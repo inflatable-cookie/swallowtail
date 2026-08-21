@@ -27,8 +27,8 @@ fn every_qualified_release_maps_to_one_input_callback_surface() {
         .as_array()
         .expect("releases are an array");
 
-    assert_eq!(releases.len(), 59);
-    assert_eq!(corpus["qualified_release_count"], 59);
+    assert_eq!(releases.len(), 61);
+    assert_eq!(corpus["qualified_release_count"], 61);
     for release in releases {
         let version = version_tuple(
             release["version"]

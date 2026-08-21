@@ -82,8 +82,8 @@
         else {
             panic!("newer stable version must remain unverified");
         };
-        assert_eq!(unverified.version().as_str(), "1.18.19");
-        assert_eq!(unverified.latest_qualified().as_str(), "1.18.18");
+        assert_eq!(unverified.version().as_str(), "1.18.21");
+        assert_eq!(unverified.latest_qualified().as_str(), "1.18.20");
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "opencode.http-sse.surface-19"

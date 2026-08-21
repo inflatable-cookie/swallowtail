@@ -239,10 +239,10 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.18` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.20` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
-  guaranteed support; a separate 59-release deletion corpus freezes two
+  guaranteed support; a separate 61-release deletion corpus freezes two
   delete-schema revisions, recursive provider-defined descendants, missing-
   target rejection, inactive-target requirements, and post-dispatch
   uncertainty without yet advertising production deletion
@@ -919,13 +919,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI evidence for 59 stable releases from `1.14.48` through
-`1.18.18` closes six selected operations through every transitive local schema
+Tagged OpenAPI evidence for 61 stable releases from `1.14.48` through
+`1.18.20` closes six selected operations through every transitive local schema
 reference. Nineteen closed surfaces map to 21 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.18` may execute as unverified through
+release. Stable exact releases above `1.18.20` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.

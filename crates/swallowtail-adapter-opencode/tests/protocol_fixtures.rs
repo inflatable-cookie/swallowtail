@@ -54,10 +54,10 @@ fn compatibility_manifest_freezes_all_stable_members_and_schema_spans() {
     assert_eq!(fixture["claim_id"], "opencode.http.server-window-1");
     assert_eq!(fixture["axis"], "opencode.server");
     assert_eq!(fixture["baseline"], "1.14.48");
-    assert_eq!(fixture["latest_qualified"], "1.18.18");
+    assert_eq!(fixture["latest_qualified"], "1.18.20");
     assert_eq!(
         fixture["releases"].as_array().expect("release array").len(),
-        59
+        61
     );
     assert_eq!(
         fixture["surface_revisions"]
@@ -81,7 +81,7 @@ fn compatibility_manifest_freezes_all_stable_members_and_schema_spans() {
         "1.16.3",
         "1.17.21",
         "1.18.4-rc.1",
-        "1.18.19",
+        "1.18.21",
         "1.18.11-rc.1",
     ] {
         assert!(rejected.iter().any(|entry| entry == version));

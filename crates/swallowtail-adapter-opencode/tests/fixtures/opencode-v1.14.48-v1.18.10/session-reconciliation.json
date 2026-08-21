@@ -1,7 +1,7 @@
 {
   "schema": "swallowtail.opencode.session-reconciliation.v1",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.18",
+  "latest_qualified": "1.18.20",
   "source_surface": "session-import.json",
   "operations": [
     {"method":"GET","path":"/global/health","purpose":"exact-version-revalidation"},
@@ -34,6 +34,6 @@
     "session_resume",
     "session_import"
   ],
-  "qualified_release_count": 59,
+  "qualified_release_count": 61,
   "surface_segment_count": 12
 }

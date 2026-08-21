@@ -4,7 +4,7 @@
   "axis": "opencode.server",
   "scheme": "semantic",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.18",
+  "latest_qualified": "1.18.20",
   "support_authority": "swallowtail_maintainer_qualified",
   "selected_route": {"operation_id":"session.delete","method":"DELETE","path":"/session/{sessionID}"},
   "surface_revisions": [
@@ -19,11 +19,11 @@
     {"minimum":"1.16.0","maximum":"1.16.0","surface":"delete-02","behavior":"opencode.http-sse.session-delete.delete-02"},
     {"minimum":"1.16.2","maximum":"1.16.2","surface":"delete-02","behavior":"opencode.http-sse.session-delete.delete-02"},
     {"minimum":"1.17.0","maximum":"1.17.20","surface":"delete-02","behavior":"opencode.http-sse.session-delete.delete-02"},
-    {"minimum":"1.18.0","maximum":"1.18.18","surface":"delete-02","behavior":"opencode.http-sse.session-delete.delete-02"}
+    {"minimum":"1.18.0","maximum":"1.18.20","surface":"delete-02","behavior":"opencode.http-sse.session-delete.delete-02"}
   ],
   "runtime_revisions": [
     {"id":"runtime-01","minimum":"1.14.48","maximum":"1.14.50","recursive_descendants":true,"busy_guard":false,"background_job_cancellation":false},
-    {"id":"runtime-02","minimum":"1.14.51","maximum":"1.18.18","recursive_descendants":true,"busy_guard":false,"background_job_cancellation":true}
+    {"id":"runtime-02","minimum":"1.14.51","maximum":"1.18.20","recursive_descendants":true,"busy_guard":false,"background_job_cancellation":true}
   ],
   "wire_behavior": {
     "success": {"status":200,"body":true,"deletion_strength":"provider_data_deleted","descendant_scope":"provider_defined_descendants"},
@@ -91,10 +91,12 @@
     {"version":"1.18.15","commit":"d7b115f623760e68a4749d16508a9eca350f246f","published":"2026-08-07","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"},
     {"version":"1.18.16","commit":"a3647eb025c7615159d417dcc49fc39fdaeba65b","published":"2026-08-10","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"},
     {"version":"1.18.17","commit":"02546dfc2e4515a4f90aaf9ceb3890df2ac2b479","published":"2026-08-12","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"},
-    {"version":"1.18.18","commit":"31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d","published":"2026-08-13","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"}
+    {"version":"1.18.18","commit":"31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d","published":"2026-08-13","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"},
+    {"version":"1.18.19","commit":"2b72179c663cadcb54f54d9f19221b3fb3d11fb6","published":"2026-08-20","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"},
+    {"version":"1.18.20","commit":"7248bc1964b13fa67e601733f89ee9dc6dfa0563","published":"2026-08-21","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","execution_surface":"surface-19","delete_surface":"delete-02","delete_surface_sha256":"b9bc1e9079cff6190161cfdcbdeab4f7cbf4da3bb187555231c84537ee025594","delete_component_count":3,"runtime_revision":"runtime-02"}
   ],
   "exclusions": ["1.14.47","1.14.52","1.15.8","1.15.14","1.16.1","1.16.3","1.17.21","1.18.4-rc.1"],
-  "unverified_newer_example": "1.18.19",
+  "unverified_newer_example": "1.18.21",
   "closure": {
     "algorithm": "session.delete operation plus transitive local JSON references; canonical object contains operation identity, method, path, operation object, and reference-addressed values; object keys recursively sorted before SHA-256",
     "external_references": false

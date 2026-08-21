@@ -7,6 +7,11 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Raised qualified OpenCode HTTP ceiling from `1.18.18` to official npm
+  `opencode-ai` `1.18.20` on the `opencode.server` axis. Compatible-extension:
+  tagged OpenAPI byte-identical through `1.18.19`; selected execution, delete,
+  import, and continuity closures unchanged; `surface-19` kept. Research 176,
+  g04.029.
 - Raised qualified Codex CLI ceiling from `0.148.0` to `0.149.0` on the
   `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
   Compatible-extension: exec help byte-identical, selected mapped flags

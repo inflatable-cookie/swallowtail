@@ -125,7 +125,7 @@ fn prepared_history_snapshot_overflow_fails_closed() {
 
 #[test]
 fn unverified_newer_server_does_not_offer_history_preparation() {
-    let fixture = PreparedFixture::new("opencode.history.newer", "1.18.19");
+    let fixture = PreparedFixture::new("opencode.history.newer", "1.18.21");
     let prepared = fixture.prepared();
     let session = prepared
         .prepare_session(OpenCodeSessionProfileInput::new(

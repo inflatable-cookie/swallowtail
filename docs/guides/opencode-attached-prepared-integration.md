@@ -45,7 +45,7 @@ Neither posture is a sandbox or host-containment claim.
 
 ## Version Posture
 
-The guaranteed server window remains `1.14.48` through `1.18.18` across the
+The guaranteed server window remains `1.14.48` through `1.18.20` across the
 qualified release segments and exact exclusions. A later exact stable release
 may proceed as visibly unverified through the latest qualified behavior. It
 does not expand guaranteed support.
@@ -131,7 +131,7 @@ revision, root, archive, and idle-status checks before issuing a normal
 `load_session` to receive bounded replay or `resume_session` to continue
 without replay.
 
-Import support is guaranteed only for qualified `1.14.48..=1.18.18` server
+Import support is guaranteed only for qualified `1.14.48..=1.18.20` server
 revisions. Visible unverified-newer servers do not inherit it. Child, active,
 archived, incompatible, missing-status, changed, or missing sessions issue no
 binding.

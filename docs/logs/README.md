@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 OpenCode HTTP 1.18.20 Claim](./2026-08-21-opencode-http-1-18-20-claim.md)
+- [2026-08-21 OpenCode HTTP 1.18.20 Identity](./2026-08-21-opencode-http-1-18-20-identity.md)
 - [2026-08-21 Claude Code 2.1.238 Claim And Acceptance](./2026-08-21-claude-code-2-1-238-claim.md)
 - [2026-08-21 Claude Code 2.1.238 Identity](./2026-08-21-claude-code-2-1-238-identity.md)
 - [2026-08-21 g04.024 Kimi Platform Cards Compiled](./2026-08-21-g04-024-kimi-platform-cards-compiled.md)

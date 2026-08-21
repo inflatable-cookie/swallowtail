@@ -4,7 +4,7 @@
   "axis": "opencode.server",
   "scheme": "semantic",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.18",
+  "latest_qualified": "1.18.20",
   "support_authority": "swallowtail_maintainer_qualified",
   "selected_routes": ["global.health", "provider.list", "session.create", "session.prompt_async", "event.subscribe", "session.abort"],
   "surface_revisions": [
@@ -49,7 +49,7 @@
     {"minimum":"1.17.11","maximum":"1.17.11","surface":"surface-17","behavior":"opencode.http-sse.surface-17"},
     {"minimum":"1.17.12","maximum":"1.17.20","surface":"surface-18","behavior":"opencode.http-sse.surface-18"},
     {"minimum":"1.18.0","maximum":"1.18.10","surface":"surface-18","behavior":"opencode.http-sse.surface-18"},
-    {"minimum":"1.18.11","maximum":"1.18.18","surface":"surface-19","behavior":"opencode.http-sse.surface-19"}
+    {"minimum":"1.18.11","maximum":"1.18.20","surface":"surface-19","behavior":"opencode.http-sse.surface-19"}
   ],
   "releases": [
     {"version":"1.14.48","commit":"4d8ac17c263c0e58fb99c25cc636684dffb45a50","published":"2026-05-11","openapi_sha256":"eefb285b34e40995dee18fbc032cfe23814fb9db9ab7c3fdacf24b42c0f0446a","surface":"surface-01"},
@@ -110,8 +110,10 @@
     {"version":"1.18.15","commit":"d7b115f623760e68a4749d16508a9eca350f246f","published":"2026-08-07","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
     {"version":"1.18.16","commit":"a3647eb025c7615159d417dcc49fc39fdaeba65b","published":"2026-08-10","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
     {"version":"1.18.17","commit":"02546dfc2e4515a4f90aaf9ceb3890df2ac2b479","published":"2026-08-12","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
-    {"version":"1.18.18","commit":"31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d","published":"2026-08-13","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"}
+    {"version":"1.18.18","commit":"31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d","published":"2026-08-13","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.19","commit":"2b72179c663cadcb54f54d9f19221b3fb3d11fb6","published":"2026-08-20","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.20","commit":"7248bc1964b13fa67e601733f89ee9dc6dfa0563","published":"2026-08-21","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"}
   ],
-  "rejections": ["1.14.47", "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21", "1.18.4-rc.1", "1.18.19", "1.18.11-rc.1", "missing", "malformed", "unhealthy", "session_version_mismatch"],
+  "rejections": ["1.14.47", "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21", "1.18.4-rc.1", "1.18.21", "1.18.11-rc.1", "missing", "malformed", "unhealthy", "session_version_mismatch"],
   "closure": {"algorithm": "selected operations plus transitive local JSON references; recursively closed; object keys sorted before SHA-256", "external_references": false}
 }

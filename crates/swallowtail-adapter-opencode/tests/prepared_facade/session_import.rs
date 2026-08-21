@@ -185,7 +185,7 @@ fn catalogue_import_and_existing_load_share_one_exact_continuation_path() {
 
 #[test]
 fn unverified_newer_server_does_not_offer_catalogue_preparation() {
-    let fixture = PreparedFixture::new("opencode.import.newer", "1.18.19");
+    let fixture = PreparedFixture::new("opencode.import.newer", "1.18.21");
     let prepared = fixture.prepared();
     let error = prepared
         .prepare_session_catalogue(OpenCodeSessionCatalogueInput::new(

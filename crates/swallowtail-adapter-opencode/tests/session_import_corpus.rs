@@ -21,7 +21,7 @@ fn every_qualified_release_maps_to_one_complete_import_surface() {
     let import: serde_json::Value = serde_json::from_str(IMPORT).expect("import corpus");
     let releases = execution["releases"].as_array().expect("release records");
     let segments = import["segments"].as_array().expect("import segments");
-    assert_eq!(releases.len(), 59);
+    assert_eq!(releases.len(), 61);
     assert_eq!(segments.len(), 12);
     assert_eq!(import["baseline"], execution["baseline"]);
     assert_eq!(import["latest_qualified"], execution["latest_qualified"]);
@@ -156,7 +156,7 @@ fn history_and_failure_fixtures_remain_bounded_and_fail_closed() {
 fn reconciliation_reuses_only_the_read_only_qualified_surface() {
     let reconciliation: serde_json::Value =
         serde_json::from_str(RECONCILIATION).expect("reconciliation corpus");
-    assert_eq!(reconciliation["qualified_release_count"], 59);
+    assert_eq!(reconciliation["qualified_release_count"], 61);
     assert_eq!(reconciliation["surface_segment_count"], 12);
     assert_eq!(
         reconciliation["operations"]

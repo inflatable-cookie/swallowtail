@@ -25,9 +25,9 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Claude Code headless and response-only `2.1.238`
-(g04.028, PR 24). The immediately preceding claim is Ollama attached
-`0.32.15` (g04.027, PR 22). Neither changes the generation pointer.
+Last one-family claim: OpenCode HTTP `1.18.20` (g04.029, PR 25). The
+immediately preceding claim is Claude Code headless and response-only
+`2.1.238` (g04.028, PR 24). Neither changes the generation pointer.
 
 ### Current Deferrals
 

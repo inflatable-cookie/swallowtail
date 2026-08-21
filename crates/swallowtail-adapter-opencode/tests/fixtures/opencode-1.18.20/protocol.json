@@ -1,0 +1,42 @@
+{
+  "version": "1.18.20",
+  "help_source": null,
+  "help_note": "host opencode not on PATH; selected protocol compared from official tagged OpenAPI",
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort"
+  ],
+  "selected_route_paths_unchanged": true,
+  "selected_operation_objects_unchanged": true,
+  "delete_closure_unchanged": true,
+  "import_closure_unchanged": true,
+  "continuity_closure_unchanged": true,
+  "selected_closure_delta": null,
+  "openapi_byte_identical_to_1_18_18": true,
+  "unmapped_changelog_extras": [
+    "cloudflare-ai-gateway-passthroughs",
+    "chatgpt-codex-rate-limits",
+    "qwen-sampling-defaults",
+    "connect-authed-provider-display",
+    "malformed-model-pricing",
+    "openai-websocket-size-fallback",
+    "chatgpt-workspace-compute-residency",
+    "console-url-account-connection",
+    "opencode-go-web-search",
+    "v1-database-compatibility",
+    "desktop-server-dialog",
+    "subagent-task_id-resumable-failure",
+    "finish_reason-network_error-retry",
+    "cerebras-max-completion-tokens",
+    "opencode-run-subagent-permissions",
+    "xai-capacity-stream-retry"
+  ],
+  "decoder_corpus": "opencode-1.14.48",
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

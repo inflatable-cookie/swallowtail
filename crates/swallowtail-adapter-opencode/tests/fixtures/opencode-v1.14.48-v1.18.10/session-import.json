@@ -4,7 +4,7 @@
   "claim_id": "opencode.http.session-import-window-1",
   "axis": "opencode.server",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.18",
+  "latest_qualified": "1.18.20",
   "support_authority": "swallowtail_maintainer_qualified",
   "selected_routes": [
     {"operation_id":"session.list","method":"GET","path":"/session"},
@@ -34,7 +34,7 @@
     {"minimum":"1.16.2","maximum":"1.16.2","surface":"import-06"},
     {"minimum":"1.17.0","maximum":"1.17.3","surface":"import-06"},
     {"minimum":"1.17.4","maximum":"1.17.20","surface":"import-07"},
-    {"minimum":"1.18.0","maximum":"1.18.18","surface":"import-07"}
+    {"minimum":"1.18.0","maximum":"1.18.20","surface":"import-07"}
   ],
   "binding": {
     "target": "exact_attached_endpoint",
@@ -69,7 +69,7 @@
   },
   "unsupported": {
     "semantic_gaps": ["1.14.52","1.15.8","1.15.14","1.16.1","1.16.3","1.17.21"],
-    "unverified_newer_minimum": "1.18.19",
+    "unverified_newer_minimum": "1.18.21",
     "child_import": false,
     "cross_directory_import": false,
     "account_wide_scan": false
@@ -80,7 +80,7 @@
   },
   "sources": {
     "baseline_openapi": "https://github.com/anomalyco/opencode/blob/v1.14.48/packages/sdk/openapi.json",
-    "latest_openapi": "https://github.com/anomalyco/opencode/blob/v1.18.18/packages/sdk/openapi.json",
+    "latest_openapi": "https://github.com/anomalyco/opencode/blob/v1.18.20/packages/sdk/openapi.json",
     "current_docs": "https://opencode.ai/docs/server/"
   }
 }

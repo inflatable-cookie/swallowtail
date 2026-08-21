@@ -1,0 +1,4 @@
+{"event":"replay_item","item":{"images":0,"kind":"user","text":"Summarize the parser module."},"sequence":0,"type":"event"}
+{"event":"replay_item","item":{"kind":"assistant","parts":[{"text":"I will read the parser first.","type":"text"},{"name":"read","arguments":{"path":"src/parser.rs"},"type":"tool_call"}],"stopReason":"toolUse","usage":{"cacheRead":0,"cacheWrite":0,"input":1180,"output":30}},"sequence":1,"type":"event"}
+{"event":"replay_item","item":{"isError":false,"kind":"tool_result","text":"pub fn parse(...)","toolName":"read"},"sequence":2,"type":"event"}
+{"event":"replay_item","item":{"kind":"assistant","parts":[{"thinking":"the parser is small","type":"thinking"},{"text":"The parser is recursive descent.","type":"text"}],"stopReason":"stop","type":"assistant","usage":{"cacheRead":0,"cacheWrite":0,"input":1200,"output":42}},"sequence":3,"type":"event"}

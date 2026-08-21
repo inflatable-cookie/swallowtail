@@ -1,0 +1,17 @@
+{"event":"agent_start","type":"event"}
+{"event":"turn_start","type":"event"}
+{"event":"message_start","role":"assistant","type":"event"}
+{"event":"reasoning_start","type":"event"}
+{"event":"reasoning_delta","delta":"checking the parser","type":"event"}
+{"event":"reasoning_end","type":"event"}
+{"event":"output_delta","delta":"The parser ","type":"event"}
+{"event":"output_delta","delta":"is recursive descent.","type":"event"}
+{"event":"tool_execution_start","toolCallId":"call-1","toolName":"read","type":"event"}
+{"event":"tool_execution_update","toolCallId":"call-1","toolName":"read","type":"event"}
+{"event":"tool_execution_end","isError":false,"toolCallId":"call-1","toolName":"read","type":"event"}
+{"event":"message_end","role":"assistant","stopReason":"stop","type":"event","usage":{"cacheRead":0,"cacheWrite":0,"input":1200,"output":42}}
+{"event":"message_end","role":"assistant","stopReason":"error","type":"event"}
+{"event":"turn_end","type":"event"}
+{"event":"agent_end","type":"event"}
+{"event":"agent_settled","type":"event"}
+{"event":"progress","type":"event"}

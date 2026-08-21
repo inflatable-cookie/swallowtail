@@ -19,6 +19,8 @@ mod prepared_profile;
 /// Bounded public decoder for qualified Pi RPC record shapes.
 pub mod protocol;
 mod selection;
+/// Pi SDK sidecar asset, identity constants, and private wire decoder.
+pub mod sidecar;
 mod turn;
 
 pub use driver::{PiRpcDriver, pi_rpc_descriptor};

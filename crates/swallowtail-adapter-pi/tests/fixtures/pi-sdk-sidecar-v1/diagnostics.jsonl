@@ -1,0 +1,2 @@
+{"code":"sdk_diagnostic","level":"warning","message":"sidecar diagnostic: sdk_diagnostic","type":"diagnostic"}
+{"code":"model_fallback","level":"warning","message":"sidecar diagnostic: model_fallback","type":"diagnostic"}

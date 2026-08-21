@@ -78,6 +78,6 @@ worker branch, 024 named, 025 standing currentness completed, target
 - [020 Config-Ref Prepare Handoff](./020-config-ref-prepare-handoff.md) — completed
 - [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — completed
 - [022 Further Addable Inventory](./022-further-addable-inventory.md) — completed
-- [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — planned
+- [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — completed on worker branch
 - [024 Hosted API-Key Kimi Platform Chat](./024-hosted-api-key-kimi-platform-chat.md) — planned, named by g04.022
 - [025 Codex 0.149.0 Useful Newer](./025-codex-0-149-0-useful-newer.md) — completed (standing currentness)

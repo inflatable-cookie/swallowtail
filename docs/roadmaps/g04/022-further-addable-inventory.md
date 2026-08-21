@@ -70,7 +70,7 @@ shapes.
 ## Lane Runway
 
 - previous: g04.021 unmarked overlay rows
-- this milestone: further addable inventory — complete in worker PR
+- this milestone: further addable inventory
 - next: g04.023 047 presentation metadata
 - later: g04.024 hosted API-key Kimi Platform Chat, then named candidates
 - generation continues toward 30-50; do not roll over

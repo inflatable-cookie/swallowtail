@@ -1,6 +1,6 @@
 # 067 047 Presentation Fields
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../023-047-presentation-metadata.md`

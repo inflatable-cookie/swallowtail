@@ -1,6 +1,6 @@
 # 065 047 Presentation Field Inventory
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../023-047-presentation-metadata.md`

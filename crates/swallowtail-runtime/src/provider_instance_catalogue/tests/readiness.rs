@@ -5,7 +5,7 @@ use super::super::{
 use super::Fixture;
 use swallowtail_core::{
     CredentialMechanism, CredentialState, DriverRole, EndpointAuthorization, EntitlementState,
-    ProviderId, RuntimeReadiness, SafeDiagnostic,
+    InstanceLabel, ProviderId, RuntimeReadiness, SafeDiagnostic,
 };
 
 #[test]
@@ -44,6 +44,56 @@ fn exact_available_evidence_produces_a_ready_portable_record() {
     assert_eq!(
         model.provider_id().map(ProviderId::as_str),
         Some("provider-a")
+    );
+}
+
+#[test]
+fn optional_instance_label_is_projected_without_changing_readiness() {
+    let ready_fixture = Fixture::ready("fixture.label-ready");
+    let ready_source = ready_fixture.prepared(DriverRole::ModelCatalog);
+    let ready = ConfiguredProviderInstanceRecord::admit(
+        ready_fixture
+            .admission()
+            .with_label(InstanceLabel::new("Work").expect("label is valid"))
+            .with_prepared_routes([ready_source.clone()])
+            .with_model_catalogue(ConfiguredProviderModelCatalogueInput::available(
+                ready_source,
+                [ready_fixture.model("model-a", None)],
+            )),
+    )
+    .expect("labelled ready record is admitted");
+    assert_eq!(ready.label().map(InstanceLabel::as_str), Some("Work"));
+    assert_eq!(
+        ready.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::Ready
+    );
+
+    let not_ready_fixture = Fixture::with_status(
+        "fixture.label-not-ready",
+        CredentialState::Expired,
+        EntitlementState::Available,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+    );
+    let not_ready_source = not_ready_fixture.prepared(DriverRole::ModelCatalog);
+    let not_ready = ConfiguredProviderInstanceRecord::admit(
+        not_ready_fixture
+            .admission()
+            .with_label(InstanceLabel::new("Expired").expect("label is valid"))
+            .with_prepared_routes([not_ready_source.clone()])
+            .with_model_catalogue(ConfiguredProviderModelCatalogueInput::available(
+                not_ready_source,
+                [not_ready_fixture.model("model-a", None)],
+            )),
+    )
+    .expect("labelled not-ready record is admitted");
+    assert_eq!(
+        not_ready.label().map(InstanceLabel::as_str),
+        Some("Expired")
+    );
+    assert_eq!(
+        not_ready.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::NotReady
     );
 }
 

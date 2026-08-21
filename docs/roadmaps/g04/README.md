@@ -35,19 +35,20 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — worker in flight, cards 065-067
+- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — completed on worker branch, cards 065-067
 - [g04.024 Hosted API-Key Kimi Platform Chat](024-hosted-api-key-kimi-platform-chat.md) — planned after 023; implementation cards not compiled
 - [g04.025 Codex 0.149.0 Useful Newer](025-codex-0-149-0-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 22 numbered completed roadmaps, 023 compiled, 024 named,
-025 standing currentness completed, target 30-50. Hosted OAuth stays parked.
+Do not roll over: 22 numbered completed roadmaps, 023 complete on the
+worker branch, 024 named, 025 standing currentness completed, target
+30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
 - g04.001 through g04.022 are complete. PR 20 is on `main` at `281244db`
-- g04.023 worker dispatched: cards 065-067, handoff
-  `docs/handoffs/20260821-092837-g04-023-047-presentation-metadata.md`
-- g04.024 is named behind 023. Do not start it.
+- g04.023 cards 065-067 are complete on worker branch
+  `t3code/presentation-metadata-handoff`; reviewable PR is pending
+- g04.024 is named behind 023. Do not start it until the worker PR is merged.
 - g04.025 standing currentness complete. PR 19 is on `main` at `25fc3e35`
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps

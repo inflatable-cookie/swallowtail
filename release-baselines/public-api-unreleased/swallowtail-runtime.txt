@@ -799,6 +799,7 @@ pub const fn swallowtail_runtime::ConfiguredProviderCredentialPosture::support_a
 pub struct swallowtail_runtime::ConfiguredProviderInstanceAdmission
 impl swallowtail_runtime::ConfiguredProviderInstanceAdmission
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceAdmission::new(swallowtail_core::registration::DriverDescriptor, swallowtail_core::instance::ConfiguredInstance, swallowtail_core::access::AccessProfile, swallowtail_runtime::PreparedAccessEvidence) -> Self
+pub fn swallowtail_runtime::ConfiguredProviderInstanceAdmission::with_label(self, swallowtail_core::connection_lifecycle::identity::InstanceLabel) -> Self
 pub fn swallowtail_runtime::ConfiguredProviderInstanceAdmission::with_model_catalogue(self, swallowtail_runtime::ConfiguredProviderModelCatalogueInput) -> Self
 pub fn swallowtail_runtime::ConfiguredProviderInstanceAdmission::with_prepared_routes(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::PreparedOperationEvidence>) -> Self
 pub struct swallowtail_runtime::ConfiguredProviderInstanceCatalogue
@@ -828,6 +829,7 @@ pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::instance_pol
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::instance_revision(&self) -> &swallowtail_core::runtime_identity::InstanceRevision
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::integration_family(&self) -> &swallowtail_core::runtime_identity::IntegrationFamilyId
 pub fn swallowtail_runtime::ConfiguredProviderInstanceRecord::interface_versions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::interface_version::InterfaceVersionBinding>
+pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::label(&self) -> core::option::Option<&swallowtail_core::connection_lifecycle::identity::InstanceLabel>
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::model_catalogue(&self) -> core::option::Option<&swallowtail_runtime::ConfiguredProviderModelCatalogue>
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::ownership(&self) -> swallowtail_core::runtime_identity::InstanceOwnership
 pub const fn swallowtail_runtime::ConfiguredProviderInstanceRecord::protocol_facade_id(&self) -> &swallowtail_core::runtime_identity::ProtocolFacadeId

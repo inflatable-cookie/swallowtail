@@ -1,8 +1,8 @@
 use swallowtail_core::{
     AdapterIdentity, CapabilityProfile, ConfiguredInstanceId, DriverDescriptor, ExecutionHostId,
-    HarnessConfigurationPosture, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, IntegrationFamilyId, InterfaceVersionBinding, ProtocolFacadeId,
-    ProviderAgentBinding, TransportFamilyId,
+    HarnessConfigurationPosture, HarnessRpcPolicy, InstanceLabel, InstanceOwnership,
+    InstancePolicyId, InstanceRevision, IntegrationFamilyId, InterfaceVersionBinding,
+    ProtocolFacadeId, ProviderAgentBinding, TransportFamilyId,
 };
 
 use super::failure::failure;
@@ -43,6 +43,7 @@ pub struct ConfiguredProviderInstanceRecord {
     capabilities: CapabilityProfile,
     credential_posture: ConfiguredProviderCredentialPosture,
     selection_readiness: ConfiguredProviderInstanceSelectionReadiness,
+    instance_label: Option<InstanceLabel>,
     routes: Vec<ConfiguredProviderInstanceRoute>,
     model_catalogue: Option<ConfiguredProviderModelCatalogue>,
 }
@@ -97,6 +98,7 @@ impl ConfiguredProviderInstanceRecord {
             capabilities: admission.instance.capabilities().clone(),
             credential_posture,
             selection_readiness,
+            instance_label: admission.instance_label.clone(),
             routes,
             model_catalogue,
         })
@@ -106,6 +108,12 @@ impl ConfiguredProviderInstanceRecord {
     /// Returns the configured-instance identity.
     pub const fn instance_id(&self) -> &ConfiguredInstanceId {
         &self.instance_id
+    }
+
+    #[must_use]
+    /// Returns the optional host-owned Contract 057 instance label.
+    pub const fn label(&self) -> Option<&InstanceLabel> {
+        self.instance_label.as_ref()
     }
 
     #[must_use]

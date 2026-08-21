@@ -1,6 +1,6 @@
 # 067 047 Presentation Fields
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../023-047-presentation-metadata.md`
@@ -24,9 +24,30 @@ Realize the named optional 047 presentation fields.
 
 ## Acceptance Criteria
 
-- [ ] named fields project onto 047 without changing `Ready` / `NotReady`
-- [ ] overlay markers remain overlay
-- [ ] `public-api-0.3.3` stays immutable
+- [x] named fields project onto 047 without changing `Ready` / `NotReady`
+- [x] overlay markers remain overlay
+- [x] `public-api-0.3.3` stays immutable
+
+## Realization
+
+`ConfiguredProviderInstanceAdmission::with_label` carries the optional
+Contract 057 host-owned `InstanceLabel` into
+`ConfiguredProviderInstanceRecord::label`. The snapshot stores no overlay
+markers, accent color, authenticated-subject values, emails, tokens, or
+targets. Focused tests cover labelled `Ready` and `NotReady` records and show
+that the label is not part of the readiness calculation.
+
+The additive surface is recorded in
+`release-baselines/public-api-unreleased/swallowtail-runtime.txt`.
+
+## Evidence
+
+Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-1e989752`
+Worker branch: `t3code/presentation-metadata-handoff`
+
+Validation passed: focused core/runtime/testkit validation (396 tests),
+`git diff --check`, and `effigy package:api`. The immutable
+`release-baselines/public-api-0.3.3/` baseline is unchanged.
 
 ## Validation
 

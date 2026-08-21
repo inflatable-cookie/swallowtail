@@ -1,5 +1,5 @@
 use crate::{PreparedAccessEvidence, PreparedOperationEvidence};
-use swallowtail_core::{AccessProfile, ConfiguredInstance, DriverDescriptor};
+use swallowtail_core::{AccessProfile, ConfiguredInstance, DriverDescriptor, InstanceLabel};
 
 use super::ConfiguredProviderModelCatalogueInput;
 
@@ -15,6 +15,7 @@ pub struct ConfiguredProviderInstanceAdmission {
     pub(super) access_evidence: PreparedAccessEvidence,
     pub(super) prepared_routes: Vec<PreparedOperationEvidence>,
     pub(super) model_catalogue: Option<ConfiguredProviderModelCatalogueInput>,
+    pub(super) instance_label: Option<InstanceLabel>,
 }
 
 impl ConfiguredProviderInstanceAdmission {
@@ -33,6 +34,7 @@ impl ConfiguredProviderInstanceAdmission {
             access_evidence,
             prepared_routes: Vec::new(),
             model_catalogue: None,
+            instance_label: None,
         }
     }
 
@@ -53,6 +55,13 @@ impl ConfiguredProviderInstanceAdmission {
         catalogue: ConfiguredProviderModelCatalogueInput,
     ) -> Self {
         self.model_catalogue = Some(catalogue);
+        self
+    }
+
+    #[must_use]
+    /// Sets the optional host-owned Contract 057 instance label.
+    pub fn with_label(mut self, label: InstanceLabel) -> Self {
+        self.instance_label = Some(label);
         self
     }
 }

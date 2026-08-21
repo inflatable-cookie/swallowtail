@@ -1,12 +1,12 @@
 # 023 047 Presentation Metadata
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.022
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 020, 047, 057
-Planning state: cards 065-067 ready
+Planning state: cards 065-067 completed
 
 ## Problem
 
@@ -23,10 +23,10 @@ shapes.
 
 ## Goals
 
-- [ ] classify which optional fields may enter 047 versus overlay versus
+- [x] classify which optional fields may enter 047 versus overlay versus
       consumer chrome
-- [ ] amend 047/057 only for the named field set
-- [ ] realize those fields without changing `Ready` / `NotReady`
+- [x] amend 047/057 only for the named field set
+- [x] realize those fields without changing `Ready` / `NotReady`
 
 ## Non-Goals
 
@@ -40,30 +40,41 @@ shapes.
 
 ### Batch 23.1 — Field Inventory
 
-- [ ] Execute card 065.
-- [ ] preferred direction: optional already-stored 057 instance labels
+- [x] Execute card 065.
+- [x] preferred direction: optional already-stored 057 instance labels
       onto the snapshot; overlay markers stay overlay
-- [ ] stop and ask if the field set is still forked
+- [x] field set is not forked
 
 ### Batch 23.2 — Contract Amendment
 
-- [ ] Execute card 066 after card 065.
-- [ ] 047/057/architecture name the fields
-- [ ] selection readiness formula is unchanged
+- [x] Execute card 066 after card 065.
+- [x] 047/057/architecture name the fields
+- [x] selection readiness formula is unchanged
 
 ### Batch 23.3 — Realize Fields
 
-- [ ] Execute card 067 after card 066.
-- [ ] additive API in `public-api-unreleased`
-- [ ] `public-api-0.3.3` stays immutable
+- [x] Execute card 067 after card 066.
+- [x] additive API in `public-api-unreleased`
+- [x] `public-api-0.3.3` stays immutable
 
 ## Acceptance Criteria
 
-- [ ] 047 `Ready` / `NotReady` is unchanged
-- [ ] overlay markers are not 047 snapshot fields
-- [ ] accent color stays consumer-owned
-- [ ] emails, tokens, and targets stay absent
-- [ ] `public-api-0.3.3` stays immutable
+- [x] 047 `Ready` / `NotReady` is unchanged
+- [x] overlay markers are not 047 snapshot fields
+- [x] accent color stays consumer-owned
+- [x] emails, tokens, and targets stay absent
+- [x] `public-api-0.3.3` stays immutable
+
+## Outcome
+
+The only named optional 047 presentation field is the host-owned
+`instance_label` carried from the Contract 057 admitted-instance store
+record. Runtime admission and snapshot projection realize it additively.
+Overlay markers, accent color, authenticated-subject values, emails, tokens,
+and targets remain outside the snapshot. `Ready` / `NotReady` is unchanged.
+
+Validation passed on the worker branch. g04.024 remains named behind this
+milestone; its implementation cards are not compiled here.
 
 ## Lane Runway
 

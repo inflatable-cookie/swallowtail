@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.023 cards 065-067. Handoff
-`docs/handoffs/20260821-092837-g04-023-047-presentation-metadata.md`.
+Review and merge the g04.023 worker PR for cards 065-067. After merge,
+compile g04.024; do not start its implementation cards before compilation.
 
 ## Standing Lanes
 

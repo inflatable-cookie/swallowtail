@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 g04.023 047 Presentation Metadata](./2026-08-21-g04-023-047-presentation-metadata.md)
 - [2026-08-21 g04.025 Codex 0.149.0 Useful Newer Merged](./2026-08-21-g04-025-codex-0-149-0-merged.md)
 - [2026-08-21 Codex 0.149.0 Claim](./2026-08-21-codex-0-149-0-claim.md)
 - [2026-08-21 Codex 0.149.0 Identity](./2026-08-21-codex-0-149-0-identity.md)

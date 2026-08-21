@@ -12,6 +12,11 @@ session-id casefold, and the hybrid-model Thinking toggle stay unmapped.
 
 g04.026 is standing currentness, completed. Next Task stays on g04.023.
 
+Focused Qwen proof (40 tests, clippy `-D warnings`), package verify,
+`qa:routes`, `qa:northstar`, and named docs indexes passed. Effigy binary
+was unavailable; equivalent nextest/clippy/package/route/index/verb
+checks ran.
+
 ## Next
 
 Resume g04.023 047 presentation metadata. Gemini stays deferred.

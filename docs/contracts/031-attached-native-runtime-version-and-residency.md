@@ -116,8 +116,8 @@ The first driver may publish this claim only after the required corpus and
 conformance pass. Its qualification target binds:
 
 - native Ollama API
-- semantic runtime versions `0.14.0` through `0.32.15`, inclusive
-- qualification points `0.14.0`, `0.18.0`, `0.30.0`, `0.32.1`, `0.32.14`, and `0.32.15`
+- semantic runtime versions `0.14.0` through `0.32.14`, inclusive
+- qualification points `0.14.0`, `0.18.0`, `0.30.0`, `0.32.1`, and `0.32.14`
 - one maintained text-only behavior segment
 - unverified attempts for exact later stable versions through the latest
   qualified text behavior

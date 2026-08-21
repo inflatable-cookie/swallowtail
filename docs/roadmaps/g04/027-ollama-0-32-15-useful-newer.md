@@ -9,8 +9,9 @@ Created: 2026-08-21
 Qualify official GitHub `ollama/ollama` `v0.32.15` (published 2026-08-19)
 on the `ollama.runtime` axis (`ollama.attached` route).
 
-This is Contract 029 currentness work. It does not keep the generation
-open.
+This is extracurricular Contract 029 currentness work, outside the
+northstar/g04 loop. Do not edit Next Task, `docs/roadmaps/README.md`, or
+g04 front-door text.
 
 ## Acceptance
 
@@ -25,14 +26,15 @@ Claim:
 - If compatible-extension: raise `OLLAMA_LATEST_QUALIFIED_VERSION` to
   `0.32.15`
 - Keep exclusions `0.32.2` and `0.32.10`
-- Update tests, guides, feature matrix, architecture if it names the
-  ceiling
+- Update tests, Ollama guide, and Ollama matrix rows
+- Leave architecture, contracts, Next Task, and g04 front-door alone
 - Pass `effigy validate:focused swallowtail-adapter-ollama`
 - Pass `effigy package:verify-affected swallowtail-adapter-ollama`
 - Pass `effigy qa:routes`
 - Pass `effigy qa:northstar`
-- Pass docs index gates
-- Pass next-action gate
+- Pass family research/log/card index gates
+- If next-action fails because Next Task says `Worker in flight`, leave
+  the generation docs alone
 
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
@@ -47,6 +49,8 @@ consumer checks.
   system-message normalize, MLX/llama.cpp deps)
 - Flattening families, including llama.cpp attached/owned
 - Decoder updates unless adapter mapping changed
+- Next Task, generation status, and g04 front-door edits
+- Architecture or contract ceiling rewrites
 
 ## Batch Cards
 

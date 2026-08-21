@@ -322,7 +322,7 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.32.15`; exact runtime, installed and running model observations,
+  `0.14.0..=0.32.14`; exact runtime, installed and running model observations,
   NDJSON output, and inference-caused residency remain distinct, with no
   installation, model acquisition, cloud access, unload, or server ownership
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
@@ -1439,7 +1439,7 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. The guaranteed `0.14.0` through `0.32.15`
+drift fail before operation effects. The guaranteed `0.14.0` through `0.32.14`
 window, exact `0.32.2` and `0.32.10` exclusions, prerelease closure, and
 visibly unverified later stable execution remain explicit.
 

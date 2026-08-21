@@ -33,13 +33,12 @@ In tests:
 In docs:
 
 - Update Ollama prepared-integration guide
-- Update route + feature matrices
-- Update architecture and contracts that name this ceiling
+- Update Ollama route + feature matrix rows
 - Add `CHANGELOG.md` Unreleased entry
 - Write identity and claim logs
-- Update research/log/roadmap/g04/batch-card indexes
-- Keep Next Task on g04.023; do not keep the generation open for
-  currentness
+- Index family research, logs, and cards only
+- Do not edit Next Task, `docs/roadmaps/README.md`, g04 front-door
+  text, architecture, or contracts
 
 ## Validation
 
@@ -51,11 +50,13 @@ effigy qa:routes
 effigy qa:northstar
 effigy qa:docs:index:research
 effigy qa:docs:index:logs
-effigy qa:docs:index:roadmaps
-effigy qa:docs:index:roadmaps:g04
 effigy qa:docs:index:roadmaps:batch-cards
-effigy qa:docs:next-action:roadmaps
 ```
+
+If `qa:docs:index:roadmaps`, `qa:docs:index:roadmaps:g04`, or
+`qa:docs:next-action:roadmaps` fail because Next Task says
+`Worker in flight` or because this milestone is unlisted on the g04
+front door, leave the generation docs alone.
 
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
@@ -67,9 +68,11 @@ consumer checks.
 - `0.32.2` and `0.32.10` remain incompatible
 - `0.32.16` remains permitted UnverifiedNewer
 - Decoder specimens remain
-- Named gates pass
+- Named route gates pass
+- Generation next-action / g04 front-door gates may fail; do not fix
+  them here
 
-Auto-continuation: No. Next Task returns to g04.023.
+Auto-continuation: No. Do not change Next Task.
 
 ## Out Of Scope
 
@@ -80,3 +83,5 @@ Auto-continuation: No. Next Task returns to g04.023.
 - Mapping unused surfaces
 - Flattening llama.cpp onto Ollama
 - Provider work
+- Next Task, generation status, g04 front-door, architecture, or
+  contract edits

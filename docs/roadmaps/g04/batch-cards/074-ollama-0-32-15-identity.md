@@ -49,3 +49,5 @@ Auto-continue to claim card 075.
 - Flattening llama.cpp onto Ollama
 - Provider work
 - Decoder updates
+- Next Task, generation status, g04 front-door, architecture, or
+  contract edits

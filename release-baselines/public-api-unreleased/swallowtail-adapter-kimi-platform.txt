@@ -19,6 +19,7 @@ impl swallowtail_adapter_kimi_platform::KimiPlatformModelSelection
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
 pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput
 impl swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
 impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue

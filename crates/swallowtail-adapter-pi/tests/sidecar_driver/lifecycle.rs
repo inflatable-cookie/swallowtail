@@ -1,13 +1,14 @@
 use super::{deadline, driver, make_host_id};
 use crate::support::{
-    SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection, turn_request,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
+    sidecar_selection_with_attachments, turn_request,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::PiSdkSidecarDriver;
 use swallowtail_core::CredentialRef;
 use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, EnvironmentRef, InteractiveSessionDriver,
-    TerminalStatus,
+    AttachmentDescriptor, AttachmentRef, AttachmentRole, CancellationAcknowledgement,
+    CleanupOutcome, EnvironmentRef, InteractiveSessionDriver, TerminalStatus,
 };
 
 #[test]
@@ -183,4 +184,66 @@ fn preflight_mismatch_has_no_effect_and_process_cleanup_failure_surfaces() {
     let cleanup = block_on(session.close());
     assert!(matches!(cleanup, CleanupOutcome::Failed(ref diagnostic)
         if diagnostic.code() == "swallowtail.pi.sdk-sidecar.process_cleanup_failed"));
+
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.nonzero-exit");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::Complete).with_process_exit_failure();
+    let selected = sidecar_selection(host_id.clone());
+    let session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        sidecar_open_request("sidecar-nonzero-session", selected.resource),
+        fixture.services(host_id),
+    ))
+    .expect("sidecar non-zero session opens");
+    let cleanup = block_on(session.close());
+    assert!(matches!(cleanup, CleanupOutcome::Failed(ref diagnostic)
+        if diagnostic.code() == "swallowtail.pi.sdk-sidecar.process_cleanup_failed"));
+}
+
+#[test]
+fn deadline_task_spawn_failure_clears_turn_and_releases_attachment() {
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.deadline-spawn");
+    let fixture =
+        SidecarFixtureHost::new(SidecarScenario::Complete).with_deadline_task_spawn_failure();
+    let selected = sidecar_selection_with_attachments(host_id.clone());
+    let services = fixture.services(host_id);
+    let mut session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        sidecar_open_request("sidecar-deadline-spawn-session", selected.resource),
+        services.clone(),
+    ))
+    .expect("sidecar session opens");
+    let attachment = AttachmentDescriptor::new(
+        AttachmentRef::new("pi.fixture.deadline-spawn-image").expect("valid attachment"),
+        "image/png",
+        AttachmentRole::Input,
+    )
+    .expect("valid descriptor")
+    .with_known_length(8);
+    let error = block_on(session.start_turn(
+        turn_request("sidecar-deadline-spawn-fail", deadline()).with_attachments([attachment]),
+        services.clone(),
+    ))
+    .err()
+    .expect("deadline task spawn fails");
+    assert_eq!(error.diagnostic().code(), "fixture.pi_sdk_sidecar.failed");
+    assert_eq!(
+        fixture
+            .cleanup_events()
+            .iter()
+            .filter(|event| **event == CleanupEvent::AttachmentRelease)
+            .count(),
+        1
+    );
+
+    let mut turn = block_on(session.start_turn(
+        turn_request("sidecar-deadline-spawn-retry", deadline()),
+        services,
+    ))
+    .expect("rolled-back session accepts a later turn");
+    assert_eq!(
+        block_on(turn.take_terminal_outcome().expect("terminal outcome")).status(),
+        &TerminalStatus::Completed
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }

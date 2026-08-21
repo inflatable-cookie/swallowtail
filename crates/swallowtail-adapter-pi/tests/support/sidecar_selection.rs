@@ -45,6 +45,16 @@ pub fn sidecar_selection(host: ExecutionHostId) -> SidecarFixtureSelection {
         host,
         DriverRole::InteractiveSession,
         sidecar_versions().to_vec(),
+        false,
+    )
+}
+
+pub fn sidecar_selection_with_attachments(host: ExecutionHostId) -> SidecarFixtureSelection {
+    build_selection(
+        host,
+        DriverRole::InteractiveSession,
+        sidecar_versions().to_vec(),
+        true,
     )
 }
 
@@ -56,11 +66,21 @@ pub fn sidecar_selection_with_instance_versions(
     host: ExecutionHostId,
     instance_versions: Vec<InterfaceVersionBinding>,
 ) -> SidecarFixtureSelection {
-    build_selection(host, DriverRole::InteractiveSession, instance_versions)
+    build_selection(
+        host,
+        DriverRole::InteractiveSession,
+        instance_versions,
+        false,
+    )
 }
 
 pub fn sidecar_catalogue_selection(host: ExecutionHostId) -> SidecarFixtureSelection {
-    build_selection(host, DriverRole::ModelCatalog, sidecar_versions().to_vec())
+    build_selection(
+        host,
+        DriverRole::ModelCatalog,
+        sidecar_versions().to_vec(),
+        false,
+    )
 }
 
 pub fn sidecar_versions() -> [InterfaceVersionBinding; 4] {
@@ -86,6 +106,7 @@ fn build_selection(
     host: ExecutionHostId,
     role: DriverRole,
     instance_versions: Vec<InterfaceVersionBinding>,
+    image_attachments: bool,
 ) -> SidecarFixtureSelection {
     let descriptor = pi_sdk_sidecar_descriptor();
     let requirement_versions: Vec<InterfaceVersionBinding> = instance_versions
@@ -96,7 +117,7 @@ fn build_selection(
     let credential = CredentialRef::new("pi.fixture.delegated-auth").expect("valid credential");
     let access_id = AccessProfileId::new("pi.fixture.harness-auth").expect("valid access id");
     let resource = WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource");
-    let capability_requirements = capabilities(role);
+    let capability_requirements = capabilities(role, image_attachments);
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let instance_id =
         ConfiguredInstanceId::new("pi.fixture.sdk-sidecar-instance").expect("valid instance");
@@ -135,7 +156,7 @@ fn build_selection(
         RuntimeReadiness::Ready,
         SupportAuthority::IntegrationMaintainerSupported,
     );
-    let services = service_kinds(role);
+    let services = service_kinds(role, image_attachments);
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -201,7 +222,7 @@ fn build_selection(
     }
 }
 
-fn service_kinds(role: DriverRole) -> Vec<HostServiceKind> {
+fn service_kinds(role: DriverRole, image_attachments: bool) -> Vec<HostServiceKind> {
     let mut services = vec![
         HostServiceKind::Task,
         HostServiceKind::Process,
@@ -210,6 +231,9 @@ fn service_kinds(role: DriverRole) -> Vec<HostServiceKind> {
     ];
     if role == DriverRole::InteractiveSession {
         services.push(HostServiceKind::WorkingResource);
+    }
+    if image_attachments {
+        services.extend([HostServiceKind::Attachment, HostServiceKind::BlockingWork]);
     }
     services
 }
@@ -224,11 +248,11 @@ fn rpc_policy() -> HarnessRpcPolicy {
     ))
 }
 
-fn capabilities(role: DriverRole) -> Vec<CapabilityRequirement> {
+fn capabilities(role: DriverRole, image_attachments: bool) -> Vec<CapabilityRequirement> {
     if role == DriverRole::ModelCatalog {
         return vec![CapabilityRequirement::new(Capability::ModelCatalog, [])];
     }
-    vec![
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
@@ -253,5 +277,16 @@ fn capabilities(role: DriverRole) -> Vec<CapabilityRequirement> {
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ]
+    ];
+    if image_attachments {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::Attachments,
+            [
+                CapabilityConstraint::attachment_media_type("image/png").expect("valid media type"),
+                CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
+                CapabilityConstraint::AttachmentMaximumCount(1),
+            ],
+        ));
+    }
+    capabilities
 }

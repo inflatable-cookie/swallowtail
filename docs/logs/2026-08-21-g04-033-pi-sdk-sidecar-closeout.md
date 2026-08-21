@@ -60,9 +60,15 @@ entered portable records or diagnostics.
   refreshes, and `git diff --check` — all passed.
 - Card 092 also ran `effigy qa:guides`, `effigy qa:northstar`,
   `effigy qa:docs`, and `effigy check:examples` — all passed. The
-  consumer front-door route comparison returned to the repo's mid-cycle
-  subset form naming `pi.sdk-sidecar` as the additive in-flight route
-  (the same shape used before the 0.3.3 release prep tightened it).
+  consumer front-door route comparison keeps the tagged `v0.3.3` set
+  immutable and admits exactly that set plus `pi.sdk-sidecar`; unrelated
+  source-route additions fail the gate.
+- Review remediation replaced portable session paths with opaque Pi session
+  ids resolved uniquely and canonically inside the approved session directory,
+  rolled back active-turn and attachment state when deadline-task creation
+  fails, and made disposal or non-zero process exit fail cleanup. The final
+  focused four-package run passed 456 tests; package verification, semantic
+  API, route, guide, Northstar, docs, Node syntax, and diff checks also passed.
 - `effigy doctor` keeps the inherited repository baseline: 41 god-file
   error findings, identical to `main`; no new error-level file.
 

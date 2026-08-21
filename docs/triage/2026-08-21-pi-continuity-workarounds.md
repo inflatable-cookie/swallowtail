@@ -37,8 +37,10 @@ separate pinned TypeScript sidecar over Pi's public `AgentSessionRuntime` SDK.
 This would be an SDK-backed route with a sidecar transport, not an RPC repair.
 The sidecar would:
 
-- accept the opaque session path and the host-resolved expected directory
-- call `switchSession(sessionPath, { cwdOverride: expectedDirectory })`
+- accept the opaque provider session id and host-resolved expected directory
+- resolve that id uniquely inside the application-approved session directory,
+  reject canonical path escape, then call
+  `switchSession(sessionPath, { cwdOverride: expectedDirectory })` privately
 - return the effective `runtime.cwd` and provider session identity
 - allow the Rust boundary to compare both before declaring attachment ready
 - expose only the operations needed by Swallowtail over a typed stdio protocol
@@ -88,12 +90,13 @@ identity is a language sidecar backed by Pi's official SDK.
 ## Resolution
 
 g04.033 landed the SDK sidecar route exactly as the SDK Route section
-proposed: `pi.sdk-sidecar` switches with the host-leased `cwdOverride`,
-compares the effective cwd and session reference before readiness, and
-realizes persistent new, load-with-replay, and replay-free resume under
-Contract 017. The RPC attachment gate from Research 180 stands: `pi.rpc`
-stays fresh-only. The recorded disposition is option 1 — retain `pi.rpc` as
-the simple fresh-session route alongside the SDK route — because the SDK
-route is a continuity superset but not an operational superset (it requires
-the provisioned Node runtime, source-tagged sidecar, and exact SDK package
-over a Swallowtail-owned private wire).
+proposed: `pi.sdk-sidecar` carries only the provider session id, resolves it
+uniquely inside the application-approved session directory, switches with the
+host-leased `cwdOverride`, and compares the effective cwd and session identity
+before readiness. It realizes persistent new, load-with-replay, and replay-free
+resume under Contract 017. The RPC attachment gate from Research 180 stands:
+`pi.rpc` stays fresh-only. The recorded disposition is option 1 — retain
+`pi.rpc` as the simple fresh-session route alongside the SDK route — because
+the SDK route is a continuity superset but not an operational superset (it
+requires the provisioned Node runtime, source-tagged sidecar, and exact SDK
+package over a Swallowtail-owned private wire).

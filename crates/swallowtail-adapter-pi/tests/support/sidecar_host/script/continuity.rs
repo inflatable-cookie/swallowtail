@@ -46,10 +46,9 @@ pub(super) fn session_switch(
     }
     let (effective_cwd, reported_ref) = match scenario {
         SidecarScenario::SwitchCwdMismatch => ("/fixture/other-workspace", session_ref),
-        SidecarScenario::SessionSubstituted => (
-            expected_cwd,
-            "/fixture/pi-sidecar-agent/sessions/other.jsonl",
-        ),
+        SidecarScenario::SessionSubstituted => {
+            (expected_cwd, "11111111-1111-1111-1111-111111111111")
+        }
         _ => (expected_cwd, session_ref),
     };
     state.session_ref = Some(session_ref.to_owned());

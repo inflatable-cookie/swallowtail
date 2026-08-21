@@ -116,12 +116,20 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     input.materialization()
                 });
             self.connection.set_active_turn(Arc::clone(&turn))?;
-            let deadline_task = spawn_deadline(
+            let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
                 request.deadline().expect("validated turn deadline"),
-            )?;
+            ) {
+                Ok(task) => task,
+                Err(error) => {
+                    turn.fail_connection(error.diagnostic().clone());
+                    self.connection.clear_active_turn(&turn);
+                    let _ = materialization.release().await;
+                    return Err(error);
+                }
+            };
             *self
                 .active
                 .lock()

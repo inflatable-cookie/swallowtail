@@ -44,13 +44,15 @@ pub enum SidecarScenario {
 }
 
 /// Provider-session reference the fixture "persists" across sidecar processes.
-pub const FIXTURE_SESSION_REF: &str = "/fixture/pi-sidecar-agent/sessions/session.jsonl";
+pub const FIXTURE_SESSION_REF: &str = "00000000-0000-0000-0000-000000000000";
 
 #[derive(Clone)]
 pub struct SidecarFixtureHost {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
     process_wait_failure: bool,
+    process_exit_failure: bool,
+    deadline_task_spawn_failure: bool,
 }
 
 struct Shared {
@@ -60,6 +62,7 @@ struct Shared {
     credential_acquisitions: AtomicUsize,
     cleanup: Mutex<Vec<CleanupEvent>>,
     time: Mutex<TimeState>,
+    task_spawns: AtomicUsize,
 }
 
 #[derive(Default)]
@@ -88,9 +91,12 @@ impl SidecarFixtureHost {
                 credential_acquisitions: AtomicUsize::new(0),
                 cleanup: Mutex::new(Vec::new()),
                 time: Mutex::new(TimeState::default()),
+                task_spawns: AtomicUsize::new(0),
             }),
             scenario,
             process_wait_failure: false,
+            process_exit_failure: false,
+            deadline_task_spawn_failure: false,
         }
     }
 
@@ -111,9 +117,22 @@ impl SidecarFixtureHost {
         self
     }
 
+    pub fn with_process_exit_failure(mut self) -> Self {
+        self.process_exit_failure = true;
+        self
+    }
+
+    pub fn with_deadline_task_spawn_failure(mut self) -> Self {
+        self.deadline_task_spawn_failure = true;
+        self
+    }
+
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(ThreadTaskService::new(
+                Arc::clone(&self.shared),
+                self.deadline_task_spawn_failure,
+            )))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))

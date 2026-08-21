@@ -1,7 +1,7 @@
 {"command":"bootstrap","id":"c-0001","params":{"cwd":"/app/host-lease/work","model":"claude-opus-4-5","provider":"anthropic","thinkingLevel":"medium"},"type":"command"}
 {"command":"bootstrap","id":"c-0001b","params":{"catalogueOnly":true},"type":"command"}
 {"command":"session_new","id":"c-0002","params":{},"type":"command"}
-{"command":"session_switch","id":"c-0003","params":{"expectedCwd":"/app/host-lease/work","sessionRef":"/app/provisioned/pi-agent/sessions/work/2026-08-21T12-00-00-000Z_00000000-0000-0000-0000-000000000000.jsonl"},"type":"command"}
+{"command":"session_switch","id":"c-0003","params":{"expectedCwd":"/app/host-lease/work","sessionRef":"00000000-0000-0000-0000-000000000000"},"type":"command"}
 {"command":"session_replay","id":"c-0004","params":{"maxItems":512},"type":"command"}
 {"command":"prompt","id":"c-0005","params":{"text":"Summarize the parser module."},"type":"command"}
 {"command":"prompt","id":"c-0006","params":{"images":[{"data":"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ","mimeType":"image/png"}],"text":"Describe this image."},"type":"command"}

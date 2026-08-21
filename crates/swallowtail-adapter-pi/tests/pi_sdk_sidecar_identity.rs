@@ -9,6 +9,7 @@ use swallowtail_core::{
 };
 
 const PROTOCOL: &str = include_str!("fixtures/pi-sdk-sidecar-v1/protocol.json");
+const SIDECAR: &str = include_str!("../sidecar/pi-sdk-sidecar.mjs");
 
 #[test]
 fn sidecar_identity_and_claims_match_the_frozen_corpus() {
@@ -67,4 +68,13 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
         swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())
     );
+}
+
+#[test]
+fn sidecar_keeps_session_paths_inside_the_approved_directory() {
+    assert!(SIDECAR.contains("state.sessionManager.listAll(state.sessionDir)"));
+    assert!(SIDECAR.contains("realpath(matches[0].path)"));
+    assert!(SIDECAR.contains("sessionRef: session.sessionId"));
+    assert!(!SIDECAR.contains("sessionRef: session.sessionFile"));
+    assert!(!SIDECAR.contains("existsSync(sessionRef)"));
 }

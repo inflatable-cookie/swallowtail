@@ -15,8 +15,8 @@
 // no-* flags, no model network, no extension/skill/prompt/theme/context
 // loading, and no update checks. Unknown semantics fail closed.
 
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { realpath } from "node:fs/promises";
+import { isAbsolute, join, relative, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import process from "node:process";
 
@@ -104,6 +104,8 @@ class SidecarFailure extends Error {
 
 const state = {
   runtime: null,
+  sessionManager: null,
+  sessionDir: null,
   catalogued: false,
   unsubscribe: null,
   pending: new Map(),
@@ -290,7 +292,7 @@ function sessionSnapshot() {
     model: String(session.model?.id ?? ""),
     thinkingLevel: String(session.thinkingLevel ?? ""),
     cwd: state.runtime.cwd,
-    sessionRef: session.sessionFile ?? null,
+    sessionRef: session.sessionId ?? null,
     sessionId: session.sessionId,
     idle: session.isIdle === true,
     streaming: session.isStreaming === true,
@@ -517,6 +519,8 @@ async function handleBootstrap(params) {
     throw new SidecarFailure("cwd_mismatch");
   }
   state.runtime = runtime;
+  state.sessionManager = sdk.SessionManager;
+  state.sessionDir = sessionDir;
   runtime.setRebindSession((session) => {
     subscribeSession(session);
     return Promise.resolve();
@@ -557,11 +561,38 @@ async function handleSessionSwitch(params) {
   requireExactParams(params, ["sessionRef", "expectedCwd"]);
   const sessionRef = requireString(params, "sessionRef");
   const expectedCwd = requireString(params, "expectedCwd");
-  if (!existsSync(sessionRef)) {
+  let sessions;
+  try {
+    sessions = await state.sessionManager.listAll(state.sessionDir);
+  } catch {
+    throw new SidecarFailure("session_invalid");
+  }
+  const matches = sessions.filter((session) => session?.id === sessionRef);
+  if (matches.length === 0) {
     throw new SidecarFailure("session_not_found");
   }
+  if (matches.length !== 1) {
+    throw new SidecarFailure("session_ambiguous");
+  }
+  let sessionPath;
   try {
-    await runtime.switchSession(sessionRef, { cwdOverride: expectedCwd });
+    const [sessionRoot, candidate] = await Promise.all([
+      realpath(state.sessionDir),
+      realpath(matches[0].path),
+    ]);
+    const contained = relative(sessionRoot, candidate);
+    if (contained === "" || contained === ".." || contained.startsWith(`..${sep}`) || isAbsolute(contained)) {
+      throw new SidecarFailure("session_outside_root");
+    }
+    sessionPath = candidate;
+  } catch (error) {
+    if (error instanceof SidecarFailure) {
+      throw error;
+    }
+    throw new SidecarFailure("session_invalid");
+  }
+  try {
+    await runtime.switchSession(sessionPath, { cwdOverride: expectedCwd });
   } catch {
     throw new SidecarFailure("session_invalid");
   }
@@ -730,9 +761,17 @@ async function handleClose(id, command) {
       }
       await state.runtime.dispose();
     } catch {
-      // Disposal degradation is reported by the process exit path, not hidden.
+      state.runtime = null;
+      state.sessionManager = null;
+      state.sessionDir = null;
+      await respondFailure(id, command, "dispose_failed");
+      await writes;
+      process.exit(1);
+      return;
     }
     state.runtime = null;
+    state.sessionManager = null;
+    state.sessionDir = null;
   }
   await respond(id, command, true, {});
   await writes;
@@ -851,8 +890,10 @@ process.stdin.on("end", () => {
   }
   if (state.runtime) {
     Promise.resolve(state.runtime.dispose())
-      .catch(() => {})
-      .finally(() => process.exit(0));
+      .catch(() => {
+        process.exitCode = 1;
+      })
+      .finally(() => process.exit(process.exitCode ?? 0));
   } else {
     process.exit(0);
   }

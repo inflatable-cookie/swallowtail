@@ -78,7 +78,7 @@ pub(super) fn respond(
                         "streaming": false,
                         "messages": 0,
                         "sessionId": "00000000-0000-0000-0000-000000000000",
-                        "sessionRef": "/fixture/pi-sidecar-agent/sessions/session.jsonl",
+                        "sessionRef": FIXTURE_SESSION_REF,
                         "tools": ["read", "grep", "find", "ls"]
                     }
                 }),

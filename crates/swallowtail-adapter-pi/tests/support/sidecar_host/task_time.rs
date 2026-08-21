@@ -1,4 +1,5 @@
 use super::{Shared, SidecarFixtureHost, fixture_failure};
+use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, Deadline, DeadlineObservation, JoinedTask, MonotonicInstant, RuntimeFailure,
@@ -74,8 +75,20 @@ impl std::future::Future for DeadlineFuture {
     }
 }
 
-pub(super) struct ThreadTaskService;
+pub(super) struct ThreadTaskService {
+    shared: Arc<Shared>,
+    reject_deadline_spawn: bool,
+}
 struct ThreadTask(Mutex<Option<std::thread::JoinHandle<()>>>);
+
+impl ThreadTaskService {
+    pub(super) fn new(shared: Arc<Shared>, reject_deadline_spawn: bool) -> Self {
+        Self {
+            shared,
+            reject_deadline_spawn,
+        }
+    }
+}
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
@@ -83,6 +96,10 @@ impl ScopedTaskService for ThreadTaskService {
         _scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        let spawn = self.shared.task_spawns.fetch_add(1, Ordering::SeqCst) + 1;
+        if self.reject_deadline_spawn && spawn == 2 {
+            return Err(fixture_failure());
+        }
         Ok(Box::new(ThreadTask(Mutex::new(Some(std::thread::spawn(
             move || futures_executor::block_on(task),
         ))))))

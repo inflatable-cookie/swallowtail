@@ -52,13 +52,12 @@ impl SidecarConnection {
             let _ = self.process.force_stop().await;
         }
         let waited = self.process.wait().await;
-        let cleanup = if waited.is_ok() {
-            CleanupOutcome::Clean
-        } else {
-            CleanupOutcome::Failed(SafeDiagnostic::new(
+        let cleanup = match waited {
+            Ok(exit) if exit.success() => CleanupOutcome::Clean,
+            Ok(_) | Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
                 "swallowtail.pi.sdk-sidecar.process_cleanup_failed",
                 "Pi SDK sidecar process cleanup failed",
-            ))
+            )),
         };
         *self.cleanup.lock().expect("sidecar cleanup lock poisoned") = Some(cleanup);
         let error = transport_failure.unwrap_or_else(|| {

@@ -22,7 +22,7 @@ pub use sidecar_host::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario}
 #[allow(unused_imports)]
 pub use sidecar_selection::{
     SidecarFixtureSelection, sidecar_catalogue_selection, sidecar_open_request, sidecar_selection,
-    sidecar_selection_with_instance_versions, sidecar_versions,
+    sidecar_selection_with_attachments, sidecar_selection_with_instance_versions, sidecar_versions,
 };
 
 #[allow(dead_code)]

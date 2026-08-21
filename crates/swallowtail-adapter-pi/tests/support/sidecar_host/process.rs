@@ -23,6 +23,7 @@ impl ProcessService for SidecarFixtureHost {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
             wait_failure: self.process_wait_failure,
+            exit_failure: self.process_exit_failure,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -32,6 +33,7 @@ struct SidecarFixtureProcess {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
     wait_failure: bool,
+    exit_failure: bool,
 }
 
 impl ProcessHandle for SidecarFixtureProcess {
@@ -92,9 +94,12 @@ impl ProcessHandle for SidecarFixtureProcess {
             .expect("sidecar fixture cleanup lock poisoned")
             .push(CleanupEvent::ProcessWait);
         let wait_failure = self.wait_failure;
+        let exit_failure = self.exit_failure;
         Box::pin(async move {
             if wait_failure {
                 Err(fixture_failure())
+            } else if exit_failure {
+                Ok(ProcessExit::new(false, Some(1)))
             } else {
                 Ok(ProcessExit::new(true, Some(0)))
             }

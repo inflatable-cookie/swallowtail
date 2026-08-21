@@ -52,6 +52,10 @@ mirrors it.
   `effigy qa:northstar` — passed; `effigy check:examples` — passed;
   `effigy package:api` — passed; `git diff --check` — passed.
 - `effigy qa:docs:index:logs` — passed.
+- Restacked head `a08c89a1`: GitHub Stable, documentation and semantic API,
+  pinned MSRV, dependency policy, and external Git-source consumer jobs all
+  passed. The first restacked run exposed only Rust 1.98 formatting drift in
+  the new lifecycle test; commit `a08c89a1` contains the formatting-only fix.
 
 The `effigy doctor` orientation keeps the inherited repository baseline:
 348 god-file findings (40 errors, 308 warnings) and one generated-in-src
@@ -59,6 +63,7 @@ warning. No new finding appeared in this lane.
 
 ## Next
 
-Merge reality is pending: the worker PR awaits orchestrator review. Do not
-select the next descriptor tranche until the merge is recorded. Hosted
-OAuth stays parked.
+PR 31 fast-forwarded `main` to `a08c89a1`; merge reality is recorded. Resolve
+the Pi RPC resource-bound session attachment decision from Research 180 before
+compiling an implementation card. Gemini enterprise API-key currentness and
+the per-route feature programme remain next in sequence.

@@ -6,7 +6,7 @@ Created: 2026-08-21
 Depends on: completed g04.023
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 020, 037, 047, 052, 057
-Planning state: cards 076-078 completed; worker PR pending merge
+Planning state: completed and merged through PR 31 at `a08c89a1`
 Research: 171
 
 ## Problem

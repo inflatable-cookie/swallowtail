@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-g04.024 Hosted API-Key Kimi Platform Chat is complete on the worker branch
-with cards 076-078 done; the worker PR awaits orchestrator review and merge.
-Do not select the next descriptor tranche until merge reality is recorded.
+Resolve the Pi RPC resource-bound session attachment decision from Research
+180. Choose upstream RPC work or a separate sidecar boundary without weakening
+Contract 017; no implementation card is ready before that choice.
 
 ## Standing Lanes
 

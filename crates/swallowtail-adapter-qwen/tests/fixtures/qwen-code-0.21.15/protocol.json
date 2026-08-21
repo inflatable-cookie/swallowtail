@@ -1,0 +1,62 @@
+{
+  "help_source": "config.ts-v0.21.15",
+  "help_selected_flags_present": [
+    "--safe-mode",
+    "--approval-mode",
+    "--core-tools",
+    "--exclude-tools",
+    "--max-wall-time",
+    "--max-tool-calls",
+    "--max-session-turns",
+    "--include-partial-messages",
+    "--input-format",
+    "--output-format",
+    "--resume"
+  ],
+  "selected_read_tools": [
+    "read_file",
+    "grep_search",
+    "glob",
+    "list_directory",
+    "lsp"
+  ],
+  "selected_controls": [
+    "can_get_available_models",
+    "get_available_models"
+  ],
+  "catalogue_image_only_filter": true,
+  "stream_types_add_goal_state_from": "0.21.4",
+  "goal_state_is_nested_stream_event": true,
+  "mapped_top_level_types": [
+    "system",
+    "stream_event",
+    "assistant",
+    "result"
+  ],
+  "decoder_corpus": "qwen-code-v0.19.11",
+  "selected_types_and_catalogue_byte_identical_to_0_21_14": true,
+  "selected_config_blob_changed": true,
+  "selected_config_delta": "unmapped --session-id occupancy casefold",
+  "selected_mapped_subset_unchanged": true,
+  "unused_deltas": [
+    "goal_state",
+    "initialize.effort_status",
+    "--continue",
+    "fork-session",
+    "acp-session-restore-projection",
+    "qwen sessions ps",
+    "/advisor",
+    "live-session-registry",
+    "--session-id casefold occupancy",
+    "/review --resume",
+    "web-shell Goal v3",
+    "standalone conversation isolation",
+    "hybrid-model thinking toggle",
+    "authenticated HTTPS git extension installs",
+    "PTY agent-view workers"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_headless_session": false,
+  "host_install_changed": false
+}

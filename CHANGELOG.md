@@ -11,6 +11,11 @@ annotated Git tags from the canonical repository.
   `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
   Compatible-extension: exec help byte-identical, selected mapped flags
   unchanged, ModelListParams unchanged. Research 172, g04.025.
+- Raised qualified Qwen Code headless ceiling from `0.21.14` to official
+  `@qwen-code/qwen-code` `0.21.15` on the `qwen-code.package` axis.
+  Compatible-extension: selected mapped flags unchanged; `types.ts` and
+  `systemController.ts` byte-identical; `config.ts` changed only unmapped
+  `--session-id` occupancy. Research 173, g04.026.
 
 ## [0.3.3] - 2026-08-19
 

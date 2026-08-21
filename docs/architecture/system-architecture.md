@@ -389,7 +389,7 @@ OpenHands adds a package without a production route.
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements maintained Qwen Code
-  `0.19.11..=0.20.1` and `0.21.0..=0.21.14` headless behavior segments with
+  `0.19.11..=0.20.1` and `0.21.0..=0.21.15` headless behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined

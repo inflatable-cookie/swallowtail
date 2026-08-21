@@ -98,6 +98,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)
 - [166 Oh My Pi 17.3.8 Identity](./166-oh-my-pi-17-3-8-identity.md)
 - [165 Kimi Code 0.37.2 Identity](./165-kimi-code-0-37-2-identity.md)
+- [173 Qwen Headless 0.21.15 Identity](./173-qwen-headless-0-21-15-identity.md)
 - [164 Qwen Headless 0.21.14 Identity](./164-qwen-headless-0-21-14-identity.md)
 - [163 Grok 1.0.5 Identity](./163-grok-1-0-5-identity.md)
 - [162 Claude Code 2.1.235 Identity](./162-claude-code-2-1-235-identity.md)

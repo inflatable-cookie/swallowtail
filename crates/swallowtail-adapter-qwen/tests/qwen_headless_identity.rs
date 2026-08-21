@@ -11,6 +11,8 @@ const IDENTITY_0_21_13: &str = include_str!("fixtures/qwen-code-0.21.13/identity
 const PROTOCOL_0_21_13: &str = include_str!("fixtures/qwen-code-0.21.13/protocol.json");
 const IDENTITY_0_21_14: &str = include_str!("fixtures/qwen-code-0.21.14/identity.json");
 const PROTOCOL_0_21_14: &str = include_str!("fixtures/qwen-code-0.21.14/protocol.json");
+const IDENTITY_0_21_15: &str = include_str!("fixtures/qwen-code-0.21.15/identity.json");
+const PROTOCOL_0_21_15: &str = include_str!("fixtures/qwen-code-0.21.15/protocol.json");
 
 #[test]
 fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
@@ -84,7 +86,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(QWEN_CODE_BASELINE_VERSION, "0.19.11");
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.14");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.21.2"
@@ -100,7 +102,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     ));
     for candidate in [
         "0.21.3", "0.21.4", "0.21.5", "0.21.6", "0.21.7", "0.21.8", "0.21.9", "0.21.10", "0.21.11",
-        "0.21.12", "0.21.13", "0.21.14",
+        "0.21.12", "0.21.13", "0.21.14", "0.21.15",
     ] {
         assert!(matches!(
             claim.assess(&version(candidate)),
@@ -112,7 +114,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     }
     assert!(!claim.permits(&version("0.20.2")));
     assert!(matches!(
-        claim.assess(&version("0.21.15")),
+        claim.assess(&version("0.21.16")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -181,7 +183,7 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.14");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.13")),
@@ -197,10 +199,113 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
     ));
     assert!(matches!(
         claim.assess(&version("0.21.15")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("0.21.16")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
         qwen_code_binding("0.21.14")
+            .expect("version binds")
+            .axis()
+            .as_str(),
+        QWEN_CODE_AXIS
+    );
+}
+
+#[test]
+fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
+    let identity: Value =
+        serde_json::from_str(IDENTITY_0_21_15).expect("Qwen 0.21.15 identity corpus is valid JSON");
+    let protocol: Value =
+        serde_json::from_str(PROTOCOL_0_21_15).expect("Qwen 0.21.15 protocol corpus is valid JSON");
+
+    assert_eq!(identity["axis"], QWEN_CODE_AXIS);
+    assert_eq!(identity["npm_package"], "@qwen-code/qwen-code");
+    assert_eq!(identity["npm_latest"], true);
+    assert_eq!(identity["host"]["not_installed"], true);
+    assert_eq!(identity["official"]["version"], "0.21.15");
+    assert_eq!(
+        identity["official"]["npm_integrity"],
+        "sha512-f4ER/SRVLpwhcqzuytK3Qeq8bG9HnVhv7f7wsf3cpE/AkRfzKSvaeURnW7s7zI3nWkEqA7DM6njSLYS2s6DWDg=="
+    );
+    assert_eq!(
+        identity["official"]["github_commit"],
+        "5dce2515a778f9cf2013168962b4fbc3454636e3"
+    );
+    assert_eq!(
+        identity["selected_types_and_catalogue_unchanged_from_0_21_14"],
+        true
+    );
+    assert_eq!(identity["selected_config_blob_changed_from_0_21_14"], true);
+    assert_eq!(identity["selected_mapped_subset_unchanged"], true);
+    assert_eq!(identity["unpublished_stable_0_20_2"], true);
+    assert_eq!(identity["unpublished_0_21_16"], true);
+    assert_eq!(identity["ignored_preview"], "0.21.14-preview.0");
+
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(
+        decision["reuse_behavior_revision"],
+        "qwen-code.headless.v0.21.0-catalogue-filter"
+    );
+    assert_eq!(decision["raise_latest_qualified_to"], "0.21.15");
+    assert_eq!(decision["keep_baseline"], "0.19.11");
+    assert_eq!(decision["new_milestone"], false);
+    assert_eq!(decision["map_session_id_casefold"], false);
+    assert_eq!(decision["map_review_resume"], false);
+    assert_eq!(decision["map_web_shell_goal_v3"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["host_install_changed"], false);
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "0.21.14"
+    );
+
+    assert_eq!(
+        protocol["selected_types_and_catalogue_byte_identical_to_0_21_14"],
+        true
+    );
+    assert_eq!(protocol["selected_mapped_subset_unchanged"], true);
+    assert_eq!(protocol["decoder_corpus"], "qwen-code-v0.19.11");
+    let unused = protocol["unused_deltas"]
+        .as_array()
+        .expect("unused deltas are an array");
+    for extra in [
+        "--session-id casefold occupancy",
+        "/review --resume",
+        "web-shell Goal v3",
+        "standalone conversation isolation",
+        "hybrid-model thinking toggle",
+    ] {
+        assert!(
+            unused.iter().any(|value| value == extra),
+            "missing unused delta {extra}"
+        );
+    }
+
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
+    let claim = qwen_headless_claim();
+    assert!(matches!(
+        claim.assess(&version("0.21.14")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("0.21.15")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "qwen-code.headless.v0.21.0-catalogue-filter"
+    ));
+    assert!(matches!(
+        claim.assess(&version("0.21.16")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        qwen_code_binding("0.21.15")
             .expect("version binds")
             .axis()
             .as_str(),

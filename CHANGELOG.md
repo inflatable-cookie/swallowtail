@@ -12,6 +12,11 @@ annotated Git tags from the canonical repository.
   tagged OpenAPI byte-identical through `1.18.19`; selected execution, delete,
   import, and continuity closures unchanged; `surface-19` kept. Research 176,
   g04.029.
+- Raised qualified Antigravity catalogue and headless ceiling from
+  `1.1.15` to official GitHub `google-antigravity/antigravity-cli`
+  `1.1.17`: `1.1.9..=1.1.17`, published intermediate `1.1.16` qualified,
+  `1.1.8` stays independently unqualified, and `mcp` plus `--input-format`
+  stay unmapped. Research 177, g04.030.
 - Raised qualified Codex CLI ceiling from `0.148.0` to `0.149.0` on the
   `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
   Compatible-extension: exec help byte-identical, selected mapped flags

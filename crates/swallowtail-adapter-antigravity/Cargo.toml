@@ -29,6 +29,10 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
+name = "antigravity_release_identity"
+path = "tests/antigravity_release_identity.rs"
+
+[[test]]
 name = "foundation"
 path = "tests/foundation.rs"
 

@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 Antigravity 1.1.17 Claim And Acceptance](./2026-08-21-antigravity-1-1-17-claim.md)
 - [2026-08-21 Antigravity 1.1.17 Identity](./2026-08-21-antigravity-1-1-17-identity.md)
 - [2026-08-21 OpenCode HTTP 1.18.20 Claim](./2026-08-21-opencode-http-1-18-20-claim.md)
 - [2026-08-21 OpenCode HTTP 1.18.20 Identity](./2026-08-21-opencode-http-1-18-20-identity.md)

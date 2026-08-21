@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Raised qualified Kimi Code ACP, headless, and local-server ceilings from
+  `0.37.2` to official `@moonshot-ai/kimi-code` `0.38.0` on the
+  `kimi-code.executable` axis. Compatible-extension: selected ACP,
+  headless, and local-server protocol blobs byte-identical; `acp --region`,
+  WaitFor, advertised close/delete, and watch-fs `runtime_id` stay
+  unmapped. Research 179, g04.032.
 - Raised qualified OpenCode HTTP ceiling from `1.18.18` to official npm
   `opencode-ai` `1.18.20` on the `opencode.server` axis. Compatible-extension:
   tagged OpenAPI byte-identical through `1.18.19`; selected execution, delete,

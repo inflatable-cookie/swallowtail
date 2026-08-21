@@ -52,7 +52,7 @@ impl Scenario {
             Self::ReasoningEffort300Success => "0.30.0",
             Self::ReasoningEffort310Success => "0.31.0",
             Self::ReasoningEffort311Success => "0.31.1",
-            Self::ReasoningNewerSuccess => "0.37.3",
+            Self::ReasoningNewerSuccess => "0.38.1",
             _ => "0.29.0",
         }
     }

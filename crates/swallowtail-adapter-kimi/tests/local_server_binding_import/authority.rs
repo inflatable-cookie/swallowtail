@@ -114,7 +114,7 @@ fn owned_import_uses_the_same_binding_contract_and_joins_its_child() {
 
 #[test]
 fn unverified_newer_import_requires_explicit_acceptance() {
-    let server = FixtureServer::start_with_version("0.37.3");
+    let server = FixtureServer::start_with_version("0.38.1");
     let host = LocalHost::new(&server);
     let host_id = value(ExecutionHostId::new, "fixture.host.newer");
     let services = host.services(host_id.clone(), false);
@@ -125,7 +125,7 @@ fn unverified_newer_import_requires_explicit_acceptance() {
         "fixture.kimi.newer",
         "fixture.endpoint",
         "fixture.bearer",
-        "0.37.3",
+        "0.38.1",
     );
     let prepared = block_on(prepare_kimi_local_server_attached(
         input,
@@ -135,7 +135,7 @@ fn unverified_newer_import_requires_explicit_acceptance() {
     .expect("newer local server remains visible");
     let source = source_authority(
         host_id,
-        "0.37.3",
+        "0.38.1",
         Some("fixture.kimi.state-root"),
         "session-1",
     )

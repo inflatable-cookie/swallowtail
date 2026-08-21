@@ -31,7 +31,7 @@ fn unchanged_persistent_acp_profile_covers_kimi_authority_boundaries() {
 #[test]
 fn qualified_kimi_milestones_compose_with_shared_compatibility_assertions() {
     let claim = kimi_acp_claim();
-    let case = ClosedSemanticWindowCase::new(version("0.28.1"), version("0.37.2"))
+    let case = ClosedSemanticWindowCase::new(version("0.28.1"), version("0.38.0"))
         .with_accepted([
             version("0.29.0"),
             version("0.29.1"),
@@ -44,10 +44,11 @@ fn qualified_kimi_milestones_compose_with_shared_compatibility_assertions() {
             version("0.36.0"),
             version("0.37.0"),
             version("0.37.2"),
+            version("0.38.0"),
         ])
         .with_rejected([version("0.28.0"), version("0.28.2"), version("0.29.0-rc.1")]);
     assert_closed_semantic_compatibility_window(&claim, &case);
-    assert_unverified_newer_execution(&claim, &version("0.37.3"));
+    assert_unverified_newer_execution(&claim, &version("0.38.1"));
 }
 
 #[test]

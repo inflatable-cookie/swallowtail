@@ -60,7 +60,7 @@ fn local_server_claim_is_separate_and_forward_permissive() {
 
     for exact in [
         "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0", "0.33.0",
-        "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
+        "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2", "0.38.0",
     ] {
         let binding = kimi_code_binding(exact).expect("exact version binds");
         assert!(matches!(
@@ -68,7 +68,7 @@ fn local_server_claim_is_separate_and_forward_permissive() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    for version in ["0.37.3", "1.0.0"] {
+    for version in ["0.38.1", "1.0.0"] {
         let newer = kimi_code_binding(version).expect("newer version binds");
         assert!(matches!(
             claim.assess(newer.version()),
@@ -207,7 +207,7 @@ fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
             .expect("ACP claim exists")
             .latest_qualified()
             .as_str(),
-        "0.37.2"
+        "0.38.0"
     );
     assert_eq!(
         kimi_headless_descriptor()
@@ -217,11 +217,11 @@ fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
             .expect("headless claim exists")
             .latest_qualified()
             .as_str(),
-        "0.37.2"
+        "0.38.0"
     );
     assert_eq!(
         kimi_local_server_claim().latest_qualified().as_str(),
-        "0.37.2"
+        "0.38.0"
     );
 
     let provenance = include_str!("fixtures/kimi-code-0.31.1/README.md");

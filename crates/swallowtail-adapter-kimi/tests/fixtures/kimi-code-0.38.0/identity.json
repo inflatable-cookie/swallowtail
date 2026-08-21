@@ -1,0 +1,72 @@
+{
+  "axis": "kimi-code.executable",
+  "observed_at": "2026-08-21",
+  "npm_package": "@moonshot-ai/kimi-code",
+  "npm_latest": true,
+  "not_python_kimi_cli": true,
+  "not_kimi_platform_chat": true,
+  "host": {
+    "version": null,
+    "source": "not-installed",
+    "note": "kimi absent from PATH; missing install is not a gap"
+  },
+  "official": {
+    "version": "0.38.0",
+    "source": "official-github-linux-x64-archive",
+    "published_at": "2026-08-20T13:13:41.488Z",
+    "github_published_at": "2026-08-20T13:13:44Z",
+    "npm_integrity": "sha512-O/z6sfjFdoDPPeTnoXzdsJ2U8IqP6K2gD3LsT+Nu8BAlHwdhCjdCQFkFTjIbLBun+aZT6x81ha5FiFt7trEilg==",
+    "npm_shasum": "3227f1a737538393d02f14d71a6ab2e9d0409296",
+    "npm_tarball_sha256": "d5c047dbfbbdfddf8d20030327e723ea9121af66260983a8556124580d64b549",
+    "github_annotated_tag": "488fe6bb311959227c8c2602e12486e48f8b5446",
+    "github_commit": "0999454bdcb5ddd98f39bffee434dcf0a810f394",
+    "github_tree": "b0f988c19b396db2d7127d1f6482743f8c8d4a26",
+    "linux_x64_zip_sha256": "2278e0c90283985c4df46b775bf0f163d07684a7b1bfc83ee3b42844f6fccdfb",
+    "extracted_linux_x64_sha256": "7f18b701ea751d14bf051776747ca0339f8d59693aec9051276933067a914b00",
+    "extracted_linux_x64_size": 182062272,
+    "darwin_arm64_zip_sha256": "48f534fcbf2d42c0cf80334c1c89e8253d4c198a149980e234b6e927c2759fda",
+    "extracted_darwin_arm64_sha256": "92bf3b4b6643e7c4cc12c82e5680cc5b54a5a6768a301de815e5e9a02d2184bb",
+    "extracted_darwin_arm64_size": 179404096,
+    "codesign_not_run": true
+  },
+  "pypi_kimi_cli": "1.49.0",
+  "published_stables_from_previous_ceiling": [
+    "0.38.0"
+  ],
+  "unpublished_0_37_3": true,
+  "unpublished_0_38_1": true,
+  "frozen_corpus_ceiling": "0.37.2",
+  "claim_at_observation": {
+    "baseline_acp": "0.28.1",
+    "baseline_headless": "0.29.0",
+    "baseline_local_server": "0.28.1",
+    "latest_qualified": "0.37.2",
+    "posture": "allow_unverified",
+    "classification_of_0_37_2": "qualified_maintained",
+    "classification_of_0_38_0": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "acp_reuse_behavior": "kimi.acp.reasoning.declared-effort-v2",
+    "headless_reuse_behavior": "kimi.headless.stream-json.v1",
+    "local_server_keep_heartbeat_ping": "0.35.0..=0.38.0",
+    "raise_latest_qualified_to": "0.38.0",
+    "qualify_intermediates": [],
+    "keep_baseline_acp": "0.28.1",
+    "keep_baseline_headless": "0.29.0",
+    "keep_baseline_local_server": "0.28.1",
+    "new_public_operation": false,
+    "private_milestone": false,
+    "map_watch_fs_runtime_id": false,
+    "map_acp_login_flag": false,
+    "map_acp_login_region": false,
+    "map_terminal_auth_meta": false,
+    "map_wait_for_tool": false,
+    "mix_python_kimi_cli_axis": false,
+    "flatten_onto_kimi_platform_chat": false,
+    "flatten_acp_onto_local_server": false,
+    "provider_prompt_sent": false,
+    "local_server_started": false,
+    "host_install_changed": false
+  }
+}

@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 Kimi Code 0.38.0 Claim](./2026-08-21-kimi-code-0-38-0-claim.md)
+- [2026-08-21 Kimi Code 0.38.0 Identity](./2026-08-21-kimi-code-0-38-0-identity.md)
 - [2026-08-21 Oh My Pi 17.4.0 Claim And Acceptance](./2026-08-21-oh-my-pi-17-4-0-claim.md)
 - [2026-08-21 Oh My Pi 17.4.0 Identity](./2026-08-21-oh-my-pi-17-4-0-identity.md)
 - [2026-08-21 Antigravity 1.1.17 Claim And Acceptance](./2026-08-21-antigravity-1-1-17-claim.md)

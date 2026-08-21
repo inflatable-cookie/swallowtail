@@ -121,7 +121,7 @@ fn prepared_catalogue_import_and_load_preserve_state_and_replay_boundaries() {
 fn missing_state_root_and_unverified_newer_fail_before_catalogue_dispatch() {
     let host_id = ExecutionHostId::new("fixture.kimi.import.newer").unwrap();
     let host = FixtureHost::new(Scenario::ReasoningNewerSuccess);
-    let prepared = prepared(&host, host_id, "0.37.3");
+    let prepared = prepared(&host, host_id, "0.38.1");
     let failure = prepared
         .prepare_session_catalogue(catalogue_input("unverified"))
         .expect_err("unverified newer cannot inherit catalogue support");

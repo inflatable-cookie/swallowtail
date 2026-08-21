@@ -47,7 +47,7 @@ and selection policy.
 - [g04.030 Antigravity 1.1.17 Useful Newer](030-antigravity-1-1-17-useful-newer.md) — standing currentness, completed
 - [g04.031 Oh My Pi 17.4.0 Useful Newer](031-oh-my-pi-17-4-0-useful-newer.md) — standing currentness, completed
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
-- [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — completed, merge pending, cards 089-092
+- [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 
 Do not roll over: 33 numbered roadmaps exist; 001-033 are complete, target
 30-50.
@@ -74,9 +74,9 @@ Do not roll over: 33 numbered roadmaps exist; 001-033 are complete, target
   `17.4.0`; cards 085-086 are complete
 - g04.032 is on `main` at `7889cc63` through PR 30: Kimi Code ACP,
   headless, and local-server `0.38.0`; cards 087-088 are complete
-- g04.033 is complete on the worker branch, merge pending: the Pi SDK
-  sidecar route is realized and both Pi routes are retained; cards 089-092
-  are complete
+- g04.033 is on `main` at `9aac2dd1` through PR 32: the Pi SDK sidecar
+  route is realized and both Pi routes are retained; cards 089-092 are
+  complete
 - Next, run Gemini CLI `0.56.0` enterprise API-key requalification,
   then serial per-route feature completion. Contract 029 currentness is
   standing
@@ -101,7 +101,7 @@ New route-family research does not pre-empt this sequence.
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
-- [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed, merge pending, cards 089-092
+- [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed
 - [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — completed
@@ -134,4 +134,4 @@ New route-family research does not pre-empt this sequence.
 - [030 Antigravity 1.1.17 Useful Newer](./030-antigravity-1-1-17-useful-newer.md) — completed (standing currentness)
 - [031 Oh My Pi 17.4.0 Useful Newer](./031-oh-my-pi-17-4-0-useful-newer.md) — completed (standing currentness)
 - [032 Kimi Code 0.38.0 Useful Newer](./032-kimi-code-0-38-0-useful-newer.md) — completed (standing currentness)
-- [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — ready, cards 089-092
+- [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

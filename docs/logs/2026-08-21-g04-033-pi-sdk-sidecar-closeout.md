@@ -74,8 +74,8 @@ entered portable records or diagnostics.
 
 ## Next
 
-Merge reality: worker PR pending; cards 089-092 are committed on the
-`g04-033-pi-sdk-sidecar` branch (through `5e8a0ec8` plus this card's
-working tree) and NOT merged. Next lane: Gemini CLI `0.56.0` enterprise
-API-key requalification across ACP and headless, then the serial per-route
-feature completion programme. Contract 029 currentness remains standing.
+Merge reality: PR 32 fast-forwarded `main` from `0ce07a74` to exact green
+head `9aac2dd1`; cards 089-092 and g04.033 are merged. Next lane: Gemini CLI
+`0.56.0` enterprise API-key requalification across ACP and headless, then the
+serial per-route feature completion programme. Contract 029 currentness
+remains standing.

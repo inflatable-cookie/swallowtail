@@ -6,7 +6,7 @@ Created: 2026-08-21
 Depends on: completed g04.024; Research 181; amended Contracts 019 and 029
 Vision tags: provider breadth, persistent sessions, explicit selection
 Contract refs: 005, 009, 010, 011, 017, 019, 023, 029, 037, 050, 057
-Planning state: ready for worker dispatch
+Planning state: merged through PR 32 at `9aac2dd1`
 Research: 053, 180, 181
 
 ## Problem

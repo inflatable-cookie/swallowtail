@@ -60,16 +60,16 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
   qualified through PR 21
 - g04.027 standing currentness is on `main` at `0c528209`: Ollama 0.32.15
   qualified through PR 22
-- g04.028 standing currentness qualifies Claude Code headless and
-  response-only through `2.1.238` in PR 24; cards 079-080 are complete
-- g04.029 standing currentness qualifies OpenCode HTTP through `1.18.20` in
-  PR 25; cards 081-082 are complete
-- g04.030 standing currentness qualifies Antigravity catalogue and headless
-  through `1.1.17` in PR 26; cards 083-084 are complete
-- g04.031 standing currentness qualifies Oh My Pi RPC through `17.4.0` in
-  PR 27; cards 085-086 are complete
-- g04.032 standing currentness qualifies Kimi Code ACP, headless, and
-  local-server through `0.38.0` in PR 30; cards 087-088 are complete
+- g04.028 is on `main` at `0cd5735d` through PR 24: Claude Code headless
+  and response-only `2.1.238`; cards 079-080 are complete
+- g04.029 is on `main` at `3dd72fcf` through PR 25: OpenCode HTTP
+  `1.18.20`; cards 081-082 are complete
+- g04.030 is on `main` at `a8317ac4` through PR 26: Antigravity catalogue
+  and headless `1.1.17`; cards 083-084 are complete
+- g04.031 is on `main` at `6d86feb6` through PR 27: Oh My Pi RPC
+  `17.4.0`; cards 085-086 are complete
+- g04.032 is on `main` at `7889cc63` through PR 30: Kimi Code ACP,
+  headless, and local-server `0.38.0`; cards 087-088 are complete
 - Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
   is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps

@@ -1,6 +1,6 @@
 # 2026-08-21 New Route Candidates
 
-Status: draft
+Status: assessed
 Owner: Tom
 
 ## Context
@@ -993,3 +993,31 @@ logins stay delegated or inherited. Parked gate unchanged.
 **Next move, if Tom wants one.** Pick at most one later inventory
 card from the highest-signal list. Do not batch-implement. Do not
 edit the matrix from this document.
+
+## Orchestrator Assessment (2026-08-21)
+
+Disposition: retain as assessed route triage. Promote no route and compile
+no roadmap from this pass.
+
+The candidates separate into three later decision tiers:
+
+1. Identity-inventory candidates: Amp execute/stream-json, then Grok Build
+   headless. These are the closest fits to existing installed-harness proof
+   shapes.
+2. Direct hosted API-key candidates: OpenAI Responses HTTP, xAI Responses
+   HTTP, DeepSeek Responses, and Gemini generateContent. Each is a distinct
+   route family; none inherits a sibling route's claim.
+3. Contract- or topology-first candidates: Mistral Agents, Alibaba managed
+   agents and DashScope apps, Codex Cloud, Grok Bot, AgentCore, Vertex Agent
+   Engine, and the SDK/framework surfaces. These need a selected consumer
+   need and boundary work before identity compilation.
+
+The 24 already-inventoried surfaces keep their existing backlog or watchlist
+dispositions. Antigravity ACP waits for official integration documentation.
+Windsurf Cascade, the Codex SDK flatten, and Chat Completions remain closed
+from this pass.
+
+If the operator later asks for one new-family inventory, Amp is the first
+recommendation; that is a recommendation, not a scheduled card. Hosted
+URL-open OAuth remains parked. This assessment does not move Next Task from
+g04.024 and does not start Kimi Platform wiring.

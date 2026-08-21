@@ -1,6 +1,6 @@
 # 2026-08-21 Advanced Route Features
 
-Status: draft
+Status: assessed
 Owner: Tom
 
 ## Context
@@ -992,3 +992,26 @@ bindings).
 - Do not surface YOLO / skip-permissions as composer defaults.
 - Do not open implementation cards from this doc. Tom's local
   orchestrator schedules any later work.
+
+## Orchestrator Assessment (2026-08-21)
+
+Disposition: retain as an assessed inventory. Do not promote the 85
+entries as one feature tranche.
+
+The inventory mixes four different shapes: exact route-local controls,
+provider topology changes, explicit policy withholds, and surfaces that
+still need identity evidence. They do not share one portable composer
+contract. UltraCode, Fast mode, Agent teams, and context size stay
+provider- and route-specific; none becomes a cross-provider label.
+
+If the operator later selects feature work, the first eligible research
+tranche is the small exact-transport set already named above: Cursor
+headless model parameters, Ollama `num_ctx`, Anthropic Messages effort,
+DeepSeek effort, and xAI Responses reasoning/output bounds. Select one
+route and one control family at a time. Recheck current official evidence
+before compiling cards.
+
+Experimental process-spawning controls, dangerous permission bypasses,
+catalogue observations presented as setters, and unconfirmed fields stay
+withheld. This assessment opens no roadmap, changes no matrix claim, and
+does not move Next Task from g04.024.

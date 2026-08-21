@@ -8,7 +8,7 @@ Created: 2026-08-21
 ## Task
 
 Raise the Qwen qualified ceiling from `0.21.14` to official `0.21.15`
-after identity card 070 confirms compatible-extension.
+after identity card 072 confirms compatible-extension.
 
 ## Edit Set
 

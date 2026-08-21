@@ -39,7 +39,7 @@ only unmapped `--session-id` occupancy.
 - Passes `effigy validate:focused swallowtail-adapter-qwen` at the claim
   card
 
-Auto-continue to claim card 071.
+Auto-continue to claim card 073.
 
 ## Out Of Scope
 

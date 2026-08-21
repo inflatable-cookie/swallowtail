@@ -2,7 +2,7 @@
 
 ## Result
 
-Card 071 raised `qwen-code.package` through official `0.21.15` as a
+Card 073 raised `qwen-code.package` through official `0.21.15` as a
 compatible extension of catalogue-filter. Maintained segment is now
 `0.21.0..=0.21.15`. Deprecated `0.19.11..=0.20.1` stays. Unpublished
 `0.20.2` stays incompatible. Later stables stay UnverifiedNewer at

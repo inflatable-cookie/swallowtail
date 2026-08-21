@@ -45,8 +45,10 @@ g04.023 or g04.024.
 
 ## PR
 
-Pending worker push and reviewable PR against the current pushed `main` tip.
-Merge is not authorised by this handoff.
+Reviewable PR: https://github.com/inflatable-cookie/swallowtail/pull/20
+
+Review is pending against the current pushed `main` tip. Merge is not
+authorised by this handoff.
 
 ## Next
 

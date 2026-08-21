@@ -48,7 +48,7 @@ Do not roll over: 22 numbered completed roadmaps, 023 compiled, 024 named,
 - g04.023 worker dispatched: cards 065-067, handoff
   `docs/handoffs/20260821-092837-g04-023-047-presentation-metadata.md`
 - g04.024 is named behind 023. Do not start it.
-- g04.025 standing currentness complete: Codex 0.149.0 qualified
+- g04.025 standing currentness complete. PR 19 is on `main` at `25fc3e35`
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`

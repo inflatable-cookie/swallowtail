@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-20
+Updated: 2026-08-21
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -24,6 +24,8 @@ need an active generation.
 One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
+
+Last one-family claim: Codex CLI `0.149.0` (g04.025, PR 19).
 
 ### Current Deferrals
 

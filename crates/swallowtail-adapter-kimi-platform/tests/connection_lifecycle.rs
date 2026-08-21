@@ -27,7 +27,9 @@ use swallowtail_core::{
     ModelId, ModelMetadata, ModelRouteId, ModelRouteRevision, OverlayMarker, ProviderId,
     ReasoningMode, RuntimeReadiness, SubjectDisclosure, SupportAuthority,
 };
-use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore};
+use swallowtail_host_local::{
+    LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
+};
 use swallowtail_runtime::{
     AddableRouteCatalog, BlockingWorkService, ConfiguredProviderInstanceAdmission,
     ConfiguredProviderInstanceRecord, ConfiguredProviderInstanceSelectionReadiness,
@@ -230,8 +232,7 @@ fn preparation_fails_closed_on_admission_drift() {
     let wrong_route = swallowtail_core::AdmittedInstanceRecord::new(
         instance_id(),
         family(),
-        swallowtail_core::AddableRouteId::new("kimi-platform.other")
-            .expect("route id is valid"),
+        swallowtail_core::AddableRouteId::new("kimi-platform.other").expect("route id is valid"),
         swallowtail_adapter_kimi_platform::kimi_platform_direct_descriptor()
             .identity()
             .clone(),
@@ -336,7 +337,11 @@ fn k3_model_selection() -> KimiPlatformModelSelection {
 fn prepared_after_admission(
     services: &HostServices,
     store: &MemoryConnectionLifecycleStore,
-) -> (KimiPlatformPreparedIntegration, AccessProfile, PreparedAccessEvidence) {
+) -> (
+    KimiPlatformPreparedIntegration,
+    AccessProfile,
+    PreparedAccessEvidence,
+) {
     let admitted = admitted_record(services, store).with_credential_refs([(
         swallowtail_core::CredentialFieldId::new(KIMI_PLATFORM_CHAT_API_KEY_FIELD_ID)
             .expect("credential id is valid"),
@@ -417,8 +422,7 @@ fn refresh_writes_host_supplied_access_status_without_touching_enablement() {
         InstanceAdmissionRequest::new(
             instance_id(),
             family(),
-            swallowtail_core::AddableRouteId::new("kimi-platform.chat")
-                .expect("route id is valid"),
+            swallowtail_core::AddableRouteId::new("kimi-platform.chat").expect("route id is valid"),
         )
         .with_enablement(InstanceEnablement::Disabled),
     )
@@ -501,10 +505,7 @@ fn catalogue_and_one_k3_attempt_prepare_after_admission() {
         KIMI_PLATFORM_MODEL_ID
     );
     assert_eq!(attempt.request().tools().len(), 0);
-    assert_prepared_operation_evidence_matches_plan(
-        attempt.evidence().operation(),
-        attempt.plan(),
-    );
+    assert_prepared_operation_evidence_matches_plan(attempt.evidence().operation(), attempt.plan());
 }
 
 #[test]
@@ -522,8 +523,14 @@ fn overlay_marks_kimi_catalogue_rows_without_changing_readiness() {
         record.driver_identity(),
         kimi_platform_direct_descriptor().identity()
     );
-    assert_eq!(record.protocol_facade_id().as_str(), KIMI_PLATFORM_FACADE_REVISION);
-    assert_eq!(record.instance_policy_id().as_str(), "public-platform-api-key");
+    assert_eq!(
+        record.protocol_facade_id().as_str(),
+        KIMI_PLATFORM_FACADE_REVISION
+    );
+    assert_eq!(
+        record.instance_policy_id().as_str(),
+        "public-platform-api-key"
+    );
     assert_eq!(record.routes().len(), 2);
     let snapshot_debug = format!("{record:?}");
     assert!(!snapshot_debug.contains('@'));

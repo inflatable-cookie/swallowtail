@@ -35,17 +35,17 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.021 Unmarked Overlay Rows](021-unmarked-overlay-rows.md) — awaiting review, PR 18
-- [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — planned pending 021
+- [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — worker in flight, cards 062-064
 - [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — planned pending 022
 
-Do not roll over: 20 numbered completed roadmaps, 023 compiled, target
+Do not roll over: 21 numbered completed roadmaps, 023 compiled, target
 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
-- g04.001 through g04.020 are complete. PR 17 is on `main` at `3d761655`
-- g04.021 awaiting review: PR 18, cards 059-061
+- g04.001 through g04.021 are complete. PR 18 is on `main` at `f6ee1390`
+- g04.022 worker dispatched: cards 062-064, handoff
+  `docs/handoffs/20260821-084456-g04-022-further-addable-inventory.md`
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
@@ -72,6 +72,6 @@ Do not roll over: 20 numbered completed roadmaps, 023 compiled, target
 - [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — completed
 - [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — completed
 - [020 Config-Ref Prepare Handoff](./020-config-ref-prepare-handoff.md) — completed
-- [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — planned
+- [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — completed
 - [022 Further Addable Inventory](./022-further-addable-inventory.md) — planned
 - [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — planned

@@ -1,12 +1,12 @@
 # 021 Unmarked Overlay Rows
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.020
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 020, 047, 057
-Planning state: cards 059-061 ready
+Planning state: cards 059-061 completed
 
 ## Problem
 

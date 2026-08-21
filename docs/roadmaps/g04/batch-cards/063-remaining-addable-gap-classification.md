@@ -1,6 +1,6 @@
 # 063 Remaining Addable Gap Classification
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../022-further-addable-inventory.md`

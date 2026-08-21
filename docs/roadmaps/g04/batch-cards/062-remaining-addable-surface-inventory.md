@@ -1,6 +1,6 @@
 # 062 Remaining Addable Surface Inventory
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../022-further-addable-inventory.md`

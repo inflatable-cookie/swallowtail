@@ -1,6 +1,6 @@
 # 060 Unmarked Overlay Rule
 
-Status: complete
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../021-unmarked-overlay-rows.md`

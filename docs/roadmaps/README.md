@@ -14,7 +14,8 @@ shape.
 
 ## Next Task
 
-Awaiting review: g04.021 PR 18. Do not merge. g04.022 stays planned.
+Worker in flight: g04.022 cards 062-064. Handoff
+`docs/handoffs/20260821-084456-g04-022-further-addable-inventory.md`.
 
 ## Standing Lanes
 

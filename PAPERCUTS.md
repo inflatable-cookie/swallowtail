@@ -5,6 +5,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
+- Friction: PR 31 added a 566-line Kimi Platform lifecycle integration test,
+  raising the doctor god-file baseline from 40 to 41 errors.
+- Impact: the completed route lane leaves repository structure health worse and
+  makes later doctor comparisons noisier.
+- Fix: split admission/preparation and refresh/catalogue/047 proofs into focused
+  test modules without changing coverage.
+- Surface: `crates/swallowtail-adapter-kimi-platform/tests/connection_lifecycle.rs`.
+
 ### [ ] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
 - Friction: PRs 24-30 allocated cards 076-085 from older planning bases while
   pushed `main` already assigns 076-078 to g04.024.

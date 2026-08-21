@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-20
+Updated: 2026-08-21
 
 ## Purpose
 
@@ -266,6 +266,18 @@ its corpus passes the same assertions. A behavior change adds a milestone and
 retains the older segment while its baseline remains supported. A public
 protocol or lifecycle break creates a new claim or driver revision; it does not
 weaken or erase the old proof.
+
+The Pi SDK sidecar is a separate driver and compatibility claim. Its first
+proof binds exact `@earendil-works/pi-coding-agent@0.84.2` on the
+`pi.sdk-sidecar.package` axis to source-tagged sidecar and
+`pi.sdk-sidecar-v1` behavior revisions. The initial claim is a qualified-only
+one-point segment. It does not inherit the RPC package window, RPC behavior
+revision, or RPC unverified-newer posture even though both routes use the same
+upstream package release.
+
+The configured instance also binds the exact Node runtime and sidecar wire.
+Changing the runtime requirement, sidecar protocol, SDK lifecycle surface, or
+session attachment behavior requires its own corpus and claim revision.
 
 ## Oh My Pi Mapping
 

@@ -2,9 +2,10 @@
 
 ## Active
 
-- [076-kimi-platform-chat-addable-descriptor.md](./076-kimi-platform-chat-addable-descriptor.md)
-- [077-kimi-platform-chat-admission-and-prepare.md](./077-kimi-platform-chat-admission-and-prepare.md)
-- [078-kimi-platform-chat-refresh-catalogue-and-047.md](./078-kimi-platform-chat-refresh-catalogue-and-047.md)
+- [089-pi-sdk-sidecar-protocol-and-corpus.md](./089-pi-sdk-sidecar-protocol-and-corpus.md)
+- [090-pi-sdk-sidecar-fresh-driver.md](./090-pi-sdk-sidecar-fresh-driver.md)
+- [091-pi-sdk-sidecar-persistent-sessions.md](./091-pi-sdk-sidecar-persistent-sessions.md)
+- [092-pi-sdk-sidecar-route-acceptance.md](./092-pi-sdk-sidecar-route-acceptance.md)
 
 ## Planned
 
@@ -12,6 +13,9 @@
 
 ## Completed
 
+- [078-kimi-platform-chat-refresh-catalogue-and-047.md](./078-kimi-platform-chat-refresh-catalogue-and-047.md)
+- [077-kimi-platform-chat-admission-and-prepare.md](./077-kimi-platform-chat-admission-and-prepare.md)
+- [076-kimi-platform-chat-addable-descriptor.md](./076-kimi-platform-chat-addable-descriptor.md)
 - [088-kimi-code-0-38-0-claim.md](./088-kimi-code-0-38-0-claim.md)
 - [087-kimi-code-0-38-0-identity.md](./087-kimi-code-0-38-0-identity.md)
 - [086-oh-my-pi-17-4-0-claim.md](./086-oh-my-pi-17-4-0-claim.md)

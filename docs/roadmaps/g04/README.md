@@ -32,6 +32,7 @@ and selection policy.
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
+| Realize a full Pi SDK sidecar route with exact session attachment. | ready | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
 | Work through official per-route feature gaps one route and one control family at a time. | planned | Contracts 011, 020, 024, 037, 041, 047, 052; per-route feature programme | compile after the Pi and Gemini decisions |
 
 ## Planned Next Roadmaps
@@ -46,9 +47,10 @@ and selection policy.
 - [g04.030 Antigravity 1.1.17 Useful Newer](030-antigravity-1-1-17-useful-newer.md) — standing currentness, completed
 - [g04.031 Oh My Pi 17.4.0 Useful Newer](031-oh-my-pi-17-4-0-useful-newer.md) — standing currentness, completed
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
+- [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — ready, cards 089-092
 
-Do not roll over: 32 numbered roadmaps exist; 001-032 are complete, target
-30-50.
+Do not roll over: 33 numbered roadmaps exist; 001-032 are complete and 033 is
+ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -72,16 +74,18 @@ Do not roll over: 32 numbered roadmaps exist; 001-032 are complete, target
   `17.4.0`; cards 085-086 are complete
 - g04.032 is on `main` at `7889cc63` through PR 30: Kimi Code ACP,
   headless, and local-server `0.38.0`; cards 087-088 are complete
-- Post-024 priority is Pi RPC resource-bound session attachment, then Gemini
-  CLI `0.56.0` enterprise API-key requalification, then serial per-route
-  feature completion. Contract 029 currentness is standing
+- Research 181 and Contracts 019/029 select a separate Pi SDK sidecar route;
+  g04.033 and cards 089-092 are ready
+- After g04.033, run Gemini CLI `0.56.0` enterprise API-key requalification,
+  then serial per-route feature completion. Contract 029 currentness is
+  standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
 ## Post-024 Planning Checkpoint
 
-1. Resolve the Pi RPC attachment boundary from Research 180 without weakening
-   Contract 017.
+1. Execute g04.033 cards 089-092: prove the Pi SDK sidecar and Contract 017
+   attachment before deciding RPC coexistence or deprecation.
 2. Run one-family Gemini CLI currentness across ACP and headless for the
    enterprise/API-key access posture. Stop for a keep-or-remove decision if
    deterministic evidence cannot support the current official stable.
@@ -128,3 +132,4 @@ New route-family research does not pre-empt this sequence.
 - [030 Antigravity 1.1.17 Useful Newer](./030-antigravity-1-1-17-useful-newer.md) — completed (standing currentness)
 - [031 Oh My Pi 17.4.0 Useful Newer](./031-oh-my-pi-17-4-0-useful-newer.md) — completed (standing currentness)
 - [032 Kimi Code 0.38.0 Useful Newer](./032-kimi-code-0-38-0-useful-newer.md) — completed (standing currentness)
+- [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — ready, cards 089-092

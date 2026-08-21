@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-08-21
 
 ## Purpose
 
@@ -28,6 +28,45 @@ SDK package identity and version remain separate from:
 
 A version pin proves the fixture and build boundary. It does not promise that
 future versions preserve behavior.
+
+## Foreign-Language SDK Sidecars
+
+A maintained SDK in another language may run in a host-owned sidecar. That
+route is not SDK-native: it retains a process boundary, a Swallowtail-owned
+wire, a language runtime, and sidecar lifecycle alongside the upstream SDK.
+
+The configured instance and preflight plan bind these identities separately:
+
+- adapter driver and route
+- source-tagged sidecar revision and launch recipe
+- sidecar wire and behavior revision
+- exact language runtime
+- exact upstream SDK package and version
+- downstream provider, model, credential, resource, and execution host
+
+The application provisions the approved runtime, sidecar entry point, and SDK
+dependency. Swallowtail does not search for, install, upgrade, repair, or
+publish them during discovery or execution. An application-local source asset
+does not become an independent package release merely because the launch
+recipe loads an npm or other language package.
+
+The sidecar wire is strict, versioned, bounded, and private to the driver. It
+uses correlated commands, responses, events, and terminal failures; rejects
+unknown semantics; and keeps SDK types, raw payloads, paths, and credentials
+outside portable records. Transport acceptance does not imply provider
+acceptance.
+
+Sidecar construction suppresses ambient extensions, skills, prompts, context,
+themes, settings, model aliases, update checks, catalogue refresh, retry, and
+network discovery unless an active contract and exact host authority admit
+them. Configuration is in-memory or supplied through explicit host-owned
+references. The sidecar reports the effective resource binding before ready;
+stored provider state cannot replace the host-leased binding.
+
+Cancellation and close abort SDK work, dispose SDK/session state, drain the
+bounded wire, join the sidecar process, then release provider state,
+credentials, and host resources in contract order. Process isolation does not
+by itself prove filesystem or network containment.
 
 ## Runtime And Task Ownership
 
@@ -189,9 +228,21 @@ Deterministic SDK fixtures must prove:
 
 Live AWS authentication and paid inference remain separately gated.
 
+Foreign-language sidecar fixtures additionally prove:
+
+- exact runtime, sidecar, wire, SDK-package, and behavior identity
+- explicit construction with all ambient loaders and automatic work disabled
+- strict correlated framing, bounds, unknown-message failure, and redaction
+- exact host-leased resource agreement before session readiness
+- cancellation, disposal, process join, and lease cleanup ordering
+- deterministic default QA without package installation, provider access, or
+  mutable network discovery
+
 ## Acceptance
 
 - SDK-native means in-process Rust embedding for the first proof
+- a foreign-language SDK sidecar retains explicit process, wire, runtime, and
+  package identities and is never relabeled SDK-native
 - concrete SDK runtimes and types remain adapter-private
 - no ambient SDK configuration participates in an operation
 - delegated credential use remains exact, scoped, and secret-free

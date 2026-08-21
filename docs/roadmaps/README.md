@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Resolve the Pi RPC resource-bound session attachment decision from Research
-180. Choose upstream RPC work or a separate sidecar boundary without weakening
-Contract 017; no implementation card is ready before that choice.
+Execute g04.033 cards 089-092 in order. Realize the separate Pi SDK sidecar
+route, prove Contract 017 load and resume, then record explicit coexistence or
+deprecation for `pi.rpc`.
 
 ## Standing Lanes
 

@@ -168,6 +168,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [114 Paged Provider Session History](./114-paged-provider-session-history.md)
 - [115 Control-Free Provider History Wire Gate](./115-control-free-provider-history-wire-gate.md)
 - [180 Pi RPC Session Attachment Gate Revalidation](./180-pi-rpc-session-attachment-gate-revalidation.md)
+- [181 Pi SDK Sidecar Route Qualification](./181-pi-sdk-sidecar-route-qualification.md)
 
 ### Activity, Topology, And Control
 

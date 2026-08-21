@@ -18,7 +18,7 @@ Implement g04.023 047 presentation metadata. Cards 065-067 are ready;
 worker in flight, handoff
 `docs/handoffs/20260821-092837-g04-023-047-presentation-metadata.md`.
 g04.024 Kimi Platform is named behind 023; do not start it. Standing
-currentness g04.026 (Ollama 0.32.15) is complete and does not keep the
+currentness g04.027 (Ollama 0.32.15) is complete and does not keep the
 generation open.
 
 ## Standing Lanes

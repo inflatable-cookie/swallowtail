@@ -83,7 +83,7 @@ claim id `ollama.native-runtime-window-2`, AllowUnverified, and decoder
 specimen `ollama-native-v0.14.0-v0.32.1`. Keep exclusions `0.32.2` and
 `0.32.10`. Synthetic later-stable UnverifiedNewer is `0.32.16`.
 
-Card 073 owns the claim change.
+Card 075 owns the claim change.
 
 ## Sources
 

@@ -8,7 +8,7 @@ Created: 2026-08-21
 ## Task
 
 Raise the Ollama qualified ceiling from `0.32.14` to official `0.32.15`
-after identity card 072 confirms compatible-extension.
+after identity card 074 confirms compatible-extension.
 
 ## Edit Set
 

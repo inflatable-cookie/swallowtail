@@ -2,7 +2,7 @@
 
 ## Result
 
-Card 072 froze official GitHub `v0.32.15` against the `0.32.14` claim.
+Card 074 froze official GitHub `v0.32.15` against the `0.32.14` claim.
 Host was not installed. `api/types.go` is byte-identical to `v0.32.14`.
 Selected native structs and the five routes remain. `routes.go` changed
 only unselected scheduler cache and chat/generate parser-error cancel.

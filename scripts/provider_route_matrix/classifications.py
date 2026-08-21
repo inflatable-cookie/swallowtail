@@ -41,6 +41,9 @@ retained_execution_classifications = {
     ("retained_background_execution", "pi.rpc"): "operation_shape_not_applicable",
     ("stream_reattachment", "pi.rpc"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "pi.rpc"): "upstream_unsupported",
+    ("retained_background_execution", "pi.sdk-sidecar"): "operation_shape_not_applicable",
+    ("stream_reattachment", "pi.sdk-sidecar"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "pi.sdk-sidecar"): "upstream_unsupported",
     ("retained_background_execution", "deepseek.continuation"): "upstream_unsupported",
     ("stream_reattachment", "deepseek.continuation"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "deepseek.continuation"): "upstream_unsupported",
@@ -134,6 +137,7 @@ working_resource_write_classifications = {
     ("working_resource", "anthropic.messages"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "anthropic.messages"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "pi.rpc"): "upstream_unsupported",
+    ("bounded_workspace_text_write", "pi.sdk-sidecar"): "upstream_unsupported",
     ("working_resource", "deepseek.continuation"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "deepseek.continuation"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
@@ -178,6 +182,7 @@ owned_runtime_not_applicable = {
     "anthropic.managed-agent",
     "anthropic.messages",
     "pi.rpc",
+    "pi.sdk-sidecar",
     "deepseek.continuation",
     "gemini-cli.acp + gemini-cli.headless",
     "gemini.live",
@@ -217,6 +222,7 @@ rollover_not_applicable = {
     "anthropic.managed-agent",
     "anthropic.messages",
     "pi.rpc",
+    "pi.sdk-sidecar",
     "deepseek.continuation",
     "gemini-cli.acp + gemini-cli.headless",
     "grok-build.acp",
@@ -274,6 +280,7 @@ residual_exact_release_only = {
     ("unverified_newer_allowed", "deepseek-harness.jsonrpc"),
     ("unverified_newer_allowed", "deepseek-harness.local-server"),
     ("unverified_newer_allowed", "zcode.app-server"),
+    ("unverified_newer_allowed", "pi.sdk-sidecar"),
 }
 residual_contract_or_corpus = {
     ("interactive_session", "qwen.headless"),
@@ -306,6 +313,7 @@ residual_operation_not_applicable = {
         "anthropic.managed-agent",
         "anthropic.messages",
         "pi.rpc",
+        "pi.sdk-sidecar",
         "deepseek.continuation",
         "deepseek-harness.jsonrpc",
         "deepseek-harness.local-server",
@@ -376,6 +384,7 @@ residual_selected_surface_absence = {
         "openai.realtime",
         "openai.background",
         "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
+        "pi.sdk-sidecar",
     }
 } | {
     ("interactive_session", "muse-code.headless"),

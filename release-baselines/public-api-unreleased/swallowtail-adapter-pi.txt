@@ -46,14 +46,35 @@ impl core::error::Error for swallowtail_adapter_pi::sidecar::protocol::PiSdkSide
 impl core::fmt::Display for swallowtail_adapter_pi::sidecar::protocol::PiSdkSidecarProtocolFailure
 pub fn swallowtail_adapter_pi::sidecar::protocol::PiSdkSidecarProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub fn swallowtail_adapter_pi::sidecar::protocol::decode_records(&[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_pi::sidecar::protocol::PiSdkSidecarRecordKind>, swallowtail_adapter_pi::sidecar::protocol::PiSdkSidecarProtocolFailure>
+pub struct swallowtail_adapter_pi::sidecar::PiSdkSidecarDriver
+impl swallowtail_adapter_pi::PiSdkSidecarDriver
+pub const fn swallowtail_adapter_pi::PiSdkSidecarDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_pi::PiSdkSidecarDriver
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_pi::PiSdkSidecarDriver
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_BEHAVIOR: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_ENTRY_FILE: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_NODE_AXIS: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_NODE_RUNTIME: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_PACKAGE_AXIS: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_PACKAGE: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_VERSION: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SIDECAR_AXIS: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_WIRE: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_WIRE_AXIS: &str
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_node_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_node_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_package_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_sidecar_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_sidecar_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub struct swallowtail_adapter_pi::PiCatalogueProfileInput
 impl swallowtail_adapter_pi::PiCatalogueProfileInput
 pub const fn swallowtail_adapter_pi::PiCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
@@ -132,6 +153,14 @@ pub struct swallowtail_adapter_pi::PiRunProfileInput
 impl swallowtail_adapter_pi::PiRunProfileInput
 pub const fn swallowtail_adapter_pi::PiRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_pi::PiModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_pi::PiRunProfileInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
+pub struct swallowtail_adapter_pi::PiSdkSidecarDriver
+impl swallowtail_adapter_pi::PiSdkSidecarDriver
+pub const fn swallowtail_adapter_pi::PiSdkSidecarDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_pi::PiSdkSidecarDriver
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_pi::PiSdkSidecarDriver
+pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_pi::PiSessionProfileInput
 impl swallowtail_adapter_pi::PiSessionProfileInput
 pub const fn swallowtail_adapter_pi::PiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_pi::PiModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
@@ -140,7 +169,20 @@ pub const fn swallowtail_adapter_pi::PiSessionProfileInput::with_image_attachmen
 pub const swallowtail_adapter_pi::PI_PACKAGE_AXIS: &str
 pub const swallowtail_adapter_pi::PI_PACKAGE_BASELINE_VERSION: &str
 pub const swallowtail_adapter_pi::PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_NODE_AXIS: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_SIDECAR_AXIS: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_WIRE_AXIS: &str
 pub fn swallowtail_adapter_pi::pi_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::pi_rpc_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_pi::pi_rpc_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_node_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_node_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_package_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_sidecar_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_sidecar_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub async fn swallowtail_adapter_pi::prepare_pi_rpc(swallowtail_adapter_pi::PiPreparationInput, swallowtail_adapter_pi::PiPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_pi::PiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

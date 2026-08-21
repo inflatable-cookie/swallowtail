@@ -103,7 +103,7 @@ mod tests {
     #[test]
     fn qualified_corpora_decode() {
         let responses = decode_records(fixture!("responses.jsonl")).unwrap();
-        assert_eq!(responses.len(), 8);
+        assert_eq!(responses.len(), 9);
         assert!(
             responses
                 .iter()
@@ -196,9 +196,10 @@ mod tests {
 
     #[test]
     fn corpus_identity_matches_the_frozen_sidecar_identity() {
-        let protocol: serde_json::Value =
-            serde_json::from_str(include_str!("../../tests/fixtures/pi-sdk-sidecar-v1/protocol.json"))
-                .unwrap();
+        let protocol: serde_json::Value = serde_json::from_str(include_str!(
+            "../../tests/fixtures/pi-sdk-sidecar-v1/protocol.json"
+        ))
+        .unwrap();
         assert_eq!(protocol["wire"], PI_SDK_SIDECAR_WIRE);
         assert_eq!(protocol["behavior_revision"], PI_SDK_SIDECAR_BEHAVIOR);
         assert_eq!(protocol["sdk_package"], PI_SDK_SIDECAR_SDK_PACKAGE);
@@ -218,12 +219,11 @@ mod tests {
 
     #[test]
     fn outbound_command_corpus_is_valid_and_covers_every_command() {
-        let commands: Vec<serde_json::Value> = include_str!(
-            "../../tests/fixtures/pi-sdk-sidecar-v1/commands.jsonl"
-        )
-        .lines()
-        .map(|line| serde_json::from_str(line).unwrap())
-        .collect();
+        let commands: Vec<serde_json::Value> =
+            include_str!("../../tests/fixtures/pi-sdk-sidecar-v1/commands.jsonl")
+                .lines()
+                .map(|line| serde_json::from_str(line).unwrap())
+                .collect();
         let names: Vec<&str> = commands
             .iter()
             .map(|command| {
@@ -246,6 +246,44 @@ mod tests {
         ] {
             assert!(names.contains(&qualified), "missing command {qualified}");
         }
-        assert_eq!(commands.len(), 11);
+        assert_eq!(commands.len(), 12);
+        let bootstrap = &commands[0];
+        assert_eq!(bootstrap["command"], "bootstrap");
+        let params: Vec<&str> = bootstrap["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(params, ["cwd", "model", "provider", "thinkingLevel"]);
+        let catalogue = &commands[1];
+        assert_eq!(catalogue["command"], "bootstrap");
+        assert_eq!(catalogue["params"]["catalogueOnly"], true);
+        let protocol: serde_json::Value = serde_json::from_str(include_str!(
+            "../../tests/fixtures/pi-sdk-sidecar-v1/protocol.json"
+        ))
+        .unwrap();
+        assert_eq!(
+            protocol["bootstrap_params"].as_array().unwrap(),
+            &["cwd", "provider", "model", "thinkingLevel", "catalogueOnly"]
+        );
+        assert_eq!(
+            protocol["environment"]["sdk_module"],
+            "PI_SDK_SIDECAR_SDK_MODULE"
+        );
+        assert_eq!(
+            protocol["environment"]["agent_dir"],
+            "PI_SDK_SIDECAR_AGENT_DIR"
+        );
+        assert_eq!(
+            protocol["environment"]["session_dir"],
+            "PI_SDK_SIDECAR_SESSION_DIR"
+        );
+        assert_eq!(protocol["bounds"]["catalogue_models"], 256);
+        assert_eq!(protocol["bounds"]["catalogue_text_bytes"], 256);
+        assert_eq!(
+            protocol["catalogue_bootstrap_params"].as_array().unwrap(),
+            &["catalogueOnly"]
+        );
     }
 }

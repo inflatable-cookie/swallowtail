@@ -164,10 +164,7 @@ fn replay_items_decode_typed_kinds_in_sequence() {
     };
     assert!(matches!(
         item,
-        PiSdkReplayItem::ToolResult {
-            failed: false,
-            ..
-        }
+        PiSdkReplayItem::ToolResult { failed: false, .. }
     ));
 
     assert_eq!(

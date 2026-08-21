@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 34);
+    assert_eq!(routes.len(), 35);
 
     let ids = routes
         .iter()
@@ -51,6 +51,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "oh-my-pi.rpc",
             "opencode.http",
             "pi.rpc",
+            "pi.sdk-sidecar",
             "qoder.headless",
             "qwen.headless",
             "zcode.app-server",
@@ -68,7 +69,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
         let expected_unknown_posture = if matches!(
             route["id"].as_str(),
-            Some("claude-code.response-only" | "qoder.headless")
+            Some("claude-code.response-only" | "qoder.headless" | "pi.sdk-sidecar")
         ) {
             "fail-closed"
         } else {
@@ -106,7 +107,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 41);
+    assert_eq!(profiles.len(), 42);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),
@@ -175,6 +176,7 @@ fn catalogue_and_management_roles_are_not_misreported_as_ordinary_activity() {
             ("opencode.http", "provider-session-management"),
             ("oh-my-pi.rpc", "model-catalogue"),
             ("pi.rpc", "model-catalogue"),
+            ("pi.sdk-sidecar", "model-catalogue"),
             ("qwen.headless", "model-catalogue"),
         ])
     );

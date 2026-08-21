@@ -1,13 +1,31 @@
+// Every integration binary compiles this module tree but uses only a subset;
+// unused-fixture lints fire per binary, not per module.
+#[allow(dead_code)]
 mod host;
+#[allow(dead_code)]
 mod selection;
+#[allow(dead_code)]
+mod sidecar_host;
+#[allow(dead_code)]
+mod sidecar_selection;
 
+#[allow(unused_imports)]
 pub use host::{CleanupEvent, FixtureHost, Scenario};
+#[allow(unused_imports)]
 pub use selection::{
     FixtureSelection, open_request, selection, selection_for_topology, turn_request,
 };
 #[allow(unused_imports)]
 pub use selection::{run_request, run_selection_for_topology};
+#[allow(unused_imports)]
+pub use sidecar_host::{SidecarFixtureHost, SidecarScenario};
+#[allow(unused_imports)]
+pub use sidecar_selection::{
+    SidecarFixtureSelection, sidecar_catalogue_selection, sidecar_selection,
+    sidecar_selection_with_instance_versions, sidecar_versions,
+};
 
+#[allow(dead_code)]
 pub fn allow_user_input_result(
     request: &swallowtail_runtime::CallbackRequest,
 ) -> swallowtail_runtime::CallbackResult {

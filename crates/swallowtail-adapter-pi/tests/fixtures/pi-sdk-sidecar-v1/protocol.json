@@ -17,7 +17,13 @@
   "node_runtime": "22.23.2",
   "node_requirement": ">=22.19.0",
   "compatibility_claim": "qualified_only_one_point",
-  "record_types": ["command", "response", "event", "terminal", "diagnostic"],
+  "record_types": [
+    "command",
+    "response",
+    "event",
+    "terminal",
+    "diagnostic"
+  ],
   "commands": [
     "bootstrap",
     "session_new",
@@ -48,14 +54,40 @@
     "replay_item",
     "progress"
   ],
-  "replay_item_kinds": ["user", "assistant", "tool_result"],
-  "tools": ["read", "grep", "find", "ls"],
+  "replay_item_kinds": [
+    "user",
+    "assistant",
+    "tool_result"
+  ],
+  "tools": [
+    "read",
+    "grep",
+    "find",
+    "ls"
+  ],
+  "bootstrap_params": [
+    "cwd",
+    "provider",
+    "model",
+    "thinkingLevel",
+    "catalogueOnly"
+  ],
+  "catalogue_bootstrap_params": [
+    "catalogueOnly"
+  ],
+  "environment": {
+    "sdk_module": "PI_SDK_SIDECAR_SDK_MODULE",
+    "agent_dir": "PI_SDK_SIDECAR_AGENT_DIR",
+    "session_dir": "PI_SDK_SIDECAR_SESSION_DIR"
+  },
   "bounds": {
     "record_bytes": 1048576,
     "command_id_bytes": 128,
     "pending_commands": 16,
     "replay_items": 1024,
     "image_bytes": 1048576,
+    "catalogue_models": 256,
+    "catalogue_text_bytes": 256,
     "failure_message_bytes": 512,
     "failure_code_bytes": 96
   },

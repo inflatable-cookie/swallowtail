@@ -1,5 +1,7 @@
 use super::super::protocol::{PiSdkSidecarProtocolFailure, PiSdkSidecarProtocolFailureKind};
-use super::{PiSdkSidecarEvent, decode_usage, failure, required_string, required_text, required_u64};
+use super::{
+    PiSdkSidecarEvent, decode_usage, failure, required_string, required_text, required_u64,
+};
 use serde_json::Value;
 use swallowtail_runtime::TokenUsage;
 

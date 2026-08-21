@@ -33,5 +33,12 @@ pub use selection::{
     PI_PACKAGE_AXIS, PI_PACKAGE_BASELINE_VERSION, PI_PACKAGE_LATEST_QUALIFIED_VERSION,
     pi_package_binding, pi_rpc_claim,
 };
+pub use sidecar::{
+    PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
+    PI_SDK_SIDECAR_WIRE_AXIS, PiSdkSidecarDriver, pi_sdk_sidecar_descriptor,
+    pi_sdk_sidecar_node_binding, pi_sdk_sidecar_node_claim, pi_sdk_sidecar_package_binding,
+    pi_sdk_sidecar_package_claim, pi_sdk_sidecar_sidecar_binding, pi_sdk_sidecar_sidecar_claim,
+    pi_sdk_sidecar_wire_binding, pi_sdk_sidecar_wire_claim,
+};
 
 const DRIVER_ID: &str = "swallowtail.pi.rpc";

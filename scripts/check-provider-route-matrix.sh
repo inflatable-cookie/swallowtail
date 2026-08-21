@@ -19,8 +19,8 @@ sed '/<!-- provider-session-lifecycle-matrix:start -->/,$d' "$route_matrix_file"
 python3 "$route_matrix_repo_root/scripts/provider_route_matrix/route_inventory.py" |
   LC_ALL=C sort > "$route_matrix_expected"
 
-if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 47 ]; then
-  printf 'provider route matrix must contain exactly 47 route rows\n' >&2
+if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 48 ]; then
+  printf 'provider route matrix must contain exactly 48 route rows\n' >&2
   exit 1
 fi
 
@@ -40,8 +40,8 @@ sed -n \
 sed -n 's/^| `\([^`]*\)` |.*$/\1/p' "$route_lifecycle_rows" |
   LC_ALL=C sort > "$route_lifecycle_actual"
 
-if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 47 ]; then
-  printf 'provider session lifecycle matrix must contain exactly 47 route rows\n' >&2
+if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 48 ]; then
+  printf 'provider session lifecycle matrix must contain exactly 48 route rows\n' >&2
   exit 1
 fi
 
@@ -92,4 +92,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 39-solution/47-route feature, and activity matrices passed\n'
+printf 'provider route, lifecycle, 40-solution/48-route feature, and activity matrices passed\n'

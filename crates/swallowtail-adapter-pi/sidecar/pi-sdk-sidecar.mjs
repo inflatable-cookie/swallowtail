@@ -4,7 +4,11 @@
 // consuming application provisions the exact approved Node runtime, this entry
 // point, and the exact `@earendil-works/pi-coding-agent` SDK package through a
 // host-approved launch recipe. This process speaks the private strict LF-JSON
-// wire `swallowtail-pi-sdk-jsonl-v1` on stdin/stdout and nothing else.
+// wire `swallowtail-pi-sdk-jsonl-v1` on stdin/stdout and nothing else. The
+// exact SDK module path, agent directory, and session directory arrive through
+// the application-approved environment (`PI_SDK_SIDECAR_SDK_MODULE`,
+// `PI_SDK_SIDECAR_AGENT_DIR`, `PI_SDK_SIDECAR_SESSION_DIR`), never through
+// ambient discovery; `process.argv` is intentionally unused.
 //
 // Ambient behavior is suppressed by construction: in-memory settings with
 // retry and compaction disabled, resource loading restricted to explicit
@@ -27,7 +31,16 @@ const MAXIMUM_COMMAND_ID_BYTES = 128;
 const MAXIMUM_PENDING_COMMANDS = 16;
 const MAXIMUM_REPLAY_ITEMS = 1024;
 const MAXIMUM_IMAGE_BYTES = 1024 * 1024;
+const MAXIMUM_CATALOGUE_MODELS = 256;
+const MAXIMUM_CATALOGUE_TEXT_BYTES = 256;
 const TOOLS = ["read", "grep", "find", "ls"];
+
+// Application-provisioned inputs arrive through the host-approved environment,
+// never through ambient discovery: the host launches this process with a
+// fully cleared environment containing only approved entries.
+const ENV_SDK_MODULE = "PI_SDK_SIDECAR_SDK_MODULE";
+const ENV_AGENT_DIR = "PI_SDK_SIDECAR_AGENT_DIR";
+const ENV_SESSION_DIR = "PI_SDK_SIDECAR_SESSION_DIR";
 
 const COMMANDS = new Set([
   "bootstrap",
@@ -91,6 +104,7 @@ class SidecarFailure extends Error {
 
 const state = {
   runtime: null,
+  catalogued: false,
   unsubscribe: null,
   pending: new Map(),
   usedIds: new Set(),
@@ -334,38 +348,22 @@ function parseImages(params) {
   });
 }
 
-async function handleBootstrap(params) {
-  if (state.runtime) {
-    throw new SidecarFailure("already_bootstrapped");
+function requireEnvironment(name) {
+  const value = process.env[name];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new SidecarFailure("missing_environment");
   }
-  requireExactParams(params, [
-    "cwd",
-    "agentDir",
-    "sessionDir",
-    "provider",
-    "model",
-    "sdkModule",
-    "thinkingLevel",
-  ]);
-  const cwd = requireString(params, "cwd");
-  const agentDir = requireString(params, "agentDir");
-  const sessionDir = requireString(params, "sessionDir");
-  const provider = requireString(params, "provider");
-  const modelId = requireString(params, "model");
-  const sdkModule = requireString(params, "sdkModule");
-  const thinkingLevel = params.thinkingLevel;
-  if (thinkingLevel !== undefined && typeof thinkingLevel !== "string") {
-    throw new SidecarFailure("invalid_command");
-  }
-  if (!checkNodeFloor()) {
-    throw new SidecarFailure("node_runtime_unsupported");
-  }
-  process.env.PI_OFFLINE = process.env.PI_OFFLINE ?? "1";
+  return value;
+}
 
+async function importSdk() {
   let sdk;
   try {
-    sdk = await import(pathToFileURL(sdkModule).href);
-  } catch {
+    sdk = await import(pathToFileURL(requireEnvironment(ENV_SDK_MODULE)).href);
+  } catch (error) {
+    if (error instanceof SidecarFailure) {
+      throw error;
+    }
     throw new SidecarFailure("sdk_unavailable");
   }
   const required = [
@@ -383,6 +381,84 @@ async function handleBootstrap(params) {
   if (sdk.VERSION !== SDK_VERSION) {
     throw new SidecarFailure("sdk_version_mismatch");
   }
+  return sdk;
+}
+
+async function handleCatalogue(sdk) {
+  const agentDir = requireEnvironment(ENV_AGENT_DIR);
+  const modelRuntime = await sdk.ModelRuntime.create({
+    authPath: join(agentDir, "auth.json"),
+    modelsPath: null,
+    allowModelNetwork: false,
+  });
+  const models = [];
+  for (const provider of modelRuntime.getProviders()) {
+    let available;
+    try {
+      available = await modelRuntime.getAvailable(provider.id);
+    } catch {
+      throw new SidecarFailure("catalogue_unavailable");
+    }
+    for (const model of available) {
+      const providerId = String(model?.provider ?? "");
+      const id = String(model?.id ?? "");
+      if (
+        providerId.length === 0 ||
+        id.length === 0 ||
+        providerId.length > MAXIMUM_CATALOGUE_TEXT_BYTES ||
+        id.length > MAXIMUM_CATALOGUE_TEXT_BYTES ||
+        models.length >= MAXIMUM_CATALOGUE_MODELS
+      ) {
+        throw new SidecarFailure("catalogue_overflow");
+      }
+      models.push({ provider: providerId, id });
+    }
+  }
+  state.catalogued = true;
+  return {
+    wire: WIRE,
+    behavior: BEHAVIOR,
+    sdkPackage: SDK_PACKAGE,
+    sdkVersion: sdk.VERSION,
+    nodeVersion: process.versions.node,
+    models,
+  };
+}
+
+async function handleBootstrap(params) {
+  if (state.runtime || state.catalogued) {
+    throw new SidecarFailure("already_bootstrapped");
+  }
+  requireExactParams(params, ["cwd", "provider", "model", "thinkingLevel", "catalogueOnly"]);
+  if (params.catalogueOnly !== undefined && params.catalogueOnly !== true) {
+    throw new SidecarFailure("invalid_command");
+  }
+  if (params.catalogueOnly === true) {
+    // Catalogue mode needs no leased working directory or model binding; its
+    // only parameter is the mode flag itself.
+    if (Object.keys(params).length !== 1) {
+      throw new SidecarFailure("invalid_command");
+    }
+    if (!checkNodeFloor()) {
+      throw new SidecarFailure("node_runtime_unsupported");
+    }
+    process.env.PI_OFFLINE = process.env.PI_OFFLINE ?? "1";
+    return handleCatalogue(await importSdk());
+  }
+  const cwd = requireString(params, "cwd");
+  const thinkingLevel = params.thinkingLevel;
+  if (thinkingLevel !== undefined && typeof thinkingLevel !== "string") {
+    throw new SidecarFailure("invalid_command");
+  }
+  if (!checkNodeFloor()) {
+    throw new SidecarFailure("node_runtime_unsupported");
+  }
+  process.env.PI_OFFLINE = process.env.PI_OFFLINE ?? "1";
+  const sdk = await importSdk();
+  const provider = requireString(params, "provider");
+  const modelId = requireString(params, "model");
+  const agentDir = requireEnvironment(ENV_AGENT_DIR);
+  const sessionDir = requireEnvironment(ENV_SESSION_DIR);
 
   const settingsManager = sdk.SettingsManager.inMemory({
     retry: { enabled: false },
@@ -600,12 +676,23 @@ async function handlePrompt(params) {
   if (session.isStreaming || !session.isIdle) {
     throw new SidecarFailure("turn_active");
   }
-  try {
-    await session.prompt(text, { images, expandPromptTemplates: false });
-  } catch {
+  // Respond at acceptance so steering, follow-up, abort, and close stay
+  // reachable while the run streams; the run's outcome arrives through the
+  // subscribed event stream, never through this response.
+  let acceptance;
+  const accepted = new Promise((resolve) => {
+    acceptance = resolve;
+  });
+  const run = session.prompt(text, {
+    images,
+    expandPromptTemplates: false,
+    preflightResult: (success) => acceptance(success === true),
+  });
+  void run.catch(() => {});
+  if (!(await accepted)) {
     throw new SidecarFailure("prompt_rejected");
   }
-  return { idle: session.isIdle === true };
+  return { accepted: true };
 }
 
 async function handleSteer(params) {

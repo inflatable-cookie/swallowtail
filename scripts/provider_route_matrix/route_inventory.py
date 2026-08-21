@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 47
+EXPECTED_ROUTE_COUNT = 48
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -68,6 +68,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "opencode.http": ("supported", "yes", "unsupported", "unsupported", "supported", "ProviderDataDeleted"),
     "oh-my-pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
+    "pi.sdk-sidecar": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "qwen.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "xai.responses-websocket": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
 }

@@ -258,11 +258,12 @@ OpenHands adds a package without a production route.
   boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
   plane audience, generated request, summary, lifecycle and error types, and
   bounded provider-neutral projection
-- `swallowtail-adapter-gemini` implements the pinned Gemini CLI `0.51.0`
-  ambient-host interactive subset with Plan Mode and bounded read callbacks
-  over ACP v1 stdio and retains session-advertised model options as negotiated
-  evidence; a separately qualified `0.51.0..=0.52.0` headless route sends one
-  prompt over stdin, consumes bounded `stream-json`, reports usage, requires
+- `swallowtail-adapter-gemini` implements the qualified Gemini CLI
+  `0.51.0..=0.56.0` ambient-host interactive subset with Plan Mode and bounded
+  read callbacks over ACP v1 stdio and retains session-advertised model options
+  as negotiated evidence; a separately qualified `0.51.0..=0.56.0` headless
+  route sends one prompt over stdin, consumes bounded `stream-json`, reports
+  usage, requires
   durable local transcript retention, and forces no sandbox; one public
   Gemini CLI facade requires explicit ACP or headless selection. A separate
   Developer API Models branch performs bounded paginated discovery, while the
@@ -816,10 +817,11 @@ the historical Gemini or Kimi pins. Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
-Gemini CLI ACP `0.51.0` is narrowed to new read-only sessions, text prompts,
-updates, native turn cancellation, permission cancellation, and bounded read
-callbacks. Authentication mutation, load/resume, mode or model switching, MCP
-injection, writes, terminals, and native session close are not claimed.
+Gemini CLI ACP `0.51.0..=0.56.0` is narrowed to new read-only sessions, text
+prompts, updates, native turn cancellation, permission cancellation, and
+bounded read callbacks. Authentication mutation, load/resume, mode or model
+switching, MCP injection, writes, terminals, and native session close are not
+claimed.
 Contract 015's `WorkingResourceIo` service is realized separately from
 consumer tools. The local host canonically resolves provider locators under
 the exact leased root, applies line and byte bounds, and rejects traversal,
@@ -1586,13 +1588,11 @@ own the exact `0.29.2` currentness extension.
 Research 054-055 and Contracts 021, 038-039 define the realized
 provider-retention tranche.
 
-- Gemini CLI stored-transcript management is a separate installed-executable
-  role across `0.51.0..=0.52.0`. A successful durable headless run can return
-  one take-once bound management capability after terminal completion. Later
-  exact-source qualification found its post-delete `--list-sessions` check may
-  perform summary inference and mutate retained transcripts. It is not a
-  read-only confirmation surface. Contract 038 and g03.033 remove the public
-  management role and binding. Operation-owned cleanup sends one delete
+- Gemini CLI stored-transcript management was revalidated across the qualified
+  `0.51.0..=0.56.0` headless range. Its post-delete `--list-sessions` check
+  may perform summary inference and mutate retained transcripts, so it is not
+  a read-only confirmation surface. Contract 038 and g03.033 remove the
+  public management role and binding. Operation-owned cleanup sends one delete
   request, performs no list confirmation, and records deletion as unconfirmed;
   Gemini ACP remains unsupported.
 - Gemini CLI and Claude Agent expose separate opt-in temporary-retention

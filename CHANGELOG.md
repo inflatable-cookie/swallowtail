@@ -7,6 +7,13 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Raised qualified Gemini CLI ACP and headless ceilings from their previous
+  `0.51.0` and `0.51.0..=0.52.0` bounds to maintained
+  `0.51.0..=0.56.0` on their separate version axes. Official published
+  intermediates are qualified; `0.56.1` remains visible `UnverifiedNewer`.
+  Selected lifecycle and stream shapes remain compatible, provider-private
+  invalid-stream additions stay unmapped, and transcript management remains
+  unsupported. Research 182, g04.034.
 - Raised qualified Kimi Code ACP, headless, and local-server ceilings from
   `0.37.2` to official `@moonshot-ai/kimi-code` `0.38.0` on the
   `kimi-code.executable` axis. Compatible-extension: selected ACP,

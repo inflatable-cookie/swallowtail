@@ -1,6 +1,7 @@
 # Gemini CLI headless `stream-json` corpus
 
-Qualified releases: `0.51.0` and `0.52.0`.
+Historical decoder specimens: `0.51.0` and `0.52.0`. The current headless
+claim is qualified through `0.56.0`; the specimen corpus remains unchanged.
 
 Source tags:
 

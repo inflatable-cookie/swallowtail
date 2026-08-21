@@ -1,16 +1,9 @@
 # g04 Batch Cards
 
-## Active
-
-- [093-gemini-cli-0-56-0-identity.md](./093-gemini-cli-0-56-0-identity.md)
-- [094-gemini-cli-0-56-0-claim.md](./094-gemini-cli-0-56-0-claim.md)
-
-## Planned
-
-- None. Cards 070-071 remain unused gaps, not tasks.
-
 ## Completed
 
+- [094-gemini-cli-0-56-0-claim.md](./094-gemini-cli-0-56-0-claim.md)
+- [093-gemini-cli-0-56-0-identity.md](./093-gemini-cli-0-56-0-identity.md)
 - [092-pi-sdk-sidecar-route-acceptance.md](./092-pi-sdk-sidecar-route-acceptance.md)
 - [091-pi-sdk-sidecar-persistent-sessions.md](./091-pi-sdk-sidecar-persistent-sessions.md)
 - [090-pi-sdk-sidecar-fresh-driver.md](./090-pi-sdk-sidecar-fresh-driver.md)
@@ -101,3 +94,11 @@
 - [003-first-route-readiness-tranche-selection.md](./003-first-route-readiness-tranche-selection.md)
 - [002-route-readiness-gap-and-contract-fit.md](./002-route-readiness-gap-and-contract-fit.md)
 - [001-route-readiness-surface-inventory.md](./001-route-readiness-surface-inventory.md)
+
+## Active
+
+- None. Cards 070-071 remain unused gaps, not tasks.
+
+## Planned
+
+- None.

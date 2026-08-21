@@ -12,13 +12,13 @@ pub const GEMINI_CLI_ACP_AXIS: &str = "gemini-cli.acp-agent";
 /// Oldest Gemini CLI version qualified for ACP interaction.
 pub const GEMINI_CLI_ACP_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for ACP interaction.
-pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.51.0";
+pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.56.0";
 /// Semantic-version axis reported by the Gemini CLI headless route.
 pub const GEMINI_CLI_HEADLESS_AXIS: &str = "gemini-cli.headless-stream-json";
 /// Oldest Gemini CLI version qualified for headless stream-JSON runs.
 pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for headless runs.
-pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.52.0";
+pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.56.0";
 
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
@@ -211,29 +211,42 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn exact_release_is_qualified_and_newer_stable_is_visible() {
+    fn published_acp_releases_are_qualified_and_later_stable_is_visible() {
         let claim = gemini_cli_acp_claim();
-        assert!(claim.supports(&version("0.51.0")));
+        for published in [
+            "0.51.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
+        ] {
+            assert!(
+                claim.supports(&version(published)),
+                "{published} is qualified"
+            );
+        }
         assert!(!claim.permits(&version("0.50.0")));
         assert!(!claim.permits(&version("0.51.0-rc.1")));
         assert!(matches!(
-            claim.assess(&version("0.52.0")),
+            claim.assess(&version("0.56.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
 
     #[test]
-    fn headless_range_qualifies_both_frozen_releases_and_allows_newer_visibility() {
+    fn published_headless_releases_are_qualified_and_later_stable_is_visible() {
         let claim = gemini_cli_headless_claim();
-        assert!(claim.supports(&version("0.51.0")));
-        assert!(claim.supports(&version("0.52.0")));
+        for published in [
+            "0.51.0", "0.52.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
+        ] {
+            assert!(
+                claim.supports(&version(published)),
+                "{published} is qualified"
+            );
+        }
         assert!(!claim.permits(&version("0.50.0")));
         assert!(matches!(
-            claim.assess(&version("0.53.0")),
+            claim.assess(&version("0.56.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         assert_eq!(
-            gemini_cli_headless_binding("0.52.0")
+            gemini_cli_headless_binding("0.56.0")
                 .expect("version binds")
                 .axis()
                 .as_str(),
@@ -244,7 +257,7 @@ mod tests {
     #[test]
     fn binding_accepts_only_one_exact_semantic_version() {
         assert_eq!(
-            gemini_cli_acp_binding("0.51.0")
+            gemini_cli_acp_binding("0.56.0")
                 .expect("version binds")
                 .axis()
                 .as_str(),

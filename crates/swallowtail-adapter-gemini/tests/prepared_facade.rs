@@ -53,7 +53,7 @@ fn solution_facade_keeps_acp_selection_typed() {
 fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
     for (host_value, version, qualified) in [
         ("fixture.prepared.local", "0.51.0", true),
-        ("fixture.prepared.remote", "0.52.0", false),
+        ("fixture.prepared.remote", "0.56.1", false),
     ] {
         let host_id = ExecutionHostId::new(host_value).expect("valid host");
         let operation_host = FixtureHost::with_version(Scenario::Success, version);

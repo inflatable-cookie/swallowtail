@@ -1,6 +1,6 @@
 # 094 Gemini CLI 0.56.0 Claim
 
-Status: ready after 093
+Status: completed
 Owner: Tom
 Milestone: [g04.034 Gemini CLI 0.56.0 Useful Newer](../034-gemini-cli-0-56-0-useful-newer.md)
 Created: 2026-08-22
@@ -73,6 +73,18 @@ effigy qa:docs:index:roadmaps:batch-cards
 effigy qa:docs:next-action:roadmaps
 git diff --check
 ```
+
+## Result
+
+Both separate Gemini CLI claims now classify published stable points through
+`0.56.0` as Qualified Maintained. Host `0.53.0`, every proved published
+intermediate, and official `0.56.0` are qualified on both axes. `0.56.1` is
+the first unpublished stable and remains permitted `UnverifiedNewer`.
+Behavior revisions, baselines, claim ids, and `AllowUnverified` remain
+unchanged. Historical ACP and headless specimens remain authoritative;
+transcript management remains unsupported without side-effect-free
+confirmation. Gemini Live, Gemini Models, browser login, and
+individual-account access are unchanged.
 
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or consumer
 checks.

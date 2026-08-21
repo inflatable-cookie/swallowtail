@@ -17,7 +17,16 @@ use swallowtail_runtime::{
 
 #[test]
 fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
-    for (version, qualified) in [("0.51.0", true), ("0.52.0", false)] {
+    for (version, qualified) in [
+        ("0.51.0", true),
+        ("0.53.0", true),
+        ("0.53.1", true),
+        ("0.54.0", true),
+        ("0.54.4", true),
+        ("0.55.1", true),
+        ("0.56.0", true),
+        ("0.56.1", false),
+    ] {
         let host_id = ExecutionHostId::new("fixture.host.discovery").expect("valid host");
         let host = DiscoveryHost::new(version);
         let outcome = block_on(driver().discover_installed_executable(
@@ -63,7 +72,17 @@ fn older_version_is_incompatible() {
 
 #[test]
 fn headless_probe_qualifies_frozen_range_and_keeps_newer_visible() {
-    for (version, qualified) in [("0.51.0", true), ("0.52.0", true), ("0.53.0", false)] {
+    for (version, qualified) in [
+        ("0.51.0", true),
+        ("0.52.0", true),
+        ("0.53.0", true),
+        ("0.53.1", true),
+        ("0.54.0", true),
+        ("0.54.4", true),
+        ("0.55.1", true),
+        ("0.56.0", true),
+        ("0.56.1", false),
+    ] {
         let host_id = ExecutionHostId::new("fixture.host.headless").expect("valid host");
         let host = DiscoveryHost::new(version);
         let outcome = block_on(headless_driver().discover_installed_executable(

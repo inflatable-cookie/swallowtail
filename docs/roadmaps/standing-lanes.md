@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-21
+Updated: 2026-08-22
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -25,22 +25,21 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Kimi Code ACP, headless, and local-server `0.38.0`
-(g04.032, PR 30). The immediately preceding claim is Oh My Pi RPC `17.4.0`
-(g04.031, PR 27). Neither changes the generation pointer.
+Last one-family claim: Gemini CLI ACP and headless `0.56.0` (g04.034,
+cards 093-094). The immediately preceding claim is Kimi Code ACP, headless,
+and local-server `0.38.0` (g04.032, PR 30). Neither changes the generation
+pointer.
 
-### Selected Family
+### Completed Family
 
-Gemini CLI requalification is reopened by operator decision. Host `0.53.0`
-and official stable `0.56.0` require one-family identity-before-claim work on
-the separate ACP and headless axes. The selected access posture is enterprise
-API-key access; Code Assist browser login remains outside the route and
-individual-account service is not supported. No live prompt is required for
-deterministic qualification.
+Gemini CLI requalification is complete. Host `0.53.0` and official stable
+`0.56.0` were compared on separate ACP and headless axes under the enterprise
+API-key posture. Both axes are compatible extensions through `0.56.0`; Code
+Assist browser login and individual-account service remain outside the route.
+The first unpublished stable, `0.56.1`, remains permitted `UnverifiedNewer`.
 
-g04.034 and cards 093-094 compile that work. If either selected axis cannot be
-qualified deterministically at `0.56.0`, both claims stay unchanged pending an
-explicit keep-or-remove decision.
+g04.034 and cards 093-094 compile that work. No live prompt, authentication,
+host update, or contract decision was required.
 
 ### Do Not
 

@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Implement g04.034 cards 093-094: qualify Gemini CLI `0.56.0` across the
-separate ACP and headless axes for enterprise API-key access. Stop for an
-explicit keep-or-remove decision if deterministic evidence cannot support
-either route. Do not start per-route feature work.
+Compile the first numbered per-route feature milestone, starting with Cursor
+headless model parameters. Use the per-route feature programme and keep
+Contract 029 currentness as a standing lane.
 
 ## Standing Lanes
 

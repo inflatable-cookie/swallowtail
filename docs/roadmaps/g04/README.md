@@ -33,7 +33,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Work through official per-route feature gaps one route and one control family at a time. | planned | Contracts 011, 020, 024, 037, 041, 047, 052; per-route feature programme | compile after the Pi and Gemini decisions |
+| Work through official per-route feature gaps one route and one control family at a time. | ready | Contracts 011, 020, 024, 037, 041, 047, 052; per-route feature programme | Cursor headless model parameters |
 
 ## Planned Next Roadmaps
 
@@ -48,10 +48,10 @@ and selection policy.
 - [g04.031 Oh My Pi 17.4.0 Useful Newer](031-oh-my-pi-17-4-0-useful-newer.md) — standing currentness, completed
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
 - [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
-- [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, ready
+- [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 34 numbered roadmaps exist; 001-033 are complete and 034 is
-ready, target 30-50.
+Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
+30-50.
 
 ## Current Checkpoint
 
@@ -78,8 +78,8 @@ ready, target 30-50.
 - g04.033 is on `main` at `9aac2dd1` through PR 32: the Pi SDK sidecar
   route is realized and both Pi routes are retained; cards 089-092 are
   complete
-- g04.034 is ready: cards 093-094 own Gemini CLI `0.56.0` enterprise
-  API-key requalification across separate ACP and headless axes
+- g04.034 is complete: cards 093-094 qualified Gemini CLI `0.56.0` across
+  separate ACP and headless axes for enterprise API-key access
 - After g04.034 closes, compile the first numbered per-route feature
   milestone. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -89,11 +89,7 @@ ready, target 30-50.
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Execute g04.034 cards 093-094 for one-family Gemini CLI currentness across
-   ACP and headless for the enterprise/API-key access posture. Stop for a
-   keep-or-remove decision if deterministic evidence cannot support the
-   current official stable.
-3. Compile the first numbered milestone from
+2. Compile the first numbered milestone from
    [Per-Route Feature Completion](./per-route-feature-completion.md), starting
    with Cursor headless model parameters unless current evidence changes the
    ranking.
@@ -104,7 +100,7 @@ New route-family research does not pre-empt this sequence.
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
-- [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — ready (standing currentness)
+- [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed

@@ -1,6 +1,6 @@
 # g04.034 Gemini CLI 0.56.0 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-22
 
@@ -56,12 +56,22 @@ and return for an explicit keep-or-remove decision on the Gemini CLI family.
 
 ## Batch Cards
 
-- [093-gemini-cli-0-56-0-identity.md](batch-cards/093-gemini-cli-0-56-0-identity.md) — ready
-- [094-gemini-cli-0-56-0-claim.md](batch-cards/094-gemini-cli-0-56-0-claim.md) — ready after 093
+- [093-gemini-cli-0-56-0-identity.md](batch-cards/093-gemini-cli-0-56-0-identity.md) — completed
+- [094-gemini-cli-0-56-0-claim.md](batch-cards/094-gemini-cli-0-56-0-claim.md) — completed
+
+## Result
+
+Official npm/GitHub Gemini CLI `0.56.0` is a compatible extension on both
+selected axes. ACP and headless retain separate claims, baselines, behavior
+revisions, and `AllowUnverified` posture; both are maintained through
+`0.56.0`. Published intermediates are qualified and `0.56.1` remains visible
+`UnverifiedNewer`. Transcript management, browser login, individual-account
+access, Gemini Live, and Gemini Models remain outside the claim.
 
 ## References
 
 - [Research 159 Post-Harness-Expansion Version Currentness Checkpoint](../../research/159-post-harness-expansion-version-currentness-checkpoint.md)
+- [Research 182 Gemini CLI 0.56.0 Identity](../../research/182-gemini-cli-0-56-0-identity.md)
 - [Research 045 Gemini CLI Headless Currentness And Corpus](../../research/045-gemini-cli-headless-currentness-and-corpus.md)
 - [Research 059 Gemini ACP Bounded Write Contract Fit And Corpus](../../research/059-gemini-acp-bounded-write-contract-fit-and-corpus.md)
 - [Contract 029 Interface Version Qualification And Compatibility](../../contracts/029-interface-version-qualification-and-compatibility.md)

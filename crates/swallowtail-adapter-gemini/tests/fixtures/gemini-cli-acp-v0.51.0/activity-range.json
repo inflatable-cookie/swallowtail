@@ -16,14 +16,19 @@
     }
   ],
   "current_external_release": {
-    "version": "0.53.0",
-    "published_at": "2026-07-28T21:45:42Z",
-    "tag_commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96",
+    "version": "0.56.0",
+    "published_at": "2026-08-19T19:29:38Z",
+    "tag_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
     "session_source_sha256": "6c477fa56ad3fc8a8a683a0bd9fae6233e5fbbf4143a8b8cb21bc8de15e34c23",
-    "classification": "unverified-newer",
-    "profile": "0.51.0-guarantee",
-    "activity_source_delta": "none",
-    "full_harness_qualification": false
+    "classification": "qualified",
+    "profile": "0.56.0-guarantee",
+    "activity_source_delta": "provider-invalid-stream-categories-unmapped",
+    "full_harness_qualification": true,
+    "later_stable_posture": {
+      "minimum": "greater-than-0.56.0",
+      "classification": "unverified-newer",
+      "execution": "allowed-with-visible-evidence"
+    }
   },
   "emitted_updates": [
     "agent_message_chunk",

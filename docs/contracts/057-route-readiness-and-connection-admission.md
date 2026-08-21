@@ -179,8 +179,12 @@ another instance. Provider catalogue defaults stay distinct from the
 consumer-default marker. Mixed gateway rows remain consumer assembly of
 several catalogues. Overlay markers do not change 047 `Ready` / `NotReady`.
 
-Accent color and other chrome stay consumer-owned. Optional 047 presentation
-metadata may be added later; it must not change selection readiness.
+Accent color and other chrome stay consumer-owned. The named optional 047
+presentation field is `instance_label`: the consumer may carry the exact
+optional label from the stored admitted-instance record into the 047 snapshot.
+It is instance-level presentation metadata only and must not change selection
+readiness. Overlay markers remain overlay fields and are not copied into the
+047 snapshot.
 
 ## Host Ports
 
@@ -228,7 +232,7 @@ First-proof routes:
 | 020 | overlay keys to catalogue identity; it does not replace the catalogue |
 | 029 / 032 | instance update observation reuses claims |
 | 037 | preparation remains after admission |
-| 047 | no emails, tokens, or targets; overlay does not change selection readiness |
+| 047 | optional stored instance label only; no emails, tokens, or targets; overlay does not change selection readiness |
 
 ## Conformance
 
@@ -244,6 +248,8 @@ Portable tests must cover:
 - subject observation redacted by default and absent from 047
 - overlay hide, ordinal, consumer-default, and favourite bound to exact
   catalogue identity
+- an optional stored instance label may be carried into 047 without changing
+  readiness
 - overlay refusal to invent a model, copy across instances, or mark
   `NotReady` selectable
 - store port persistence of references, labels, enablement, and overlay

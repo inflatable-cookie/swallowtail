@@ -1,6 +1,6 @@
 # 066 047 Presentation Contract Amendment
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../023-047-presentation-metadata.md`
@@ -25,9 +25,29 @@ Amend 047 and 057 for the named optional presentation field set.
 
 ## Acceptance Criteria
 
-- [ ] 047/057 name the optional fields
-- [ ] `Ready` / `NotReady` rules are unchanged
-- [ ] overlay markers are still not 047 fields
+- [x] 047/057 name the optional fields
+- [x] `Ready` / `NotReady` rules are unchanged
+- [x] overlay markers are still not 047 fields
+
+## Amendment
+
+Contracts 047 and 057 now name `instance_label` as the sole optional 047
+presentation field in this tranche. It is copied from the exact host-owned
+label stored on the Contract 057 admitted-instance record. It is not provider
+identity, product chrome, a default, routing input, or readiness evidence.
+
+The contracts continue to exclude overlay hide, ordinal, consumer-default,
+and favourite; accent color and other consumer chrome; authenticated-subject
+values, emails, tokens, and targets. The 047 `Ready` / `NotReady` formula is
+unchanged.
+
+Architecture records the same boundary and provenance.
+
+## Evidence
+
+Contracts 047/057 and `docs/architecture/system-architecture.md` were amended
+for the card 065 field decision. No runtime realization or public API baseline
+changed in this card.
 
 ## Validation
 

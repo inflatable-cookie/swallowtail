@@ -1160,6 +1160,10 @@ Process, or Network. Registering a port does not start sign-in. The loop owns
 start, poll, complete, cancel, and timeout. Missing required ports fail
 closed. API-key collection writes opaque `CredentialRef` values, never secret
 bytes.
+The 047 snapshot may also carry the optional host-owned `instance_label` from
+the exact Contract 057 admitted-instance record. That label is presentation
+metadata only; overlay markers, accent color, authenticated-subject values,
+emails, tokens, and targets remain outside the snapshot.
 
 First-proof hosted API-key Anthropic Messages, installed Codex
 app-server, and local Ollama attach are realized. DeepSeek continuation is
@@ -1257,9 +1261,9 @@ consumer assembles it from exact configured instances, safe access evidence,
 prepared operation evidence, and bound model-catalogue outcomes. Admission
 checks driver, transport, instance, revision, host, target, facade, policy, and
 access agreement before dropping credential and target authority. The result
-retains exact identity, route, capability, model, provider, and readiness
-posture for presentation. It has no driver handle, provider probe, router,
-default, fallback, refresh loop, or persistence policy.
+retains exact identity, optional instance label, route, capability, model,
+provider, and readiness posture for presentation. It has no driver handle,
+provider probe, router, default, fallback, refresh loop, or persistence policy.
 
 Host-local owns joined scoped tasks, exact service composition, and opaque
 executable target approval. The Codex adapter owns an exact-target factory that

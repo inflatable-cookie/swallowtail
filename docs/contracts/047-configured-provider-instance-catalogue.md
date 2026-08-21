@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-04
-Updated: 2026-08-19
+Updated: 2026-08-21
 
 ## Purpose
 
@@ -37,6 +37,7 @@ the catalogue to widen a provider claim.
 One admitted instance retains:
 
 - configured-instance id and revision
+- optional host-owned `instance_label` copied from the Contract 057 store
 - adapter identity, integration family, and transport family
 - protocol facade and instance policy
 - execution host and ownership
@@ -47,10 +48,12 @@ Provider identity remains the provider id attached to each model-catalogue
 entry. The catalogue does not invent one provider id for a multi-provider
 gateway, infer one from an adapter name, or merge model and provider identity.
 
-Display names, grouping chrome, and product labels remain downstream
-presentation. Contract 057 may store bound overlay markers for hide, ordinal,
-consumer-default, and favourite. Those markers are not this snapshot's fields
-and cannot change `Ready` / `NotReady`.
+The optional `instance_label` is bounded host-owned presentation metadata. It
+is not a provider display name, product label, identity, routing key, default,
+or readiness input. Provider display names, grouping chrome, and other product
+labels remain downstream presentation. Contract 057 may store bound overlay
+markers for hide, ordinal, consumer-default, and favourite. Those markers are
+not this snapshot's fields and cannot change `Ready` / `NotReady`.
 
 ## Credential And Availability Posture
 
@@ -114,6 +117,19 @@ The configured-instance catalogue does not choose a catalogue default, turn a
 provider default into a consumer default, select reasoning, create model
 routes, or infer model availability for another facade or instance.
 
+## Optional Instance Presentation Metadata
+
+The snapshot may carry one optional `instance_label`, copied by the consumer
+from the exact admitted configured-instance record stored under Contract 057.
+The label is a bounded presentation hint for that configured instance. An
+absent label remains absent; the snapshot does not derive one from adapter,
+provider, route, host, or account identity. The label does not alter
+selection, route binding, model identity, provider identity, defaults,
+enablement, overlay markers, or `Ready` / `NotReady`.
+
+Authenticated-subject values, emails, credential references, tokens, targets,
+accent color, and other consumer chrome remain outside this snapshot.
+
 ## Bounds And Snapshot Truth
 
 The portable projection admits at most:
@@ -154,6 +170,7 @@ new ready snapshot.
 ## Acceptance
 
 - exact prepared route and model-catalogue bindings survive projection
+- an optional stored instance label survives as presentation metadata only
 - unavailable instances remain visible and never report `Ready`
 - credentials, target references, emails, provider payloads, and handles are absent
 - overlay markers cannot change `Ready` / `NotReady`

@@ -2,18 +2,21 @@
 
 ## Active
 
-- [065-047-presentation-field-inventory.md](./065-047-presentation-field-inventory.md)
-- [066-047-presentation-contract-amendment.md](./066-047-presentation-contract-amendment.md)
-- [067-047-presentation-fields.md](./067-047-presentation-fields.md)
+- [076-kimi-platform-chat-addable-descriptor.md](./076-kimi-platform-chat-addable-descriptor.md)
+- [077-kimi-platform-chat-admission-and-prepare.md](./077-kimi-platform-chat-admission-and-prepare.md)
+- [078-kimi-platform-chat-refresh-catalogue-and-047.md](./078-kimi-platform-chat-refresh-catalogue-and-047.md)
 
 ## Planned
 
-- None. g04.024 is named, but its implementation cards are not compiled.
+- None. Cards 070-071 remain unused gaps, not tasks.
 
 Hosted OAuth stays parked.
 
 ## Completed
 
+- [067-047-presentation-fields.md](./067-047-presentation-fields.md)
+- [066-047-presentation-contract-amendment.md](./066-047-presentation-contract-amendment.md)
+- [065-047-presentation-field-inventory.md](./065-047-presentation-field-inventory.md)
 - [075-ollama-0-32-15-claim.md](./075-ollama-0-32-15-claim.md)
 - [074-ollama-0-32-15-identity.md](./074-ollama-0-32-15-identity.md)
 - [073-qwen-headless-0-21-15-claim.md](./073-qwen-headless-0-21-15-claim.md)

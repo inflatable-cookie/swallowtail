@@ -39,7 +39,7 @@ consumer checks.
 ## Out Of Scope
 
 - Gemini requalification (deferred)
-- Codex (PR 19 in flight)
+- Reopening the completed Codex qualification
 - Provider prompt, live catalogue, live session, install, or host update
 - Mapping unused surfaces (Goal v3, `/review --resume`, session-id
   casefold, conversation isolation, Thinking toggle, Git extension
@@ -58,3 +58,10 @@ consumer checks.
 - [Contract 029 Interface Version Qualification And Compatibility](../../contracts/029-interface-version-qualification-and-compatibility.md)
 - [Version Currentness Checkpoint](../../guides/version-currentness-checkpoint.md)
 - [Standing Lanes](../standing-lanes.md)
+
+## Closeout
+
+PR 21 passed all five CI jobs at exact head `550ba112` and was
+fast-forwarded onto `main` after PR 23. The canonical orchestrator verdict is
+https://github.com/inflatable-cookie/swallowtail/pull/21#issuecomment-5368674500.
+This standing-lane claim did not change the generation Next Task.

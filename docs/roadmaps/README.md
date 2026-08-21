@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.023 cards 065-067. Handoff
-`docs/handoffs/20260821-092837-g04-023-047-presentation-metadata.md`.
+Implement g04.024 Hosted API-Key Kimi Platform Chat, starting with card
+076 and continuing through cards 077-078 in order. The cards are ready;
+implementation has not started. Hosted OAuth stays parked.
 
 ## Standing Lanes
 

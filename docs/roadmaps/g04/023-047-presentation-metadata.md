@@ -73,8 +73,9 @@ record. Runtime admission and snapshot projection realize it additively.
 Overlay markers, accent color, authenticated-subject values, emails, tokens,
 and targets remain outside the snapshot. `Ready` / `NotReady` is unchanged.
 
-Validation passed on the worker branch. g04.024 remains named behind this
-milestone; its implementation cards are not compiled here.
+PR 23 passed all five CI jobs at exact head `deedc3e4` and was
+fast-forwarded onto `main`. g04.024 remains the next implementation
+milestone; its cards are compiled separately.
 
 ## Lane Runway
 

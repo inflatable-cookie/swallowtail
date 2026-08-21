@@ -91,10 +91,11 @@ g04 goal. Operator: do not roll g04 at 19 roadmaps; continue toward 30-50.
 g04.020 is merged (PR 17, `3d761655`). g04.021 is merged (PR 18,
 `f6ee1390`). g04.022 is merged (PR 20, `281244db`). Research 171
 inventories remaining addable routes and names g04.024 Kimi Platform
-behind 023. g04.023 cards 065-067 are in flight for optional 047
-presentation metadata. Do not start 024. g04.025 is merged
-(PR 19, `25fc3e35`): Codex CLI `0.149.0` qualified. Standing
-currentness; Gemini stays deferred.
-Optional 047
-overlay presentation metadata stays later and must not change `Ready` /
-`NotReady`.
+behind 023. g04.023 cards 065-067 are merged through PR 23 at
+`deedc3e4`; the only 047 presentation field is the stored optional
+instance label. g04.025 is merged (PR 19, `25fc3e35`): Codex CLI
+`0.149.0` qualified. Standing currentness continued with Qwen headless
+`0.21.15` (PR 21, `550ba112`) and Ollama attached `0.32.15` (PR 22,
+`0c528209`). Gemini stays deferred. g04.024 cards 076-078 are ready;
+Kimi implementation has not started. Hosted OAuth stays parked. This note
+remains fully promoted with no open product decision.

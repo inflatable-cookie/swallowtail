@@ -35,26 +35,28 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — completed on worker branch, cards 065-067
-- [g04.024 Hosted API-Key Kimi Platform Chat](024-hosted-api-key-kimi-platform-chat.md) — planned after 023; implementation cards not compiled
+- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — completed and merged, cards 065-067
+- [g04.024 Hosted API-Key Kimi Platform Chat](024-hosted-api-key-kimi-platform-chat.md) — planned, cards 076-078 ready; implementation not started
 - [g04.025 Codex 0.149.0 Useful Newer](025-codex-0-149-0-useful-newer.md) — standing currentness, completed
 - [g04.026 Qwen Headless 0.21.15 Useful Newer](026-qwen-headless-0-21-15-useful-newer.md) — standing currentness, completed
 - [g04.027 Ollama 0.32.15 Useful Newer](027-ollama-0-32-15-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 22 numbered completed roadmaps, 023 complete on the
-worker branch, 024 named, 025-027 standing currentness completed, target
-30-50. Hosted OAuth stays parked.
+Do not roll over: 27 numbered roadmaps exist; 001-023 and 025-027 are
+complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
 - g04.001 through g04.022 are complete. PR 20 is on `main` at `281244db`
-- g04.023 cards 065-067 are complete on worker branch
-  `t3code/presentation-metadata-handoff`; reviewable PR is pending
-- g04.024 is named behind 023. Do not start it until the worker PR is merged.
+- g04.023 is on `main` at `deedc3e4` through PR 23; cards 065-067 are
+  complete
+- g04.024 cards 076-078 are ready. Implementation has not started
 - g04.025 standing currentness complete. PR 19 is on `main` at `25fc3e35`
-- g04.026 standing currentness complete: Qwen 0.21.15 qualified
-- g04.027 standing currentness complete: Ollama 0.32.15 qualified
-- Hosted OAuth is parked. Contract 029 currentness is standing
+- g04.026 standing currentness is on `main` at `550ba112`: Qwen 0.21.15
+  qualified through PR 21
+- g04.027 standing currentness is on `main` at `0c528209`: Ollama 0.32.15
+  qualified through PR 22
+- Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
+  is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
@@ -82,8 +84,8 @@ worker branch, 024 named, 025-027 standing currentness completed, target
 - [020 Config-Ref Prepare Handoff](./020-config-ref-prepare-handoff.md) — completed
 - [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — completed
 - [022 Further Addable Inventory](./022-further-addable-inventory.md) — completed
-- [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — completed on worker branch
-- [024 Hosted API-Key Kimi Platform Chat](./024-hosted-api-key-kimi-platform-chat.md) — planned, named by g04.022
+- [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — completed and merged
+- [024 Hosted API-Key Kimi Platform Chat](./024-hosted-api-key-kimi-platform-chat.md) — planned, cards 076-078 ready
 - [025 Codex 0.149.0 Useful Newer](./025-codex-0-149-0-useful-newer.md) — completed (standing currentness)
 - [026 Qwen Headless 0.21.15 Useful Newer](./026-qwen-headless-0-21-15-useful-newer.md) — completed (standing currentness)
 - [027 Ollama 0.32.15 Useful Newer](./027-ollama-0-32-15-useful-newer.md) — completed (standing currentness)

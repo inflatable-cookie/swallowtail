@@ -23,6 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 g04.024 Kimi Platform Cards Compiled](./2026-08-21-g04-024-kimi-platform-cards-compiled.md)
+- [2026-08-21 g04.027 Ollama 0.32.15 Useful Newer Merged](./2026-08-21-g04-027-ollama-0-32-15-merged.md)
+- [2026-08-21 g04.026 Qwen 0.21.15 Useful Newer Merged](./2026-08-21-g04-026-qwen-0-21-15-merged.md)
+- [2026-08-21 g04.023 047 Presentation Metadata Merged](./2026-08-21-g04-023-047-presentation-metadata-merged.md)
 - [2026-08-21 g04.023 047 Presentation Metadata](./2026-08-21-g04-023-047-presentation-metadata.md)
 - [2026-08-21 Ollama 0.32.15 Claim](./2026-08-21-ollama-0-32-15-claim.md)
 - [2026-08-21 Ollama 0.32.15 Identity](./2026-08-21-ollama-0-32-15-identity.md)

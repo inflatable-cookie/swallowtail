@@ -5,6 +5,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Timing-sensitive deadline fixtures make unrelated PR heads red — 2026-08-21
+- Friction: restacked PR 23 failed Stable in Ollama
+  `deadline_remains_distinct_from_cancellation`, while PR 21 failed MSRV in
+  Codex `callback_wait_ends_when_the_host_deadline_is_observed`; neither PR
+  changes the failing adapter surface.
+- Impact: otherwise mergeable stacked heads need unrelated CI reruns before
+  the orchestrator can satisfy the exact-head green gate.
+- Fix: make the fake-time/fixture-message handoff deterministic in both tests,
+  or give the asserted transition an explicit synchronization boundary.
+- Surface: Ollama attached-driver deadline test; Codex app-server callback
+  deadline test; Stable and MSRV CI jobs.
+
 ### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
 - Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
   modules (`preflight/validation.rs`, `provider_session_history/page.rs`)

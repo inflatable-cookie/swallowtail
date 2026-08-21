@@ -6,7 +6,7 @@ Created: 2026-08-21
 Depends on: completed g04.023
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 020, 037, 047, 052, 057
-Planning state: named after g04.023; implementation cards not compiled
+Planning state: cards 076-078 ready; implementation not started
 Research: 171
 
 ## Problem
@@ -22,18 +22,17 @@ Extend the proved hosted API-key shape by one stateless direct HTTP/SSE route.
 
 ## Goals
 
-- expose an adapter-local hosted addable descriptor for
+- [ ] expose an adapter-local hosted addable descriptor for
   `kimi-platform.chat`
-- describe a secret Platform API-key field without inventing an environment
+- [ ] describe a secret Platform API-key field without inventing an environment
   name
-- describe the approved `api.moonshot.ai` endpoint as an opaque config field
-- admit the instance through Contract 057, then reuse
+- [ ] describe the approved `api.moonshot.ai` endpoint as an opaque config field
+- [ ] admit the instance through Contract 057, then reuse
   `prepare_kimi_platform_direct`
-- keep subject `Absent` and 047 `Ready` / `NotReady` semantics unchanged
+- [ ] keep subject `Absent` and 047 `Ready` / `NotReady` semantics unchanged
 
 ## Non-Goals
 
-- starting implementation before g04.023 closes
 - hosted URL-open OAuth
 - Kimi Membership, Kimi Code, or Kimi local-server access
 - tools, reusable sessions, provider-state management, or retry authority
@@ -51,6 +50,44 @@ The later implementation must keep the existing prepared route's boundaries:
 - catalogue and one explicit K3 attempt only
 - exact `kimi-platform-chat-2026-07-21` facade binding
 - no provider session, continuation, tools, or fallback
+
+## Execution Plan
+
+### Batch 24.1 — Addable Descriptor
+
+- [ ] Execute card 076.
+- [ ] expose one adapter-local hosted descriptor
+- [ ] describe the secret Platform API-key field with no environment name
+- [ ] describe the endpoint as an opaque host-owned config field
+
+### Batch 24.2 — Admission And Prepare Handoff
+
+- [ ] Execute card 077 after card 076.
+- [ ] collect only a `CredentialRef` through the API-key sign-in loop
+- [ ] retype the admitted endpoint and credential refs into
+      `KimiPlatformPreparationInput`
+- [ ] preserve the exact Platform audience and facade binding
+
+### Batch 24.3 — Refresh, Catalogue, And 047 Path
+
+- [ ] Execute card 078 after card 077.
+- [ ] refresh host-supplied access status; subject stays `Absent`
+- [ ] prepare the existing catalogue and one explicit K3 attempt
+- [ ] project the consumer-assembled 047 snapshot without changing
+      `Ready` / `NotReady`
+
+## Acceptance Criteria
+
+- [ ] linking `swallowtail-adapter-kimi-platform` can add exactly
+      `kimi-platform.chat`
+- [ ] portable records contain opaque endpoint and credential refs, never
+      their values
+- [ ] `prepare_kimi_platform_direct` remains after admission
+- [ ] catalogue and inference keep exact `moonshot` / `kimi-k3` identity and
+      explicit reasoning selection
+- [ ] subject remains `Absent`; overlay and 047 readiness rules stay unchanged
+- [ ] no live provider, billing, login, OAuth, or retry work runs
+- [ ] `release-baselines/public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

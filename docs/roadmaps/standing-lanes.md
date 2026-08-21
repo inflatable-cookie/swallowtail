@@ -25,7 +25,9 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Codex CLI `0.149.0` (g04.025, PR 19).
+Last one-family claim: Ollama attached `0.32.15` (g04.027, PR 22).
+The immediately preceding claim is Qwen headless `0.21.15` (g04.026,
+PR 21). Both are merged. Neither changes the generation pointer.
 
 ### Current Deferrals
 

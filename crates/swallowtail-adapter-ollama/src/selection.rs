@@ -83,23 +83,32 @@ pub fn ollama_native_descriptor() -> DriverDescriptor {
         OperationShape::StructuredRun,
         OperationShape::InteractiveSession,
     ])
-    .with_required_host_services(DriverRole::ModelCatalog, [
-        HostServiceKind::BlockingWork,
-        HostServiceKind::Time,
-        HostServiceKind::Network,
-    ])
-    .with_required_host_services(DriverRole::InteractiveSession, [
-        HostServiceKind::Task,
-        HostServiceKind::BlockingWork,
-        HostServiceKind::Time,
-        HostServiceKind::Network,
-    ])
-    .with_required_host_services(DriverRole::StructuredRun, [
-        HostServiceKind::Task,
-        HostServiceKind::BlockingWork,
-        HostServiceKind::Time,
-        HostServiceKind::Network,
-    ])
+    .with_required_host_services(
+        DriverRole::ModelCatalog,
+        [
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::InteractiveSession,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::StructuredRun,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+        ],
+    )
     .with_interface_compatibility(ollama_runtime_claim())
 }
 

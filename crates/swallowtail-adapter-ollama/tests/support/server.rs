@@ -248,13 +248,16 @@ fn respond(
                         INTERACTIVE_TURN_2
                     },
                 ),
-                StreamFixture::InteractiveFailureThenSuccess => {
-                    respond_with(stream, 200, "application/x-ndjson", match attempt {
+                StreamFixture::InteractiveFailureThenSuccess => respond_with(
+                    stream,
+                    200,
+                    "application/x-ndjson",
+                    match attempt {
                         0 => INTERACTIVE_TURN_1,
                         1 => INTERACTIVE_ERROR,
                         _ => INTERACTIVE_TURN_2,
-                    })
-                }
+                    },
+                ),
             }
         }
         _ => respond_with(

@@ -59,8 +59,10 @@ Follow [connection lifecycle](connection-lifecycle.md) before
    email.
 6. `observe_instance_update` reuses `claude_agent_acp_claim` and optional
    Contract 032 installed-executable observation.
-7. Session-negotiated ACP model rows omit `provider_id`. Overlay cannot
-   mark them. Do not invent a catalogue provider id.
+7. Session-negotiated ACP model rows omit `provider_id` and are not 047
+   catalogue rows. Overlay keys instance plus model when a 047 catalogue
+   row exists without `provider_id`. Do not invent a catalogue provider
+   id. This addable snapshot has no catalogue, so overlay stays empty.
 8. Build `ClaudeAgentPreparationInput::from_admitted` from the admitted record,
    then call `prepare_claude_agent`. The constructor selects the stored
    `binary_path` and `environment` refs; the host resolves them during Contract

@@ -1,6 +1,6 @@
 # 060 Unmarked Overlay Rule
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../021-unmarked-overlay-rows.md`
@@ -26,9 +26,9 @@ Realize the chosen unmarked-row overlay rule.
 
 ## Acceptance Criteria
 
-- [ ] the chosen rule is realized in overlay or recorded as durable
-- [ ] no invented catalogue `provider_id`
-- [ ] overlay still cannot mark `NotReady` selectable
+- [x] the chosen rule is realized in overlay or recorded as durable
+- [x] no invented catalogue `provider_id`
+- [x] overlay still cannot mark `NotReady` selectable
 
 ## Validation
 

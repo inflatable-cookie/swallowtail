@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 g04.021 Unmarked Overlay Rows](./2026-08-21-g04-021-unmarked-overlay-rows.md)
+- [2026-08-21 g04.021 Unmarked Overlay Classification](./2026-08-21-g04-021-unmarked-overlay-classification.md)
 - [2026-08-21 g04.021 Unmarked Overlay Worker Dispatch](./2026-08-21-g04-021-unmarked-overlay-worker-dispatch.md)
 - [2026-08-21 g04.020 Config-Ref Prepare Merged](./2026-08-21-g04-020-config-ref-prepare-merged.md)
 - [2026-08-20 g04.020 Config-Ref Prepare Inventory](./2026-08-20-g04-020-config-ref-prepare-inventory.md)

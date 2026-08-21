@@ -9,9 +9,11 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+type OverlayKey = (String, Option<String>, String);
+
 struct MemoryStore {
     instances: Mutex<BTreeMap<String, AdmittedInstanceRecord>>,
-    overlays: Mutex<BTreeMap<(String, String, String), OverlayMarker>>,
+    overlays: Mutex<BTreeMap<OverlayKey, OverlayMarker>>,
 }
 
 impl MemoryStore {
@@ -66,7 +68,9 @@ impl ConnectionLifecycleStore for MemoryStore {
         self.overlays.lock().expect("store lock poisoned").insert(
             (
                 marker.instance_id().as_str().to_owned(),
-                marker.provider_id().as_str().to_owned(),
+                marker
+                    .provider_id()
+                    .map(|provider| provider.as_str().to_owned()),
                 marker.model_id().as_str().to_owned(),
             ),
             marker,

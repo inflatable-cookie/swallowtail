@@ -185,9 +185,12 @@ impl ModelPresentationOverlay {
 
 /// Projects overlay markers onto one bound catalogue result.
 ///
-/// Markers must key to this instance and to exact provider and model ids from
-/// the catalogue. Unknown models and cross-instance markers fail closed. The
-/// snapshot's `Ready` / `NotReady` value is copied, never rewritten.
+/// Markers must key to this instance and to exact catalogue identity.
+/// Rows that report a provider id match that provider id plus model id.
+/// Rows that omit a provider id match instance plus model and must not
+/// invent a provider id. Unknown models and cross-instance markers fail
+/// closed. The snapshot's `Ready` / `NotReady` value is copied, never
+/// rewritten.
 ///
 /// Pass only this instance's markers. An unfiltered store list that includes
 /// another instance fails as [`ModelPresentationOverlayFailureKind::CrossInstance`].
@@ -202,7 +205,7 @@ pub fn apply_model_presentation_overlay(
         if marker.instance_id() != record.instance_id() {
             return Err(ModelPresentationOverlayFailure::cross_instance());
         }
-        let key = (marker.provider_id().clone(), marker.model_id().clone());
+        let key = overlay_identity(marker.provider_id(), marker.model_id());
         if !catalogue_keys.contains(&key) {
             return Err(ModelPresentationOverlayFailure::unknown_model());
         }
@@ -215,11 +218,9 @@ pub fn apply_model_presentation_overlay(
         .flat_map(|catalogue| catalogue.entries())
         .enumerate()
         .map(|(index, entry)| {
-            let marker = entry.provider_id().and_then(|provider| {
-                by_identity
-                    .get(&(provider.clone(), entry.id().clone()))
-                    .copied()
-            });
+            let marker = by_identity
+                .get(&overlay_identity(entry.provider_id(), entry.id()))
+                .copied();
             (
                 index,
                 ModelPresentationOverlayEntry::from_catalogue(entry, marker),
@@ -255,15 +256,18 @@ pub fn apply_stored_model_presentation_overlay(
 
 fn catalogue_identity_set(
     record: &ConfiguredProviderInstanceRecord,
-) -> BTreeSet<(ProviderId, ModelId)> {
+) -> BTreeSet<(Option<ProviderId>, ModelId)> {
     record
         .model_catalogue()
         .into_iter()
         .flat_map(|catalogue| catalogue.entries())
-        .filter_map(|entry| {
-            entry
-                .provider_id()
-                .map(|provider| (provider.clone(), entry.id().clone()))
-        })
+        .map(|entry| overlay_identity(entry.provider_id(), entry.id()))
         .collect()
+}
+
+fn overlay_identity(
+    provider_id: Option<&ProviderId>,
+    model_id: &ModelId,
+) -> (Option<ProviderId>, ModelId) {
+    (provider_id.cloned(), model_id.clone())
 }

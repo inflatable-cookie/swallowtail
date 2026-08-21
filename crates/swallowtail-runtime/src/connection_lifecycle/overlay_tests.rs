@@ -228,8 +228,17 @@ fn marker(instance_id: &str, model_id: &str) -> OverlayMarker {
     )
 }
 
+fn unmarked_marker(instance_id: &str, model_id: &str) -> OverlayMarker {
+    OverlayMarker::without_provider(
+        ConfiguredInstanceId::new(instance_id).expect("instance id"),
+        ModelId::new(model_id).expect("model id"),
+    )
+}
+
+type OverlayKey = (String, Option<String>, String);
+
 struct MemoryStore {
-    overlays: Mutex<BTreeMap<(String, String, String), OverlayMarker>>,
+    overlays: Mutex<BTreeMap<OverlayKey, OverlayMarker>>,
     list_failure: Option<ConnectionLifecycleStoreFailure>,
 }
 
@@ -280,7 +289,9 @@ impl ConnectionLifecycleStore for MemoryStore {
         self.overlays.lock().expect("store lock poisoned").insert(
             (
                 marker.instance_id().as_str().to_owned(),
-                marker.provider_id().as_str().to_owned(),
+                marker
+                    .provider_id()
+                    .map(|provider| provider.as_str().to_owned()),
                 marker.model_id().as_str().to_owned(),
             ),
             marker,
@@ -508,17 +519,63 @@ fn stored_overlay_reports_store_failure() {
 }
 
 #[test]
-fn catalogue_rows_without_provider_id_cannot_receive_a_marker() {
+fn catalogue_rows_without_provider_id_key_instance_and_model() {
     let record = record_without_provider();
-    let unmarked = apply_model_presentation_overlay(&record, &[]).expect("unmarked row remains");
-    let entry = unmarked.entries().next().expect("opus remains");
+    let overlay = apply_model_presentation_overlay(
+        &record,
+        &[unmarked_marker("work", "opus").with_favourite(true)],
+    )
+    .expect("instance-plus-model marker applies");
+    let entry = overlay.entries().next().expect("opus remains");
     assert_eq!(entry.provider_id(), None);
-    assert!(!entry.favourite());
+    assert!(entry.favourite());
+    assert_eq!(
+        overlay.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::Ready
+    );
 
-    let failure = apply_model_presentation_overlay(&record, &[marker("work", "opus")])
+    let invented = apply_model_presentation_overlay(&record, &[marker("work", "opus")])
         .expect_err("marker cannot invent a catalogue provider id");
     assert_eq!(
-        failure.kind(),
+        invented.kind(),
         ModelPresentationOverlayFailureKind::UnknownModel
+    );
+
+    let provider_row = ready_record();
+    let unmarked_on_provider =
+        apply_model_presentation_overlay(&provider_row, &[unmarked_marker("work", "opus")])
+            .expect_err("unmarked marker cannot drop a reported provider id");
+    assert_eq!(
+        unmarked_on_provider.kind(),
+        ModelPresentationOverlayFailureKind::UnknownModel
+    );
+
+    let fixture = Fixture::not_ready("work");
+    let source = fixture.prepared();
+    let not_ready = ConfiguredProviderInstanceRecord::admit(
+        fixture
+            .admission()
+            .with_prepared_routes([source.clone()])
+            .with_model_catalogue(ConfiguredProviderModelCatalogueInput::available(
+                source,
+                [Fixture::model_without_provider("opus")],
+            )),
+    )
+    .expect("not-ready unmarked catalogue remains visible");
+    let not_ready_overlay = apply_model_presentation_overlay(
+        &not_ready,
+        &[unmarked_marker("work", "opus").with_consumer_default(true)],
+    )
+    .expect("unmarked preference markers do not select a not-ready instance");
+    assert_eq!(
+        not_ready_overlay.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::NotReady
+    );
+    assert!(
+        not_ready_overlay
+            .entries()
+            .next()
+            .expect("opus remains")
+            .consumer_default()
     );
 }

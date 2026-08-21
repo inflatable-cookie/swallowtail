@@ -1320,11 +1320,12 @@ pub const fn swallowtail_core::OverlayMarker::instance_id(&self) -> &swallowtail
 pub const fn swallowtail_core::OverlayMarker::model_id(&self) -> &swallowtail_core::ModelId
 pub const fn swallowtail_core::OverlayMarker::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::ProviderId, swallowtail_core::ModelId) -> Self
 pub const fn swallowtail_core::OverlayMarker::ordinal(&self) -> core::option::Option<u32>
-pub const fn swallowtail_core::OverlayMarker::provider_id(&self) -> &swallowtail_core::ProviderId
+pub const fn swallowtail_core::OverlayMarker::provider_id(&self) -> core::option::Option<&swallowtail_core::ProviderId>
 pub const fn swallowtail_core::OverlayMarker::with_consumer_default(self, bool) -> Self
 pub const fn swallowtail_core::OverlayMarker::with_favourite(self, bool) -> Self
 pub const fn swallowtail_core::OverlayMarker::with_hidden(self, bool) -> Self
 pub const fn swallowtail_core::OverlayMarker::with_ordinal(self, core::option::Option<u32>) -> Self
+pub const fn swallowtail_core::OverlayMarker::without_provider(swallowtail_core::ConfiguredInstanceId, swallowtail_core::ModelId) -> Self
 pub struct swallowtail_core::PreflightContext<'a>
 impl<'a> swallowtail_core::PreflightContext<'a>
 pub fn swallowtail_core::PreflightContext<'a>::new(&'a swallowtail_core::DriverDescriptor, &'a swallowtail_core::ConfiguredInstance, &'a swallowtail_core::AccessProfile, &'a swallowtail_core::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HostServiceKind>) -> Self

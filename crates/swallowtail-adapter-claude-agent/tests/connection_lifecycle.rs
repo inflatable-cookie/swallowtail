@@ -333,6 +333,22 @@ fn overlay_does_not_invent_a_claude_agent_catalogue_provider_id() {
 
     store
         .put_overlay_marker(
+            OverlayMarker::without_provider(
+                instance_id(),
+                ModelId::new("claude-fixture").expect("model id is valid"),
+            )
+            .with_favourite(true),
+        )
+        .expect("unmarked overlay marker stores");
+    let unmarked = apply_stored_model_presentation_overlay(&store, &record)
+        .expect_err("instance-plus-model cannot invent a missing catalogue row");
+    assert_eq!(
+        unmarked.kind(),
+        ModelPresentationOverlayFailureKind::UnknownModel
+    );
+
+    store
+        .put_overlay_marker(
             OverlayMarker::new(
                 instance_id(),
                 ProviderId::new("claude-agent").expect("provider id is valid"),

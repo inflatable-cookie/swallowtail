@@ -1,6 +1,6 @@
 # 061 Unmarked Addable Overlay Proof
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../021-unmarked-overlay-rows.md`
@@ -24,9 +24,9 @@ Prove the chosen overlay rule on the unmarked addable catalogues.
 
 ## Acceptance Criteria
 
-- [ ] unmarked addable catalogues follow the chosen rule
-- [ ] Anthropic and DeepSeek still key `provider_id` rows
-- [ ] 047 `Ready` / `NotReady` is unchanged
+- [x] unmarked addable catalogues follow the chosen rule
+- [x] Anthropic and DeepSeek still key `provider_id` rows
+- [x] 047 `Ready` / `NotReady` is unchanged
 
 ## Validation
 

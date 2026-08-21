@@ -38,8 +38,8 @@ Only `codex.app-server` currently exports an addable descriptor.
 5. `observe_authenticated_subject` is `Absent`.
 6. `observe_instance_update` reuses `codex_app_server_claim` and optional
    Contract 032 installed-executable observation.
-7. Codex catalogue rows omit `provider_id`. Overlay cannot mark them. Do
-   not invent a catalogue provider id.
+7. Codex catalogue rows omit `provider_id`. Overlay keys instance plus
+   model. Do not invent a catalogue provider id.
 8. Build `CodexPreparationInput::from_admitted` from the admitted record, then
    call `prepare_codex` with its fixed `CodexPreparedDriver::AppServer` path.
    The constructor selects the stored `binary_path` and `environment` refs;

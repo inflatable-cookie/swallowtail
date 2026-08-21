@@ -1146,13 +1146,15 @@ diagnostic, or routing key. Update observation reuses a 029 claim and
 optional 032 installed-executable evidence. It does not install, authenticate,
 or admit an instance. Overlay projection applies hide, ordinal,
 consumer-default, and favourite onto one bound 047 catalogue result. Markers
-key to exact instance, provider, and model ids. Provider catalogue defaults
-stay distinct from the consumer-default marker. Unknown models and
-cross-instance markers fail closed. `apply_stored_model_presentation_overlay`
-filters the store by instance so other-instance markers are not copied.
-Catalogue rows without a provider id cannot receive a marker. Overlay copies
-`Ready` / `NotReady` and cannot make `NotReady` selectable. Mixed gateway
-rows remain consumer assembly of several catalogues. Optional URL-open,
+key to exact instance and model ids. When a catalogue row reports a provider
+id, the marker must match that provider id. When a row omits a provider id,
+the marker keys instance plus model and must not invent a provider id.
+Provider catalogue defaults stay distinct from the consumer-default marker.
+Unknown models and cross-instance markers fail closed.
+`apply_stored_model_presentation_overlay` filters the store by instance so
+other-instance markers are not copied. Overlay copies `Ready` / `NotReady`
+and cannot make `NotReady` selectable. Mixed gateway rows remain consumer
+assembly of several catalogues. Optional URL-open,
 loopback-callback, and device-code ports do not collapse into Credential,
 Process, or Network. Registering a port does not start sign-in. The loop owns
 start, poll, complete, cancel, and timeout. Missing required ports fail
@@ -1164,14 +1166,14 @@ app-server, and local Ollama attach are realized. DeepSeek continuation is
 the second hosted API-key proof. Claude Agent ACP is the second installed
 proof. llama.cpp attached is the second local-runtime proof. Anthropic and
 DeepSeek collect `CredentialRef`; DeepSeek does not advertise an
-environment name. Overlay keys `anthropic` and `deepseek` catalogue rows.
+environment name. Overlay keys `anthropic` and `deepseek` catalogue rows by provider id.
 Codex admits the ChatGPT subscription profile with no credential field and
 reuses 029/032 update observation. Claude Agent ACP admits the local
 subscription profile with no credential field and reuses 029/032 the same
 way. Ollama and llama.cpp attached admit a local-unauthenticated attached
 runtime with no credential field. llama.cpp attached does not advertise
-`llama-cpp.owned`. Catalogue rows without `provider_id` stay unmarked. The
-Contract 052 consumer path is realized for those six routes. Remaining
+`llama-cpp.owned`. Catalogue rows that omit `provider_id` key instance plus
+model. The Contract 052 consumer path is realized for those six routes. Remaining
 production routes have no addable descriptors. Hosted interactive OAuth is
 still not realized. It is parked until a named production route requires
 URL-open plus loopback.

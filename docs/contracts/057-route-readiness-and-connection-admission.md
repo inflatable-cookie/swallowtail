@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-20
+Updated: 2026-08-21
 Research: 168
 Spec: archived 011
 
@@ -168,9 +168,11 @@ currentness system, install, upgrade, or authenticate.
 
 ## Model-Presentation Overlay
 
-Overlay entries key to exact configured-instance, provider, and model ids
-from a catalogue result. They may mark hidden, ordinal, consumer-default, and
-favourite.
+Overlay entries key to exact configured-instance and model ids from a
+catalogue result. When a row reports a provider id, the marker must match
+that provider id too. When a row omits a provider id, the marker keys
+instance plus model and must not invent a provider id. They may mark
+hidden, ordinal, consumer-default, and favourite.
 
 They cannot invent a model, make `NotReady` selectable, or copy a model from
 another instance. Provider catalogue defaults stay distinct from the

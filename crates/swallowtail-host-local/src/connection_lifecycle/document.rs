@@ -47,7 +47,8 @@ struct JsonAccessStatus {
 #[derive(Debug, Deserialize, Serialize)]
 struct JsonOverlayMarker {
     instance_id: String,
-    provider_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_id: Option<String>,
     model_id: String,
     hidden: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -131,7 +132,9 @@ fn json_instance(record: &AdmittedInstanceRecord) -> JsonInstance {
 fn json_overlay(marker: &OverlayMarker) -> JsonOverlayMarker {
     JsonOverlayMarker {
         instance_id: marker.instance_id().as_str().to_owned(),
-        provider_id: marker.provider_id().as_str().to_owned(),
+        provider_id: marker
+            .provider_id()
+            .map(|provider| provider.as_str().to_owned()),
         model_id: marker.model_id().as_str().to_owned(),
         hidden: marker.hidden(),
         ordinal: marker.ordinal(),
@@ -206,19 +209,25 @@ fn instance_from_json(
 fn overlay_from_json(
     marker: JsonOverlayMarker,
 ) -> Result<OverlayMarker, ConnectionLifecycleStoreFailure> {
-    Ok(OverlayMarker::new(
-        required_id(
-            ConfiguredInstanceId::new,
-            "configured instance id",
-            marker.instance_id,
-        )?,
-        required_id(ProviderId::new, "provider id", marker.provider_id)?,
-        required_id(ModelId::new, "model id", marker.model_id)?,
-    )
-    .with_hidden(marker.hidden)
-    .with_ordinal(marker.ordinal)
-    .with_consumer_default(marker.consumer_default)
-    .with_favourite(marker.favourite))
+    let instance_id = required_id(
+        ConfiguredInstanceId::new,
+        "configured instance id",
+        marker.instance_id,
+    )?;
+    let model_id = required_id(ModelId::new, "model id", marker.model_id)?;
+    let overlay = match marker.provider_id {
+        Some(provider_id) => OverlayMarker::new(
+            instance_id,
+            required_id(ProviderId::new, "provider id", provider_id)?,
+            model_id,
+        ),
+        None => OverlayMarker::without_provider(instance_id, model_id),
+    };
+    Ok(overlay
+        .with_hidden(marker.hidden)
+        .with_ordinal(marker.ordinal)
+        .with_consumer_default(marker.consumer_default)
+        .with_favourite(marker.favourite))
 }
 
 fn access_from_json(

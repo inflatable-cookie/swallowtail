@@ -159,8 +159,17 @@ fn marker(instance_id: &str, model_id: &str) -> OverlayMarker {
     )
 }
 
+fn unmarked_marker(instance_id: &str, model_id: &str) -> OverlayMarker {
+    OverlayMarker::without_provider(
+        ConfiguredInstanceId::new(instance_id).expect("instance id"),
+        ModelId::new(model_id).expect("model id"),
+    )
+}
+
+type OverlayKey = (String, Option<String>, String);
+
 struct MemoryStore {
-    overlays: Mutex<BTreeMap<(String, String, String), OverlayMarker>>,
+    overlays: Mutex<BTreeMap<OverlayKey, OverlayMarker>>,
 }
 
 impl MemoryStore {
@@ -199,7 +208,9 @@ impl ConnectionLifecycleStore for MemoryStore {
         self.overlays.lock().expect("store lock poisoned").insert(
             (
                 marker.instance_id().as_str().to_owned(),
-                marker.provider_id().as_str().to_owned(),
+                marker
+                    .provider_id()
+                    .map(|provider| provider.as_str().to_owned()),
                 marker.model_id().as_str().to_owned(),
             ),
             marker,
@@ -290,10 +301,16 @@ fn overlay_cannot_mark_not_ready_selectable_or_invent_a_model() {
 }
 
 #[test]
-fn catalogue_rows_without_provider_id_cannot_receive_a_marker() {
+fn catalogue_rows_without_provider_id_key_instance_and_model() {
     let record = admit("work", CredentialState::Ready, [model("opus", None)]);
-    let unmarked = apply_model_presentation_overlay(&record, &[]).expect("unmarked row remains");
-    assert_eq!(unmarked.entries().next().expect("opus").provider_id(), None);
+    let overlay = apply_model_presentation_overlay(
+        &record,
+        &[unmarked_marker("work", "opus").with_favourite(true)],
+    )
+    .expect("instance-plus-model marker applies");
+    let entry = overlay.entries().next().expect("opus");
+    assert_eq!(entry.provider_id(), None);
+    assert!(entry.favourite());
 
     let failure = apply_model_presentation_overlay(&record, &[marker("work", "opus")])
         .expect_err("marker cannot invent a catalogue provider id");

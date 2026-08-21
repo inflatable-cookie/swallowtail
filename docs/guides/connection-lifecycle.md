@@ -157,12 +157,13 @@ supplied.
 
 `apply_stored_model_presentation_overlay` projects hide, ordinal,
 consumer-default, and favourite markers onto one bound 047 catalogue
-result. Markers key to exact configured-instance, provider, and model ids.
-Provider catalogue defaults stay distinct from the consumer-default marker.
-Unknown models and cross-instance markers fail closed. Catalogue rows
-without `provider_id` stay unmarked; do not invent a Codex, Claude Agent,
-Ollama, or llama.cpp provider id. Overlay copies `Ready` / `NotReady` and cannot make
-`NotReady` selectable.
+result. Markers key to exact configured-instance and model ids. When a
+row reports a provider id, the marker must match that provider id. When a
+row omits a provider id, the marker keys instance plus model and must not
+invent a Codex, Claude Agent, Ollama, or llama.cpp provider id. Provider
+catalogue defaults stay distinct from the consumer-default marker.
+Unknown models and cross-instance markers fail closed. Overlay copies
+`Ready` / `NotReady` and cannot make `NotReady` selectable.
 
 Build the route-local preparation input from the admitted record. Each
 constructor selects the exact route fields, retypes their opaque references for

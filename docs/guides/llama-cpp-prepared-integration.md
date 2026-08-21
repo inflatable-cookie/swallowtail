@@ -37,8 +37,8 @@ operator-owned server.
 6. `observe_instance_update` reuses `llama_cpp_attached_runtime_claim`.
    Contract 032 stays unobserved unless an executable is supplied. Exact
    opaque b9910/f5525f7e7 binding stays prepare-time. No unverified-newer.
-7. llama.cpp catalogue rows omit `provider_id`. Overlay cannot mark them.
-   Do not invent a catalogue provider id.
+7. llama.cpp catalogue rows omit `provider_id`. Overlay keys instance plus
+   model. Do not invent a catalogue provider id.
 8. Build `LlamaCppAttachedPreparationInput::from_admitted` from the admitted
    record, then call `prepare_llama_cpp_attached`. The constructor selects the
    stored `endpoint` ref; the host resolves it for preparation. Exact opaque

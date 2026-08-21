@@ -77,10 +77,21 @@ fn overlay_markers_cannot_be_constructed_with_an_empty_model_id() {
     .with_favourite(true);
 
     assert_eq!(marker.model_id().as_str(), "claude-opus");
+    assert_eq!(
+        marker.provider_id().map(ProviderId::as_str),
+        Some("anthropic")
+    );
     assert!(marker.hidden());
     assert_eq!(marker.ordinal(), Some(2));
     assert!(marker.consumer_default());
     assert!(marker.favourite());
+
+    let unmarked = OverlayMarker::without_provider(
+        ConfiguredInstanceId::new("work").expect("instance id is valid"),
+        ModelId::new("gpt-fixture").expect("model id is valid"),
+    );
+    assert_eq!(unmarked.model_id().as_str(), "gpt-fixture");
+    assert_eq!(unmarked.provider_id(), None);
 }
 
 #[test]

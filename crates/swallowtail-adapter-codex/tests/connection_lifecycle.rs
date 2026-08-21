@@ -374,7 +374,7 @@ fn update_observation_reuses_the_app_server_claim_and_032_evidence() {
 }
 
 #[test]
-fn overlay_does_not_invent_a_codex_catalogue_provider_id() {
+fn overlay_keys_codex_rows_by_instance_and_model() {
     let (services, _) = services();
     let store = MemoryConnectionLifecycleStore::new();
     let admitted = admitted_record(&services, &store);
@@ -407,6 +407,25 @@ fn overlay_does_not_invent_a_codex_catalogue_provider_id() {
         .find(|entry| entry.model_id().as_str() == "gpt-fixture-primary")
         .expect("primary row is present");
     assert!(primary.provider_default());
+
+    store
+        .put_overlay_marker(
+            OverlayMarker::without_provider(
+                instance_id(),
+                ModelId::new("gpt-fixture-secondary").expect("model id is valid"),
+            )
+            .with_favourite(true),
+        )
+        .expect("unmarked overlay marker stores");
+    let marked = apply_stored_model_presentation_overlay(&store, &record)
+        .expect("instance-plus-model marker applies");
+    assert_eq!(marked.selection_readiness(), record.selection_readiness());
+    let secondary = marked
+        .entries()
+        .find(|entry| entry.model_id().as_str() == "gpt-fixture-secondary")
+        .expect("secondary row is present");
+    assert_eq!(secondary.provider_id(), None);
+    assert!(secondary.favourite());
 
     store
         .put_overlay_marker(

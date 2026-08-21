@@ -359,7 +359,7 @@ fn snapshot_record(
 }
 
 #[test]
-fn overlay_does_not_invent_a_llama_cpp_catalogue_provider_id() {
+fn overlay_keys_llama_cpp_rows_by_instance_and_model() {
     let services = services();
     let store = MemoryConnectionLifecycleStore::new();
     let admitted = admitted_record(&services, &store);
@@ -392,6 +392,25 @@ fn overlay_does_not_invent_a_llama_cpp_catalogue_provider_id() {
         .find(|entry| entry.model_id().as_str() == MODEL)
         .expect("primary row is present");
     assert!(primary.provider_default());
+
+    store
+        .put_overlay_marker(
+            OverlayMarker::without_provider(
+                instance_id(),
+                ModelId::new("swallowtail-fixture-other").expect("model id is valid"),
+            )
+            .with_favourite(true),
+        )
+        .expect("unmarked overlay marker stores");
+    let marked = apply_stored_model_presentation_overlay(&store, &record)
+        .expect("instance-plus-model marker applies");
+    assert_eq!(marked.selection_readiness(), record.selection_readiness());
+    let secondary = marked
+        .entries()
+        .find(|entry| entry.model_id().as_str() == "swallowtail-fixture-other")
+        .expect("secondary row is present");
+    assert_eq!(secondary.provider_id(), None);
+    assert!(secondary.favourite());
 
     store
         .put_overlay_marker(

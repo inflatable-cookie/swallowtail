@@ -1,10 +1,12 @@
 use std::collections::BTreeMap;
 use swallowtail_core::{AdmittedInstanceRecord, ConfiguredInstanceId, OverlayMarker};
 
+pub(super) type OverlayKey = (String, Option<String>, String);
+
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub(super) struct StoreState {
     pub instances: BTreeMap<String, AdmittedInstanceRecord>,
-    pub overlays: BTreeMap<(String, String, String), OverlayMarker>,
+    pub overlays: BTreeMap<OverlayKey, OverlayMarker>,
 }
 
 impl StoreState {
@@ -30,10 +32,12 @@ impl StoreState {
     }
 }
 
-pub(super) fn overlay_key(marker: &OverlayMarker) -> (String, String, String) {
+pub(super) fn overlay_key(marker: &OverlayMarker) -> OverlayKey {
     (
         marker.instance_id().as_str().to_owned(),
-        marker.provider_id().as_str().to_owned(),
+        marker
+            .provider_id()
+            .map(|provider| provider.as_str().to_owned()),
         marker.model_id().as_str().to_owned(),
     )
 }

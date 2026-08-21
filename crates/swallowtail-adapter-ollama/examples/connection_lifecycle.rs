@@ -9,11 +9,12 @@ use swallowtail_core::{
     AccessProfile, AccessStatus, AdmittedInstanceRecord, AttachedModelTag, ConfigFieldId,
     ConfigFieldRef, ConfiguredInstanceId, ExecutionHostId, InstalledExecutableObservation,
     InstanceRevision, InstanceUpdateObservation, IntegrationFamilyId,
-    InvalidInstanceUpdateObservation, ModelManifestDigest,
+    InvalidInstanceUpdateObservation, ModelId, ModelManifestDigest, OverlayMarker,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
-    AddableRouteCatalog, ConfiguredProviderInstanceRecord, HostServices, InstanceAdmissionFailure,
+    AddableRouteCatalog, ConfiguredProviderInstanceRecord, ConnectionLifecycleStore,
+    ConnectionLifecycleStoreFailure, HostServices, InstanceAdmissionFailure,
     InstanceAdmissionRequest, ModelPresentationOverlay, ModelPresentationOverlayFailure,
     PreparationFailure, PreparedAccessEvidence, ReadinessRefreshRequest, admit_instance,
     apply_stored_model_presentation_overlay, observe_instance_update, refresh_readiness,
@@ -84,7 +85,17 @@ fn observe_runtime_update(
     observe_instance_update(&ollama_runtime_claim(), installed.cloned())
 }
 
-fn project_unmarked_overlay(
+fn store_instance_model_overlay(
+    store: &MemoryConnectionLifecycleStore,
+    instance_id: ConfiguredInstanceId,
+    model_id: ModelId,
+) -> Result<(), ConnectionLifecycleStoreFailure> {
+    store.put_overlay_marker(
+        OverlayMarker::without_provider(instance_id, model_id).with_favourite(true),
+    )
+}
+
+fn project_overlay(
     store: &MemoryConnectionLifecycleStore,
     record: &ConfiguredProviderInstanceRecord,
 ) -> Result<ModelPresentationOverlay, ModelPresentationOverlayFailure> {

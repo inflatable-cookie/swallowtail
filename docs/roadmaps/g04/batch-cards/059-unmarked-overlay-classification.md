@@ -1,6 +1,6 @@
 # 059 Unmarked Overlay Classification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../021-unmarked-overlay-rows.md`
@@ -26,9 +26,9 @@ Classify overlay behavior for catalogue rows that omit `provider_id`.
 
 ## Acceptance Criteria
 
-- [ ] unmarked versus instance-plus-model keying is classified
-- [ ] gateway-flattening risk is named
-- [ ] no overlay code changes in this card
+- [x] unmarked versus instance-plus-model keying is classified
+- [x] gateway-flattening risk is named
+- [x] no overlay code changes in this card
 
 ## Validation
 

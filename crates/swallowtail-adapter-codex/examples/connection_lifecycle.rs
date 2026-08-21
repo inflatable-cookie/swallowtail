@@ -10,16 +10,16 @@ use swallowtail_core::{
     AccessProfileId, AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef,
     ConfiguredInstanceId, ExecutionHostId, InstalledExecutableObservation, InstanceRevision,
     InstanceUpdateObservation, IntegrationFamilyId, InterfaceVersionAxis,
-    InvalidInstanceUpdateObservation,
+    InvalidInstanceUpdateObservation, ModelId, OverlayMarker,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
-    AddableRouteCatalog, ConfiguredProviderInstanceRecord, Deadline, DiscoveryCancellation,
-    ExecutableRef, HostServices, InstalledExecutableTarget, InstanceAdmissionFailure,
-    InstanceAdmissionRequest, ModelPresentationOverlay, ModelPresentationOverlayFailure,
-    PreparationFailure, PreparedAccessEvidence, ReadinessRefreshRequest, RequestId, ScopeId,
-    admit_instance, apply_stored_model_presentation_overlay, observe_instance_update,
-    refresh_readiness,
+    AddableRouteCatalog, ConfiguredProviderInstanceRecord, ConnectionLifecycleStore,
+    ConnectionLifecycleStoreFailure, Deadline, DiscoveryCancellation, ExecutableRef, HostServices,
+    InstalledExecutableTarget, InstanceAdmissionFailure, InstanceAdmissionRequest,
+    ModelPresentationOverlay, ModelPresentationOverlayFailure, PreparationFailure,
+    PreparedAccessEvidence, ReadinessRefreshRequest, RequestId, ScopeId, admit_instance,
+    apply_stored_model_presentation_overlay, observe_instance_update, refresh_readiness,
 };
 
 fn admit_app_server(
@@ -95,7 +95,17 @@ fn observe_app_server_update(
     observe_instance_update(&claim, installed.cloned())
 }
 
-fn project_unmarked_overlay(
+fn store_instance_model_overlay(
+    store: &MemoryConnectionLifecycleStore,
+    instance_id: ConfiguredInstanceId,
+    model_id: ModelId,
+) -> Result<(), ConnectionLifecycleStoreFailure> {
+    store.put_overlay_marker(
+        OverlayMarker::without_provider(instance_id, model_id).with_favourite(true),
+    )
+}
+
+fn project_overlay(
     store: &MemoryConnectionLifecycleStore,
     record: &ConfiguredProviderInstanceRecord,
 ) -> Result<ModelPresentationOverlay, ModelPresentationOverlayFailure> {

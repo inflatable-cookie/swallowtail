@@ -208,11 +208,13 @@ impl Default for AuthenticatedSubjectObservation {
 /// Presentation overlay bound to one exact catalogue model identity.
 ///
 /// Markers cannot invent a model id. They do not change 047 `Ready` /
-/// `NotReady` and they do not copy models across instances.
+/// `NotReady` and they do not copy models across instances. When a
+/// catalogue row omits `provider_id`, [`Self::without_provider`] keys the
+/// marker to instance plus model instead of inventing a provider id.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OverlayMarker {
     instance_id: ConfiguredInstanceId,
-    provider_id: ProviderId,
+    provider_id: Option<ProviderId>,
     model_id: ModelId,
     hidden: bool,
     ordinal: Option<u32>,
@@ -233,7 +235,24 @@ impl OverlayMarker {
     ) -> Self {
         Self {
             instance_id,
-            provider_id,
+            provider_id: Some(provider_id),
+            model_id,
+            hidden: false,
+            ordinal: None,
+            consumer_default: false,
+            favourite: false,
+        }
+    }
+
+    /// Creates an overlay marker for a catalogue row that omits `provider_id`.
+    ///
+    /// The marker keys instance plus model. It does not invent a catalogue
+    /// provider id.
+    #[must_use]
+    pub const fn without_provider(instance_id: ConfiguredInstanceId, model_id: ModelId) -> Self {
+        Self {
+            instance_id,
+            provider_id: None,
             model_id,
             hidden: false,
             ordinal: None,
@@ -277,9 +296,9 @@ impl OverlayMarker {
     }
 
     #[must_use]
-    /// Returns the provider identity from the catalogue result.
-    pub const fn provider_id(&self) -> &ProviderId {
-        &self.provider_id
+    /// Returns the catalogue provider identity, when the source reported one.
+    pub const fn provider_id(&self) -> Option<&ProviderId> {
+        self.provider_id.as_ref()
     }
 
     #[must_use]

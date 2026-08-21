@@ -24,9 +24,9 @@ shapes.
 
 ## Goals
 
-- [ ] classify unmarked-row overlay without inventing a provider id
-- [ ] realize the chosen rule
-- [ ] prove it on the unmarked addable catalogues
+- [x] classify unmarked-row overlay without inventing a provider id
+- [x] realize the chosen rule
+- [x] prove it on the unmarked addable catalogues
 
 ## Non-Goals
 
@@ -41,30 +41,30 @@ shapes.
 
 ### Batch 21.1 — Classification
 
-- [ ] Execute card 059.
-- [ ] preferred direction: key instance plus model when `provider_id` is
+- [x] Execute card 059.
+- [x] preferred direction: key instance plus model when `provider_id` is
       absent; do not invent a provider id
-- [ ] stop and ask if that would flatten gateways
+- [x] stop and ask if that would flatten gateways
 
 ### Batch 21.2 — Realize The Rule
 
-- [ ] Execute card 060 after card 059.
-- [ ] either overlay keys absent-provider rows, or architecture records
+- [x] Execute card 060 after card 059.
+- [x] either overlay keys absent-provider rows, or architecture records
       unmarked as durable
 
 ### Batch 21.3 — Unmarked-Route Proof
 
-- [ ] Execute card 061 after card 060.
-- [ ] Codex, Claude Agent, Ollama, and llama.cpp attached follow the
+- [x] Execute card 061 after card 060.
+- [x] Codex, Claude Agent, Ollama, and llama.cpp attached follow the
       chosen rule
-- [ ] Anthropic and DeepSeek overlay keying stays unchanged
+- [x] Anthropic and DeepSeek overlay keying stays unchanged
 
 ## Acceptance Criteria
 
-- [ ] no invented catalogue `provider_id`
-- [ ] mixed gateway rows remain consumer assembly
-- [ ] 047 `Ready` / `NotReady` is unchanged
-- [ ] `public-api-0.3.3` stays immutable
+- [x] no invented catalogue `provider_id`
+- [x] mixed gateway rows remain consumer assembly
+- [x] 047 `Ready` / `NotReady` is unchanged
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

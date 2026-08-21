@@ -61,6 +61,14 @@ fn marker(instance_id: &str) -> OverlayMarker {
     .with_favourite(true)
 }
 
+fn unmarked_marker(instance_id: &str) -> OverlayMarker {
+    OverlayMarker::without_provider(
+        ConfiguredInstanceId::new(instance_id).expect("instance id is valid"),
+        ModelId::new("gpt-fixture").expect("model id is valid"),
+    )
+    .with_favourite(true)
+}
+
 fn temporary_root() -> PathBuf {
     let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
     let nanos = SystemTime::now()
@@ -147,4 +155,26 @@ fn json_file_adapter_round_trips_distinct_family_instances_without_secret_bytes(
     assert!(!document.contains(secret));
     assert!(!document.contains("secret_bytes"));
     assert!(!document.contains("expose_secret"));
+}
+
+#[test]
+fn json_file_adapter_round_trips_unmarked_overlay_markers() {
+    let path = temporary_root().join("unmarked-overlay.json");
+    {
+        let store = JsonFileConnectionLifecycleStore::open(&path)
+            .expect("json store opens on missing path");
+        store
+            .put_overlay_marker(unmarked_marker("work"))
+            .expect("put unmarked overlay");
+    }
+
+    let reopened =
+        JsonFileConnectionLifecycleStore::open(&path).expect("json store reopens existing path");
+    let markers = reopened.list_overlay_markers().expect("list overlays");
+    assert_eq!(markers.len(), 1);
+    assert_eq!(markers[0].provider_id(), None);
+    assert_eq!(markers[0].model_id().as_str(), "gpt-fixture");
+    assert!(markers[0].favourite());
+    let document = std::fs::read_to_string(&path).expect("json document is readable");
+    assert!(!document.contains("provider_id"));
 }

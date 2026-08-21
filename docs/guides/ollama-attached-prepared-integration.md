@@ -55,8 +55,8 @@ Ollama.
 6. `observe_instance_update` reuses `ollama_runtime_claim`. Contract 032
    stays unobserved unless an executable is supplied. Runtime version comes
    from preparation's `/api/version` observation.
-7. Ollama catalogue rows omit `provider_id`. Overlay cannot mark them. Do
-   not invent a catalogue provider id.
+7. Ollama catalogue rows omit `provider_id`. Overlay keys instance plus
+   model. Do not invent a catalogue provider id.
 8. Build `OllamaPreparationInput::from_admitted` from the admitted record, then
    call `prepare_ollama_attached`. The constructor selects the stored
    `endpoint` ref; the host resolves it for the bounded probe. Model tag and

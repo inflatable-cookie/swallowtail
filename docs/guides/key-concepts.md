@@ -57,7 +57,8 @@ facade. See [connection lifecycle](connection-lifecycle.md).
 - **Model-presentation overlay** — hide, ordinal, consumer-default, and
   favourite markers keyed to exact catalogue identity. Overlay copies
   `Ready` / `NotReady` and cannot change it. Catalogue rows without
-  `provider_id` stay unmarked.
+  `provider_id` key instance plus model; overlay does not invent a
+  provider id.
 
 ## Access And Environment
 

@@ -6,13 +6,17 @@ mod catalogue;
 mod failures;
 #[path = "sidecar_driver/lifecycle.rs"]
 mod lifecycle;
+#[path = "sidecar_driver/persistent.rs"]
+mod persistent;
+#[path = "sidecar_driver/persistent_replay.rs"]
+mod persistent_replay;
 #[path = "sidecar_driver/versions.rs"]
 mod versions;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{
-    CleanupEvent, SidecarFixtureHost, SidecarScenario, open_request, sidecar_selection,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
     turn_request,
 };
 use swallowtail_adapter_pi::{
@@ -91,7 +95,7 @@ fn fresh_session_relays_scheduling_and_joined_cleanup() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-session-success", selected.resource),
+        sidecar_open_request("sidecar-session-success", selected.resource),
         services.clone(),
     ))
     .expect("sidecar session opens");

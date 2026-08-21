@@ -1,0 +1,362 @@
+//! Persistent-session prepared facade for the Pi SDK sidecar route.
+//!
+//! The prepared session binds the four exact interface-version points, the
+//! host-approved launch recipe target, the delegated harness credential, the
+//! exact provider and model route, and the durable provider-state posture.
+//! From it, consumers open new sessions (which return the initial durable
+//! binding), or load/resume previously bound provider sessions through the
+//! runtime's binding machinery.
+
+use super::driver::PiSdkSidecarDriver;
+use super::selection::{
+    pi_sdk_sidecar_node_binding, pi_sdk_sidecar_package_binding, pi_sdk_sidecar_sidecar_binding,
+    pi_sdk_sidecar_wire_binding,
+};
+use super::{
+    PI_SDK_SIDECAR_NODE_RUNTIME, PI_SDK_SIDECAR_SDK_VERSION, PI_SDK_SIDECAR_SOURCE_TAG,
+    PI_SDK_SIDECAR_WIRE,
+};
+use std::num::NonZeroU32;
+use swallowtail_core::{
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
+    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
+    ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, DriverRole,
+    EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
+    ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessConfigurationPosture,
+    HarnessIsolation, HarnessRpcPolicy, HarnessSchedulingBounds, HostServiceKind,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightPlan,
+    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
+};
+use swallowtail_runtime::{
+    BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
+    LoadSessionRequest, LoadedSession, OpenSessionRequest, PreparationFailure, RequestId,
+    ResumeSessionRequest, RuntimeFailure, SessionResumeBinding, WorkingResourceRef,
+};
+
+/// Explicit inputs for preparing one persistent sidecar session.
+pub struct PiSdkSidecarSessionPreparation {
+    instance_id: ConfiguredInstanceId,
+    instance_revision: InstanceRevision,
+    execution_host_id: ExecutionHostId,
+    target: InstanceTargetRef,
+    environment: EnvironmentRef,
+    credential: CredentialRef,
+    access_profile_id: AccessProfileId,
+    route_id: ModelRouteId,
+    route_revision: ModelRouteRevision,
+    provider: ProviderId,
+    model: ModelId,
+    working_resource: WorkingResourceRef,
+    request_id: RequestId,
+    image_attachments: bool,
+}
+
+impl PiSdkSidecarSessionPreparation {
+    /// Creates a session preparation from explicit application-approved
+    /// identity, launch, access, model, and resource inputs.
+    #[must_use]
+    #[allow(clippy::too_many_arguments)]
+    pub const fn new(
+        instance_id: ConfiguredInstanceId,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        target: InstanceTargetRef,
+        environment: EnvironmentRef,
+        credential: CredentialRef,
+        access_profile_id: AccessProfileId,
+        route_id: ModelRouteId,
+        route_revision: ModelRouteRevision,
+        provider: ProviderId,
+        model: ModelId,
+        working_resource: WorkingResourceRef,
+        request_id: RequestId,
+    ) -> Self {
+        Self {
+            instance_id,
+            instance_revision,
+            execution_host_id,
+            target,
+            environment,
+            credential,
+            access_profile_id,
+            route_id,
+            route_revision,
+            provider,
+            model,
+            working_resource,
+            request_id,
+            image_attachments: false,
+        }
+    }
+
+    /// Enables the route's bounded PNG image-attachment capability.
+    #[must_use]
+    pub const fn with_image_attachments(mut self) -> Self {
+        self.image_attachments = true;
+        self
+    }
+}
+
+type OpenSessionFuture =
+    BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
+type LoadSessionFuture = BoxFuture<'static, Result<LoadedSession, RuntimeFailure>>;
+
+/// A prepared persistent sidecar session: validated plan plus bound request.
+pub struct PiSdkSidecarPreparedSession {
+    plan: PreflightPlan,
+    request: OpenSessionRequest,
+    environment: EnvironmentRef,
+    credential: CredentialRef,
+}
+
+impl PiSdkSidecarPreparedSession {
+    /// Returns the validated preflight plan.
+    #[must_use]
+    pub const fn plan(&self) -> &PreflightPlan {
+        &self.plan
+    }
+
+    /// Returns the bound session-open request.
+    #[must_use]
+    pub const fn request(&self) -> &OpenSessionRequest {
+        &self.request
+    }
+
+    /// Creates the low-level sidecar driver bound to this session.
+    #[must_use]
+    pub fn low_level_driver(&self) -> PiSdkSidecarDriver {
+        PiSdkSidecarDriver::new(self.environment.clone(), self.credential.clone())
+    }
+
+    /// Opens a new provider session with caller-supplied host services. The
+    /// returned handle carries the initial durable resume binding.
+    pub fn open_session(&self, services: HostServices) -> OpenSessionFuture {
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        let request = self.request.clone();
+        Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
+    /// Builds an exact provider-session load request with bounded replay.
+    pub fn load_request(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<LoadSessionRequest, PreparationFailure> {
+        LoadSessionRequest::from_plan(
+            &self.plan,
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared sidecar session binds a working resource")
+                .clone(),
+            self.request.deadline(),
+        )
+    }
+
+    /// Builds an exact provider-session resume request without replay.
+    pub fn resume_request(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        ResumeSessionRequest::from_plan(
+            &self.plan,
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared sidecar session binds a working resource")
+                .clone(),
+            self.request.deadline(),
+        )
+    }
+
+    /// Loads a bound provider session, returning typed replay plus the
+    /// interactive handle.
+    pub fn load_session(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<LoadSessionFuture, PreparationFailure> {
+        let request = self.load_request(request_id, binding)?;
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        Ok(Box::pin(async move {
+            driver.load_session(plan, request, services).await
+        }))
+    }
+
+    /// Resumes a bound provider session without replaying prior content.
+    pub fn resume_session(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<OpenSessionFuture, PreparationFailure> {
+        let request = self.resume_request(request_id, binding)?;
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        Ok(Box::pin(async move {
+            driver.resume_session(plan, request, services).await
+        }))
+    }
+}
+
+/// Prepares one persistent Pi SDK sidecar session from explicit inputs.
+pub fn prepare_pi_sdk_sidecar_session(
+    input: PiSdkSidecarSessionPreparation,
+) -> Result<PiSdkSidecarPreparedSession, PreparationFailure> {
+    let mut capability_requirements = vec![
+        CapabilityRequirement::new(Capability::InteractiveSession, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::LoadSession,
+            [
+                CapabilityConstraint::ReplayMaximumItems(
+                    super::replay::MAXIMUM_REPLAY_ITEMS as u32,
+                ),
+                CapabilityConstraint::ReplayMaximumBytes(
+                    super::replay::MAXIMUM_REPLAY_BYTES as u64,
+                ),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::Resume, []),
+        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                swallowtail_core::CancellationScope::ActiveTurn,
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+    ];
+    if input.image_attachments {
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::Attachments,
+            [
+                CapabilityConstraint::attachment_media_type("image/png")
+                    .expect("static media type is valid"),
+                CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
+                CapabilityConstraint::AttachmentMaximumCount(1),
+            ],
+        ));
+    }
+    let capabilities = CapabilityProfile::new(capability_requirements.clone());
+    let versions = [
+        pi_sdk_sidecar_package_binding(PI_SDK_SIDECAR_SDK_VERSION),
+        pi_sdk_sidecar_node_binding(PI_SDK_SIDECAR_NODE_RUNTIME),
+        pi_sdk_sidecar_wire_binding(PI_SDK_SIDECAR_WIRE),
+        pi_sdk_sidecar_sidecar_binding(PI_SDK_SIDECAR_SOURCE_TAG),
+    ];
+    let versions = versions
+        .into_iter()
+        .collect::<Option<Vec<_>>>()
+        .expect("static sidecar version bindings are valid");
+    let one = NonZeroU32::new(1).expect("one is non-zero");
+    let rpc_policy = HarnessRpcPolicy::restrictive(HarnessSchedulingBounds::new(
+        one,
+        NonZeroU32::new(2).expect("two is non-zero"),
+        one,
+        one,
+    ));
+    let descriptor = super::pi_sdk_sidecar_descriptor();
+    let instance = ConfiguredInstance::new(
+        input.instance_id.clone(),
+        input.instance_revision,
+        descriptor.identity().id().clone(),
+        input.execution_host_id.clone(),
+        input.target,
+        InstanceOwnership::HostOwnedEphemeral,
+        input.access_profile_id.clone(),
+        SupportAuthority::IntegrationMaintainerSupported,
+        ProtocolFacadeId::new("pi-sdk-sidecar-jsonl-v1").expect("static facade is valid"),
+        InstancePolicyId::new("pi-sdk-sidecar-ambient-read").expect("static policy is valid"),
+        capabilities.clone(),
+    )
+    .with_interface_versions(versions.clone())
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_harness_rpc_policy(rpc_policy.clone());
+    let route = ModelRoute::new(
+        input.route_id,
+        input.route_revision,
+        input.instance_id,
+        input.model,
+        capabilities,
+    )
+    .with_provider_id(input.provider);
+    let access = AccessProfile::new(
+        input.access_profile_id.clone(),
+        CredentialMechanism::ProviderSpecific(
+            ExtensionNamespace::new("pi/delegated-harness-auth").expect("static namespace"),
+        ),
+        EntitlementMetering::Unknown,
+        EndpointAudience::new("pi-harness").expect("static audience"),
+        SupportAuthority::IntegrationMaintainerSupported,
+    )
+    .with_credential_reference(input.credential.clone());
+    let status = AccessStatus::new(
+        input.access_profile_id,
+        CredentialState::Ready,
+        EntitlementState::Unknown,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::IntegrationMaintainerSupported,
+    );
+    let services = [
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Credential,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::Time,
+    ];
+    let requirements = OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::InteractiveSession,
+        DriverRole::InteractiveSession,
+        input.execution_host_id.clone(),
+        AccessRequirement::new(access.id().clone())
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Unknown])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([SupportAuthority::IntegrationMaintainerSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::HostOwnedEphemeral])
+    .with_host_services(services)
+    .with_capabilities(capability_requirements)
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_interface_versions(versions)
+    .with_harness_rpc_policy(rpc_policy)
+    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    .require_model_route();
+    let plan = swallowtail_runtime::build_plan(
+        &descriptor,
+        &instance,
+        Some(&route),
+        &requirements,
+        &access,
+        &status,
+        services,
+    )?;
+    let request =
+        OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?;
+    Ok(PiSdkSidecarPreparedSession {
+        plan,
+        request,
+        environment: input.environment,
+        credential: input.credential,
+    })
+}

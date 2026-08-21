@@ -1,4 +1,5 @@
 use super::failure::{failure, protocol_failure};
+use super::replay::ReplayCollector;
 use super::turn::SidecarActiveTurn;
 use super::wire::{PiSdkSidecarCommand, encode_command};
 use serde_json::Value;
@@ -8,7 +9,7 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{SafeDiagnostic, SessionRef};
 use swallowtail_runtime::{
     CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
     RuntimeFailure,
@@ -29,7 +30,9 @@ pub(crate) struct SidecarConnection {
     pending: Mutex<BTreeMap<String, PendingCommand>>,
     used_ids: Mutex<BTreeSet<String>>,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
+    replay: Mutex<Option<ReplayCollector>>,
     closed: AtomicBool,
+    terminal_error: Mutex<Option<SafeDiagnostic>>,
     cleanup: Mutex<Option<CleanupOutcome>>,
 }
 
@@ -41,7 +44,9 @@ impl SidecarConnection {
             pending: Mutex::new(BTreeMap::new()),
             used_ids: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
+            replay: Mutex::new(None),
             closed: AtomicBool::new(false),
+            terminal_error: Mutex::new(None),
             cleanup: Mutex::new(None),
         })
     }
@@ -64,7 +69,7 @@ impl SidecarConnection {
         params: Value,
     ) -> Result<CommandResult, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
-            return Err(connection_closed());
+            return Err(self.closed_failure());
         }
         if !self
             .used_ids
@@ -134,6 +139,30 @@ impl SidecarConnection {
         }
     }
 
+    /// Arms the bounded replay collector for one in-flight `session_replay`
+    /// command. Only one replay phase may be armed at a time.
+    pub(crate) fn arm_replay(&self, session: SessionRef) -> Result<(), RuntimeFailure> {
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(connection_closed());
+        }
+        let mut replay = self.replay.lock().expect("sidecar replay lock poisoned");
+        if replay.is_some() {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.replay_active",
+                "Pi SDK sidecar already has an active replay phase",
+            ));
+        }
+        *replay = Some(ReplayCollector::new(session));
+        Ok(())
+    }
+
+    pub(crate) fn take_replay(&self) -> Option<ReplayCollector> {
+        self.replay
+            .lock()
+            .expect("sidecar replay lock poisoned")
+            .take()
+    }
+
     pub(crate) async fn begin_close(&self) {
         self.closed.store(true, Ordering::SeqCst);
         let _ = self.process.close_stdin().await;
@@ -198,6 +227,29 @@ impl Future for ResponseFuture {
         } else {
             state.waiter = Some(context.waker().clone());
             Poll::Pending
+        }
+    }
+}
+
+impl SidecarConnection {
+    /// Records the terminal transport failure before the closed flag so a
+    /// later command observes the exact cause instead of a generic close.
+    pub(crate) fn record_terminal_error(&self, error: &RuntimeFailure) {
+        *self
+            .terminal_error
+            .lock()
+            .expect("sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
+    }
+
+    fn closed_failure(&self) -> RuntimeFailure {
+        match self
+            .terminal_error
+            .lock()
+            .expect("sidecar terminal-error lock poisoned")
+            .clone()
+        {
+            Some(diagnostic) => RuntimeFailure::new(diagnostic),
+            None => connection_closed(),
         }
     }
 }

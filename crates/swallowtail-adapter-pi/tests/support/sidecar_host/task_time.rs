@@ -24,6 +24,24 @@ impl TimeService for SidecarFixtureHost {
     }
 }
 
+impl SidecarFixtureHost {
+    pub fn advance_time(&self, ticks: u64) {
+        let waiters = {
+            let mut time = self
+                .shared
+                .time
+                .lock()
+                .expect("sidecar fixture time lock poisoned");
+            time.now = ticks;
+            time.fire_through = Some(ticks);
+            std::mem::take(&mut time.waiters)
+        };
+        for waiter in waiters {
+            waiter.wake();
+        }
+    }
+}
+
 struct DeadlineFuture {
     shared: Arc<Shared>,
     deadline: Deadline,

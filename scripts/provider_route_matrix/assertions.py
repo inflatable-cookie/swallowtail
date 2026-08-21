@@ -251,8 +251,8 @@ session_continuity_no_cells = {
     for feature in ["load_session", "resume_session", "native_session_close"]
     if row[feature] == "No"
 }
-if len(session_continuity_no_cells) != 100:
-    raise SystemExit("session-continuity inventory must contain exactly 100 No cells")
+if len(session_continuity_no_cells) != 98:
+    raise SystemExit("session-continuity inventory must contain exactly 98 No cells")
 if session_continuity_no_cells != set(session_continuity_classifications):
     raise SystemExit("session-continuity No classifications changed")
 
@@ -277,7 +277,7 @@ for row in rows:
         classification_counts[classification] += 1
 if classification_counts != Counter(
     {
-        "contract_or_corpus_required": 85,
+        "contract_or_corpus_required": 83,
         "upstream_unsupported": 178,
         "operation_shape_not_applicable": 64,
         "ready_existing_contract": 4,

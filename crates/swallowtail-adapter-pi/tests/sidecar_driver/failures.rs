@@ -1,6 +1,6 @@
 use super::{deadline, driver, make_host_id};
 use crate::support::{
-    CleanupEvent, SidecarFixtureHost, SidecarScenario, open_request, sidecar_selection,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
     turn_request,
 };
 use futures_executor::block_on;
@@ -41,7 +41,7 @@ fn provider_transport_and_protocol_failures_remain_distinct() {
         let services = fixture.services(host_id);
         let mut session = block_on(driver(selected.credential.clone()).open_session(
             selected.plan,
-            open_request("sidecar-failure-session", selected.resource),
+            sidecar_open_request("sidecar-failure-session", selected.resource),
             services.clone(),
         ))
         .expect("sidecar session opens");
@@ -76,7 +76,7 @@ fn response_command_mismatch_fails_the_turn_and_still_joins() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-mismatch-session", selected.resource),
+        sidecar_open_request("sidecar-mismatch-session", selected.resource),
         services.clone(),
     ))
     .expect("sidecar session opens");
@@ -113,7 +113,7 @@ fn bootstrap_identity_mismatch_fails_before_provider_work() {
         let selected = sidecar_selection(host_id.clone());
         let error = block_on(driver(selected.credential.clone()).open_session(
             selected.plan,
-            open_request("sidecar-startup-fail", selected.resource),
+            sidecar_open_request("sidecar-startup-fail", selected.resource),
             fixture.services(host_id),
         ))
         .err()

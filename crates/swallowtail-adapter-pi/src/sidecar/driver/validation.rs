@@ -57,8 +57,10 @@ pub(super) fn validate_open(
     {
         return Err(plan_mismatch("ambient read access"));
     }
-    if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
-        return Err(unsupported("provider session persistence"));
+    if request.provider_state_policy()
+        != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    {
+        return Err(plan_mismatch("provider-state policy"));
     }
     if request.working_resource().is_none() {
         return Err(unsupported("resource-free session"));
@@ -83,6 +85,106 @@ pub(super) fn validate_open(
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
     )?;
+    validate_planned_attachment_services(plan, services)
+}
+
+/// Shared validated surface of one load or resume attachment request.
+pub(super) struct AttachmentSurface<'a> {
+    pub plan_agreement: &'a swallowtail_runtime::SessionPlanAgreement,
+    pub access_policy: &'a SessionAccessPolicy,
+    pub provider_state_policy: Option<SessionProviderStatePolicy>,
+    pub working_resource: &'a swallowtail_runtime::WorkingResourceRef,
+    pub options_empty: bool,
+    pub binding: &'a swallowtail_runtime::SessionResumeBinding,
+    pub replay: bool,
+}
+
+pub(super) fn validate_attachment(
+    plan: &PreflightPlan,
+    services: &HostServices,
+    credential: &swallowtail_core::CredentialRef,
+    surface: &AttachmentSurface<'_>,
+) -> Result<(), RuntimeFailure> {
+    validate_common(plan, services, credential)?;
+    if plan.requirements().driver_role() != DriverRole::InteractiveSession {
+        return Err(plan_mismatch("driver role"));
+    }
+    if !plan
+        .requirements()
+        .host_services()
+        .any(|required| required == HostServiceKind::WorkingResource)
+        || services.working_resource().is_none()
+    {
+        return Err(plan_mismatch("host service"));
+    }
+    if plan.provider_id().is_none() || plan.model_id().is_none() || plan.model_route_id().is_none()
+    {
+        return Err(plan_mismatch("provider and model route"));
+    }
+    validate_session_plan_agreement(plan, surface.plan_agreement)?;
+    if surface.access_policy != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
+    {
+        return Err(plan_mismatch("ambient read access"));
+    }
+    if surface.provider_state_policy
+        != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    {
+        return Err(plan_mismatch("provider-state policy"));
+    }
+    if !surface.options_empty {
+        return Err(unsupported("session options"));
+    }
+    if !surface
+        .binding
+        .matches_attachment(plan, surface.working_resource, surface.access_policy)
+    {
+        return Err(failure(
+            "swallowtail.pi.sdk-sidecar.resume_binding_mismatch",
+            "Pi SDK sidecar resume binding does not match the preflight plan and attachment",
+        ));
+    }
+    require_capability(plan, Capability::InteractiveSession)?;
+    require_capability(plan, Capability::StreamingEvents)?;
+    require_constraint(
+        plan,
+        Capability::Interruption,
+        CapabilityConstraint::CancellationScope(CancellationScope::ActiveTurn),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+    )?;
+    if surface.replay {
+        let requirement = plan
+            .requirements()
+            .capabilities()
+            .find(|required| required.capability() == Capability::LoadSession)
+            .ok_or_else(|| plan_mismatch("load capability"))?;
+        for constraint in [
+            CapabilityConstraint::ReplayMaximumItems(
+                crate::sidecar::replay::MAXIMUM_REPLAY_ITEMS as u32,
+            ),
+            CapabilityConstraint::ReplayMaximumBytes(
+                crate::sidecar::replay::MAXIMUM_REPLAY_BYTES as u64,
+            ),
+        ] {
+            if !requirement
+                .constraints()
+                .any(|required| required == &constraint)
+            {
+                return Err(plan_mismatch("replay bounds"));
+            }
+        }
+    } else {
+        require_capability(plan, Capability::Resume)?;
+    }
     validate_planned_attachment_services(plan, services)
 }
 

@@ -1,7 +1,7 @@
 use super::{driver, make_host_id};
 use crate::support::{
-    SidecarFixtureHost, SidecarFixtureSelection, SidecarScenario, open_request, sidecar_selection,
-    sidecar_selection_with_instance_versions, sidecar_versions,
+    SidecarFixtureHost, SidecarFixtureSelection, SidecarScenario, sidecar_open_request,
+    sidecar_selection, sidecar_selection_with_instance_versions, sidecar_versions,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::{
@@ -67,13 +67,16 @@ fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work()
 }
 
 #[test]
-fn resume_is_unsupported_at_this_card() {
-    let host_id = make_host_id("pi.fixture.sdk-sidecar.resume");
+fn unbound_or_mismatched_resume_bindings_fail_before_process_work() {
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.resume-mismatch");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
     let selected = sidecar_selection(host_id.clone());
+    // Same route dimensions but a different configured instance: the binding
+    // no longer matches the plan.
     let binding = swallowtail_runtime::SessionResumeBinding::new(
         swallowtail_core::SessionRef::new("pi-sidecar-session-fixture").expect("valid session ref"),
-        selected.plan.instance_id().clone(),
+        swallowtail_core::ConfiguredInstanceId::new("pi.fixture.other-instance")
+            .expect("valid instance"),
         selected.plan.execution_host_id().clone(),
         selected.plan.model_route_id().expect("model route").clone(),
         selected.plan.model_id().expect("model").clone(),
@@ -85,7 +88,7 @@ fn resume_is_unsupported_at_this_card() {
     let error = block_on(driver(selected.credential.clone()).resume_session(
         selected.plan,
         swallowtail_runtime::ResumeSessionRequest::new(
-            RequestId::new("sidecar-resume").expect("valid request"),
+            RequestId::new("sidecar-resume-mismatch").expect("valid request"),
             binding,
             selected.resource.clone(),
             None,
@@ -93,18 +96,19 @@ fn resume_is_unsupported_at_this_card() {
                 swallowtail_core::SessionAccessPolicy::ambient_harness(
                     swallowtail_core::ResourceAccess::Read,
                 ),
-                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::SessionProviderStatePolicy::DurableProviderSessionPreserved),
                 Some(swallowtail_core::HarnessConfigurationPosture::ProviderSuppressed),
             ),
         ),
         fixture.services(host_id),
     ))
     .err()
-    .expect("resume is unsupported");
+    .expect("mismatched binding fails");
     assert_eq!(
         error.diagnostic().code(),
-        "swallowtail.pi.sdk-sidecar.unsupported_input"
+        "swallowtail.pi.sdk-sidecar.resume_binding_mismatch"
     );
+    assert_eq!(fixture.credential_acquisitions(), 0);
     assert!(!fixture.process_started());
 }
 
@@ -116,7 +120,7 @@ fn version_case(versions: Vec<InterfaceVersionBinding>) -> swallowtail_runtime::
         sidecar_selection_with_instance_versions(host_id.clone(), versions);
     let error = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-version-fail", selected.resource),
+        sidecar_open_request("sidecar-version-fail", selected.resource),
         fixture.services(host_id),
     ))
     .err()

@@ -17,7 +17,7 @@ mod process;
 mod script;
 mod task_time;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[allow(dead_code)]
 pub enum SidecarScenario {
     Complete,
@@ -31,7 +31,20 @@ pub enum SidecarScenario {
     BootstrapCwdMismatch,
     BootstrapVersionMismatch,
     StateMismatch,
+    SessionNotFound,
+    SessionSubstituted,
+    SwitchCwdMismatch,
+    ReplayFailure,
+    ReplaySequenceGap,
+    ReplayCountMismatch,
+    ReplayOverflow,
+    ReplayAfterResponse,
+    ReplayDuringResume,
+    HoldReplay,
 }
+
+/// Provider-session reference the fixture "persists" across sidecar processes.
+pub const FIXTURE_SESSION_REF: &str = "/fixture/pi-sidecar-agent/sessions/session.jsonl";
 
 #[derive(Clone)]
 pub struct SidecarFixtureHost {
@@ -62,6 +75,7 @@ struct ProcessState {
     output: VecDeque<ProcessOutputChunk>,
     stopped: bool,
     bootstrap: Option<(String, String, String)>,
+    session_ref: Option<String>,
 }
 
 impl SidecarFixtureHost {
@@ -138,6 +152,25 @@ impl SidecarFixtureHost {
             .environment()
             .map(|value| value.as_host_value().to_owned())
             .collect()
+    }
+
+    pub fn wait_for_command(&self, command: &str) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        while !state
+            .input
+            .iter()
+            .any(|value| value.get("command").and_then(Value::as_str) == Some(command))
+        {
+            state = self
+                .shared
+                .changed
+                .wait(state)
+                .expect("sidecar fixture wait lock poisoned");
+        }
     }
 
     pub fn inputs(&self) -> Vec<Value> {

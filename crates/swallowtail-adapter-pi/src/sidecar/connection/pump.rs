@@ -1,6 +1,6 @@
 use super::{CommandResult, SidecarConnection};
 use crate::sidecar::failure::{failure, protocol_failure};
-use crate::sidecar::wire::{PiSdkSidecarDecoder, PiSdkSidecarRecord};
+use crate::sidecar::wire::{PiSdkSidecarDecoder, PiSdkSidecarEvent, PiSdkSidecarRecord};
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{CleanupOutcome, ProcessOutputStream, RuntimeFailure};
@@ -52,7 +52,6 @@ impl SidecarConnection {
             let _ = self.process.force_stop().await;
         }
         let waited = self.process.wait().await;
-        self.closed.store(true, std::sync::atomic::Ordering::SeqCst);
         let cleanup = if waited.is_ok() {
             CleanupOutcome::Clean
         } else {
@@ -68,6 +67,8 @@ impl SidecarConnection {
                 "Pi SDK sidecar connection ended",
             )
         });
+        self.record_terminal_error(&error);
+        self.closed.store(true, std::sync::atomic::Ordering::SeqCst);
         if let Some(turn) = self
             .active_turn
             .lock()
@@ -106,6 +107,18 @@ impl SidecarConnection {
                     data: response.data,
                 }));
                 Ok(())
+            }
+            PiSdkSidecarRecord::Event(PiSdkSidecarEvent::ReplayItem { sequence, item }) => {
+                // Replay items belong to an armed load replay phase; anywhere
+                // else they fail the transport closed.
+                let mut replay = self.replay.lock().expect("sidecar replay lock poisoned");
+                match replay.as_mut() {
+                    Some(collector) => collector.push(sequence, item),
+                    None => Err(failure(
+                        "swallowtail.pi.sdk-sidecar.replay_unexpected",
+                        "Pi SDK sidecar emitted replay evidence outside a load replay phase",
+                    )),
+                }
             }
             PiSdkSidecarRecord::Event(event) => {
                 let turn = self

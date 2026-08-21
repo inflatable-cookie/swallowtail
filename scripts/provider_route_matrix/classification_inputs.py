@@ -357,8 +357,6 @@ session_continuity_classifications = {
     ("load_session", "pi.rpc"): "ready_existing_contract",
     ("resume_session", "pi.rpc"): "ready_existing_contract",
     ("native_session_close", "pi.rpc"): "upstream_unsupported",
-    ("load_session", "pi.sdk-sidecar"): "contract_or_corpus_required",
-    ("resume_session", "pi.sdk-sidecar"): "contract_or_corpus_required",
     ("native_session_close", "pi.sdk-sidecar"): "selected_surface_absence",
     ("load_session", "deepseek.continuation"): "operation_shape_not_applicable",
     ("resume_session", "deepseek.continuation"): "operation_shape_not_applicable",

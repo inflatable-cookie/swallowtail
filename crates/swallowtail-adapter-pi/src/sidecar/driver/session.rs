@@ -14,7 +14,7 @@ use std::task::Poll;
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, HostServices,
     InteractiveSessionHandle, JoinedTask, RequestId, ResourceLease, RuntimeFailure,
-    RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
+    RuntimeSessionId, ScopeId, SessionResumeBinding, TurnHandle, TurnRequest,
 };
 
 pub(super) mod cleanup;
@@ -38,6 +38,7 @@ pub(super) struct PiSdkSidecarSessionHandle {
     pub(super) request_id: RequestId,
     pub(super) runtime_id: RuntimeSessionId,
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
+    pub(super) binding: SessionResumeBinding,
     pub(super) connection: Arc<SidecarConnection>,
     pub(super) cancellation: SessionCancellation,
     pub(super) pump_task: Option<Box<dyn JoinedTask>>,
@@ -59,11 +60,11 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
     }
 
     fn provider_session_ref(&self) -> Option<&swallowtail_core::SessionRef> {
-        None
+        Some(self.binding.provider_session_ref())
     }
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
-        None
+        Some(&self.binding)
     }
 
     fn start_turn<'a>(

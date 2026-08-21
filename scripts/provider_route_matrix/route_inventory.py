@@ -68,7 +68,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "opencode.http": ("supported", "yes", "unsupported", "unsupported", "supported", "ProviderDataDeleted"),
     "oh-my-pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
-    "pi.sdk-sidecar": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
+    "pi.sdk-sidecar": ("supported", "yes", "unsupported", "unsupported", "unsupported", "unsupported"),
     "qwen.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "xai.responses-websocket": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
 }

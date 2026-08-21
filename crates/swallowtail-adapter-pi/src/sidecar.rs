@@ -11,14 +11,19 @@ mod catalogue;
 mod connection;
 mod driver;
 mod failure;
+mod prepared;
 /// Bounded public decoder for qualified sidecar wire record shapes.
 pub mod protocol;
+mod replay;
 mod selection;
 mod turn;
 pub(crate) mod wire;
 
 pub use asset::{PI_SDK_SIDECAR_ENTRY_FILE, PI_SDK_SIDECAR_SOURCE, PI_SDK_SIDECAR_SOURCE_TAG};
 pub use driver::{PiSdkSidecarDriver, pi_sdk_sidecar_descriptor};
+pub use prepared::{
+    PiSdkSidecarPreparedSession, PiSdkSidecarSessionPreparation, prepare_pi_sdk_sidecar_session,
+};
 pub use selection::{
     PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
     PI_SDK_SIDECAR_WIRE_AXIS, pi_sdk_sidecar_node_binding, pi_sdk_sidecar_node_claim,

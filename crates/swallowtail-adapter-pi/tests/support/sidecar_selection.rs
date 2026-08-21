@@ -16,7 +16,23 @@ use swallowtail_core::{
     ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
     SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
-use swallowtail_runtime::WorkingResourceRef;
+use swallowtail_runtime::{
+    OpenSessionRequest, RequestId, SessionPlanAgreement, WorkingResourceRef,
+};
+
+/// Builds a session-open request carrying the durable provider-state posture.
+pub fn sidecar_open_request(id: &str, resource: WorkingResourceRef) -> OpenSessionRequest {
+    OpenSessionRequest::new(
+        RequestId::new(id).expect("valid request"),
+        resource,
+        None,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+            Some(SessionProviderStatePolicy::DurableProviderSessionPreserved),
+            Some(HarnessConfigurationPosture::ProviderSuppressed),
+        ),
+    )
+}
 
 pub struct SidecarFixtureSelection {
     pub plan: PreflightPlan,
@@ -159,7 +175,9 @@ fn build_selection(
                 .with_session_access_policy(SessionAccessPolicy::ambient_harness(
                     ResourceAccess::Read,
                 ))
-                .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+                .with_session_provider_state_policy(
+                    SessionProviderStatePolicy::DurableProviderSessionPreserved,
+                )
                 .require_model_route(),
         )
         .expect("sidecar fixture preflight succeeds");
@@ -213,6 +231,15 @@ fn capabilities(role: DriverRole) -> Vec<CapabilityRequirement> {
     vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::LoadSession,
+            [
+                CapabilityConstraint::ReplayMaximumItems(1024),
+                CapabilityConstraint::ReplayMaximumBytes(4 * 1024 * 1024),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::Resume, []),
+        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(

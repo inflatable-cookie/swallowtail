@@ -1,6 +1,6 @@
 use super::{deadline, driver, make_host_id};
 use crate::support::{
-    SidecarFixtureHost, SidecarScenario, open_request, sidecar_selection, turn_request,
+    SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection, turn_request,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::PiSdkSidecarDriver;
@@ -18,7 +18,7 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-session-cancel", selected.resource),
+        sidecar_open_request("sidecar-session-cancel", selected.resource),
         services.clone(),
     ))
     .expect("sidecar session opens");
@@ -57,7 +57,7 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-session-timeout", selected.resource),
+        sidecar_open_request("sidecar-session-timeout", selected.resource),
         services.clone(),
     ))
     .expect("sidecar session opens");
@@ -88,7 +88,7 @@ fn prompt_bounds_hold_without_reclassification() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-busy-session", selected.resource),
+        sidecar_open_request("sidecar-busy-session", selected.resource),
         services.clone(),
     ))
     .expect("sidecar session opens");
@@ -114,7 +114,7 @@ fn prompt_bounds_hold_without_reclassification() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-limit-session", selected.resource),
+        sidecar_open_request("sidecar-limit-session", selected.resource),
         services.clone(),
     ))
     .expect("sidecar limit session opens");
@@ -152,7 +152,7 @@ fn preflight_mismatch_has_no_effect_and_process_cleanup_failure_surfaces() {
     );
     let error = block_on(wrong_driver.open_session(
         selected.plan,
-        open_request("sidecar-preflight-fail", selected.resource),
+        sidecar_open_request("sidecar-preflight-fail", selected.resource),
         fixture.services(host_id),
     ))
     .err()
@@ -170,7 +170,7 @@ fn preflight_mismatch_has_no_effect_and_process_cleanup_failure_surfaces() {
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        open_request("sidecar-cleanup-session", selected.resource),
+        sidecar_open_request("sidecar-cleanup-session", selected.resource),
         services.clone(),
     ))
     .expect("sidecar cleanup session opens");

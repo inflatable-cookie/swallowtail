@@ -5,9 +5,6 @@ use serde_json::Value;
 use swallowtail_runtime::TokenUsage;
 
 mod decode;
-// Card 091 consumes the typed replay payloads; the fresh-session driver fails
-// closed on replay events without reading them.
-#[allow(dead_code)]
 pub(crate) mod replay;
 
 pub(crate) use decode::decode_usage;
@@ -141,9 +138,6 @@ pub(crate) enum PiSdkSidecarEvent {
         name: String,
         failed: bool,
     },
-    // Card 091 projects replay items during session load; fresh turns fail
-    // closed before reading the payload.
-    #[allow(dead_code)]
     ReplayItem {
         sequence: u64,
         item: PiSdkReplayItem,

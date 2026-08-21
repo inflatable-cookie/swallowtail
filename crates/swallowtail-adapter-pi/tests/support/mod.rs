@@ -18,10 +18,10 @@ pub use selection::{
 #[allow(unused_imports)]
 pub use selection::{run_request, run_selection_for_topology};
 #[allow(unused_imports)]
-pub use sidecar_host::{SidecarFixtureHost, SidecarScenario};
+pub use sidecar_host::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario};
 #[allow(unused_imports)]
 pub use sidecar_selection::{
-    SidecarFixtureSelection, sidecar_catalogue_selection, sidecar_selection,
+    SidecarFixtureSelection, sidecar_catalogue_selection, sidecar_open_request, sidecar_selection,
     sidecar_selection_with_instance_versions, sidecar_versions,
 };
 

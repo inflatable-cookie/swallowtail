@@ -6,15 +6,17 @@ use serde_json::Value;
 use swallowtail_runtime::TokenUsage;
 
 pub(crate) enum PiSdkReplayItem {
-    User {
-        text: String,
-        images: u64,
-    },
+    // Replay projection carries text only; image counts, stop reasons, usage,
+    // tool names, and failure flags stay inside the adapter by design.
+    #[allow(dead_code)]
+    User { text: String, images: u64 },
+    #[allow(dead_code)]
     Assistant {
         parts: Vec<PiSdkReplayPart>,
         stop_reason: String,
         usage: Option<TokenUsage>,
     },
+    #[allow(dead_code)]
     ToolResult {
         name: String,
         failed: bool,
@@ -25,7 +27,11 @@ pub(crate) enum PiSdkReplayItem {
 pub(crate) enum PiSdkReplayPart {
     Text(String),
     Reasoning(String),
-    ToolCall { name: String, arguments: Value },
+    #[allow(dead_code)]
+    ToolCall {
+        name: String,
+        arguments: Value,
+    },
 }
 
 pub(crate) fn decode_replay_item(

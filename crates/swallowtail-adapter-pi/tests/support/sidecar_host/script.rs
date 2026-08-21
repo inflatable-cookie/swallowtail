@@ -1,4 +1,6 @@
-use super::{ProcessState, SidecarScenario, fixture_failure};
+use super::{FIXTURE_SESSION_REF, ProcessState, SidecarScenario, fixture_failure};
+
+mod continuity;
 use serde_json::{Value, json};
 use swallowtail_runtime::{ProcessOutputChunk, ProcessOutputStream, RuntimeFailure};
 
@@ -44,6 +46,7 @@ pub(super) fn respond(
                 .ok_or_else(fixture_failure)?
                 .to_owned();
             state.bootstrap = Some((cwd.clone(), provider.clone(), model.clone()));
+            state.session_ref = Some(FIXTURE_SESSION_REF.to_owned());
             let (sdk_version, node_version) =
                 if matches!(scenario, SidecarScenario::BootstrapVersionMismatch) {
                     ("0.84.1", "22.23.1")
@@ -83,6 +86,7 @@ pub(super) fn respond(
         }
         "state" => {
             let (cwd, provider, model) = state.bootstrap.clone().ok_or_else(fixture_failure)?;
+            let session_ref = state.session_ref.clone().ok_or_else(fixture_failure)?;
             let provider = if matches!(scenario, SidecarScenario::StateMismatch) {
                 "wrong-provider"
             } else {
@@ -103,11 +107,17 @@ pub(super) fn respond(
                         "streaming": false,
                         "messages": 0,
                         "sessionId": "00000000-0000-0000-0000-000000000000",
-                        "sessionRef": "/fixture/pi-sidecar-agent/sessions/session.jsonl",
+                        "sessionRef": session_ref,
                         "tools": ["read", "grep", "find", "ls"]
                     }
                 }),
             );
+        }
+        "session_switch" => {
+            continuity::session_switch(scenario, id, &params, state)?;
+        }
+        "session_replay" => {
+            continuity::session_replay(scenario, id, state);
         }
         "prompt" => {
             let response_command = if matches!(scenario, SidecarScenario::ResponseMismatch) {
@@ -170,7 +180,17 @@ pub(super) fn respond(
                 | SidecarScenario::ResponseMismatch
                 | SidecarScenario::BootstrapCwdMismatch
                 | SidecarScenario::BootstrapVersionMismatch
-                | SidecarScenario::StateMismatch => {}
+                | SidecarScenario::StateMismatch
+                | SidecarScenario::SessionNotFound
+                | SidecarScenario::SessionSubstituted
+                | SidecarScenario::SwitchCwdMismatch
+                | SidecarScenario::ReplayFailure
+                | SidecarScenario::ReplaySequenceGap
+                | SidecarScenario::ReplayCountMismatch
+                | SidecarScenario::ReplayOverflow
+                | SidecarScenario::ReplayAfterResponse
+                | SidecarScenario::ReplayDuringResume
+                | SidecarScenario::HoldReplay => {}
             }
         }
         "steer" => {

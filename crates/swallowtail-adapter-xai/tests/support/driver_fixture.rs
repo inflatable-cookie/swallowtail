@@ -1,19 +1,13 @@
+mod plan;
+
 use super::{
     CallLog, FixtureServer, ServerScenario, ThreadServices, TrackingCredential, TrackingNetwork,
 };
 use std::sync::Arc;
-use swallowtail_adapter_xai::{
-    XaiPreparationInput, xai_responses_access_profile, xai_websocket_descriptor,
-};
+use swallowtail_adapter_xai::{XaiPreparationInput, xai_responses_access_profile};
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
-    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
-    ProviderId, RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy,
-    SupportAuthority, preflight,
+    AccessStatus, CredentialState, EndpointAudience, EndpointAuthorization, ExecutionHostId,
+    InstanceRevision, InstanceTargetRef, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -99,7 +93,7 @@ impl DriverFixture {
         let status = AccessStatus::new(
             access.id().clone(),
             CredentialState::Ready,
-            EntitlementState::Available,
+            swallowtail_core::EntitlementState::Available,
             EndpointAuthorization::Allowed,
             RuntimeReadiness::Ready,
             SupportAuthority::ProviderSupported,
@@ -112,126 +106,4 @@ impl DriverFixture {
             PreparedAccessEvidence::caller_asserted(status),
         )
     }
-
-    pub fn plan(&self) -> PreflightPlan {
-        self.plan_for(swallowtail_core::DriverRole::InteractiveSession)
-    }
-
-    pub fn run_plan(&self) -> PreflightPlan {
-        self.plan_for(swallowtail_core::DriverRole::StructuredRun)
-    }
-
-    fn plan_for(&self, role: swallowtail_core::DriverRole) -> PreflightPlan {
-        let descriptor = xai_websocket_descriptor();
-        let access_id = AccessProfileId::new("access.xai.public").expect("access id is valid");
-        let mut all_requirements = capability_requirements();
-        all_requirements.extend(run_capability_requirements());
-        let capabilities = CapabilityProfile::new(all_requirements);
-        let instance = ConfiguredInstance::new(
-            ConfiguredInstanceId::new("xai.public.websocket").expect("instance id is valid"),
-            InstanceRevision::new("1").expect("revision is valid"),
-            descriptor.identity().id().clone(),
-            self.host_id.clone(),
-            self.target.clone(),
-            InstanceOwnership::ExternalAttached,
-            access_id.clone(),
-            SupportAuthority::ProviderSupported,
-            ProtocolFacadeId::new("xai-responses-websocket-2026-04-23").expect("facade is valid"),
-            InstancePolicyId::new("public-api-key-resource-free").expect("policy is valid"),
-            capabilities.clone(),
-        );
-        let route = ModelRoute::new(
-            ModelRouteId::new("xai-grok-fixture").expect("route id is valid"),
-            ModelRouteRevision::new("1").expect("route revision is valid"),
-            instance.id().clone(),
-            ModelId::new("grok-fixture-exact").expect("model id is valid"),
-            capabilities,
-        )
-        .with_provider_id(ProviderId::new("xai").expect("provider id is valid"));
-        let access = AccessProfile::new(
-            access_id.clone(),
-            CredentialMechanism::ApiKey,
-            EntitlementMetering::PayAsYouGo,
-            self.audience.clone(),
-            SupportAuthority::ProviderSupported,
-        )
-        .with_credential_reference(self.credential.clone());
-        let status = AccessStatus::new(
-            access_id.clone(),
-            CredentialState::Ready,
-            EntitlementState::Available,
-            EndpointAuthorization::Allowed,
-            RuntimeReadiness::Ready,
-            SupportAuthority::ProviderSupported,
-        );
-        let host_services: Vec<_> = descriptor.required_host_services(role).collect();
-        let access_requirement = AccessRequirement::new(access_id)
-            .with_credential_states([CredentialState::Ready])
-            .with_entitlement_states([EntitlementState::Available])
-            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-            .with_runtime_readiness([RuntimeReadiness::Ready])
-            .with_support_authorities([SupportAuthority::ProviderSupported]);
-        let operation = match role {
-            swallowtail_core::DriverRole::StructuredRun => OperationRequirements::new(
-                ExecutionLayer::DirectModelInference,
-                OperationShape::StructuredRun,
-                role,
-                self.host_id.clone(),
-                access_requirement,
-            )
-            .with_ownership_modes([InstanceOwnership::ExternalAttached])
-            .with_host_services(host_services.clone())
-            .with_capabilities(run_capability_requirements())
-            .require_model_route(),
-            _ => OperationRequirements::new(
-                ExecutionLayer::DirectModelInference,
-                OperationShape::InteractiveSession,
-                role,
-                self.host_id.clone(),
-                access_requirement,
-            )
-            .with_ownership_modes([InstanceOwnership::ExternalAttached])
-            .with_host_services(host_services.clone())
-            .with_capabilities(capability_requirements())
-            .with_session_access_policy(SessionAccessPolicy::resource_free())
-            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
-            .require_model_route(),
-        };
-        preflight(
-            &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)
-                .with_model_route(&route),
-            &operation,
-        )
-        .expect("xAI session preflight succeeds")
-    }
-}
-
-fn capability_requirements() -> Vec<CapabilityRequirement> {
-    vec![
-        CapabilityRequirement::new(Capability::InteractiveSession, []),
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [swallowtail_core::CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::ActiveTurn,
-            )],
-        ),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::BilledCostReporting, []),
-    ]
-}
-
-fn run_capability_requirements() -> Vec<CapabilityRequirement> {
-    vec![
-        CapabilityRequirement::new(Capability::StructuredRun, []),
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [swallowtail_core::CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::StructuredRun,
-            )],
-        ),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::BilledCostReporting, []),
-    ]
 }

@@ -68,7 +68,10 @@ pub(crate) fn from_plan(plan: &PreflightPlan) -> Result<GenerationControls, Runt
     let maximum_output_tokens = match one_constraint(plan, Capability::OutputTokenLimit)? {
         None => None,
         Some(CapabilityConstraint::OutputTokenMaximum(value)) => {
-            NonZeroU64::new(value).filter(|value| value.get() <= MAX_OUTPUT_TOKENS)
+            if value == 0 || value > MAX_OUTPUT_TOKENS {
+                return Err(plan_controls_failure());
+            }
+            Some(NonZeroU64::new(value).expect("validated positive output-token maximum"))
         }
         Some(_) => return Err(plan_controls_failure()),
     };

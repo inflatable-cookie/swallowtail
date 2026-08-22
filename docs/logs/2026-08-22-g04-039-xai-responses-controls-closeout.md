@@ -59,7 +59,7 @@ Official evidence used by Research 187:
 Passed:
 
 - `cargo fmt -p swallowtail-adapter-xai`
-- `effigy validate:focused swallowtail-adapter-xai` — 36 tests passed
+- `CARGO_BUILD_JOBS=1 NEXTEST_TEST_THREADS=1 effigy validate:focused swallowtail-adapter-xai` — 40 tests passed
 - `effigy package:verify-affected swallowtail-adapter-xai`
 - `effigy check:examples`
 - `effigy qa:routes`
@@ -69,8 +69,10 @@ Passed:
 - `git diff --check`
 
 `effigy doctor` remains blocked by the repository's inherited god-file scan
-(371 findings, including 45 errors); no new doctor finding was introduced by
-this route-local work.
+(371 findings: 326 warnings and 45 errors); the post-fix count matches the
+`origin/main` baseline and no new doctor finding was introduced by this
+route-local work. The doctor report also retains its existing graph-index and
+generated-in-source warnings.
 
 ## Deferred Shared-Surface Delta
 

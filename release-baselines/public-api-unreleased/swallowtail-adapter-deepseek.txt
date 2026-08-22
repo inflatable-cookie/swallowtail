@@ -35,6 +35,7 @@ pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::access(&sel
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
 pub struct swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
 impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence

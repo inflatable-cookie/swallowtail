@@ -7,13 +7,13 @@ use swallowtail_adapter_deepseek::{
     deepseek_v4_run_requirements,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
-    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, ProtocolFacadeId, ProviderId,
-    RuntimeReadiness, SupportAuthority, preflight,
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
+    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
+    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
+    ProtocolFacadeId, ProviderId, ReasoningMode, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -143,6 +143,14 @@ impl Fixture {
     }
 
     pub fn plan(&self, role: DriverRole) -> swallowtail_core::PreflightPlan {
+        self.plan_with_reasoning(role, "high")
+    }
+
+    pub fn plan_with_reasoning(
+        &self,
+        role: DriverRole,
+        reasoning: &str,
+    ) -> swallowtail_core::PreflightPlan {
         let descriptor = deepseek_direct_descriptor();
         let session_requirements =
             deepseek_v4_requirements(self.host_id.clone(), self.access_id.clone());
@@ -191,8 +199,10 @@ impl Fixture {
             SupportAuthority::ProviderSupported,
         );
         let operation = match role {
-            DriverRole::InteractiveSession => session_requirements,
-            DriverRole::StructuredRun => run_requirements,
+            DriverRole::InteractiveSession => {
+                exact_reasoning_requirements(session_requirements, reasoning)
+            }
+            DriverRole::StructuredRun => exact_reasoning_requirements(run_requirements, reasoning),
             _ => OperationRequirements::new(
                 ExecutionLayer::DirectModelInference,
                 OperationShape::InteractiveSession,
@@ -213,6 +223,27 @@ impl Fixture {
             preflight(&context.with_model_route(&route), &operation).expect("route preflight")
         }
     }
+}
+
+fn exact_reasoning_requirements(
+    requirements: OperationRequirements,
+    mode: &str,
+) -> OperationRequirements {
+    let selected = ReasoningMode::new(mode).expect("fixture reasoning mode");
+    let capabilities = requirements
+        .capabilities()
+        .map(|requirement| {
+            if requirement.capability() == Capability::ReasoningSelection {
+                CapabilityRequirement::new(
+                    Capability::ReasoningSelection,
+                    [CapabilityConstraint::ReasoningMode(selected.clone())],
+                )
+            } else {
+                requirement.clone()
+            }
+        })
+        .collect::<Vec<_>>();
+    requirements.with_capabilities(capabilities)
 }
 
 fn access_requirement(id: AccessProfileId) -> AccessRequirement {

@@ -1,7 +1,7 @@
 use super::input::DeepSeekSessionProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
-use crate::selection::deepseek_reasoning_mode_is_supported;
+use crate::selection::{deepseek_reasoning_mode_is_supported, deepseek_requirements_for_reasoning};
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
@@ -86,6 +86,7 @@ impl DeepSeekPreparedIntegration {
                 "DeepSeek direct continuation requires explicit acceptance of unmanaged provider caching",
             ));
         }
+        let reasoning = options.reasoning_mode().cloned();
         if options
             .reasoning_mode()
             .is_none_or(|mode| !deepseek_reasoning_mode_is_supported(mode))
@@ -98,10 +99,14 @@ impl DeepSeekPreparedIntegration {
                 "DeepSeek direct continuation requires an exact supported reasoning selection and one to eight declared tools",
             ));
         }
+        let reasoning = reasoning.expect("validated reasoning selection");
         let activity = crate::activity::profile::activity_profile(true);
-        let base_requirements = crate::deepseek_v4_requirements(
-            self.instance().execution_host_id().clone(),
-            self.access_profile().id().clone(),
+        let base_requirements = deepseek_requirements_for_reasoning(
+            crate::deepseek_v4_requirements(
+                self.instance().execution_host_id().clone(),
+                self.access_profile().id().clone(),
+            ),
+            &reasoning,
         );
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
@@ -132,7 +137,9 @@ impl DeepSeekPreparedIntegration {
             )
         })?;
         Ok(DeepSeekPreparedSession {
-            evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(
+                self, plan, activity, reasoning,
+            )?,
             request,
         })
     }

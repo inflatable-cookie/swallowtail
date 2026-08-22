@@ -9,8 +9,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_deepseek::{
     DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_MODEL_ID, DeepSeekCatalogueProfileInput,
-    DeepSeekModelSelection, DeepSeekRunProfileInput, DeepSeekSessionProfileInput,
-    prepare_deepseek_direct,
+    DeepSeekDirectDriver, DeepSeekModelSelection, DeepSeekRunProfileInput,
+    DeepSeekSessionProfileInput, deepseek_v4_config, prepare_deepseek_direct,
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, ModelId, ModelRouteId, ModelRouteRevision,
@@ -18,8 +18,10 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DirectContinuationTurnRequest, DirectToolResult,
-    DirectToolResultContent, MonotonicInstant, OperationContent, RequestId, RuntimeTurnId,
-    SchemaDocument, TerminalStatus, ToolDeclaration,
+    DirectToolResultContent, InteractiveSessionDriver, MonotonicInstant,
+    OpenDirectContinuationSessionRequest, OperationContent, OperationPolicy, RequestId,
+    RuntimeTurnId, SchemaDocument, SessionOptions, StructuredRunDriver, StructuredRunRequest,
+    TerminalStatus, ToolDeclaration,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, assert_observable_activity_not_applicable,
@@ -194,7 +196,13 @@ fn exact_reasoning_selection_repeats_in_prepared_plan_request_and_evidence() {
                 .as_str(),
             mode
         );
-        assert_plan_supports_reasoning(run.plan(), mode);
+        assert_plan_binds_reasoning(run.plan(), mode);
+        assert_eq!(
+            run.evidence()
+                .reasoning_mode()
+                .map(|selected| selected.as_str()),
+            Some(mode)
+        );
         assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
 
         let session = prepared
@@ -213,7 +221,14 @@ fn exact_reasoning_selection_repeats_in_prepared_plan_request_and_evidence() {
                 .as_str(),
             mode
         );
-        assert_plan_supports_reasoning(session.plan(), mode);
+        assert_plan_binds_reasoning(session.plan(), mode);
+        assert_eq!(
+            session
+                .evidence()
+                .reasoning_mode()
+                .map(|selected| selected.as_str()),
+            Some(mode)
+        );
         assert_prepared_operation_evidence_matches_plan(
             session.evidence().operation(),
             session.plan(),
@@ -257,6 +272,72 @@ fn unsupported_reasoning_modes_fail_during_preparation_without_effects() {
         );
     }
 
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn supported_reasoning_substitution_fails_against_prepared_plan_before_effects() {
+    let fixture = Fixture::new();
+    let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let run = prepared
+        .prepare_run(DeepSeekRunProfileInput::new(
+            RequestId::new("bound-low-run").expect("request id"),
+            model(DEEPSEEK_MODEL_ID),
+            OperationContent::new("must reject substitution").expect("content"),
+            ReasoningMode::new("low").expect("reasoning"),
+            std::num::NonZeroU64::new(512).expect("maximum"),
+            ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
+        ))
+        .expect("low run prepares");
+    let run_request = StructuredRunRequest::new(
+        RequestId::new("substituted-high-run").expect("request id"),
+        OperationContent::new("must reject substitution").expect("content"),
+        OperationPolicy::offline().with_reasoning_mode(ReasoningMode::new("high").expect("mode")),
+    )
+    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+    let error = block_on(DeepSeekDirectDriver::new().start_run(
+        run.plan().clone(),
+        run_request,
+        fixture.services(),
+    ))
+    .err()
+    .expect("supported reasoning substitution rejects");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.deepseek.unsupported"
+    );
+
+    let session = prepared
+        .prepare_session(session_input_with_reasoning(
+            "bound-low-session",
+            DEEPSEEK_MODEL_ID,
+            "low",
+        ))
+        .expect("low session prepares");
+    let session_request = OpenDirectContinuationSessionRequest::new(
+        RequestId::new("substituted-high-session").expect("request id"),
+        deepseek_v4_config(),
+    )
+    .with_options(
+        SessionOptions::default()
+            .with_reasoning_mode(ReasoningMode::new("high").expect("mode"))
+            .with_tools([tool()]),
+    );
+    let error = block_on(
+        DeepSeekDirectDriver::new().open_direct_continuation_session(
+            session.plan().clone(),
+            session_request,
+            fixture.services(),
+        ),
+    )
+    .err()
+    .expect("supported reasoning substitution rejects");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.deepseek.request_plan_mismatch"
+    );
     assert!(fixture.server.requests().is_empty());
     assert_eq!(fixture.releases(), 0);
 }
@@ -322,16 +403,19 @@ fn session_input_with_reasoning(
     )
 }
 
-fn assert_plan_supports_reasoning(plan: &swallowtail_core::PreflightPlan, mode: &str) {
-    assert!(plan.requirements().capabilities().any(|requirement| {
-        requirement.capability() == Capability::ReasoningSelection
-            && requirement.constraints().any(|constraint| {
-                matches!(
-                    constraint,
-                    CapabilityConstraint::ReasoningMode(selected) if selected.as_str() == mode
-                )
-            })
-    }));
+fn assert_plan_binds_reasoning(plan: &swallowtail_core::PreflightPlan, mode: &str) {
+    let mut requirements = plan
+        .requirements()
+        .capabilities()
+        .filter(|requirement| requirement.capability() == Capability::ReasoningSelection);
+    let requirement = requirements.next().expect("reasoning requirement");
+    assert!(requirements.next().is_none());
+    let mut constraints = requirement.constraints();
+    assert!(matches!(
+        constraints.next(),
+        Some(CapabilityConstraint::ReasoningMode(selected)) if selected.as_str() == mode
+    ));
+    assert!(constraints.next().is_none());
 }
 
 fn model(model_id: &str) -> DeepSeekModelSelection {

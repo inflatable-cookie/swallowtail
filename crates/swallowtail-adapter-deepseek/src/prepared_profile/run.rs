@@ -1,7 +1,7 @@
 use super::input::DeepSeekRunProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
-use crate::selection::deepseek_reasoning_mode_is_supported;
+use crate::selection::{deepseek_reasoning_mode_is_supported, deepseek_requirements_for_reasoning};
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
@@ -87,9 +87,12 @@ impl DeepSeekPreparedIntegration {
             ));
         }
         let activity = crate::activity::profile::activity_profile(false);
-        let base_requirements = crate::deepseek_v4_run_requirements(
-            self.instance().execution_host_id().clone(),
-            self.access_profile().id().clone(),
+        let base_requirements = deepseek_requirements_for_reasoning(
+            crate::deepseek_v4_run_requirements(
+                self.instance().execution_host_id().clone(),
+                self.access_profile().id().clone(),
+            ),
+            &reasoning,
         );
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
@@ -113,14 +116,16 @@ impl DeepSeekPreparedIntegration {
         let mut request = StructuredRunRequest::new(
             request_id,
             content,
-            OperationPolicy::offline().with_reasoning_mode(reasoning),
+            OperationPolicy::offline().with_reasoning_mode(reasoning.clone()),
         )
         .with_maximum_output_tokens(maximum);
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
         Ok(DeepSeekPreparedRun {
-            evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(
+                self, plan, activity, reasoning,
+            )?,
             request,
         })
     }

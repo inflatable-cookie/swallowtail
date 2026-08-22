@@ -112,7 +112,7 @@ fn structured_run_dispatches_each_exact_reasoning_effort() {
         )
         .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
         let mut run = block_on(DeepSeekDirectDriver::new().start_run(
-            fixture.plan(DriverRole::StructuredRun),
+            fixture.plan_with_reasoning(DriverRole::StructuredRun, mode),
             request,
             fixture.services(),
         ))
@@ -396,7 +396,7 @@ fn open_with_reasoning(
 ) -> Box<dyn swallowtail_runtime::InteractiveSessionHandle> {
     block_on(
         DeepSeekDirectDriver::new().open_direct_continuation_session(
-            fixture.plan(DriverRole::InteractiveSession),
+            fixture.plan_with_reasoning(DriverRole::InteractiveSession, reasoning),
             OpenDirectContinuationSessionRequest::new(
                 RequestId::new(request_id).expect("request id"),
                 deepseek_v4_config(),

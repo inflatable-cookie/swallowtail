@@ -2,6 +2,7 @@ use crate::DeepSeekPreparedIntegration;
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole,
     ExecutionLayer, ModelRoute, OperationRequirements, OperationShape, PreflightPlan, ProviderId,
+    ReasoningMode,
 };
 use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
@@ -9,6 +10,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 /// Inspectable prepared evidence for one DeepSeek operation.
 pub struct DeepSeekPreparedEvidence {
     operation: PreparedOperationEvidence,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl DeepSeekPreparedEvidence {
@@ -21,6 +23,7 @@ impl DeepSeekPreparedEvidence {
                 plan,
                 prepared.access_evidence().clone(),
             )?,
+            reasoning_mode: None,
         })
     }
 
@@ -28,6 +31,7 @@ impl DeepSeekPreparedEvidence {
         prepared: &DeepSeekPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        reasoning_mode: ReasoningMode,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
@@ -35,6 +39,7 @@ impl DeepSeekPreparedEvidence {
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
+            reasoning_mode: Some(reasoning_mode),
         })
     }
 
@@ -60,6 +65,12 @@ impl DeepSeekPreparedEvidence {
     /// Returns the immutable preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    #[must_use]
+    /// Returns the exact reasoning selection bound to this operation, if any.
+    pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
+        self.reasoning_mode.as_ref()
     }
 }
 

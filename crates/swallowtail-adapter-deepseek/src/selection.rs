@@ -48,16 +48,49 @@ fn deepseek_reasoning_requirement() -> CapabilityRequirement {
     )
 }
 
+fn deepseek_selected_reasoning_requirement(selected: &ReasoningMode) -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::ReasoningSelection,
+        [CapabilityConstraint::ReasoningMode(selected.clone())],
+    )
+}
+
+pub(crate) fn deepseek_requirements_for_reasoning(
+    requirements: OperationRequirements,
+    selected: &ReasoningMode,
+) -> OperationRequirements {
+    let capabilities = requirements
+        .capabilities()
+        .map(|requirement| {
+            if requirement.capability() == Capability::ReasoningSelection {
+                deepseek_selected_reasoning_requirement(selected)
+            } else {
+                requirement.clone()
+            }
+        })
+        .collect::<Vec<_>>();
+    requirements.with_capabilities(capabilities)
+}
+
 pub(crate) fn deepseek_plan_supports_reasoning(
     plan: &swallowtail_core::PreflightPlan,
     selected: &ReasoningMode,
 ) -> bool {
-    plan.requirements().capabilities().any(|requirement| {
-        requirement.capability() == Capability::ReasoningSelection
-            && requirement.constraints().any(|constraint| {
-                matches!(constraint, CapabilityConstraint::ReasoningMode(mode) if mode == selected)
-            })
-    })
+    let mut reasoning_requirements = plan
+        .requirements()
+        .capabilities()
+        .filter(|requirement| requirement.capability() == Capability::ReasoningSelection);
+    let Some(requirement) = reasoning_requirements.next() else {
+        return false;
+    };
+    if reasoning_requirements.next().is_some() {
+        return false;
+    }
+    let mut constraints = requirement.constraints();
+    matches!(
+        constraints.next(),
+        Some(CapabilityConstraint::ReasoningMode(mode)) if mode == selected
+    ) && constraints.next().is_none()
 }
 
 #[must_use]

@@ -18,7 +18,10 @@ fn fixture() -> (
 ) {
     let host = ExecutionHostId::new("fixture.host.deepseek").unwrap();
     let access_id = AccessProfileId::new("fixture.access.deepseek").unwrap();
-    let requirements = deepseek_v4_requirements(host.clone(), access_id.clone());
+    let requirements = deepseek_requirements_for_reasoning(
+        deepseek_v4_requirements(host.clone(), access_id.clone()),
+        &swallowtail_core::ReasoningMode::new("high").unwrap(),
+    );
     let profile = CapabilityProfile::new(requirements.capabilities().cloned());
     let adapter_id = AdapterId::new("swallowtail.deepseek.direct").unwrap();
     let driver = DriverDescriptor::new(

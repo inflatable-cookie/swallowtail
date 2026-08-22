@@ -8,8 +8,8 @@ Branch: `t3code/openai-background-reasoning-correction`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-4946f4f4`
 Base: `1b3b5bb243a14eeacc9475cc9efa595f4e009321`
 Implementation commit: `a8cad66`
-PR: pending
-Review: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/43
+Review: awaiting orchestrator
 Merge: none; worker must not merge
 
 ## Outcome
@@ -74,7 +74,7 @@ The worker did not edit shared surfaces outside the named route lane.
 
 ## Unresolved
 
-- PR URL and orchestrator review are pending; merge remains unauthorized.
+- Orchestrator review is pending; merge remains unauthorized.
 - Shared activity-inventory correction and the Contract 036 next-minor
   release-facing delta remain outside this worker branch.
 - No planning decision is needed for the route-local correction. Release

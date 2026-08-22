@@ -1,6 +1,6 @@
 # 120 OpenAI Background Search Binding
 
-Status: planned; conditional on card 119
+Status: blocked; card 119 evidence stop
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.043 OpenAI Background Hosted Search](../043-openai-background-hosted-search.md)
@@ -78,3 +78,12 @@ projection, absent-path, and zero-network rejection tests pass.
 - filters, location, image search, file search, MCP, functions, service tier,
   or sibling OpenAI routes
 - live provider work
+
+## Closeout
+
+Not executed. Research 191 admits no deliver-now request/control row. The
+official docs establish individual `web_search`, model, bound, source, and
+background fields but do not prove their exact composition with this route's
+stream, retrieve, activity, account-policy, or facade requirements. There is
+no typed input, plan constraint, prepared evidence, driver binding, or wire
+delta to implement.

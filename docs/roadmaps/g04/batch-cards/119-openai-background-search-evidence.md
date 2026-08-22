@@ -1,6 +1,6 @@
 # 119 OpenAI Background Search Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.043 OpenAI Background Hosted Search](../043-openai-background-hosted-search.md)
@@ -47,17 +47,17 @@ OpenAI operation is authorized.
 
 ## Acceptance Criteria
 
-- [ ] current official sources and stable specimens are frozen with digests
-- [ ] exact tool, bound, choice, source, model, and access semantics are explicit
-- [ ] background and every existing lifecycle/control combination is classified
-- [ ] stream, reattachment, retrieve, activity, usage, and failure truth is explicit
-- [ ] interface revision and Contract 029 disposition is explicit
-- [ ] Research 191 is promoted with a route/request deliver-now table
-- [ ] the existing production claim is unchanged unless exact evidence supports
+- [x] current official sources and stable specimens are frozen with digests
+- [x] exact tool, bound, choice, source, model, and access semantics are explicit
+- [x] background and every existing lifecycle/control combination is classified
+- [x] stream, reattachment, retrieve, activity, usage, and failure truth is explicit
+- [x] interface revision and Contract 029 disposition is explicit
+- [x] Research 191 is promoted with a route/request deliver-now table
+- [x] the existing production claim is unchanged unless exact evidence supports
       a named additive behavior revision
-- [ ] `effigy validate:focused swallowtail-adapter-openai` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-openai` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 120 only when Research 191 admits a bounded exact
 `web_search` mapping with no contract, model, facade, or lifecycle gap.
@@ -79,3 +79,19 @@ Auto-continue to card 120 only when Research 191 admits a bounded exact
 - search filters, location, context size, return-token budget, image search,
   file search, MCP, functions, service tier, or other routes
 - shared research/log/roadmap indexes and shared closeout surfaces
+
+## Closeout
+
+Research 191 is promoted with current official OpenAI source digests and
+secret-free request, stream, search-item, retrieve, and failure specimens.
+The public docs establish `web_search`, `gpt-5.6` feature support, explicit
+provider access posture, `max_tool_calls: 1` as a positive total-call
+candidate, `tool_choice: "auto"`, source inclusion, and the individual
+background lifecycle controls.
+
+They do not establish the exact composed background request, search-event
+continuity through one reattachment, retrieved source/output truth, account
+policy, or activity/facade mapping. Independent field documentation is not
+promoted to route support. No deliver-now row exists. Cards 120 and 121 are
+blocked and were not executed; the existing tool-free production claim is
+unchanged.

@@ -1,6 +1,6 @@
 # 121 OpenAI Background Search Acceptance
 
-Status: planned; conditional on card 120
+Status: blocked; card 119 evidence stop
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.043 OpenAI Background Hosted Search](../043-openai-background-hosted-search.md)
@@ -76,3 +76,11 @@ Auto-continuation: No.
 - merge or restack authority
 - shared architecture, route/feature matrices, programme/front doors/indexes,
   matrix assertions, `CHANGELOG.md`, and shared package lists
+
+## Closeout
+
+Not executed. Card 120 produced no binding because Research 191 has an empty
+deliver-now set. There is no admitted request, stream, reattachment, retrieve,
+activity, failure, or cleanup behavior to exercise. The adapter, fixtures,
+guide, and public API baseline remain unchanged; the shared-surface delta is
+recorded in the route-local closeout.

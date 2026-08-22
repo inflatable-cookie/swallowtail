@@ -1,6 +1,6 @@
 # g04.043 OpenAI Background Hosted Search
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-22
 Updated: 2026-08-22
@@ -32,15 +32,15 @@ Responses tool surface.
 
 ## Goals
 
-- [ ] freeze current official Responses web-search, create/retrieve, background,
+- [x] freeze current official Responses web-search, create/retrieve, background,
       streaming, and `gpt-5.6` evidence
-- [ ] qualify exact `web_search` request fields, positive use bound, source
+- [x] qualify exact `web_search` request fields, positive use bound, source
       inclusion, event shapes, and terminal/retrieved representation
-- [ ] distinguish provider tool selection, invocation, sources, citations,
+- [x] distinguish provider tool selection, invocation, sources, citations,
       usage, billing, and assistant output
-- [ ] classify compatibility with background execution, `stream=true`,
+- [x] classify compatibility with background execution, `stream=true`,
       `store=false`, reattachment, reasoning, and structured output
-- [ ] decide the exact private facade revision and Contract 029 claim delta
+- [x] decide the exact private facade revision and Contract 029 claim delta
 - [ ] bind only Research 191 deliver-now rows through typed prepared input,
       immutable plan/evidence, request policy, driver validation, and wire
 - [ ] preserve exact request and lifecycle behavior when search is absent
@@ -85,10 +85,10 @@ admitted.
 
 ### Batch 43.1 — Exact Responses And Model Evidence
 
-- [ ] Execute card 119.
-- [ ] freeze official current pages and stable secret-free request, stream,
+- [x] Execute card 119.
+- [x] freeze official current pages and stable secret-free request, stream,
       retrieve, source, usage, and failure specimens
-- [ ] promote Research 191 with request/value, model, lifecycle, activity,
+- [x] promote Research 191 with request/value, model, lifecycle, activity,
       compatibility, and facade-revision dispositions
 
 ### Batch 43.2 — Conditional Prepared Binding
@@ -99,12 +99,16 @@ admitted.
 - [ ] preserve the absent path and reject policy, plan, evidence, driver, or
       wire drift before provider work
 
+Card 120 is blocked. Research 191 admits no deliver-now row.
+
 ### Batch 43.3 — Route-Local Acceptance
 
 - [ ] Execute card 121 only after card 120.
 - [ ] prove request, stream, reattachment, retrieve, activity, failure, and
       cleanup behavior without live provider work
 - [ ] update route-local guidance and report the deferred shared closeout delta
+
+Card 121 is blocked. There is no admitted dispatch to prove.
 
 ## Acceptance Criteria
 
@@ -148,9 +152,9 @@ admitted.
 
 ## Batch Cards
 
-- [119-openai-background-search-evidence.md](batch-cards/119-openai-background-search-evidence.md) — ready
-- [120-openai-background-search-binding.md](batch-cards/120-openai-background-search-binding.md) — conditional on card 119
-- [121-openai-background-search-acceptance.md](batch-cards/121-openai-background-search-acceptance.md) — conditional on card 120
+- [119-openai-background-search-evidence.md](batch-cards/119-openai-background-search-evidence.md) — complete; evidence stop
+- [120-openai-background-search-binding.md](batch-cards/120-openai-background-search-binding.md) — blocked
+- [121-openai-background-search-acceptance.md](batch-cards/121-openai-background-search-acceptance.md) — blocked
 
 ## References
 
@@ -165,3 +169,13 @@ admitted.
 - [OpenAI Web Search](https://developers.openai.com/api/docs/guides/tools-web-search)
 - [OpenAI Responses Create](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)
 - [OpenAI Models](https://developers.openai.com/api/docs/models)
+
+## Evidence Stop
+
+Research 191 is promoted, but its deliver-now set is empty. Official OpenAI
+documentation proves the candidate tool and its individual request and
+lifecycle fields, not the exact composed `openai.background` search route.
+The current adapter also has no search event/item parser or source-aware
+terminal representation. Cards 120 and 121 are therefore blocked. The
+existing `openai-responses-background-2026-07-21` facade point, tool-free
+request bytes, and route claim remain unchanged.

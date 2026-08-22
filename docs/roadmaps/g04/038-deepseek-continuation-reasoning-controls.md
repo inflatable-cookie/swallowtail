@@ -42,6 +42,8 @@ continuation contract or mapping unsupported labels to `high`.
 - [ ] reject unqualified modes, aliases, field combinations, and mismatches
       before network work
 - [ ] publish qualified dispatch without claiming effective reasoning depth
+- [ ] leave the exact shared architecture, matrix, changelog, and programme
+      delta for orchestrator closeout after merge
 
 ## Non-Goals
 
@@ -93,7 +95,8 @@ becomes consumer output.
 
 - [ ] Execute card 106 after card 105.
 - [ ] prove exact request bodies, replay invariants, and failure boundaries
-- [ ] update realized architecture, guide, matrices, programme, and changelog
+- [ ] update the route guide and report the shared architecture, matrix,
+      programme, and changelog delta for orchestrator closeout after merge
 
 ## Acceptance Criteria
 
@@ -107,6 +110,7 @@ becomes consumer output.
 - [ ] deterministic QA makes no provider call or account inspection
 - [ ] docs separate dispatch, acceptance, effective reasoning, and observed
       private continuation
+- [ ] the worker branch touches no shared parallel-closeout surface
 
 ## Lane Runway
 
@@ -141,4 +145,3 @@ becomes consumer output.
 - [Contract 030 Consumer-Owned Direct Tool Continuation](../../contracts/030-consumer-owned-direct-tool-continuation.md)
 - [Contract 040 Generation-Control Application And Enforcement](../../contracts/040-generation-control-application-and-enforcement.md)
 - [DeepSeek Prepared Integration](../../guides/deepseek-prepared-integration.md)
-

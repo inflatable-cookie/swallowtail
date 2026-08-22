@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-22 g04.038 DeepSeek Reasoning Controls Closeout](./2026-08-22-g04-038-deepseek-reasoning-controls-closeout.md)
+- [2026-08-22 g04.037 Anthropic Messages Effort Closeout](./2026-08-22-g04-037-anthropic-messages-effort-closeout.md)
 - [2026-08-22 g04.037-038 Parallel Feature Wave Compiled](./2026-08-22-g04-037-038-parallel-feature-wave-compiled.md)
 - [2026-08-22 g04.036 Ollama Num Ctx Compiled](./2026-08-22-g04-036-ollama-num-ctx-compiled.md)
 - [2026-08-22 g04.035 Cursor Headless Model Parameters Closeout](./2026-08-22-g04-035-cursor-headless-model-parameters-closeout.md)

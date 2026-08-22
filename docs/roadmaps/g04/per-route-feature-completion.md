@@ -62,6 +62,19 @@ families do not interrupt this programme by default.
 - The three route families may execute concurrently. Each lane remains serial;
   integrate Ollama, then Anthropic, then DeepSeek. Compile xAI after this wave.
 
+## Parallel Execution Boundary
+
+The Ollama, Anthropic, and DeepSeek workers own only their route crate, fixtures,
+prepared guide, numbered milestone and cards, reserved research record, reserved
+closeout log, and package-specific public API baseline. Anthropic and DeepSeek
+must not edit shared architecture, route/feature matrices, changelog, programme,
+roadmap front doors, indexes, or `packages.txt` while Ollama is in flight.
+
+The orchestrator reconciles those shared surfaces after review and merge in the
+fixed order Ollama, Anthropic, DeepSeek. A worker reports the required shared
+delta in its closeout record and PR body; it does not apply that delta on its
+parallel branch.
+
 ## Exclusions
 
 - dangerous permission-bypass defaults

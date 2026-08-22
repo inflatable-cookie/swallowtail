@@ -29,9 +29,9 @@ portable reasoning selection without a live provider request.
 6. Decide whether exact deliver-now values map to portable
    `ReasoningSelection` under Contract 040. Keep the provider field and model
    allowlist adapter-owned.
-7. Freeze deterministic request specimens and write/index promoted Research
-   185 with deliver-now, evidence-gated, withheld, not-applicable, and obsolete
-   dispositions.
+7. Freeze deterministic request specimens and replace the pre-indexed Research
+   185 reservation with deliver-now, evidence-gated, withheld, not-applicable,
+   and obsolete dispositions. Do not edit the shared research index.
 
 Do not authenticate, inspect an account, send a prompt, or infer effective
 effort from response text.
@@ -64,4 +64,4 @@ combination is deliver-now without a contract or facade-revision gap.
 - production binding or dispatch
 - Messages thinking, web-search version updates, or another feature family
 - live provider, account, model catalogue, or currentness work
-
+- shared research/log/roadmap indexes and other parallel-closeout surfaces

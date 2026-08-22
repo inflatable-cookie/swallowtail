@@ -15,11 +15,13 @@ their implementation, fixtures, and focused package validation are independent.
 Each route remains internally serial: exact evidence, then binding, then
 acceptance.
 
-Shared planning, matrix, architecture, changelog, and API-baseline surfaces make
-the finished PRs a controlled stack rather than independent merge candidates.
-The integration order is g04.036 Ollama, then g04.037 Anthropic, then g04.038
-DeepSeek. Workers may develop and review concurrently; the orchestrator owns
-restacking and merge truth.
+The worker branches have disjoint mutable scope. Research and closeout files are
+pre-reserved and indexed. Anthropic and DeepSeek defer shared architecture,
+matrix, changelog, programme, front-door, index, and `packages.txt` changes to
+orchestrator closeout. The integration order is g04.036 Ollama, then g04.037
+Anthropic, then g04.038 DeepSeek. Workers may develop and review concurrently;
+the orchestrator owns restacking, shared-surface reconciliation, and merge
+truth.
 
 Anthropic effort maps only exact Research 185 model/value/profile combinations
 to portable reasoning selection. It is not Messages thinking, Claude Code
@@ -33,4 +35,3 @@ A required facade revision or Contract 030 change stops the worker.
 
 Execute g04.036, g04.037, and g04.038 in isolated route-family workers. Review
 and restack them in fixed order. Compile xAI only after this wave is assessed.
-

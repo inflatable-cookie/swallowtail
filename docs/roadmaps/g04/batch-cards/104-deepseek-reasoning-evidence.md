@@ -30,8 +30,9 @@ and private direct-continuation behavior.
    each deliver-now combination. Stop on a needed revision or contract change.
 7. Decide exact portable `ReasoningSelection` mappings and whether thinking
    disable has any safe typed representation. Do not invent a generic boolean.
-8. Freeze deterministic corpus changes and write/index promoted Research 186
-   with per-control and per-profile dispositions.
+8. Freeze deterministic corpus changes and replace the pre-indexed Research 186
+   reservation with per-control and per-profile dispositions. Do not edit the
+   shared research index.
 
 ## Acceptance Criteria
 
@@ -61,4 +62,4 @@ the current facade without a contract or compatibility-segment change.
 - production binding or dispatch
 - V4 Flash, retired aliases, other facades, tools expansion, or output changes
 - live provider, account, balance, or currentness work
-
+- shared research/log/roadmap indexes and other parallel-closeout surfaces

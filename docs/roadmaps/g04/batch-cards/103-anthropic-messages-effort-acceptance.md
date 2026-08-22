@@ -8,8 +8,8 @@ Depends on: card 102
 
 ## Goal
 
-Prove exact Messages effort dispatch, publish bounded route truth, and close the
-Anthropic feature milestone without obscuring the parallel integration order.
+Prove exact Messages effort dispatch and produce the review-ready Anthropic
+route closeout without obscuring the parallel integration order.
 
 ## Scope
 
@@ -24,11 +24,12 @@ Anthropic feature milestone without obscuring the parallel integration order.
    the fixed prepared value. If not, document and test rejection.
 6. Preserve output-token, search, attachment, model, version, cancellation,
    failure, and cleanup proofs.
-7. Update realized architecture, the Anthropic direct guide, route and feature
-   matrices, changelog, Research 185, cards 101-103, g04.037, programme, logs,
-   and indexes.
-8. Keep the sole Next Task on the parallel feature wave until g04.036 and
-   g04.038 also land. Do not compile or start xAI from this worker.
+7. Update the Anthropic direct guide, Research 185, cards 101-103, g04.037, the
+   pre-indexed route-local closeout log, and the Anthropic package API baseline.
+8. Record the exact required architecture, route/feature matrix, changelog,
+   programme, index, and Next Task delta in the closeout log and PR body. Do not
+   edit those shared surfaces on this parallel branch.
+9. Do not compile or start xAI from this worker.
 
 ## Acceptance Criteria
 
@@ -37,6 +38,7 @@ Anthropic feature milestone without obscuring the parallel integration order.
 - docs distinguish dispatch, acceptance, and effective effort
 - no sibling Anthropic route gains the capability
 - closeout records PR/head truth without claiming merge
+- worker changed files stay within the programme's parallel execution boundary
 - named gates pass
 
 ## Validation
@@ -71,4 +73,5 @@ Auto-continuation: No.
 - Messages thinking, newer web-search tool, managed-agent model settings
 - live provider verification, release, publication, or consumer changes
 - merge or restack authority
-
+- `CHANGELOG.md`; `docs/architecture/system-architecture.md`; route/feature
+  matrices; programme and roadmap front doors; shared indexes; `packages.txt`

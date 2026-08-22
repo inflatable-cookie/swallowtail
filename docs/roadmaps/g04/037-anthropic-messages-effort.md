@@ -40,6 +40,8 @@ request-to-plan-to-wire agreement on qualified models and operation profiles.
       before network work
 - [ ] publish qualified dispatch without claiming provider acceptance or an
       effective effort level
+- [ ] leave the exact shared architecture, matrix, changelog, and programme
+      delta for orchestrator closeout after merge
 
 ## Non-Goals
 
@@ -86,7 +88,8 @@ exact provider confirmation surface is qualified.
 
 - [ ] Execute card 103 after card 102.
 - [ ] prove exact request bodies and mismatch failures
-- [ ] update realized architecture, guide, matrices, programme, and changelog
+- [ ] update the route guide and report the shared architecture, matrix,
+      programme, and changelog delta for orchestrator closeout after merge
 
 ## Acceptance Criteria
 
@@ -99,6 +102,7 @@ exact provider confirmation surface is qualified.
 - [ ] deterministic QA makes no provider call or account inspection
 - [ ] docs separate requested, planned, dispatched, accepted, and effective
       states
+- [ ] the worker branch touches no shared parallel-closeout surface
 
 ## Lane Runway
 
@@ -130,4 +134,3 @@ exact provider confirmation surface is qualified.
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 040 Generation-Control Application And Enforcement](../../contracts/040-generation-control-application-and-enforcement.md)
 - [Anthropic Direct Prepared Integration](../../guides/anthropic-direct-prepared-integration.md)
-

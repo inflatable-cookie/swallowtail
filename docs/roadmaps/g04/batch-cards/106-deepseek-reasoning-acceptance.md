@@ -8,8 +8,8 @@ Depends on: card 105
 
 ## Goal
 
-Prove exact DeepSeek reasoning dispatch and continuation invariants, then close
-the fourth route-local feature milestone.
+Prove exact DeepSeek reasoning dispatch and continuation invariants, then
+produce the review-ready route closeout for orchestrator integration.
 
 ## Scope
 
@@ -26,10 +26,12 @@ the fourth route-local feature milestone.
    undisclosed.
 6. Preserve model/facade, tool-loop, output, cache, endpoint, credential,
    cancellation, failure, and cleanup proofs.
-7. Update realized architecture, DeepSeek guide, route and feature matrices,
-   changelog, Research 186, cards 104-106, g04.038, programme, logs, and indexes.
-8. Keep the sole Next Task on completing/restacking the parallel feature wave
-   until g04.036 and g04.037 land. Do not compile or start xAI from this worker.
+7. Update the DeepSeek guide, Research 186, cards 104-106, g04.038, the
+   pre-indexed route-local closeout log, and the DeepSeek package API baseline.
+8. Record the exact required architecture, route/feature matrix, changelog,
+   programme, index, and Next Task delta in the closeout log and PR body. Do not
+   edit those shared surfaces on this parallel branch.
+9. Do not compile or start xAI from this worker.
 
 ## Acceptance Criteria
 
@@ -39,6 +41,7 @@ the fourth route-local feature milestone.
 - docs distinguish dispatch, acceptance, effective depth, and private replay
 - no sibling DeepSeek route or model gains the capability
 - closeout records PR/head truth without claiming merge
+- worker changed files stay within the programme's parallel execution boundary
 - named gates pass
 
 ## Validation
@@ -73,4 +76,5 @@ Auto-continuation: No.
 - live provider verification, release, publication, or consumer changes
 - xAI planning or implementation
 - merge or restack authority
-
+- `CHANGELOG.md`; `docs/architecture/system-architecture.md`; route/feature
+  matrices; programme and roadmap front doors; shared indexes; `packages.txt`

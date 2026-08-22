@@ -54,9 +54,10 @@ and selection policy.
 - [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — complete, cards 101-103
 - [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
 - [g04.039 xAI Responses Reasoning And Output Bounds](039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
+- [g04.040 Copilot CLI ACP Session Effort](040-copilot-cli-acp-session-effort.md) — ready, cards 110-112
 
-Do not roll over: 39 numbered roadmaps exist and are complete, target 30-50.
-Select and compile one next per-route control family as g04.040.
+Do not roll over: 40 numbered roadmaps exist; 001-039 are complete and 040 is
+ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -96,6 +97,9 @@ Select and compile one next per-route control family as g04.040.
   104-106 are complete
 - g04.039 is on `main` at `e9ae1a49` through PR 38: exact Grok 4.5/4.6
   reasoning and positive output bounds are realized; cards 107-109 are complete
+- g04.040 is ready: cards 110-112 cover exact Copilot CLI ACP `1.0.80`
+  startup-effort evidence, prepared binding, and deterministic session-lifetime
+  acceptance
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -106,8 +110,8 @@ Select and compile one next per-route control family as g04.040.
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
 2. g04.035-039 completed the initial five per-route feature families.
-3. Reassess the remaining promoted inventory, select one route and one coherent
-   control family, then compile g04.040. Contract 029 currentness remains
+3. Execute g04.040 as one serial Copilot CLI ACP route-family lane. Card 110 is
+   the exact package and Contract 040 gate. Contract 029 currentness remains
    standing.
 
 New route-family research does not pre-empt this sequence.
@@ -120,6 +124,7 @@ New route-family research does not pre-empt this sequence.
 - [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — complete, cards 101-103
 - [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
 - [039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
+- [040 Copilot CLI ACP Session Effort](./040-copilot-cli-acp-session-effort.md) — ready, cards 110-112
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

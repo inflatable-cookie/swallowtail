@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted advanced-route feature inventory against the
-current production matrix, select one route and one coherent control family,
-then compile g04.040 and its cards. No implementation worker is ready until
-that planning pass completes. Contract 029 currentness stays standing.
+Implement g04.040 cards 110-112 for Copilot CLI ACP session-fixed effort. Card
+110 must prove the exact `1.0.80` startup flags and the no-model-route Contract
+040 fit before any binding. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

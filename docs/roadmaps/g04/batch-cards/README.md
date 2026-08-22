@@ -116,5 +116,6 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-No card is compiled. The orchestrator must select one remaining route/control
-family before reserving g04.040 cards.
+- [112-copilot-cli-acp-effort-acceptance.md](./112-copilot-cli-acp-effort-acceptance.md) — ready after 111
+- [111-copilot-cli-acp-effort-binding.md](./111-copilot-cli-acp-effort-binding.md) — ready after 110
+- [110-copilot-cli-acp-effort-evidence.md](./110-copilot-cli-acp-effort-evidence.md) — ready

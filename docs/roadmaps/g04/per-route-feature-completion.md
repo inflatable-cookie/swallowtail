@@ -65,13 +65,20 @@ families do not interrupt this programme by default.
   is complete and merged through PR 38 at `e9ae1a49`. Research 187 and cards
   107-109 realize exact model-qualified reasoning and positive output-token
   bounds on structured and serial connection-local profiles.
+- [g04.040 Copilot CLI ACP Session Effort](./040-copilot-cli-acp-session-effort.md)
+  is ready. Cards 110-112 begin with exact `1.0.80` package and Contract 040
+  evidence before binding any process-fixed effort to the prepared session.
 
-## Current Planning Boundary
+## Current Worker Boundary
 
-The initial five-family sequence is complete. The orchestrator must reassess
-the remaining promoted inventory against current route and contract truth,
-select one route and one coherent control family, and compile g04.040 before
-any implementation worker starts. Do not bulk-promote the remaining gaps.
+The Copilot CLI worker owns only its route crate, fixtures, prepared guide,
+numbered milestone and cards, reserved Research 188, reserved closeout log, and
+package-specific public API baseline. It must not edit shared architecture,
+route/feature matrices, changelog, programme, roadmap front doors, indexes,
+matrix assertions, or `packages.txt` while the lane is in flight.
+
+The orchestrator reconciles those shared surfaces after review and merge. The
+worker reports the exact required delta in its closeout record and PR body.
 
 ## Exclusions
 

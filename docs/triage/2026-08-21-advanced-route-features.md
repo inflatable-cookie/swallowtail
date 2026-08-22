@@ -1016,3 +1016,22 @@ Experimental process-spawning controls, dangerous permission bypasses,
 catalogue observations presented as setters, and unconfirmed fields stay
 withheld. The next planning pass must reassess the remaining entries against
 current production-matrix and contract truth before compiling g04.040.
+
+## Next-Family Selection (2026-08-22)
+
+Disposition: Copilot CLI ACP session effort promoted into
+[`g04.040`](../roadmaps/g04/040-copilot-cli-acp-session-effort.md).
+
+The current official ACP-server surface names `--effort` and
+`--reasoning-effort` with `low`, `medium`, `high`, `xhigh`, and `max`, fixed at
+server start and inherited by every session. Swallowtail owns one child for one
+bounded prepared Copilot session, so the lifetime is a cleaner next fit than a
+global configuration mutation. Exact package `1.0.80`, canonical syntax, the
+no-model-route Contract 040 boundary, and every value remain gated by card 110
+and Research 188.
+
+Qwen effort remains promoted for a later evidence lane: its current global
+setting includes provider/model clamp behavior that cannot become an exact
+portable selection without deeper qualification. Cline thinking is a boolean
+spawn control rather than the same five-value effort ladder. Parked families
+remain outside this selection. Do not bulk-promote the remaining inventory.

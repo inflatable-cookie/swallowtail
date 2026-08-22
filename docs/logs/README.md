@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-22 g04.040 Copilot CLI ACP Effort Compiled](./2026-08-22-g04-040-copilot-cli-acp-effort-compiled.md)
+- [2026-08-22 g04.040 Copilot CLI ACP Effort Closeout](./2026-08-22-g04-040-copilot-cli-acp-effort-closeout.md)
 - [2026-08-22 g04.039 xAI Responses Controls Merged](./2026-08-22-g04-039-xai-responses-controls-merged.md)
 - [2026-08-22 g04.039 xAI Responses Controls Compiled](./2026-08-22-g04-039-xai-responses-controls-compiled.md)
 - [2026-08-22 g04.039 xAI Responses Controls Closeout](./2026-08-22-g04-039-xai-responses-controls-closeout.md)

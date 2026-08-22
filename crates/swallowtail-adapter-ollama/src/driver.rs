@@ -32,8 +32,7 @@ const ROUTE: &str = "ollama.attached";
 /// Low-level driver for one externally managed Ollama native HTTP runtime.
 pub struct OllamaNativeAttachedDriver {
     transport: CurlTransport,
-    prepared_dispatch_binding:
-        Option<crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding>,
+    context_window: Option<crate::OllamaContextWindow>,
 }
 
 impl OllamaNativeAttachedDriver {
@@ -43,130 +42,27 @@ impl OllamaNativeAttachedDriver {
         Self::default()
     }
 
-    /// Creates a driver bound to one prepared structured inference attempt.
-    #[must_use]
-    pub fn bound_to_prepared_inference_attempt(
-        attempt: &crate::OllamaPreparedInferenceAttempt,
-    ) -> Self {
-        Self {
-            transport: CurlTransport,
-            prepared_dispatch_binding: Some(
-                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_structured_run(
-                    attempt,
-                ),
-            ),
-        }
-    }
-
-    /// Creates a driver bound to one prepared interactive session.
-    #[must_use]
-    pub fn bound_to_prepared_session(session: &crate::OllamaPreparedSession) -> Self {
-        Self {
-            transport: CurlTransport,
-            prepared_dispatch_binding: Some(
-                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_open_session(
-                    session,
-                ),
-            ),
-        }
-    }
-
-    /// Creates a driver bound to prepared evidence without a request identity.
+    /// Configures one adapter-local native `num_ctx` selection for low-level dispatch.
     ///
-    /// Use only when no native `num_ctx` selection was prepared. Context-window
-    /// dispatch requires [`Self::bound_to_prepared_inference_attempt`] or
-    /// [`Self::bound_to_prepared_session`].
+    /// The caller owns agreement between this value, any extracted prepared evidence,
+    /// and the `(plan, request)` pair passed to [`StructuredRunDriver::start_run`] or
+    /// [`InteractiveSessionDriver::open_session`]. Prepared
+    /// [`crate::OllamaPreparedInferenceAttempt::start_run`] and
+    /// [`crate::OllamaPreparedSession::open_session`] remain the fail-closed path.
     #[must_use]
-    pub fn bound_to_prepared_evidence(evidence: &crate::OllamaPreparedEvidence) -> Self {
-        Self {
-            transport: CurlTransport,
-            prepared_dispatch_binding: Some(
-                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_evidence(
-                    evidence,
-                ),
-            ),
-        }
+    pub fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+        self.context_window = Some(context_window);
+        self
     }
 
     pub(super) fn context_window(&self) -> Option<crate::OllamaContextWindow> {
-        self.prepared_dispatch_binding.as_ref().and_then(
-            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::context_window,
-        )
+        self.context_window
     }
 
     pub(crate) fn from_transport(transport: CurlTransport) -> Self {
         Self {
             transport,
-            prepared_dispatch_binding: None,
-        }
-    }
-
-    pub(crate) fn validate_prepared_dispatch(
-        &self,
-        plan: &PreflightPlan,
-        request_id: &swallowtail_runtime::RequestId,
-    ) -> Result<(), RuntimeFailure> {
-        if let Some(binding) = &self.prepared_dispatch_binding {
-            binding.validate_prepared_dispatch(plan, request_id)?;
-        }
-        Ok(())
-    }
-
-    /// Validates that this driver matches one prepared structured inference attempt.
-    pub fn validate_against_prepared_inference_attempt(
-        &self,
-        attempt: &crate::OllamaPreparedInferenceAttempt,
-    ) -> Result<(), RuntimeFailure> {
-        let expected =
-            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_structured_run(
-                attempt,
-            );
-        match &self.prepared_dispatch_binding {
-            Some(binding) if binding == &expected => Ok(()),
-            _ => Err(failure(
-                "swallowtail.ollama.context_window_binding_mismatch",
-                "Ollama prepared dispatch binding did not match prepared inference attempt",
-            )),
-        }
-    }
-
-    /// Validates that this driver matches one prepared interactive session.
-    pub fn validate_against_prepared_session(
-        &self,
-        session: &crate::OllamaPreparedSession,
-    ) -> Result<(), RuntimeFailure> {
-        let expected =
-            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_open_session(
-                session,
-            );
-        match &self.prepared_dispatch_binding {
-            Some(binding) if binding == &expected => Ok(()),
-            _ => Err(failure(
-                "swallowtail.ollama.context_window_binding_mismatch",
-                "Ollama prepared dispatch binding did not match prepared session",
-            )),
-        }
-    }
-
-    /// Validates that this driver matches prepared evidence without request identity.
-    ///
-    /// This check is insufficient for context-window dispatch. Use
-    /// [`Self::validate_against_prepared_inference_attempt`] or
-    /// [`Self::validate_against_prepared_session`] when `num_ctx` was prepared.
-    pub fn validate_against_prepared_evidence(
-        &self,
-        evidence: &crate::OllamaPreparedEvidence,
-    ) -> Result<(), RuntimeFailure> {
-        let expected =
-            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_evidence(
-                evidence,
-            );
-        match &self.prepared_dispatch_binding {
-            Some(binding) if binding == &expected => Ok(()),
-            _ => Err(failure(
-                "swallowtail.ollama.context_window_binding_mismatch",
-                "Ollama prepared dispatch binding did not match prepared evidence",
-            )),
+            context_window: None,
         }
     }
 

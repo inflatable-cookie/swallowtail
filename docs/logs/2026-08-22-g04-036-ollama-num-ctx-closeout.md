@@ -12,10 +12,10 @@ Status: complete
 - Card 098 promoted Research 184 with exact tagged-source evidence across six
   qualification points, FAQ and native API specimens, scheduler minimum and
   vision-floor paths, and a deliver-now domain of `4..=2147483647`.
-- Card 099 added adapter-local `OllamaContextWindow`,
-  `bound_to_prepared_evidence`, prepared evidence retention, fail-closed
-  evidence/driver agreement, and exact `options.num_ctx` encoding beside
-  `num_predict`.
+- Card 099 added adapter-local `OllamaContextWindow`, prepared evidence
+  retention, prepared-path fail-closed agreement, public `with_context_window`
+  for Contract 037 low-level caller authority, and exact `options.num_ctx`
+  encoding beside `num_predict`.
 - Card 100 proved absent-path byte identity, session replay and restoration
   dispatch, boundary values, and bounded dispatch-only documentation without a
   portable context-window capability.

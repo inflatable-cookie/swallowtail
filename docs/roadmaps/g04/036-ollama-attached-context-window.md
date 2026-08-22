@@ -36,8 +36,8 @@ evidence and wire dispatch on only the qualified `/api/chat` profiles.
       network work
 - [x] add an adapter-local typed input only to the profiles qualified by the
       evidence card
-- [x] retain the exact selection in prepared evidence and the bound low-level
-      driver used for dispatch
+- [x] retain the exact selection in prepared evidence and configure prepared
+      dispatch from the same prepared object
 - [x] encode `num_ctx` once beside `num_predict` in the native `options` object
 - [x] preserve byte-identical request bodies when the control is absent
 - [x] publish qualified dispatch without claiming provider acceptance,
@@ -66,9 +66,11 @@ qualified mapping; this milestone does not widen that guarantee.
 Card 098 must verify `num_ctx` at the exact tagged qualification points and
 settle structured-run versus interactive-session applicability. Card 099 may
 implement only the resulting Research 184 deliver-now rows. The selected value
-stays adapter-local: prepared evidence and the configured low-level driver bind
-it, while the provider-neutral plan continues to advertise no portable
-context-window capability.
+stays adapter-local in prepared evidence. Prepared dispatch configures the
+low-level driver from the same prepared object; generic role dispatch exposes
+`with_context_window` as caller authority and does not claim automatic
+prepared-evidence agreement. The provider-neutral plan continues to advertise no
+portable context-window capability.
 
 The route claims only that the exact integer was dispatched inside the native
 `options` object. Ollama may cap, raise, reject, or resource-limit the value.

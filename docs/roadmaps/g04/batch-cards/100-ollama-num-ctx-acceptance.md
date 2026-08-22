@@ -20,8 +20,9 @@ and close the second per-route feature milestone.
    configuration.
 3. Assert the absent selection preserves existing fixture request bodies
    byte-for-byte.
-4. Assert zero, overflow, out-of-domain, evidence/driver mismatch, raw options,
-   and unqualified profile use fail before network work.
+4. Assert zero, overflow, out-of-domain, raw options, and unqualified profile
+   use fail before network work. Prepared-path tests prove evidence/driver/native
+   agreement; low-level role dispatch remains caller authority under Contract 037.
 5. If sessions are admitted, assert every clean replay turn and fresh
    restoration uses the fixed prepared value; failed turns still do not commit
    history. If not admitted, document and test the rejection.
@@ -43,7 +44,7 @@ and close the second per-route feature milestone.
 
 ## Acceptance Criteria
 
-- deterministic tests prove evidence/driver/native-body agreement
+- deterministic tests prove prepared-path evidence/driver/native-body agreement
 - every admitted value boundary and failure class is covered
 - default QA starts no runtime and sends no model request
 - local attached and remote/cloud exclusions stay explicit

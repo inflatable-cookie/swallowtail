@@ -119,10 +119,15 @@ the selected-model detail advertises thinking, one inline JSON Schema
 2020-12 object with provider-native enforcement, and one adapter-local
 `OllamaContextWindow` value encoded as native `options.num_ctx`. Preparation
 rejects controls not supported by the observed selected model; it never infers
-capability from the model tag alone. Dispatching `num_ctx` may load or reload
-the runner and change memory pressure on the externally owned runtime. It does
-not prove provider acceptance, effective allocation, truncation outcome, or
-resource feasibility.
+capability from the model tag alone. Dispatch may load or reload a runner and change memory pressure on the
+externally owned runtime. It does not prove provider acceptance, effective
+allocation, truncation outcome, or resource feasibility.
+
+Prepared `start_run`, `open_session`, and restoration guarantee exact agreement
+between prepared evidence, the configured driver, and the native body.
+`low_level_driver`, `into_parts`, and generic role dispatch remain Contract 037
+caller authority: the caller must keep `with_context_window`, extracted
+evidence, and any `(plan, request)` tuple consistent.
 
 One `start_run` call is one native `/api/chat` attempt. Invocation may load the
 selected model, refresh its timer, or evict another model. That accepted side

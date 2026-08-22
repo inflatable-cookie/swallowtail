@@ -88,13 +88,21 @@ impl OllamaPreparedEvidence {
 pub(super) fn bind_structured_run_driver(
     attempt: &super::OllamaPreparedInferenceAttempt,
 ) -> crate::OllamaNativeAttachedDriver {
-    crate::OllamaNativeAttachedDriver::bound_to_prepared_inference_attempt(attempt)
+    let mut driver = crate::OllamaNativeAttachedDriver::new();
+    if let Some(context_window) = attempt.evidence().context_window() {
+        driver = driver.with_context_window(context_window);
+    }
+    driver
 }
 
 pub(super) fn bind_session_driver(
     session: &super::OllamaPreparedSession,
 ) -> crate::OllamaNativeAttachedDriver {
-    crate::OllamaNativeAttachedDriver::bound_to_prepared_session(session)
+    let mut driver = crate::OllamaNativeAttachedDriver::new();
+    if let Some(context_window) = session.evidence().context_window() {
+        driver = driver.with_context_window(context_window);
+    }
+    driver
 }
 
 pub(super) fn instance_with_capabilities(

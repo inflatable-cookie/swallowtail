@@ -73,13 +73,8 @@ impl swallowtail_adapter_ollama::OllamaModelSelection
 pub const fn swallowtail_adapter_ollama::OllamaModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
 pub struct swallowtail_adapter_ollama::OllamaNativeAttachedDriver
 impl swallowtail_adapter_ollama::OllamaNativeAttachedDriver
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::bound_to_prepared_evidence(&swallowtail_adapter_ollama::OllamaPreparedEvidence) -> Self
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::bound_to_prepared_inference_attempt(&swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt) -> Self
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::bound_to_prepared_session(&swallowtail_adapter_ollama::OllamaPreparedSession) -> Self
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::new() -> Self
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::validate_against_prepared_evidence(&self, &swallowtail_adapter_ollama::OllamaPreparedEvidence) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::validate_against_prepared_inference_attempt(&self, &swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
-pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::validate_against_prepared_session(&self, &swallowtail_adapter_ollama::OllamaPreparedSession) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::with_context_window(self, swallowtail_adapter_ollama::OllamaContextWindow) -> Self
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_ollama::OllamaNativeAttachedDriver
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>

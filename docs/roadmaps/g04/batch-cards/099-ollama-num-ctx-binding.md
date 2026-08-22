@@ -22,9 +22,10 @@ encoding without opening a generic option surface.
    absent-control behavior.
 3. Retain the selected value in `OllamaPreparedEvidence` and expose a safe
    getter. Inventory preparation records no context selection.
-4. Configure the prepared operation's `OllamaNativeAttachedDriver` with the
-   same typed value. Preserve `new()` as the no-override low-level path and add
-   an exact typed low-level constructor or builder rather than raw JSON options.
+4. Configure the prepared operation's low-level driver from the same prepared
+   object that owns evidence and request construction. Preserve `new()` as the
+   no-override low-level path and expose `with_context_window` for Contract 037
+   caller authority without claiming evidence binding.
 5. Ensure existing `into_parts` extraction retains the value through evidence;
    add an additive bound-parts helper if needed. Do not break the existing tuple
    or silently drop the selection.
@@ -38,8 +39,9 @@ encoding without opening a generic option surface.
    route-local value.
 9. Keep maximum output tokens, reasoning, structured output, model tag/digest,
    version assessment, residency, cancellation, and cleanup independent.
-10. Reject any evidence/driver/value mismatch before endpoint authorization or
-    catalogue observation. Add deterministic preparation and low-level tests.
+10. Reject out-of-domain values at preparation. Guarantee exact evidence,
+    driver, and native-body agreement on prepared `start_run`, `open_session`,
+    and restoration only. Low-level role dispatch remains caller authority.
 
 ## Compatibility Boundary
 
@@ -54,7 +56,9 @@ encoding without opening a generic option surface.
 
 - no generic map or raw `options` payload enters public API
 - only Research 184 deliver-now profiles and numeric values prepare
-- prepared evidence, configured driver, and encoded integer agree exactly
+- prepared evidence, configured driver, and encoded integer agree exactly on the
+  prepared dispatch path
+- low-level role dispatch does not claim automatic prepared-evidence agreement
 - absent selection preserves current request JSON and public behavior
 - `num_ctx` remains independent from `num_predict` and model metadata
 - all known validation failures occur before network work
@@ -77,10 +81,13 @@ pass.
 ## Stop Conditions
 
 - the value requires a generic options map or provider-neutral capability
-- prepared evidence and low-level driver cannot remain in exact agreement
+- prepared `start_run`, `open_session`, or restoration cannot retain exact
+  evidence/driver/native-body agreement without a provider-neutral plan field
 - session support would allow value drift across turns or restoration
 - preserving current constructors or absent JSON requires a breaking change
 - implementation needs a live runtime or effective-value inference
+- generic role dispatch must prove prepared-evidence agreement without a
+  distinct prepared-bound dispatch type or orchestrator boundary decision
 
 ## Out Of Scope
 

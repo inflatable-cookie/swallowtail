@@ -13,7 +13,6 @@ mod context_window;
 mod driver;
 mod failure;
 mod prepared;
-mod prepared_dispatch_binding;
 mod prepared_profile;
 /// Bounded native HTTP request, response, catalogue, and stream projection.
 pub mod protocol;

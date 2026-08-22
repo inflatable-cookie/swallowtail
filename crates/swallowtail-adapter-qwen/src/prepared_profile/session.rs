@@ -89,9 +89,25 @@ impl QwenPreparedIntegration {
         &self,
         input: QwenSessionProfileInput,
     ) -> Result<QwenPreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, deadline) = input.into_parts();
+        let (request_id, model, working_resource, deadline, reasoning) = input.into_parts();
         let activity = activity_profile(self)?;
-        let capabilities = with_activity(CapabilityProfile::new(session_capabilities()), &activity);
+        let (route_id, route_revision, provider_id, model_id) = model.into_parts();
+        if let Some(reasoning) = reasoning.as_ref() {
+            crate::reasoning::validate_preparation(
+                self.observation().version().version(),
+                &provider_id,
+                &model_id,
+                reasoning,
+            )?;
+        }
+        let mut session_capabilities = session_capabilities();
+        if let Some(reasoning) = reasoning.as_ref() {
+            session_capabilities.push(CapabilityRequirement::new(
+                Capability::ReasoningSelection,
+                [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+            ));
+        }
+        let capabilities = with_activity(CapabilityProfile::new(session_capabilities), &activity);
         let capability_requirements = capabilities
             .iter()
             .map(|(capability, constraints)| {
@@ -99,7 +115,6 @@ impl QwenPreparedIntegration {
             })
             .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
-        let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
             route_revision,
@@ -119,9 +134,14 @@ impl QwenPreparedIntegration {
             SessionProviderStatePolicy::DurableProviderSessionPreserved,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;
+        let mut options = swallowtail_runtime::SessionOptions::default();
+        if let Some(reasoning) = reasoning.clone() {
+            options = options.with_reasoning_mode(reasoning);
+        }
+        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?
+            .with_options(options);
         Ok(QwenPreparedSession {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity)?,
+            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity, reasoning)?,
             request,
         })
     }

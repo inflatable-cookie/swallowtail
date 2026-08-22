@@ -1,4 +1,4 @@
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, WorkingResourceRef};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -45,6 +45,7 @@ pub struct QwenRunProfileInput {
     content: OperationContent,
     working_resource: WorkingResourceRef,
     deadline: Deadline,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -54,6 +55,7 @@ pub struct QwenSessionProfileInput {
     model: QwenModelSelection,
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl QwenSessionProfileInput {
@@ -69,6 +71,7 @@ impl QwenSessionProfileInput {
             model,
             working_resource,
             deadline: None,
+            reasoning_mode: None,
         }
     }
 
@@ -79,6 +82,13 @@ impl QwenSessionProfileInput {
         self
     }
 
+    /// Selects one exact Qwen reasoning mode.
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
@@ -86,12 +96,14 @@ impl QwenSessionProfileInput {
         QwenModelSelection,
         WorkingResourceRef,
         Option<Deadline>,
+        Option<ReasoningMode>,
     ) {
         (
             self.request_id,
             self.model,
             self.working_resource,
             self.deadline,
+            self.reasoning_mode,
         )
     }
 }
@@ -112,7 +124,15 @@ impl QwenRunProfileInput {
             content,
             working_resource,
             deadline,
+            reasoning_mode: None,
         }
+    }
+
+    /// Selects one exact Qwen reasoning mode.
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(reasoning_mode);
+        self
     }
 
     pub(super) fn into_parts(
@@ -123,6 +143,7 @@ impl QwenRunProfileInput {
         OperationContent,
         WorkingResourceRef,
         Deadline,
+        Option<ReasoningMode>,
     ) {
         (
             self.request_id,
@@ -130,6 +151,7 @@ impl QwenRunProfileInput {
             self.content,
             self.working_resource,
             self.deadline,
+            self.reasoning_mode,
         )
     }
 }

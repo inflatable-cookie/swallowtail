@@ -1,5 +1,6 @@
 use crate::DRIVER_ID;
-use crate::command::arguments;
+use crate::command::{arguments, reasoning_arguments};
+use crate::control::{establish_reasoning, write_user_message};
 use crate::handle::{QwenProcessCancellation, QwenRunHandle};
 use crate::pump::{cleanup_failed_start, pump};
 use crate::validation::{failure, validate};
@@ -137,7 +138,11 @@ impl QwenHeadlessDriver {
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
-            .with_arguments(arguments(&model))
+            .with_arguments(if request.policy().reasoning_mode().is_some() {
+                reasoning_arguments(&model)
+            } else {
+                arguments(&model)
+            })
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);
         let process: Arc<dyn ProcessHandle> = Arc::from(
@@ -145,10 +150,34 @@ impl QwenHeadlessDriver {
                 .start(scope.clone(), process_request)
                 .await?,
         );
-        if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
-            cleanup_failed_start(process.as_ref()).await;
-            return Err(error);
-        }
+        let buffered_values = if let Some(reasoning) = request.policy().reasoning_mode() {
+            let setup = match establish_reasoning(
+                process.as_ref(),
+                reasoning,
+                time_service.wait_until(deadline),
+            )
+            .await
+            {
+                Ok(setup) => setup,
+                Err(error) => {
+                    cleanup_failed_start(process.as_ref()).await;
+                    return Err(error);
+                }
+            };
+            if let Err(error) =
+                write_user_message(process.as_ref(), &setup.session_id, request.content()).await
+            {
+                cleanup_failed_start(process.as_ref()).await;
+                return Err(error);
+            }
+            setup.buffered_values
+        } else {
+            if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
+                cleanup_failed_start(process.as_ref()).await;
+                return Err(error);
+            }
+            Vec::new()
+        };
         let deadline = time_service.wait_until(deadline);
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
@@ -172,6 +201,7 @@ impl QwenHeadlessDriver {
                         model,
                         expected_version,
                         operation_id,
+                        buffered_values,
                         services,
                     )
                     .await;

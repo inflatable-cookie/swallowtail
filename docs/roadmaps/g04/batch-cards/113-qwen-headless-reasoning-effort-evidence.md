@@ -1,6 +1,6 @@
 # 113 Qwen Headless Reasoning Effort Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.041 Qwen Headless Reasoning Effort](../041-qwen-headless-reasoning-effort.md)
@@ -48,21 +48,29 @@ mutation, package installation, or live catalogue is authorized.
 
 ## Acceptance Criteria
 
-- [ ] exact current official and exact `0.21.15` evidence is frozen without
+- [x] exact current official and exact `0.21.15` evidence is frozen without
       secrets
-- [ ] `/effort` and headless process transport are separated explicitly
-- [ ] transport, precedence, configuration posture, and mutation truth are
+- [x] `/effort` and headless process transport are separated explicitly
+- [x] transport, precedence, configuration posture, and mutation truth are
       explicit
-- [ ] every model/value candidate has clamp, default, and support disposition
-- [ ] run, first-turn, resumed-turn, and fresh-replacement lifetime is explicit
-- [ ] version segment and private behavior-revision disposition is explicit
-- [ ] Research 189 is promoted and the production claim is unchanged
-- [ ] `effigy validate:focused swallowtail-adapter-qwen` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] every model/value candidate has clamp, default, and support disposition
+- [x] run, first-turn, resumed-turn, and fresh-replacement lifetime is explicit
+- [x] version segment and private behavior-revision disposition is explicit
+- [x] Research 189 is promoted and the existing compatibility claim is unchanged
+- [x] `effigy validate:focused swallowtail-adapter-qwen` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 114 only when at least one exact model/value row has a
 process-private Contract 040 transport with no Contract 033 lease gap.
+
+## Evidence Result
+
+Research 189 admits ten deliver-now rows: both exact DashScope models with all
+five canonical values. The post-initialize `set_effort` control response is
+the only admitted headless transport. The route does not use `/effort`,
+`initialize.effort`, ambient settings writes, aliases, or generic Qwen model
+mapping. Cards 114-115 may proceed.
 
 ## Stop Conditions
 

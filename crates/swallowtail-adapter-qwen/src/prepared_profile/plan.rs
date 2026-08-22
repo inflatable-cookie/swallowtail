@@ -14,6 +14,7 @@ pub struct QwenPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
     operation: PreparedOperationEvidence,
+    reasoning_mode: Option<swallowtail_core::ReasoningMode>,
 }
 
 impl QwenPreparedEvidence {
@@ -21,10 +22,12 @@ impl QwenPreparedEvidence {
         prepared: &QwenPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        reasoning_mode: Option<swallowtail_core::ReasoningMode>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
+            reasoning_mode,
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
@@ -61,6 +64,12 @@ impl QwenPreparedEvidence {
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    /// Returns the exact reasoning mode selected during preparation.
+    #[must_use]
+    pub const fn reasoning_mode(&self) -> Option<&swallowtail_core::ReasoningMode> {
+        self.reasoning_mode.as_ref()
     }
 
     pub(super) fn low_level_driver(&self) -> crate::QwenHeadlessDriver {

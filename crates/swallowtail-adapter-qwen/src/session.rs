@@ -7,8 +7,8 @@ use crate::{DRIVER_ID, QwenHeadlessDriver};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, HarnessConfigurationPosture,
-    HarnessIsolation, InstanceOwnership, PreflightPlan, ResourceAccess, SessionProviderStatePolicy,
-    SessionRef,
+    HarnessIsolation, InstanceOwnership, PreflightPlan, ReasoningMode, ResourceAccess,
+    SessionProviderStatePolicy, SessionRef,
 };
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, HostServices, InteractiveSessionDriver,
@@ -35,6 +35,7 @@ pub(super) struct QwenSessionHandle {
     cancellation: Arc<SessionCancellation>,
     pub(super) environment: swallowtail_runtime::EnvironmentRef,
     pub(super) target: swallowtail_core::InstanceTargetRef,
+    pub(super) reasoning: Option<ReasoningMode>,
 }
 
 impl InteractiveSessionDriver for QwenHeadlessDriver {
@@ -82,6 +83,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
                 cancellation,
                 environment: self.environment().clone(),
                 target: plan.instance_target_ref().clone(),
+                reasoning: request.options().reasoning_mode().cloned(),
             }) as Box<dyn InteractiveSessionHandle>)
         })
     }
@@ -221,13 +223,17 @@ fn validate_open(
             "Qwen interactive session bounds did not match the qualified profile",
         ));
     }
+    crate::reasoning::validate_runtime_binding(plan, request.options().reasoning_mode())?;
     if request.working_resource().is_none()
         || request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         || request.provider_state_policy()
             != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
         || request.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient)
         || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
-        || !request.options().is_empty()
+        || request.options().developer_instructions().is_some()
+        || request.options().harness_mode().is_some()
+        || request.options().tools().next().is_some()
+        || request.options().idioms().is_some()
     {
         return Err(unsupported(
             "session access, provider state, configuration, or options",

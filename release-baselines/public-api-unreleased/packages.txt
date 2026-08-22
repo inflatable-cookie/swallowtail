@@ -7,6 +7,7 @@ swallowtail-adapter-kimi-platform
 swallowtail-adapter-llama-cpp
 swallowtail-adapter-ollama
 swallowtail-adapter-pi
+swallowtail-adapter-qwen
 swallowtail-adapter-xai
 swallowtail-core
 swallowtail-host-local

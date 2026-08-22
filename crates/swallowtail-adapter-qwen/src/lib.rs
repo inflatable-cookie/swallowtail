@@ -9,6 +9,7 @@
 mod activity;
 mod catalogue;
 mod command;
+mod control;
 mod discovery;
 mod driver;
 mod events;
@@ -17,6 +18,7 @@ mod prepared;
 mod prepared_catalogue;
 mod prepared_profile;
 mod pump;
+mod reasoning;
 mod selection;
 mod session;
 mod validation;

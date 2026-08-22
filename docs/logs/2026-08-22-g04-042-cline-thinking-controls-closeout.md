@@ -59,9 +59,13 @@ advertises `budget_tokens`. An explicit off survives only when the model
 supports off, and is dropped outright for Cline-provider Claude Fable models
 because reasoning is mandatory there.
 
-The only headless acknowledgement is `run_start.thinking`, which is
-`"on"`/`"off"`. It cannot confirm which of `low`, `medium`, `high`, or `xhigh`
-was accepted.
+The selected headless argv returns no acknowledgement of the value at all.
+`run_agent.ts` calls `printModelProviderInfo` — the sole emitter of the
+`run_start` envelope and its `thinking` field — only inside `if (config.verbose)`,
+and `cline.headless` passes no `-v/--verbose`. `--verbose` is an unselected
+surface, and selecting it would not help: `run_start.thinking` is a boolean
+that cannot distinguish `low` from `medium`, `high`, or `xhigh`. Dispatch
+therefore stops at argv, with no acceptance tier available.
 
 Upstream `none` is therefore not exact portable `off` on either route.
 `cline.acp` fails at dispatch; `cline.headless` fails at model qualification.

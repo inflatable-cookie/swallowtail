@@ -105,8 +105,10 @@ branch forwards only `autoApproveTools` and `AcpAgent.buildConfig` hard-codes
 configuration, and an explicit level beats persisted provider settings, but the
 route selects no provider and no model, and every value is then clamped to the
 nearest advertised tier, substituted, removed, or converted to a derived token
-budget by the resolved model. `run_start.thinking` is a boolean, so the wire
-cannot confirm which tier was accepted.
+budget by the resolved model. The selected argv also returns no acknowledgement
+of the value: `run_start` is emitted only under `--verbose`, which the route
+does not pass, and even under that unselected surface the field collapses to
+`on`/`off`.
 
 Upstream `none` is not exact portable `off` on either route. No route/value row
 is deliver-now. Cards 117-118 are not executed. Current `cline --acp` and

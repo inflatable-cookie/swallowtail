@@ -43,7 +43,7 @@ Current official pages are leads. The exact package is the finding.
 | `apps/cli/src/main.ts` | invalid-value rejection, ACP early return, print-path config | 2026-08-22 | `1b7a0a5b680aa6f3f736826c449f64e9a62dbe7b57e0b55cbc74379d45f37274` |
 | `apps/cli/src/acp/index.ts` | ACP entry options | 2026-08-22 | `8cbcf4c04bb9b01ccc877c661210346380732a32b796ac8335663b5d141adbb7` |
 | `apps/cli/src/acp/acpAgent.ts` | ACP session config construction | 2026-08-22 | `248092d41e330ef1898f98b99d35c6713574a7b9305d95601177c07e64db9e71` |
-| `apps/cli/src/runtime/run-agent.ts` | `--json` `run_start` thinking field | 2026-08-22 | `34d6dfc8e7324ad91f6e6a9daa032d11aeed36fbd9e1e790af3d9f3c828de5e6` |
+| `apps/cli/src/runtime/run-agent.ts` | verbosity-gated `run_start` thinking field; sole call site | 2026-08-22 | `34d6dfc8e7324ad91f6e6a9daa032d11aeed36fbd9e1e790af3d9f3c828de5e6` |
 | `sdk/packages/core/src/runtime/host/local-runtime-host.ts` | persisted provider-config effort fallback | 2026-08-22 | `61fce1f2f9b9061b86721f48a7a1786fa869fc96b566c4cd18fc3379c0ed0743` |
 | `sdk/packages/llms/src/providers/gateway.ts` | reasoning merge and disable short circuit | 2026-08-22 | `3ef8893d5275709cec98d429f42c808b21feb959bd57b50032da25c6a160c238` |
 | `sdk/packages/llms/src/providers/routing/reasoning-options.ts` | model-entitled normalization, off support, budget derivation | 2026-08-22 | `2785f6692bccd7a0b1573a271b107b0e404c6e7d51b0383ca9c7a77577829d37` |
@@ -301,7 +301,15 @@ Four distinct hazards, all keyed on the unselected model:
 `PORTABLE_REASONING_PROVIDERS` set, `enabled === false` resolves to `undefined`
 rather than a portable off.
 
-The only acknowledgement the headless wire returns collapses the tier:
+The selected route returns no acknowledgement of the value at all. The only
+envelope that carries a thinking field is emitted behind a verbosity guard:
+
+```ts
+// apps/cli/src/runtime/run-agent.ts — runAgent
+if (config.verbose) {
+    printModelProviderInfo(config);
+}
+```
 
 ```ts
 // apps/cli/src/runtime/run-agent.ts — printModelProviderInfo
@@ -312,10 +320,20 @@ if (config.outputMode === "json") {
 }
 ```
 
-`run_start.thinking` is a boolean. It cannot distinguish `low` from `medium`,
-`high`, or `xhigh`, and it reports `off` for `none` whatever the routing layer
-later does with the request. So `cline.headless` at `3.0.55` offers no
-acceptance evidence for a specific tier, only for on-versus-off.
+`printModelProviderInfo` is the sole call site of that envelope, and it runs
+only when `config.verbose` is true. The selected `cline.headless` argv is
+`--json --auto-approve false -c <cwd> <prompt>`
+(`crates/swallowtail-adapter-cline/src/headless/command.rs`), which passes no
+`-v/--verbose`. So no `run_start` line is emitted on this route and the wire
+reports nothing about the requested value.
+
+`--verbose` is an unselected surface, and selecting it would not rescue the
+mapping: `run_start.thinking` is a boolean that cannot distinguish `low` from
+`medium`, `high`, or `xhigh`, and it reports `off` for `none` whatever the
+routing layer later does with the request.
+
+So `cline.headless` at `3.0.55` has no acceptance evidence for a thinking
+value under Contract 040 — not a coarse one, none. Dispatch stops at argv.
 
 ## Syntax And Lifetime
 
@@ -334,7 +352,8 @@ acceptance evidence for a specific tier, only for on-versus-off.
 | Headless one run | applied to that child's `Config` only | scope is correct; entitlement is not |
 | Headless persisted precedence | explicit CLI beats `providerSettings.reasoning` | correct at the CLI boundary only |
 | Headless second persisted source | `providerConfig.reasoningEffort` fills an undefined effort below the CLI | dropped for `none` by the gateway short circuit |
-| Headless acknowledgement | `run_start.thinking` is `"on"`/`"off"` | cannot confirm a tier |
+| Headless acknowledgement | none on the selected argv; `run_start` is emitted only under `--verbose`, which the route does not pass | nothing to accept |
+| Headless acknowledgement under an unselected `--verbose` | `run_start.thinking` is `"on"`/`"off"` | would still not confirm a tier |
 
 ## Route And Value Dispositions
 
@@ -366,8 +385,9 @@ but the route selects no provider and no model, and every value's survival
 depends on the model that host settings or a catalogue happen to resolve.
 Contract 040 forbids clamping to the nearest supported value, replacing an
 unsupported value with a provider default, and inferring support from
-catalogues. Exact `3.0.55` does the first two itself and offers only a boolean
-acknowledgement, so Swallowtail cannot even prove which tier was accepted.
+catalogues. Exact `3.0.55` does the first two itself, and the selected argv
+returns no acknowledgement of the value, so Swallowtail could claim dispatch
+and nothing beyond it.
 
 `none` is not exact portable `off` on either route. On ACP it is discarded. On
 headless it survives only where the unselected model advertises off, and it is

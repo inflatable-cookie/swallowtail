@@ -8,9 +8,8 @@ use swallowtail_core::{
     InstanceOwnership, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument,
-    StructuredOutputDescriptor, TerminalStatus, TurnRequest,
-    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument, StructuredOutputDescriptor,
+    TerminalStatus, TurnRequest, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     assert_observable_activity_not_applicable, assert_observable_activity_trace,

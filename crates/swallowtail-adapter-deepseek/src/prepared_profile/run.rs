@@ -87,22 +87,22 @@ impl DeepSeekPreparedIntegration {
             ));
         }
         let activity = crate::activity::profile::activity_profile(false);
-        let base_requirements = deepseek_requirements_for_reasoning(
-            crate::deepseek_v4_run_requirements(
-                self.instance().execution_host_id().clone(),
-                self.access_profile().id().clone(),
-            ),
-            &reasoning,
+        let base_requirements = crate::deepseek_v4_run_requirements(
+            self.instance().execution_host_id().clone(),
+            self.access_profile().id().clone(),
         );
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
             &activity,
         );
-        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
-            |(capability, constraints)| {
-                CapabilityRequirement::new(capability, constraints.iter().cloned())
-            },
-        ));
+        let requirements = deepseek_requirements_for_reasoning(
+            base_requirements.with_capabilities(capabilities.iter().map(
+                |(capability, constraints)| {
+                    CapabilityRequirement::new(capability, constraints.iter().cloned())
+                },
+            )),
+            &reasoning,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         if route.model_id().as_str() != crate::DEEPSEEK_MODEL_ID {

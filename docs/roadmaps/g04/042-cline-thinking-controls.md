@@ -1,8 +1,9 @@
 # g04.042 Cline Thinking Controls
 
-Status: ready
+Status: stopped
 Owner: Tom
 Created: 2026-08-22
+Updated: 2026-08-22
 Depends on: per-route feature completion programme; g03.086-087
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 029, 033, 037, 040, 050, 052
@@ -30,22 +31,22 @@ lifetime, model, default, or acceptance truth.
 
 ## Goals
 
-- [ ] freeze current official documentation and exact `3.0.55` package source
+- [x] freeze current official documentation and exact `3.0.55` package source
       for syntax, omission, defaults, normalization, model/provider support,
       and precedence
-- [ ] classify ACP spawn and headless run transport independently
-- [ ] classify `none`, `low`, `medium`, `high`, and `xhigh` independently,
+- [x] classify ACP spawn and headless run transport independently
+- [x] classify `none`, `low`, `medium`, `high`, and `xhigh` independently,
       including whether `none` can map exactly to portable `off`
-- [ ] reject aliases, nearest-value mapping, model defaults, provider/model
+- [x] reject aliases, nearest-value mapping, model defaults, provider/model
       substitution, and inferred support
-- [ ] decide whether either transport needs a private Contract 029 behavior
+- [x] decide whether either transport needs a private Contract 029 behavior
       revision at exact `3.0.55`
 - [ ] bind only Research 190 deliver-now route/value rows through typed input,
       immutable plan/evidence, request/session policy, driver, and argv
-- [ ] preserve exact existing commands and behavior when thinking is absent
+- [x] preserve exact existing commands and behavior when thinking is absent
 - [ ] repeat an admitted ACP selection on fresh context-losing replacement
       and keep a headless selection local to its one run
-- [ ] publish only requested, planned, dispatched, accepted, effective, and
+- [x] publish only requested, planned, dispatched, accepted, effective, and
       observed truth proved by the exact surface
 
 ## Non-Goals
@@ -83,9 +84,9 @@ is not a selected reasoning value.
 
 ### Batch 42.1 — Exact Package And Two-Transport Evidence
 
-- [ ] Execute card 116.
-- [ ] freeze current official and exact `3.0.55` specimens and digests
-- [ ] promote Research 190 with separate route/value, omission, model,
+- [x] Execute card 116.
+- [x] freeze current official and exact `3.0.55` specimens and digests
+- [x] promote Research 190 with separate route/value, omission, model,
       normalization, version, and lifetime dispositions
 
 ### Batch 42.2 — Conditional Prepared Binding
@@ -96,6 +97,9 @@ is not a selected reasoning value.
 - [ ] preserve absent argv exactly and reject plan/evidence/driver drift before
       process work
 
+Card 117 is blocked. Research 190 admits no deliver-now row on either
+transport.
+
 ### Batch 42.3 — Route-Local Acceptance
 
 - [ ] Execute card 118 only after card 117.
@@ -103,25 +107,32 @@ is not a selected reasoning value.
       absent behavior, and fail-closed rejection
 - [ ] update both route guides and report the deferred shared closeout delta
 
+Card 118 is blocked. There is no dispatch to prove, so both route guides stay
+unchanged and the deferred shared delta is recorded in the route-local
+closeout.
+
 ## Acceptance Criteria
 
-- [ ] ACP and headless dispositions are explicit and independent
-- [ ] only Research 190 deliver-now rows prepare
+- [x] ACP and headless dispositions are explicit and independent
+- [x] only Research 190 deliver-now rows prepare
 - [ ] portable mode, plan constraint, prepared evidence, request/session
       policy, configured driver, and exact argv agree
-- [ ] no alias, clamp, default, provider/model inference, or sibling-route
+- [x] no alias, clamp, default, provider/model inference, or sibling-route
       promotion enters the mapping
-- [ ] absent thinking retains current `cline --acp` and
+- [x] absent thinking retains current `cline --acp` and
       `cline --json --auto-approve false ...` behavior
 - [ ] every known mismatch fails before provider work at the earliest boundary
       the exact process surface permits
-- [ ] deterministic QA uses no install, login, credential, account, or prompt
-- [ ] docs do not infer provider-effective reasoning from CLI acceptance or
+- [x] deterministic QA uses no install, login, credential, account, or prompt
+- [x] docs do not infer provider-effective reasoning from CLI acceptance or
       emitted reasoning text
 
 An empty Research 190 deliver-now set, or a set for only one transport, is an
 honest result. It does not justify weakening Contract 040 or copying one
 route's claim onto the other.
+
+The set is empty on both transports. Acceptance is the retained `cline --acp`
+and `cline --json --auto-approve false …` boundary, not a new control.
 
 ## Lane Runway
 
@@ -131,6 +142,7 @@ route's claim onto the other.
 - execution topology: one serial worker lane, cards 116-118
 - next route family: selected by the orchestrator after evidence and merge
   closeout; no later family is precompiled here
+- outcome: stopped after card 116 on both transports
 
 ## Decision Gates
 
@@ -149,9 +161,9 @@ route's claim onto the other.
 
 ## Batch Cards
 
-- [116-cline-thinking-control-evidence.md](batch-cards/116-cline-thinking-control-evidence.md) — ready
-- [117-cline-thinking-control-binding.md](batch-cards/117-cline-thinking-control-binding.md) — conditional
-- [118-cline-thinking-control-acceptance.md](batch-cards/118-cline-thinking-control-acceptance.md) — conditional
+- [116-cline-thinking-control-evidence.md](batch-cards/116-cline-thinking-control-evidence.md) — complete
+- [117-cline-thinking-control-binding.md](batch-cards/117-cline-thinking-control-binding.md) — blocked
+- [118-cline-thinking-control-acceptance.md](batch-cards/118-cline-thinking-control-acceptance.md) — blocked
 
 ## References
 

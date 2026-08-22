@@ -1,8 +1,9 @@
 # 118 Cline Thinking Control Acceptance
 
-Status: conditional on card 117
+Status: blocked
 Owner: Tom
 Created: 2026-08-22
+Updated: 2026-08-22
 Milestone: [g04.042 Cline Thinking Controls](../042-cline-thinking-controls.md)
 Depends on: card 117
 
@@ -82,3 +83,10 @@ Auto-continuation: No.
 - merge or restack authority
 - `CHANGELOG.md`; shared architecture; route/feature matrices;
   programme/front doors/indexes; matrix assertions; shared package lists
+
+## Closeout
+
+Not executed. Card 117 produced no binding, so there is no dispatch, lifetime,
+or rejection behavior to prove. Both Cline route guides, the adapter fixtures,
+and the unreleased package API baseline are unchanged. The route-local closeout
+records the deferred shared-surface delta.

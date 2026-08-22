@@ -1,8 +1,9 @@
 # 117 Cline Thinking Control Binding
 
-Status: conditional on card 116
+Status: blocked
 Owner: Tom
 Created: 2026-08-22
+Updated: 2026-08-22
 Milestone: [g04.042 Cline Thinking Controls](../042-cline-thinking-controls.md)
 Depends on: card 116; promoted Research 190 with a non-empty deliver-now set
 
@@ -83,3 +84,11 @@ zero-process failure tests pass.
   closeout
 - provider-effective reasoning claims not proved by Research 190
 - other Cline settings, models, modes, permissions, tools, or live work
+
+## Closeout
+
+Not executed. Research 190 admits no deliver-now route/value row. `cline.acp`
+discards the parsed flag entirely, and every `cline.headless` value depends on
+a provider and model the route does not select, so binding a portable
+`ReasoningSelection` would claim a capability from argv acceptance or accept
+Cline's own clamp and substitution.

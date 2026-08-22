@@ -59,16 +59,16 @@ families do not interrupt this programme by default.
 - [g04.038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md)
   is ready. Cards 104-106 separate effort from thinking mode and preserve
   private continuation through only Research 186 deliver-now mappings.
-- The three route families may execute concurrently. Each lane remains serial;
-  integrate Anthropic, then DeepSeek. Compile xAI after this wave.
+- g04.037 and g04.038 may execute concurrently in isolated worktrees. Integrate
+  Anthropic, then DeepSeek. Compile xAI after this wave.
 
 ## Parallel Execution Boundary
 
-The Ollama, Anthropic, and DeepSeek workers own only their route crate, fixtures,
+The Anthropic and DeepSeek workers own only their route crate, fixtures,
 prepared guide, numbered milestone and cards, reserved research record, reserved
-closeout log, and package-specific public API baseline. Anthropic and DeepSeek
-must not edit shared architecture, route/feature matrices, changelog, programme,
-roadmap front doors, indexes, or `packages.txt` while Ollama is in flight.
+closeout log, and package-specific public API baseline. Each worker must not
+edit shared architecture, route/feature matrices, changelog, programme,
+roadmap front doors, indexes, or `packages.txt` while its lane is in flight.
 
 The orchestrator reconciles those shared surfaces after review and merge in the
 fixed order Anthropic, then DeepSeek. A worker reports the required shared

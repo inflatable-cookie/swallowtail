@@ -63,19 +63,16 @@ impl OllamaSessionHandle {
         )?;
         let scope = operation_scope("turn", request.turn_id().as_str())?;
         let cancelled = Arc::new(AtomicBool::new(false));
-        if let Err(error) = (OllamaNativeAttachedDriver {
-            transport: self.transport.clone(),
-            context_window: self.context_window,
-        })
-        .observe_catalogue(
-            scope.clone(),
-            &self.endpoint,
-            &self.plan,
-            request.deadline(),
-            &self.services,
-            Arc::clone(&cancelled),
-        )
-        .await
+        if let Err(error) = OllamaNativeAttachedDriver::from_transport(self.transport.clone())
+            .observe_catalogue(
+                scope.clone(),
+                &self.endpoint,
+                &self.plan,
+                request.deadline(),
+                &self.services,
+                Arc::clone(&cancelled),
+            )
+            .await
         {
             self.state
                 .lock()

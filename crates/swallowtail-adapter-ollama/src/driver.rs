@@ -32,7 +32,8 @@ const ROUTE: &str = "ollama.attached";
 /// Low-level driver for one externally managed Ollama native HTTP runtime.
 pub struct OllamaNativeAttachedDriver {
     transport: CurlTransport,
-    context_window: Option<crate::OllamaContextWindow>,
+    prepared_dispatch_binding:
+        Option<crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding>,
 }
 
 impl OllamaNativeAttachedDriver {
@@ -45,23 +46,45 @@ impl OllamaNativeAttachedDriver {
     /// Creates a driver bound to the exact context selection in prepared evidence.
     #[must_use]
     pub fn bound_to_prepared_evidence(evidence: &crate::OllamaPreparedEvidence) -> Self {
-        let mut driver = Self::new();
-        if let Some(context_window) = evidence.context_window() {
-            driver = driver.with_context_window(context_window);
+        Self {
+            transport: CurlTransport,
+            prepared_dispatch_binding: Some(
+                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_evidence(
+                    evidence,
+                ),
+            ),
         }
-        driver
-    }
-
-    pub(crate) fn with_context_window(
-        mut self,
-        context_window: crate::OllamaContextWindow,
-    ) -> Self {
-        self.context_window = Some(context_window);
-        self
     }
 
     pub(super) fn context_window(&self) -> Option<crate::OllamaContextWindow> {
-        self.context_window
+        self.prepared_dispatch_binding.as_ref().and_then(
+            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::context_window,
+        )
+    }
+
+    pub(crate) fn from_transport(transport: CurlTransport) -> Self {
+        Self {
+            transport,
+            prepared_dispatch_binding: None,
+        }
+    }
+
+    /// Validates that this driver matches one prepared evidence snapshot.
+    pub fn validate_against_prepared_evidence(
+        &self,
+        evidence: &crate::OllamaPreparedEvidence,
+    ) -> Result<(), RuntimeFailure> {
+        let expected =
+            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_evidence(
+                evidence,
+            );
+        match &self.prepared_dispatch_binding {
+            Some(binding) if binding == &expected => Ok(()),
+            _ => Err(failure(
+                "swallowtail.ollama.context_window_binding_mismatch",
+                "Ollama prepared dispatch binding did not match prepared evidence",
+            )),
+        }
     }
 
     fn validate_plan(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
@@ -113,16 +136,10 @@ impl OllamaNativeAttachedDriver {
                 "Ollama runtime, route, tag, or digest binding did not match preflight",
             ));
         }
-        let capability = match plan.requirements().operation_shape() {
-            swallowtail_core::OperationShape::StructuredRun => Capability::StructuredRun,
-            swallowtail_core::OperationShape::InteractiveSession => Capability::InteractiveSession,
-            _ => return Ok(()),
-        };
-        crate::context_window_plan::validate_context_window_plan_binding(
-            self.context_window(),
-            plan,
-            capability,
-        )
+        if let Some(binding) = &self.prepared_dispatch_binding {
+            binding.validate_against(plan)?;
+        }
+        Ok(())
     }
 }
 

@@ -472,15 +472,26 @@ fn mismatched_low_level_run_driver_fails_before_network() {
         )
         .expect("context window prepares");
 
-    let error = match block_on(OllamaNativeAttachedDriver::new().start_run(
-        attempt.plan().clone(),
+    let error = OllamaNativeAttachedDriver::new()
+        .validate_against_prepared_evidence(attempt.evidence())
+        .expect_err("unbound driver must reject prepared context evidence");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_binding_mismatch"
+    );
+
+    let session_profile = prepared
+        .prepare_session(session_input("context-window-run-mismatch-session"))
+        .expect("session prepares");
+    let driver = OllamaNativeAttachedDriver::bound_to_prepared_evidence(attempt.evidence());
+    let error = match block_on(driver.start_run(
+        session_profile.plan().clone(),
         attempt.request().clone(),
         fixture.services(),
     )) {
         Err(error) => error,
-        Ok(_) => panic!("unbound driver must fail before transport"),
+        Ok(_) => panic!("bound driver must reject alien preflight before transport"),
     };
-
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.ollama.context_window_binding_mismatch"
@@ -499,20 +510,57 @@ fn mismatched_low_level_session_driver_fails_before_network() {
         )
         .expect("session context window prepares");
 
-    let error = match block_on(OllamaNativeAttachedDriver::new().open_session(
-        profile.plan().clone(),
+    let error = OllamaNativeAttachedDriver::new()
+        .validate_against_prepared_evidence(profile.evidence())
+        .expect_err("unbound driver must reject prepared context evidence");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_binding_mismatch"
+    );
+
+    let inference_attempt = prepared
+        .prepare_inference_attempt(attempt_input("context-window-session-mismatch-run"))
+        .expect("inference prepares");
+    let driver = OllamaNativeAttachedDriver::bound_to_prepared_evidence(profile.evidence());
+    let error = match block_on(driver.open_session(
+        inference_attempt.plan().clone(),
         profile.request().clone(),
         fixture.services(),
     )) {
         Err(error) => error,
-        Ok(_) => panic!("unbound driver must fail before transport"),
+        Ok(_) => panic!("bound driver must reject alien preflight before transport"),
     };
-
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.ollama.context_window_binding_mismatch"
     );
     assert_eq!(fixture.server.inference_attempts(), 0);
+}
+
+#[test]
+fn mismatched_bound_driver_rejects_different_prepared_evidence() {
+    let fixture = Fixture::new();
+    let prepared = prepared(&fixture);
+    let with_context = prepared
+        .prepare_inference_attempt(
+            attempt_input("context-window-evidence-a")
+                .with_context_window(OllamaContextWindow::from_u64(8192).expect("value")),
+        )
+        .expect("first attempt prepares");
+    let other_context = prepared
+        .prepare_inference_attempt(
+            attempt_input("context-window-evidence-b")
+                .with_context_window(OllamaContextWindow::from_u64(4096).expect("value")),
+        )
+        .expect("second attempt prepares");
+    let driver = OllamaNativeAttachedDriver::bound_to_prepared_evidence(with_context.evidence());
+    let error = driver
+        .validate_against_prepared_evidence(other_context.evidence())
+        .expect_err("bound driver must reject alien prepared evidence");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_binding_mismatch"
+    );
 }
 
 fn schema() -> StructuredOutputDescriptor {

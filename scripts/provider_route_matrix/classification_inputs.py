@@ -112,8 +112,6 @@ generation_control_classifications = {
     ("reasoning_selection", "openai.realtime"): "upstream_unsupported",
     ("structured_output", "openai.realtime"): "upstream_unsupported",
     ("output_token_limit", "opencode.http"): "upstream_unsupported",
-    ("output_token_limit", "xai.responses-websocket"): "ready_operator_hold",
-    ("reasoning_selection", "xai.responses-websocket"): "ready_operator_hold",
     ("structured_output", "xai.responses-websocket"): "ready_operator_hold",
     ("output_token_limit", "grok-build.acp"): "upstream_unsupported",
     ("reasoning_selection", "grok-build.acp"): "contract_or_corpus_required",

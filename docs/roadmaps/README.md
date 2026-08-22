@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Implement g04.039 cards 107-109 for xAI Responses WebSocket reasoning and
-output bounds. Card 107 must freeze the exact current model/value/profile
-surface before binding. Contract 029 currentness stays standing.
+Reassess the remaining promoted advanced-route feature inventory against the
+current production matrix, select one route and one coherent control family,
+then compile g04.040 and its cards. No implementation worker is ready until
+that planning pass completes. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

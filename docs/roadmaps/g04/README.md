@@ -53,10 +53,10 @@ and selection policy.
 - [g04.036 Ollama Attached Context Window](036-ollama-attached-context-window.md) — complete, cards 098-100
 - [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — complete, cards 101-103
 - [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
-- [g04.039 xAI Responses Reasoning And Output Bounds](039-xai-responses-reasoning-output-bounds.md) — ready, cards 107-109
+- [g04.039 xAI Responses Reasoning And Output Bounds](039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
 
-Do not roll over: 39 numbered roadmaps exist; 001-038 are complete and 039 is
-ready, target 30-50.
+Do not roll over: 39 numbered roadmaps exist and are complete, target 30-50.
+Select and compile one next per-route control family as g04.040.
 
 ## Current Checkpoint
 
@@ -94,8 +94,8 @@ ready, target 30-50.
 - g04.038 is on `main` at `badb400a` through PR 36: exact V4 Pro
   `low`/`high`/`max` reasoning is realized with thinking fixed enabled; cards
   104-106 are complete
-- g04.039 is ready: cards 107-109 cover refreshed xAI WebSocket/model/control
-  evidence, exact binding, and deterministic continuation acceptance
+- g04.039 is on `main` at `e9ae1a49` through PR 38: exact Grok 4.5/4.6
+  reasoning and positive output bounds are realized; cards 107-109 are complete
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -105,9 +105,10 @@ ready, target 30-50.
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. g04.035-038 completed the first four per-route feature families.
-3. Execute g04.039 as one serial xAI route-family lane. Contract 029 currentness
-   remains standing.
+2. g04.035-039 completed the initial five per-route feature families.
+3. Reassess the remaining promoted inventory, select one route and one coherent
+   control family, then compile g04.040. Contract 029 currentness remains
+   standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -118,7 +119,7 @@ New route-family research does not pre-empt this sequence.
 - [036 Ollama Attached Context Window](./036-ollama-attached-context-window.md) — complete, cards 098-100
 - [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — complete, cards 101-103
 - [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
-- [039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md) — ready, cards 107-109
+- [039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

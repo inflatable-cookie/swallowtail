@@ -1005,14 +1005,14 @@ still need identity evidence. They do not share one portable composer
 contract. UltraCode, Fast mode, Agent teams, and context size stay
 provider- and route-specific; none becomes a cross-provider label.
 
-If the operator later selects feature work, the first eligible research
-tranche is the small exact-transport set already named above: Cursor
-headless model parameters, Ollama `num_ctx`, Anthropic Messages effort,
-DeepSeek effort, and xAI Responses reasoning/output bounds. Select one
-route and one control family at a time. Recheck current official evidence
-before compiling cards.
+The first eligible exact-transport tranche is now complete through g04.035-039:
+Cursor headless model parameters, Ollama `num_ctx`, Anthropic Messages effort,
+DeepSeek effort, and xAI Responses reasoning/output bounds. The remaining
+inventory stays promoted as selection input, not as one implementation tranche.
+Select one route and one coherent control family at a time and recheck current
+official evidence before compiling cards.
 
 Experimental process-spawning controls, dangerous permission bypasses,
 catalogue observations presented as setters, and unconfirmed fields stay
-withheld. This assessment opens no roadmap, changes no matrix claim, and
-does not move Next Task from g04.024.
+withheld. The next planning pass must reassess the remaining entries against
+current production-matrix and contract truth before compiling g04.040.

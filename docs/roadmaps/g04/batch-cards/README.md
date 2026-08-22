@@ -2,6 +2,9 @@
 
 ## Completed
 
+- [109-xai-responses-control-acceptance.md](./109-xai-responses-control-acceptance.md)
+- [108-xai-responses-control-binding.md](./108-xai-responses-control-binding.md)
+- [107-xai-responses-control-evidence.md](./107-xai-responses-control-evidence.md)
 - [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md)
 - [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md)
 - [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md)
@@ -113,6 +116,5 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [109-xai-responses-control-acceptance.md](./109-xai-responses-control-acceptance.md) — ready after 108
-- [108-xai-responses-control-binding.md](./108-xai-responses-control-binding.md) — ready after 107
-- [107-xai-responses-control-evidence.md](./107-xai-responses-control-evidence.md) — ready
+No card is compiled. The orchestrator must select one remaining route/control
+family before reserving g04.040 cards.

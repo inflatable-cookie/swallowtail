@@ -62,20 +62,16 @@ families do not interrupt this programme by default.
   104-106 realize exact V4 Pro `low`, `high`, and `max` effort while keeping
   thinking enabled and private continuation adapter-held.
 - [g04.039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md)
-  is ready. Cards 107-109 start with refreshed exact model/value/profile
-  evidence before binding any reasoning or output control.
+  is complete and merged through PR 38 at `e9ae1a49`. Research 187 and cards
+  107-109 realize exact model-qualified reasoning and positive output-token
+  bounds on structured and serial connection-local profiles.
 
-## Current Worker Boundary
+## Current Planning Boundary
 
-The xAI worker owns only its route crate, fixtures, prepared guide, numbered
-milestone and cards, reserved research record, reserved closeout log, and
-package-specific public API baseline. It must not edit shared architecture,
-route/feature matrices, changelog, programme, roadmap front doors, indexes, or
-`packages.txt` while the lane is in flight.
-
-The orchestrator reconciles those shared surfaces after review and merge. The
-worker reports the required shared delta in its closeout record and PR body; it
-does not apply that delta on its route branch.
+The initial five-family sequence is complete. The orchestrator must reassess
+the remaining promoted inventory against current route and contract truth,
+select one route and one coherent control family, and compile g04.040 before
+any implementation worker starts. Do not bulk-promote the remaining gaps.
 
 ## Exclusions
 

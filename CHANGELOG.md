@@ -7,6 +7,13 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add exact xAI Responses WebSocket reasoning selection for `grok-4.5`
+  (`low`, `medium`, `high`) and `grok-4.6` (`low`, `medium`, `high`,
+  `xhigh`), plus positive `max_output_tokens` through `2_147_483_647`, on
+  structured runs and serial connection-local sessions; controls remain fixed
+  through continuation and fresh replacement, and dispatch does not claim
+  provider acceptance, effective reasoning depth, or exact generated length;
+  Research 187, g04.039
 - add exact Anthropic Messages effort selection for `claude-opus-4-7` through
   portable `ReasoningSelection` values `low`, `medium`, `high`, `xhigh`, and
   `max` on structured runs and fixed direct-continuation sessions; dispatches

@@ -1442,7 +1442,15 @@ containers remain excluded.
 Realtime routes now expose three separate prepared connection surfaces. xAI
 Responses WebSocket requires an explicit caller-selected model and retains
 serial text turns, connection-private continuation, billed cost, and
-whole-session invalidation. OpenAI Realtime binds `gpt-realtime-2.1`, mono
+whole-session invalidation. Its prepared run and session profiles bind exact
+`grok-4.5` reasoning `low`, `medium`, or `high`; exact `grok-4.6` reasoning
+`low`, `medium`, `high`, or `xhigh`; and positive `max_output_tokens` through
+the signed 32-bit maximum. One selection remains fixed across first and later
+turns plus fresh context-losing replacement. Unsupported models, values,
+aliases, and plan mismatches reject before endpoint or credential use. The
+binding proves dispatched request shape, not provider acceptance, effective
+reasoning depth, or exact generated length. OpenAI Realtime binds
+`gpt-realtime-2.1`, mono
 24 kHz PCM, manual input commit, native response cancellation, and no planned
 rollover. Gemini Live binds `gemini-3.1-flash-live-preview`, 16 kHz input,
 24 kHz output, local interruption truth, and exactly one provider-planned

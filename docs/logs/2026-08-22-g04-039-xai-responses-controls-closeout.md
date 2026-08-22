@@ -1,16 +1,18 @@
 # 2026-08-22 g04.039 xAI Responses Controls Closeout
 
-Status: review PR open; merge not authorized
+Status: merged; shared closeout complete
 Owner: Tom
 Milestone: g04.039
 Cards: 107-109
 Base: `origin/main` at `906e776d957b02b25b0d69fce71b28d6543af40f`
 PR: [#38](https://github.com/inflatable-cookie/swallowtail/pull/38)
 PR head at opening: `6ad12932`
+Accepted and merged head: `e9ae1a49a90a32c9242eaec0b64d80c3050d2e40`
+Merge: fast-forward-only onto `main`, 2026-08-22
 Branch: `t3code/xai-responses-controls`
 
-This closeout-only follow-up records the PR truth; the final branch head is
-reported with the worker handoff because this file is part of that head.
+The exact accepted head passed all five CI jobs before `main` advanced. No merge
+commit or red-head bypass was used.
 
 ## Result
 
@@ -77,10 +79,13 @@ attempted in both the repository and an isolated target, but the host returned
 `EMFILE` (`Too many open files in system`) while documenting unrelated
 workspace/ACP crates. The xAI package baseline comparison passed exactly.
 
-## Deferred Shared-Surface Delta
+During orchestrator review the full workspace `effigy package:api` gate passed
+at the exact accepted head. The earlier `EMFILE` result was host-transient, not
+a route or public-API failure.
 
-The worker intentionally did not edit shared surfaces. After review merge, the
-orchestrator should apply the exact xAI Responses control truth to:
+## Shared-Surface Closeout
+
+The orchestrator applied the worker's deferred delta after merge:
 
 - `docs/architecture/system-architecture.md`: record exact Grok rows and
   prepared dispatch boundaries without acceptance/effectiveness claims;
@@ -91,11 +96,11 @@ orchestrator should apply the exact xAI Responses control truth to:
 - `CHANGELOG.md`: add the unreleased route-local control binding;
 - `docs/roadmaps/g04/per-route-feature-completion.md`: mark this control
   family integrated;
-- shared roadmap front doors, indexes, and `Next Task`: advance statuses only
-  after merge;
+- shared roadmap front doors, indexes, and `Next Task`: g04.039 is complete and
+  the next action is a one-family selection and g04.040 compilation pass;
 - `release-baselines/public-api-0.3.3/packages.txt`: no package-set change;
   this worker added only the allowed unreleased xAI API baseline and package
   entry.
 
-No merge, shared-surface completion, live provider acceptance, account
-inspection, release, or publication is claimed from this worker branch.
+No live provider acceptance, account inspection, release, or publication is
+claimed.

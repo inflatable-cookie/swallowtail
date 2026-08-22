@@ -223,8 +223,8 @@ generation_control_no_cells = {
     for feature in ["output_token_limit", "reasoning_selection", "structured_output"]
     if row[feature] == "No"
 }
-if len(generation_control_no_cells) != 89:
-    raise SystemExit("generation-control inventory must contain exactly 89 No cells")
+if len(generation_control_no_cells) != 87:
+    raise SystemExit("generation-control inventory must contain exactly 87 No cells")
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
@@ -281,7 +281,7 @@ if classification_counts != Counter(
         "upstream_unsupported": 178,
         "operation_shape_not_applicable": 64,
         "ready_existing_contract": 4,
-        "ready_operator_hold": 6,
+        "ready_operator_hold": 4,
         "composite_partial_only": 6,
         "shared_contract_expansion_required": 2,
         "upstream_ordering_blocked": 1,

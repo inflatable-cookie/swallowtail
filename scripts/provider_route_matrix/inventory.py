@@ -6,8 +6,8 @@ expected_no_counts = Counter(
         "realtime_media_session": 3,
         "usage_evidence": 12,
         "billed_cost_evidence": 19,
-        "output_token_limit": 31,
-        "reasoning_selection": 24,
+        "output_token_limit": 30,
+        "reasoning_selection": 23,
         "structured_output": 34,
         "attachments": 33,
         "consumer_tool_exchange": 35,
@@ -47,8 +47,8 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 325,
-        "No": 554,
+        "Yes": 327,
+        "No": 552,
         "Not applicable": 421,
         "Partial": 2,
         "Caller-supplied": 15,
@@ -62,5 +62,5 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 554 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 554 unique cells")
+if len(no_cells) != 552 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 552 unique cells")

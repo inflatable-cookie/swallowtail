@@ -7,7 +7,7 @@ Cards: 119 complete; 120-121 blocked
 Branch: `t3code/openai-background-search`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-e3fd4917`
 Base: `4179bff8a618007214f09bd99c765e65474eba03` (`origin/main` at dispatch)
-PR: pending
+PR: [#42](https://github.com/inflatable-cookie/swallowtail/pull/42)
 Review: pending
 Merge: none; worker must not merge
 

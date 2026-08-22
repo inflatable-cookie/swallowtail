@@ -1,6 +1,6 @@
 # 111 Copilot CLI ACP Effort Binding
 
-Status: ready after 110
+Status: blocked
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.040 Copilot CLI ACP Session Effort](../040-copilot-cli-acp-session-effort.md)
@@ -70,3 +70,9 @@ failure tests pass.
 - route guide, matrices, architecture, programme, changelog, or shared closeout
 - provider acceptance or effective-effort claims
 - tool filters, permission broadening, TCP, login, model selection, or live work
+
+## Closeout
+
+Not executed. Research 188 admits no deliver-now value. Binding a portable
+reasoning input would require unknown model capability or accept Copilot's
+model-default substitution.

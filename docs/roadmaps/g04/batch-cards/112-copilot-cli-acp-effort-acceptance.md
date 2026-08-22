@@ -1,6 +1,6 @@
 # 112 Copilot CLI ACP Effort Acceptance
 
-Status: ready after 111
+Status: blocked
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.040 Copilot CLI ACP Session Effort](../040-copilot-cli-acp-session-effort.md)
@@ -75,3 +75,8 @@ Auto-continuation: No.
 - `CHANGELOG.md`; `docs/architecture/system-architecture.md`; route/feature
   matrices; programme and roadmap front doors; shared indexes and matrix
   assertions; `packages.txt`
+
+## Closeout
+
+Not executed. There is no dispatch, guide change, or API baseline delta to
+prove. Route-local closeout is the Research 188 stop record.

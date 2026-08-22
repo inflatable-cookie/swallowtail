@@ -1,6 +1,6 @@
 # 110 Copilot CLI ACP Effort Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.040 Copilot CLI ACP Session Effort](../040-copilot-cli-acp-session-effort.md)
@@ -41,17 +41,17 @@ prompt, or infer effective effort from provider output.
 
 ## Acceptance Criteria
 
-- [ ] exact current official and exact `1.0.80` evidence is frozen without
+- [x] exact current official and exact `1.0.80` evidence is frozen without
       secrets
-- [ ] canonical syntax, alias posture, values, default, and lifetime are explicit
-- [ ] the no-model-route Contract 040 disposition is explicit
-- [ ] every candidate value and session stage has a disposition
-- [ ] Research 188 is promoted and the existing route behavior boundary is
+- [x] canonical syntax, alias posture, values, default, and lifetime are explicit
+- [x] the no-model-route Contract 040 disposition is explicit
+- [x] every candidate value and session stage has a disposition
+- [x] Research 188 is promoted and the existing route behavior boundary is
       either retained with evidence or named as a stop
-- [ ] production code, claims, matrices, architecture, and changelog are unchanged
-- [ ] `effigy validate:focused swallowtail-adapter-copilot-cli` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] production code, claims, matrices, architecture, and changelog are unchanged
+- [x] `effigy validate:focused swallowtail-adapter-copilot-cli` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 111 only when at least one exact value maps to portable
 reasoning on package `1.0.80` without a contract, facade, or version-segment gap.
@@ -70,3 +70,12 @@ reasoning on package `1.0.80` without a contract, facade, or version-segment gap
 - tool filters, permissions, TCP, login, currentness, or another Copilot route
 - live provider/account work
 - shared research/log/roadmap indexes and shared closeout surfaces
+
+## Closeout
+
+Research 188 freezes official ACP-server and exact `1.0.80` `app.js` evidence
+for `--effort` / `--reasoning-effort`. The five documented values parse as one
+commander option and are stored as ACP session-initial effort, but entitled
+application is model-gated and can substitute the model default. `copilot-cli.acp`
+has no selected model. No portable `ReasoningSelection` row survives. Card 111
+is not executed. The current `copilot --acp --stdio` boundary is retained.

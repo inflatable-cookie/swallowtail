@@ -1,12 +1,12 @@
 # g04.040 Copilot CLI ACP Session Effort
 
-Status: ready
+Status: stopped
 Owner: Tom
 Created: 2026-08-22
 Depends on: per-route feature completion programme
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 029, 037, 040, 041, 052
-Research: 049, 149, 159; 188 to be produced by card 110
+Research: 049, 149, 159, 188
 
 ## Problem
 
@@ -31,22 +31,22 @@ the existing one-child/one-session route, if Research 188 proves it.
 
 ## Goals
 
-- [ ] freeze current official ACP-server documentation and exact `1.0.80`
+- [x] freeze current official ACP-server documentation and exact `1.0.80`
       package evidence for effort flags, syntax, values, scope, and defaults
-- [ ] decide whether the interface-level session effort can map to portable
+- [x] decide whether the interface-level session effort can map to portable
       `ReasoningSelection` without selected-model inference or value clamping
-- [ ] classify the canonical `--effort` form and its
+- [x] classify the canonical `--effort` form and its
       `--reasoning-effort` alias without exposing raw argv choice
 - [ ] bind only Research 188 deliver-now values through prepared input,
       immutable plan/evidence, driver configuration, and child argv
 - [ ] keep one selection fixed for the owned process, every prompt, and fresh
       context-losing replacement
-- [ ] preserve exact `copilot --acp --stdio` behavior when effort is absent
+- [x] preserve exact `copilot --acp --stdio` behavior when effort is absent
 - [ ] reject unsupported values and request/plan/evidence/driver drift before
       process work
 - [ ] publish dispatch truth without claiming provider acceptance or effective
       reasoning depth
-- [ ] leave shared architecture, matrices, changelog, programme, indexes, and
+- [x] leave shared architecture, matrices, changelog, programme, indexes, and
       roadmap-front-door deltas for orchestrator closeout after merge
 
 ## Non-Goals
@@ -85,9 +85,9 @@ context-losing replacement must spawn a new child with the same prepared value.
 
 ### Batch 40.1 — Exact Package And Contract Evidence
 
-- [ ] Execute card 110.
-- [ ] freeze official and exact `1.0.80` effort specimens and digests
-- [ ] promote Research 188 with value, syntax, profile, lifetime, and claim
+- [x] Execute card 110.
+- [x] freeze official and exact `1.0.80` effort specimens and digests
+- [x] promote Research 188 with value, syntax, profile, lifetime, and claim
       dispositions
 
 ### Batch 40.2 — Prepared Session Binding
@@ -97,6 +97,8 @@ context-losing replacement must spawn a new child with the same prepared value.
       driver, and canonical argv
 - [ ] preserve the absent path and reject drift before process work
 
+Card 111 is blocked. Research 188 admits no deliver-now subset.
+
 ### Batch 40.3 — Dispatch And Acceptance
 
 - [ ] Execute card 112 only after card 111.
@@ -104,18 +106,23 @@ context-losing replacement must spawn a new child with the same prepared value.
       failures, and unchanged ACP lifecycle
 - [ ] update route-local guidance and report the deferred shared closeout delta
 
+Card 112 is blocked. There is no dispatch to prove.
+
 ## Acceptance Criteria
 
-- [ ] only Research 188 deliver-now values prepare
+- [x] only Research 188 deliver-now values prepare
 - [ ] request, plan constraint, prepared evidence, driver, and child argv agree
       exactly
 - [ ] one selection spans the owned child/session and fresh replacement
-- [ ] absent effort retains current argv and public behavior
-- [ ] no alias, raw string, clamp, default substitution, or model inference
+- [x] absent effort retains current argv and public behavior
+- [x] no alias, raw string, clamp, default substitution, or model inference
       enters the public mapping
 - [ ] known failures occur before process or provider work
-- [ ] deterministic QA uses no login, credential, account, or prompt
-- [ ] docs stop at the exact evidence state proved
+- [x] deterministic QA uses no login, credential, account, or prompt
+- [x] docs stop at the exact evidence state proved
+
+Research 188 deliver-now set is empty. Acceptance is the retained
+`copilot --acp --stdio` boundary, not a new control.
 
 ## Lane Runway
 
@@ -140,9 +147,9 @@ context-losing replacement must spawn a new child with the same prepared value.
 
 ## Batch Cards
 
-- [110-copilot-cli-acp-effort-evidence.md](batch-cards/110-copilot-cli-acp-effort-evidence.md) — ready
-- [111-copilot-cli-acp-effort-binding.md](batch-cards/111-copilot-cli-acp-effort-binding.md) — ready after 110
-- [112-copilot-cli-acp-effort-acceptance.md](batch-cards/112-copilot-cli-acp-effort-acceptance.md) — ready after 111
+- [110-copilot-cli-acp-effort-evidence.md](batch-cards/110-copilot-cli-acp-effort-evidence.md) — complete
+- [111-copilot-cli-acp-effort-binding.md](batch-cards/111-copilot-cli-acp-effort-binding.md) — blocked
+- [112-copilot-cli-acp-effort-acceptance.md](batch-cards/112-copilot-cli-acp-effort-acceptance.md) — blocked
 
 ## References
 

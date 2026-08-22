@@ -170,7 +170,8 @@ pub(crate) fn parse_plan_model_id(model_id: &str) -> Result<ParsedHeadlessModelI
         }
         let inner = &model_id[open + 1..model_id.len() - 1];
         let parameters = parse_parameter_suffix(base_model, inner)?;
-        let rendered = render_model_id(base_model, &parameters).map_err(|_| model_parameter_rejected())?;
+        let rendered =
+            render_model_id(base_model, &parameters).map_err(|_| model_parameter_rejected())?;
         if rendered.as_str() != model_id {
             return Err(model_parameter_rejected());
         }
@@ -340,8 +341,8 @@ mod tests {
         ] {
             assert!(parse_plan_model_id(model).is_err(), "{model}");
         }
-        let parsed =
-            parse_plan_model_id("claude-opus-4-8[context=1m,effort=high,fast=false]").expect("valid");
+        let parsed = parse_plan_model_id("claude-opus-4-8[context=1m,effort=high,fast=false]")
+            .expect("valid");
         assert_eq!(parsed.base_model, "claude-opus-4-8");
     }
 }

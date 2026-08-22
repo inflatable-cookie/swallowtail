@@ -9,8 +9,8 @@ use swallowtail_core::{
     ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
     ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
-    PreflightPlan, ProtocolFacadeId, ProviderId, ReasoningMode, ResourceAccess, ResourceRepresentation,
-    RuntimeReadiness, SupportAuthority, preflight,
+    PreflightPlan, ProtocolFacadeId, ProviderId, ReasoningMode, ResourceAccess,
+    ResourceRepresentation, RuntimeReadiness, SupportAuthority, preflight,
 };
 
 #[allow(dead_code)]

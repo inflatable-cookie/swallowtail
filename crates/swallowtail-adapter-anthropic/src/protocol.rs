@@ -31,6 +31,35 @@ pub(crate) struct ToolSpec {
     pub(crate) input_schema: serde_json::Value,
 }
 
+/// Keep request bytes independent of workspace-wide `serde_json` features.
+///
+/// The workspace may enable `serde_json/preserve_order` transitively through
+/// ACP dependencies. Rebuilding every object in lexical key order preserves
+/// the pre-change BTreeMap wire shape in both feature configurations.
+fn canonicalize_json_object_order(value: serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Object(object) => {
+            let mut entries: Vec<_> = object
+                .into_iter()
+                .map(|(key, value)| (key, canonicalize_json_object_order(value)))
+                .collect();
+            entries.sort_unstable_by(|left, right| left.0.cmp(&right.0));
+            let mut ordered = serde_json::Map::new();
+            for (key, value) in entries {
+                ordered.insert(key, value);
+            }
+            serde_json::Value::Object(ordered)
+        }
+        serde_json::Value::Array(values) => serde_json::Value::Array(
+            values
+                .into_iter()
+                .map(canonicalize_json_object_order)
+                .collect(),
+        ),
+        value => value,
+    }
+}
+
 impl Request {
     pub(crate) fn models(after: Option<&str>) -> Self {
         let mut query = vec![("limit".to_owned(), "2".to_owned())];
@@ -90,7 +119,8 @@ impl Request {
         if let Some(reasoning) = reasoning {
             body["output_config"] = json!({"effort": reasoning.as_str()});
         }
-        let body = serde_json::to_vec(&body).expect("message request JSON serializes");
+        let body = serde_json::to_vec(&canonicalize_json_object_order(body))
+            .expect("message request JSON serializes");
         Ok(Self {
             method: Method::Post,
             path: "/v1/messages".to_owned(),
@@ -133,7 +163,8 @@ impl Request {
         if let Some(reasoning) = reasoning {
             body["output_config"] = json!({"effort": reasoning.as_str()});
         }
-        let body = serde_json::to_vec(&body).expect("direct-continuation request JSON serializes");
+        let body = serde_json::to_vec(&canonicalize_json_object_order(body))
+            .expect("direct-continuation request JSON serializes");
         Ok(Self {
             method: Method::Post,
             path: "/v1/messages".to_owned(),

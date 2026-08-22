@@ -64,6 +64,10 @@ mod tests {
                 .expect("request body parses");
         assert_eq!(body["output_config"]["effort"], "max");
         assert!(body.get("thinking").is_none());
+        assert_eq!(
+            serde_json::to_vec(&body).expect("request body reserializes"),
+            br#"{"max_tokens":64,"messages":[],"model":"claude-opus-4-7","output_config":{"effort":"max"},"stream":true,"tool_choice":{"type":"auto"},"tools":[]}"#
+        );
     }
 
     #[test]

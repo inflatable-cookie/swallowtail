@@ -1,8 +1,9 @@
 use crate::AnthropicPreparedIntegration;
 use swallowtail_core::{
-    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole,
-    ExecutionLayer, HostServiceKind, ModelRoute, OperationRequirements, OperationShape,
-    PreflightPlan, ProviderId, SessionAccessPolicy, SessionProviderStatePolicy,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
+    CredentialState, DriverRole, ExecutionLayer, HostServiceKind, ModelRoute,
+    OperationRequirements, OperationShape, PreflightPlan, ProviderId, ReasoningMode,
+    SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
@@ -10,6 +11,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 /// Inspectable prepared evidence for one Anthropic Messages operation.
 pub struct AnthropicPreparedEvidence {
     operation: PreparedOperationEvidence,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl AnthropicPreparedEvidence {
@@ -17,11 +19,13 @@ impl AnthropicPreparedEvidence {
         prepared: &AnthropicPreparedIntegration,
         plan: PreflightPlan,
     ) -> Result<Self, PreparationFailure> {
+        let reasoning_mode = reasoning_mode_from_plan(&plan)?;
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan(
                 plan,
                 prepared.access_evidence().clone(),
             )?,
+            reasoning_mode,
         })
     }
 
@@ -30,12 +34,14 @@ impl AnthropicPreparedEvidence {
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
+        let reasoning_mode = reasoning_mode_from_plan(&plan)?;
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
+            reasoning_mode,
         })
     }
 
@@ -61,6 +67,41 @@ impl AnthropicPreparedEvidence {
     /// Returns the immutable preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    #[must_use]
+    /// Returns the exact prepared effort selection, when supplied.
+    pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
+        self.reasoning_mode.as_ref()
+    }
+}
+
+fn reasoning_mode_from_plan(
+    plan: &PreflightPlan,
+) -> Result<Option<ReasoningMode>, PreparationFailure> {
+    let requirements = plan
+        .requirements()
+        .capabilities()
+        .filter(|requirement| requirement.capability() == Capability::ReasoningSelection)
+        .collect::<Vec<_>>();
+    match requirements.as_slice() {
+        [] => Ok(None),
+        [requirement] => {
+            let constraints = requirement.constraints().cloned().collect::<Vec<_>>();
+            match constraints.as_slice() {
+                [CapabilityConstraint::ReasoningMode(mode)] => Ok(Some(mode.clone())),
+                _ => Err(crate::prepared::failure(
+                    swallowtail_runtime::PreparationStage::Preflight,
+                    "swallowtail.anthropic.preparation.reasoning_plan_invalid",
+                    "Anthropic effort plan must contain one exact reasoning selection",
+                )),
+            }
+        }
+        _ => Err(crate::prepared::failure(
+            swallowtail_runtime::PreparationStage::Preflight,
+            "swallowtail.anthropic.preparation.reasoning_plan_invalid",
+            "Anthropic effort plan must contain one exact reasoning selection",
+        )),
     }
 }
 

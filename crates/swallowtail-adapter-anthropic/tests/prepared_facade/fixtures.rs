@@ -128,12 +128,20 @@ impl PreparedFixture {
     }
 
     pub fn attempt_input(&self, id: &str) -> AnthropicInferenceAttemptInput {
+        self.attempt_input_for_model(id, "claude-fixture-primary")
+    }
+
+    pub fn attempt_input_for_model(
+        &self,
+        id: &str,
+        model_id: &str,
+    ) -> AnthropicInferenceAttemptInput {
         AnthropicInferenceAttemptInput::new(
             RequestId::new(id).unwrap(),
             AnthropicModelSelection::new(
                 ModelRouteId::new("anthropic.prepared.route").unwrap(),
                 ModelRouteRevision::new("1").unwrap(),
-                ModelId::new("claude-fixture-primary").unwrap(),
+                ModelId::new(model_id).unwrap(),
             ),
             OperationContent::new("prepared fixture prompt").unwrap(),
             NonZeroU64::new(64).unwrap(),

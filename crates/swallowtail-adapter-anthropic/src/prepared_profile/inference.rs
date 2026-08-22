@@ -5,7 +5,8 @@ use super::plan::{
 use crate::prepared::failure;
 use crate::{AnthropicDirectDriver, AnthropicPreparedIntegration};
 use swallowtail_core::{
-    Capability, CapabilityProfile, CapabilityRequirement, DriverRole, PreflightPlan,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, DriverRole,
+    PreflightPlan,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, PreparationStage, RunHandle,
@@ -81,7 +82,7 @@ impl AnthropicPreparedIntegration {
         &self,
         input: AnthropicInferenceAttemptInput,
     ) -> Result<AnthropicPreparedInferenceAttempt, PreparationFailure> {
-        let (request_id, model, content, maximum, deadline, attachments, web_search) =
+        let (request_id, model, content, maximum, deadline, attachments, web_search, reasoning) =
             input.into_parts();
         if maximum.get() > u64::from(u32::MAX) {
             return Err(failure(
@@ -90,14 +91,20 @@ impl AnthropicPreparedIntegration {
                 "Anthropic maximum output tokens exceed the supported request range",
             ));
         }
+        if let Some(reasoning) = reasoning.as_ref() {
+            crate::reasoning::validate_preparation(model.model_id(), reasoning)?;
+        }
         validate_attachments(&attachments)?;
         let search_domains =
             web_search.map(super::input::AnthropicWebSearchInput::into_allowed_domains);
         if let Some(domains) = search_domains.as_deref() {
             validate_search_domains(domains)?;
         }
-        let capability_requirements =
-            inference_capabilities(!attachments.is_empty(), search_domains.is_some());
+        let capability_requirements = inference_capabilities(
+            !attachments.is_empty(),
+            search_domains.is_some(),
+            reasoning.as_ref(),
+        );
         let activity = crate::activity::profile::structured_profile(search_domains.is_some());
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(capability_requirements),
@@ -119,7 +126,7 @@ impl AnthropicPreparedIntegration {
         )
         .require_model_route();
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
-        let policy = if search_domains.is_some() {
+        let mut policy = if search_domains.is_some() {
             OperationPolicy::new(
                 swallowtail_core::ExternalNetworkPolicy::HostApproved,
                 swallowtail_core::ExternalSearchPolicy::Enabled,
@@ -128,6 +135,9 @@ impl AnthropicPreparedIntegration {
         } else {
             OperationPolicy::offline()
         };
+        if let Some(reasoning) = reasoning {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
         let mut request = StructuredRunRequest::new(request_id, content, policy)
             .with_maximum_output_tokens(maximum)
             .with_attachments(attachments);
@@ -142,7 +152,11 @@ impl AnthropicPreparedIntegration {
     }
 }
 
-fn inference_capabilities(image_attachments: bool, web_search: bool) -> Vec<CapabilityRequirement> {
+fn inference_capabilities(
+    image_attachments: bool,
+    web_search: bool,
+    reasoning: Option<&swallowtail_core::ReasoningMode>,
+) -> Vec<CapabilityRequirement> {
     let mut capabilities: Vec<_> = [
         Capability::StructuredRun,
         Capability::StreamingEvents,
@@ -168,6 +182,12 @@ fn inference_capabilities(image_attachments: bool, web_search: bool) -> Vec<Capa
             CapabilityRequirement::new(Capability::ProviderExternalNetwork, []),
             CapabilityRequirement::new(Capability::ExternalSearch, []),
         ]);
+    }
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+        ));
     }
     capabilities
 }

@@ -15,6 +15,7 @@ struct TurnContext {
     transport: crate::transport::CurlTransport,
     endpoint: String,
     tools: Arc<Vec<ToolSpec>>,
+    reasoning: Option<swallowtail_core::ReasoningMode>,
     state: Arc<Mutex<DirectContinuationState>>,
     history: Arc<Mutex<History>>,
     usable: Arc<AtomicBool>,
@@ -186,6 +187,7 @@ async fn run_turn(
                                 .config()
                                 .maximum_output_tokens_per_attempt()
                                 .get(),
+                            context.reasoning.as_ref(),
                         )
                         .map_err(|error| TurnFailure::Runtime(error, CleanupOutcome::Clean))?;
                         context.cancelled.store(false, Ordering::SeqCst);
@@ -286,4 +288,3 @@ async fn run_turn(
         }
     }
 }
-

@@ -85,13 +85,16 @@ impl AnthropicPreparedIntegration {
         &self,
         input: AnthropicSessionProfileInput,
     ) -> Result<AnthropicPreparedSession, PreparationFailure> {
-        let (request_id, model, tools) = input.into_parts();
+        let (request_id, model, tools, reasoning) = input.into_parts();
         if tools.is_empty() || tools.len() > 8 {
             return Err(failure(
                 PreparationStage::Preflight,
                 "swallowtail.anthropic.preparation.tools_rejected",
                 "Anthropic continuation requires one to eight declared consumer tools",
             ));
+        }
+        if let Some(reasoning) = reasoning.as_ref() {
+            crate::reasoning::validate_preparation(model.model_id(), reasoning)?;
         }
         let config = anthropic_messages_continuation_config();
         let mut capabilities = vec![
@@ -108,6 +111,12 @@ impl AnthropicPreparedIntegration {
             ),
         ];
         capabilities.extend(config.capability_requirements());
+        if let Some(reasoning) = reasoning.as_ref() {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::ReasoningSelection,
+                [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+            ));
+        }
         let activity = crate::activity::profile::session_profile();
         let profile = crate::activity::profile::with_activity(
             CapabilityProfile::new(capabilities),
@@ -128,8 +137,12 @@ impl AnthropicPreparedIntegration {
             ))
             .require_model_route();
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
-        let request = OpenDirectContinuationSessionRequest::new(request_id, config)
-            .with_options(SessionOptions::default().with_tools(tools));
+        let mut options = SessionOptions::default().with_tools(tools);
+        if let Some(reasoning) = reasoning {
+            options = options.with_reasoning_mode(reasoning);
+        }
+        let request =
+            OpenDirectContinuationSessionRequest::new(request_id, config).with_options(options);
         swallowtail_runtime::validate_direct_continuation_plan(&plan, &request).map_err(
             |error| {
                 PreparationFailure::new(

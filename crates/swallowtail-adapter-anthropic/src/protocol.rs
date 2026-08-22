@@ -2,7 +2,9 @@ use crate::failure::failure;
 use serde::Deserialize;
 use serde_json::json;
 use std::collections::BTreeMap;
-use swallowtail_core::{ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId};
+use swallowtail_core::{
+    ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMode,
+};
 use swallowtail_runtime::{OperationContent, RuntimeFailure};
 
 pub(crate) const API_VERSION: &str = "2023-06-01";
@@ -49,6 +51,7 @@ impl Request {
         maximum_output_tokens: u64,
         image: Option<&str>,
         search_domains: Option<&[String]>,
+        reasoning: Option<&ReasoningMode>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -84,6 +87,9 @@ impl Request {
                 "allowed_domains": domains
             }]);
         }
+        if let Some(reasoning) = reasoning {
+            body["output_config"] = json!({"effort": reasoning.as_str()});
+        }
         let body = serde_json::to_vec(&body).expect("message request JSON serializes");
         Ok(Self {
             method: Method::Post,
@@ -98,6 +104,7 @@ impl Request {
         messages: serde_json::Value,
         tools: &[ToolSpec],
         maximum_output_tokens: u64,
+        reasoning: Option<&ReasoningMode>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -115,15 +122,18 @@ impl Request {
                 })
             })
             .collect();
-        let body = serde_json::to_vec(&json!({
+        let mut body = json!({
             "model": model,
             "max_tokens": maximum,
             "messages": messages,
             "tools": tools,
             "tool_choice": {"type": "auto"},
             "stream": true
-        }))
-        .expect("direct-continuation request JSON serializes");
+        });
+        if let Some(reasoning) = reasoning {
+            body["output_config"] = json!({"effort": reasoning.as_str()});
+        }
+        let body = serde_json::to_vec(&body).expect("direct-continuation request JSON serializes");
         Ok(Self {
             method: Method::Post,
             path: "/v1/messages".to_owned(),

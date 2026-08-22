@@ -1,8 +1,19 @@
 use std::num::NonZeroU64;
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, RequestId, ToolDeclaration,
 };
+
+type InferenceAttemptParts = (
+    RequestId,
+    AnthropicModelSelection,
+    OperationContent,
+    NonZeroU64,
+    Option<Deadline>,
+    Vec<AttachmentDescriptor>,
+    Option<AnthropicWebSearchInput>,
+    Option<ReasoningMode>,
+);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Consumer input for an Anthropic Messages catalogue observation.
@@ -59,6 +70,10 @@ impl AnthropicModelSelection {
     pub(super) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
         (self.route_id, self.route_revision, self.model_id)
     }
+
+    pub(super) const fn model_id(&self) -> &ModelId {
+        &self.model_id
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -71,6 +86,7 @@ pub struct AnthropicInferenceAttemptInput {
     deadline: Option<Deadline>,
     attachments: Vec<AttachmentDescriptor>,
     web_search: Option<AnthropicWebSearchInput>,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl AnthropicInferenceAttemptInput {
@@ -90,6 +106,7 @@ impl AnthropicInferenceAttemptInput {
             deadline: None,
             attachments: Vec::new(),
             web_search: None,
+            reasoning_mode: None,
         }
     }
 
@@ -117,17 +134,14 @@ impl AnthropicInferenceAttemptInput {
         self
     }
 
-    pub(super) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        AnthropicModelSelection,
-        OperationContent,
-        NonZeroU64,
-        Option<Deadline>,
-        Vec<AttachmentDescriptor>,
-        Option<AnthropicWebSearchInput>,
-    ) {
+    #[must_use]
+    /// Selects one exact Anthropic effort value for the qualified model.
+    pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    pub(super) fn into_parts(self) -> InferenceAttemptParts {
         (
             self.request_id,
             self.model,
@@ -136,6 +150,7 @@ impl AnthropicInferenceAttemptInput {
             self.deadline,
             self.attachments,
             self.web_search,
+            self.reasoning_mode,
         )
     }
 }
@@ -166,6 +181,7 @@ pub struct AnthropicSessionProfileInput {
     request_id: RequestId,
     model: AnthropicModelSelection,
     tools: Vec<ToolDeclaration>,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl AnthropicSessionProfileInput {
@@ -180,10 +196,25 @@ impl AnthropicSessionProfileInput {
             request_id,
             model,
             tools: tools.into_iter().collect(),
+            reasoning_mode: None,
         }
     }
 
-    pub(super) fn into_parts(self) -> (RequestId, AnthropicModelSelection, Vec<ToolDeclaration>) {
-        (self.request_id, self.model, self.tools)
+    #[must_use]
+    /// Selects one exact Anthropic effort value for the qualified model.
+    pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        AnthropicModelSelection,
+        Vec<ToolDeclaration>,
+        Option<ReasoningMode>,
+    ) {
+        (self.request_id, self.model, self.tools, self.reasoning_mode)
     }
 }

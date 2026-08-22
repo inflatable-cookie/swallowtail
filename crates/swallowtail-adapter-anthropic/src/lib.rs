@@ -19,6 +19,7 @@ mod prepared_managed_profile;
 mod prepared_managed_recovery;
 mod prepared_profile;
 mod protocol;
+mod reasoning;
 mod selection;
 mod transport;
 

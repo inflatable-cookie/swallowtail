@@ -1,6 +1,7 @@
 use super::{AccessLeases, AnthropicDirectDriver, operation_scope, require_services};
 use crate::failure::{failure, unsupported};
 use crate::protocol::{ContentBlock, Event, Request, ToolSpec, parse_event, provider_failure};
+use crate::reasoning::validate_runtime_binding;
 use crate::transport::{StreamItem, Subscription};
 use futures_channel::{mpsc, oneshot};
 use std::collections::{BTreeMap, BTreeSet};
@@ -9,7 +10,9 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
-use swallowtail_core::{CancellationScope, PreflightPlan, ProviderRequestRef, SessionRef, TurnRef};
+use swallowtail_core::{
+    CancellationScope, PreflightPlan, ProviderRequestRef, ReasoningMode, SessionRef, TurnRef,
+};
 use swallowtail_runtime::{
     BoxDirectToolCallStream, BoxEventStream, BoxFuture, CancellationAcknowledgement,
     CancellationControl, CleanupOutcome, DirectAttemptFinishObservation,
@@ -36,6 +39,7 @@ struct SessionHandle {
     endpoint: String,
     access: Option<AccessLeases>,
     tools: Arc<Vec<ToolSpec>>,
+    reasoning: Option<ReasoningMode>,
     state: Arc<Mutex<DirectContinuationState>>,
     history: Arc<Mutex<History>>,
     usable: Arc<AtomicBool>,
@@ -83,13 +87,14 @@ impl InteractiveSessionDriver for AnthropicDirectDriver {
             services.require_execution_host(plan.execution_host_id())?;
             validate_direct_continuation_plan(&plan, &request)?;
             require_services(&services, true, false)?;
+            validate_runtime_binding(&plan, request.options().reasoning_mode())?;
             if request.options().developer_instructions().is_some()
-                || request.options().reasoning_mode().is_some()
                 || request.options().tools().len() == 0
             {
                 return Err(unsupported("the requested direct-session options"));
             }
             let tools = tool_specs(&request)?;
+            let reasoning = request.options().reasoning_mode().cloned();
             let scope = operation_scope("session", request.request_id().as_str())?;
             let runtime_id = RuntimeSessionId::new(format!(
                 "anthropic-direct:{}",
@@ -121,6 +126,7 @@ impl InteractiveSessionDriver for AnthropicDirectDriver {
                 endpoint,
                 access: Some(access),
                 tools: Arc::new(tools),
+                reasoning,
                 state: Arc::new(Mutex::new(DirectContinuationState::new(config.clone()))),
                 history: Arc::new(Mutex::new(History::new(
                     config.maximum_private_history_bytes().get(),
@@ -242,6 +248,7 @@ impl SessionHandle {
                 .config()
                 .maximum_output_tokens_per_attempt()
                 .get(),
+            self.reasoning.as_ref(),
         )?;
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
@@ -279,6 +286,7 @@ impl SessionHandle {
             transport: self.transport.clone(),
             endpoint: self.endpoint.clone(),
             tools: Arc::clone(&self.tools),
+            reasoning: self.reasoning.clone(),
             state: Arc::clone(&self.state),
             history: Arc::clone(&self.history),
             usable: Arc::clone(&self.usable),

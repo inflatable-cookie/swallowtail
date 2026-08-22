@@ -1,4 +1,5 @@
 use crate::protocol::{Event, parse_event, provider_failure};
+use crate::reasoning::validate_runtime_binding;
 use crate::transport::{StreamItem, Subscription};
 use input::{SharedAttachment, prepare_image};
 use std::collections::BTreeMap;
@@ -60,6 +61,7 @@ impl AnthropicDirectDriver {
                 maximum,
                 image.as_ref().map(|image| image.encoded.as_str()),
                 search_domains.as_deref(),
+                request.policy().reasoning_mode(),
             ) {
                 Ok(message) => message,
                 Err(error) => {
@@ -191,6 +193,7 @@ fn validate_run(
             "Anthropic run requires a preflight-bound maximum output-token input",
         ));
     }
+    validate_runtime_binding(plan, request.policy().reasoning_mode())?;
     if request.working_resource().is_some() {
         return Err(unsupported("a working resource"));
     }
@@ -218,8 +221,7 @@ fn validate_run(
     let search_requested = search_domains.is_some()
         && request.policy().external_network() == ExternalNetworkPolicy::HostApproved
         && request.policy().external_search() == ExternalSearchPolicy::Enabled;
-    if request.policy().reasoning_mode().is_some()
-        || search_bound != search_requested
+    if search_bound != search_requested
         || (!search_requested
             && (request.policy().external_network() != ExternalNetworkPolicy::Denied
                 || request.policy().external_search() != ExternalSearchPolicy::Disabled))

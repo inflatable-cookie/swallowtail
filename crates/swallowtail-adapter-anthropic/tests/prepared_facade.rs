@@ -1,5 +1,7 @@
 mod support;
 
+#[path = "prepared_facade/effort.rs"]
+mod effort;
 #[path = "prepared_facade/fixtures.rs"]
 mod fixtures;
 #[path = "prepared_facade/input_callbacks.rs"]

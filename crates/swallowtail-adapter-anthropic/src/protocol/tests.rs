@@ -15,6 +15,58 @@ mod tests {
     );
 
     #[test]
+    fn messages_effort_is_additive_and_does_not_enable_thinking() {
+        let content = OperationContent::new("fixture prompt").expect("content is valid");
+        let reasoning = ReasoningMode::new("xhigh").expect("reasoning is valid");
+        let request = Request::message(
+            "claude-opus-4-7",
+            &content,
+            64,
+            None,
+            None,
+            Some(&reasoning),
+        )
+        .expect("message request serializes");
+        let raw = request.body.expect("request body exists");
+        let body: serde_json::Value = serde_json::from_slice(&raw).expect("request body parses");
+        assert_eq!(body["output_config"]["effort"], "xhigh");
+        assert!(body.get("thinking").is_none());
+        assert_eq!(
+            raw,
+            br#"{"max_tokens":64,"messages":[{"content":"fixture prompt","role":"user"}],"model":"claude-opus-4-7","output_config":{"effort":"xhigh"},"stream":true}"#
+        );
+    }
+
+    #[test]
+    fn absent_message_effort_keeps_existing_serialized_body() {
+        let content = OperationContent::new("fixture prompt").expect("content is valid");
+        let request = Request::message("claude-fixture-primary", &content, 64, None, None, None)
+            .expect("message request serializes");
+        assert_eq!(
+            request.body.expect("request body exists"),
+            br#"{"max_tokens":64,"messages":[{"content":"fixture prompt","role":"user"}],"model":"claude-fixture-primary","stream":true}"#
+        );
+    }
+
+    #[test]
+    fn direct_messages_effort_is_additive() {
+        let reasoning = ReasoningMode::new("max").expect("reasoning is valid");
+        let request = Request::direct_message(
+            "claude-opus-4-7",
+            serde_json::json!([]),
+            &[],
+            64,
+            Some(&reasoning),
+        )
+        .expect("direct message request serializes");
+        let body: serde_json::Value =
+            serde_json::from_slice(&request.body.expect("request body exists"))
+                .expect("request body parses");
+        assert_eq!(body["output_config"]["effort"], "max");
+        assert!(body.get("thinking").is_none());
+    }
+
+    #[test]
     fn production_decoder_preserves_success_order_and_usage() {
         let frames = decode(SUCCESS).expect("success decodes");
         let events: Vec<_> = frames

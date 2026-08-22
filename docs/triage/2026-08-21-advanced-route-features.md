@@ -1102,3 +1102,21 @@ must still prove the exact background request, positive bound, source/activity
 events, existing-control combinations, retained lifecycle, and facade revision.
 No tool, model, route, or capability claim follows from selection. Rich search
 configuration and later feature families remain unselected.
+
+## OpenAI Background Search Stop And Reasoning Correction (2026-08-23)
+
+g04.043 stopped after Research 191 and card 119, then merged through PR 42 at
+`685dbf1a`. Official docs prove the individual `web_search`, exact-model,
+positive-bound, source, event, and background fields but not their complete
+composition through this route's stream, reattachment, retrieve, account
+policy, activity, and facade truth. Cards 120-121 are blocked. No search
+capability shipped.
+
+The same exact GPT-5.6 evidence lists reasoning
+`none|low|medium|high|xhigh|max` and omits `minimal`, which the current guide
+and validator admit. Named follow-up `g04.043-R1` is promoted into
+[`g04.044`](../roadmaps/g04/044-openai-background-reasoning-vocabulary-correction.md)
+with cards 122-123. The correction is route-local, uses a new exact opaque
+facade point, permits no alias or fallback, and requires a Contract 036
+next-minor disposition. No later feature family is selected by this
+compilation.

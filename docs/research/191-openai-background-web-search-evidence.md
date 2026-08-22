@@ -230,17 +230,16 @@ inherited `minimal` reasoning claim, which conflicts with the exact model page.
 
 ## Named Follow-Up
 
-`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is required
-before a future route or feature claim treats the current reasoning surface as
-exact. Reconcile the official GPT-5.6 effort list with the prepared guide,
-`validate_reasoning`, route-local tests, and the orchestrator-owned production
-claim. This search worker records the mismatch but does not alter the guide,
-preparation code, matrices, or shared claim.
+`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is promoted
+into g04.044 cards 122-123. They must reconcile the official GPT-5.6 effort
+list with the prepared guide, `validate_reasoning`, route-local tests, and the
+production facade claim. This research record supplies the evidence but does
+not itself alter the guide, preparation code, matrices, or shared claim.
 
 ## Decision
 
 Card 119 is complete as an evidence stop. Cards 120 and 121 are blocked and
 were not executed. The adapter, fixtures, prepared integration guide, public
-API baseline, shared architecture, matrices, programme, indexes, changelog,
-and sole Next Task pointer remain unchanged. The inherited reasoning mismatch
-is recorded as follow-up `g04.043-R1`, not absorbed into search implementation.
+API baseline, shared architecture, matrices, and changelog remain unchanged.
+After PR 42 merged, the orchestrator promoted the inherited reasoning mismatch
+into g04.044 rather than absorbing it into search implementation.

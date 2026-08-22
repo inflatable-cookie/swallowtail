@@ -81,16 +81,19 @@ families do not interrupt this programme by default.
   it while the route selects no model. Cards 117-118 are blocked and both
   `reasoning_selection` cells remain `No`.
 - [g04.043 OpenAI Background Hosted Search](./043-openai-background-hosted-search.md)
-  is ready. Research 191 and cards 119-121 qualify the exact `gpt-5.6`
-  Responses `web_search` tool on `openai.background` and bind only a bounded
-  Contract 041 deliver-now subset.
+  stopped after card 119 and merged through PR 42 at `685dbf1a`. Research 191
+  proves the individual search fields but not the exact composed background
+  route. Cards 120-121 are blocked and no search capability shipped.
+- [g04.044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md)
+  is ready. Research 191 proves exact GPT-5.6 reasoning
+  `none|low|medium|high|xhigh|max`; cards 122-123 remove unqualified `minimal`,
+  version the corrected opaque facade truth, and prove early rejection.
 
 ## Next Planning Boundary
 
-Execute g04.043 cards 119-121 in one serial worker lane. Card 119 must freeze
-exact current Responses/model/facade, request-bound, source, activity, and
-background-lifecycle truth. Cards 120-121 remain conditional on Research 191
-deliver-now rows.
+Execute g04.044 cards 122-123 in one serial worker lane. Keep the correction
+route-local, preserve global reasoning vocabulary, add no fallback, and record
+the Contract 036 next-minor disposition without selecting a release.
 
 ## Exclusions
 

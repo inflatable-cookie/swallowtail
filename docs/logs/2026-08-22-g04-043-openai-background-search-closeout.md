@@ -1,6 +1,6 @@
 # 2026-08-22 g04.043 OpenAI Background Search Closeout
 
-Status: stopped after evidence; worker closeout ready for review
+Status: stopped after evidence; reviewed and merged
 Owner: Tom
 Milestone: g04.043
 Cards: 119 complete; 120-121 blocked
@@ -8,8 +8,8 @@ Branch: `t3code/openai-background-search`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-e3fd4917`
 Base: `4179bff8a618007214f09bd99c765e65474eba03` (`origin/main` at dispatch)
 PR: [#42](https://github.com/inflatable-cookie/swallowtail/pull/42)
-Review: pending
-Merge: none; worker must not merge
+Review: accepted at `685dbf1abf16ebc6f261343f472b6620b33e99d2`
+Merge: PR 42 fast-forwarded onto `main` at the reviewed head on 2026-08-23
 
 ## Outcome
 
@@ -51,13 +51,21 @@ Unchanged: `crates/swallowtail-adapter-openai/**`, OpenAI route fixtures,
 `docs/guides/openai-background-prepared-integration.md`, the unreleased
 package API baseline, and all shared surfaces.
 
-## Shared-Surface Closeout Delta
+## Shared-Surface Closeout
 
-No shared-surface delta is requested from this worker. After review, the
-orchestrator must decide whether to record the evidence stop in architecture,
-route and feature matrices, programme/front doors, indexes, matrix
-assertions, changelog, and the sole Next Task. Those surfaces remain
-orchestrator-owned and were not edited here.
+Completed by the orchestrator after the fast-forward merge:
+
+- architecture and route/feature matrices remain unchanged because no search
+  behavior shipped
+- `CHANGELOG.md` remains unchanged because the lane changed no production
+  behavior
+- programme/front doors and the sole Next Task record the evidence stop and
+  select g04.044
+- batch-card, research, and log indexes record card 119 complete, cards
+  120-121 blocked, and Research 191 promoted
+- advanced-feature triage records the stop and promotes named follow-up
+  `g04.043-R1` into g04.044
+- matrix assertions and release baselines remain unchanged
 
 ## Validation
 
@@ -97,7 +105,7 @@ failure and usage truth, and the private facade/activity mapping. No live
 provider proof was attempted. Contract 029 currentness remains in its
 standing lane and was not changed.
 
-Named follow-up `g04.043-R1` must separately reconcile the official GPT-5.6
-reasoning effort list with the current prepared guide, validator, route-local
-tests, and shared production claim. It is not part of the blocked search
-binding cards.
+Named follow-up `g04.043-R1` is promoted into g04.044 cards 122-123. They must
+separately reconcile the official GPT-5.6 reasoning effort list with the
+current prepared guide, validator, route-local tests, and production facade
+claim. It is not part of the blocked search binding cards.

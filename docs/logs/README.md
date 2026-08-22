@@ -23,8 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04.044 OpenAI Background Reasoning Correction Compiled](./2026-08-23-g04-044-openai-background-reasoning-compiled.md)
+- [2026-08-23 g04.044 OpenAI Background Reasoning Correction Closeout](./2026-08-23-g04-044-openai-background-reasoning-closeout.md) — reserved
 - [2026-08-22 g04.043 OpenAI Background Search Compiled](./2026-08-22-g04-043-openai-background-search-compiled.md)
-- [2026-08-22 g04.043 OpenAI Background Search Closeout](./2026-08-22-g04-043-openai-background-search-closeout.md) — reserved
+- [2026-08-22 g04.043 OpenAI Background Search Closeout](./2026-08-22-g04-043-openai-background-search-closeout.md) — stopped after evidence and merged through PR 42 at `685dbf1a`
 - [2026-08-22 g04.042 Cline Thinking Controls Compiled](./2026-08-22-g04-042-cline-thinking-controls-compiled.md)
 - [2026-08-22 g04.042 Cline Thinking Controls Closeout](./2026-08-22-g04-042-cline-thinking-controls-closeout.md) — stopped after evidence and merged through PR 41 at `27b34c7d`
 - [2026-08-22 g04.041 Qwen Headless Reasoning Effort Compiled](./2026-08-22-g04-041-qwen-headless-reasoning-effort-compiled.md)

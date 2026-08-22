@@ -2,6 +2,7 @@
 
 ## Completed
 
+- [119-openai-background-search-evidence.md](./119-openai-background-search-evidence.md)
 - [116-cline-thinking-control-evidence.md](./116-cline-thinking-control-evidence.md)
 - [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md)
 - [114-qwen-headless-reasoning-effort-binding.md](./114-qwen-headless-reasoning-effort-binding.md)
@@ -121,12 +122,13 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [121-openai-background-search-acceptance.md](./121-openai-background-search-acceptance.md) — conditional on card 120
-- [120-openai-background-search-binding.md](./120-openai-background-search-binding.md) — conditional on card 119
-- [119-openai-background-search-evidence.md](./119-openai-background-search-evidence.md) — ready
+- [123-openai-background-reasoning-vocabulary-acceptance.md](./123-openai-background-reasoning-vocabulary-acceptance.md) — after card 122
+- [122-openai-background-reasoning-vocabulary-correction.md](./122-openai-background-reasoning-vocabulary-correction.md) — ready
 
 ## Blocked
 
+- [121-openai-background-search-acceptance.md](./121-openai-background-search-acceptance.md) — no deliver-now search binding to accept
+- [120-openai-background-search-binding.md](./120-openai-background-search-binding.md) — Research 191 admits no deliver-now search row
 - [118-cline-thinking-control-acceptance.md](./118-cline-thinking-control-acceptance.md) — no deliver-now route/value row or binding to accept
 - [117-cline-thinking-control-binding.md](./117-cline-thinking-control-binding.md) — Research 190 admits no deliver-now route/value row
 - [112-copilot-cli-acp-effort-acceptance.md](./112-copilot-cli-acp-effort-acceptance.md) — no deliver-now value or binding to prove

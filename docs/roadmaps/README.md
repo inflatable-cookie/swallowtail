@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.043 cards 119-121 for bounded provider-owned web search on
-`openai.background` in one serial worker lane. Card 119 freezes exact current
-Responses/model/facade evidence; cards 120-121 run only for Research 191
-deliver-now rows. Contract 029 currentness stays standing.
+Execute g04.044 cards 122-123 for the exact GPT-5.6 background reasoning-
+vocabulary correction in one serial worker lane. Remove only unqualified
+`minimal`, bind the corrected mapping to a new opaque facade point, and prove
+fail-closed behavior. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

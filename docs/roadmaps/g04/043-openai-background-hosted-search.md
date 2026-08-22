@@ -1,9 +1,10 @@
 # g04.043 OpenAI Background Hosted Search
 
-Status: stopped after evidence
+Status: stopped after evidence and merged
 Owner: Tom
 Created: 2026-08-22
 Updated: 2026-08-23
+Merged: PR 42 at `685dbf1a`, reviewed head `685dbf1a`, 2026-08-23
 Depends on: per-route feature completion programme; g01.023; g03.030
 Vision tags: explicit selection, provider truth, provider-owned tools
 Contract refs: 009, 010, 011, 014, 021, 029, 037, 041, 044, 052
@@ -135,8 +136,7 @@ Card 121 is blocked. There is no admitted dispatch to prove.
 - this milestone: OpenAI background provider-owned web-search evidence and
   conditional binding
 - execution topology: one serial worker lane, cards 119-121
-- next route family: selected by the orchestrator after evidence and merge
-  closeout; no later family is precompiled here
+- next route family: g04.044 exact GPT-5.6 reasoning-vocabulary correction
 
 ## Decision Gates
 
@@ -185,10 +185,10 @@ reasoning mismatch is recorded as named follow-up `g04.043-R1` below.
 
 ## Named Follow-Up
 
-`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is outside
-the search binding lane. The exact GPT-5.6 model page lists
+`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is promoted
+to g04.044 and remains outside the search binding lane. The exact GPT-5.6 model page lists
 `none|low|medium|high|xhigh|max`, while the current OpenAI background guide and
 preparation validator also admit `minimal`. The follow-up must reconcile the
 guide, preparation code, route-local tests, and orchestrator-owned production
 claim before reasoning support is described as exact. This lane records the
-mismatch and does not change those surfaces.
+mismatch and does not change those surfaces. Cards 122-123 own the correction.

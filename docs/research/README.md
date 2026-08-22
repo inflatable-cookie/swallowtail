@@ -103,7 +103,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [188 Copilot CLI ACP Effort Evidence](./188-copilot-cli-acp-effort-evidence.md) — promoted evidence stop; no deliver-now value on exact `1.0.80`
 - [189 Qwen Headless Reasoning Effort Evidence](./189-qwen-headless-reasoning-effort-evidence.md) — complete; exact `0.21.15` deliver-now subset promoted through g04.041
 - [190 Cline Thinking Control Evidence](./190-cline-thinking-control-evidence.md) — promoted evidence stop; no deliver-now row on exact `3.0.55`
-- [191 OpenAI Background Web Search Evidence](./191-openai-background-web-search-evidence.md) — reserved for g04.043 card 119
+- [191 OpenAI Background Web Search Evidence](./191-openai-background-web-search-evidence.md) — promoted evidence stop; no exact composed search row, with GPT-5.6 reasoning correction promoted to g04.044
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

@@ -13,9 +13,10 @@ acceptance coverage are complete in the selected worker worktree.
 
 - Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-b71d0882`
 - Branch: `t3code/review-qwen-reasoning-handoff`
-- Current `HEAD`: `b20c5e84dd77c61df0521ad8ccb6e5bcc931267c` (pushed)
+- Implementation commit: `b20c5e84dd77c61df0521ad8ccb6e5bcc931267c`
+  (pushed)
 - Base/head before worker changes: `a4440b4f917aa065bcc1e946deabecad87841acf`
-- Worker commit: `b20c5e84dd77c61df0521ad8ccb6e5bcc931267c`
+- Closeout metadata is pushed on the same PR branch.
 - PR: https://github.com/inflatable-cookie/swallowtail/pull/40
 - Reviewed head: pending orchestrator review
 - Merge: not performed

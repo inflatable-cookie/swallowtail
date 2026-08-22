@@ -1037,9 +1037,11 @@ default; `copilot-cli.acp` selects no model. Reopen only with an exact selected-
 model route or an upstream interface that accepts one value without model
 entitlement.
 
-Qwen headless reasoning effort is the next planning checkpoint. Its current
-global setting includes provider/model clamp behavior, so g04.041 must begin
-with exact `0.21.15` configuration, model, clamp, default, and lifetime
-evidence. Cline thinking remains a separate later boolean spawn-control family.
-Parked families remain outside this selection. Do not bulk-promote the
-remaining inventory.
+Qwen headless reasoning effort is promoted into
+[`g04.041`](../roadmaps/g04/041-qwen-headless-reasoning-effort.md). Research 189
+and cards 113-115 form one serial evidence-first lane. Exact `0.21.15` process
+transport, model qualification, clamp, default, and run/turn/replacement
+lifetime proof must precede binding. A global setting, `/effort`, user-config
+mutation, or unleased synthetic config root is a stop. Cline thinking remains
+a separate later boolean spawn-control family. Parked families remain outside
+this selection. Do not bulk-promote the remaining inventory.

@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Compile g04.041 for Qwen headless reasoning-effort evidence. Start with exact
-`0.21.15` configuration transport, model qualification, clamp, default, and
-run/turn lifetime proof before making any card ready for binding. Contract 029
-currentness stays standing.
+Implement g04.041 cards 113-115 in order. Card 113 must first prove exact Qwen
+Code `0.21.15` process-private reasoning transport, model/value qualification,
+clamp/default behavior, and run/turn/replacement lifetime. Continue to binding
+only for Research 189 deliver-now rows. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

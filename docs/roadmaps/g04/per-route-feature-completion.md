@@ -70,13 +70,17 @@ families do not interrupt this programme by default.
   proves exact `1.0.80` model-entitles server-start effort and may substitute
   the selected model's default. The route selects no model, so cards 111-112
   are blocked and `reasoning_selection` remains `No`.
+- [g04.041 Qwen Headless Reasoning Effort](./041-qwen-headless-reasoning-effort.md)
+  is compiled and ready. Research 189 and cards 113-115 form one serial lane;
+  exact `0.21.15` process transport, model/value, clamp/default, and lifetime
+  evidence gates any binding.
 
-## Next Planning Boundary
+## Next Worker Boundary
 
-Compile one Qwen headless reasoning-effort evidence lane next. Exact package
-`0.21.15` must prove the configuration transport, model qualification, clamp,
-default, and per-run/turn lifetime before any portable `ReasoningSelection`
-binding. No worker is ready until g04.041 and its cards are compiled and pushed.
+Execute g04.041 cards 113-115 in one isolated worker lane. Card 113 may inspect
+official and exact package evidence without install, login, config mutation, or
+provider prompts. Cards 114-115 run only when Research 189 admits at least one
+exact model/value row through a process-private Contract 040 transport.
 
 ## Exclusions
 

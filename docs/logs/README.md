@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-22 g04.041 Qwen Headless Reasoning Effort Compiled](./2026-08-22-g04-041-qwen-headless-reasoning-effort-compiled.md)
+- [2026-08-22 g04.041 Qwen Headless Reasoning Effort Closeout](./2026-08-22-g04-041-qwen-headless-reasoning-effort-closeout.md) — reserved for worker PR closeout
 - [2026-08-22 g04.040 Copilot CLI ACP Effort Compiled](./2026-08-22-g04-040-copilot-cli-acp-effort-compiled.md)
 - [2026-08-22 g04.040 Copilot CLI ACP Effort Closeout](./2026-08-22-g04-040-copilot-cli-acp-effort-closeout.md) — stopped after evidence and merged through PR 39
 - [2026-08-22 g04.039 xAI Responses Controls Merged](./2026-08-22-g04-039-xai-responses-controls-merged.md)

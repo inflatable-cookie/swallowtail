@@ -117,8 +117,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-No cards are planned. The sole next action is the g04.041 Qwen evidence
-compilation checkpoint in `docs/roadmaps/README.md`.
+- [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md) — ready after 114
+- [114-qwen-headless-reasoning-effort-binding.md](./114-qwen-headless-reasoning-effort-binding.md) — ready after 113 and a non-empty Research 189 deliver-now set
+- [113-qwen-headless-reasoning-effort-evidence.md](./113-qwen-headless-reasoning-effort-evidence.md) — ready
 
 ## Blocked
 

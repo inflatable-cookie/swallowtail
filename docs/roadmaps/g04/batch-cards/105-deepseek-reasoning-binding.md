@@ -1,6 +1,6 @@
 # 105 DeepSeek Reasoning Binding
 
-Status: ready after 104
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.038 DeepSeek Continuation Reasoning Controls](../038-deepseek-continuation-reasoning-controls.md)
@@ -60,9 +60,30 @@ pass.
 - thinking disable falsifies capability or private-continuation truth
 - preserving current public behavior requires a breaking change
 
+## Closeout
+
+Card 105 binds Research 186's exact `low`, `high`, and `max` selections through
+the prepared input, capability constraints, immutable plan, prepared request
+and evidence, configured driver, and every request encoder. `thinking.type`
+remains fixed to `enabled`; private continuation state remains unchanged and
+adapter-held.
+
+Deterministic coverage proves:
+
+- exact `max` dispatch for a structured run
+- exact `max` on initial, tool-result, and later-turn continuation requests
+- unchanged high/enabled fixture bodies
+- prepared request, plan constraint, and evidence agreement for all three
+  admitted values
+- pre-network rejection of `medium`, `xhigh`, and arbitrary provider aliases
+
+Validation passed with `cargo fmt -p swallowtail-adapter-deepseek` and
+`cargo test -p swallowtail-adapter-deepseek --locked`.
+
+Auto-continuation: card 106 is admitted.
+
 ## Out Of Scope
 
 - guide, matrix, architecture, programme, or changelog closeout
 - provider acceptance or effective-depth claims
 - other DeepSeek models, facades, tools, limits, or live work
-

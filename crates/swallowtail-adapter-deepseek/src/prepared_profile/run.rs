@@ -1,6 +1,7 @@
 use super::input::DeepSeekRunProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
+use crate::selection::deepseek_reasoning_mode_is_supported;
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
@@ -75,14 +76,14 @@ impl DeepSeekPreparedIntegration {
     ) -> Result<DeepSeekPreparedRun, PreparationFailure> {
         let (request_id, model, content, reasoning, maximum, cache_policy, deadline) =
             input.into_parts();
-        if reasoning.as_str() != "high"
+        if !deepseek_reasoning_mode_is_supported(&reasoning)
             || maximum.get() > u64::from(u32::MAX)
             || cache_policy != ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority
         {
             return Err(failure(
                 PreparationStage::Preflight,
                 "swallowtail.deepseek.preparation.run_options_rejected",
-                "DeepSeek structured runs require high reasoning, a supported output-token limit, and explicit unmanaged-cache acceptance",
+                "DeepSeek structured runs require an exact supported reasoning selection, a supported output-token limit, and explicit unmanaged-cache acceptance",
             ));
         }
         let activity = crate::activity::profile::activity_profile(false);

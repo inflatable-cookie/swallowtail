@@ -141,6 +141,7 @@ fn continuation_request(context: &TurnContext) -> Result<HttpRequest, RuntimeFai
         first.arguments(),
         first.result()?,
         &context.tools,
+        &context.reasoning,
     )
     .map_err(protocol)?;
     Ok(HttpRequest::completion(body, true))

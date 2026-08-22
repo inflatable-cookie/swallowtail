@@ -101,6 +101,89 @@ fn one_request_structured_run_has_no_tools_or_private_continuation() {
 }
 
 #[test]
+fn structured_run_dispatches_exact_maximum_reasoning_effort() {
+    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
+    let request = StructuredRunRequest::new(
+        RequestId::new("structured-max").expect("request id"),
+        OperationContent::new("Answer once").expect("content"),
+        OperationPolicy::offline()
+            .with_reasoning_mode(ReasoningMode::new("max").expect("reasoning")),
+    )
+    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+    let mut run = block_on(DeepSeekDirectDriver::new().start_run(
+        fixture.plan(DriverRole::StructuredRun),
+        request,
+        fixture.services(),
+    ))
+    .expect("run starts");
+    let (_, outcome) = complete_run(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+
+    let body: serde_json::Value =
+        serde_json::from_slice(&fixture.server.requests()[0].body).expect("request JSON");
+    assert_eq!(body["reasoning_effort"], "max");
+    assert_eq!(body["thinking"]["type"], "enabled");
+}
+
+#[test]
+fn provider_effort_aliases_fail_before_network_work() {
+    for mode in ["medium", "xhigh", "provider-high"] {
+        let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
+        let request = StructuredRunRequest::new(
+            RequestId::new(format!("reject-{mode}")).expect("request id"),
+            OperationContent::new("must reject").expect("content"),
+            OperationPolicy::offline()
+                .with_reasoning_mode(ReasoningMode::new(mode).expect("reasoning")),
+        )
+        .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+        let error = block_on(DeepSeekDirectDriver::new().start_run(
+            fixture.plan(DriverRole::StructuredRun),
+            request,
+            fixture.services(),
+        ))
+        .err()
+        .expect("unsupported effort rejects");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.deepseek.unsupported"
+        );
+        assert!(fixture.server.requests().is_empty());
+        assert_eq!(fixture.releases(), 0);
+    }
+}
+
+#[test]
+fn continuation_effort_aliases_fail_before_network_work() {
+    for mode in ["medium", "xhigh", "provider-high"] {
+        let fixture = Fixture::new();
+        let error = block_on(
+            DeepSeekDirectDriver::new().open_direct_continuation_session(
+                fixture.plan(DriverRole::InteractiveSession),
+                OpenDirectContinuationSessionRequest::new(
+                    RequestId::new(format!("reject-session-{mode}")).expect("request id"),
+                    deepseek_v4_config(),
+                )
+                .with_options(
+                    SessionOptions::default()
+                        .with_reasoning_mode(ReasoningMode::new(mode).expect("reasoning mode"))
+                        .with_tools([fixture_tool()]),
+                ),
+                fixture.services(),
+            ),
+        )
+        .err()
+        .expect("unsupported effort rejects");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.deepseek.request_plan_mismatch"
+        );
+        assert!(fixture.server.requests().is_empty());
+        assert_eq!(fixture.releases(), 0);
+    }
+}
+
+#[test]
 fn structured_run_rejects_tools_before_network_access() {
     let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
     let request = StructuredRunRequest::new(
@@ -255,9 +338,56 @@ fn exact_catalogue_tool_exchange_and_private_replay_complete_three_attempts() {
     }
 }
 
+#[test]
+fn maximum_reasoning_effort_stays_fixed_across_continuation_attempts() {
+    let fixture = Fixture::new();
+    let mut session = open_with_reasoning(&fixture, "maximum-session", "max");
+
+    let mut first = block_on(session.start_direct_continuation_turn(
+        turn_request("maximum-turn-one", FIRST_PROMPT, 5_000),
+        fixture.services(),
+    ))
+    .expect("first turn starts");
+    submit_fixture_result(&mut first);
+    let (_, first_outcome) = complete(&mut first);
+    assert_eq!(first_outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(first.close()), CleanupOutcome::Clean);
+
+    let mut second = block_on(session.start_direct_continuation_turn(
+        turn_request("maximum-turn-two", SECOND_PROMPT, 5_000),
+        fixture.services(),
+    ))
+    .expect("second turn starts");
+    let (_, second_outcome) = complete(&mut second);
+    assert_eq!(second_outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(second.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let requests = fixture
+        .server
+        .requests()
+        .into_iter()
+        .filter(|request| request.target == "/chat/completions")
+        .collect::<Vec<_>>();
+    assert_eq!(requests.len(), 3);
+    for request in requests {
+        let body: serde_json::Value = serde_json::from_slice(&request.body).expect("request JSON");
+        assert_eq!(body["reasoning_effort"], "max");
+        assert_eq!(body["thinking"]["type"], "enabled");
+    }
+}
+
 fn open(
     fixture: &Fixture,
     request_id: &str,
+) -> Box<dyn swallowtail_runtime::InteractiveSessionHandle> {
+    open_with_reasoning(fixture, request_id, "high")
+}
+
+fn open_with_reasoning(
+    fixture: &Fixture,
+    request_id: &str,
+    reasoning: &str,
 ) -> Box<dyn swallowtail_runtime::InteractiveSessionHandle> {
     block_on(
         DeepSeekDirectDriver::new().open_direct_continuation_session(
@@ -268,7 +398,7 @@ fn open(
             )
             .with_options(
                 SessionOptions::default()
-                    .with_reasoning_mode(ReasoningMode::new("high").expect("reasoning mode"))
+                    .with_reasoning_mode(ReasoningMode::new(reasoning).expect("reasoning mode"))
                     .with_tools([fixture_tool()]),
             ),
             fixture.services(),

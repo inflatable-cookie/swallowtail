@@ -14,7 +14,12 @@ impl StructuredRunDriver for DeepSeekDirectDriver {
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
-            let body = encode_structured(request.content().as_str(), maximum).map_err(protocol)?;
+            let reasoning = request
+                .policy()
+                .reasoning_mode()
+                .expect("validated reasoning selection");
+            let body =
+                encode_structured(request.content().as_str(), maximum, reasoning).map_err(protocol)?;
             let wire = HttpRequest::completion(body, true);
             let scope = operation_scope("run", request.request_id().as_str())?;
             let run_id =
@@ -152,18 +157,10 @@ fn validate_run(
         .policy()
         .reasoning_mode()
         .ok_or_else(|| unsupported("an omitted reasoning selection"))?;
-    if reasoning.as_str() != "high"
-        || !plan.requirements().capabilities().any(|requirement| {
-            requirement.capability() == Capability::ReasoningSelection
-                && requirement.constraints().any(|constraint| {
-                    matches!(
-                        constraint,
-                        CapabilityConstraint::ReasoningMode(mode) if mode == reasoning
-                    )
-                })
-        })
+    if !deepseek_reasoning_mode_is_supported(reasoning)
+        || !deepseek_plan_supports_reasoning(plan, reasoning)
     {
-        return Err(unsupported("a reasoning selection other than high"));
+        return Err(unsupported("an unsupported reasoning selection"));
     }
     if request.working_resource().is_some() {
         return Err(unsupported("a working resource"));
@@ -199,4 +196,3 @@ fn validate_run(
     }
     Ok(())
 }
-

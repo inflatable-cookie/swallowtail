@@ -1,6 +1,7 @@
 use super::input::DeepSeekSessionProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
+use crate::selection::deepseek_reasoning_mode_is_supported;
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
@@ -87,14 +88,14 @@ impl DeepSeekPreparedIntegration {
         }
         if options
             .reasoning_mode()
-            .is_none_or(|mode| mode.as_str() != "high")
+            .is_none_or(|mode| !deepseek_reasoning_mode_is_supported(mode))
             || options.tools().len() == 0
             || options.tools().len() > 8
         {
             return Err(failure(
                 PreparationStage::Preflight,
                 "swallowtail.deepseek.preparation.session_options_rejected",
-                "DeepSeek direct continuation requires high reasoning and one to eight declared tools",
+                "DeepSeek direct continuation requires an exact supported reasoning selection and one to eight declared tools",
             ));
         }
         let activity = crate::activity::profile::activity_profile(true);

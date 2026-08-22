@@ -4,6 +4,7 @@ use super::stream::parse_final_stream;
 use super::*;
 use crate::{DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, deepseek_v4_config};
 use serde_json::{Value, json};
+use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::DirectInferenceAttemptId;
 
 const ROOT: &str = "../tests/fixtures/deepseek-openai-chat-2026-07-22";
@@ -23,6 +24,10 @@ fn tools() -> Vec<ToolSpec> {
 
 fn fixture_json(bytes: &[u8]) -> Value {
     serde_json::from_slice(bytes).expect("fixture is valid JSON")
+}
+
+fn reasoning(mode: &str) -> ReasoningMode {
+    ReasoningMode::new(mode).expect("fixture reasoning mode is valid")
 }
 
 #[test]
@@ -61,7 +66,12 @@ fn manifest_freezes_exact_route_bounds_cache_and_exclusions() {
 
 #[test]
 fn exact_initial_tool_attempt_is_buffered_and_omits_tool_choice() {
-    let encoded = encode_initial("What is the fixture weather in London?", &tools()).unwrap();
+    let encoded = encode_initial(
+        "What is the fixture weather in London?",
+        &tools(),
+        &reasoning("high"),
+    )
+    .unwrap();
     let expected = fixture_json(include_bytes!(
         "../../tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-1-request.json"
     ));
@@ -101,6 +111,7 @@ fn tool_response_and_correlated_result_preserve_private_reasoning_only_inside_ad
         std::str::from_utf8(attempt.call.arguments().as_bytes()).unwrap(),
         r#"{"temperature_c":18,"condition":"clear"}"#,
         &tools(),
+        &reasoning("high"),
     )
     .unwrap();
     assert_eq!(
@@ -147,6 +158,7 @@ fn streaming_final_and_later_turn_keep_continuation_and_usage_exact() {
         &final_attempt.output,
         "Summarise that in three words.",
         &tools(),
+        &reasoning("high"),
     )
     .unwrap();
     assert_eq!(
@@ -161,6 +173,22 @@ fn streaming_final_and_later_turn_keep_continuation_and_usage_exact() {
     )
     .unwrap();
     assert_eq!(last.output, "Clear, mild, London.");
+}
+
+#[test]
+fn exact_reasoning_effort_ladder_is_encoded_without_aliasing() {
+    for mode in ["low", "high", "max"] {
+        let actual = fixture_json(
+            &encode_initial(
+                "What is the fixture weather in London?",
+                &tools(),
+                &reasoning(mode),
+            )
+            .unwrap(),
+        );
+        assert_eq!(actual["reasoning_effort"], mode);
+        assert_eq!(actual["thinking"]["type"], "enabled");
+    }
 }
 
 #[test]

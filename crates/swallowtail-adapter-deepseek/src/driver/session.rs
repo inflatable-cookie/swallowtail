@@ -8,7 +8,7 @@ use crate::protocol::ToolSpec;
 use crate::selection::validate_deepseek_request_plan;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use swallowtail_core::{PreflightPlan, SessionRef};
+use swallowtail_core::{PreflightPlan, ReasoningMode, SessionRef};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DirectContinuationBinding,
     DirectContinuationState, DirectContinuationTurnRequest, HostServices, InteractiveSessionDriver,
@@ -27,6 +27,7 @@ pub(super) struct DeepSeekSessionHandle {
     pub(super) endpoint: String,
     pub(super) access: Option<AccessLeases>,
     pub(super) tools: Arc<Vec<ToolSpec>>,
+    pub(super) reasoning: ReasoningMode,
     pub(super) state: Arc<Mutex<DirectContinuationState>>,
     pub(super) history: Arc<Mutex<SessionHistory>>,
     pub(super) private_records: Arc<Mutex<Vec<ProviderPrivateContinuationRecord>>>,
@@ -73,6 +74,11 @@ impl InteractiveSessionDriver for DeepSeekDirectDriver {
                     "DeepSeek continuation requires at least one declared consumer tool",
                 ));
             }
+            let reasoning = request
+                .options()
+                .reasoning_mode()
+                .cloned()
+                .ok_or_else(|| unsupported("an omitted reasoning selection"))?;
             let scope = operation_scope("session", request.request_id().as_str())?;
             let runtime_id =
                 RuntimeSessionId::new(format!("deepseek-direct:{}", request.request_id().as_str()))
@@ -102,6 +108,7 @@ impl InteractiveSessionDriver for DeepSeekDirectDriver {
                 endpoint,
                 access: Some(access),
                 tools: Arc::new(tools),
+                reasoning,
                 state: Arc::new(Mutex::new(DirectContinuationState::new(config.clone()))),
                 history: Arc::new(Mutex::new(SessionHistory::new(&config))),
                 private_records: Arc::new(Mutex::new(Vec::new())),

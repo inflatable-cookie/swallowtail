@@ -2,6 +2,7 @@ use super::private::PrivateContinuation;
 use super::{ProtocolFailure, ProtocolFailureKind};
 use crate::selection::DEEPSEEK_MODEL_ID;
 use serde_json::{Value, json};
+use swallowtail_core::ReasoningMode;
 use swallowtail_protocol_openai_chat::{ChatMessage, ChatRequest, CodecLimits, encode_request};
 
 #[derive(Clone)]
@@ -11,19 +12,31 @@ pub(crate) struct ToolSpec {
     pub(crate) parameters: Value,
 }
 
-pub(crate) fn encode_initial(user: &str, tools: &[ToolSpec]) -> Result<Vec<u8>, ProtocolFailure> {
-    encode(vec![ChatMessage::new("user", user)], tools, false, 8_192)
+pub(crate) fn encode_initial(
+    user: &str,
+    tools: &[ToolSpec],
+    reasoning: &ReasoningMode,
+) -> Result<Vec<u8>, ProtocolFailure> {
+    encode(
+        vec![ChatMessage::new("user", user)],
+        tools,
+        false,
+        8_192,
+        reasoning,
+    )
 }
 
 pub(crate) fn encode_structured(
     user: &str,
     maximum_output_tokens: u64,
+    reasoning: &ReasoningMode,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     encode(
         vec![ChatMessage::new("user", user)],
         &[],
         true,
         maximum_output_tokens,
+        reasoning,
     )
 }
 
@@ -36,6 +49,7 @@ pub(crate) fn encode_after_tool(
     arguments: &str,
     tool_result: &str,
     tools: &[ToolSpec],
+    reasoning_mode: &ReasoningMode,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     let mut assistant = ChatMessage::without_content("assistant");
     assistant
@@ -60,6 +74,7 @@ pub(crate) fn encode_after_tool(
         tools,
         true,
         8_192,
+        reasoning_mode,
     )
 }
 
@@ -75,6 +90,7 @@ pub(crate) fn encode_later_user(
     first_answer: &str,
     next_user: &str,
     tools: &[ToolSpec],
+    reasoning_mode: &ReasoningMode,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     let after_tool = encode_after_tool(
         first_user,
@@ -84,6 +100,7 @@ pub(crate) fn encode_later_user(
         arguments,
         tool_result,
         tools,
+        reasoning_mode,
     )?;
     let mut value: Value = serde_json::from_slice(&after_tool).map_err(invalid)?;
     let messages = value["messages"]
@@ -103,11 +120,12 @@ fn encode(
     tools: &[ToolSpec],
     stream: bool,
     maximum_output_tokens: u64,
+    reasoning: &ReasoningMode,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     let mut request = ChatRequest::new(DEEPSEEK_MODEL_ID, messages, stream, stream);
     for (name, value) in [
         ("max_tokens", json!(maximum_output_tokens)),
-        ("reasoning_effort", json!("high")),
+        ("reasoning_effort", json!(reasoning.as_str())),
         ("thinking", json!({"type":"enabled"})),
         (
             "tools",

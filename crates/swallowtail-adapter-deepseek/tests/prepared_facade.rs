@@ -13,8 +13,8 @@ use swallowtail_adapter_deepseek::{
     prepare_deepseek_direct,
 };
 use swallowtail_core::{
-    DriverRole, ModelId, ModelRouteId, ModelRouteRevision, ProviderInferenceCachePolicy,
-    ReasoningMode,
+    Capability, CapabilityConstraint, DriverRole, ModelId, ModelRouteId, ModelRouteRevision,
+    ProviderInferenceCachePolicy, ReasoningMode,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DirectContinuationTurnRequest, DirectToolResult,
@@ -170,6 +170,59 @@ fn model_substitution_and_unaccepted_cache_posture_fail_before_effects() {
 }
 
 #[test]
+fn exact_reasoning_selection_repeats_in_prepared_plan_request_and_evidence() {
+    let fixture = Fixture::new();
+    let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+
+    for mode in ["low", "high", "max"] {
+        let run = prepared
+            .prepare_run(DeepSeekRunProfileInput::new(
+                RequestId::new(format!("prepared-{mode}-run")).expect("request id"),
+                model(DEEPSEEK_MODEL_ID),
+                OperationContent::new("one exact selection").expect("content"),
+                ReasoningMode::new(mode).expect("reasoning"),
+                std::num::NonZeroU64::new(512).expect("maximum"),
+                ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
+            ))
+            .expect("exact run effort prepares");
+        assert_eq!(
+            run.request()
+                .policy()
+                .reasoning_mode()
+                .expect("request reasoning")
+                .as_str(),
+            mode
+        );
+        assert_plan_supports_reasoning(run.plan(), mode);
+        assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+
+        let session = prepared
+            .prepare_session(session_input_with_reasoning(
+                &format!("prepared-{mode}-session"),
+                DEEPSEEK_MODEL_ID,
+                mode,
+            ))
+            .expect("exact session effort prepares");
+        assert_eq!(
+            session
+                .request()
+                .options()
+                .reasoning_mode()
+                .expect("session reasoning")
+                .as_str(),
+            mode
+        );
+        assert_plan_supports_reasoning(session.plan(), mode);
+        assert_prepared_operation_evidence_matches_plan(
+            session.evidence().operation(),
+            session.plan(),
+        );
+    }
+    assert!(fixture.server.requests().is_empty());
+}
+
+#[test]
 fn one_request_structured_run_prepares_on_both_host_topologies() {
     for topology in [
         ExecutionTopologyFixture::local(),
@@ -213,13 +266,33 @@ fn one_request_structured_run_prepares_on_both_host_topologies() {
 }
 
 fn session_input(id: &str, model_id: &str) -> DeepSeekSessionProfileInput {
+    session_input_with_reasoning(id, model_id, "high")
+}
+
+fn session_input_with_reasoning(
+    id: &str,
+    model_id: &str,
+    reasoning: &str,
+) -> DeepSeekSessionProfileInput {
     DeepSeekSessionProfileInput::new(
         RequestId::new(id).expect("request id"),
         model(model_id),
-        ReasoningMode::new("high").expect("reasoning"),
+        ReasoningMode::new(reasoning).expect("reasoning"),
         [tool()],
         ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
     )
+}
+
+fn assert_plan_supports_reasoning(plan: &swallowtail_core::PreflightPlan, mode: &str) {
+    assert!(plan.requirements().capabilities().any(|requirement| {
+        requirement.capability() == Capability::ReasoningSelection
+            && requirement.constraints().any(|constraint| {
+                matches!(
+                    constraint,
+                    CapabilityConstraint::ReasoningMode(selected) if selected.as_str() == mode
+                )
+            })
+    }));
 }
 
 fn model(model_id: &str) -> DeepSeekModelSelection {

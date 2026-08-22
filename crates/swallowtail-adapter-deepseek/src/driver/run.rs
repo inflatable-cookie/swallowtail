@@ -6,7 +6,10 @@ use crate::failure::{failure, protocol, unsupported};
 use crate::protocol::{
     FinalStreamParser, FinalStreamUpdate, HttpRequest, Usage, encode_structured,
 };
-use crate::selection::{DEEPSEEK_MODEL_ID, deepseek_v4_config};
+use crate::selection::{
+    DEEPSEEK_MODEL_ID, deepseek_plan_supports_reasoning, deepseek_reasoning_mode_is_supported,
+    deepseek_v4_config,
+};
 use crate::transport::{StreamItem, Subscription};
 use std::collections::BTreeMap;
 use std::future::poll_fn;
@@ -14,8 +17,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
 use swallowtail_core::{
-    CancellationScope, Capability, CapabilityConstraint, ExternalNetworkPolicy,
-    ExternalSearchPolicy, PreflightPlan, ProviderRequestRef, RunRef, SafeDiagnostic,
+    CancellationScope, Capability, ExternalNetworkPolicy, ExternalSearchPolicy, PreflightPlan,
+    ProviderRequestRef, RunRef, SafeDiagnostic,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,

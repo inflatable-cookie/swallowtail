@@ -20,7 +20,7 @@ use signals::{StopSignal, StreamSignal, WorkFailure, next_stream_signal, wait_re
 use std::num::NonZeroU64;
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
-use swallowtail_core::{DirectContinuationConfig, PreflightPlan};
+use swallowtail_core::{DirectContinuationConfig, PreflightPlan, ReasoningMode};
 use swallowtail_runtime::{
     CleanupOutcome, DebugObservationKind, DirectContinuationBinding, DirectContinuationState,
     DirectInferenceAttempt, HostServices, OperationContent, ProviderPrivateContinuationRecord,
@@ -37,6 +37,7 @@ pub(super) struct TurnContext {
     session_id: RuntimeSessionId,
     binding: DirectContinuationBinding,
     tools: Arc<Vec<crate::protocol::ToolSpec>>,
+    reasoning: ReasoningMode,
     state: Arc<Mutex<DirectContinuationState>>,
     history: Arc<Mutex<SessionHistory>>,
     private_records: Arc<Mutex<Vec<ProviderPrivateContinuationRecord>>>,
@@ -87,6 +88,7 @@ impl TurnContext {
             session_id: session.runtime_id.clone(),
             binding: session.binding.clone(),
             tools: Arc::clone(&session.tools),
+            reasoning: session.reasoning.clone(),
             state: Arc::clone(&session.state),
             history: Arc::clone(&session.history),
             private_records: Arc::clone(&session.private_records),

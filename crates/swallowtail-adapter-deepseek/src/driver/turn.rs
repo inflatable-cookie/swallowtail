@@ -211,7 +211,11 @@ fn build_request(
     attempt: &DirectInferenceAttempt,
 ) -> Result<HttpRequest, RuntimeFailure> {
     let body = match attempt.ordinal().get() {
-        1 => encode_initial(request.content().as_str(), &session.tools),
+        1 => encode_initial(
+            request.content().as_str(),
+            &session.tools,
+            &session.reasoning,
+        ),
         3 => {
             let history = session.history.lock().expect("history lock poisoned");
             if !history.is_complete() {
@@ -232,6 +236,7 @@ fn build_request(
                 first.answer()?,
                 request.content().as_str(),
                 &session.tools,
+                &session.reasoning,
             )
         }
         _ => {

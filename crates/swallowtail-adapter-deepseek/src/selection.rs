@@ -7,8 +7,8 @@ use swallowtail_core::{
     InstanceOwnership, InterfaceBehaviorRevision, InterfaceCompatibilityClaim,
     InterfaceCompatibilityClaimId, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
     InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, ModelId,
-    OperationRequirements, OperationShape, ProviderInferenceCachePolicy, RuntimeReadiness,
-    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
+    OperationRequirements, OperationShape, ProviderInferenceCachePolicy, ReasoningMode,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     OpenDirectContinuationSessionRequest, RuntimeFailure, validate_direct_continuation_plan,
@@ -26,6 +26,39 @@ pub const DEEPSEEK_ENDPOINT_AUDIENCE: &str = "api.deepseek.com";
 #[cfg(test)]
 const DEEPSEEK_AUDIENCE: &str = DEEPSEEK_ENDPOINT_AUDIENCE;
 pub(crate) const DEEPSEEK_FACADE_AXIS: &str = "deepseek.openai-chat-facade";
+
+pub(crate) fn deepseek_reasoning_mode_is_supported(mode: &ReasoningMode) -> bool {
+    matches!(mode.as_str(), "low" | "high" | "max")
+}
+
+fn deepseek_reasoning_requirement() -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::ReasoningSelection,
+        [
+            CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new("low").expect("static mode is valid"),
+            ),
+            CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new("high").expect("static mode is valid"),
+            ),
+            CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new("max").expect("static mode is valid"),
+            ),
+        ],
+    )
+}
+
+pub(crate) fn deepseek_plan_supports_reasoning(
+    plan: &swallowtail_core::PreflightPlan,
+    selected: &ReasoningMode,
+) -> bool {
+    plan.requirements().capabilities().any(|requirement| {
+        requirement.capability() == Capability::ReasoningSelection
+            && requirement.constraints().any(|constraint| {
+                matches!(constraint, CapabilityConstraint::ReasoningMode(mode) if mode == selected)
+            })
+    })
+}
 
 #[must_use]
 /// Returns the bounded direct-continuation configuration for DeepSeek V4 Pro.
@@ -89,6 +122,7 @@ pub fn deepseek_v4_requirements(
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::OutputTokenLimit, []),
         CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
+        deepseek_reasoning_requirement(),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -160,12 +194,7 @@ pub fn deepseek_v4_run_requirements(
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::OutputTokenLimit, []),
         CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
-        CapabilityRequirement::new(
-            Capability::ReasoningSelection,
-            [CapabilityConstraint::ReasoningMode(
-                swallowtail_core::ReasoningMode::new("high").expect("static mode is valid"),
-            )],
-        ),
+        deepseek_reasoning_requirement(),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -184,10 +213,14 @@ pub fn validate_deepseek_request_plan(
 ) -> Result<(), RuntimeFailure> {
     validate_direct_continuation_plan(plan, request)?;
     let exact_version = deepseek_facade_binding();
-    let reasoning_is_high = request
+    let reasoning_is_supported = request
         .options()
         .reasoning_mode()
-        .is_some_and(|mode| mode.as_str() == "high");
+        .is_some_and(deepseek_reasoning_mode_is_supported);
+    let reasoning_matches_plan = request
+        .options()
+        .reasoning_mode()
+        .is_some_and(|mode| deepseek_plan_supports_reasoning(plan, mode));
     if plan.instance_target_ref().as_host_value() != DEEPSEEK_ENDPOINT
         || plan.protocol_facade_id().as_str() != DEEPSEEK_FACADE_REVISION
         || plan
@@ -202,7 +235,8 @@ pub fn validate_deepseek_request_plan(
             .interface_versions()
             .any(|binding| binding == &exact_version)
         || plan.classify_interface_version(&exact_version).is_none()
-        || !reasoning_is_high
+        || !reasoning_is_supported
+        || !reasoning_matches_plan
         || request.options().developer_instructions().is_some()
         || request.options().tools().len() > 8
         || request.config().tool_selection() != DirectToolSelection::ProviderAutomatic

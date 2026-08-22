@@ -69,7 +69,11 @@ pub(crate) fn validate(
     {
         return Err(unsupported("consumer network or search policy"));
     }
-    validate_reasoning_selection(plan, request.policy().reasoning_mode())?;
+    validate_reasoning_selection(
+        plan,
+        request.policy().reasoning_mode(),
+        plan.model_id().expect("validated above").as_str(),
+    )?;
     if request.working_resource().is_none() || request.deadline().is_none() {
         return Err(unsupported("missing working resource or host deadline"));
     }
@@ -190,17 +194,19 @@ fn unsupported(feature: &str) -> RuntimeFailure {
 fn validate_reasoning_selection(
     plan: &PreflightPlan,
     requested: Option<&ReasoningMode>,
+    model_id: &str,
 ) -> Result<(), RuntimeFailure> {
+    let parsed = crate::headless_model_parameters::parse_plan_model_id(model_id)?;
+    let encoded = parsed.parameters.effort().cloned();
     let mut planned = plan
         .requirements()
         .capabilities()
         .filter(|required| required.capability() == Capability::ReasoningSelection);
     let Some(planned_requirement) = planned.next() else {
-        return if requested.is_some() {
-            Err(unsupported("unplanned reasoning selection"))
-        } else {
-            Ok(())
-        };
+        if requested.is_some() || encoded.is_some() {
+            return Err(unsupported("unplanned reasoning selection"));
+        }
+        return Ok(());
     };
     if planned.next().is_some() {
         return Err(plan_mismatch("reasoning capability"));
@@ -215,7 +221,13 @@ fn validate_reasoning_selection(
     if constraints.next().is_some() {
         return Err(plan_mismatch("reasoning constraint"));
     }
-    if *planned_constraint != CapabilityConstraint::ReasoningMode(requested.clone()) {
+    let CapabilityConstraint::ReasoningMode(planned_effort) = planned_constraint else {
+        return Err(plan_mismatch("reasoning constraint"));
+    };
+    let Some(encoded) = encoded else {
+        return Err(plan_mismatch("rendered model effort"));
+    };
+    if planned_effort != requested || planned_effort != &encoded {
         return Err(plan_mismatch("reasoning selection"));
     }
     Ok(())

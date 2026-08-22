@@ -1,5 +1,5 @@
 use swallowtail_core::{ModelId, ReasoningMode};
-use swallowtail_runtime::{PreparationFailure, PreparationStage};
+use swallowtail_runtime::{PreparationFailure, PreparationStage, RuntimeFailure};
 
 /// Cursor-local Fast parameter for headless `--model` bracket syntax.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -22,6 +22,13 @@ pub(crate) struct CursorHeadlessModelParameters {
     fast: Option<CursorHeadlessFast>,
     context: Option<CursorHeadlessContext>,
     effort: Option<ReasoningMode>,
+}
+
+/// Parsed base model and parameters from a plan-bound model id.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ParsedHeadlessModelId {
+    pub(crate) base_model: String,
+    pub(crate) parameters: CursorHeadlessModelParameters,
 }
 
 impl CursorHeadlessModelParameters {
@@ -151,6 +158,97 @@ pub(crate) fn validate_plain_model_id(model_id: &str) -> Result<(), PreparationF
     Ok(())
 }
 
+/// Parses and validates a plan-bound model id against the Research 183 allowlist.
+pub(crate) fn parse_plan_model_id(model_id: &str) -> Result<ParsedHeadlessModelId, RuntimeFailure> {
+    if let Some(open) = model_id.find('[') {
+        if !model_id.ends_with(']') || model_id[open + 1..].find('[').is_some() {
+            return Err(model_parameter_rejected());
+        }
+        let base_model = &model_id[..open];
+        if base_model.is_empty() {
+            return Err(model_parameter_rejected());
+        }
+        let inner = &model_id[open + 1..model_id.len() - 1];
+        let parameters = parse_parameter_suffix(base_model, inner)?;
+        let rendered = render_model_id(base_model, &parameters).map_err(|_| model_parameter_rejected())?;
+        if rendered.as_str() != model_id {
+            return Err(model_parameter_rejected());
+        }
+        Ok(ParsedHeadlessModelId {
+            base_model: base_model.to_owned(),
+            parameters,
+        })
+    } else if contains_parameter_grammar(model_id) {
+        Err(model_parameter_rejected())
+    } else {
+        Ok(ParsedHeadlessModelId {
+            base_model: model_id.to_owned(),
+            parameters: CursorHeadlessModelParameters::empty(),
+        })
+    }
+}
+
+fn parse_parameter_suffix(
+    base_model: &str,
+    inner: &str,
+) -> Result<CursorHeadlessModelParameters, RuntimeFailure> {
+    if inner.is_empty() {
+        return Err(model_parameter_rejected());
+    }
+    const ORDER: [&str; 3] = ["context", "effort", "fast"];
+    let mut parameters = CursorHeadlessModelParameters::empty();
+    let mut last_index = None;
+    for part in inner.split(',') {
+        let Some((key, value)) = part.split_once('=') else {
+            return Err(model_parameter_rejected());
+        };
+        let index = ORDER
+            .iter()
+            .position(|candidate| *candidate == key)
+            .ok_or_else(model_parameter_rejected)?;
+        if last_index.is_some_and(|previous| index <= previous) {
+            return Err(model_parameter_rejected());
+        }
+        last_index = Some(index);
+        parameters = match key {
+            "context" => parameters
+                .with_context(
+                    base_model,
+                    match value {
+                        "300k" => CursorHeadlessContext::ThreeHundredK,
+                        "1m" => CursorHeadlessContext::OneMillion,
+                        _ => return Err(model_parameter_rejected()),
+                    },
+                )
+                .map_err(|_| model_parameter_rejected())?,
+            "effort" => parameters
+                .with_effort(
+                    base_model,
+                    ReasoningMode::new(value).map_err(|_| model_parameter_rejected())?,
+                )
+                .map_err(|_| model_parameter_rejected())?,
+            "fast" => parameters
+                .with_fast(
+                    base_model,
+                    match value {
+                        "false" => CursorHeadlessFast::Standard,
+                        _ => return Err(model_parameter_rejected()),
+                    },
+                )
+                .map_err(|_| model_parameter_rejected())?,
+            _ => return Err(model_parameter_rejected()),
+        };
+    }
+    Ok(parameters)
+}
+
+fn model_parameter_rejected() -> RuntimeFailure {
+    crate::failure::failure(
+        "swallowtail.cursor.headless.model_parameter_rejected",
+        "Cursor headless model-parameter tuple is not qualified",
+    )
+}
+
 fn allows_fast(base_model: &str, fast: CursorHeadlessFast) -> bool {
     matches!(
         (base_model, fast),
@@ -194,7 +292,7 @@ fn invalid_model_id() -> PreparationFailure {
 mod tests {
     use super::{
         CursorHeadlessContext, CursorHeadlessFast, CursorHeadlessModelParameters,
-        contains_parameter_grammar, render_model_id, validate_plain_model_id,
+        contains_parameter_grammar, parse_plan_model_id, render_model_id, validate_plain_model_id,
     };
     use swallowtail_core::ReasoningMode;
 
@@ -233,13 +331,17 @@ mod tests {
     }
 
     #[test]
-    fn rejects_unqualified_model_parameter_combinations() {
-        let err = CursorHeadlessModelParameters::default()
-            .with_context("composer-2.5", CursorHeadlessContext::ThreeHundredK)
-            .expect_err("composer context");
-        assert_eq!(
-            err.diagnostic().safe().code(),
-            "swallowtail.cursor.headless.model_parameter_rejected"
-        );
+    fn parse_plan_model_id_rejects_unqualified_and_noncanonical_suffixes() {
+        for model in [
+            "composer-2.5[fast=true]",
+            "claude-opus-5[effort=high,context=300k]",
+            "claude-opus-5[effort=high,effort=high]",
+            "claude-opus-5[effort=low]",
+        ] {
+            assert!(parse_plan_model_id(model).is_err(), "{model}");
+        }
+        let parsed =
+            parse_plan_model_id("claude-opus-4-8[context=1m,effort=high,fast=false]").expect("valid");
+        assert_eq!(parsed.base_model, "claude-opus-4-8");
     }
 }

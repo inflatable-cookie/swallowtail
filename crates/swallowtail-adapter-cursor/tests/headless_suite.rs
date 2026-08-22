@@ -8,7 +8,7 @@ use std::sync::Arc;
 use support::{FixtureHost, ImmediateTime};
 use swallowtail_adapter_cursor::CursorHeadlessDriver;
 use swallowtail_core::{
-    ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, ResourceAccess,
+    ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, ReasoningMode, ResourceAccess,
 };
 use swallowtail_runtime::{
     ActivityKind, CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
@@ -232,6 +232,72 @@ fn local_and_remote_authoritative_hosts_use_the_same_explicit_route() {
     }
 }
 
+#[test]
+fn low_level_driver_rejects_unqualified_parameterized_plans_before_process_work() {
+    let host_id = local_host();
+    for (model, reasoning, request_id) in [
+        ("composer-2.5[fast=true]", None, "bad-fast"),
+        (
+            "claude-opus-5[effort=high,context=300k]",
+            Some("high"),
+            "bad-order",
+        ),
+        (
+            "claude-opus-5[context=300k,effort=high,effort=high]",
+            Some("high"),
+            "duplicate-effort",
+        ),
+    ] {
+        let host = FixtureHost::completed([stdout(&fixture())]);
+        let err = match block_on(driver().start_run(
+            plan::headless_plan_with_model(
+                host_id.clone(),
+                "cursor.fixture.executable",
+                ResourceAccess::ReadWrite,
+                model,
+                reasoning,
+            ),
+            parameterized_request(request_id, reasoning),
+            host.services(host_id.clone()),
+        )) {
+            Err(error) => error,
+            Ok(_) => panic!("expected failure for {model}"),
+        };
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.cursor.headless.model_parameter_rejected",
+            "{model}"
+        );
+        assert!(!host.started(), "{model}");
+    }
+}
+
+#[test]
+fn low_level_driver_rejects_effort_mismatch_before_process_work() {
+    let host_id = local_host();
+    let host = FixtureHost::completed([stdout(&fixture())]);
+    let model = "claude-opus-5[context=300k,effort=high]";
+    let err = match block_on(driver().start_run(
+        plan::headless_plan_with_model(
+            host_id.clone(),
+            "cursor.fixture.executable",
+            ResourceAccess::ReadWrite,
+            model,
+            Some("high"),
+        ),
+        parameterized_request("effort-mismatch", Some("low")),
+        host.services(host_id),
+    )) {
+        Err(error) => error,
+        Ok(_) => panic!("expected effort mismatch failure"),
+    };
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.cursor.headless.request_plan_mismatch"
+    );
+    assert!(!host.started());
+}
+
 fn completed_run(
     _host: &FixtureHost,
     plan: swallowtail_core::PreflightPlan,
@@ -260,13 +326,21 @@ fn driver() -> CursorHeadlessDriver {
 }
 
 fn request(id: &str) -> StructuredRunRequest {
+    parameterized_request(id, None)
+}
+
+fn parameterized_request(id: &str, reasoning: Option<&str>) -> StructuredRunRequest {
+    let mut policy = OperationPolicy::offline()
+        .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
+        .with_harness_isolation(HarnessIsolation::AmbientHost)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+    if let Some(reasoning) = reasoning {
+        policy = policy.with_reasoning_mode(ReasoningMode::new(reasoning).expect("reasoning"));
+    }
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id"),
         OperationContent::new("fixture-private-prompt").expect("prompt"),
-        OperationPolicy::offline()
-            .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
-            .with_harness_isolation(HarnessIsolation::AmbientHost)
-            .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient),
+        policy,
     )
     .with_working_resource(WorkingResourceRef::new("workspace.main").expect("resource"))
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000)))

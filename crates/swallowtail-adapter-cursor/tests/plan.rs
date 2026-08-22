@@ -9,7 +9,7 @@ use swallowtail_core::{
     ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
     ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
-    PreflightPlan, ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation,
+    PreflightPlan, ProtocolFacadeId, ProviderId, ReasoningMode, ResourceAccess, ResourceRepresentation,
     RuntimeReadiness, SupportAuthority, preflight,
 };
 
@@ -154,13 +154,22 @@ pub fn headless_plan_with_model(
     target: &str,
     resource_access: ResourceAccess,
     model_id: &str,
+    reasoning: Option<&str>,
 ) -> PreflightPlan {
     let descriptor = cursor_headless_descriptor();
     let access_id = AccessProfileId::new("access.cursor.subscription").expect("valid access id");
     let access = cursor_subscription_access_profile(access_id.clone());
     let version = cursor_agent_release_binding("2026.07.01-41b2de7")
         .expect("fixture Cursor release is valid");
-    let capabilities = headless_capabilities(resource_access);
+    let mut capabilities = headless_capabilities(resource_access);
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new(reasoning).expect("valid reasoning mode"),
+            )],
+        ));
+    }
     let profile = CapabilityProfile::new(capabilities.clone());
     let instance = ConfiguredInstance::new(
         ConfiguredInstanceId::new("cursor-agent.headless.fixture").expect("valid instance id"),

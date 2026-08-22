@@ -73,8 +73,9 @@ request policy, evidence, and driver must retain the same exact value. The
 selected child switches to `--input-format stream-json`, sends a private
 `initialize` control request, requires `can_set_effort`, sends `set_effort`
 with the canonical value, and requires an exact `applied: true` response with
-no override before sending the user message. A substituted tier or
-higher-priority ambient provider knob fails before the prompt is sent.
+no override before sending the user message. The bounded child has started by
+this point; a substituted tier or higher-priority ambient provider knob is
+rejected before the user message/provider prompt is sent.
 
 This is an in-memory operation-private control exchange. It does not automate
 `/effort`, persist `model.reasoningEffort`, mutate user/project settings, or

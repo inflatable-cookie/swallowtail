@@ -38,15 +38,15 @@
   },
   "selected_types_and_catalogue_unchanged_from_0_21_14": true,
   "selected_config_blob_changed_from_0_21_14": true,
-  "selected_mapped_subset_unchanged": true,
+  "selected_mapped_subset_unchanged": false,
   "frozen_stream_types_blob_from_0_21_4": "53801c8b14f50a7ece0ea7d649b7f228fcd7d85b",
   "frozen_corpus_ceiling": "0.21.14",
   "claim_at_observation": {
     "baseline": "0.19.11",
-    "latest_qualified": "0.21.14",
+    "latest_qualified": "0.21.15",
     "posture": "allow_unverified",
     "classification_of_0_21_14": "qualified_maintained",
-    "classification_of_0_21_15": "unverified_newer"
+    "classification_of_0_21_15": "qualified_maintained"
   },
   "identity_decision": {
     "shape": "compatible-extension",
@@ -54,7 +54,7 @@
     "raise_latest_qualified_to": "0.21.15",
     "keep_baseline": "0.19.11",
     "qualify_intermediates": true,
-    "new_milestone": false,
+    "new_milestone": true,
     "keep_0_20_2_incompatible": true,
     "map_goal_state": false,
     "map_initialize_effort_status": false,

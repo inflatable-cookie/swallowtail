@@ -1,15 +1,17 @@
 use crate::events::QwenEventParser;
 use crate::handle::QwenProcessCancellation;
+mod buffered;
+mod stream;
 use serde_json::Value;
-use std::future::poll_fn;
 use std::sync::Arc;
-use std::task::Poll;
 use swallowtail_core::{InterfaceVersion, ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
-    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    HostServices, ProcessHandle, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
+    TerminalOutcome, TerminalStatus,
 };
+
+use stream::{NextOutput, next_output, send_all};
 
 const ROUTE: &str = "qwen.headless";
 
@@ -87,37 +89,15 @@ pub(crate) async fn pump_with_session(
         context.expected_session_id,
         context.operation_id,
     );
-    for value in context.buffered_values {
-        let mut bytes = match serde_json::to_vec(&value) {
-            Ok(bytes) => bytes,
-            Err(_) => {
-                let cleanup = force_cleanup(process.as_ref()).await;
-                return result(TerminalOutcome::new(
-                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                        "swallowtail.qwen.headless.malformed_stream",
-                        "Qwen Code emitted malformed stream output",
-                    )),
-                    cleanup,
-                ));
-            }
-        };
-        bytes.push(b'\n');
-        match parser.push(&bytes) {
-            Ok(parsed) => {
-                if send_all(&events, parsed).is_err() {
-                    let cleanup = force_cleanup(process.as_ref()).await;
-                    return result(event_delivery_failed(cleanup));
-                }
-            }
-            Err(failure) => {
-                emit_protocol_debug(&services, &failure, "headless.pump.buffered_decode");
-                let cleanup = force_cleanup(process.as_ref()).await;
-                return result(TerminalOutcome::new(
-                    TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
-                    cleanup,
-                ));
-            }
-        }
+    if let Err(failure) =
+        buffered::push_buffered_values(&mut parser, &events, context.buffered_values)
+    {
+        emit_protocol_debug(&services, &failure, "headless.pump.buffered_decode");
+        let cleanup = force_cleanup(process.as_ref()).await;
+        return result(TerminalOutcome::new(
+            TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+            cleanup,
+        ));
     }
     let mut deadline = Some(deadline);
     loop {
@@ -231,39 +211,6 @@ fn result(outcome: TerminalOutcome) -> QwenPumpResult {
         outcome,
         session_id: None,
     }
-}
-
-enum NextOutput {
-    Process(Result<Option<ProcessOutputChunk>, RuntimeFailure>),
-    Deadline,
-}
-
-async fn next_output(
-    process: &dyn ProcessHandle,
-    cancellation: &QwenProcessCancellation,
-    deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
-) -> NextOutput {
-    let mut read = process.read_output();
-    poll_fn(|context| {
-        if !cancellation.is_requested()
-            && let Some(wait) = deadline.as_mut()
-            && wait.as_mut().poll(context).is_ready()
-        {
-            return Poll::Ready(NextOutput::Deadline);
-        }
-        read.as_mut().poll(context).map(NextOutput::Process)
-    })
-    .await
-}
-
-fn send_all(
-    sender: &RuntimeEventSender,
-    events: impl IntoIterator<Item = swallowtail_runtime::RuntimeEvent>,
-) -> Result<(), RuntimeFailure> {
-    for event in events {
-        sender.send(event)?;
-    }
-    Ok(())
 }
 
 pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle) {

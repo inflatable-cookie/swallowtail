@@ -16,16 +16,22 @@ pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.21.15";
 
 const BASELINE_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
 const CATALOGUE_FILTER_BEHAVIOR: &str = "qwen-code.headless.v0.21.0-catalogue-filter";
+pub(crate) const REASONING_CONTROL_BEHAVIOR: &str = "qwen-code.headless.v0.21.15-reasoning-control";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct QwenPlanSelection {
     version: InterfaceVersion,
+    behavior_revision: InterfaceBehaviorRevision,
 }
 
 impl QwenPlanSelection {
     pub(crate) const fn version(&self) -> &InterfaceVersion {
         &self.version
+    }
+
+    pub(crate) const fn behavior_revision(&self) -> &InterfaceBehaviorRevision {
+        &self.behavior_revision
     }
 }
 
@@ -65,8 +71,14 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
             ),
             InterfaceVersionSegment::new(
                 version("0.21.0").expect("static Qwen version is valid"),
-                version(QWEN_CODE_LATEST_QUALIFIED_VERSION).expect("static Qwen version is valid"),
+                version("0.21.14").expect("static Qwen version is valid"),
                 InterfaceBehaviorRevision::new(CATALOGUE_FILTER_BEHAVIOR)
+                    .expect("static Qwen behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                version(QWEN_CODE_LATEST_QUALIFIED_VERSION).expect("static Qwen version is valid"),
+                InterfaceBehaviorRevision::new(REASONING_CONTROL_BEHAVIOR)
                     .expect("static Qwen behavior revision is valid"),
                 InterfaceSupportStatus::Maintained,
             ),
@@ -96,14 +108,18 @@ pub(crate) fn validate_qwen_plan_version(
         ));
     }
     let assessment = claim.assess(binding.version());
+    let behavior_revision = assessment.behavior_revision().ok_or_else(|| {
+        failure(
+            "swallowtail.qwen.headless.version_incompatible",
+            "Qwen headless executable behavior is not mapped by this driver",
+        )
+    })?;
     if assessment != plan.assess_interface_version(binding)
         || !assessment.is_permitted()
-        || assessment.behavior_revision().is_none_or(|revision| {
-            !matches!(
-                revision.as_str(),
-                BASELINE_BEHAVIOR | CATALOGUE_FILTER_BEHAVIOR
-            )
-        })
+        || !matches!(
+            behavior_revision.as_str(),
+            BASELINE_BEHAVIOR | CATALOGUE_FILTER_BEHAVIOR | REASONING_CONTROL_BEHAVIOR
+        )
     {
         return Err(failure(
             "swallowtail.qwen.headless.version_incompatible",
@@ -112,6 +128,7 @@ pub(crate) fn validate_qwen_plan_version(
     }
     Ok(QwenPlanSelection {
         version: binding.version().clone(),
+        behavior_revision: behavior_revision.clone(),
     })
 }
 
@@ -125,7 +142,7 @@ fn version(value: &str) -> Option<InterfaceVersion> {
 
 #[cfg(test)]
 mod tests {
-    use super::{qwen_code_binding, qwen_headless_claim};
+    use super::{REASONING_CONTROL_BEHAVIOR, qwen_code_binding, qwen_headless_claim};
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
@@ -153,6 +170,14 @@ mod tests {
                 .as_str(),
             "qwen-code.headless.v0.21.0-catalogue-filter"
         );
+        assert_eq!(
+            claim
+                .assess(&version("0.21.15"))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            REASONING_CONTROL_BEHAVIOR
+        );
         assert!(!claim.permits(&version("0.20.2")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             claim.assess(&version("0.21.16"))
@@ -161,7 +186,7 @@ mod tests {
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            "qwen-code.headless.v0.21.0-catalogue-filter"
+            REASONING_CONTROL_BEHAVIOR
         );
         assert!(!claim.permits(&version("0.21.14-rc.1")));
         assert!(!claim.permits(&version("0.21.14-preview.0")));

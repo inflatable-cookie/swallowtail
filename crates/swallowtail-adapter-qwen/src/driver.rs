@@ -1,6 +1,6 @@
 use crate::DRIVER_ID;
 use crate::command::{arguments, reasoning_arguments};
-use crate::control::{establish_reasoning, write_user_message};
+use crate::control::establish_reasoning_and_write_user;
 use crate::handle::{QwenProcessCancellation, QwenRunHandle};
 use crate::pump::{cleanup_failed_start, pump};
 use crate::validation::{failure, validate};
@@ -151,26 +151,20 @@ impl QwenHeadlessDriver {
                 .await?,
         );
         let buffered_values = if let Some(reasoning) = request.policy().reasoning_mode() {
-            let setup = match establish_reasoning(
+            match establish_reasoning_and_write_user(
                 process.as_ref(),
                 reasoning,
                 time_service.wait_until(deadline),
+                request.content(),
             )
             .await
             {
-                Ok(setup) => setup,
+                Ok(buffered_values) => buffered_values,
                 Err(error) => {
                     cleanup_failed_start(process.as_ref()).await;
                     return Err(error);
                 }
-            };
-            if let Err(error) =
-                write_user_message(process.as_ref(), &setup.session_id, request.content()).await
-            {
-                cleanup_failed_start(process.as_ref()).await;
-                return Err(error);
             }
-            setup.buffered_values
         } else {
             if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
                 cleanup_failed_start(process.as_ref()).await;

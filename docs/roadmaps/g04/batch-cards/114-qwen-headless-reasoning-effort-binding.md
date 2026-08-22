@@ -30,9 +30,10 @@ and exact operation-private child transport.
    child, every `--resume` child, and a fresh context-losing replacement.
 8. Ensure ambient configuration cannot override the planned value. Do not
    create a synthetic home/config root or mutate user/project settings.
-9. Validate request, plan, evidence, model, package, driver, and transport
-   agreement before task or process work. Preserve existing lifecycle and
-   resource behavior.
+9. Validate request, plan, evidence, model, package, and driver agreement
+   before task or process work. Validate control transport agreement after
+   child startup but before the user message/provider prompt. Preserve existing
+   lifecycle and resource behavior.
 
 ## Acceptance Criteria
 
@@ -42,7 +43,9 @@ and exact operation-private child transport.
 - [x] no generic setting/argv/environment map enters the public API
 - [x] model selection and reasoning selection remain exact and independent
 - [x] ambient settings cannot override the prepared value
-- [x] known mismatch and unsupported failures occur before process work
+- [x] known mismatch and unsupported failures occur before process work; a
+      control or ambient override failure occurs before the user
+      message/provider prompt
 
 ## Binding Result
 
@@ -50,7 +53,10 @@ Prepared Qwen run and session inputs now carry one optional typed
 `ReasoningMode`. Exact package/provider/model validation adds one
 `ReasoningSelection` constraint only when selected, and request policy/session
 options plus prepared evidence retain the same value. Selected children use
-the private stream-JSON control handshake; the absent path is unchanged.
+the private stream-JSON control handshake bound to
+`qwen-code.headless.v0.21.15-reasoning-control`; the absent path is unchanged.
+Control substitution is observed after child startup and rejected before the
+user message/provider prompt.
 
 ## Validation
 

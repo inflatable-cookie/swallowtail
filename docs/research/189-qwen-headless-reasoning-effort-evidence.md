@@ -17,9 +17,10 @@ ambient configuration mutation, or a Contract 033 host-scoped lease?
 Yes, but only for the exact package point `0.21.15`, provider
 `alibaba-modelstudio`, models `qwen3.8-max` and `qwen3.8-max-preview`, and
 canonical values `low`, `medium`, `high`, `xhigh`, and `max`. This is a
-feature-local exact-version gate. It does not widen the existing
-`qwen-code.headless.v0.21.0-catalogue-filter` compatibility segment or claim
-the same reasoning mapping for `0.21.0..=0.21.14`.
+feature-local exact-version gate. Contract 029 keeps
+`qwen-code.headless.v0.21.0-catalogue-filter` through `0.21.14` and binds an
+exact `qwen-code.headless.v0.21.15-reasoning-control` segment at `0.21.15`.
+It does not claim the reasoning mapping for `0.21.0..=0.21.14`.
 
 The selected transport is the private `stream-json` control exchange:
 
@@ -128,12 +129,11 @@ and preserved fresh-replacement preparation.
 
 ## Behavior Revision And Compatibility
 
-The existing compatibility claim remains unchanged:
-`qwen-code.headless.v0.21.0-catalogue-filter` covers the route's established
-headless stream behavior. The reasoning mapping is a private feature boundary
-named `qwen-code.headless.v0.21.15-reasoning-control` in this evidence record,
-gated by exact version equality. It is not a new general compatibility segment
-and is not claimed for `0.21.0..=0.21.14`.
+Contract 029 keeps `qwen-code.headless.v0.21.0-catalogue-filter` for the
+established headless stream behavior through `0.21.14`. It binds the exact
+`qwen-code.headless.v0.21.15-reasoning-control` behavior revision at `0.21.15`
+for the reasoning operation. The claim and plan do not retroactively map
+reasoning control across `0.21.0..=0.21.14`.
 
 ## Validation
 
@@ -141,4 +141,5 @@ and is not claimed for `0.21.0..=0.21.14`.
 - exact-package source and npm identity rechecked from disposable extraction
 - no install, login, credential, account, catalogue, or provider prompt
 - shared architecture, route/feature matrices, programme/front doors, indexes,
-  changelog, currentness claim, and `packages.txt` were not edited
+  changelog, and currentness claim were not edited; the shared package list
+  contains only the operator-authorized Qwen registration

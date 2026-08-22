@@ -1,16 +1,19 @@
 use crate::validation::failure;
 use serde_json::{Value, json};
-use std::collections::VecDeque;
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{
     BoxFuture, DeadlineObservation, OperationContent, ProcessHandle, ProcessInputChunk,
-    ProcessOutputChunk, ProcessOutputStream, RuntimeFailure,
+    ProcessOutputChunk, RuntimeFailure,
 };
+
+mod reader;
+use reader::ControlReader;
 
 const MAXIMUM_OUTPUT_BYTES: usize = 2 * 1024 * 1024;
 const MAXIMUM_LINE_BYTES: usize = 1024 * 1024;
+const MAXIMUM_CONTROL_RECORDS: usize = 4096;
 const MAXIMUM_SESSION_ID_BYTES: usize = 256;
 
 pub(crate) struct ReasoningSetup {
@@ -91,6 +94,17 @@ pub(crate) async fn establish_reasoning(
     })
 }
 
+pub(crate) async fn establish_reasoning_and_write_user(
+    process: &dyn ProcessHandle,
+    reasoning: &ReasoningMode,
+    deadline: BoxFuture<'static, DeadlineObservation>,
+    content: &OperationContent,
+) -> Result<Vec<Value>, RuntimeFailure> {
+    let setup = establish_reasoning(process, reasoning, deadline).await?;
+    write_user_message(process, &setup.session_id, content).await?;
+    Ok(setup.buffered_values)
+}
+
 pub(crate) async fn write_user_message(
     process: &dyn ProcessHandle,
     session_id: &str,
@@ -117,110 +131,6 @@ async fn write_control(process: &dyn ProcessHandle, value: Value) -> Result<(), 
     let mut bytes = serde_json::to_vec(&value).map_err(|_| control_protocol_failure())?;
     bytes.push(b'\n');
     process.write_stdin(ProcessInputChunk::new(bytes)).await
-}
-
-#[derive(Default)]
-struct ControlReader {
-    bytes: Vec<u8>,
-    lines: VecDeque<Value>,
-    buffered_values: Vec<Value>,
-}
-
-impl ControlReader {
-    async fn response(
-        &mut self,
-        process: &dyn ProcessHandle,
-        request_id: &str,
-        payload_subtype: &str,
-        deadline: &mut BoxFuture<'static, DeadlineObservation>,
-    ) -> Result<Value, RuntimeFailure> {
-        loop {
-            while let Some(value) = self.lines.pop_front() {
-                if value.get("type").and_then(Value::as_str) != Some("control_response") {
-                    self.buffered_values.push(value);
-                    continue;
-                }
-                let response = value.get("response").ok_or_else(control_protocol_failure)?;
-                if response.get("request_id").and_then(Value::as_str) != Some(request_id) {
-                    continue;
-                }
-                if response.get("subtype").and_then(Value::as_str) != Some("success") {
-                    return Err(failure(
-                        "swallowtail.qwen.headless.reasoning_control_rejected",
-                        "Qwen Code rejected an exact reasoning control request",
-                    ));
-                }
-                let payload = response
-                    .get("response")
-                    .ok_or_else(control_protocol_failure)?;
-                if payload.get("subtype").and_then(Value::as_str) != Some(payload_subtype) {
-                    return Err(control_protocol_failure());
-                }
-                return Ok(payload.clone());
-            }
-            let output = next_output(process, deadline).await?;
-            let Some(output) = output else {
-                self.finish_pending()?;
-                if let Some(value) = self.lines.pop_front() {
-                    self.buffered_values.push(value);
-                    continue;
-                }
-                return Err(failure(
-                    "swallowtail.qwen.headless.reasoning_control_response_missing",
-                    "Qwen Code ended before confirming reasoning control",
-                ));
-            };
-            if output.stream() == ProcessOutputStream::Stdout {
-                self.push(output.bytes())?;
-            }
-        }
-    }
-
-    fn push(&mut self, bytes: &[u8]) -> Result<(), RuntimeFailure> {
-        if self.bytes.len().saturating_add(bytes.len()) > MAXIMUM_OUTPUT_BYTES {
-            return Err(control_protocol_failure());
-        }
-        self.bytes.extend_from_slice(bytes);
-        while let Some(index) = self.bytes.iter().position(|byte| *byte == b'\n') {
-            if index > MAXIMUM_LINE_BYTES {
-                return Err(control_protocol_failure());
-            }
-            let mut line = self.bytes.drain(..=index).collect::<Vec<_>>();
-            line.pop();
-            if line.last() == Some(&b'\r') {
-                line.pop();
-            }
-            if line.is_empty() {
-                continue;
-            }
-            self.lines
-                .push_back(serde_json::from_slice(&line).map_err(|_| control_protocol_failure())?);
-        }
-        if self.bytes.len() > MAXIMUM_LINE_BYTES {
-            return Err(control_protocol_failure());
-        }
-        Ok(())
-    }
-
-    fn finish_pending(&mut self) -> Result<(), RuntimeFailure> {
-        if self.bytes.is_empty() {
-            return Ok(());
-        }
-        let line = std::mem::take(&mut self.bytes);
-        self.lines
-            .push_back(serde_json::from_slice(&line).map_err(|_| control_protocol_failure())?);
-        Ok(())
-    }
-
-    fn take_buffered_values(mut self) -> Result<Vec<Value>, RuntimeFailure> {
-        while let Some(value) = self.lines.pop_front() {
-            if value.get("type").and_then(Value::as_str) == Some("control_response") {
-                return Err(control_protocol_failure());
-            }
-            self.buffered_values.push(value);
-        }
-        Ok(self.buffered_values)
-    }
 }
 
 async fn next_output(
@@ -256,5 +166,12 @@ fn control_protocol_failure() -> RuntimeFailure {
     failure(
         "swallowtail.qwen.headless.reasoning_control_invalid",
         "Qwen Code returned an invalid reasoning control response",
+    )
+}
+
+fn unexpected_control_response_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.qwen.headless.reasoning_control_unexpected_response",
+        "Qwen Code returned a control response for an unexpected request",
     )
 }

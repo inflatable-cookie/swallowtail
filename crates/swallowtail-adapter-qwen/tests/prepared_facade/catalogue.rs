@@ -71,7 +71,7 @@ fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
     };
     assert_eq!(
         assessment.behavior_revision().as_str(),
-        "qwen-code.headless.v0.21.0-catalogue-filter"
+        "qwen-code.headless.v0.21.15-reasoning-control"
     );
 
     let profile = prepared
@@ -116,4 +116,3 @@ fn later_stable_qwen_is_visible_and_executable_as_unverified_newer() {
         InstalledExecutableCompatibility::UnverifiedNewer(_)
     ));
 }
-

@@ -223,7 +223,11 @@ fn validate_open(
             "Qwen interactive session bounds did not match the qualified profile",
         ));
     }
-    crate::reasoning::validate_runtime_binding(plan, request.options().reasoning_mode())?;
+    crate::reasoning::validate_runtime_binding(
+        &selection,
+        plan,
+        request.options().reasoning_mode(),
+    )?;
     if request.working_resource().is_none()
         || request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         || request.provider_state_policy()

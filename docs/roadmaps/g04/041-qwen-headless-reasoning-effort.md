@@ -58,9 +58,11 @@ turn, resume, and fresh-replacement paths.
 ## Named Scope
 
 The milestone is restricted to `qwen.headless`, package axis
-`qwen-code.package`, exact qualified point `0.21.15`, and the existing
-`qwen-code.headless.v0.21.0-catalogue-filter` behavior until Research 189
-proves a new private mapping boundary.
+`qwen-code.package`, the existing
+`qwen-code.headless.v0.21.0-catalogue-filter` behavior through `0.21.14`, and
+the exact `qwen-code.headless.v0.21.15-reasoning-control` behavior revision at
+qualified point `0.21.15`. The reasoning revision is a private feature
+boundary; it does not retroactively map `0.21.0..=0.21.14`.
 
 Qwen preparation already selects an exact model route. Research 189 must still
 qualify every model/value combination independently. A documented global
@@ -87,7 +89,8 @@ after card 113.
 - [x] Execute card 114 after card 113 admitted a useful exact subset.
 - [x] bind optional portable reasoning through run/session input, plan,
       evidence, request, driver, and operation-private child configuration
-- [x] preserve the absent path and reject drift before process work
+- [x] preserve the absent path; reject plan/evidence drift before process work
+      and control/ambient drift after child startup but before the user message
 
 ### Batch 41.3 — Lifecycle And Acceptance
 
@@ -106,7 +109,9 @@ after card 113.
 - [x] absent reasoning retains current command and behavior
 - [x] no raw setting, alias, clamp, default substitution, or model inference
       enters the public mapping
-- [x] known failures occur before task or process effects
+- [x] plan/evidence/driver failures occur before process start; control and
+      ambient override failures occur after child startup but before the user
+      message/provider prompt
 - [x] deterministic QA uses no install, login, credential, account, or prompt
 - [x] docs stop at dispatched, accepted, effective, and observed truth actually
       proved by the exact surface

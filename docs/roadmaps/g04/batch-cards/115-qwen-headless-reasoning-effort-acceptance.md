@@ -20,8 +20,10 @@ route-local closeout.
 3. Assert absent reasoning retains current argv/environment and behavior.
 4. Assert structured runs, first turns, resumed later turns, and fresh
    context-losing replacement receive the same prepared value.
-5. Assert unsupported values, model/package drift, ambient override attempts,
-   and plan/evidence/driver mismatches fail before task or process effects.
+5. Assert unsupported values, model/package drift, and plan/evidence/driver
+   mismatches fail before process start; assert ambient override and control
+   substitution failures after child startup but before the user
+   message/provider prompt.
 6. Preserve Qwen stream parsing, session-id resume, model/version validation,
    working-resource, cancellation, terminal, durable-session, and joined
    cleanup proofs.
@@ -49,8 +51,9 @@ Deterministic fixtures cover both admitted models across all five values,
 structured runs, first turns, resumed turns, control substitution/ambient
 override rejection, unsupported package/model/value/provider rows, and
 plan/request mismatch before process start. Fresh replacement retains the
-prepared request and repeats the same child handshake; provider-effective and
-observed reasoning remain unclaimed.
+prepared request and repeats the same child handshake. Control substitution is
+rejected after child startup but before the user message/provider prompt;
+provider-effective and observed reasoning remain unclaimed.
 
 All named route-local and package API gates pass. The operator-authorized
 Qwen registration in `release-baselines/public-api-unreleased/packages.txt`

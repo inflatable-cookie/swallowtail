@@ -59,7 +59,7 @@
   "selected_types_and_catalogue_byte_identical_to_0_21_14": true,
   "selected_config_blob_changed": true,
   "selected_config_delta": "unmapped --session-id occupancy casefold",
-  "selected_mapped_subset_unchanged": true,
+  "selected_mapped_subset_unchanged": false,
   "unused_deltas": [
     "goal_state",
     "initialize.effort_status",

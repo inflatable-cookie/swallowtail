@@ -23,10 +23,14 @@ use swallowtail_runtime::{
     InstalledExecutableTarget, MonotonicInstant, OperationContent, OperationPolicy,
     PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, RuntimeTurnId, ScopeId,
     StructuredRunDriver, StructuredRunRequest, TerminalStatus, TurnRequest, WorkingResourceRef,
+    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
 include!("prepared_facade/runs.rs");
+include!("prepared_facade/reasoning_dispatch.rs");
+include!("prepared_facade/reasoning_rejections.rs");
 include!("prepared_facade/sessions.rs");
+include!("prepared_facade/reasoning_sessions.rs");
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/support.rs");

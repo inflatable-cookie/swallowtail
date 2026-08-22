@@ -81,7 +81,11 @@ pub(crate) fn validate(
     {
         return Err(unsupported("provider network or search"));
     }
-    crate::reasoning::validate_runtime_binding(plan, request.policy().reasoning_mode())?;
+    crate::reasoning::validate_runtime_binding(
+        &selection,
+        plan,
+        request.policy().reasoning_mode(),
+    )?;
     if request.working_resource().is_none() {
         return Err(unsupported("missing working resource"));
     }

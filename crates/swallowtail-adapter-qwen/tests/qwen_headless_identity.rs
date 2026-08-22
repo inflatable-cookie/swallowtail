@@ -102,7 +102,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     ));
     for candidate in [
         "0.21.3", "0.21.4", "0.21.5", "0.21.6", "0.21.7", "0.21.8", "0.21.9", "0.21.10", "0.21.11",
-        "0.21.12", "0.21.13", "0.21.14", "0.21.15",
+        "0.21.12", "0.21.13", "0.21.14",
     ] {
         assert!(matches!(
             claim.assess(&version(candidate)),
@@ -112,6 +112,13 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
                         == "qwen-code.headless.v0.21.0-catalogue-filter"
         ));
     }
+    assert!(matches!(
+        claim.assess(&version("0.21.15")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "qwen-code.headless.v0.21.15-reasoning-control"
+    ));
     assert!(!claim.permits(&version("0.20.2")));
     assert!(matches!(
         claim.assess(&version("0.21.16")),
@@ -201,6 +208,8 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
         claim.assess(&version("0.21.15")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "qwen-code.headless.v0.21.15-reasoning-control"
     ));
     assert!(matches!(
         claim.assess(&version("0.21.16")),
@@ -240,7 +249,7 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
         true
     );
     assert_eq!(identity["selected_config_blob_changed_from_0_21_14"], true);
-    assert_eq!(identity["selected_mapped_subset_unchanged"], true);
+    assert_eq!(identity["selected_mapped_subset_unchanged"], false);
     assert_eq!(identity["unpublished_stable_0_20_2"], true);
     assert_eq!(identity["unpublished_0_21_16"], true);
     assert_eq!(identity["ignored_preview"], "0.21.14-preview.0");
@@ -253,7 +262,12 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
     );
     assert_eq!(decision["raise_latest_qualified_to"], "0.21.15");
     assert_eq!(decision["keep_baseline"], "0.19.11");
-    assert_eq!(decision["new_milestone"], false);
+    assert_eq!(decision["new_milestone"], true);
+    assert_eq!(decision["reasoning_control_exact_version"], "0.21.15");
+    assert_eq!(
+        decision["reasoning_behavior_revision"],
+        "qwen-code.headless.v0.21.15-reasoning-control"
+    );
     assert_eq!(decision["map_session_id_casefold"], false);
     assert_eq!(decision["map_review_resume"], false);
     assert_eq!(decision["map_web_shell_goal_v3"], false);
@@ -261,14 +275,14 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
     assert_eq!(decision["host_install_changed"], false);
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
-        "0.21.14"
+        "0.21.15"
     );
 
     assert_eq!(
         protocol["selected_types_and_catalogue_byte_identical_to_0_21_14"],
         true
     );
-    assert_eq!(protocol["selected_mapped_subset_unchanged"], true);
+    assert_eq!(protocol["selected_mapped_subset_unchanged"], false);
     assert_eq!(protocol["decoder_corpus"], "qwen-code-v0.19.11");
     let unused = protocol["unused_deltas"]
         .as_array()
@@ -292,13 +306,15 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
         claim.assess(&version("0.21.14")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "qwen-code.headless.v0.21.0-catalogue-filter"
     ));
     assert!(matches!(
         claim.assess(&version("0.21.15")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
                 && matched.behavior_revision().as_str()
-                    == "qwen-code.headless.v0.21.0-catalogue-filter"
+                    == "qwen-code.headless.v0.21.15-reasoning-control"
     ));
     assert!(matches!(
         claim.assess(&version("0.21.16")),

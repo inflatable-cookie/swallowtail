@@ -1,3 +1,4 @@
+use crate::selection::{QwenPlanSelection, REASONING_CONTROL_BEHAVIOR};
 use crate::validation::failure;
 use swallowtail_core::{
     Capability, CapabilityConstraint, Diagnostic, InterfaceVersion, ModelId, PreflightPlan,
@@ -29,10 +30,14 @@ pub(crate) fn validate_preparation(
 }
 
 pub(crate) fn validate_runtime_binding(
+    selection: &QwenPlanSelection,
     plan: &PreflightPlan,
     reasoning: Option<&ReasoningMode>,
 ) -> Result<(), RuntimeFailure> {
-    if binding_matches(plan, reasoning) {
+    if binding_matches(plan, reasoning)
+        && (reasoning.is_none()
+            || selection.behavior_revision().as_str() == REASONING_CONTROL_BEHAVIOR)
+    {
         Ok(())
     } else {
         Err(failure(

@@ -1,13 +1,13 @@
 use super::QwenSessionHandle;
 use super::lifecycle::{ActiveTurn, join_turn, reap_finished};
+mod input;
+mod validation;
 use crate::command::{
     arguments, reasoning_arguments, resumed_arguments, resumed_reasoning_arguments,
 };
-use crate::control::{establish_reasoning, write_user_message};
-use crate::driver::write_prompt;
 use crate::handle::QwenProcessCancellation;
 use crate::pump::{QwenPumpContext, cleanup_failed_start, pump_with_session};
-use crate::validation::{failure, unsupported};
+use crate::validation::failure;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, TurnRef};
@@ -17,6 +17,8 @@ use swallowtail_runtime::{
     RuntimeFailure, RuntimeTurnId, ScopeId, TerminalOutcome, TerminalStatus, TurnHandle,
     TurnRequest, runtime_event_channel, terminal_outcome_channel,
 };
+
+use validation::validate_turn;
 
 const EVENT_CAPACITY: usize = 4098;
 
@@ -94,18 +96,9 @@ impl QwenSessionHandle {
                 return Err(error);
             }
         };
-        let buffered_values = if let Some(reasoning) = self.reasoning.as_ref() {
-            let setup = match establish_reasoning(
-                process.as_ref(),
-                reasoning,
-                self.services
-                    .time()
-                    .expect("validated Qwen time")
-                    .wait_until(deadline),
-            )
-            .await
-            {
-                Ok(setup) => setup,
+        let buffered_values =
+            match input::write_turn_input(self, process.as_ref(), &request, deadline).await {
+                Ok(buffered_values) => buffered_values,
                 Err(error) => {
                     self.state
                         .lock()
@@ -115,28 +108,6 @@ impl QwenSessionHandle {
                     return Err(error);
                 }
             };
-            if let Err(error) =
-                write_user_message(process.as_ref(), &setup.session_id, request.content()).await
-            {
-                self.state
-                    .lock()
-                    .expect("Qwen session lock poisoned")
-                    .usable = false;
-                cleanup_failed_start(process.as_ref()).await;
-                return Err(error);
-            }
-            setup.buffered_values
-        } else {
-            if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
-                self.state
-                    .lock()
-                    .expect("Qwen session lock poisoned")
-                    .usable = false;
-                cleanup_failed_start(process.as_ref()).await;
-                return Err(error);
-            }
-            Vec::new()
-        };
         let deadline = self
             .services
             .time()
@@ -263,34 +234,4 @@ impl TurnHandle for QwenTurnHandle {
             join_turn(&self.active, &self.turn_id, &self.state).await
         })
     }
-}
-
-fn validate_turn(session: &QwenSessionHandle, request: &TurnRequest) -> Result<(), RuntimeFailure> {
-    let state = session.state.lock().expect("Qwen session lock poisoned");
-    if !state.usable {
-        return Err(failure(
-            "swallowtail.qwen.headless.session_unusable",
-            "Qwen interactive session can no longer accept turns",
-        ));
-    }
-    if state.completed_turns >= 24 {
-        return Err(failure(
-            "swallowtail.qwen.headless.turn_limit",
-            "Qwen interactive session reached its bounded turn limit",
-        ));
-    }
-    drop(state);
-    if request.attachments().len() != 0 || request.structured_output().is_some() {
-        return Err(unsupported("turn attachments or structured output"));
-    }
-    let deadline = request
-        .deadline()
-        .ok_or_else(|| unsupported("a turn without an explicit host deadline"))?;
-    if session.services.time().expect("validated Qwen time").now() >= deadline.instant() {
-        return Err(failure(
-            "swallowtail.qwen.headless.deadline_elapsed",
-            "Qwen turn deadline elapsed before provider work",
-        ));
-    }
-    Ok(())
 }

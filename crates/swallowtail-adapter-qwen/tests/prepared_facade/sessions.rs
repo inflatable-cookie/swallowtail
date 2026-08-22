@@ -36,7 +36,7 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
                 RuntimeTurnId::new("lost-qwen-turn").expect("valid turn")
             )
             .method(),
-        swallowtail_runtime::WorkingStateRestorationMethod::FreshSessionReplacement
+        WorkingStateRestorationMethod::FreshSessionReplacement
     );
 
     let (process, states) = ScriptedProcessService::completed(&[
@@ -91,125 +91,6 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
 }
 
 #[test]
-fn qwen_reasoning_session_repeats_exact_setup_across_resume_turns() {
-    let host_id = ExecutionHostId::new("fixture.qwen.reasoning.session").expect("valid host");
-    let (discovery_process, _) = FakeProcessService::completed("0.21.15\n");
-    let (discovery_services, _) = host_services_for(
-        host_id.clone(),
-        discovery_process,
-        Arc::new(PendingTimeService),
-    );
-    let mode = ReasoningMode::new("high").expect("mode is valid");
-    let prepared = block_on(prepare_qwen_headless(
-        preparation_input(host_id.clone()),
-        probe(),
-        discovery_services,
-    ))
-    .expect("Qwen prepares");
-    let profile = prepared
-        .prepare_session(
-            QwenSessionProfileInput::new(
-                RequestId::new("qwen-reasoning-session").expect("valid request"),
-                QwenModelSelection::new(
-                    ModelRouteId::new("qwen.reasoning.session.route").expect("valid route"),
-                    ModelRouteRevision::new("1").expect("valid route revision"),
-                    ProviderId::new("alibaba-modelstudio").expect("valid provider"),
-                    ModelId::new("qwen3.8-max").expect("valid model"),
-                ),
-                WorkingResourceRef::new("qwen.reasoning.session.workspace")
-                    .expect("valid resource"),
-            )
-            .with_reasoning_mode(mode.clone()),
-        )
-        .expect("qualified reasoning session prepares");
-    assert_eq!(profile.evidence().reasoning_mode(), Some(&mode));
-    assert_eq!(profile.request().options().reasoning_mode(), Some(&mode));
-    let control = |session_id: &str, payload: &str| {
-        let initialize = serde_json::json!({
-            "type": "control_response",
-            "response": {
-                "subtype": "success",
-                "request_id": "swallowtail-initialize",
-                "response": {
-                    "subtype": "initialize",
-                    "session_id": session_id,
-                    "capabilities": {"can_set_effort": true}
-                }
-            }
-        });
-        let effort = serde_json::json!({
-            "type": "control_response",
-            "response": {
-                "subtype": "success",
-                "request_id": "swallowtail-reasoning",
-                "response": {
-                    "subtype": "set_effort",
-                    "effort": "high",
-                    "applied": true,
-                    "override": null
-                }
-            }
-        });
-        format!("{}\n{}\n{}", initialize, effort, payload)
-    };
-    let outputs = [
-        control(
-            "fixture-control-session-1",
-            include_str!("../fixtures/qwen-code-0.21.15/reasoning-success.jsonl"),
-        ),
-        control(
-            "fixture-control-session-2",
-            include_str!("../fixtures/qwen-code-0.21.15/reasoning-continued.jsonl"),
-        ),
-    ];
-    let output_refs = outputs.iter().map(String::as_str).collect::<Vec<_>>();
-    let (process, states) = ScriptedProcessService::completed(&output_refs);
-    let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));
-    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
-    for (index, content) in ["first reasoning prompt", "second reasoning prompt"]
-        .into_iter()
-        .enumerate()
-    {
-        let mut turn = block_on(
-            session.start_turn(
-                TurnRequest::new(
-                    RuntimeTurnId::new(format!("qwen-reasoning-turn-{}", index + 1))
-                        .expect("valid turn"),
-                    OperationContent::new(content).expect("valid content"),
-                )
-                .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
-                services.clone(),
-            ),
-        )
-        .expect("turn starts");
-        let terminal = block_on(
-            turn.take_terminal_outcome()
-                .expect("terminal outcome is available"),
-        );
-        assert_eq!(terminal.status(), &TerminalStatus::Completed);
-        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    }
-    for state in &states {
-        let arguments = state.request().arguments;
-        assert!(arguments.windows(2).any(|pair| pair == ["--input-format", "stream-json"]));
-        assert!(String::from_utf8(state.stdin())
-            .expect("control stdin is UTF-8")
-            .lines()
-            .any(|line| line.contains("\"subtype\":\"set_effort\"")));
-    }
-    assert!(!states[0].request().arguments.iter().any(|arg| arg == "--resume"));
-    assert_eq!(
-        states[1]
-            .request()
-            .arguments
-            .windows(2)
-            .find(|pair| pair[0] == "--resume"),
-        Some(["--resume".to_owned(), "reasoning-session-1".to_owned()].as_slice())
-    );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-}
-
-#[test]
 fn qwen_session_mismatch_fails_closed_without_starting_another_child() {
     let host_id = ExecutionHostId::new("fixture.qwen.mismatch").expect("valid host");
     let (discovery_process, _) = FakeProcessService::completed("0.19.11\n");
@@ -256,7 +137,8 @@ fn qwen_session_mismatch_fails_closed_without_starting_another_child() {
             session.start_turn(
                 TurnRequest::new(
                     RuntimeTurnId::new(format!("qwen-mismatch-{}", index + 1)).expect("valid turn"),
-                    OperationContent::new(format!("prompt {}", index + 1)).expect("valid content"),
+                    OperationContent::new(format!("prompt {}", index + 1))
+                        .expect("valid content"),
                 )
                 .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
                 services.clone(),

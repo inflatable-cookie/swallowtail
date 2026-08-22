@@ -101,29 +101,31 @@ fn one_request_structured_run_has_no_tools_or_private_continuation() {
 }
 
 #[test]
-fn structured_run_dispatches_exact_maximum_reasoning_effort() {
-    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
-    let request = StructuredRunRequest::new(
-        RequestId::new("structured-max").expect("request id"),
-        OperationContent::new("Answer once").expect("content"),
-        OperationPolicy::offline()
-            .with_reasoning_mode(ReasoningMode::new("max").expect("reasoning")),
-    )
-    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
-    let mut run = block_on(DeepSeekDirectDriver::new().start_run(
-        fixture.plan(DriverRole::StructuredRun),
-        request,
-        fixture.services(),
-    ))
-    .expect("run starts");
-    let (_, outcome) = complete_run(&mut run);
-    assert_eq!(outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+fn structured_run_dispatches_each_exact_reasoning_effort() {
+    for mode in ["low", "high", "max"] {
+        let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
+        let request = StructuredRunRequest::new(
+            RequestId::new(format!("structured-{mode}")).expect("request id"),
+            OperationContent::new("Answer once").expect("content"),
+            OperationPolicy::offline()
+                .with_reasoning_mode(ReasoningMode::new(mode).expect("reasoning")),
+        )
+        .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+        let mut run = block_on(DeepSeekDirectDriver::new().start_run(
+            fixture.plan(DriverRole::StructuredRun),
+            request,
+            fixture.services(),
+        ))
+        .expect("run starts");
+        let (_, outcome) = complete_run(&mut run);
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
 
-    let body: serde_json::Value =
-        serde_json::from_slice(&fixture.server.requests()[0].body).expect("request JSON");
-    assert_eq!(body["reasoning_effort"], "max");
-    assert_eq!(body["thinking"]["type"], "enabled");
+        let body: serde_json::Value =
+            serde_json::from_slice(&fixture.server.requests()[0].body).expect("request JSON");
+        assert_eq!(body["reasoning_effort"], mode);
+        assert_eq!(body["thinking"]["type"], "enabled");
+    }
 }
 
 #[test]
@@ -339,41 +341,44 @@ fn exact_catalogue_tool_exchange_and_private_replay_complete_three_attempts() {
 }
 
 #[test]
-fn maximum_reasoning_effort_stays_fixed_across_continuation_attempts() {
-    let fixture = Fixture::new();
-    let mut session = open_with_reasoning(&fixture, "maximum-session", "max");
+fn each_reasoning_effort_stays_fixed_across_continuation_attempts() {
+    for mode in ["low", "high", "max"] {
+        let fixture = Fixture::new();
+        let mut session = open_with_reasoning(&fixture, &format!("{mode}-session"), mode);
 
-    let mut first = block_on(session.start_direct_continuation_turn(
-        turn_request("maximum-turn-one", FIRST_PROMPT, 5_000),
-        fixture.services(),
-    ))
-    .expect("first turn starts");
-    submit_fixture_result(&mut first);
-    let (_, first_outcome) = complete(&mut first);
-    assert_eq!(first_outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(block_on(first.close()), CleanupOutcome::Clean);
+        let mut first = block_on(session.start_direct_continuation_turn(
+            turn_request(&format!("{mode}-turn-one"), FIRST_PROMPT, 5_000),
+            fixture.services(),
+        ))
+        .expect("first turn starts");
+        submit_fixture_result(&mut first);
+        let (_, first_outcome) = complete(&mut first);
+        assert_eq!(first_outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(first.close()), CleanupOutcome::Clean);
 
-    let mut second = block_on(session.start_direct_continuation_turn(
-        turn_request("maximum-turn-two", SECOND_PROMPT, 5_000),
-        fixture.services(),
-    ))
-    .expect("second turn starts");
-    let (_, second_outcome) = complete(&mut second);
-    assert_eq!(second_outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(block_on(second.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        let mut second = block_on(session.start_direct_continuation_turn(
+            turn_request(&format!("{mode}-turn-two"), SECOND_PROMPT, 5_000),
+            fixture.services(),
+        ))
+        .expect("second turn starts from private replay");
+        let (_, second_outcome) = complete(&mut second);
+        assert_eq!(second_outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(second.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 
-    let requests = fixture
-        .server
-        .requests()
-        .into_iter()
-        .filter(|request| request.target == "/chat/completions")
-        .collect::<Vec<_>>();
-    assert_eq!(requests.len(), 3);
-    for request in requests {
-        let body: serde_json::Value = serde_json::from_slice(&request.body).expect("request JSON");
-        assert_eq!(body["reasoning_effort"], "max");
-        assert_eq!(body["thinking"]["type"], "enabled");
+        let requests = fixture
+            .server
+            .requests()
+            .into_iter()
+            .filter(|request| request.target == "/chat/completions")
+            .collect::<Vec<_>>();
+        assert_eq!(requests.len(), 3);
+        for request in requests {
+            let body: serde_json::Value =
+                serde_json::from_slice(&request.body).expect("request JSON");
+            assert_eq!(body["reasoning_effort"], mode);
+            assert_eq!(body["thinking"]["type"], "enabled");
+        }
     }
 }
 

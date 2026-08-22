@@ -223,6 +223,45 @@ fn exact_reasoning_selection_repeats_in_prepared_plan_request_and_evidence() {
 }
 
 #[test]
+fn unsupported_reasoning_modes_fail_during_preparation_without_effects() {
+    let fixture = Fixture::new();
+    let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+
+    for mode in ["medium", "xhigh", "provider-high", "disabled", "unknown"] {
+        let failure = prepared
+            .prepare_run(DeepSeekRunProfileInput::new(
+                RequestId::new(format!("reject-{mode}-run")).expect("request id"),
+                model(DEEPSEEK_MODEL_ID),
+                OperationContent::new("must reject").expect("content"),
+                ReasoningMode::new(mode).expect("reasoning"),
+                std::num::NonZeroU64::new(512).expect("maximum"),
+                ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
+            ))
+            .expect_err("unsupported run reasoning rejects");
+        assert_eq!(
+            failure.stage(),
+            swallowtail_runtime::PreparationStage::Preflight
+        );
+
+        let failure = prepared
+            .prepare_session(session_input_with_reasoning(
+                &format!("reject-{mode}-session"),
+                DEEPSEEK_MODEL_ID,
+                mode,
+            ))
+            .expect_err("unsupported session reasoning rejects");
+        assert_eq!(
+            failure.stage(),
+            swallowtail_runtime::PreparationStage::Preflight
+        );
+    }
+
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
 fn one_request_structured_run_prepares_on_both_host_topologies() {
     for topology in [
         ExecutionTopologyFixture::local(),

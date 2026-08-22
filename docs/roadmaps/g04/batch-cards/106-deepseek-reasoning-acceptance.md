@@ -1,6 +1,6 @@
 # 106 DeepSeek Reasoning Acceptance
 
-Status: ready after 105
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.038 DeepSeek Continuation Reasoning Controls](../038-deepseek-continuation-reasoning-controls.md)
@@ -64,6 +64,28 @@ git diff --check
 ```
 
 Auto-continuation: No.
+
+## Closeout
+
+Card 106 closes the route-local DeepSeek reasoning-control lane. The existing
+fixture tests prove exact `low`, `high`, and `max` request encoding, fixed
+`thinking.type=enabled`, exact prepared plan/request/evidence agreement,
+high/enabled compatibility, private replay, fresh restoration, and
+pre-network rejection of `medium`, `xhigh`, provider aliases, alternate
+models, and unaccepted cache posture. No effective reasoning or provider
+acceptance claim is made.
+
+The prepared guide and milestone are complete. The exact required changes to
+shared architecture, route/feature matrices, changelog, programme, front
+doors, indexes, and `packages.txt` are recorded in the reserved route-local
+closeout log for orchestrator application after review and merge. The worker
+branch does not edit those surfaces.
+
+The named validation gates passed before the review PR: focused package
+validation, affected-package verification, examples, route QA, Northstar QA,
+all required research/log/roadmap/batch-card index checks, next-action QA,
+package API verification, and `git diff --check`. The DeepSeek package test
+suite also passed with 42 tests under Effigy validation.
 
 ## Stop Conditions
 

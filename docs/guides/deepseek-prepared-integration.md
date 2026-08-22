@@ -68,10 +68,33 @@ set, and `DeepSeekDirectDriver` escape hatch.
 selecting a model. Catalogue presence proves neither balance, entitlement,
 capacity, cache state, billing, nor invocation success.
 
+## Generation Controls
+
+The exact V4 Pro route accepts portable `ReasoningMode` values `low`, `high`,
+and `max`. Preparation copies the selected value into the immutable plan,
+prepared evidence, configured driver, and request policy. Every request sends
+the same value as `reasoning_effort`; the adapter never clamps, aliases, or
+reports an effective reasoning depth. `medium`, `xhigh`, provider aliases, and
+unknown values fail before endpoint or credential work.
+
+Every admitted profile sends `thinking: {"type":"enabled"}`. DeepSeek
+documents `disabled` upstream, but this route has no qualified typed control
+for that independent field. It remains withheld for structured runs, and
+continuation cannot admit it because the existing tool-bearing proof requires
+private `reasoning_content` replay.
+
+The route distinguishes dispatched request fields from provider acceptance,
+effective reasoning depth, and observed private continuation. Deterministic
+tests prove only exact local dispatch and selection agreement. Provider
+acceptance and effective depth remain unclaimed. `reasoning_content` is
+adapter-held bounded state used only for same-route continuation; it is never
+consumer output or durable session material.
+
 ## One-Request Structured Run
 
-`prepare_run` requires the exact `deepseek-v4-pro` route, `high` reasoning,
-text content, positive output-token limit, optional host deadline, and explicit
+`prepare_run` requires the exact `deepseek-v4-pro` route, `low`, `high`, or
+`max` reasoning, text content, positive output-token limit, optional host
+deadline, and explicit
 `ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority`.
 `start_run` sends one tool-free streamed request.
 
@@ -83,9 +106,13 @@ error authorizes retry.
 
 ## Direct Tool Continuation
 
-`prepare_session` requires the exact model, `high` reasoning, one to eight
-consumer-owned JSON Schema tools, and the same unmanaged-cache acceptance.
-The cache policy grants no cache read, deletion, retention, or retry authority.
+`prepare_session` requires the exact model, `low`, `high`, or `max` reasoning,
+one to eight consumer-owned JSON Schema tools, and the same unmanaged-cache
+acceptance. The cache policy grants no cache read, deletion, retention, or
+retry authority.
+
+The prepared selection stays fixed on the initial request, every authorized
+tool-result continuation, each later user turn, and fresh local restoration.
 
 Call `open_session`, then `start_direct_continuation_turn`. When DeepSeek emits
 a tool call, the turn pauses. Swallowtail never selects or executes the tool;

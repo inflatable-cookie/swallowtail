@@ -1,12 +1,12 @@
 # g04.038 DeepSeek Continuation Reasoning Controls
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Depends on: per-route feature completion programme
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 024, 029, 030, 037, 040, 041, 052
-Research: 023, 067, 169; 186 to be produced by card 104
+Research: 023, 067, 169, 186 promoted by card 104
 
 ## Problem
 
@@ -29,20 +29,20 @@ continuation contract or mapping unsupported labels to `high`.
 
 ## Goals
 
-- [ ] freeze current official `reasoning_effort`, `thinking`, model, tool, and
+- [x] freeze current official `reasoning_effort`, `thinking`, model, tool, and
       continuation evidence
-- [ ] classify `low`, `high`, and `max` independently from documented aliases
+- [x] classify `low`, `high`, and `max` independently from documented aliases
       or provider mappings
-- [ ] classify thinking disable independently for structured runs and
+- [x] classify thinking disable independently for structured runs and
       continuation sessions
-- [ ] bind only exact deliver-now portable reasoning modes through input, plan,
+- [x] bind only exact deliver-now portable reasoning modes through input, plan,
       evidence, driver, and every request attempt
-- [ ] preserve private `reasoning_content` replay and fixed-session selection
+- [x] preserve private `reasoning_content` replay and fixed-session selection
       wherever continuation remains admitted
-- [ ] reject unqualified modes, aliases, field combinations, and mismatches
+- [x] reject unqualified modes, aliases, field combinations, and mismatches
       before network work
-- [ ] publish qualified dispatch without claiming effective reasoning depth
-- [ ] leave the exact shared architecture, matrix, changelog, and programme
+- [x] publish qualified dispatch without claiming effective reasoning depth
+- [x] leave the exact shared architecture, matrix, changelog, and programme
       delta for orchestrator closeout after merge
 
 ## Non-Goals
@@ -80,37 +80,37 @@ becomes consumer output.
 
 ### Batch 38.1 — Exact Reasoning Evidence
 
-- [ ] Execute card 104.
-- [ ] freeze current official field, value, model, and continuation evidence
-- [ ] promote Research 186 with per-profile and per-control dispositions
+- [x] Execute card 104.
+- [x] freeze current official field, value, model, and continuation evidence
+- [x] promote Research 186 with per-profile and per-control dispositions
 
 ### Batch 38.2 — Exact Binding
 
-- [ ] Execute card 105 after card 104.
-- [ ] bind only deliver-now reasoning controls through prepared operations
-- [ ] keep one fixed selection across every continuation request
-- [ ] preserve current high/enabled behavior when no new selection is supplied
+- [x] Execute card 105 after card 104.
+- [x] bind only deliver-now reasoning controls through prepared operations
+- [x] keep one fixed selection across every continuation request
+- [x] preserve current high/enabled behavior when no new selection is supplied
 
 ### Batch 38.3 — Dispatch And Acceptance
 
-- [ ] Execute card 106 after card 105.
-- [ ] prove exact request bodies, replay invariants, and failure boundaries
-- [ ] update the route guide and report the shared architecture, matrix,
+- [x] Execute card 106 after card 105.
+- [x] prove exact request bodies, replay invariants, and failure boundaries
+- [x] update the route guide and report the shared architecture, matrix,
       programme, and changelog delta for orchestrator closeout after merge
 
 ## Acceptance Criteria
 
-- [ ] only Research 186 model/value/profile combinations prepare
-- [ ] no alias or unsupported mode is silently mapped to `high`
-- [ ] request, plan, evidence, driver, and every wire attempt agree exactly
-- [ ] continuation-private reasoning stays private, bounded, and invalidated on
+- [x] only Research 186 model/value/profile combinations prepare
+- [x] no alias or unsupported mode is silently mapped to `high`
+- [x] request, plan, evidence, driver, and every wire attempt agree exactly
+- [x] continuation-private reasoning stays private, bounded, and invalidated on
       the existing lifecycle
-- [ ] current fixed high/enabled request behavior remains unchanged when the
+- [x] current fixed high/enabled request behavior remains unchanged when the
       additive control path is absent
-- [ ] deterministic QA makes no provider call or account inspection
-- [ ] docs separate dispatch, acceptance, effective reasoning, and observed
+- [x] deterministic QA makes no provider call or account inspection
+- [x] docs separate dispatch, acceptance, effective reasoning, and observed
       private continuation
-- [ ] the worker branch touches no shared parallel-closeout surface
+- [x] the worker branch touches no shared parallel-closeout surface
 
 ## Lane Runway
 
@@ -133,9 +133,24 @@ becomes consumer output.
 
 ## Batch Cards
 
-- [104-deepseek-reasoning-evidence.md](batch-cards/104-deepseek-reasoning-evidence.md) — ready
-- [105-deepseek-reasoning-binding.md](batch-cards/105-deepseek-reasoning-binding.md) — ready after 104
-- [106-deepseek-reasoning-acceptance.md](batch-cards/106-deepseek-reasoning-acceptance.md) — ready after 105
+- [104-deepseek-reasoning-evidence.md](batch-cards/104-deepseek-reasoning-evidence.md) — complete
+- [105-deepseek-reasoning-binding.md](batch-cards/105-deepseek-reasoning-binding.md) — complete
+- [106-deepseek-reasoning-acceptance.md](batch-cards/106-deepseek-reasoning-acceptance.md) — complete
+
+## Closeout
+
+Research 186 promoted exact `low`, `high`, and `max` effort dispatch for
+`deepseek-v4-pro` on the existing `deepseek-openai-chat-2026-07-22` facade.
+`thinking.type=enabled` remains fixed. Medium, xhigh, provider aliases, V4
+Flash, and thinking disable remain rejected or withheld. The selected effort
+is fixed across structured runs, initial and tool-result continuation attempts,
+later turns, and fresh local restoration. Private `reasoning_content` remains
+bounded adapter state and is never disclosed.
+
+Cards 104-106 are complete. The route guide now separates dispatched fields,
+provider acceptance, effective reasoning, and private replay. The required
+shared-surface delta is recorded in the route-local closeout log; those shared
+files remain untouched on this branch.
 
 ## References
 

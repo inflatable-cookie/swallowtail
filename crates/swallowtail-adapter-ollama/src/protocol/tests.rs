@@ -129,8 +129,8 @@ fn native_requests_contain_only_the_selected_text_subset() {
         Request::show("fixture-model:8b").unwrap().body.unwrap(),
         fixture_text!("show-request.json"),
     );
-    let chat = Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None)
-        .expect("chat encodes");
+    let chat =
+        Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None).expect("chat encodes");
     assert_eq!(chat.path, "/api/chat");
     assert_json_eq(chat.body.unwrap(), fixture_text!("chat-request.json"));
     assert!(Request::chat("fixture-model:8b", "Fixture prompt", 0, None, None).is_err());

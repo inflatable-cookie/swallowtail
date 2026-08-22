@@ -50,7 +50,7 @@ pub struct swallowtail_adapter_ollama::OllamaContextWindow(_)
 impl swallowtail_adapter_ollama::OllamaContextWindow
 pub const fn swallowtail_adapter_ollama::OllamaContextWindow::as_u32(self) -> u32
 pub fn swallowtail_adapter_ollama::OllamaContextWindow::from_u64(u64) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
-pub const fn swallowtail_adapter_ollama::OllamaContextWindow::new(core::num::nonzero::NonZeroU32) -> Self
+pub fn swallowtail_adapter_ollama::OllamaContextWindow::new(core::num::nonzero::NonZeroU32) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub struct swallowtail_adapter_ollama::OllamaInferenceAttemptInput
 impl swallowtail_adapter_ollama::OllamaInferenceAttemptInput
 pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self

@@ -60,7 +60,7 @@ families do not interrupt this programme by default.
   is ready. Cards 104-106 separate effort from thinking mode and preserve
   private continuation through only Research 186 deliver-now mappings.
 - The three route families may execute concurrently. Each lane remains serial;
-  integrate Ollama, then Anthropic, then DeepSeek. Compile xAI after this wave.
+  integrate Anthropic, then DeepSeek. Compile xAI after this wave.
 
 ## Parallel Execution Boundary
 
@@ -71,7 +71,7 @@ must not edit shared architecture, route/feature matrices, changelog, programme,
 roadmap front doors, indexes, or `packages.txt` while Ollama is in flight.
 
 The orchestrator reconciles those shared surfaces after review and merge in the
-fixed order Ollama, Anthropic, DeepSeek. A worker reports the required shared
+fixed order Anthropic, then DeepSeek. A worker reports the required shared
 delta in its closeout record and PR body; it does not apply that delta on its
 parallel branch.
 

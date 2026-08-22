@@ -21,9 +21,8 @@ pub struct OllamaContextWindow(NonZeroU32);
 
 impl OllamaContextWindow {
     /// Creates a context-window selection from one admitted `u32`.
-    #[must_use]
-    pub const fn new(value: NonZeroU32) -> Self {
-        Self(value)
+    pub fn new(value: NonZeroU32) -> Result<Self, RuntimeFailure> {
+        Self::from_u64(u64::from(value.get()))
     }
 
     /// Returns the exact positive integer encoded on the native wire.
@@ -51,24 +50,9 @@ impl OllamaContextWindow {
     }
 }
 
-pub(crate) fn validate_context_window_agreement(
-    driver: Option<OllamaContextWindow>,
-    evidence: Option<OllamaContextWindow>,
-) -> Result<(), RuntimeFailure> {
-    if driver == evidence {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.ollama.context_window_binding_mismatch",
-            "Ollama context window binding did not match prepared evidence",
-        ))
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::OllamaNativeAttachedDriver;
 
     #[test]
     fn admitted_domain_accepts_boundary_values() {
@@ -98,20 +82,14 @@ mod tests {
     }
 
     #[test]
-    fn mismatched_driver_and_evidence_fail_closed() {
-        let driver = OllamaNativeAttachedDriver::new().with_context_window(
-            OllamaContextWindow::new(NonZeroU32::new(4096).expect("value is nonzero")),
-        );
-        let error = validate_context_window_agreement(
-            driver.context_window(),
-            Some(OllamaContextWindow::new(
-                NonZeroU32::new(8192).expect("value is nonzero"),
-            )),
-        )
-        .expect_err("mismatch fails");
-        assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.ollama.context_window_binding_mismatch"
-        );
+    fn new_rejects_the_same_out_of_domain_values_as_from_u64() {
+        for value in [1, 2, 3, u32::MAX] {
+            let nonzero = NonZeroU32::new(value).expect("value is nonzero");
+            let error = OllamaContextWindow::new(nonzero).expect_err("out of domain");
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.ollama.context_window_invalid"
+            );
+        }
     }
 }

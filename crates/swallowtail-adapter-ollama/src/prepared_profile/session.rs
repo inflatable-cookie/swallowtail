@@ -52,11 +52,6 @@ impl OllamaPreparedSession {
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         let driver = self.low_level_driver();
-        if let Err(error) =
-            super::plan::validate_prepared_context_window_binding(&driver, &self.evidence)
-        {
-            return Box::pin(async move { Err(error) });
-        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
@@ -97,7 +92,7 @@ impl OllamaPreparedIntegration {
         input: OllamaSessionProfileInput,
     ) -> Result<OllamaPreparedSession, PreparationFailure> {
         let (request_id, context_window, deadline) = input.into_parts();
-        let capability_requirements = session_capabilities();
+        let capability_requirements = session_capabilities(context_window);
         let activity = crate::activity::profile::activity_profile(self).map_err(|error| {
             PreparationFailure::new(
                 PreparationStage::Preflight,
@@ -139,15 +134,17 @@ impl OllamaPreparedIntegration {
     }
 }
 
-fn session_capabilities() -> Vec<CapabilityRequirement> {
+fn session_capabilities(
+    context_window: Option<crate::OllamaContextWindow>,
+) -> Vec<CapabilityRequirement> {
+    let mut session_constraints = vec![
+        CapabilityConstraint::MaximumTurns(24),
+        CapabilityConstraint::PrivateHistoryMaximumBytes(1_048_576),
+    ];
+    session_constraints
+        .extend(crate::context_window_plan::context_window_capability_constraints(context_window));
     vec![
-        CapabilityRequirement::new(
-            Capability::InteractiveSession,
-            [
-                CapabilityConstraint::MaximumTurns(24),
-                CapabilityConstraint::PrivateHistoryMaximumBytes(1_048_576),
-            ],
-        ),
+        CapabilityRequirement::new(Capability::InteractiveSession, session_constraints),
         CapabilityRequirement::new(
             Capability::StreamingEvents,
             [CapabilityConstraint::StreamRecordMaximumCount(4096)],

@@ -91,13 +91,6 @@ pub(super) fn bind_low_level_driver(
     crate::OllamaNativeAttachedDriver::bound_to_prepared_evidence(evidence)
 }
 
-pub(crate) fn validate_prepared_context_window_binding(
-    driver: &crate::OllamaNativeAttachedDriver,
-    evidence: &OllamaPreparedEvidence,
-) -> Result<(), swallowtail_runtime::RuntimeFailure> {
-    crate::validate_context_window_agreement(driver.context_window(), evidence.context_window())
-}
-
 pub(super) fn instance_with_capabilities(
     prepared: &OllamaPreparedIntegration,
     capabilities: CapabilityProfile,

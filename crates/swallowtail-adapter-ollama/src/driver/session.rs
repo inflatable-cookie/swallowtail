@@ -185,11 +185,16 @@ fn validate_open(
         .constraints()
         .cloned()
         .collect::<std::collections::BTreeSet<_>>();
-    if interactive_constraints
-        != std::collections::BTreeSet::from([
-            CapabilityConstraint::MaximumTurns(24),
-            CapabilityConstraint::PrivateHistoryMaximumBytes(1_048_576),
-        ])
+    let mut expected_session_constraints = std::collections::BTreeSet::from([
+        CapabilityConstraint::MaximumTurns(24),
+        CapabilityConstraint::PrivateHistoryMaximumBytes(1_048_576),
+    ]);
+    if let Some(value) =
+        crate::context_window_plan::plan_bound_context_window(plan, Capability::InteractiveSession)
+    {
+        expected_session_constraints.insert(CapabilityConstraint::ContextLimit(u64::from(value)));
+    }
+    if interactive_constraints != expected_session_constraints
         || !exact_constraint(
             Capability::StreamingEvents,
             CapabilityConstraint::StreamRecordMaximumCount(4096),

@@ -53,11 +53,6 @@ impl OllamaPreparedInferenceAttempt {
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         let driver = self.low_level_driver();
-        if let Err(error) =
-            super::plan::validate_prepared_context_window_binding(&driver, &self.evidence)
-        {
-            return Box::pin(async move { Err(error) });
-        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.start_run(plan, request, services).await })
@@ -96,6 +91,7 @@ impl OllamaPreparedIntegration {
             maximum.get(),
             reasoning.as_ref(),
             structured_output.as_ref(),
+            context_window,
         );
         let activity = crate::activity::profile::activity_profile(self).map_err(|error| {
             PreparationFailure::new(
@@ -152,9 +148,13 @@ fn inference_capabilities(
     maximum: u64,
     reasoning: Option<&ReasoningMode>,
     structured_output: Option<&StructuredOutputDescriptor>,
+    context_window: Option<crate::OllamaContextWindow>,
 ) -> Vec<CapabilityRequirement> {
     let mut capabilities = vec![
-        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(
+            Capability::StructuredRun,
+            crate::context_window_plan::context_window_capability_constraints(context_window),
+        ),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(

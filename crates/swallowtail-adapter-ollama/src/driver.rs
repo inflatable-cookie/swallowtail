@@ -52,7 +52,10 @@ impl OllamaNativeAttachedDriver {
         driver
     }
 
-    pub(crate) fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+    pub(crate) fn with_context_window(
+        mut self,
+        context_window: crate::OllamaContextWindow,
+    ) -> Self {
         self.context_window = Some(context_window);
         self
     }
@@ -110,7 +113,16 @@ impl OllamaNativeAttachedDriver {
                 "Ollama runtime, route, tag, or digest binding did not match preflight",
             ));
         }
-        Ok(())
+        let capability = match plan.requirements().operation_shape() {
+            swallowtail_core::OperationShape::StructuredRun => Capability::StructuredRun,
+            swallowtail_core::OperationShape::InteractiveSession => Capability::InteractiveSession,
+            _ => return Ok(()),
+        };
+        crate::context_window_plan::validate_context_window_plan_binding(
+            self.context_window(),
+            plan,
+            capability,
+        )
     }
 }
 

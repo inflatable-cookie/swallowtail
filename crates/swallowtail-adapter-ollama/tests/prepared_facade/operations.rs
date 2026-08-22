@@ -2,15 +2,15 @@ use super::fixtures::{attempt_input, inventory_input, prepared, session_input};
 use crate::support::{Fixture, FixtureServer, StreamFixture, VersionFixture};
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::num::NonZeroU32;
-use swallowtail_adapter_ollama::OllamaContextWindow;
+use swallowtail_adapter_ollama::{OllamaContextWindow, OllamaNativeAttachedDriver};
 use swallowtail_core::{
     AttachedRuntimeResidency, Capability, CapabilityConstraint, ExecutionHostId, HostServiceKind,
     InstanceOwnership, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument, StructuredOutputDescriptor,
-    TerminalStatus, TurnRequest, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    CleanupOutcome, InteractiveSessionDriver, OperationContent, RuntimeTurnId, SchemaDocument,
+    StructuredOutputDescriptor, StructuredRunDriver, TerminalStatus, TurnRequest,
+    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     assert_observable_activity_not_applicable, assert_observable_activity_trace,
@@ -320,11 +320,9 @@ fn prepared_session_context_window_replays_fixed_value_across_turns_and_restorat
         StreamFixture::InteractiveFailureThenSuccess,
     ));
     let prepared = prepared(&fixture);
-    let context = OllamaContextWindow::new(NonZeroU32::new(8192).expect("value is nonzero"));
+    let context = OllamaContextWindow::from_u64(8192).expect("representative value");
     let profile = prepared
-        .prepare_session(
-            session_input("ollama-context-session").with_context_window(context),
-        )
+        .prepare_session(session_input("ollama-context-session").with_context_window(context))
         .expect("session prepares");
     let services = fixture.services();
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
@@ -412,14 +410,20 @@ fn prepared_session_context_window_replays_fixed_value_across_turns_and_restorat
     )
     .expect("restored request is JSON");
     assert_eq!(restored_body["options"]["num_ctx"], 8192);
-    assert_eq!(restored_body["messages"].as_array().expect("messages").len(), 1);
+    assert_eq!(
+        restored_body["messages"]
+            .as_array()
+            .expect("messages")
+            .len(),
+        1
+    );
 }
 
 #[test]
 fn prepared_context_window_binds_evidence_driver_and_native_body() {
     let fixture = Fixture::new();
     let prepared = prepared(&fixture);
-    let context = OllamaContextWindow::new(NonZeroU32::new(8192).expect("value is nonzero"));
+    let context = OllamaContextWindow::from_u64(8192).expect("representative value");
     let attempt = prepared
         .prepare_inference_attempt(
             attempt_input("prepared-context-window").with_context_window(context),
@@ -444,6 +448,71 @@ fn prepared_context_window_binds_evidence_driver_and_native_body() {
         .expect("session context window prepares");
     assert_eq!(session.evidence().context_window(), Some(context));
     assert_eq!(fixture.server.inference_attempts(), 1);
+}
+
+#[test]
+fn prepared_context_window_rejects_out_of_domain_values() {
+    for value in [1u64, 3, u64::from(u32::MAX)] {
+        let error = OllamaContextWindow::from_u64(value).expect_err("out of domain");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.ollama.context_window_invalid"
+        );
+    }
+}
+
+#[test]
+fn mismatched_low_level_run_driver_fails_before_network() {
+    let fixture = Fixture::new();
+    let prepared = prepared(&fixture);
+    let context = OllamaContextWindow::from_u64(8192).expect("representative value");
+    let attempt = prepared
+        .prepare_inference_attempt(
+            attempt_input("context-window-run-mismatch").with_context_window(context),
+        )
+        .expect("context window prepares");
+
+    let error = match block_on(OllamaNativeAttachedDriver::new().start_run(
+        attempt.plan().clone(),
+        attempt.request().clone(),
+        fixture.services(),
+    )) {
+        Err(error) => error,
+        Ok(_) => panic!("unbound driver must fail before transport"),
+    };
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_binding_mismatch"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 0);
+}
+
+#[test]
+fn mismatched_low_level_session_driver_fails_before_network() {
+    let fixture = Fixture::new();
+    let prepared = prepared(&fixture);
+    let context = OllamaContextWindow::from_u64(8192).expect("representative value");
+    let profile = prepared
+        .prepare_session(
+            session_input("context-window-session-mismatch").with_context_window(context),
+        )
+        .expect("session context window prepares");
+
+    let error = match block_on(OllamaNativeAttachedDriver::new().open_session(
+        profile.plan().clone(),
+        profile.request().clone(),
+        fixture.services(),
+    )) {
+        Err(error) => error,
+        Ok(_) => panic!("unbound driver must fail before transport"),
+    };
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_binding_mismatch"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 0);
 }
 
 fn schema() -> StructuredOutputDescriptor {

@@ -33,7 +33,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.036` |
+| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
 
 ## Planned Next Roadmaps
 
@@ -54,7 +54,7 @@ and selection policy.
 - [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — ready, cards 101-103
 - [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — ready, cards 104-106
 
-Do not roll over: 38 numbered roadmaps exist; 001-035 are complete and 036-038
+Do not roll over: 38 numbered roadmaps exist; 001-036 are complete and 037-038
 are ready, target 30-50.
 
 ## Current Checkpoint
@@ -88,13 +88,12 @@ are ready, target 30-50.
   evidence, added typed headless binding, and proved bounded dispatch
 - g04.036 is complete: cards 098-100 froze exact Ollama `num_ctx` evidence,
   added adapter-local binding, and proved bounded native dispatch
-  adapter-local binding, and deterministic native-request acceptance
 - g04.037 is ready: cards 101-103 cover exact Anthropic Messages effort
   evidence, portable reasoning binding, and deterministic dispatch acceptance
 - g04.038 is ready: cards 104-106 cover exact DeepSeek effort/thinking
   evidence, continuation-safe binding, and deterministic replay acceptance
-- g04.036-038 may execute concurrently in isolated worktrees. Their fixed
-  integration order is Ollama, Anthropic, then DeepSeek
+- g04.037-038 may execute concurrently in isolated worktrees. Their fixed
+  integration order is Anthropic, then DeepSeek
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -104,9 +103,9 @@ are ready, target 30-50.
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Execute g04.036-038 as isolated route-family lanes. Keep each lane internally
-   serial and integrate Ollama, Anthropic, then DeepSeek. Contract 029
-   currentness remains standing.
+2. Execute g04.037-038 as isolated route-family lanes. Keep each lane internally
+   serial and integrate Anthropic, then DeepSeek. Contract 029 currentness
+   remains standing.
 
 New route-family research does not pre-empt this sequence.
 

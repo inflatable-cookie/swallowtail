@@ -6,14 +6,15 @@ unsigned release asset before Swallowtail widens the separate ACP and
 headless claims.
 
 The installed host is `0.53.0`; its npm bin link is unsigned and was not
-changed. Published stable points after the existing ceilings are `0.53.0`,
-`0.53.1`, `0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`. The first unpublished
+changed. Published stable points after the existing ceilings are `0.52.0`,
+`0.53.0`, `0.53.1`, `0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`. The first unpublished
 later stable is `0.56.1`; `0.57.0-preview.0` is ignored.
 
-Selected help output is byte-identical across the six published points.
-ACP launch, initialize, session, callback, and retention sources are stable
-through `0.56.0` except for provider-private invalid-stream categories added
-in `0.53.1`. Headless invocation, stream-json event names and fields,
+Selected help output is byte-identical across the six later published points.
+The ACP source/profile comparison includes `0.52.0` and confirms that both the
+read-only Plan Mode and bounded-write Auto Edit shapes remain stable through
+`0.56.0`; provider-private invalid-stream categories were added in `0.53.1`.
+Headless invocation, stream-json event names and fields,
 terminal result shape, and retention sources remain stable; the same
 invalid-stream additions only refine provider error text and metadata.
 Those additions stay unmapped. The historical ACP and headless decoder

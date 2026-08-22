@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Compile the first numbered per-route feature milestone, starting with Cursor
+Define the first numbered per-route feature milestone, starting with Cursor
 headless model parameters. Use the per-route feature programme and keep
 Contract 029 currentness as a standing lane.
 

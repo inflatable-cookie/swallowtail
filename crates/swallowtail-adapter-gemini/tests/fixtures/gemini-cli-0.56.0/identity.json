@@ -38,6 +38,11 @@
   },
   "published_stables_from_previous_ceilings": [
     {
+      "version": "0.52.0",
+      "npm_published_at": "2026-07-22T20:50:35.228Z",
+      "github_commit": "d14583b926769bd98f807cdc6b1ca50e91ae26ec"
+    },
+    {
       "version": "0.53.0",
       "npm_published_at": "2026-07-28T21:45:04.718Z",
       "github_commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96"
@@ -94,6 +99,76 @@
       "0.54.4": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
       "0.55.1": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
       "0.56.0": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632"
+    },
+    "acp_published_release_set": [
+      "0.51.0",
+      "0.52.0",
+      "0.53.0",
+      "0.53.1",
+      "0.54.0",
+      "0.54.4",
+      "0.55.1",
+      "0.56.0"
+    ],
+    "acp_profile_comparison": {
+      "compared_releases": [
+        "0.51.0",
+        "0.52.0",
+        "0.53.0",
+        "0.53.1",
+        "0.54.0",
+        "0.54.4",
+        "0.55.1",
+        "0.56.0"
+      ],
+      "read_only": {
+        "approval_mode": "plan",
+        "agent_mode_id": "plan",
+        "client_filesystem_capabilities": {
+          "readTextFile": true,
+          "writeTextFile": false
+        },
+        "callbacks": [
+          "fs.readTextFile"
+        ],
+        "selected_external_shapes_unchanged_through_0.56.0": true
+      },
+      "bounded_write": {
+        "approval_mode": "auto_edit",
+        "agent_mode_id": "autoEdit",
+        "client_filesystem_capabilities": {
+          "readTextFile": true,
+          "writeTextFile": true
+        },
+        "callbacks": [
+          "fs.readTextFile",
+          "fs.writeTextFile"
+        ],
+        "selected_external_shapes_unchanged_through_0.56.0": true
+      },
+      "source_sha256": {
+        "acpSessionManager.ts": {
+          "0.51.0": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.52.0": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.53.0": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.53.1": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.54.0": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.54.4": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.55.1": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+          "0.56.0": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e"
+        },
+        "acpFileSystemService.ts": {
+          "0.51.0": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.52.0": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.53.0": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.53.1": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.54.0": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.54.4": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.55.1": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+          "0.56.0": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd"
+        }
+      },
+      "source_shape_result": "read-only and bounded-write ACP profiles unchanged through 0.56.0"
     },
     "acp_selected_external_shapes_unchanged": true,
     "acp_unchanged_sources": [

@@ -56,6 +56,55 @@
     "load_session": "observed but not claimed",
     "native_close": "not selected; process close and join",
     "selected_external_shapes_unchanged_from_0.51.0": true,
+    "profile_comparison": {
+      "compared_releases": [
+        "0.51.0",
+        "0.52.0",
+        "0.53.0",
+        "0.53.1",
+        "0.54.0",
+        "0.54.4",
+        "0.55.1",
+        "0.56.0"
+      ],
+      "read_only": {
+        "command": [
+          "gemini",
+          "--acp",
+          "--approval-mode",
+          "plan"
+        ],
+        "approval_mode": "plan",
+        "agent_mode_id": "plan",
+        "client_filesystem_capabilities": {
+          "readTextFile": true,
+          "writeTextFile": false
+        },
+        "callbacks": [
+          "fs.readTextFile"
+        ],
+        "selected_external_shapes_unchanged_through_0.56.0": true
+      },
+      "bounded_write": {
+        "command": [
+          "gemini",
+          "--acp",
+          "--approval-mode",
+          "auto_edit"
+        ],
+        "approval_mode": "auto_edit",
+        "agent_mode_id": "autoEdit",
+        "client_filesystem_capabilities": {
+          "readTextFile": true,
+          "writeTextFile": true
+        },
+        "callbacks": [
+          "fs.readTextFile",
+          "fs.writeTextFile"
+        ],
+        "selected_external_shapes_unchanged_through_0.56.0": true
+      }
+    },
     "unmapped_additions": [
       "provider-invalid-stream categories MAX_TOKENS_EXCEEDED, SAFETY_BLOCKED, RECITATION_BLOCKED, OTHER_BLOCKED, THINKING_ONLY_RESPONSE",
       "provider-private ACP metadata and model selection",

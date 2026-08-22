@@ -23,9 +23,9 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-08-22 g04.034 Gemini CLI Currentness Compiled](./2026-08-22-g04-034-gemini-cli-currentness-compiled.md)
 - [2026-08-22 Gemini CLI 0.56.0 Claim](./2026-08-22-gemini-cli-0-56-0-claim.md)
 - [2026-08-22 Gemini CLI 0.56.0 Identity](./2026-08-22-gemini-cli-0-56-0-identity.md)
+- [2026-08-22 g04.034 Gemini CLI Currentness Compiled](./2026-08-22-g04-034-gemini-cli-currentness-compiled.md)
 - [2026-08-21 g04.033 Pi SDK Sidecar Closeout](./2026-08-21-g04-033-pi-sdk-sidecar-closeout.md)
 - [2026-08-21 Pi SDK Sidecar Route Planning](./2026-08-21-pi-sdk-sidecar-route-planning.md)
 - [2026-08-21 Post-Kimi Priority Reset](./2026-08-21-post-kimi-priority-reset.md)

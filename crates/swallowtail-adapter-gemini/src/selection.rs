@@ -214,7 +214,7 @@ mod tests {
     fn published_acp_releases_are_qualified_and_later_stable_is_visible() {
         let claim = gemini_cli_acp_claim();
         for published in [
-            "0.51.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
+            "0.51.0", "0.52.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
         ] {
             assert!(
                 claim.supports(&version(published)),

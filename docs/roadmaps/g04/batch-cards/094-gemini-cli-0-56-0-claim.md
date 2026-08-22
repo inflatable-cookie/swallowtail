@@ -49,7 +49,7 @@ In current docs:
 - Write Gemini `0.56.0` identity and claim logs and index them
 - Complete cards 093-094 and g04.034; update g04, standing-lane, batch-card,
   and roadmaps front doors
-- Set the sole Next Task to compile the first numbered per-route feature
+- Set the sole Next Task to define the first numbered per-route feature
   milestone, starting with Cursor headless model parameters unless the
   completed Gemini evidence changes the ranking
 

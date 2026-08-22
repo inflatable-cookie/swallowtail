@@ -46,14 +46,14 @@ individual-account service remain outside both routes.
 | darwin-arm64 unsigned asset SHA-256 | `be0c20ccf8b6be6ce01654736847168a9328e92db4db4c0d0b776de70703fb8f` |
 | extracted darwin-arm64 executable SHA-256 | `fa84c229012862d3695775afafff6e07dcffaa6da22db4072a6dbe87e5265151` |
 
-Published stable points after the existing ceilings are `0.53.0`, `0.53.1`,
-`0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`. `0.56.1` is not published;
+Published stable points after the existing ceilings are `0.52.0`, `0.53.0`,
+`0.53.1`, `0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`. `0.56.1` is not published;
 `0.57.0-preview.0` is a preview and is ignored.
 
 ## Selected protocol comparison
 
-The official npm bundle's selected help output is byte-identical across all
-six published points. It contains the selected `--acp`, `--output-format
+The official npm bundle's selected help output is byte-identical across the six
+later published points. It contains the selected `--acp`, `--output-format
 stream-json`, model, approval, extension, MCP, trust, session, and delete
 flags.
 
@@ -63,7 +63,14 @@ The selected ACP launch, initialize, session, callback, authentication
 advertisement, and process lifecycle remain compatible with the frozen
 `gemini-cli.acp.v0.51.0` behavior. The selected methods are `initialize`,
 `session/new`, `session/prompt`, and `session/cancel`; the selected callback
-is `session/update`, with the existing filesystem callback boundary.
+is `session/update`, with the existing filesystem callback boundary. The
+comparison explicitly includes the `0.52.0` tag
+(`d14583b926769bd98f807cdc6b1ca50e91ae26ec`): both the read-only Plan Mode
+profile (`writeTextFile: false`) and bounded-write Auto Edit profile
+(`writeTextFile: true`) retain their mode ids and filesystem callbacks through
+`0.56.0`. The selected `acpSessionManager.ts` and
+`acpFileSystemService.ts` source digests are identical across every compared
+stable release.
 
 The `0.53.1` source delta adds provider-invalid-stream categories to the
 graceful `end_turn` path. Wire methods, callbacks, auth advertisement, session

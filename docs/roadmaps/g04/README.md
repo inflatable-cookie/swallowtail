@@ -80,7 +80,7 @@ Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
   complete
 - g04.034 is complete: cards 093-094 qualified Gemini CLI `0.56.0` across
   separate ACP and headless axes for enterprise API-key access
-- After g04.034 closes, compile the first numbered per-route feature
+- After g04.034 closes, define the first numbered per-route feature
   milestone. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
@@ -89,7 +89,7 @@ Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Compile the first numbered milestone from
+2. Define the first numbered milestone from
    [Per-Route Feature Completion](./per-route-feature-completion.md), starting
    with Cursor headless model parameters unless current evidence changes the
    ranking.

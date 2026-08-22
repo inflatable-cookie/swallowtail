@@ -259,9 +259,10 @@ OpenHands adds a package without a production route.
   plane audience, generated request, summary, lifecycle and error types, and
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
-  `0.51.0..=0.56.0` ambient-host interactive subset with Plan Mode and bounded
-  read callbacks over ACP v1 stdio and retains session-advertised model options
-  as negotiated evidence; a separately qualified `0.51.0..=0.56.0` headless
+  `0.51.0..=0.56.0` ambient-host interactive subset with separate read-only
+  Plan Mode and bounded-write Auto Edit profiles, bounded host text read/write
+  callbacks over ACP v1 stdio, and session-advertised model options retained as
+  negotiated evidence; a separately qualified `0.51.0..=0.56.0` headless
   route sends one prompt over stdin, consumes bounded `stream-json`, reports
   usage, requires
   durable local transcript retention, and forces no sandbox; one public
@@ -817,16 +818,19 @@ the historical Gemini or Kimi pins. Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
-Gemini CLI ACP `0.51.0..=0.56.0` is narrowed to new read-only sessions, text
-prompts, updates, native turn cancellation, permission cancellation, and
-bounded read callbacks. Authentication mutation, load/resume, mode or model
-switching, MCP injection, writes, terminals, and native session close are not
-claimed.
+Gemini CLI ACP `0.51.0..=0.56.0` supports new sessions, text prompts, updates,
+native turn cancellation, permission cancellation, and bounded host text
+callbacks. Its read-only profile launches Plan Mode and advertises only
+`fs.readTextFile`; its bounded-write profile launches Auto Edit and advertises
+`fs.readTextFile` plus `fs.writeTextFile`. Authentication mutation, load/resume,
+mode or model switching, MCP injection, terminals, and native session close
+are not claimed.
 Contract 015's `WorkingResourceIo` service is realized separately from
 consumer tools. The local host canonically resolves provider locators under
 the exact leased root, applies line and byte bounds, and rejects traversal,
 symlink escape, wrong representation, and unapproved resources before content
-is returned. The Gemini adapter advertises reads only when that host service is
+is returned. The Gemini adapter advertises read callbacks for both profiles and
+the write callback only for the bounded-write profile when that host service is
 present.
 
 The Gemini ACP proof passes deterministic production-driver fixtures for

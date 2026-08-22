@@ -20,7 +20,7 @@ card.
 3. Download official npm and GitHub assets to `/tmp`; record package, asset,
    and extracted executable/source digests
 4. Enumerate the published stable points after the existing ceilings:
-   `0.53.0`, `0.53.1`, `0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`; keep any
+   `0.52.0`, `0.53.0`, `0.53.1`, `0.54.0`, `0.54.4`, `0.55.1`, and `0.56.0`; keep any
    independently unqualified or withdrawn point incompatible
 5. Compare the selected ACP launch/initialize/session/callback subset and the
    selected headless invocation/event/terminal/retention subset against the

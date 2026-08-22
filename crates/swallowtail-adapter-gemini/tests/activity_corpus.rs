@@ -85,7 +85,29 @@ fn gemini_cli_0_56_identity_corpus_freezes_currentness_decisions() {
         identity["published_stables_from_previous_ceilings"]
             .as_array()
             .map(Vec::len),
-        Some(6)
+        Some(7)
+    );
+    assert!(
+        identity["published_stables_from_previous_ceilings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|release| release["version"] == "0.52.0")
+    );
+    assert_eq!(
+        identity["source_comparison"]["acp_published_release_set"]
+            .as_array()
+            .map(Vec::len),
+        Some(8)
+    );
+    assert_eq!(
+        identity["source_comparison"]["acp_profile_comparison"]["source_sha256"]["acpSessionManager.ts"]
+            ["0.52.0"],
+        "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e"
+    );
+    assert_eq!(
+        identity["published_stables_from_previous_ceilings"][0]["github_commit"],
+        "d14583b926769bd98f807cdc6b1ca50e91ae26ec"
     );
     assert_eq!(identity["unpublished_later_stable"], "0.56.1");
     assert_eq!(identity["ignored_preview"], "0.57.0-preview.0");
@@ -123,6 +145,34 @@ fn gemini_cli_0_56_protocol_corpus_keeps_axes_and_unmapped_deltas_explicit() {
         protocol["acp"]["selected_external_shapes_unchanged_from_0.51.0"],
         true
     );
+    let profiles = &protocol["acp"]["profile_comparison"];
+    assert_eq!(
+        profiles["compared_releases"].as_array().map(Vec::len),
+        Some(8)
+    );
+    assert_eq!(profiles["read_only"]["approval_mode"], "plan");
+    assert_eq!(profiles["read_only"]["agent_mode_id"], "plan");
+    assert_eq!(
+        profiles["read_only"]["client_filesystem_capabilities"]["writeTextFile"],
+        false
+    );
+    assert_eq!(profiles["read_only"]["callbacks"][0], "fs.readTextFile");
+    assert_eq!(profiles["bounded_write"]["approval_mode"], "auto_edit");
+    assert_eq!(profiles["bounded_write"]["agent_mode_id"], "autoEdit");
+    assert_eq!(
+        profiles["bounded_write"]["client_filesystem_capabilities"]["writeTextFile"],
+        true
+    );
+    assert_eq!(
+        profiles["bounded_write"]["callbacks"][1],
+        "fs.writeTextFile"
+    );
+    for profile in ["read_only", "bounded_write"] {
+        assert_eq!(
+            profiles[profile]["selected_external_shapes_unchanged_through_0.56.0"],
+            true
+        );
+    }
     assert_eq!(
         protocol["headless"]["selected_external_shapes_unchanged_through_0.56.0"],
         true

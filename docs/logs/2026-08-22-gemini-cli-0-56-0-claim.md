@@ -9,7 +9,8 @@ Card 094 raised both separate Gemini CLI qualified ceilings through official
 - headless: `0.51.0..=0.56.0` on `gemini-cli.headless-stream-json`
 
 Both retain their claim ids, baselines, behavior revisions, and
-`AllowUnverified` posture. Published intermediates are qualified. The first
+`AllowUnverified` posture. ACP covers both the read-only Plan Mode and
+bounded-write Auto Edit profiles; published intermediates are qualified. The first
 unpublished later stable, `0.56.1`, remains visible `UnverifiedNewer`.
 
 The historical ACP activity and headless stream-json corpora remain in place.
@@ -25,5 +26,5 @@ roadmap next-action gates passed. `git diff --check` passed.
 
 ## Next
 
-Compile the first numbered per-route feature milestone, starting with Cursor
+Define the first numbered per-route feature milestone, starting with Cursor
 headless model parameters.

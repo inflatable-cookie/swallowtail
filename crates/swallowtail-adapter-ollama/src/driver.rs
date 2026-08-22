@@ -43,7 +43,39 @@ impl OllamaNativeAttachedDriver {
         Self::default()
     }
 
-    /// Creates a driver bound to the exact context selection in prepared evidence.
+    /// Creates a driver bound to one prepared structured inference attempt.
+    #[must_use]
+    pub fn bound_to_prepared_inference_attempt(
+        attempt: &crate::OllamaPreparedInferenceAttempt,
+    ) -> Self {
+        Self {
+            transport: CurlTransport,
+            prepared_dispatch_binding: Some(
+                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_structured_run(
+                    attempt,
+                ),
+            ),
+        }
+    }
+
+    /// Creates a driver bound to one prepared interactive session.
+    #[must_use]
+    pub fn bound_to_prepared_session(session: &crate::OllamaPreparedSession) -> Self {
+        Self {
+            transport: CurlTransport,
+            prepared_dispatch_binding: Some(
+                crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_open_session(
+                    session,
+                ),
+            ),
+        }
+    }
+
+    /// Creates a driver bound to prepared evidence without a request identity.
+    ///
+    /// Use only when no native `num_ctx` selection was prepared. Context-window
+    /// dispatch requires [`Self::bound_to_prepared_inference_attempt`] or
+    /// [`Self::bound_to_prepared_session`].
     #[must_use]
     pub fn bound_to_prepared_evidence(evidence: &crate::OllamaPreparedEvidence) -> Self {
         Self {
@@ -69,7 +101,58 @@ impl OllamaNativeAttachedDriver {
         }
     }
 
-    /// Validates that this driver matches one prepared evidence snapshot.
+    pub(crate) fn validate_prepared_dispatch(
+        &self,
+        plan: &PreflightPlan,
+        request_id: &swallowtail_runtime::RequestId,
+    ) -> Result<(), RuntimeFailure> {
+        if let Some(binding) = &self.prepared_dispatch_binding {
+            binding.validate_prepared_dispatch(plan, request_id)?;
+        }
+        Ok(())
+    }
+
+    /// Validates that this driver matches one prepared structured inference attempt.
+    pub fn validate_against_prepared_inference_attempt(
+        &self,
+        attempt: &crate::OllamaPreparedInferenceAttempt,
+    ) -> Result<(), RuntimeFailure> {
+        let expected =
+            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_structured_run(
+                attempt,
+            );
+        match &self.prepared_dispatch_binding {
+            Some(binding) if binding == &expected => Ok(()),
+            _ => Err(failure(
+                "swallowtail.ollama.context_window_binding_mismatch",
+                "Ollama prepared dispatch binding did not match prepared inference attempt",
+            )),
+        }
+    }
+
+    /// Validates that this driver matches one prepared interactive session.
+    pub fn validate_against_prepared_session(
+        &self,
+        session: &crate::OllamaPreparedSession,
+    ) -> Result<(), RuntimeFailure> {
+        let expected =
+            crate::prepared_dispatch_binding::OllamaPreparedDispatchBinding::from_open_session(
+                session,
+            );
+        match &self.prepared_dispatch_binding {
+            Some(binding) if binding == &expected => Ok(()),
+            _ => Err(failure(
+                "swallowtail.ollama.context_window_binding_mismatch",
+                "Ollama prepared dispatch binding did not match prepared session",
+            )),
+        }
+    }
+
+    /// Validates that this driver matches prepared evidence without request identity.
+    ///
+    /// This check is insufficient for context-window dispatch. Use
+    /// [`Self::validate_against_prepared_inference_attempt`] or
+    /// [`Self::validate_against_prepared_session`] when `num_ctx` was prepared.
     pub fn validate_against_prepared_evidence(
         &self,
         evidence: &crate::OllamaPreparedEvidence,
@@ -135,9 +218,6 @@ impl OllamaNativeAttachedDriver {
                 "swallowtail.ollama.attached_binding_mismatch",
                 "Ollama runtime, route, tag, or digest binding did not match preflight",
             ));
-        }
-        if let Some(binding) = &self.prepared_dispatch_binding {
-            binding.validate_against(plan)?;
         }
         Ok(())
     }

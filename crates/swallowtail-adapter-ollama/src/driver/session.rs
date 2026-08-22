@@ -45,6 +45,7 @@ impl InteractiveSessionDriver for OllamaNativeAttachedDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             self.validate_plan(&plan)?;
+            self.validate_prepared_dispatch(&plan, request.request_id())?;
             services.require_execution_host(plan.execution_host_id())?;
             require_services(&services, true)?;
             validate_open(&plan, &request, &services)?;

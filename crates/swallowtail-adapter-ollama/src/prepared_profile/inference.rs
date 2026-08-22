@@ -1,6 +1,6 @@
 use super::input::OllamaInferenceAttemptInput;
 use super::plan::{
-    OllamaPreparedEvidence, bind_low_level_driver, build_plan, instance_with_capabilities,
+    OllamaPreparedEvidence, bind_structured_run_driver, build_plan, instance_with_capabilities,
     model_route, requirements,
 };
 use crate::prepared::failure;
@@ -44,7 +44,7 @@ impl OllamaPreparedInferenceAttempt {
     /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OllamaNativeAttachedDriver {
-        bind_low_level_driver(&self.evidence)
+        bind_structured_run_driver(self)
     }
 
     /// Starts the prepared inference attempt.
@@ -53,12 +53,6 @@ impl OllamaPreparedInferenceAttempt {
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         let driver = self.low_level_driver();
-        if let Err(error) = crate::prepared_dispatch_binding::validate_driver_matches_evidence(
-            &driver,
-            self.evidence(),
-        ) {
-            return Box::pin(async move { Err(error) });
-        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.start_run(plan, request, services).await })

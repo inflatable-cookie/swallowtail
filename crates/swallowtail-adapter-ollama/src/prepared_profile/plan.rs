@@ -85,10 +85,16 @@ impl OllamaPreparedEvidence {
     }
 }
 
-pub(super) fn bind_low_level_driver(
-    evidence: &OllamaPreparedEvidence,
+pub(super) fn bind_structured_run_driver(
+    attempt: &super::OllamaPreparedInferenceAttempt,
 ) -> crate::OllamaNativeAttachedDriver {
-    crate::OllamaNativeAttachedDriver::bound_to_prepared_evidence(evidence)
+    crate::OllamaNativeAttachedDriver::bound_to_prepared_inference_attempt(attempt)
+}
+
+pub(super) fn bind_session_driver(
+    session: &super::OllamaPreparedSession,
+) -> crate::OllamaNativeAttachedDriver {
+    crate::OllamaNativeAttachedDriver::bound_to_prepared_session(session)
 }
 
 pub(super) fn instance_with_capabilities(

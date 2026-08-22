@@ -7,6 +7,7 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         Box::pin(async move {
             self.validate_plan(&plan)?;
+            self.validate_prepared_dispatch(&plan, request.request_id())?;
             services.require_execution_host(plan.execution_host_id())?;
             require_services(&services, true)?;
             validate_run(&plan, &request, &services)?;

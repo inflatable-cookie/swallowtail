@@ -1,6 +1,6 @@
 # 108 xAI Responses Control Binding
 
-Status: ready after 107
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.039 xAI Responses Reasoning And Output Bounds](../039-xai-responses-reasoning-output-bounds.md)
@@ -32,13 +32,13 @@ WebSocket requests.
 
 ## Acceptance Criteria
 
-- only Research 187 deliver-now combinations prepare
-- input, plan, evidence, driver, and every request agree exactly
-- reasoning and output controls can be selected independently where evidence
+- [x] only Research 187 deliver-now combinations prepare
+- [x] input, plan, evidence, driver, and every request agree exactly
+- [x] reasoning and output controls can be selected independently where evidence
   allows
-- no alias or multi-agent meaning silently maps to portable reasoning
-- absent controls preserve current public and wire behavior
-- known failures occur before network work
+- [x] no alias or multi-agent meaning silently maps to portable reasoning
+- [x] absent controls preserve current public and wire behavior
+- [x] known failures occur before network work
 
 ## Validation
 
@@ -66,3 +66,13 @@ tests pass.
 - guide, matrix, architecture, programme, or changelog closeout
 - provider acceptance, effective-depth, or exact-length claims
 - search, tools, multi-agent, currentness, or live work
+
+## Closeout
+
+The additive prepared inputs now retain optional `ReasoningMode` and positive
+maximum-output-token selections. Exact constraints are carried in the model
+route and plan, exposed through `XaiPreparedEvidence`, and checked again by
+the run/session drivers before endpoint or credential use. The protocol emits
+only selected `reasoning.effort` and `max_output_tokens` fields; omitted
+controls keep the prior body. Commit `537ca567` carries the binding and
+deterministic coverage.

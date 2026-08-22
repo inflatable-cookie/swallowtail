@@ -50,6 +50,22 @@ interactive session retains `store=false`, one active text turn, private
 connection-local continuation, provider usage and billed ticks, and
 credential-last joined cleanup.
 
+The optional prepared generation controls are exact and independent. For
+`grok-4.5`, reasoning accepts `low`, `medium`, or `high`; for `grok-4.6`, it
+also accepts `xhigh`. Both exact model ids accept a positive
+`max_output_tokens` value through `2_147_483_647`. Use
+`XaiRunProfileInput::with_reasoning_mode` or
+`XaiSessionProfileInput::with_reasoning_mode`, and the corresponding
+`with_maximum_output_tokens` builder, to select them. Aliases, Grok 4.5
+`xhigh`, multi-agent effort, and other model ids are rejected before endpoint
+or credential work. Omission preserves the existing request body.
+
+For a session, the prepared selection is fixed on the opened handle and is
+sent on the first turn, each serial continuation turn, and a fresh working
+state replacement. `max_output_tokens` is a provider request bound that
+includes reasoning tokens; it is not a client truncation or an exact text
+length claim.
+
 `prepare_responses_run` binds the same explicit route and access evidence to
 one resource-free structured operation. It opens one connection, sends one
 `store=false` `response.create` without a previous-response id, streams one
@@ -175,11 +191,12 @@ Live authentication, microphone capture, speakers, browser transports,
 ephemeral client tokens, WebRTC, SIP, tools, automatic provider fallback, and
 route selection remain downstream or separately gated.
 
-The routes also expose no attachments, structured output, reasoning control,
-consumer callbacks, working resources, public load/resume, reconciliation,
-provider-session management, background execution, or cross-process stream
-reattachment. xAI alone reports billed cost; OpenAI alone exposes the
-qualified output-token maximum; Gemini alone permits the planned rollover.
+The routes also expose no attachments, structured output, consumer callbacks,
+working resources, public load/resume, reconciliation, provider-session
+management, background execution, or cross-process stream reattachment. xAI
+reports billed cost and exposes the qualified text reasoning/output controls;
+OpenAI exposes the qualified Realtime output-token maximum; Gemini permits the
+planned rollover.
 
 ## Failures, Promotion, And Validation
 

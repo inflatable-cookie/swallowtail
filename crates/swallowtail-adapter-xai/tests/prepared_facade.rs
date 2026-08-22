@@ -448,6 +448,50 @@ fn prepared_xai_driver_rejects_control_request_drift_before_provider_effects() {
     assert!(session_fixture.server.frames().is_empty());
 }
 
+#[test]
+fn prepared_xai_controls_reach_failed_turns_before_chain_invalidation() {
+    for scenario in [
+        ServerScenario::PreviousResponseNotFound,
+        ServerScenario::Disconnect,
+    ] {
+        let fixture = DriverFixture::new(scenario);
+        let prepared =
+            prepare_xai_responses_websocket(fixture.preparation_input(), &fixture.services())
+                .expect("xAI integration prepares");
+        let operation = prepared
+            .prepare_responses_session(
+                XaiSessionProfileInput::new(
+                    RequestId::new("controlled-failure").expect("request id"),
+                    qualified_model("grok-4.6"),
+                    None,
+                )
+                .with_reasoning_mode(ReasoningMode::new("high").expect("mode"))
+                .with_maximum_output_tokens(NonZeroU64::new(512).expect("maximum")),
+            )
+            .expect("controlled session prepares");
+        let mut session =
+            block_on(operation.open_session(fixture.services())).expect("session opens");
+        let mut turn = block_on(
+            session.start_turn(turn_request("controlled-failure-turn"), fixture.services()),
+        )
+        .expect("turn starts");
+        let mut events = turn.take_events().expect("events exist");
+        let terminal = turn.take_terminal_outcome().expect("terminal exists");
+        let outcome = block_on(async {
+            while events.next().await.is_some() {}
+            terminal.await
+        });
+        assert!(matches!(
+            outcome.status(),
+            TerminalStatus::ProviderFailed(_) | TerminalStatus::RuntimeFailed(_)
+        ));
+        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        let frame = fixture.server.frames().pop().expect("failed turn frame");
+        assert_wire_controls(&frame, Some("high"), Some(512), false);
+    }
+}
+
 fn model() -> XaiModelSelection {
     qualified_model("grok-fixture-exact")
 }

@@ -1,6 +1,6 @@
 # g04.039 xAI Responses Reasoning And Output Bounds
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Depends on: per-route feature completion programme
@@ -29,20 +29,20 @@ only the model/value/profile combinations admitted by Research 187.
 
 ## Goals
 
-- [ ] freeze current official WebSocket, Responses-body, model, reasoning, and
+- [x] freeze current official WebSocket, Responses-body, model, reasoning, and
       output-bound evidence
-- [ ] classify structured and connection-local interactive profiles separately
-- [ ] distinguish Grok 4.5, Grok 4.6, model aliases, and multi-agent semantics
-- [ ] map only exact reasoning-depth values to portable `ReasoningSelection`
-- [ ] add an exact positive maximum-output-token input only where the selected
+- [x] classify structured and connection-local interactive profiles separately
+- [x] distinguish Grok 4.5, Grok 4.6, model aliases, and multi-agent semantics
+- [x] map only exact reasoning-depth values to portable `ReasoningSelection`
+- [x] add an exact positive maximum-output-token input only where the selected
       model and WebSocket body support it
-- [ ] retain both controls through immutable plan/evidence and every admitted
+- [x] retain both controls through immutable plan/evidence and every admitted
       continuation request
-- [ ] reject unqualified models, values, aliases, profile combinations, and
+- [x] reject unqualified models, values, aliases, profile combinations, and
       mismatches before network work
-- [ ] publish dispatch truth without claiming provider acceptance, effective
+- [x] publish dispatch truth without claiming provider acceptance, effective
       reasoning depth, or an exact generated length
-- [ ] leave shared architecture, matrices, changelog, programme, indexes, and
+- [x] leave shared architecture, matrices, changelog, programme, indexes, and
       roadmap-front-door deltas for orchestrator closeout after merge
 
 ## Non-Goals
@@ -77,35 +77,35 @@ connection loss.
 
 ### Batch 39.1 — Exact Current Evidence
 
-- [ ] Execute card 107.
-- [ ] freeze official sources, stable specimens, digests, and exact dispositions
-- [ ] promote Research 187 with model/value/profile/control rows
+- [x] Execute card 107.
+- [x] freeze official sources, stable specimens, digests, and exact dispositions
+- [x] promote Research 187 with model/value/profile/control rows
 
 ### Batch 39.2 — Prepared Binding
 
-- [ ] Execute card 108 after card 107.
-- [ ] bind only deliver-now reasoning and output controls through prepared input,
+- [x] Execute card 108 after card 107.
+- [x] bind only deliver-now reasoning and output controls through prepared input,
       capability constraints, immutable evidence, driver policy, and protocol
-- [ ] preserve current absent-control request bytes and behavior
+- [x] preserve current absent-control request bytes and behavior
 
 ### Batch 39.3 — Dispatch And Acceptance
 
-- [ ] Execute card 109 after card 108.
-- [ ] prove exact first-turn, later-turn, restoration, and failure request bodies
-- [ ] update the xAI guide and report the deferred shared-surface delta
+- [x] Execute card 109 after card 108.
+- [x] prove exact first-turn, later-turn, restoration, and failure request bodies
+- [x] update the xAI guide and report the deferred shared-surface delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 187 model/value/profile/control combinations prepare
-- [ ] request, plan constraints, prepared evidence, configured driver, and wire
+- [x] only Research 187 model/value/profile/control combinations prepare
+- [x] request, plan constraints, prepared evidence, configured driver, and wire
       values agree exactly
-- [ ] reasoning depth stays distinct from multi-agent count and model defaults
-- [ ] output bounds remain requested dispatch controls, not effective-length
+- [x] reasoning depth stays distinct from multi-agent count and model defaults
+- [x] output bounds remain requested dispatch controls, not effective-length
       observations
-- [ ] absent controls preserve current request JSON and public behavior
-- [ ] unsupported combinations fail before endpoint or credential use
-- [ ] deterministic QA makes no provider call or account inspection
-- [ ] route-local closeout records the exact deferred shared-surface delta
+- [x] absent controls preserve current request JSON and public behavior
+- [x] unsupported combinations fail before endpoint or credential use
+- [x] deterministic QA makes no provider call or account inspection
+- [x] route-local closeout records the exact deferred shared-surface delta
 
 ## Lane Runway
 
@@ -127,9 +127,9 @@ connection loss.
 
 ## Batch Cards
 
-- [107-xai-responses-control-evidence.md](batch-cards/107-xai-responses-control-evidence.md) — ready
-- [108-xai-responses-control-binding.md](batch-cards/108-xai-responses-control-binding.md) — ready after 107
-- [109-xai-responses-control-acceptance.md](batch-cards/109-xai-responses-control-acceptance.md) — ready after 108
+- [107-xai-responses-control-evidence.md](batch-cards/107-xai-responses-control-evidence.md) — complete
+- [108-xai-responses-control-binding.md](batch-cards/108-xai-responses-control-binding.md) — complete
+- [109-xai-responses-control-acceptance.md](batch-cards/109-xai-responses-control-acceptance.md) — complete
 
 ## References
 

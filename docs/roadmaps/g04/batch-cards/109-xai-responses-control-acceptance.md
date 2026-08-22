@@ -1,6 +1,6 @@
 # 109 xAI Responses Control Acceptance
 
-Status: ready after 108
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.039 xAI Responses Reasoning And Output Bounds](../039-xai-responses-reasoning-output-bounds.md)
@@ -34,14 +34,14 @@ closeout for orchestrator integration.
 
 ## Acceptance Criteria
 
-- every deliver-now value, bound, profile, and failure class is covered
-- continuation and fresh replacement preserve exact fixed selection
-- default QA sends no provider request
-- docs distinguish request, plan, dispatch, acceptance, and effectiveness
-- no sibling xAI route or model gains a capability by inference
-- closeout records PR/head truth without claiming merge
-- worker changed files stay inside the route-local boundary
-- named gates pass
+- [x] every deliver-now value, bound, profile, and failure class is covered
+- [x] continuation and fresh replacement preserve exact fixed selection
+- [x] default QA sends no provider request
+- [x] docs distinguish request, plan, dispatch, acceptance, and effectiveness
+- [x] no sibling xAI route or model gains a capability by inference
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changed files stay inside the route-local boundary
+- [x] named gates pass
 
 ## Validation
 
@@ -78,3 +78,12 @@ Auto-continuation: No.
 - merge or restack authority
 - `CHANGELOG.md`; `docs/architecture/system-architecture.md`; route/feature
   matrices; programme and roadmap front doors; shared indexes; `packages.txt`
+
+## Closeout
+
+Research 187's exact rows are covered by prepared-input, capability-plan,
+evidence, driver, and protocol tests. The tests prove independent reasoning
+and output controls, absent-control compatibility, exact first/later/fresh
+session dispatch, unsupported model/value/bound rejection, and request-plan
+drift rejection before network or credential effects. No provider acceptance,
+effective reasoning depth, or exact text-length claim is made.

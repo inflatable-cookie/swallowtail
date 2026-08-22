@@ -3,7 +3,7 @@
 Status: complete on review PR; not merged
 Owner: Tom
 PR: https://github.com/inflatable-cookie/swallowtail/pull/36
-Evidence head: `fc5b4bac`
+Evidence head: `80011cf4`
 
 Card 106 replaces the reservation with route-local evidence. The orchestrator
 records merge and shared-surface closeout separately.
@@ -71,15 +71,17 @@ DeepSeek integration order:
   is reconciled. No worker-side index edit is needed; pre-indexed Research 186
   and this closeout path remain valid.
 - `release-baselines/public-api-0.3.3/packages.txt`: no package-set delta.
-  `effigy package:api` should confirm the package-specific public API baseline
-  is unchanged because this is behavior-only within existing public inputs.
+  `release-baselines/public-api-unreleased/swallowtail-adapter-deepseek.txt`
+  records the additive `DeepSeekPreparedEvidence::reasoning_mode` accessor so
+  the exact prepared selection remains inspectable. `effigy package:api`
+  passes with that package-local API addition.
 
 ## Validation
 
-Passed before the review PR:
+Passed for the review fix:
 
 - `cargo fmt -p swallowtail-adapter-deepseek`
-- `cargo test -p swallowtail-adapter-deepseek --locked`
+- `cargo test -p swallowtail-adapter-deepseek --locked -- --test-threads=1`
 - `effigy validate:focused swallowtail-adapter-deepseek`
 - `effigy package:verify-affected swallowtail-adapter-deepseek`
 - `effigy check:examples`

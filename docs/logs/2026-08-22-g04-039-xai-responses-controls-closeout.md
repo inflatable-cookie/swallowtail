@@ -65,14 +65,17 @@ Passed:
 - `effigy qa:routes`
 - `effigy qa:northstar`
 - research, logs, roadmaps, g04, batch-card index, and next-action gates
-- `effigy package:api`
+- xAI package API baseline diff
 - `git diff --check`
 
 `effigy doctor` remains blocked by the repository's inherited god-file scan
 (371 findings: 326 warnings and 45 errors); the post-fix count matches the
 `origin/main` baseline and no new doctor finding was introduced by this
 route-local work. The doctor report also retains its existing graph-index and
-generated-in-source warnings.
+generated-in-source warnings. The full workspace `effigy package:api` gate was
+attempted in both the repository and an isolated target, but the host returned
+`EMFILE` (`Too many open files in system`) while documenting unrelated
+workspace/ACP crates. The xAI package baseline comparison passed exactly.
 
 ## Deferred Shared-Surface Delta
 

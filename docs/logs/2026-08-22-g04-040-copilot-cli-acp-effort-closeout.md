@@ -6,8 +6,8 @@ Milestone: g04.040
 Cards: 110 complete; 111-112 blocked
 Branch: `t3code/copilot-cli-acp-effort`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-4f3ec348`
-PR: pending
-Implementation head: pending
+PR: [#39](https://github.com/inflatable-cookie/swallowtail/pull/39)
+Implementation head: `b40637ec`
 
 Card 110 froze official ACP-server documentation and exact `@github/copilot`
 `1.0.80` package evidence. Research 188 admits no deliver-now portable

@@ -1084,3 +1084,21 @@ The next planning checkpoint must reassess the remaining promoted inventory
 against current production-route and contract truth, choose one coherent
 route-local control family, and compile g04.043. New-route research does not
 pre-empt this programme.
+
+## OpenAI Background Search Selection (2026-08-22)
+
+The reassessment selects provider-owned web search on `openai.background` for
+[`g04.043`](../roadmaps/g04/043-openai-background-hosted-search.md). Current
+official OpenAI surfaces name the non-preview Responses `web_search` tool for
+new integrations, show it on `gpt-5.6`, expose a maximum total built-in-tool-
+call field, and can include complete source evidence. The production route
+already owns the matching model, public API-key billing boundary, background
+execution, stream reattachment, retrieval, cancellation, deletion, detachment,
+and reconciliation. Contract 041 and the portable external-search policy are
+already realized.
+
+Research 191 and cards 119-121 form one serial evidence-first lane. Card 119
+must still prove the exact background request, positive bound, source/activity
+events, existing-control combinations, retained lifecycle, and facade revision.
+No tool, model, route, or capability claim follows from selection. Rich search
+configuration and later feature families remain unselected.

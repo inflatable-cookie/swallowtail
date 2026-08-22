@@ -80,12 +80,17 @@ families do not interrupt this programme by default.
   exact `3.0.55` ACP discards the parsed selection and headless model-entitles
   it while the route selects no model. Cards 117-118 are blocked and both
   `reasoning_selection` cells remain `No`.
+- [g04.043 OpenAI Background Hosted Search](./043-openai-background-hosted-search.md)
+  is ready. Research 191 and cards 119-121 qualify the exact `gpt-5.6`
+  Responses `web_search` tool on `openai.background` and bind only a bounded
+  Contract 041 deliver-now subset.
 
 ## Next Planning Boundary
 
-Reassess the remaining promoted inventory against current production-route and
-contract truth, select one coherent route-local control family, and compile
-g04.043. Do not let new-route research pre-empt the feature-completion lane.
+Execute g04.043 cards 119-121 in one serial worker lane. Card 119 must freeze
+exact current Responses/model/facade, request-bound, source, activity, and
+background-lifecycle truth. Cards 120-121 remain conditional on Research 191
+deliver-now rows.
 
 ## Exclusions
 

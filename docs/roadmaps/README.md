@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted per-route feature inventory, select one
-coherent production-route control family, and compile g04.043. New-route
-research does not pre-empt this lane; Contract 029 currentness stays standing.
+Execute g04.043 cards 119-121 for bounded provider-owned web search on
+`openai.background` in one serial worker lane. Card 119 freezes exact current
+Responses/model/facade evidence; cards 120-121 run only for Research 191
+deliver-now rows. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

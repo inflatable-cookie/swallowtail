@@ -121,7 +121,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-None. g04.043 is not yet compiled.
+- [121-openai-background-search-acceptance.md](./121-openai-background-search-acceptance.md) — conditional on card 120
+- [120-openai-background-search-binding.md](./120-openai-background-search-binding.md) — conditional on card 119
+- [119-openai-background-search-evidence.md](./119-openai-background-search-evidence.md) — ready
 
 ## Blocked
 

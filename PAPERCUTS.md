@@ -5,6 +5,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] evidence-download cwd steals later repo commands — 2026-08-22
+- Friction: a disposable evidence directory became the persistent shell cwd, so later `effigy` and `git diff --check` ran outside the worktree.
+- Impact: card-gate commands fail with missing-catalog or "not a git repository" errors after an otherwise successful evidence fetch.
+- Fix: `cd` back to the worktree after temp-dir evidence work, or run later repo commands with an explicit working directory.
+- Surface: agent shell sessions that download provider evidence outside the worktree.
+
 ### [ ] zsh special variables break ordinary shell snippets — 2026-08-22
 - Friction: authority-read snippets used `path` and `status` as ordinary
   variables; zsh hid the executable search path for the former and rejected

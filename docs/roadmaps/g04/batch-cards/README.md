@@ -2,6 +2,7 @@
 
 ## Completed
 
+- [116-cline-thinking-control-evidence.md](./116-cline-thinking-control-evidence.md)
 - [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md)
 - [114-qwen-headless-reasoning-effort-binding.md](./114-qwen-headless-reasoning-effort-binding.md)
 - [113-qwen-headless-reasoning-effort-evidence.md](./113-qwen-headless-reasoning-effort-evidence.md)
@@ -120,11 +121,11 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [118-cline-thinking-control-acceptance.md](./118-cline-thinking-control-acceptance.md) — conditional on card 117
-- [117-cline-thinking-control-binding.md](./117-cline-thinking-control-binding.md) — conditional on card 116
-- [116-cline-thinking-control-evidence.md](./116-cline-thinking-control-evidence.md) — ready
+None. g04.043 is not yet compiled.
 
 ## Blocked
 
+- [118-cline-thinking-control-acceptance.md](./118-cline-thinking-control-acceptance.md) — no deliver-now route/value row or binding to accept
+- [117-cline-thinking-control-binding.md](./117-cline-thinking-control-binding.md) — Research 190 admits no deliver-now route/value row
 - [112-copilot-cli-acp-effort-acceptance.md](./112-copilot-cli-acp-effort-acceptance.md) — no deliver-now value or binding to prove
 - [111-copilot-cli-acp-effort-binding.md](./111-copilot-cli-acp-effort-binding.md) — Research 188 admits no deliver-now value

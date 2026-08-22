@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.042 cards 116-118 for Cline thinking controls in one serial worker
-lane. Card 116 freezes exact `3.0.55` ACP/headless evidence; cards 117-118 run
-only for Research 190 deliver-now route/value rows. Contract 029 currentness
-stays standing.
+Reassess the remaining promoted per-route feature inventory, select one
+coherent production-route control family, and compile g04.043. New-route
+research does not pre-empt this lane; Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

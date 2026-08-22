@@ -75,16 +75,17 @@ families do not interrupt this programme by default.
   113-115 realize exact `0.21.15` process-private reasoning selection for
   `qwen3.8-max` and `qwen3.8-max-preview` across runs, turns, resume, and fresh
   replacement.
-- [g04.042 Cline Thinking Controls](./042-cline-thinking-controls.md) is ready.
-  Research 190 and cards 116-118 classify `cline.acp` and `cline.headless`
-  independently and bind only exact deliver-now route/value rows.
+- [g04.042 Cline Thinking Controls](./042-cline-thinking-controls.md) stopped
+  after card 116 and merged through PR 41 at `27b34c7d`. Research 190 proves
+  exact `3.0.55` ACP discards the parsed selection and headless model-entitles
+  it while the route selects no model. Cards 117-118 are blocked and both
+  `reasoning_selection` cells remain `No`.
 
 ## Next Planning Boundary
 
-Execute g04.042 cards 116-118 in one serial worker lane. Card 116 must resolve
-current official versus exact `3.0.55` syntax, omission, model, normalization,
-and lifetime truth separately for `cline.acp` and `cline.headless`. Cards
-117-118 remain conditional on Research 190 deliver-now rows.
+Reassess the remaining promoted inventory against current production-route and
+contract truth, select one coherent route-local control family, and compile
+g04.043. Do not let new-route research pre-empt the feature-completion lane.
 
 ## Exclusions
 

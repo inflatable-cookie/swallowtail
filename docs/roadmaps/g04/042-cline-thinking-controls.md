@@ -1,6 +1,6 @@
 # g04.042 Cline Thinking Controls
 
-Status: stopped
+Status: stopped after evidence; merged through PR 41 at `27b34c7d`
 Owner: Tom
 Created: 2026-08-22
 Updated: 2026-08-22
@@ -143,6 +143,7 @@ and `cline --json --auto-approve false …` boundary, not a new control.
 - next route family: selected by the orchestrator after evidence and merge
   closeout; no later family is precompiled here
 - outcome: stopped after card 116 on both transports
+- merge: PR 41 fast-forwarded onto `main` at reviewed head `27b34c7d`
 
 ## Decision Gates
 

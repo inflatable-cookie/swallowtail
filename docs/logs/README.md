@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-22 g04.042 Cline Thinking Controls Compiled](./2026-08-22-g04-042-cline-thinking-controls-compiled.md)
-- [2026-08-22 g04.042 Cline Thinking Controls Closeout](./2026-08-22-g04-042-cline-thinking-controls-closeout.md) — reserved
+- [2026-08-22 g04.042 Cline Thinking Controls Closeout](./2026-08-22-g04-042-cline-thinking-controls-closeout.md) — stopped after evidence and merged through PR 41 at `27b34c7d`
 - [2026-08-22 g04.041 Qwen Headless Reasoning Effort Compiled](./2026-08-22-g04-041-qwen-headless-reasoning-effort-compiled.md)
 - [2026-08-22 g04.041 Qwen Headless Reasoning Effort Closeout](./2026-08-22-g04-041-qwen-headless-reasoning-effort-closeout.md) — merged through PR 40 at `709d197c`
 - [2026-08-22 g04.040 Copilot CLI ACP Effort Compiled](./2026-08-22-g04-040-copilot-cli-acp-effort-compiled.md)

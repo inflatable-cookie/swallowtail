@@ -1070,3 +1070,17 @@ classified independently despite their shared package axis. Binding is
 conditional on exact `3.0.55` route/value rows that survive omission/default,
 normalization, provider/model, and lifetime checks. No later feature family is
 selected by this compilation.
+
+## Cline Evidence Stop And Next Assessment (2026-08-22)
+
+g04.042 stopped after Research 190 and card 116, then merged through PR 41 at
+`27b34c7d`. Exact `3.0.55` ACP parses and discards thinking selection. Headless
+applies selection only after provider/model resolution, may clamp, substitute,
+remove, or budget-map it, and the production route selects no provider or model
+and receives no applied-tier acknowledgement. Neither route has a deliver-now
+row; cards 117-118 remain blocked.
+
+The next planning checkpoint must reassess the remaining promoted inventory
+against current production-route and contract truth, choose one coherent
+route-local control family, and compile g04.043. New-route research does not
+pre-empt this programme.

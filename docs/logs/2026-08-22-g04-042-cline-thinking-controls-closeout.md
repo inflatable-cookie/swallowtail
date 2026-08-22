@@ -1,6 +1,6 @@
 # 2026-08-22 g04.042 Cline Thinking Controls Closeout
 
-Status: worker complete; evidence stop; awaiting orchestrator review
+Status: stopped after evidence; reviewed and merged
 Owner: Tom
 Milestone: g04.042
 Cards: 116 complete; 117-118 blocked
@@ -10,7 +10,8 @@ Base: `019b2c94c362bdda3675afad5ae579a8ef5add2c` (`origin/main` at dispatch)
 PR: [#41](https://github.com/inflatable-cookie/swallowtail/pull/41)
 Worker implementation head: `c3293090`
 Review: changes requested on `4d2ca7ec`; headless acknowledgement truth corrected
-Merge: none; the worker did not merge
+Reviewed head: `27b34c7daac175621893c41935579a82cec472da`
+Merge: PR 41 fast-forwarded onto `main` at the reviewed head on 2026-08-22
 
 Card 116 froze the current official Cline pages and exact `cline@3.0.55`
 package evidence. Research 190 admits no deliver-now portable reasoning row on
@@ -98,10 +99,9 @@ Unchanged: `crates/swallowtail-adapter-cline/**`, both Cline route fixtures,
 public-API baseline. The guides are silent on thinking today and stay accurate
 without an edit; card 118, which owns them, did not execute.
 
-## Shared-Surface Closeout Delta
+## Shared-Surface Closeout
 
-Deferred to the orchestrator after merge. None of these were edited on the
-worker branch:
+Completed by the orchestrator after the fast-forward merge:
 
 - `docs/architecture/system-architecture.md`: record that Cline thinking was
   evidenced on exact `3.0.55` and withheld on both transports — ACP discards
@@ -121,7 +121,11 @@ worker branch:
   `docs/logs/README.md`: refresh status text only. Research 190 and this log
   remain pre-indexed.
 - `release-baselines/public-api-*/packages.txt`: no change.
-- matrix-assertion tests: no change expected while both cells stay `No`.
+- matrix-assertion tests: unchanged while both cells stay `No`.
+
+The sole generation pointer now selects the next per-route feature-family
+assessment and g04.043 compilation. No later implementation family was chosen
+without that reassessment.
 
 ## Validation
 
@@ -143,8 +147,14 @@ Passed:
 - `git diff --check`
 
 `effigy doctor` reproduces the inherited baseline unchanged: 371 god-file
-findings (326 warnings, 45 errors) plus one generated-in-src warning. This lane
-created no new finding and no `PAPERCUTS.md` entry.
+findings (326 warnings, 45 errors), one stale graph-index warning, and one
+generated-in-src warning. This lane created no new finding and no
+`PAPERCUTS.md` entry.
+
+After merge, the orchestrator additionally passed `effigy qa:northstar`,
+`effigy qa:routes`, the research/log/roadmap/g04/batch-card index checks, the
+roadmap next-action check, `effigy test --plan`, and `git diff --check` on the
+shared closeout delta.
 
 Card 117 and 118 binding-only gates had no subject: there is no typed input,
 plan constraint, prepared evidence, driver binding, or argv delta to exercise.

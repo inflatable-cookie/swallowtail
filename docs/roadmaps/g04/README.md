@@ -51,9 +51,11 @@ and selection policy.
 - [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, completed
 - [g04.035 Cursor Headless Model Parameters](035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [g04.036 Ollama Attached Context Window](036-ollama-attached-context-window.md) — complete, cards 098-100
+- [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — ready, cards 101-103
+- [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — ready, cards 104-106
 
-Do not roll over: 36 numbered roadmaps exist; 001-035 are complete and 036 is ready,
-target 30-50.
+Do not roll over: 38 numbered roadmaps exist; 001-035 are complete and 036-038
+are ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -86,6 +88,13 @@ target 30-50.
   evidence, added typed headless binding, and proved bounded dispatch
 - g04.036 is complete: cards 098-100 froze exact Ollama `num_ctx` evidence,
   added adapter-local binding, and proved bounded native dispatch
+  adapter-local binding, and deterministic native-request acceptance
+- g04.037 is ready: cards 101-103 cover exact Anthropic Messages effort
+  evidence, portable reasoning binding, and deterministic dispatch acceptance
+- g04.038 is ready: cards 104-106 cover exact DeepSeek effort/thinking
+  evidence, continuation-safe binding, and deterministic replay acceptance
+- g04.036-038 may execute concurrently in isolated worktrees. Their fixed
+  integration order is Ollama, Anthropic, then DeepSeek
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -95,7 +104,8 @@ target 30-50.
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Compile g04.037 Anthropic Messages `output_config.effort`. Contract 029
+2. Execute g04.036-038 as isolated route-family lanes. Keep each lane internally
+   serial and integrate Ollama, Anthropic, then DeepSeek. Contract 029
    currentness remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -105,6 +115,8 @@ New route-family research does not pre-empt this sequence.
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
 - [036 Ollama Attached Context Window](./036-ollama-attached-context-window.md) — complete, cards 098-100
+- [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — ready, cards 101-103
+- [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — ready, cards 104-106
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

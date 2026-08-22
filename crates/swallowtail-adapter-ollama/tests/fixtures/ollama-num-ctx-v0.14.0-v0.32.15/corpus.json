@@ -45,8 +45,13 @@
   "runner_struct_field": "Runner.NumCtx",
   "chat_request_options": "ChatRequest.Options map[string]any",
   "wire_integer_domain": "positive JSON integers accepted as int64 or float64 and stored as Go int",
-  "swallowtail_positive_domain": "1..=4294967295",
+  "swallowtail_positive_domain": "4..=2147483647",
   "server_zero_semantics": "omitted or zero selects server default context; Swallowtail fails closed before dispatch",
+  "server_schedule_adjustments": {
+    "minimum_before_runner": 4,
+    "vision_minimum": 2048,
+    "training_context_clamp": "llm.NewLlamaServer and scheduler paths may lower NumCtx to model training context"
+  },
   "runtime_side_effects": [
     "runner load or reload when num_ctx changes",
     "memory pressure on externally owned runtime",
@@ -55,15 +60,23 @@
   ],
   "official_documentation": {
     "chat_api_url": "https://docs.ollama.com/api/chat",
-    "show_api_url": "https://docs.ollama.com/api-reference/show-model-details"
+    "generate_api_url": "https://docs.ollama.com/api/generate",
+    "faq_url": "https://docs.ollama.com/faq",
+    "faq_excerpt": "faq-num-ctx-v0.32.15.mdx.excerpt",
+    "api_generate_options_excerpt": "api-generate-options-num-ctx-v0.32.15.md.excerpt",
+    "sched_get_runner_excerpt": "sched-get-runner-num-ctx-v0.32.15.go.excerpt"
   },
   "profile_dispositions": {
     "structured_run": "deliver-now",
     "interactive_session": "deliver-now"
   },
   "representative_values": {
-    "minimum": 1,
+    "minimum": 4,
     "representative": 8192,
-    "maximum": 4294967295
+    "maximum": 2147483647
+  },
+  "wire_only_values": {
+    "1..=3": "dispatchable on the wire but raised to 4 before runner scheduling on exact v0.32.15 source",
+    "2147483648..=4294967295": "evidence-gated; exceeds positive signed Go int ceiling used for admission"
   }
 }

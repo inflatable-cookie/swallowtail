@@ -10,6 +10,8 @@
 mod activity;
 mod addable;
 mod context_window;
+
+pub(crate) use context_window::validate_context_window_agreement;
 mod driver;
 mod failure;
 mod prepared;
@@ -23,7 +25,7 @@ pub use addable::{
     OLLAMA_ATTACHED_ADDABLE_ROUTE_ID, OLLAMA_ATTACHED_ENDPOINT_FIELD_ID,
     ollama_attached_addable_route_descriptor,
 };
-pub use context_window::OllamaContextWindow;
+pub use context_window::{OllamaContextWindow, MAXIMUM, MINIMUM};
 pub use driver::OllamaNativeAttachedDriver;
 pub use prepared::{
     OllamaPreparationInput, OllamaPreparationProbe, OllamaPreparedIntegration,

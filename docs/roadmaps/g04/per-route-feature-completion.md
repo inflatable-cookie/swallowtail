@@ -53,7 +53,27 @@ families do not interrupt this programme by default.
 - [g04.036 Ollama Attached Context Window](./036-ollama-attached-context-window.md)
   is complete. Research 184, cards 098-100, and adapter-local `options.num_ctx`
   dispatch are realized on `ollama.attached`.
-- Next: compile Anthropic Messages `output_config.effort` as g04.037.
+- [g04.037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) is
+  ready. Cards 101-103 start with exact model/value/profile evidence and bind
+  only Research 185 deliver-now `output_config.effort` mappings.
+- [g04.038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md)
+  is ready. Cards 104-106 separate effort from thinking mode and preserve
+  private continuation through only Research 186 deliver-now mappings.
+- The three route families may execute concurrently. Each lane remains serial;
+  integrate Ollama, then Anthropic, then DeepSeek. Compile xAI after this wave.
+
+## Parallel Execution Boundary
+
+The Ollama, Anthropic, and DeepSeek workers own only their route crate, fixtures,
+prepared guide, numbered milestone and cards, reserved research record, reserved
+closeout log, and package-specific public API baseline. Anthropic and DeepSeek
+must not edit shared architecture, route/feature matrices, changelog, programme,
+roadmap front doors, indexes, or `packages.txt` while Ollama is in flight.
+
+The orchestrator reconciles those shared surfaces after review and merge in the
+fixed order Ollama, Anthropic, DeepSeek. A worker reports the required shared
+delta in its closeout record and PR body; it does not apply that delta on its
+parallel branch.
 
 ## Exclusions
 

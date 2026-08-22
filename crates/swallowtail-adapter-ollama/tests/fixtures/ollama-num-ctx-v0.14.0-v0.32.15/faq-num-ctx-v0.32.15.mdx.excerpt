@@ -1,0 +1,15 @@
+## How can I specify the context window size?
+
+By default, Ollama uses a context window size of 4096 tokens.
+
+When using the API, specify the `num_ctx` parameter:
+
+```shell
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2",
+  "prompt": "Why is the sky blue?",
+  "options": {
+    "num_ctx": 4096
+  }
+}'
+```

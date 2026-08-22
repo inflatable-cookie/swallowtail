@@ -42,9 +42,17 @@ impl OllamaNativeAttachedDriver {
         Self::default()
     }
 
-    /// Binds one exact native `options.num_ctx` value for subsequent dispatch.
+    /// Creates a driver bound to the exact context selection in prepared evidence.
     #[must_use]
-    pub fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+    pub fn bound_to_prepared_evidence(evidence: &crate::OllamaPreparedEvidence) -> Self {
+        let mut driver = Self::new();
+        if let Some(context_window) = evidence.context_window() {
+            driver = driver.with_context_window(context_window);
+        }
+        driver
+    }
+
+    pub(crate) fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
         self.context_window = Some(context_window);
         self
     }

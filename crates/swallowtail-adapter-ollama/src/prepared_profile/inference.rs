@@ -53,6 +53,11 @@ impl OllamaPreparedInferenceAttempt {
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         let driver = self.low_level_driver();
+        if let Err(error) =
+            super::plan::validate_prepared_context_window_binding(&driver, &self.evidence)
+        {
+            return Box::pin(async move { Err(error) });
+        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.start_run(plan, request, services).await })

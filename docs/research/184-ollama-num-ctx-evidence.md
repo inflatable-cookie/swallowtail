@@ -15,10 +15,10 @@ capability?
 ## Method
 
 Inspected exact official tagged source at `0.14.0`, `0.18.0`, `0.30.0`,
-`0.32.1`, `0.32.14`, and `0.32.15`; froze current official chat API
-documentation; and confirmed the prepared route rejects remote/cloud model detail.
-No runtime was started and no model request, authentication, install, pull,
-unload, or host change ran.
+`0.32.1`, `0.32.14`, and `0.32.15`; froze current official FAQ and native API
+documentation specimens; and confirmed the prepared route rejects remote/cloud
+model detail. No runtime was started and no model request, authentication,
+install, pull, unload, or host change ran.
 
 Frozen corpus:
 `crates/swallowtail-adapter-ollama/tests/fixtures/ollama-num-ctx-v0.14.0-v0.32.15/`.
@@ -41,19 +41,44 @@ Across every qualification point:
 - `Options.FromMap` accepts JSON integers as `int64` or `float64`
 - `/api/chat` remains the native request surface
 
+## Official documentation specimens
+
+| Surface | Source | Frozen specimen |
+| --- | --- | --- |
+| FAQ context-window API example | `docs/faq.mdx` at `v0.32.15` | `faq-num-ctx-v0.32.15.mdx.excerpt` |
+| Native API generate options example | `docs/api.md` at `v0.32.15` | `api-generate-options-num-ctx-v0.32.15.md.excerpt` |
+| Scheduler minimum and vision floor | `server/sched.go` at `v0.32.15` | `sched-get-runner-num-ctx-v0.32.15.go.excerpt` |
+| Training-context clamp | `llm/server.go` at `v0.32.15` | cited in corpus metadata |
+
+Current official URLs checked on 2026-08-22:
+
+- https://docs.ollama.com/api/chat
+- https://docs.ollama.com/api/generate
+- https://docs.ollama.com/faq
+
 ## Numeric domain
 
 | Input | Disposition |
 | --- | --- |
-| positive integer `1..=4294967295` | deliver-now |
+| positive integer `4..=2147483647` | deliver-now |
+| `1..=3` | wire-only; exact `v0.32.15` scheduler raises to `4` before runner scheduling |
 | zero | fail closed before dispatch |
 | negative representation | fail closed before dispatch |
-| values above `u32::MAX` | fail closed before dispatch |
+| values above `2147483647` | fail closed before dispatch |
+| values above `4294967295` | fail closed before dispatch |
 
 Swallowtail encodes the exact selected positive integer as JSON `num_ctx` beside
-`num_predict`. Ollama may apply server defaults when the field is absent, clamp
-to model training context, reload the runner, truncate prompts, or reject the
-request. Those outcomes remain provider/runtime truth.
+`num_predict`. The admitted ceiling is `i32::MAX` because the tagged wire field
+is a signed Go `int`; dispatch does not prove the value survives scheduler
+minimum floors, vision-model raises, training-context clamps, reload, or
+effective allocation.
+
+Exact `v0.32.15` scheduler truth on the qualified attached text route:
+
+- `opts.NumCtx < 4` becomes `4` in `Scheduler.getRunner`
+- vision-capable models raise to at least `2048`; the prepared text subset does
+  not admit vision-only selection through this route
+- `llm.NewLlamaServer` clamps above model training context with a warning
 
 ## Operation profile disposition
 
@@ -68,7 +93,7 @@ request. Those outcomes remain provider/runtime truth.
 
 | Surface | Disposition |
 | --- | --- |
-| `/api/generate` | intentionally withheld |
+| `/api/generate` | intentionally withheld from binding; documentation retained as sibling evidence only |
 | OpenAI-compatible endpoints | intentionally withheld |
 | Ollama Cloud | intentionally withheld |
 | `OLLAMA_CONTEXT_LENGTH` / Modelfile / CLI `ollama run` | not-applicable to request-local dispatch |
@@ -83,7 +108,10 @@ effective context allocation, truncation outcome, or resource feasibility.
 
 ## Primary sources
 
-- exact tagged `api/types.go` on all six qualification points
+- exact tagged `api/types.go`, `server/sched.go`, and `llm/server.go` on all six
+  qualification points
 - [Ollama chat API](https://docs.ollama.com/api/chat)
+- [Ollama generate API](https://docs.ollama.com/api/generate)
+- [Ollama FAQ](https://docs.ollama.com/faq)
 - existing `ollama.native-text-v1` fixture boundary for `/api/chat`, reasoning,
   structured output, and interactive replay

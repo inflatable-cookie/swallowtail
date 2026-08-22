@@ -1,4 +1,4 @@
-# 2026-08-22 g04-036 Ollama Num Ctx Closeout
+# 2026-08-22 g04.036 Ollama Num Ctx Closeout
 
 Date: 2026-08-22
 Milestone: g04.036
@@ -10,19 +10,19 @@ Status: complete
 `ollama.attached` is the second per-route feature milestone:
 
 - Card 098 promoted Research 184 with exact tagged-source evidence across six
-  qualification points, a positive `1..=4294967295` domain, and deliver-now
-  structured-run and interactive-session profiles.
-- Card 099 added adapter-local `OllamaContextWindow`, `with_context_window` on
-  inference and session inputs, prepared evidence retention, bound low-level
-  driver construction, and exact `options.num_ctx` encoding beside
+  qualification points, FAQ and native API specimens, scheduler minimum and
+  vision-floor paths, and a deliver-now domain of `4..=2147483647`.
+- Card 099 added adapter-local `OllamaContextWindow`,
+  `bound_to_prepared_evidence`, prepared evidence retention, fail-closed
+  evidence/driver agreement, and exact `options.num_ctx` encoding beside
   `num_predict`.
-- Card 100 proved absent-path byte identity, boundary values, evidence/driver
-  agreement, and bounded dispatch-only documentation without a portable
-  context-window capability.
+- Card 100 proved absent-path byte identity, session replay and restoration
+  dispatch, boundary values, and bounded dispatch-only documentation without a
+  portable context-window capability.
 
 Dispatch may load or reload a runner and change memory pressure on the
-externally owned runtime. Provider acceptance, effective allocation, and
-resource feasibility remain separate states under Contract 040.
+externally owned runtime. Provider acceptance, effective allocation, scheduler
+raises, and resource feasibility remain separate states under Contract 040.
 
 ## Validation
 
@@ -36,5 +36,6 @@ resource feasibility remain separate states under Contract 040.
 
 ## Next
 
-Compile Anthropic Messages `output_config.effort` as the next numbered
-per-route feature milestone. Contract 029 currentness remains standing.
+The orchestrator reconciles shared programme, roadmap, matrix, and changelog
+surfaces after the parallel g04.036-038 wave. Anthropic and DeepSeek lanes
+remain on their compiled milestones.

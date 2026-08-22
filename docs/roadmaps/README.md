@@ -14,8 +14,10 @@ shape.
 
 ## Next Task
 
-Compile g04.037 Anthropic Messages `output_config.effort` as the next numbered
-per-route feature milestone. Contract 029 currentness remains a standing lane.
+Implement the parallel per-route feature wave: g04.036 cards 098-100 for Ollama
+attached `num_ctx`, g04.037 cards 101-103 for Anthropic Messages effort, and
+g04.038 cards 104-106 for DeepSeek reasoning controls. Keep each route serial
+internally and integrate in that order. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

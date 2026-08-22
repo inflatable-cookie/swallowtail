@@ -1,0 +1,14 @@
+// Excerpt from github.com/ollama/ollama server/sched.go at tag v0.32.15
+// commit b7871fc0d1d82fe109536efa3e0e8e411c766c75
+
+func (s *Scheduler) getRunner(...) (chan *runnerRef, chan error) {
+	if opts.NumCtx < 4 {
+		opts.NumCtx = 4
+	}
+
+	if m.CheckCapabilities(model.CapabilityVision) == nil {
+		// multimodal models require at least 2048 context
+		opts.NumCtx = max(opts.NumCtx, 2048)
+	}
+	// ...
+}

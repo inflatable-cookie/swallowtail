@@ -314,6 +314,108 @@ fn prepared_generation_controls_require_model_evidence_and_exact_constraints() {
 }
 
 #[test]
+fn prepared_session_context_window_replays_fixed_value_across_turns_and_restoration() {
+    let fixture = Fixture::with_server(FixtureServer::start_with(
+        VersionFixture::Expected,
+        StreamFixture::InteractiveFailureThenSuccess,
+    ));
+    let prepared = prepared(&fixture);
+    let context = OllamaContextWindow::new(NonZeroU32::new(8192).expect("value is nonzero"));
+    let profile = prepared
+        .prepare_session(
+            session_input("ollama-context-session").with_context_window(context),
+        )
+        .expect("session prepares");
+    let services = fixture.services();
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+
+    for (index, content, expected) in [
+        (1, "First fixture turn", TerminalStatus::Completed),
+        (
+            2,
+            "failed fixture turn",
+            TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.ollama.stream_failed",
+                "Ollama reported a stream failure",
+            )),
+        ),
+        (3, "retry fixture turn", TerminalStatus::Completed),
+    ] {
+        let mut turn = block_on(session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new(format!("ollama-context-{index}")).expect("valid turn"),
+                OperationContent::new(content).expect("valid content"),
+            ),
+            services.clone(),
+        ))
+        .expect("turn starts");
+        let outcome = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        assert_eq!(outcome.status(), &expected);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    }
+
+    for body in fixture.server.inference_bodies() {
+        let request: serde_json::Value =
+            serde_json::from_slice(&body).expect("request body is JSON");
+        assert_eq!(request["options"]["num_ctx"], 8192);
+    }
+
+    let retry: serde_json::Value = serde_json::from_slice(
+        fixture
+            .server
+            .inference_bodies()
+            .last()
+            .expect("retry request exists"),
+    )
+    .expect("retry request is JSON");
+    let messages = retry["messages"]
+        .as_array()
+        .expect("retry messages are an array");
+    assert_eq!(messages.len(), 3);
+    assert_eq!(messages[0]["content"], "First fixture turn");
+    assert_eq!(messages[2]["content"], "retry fixture turn");
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let restoration = profile.prepare_working_state_restoration(
+        RuntimeTurnId::new("ollama-context-interrupted").expect("turn id"),
+    );
+    let restored = block_on(restoration.restore(services.clone())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replacement) = restored else {
+        panic!("fresh session replacement expected");
+    };
+    let (_, mut replacement) = replacement.into_parts();
+    let mut turn = block_on(replacement.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("ollama-context-restored").expect("valid turn"),
+            OperationContent::new("restored fixture turn").expect("valid content"),
+        ),
+        services,
+    ))
+    .expect("restored turn starts");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+
+    let restored_body: serde_json::Value = serde_json::from_slice(
+        fixture
+            .server
+            .inference_bodies()
+            .last()
+            .expect("restored request exists"),
+    )
+    .expect("restored request is JSON");
+    assert_eq!(restored_body["options"]["num_ctx"], 8192);
+    assert_eq!(restored_body["messages"].as_array().expect("messages").len(), 1);
+}
+
+#[test]
 fn prepared_context_window_binds_evidence_driver_and_native_body() {
     let fixture = Fixture::new();
     let prepared = prepared(&fixture);

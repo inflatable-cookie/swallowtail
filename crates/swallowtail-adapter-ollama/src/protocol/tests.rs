@@ -226,14 +226,14 @@ fn malformed_disconnect_unsupported_and_http_errors_are_safe() {
 
 #[test]
 fn context_window_encodes_beside_num_predict_without_changing_absent_chat() {
-    use std::num::NonZeroU32;
+    use crate::{MAXIMUM, MINIMUM};
     let absent = Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None)
         .expect("absent path encodes");
     let absent_body: Value =
         serde_json::from_slice(&absent.body.expect("absent body")).expect("absent JSON parses");
     assert!(absent_body["options"].get("num_ctx").is_none());
 
-    for value in [1_u32, 8192, u32::MAX] {
+    for value in [MINIMUM, 8192, MAXIMUM] {
         let request = Request::chat_with_context_window(
             "fixture-model:8b",
             "Fixture prompt",

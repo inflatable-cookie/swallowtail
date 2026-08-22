@@ -1,12 +1,13 @@
 use super::input::XaiSessionProfileInput;
 use super::plan::{XaiPreparedEvidence, build_plan, instance_with_capabilities, model_route};
+use crate::controls::GenerationControls;
 use crate::{XaiPreparedIntegration, XaiWebSocketDriver};
 use swallowtail_core::PreflightPlan;
 use swallowtail_core::{CapabilityProfile, CapabilityRequirement};
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     OpenSessionRequest, PreparationFailure, PreparedWorkingStateRestoration, RuntimeFailure,
-    RuntimeTurnId,
+    RuntimeTurnId, SessionOptions,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -80,13 +81,27 @@ impl XaiPreparedIntegration {
         &self,
         input: XaiSessionProfileInput,
     ) -> Result<XaiPreparedResponsesSession, PreparationFailure> {
-        let (request_id, model, deadline) = input.into_parts();
+        let (request_id, model, deadline, reasoning, maximum_output_tokens) = input.into_parts();
+        crate::controls::validate_preparation(
+            model.model_id(),
+            reasoning.as_ref(),
+            maximum_output_tokens,
+        )?;
+        let controls = GenerationControls {
+            reasoning,
+            maximum_output_tokens,
+        };
         let activity = crate::activity::profile::activity_profile();
         let base_requirements =
             crate::xai_responses_requirements(self.instance().execution_host_id().clone());
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
             &activity,
+        );
+        let capabilities = crate::controls::with_capabilities(
+            capabilities,
+            controls.reasoning.as_ref(),
+            controls.maximum_output_tokens,
         );
         let requirements = base_requirements.with_capabilities(capabilities.iter().map(
             |(capability, constraints)| {
@@ -96,9 +111,13 @@ impl XaiPreparedIntegration {
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let request = OpenSessionRequest::resource_free_from_plan(&plan, request_id, deadline)?;
+        let mut request = OpenSessionRequest::resource_free_from_plan(&plan, request_id, deadline)?;
+        if let Some(reasoning) = controls.reasoning.clone() {
+            request =
+                request.with_options(SessionOptions::default().with_reasoning_mode(reasoning));
+        }
         Ok(XaiPreparedResponsesSession {
-            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity)?,
+            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity, controls)?,
             request,
         })
     }

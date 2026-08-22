@@ -1,4 +1,5 @@
 use crate::RESPONSES_WEBSOCKET_PATH;
+use crate::controls::GenerationControls;
 use crate::failure::failure;
 use crate::protocol::{MAX_FRAME_BYTES, Request, TurnState, TurnUpdate};
 use futures_channel::mpsc;
@@ -92,6 +93,7 @@ impl Connection {
         input: &str,
         continuation: &Arc<Mutex<Option<String>>>,
         chain_valid: &Arc<AtomicBool>,
+        controls: &GenerationControls,
         mut updates: mpsc::Sender<TurnUpdate>,
     ) -> Result<(), RuntimeFailure> {
         if !chain_valid.load(Ordering::SeqCst) {
@@ -99,7 +101,13 @@ impl Connection {
         }
         let request = {
             let continuation = continuation.lock().expect("continuation lock poisoned");
-            Request::turn(model, input, continuation.as_deref())?
+            Request::turn(
+                model,
+                input,
+                continuation.as_deref(),
+                controls.reasoning.as_ref(),
+                controls.maximum_output_tokens,
+            )?
         };
         let mut guard = self.socket.lock().expect("socket lock poisoned");
         let socket = guard.as_mut().ok_or_else(connection_closed)?;
@@ -172,6 +180,7 @@ impl Connection {
         &self,
         model: &str,
         input: &str,
+        controls: GenerationControls,
         updates: mpsc::Sender<TurnUpdate>,
     ) -> Result<(), RuntimeFailure> {
         self.run_turn(
@@ -179,6 +188,7 @@ impl Connection {
             input,
             &Arc::new(Mutex::new(None)),
             &Arc::new(AtomicBool::new(true)),
+            &controls,
             updates,
         )
     }

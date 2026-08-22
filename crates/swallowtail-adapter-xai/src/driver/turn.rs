@@ -3,6 +3,7 @@ pub(super) mod pump;
 use self::pump::{PendingTurn, TurnObservationContext, pump_turn};
 use super::lifecycle::{ActiveTurn, TurnCancellation, join_turn, reap_finished};
 use super::session::XaiSessionHandle;
+use crate::controls::GenerationControls;
 use crate::failure::{failure, unsupported};
 use futures_channel::mpsc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -69,6 +70,10 @@ impl XaiSessionHandle {
         let input = request.content().as_str().to_owned();
         let continuation = Arc::clone(&self.continuation);
         let chain_valid = Arc::clone(&self.chain_valid);
+        let controls = GenerationControls {
+            reasoning: self.reasoning.clone(),
+            maximum_output_tokens: self.maximum_output_tokens,
+        };
         let blocking = self
             .services
             .blocking_work()
@@ -77,7 +82,14 @@ impl XaiSessionHandle {
         let work = blocking.run(
             turn_scope.clone(),
             Box::new(move || {
-                connection.run_turn(&model, &input, &continuation, &chain_valid, updates)
+                connection.run_turn(
+                    &model,
+                    &input,
+                    &continuation,
+                    &chain_valid,
+                    &controls,
+                    updates,
+                )
             }),
         );
         let pending = Arc::new(Mutex::new(Some(PendingTurn {

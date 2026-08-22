@@ -1,5 +1,6 @@
 use super::input::XaiRunProfileInput;
 use super::plan::{XaiPreparedEvidence, build_plan, instance_with_capabilities, model_route};
+use crate::controls::GenerationControls;
 use crate::{XaiPreparedIntegration, XaiWebSocketDriver};
 use swallowtail_core::PreflightPlan;
 use swallowtail_core::{CapabilityProfile, CapabilityRequirement};
@@ -65,13 +66,28 @@ impl XaiPreparedIntegration {
         &self,
         input: XaiRunProfileInput,
     ) -> Result<XaiPreparedResponsesRun, PreparationFailure> {
-        let (request_id, model, content, deadline) = input.into_parts();
+        let (request_id, model, content, deadline, reasoning, maximum_output_tokens) =
+            input.into_parts();
+        crate::controls::validate_preparation(
+            model.model_id(),
+            reasoning.as_ref(),
+            maximum_output_tokens,
+        )?;
+        let controls = GenerationControls {
+            reasoning,
+            maximum_output_tokens,
+        };
         let activity = crate::activity::profile::activity_profile();
         let base_requirements =
             crate::xai_responses_run_requirements(self.instance().execution_host_id().clone());
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
             &activity,
+        );
+        let capabilities = crate::controls::with_capabilities(
+            capabilities,
+            controls.reasoning.as_ref(),
+            controls.maximum_output_tokens,
         );
         let requirements = base_requirements.with_capabilities(capabilities.iter().map(
             |(capability, constraints)| {
@@ -81,13 +97,19 @@ impl XaiPreparedIntegration {
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let mut request =
-            StructuredRunRequest::new(request_id, content, OperationPolicy::offline());
+        let mut policy = OperationPolicy::offline();
+        if let Some(reasoning) = controls.reasoning.clone() {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
+        let mut request = StructuredRunRequest::new(request_id, content, policy);
+        if let Some(maximum_output_tokens) = controls.maximum_output_tokens {
+            request = request.with_maximum_output_tokens(maximum_output_tokens);
+        }
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
         Ok(XaiPreparedResponsesRun {
-            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity)?,
+            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity, controls)?,
             request,
         })
     }

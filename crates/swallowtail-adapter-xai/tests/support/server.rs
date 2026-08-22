@@ -197,7 +197,10 @@ fn read_text(socket: &mut tungstenite::WebSocket<TcpStream>) -> String {
 fn validate_turn(frame: &str, chained: bool) {
     let request: Value = serde_json::from_str(frame).expect("request JSON parses");
     assert_eq!(request["type"], "response.create");
-    assert_eq!(request["model"], "grok-fixture-exact");
+    assert!(matches!(
+        request["model"].as_str(),
+        Some("grok-fixture-exact" | "grok-4.5" | "grok-4.6")
+    ));
     assert_eq!(request["store"], false);
     assert_eq!(request["tools"], serde_json::json!([]));
     assert!(request.get("stream").is_none());

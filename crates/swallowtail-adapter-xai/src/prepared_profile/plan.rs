@@ -1,4 +1,7 @@
 use crate::XaiPreparedIntegration;
+use crate::controls::GenerationControls;
+use std::num::NonZeroU64;
+use swallowtail_core::ReasoningMode;
 use swallowtail_core::{ConfiguredInstance, ModelRoute, OperationRequirements, PreflightPlan};
 use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
@@ -6,6 +9,8 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 /// Inspectable prepared evidence for one xAI Responses operation.
 pub struct XaiPreparedEvidence {
     operation: PreparedOperationEvidence,
+    reasoning: Option<ReasoningMode>,
+    maximum_output_tokens: Option<NonZeroU64>,
 }
 
 impl XaiPreparedEvidence {
@@ -13,6 +18,7 @@ impl XaiPreparedEvidence {
         prepared: &XaiPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        controls: GenerationControls,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
@@ -20,6 +26,8 @@ impl XaiPreparedEvidence {
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
+            reasoning: controls.reasoning,
+            maximum_output_tokens: controls.maximum_output_tokens,
         })
     }
 
@@ -45,6 +53,18 @@ impl XaiPreparedEvidence {
     /// Returns the immutable preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    #[must_use]
+    /// Returns the exact prepared reasoning selection, when present.
+    pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
+        self.reasoning.as_ref()
+    }
+
+    #[must_use]
+    /// Returns the exact prepared maximum-output-token bound, when present.
+    pub const fn maximum_output_tokens(&self) -> Option<NonZeroU64> {
+        self.maximum_output_tokens
     }
 }
 

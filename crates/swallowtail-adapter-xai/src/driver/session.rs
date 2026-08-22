@@ -3,10 +3,11 @@ use super::lifecycle::{ActiveSlot, SessionCancellation, close_active, merge_clea
 use super::{PROVIDER_ID, XaiWebSocketDriver};
 use crate::failure::{failure, unsupported};
 use crate::transport::Connection;
+use std::num::NonZeroU64;
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    CancellationScope, Capability, CapabilityConstraint, PreflightPlan, SessionRef,
+    CancellationScope, Capability, CapabilityConstraint, PreflightPlan, ReasoningMode, SessionRef,
 };
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, HostServices, InteractiveSessionDriver,
@@ -19,6 +20,8 @@ pub(super) struct XaiSessionHandle {
     pub(super) request_id: RequestId,
     pub(super) runtime_id: RuntimeSessionId,
     pub(super) model: String,
+    pub(super) reasoning: Option<ReasoningMode>,
+    pub(super) maximum_output_tokens: Option<NonZeroU64>,
     pub(super) model_route_id: swallowtail_core::ModelRouteId,
     pub(super) access_profile_id: swallowtail_core::AccessProfileId,
     pub(super) scope: ScopeId,
@@ -41,7 +44,7 @@ impl InteractiveSessionDriver for XaiWebSocketDriver {
         Box::pin(async move {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
-            validate_open(&plan, &request, &services)?;
+            let controls = validate_open(&plan, &request, &services)?;
             let model = plan
                 .model_id()
                 .expect("validated model")
@@ -84,6 +87,8 @@ impl InteractiveSessionDriver for XaiWebSocketDriver {
                 request_id: request.request_id().clone(),
                 runtime_id,
                 model,
+                reasoning: controls.reasoning,
+                maximum_output_tokens: controls.maximum_output_tokens,
                 model_route_id,
                 access_profile_id,
                 scope,
@@ -165,7 +170,7 @@ fn validate_open(
     plan: &PreflightPlan,
     request: &OpenSessionRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<crate::controls::GenerationControls, RuntimeFailure> {
     if services.task().is_none()
         || services.blocking_work().is_none()
         || services.time().is_none()
@@ -228,8 +233,19 @@ fn validate_open(
     {
         return Err(unsupported("a working resource"));
     }
-    if !request.options().is_empty() {
+    if request.options().developer_instructions().is_some()
+        || request.options().harness_mode().is_some()
+        || request.options().tools().len() != 0
+        || request.options().idioms().is_some()
+    {
         return Err(unsupported("session options"));
+    }
+    let controls = crate::controls::from_plan(plan)?;
+    if controls.reasoning.as_ref() != request.options().reasoning_mode() {
+        return Err(failure(
+            "swallowtail.xai.generation_control_mismatch",
+            "xAI session reasoning differed between the request and preflight plan",
+        ));
     }
     if let Some(deadline) = request.deadline()
         && services.time().expect("validated time").now() >= deadline.instant()
@@ -239,5 +255,5 @@ fn validate_open(
             "xAI session deadline elapsed before provider work",
         ));
     }
-    Ok(())
+    Ok(controls)
 }

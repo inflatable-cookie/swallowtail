@@ -31,7 +31,7 @@ impl StructuredRunDriver for XaiWebSocketDriver {
         Box::pin(async move {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
-            validate_run(&plan, &request, &services)?;
+            let controls = validate_run(&plan, &request, &services)?;
             let scope = ScopeId::new(format!(
                 "xai-websocket:run:{}",
                 request.request_id().as_str()
@@ -84,7 +84,9 @@ impl StructuredRunDriver for XaiWebSocketDriver {
                 .expect("validated blocking work")
                 .run(
                     scope.clone(),
-                    Box::new(move || work_connection.run_one_response(&model, &input, updates)),
+                    Box::new(move || {
+                        work_connection.run_one_response(&model, &input, controls, updates)
+                    }),
                 );
             let pending = Arc::new(Mutex::new(Some(RunResources {
                 pending: PendingTurn {
@@ -180,7 +182,7 @@ fn validate_run(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<crate::controls::GenerationControls, RuntimeFailure> {
     if services.task().is_none()
         || services.blocking_work().is_none()
         || services.time().is_none()
@@ -234,9 +236,11 @@ fn validate_run(
     if request.structured_output().is_some() {
         return Err(unsupported("structured output"));
     }
-    if request.maximum_output_tokens().is_some() {
-        return Err(unsupported("a maximum output-token override"));
-    }
+    let controls = crate::controls::validate_request(
+        plan,
+        request.policy().reasoning_mode(),
+        request.maximum_output_tokens(),
+    )?;
     validate_policy(request.policy())?;
     if let Some(deadline) = request.deadline()
         && services.time().expect("validated time").now() >= deadline.instant()
@@ -246,12 +250,11 @@ fn validate_run(
             "xAI run deadline elapsed before provider work",
         ));
     }
-    Ok(())
+    Ok(controls)
 }
 
 fn validate_policy(policy: &OperationPolicy) -> Result<(), RuntimeFailure> {
-    if policy.reasoning_mode().is_some()
-        || policy.external_network() != ExternalNetworkPolicy::Denied
+    if policy.external_network() != ExternalNetworkPolicy::Denied
         || policy.external_search() != ExternalSearchPolicy::Disabled
         || policy.provider_execution() != ProviderExecutionPolicy::Attached
         || policy.provider_retention() != ProviderRetentionPolicy::Prohibited
@@ -259,7 +262,7 @@ fn validate_policy(policy: &OperationPolicy) -> Result<(), RuntimeFailure> {
         || policy.stream_reattachment() != StreamReattachmentPolicy::Disabled
     {
         Err(unsupported(
-            "reasoning, network, background, retention, recovery, or reattachment policy",
+            "network, background, retention, recovery, or reattachment policy",
         ))
     } else {
         Ok(())

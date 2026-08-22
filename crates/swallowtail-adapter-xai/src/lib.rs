@@ -8,6 +8,7 @@
 
 mod activity;
 mod catalogue;
+mod controls;
 mod driver;
 mod failure;
 mod prepared;

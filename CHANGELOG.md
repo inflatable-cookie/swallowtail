@@ -5,6 +5,15 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+
+- add typed Cursor headless model parameters (`CursorHeadlessFast`,
+  `CursorHeadlessContext`, `with_fast`, `with_context`, `with_effort`) with
+  Research 183 deliver-now tuples, canonical single-argument `--model`
+  dispatch, and qualified `ReasoningSelection` for high effort on
+  `claude-opus-4-8` and `claude-opus-5` only; dispatch does not prove provider
+  acceptance; g04.035
+
 ### Changed
 
 - Raised qualified Gemini CLI ACP and headless ceilings from their previous

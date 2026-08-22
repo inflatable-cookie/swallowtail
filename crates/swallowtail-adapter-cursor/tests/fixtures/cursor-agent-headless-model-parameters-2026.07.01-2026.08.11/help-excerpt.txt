@@ -1,0 +1,4 @@
+  --model <model>              Model to use (e.g., gpt-5, sonnet-4-thinking).
+                               Parameterized models accept quoted bracket
+                               overrides, e.g.
+                               'claude-opus-4-8[context=1m,effort=high,fast=false]'

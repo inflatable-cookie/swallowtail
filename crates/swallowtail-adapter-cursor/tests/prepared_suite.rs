@@ -5,14 +5,16 @@ use futures_util::StreamExt;
 use std::sync::Arc;
 use swallowtail_adapter_cursor::{
     CURSOR_AGENT_RELEASE_AXIS, CursorAcpSessionProfileInput, CursorCatalogueProfileInput,
-    CursorHeadlessModelSelection, CursorHeadlessRunProfileInput, CursorPreparationInput,
-    CursorPreparationProbe, CursorPreparedDriver, CursorPreparedIntegration,
-    cursor_subscription_access_profile, prepare_cursor,
+    CursorHeadlessContext, CursorHeadlessFast, CursorHeadlessModelSelection,
+    CursorHeadlessRunProfileInput, CursorPreparationInput, CursorPreparationProbe,
+    CursorPreparedDriver, CursorPreparedIntegration, cursor_subscription_access_profile,
+    prepare_cursor,
 };
 use swallowtail_core::{
     AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization, EntitlementState,
     ExecutionHostId, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
-    ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionRef, SupportAuthority,
+    ReasoningMode, ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionRef,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -151,6 +153,113 @@ fn headless_preparation_keeps_read_and_write_authority_distinct() {
 }
 
 #[test]
+fn headless_model_parameters_bind_exact_rendered_model_ids() {
+    let prepared = prepare(CursorPreparedDriver::Headless, host_id()).expect("prepares");
+    let CursorPreparedIntegration::Headless(prepared) = prepared else {
+        panic!("headless route");
+    };
+
+    let composer = prepared
+        .prepare_run(parameterized_input(
+            parameterized_selection("composer-2.5")
+                .expect("selection")
+                .with_fast(CursorHeadlessFast::Standard)
+                .expect("fast"),
+            ResourceAccess::ReadWrite,
+        ))
+        .expect("composer");
+    assert_eq!(
+        composer.plan().model_id().map(ModelId::as_str),
+        Some("composer-2.5[fast=false]")
+    );
+    assert!(composer.request().policy().reasoning_mode().is_none());
+
+    let opus5 = prepared
+        .prepare_run(parameterized_input(
+            parameterized_selection("claude-opus-5")
+                .expect("selection")
+                .with_context(CursorHeadlessContext::ThreeHundredK)
+                .expect("context")
+                .with_effort(ReasoningMode::new("high").expect("effort"))
+                .expect("effort"),
+            ResourceAccess::ReadWrite,
+        ))
+        .expect("opus5");
+    assert_eq!(
+        opus5.plan().model_id().map(ModelId::as_str),
+        Some("claude-opus-5[context=300k,effort=high]")
+    );
+    assert_eq!(
+        opus5
+            .request()
+            .policy()
+            .reasoning_mode()
+            .map(ReasoningMode::as_str),
+        Some("high")
+    );
+
+    let opus48 = prepared
+        .prepare_run(parameterized_input(
+            parameterized_selection("claude-opus-4-8")
+                .expect("selection")
+                .with_context(CursorHeadlessContext::OneMillion)
+                .expect("context")
+                .with_effort(ReasoningMode::new("high").expect("effort"))
+                .expect("effort")
+                .with_fast(CursorHeadlessFast::Standard)
+                .expect("fast"),
+            ResourceAccess::ReadWrite,
+        ))
+        .expect("opus48");
+    assert_eq!(
+        opus48.plan().model_id().map(ModelId::as_str),
+        Some("claude-opus-4-8[context=1m,effort=high,fast=false]")
+    );
+    assert_eq!(
+        opus48
+            .request()
+            .policy()
+            .reasoning_mode()
+            .map(ReasoningMode::as_str),
+        Some("high")
+    );
+}
+
+#[test]
+fn headless_model_parameters_reject_raw_grammar_and_unqualified_tuples() {
+    let prepared = prepare(CursorPreparedDriver::Headless, host_id()).expect("prepares");
+    let CursorPreparedIntegration::Headless(prepared) = prepared else {
+        panic!("headless route");
+    };
+
+    for model in [
+        "claude-opus-4-8[context=1m]",
+        "composer-2.5[fast=true]",
+        "claude-opus-5[context=1m]",
+    ] {
+        let err = prepared
+            .prepare_run(parameterized_input(
+                parameterized_selection(model).expect("selection"),
+                ResourceAccess::Read,
+            ))
+            .expect_err(model);
+        assert!(
+            err.diagnostic().safe().code().contains("model_parameter"),
+            "{model}"
+        );
+    }
+
+    let err = parameterized_selection("composer-2.5")
+        .expect("selection")
+        .with_context(CursorHeadlessContext::ThreeHundredK)
+        .expect_err("composer context");
+    assert_eq!(
+        err.diagnostic().safe().code(),
+        "swallowtail.cursor.headless.model_parameter_rejected"
+    );
+}
+
+#[test]
 fn preparation_rejects_access_and_axis_drift_before_discovery() {
     let host_id = host_id();
     let access_id = AccessProfileId::new("cursor.fixture.access").expect("access id");
@@ -218,17 +327,33 @@ fn evidence(access_id: AccessProfileId) -> PreparedAccessEvidence {
 }
 
 fn headless_input(access: ResourceAccess) -> CursorHeadlessRunProfileInput {
+    parameterized_input(
+        parameterized_selection("fixture-model").expect("selection"),
+        access,
+    )
+}
+
+fn parameterized_selection(
+    model: &str,
+) -> Result<CursorHeadlessModelSelection, PreparationFailure> {
+    Ok(CursorHeadlessModelSelection::new(
+        ModelRouteId::new("cursor.fixture.route").expect("route"),
+        ModelRouteRevision::new("1").expect("revision"),
+        ProviderId::new("cursor").expect("provider"),
+        ModelId::new(model).expect("model"),
+    ))
+}
+
+fn parameterized_input(
+    model: CursorHeadlessModelSelection,
+    access: ResourceAccess,
+) -> CursorHeadlessRunProfileInput {
     CursorHeadlessRunProfileInput::new(
         request_id(match access {
             ResourceAccess::Read => "headless-read",
             ResourceAccess::ReadWrite => "headless-write",
         }),
-        CursorHeadlessModelSelection::new(
-            ModelRouteId::new("cursor.fixture.route").expect("route"),
-            ModelRouteRevision::new("1").expect("revision"),
-            ProviderId::new("cursor").expect("provider"),
-            ModelId::new("fixture-model").expect("model"),
-        ),
+        model,
         OperationContent::new("fixture-private-prompt").expect("prompt"),
         working_resource(),
         access,

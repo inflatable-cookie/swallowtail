@@ -356,10 +356,14 @@ OpenHands adds a package without a production route.
   `2026.08.11-e8db854` through three separate routes:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
-  headless route binds an explicit model and workspace authority, sends prompts
-  on stdin, uses plan mode for read-only execution, projects exact assistant,
-  thinking, correlated tool, usage, and terminal evidence, and joins every
-  cancellation, deadline, success, or failure path. All four qualified calendar
+  headless route binds an explicit model and workspace authority, accepts typed
+  fast, context, and effort on Research 183 deliver-now tuples only, renders
+  them canonically into one `--model` argv, binds qualified high effort to
+  portable `ReasoningSelection` on `claude-opus-4-8` and `claude-opus-5`,
+  sends prompts on stdin, uses plan mode for read-only execution, projects
+  exact assistant, thinking, correlated tool, usage, and terminal evidence,
+  and joins every cancellation, deadline, success, or failure path. Dispatch
+  does not prove provider acceptance. All four qualified calendar
   dates retain exact opaque build gates; the gap is not inferred and later
   dates remain visibly unverified. Raw tool payloads and stderr remain private;
   force flags, implicit sandboxing, and partial-output duplication are not
@@ -1306,9 +1310,11 @@ Cursor now uses the same provider-wide prepared foundation without sharing a
 transport. `prepare_cursor` requires an explicit `Catalogue`, `Acp`, or
 `Headless` branch before executable discovery and returns a route-specific
 prepared integration type. Catalogue binds no model route. ACP binds one
-ambient read-write durable session without model selection. Headless requires
-an explicit model plus read-only or read-write resource authority for one
-durable structured run. Each operation retains exact driver, transport,
+ambient read-write durable session without model selection. Headless requires an explicit model plus read-only or read-write resource
+authority for one durable structured run. Typed fast, context, and effort
+prepare only on Research 183 deliver-now tuples; qualified high effort also
+binds `ReasoningSelection` on the named Opus models. Each operation retains
+exact driver, transport,
 facade, access, host, target, release assessment, and observable-activity
 evidence. The facade adds no fallback, generic prompt method, credential
 extraction, sandbox assumption, or provider-session management claim.

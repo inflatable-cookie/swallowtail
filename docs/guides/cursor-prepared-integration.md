@@ -104,11 +104,35 @@ tool, result, usage, and terminal events before `close`. Cancellation and
 deadline stop the owned child; cleanup joins it. Durable provider state may
 remain, but no management authority escapes.
 
-Reasoning selection, JSON Schema output, attachments, callbacks, and external
-search are not qualified on this route.
+JSON Schema output, attachments, callbacks, and external search are not
+qualified on this route.
 
 See
 [`prepared_cursor_headless`](../../crates/swallowtail-adapter-cursor/examples/prepared_cursor_headless.rs).
+
+## Headless Model Parameters
+
+`CursorHeadlessModelSelection` keeps `new` for plain catalogue model ids. Typed
+parameters are additive and fail closed before provider work:
+
+- `with_fast(CursorHeadlessFast::Standard)` — `fast=false` on `composer-2.5` and
+  `claude-opus-4-8`
+- `with_context(CursorHeadlessContext::OneMillion)` — `context=1m` on
+  `claude-opus-4-8`
+- `with_context(CursorHeadlessContext::ThreeHundredK)` — `context=300k` on
+  `claude-opus-5`
+- `with_effort` with `ReasoningMode::high` — `effort=high` on `claude-opus-4-8`
+  and `claude-opus-5`
+
+Non-empty typed parameters render once in canonical order (`context`, `effort`,
+`fast`) into one exact `--model` value bound by the immutable plan. Bracket,
+comma, or equals grammar in the base model id is rejected. Qualified effort also
+binds portable `ReasoningSelection`; fast and context remain Cursor-local
+selected-model parameters with no portable alias.
+
+Swallowtail claims qualified dispatch only. Provider acceptance and effective
+application remain separate states. See
+[Research 183](../research/183-cursor-headless-model-parameter-evidence.md).
 
 ## Lifecycle And Failure Handling
 
@@ -120,8 +144,10 @@ classification for normal handling and retain exact Cursor codes for support.
 ## Unsupported
 
 Cursor exposes no provider-session import or management, consumer tools,
-permission/question response, attachments, external search, public reasoning
-control, or structured output. Activity does not grant tool or child-control
+permission/question response, attachments, external search, or structured
+output. Headless qualified effort is route-local to the exact Research 183
+Opus tuples; it is not a general reasoning-control surface across Cursor
+routes. Activity does not grant tool or child-control
 authority.
 
 Promotion requires an exact Cursor surface and calendar/build pair,

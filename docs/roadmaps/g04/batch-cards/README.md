@@ -2,6 +2,9 @@
 
 ## Completed
 
+- [097-cursor-headless-model-parameter-acceptance.md](./097-cursor-headless-model-parameter-acceptance.md)
+- [096-cursor-headless-model-parameter-binding.md](./096-cursor-headless-model-parameter-binding.md)
+- [095-cursor-headless-model-parameter-evidence.md](./095-cursor-headless-model-parameter-evidence.md)
 - [094-gemini-cli-0-56-0-claim.md](./094-gemini-cli-0-56-0-claim.md)
 - [093-gemini-cli-0-56-0-identity.md](./093-gemini-cli-0-56-0-identity.md)
 - [092-pi-sdk-sidecar-route-acceptance.md](./092-pi-sdk-sidecar-route-acceptance.md)
@@ -97,11 +100,6 @@
 
 ## Active
 
-- [095-cursor-headless-model-parameter-evidence.md](./095-cursor-headless-model-parameter-evidence.md)
-
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
-
-- [096-cursor-headless-model-parameter-binding.md](./096-cursor-headless-model-parameter-binding.md)
-- [097-cursor-headless-model-parameter-acceptance.md](./097-cursor-headless-model-parameter-acceptance.md)

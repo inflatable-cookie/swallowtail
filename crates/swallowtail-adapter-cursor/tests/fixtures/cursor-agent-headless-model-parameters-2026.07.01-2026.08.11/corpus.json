@@ -1,0 +1,47 @@
+{
+  "axis": "cursor-agent.release-date",
+  "behavior": "cursor-agent.stream-json.structured-v1",
+  "qualified_versions": [
+    "2026.07.01-41b2de7",
+    "2026.07.23-e383d2b",
+    "2026.08.04-aaa8809",
+    "2026.08.11-e8db854"
+  ],
+  "syntax_segment": "Parameterized models accept quoted bracket overrides, e.g. 'claude-opus-4-8[context=1m,effort=high,fast=false]'",
+  "canonical_parameter_order": ["context", "effort", "fast"],
+  "catalogue_note": "cursor-agent models returns plain catalogue identities without parameter descriptors",
+  "artifacts": [
+    {
+      "version": "2026.07.01-41b2de7",
+      "source": "official-darwin-arm64-archive",
+      "archive_url": "https://downloads.cursor.com/lab/2026.07.01-41b2de7/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "48cbf291c2e28d81b79fa0dcbf18ab50bf4ac7772d0e9ab0948ecbd5f5a29158",
+      "executable_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831"
+    },
+    {
+      "version": "2026.07.23-e383d2b",
+      "source": "official-darwin-arm64-archive",
+      "archive_url": "https://downloads.cursor.com/lab/2026.07.23-e383d2b/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "f2eb25851f2079dcdf0558a816e06c402d187abfca93255d35167020439ebbf2",
+      "executable_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831"
+    },
+    {
+      "version": "2026.08.04-aaa8809",
+      "source": "installed-host",
+      "executable_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831"
+    },
+    {
+      "version": "2026.08.11-e8db854",
+      "source": "official-darwin-arm64-archive",
+      "archive_url": "https://downloads.cursor.com/lab/2026.08.11-e8db854/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "46044d6d7bcbd7b49a0cf1cd01aa4ca79aaa2ea5f2c7a32965fc0ebe29841790",
+      "executable_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831"
+    }
+  ],
+  "cli_help_excerpt": "  --model <model>              Model to use (e.g., gpt-5, sonnet-4-thinking).\n                               Parameterized models accept quoted bracket\n                               overrides, e.g.\n                               'claude-opus-4-8[context=1m,effort=high,fast=false]'",
+  "official_documentation": {
+    "subagents_model_parameters_url": "https://cursor.com/docs/subagents.md#model-parameters",
+    "sdk_model_parameters_url": "https://cursor.com/docs/sdk/typescript.md#model-parameters",
+    "sdk_is_sibling_surface": true
+  }
+}

@@ -37,4 +37,20 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn parameterized_model_id_renders_one_model_argument() {
+        let model =
+            ModelId::new("claude-opus-4-8[context=1m,effort=high,fast=false]").expect("model");
+        let arguments = arguments(&model, ResourceAccess::Read);
+        assert!(
+            arguments
+                .windows(2)
+                .any(|pair| pair == ["--model", model.as_str()])
+        );
+        assert_eq!(
+            arguments.iter().filter(|value| *value == "--model").count(),
+            1
+        );
+    }
 }

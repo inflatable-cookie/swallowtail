@@ -19,6 +19,7 @@ mod headless_activity;
 mod headless_command;
 mod headless_events;
 mod headless_handle;
+mod headless_model_parameters;
 mod headless_pump;
 mod headless_validation;
 mod prepared;
@@ -32,6 +33,7 @@ pub use descriptor::{
 };
 pub use discovery::CursorAcpDriver;
 pub use headless::CursorHeadlessDriver;
+pub use headless_model_parameters::{CursorHeadlessContext, CursorHeadlessFast};
 pub use prepared::{
     CursorAcpSessionProfileInput, CursorCatalogueProfileInput, CursorHeadlessModelSelection,
     CursorHeadlessRunProfileInput, CursorPreparationInput, CursorPreparationProbe,

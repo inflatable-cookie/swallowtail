@@ -1,0 +1,106 @@
+pub mod swallowtail_adapter_xai
+pub struct swallowtail_adapter_xai::XaiModelSelection
+impl swallowtail_adapter_xai::XaiModelSelection
+pub const fn swallowtail_adapter_xai::XaiModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_xai::XaiModelsDriver
+impl swallowtail_adapter_xai::XaiModelsDriver
+pub fn swallowtail_adapter_xai::XaiModelsDriver::new() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_xai::XaiModelsDriver
+pub fn swallowtail_adapter_xai::XaiModelsDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_xai::XaiModelsPreparationInput
+impl swallowtail_adapter_xai::XaiModelsPreparationInput
+pub const fn swallowtail_adapter_xai::XaiModelsPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_xai::XaiModelsPreparedIntegration
+impl swallowtail_adapter_xai::XaiModelsPreparedIntegration
+pub const fn swallowtail_adapter_xai::XaiModelsPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_xai::XaiModelsPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_xai::XaiModelsPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_xai::XaiModelsPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_xai::XaiModelsPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_xai::XaiModelsProfileInput) -> core::result::Result<swallowtail_adapter_xai::XaiPreparedModels, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_xai::XaiModelsProfileInput
+impl swallowtail_adapter_xai::XaiModelsProfileInput
+pub const fn swallowtail_adapter_xai::XaiModelsProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_xai::XaiModelsProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_xai::XaiPreparationInput
+impl swallowtail_adapter_xai::XaiPreparationInput
+pub const fn swallowtail_adapter_xai::XaiPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_xai::XaiPreparedEvidence
+impl swallowtail_adapter_xai::XaiPreparedEvidence
+pub const fn swallowtail_adapter_xai::XaiPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_xai::XaiPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_xai::XaiPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_xai::XaiPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_xai::XaiPreparedIntegration
+impl swallowtail_adapter_xai::XaiPreparedIntegration
+pub const fn swallowtail_adapter_xai::XaiPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_xai::XaiPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_xai::XaiPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_xai::XaiPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_xai::XaiPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_xai::XaiWebSocketDriver
+pub fn swallowtail_adapter_xai::XaiPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_xai::XaiPreparedIntegration
+pub fn swallowtail_adapter_xai::XaiPreparedIntegration::prepare_responses_run(&self, swallowtail_adapter_xai::XaiRunProfileInput) -> core::result::Result<swallowtail_adapter_xai::XaiPreparedResponsesRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_xai::XaiPreparedIntegration
+pub fn swallowtail_adapter_xai::XaiPreparedIntegration::prepare_responses_session(&self, swallowtail_adapter_xai::XaiSessionProfileInput) -> core::result::Result<swallowtail_adapter_xai::XaiPreparedResponsesSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_xai::XaiPreparedModels
+impl swallowtail_adapter_xai::XaiPreparedModels
+pub const fn swallowtail_adapter_xai::XaiPreparedModels::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_xai::XaiPreparedModels::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_xai::XaiPreparedModels::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_xai::XaiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_xai::XaiPreparedResponsesRun
+impl swallowtail_adapter_xai::XaiPreparedResponsesRun
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::evidence(&self) -> &swallowtail_adapter_xai::XaiPreparedEvidence
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::into_parts(self) -> (swallowtail_adapter_xai::XaiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::low_level_driver(&self) -> swallowtail_adapter_xai::XaiWebSocketDriver
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_xai::XaiPreparedResponsesSession
+impl swallowtail_adapter_xai::XaiPreparedResponsesSession
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesSession::evidence(&self) -> &swallowtail_adapter_xai::XaiPreparedEvidence
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::into_parts(self) -> (swallowtail_adapter_xai::XaiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::low_level_driver(&self) -> swallowtail_adapter_xai::XaiWebSocketDriver
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_xai::XaiPreparedResponsesSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_xai::XaiRunProfileInput
+impl swallowtail_adapter_xai::XaiRunProfileInput
+pub const fn swallowtail_adapter_xai::XaiRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_xai::XaiModelSelection, swallowtail_runtime::content::OperationContent, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_xai::XaiSessionProfileInput
+impl swallowtail_adapter_xai::XaiSessionProfileInput
+pub const fn swallowtail_adapter_xai::XaiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_xai::XaiModelSelection, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_xai::XaiWebSocketDriver
+impl swallowtail_adapter_xai::XaiWebSocketDriver
+pub fn swallowtail_adapter_xai::XaiWebSocketDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_xai::XaiWebSocketDriver
+pub fn swallowtail_adapter_xai::XaiWebSocketDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_xai::XaiWebSocketDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_xai::XaiWebSocketDriver
+pub fn swallowtail_adapter_xai::XaiWebSocketDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const swallowtail_adapter_xai::RESPONSES_WEBSOCKET_PATH: &str
+pub const swallowtail_adapter_xai::USD_TICKS_PER_USD: u64
+pub const swallowtail_adapter_xai::XAI_MODELS_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_xai::XAI_MODELS_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_xai::XAI_MODELS_ENDPOINT: &str
+pub const swallowtail_adapter_xai::XAI_MODELS_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_xai::XAI_MODELS_FACADE_REVISION: &str
+pub const swallowtail_adapter_xai::XAI_RESPONSES_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_xai::XAI_RESPONSES_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_xai::XAI_RESPONSES_ENDPOINT: &str
+pub const swallowtail_adapter_xai::XAI_RESPONSES_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_xai::XAI_RESPONSES_FACADE_REVISION: &str
+pub fn swallowtail_adapter_xai::prepare_xai_models(swallowtail_adapter_xai::XaiModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_xai::XaiModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_xai::prepare_xai_responses_websocket(swallowtail_adapter_xai::XaiPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_xai::XaiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_xai::xai_models_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_xai::xai_models_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_xai::xai_models_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_xai::xai_responses_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_xai::xai_responses_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_xai::xai_responses_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_xai::xai_responses_instance(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_xai::xai_responses_model_route(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_xai::xai_responses_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_xai::xai_responses_run_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_xai::xai_websocket_descriptor() -> swallowtail_core::registration::DriverDescriptor

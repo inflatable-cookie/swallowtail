@@ -2,7 +2,7 @@ use crate::failure::failure;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
-    PreflightPlan, ResourceAccess, ResourceRepresentation, SupportAuthority,
+    PreflightPlan, ReasoningMode, ResourceAccess, ResourceRepresentation, SupportAuthority,
 };
 use swallowtail_runtime::{
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderExecutionPolicy,
@@ -66,12 +66,10 @@ pub(crate) fn validate(
     }
     if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
-        || request.policy().reasoning_mode().is_some()
     {
-        return Err(unsupported(
-            "consumer network, search, or reasoning selection",
-        ));
+        return Err(unsupported("consumer network or search policy"));
     }
+    validate_reasoning_selection(plan, request.policy().reasoning_mode())?;
     if request.working_resource().is_none() || request.deadline().is_none() {
         return Err(unsupported("missing working resource or host deadline"));
     }
@@ -187,4 +185,38 @@ fn unsupported(feature: &str) -> RuntimeFailure {
         "swallowtail.cursor.headless.unsupported_input",
         format!("Cursor headless does not support {feature}"),
     )
+}
+
+fn validate_reasoning_selection(
+    plan: &PreflightPlan,
+    requested: Option<&ReasoningMode>,
+) -> Result<(), RuntimeFailure> {
+    let mut planned = plan
+        .requirements()
+        .capabilities()
+        .filter(|required| required.capability() == Capability::ReasoningSelection);
+    let Some(planned_requirement) = planned.next() else {
+        return if requested.is_some() {
+            Err(unsupported("unplanned reasoning selection"))
+        } else {
+            Ok(())
+        };
+    };
+    if planned.next().is_some() {
+        return Err(plan_mismatch("reasoning capability"));
+    }
+    let Some(requested) = requested else {
+        return Err(unsupported("missing reasoning selection"));
+    };
+    let mut constraints = planned_requirement.constraints();
+    let Some(planned_constraint) = constraints.next() else {
+        return Err(plan_mismatch("reasoning constraint"));
+    };
+    if constraints.next().is_some() {
+        return Err(plan_mismatch("reasoning constraint"));
+    }
+    if *planned_constraint != CapabilityConstraint::ReasoningMode(requested.clone()) {
+        return Err(plan_mismatch("reasoning selection"));
+    }
+    Ok(())
 }

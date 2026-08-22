@@ -48,10 +48,9 @@ families do not interrupt this programme by default.
 ## Progress
 
 - [g04.035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md)
-  is ready with cards 095-097. It begins with an exact model/parameter/value
-  evidence allowlist, then adds typed plan-bound dispatch.
-- After g04.035 closes, compile Ollama attached `num_ctx` as the next numbered
-  route-local milestone.
+  is complete. Research 183, cards 095-097, and typed headless model-parameter
+  dispatch are realized on `cursor-agent.headless`.
+- Next numbered milestone: compile Ollama attached `num_ctx`.
 
 ## Exclusions
 

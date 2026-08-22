@@ -33,7 +33,10 @@ pub(crate) fn route_instance_shape(
             crate::cursor_headless_descriptor(),
             "cursor-stream-json-v1",
             "cursor-prepared-ambient-explicit-access",
-            headless_capabilities(ResourceAccess::Read),
+            headless_capabilities(
+                ResourceAccess::Read,
+                &crate::headless_model_parameters::CursorHeadlessModelParameters::empty(),
+            ),
         ),
     }
 }
@@ -71,8 +74,11 @@ pub(crate) fn acp_capabilities() -> CapabilityProfile {
     ])
 }
 
-pub(crate) fn headless_capabilities(access: ResourceAccess) -> CapabilityProfile {
-    CapabilityProfile::new([
+pub(crate) fn headless_capabilities(
+    access: ResourceAccess,
+    parameters: &crate::headless_model_parameters::CursorHeadlessModelParameters,
+) -> CapabilityProfile {
+    let mut requirements = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ObservableActivity, []),
@@ -91,7 +97,14 @@ pub(crate) fn headless_capabilities(access: ResourceAccess) -> CapabilityProfile
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ])
+    ];
+    if let Some(effort) = parameters.effort() {
+        requirements.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(effort.clone())],
+        ));
+    }
+    CapabilityProfile::new(requirements)
 }
 
 pub(crate) fn instance_with_capabilities(

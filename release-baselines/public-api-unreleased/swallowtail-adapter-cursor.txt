@@ -1,4 +1,9 @@
 pub mod swallowtail_adapter_cursor
+pub enum swallowtail_adapter_cursor::CursorHeadlessContext
+pub swallowtail_adapter_cursor::CursorHeadlessContext::OneMillion
+pub swallowtail_adapter_cursor::CursorHeadlessContext::ThreeHundredK
+pub enum swallowtail_adapter_cursor::CursorHeadlessFast
+pub swallowtail_adapter_cursor::CursorHeadlessFast::Standard
 pub enum swallowtail_adapter_cursor::CursorPreparedDriver
 pub swallowtail_adapter_cursor::CursorPreparedDriver::Acp
 pub swallowtail_adapter_cursor::CursorPreparedDriver::Catalogue
@@ -47,6 +52,9 @@ pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::start_run(&self, swallo
 pub struct swallowtail_adapter_cursor::CursorHeadlessModelSelection
 impl swallowtail_adapter_cursor::CursorHeadlessModelSelection
 pub const fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_context(self, swallowtail_adapter_cursor::CursorHeadlessContext) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_effort(self, swallowtail_core::model::ReasoningMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_fast(self, swallowtail_adapter_cursor::CursorHeadlessFast) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
 impl swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
 pub const fn swallowtail_adapter_cursor::CursorHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_cursor::CursorHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::session_access::ResourceAccess, swallowtail_runtime::time::Deadline) -> Self

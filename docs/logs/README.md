@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-22 g04.035 Cursor Headless Model Parameters Closeout](./2026-08-22-g04-035-cursor-headless-model-parameters-closeout.md)
 - [2026-08-22 g04.035 Cursor Headless Model Parameters Compiled](./2026-08-22-g04-035-cursor-headless-model-parameters-compiled.md)
 - [2026-08-22 Gemini CLI 0.56.0 Claim](./2026-08-22-gemini-cli-0-56-0-claim.md)
 - [2026-08-22 Gemini CLI 0.56.0 Identity](./2026-08-22-gemini-cli-0-56-0-identity.md)

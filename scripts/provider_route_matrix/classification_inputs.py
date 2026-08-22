@@ -71,7 +71,6 @@ generation_control_classifications = {
     ("structured_output", "oh-my-pi.rpc"): "selected_surface_absence",
     ("output_token_limit", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
     ("output_token_limit", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
-    ("reasoning_selection", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
     ("structured_output", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("output_token_limit", "qwen.headless"): "contract_or_corpus_required",
     ("reasoning_selection", "qwen.headless"): "contract_or_corpus_required",

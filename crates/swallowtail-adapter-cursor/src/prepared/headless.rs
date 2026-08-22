@@ -1,8 +1,13 @@
 use super::CursorPreparedHeadlessIntegration;
+use crate::headless_model_parameters::{
+    CursorHeadlessContext, CursorHeadlessFast, CursorHeadlessModelParameters, render_model_id,
+    validate_combination, validate_plain_model_id,
+};
 use swallowtail_core::{
     CapabilityRequirement, DriverRole, ExecutionLayer, HarnessConfigurationPosture,
     HarnessIsolation, HostServiceKind, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightPlan, ProviderId, ResourceAccess,
+    OperationRequirements, OperationShape, PreflightPlan, ProviderId, ReasoningMode,
+    ResourceAccess,
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
@@ -16,11 +21,12 @@ pub struct CursorHeadlessModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
     provider_id: ProviderId,
-    model_id: ModelId,
+    base_model_id: ModelId,
+    parameters: CursorHeadlessModelParameters,
 }
 
 impl CursorHeadlessModelSelection {
-    /// Creates an exact Cursor model selection.
+    /// Creates an exact plain Cursor model selection without bracket parameters.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -32,8 +38,43 @@ impl CursorHeadlessModelSelection {
             route_id,
             route_revision,
             provider_id,
-            model_id,
+            base_model_id: model_id,
+            parameters: CursorHeadlessModelParameters::empty(),
         }
+    }
+
+    /// Selects the qualified standard Fast variant for the current base model.
+    pub fn with_fast(self, fast: CursorHeadlessFast) -> Result<Self, PreparationFailure> {
+        let parameters = self
+            .parameters
+            .with_fast(self.base_model_id.as_str(), fast)?;
+        Ok(Self { parameters, ..self })
+    }
+
+    /// Selects a qualified context-window parameter for the current base model.
+    pub fn with_context(self, context: CursorHeadlessContext) -> Result<Self, PreparationFailure> {
+        let parameters = self
+            .parameters
+            .with_context(self.base_model_id.as_str(), context)?;
+        Ok(Self { parameters, ..self })
+    }
+
+    /// Selects qualified high reasoning effort for the current base model.
+    pub fn with_effort(self, effort: ReasoningMode) -> Result<Self, PreparationFailure> {
+        let parameters = self
+            .parameters
+            .with_effort(self.base_model_id.as_str(), effort)?;
+        Ok(Self { parameters, ..self })
+    }
+
+    pub(crate) fn resolved_model_id(&self) -> Result<ModelId, PreparationFailure> {
+        validate_plain_model_id(self.base_model_id.as_str())?;
+        validate_combination(self.base_model_id.as_str(), &self.parameters)?;
+        render_model_id(self.base_model_id.as_str(), &self.parameters)
+    }
+
+    pub(crate) const fn parameters(&self) -> &CursorHeadlessModelParameters {
+        &self.parameters
     }
 }
 
@@ -85,18 +126,20 @@ impl CursorPreparedHeadlessIntegration {
         input: CursorHeadlessRunProfileInput,
     ) -> Result<CursorPreparedHeadlessRun, PreparationFailure> {
         let activity = super::activity::headless(self.observation())?;
+        let model = input.model;
+        let rendered_model_id = model.resolved_model_id()?;
+        let effort = model.parameters().effort().cloned();
         let capabilities = super::activity::with_activity(
-            super::plan::headless_capabilities(input.resource_access),
+            super::plan::headless_capabilities(input.resource_access, model.parameters()),
             &activity,
         );
         let instance =
             super::plan::instance_with_capabilities(self.instance(), capabilities.clone());
-        let model = input.model;
         let route = ModelRoute::new(
             model.route_id,
             model.route_revision,
             instance.id().clone(),
-            model.model_id,
+            rendered_model_id,
             capabilities.clone(),
         )
         .with_provider_id(model.provider_id);
@@ -129,10 +172,13 @@ impl CursorPreparedHeadlessIntegration {
             &requirements,
             Some(&route),
         )?;
-        let policy = OperationPolicy::offline()
+        let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        if let Some(effort) = effort {
+            policy = policy.with_reasoning_mode(effort);
+        }
         let request = StructuredRunRequest::new(input.request_id, input.content, policy)
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);

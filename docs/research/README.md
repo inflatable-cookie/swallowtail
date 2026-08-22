@@ -95,6 +95,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [157 Deep Agents ACP 0.1.25 Identity](./157-deepagents-acp-0-1-25-identity.md)
 - [158 Watchlist And Registry-Only Disposition](./158-watchlist-and-registry-only-disposition.md)
 - [182 Gemini CLI 0.56.0 Identity](./182-gemini-cli-0-56-0-identity.md)
+- [183 Cursor Headless Model Parameter Evidence](./183-cursor-headless-model-parameter-evidence.md)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

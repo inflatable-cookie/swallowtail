@@ -1,6 +1,6 @@
 # 095 Cursor Headless Model Parameter Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.035 Cursor Headless Model Parameters](../035-cursor-headless-model-parameters.md)

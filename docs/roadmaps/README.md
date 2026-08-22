@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Implement g04.035 cards 095-097 for Cursor headless model parameters. Start
-with exact evidence and keep Contract 029 currentness as a standing lane.
+Compile the Ollama attached `num_ctx` per-route feature milestone. Do not
+implement it in this lane. Keep Contract 029 currentness as a standing lane.
 
 ## Standing Lanes
 

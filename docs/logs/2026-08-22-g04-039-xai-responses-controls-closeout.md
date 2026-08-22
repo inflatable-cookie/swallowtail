@@ -1,12 +1,16 @@
 # 2026-08-22 g04.039 xAI Responses Controls Closeout
 
-Status: implementation complete; PR pending push
+Status: review PR open; merge not authorized
 Owner: Tom
 Milestone: g04.039
 Cards: 107-109
 Base: `origin/main` at `906e776d957b02b25b0d69fce71b28d6543af40f`
-Head: pending final closeout commit
-PR: pending
+PR: [#38](https://github.com/inflatable-cookie/swallowtail/pull/38)
+PR head at opening: `6ad12932`
+Branch: `t3code/xai-responses-controls`
+
+This closeout-only follow-up records the PR truth; the final branch head is
+reported with the worker handoff because this file is part of that head.
 
 ## Result
 

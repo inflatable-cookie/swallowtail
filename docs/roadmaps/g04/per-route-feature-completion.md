@@ -75,14 +75,16 @@ families do not interrupt this programme by default.
   113-115 realize exact `0.21.15` process-private reasoning selection for
   `qwen3.8-max` and `qwen3.8-max-preview` across runs, turns, resume, and fresh
   replacement.
+- [g04.042 Cline Thinking Controls](./042-cline-thinking-controls.md) is ready.
+  Research 190 and cards 116-118 classify `cline.acp` and `cline.headless`
+  independently and bind only exact deliver-now route/value rows.
 
 ## Next Planning Boundary
 
-Compile g04.042 for Cline thinking controls. Recheck the current official and
-exact package surfaces for `cline.acp` and `cline.headless`, keep their
-transport claims separate, and admit only exact values that cannot be aliased,
-clamped, defaulted, or inferred. This is a planning checkpoint; no worker is
-ready until the milestone and cards are compiled and pushed.
+Execute g04.042 cards 116-118 in one serial worker lane. Card 116 must resolve
+current official versus exact `3.0.55` syntax, omission, model, normalization,
+and lifetime truth separately for `cline.acp` and `cline.headless`. Cards
+117-118 remain conditional on Research 190 deliver-now rows.
 
 ## Exclusions
 

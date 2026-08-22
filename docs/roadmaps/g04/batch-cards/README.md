@@ -120,7 +120,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-None. g04.042 is not yet compiled.
+- [118-cline-thinking-control-acceptance.md](./118-cline-thinking-control-acceptance.md) — conditional on card 117
+- [117-cline-thinking-control-binding.md](./117-cline-thinking-control-binding.md) — conditional on card 116
+- [116-cline-thinking-control-evidence.md](./116-cline-thinking-control-evidence.md) — ready
 
 ## Blocked
 

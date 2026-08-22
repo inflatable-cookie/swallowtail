@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Compile g04.042 for Cline thinking controls. Recheck the current official and
-exact package surfaces for `cline.acp` and `cline.headless`, classify each
-transport independently, and make binding cards ready only for exact
-deliver-now rows. Contract 029 currentness stays standing.
+Execute g04.042 cards 116-118 for Cline thinking controls in one serial worker
+lane. Card 116 freezes exact `3.0.55` ACP/headless evidence; cards 117-118 run
+only for Research 190 deliver-now route/value rows. Contract 029 currentness
+stays standing.
 
 ## Standing Lanes
 

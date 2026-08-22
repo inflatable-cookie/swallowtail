@@ -1060,3 +1060,13 @@ current official and exact package surfaces for ACP and headless separately,
 including syntax, value normalization, model dependence, spawn lifetime, and
 absent-path behavior. Kiro remains parked with the other deferred route
 surfaces. Do not implement until the evidence gate and cards are compiled.
+
+## Cline Compilation (2026-08-22)
+
+Cline thinking controls are promoted into
+[`g04.042`](../roadmaps/g04/042-cline-thinking-controls.md). Research 190 and
+cards 116-118 form one serial evidence-first lane. ACP and headless must be
+classified independently despite their shared package axis. Binding is
+conditional on exact `3.0.55` route/value rows that survive omission/default,
+normalization, provider/model, and lifetime checks. No later feature family is
+selected by this compilation.

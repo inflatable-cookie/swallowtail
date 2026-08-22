@@ -31,7 +31,7 @@ and selection policy.
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
-| Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
+| Close remaining 057/047 seams and expand addable coverage on proved shapes. | completed | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
 | Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
 
@@ -51,11 +51,12 @@ and selection policy.
 - [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, completed
 - [g04.035 Cursor Headless Model Parameters](035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [g04.036 Ollama Attached Context Window](036-ollama-attached-context-window.md) — complete, cards 098-100
-- [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — ready, cards 101-103
-- [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — ready, cards 104-106
+- [g04.037 Anthropic Messages Effort](037-anthropic-messages-effort.md) — complete, cards 101-103
+- [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
+- [g04.039 xAI Responses Reasoning And Output Bounds](039-xai-responses-reasoning-output-bounds.md) — ready, cards 107-109
 
-Do not roll over: 38 numbered roadmaps exist; 001-036 are complete and 037-038
-are ready, target 30-50.
+Do not roll over: 39 numbered roadmaps exist; 001-038 are complete and 039 is
+ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -88,23 +89,24 @@ are ready, target 30-50.
   evidence, added typed headless binding, and proved bounded dispatch
 - g04.036 is complete: cards 098-100 froze exact Ollama `num_ctx` evidence,
   added adapter-local binding, and proved bounded native dispatch
-- g04.037 is ready: cards 101-103 cover exact Anthropic Messages effort
-  evidence, portable reasoning binding, and deterministic dispatch acceptance
-- g04.038 is ready: cards 104-106 cover exact DeepSeek effort/thinking
-  evidence, continuation-safe binding, and deterministic replay acceptance
-- g04.037-038 may execute concurrently in isolated worktrees. Their fixed
-  integration order is Anthropic, then DeepSeek
+- g04.037 is on `main` at `56a7b87b` through PR 37: exact
+  `claude-opus-4-7` Messages effort is realized; cards 101-103 are complete
+- g04.038 is on `main` at `badb400a` through PR 36: exact V4 Pro
+  `low`/`high`/`max` reasoning is realized with thinking fixed enabled; cards
+  104-106 are complete
+- g04.039 is ready: cards 107-109 cover refreshed xAI WebSocket/model/control
+  evidence, exact binding, and deterministic continuation acceptance
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
-## Post-024 Planning Checkpoint
+## Current Planning Checkpoint
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Execute g04.037-038 as isolated route-family lanes. Keep each lane internally
-   serial and integrate Anthropic, then DeepSeek. Contract 029 currentness
+2. g04.035-038 completed the first four per-route feature families.
+3. Execute g04.039 as one serial xAI route-family lane. Contract 029 currentness
    remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -114,8 +116,9 @@ New route-family research does not pre-empt this sequence.
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
 - [036 Ollama Attached Context Window](./036-ollama-attached-context-window.md) — complete, cards 098-100
-- [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — ready, cards 101-103
-- [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — ready, cards 104-106
+- [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — complete, cards 101-103
+- [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
+- [039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md) — ready, cards 107-109
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

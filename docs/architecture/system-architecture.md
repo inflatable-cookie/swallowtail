@@ -181,9 +181,10 @@ OpenHands adds a package without a production route.
   structured-output capability
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
-  host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
-  tool exchange, private reasoning continuation, and joined credential-last
-  cleanup
+  host-approved HTTP/SSE, including authenticated catalogue, exact portable
+  `low` / `high` / `max` reasoning selection with fixed enabled thinking,
+  consumer-owned tool exchange, private reasoning continuation, and joined
+  credential-last cleanup; dispatch does not claim effective reasoning depth
 - `swallowtail-adapter-deepseek-harness` implements two distinct exact routes:
   `0.1.0rc6` JSON-RPC over one host-owned NDJSON stdio process, and
   `0.1.0-rc.6` Web `/api` over one host-owned loopback `dsh web` process. The
@@ -247,8 +248,12 @@ OpenHands adds a package without a production route.
   target rejection, inactive-target requirements, and post-dispatch
   uncertainty without yet advertising production deletion
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
-  Models catalogue and Messages direct inference over host-approved HTTP/SSE;
-  its separate `managed-agents-2026-04-01` remote-harness driver binds one
+  Models catalogue and Messages direct inference over host-approved HTTP/SSE,
+  including exact `claude-opus-4-7` `low` / `medium` / `high` / `xhigh` / `max`
+  effort selection on structured and fixed direct-continuation profiles through
+  portable `ReasoningSelection`; this does not add Messages thinking or claim
+  effective effort. Its separate `managed-agents-2026-04-01` remote-harness
+  driver binds one
   operator-owned agent version, one driver-owned limited environment and
   session, authoritative events, callbacks, bounded recovery, interruption,
   usage evidence, and ordered deletion
@@ -1369,16 +1374,20 @@ compatible tool fields.
 DeepSeek preparation accepts only the exact `https://api.deepseek.com` target,
 `api.deepseek.com` Open Platform API-key profile, dated OpenAI facade, and
 `deepseek-v4-pro` route. Catalogue stays route-free. Run preparation requires
-high reasoning, an explicit output bound, and acceptance of unmanaged provider
-caching; it emits one tool-free request and retains no continuation. Session
-preparation requires high reasoning,
+exact `low`, `high`, or `max` reasoning, an explicit output bound, and
+acceptance of unmanaged provider caching; it emits one tool-free request and
+retains no continuation. Session preparation requires the same exact reasoning
+selection,
 consumer-declared tools, and explicit acceptance of provider-managed cache
 without management authority. Opening returns the existing direct-
 continuation session. Each user turn authorizes its first attempt; only
 correlated tool-result submission authorizes another. Private reasoning
-replay, attempt bounds, cancellation, deadline, zeroization, and credential-
-last cleanup remain in the low-level driver. Shared JSON and SSE structure
-creates no cross-provider model, credential, lifecycle, or fallback path.
+replay and the fixed selected effort continue through every attempt and fresh
+restoration. Thinking stays fixed to `enabled`; `medium`, `xhigh`, aliases, and
+thinking disable reject before effects. Attempt bounds, cancellation, deadline,
+zeroization, and credential-last cleanup remain in the low-level driver. Shared
+JSON and SSE structure creates no cross-provider model, credential, lifecycle,
+or fallback path.
 
 Alibaba Model Studio now adds a prepared provider-conversation surface over
 the existing Singapore workspace driver. Preparation binds the exact regional

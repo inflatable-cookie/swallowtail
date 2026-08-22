@@ -87,7 +87,6 @@ generation_control_classifications = {
     ("output_token_limit", "anthropic.managed-agent"): "operation_shape_not_applicable",
     ("reasoning_selection", "anthropic.managed-agent"): "operation_shape_not_applicable",
     ("structured_output", "anthropic.managed-agent"): "operation_shape_not_applicable",
-    ("reasoning_selection", "anthropic.messages"): "contract_or_corpus_required",
     ("structured_output", "anthropic.messages"): "contract_or_corpus_required",
     ("output_token_limit", "pi.rpc"): "upstream_unsupported",
     ("reasoning_selection", "pi.rpc"): "contract_or_corpus_required",

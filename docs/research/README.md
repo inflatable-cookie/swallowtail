@@ -99,6 +99,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [184 Ollama Num Ctx Evidence](./184-ollama-num-ctx-evidence.md)
 - [185 Anthropic Messages Effort Evidence](./185-anthropic-messages-effort-evidence.md)
 - [186 DeepSeek Reasoning Control Evidence](./186-deepseek-reasoning-control-evidence.md)
+- [187 xAI Responses Control Evidence](./187-xai-responses-control-evidence.md)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

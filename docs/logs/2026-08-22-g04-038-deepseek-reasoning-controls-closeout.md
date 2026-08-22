@@ -1,12 +1,16 @@
 # 2026-08-22 g04.038 DeepSeek Reasoning Controls Closeout
 
-Status: complete on review PR; not merged
+Status: merged and shared surfaces reconciled
 Owner: Tom
 PR: https://github.com/inflatable-cookie/swallowtail/pull/36
 Evidence head: `4cb679d0`
+Merge head: `badb400a69dfd9ba2562117daef5c9bdc520c088`
 
-Card 106 replaces the reservation with route-local evidence. The orchestrator
-records merge and shared-surface closeout separately.
+Card 106 replaced the reservation with route-local evidence. PR 36 was
+retargeted to the identical newly merged Anthropic base, passed 5/5 exact-head
+checks, and merged fast-forward-only. The orchestrator then reconciled the
+shared architecture, route and feature matrices, changelog, programme, indexes,
+and roadmap front doors.
 
 ## Result
 
@@ -39,11 +43,11 @@ balance, or live-model behavior.
 - Official Tool Calls: <https://api-docs.deepseek.com/guides/tool_calls/> (`d50d330bc0e1f30b84ee804d77f1ad3f7073e5d2557a6a80545d2d2696ea2471`)
 - Official Models and Pricing: <https://api-docs.deepseek.com/quick_start/pricing/> (`c6db3039404a4d108cf3c4e9b6c1891e4f446a6e8e8a3cfdf3c1eff739e194e6`)
 
-## Shared-surface delta for orchestrator
+## Shared-Surface Delta Reconciled By Orchestrator
 
-The worker intentionally leaves the following shared surfaces unchanged. Apply
-these deltas only after review and merge, in the fixed Ollama → Anthropic →
-DeepSeek integration order:
+The worker intentionally left the following shared surfaces unchanged. The
+orchestrator applied them after the fixed Ollama → Anthropic → DeepSeek
+integration order completed; the list remains as the audit trail:
 
 - `docs/architecture/system-architecture.md`: extend the realized DeepSeek
   direct-inference bullet to name exact V4 Pro `low`/`high`/`max` reasoning

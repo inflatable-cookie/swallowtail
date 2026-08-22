@@ -54,26 +54,28 @@ families do not interrupt this programme by default.
   is complete. Research 184, cards 098-100, and adapter-local `options.num_ctx`
   dispatch are realized on `ollama.attached`.
 - [g04.037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) is
-  ready. Cards 101-103 start with exact model/value/profile evidence and bind
-  only Research 185 deliver-now `output_config.effort` mappings.
+  complete and merged through PR 37 at `56a7b87b`. Research 185 and cards
+  101-103 realize exact `claude-opus-4-7` `output_config.effort` dispatch on
+  structured and fixed direct-continuation profiles.
 - [g04.038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md)
-  is ready. Cards 104-106 separate effort from thinking mode and preserve
-  private continuation through only Research 186 deliver-now mappings.
-- g04.037 and g04.038 may execute concurrently in isolated worktrees. Integrate
-  Anthropic, then DeepSeek. Compile xAI after this wave.
+  is complete and merged through PR 36 at `badb400a`. Research 186 and cards
+  104-106 realize exact V4 Pro `low`, `high`, and `max` effort while keeping
+  thinking enabled and private continuation adapter-held.
+- [g04.039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md)
+  is ready. Cards 107-109 start with refreshed exact model/value/profile
+  evidence before binding any reasoning or output control.
 
-## Parallel Execution Boundary
+## Current Worker Boundary
 
-The Anthropic and DeepSeek workers own only their route crate, fixtures,
-prepared guide, numbered milestone and cards, reserved research record, reserved
-closeout log, and package-specific public API baseline. Each worker must not
-edit shared architecture, route/feature matrices, changelog, programme,
-roadmap front doors, indexes, or `packages.txt` while its lane is in flight.
+The xAI worker owns only its route crate, fixtures, prepared guide, numbered
+milestone and cards, reserved research record, reserved closeout log, and
+package-specific public API baseline. It must not edit shared architecture,
+route/feature matrices, changelog, programme, roadmap front doors, indexes, or
+`packages.txt` while the lane is in flight.
 
-The orchestrator reconciles those shared surfaces after review and merge in the
-fixed order Anthropic, then DeepSeek. A worker reports the required shared
-delta in its closeout record and PR body; it does not apply that delta on its
-parallel branch.
+The orchestrator reconciles those shared surfaces after review and merge. The
+worker reports the required shared delta in its closeout record and PR body; it
+does not apply that delta on its route branch.
 
 ## Exclusions
 

@@ -132,6 +132,14 @@ exact provider confirmation surface is qualified.
 - [102-anthropic-messages-effort-binding.md](batch-cards/102-anthropic-messages-effort-binding.md) — completed
 - [103-anthropic-messages-effort-acceptance.md](batch-cards/103-anthropic-messages-effort-acceptance.md) — completed
 
+## Closeout
+
+PR 37 merged fast-forward-only at `56a7b87b`. Research 185, cards 101-103,
+route-local implementation, deterministic proofs, public API baseline, and the
+shared architecture, matrices, changelog, programme, indexes, and roadmap state
+are reconciled. Exact dispatch is qualified; provider acceptance and effective
+effort are not.
+
 ## References
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md)

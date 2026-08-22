@@ -5,6 +5,28 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] zsh special variables break ordinary shell snippets — 2026-08-22
+- Friction: authority-read snippets used `path` and `status` as ordinary
+  variables; zsh hid the executable search path for the former and rejected
+  assignment to the read-only latter.
+- Impact: otherwise read-only agent scripts can fail partway through a batch
+  with a misleading `command not found` error.
+- Fix: document common reserved names or lint generated zsh snippets for
+  assignments to zsh special parameters.
+- Surface: agent-authored zsh orchestration commands.
+
+### [ ] OpenCode cancellation fixture panics on expected broken pipe — 2026-08-22
+- Friction: PR 35 MSRV failed in
+  `post_dispatch_cancellation_is_joined_and_unconfirmed` because the fixture
+  response writer treated the cancelled client's `BrokenPipe` as fatal and the
+  fixture server then panicked while joining.
+- Impact: unrelated exact heads can fail MSRV after the product cancellation
+  path has already produced the expected disconnect.
+- Fix: let the cancellation fixture accept `BrokenPipe`/connection reset while
+  writing the abandoned response, while preserving failures for other write
+  errors.
+- Surface: OpenCode prepared-facade HTTP fixture response writer; MSRV CI.
+
 ### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
   raising the doctor god-file baseline from 41 to 42 errors.

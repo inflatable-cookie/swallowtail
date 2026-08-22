@@ -23,6 +23,9 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-22 g04.039 xAI Responses Controls Compiled](./2026-08-22-g04-039-xai-responses-controls-compiled.md)
+- [2026-08-22 g04.039 xAI Responses Controls Closeout](./2026-08-22-g04-039-xai-responses-controls-closeout.md)
+- [2026-08-22 g04.037-038 Feature Wave Merged](./2026-08-22-g04-037-038-feature-wave-merged.md)
 - [2026-08-22 g04.036 Ollama Num Ctx Closeout](./2026-08-22-g04-036-ollama-num-ctx-closeout.md)
 - [2026-08-22 g04.038 DeepSeek Reasoning Controls Closeout](./2026-08-22-g04-038-deepseek-reasoning-controls-closeout.md)
 - [2026-08-22 g04.037 Anthropic Messages Effort Closeout](./2026-08-22-g04-037-anthropic-messages-effort-closeout.md)

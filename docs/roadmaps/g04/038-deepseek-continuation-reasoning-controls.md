@@ -117,8 +117,7 @@ becomes consumer output.
 - parallel predecessor: g04.037 Anthropic Messages effort
 - this milestone: DeepSeek continuation reasoning controls
 - fixed integration position: after g04.037
-- next: xAI Responses reasoning and output bounds, to be compiled after this
-  parallel wave is reviewed
+- next: g04.039 xAI Responses reasoning and output bounds, now compiled
 
 ## Decision Gates
 
@@ -149,8 +148,9 @@ bounded adapter state and is never disclosed.
 
 Cards 104-106 are complete. The route guide now separates dispatched fields,
 provider acceptance, effective reasoning, and private replay. The required
-shared-surface delta is recorded in the route-local closeout log; those shared
-files remain untouched on this branch.
+shared-surface delta is reconciled after PR 36 merged fast-forward-only at
+`badb400a`. Architecture, matrices, changelog, programme, indexes, and roadmap
+state now match the route-local result.
 
 ## References
 

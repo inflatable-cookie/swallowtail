@@ -7,6 +7,16 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add exact Anthropic Messages effort selection for `claude-opus-4-7` through
+  portable `ReasoningSelection` values `low`, `medium`, `high`, `xhigh`, and
+  `max` on structured runs and fixed direct-continuation sessions; dispatches
+  `output_config.effort` without adding Messages thinking or claiming effective
+  effort; Research 185, g04.037
+- add exact DeepSeek V4 Pro reasoning selection for `low`, `high`, and `max`
+  across structured runs, tool continuation, later turns, and fresh local
+  restoration; `thinking.type` remains fixed to `enabled`, private reasoning
+  replay remains adapter-held, and dispatch does not claim provider acceptance
+  or effective depth; Research 186, g04.038
 - add typed Ollama adapter-local context-window selection (`OllamaContextWindow`,
   `with_context_window`) on structured inference and interactive session
   profiles, with Research 184 positive-domain dispatch of `options.num_ctx`

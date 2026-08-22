@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Implement the parallel per-route feature wave: g04.037 cards 101-103 for Anthropic
-Messages effort and g04.038 cards 104-106 for DeepSeek reasoning controls. Keep
-each route serial internally and integrate Anthropic, then DeepSeek. Contract 029
-currentness stays standing.
+Implement g04.039 cards 107-109 for xAI Responses WebSocket reasoning and
+output bounds. Card 107 must freeze the exact current model/value/profile
+surface before binding. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

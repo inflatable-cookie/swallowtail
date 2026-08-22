@@ -2,6 +2,15 @@
 
 ## Completed
 
+- [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md)
+- [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md)
+- [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md)
+- [106-deepseek-reasoning-acceptance.md](./106-deepseek-reasoning-acceptance.md)
+- [105-deepseek-reasoning-binding.md](./105-deepseek-reasoning-binding.md)
+- [104-deepseek-reasoning-evidence.md](./104-deepseek-reasoning-evidence.md)
+- [103-anthropic-messages-effort-acceptance.md](./103-anthropic-messages-effort-acceptance.md)
+- [102-anthropic-messages-effort-binding.md](./102-anthropic-messages-effort-binding.md)
+- [101-anthropic-messages-effort-evidence.md](./101-anthropic-messages-effort-evidence.md)
 - [097-cursor-headless-model-parameter-acceptance.md](./097-cursor-headless-model-parameter-acceptance.md)
 - [096-cursor-headless-model-parameter-binding.md](./096-cursor-headless-model-parameter-binding.md)
 - [095-cursor-headless-model-parameter-evidence.md](./095-cursor-headless-model-parameter-evidence.md)
@@ -104,12 +113,6 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md) — complete
-- [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md) — complete
-- [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md) — complete
-- [106-deepseek-reasoning-acceptance.md](./106-deepseek-reasoning-acceptance.md) — ready after 105
-- [105-deepseek-reasoning-binding.md](./105-deepseek-reasoning-binding.md) — ready after 104
-- [104-deepseek-reasoning-evidence.md](./104-deepseek-reasoning-evidence.md) — ready
-- [103-anthropic-messages-effort-acceptance.md](./103-anthropic-messages-effort-acceptance.md) — ready after 102
-- [102-anthropic-messages-effort-binding.md](./102-anthropic-messages-effort-binding.md) — ready after 101
-- [101-anthropic-messages-effort-evidence.md](./101-anthropic-messages-effort-evidence.md) — ready
+- [109-xai-responses-control-acceptance.md](./109-xai-responses-control-acceptance.md) — ready after 108
+- [108-xai-responses-control-binding.md](./108-xai-responses-control-binding.md) — ready after 107
+- [107-xai-responses-control-evidence.md](./107-xai-responses-control-evidence.md) — ready

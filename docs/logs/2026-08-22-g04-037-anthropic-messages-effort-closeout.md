@@ -1,14 +1,17 @@
 # 2026-08-22 g04.037 Anthropic Messages Effort Closeout
 
-Status: completed
+Status: merged and shared surfaces reconciled
 Owner: Tom
 Branch: `t3code/anthropic-messages-effort`
 PR: [#37](https://github.com/inflatable-cookie/swallowtail/pull/37)
 Implementation head: `283fe50d2fd9aa714b60d9bed84ec67767588b57`
+Merge head: `56a7b87b50ae30ffed56f299121df7aa9adeacb1`
 
-This is the route-local worker closeout. The orchestrator records merge and
-shared-surface closeout separately. No merge, release, live provider request,
-account inspection, credential use, or effective-effort claim was made.
+The route-local worker closeout was accepted and PR 37 was merged
+fast-forward-only after 5/5 exact-head checks passed. The orchestrator then
+reconciled architecture, route and feature matrices, changelog, programme,
+indexes, and roadmap front doors. No release, live provider request, account
+inspection, credential use, or effective-effort claim was made.
 
 ## Delivered Row
 
@@ -46,10 +49,10 @@ Research 185 promotes one exact route-local row:
 - `release-baselines/public-api-unreleased/swallowtail-adapter-anthropic.txt`:
   new public effort builders and evidence accessor
 
-## Required Shared-Surface Delta For Orchestrator
+## Shared-Surface Delta Reconciled By Orchestrator
 
-Do not apply these edits from this worker branch while the parallel wave is
-open:
+The orchestrator applied these edits after the fixed-order wave merged. The
+list remains as the audit trail of the route-local report:
 
 - `docs/architecture/system-architecture.md`: extend the realized
   `swallowtail-adapter-anthropic` direct-facade paragraphs with the exact

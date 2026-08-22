@@ -1,6 +1,6 @@
 # 103 Anthropic Messages Effort Acceptance
 
-Status: ready after 102
+Status: completed
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.037 Anthropic Messages Effort](../037-anthropic-messages-effort.md)
@@ -33,13 +33,13 @@ route closeout without obscuring the parallel integration order.
 
 ## Acceptance Criteria
 
-- exact deliver-now values and failure classes have deterministic coverage
-- default QA sends no provider request
-- docs distinguish dispatch, acceptance, and effective effort
-- no sibling Anthropic route gains the capability
-- closeout records PR/head truth without claiming merge
-- worker changed files stay within the programme's parallel execution boundary
-- named gates pass
+- [x] exact deliver-now values and failure classes have deterministic coverage
+- [x] default QA sends no provider request
+- [x] docs distinguish dispatch, acceptance, and effective effort
+- [x] no sibling Anthropic route gains the capability
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changed files stay within the programme's parallel execution boundary
+- [x] named gates pass
 
 ## Validation
 

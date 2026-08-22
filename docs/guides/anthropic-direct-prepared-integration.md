@@ -80,6 +80,15 @@ bound, and optional deadline. Optional qualified inputs are:
 - at most one input PNG with declared size no greater than one MiB
 - `AnthropicWebSearchInput` with one to ten bare allowed domains; the provider
   tool is fixed to at most two uses
+- `with_reasoning_mode` for the promoted exact effort row: model
+  `claude-opus-4-7` with `low`, `medium`, `high`, `xhigh`, or `max`
+
+Effort is the portable `ReasoningMode` selection for this route. Preparation
+rejects another model, value, or profile before endpoint authorization. It emits
+only the provider-owned `output_config: {"effort": "<exact>"}` field; it does
+not add `thinking`, choose a default, clamp a value, or infer effort from
+output text. Omission retains the existing request body and means no effort
+selection.
 
 The host materializes the opaque attachment. Web search is provider-owned
 external network access, not a consumer tool or general network grant.
@@ -91,16 +100,24 @@ run. Usage, request correlation, rate evidence, cancellation, deadline,
 provider failure, and cleanup remain distinct. No result, error, timer, usage,
 or catalogue observation authorizes an automatic retry.
 
-The structured role has no consumer tool loop, reasoning selection,
-structured output, provider retention, background execution, or continuation.
+The structured role has no consumer tool loop, structured output, provider
+retention, background execution, or continuation. Its optional effort selection
+is independent of output-token limits, attachments, search, cancellation, and
+model identity.
 
 ## Direct Tool Continuation And Restart
 
 `AnthropicSessionProfileInput` binds an exact model and one to eight declared
-consumer JSON Schema tools. `prepare_session` returns a resource-free
+consumer JSON Schema tools. Add the same exact effort selection to the profile
+when using `claude-opus-4-7`. `prepare_session` returns a resource-free
 interactive profile supporting two user turns and one exact correlated tool
 call/result continuation. Swallowtail relays the tool exchange but never
 selects or executes a tool.
+
+Session effort is fixed at preparation. The plan, evidence, session options,
+and driver must agree; the same `output_config.effort` is sent on the initial
+request, every correlated continuation attempt, every later turn, and a fresh
+working-state restoration. There is no per-turn raw override.
 
 Call `open_session`, then start turns through the direct-continuation
 interface. Drain events, the tool exchange, and terminal concurrently. A next
@@ -108,8 +125,8 @@ provider request occurs only after the consumer supplies the exact correlated
 result. Cancellation, omission, or rejection sends no continuation attempt.
 Close each turn and the session to join local HTTP, task, and credential work.
 
-Provider-required assistant and reasoning envelopes stay bounded in adapter
-memory. They are not portable output or durable provider-session identity.
+Provider-required assistant and tool envelopes stay bounded in adapter memory.
+They are not portable output or durable provider-session identity.
 `prepare_working_state_restoration` therefore opens a fresh session and
 returns `SessionReplaced`. It preserves only the interrupted consumer turn ID,
 not prompt, transcript, tool result, private continuation, or terminal truth.
@@ -129,6 +146,17 @@ Promotion requires an exact Anthropic facade and model surface, immutable
 prepared-plan and access binding, bounded protocol/attachment fixtures,
 lifecycle tests, and route-matrix coverage. Documentation or compatible syntax
 alone is insufficient.
+
+Keep the effort claim states separate:
+
+- **requested:** the consumer supplied `ReasoningMode` during preparation
+- **planned:** the immutable plan and prepared evidence carry one exact
+  `ReasoningSelection` constraint
+- **dispatched:** the Messages request contains the exact `output_config.effort`
+- **accepted:** a successful provider response may establish request
+  acceptance, subject to the route's normal response handling
+- **effective:** not claimed; no response-text inference establishes provider
+  reasoning allocation
 
 The compile-tested
 [`prepared_direct` example](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs)

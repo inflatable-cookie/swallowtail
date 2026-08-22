@@ -1,12 +1,12 @@
 # g04.037 Anthropic Messages Effort
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-22
 Depends on: per-route feature completion programme
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 029, 037, 040, 052
-Research: 004, 067, 169; 185 to be produced by card 101
+Research: 004, 067, 169, 185
 
 ## Problem
 
@@ -28,20 +28,25 @@ request-to-plan-to-wire agreement on qualified models and operation profiles.
 
 ## Goals
 
-- [ ] freeze current official request, value, model, and compatibility evidence
+- [x] freeze current official request, value, model, and compatibility evidence
       for `output_config.effort`
-- [ ] classify one-attempt inference and direct-continuation sessions separately
-- [ ] map only exact supported values to portable `ReasoningSelection`
-- [ ] retain the requested mode in the immutable request, plan, and prepared
+- [x] classify one-attempt inference and direct-continuation sessions separately
+- [x] map only exact supported values to portable `ReasoningSelection`
+- [x] retain the requested mode in the immutable request, plan, and prepared
       evidence used for dispatch
-- [ ] encode one exact `output_config.effort` object without changing the absent
+- [x] encode one exact `output_config.effort` object without changing the absent
       request body
-- [ ] reject unsupported models, values, profile combinations, and mismatches
+- [x] reject unsupported models, values, profile combinations, and mismatches
       before network work
-- [ ] publish qualified dispatch without claiming provider acceptance or an
+- [x] publish qualified dispatch without claiming provider acceptance or an
       effective effort level
-- [ ] leave the exact shared architecture, matrix, changelog, and programme
+- [x] leave the exact shared architecture, matrix, changelog, and programme
       delta for orchestrator closeout after merge
+
+The promoted route-local row is `claude-opus-4-7` with `low`, `medium`, `high`,
+`xhigh`, or `max` on structured attempts and fixed direct-continuation
+sessions. Existing fixture model ids and other Anthropic model ids remain
+withheld or evidence-gated; no family inference was added.
 
 ## Non-Goals
 
@@ -73,36 +78,36 @@ exact provider confirmation surface is qualified.
 
 ### Batch 37.1 — Exact Effort Evidence
 
-- [ ] Execute card 101.
-- [ ] freeze current official request, model, and value evidence
-- [ ] promote Research 185 with profile and compatibility dispositions
+- [x] Execute card 101.
+- [x] freeze current official request, model, and value evidence
+- [x] promote Research 185 with profile and compatibility dispositions
 
 ### Batch 37.2 — Portable Binding
 
-- [ ] Execute card 102 after card 101.
-- [ ] add exact effort input to only the admitted prepared profiles
-- [ ] bind request, capability constraint, prepared evidence, and driver
-- [ ] preserve the absent path and fail before network work
+- [x] Execute card 102 after card 101.
+- [x] add exact effort input to only the admitted prepared profiles
+- [x] bind request, capability constraint, prepared evidence, and driver
+- [x] preserve the absent path and fail before network work
 
 ### Batch 37.3 — Dispatch And Acceptance
 
-- [ ] Execute card 103 after card 102.
-- [ ] prove exact request bodies and mismatch failures
-- [ ] update the route guide and report the shared architecture, matrix,
+- [x] Execute card 103 after card 102.
+- [x] prove exact request bodies and mismatch failures
+- [x] update the route guide and report the shared architecture, matrix,
       programme, and changelog delta for orchestrator closeout after merge
 
 ## Acceptance Criteria
 
-- [ ] only Research 185 model/value/profile combinations prepare
-- [ ] request, plan constraint, prepared evidence, and wire value agree exactly
-- [ ] `output_config.effort` remains distinct from `thinking` and Claude Code
+- [x] only Research 185 model/value/profile combinations prepare
+- [x] request, plan constraint, prepared evidence, and wire value agree exactly
+- [x] `output_config.effort` remains distinct from `thinking` and Claude Code
       controls
-- [ ] absent effort preserves current request JSON and public behavior
-- [ ] unsupported combinations fail before endpoint or credential use
-- [ ] deterministic QA makes no provider call or account inspection
-- [ ] docs separate requested, planned, dispatched, accepted, and effective
+- [x] absent effort preserves current request JSON and public behavior
+- [x] unsupported combinations fail before endpoint or credential use
+- [x] deterministic QA makes no provider call or account inspection
+- [x] docs separate requested, planned, dispatched, accepted, and effective
       states
-- [ ] the worker branch touches no shared parallel-closeout surface
+- [x] the worker branch touches no shared parallel-closeout surface
 
 ## Lane Runway
 
@@ -123,9 +128,9 @@ exact provider confirmation surface is qualified.
 
 ## Batch Cards
 
-- [101-anthropic-messages-effort-evidence.md](batch-cards/101-anthropic-messages-effort-evidence.md) — ready
-- [102-anthropic-messages-effort-binding.md](batch-cards/102-anthropic-messages-effort-binding.md) — ready after 101
-- [103-anthropic-messages-effort-acceptance.md](batch-cards/103-anthropic-messages-effort-acceptance.md) — ready after 102
+- [101-anthropic-messages-effort-evidence.md](batch-cards/101-anthropic-messages-effort-evidence.md) — completed
+- [102-anthropic-messages-effort-binding.md](batch-cards/102-anthropic-messages-effort-binding.md) — completed
+- [103-anthropic-messages-effort-acceptance.md](batch-cards/103-anthropic-messages-effort-acceptance.md) — completed
 
 ## References
 

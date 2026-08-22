@@ -1,6 +1,6 @@
 # 101 Anthropic Messages Effort Evidence
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.037 Anthropic Messages Effort](../037-anthropic-messages-effort.md)
@@ -38,16 +38,16 @@ effort from response text.
 
 ## Acceptance Criteria
 
-- exact current official evidence is frozen without secrets
-- every admitted model, value, and profile has an explicit disposition
-- `output_config.effort` is separated from `thinking`, Ultracode, Fast mode,
+- [x] exact current official evidence is frozen without secrets
+- [x] every admitted model, value, and profile has an explicit disposition
+- [x] `output_config.effort` is separated from `thinking`, Ultracode, Fast mode,
   Claude Code, and Managed Agents controls
-- portable mapping and claim bounds are explicit
-- Research 185 is promoted and indexed
-- production code, claims, matrices, architecture, and changelog are unchanged
-- `effigy validate:focused swallowtail-adapter-anthropic` passes
-- `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- `git diff --check` passes
+- [x] portable mapping and claim bounds are explicit
+- [x] Research 185 is promoted and indexed
+- [x] production code, claims, matrices, architecture, and changelog are unchanged
+- [x] `effigy validate:focused swallowtail-adapter-anthropic` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 102 only when at least one exact model/value/profile
 combination is deliver-now without a contract or facade-revision gap.

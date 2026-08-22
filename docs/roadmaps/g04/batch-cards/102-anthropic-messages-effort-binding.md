@@ -1,6 +1,6 @@
 # 102 Anthropic Messages Effort Binding
 
-Status: ready after 101
+Status: completed
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.037 Anthropic Messages Effort](../037-anthropic-messages-effort.md)
@@ -31,13 +31,13 @@ request encoding.
 
 ## Acceptance Criteria
 
-- only Research 185 deliver-now combinations prepare
-- input, plan constraint, evidence, driver, and wire value agree exactly
-- absent selection preserves current JSON and public behavior
-- no raw provider value or generic options object enters public API
-- `thinking`, output limits, search, attachments, model identity, cancellation,
+- [x] only Research 185 deliver-now combinations prepare
+- [x] input, plan constraint, evidence, driver, and wire value agree exactly
+- [x] absent selection preserves current JSON and public behavior
+- [x] no raw provider value or generic options object enters public API
+- [x] `thinking`, output limits, search, attachments, model identity, cancellation,
   and cleanup stay independent
-- known failures occur before network work
+- [x] known failures occur before network work
 
 ## Validation
 
@@ -64,4 +64,3 @@ Auto-continue to card 103 when exact binding and absent-path tests pass.
 - guide, matrix, architecture, programme, or changelog closeout
 - provider acceptance or effective-effort claims
 - Messages thinking, web-search updates, or live provider work
-

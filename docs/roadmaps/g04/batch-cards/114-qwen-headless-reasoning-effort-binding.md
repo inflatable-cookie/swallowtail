@@ -1,6 +1,6 @@
 # 114 Qwen Headless Reasoning Effort Binding
 
-Status: ready after 113
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.041 Qwen Headless Reasoning Effort](../041-qwen-headless-reasoning-effort.md)
@@ -36,13 +36,21 @@ and exact operation-private child transport.
 
 ## Acceptance Criteria
 
-- [ ] only Research 189 deliver-now rows prepare
-- [ ] input, request, plan, evidence, driver, and child transport agree exactly
-- [ ] absent reasoning preserves current command and public behavior
-- [ ] no generic setting/argv/environment map enters the public API
-- [ ] model selection and reasoning selection remain exact and independent
-- [ ] ambient settings cannot override the prepared value
-- [ ] known mismatch and unsupported failures occur before process work
+- [x] only Research 189 deliver-now rows prepare
+- [x] input, request, plan, evidence, driver, and child transport agree exactly
+- [x] absent reasoning preserves current command and public behavior
+- [x] no generic setting/argv/environment map enters the public API
+- [x] model selection and reasoning selection remain exact and independent
+- [x] ambient settings cannot override the prepared value
+- [x] known mismatch and unsupported failures occur before process work
+
+## Binding Result
+
+Prepared Qwen run and session inputs now carry one optional typed
+`ReasoningMode`. Exact package/provider/model validation adds one
+`ReasoningSelection` constraint only when selected, and request policy/session
+options plus prepared evidence retain the same value. Selected children use
+the private stream-JSON control handshake; the absent path is unchanged.
 
 ## Validation
 

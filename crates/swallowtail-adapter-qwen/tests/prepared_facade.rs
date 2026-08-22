@@ -6,9 +6,9 @@ use futures_executor::block_on;
 use std::sync::Arc;
 use support::{FakeProcessService, PendingTimeService, ScriptedProcessService, host_services_for};
 use swallowtail_adapter_qwen::{
-    QWEN_CODE_AXIS, QwenCatalogueProfileInput, QwenModelSelection, QwenPreparationInput,
-    QwenPreparationProbe, QwenRunProfileInput, QwenSessionProfileInput, prepare_qwen_catalogue,
-    prepare_qwen_headless,
+    QWEN_CODE_AXIS, QwenCatalogueProfileInput, QwenHeadlessDriver, QwenModelSelection,
+    QwenPreparationInput, QwenPreparationProbe, QwenRunProfileInput, QwenSessionProfileInput,
+    prepare_qwen_catalogue, prepare_qwen_headless,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -16,12 +16,13 @@ use swallowtail_core::{
     EntitlementState, ExecutionHostId, ExtensionNamespace, HarnessConfigurationPosture,
     HarnessIsolation, InstalledExecutableCompatibility, InstanceRevision, InterfaceVersionAxis,
     ModelId, ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, ProviderId,
-    RuntimeReadiness, SupportAuthority,
+    ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
-    RequestId, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, OperationPolicy,
+    PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, RuntimeTurnId, ScopeId,
+    StructuredRunDriver, StructuredRunRequest, TerminalStatus, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 

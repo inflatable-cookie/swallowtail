@@ -4,7 +4,8 @@ use crate::activity::profile::{activity_profile, with_activity};
 use crate::prepared::instance::run_capabilities;
 use crate::{QwenHeadlessDriver, QwenPreparedIntegration};
 use swallowtail_core::{
-    CapabilityRequirement, HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
+    HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, ProviderRetentionPolicy,
@@ -74,11 +75,33 @@ impl QwenPreparedIntegration {
         &self,
         input: QwenRunProfileInput,
     ) -> Result<QwenPreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline) = input.into_parts();
+        let (request_id, model, content, working_resource, deadline, reasoning) =
+            input.into_parts();
         let activity = activity_profile(self)?;
-        let capabilities = with_activity(run_capabilities(), &activity);
-        let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
+        if let Some(reasoning) = reasoning.as_ref() {
+            crate::reasoning::validate_preparation(
+                self.observation().version().version(),
+                &provider_id,
+                &model_id,
+                reasoning,
+            )?;
+        }
+        let mut capability_requirements = run_capabilities()
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
+        if let Some(reasoning) = reasoning.as_ref() {
+            capability_requirements.push(CapabilityRequirement::new(
+                Capability::ReasoningSelection,
+                [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+            ));
+        }
+        let capabilities =
+            with_activity(CapabilityProfile::new(capability_requirements), &activity);
+        let instance = instance_with_capabilities(self, capabilities.clone());
         let route = ModelRoute::new(
             route_id,
             route_revision,
@@ -96,15 +119,18 @@ impl QwenPreparedIntegration {
             }),
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let policy = OperationPolicy::offline()
+        let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        if let Some(reasoning) = reasoning.clone() {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
         let request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(QwenPreparedRun {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity)?,
+            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity, reasoning)?,
             request,
         })
     }

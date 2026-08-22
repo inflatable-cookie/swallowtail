@@ -1,6 +1,9 @@
 use super::QwenSessionHandle;
 use super::lifecycle::{ActiveTurn, join_turn, reap_finished};
-use crate::command::{arguments, resumed_arguments};
+use crate::command::{
+    arguments, reasoning_arguments, resumed_arguments, resumed_reasoning_arguments,
+};
+use crate::control::{establish_reasoning, write_user_message};
 use crate::driver::write_prompt;
 use crate::handle::QwenProcessCancellation;
 use crate::pump::{QwenPumpContext, cleanup_failed_start, pump_with_session};
@@ -53,6 +56,7 @@ impl QwenSessionHandle {
             .expect("Qwen session lock poisoned")
             .provider_session_id
             .clone();
+        let deadline = request.deadline().expect("validated Qwen turn deadline");
         let scope = ScopeId::new(format!("qwen-headless:turn:{}", request.turn_id().as_str()))
             .map_err(|_| {
                 failure(
@@ -62,10 +66,16 @@ impl QwenSessionHandle {
             })?;
         let process_request =
             ProcessRequest::new(ExecutableRef::from_instance_target(&self.target))
-                .with_arguments(match expected_session.as_deref() {
-                    Some(session_id) => resumed_arguments(&self.model, session_id),
-                    None => arguments(&self.model),
-                })
+                .with_arguments(
+                    match (self.reasoning.is_some(), expected_session.as_deref()) {
+                        (true, Some(session_id)) => {
+                            resumed_reasoning_arguments(&self.model, session_id)
+                        }
+                        (true, None) => reasoning_arguments(&self.model),
+                        (false, Some(session_id)) => resumed_arguments(&self.model, session_id),
+                        (false, None) => arguments(&self.model),
+                    },
+                )
                 .with_environment([self.environment.clone()])
                 .with_working_resource(self.working_resource.clone());
         let process: Arc<dyn ProcessHandle> = match self
@@ -84,15 +94,49 @@ impl QwenSessionHandle {
                 return Err(error);
             }
         };
-        if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
-            self.state
-                .lock()
-                .expect("Qwen session lock poisoned")
-                .usable = false;
-            cleanup_failed_start(process.as_ref()).await;
-            return Err(error);
-        }
-        let deadline = request.deadline().expect("validated Qwen turn deadline");
+        let buffered_values = if let Some(reasoning) = self.reasoning.as_ref() {
+            let setup = match establish_reasoning(
+                process.as_ref(),
+                reasoning,
+                self.services
+                    .time()
+                    .expect("validated Qwen time")
+                    .wait_until(deadline),
+            )
+            .await
+            {
+                Ok(setup) => setup,
+                Err(error) => {
+                    self.state
+                        .lock()
+                        .expect("Qwen session lock poisoned")
+                        .usable = false;
+                    cleanup_failed_start(process.as_ref()).await;
+                    return Err(error);
+                }
+            };
+            if let Err(error) =
+                write_user_message(process.as_ref(), &setup.session_id, request.content()).await
+            {
+                self.state
+                    .lock()
+                    .expect("Qwen session lock poisoned")
+                    .usable = false;
+                cleanup_failed_start(process.as_ref()).await;
+                return Err(error);
+            }
+            setup.buffered_values
+        } else {
+            if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
+                self.state
+                    .lock()
+                    .expect("Qwen session lock poisoned")
+                    .usable = false;
+                cleanup_failed_start(process.as_ref()).await;
+                return Err(error);
+            }
+            Vec::new()
+        };
         let deadline = self
             .services
             .time()
@@ -135,7 +179,8 @@ impl QwenSessionHandle {
                         expected_version,
                         task_expected,
                         ActivityOperationId::Turn(task_turn_id),
-                    ),
+                    )
+                    .with_buffered_values(buffered_values),
                     task_services,
                 )
                 .await;

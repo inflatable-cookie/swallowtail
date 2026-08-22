@@ -1,6 +1,6 @@
 # g04.041 Qwen Headless Reasoning Effort
 
-Status: ready
+Status: completed; worker PR pending review
 Owner: Tom
 Created: 2026-08-22
 Depends on: per-route feature completion programme; g04.026
@@ -30,20 +30,20 @@ turn, resume, and fresh-replacement paths.
 
 ## Goals
 
-- [ ] freeze official current documentation and exact `0.21.15` package source
+- [x] freeze official current documentation and exact `0.21.15` package source
       for reasoning values, transport, precedence, defaults, and lifetime
-- [ ] separate interactive `/effort` from a process-safe headless mapping
-- [ ] classify `low`, `medium`, `high`, `xhigh`, and `max` per exact model
-- [ ] prove whether any value survives without clamp, aliasing, or default
+- [x] separate interactive `/effort` from a process-safe headless mapping
+- [x] classify `low`, `medium`, `high`, `xhigh`, and `max` per exact model
+- [x] prove whether any value survives without clamp, aliasing, or default
       substitution
-- [ ] prove a process-private mapping that neither mutates ambient settings nor
+- [x] prove a process-private mapping that neither mutates ambient settings nor
       requires an unleased synthetic configuration root
-- [ ] bind only Research 189 deliver-now model/value rows through prepared
+- [x] bind only Research 189 deliver-now model/value rows through prepared
       input, immutable plan/evidence, request policy, driver, and child process
-- [ ] preserve the selected value on structured runs, first and resumed turns,
+- [x] preserve the selected value on structured runs, first and resumed turns,
       and fresh context-losing replacement
-- [ ] preserve exact current behavior when reasoning is absent
-- [ ] publish dispatch/acceptance truth without inferring effective reasoning
+- [x] preserve exact current behavior when reasoning is absent
+- [x] publish dispatch/acceptance truth without inferring effective reasoning
 
 ## Non-Goals
 
@@ -77,37 +77,38 @@ after card 113.
 
 ### Batch 41.1 — Exact Package And Transport Evidence
 
-- [ ] Execute card 113.
-- [ ] freeze official and exact `0.21.15` configuration specimens and digests
-- [ ] promote Research 189 with model/value, transport, precedence, clamp,
+- [x] Execute card 113.
+- [x] freeze official and exact `0.21.15` configuration specimens and digests
+- [x] promote Research 189 with model/value, transport, precedence, clamp,
       default, version, and lifetime dispositions
 
 ### Batch 41.2 — Prepared Run And Session Binding
 
-- [ ] Execute card 114 only after card 113 admits a useful exact subset.
-- [ ] bind optional portable reasoning through run/session input, plan,
+- [x] Execute card 114 after card 113 admitted a useful exact subset.
+- [x] bind optional portable reasoning through run/session input, plan,
       evidence, request, driver, and operation-private child configuration
-- [ ] preserve the absent path and reject drift before process work
+- [x] preserve the absent path and reject drift before process work
 
 ### Batch 41.3 — Lifecycle And Acceptance
 
-- [ ] Execute card 115 only after card 114.
-- [ ] prove run, first turn, resumed turn, and fresh replacement dispatch
-- [ ] update route-local guidance and report the deferred shared closeout delta
+- [x] Execute card 115 after card 114; the operator-authorized Qwen package
+      registration makes the final API gate pass.
+- [x] prove run, first turn, resumed turn, and fresh replacement dispatch
+- [x] update route-local guidance and report the deferred shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 189 deliver-now model/value rows prepare
-- [ ] request, plan constraint, prepared evidence, driver, and child transport
+- [x] only Research 189 deliver-now model/value rows prepare
+- [x] request, plan constraint, prepared evidence, driver, and child transport
       agree exactly
-- [ ] ambient configuration cannot override the planned value
-- [ ] one selected value spans every child in the prepared operation lifetime
-- [ ] absent reasoning retains current command and behavior
-- [ ] no raw setting, alias, clamp, default substitution, or model inference
+- [x] ambient configuration cannot override the planned value
+- [x] one selected value spans every child in the prepared operation lifetime
+- [x] absent reasoning retains current command and behavior
+- [x] no raw setting, alias, clamp, default substitution, or model inference
       enters the public mapping
-- [ ] known failures occur before task or process effects
-- [ ] deterministic QA uses no install, login, credential, account, or prompt
-- [ ] docs stop at dispatched, accepted, effective, and observed truth actually
+- [x] known failures occur before task or process effects
+- [x] deterministic QA uses no install, login, credential, account, or prompt
+- [x] docs stop at dispatched, accepted, effective, and observed truth actually
       proved by the exact surface
 
 An empty Research 189 deliver-now set is an honest stopped milestone, not a
@@ -136,9 +137,20 @@ reason to weaken Contract 033 or 040.
 
 ## Batch Cards
 
-- [113-qwen-headless-reasoning-effort-evidence.md](batch-cards/113-qwen-headless-reasoning-effort-evidence.md) — ready
-- [114-qwen-headless-reasoning-effort-binding.md](batch-cards/114-qwen-headless-reasoning-effort-binding.md) — ready after 113
-- [115-qwen-headless-reasoning-effort-acceptance.md](batch-cards/115-qwen-headless-reasoning-effort-acceptance.md) — ready after 114
+- [113-qwen-headless-reasoning-effort-evidence.md](batch-cards/113-qwen-headless-reasoning-effort-evidence.md) — complete
+- [114-qwen-headless-reasoning-effort-binding.md](batch-cards/114-qwen-headless-reasoning-effort-binding.md) — complete
+- [115-qwen-headless-reasoning-effort-acceptance.md](batch-cards/115-qwen-headless-reasoning-effort-acceptance.md) — complete
+
+## Closeout
+
+Cards 113-115 are complete in the worker worktree. Research 189 admits only
+the exact `0.21.15` DashScope rows for `qwen3.8-max` and
+`qwen3.8-max-preview`, all five canonical values. The route-local guide,
+fixtures, prepared adapter, deterministic acceptance tests, and
+package-specific API baseline are updated. The operator-authorized Qwen line
+in the shared unreleased package list makes the package API gate pass. The PR
+and reviewed head are recorded in the route-local closeout log after push; no
+merge is claimed.
 
 ## References
 

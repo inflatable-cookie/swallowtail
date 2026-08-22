@@ -33,3 +33,24 @@ pub(crate) fn resumed_arguments(model: &ModelId, session_id: &str) -> Vec<String
     arguments.extend(["--resume".to_owned(), session_id.to_owned()]);
     arguments
 }
+
+pub(crate) fn reasoning_arguments(model: &ModelId) -> Vec<String> {
+    let mut arguments = arguments(model);
+    replace_input_format(&mut arguments);
+    arguments
+}
+
+pub(crate) fn resumed_reasoning_arguments(model: &ModelId, session_id: &str) -> Vec<String> {
+    let mut arguments = reasoning_arguments(model);
+    arguments.extend(["--resume".to_owned(), session_id.to_owned()]);
+    arguments
+}
+
+fn replace_input_format(arguments: &mut [String]) {
+    if let Some(input_format) = arguments
+        .iter_mut()
+        .find(|argument| argument.as_str() == "text")
+    {
+        *input_format = "stream-json".to_owned();
+    }
+}

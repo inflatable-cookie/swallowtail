@@ -8,7 +8,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Choose it for an authenticated model catalogue, one bounded prompt, or a
 turn-scoped interactive continuation that privately reuses Qwen's exact
 session ID. Reject it when the application needs writes, callbacks,
-attachments, generation controls, public load/resume, or provider-session
+attachments, unsupported generation controls, public load/resume, or provider-session
 management.
 
 ## Operator Prerequisites
@@ -59,6 +59,30 @@ concurrently. Drain assistant, tool, usage, and terminal events, then close the
 run. Cancellation or deadline stops and joins the child. Terminal status and
 cleanup remain separate.
 
+### Exact Reasoning Selection
+
+Reasoning selection is qualified only at package `0.21.15`, provider
+`alibaba-modelstudio`, and models `qwen3.8-max` or `qwen3.8-max-preview`.
+Each model admits only the canonical values `low`, `medium`, `high`, `xhigh`,
+and `max`. Other Qwen models, upstream aliases, and other package points stay
+withheld. An omitted selection keeps the existing text-stdin command and
+request shape.
+
+Supply the selection through the typed prepared input. The prepared plan,
+request policy, evidence, and driver must retain the same exact value. The
+selected child switches to `--input-format stream-json`, sends a private
+`initialize` control request, requires `can_set_effort`, sends `set_effort`
+with the canonical value, and requires an exact `applied: true` response with
+no override before sending the user message. A substituted tier or
+higher-priority ambient provider knob fails before the prompt is sent.
+
+This is an in-memory operation-private control exchange. It does not automate
+`/effort`, persist `model.reasoningEffort`, mutate user/project settings, or
+create a synthetic configuration root. It proves requested, planned,
+dispatched, and Qwen-control accepted values only; it does not claim
+provider-effective or response-observed reasoning. The exact evidence is in
+[Research 189](../research/189-qwen-headless-reasoning-effort-evidence.md).
+
 ## Interactive Continuation
 
 Create `QwenSessionProfileInput` with request identity, exact model, working
@@ -71,6 +95,11 @@ provider session ID from Qwen's result and passes it to the next child with
 `--resume`. A failed, cancelled, timed-out, or mismatched turn does not advance
 that state. The ID never becomes a public `SessionResumeBinding`, load, or
 resume operation.
+
+When the prepared session has an admitted reasoning selection, every child —
+first, resumed, and fresh replacement — repeats the same private initialize /
+`set_effort` handshake before its user message. The setting is not recovered
+from ambient configuration or provider session state.
 
 For every turn, drain events and terminal concurrently, then close the turn.
 Active-turn interruption stops only that child. Closing the session joins
@@ -91,8 +120,9 @@ Handle failures through portable classification and retain the exact
 Qwen state, tool display, or provider prose in consumer code to infer auth,
 retry, terminal, or cleanup truth.
 
-The route exposes no output-token limit, reasoning selection, structured
-output, attachments, consumer tools, permissions, questions, writes, external
+The route exposes no output-token limit outside the qualified Qwen reasoning
+selection above, structured output, attachments, consumer tools, permissions,
+questions, writes, external
 search, public continuation, provider-session catalogue/import, reconciliation,
 archive/restore/delete, native close, or public child control.
 

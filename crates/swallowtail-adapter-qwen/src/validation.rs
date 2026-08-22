@@ -78,12 +78,10 @@ pub(crate) fn validate(
     }
     if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
-        || request.policy().reasoning_mode().is_some()
     {
-        return Err(unsupported(
-            "provider network, search, or reasoning selection",
-        ));
+        return Err(unsupported("provider network or search"));
     }
+    crate::reasoning::validate_runtime_binding(plan, request.policy().reasoning_mode())?;
     if request.working_resource().is_none() {
         return Err(unsupported("missing working resource"));
     }

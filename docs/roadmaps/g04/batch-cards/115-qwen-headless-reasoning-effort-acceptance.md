@@ -1,6 +1,6 @@
 # 115 Qwen Headless Reasoning Effort Acceptance
 
-Status: ready after 114
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.041 Qwen Headless Reasoning Effort](../041-qwen-headless-reasoning-effort.md)
@@ -29,17 +29,32 @@ route-local closeout.
    route-local closeout log, and package-specific public API baseline.
 8. Record the exact required architecture, route/feature matrix, changelog,
    programme, index, matrix-assertion, and Next Task delta in the closeout log
-   and PR body. Do not edit those shared surfaces on the worker branch.
+   and PR body. Do not edit those shared surfaces on the worker branch; the
+   operator-authorized Qwen package-list registration is the sole exception
+   required by the package API gate.
 
 ## Acceptance Criteria
 
-- [ ] exact deliver-now rows and failure classes have deterministic coverage
-- [ ] default QA performs no install, login, credential, account, or prompt
-- [ ] docs distinguish dispatched, accepted, effective, and observed truth
-- [ ] no sibling Qwen surface or model gains the capability
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside the route-local boundary
-- [ ] named gates pass
+- [x] exact deliver-now rows and failure classes have deterministic coverage
+- [x] default QA performs no install, login, credential, account, or prompt
+- [x] docs distinguish dispatched, accepted, effective, and observed truth
+- [x] no sibling Qwen surface or model gains the capability
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside the route-local boundary
+- [x] named gates pass
+
+## Acceptance Result
+
+Deterministic fixtures cover both admitted models across all five values,
+structured runs, first turns, resumed turns, control substitution/ambient
+override rejection, unsupported package/model/value/provider rows, and
+plan/request mismatch before process start. Fresh replacement retains the
+prepared request and repeats the same child handshake; provider-effective and
+observed reasoning remain unclaimed.
+
+All named route-local and package API gates pass. The operator-authorized
+Qwen registration in `release-baselines/public-api-unreleased/packages.txt`
+allows the checker to select the package-specific unreleased baseline.
 
 ## Validation
 
@@ -75,4 +90,5 @@ Auto-continuation: No.
 - merge or restack authority
 - `CHANGELOG.md`; `docs/architecture/system-architecture.md`; route/feature
   matrices; programme and roadmap front doors; shared indexes and matrix
-  assertions; either `packages.txt`
+  assertions; package-list changes other than the operator-authorized Qwen
+  registration required by this card

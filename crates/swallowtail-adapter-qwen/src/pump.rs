@@ -1,5 +1,6 @@
 use crate::events::QwenEventParser;
 use crate::handle::QwenProcessCancellation;
+use serde_json::Value;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
@@ -21,6 +22,7 @@ pub(crate) async fn pump(
     model: ModelId,
     expected_version: InterfaceVersion,
     operation_id: ActivityOperationId,
+    buffered_values: Vec<serde_json::Value>,
     services: HostServices,
 ) -> TerminalOutcome {
     pump_with_session(
@@ -28,7 +30,8 @@ pub(crate) async fn pump(
         events,
         cancellation,
         deadline,
-        QwenPumpContext::new(model, expected_version, None, operation_id),
+        QwenPumpContext::new(model, expected_version, None, operation_id)
+            .with_buffered_values(buffered_values),
         services,
     )
     .await
@@ -45,6 +48,7 @@ pub(crate) struct QwenPumpContext {
     expected_version: InterfaceVersion,
     expected_session_id: Option<String>,
     operation_id: ActivityOperationId,
+    buffered_values: Vec<Value>,
 }
 
 impl QwenPumpContext {
@@ -59,7 +63,13 @@ impl QwenPumpContext {
             expected_version,
             expected_session_id,
             operation_id,
+            buffered_values: Vec::new(),
         }
+    }
+
+    pub(crate) fn with_buffered_values(mut self, buffered_values: Vec<Value>) -> Self {
+        self.buffered_values = buffered_values;
+        self
     }
 }
 
@@ -77,6 +87,38 @@ pub(crate) async fn pump_with_session(
         context.expected_session_id,
         context.operation_id,
     );
+    for value in context.buffered_values {
+        let mut bytes = match serde_json::to_vec(&value) {
+            Ok(bytes) => bytes,
+            Err(_) => {
+                let cleanup = force_cleanup(process.as_ref()).await;
+                return result(TerminalOutcome::new(
+                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                        "swallowtail.qwen.headless.malformed_stream",
+                        "Qwen Code emitted malformed stream output",
+                    )),
+                    cleanup,
+                ));
+            }
+        };
+        bytes.push(b'\n');
+        match parser.push(&bytes) {
+            Ok(parsed) => {
+                if send_all(&events, parsed).is_err() {
+                    let cleanup = force_cleanup(process.as_ref()).await;
+                    return result(event_delivery_failed(cleanup));
+                }
+            }
+            Err(failure) => {
+                emit_protocol_debug(&services, &failure, "headless.pump.buffered_decode");
+                let cleanup = force_cleanup(process.as_ref()).await;
+                return result(TerminalOutcome::new(
+                    TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+                    cleanup,
+                ));
+            }
+        }
+    }
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

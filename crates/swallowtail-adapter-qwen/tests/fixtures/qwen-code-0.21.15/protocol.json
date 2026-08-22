@@ -22,8 +22,30 @@
   ],
   "selected_controls": [
     "can_get_available_models",
-    "get_available_models"
+    "get_available_models",
+    "can_set_effort",
+    "set_effort"
   ],
+  "reasoning_control": {
+    "transport": "stream-json control_request",
+    "request_subtype": "set_effort",
+    "response_requires": [
+      "effort equals requested canonical tier",
+      "applied true",
+      "override null"
+    ],
+    "models": [
+      "qwen3.8-max",
+      "qwen3.8-max-preview"
+    ],
+    "values": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
   "catalogue_image_only_filter": true,
   "stream_types_add_goal_state_from": "0.21.4",
   "goal_state_is_nested_stream_event": true,

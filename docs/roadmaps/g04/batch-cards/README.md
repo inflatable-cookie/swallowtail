@@ -104,6 +104,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
+- [106-deepseek-reasoning-acceptance.md](./106-deepseek-reasoning-acceptance.md) — ready after 105
+- [105-deepseek-reasoning-binding.md](./105-deepseek-reasoning-binding.md) — ready after 104
+- [104-deepseek-reasoning-evidence.md](./104-deepseek-reasoning-evidence.md) — ready
+- [103-anthropic-messages-effort-acceptance.md](./103-anthropic-messages-effort-acceptance.md) — ready after 102
+- [102-anthropic-messages-effort-binding.md](./102-anthropic-messages-effort-binding.md) — ready after 101
+- [101-anthropic-messages-effort-evidence.md](./101-anthropic-messages-effort-evidence.md) — ready
 - [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md) — ready after 099
 - [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md) — ready after 098
 - [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md) — ready

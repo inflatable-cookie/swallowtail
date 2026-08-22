@@ -53,7 +53,14 @@ families do not interrupt this programme by default.
 - [g04.036 Ollama Attached Context Window](./036-ollama-attached-context-window.md)
   is ready. Cards 098-100 start with exact `num_ctx` evidence, then bind and
   prove only the Research 184 deliver-now native `/api/chat` profiles.
-- Next after g04.036: compile Anthropic Messages `output_config.effort`.
+- [g04.037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) is
+  ready. Cards 101-103 start with exact model/value/profile evidence and bind
+  only Research 185 deliver-now `output_config.effort` mappings.
+- [g04.038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md)
+  is ready. Cards 104-106 separate effort from thinking mode and preserve
+  private continuation through only Research 186 deliver-now mappings.
+- The three route families may execute concurrently. Each lane remains serial;
+  integrate Ollama, then Anthropic, then DeepSeek. Compile xAI after this wave.
 
 ## Exclusions
 

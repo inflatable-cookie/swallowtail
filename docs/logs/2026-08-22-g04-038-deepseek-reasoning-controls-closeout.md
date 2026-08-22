@@ -2,8 +2,8 @@
 
 Status: complete on review PR; not merged
 Owner: Tom
-PR: pending at first closeout commit
-Head: pending at first closeout commit
+PR: https://github.com/inflatable-cookie/swallowtail/pull/36
+Evidence head: `fc5b4bac`
 
 Card 106 replaces the reservation with route-local evidence. The orchestrator
 records merge and shared-surface closeout separately.

@@ -4,7 +4,7 @@ Status: active programme
 Owner: Tom
 Created: 2026-08-21
 Evidence: `../triage/2026-08-21-advanced-route-features.md`
-Governing refs: Contracts 011, 020, 024, 037, 041, 047, 052
+Governing refs: Contracts 011, 020, 024, 037, 040, 041, 047, 052
 
 ## Purpose
 
@@ -66,19 +66,17 @@ families do not interrupt this programme by default.
   107-109 realize exact model-qualified reasoning and positive output-token
   bounds on structured and serial connection-local profiles.
 - [g04.040 Copilot CLI ACP Session Effort](./040-copilot-cli-acp-session-effort.md)
-  is ready. Cards 110-112 begin with exact `1.0.80` package and Contract 040
-  evidence before binding any process-fixed effort to the prepared session.
+  stopped after card 110 and merged through PR 39 at `da0871d5`. Research 188
+  proves exact `1.0.80` model-entitles server-start effort and may substitute
+  the selected model's default. The route selects no model, so cards 111-112
+  are blocked and `reasoning_selection` remains `No`.
 
-## Current Worker Boundary
+## Next Planning Boundary
 
-The Copilot CLI worker owns only its route crate, fixtures, prepared guide,
-numbered milestone and cards, reserved Research 188, reserved closeout log, and
-package-specific public API baseline. It must not edit shared architecture,
-route/feature matrices, changelog, programme, roadmap front doors, indexes,
-matrix assertions, or `packages.txt` while the lane is in flight.
-
-The orchestrator reconciles those shared surfaces after review and merge. The
-worker reports the exact required delta in its closeout record and PR body.
+Compile one Qwen headless reasoning-effort evidence lane next. Exact package
+`0.21.15` must prove the configuration transport, model qualification, clamp,
+default, and per-run/turn lifetime before any portable `ReasoningSelection`
+binding. No worker is ready until g04.041 and its cards are compiled and pushed.
 
 ## Exclusions
 

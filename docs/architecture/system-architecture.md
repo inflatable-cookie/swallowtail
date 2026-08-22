@@ -211,7 +211,11 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-copilot-cli` implements exact npm `1.0.80` ACP on
   `copilot --acp --stdio`. Public preview stays visible. Credentials stay
   host-owned. `--port`, `--yolo`, `--allow-all`, login, and Copilot
-  IDE/API flattening stay out.
+  IDE/API flattening stay out. Research 188 withholds server-start effort:
+  exact `1.0.80` resolves the stored value against the current model's
+  entitled set and may substitute that model's default, while this route
+  selects no model. The route therefore exposes no portable
+  `ReasoningSelection` and retains its exact absent-effort argv.
 - `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.24.2`
   discovery and one bounded `vibe --prompt --output streaming` structured
   run with `--max-turns 8 --trust --agent plan --workdir` through

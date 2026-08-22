@@ -578,7 +578,7 @@ Swallowtail: `copilot --acp --stdio` only.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Effort | `--effort` at server start | not passed | yes | only-if: process-lifetime, not per-turn | ACP `session/new` cannot set it |
+| Effort | `--effort` at server start | not passed | yes | withheld on exact `1.0.80` | model-entitled values may fall back to the selected model's default; this route selects no model |
 | Tool filter | `--available-tools` / `--excluded-tools` | not passed | yes | only-if: same lifetime | same |
 | YOLO | `--yolo` / `--allow-all` | withheld | official unused | no | — |
 
@@ -1017,10 +1017,11 @@ catalogue observations presented as setters, and unconfirmed fields stay
 withheld. The next planning pass must reassess the remaining entries against
 current production-matrix and contract truth before compiling g04.040.
 
-## Next-Family Selection (2026-08-22)
+## Copilot Evidence Stop And Next Selection (2026-08-22)
 
-Disposition: Copilot CLI ACP session effort promoted into
-[`g04.040`](../roadmaps/g04/040-copilot-cli-acp-session-effort.md).
+Disposition: Copilot CLI ACP session effort was promoted into
+[`g04.040`](../roadmaps/g04/040-copilot-cli-acp-session-effort.md), then stopped
+after Research 188 and card 110. PR 39 merged the evidence at `da0871d5`.
 
 The current official ACP-server surface names `--effort` and
 `--reasoning-effort` with `low`, `medium`, `high`, `xhigh`, and `max`, fixed at
@@ -1030,8 +1031,15 @@ global configuration mutation. Exact package `1.0.80`, canonical syntax, the
 no-model-route Contract 040 boundary, and every value remain gated by card 110
 and Research 188.
 
-Qwen effort remains promoted for a later evidence lane: its current global
-setting includes provider/model clamp behavior that cannot become an exact
-portable selection without deeper qualification. Cline thinking is a boolean
-spawn control rather than the same five-value effort ladder. Parked families
-remain outside this selection. Do not bulk-promote the remaining inventory.
+No Copilot value is deliver-now on exact `1.0.80`. The package resolves startup
+effort against the current model's entitled set and may substitute the model
+default; `copilot-cli.acp` selects no model. Reopen only with an exact selected-
+model route or an upstream interface that accepts one value without model
+entitlement.
+
+Qwen headless reasoning effort is the next planning checkpoint. Its current
+global setting includes provider/model clamp behavior, so g04.041 must begin
+with exact `0.21.15` configuration, model, clamp, default, and lifetime
+evidence. Cline thinking remains a separate later boolean spawn-control family.
+Parked families remain outside this selection. Do not bulk-promote the
+remaining inventory.

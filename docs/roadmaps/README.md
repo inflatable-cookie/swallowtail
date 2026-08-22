@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Implement g04.040 cards 110-112 for Copilot CLI ACP session-fixed effort. Card
-110 must prove the exact `1.0.80` startup flags and the no-model-route Contract
-040 fit before any binding. Contract 029 currentness stays standing.
+Compile g04.041 for Qwen headless reasoning-effort evidence. Start with exact
+`0.21.15` configuration transport, model qualification, clamp, default, and
+run/turn lifetime proof before making any card ready for binding. Contract 029
+currentness stays standing.
 
 ## Standing Lanes
 

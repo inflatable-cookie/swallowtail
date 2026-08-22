@@ -3,6 +3,7 @@
 Status: stopped
 Owner: Tom
 Created: 2026-08-22
+Merged: PR 39 at `da0871d5`, reviewed head `9c583604`, 2026-08-22
 Depends on: per-route feature completion programme
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 029, 037, 040, 041, 052
@@ -129,8 +130,8 @@ Research 188 deliver-now set is empty. Acceptance is the retained
 - predecessors: g04.035-039 initial per-route feature sequence
 - this milestone: Copilot CLI ACP startup/session effort
 - execution topology: one serial worker lane, cards 110-112
-- next route family: selected by the orchestrator after merge from the remaining
-  promoted inventory
+- next route family: Qwen headless reasoning-effort evidence, selected for
+  g04.041 compilation
 
 ## Decision Gates
 

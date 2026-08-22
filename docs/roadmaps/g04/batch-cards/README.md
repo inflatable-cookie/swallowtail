@@ -2,6 +2,7 @@
 
 ## Completed
 
+- [110-copilot-cli-acp-effort-evidence.md](./110-copilot-cli-acp-effort-evidence.md)
 - [109-xai-responses-control-acceptance.md](./109-xai-responses-control-acceptance.md)
 - [108-xai-responses-control-binding.md](./108-xai-responses-control-binding.md)
 - [107-xai-responses-control-evidence.md](./107-xai-responses-control-evidence.md)
@@ -116,6 +117,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [112-copilot-cli-acp-effort-acceptance.md](./112-copilot-cli-acp-effort-acceptance.md) — ready after 111
-- [111-copilot-cli-acp-effort-binding.md](./111-copilot-cli-acp-effort-binding.md) — ready after 110
-- [110-copilot-cli-acp-effort-evidence.md](./110-copilot-cli-acp-effort-evidence.md) — ready
+No cards are planned. The sole next action is the g04.041 Qwen evidence
+compilation checkpoint in `docs/roadmaps/README.md`.
+
+## Blocked
+
+- [112-copilot-cli-acp-effort-acceptance.md](./112-copilot-cli-acp-effort-acceptance.md) — no deliver-now value or binding to prove
+- [111-copilot-cli-acp-effort-binding.md](./111-copilot-cli-acp-effort-binding.md) — Research 188 admits no deliver-now value

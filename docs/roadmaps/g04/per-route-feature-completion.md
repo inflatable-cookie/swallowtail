@@ -1,6 +1,6 @@
 # Per-Route Feature Completion
 
-Status: planned programme
+Status: active programme
 Owner: Tom
 Created: 2026-08-21
 Evidence: `../triage/2026-08-21-advanced-route-features.md`
@@ -44,6 +44,14 @@ already identified by the assessed inventory:
 Then continue route-by-route through the production matrix. Re-rank only for a
 consumer need, an upstream removal, or a shared contract dependency. New route
 families do not interrupt this programme by default.
+
+## Progress
+
+- [g04.035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md)
+  is ready with cards 095-097. It begins with an exact model/parameter/value
+  evidence allowlist, then adds typed plan-bound dispatch.
+- After g04.035 closes, compile Ollama attached `num_ctx` as the next numbered
+  route-local milestone.
 
 ## Exclusions
 

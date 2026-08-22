@@ -97,8 +97,11 @@
 
 ## Active
 
-- None. Cards 070-071 remain unused gaps, not tasks.
+- [095-cursor-headless-model-parameter-evidence.md](./095-cursor-headless-model-parameter-evidence.md)
+
+Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- None.
+- [096-cursor-headless-model-parameter-binding.md](./096-cursor-headless-model-parameter-binding.md)
+- [097-cursor-headless-model-parameter-acceptance.md](./097-cursor-headless-model-parameter-acceptance.md)

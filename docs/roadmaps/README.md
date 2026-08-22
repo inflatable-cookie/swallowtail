@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Define the first numbered per-route feature milestone, starting with Cursor
-headless model parameters. Use the per-route feature programme and keep
-Contract 029 currentness as a standing lane.
+Implement g04.035 cards 095-097 for Cursor headless model parameters. Start
+with exact evidence and keep Contract 029 currentness as a standing lane.
 
 ## Standing Lanes
 

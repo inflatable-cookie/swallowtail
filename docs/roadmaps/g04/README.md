@@ -33,7 +33,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Work through official per-route feature gaps one route and one control family at a time. | ready | Contracts 011, 020, 024, 037, 041, 047, 052; per-route feature programme | Cursor headless model parameters |
+| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.035` |
 
 ## Planned Next Roadmaps
 
@@ -49,9 +49,10 @@ and selection policy.
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
 - [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 - [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, completed
+- [g04.035 Cursor Headless Model Parameters](035-cursor-headless-model-parameters.md) — ready, cards 095-097
 
-Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
-30-50.
+Do not roll over: 35 numbered roadmaps exist; 001-034 are complete and 035 is
+ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -80,8 +81,10 @@ Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
   complete
 - g04.034 is complete: cards 093-094 qualified Gemini CLI `0.56.0` across
   separate ACP and headless axes for enterprise API-key access
-- After g04.034 closes, define the first numbered per-route feature
-  milestone. Contract 029 currentness is standing
+- g04.035 is ready: cards 095-097 freeze exact Cursor model-parameter
+  evidence, add typed headless binding, and prove bounded dispatch
+- Contract 029 currentness remains standing and does not move the generation
+  pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
@@ -89,10 +92,8 @@ Do not roll over: 34 numbered roadmaps exist; 001-034 are complete, target
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Define the first numbered milestone from
-   [Per-Route Feature Completion](./per-route-feature-completion.md), starting
-   with Cursor headless model parameters unless current evidence changes the
-   ranking.
+2. Execute g04.035 cards 095-097 serially for Cursor headless model
+   parameters. The next route-local milestone is Ollama attached `num_ctx`.
 
 New route-family research does not pre-empt this sequence.
 
@@ -100,6 +101,7 @@ New route-family research does not pre-empt this sequence.
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
+- [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — ready, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed

@@ -115,10 +115,14 @@ route and an offline text request with explicit
 `AttachedRuntimeResidency::RuntimeManaged`.
 
 Optional controls are exact reasoning `off`, `low`, `medium`, or `high` when
-the selected-model detail advertises thinking, and one inline JSON Schema
-2020-12 object with provider-native enforcement. Preparation rejects controls
-not supported by the observed selected model; it never infers capability from
-the model tag alone.
+the selected-model detail advertises thinking, one inline JSON Schema
+2020-12 object with provider-native enforcement, and one adapter-local
+`OllamaContextWindow` value encoded as native `options.num_ctx`. Preparation
+rejects controls not supported by the observed selected model; it never infers
+capability from the model tag alone. Dispatching `num_ctx` may load or reload
+the runner and change memory pressure on the externally owned runtime. It does
+not prove provider acceptance, effective allocation, truncation outcome, or
+resource feasibility.
 
 One `start_run` call is one native `/api/chat` attempt. Invocation may load the
 selected model, refresh its timer, or evict another model. That accepted side
@@ -138,8 +142,10 @@ authorizes retry.
 
 ## Interactive Transcript Replay
 
-`prepare_session` accepts `OllamaSessionProfileInput` with request identity and
-optional deadline. `open_session` creates no provider session. Swallowtail
+`prepare_session` accepts `OllamaSessionProfileInput` with request identity,
+optional deadline, and the same optional adapter-local `OllamaContextWindow`
+selection fixed for every replay turn and fresh restoration. `open_session`
+creates no provider session. Swallowtail
 keeps at most 24 clean terminal turns and one MiB of private transcript in the
 live handle, replaying that consumer-owned history on later `/api/chat`
 requests. Failed, cancelled, timed-out, or malformed turns do not commit.

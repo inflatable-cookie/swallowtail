@@ -7,6 +7,11 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed Ollama adapter-local context-window selection (`OllamaContextWindow`,
+  `with_context_window`) on structured inference and interactive session
+  profiles, with Research 184 positive-domain dispatch of `options.num_ctx`
+  beside `num_predict`; dispatch does not prove provider acceptance or
+  effective allocation; g04.036
 - add typed Cursor headless model parameters (`CursorHeadlessFast`,
   `CursorHeadlessContext`, `with_fast`, `with_context`, `with_effort`) with
   Research 183 deliver-now tuples, canonical single-argument `--model`

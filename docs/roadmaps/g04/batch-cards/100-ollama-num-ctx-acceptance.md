@@ -1,6 +1,6 @@
 # 100 Ollama Num Ctx Acceptance
 
-Status: ready after 099
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.036 Ollama Attached Context Window](../036-ollama-attached-context-window.md)

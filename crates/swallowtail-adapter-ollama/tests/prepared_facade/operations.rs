@@ -2,6 +2,8 @@ use super::fixtures::{attempt_input, inventory_input, prepared, session_input};
 use crate::support::{Fixture, FixtureServer, StreamFixture, VersionFixture};
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::num::NonZeroU32;
+use swallowtail_adapter_ollama::OllamaContextWindow;
 use swallowtail_core::{
     AttachedRuntimeResidency, Capability, CapabilityConstraint, ExecutionHostId, HostServiceKind,
     InstanceOwnership, ReasoningMode, StructuredOutputEnforcement,
@@ -309,6 +311,37 @@ fn prepared_generation_controls_require_model_evidence_and_exact_constraints() {
         "swallowtail.ollama.preparation.reasoning_unsupported"
     );
     assert_eq!(fixture.server.inference_attempts(), 0);
+}
+
+#[test]
+fn prepared_context_window_binds_evidence_driver_and_native_body() {
+    let fixture = Fixture::new();
+    let prepared = prepared(&fixture);
+    let context = OllamaContextWindow::new(NonZeroU32::new(8192).expect("value is nonzero"));
+    let attempt = prepared
+        .prepare_inference_attempt(
+            attempt_input("prepared-context-window").with_context_window(context),
+        )
+        .expect("context window prepares");
+    assert_eq!(attempt.evidence().context_window(), Some(context));
+
+    let mut run = block_on(attempt.start_run(fixture.services())).expect("run starts");
+    let terminal = run.take_terminal_outcome().expect("terminal exists");
+    block_on(terminal);
+    let bodies = fixture.server.inference_bodies();
+    let body = bodies.last().expect("request body");
+    let request: serde_json::Value = serde_json::from_slice(body).expect("request body is JSON");
+    assert_eq!(request["options"]["num_ctx"], 8192);
+    assert_eq!(request["options"]["num_predict"], 8);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+
+    let session = prepared
+        .prepare_session(
+            session_input("prepared-session-context-window").with_context_window(context),
+        )
+        .expect("session context window prepares");
+    assert_eq!(session.evidence().context_window(), Some(context));
+    assert_eq!(fixture.server.inference_attempts(), 1);
 }
 
 fn schema() -> StructuredOutputDescriptor {

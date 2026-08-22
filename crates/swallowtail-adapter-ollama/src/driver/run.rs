@@ -19,10 +19,11 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
-            let chat = Request::chat(
+            let chat = Request::chat_with_context_window(
                 &model,
                 request.content().as_str(),
                 maximum,
+                self.context_window().map(crate::OllamaContextWindow::as_u32),
                 request.policy().reasoning_mode(),
                 request.structured_output(),
             )?;

@@ -129,8 +129,8 @@ fn native_requests_contain_only_the_selected_text_subset() {
         Request::show("fixture-model:8b").unwrap().body.unwrap(),
         fixture_text!("show-request.json"),
     );
-    let chat =
-        Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None).expect("chat encodes");
+    let chat = Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None)
+        .expect("chat encodes");
     assert_eq!(chat.path, "/api/chat");
     assert_json_eq(chat.body.unwrap(), fixture_text!("chat-request.json"));
     assert!(Request::chat("fixture-model:8b", "Fixture prompt", 0, None, None).is_err());
@@ -222,6 +222,99 @@ fn malformed_disconnect_unsupported_and_http_errors_are_safe() {
         assert!(!diagnostic.contains("cloud.example.invalid"));
         assert!(!diagnostic.contains("Fixture prompt"));
     }
+}
+
+#[test]
+fn context_window_encodes_beside_num_predict_without_changing_absent_chat() {
+    use std::num::NonZeroU32;
+    let absent = Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None)
+        .expect("absent path encodes");
+    let absent_body: Value =
+        serde_json::from_slice(&absent.body.expect("absent body")).expect("absent JSON parses");
+    assert!(absent_body["options"].get("num_ctx").is_none());
+
+    for value in [1_u32, 8192, u32::MAX] {
+        let request = Request::chat_with_context_window(
+            "fixture-model:8b",
+            "Fixture prompt",
+            8,
+            Some(value),
+            None,
+            None,
+        )
+        .expect("context window encodes");
+        let body: Value =
+            serde_json::from_slice(&request.body.expect("body")).expect("request JSON parses");
+        assert_eq!(body["options"]["num_ctx"], value);
+        assert_eq!(body["options"]["num_predict"], 8);
+    }
+
+    let fixture: Value = serde_json::from_str(include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/ollama-num-ctx-v0.14.0-v0.32.15/context-window-chat-request.json"
+    )))
+    .expect("fixture parses");
+    let encoded = Request::chat_with_context_window(
+        "fixture-model:8b",
+        "Fixture prompt",
+        8,
+        Some(8192),
+        None,
+        None,
+    )
+    .expect("fixture value encodes");
+    let encoded_body: Value =
+        serde_json::from_slice(&encoded.body.expect("encoded body")).expect("encoded JSON parses");
+    assert_eq!(encoded_body, fixture);
+}
+
+#[test]
+fn context_window_generation_controls_remain_distinct() {
+    let schema = StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid");
+    let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+    let request = Request::chat_with_context_window(
+        "fixture-model:8b",
+        "Return one fixture result",
+        64,
+        Some(8192),
+        Some(&reasoning),
+        Some(&schema),
+    )
+    .expect("generation controls encode");
+    let body: Value =
+        serde_json::from_slice(&request.body.expect("body")).expect("request JSON parses");
+    let fixture: Value = serde_json::from_str(include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/ollama-num-ctx-v0.14.0-v0.32.15/context-window-generation-controls-chat-request.json"
+    )))
+    .expect("fixture parses");
+    assert_eq!(body, fixture);
+}
+
+#[test]
+fn zero_context_window_fails_before_request_encoding() {
+    let error = Request::chat_with_context_window(
+        "fixture-model:8b",
+        "Fixture prompt",
+        8,
+        Some(0),
+        None,
+        None,
+    )
+    .expect_err("zero context window is rejected");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.context_window_invalid"
+    );
 }
 
 fn decode(bytes: &[u8]) -> Result<Vec<NativeEvent>, swallowtail_runtime::RuntimeFailure> {

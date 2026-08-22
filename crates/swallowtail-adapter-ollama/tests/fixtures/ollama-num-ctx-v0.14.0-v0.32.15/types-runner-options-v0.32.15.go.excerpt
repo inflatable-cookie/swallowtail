@@ -1,0 +1,35 @@
+// Excerpt from github.com/ollama/ollama api/types.go at tag v0.32.15
+// commit b7871fc0d1d82fe109536efa3e0e8e411c766c75
+
+type ChatRequest struct {
+	// ...
+	// Options lists model-specific options.
+	Options map[string]any `json:"options"`
+	// ...
+}
+
+type Options struct {
+	Runner
+	NumPredict int `json:"num_predict,omitempty"`
+	// ...
+}
+
+// Runner options which must be set when the model is loaded into memory
+type Runner struct {
+	NumCtx int `json:"num_ctx,omitempty"`
+	// ...
+}
+
+func (opts *Options) FromMap(m map[string]any) error {
+	// ...
+			case reflect.Int:
+				switch t := val.(type) {
+				case int64:
+					field.SetInt(t)
+				case float64:
+					field.SetInt(int64(t))
+				default:
+					return fmt.Errorf("option %q must be of type integer", key)
+				}
+	// ...
+}

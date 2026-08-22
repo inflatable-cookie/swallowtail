@@ -12,12 +12,14 @@ use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperatio
 pub struct OllamaPreparedEvidence {
     runtime: crate::OllamaPreparedRuntimeObservation,
     operation: PreparedOperationEvidence,
+    context_window: Option<crate::OllamaContextWindow>,
 }
 
 impl OllamaPreparedEvidence {
     pub(super) fn from_prepared(
         prepared: &OllamaPreparedIntegration,
         plan: PreflightPlan,
+        context_window: Option<crate::OllamaContextWindow>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             runtime: prepared.runtime().clone(),
@@ -25,6 +27,7 @@ impl OllamaPreparedEvidence {
                 plan,
                 prepared.access_evidence().clone(),
             )?,
+            context_window,
         })
     }
 
@@ -32,6 +35,7 @@ impl OllamaPreparedEvidence {
         prepared: &OllamaPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        context_window: Option<crate::OllamaContextWindow>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             runtime: prepared.runtime().clone(),
@@ -40,6 +44,7 @@ impl OllamaPreparedEvidence {
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
+            context_window,
         })
     }
 
@@ -72,6 +77,22 @@ impl OllamaPreparedEvidence {
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }
+
+    /// Returns the selected native context window when one was prepared.
+    #[must_use]
+    pub const fn context_window(&self) -> Option<crate::OllamaContextWindow> {
+        self.context_window
+    }
+}
+
+pub(super) fn bind_low_level_driver(
+    evidence: &OllamaPreparedEvidence,
+) -> crate::OllamaNativeAttachedDriver {
+    let mut driver = crate::OllamaNativeAttachedDriver::new();
+    if let Some(context_window) = evidence.context_window() {
+        driver = driver.with_context_window(context_window);
+    }
+    driver
 }
 
 pub(super) fn instance_with_capabilities(

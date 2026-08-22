@@ -46,9 +46,15 @@ pub fn swallowtail_adapter_ollama::protocol::require_success(&swallowtail_adapte
 pub enum swallowtail_adapter_ollama::OllamaModelCapability
 pub swallowtail_adapter_ollama::OllamaModelCapability::Completion
 pub swallowtail_adapter_ollama::OllamaModelCapability::Thinking
+pub struct swallowtail_adapter_ollama::OllamaContextWindow(_)
+impl swallowtail_adapter_ollama::OllamaContextWindow
+pub const fn swallowtail_adapter_ollama::OllamaContextWindow::as_u32(self) -> u32
+pub fn swallowtail_adapter_ollama::OllamaContextWindow::from_u64(u64) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_ollama::OllamaContextWindow::new(core::num::nonzero::NonZeroU32) -> Self
 pub struct swallowtail_adapter_ollama::OllamaInferenceAttemptInput
 impl swallowtail_adapter_ollama::OllamaInferenceAttemptInput
 pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
+pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_context_window(self, swallowtail_adapter_ollama::OllamaContextWindow) -> Self
 pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_structured_output(self, swallowtail_runtime::schema::StructuredOutputDescriptor) -> Self
@@ -68,6 +74,7 @@ pub const fn swallowtail_adapter_ollama::OllamaModelSelection::new(swallowtail_c
 pub struct swallowtail_adapter_ollama::OllamaNativeAttachedDriver
 impl swallowtail_adapter_ollama::OllamaNativeAttachedDriver
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::new() -> Self
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::with_context_window(self, swallowtail_adapter_ollama::OllamaContextWindow) -> Self
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_ollama::OllamaNativeAttachedDriver
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -85,6 +92,7 @@ pub const fn swallowtail_adapter_ollama::OllamaPreparationProbe::new(swallowtail
 pub struct swallowtail_adapter_ollama::OllamaPreparedEvidence
 impl swallowtail_adapter_ollama::OllamaPreparedEvidence
 pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::context_window(&self) -> core::option::Option<swallowtail_adapter_ollama::OllamaContextWindow>
 pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
 pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -142,6 +150,7 @@ pub const fn swallowtail_adapter_ollama::OllamaPreparedSession::request(&self) -
 pub struct swallowtail_adapter_ollama::OllamaSessionProfileInput
 impl swallowtail_adapter_ollama::OllamaSessionProfileInput
 pub const fn swallowtail_adapter_ollama::OllamaSessionProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_ollama::OllamaSessionProfileInput::with_context_window(self, swallowtail_adapter_ollama::OllamaContextWindow) -> Self
 pub const fn swallowtail_adapter_ollama::OllamaSessionProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub const swallowtail_adapter_ollama::OLLAMA_ATTACHED_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_ollama::OLLAMA_ATTACHED_ENDPOINT_FIELD_ID: &str

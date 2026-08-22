@@ -101,6 +101,26 @@ impl Request {
             model,
             &messages,
             maximum_output_tokens,
+            None,
+            reasoning,
+            structured_output,
+        )
+    }
+
+    pub(crate) fn chat_with_context_window(
+        model: &str,
+        content: &str,
+        maximum_output_tokens: u64,
+        context_window: Option<u32>,
+        reasoning: Option<&ReasoningMode>,
+        structured_output: Option<&StructuredOutputDescriptor>,
+    ) -> Result<Self, RuntimeFailure> {
+        let messages = [ChatMessage::user(content)];
+        Self::chat_with_messages(
+            model,
+            &messages,
+            maximum_output_tokens,
+            context_window,
             reasoning,
             structured_output,
         )
@@ -110,14 +130,23 @@ impl Request {
         model: &str,
         messages: &[ChatMessage],
         maximum_output_tokens: u64,
+        context_window: Option<u32>,
     ) -> Result<Self, RuntimeFailure> {
-        Self::chat_with_messages(model, messages, maximum_output_tokens, None, None)
+        Self::chat_with_messages(
+            model,
+            messages,
+            maximum_output_tokens,
+            context_window,
+            None,
+            None,
+        )
     }
 
     fn chat_with_messages(
         model: &str,
         messages: &[ChatMessage],
         maximum_output_tokens: u64,
+        context_window: Option<u32>,
         reasoning: Option<&ReasoningMode>,
         structured_output: Option<&StructuredOutputDescriptor>,
     ) -> Result<Self, RuntimeFailure> {
@@ -130,13 +159,23 @@ impl Request {
                     "Ollama maximum output tokens exceeded the supported request range",
                 )
             })?;
+        let mut options = serde_json::json!({
+            "num_predict": maximum
+        });
+        if let Some(context_window) = context_window {
+            if context_window == 0 {
+                return Err(failure(
+                    "swallowtail.ollama.context_window_invalid",
+                    "Ollama context window exceeded the supported positive request range",
+                ));
+            }
+            options["num_ctx"] = serde_json::json!(context_window);
+        }
         let mut request = serde_json::json!({
             "model": model,
             "messages": messages,
             "stream": true,
-            "options": {
-                "num_predict": maximum
-            }
+            "options": options
         });
         if let Some(reasoning) = reasoning {
             request["think"] = match reasoning.as_str() {

@@ -1,0 +1,69 @@
+{
+  "axis": "ollama.runtime",
+  "behavior": "ollama.native-text-v1",
+  "qualified_window": "0.14.0..=0.32.15",
+  "excluded_versions": ["0.32.2", "0.32.10"],
+  "qualification_points": [
+    {
+      "version": "0.14.0",
+      "tag": "v0.14.0",
+      "commit": "02a24015968d612b418448b73cffaa1b0652d161",
+      "types_go_sha256": "641793496655f5d55905022f89d5ad0ee0df36b5efb0c8901c91eaec9bb7cff6"
+    },
+    {
+      "version": "0.18.0",
+      "tag": "v0.18.0",
+      "commit": "3980c0217d27e05a441808a446e7ee5ea7e04256",
+      "types_go_sha256": "9189af46efbaa269252477851d879b9e8b5b789e3c831389ed4cb2fc6be49c94"
+    },
+    {
+      "version": "0.30.0",
+      "tag": "v0.30.0",
+      "commit": "2c71d8d7ca6edbc9bdc1a312f71ce3b079c0fe56",
+      "types_go_sha256": "a4f8c934d7592611238d318fb1486fc0ca6db4f779f7d9312cdf378d41ceb3aa"
+    },
+    {
+      "version": "0.32.1",
+      "tag": "v0.32.1",
+      "commit": "30c390384e20333b67cadab60da5bcb669407f01",
+      "types_go_sha256": "a54975f59ef7240841744bead00efe4158eb0369860a65e46bf1853f2a67b592"
+    },
+    {
+      "version": "0.32.14",
+      "tag": "v0.32.14",
+      "commit": "d67ad83426633195089509347ffd4fe795120198",
+      "types_go_sha256": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1"
+    },
+    {
+      "version": "0.32.15",
+      "tag": "v0.32.15",
+      "commit": "b7871fc0d1d82fe109536efa3e0e8e411c766c75",
+      "types_go_sha256": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1"
+    }
+  ],
+  "native_field": "options.num_ctx",
+  "runner_struct_field": "Runner.NumCtx",
+  "chat_request_options": "ChatRequest.Options map[string]any",
+  "wire_integer_domain": "positive JSON integers accepted as int64 or float64 and stored as Go int",
+  "swallowtail_positive_domain": "1..=4294967295",
+  "server_zero_semantics": "omitted or zero selects server default context; Swallowtail fails closed before dispatch",
+  "runtime_side_effects": [
+    "runner load or reload when num_ctx changes",
+    "memory pressure on externally owned runtime",
+    "training-context clamp with warning in llm.NewLlamaServer",
+    "message truncation when opts.NumCtx bounds prompt fit"
+  ],
+  "official_documentation": {
+    "chat_api_url": "https://docs.ollama.com/api/chat",
+    "show_api_url": "https://docs.ollama.com/api-reference/show-model-details"
+  },
+  "profile_dispositions": {
+    "structured_run": "deliver-now",
+    "interactive_session": "deliver-now"
+  },
+  "representative_values": {
+    "minimum": 1,
+    "representative": 8192,
+    "maximum": 4294967295
+  }
+}

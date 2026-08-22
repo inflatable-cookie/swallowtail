@@ -333,8 +333,10 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
   `0.14.0..=0.32.15`; exact runtime, installed and running model observations,
-  NDJSON output, and inference-caused residency remain distinct, with no
-  installation, model acquisition, cloud access, unload, or server ownership
+  NDJSON output, and inference-caused residency remain distinct, with optional
+  adapter-local `options.num_ctx` dispatch on structured runs and interactive
+  replay, with no installation, model acquisition, cloud access, unload, or
+  server ownership
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
   continuation or serial interactive turns with private continuation; both

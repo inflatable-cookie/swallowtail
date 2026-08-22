@@ -1,0 +1,1 @@
+{"format":{"additionalProperties":false,"properties":{"result":{"type":"string"}},"required":["result"],"type":"object"},"messages":[{"content":"Return one fixture result","role":"user"}],"model":"fixture-model:8b","options":{"num_ctx":8192,"num_predict":64},"stream":true,"think":"high"}

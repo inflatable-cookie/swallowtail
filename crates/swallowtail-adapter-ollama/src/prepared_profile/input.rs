@@ -2,6 +2,22 @@ use std::num::NonZeroU64;
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, StructuredOutputDescriptor};
 
+type InferenceAttemptParts = (
+    RequestId,
+    OperationContent,
+    NonZeroU64,
+    Option<crate::OllamaContextWindow>,
+    Option<ReasoningMode>,
+    Option<StructuredOutputDescriptor>,
+    Option<Deadline>,
+);
+
+type SessionProfileParts = (
+    RequestId,
+    Option<crate::OllamaContextWindow>,
+    Option<Deadline>,
+);
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Exact local model route selected for the attached runtime.
 pub struct OllamaModelSelection {
@@ -65,6 +81,7 @@ pub struct OllamaInferenceAttemptInput {
     request_id: RequestId,
     content: OperationContent,
     maximum_output_tokens: NonZeroU64,
+    context_window: Option<crate::OllamaContextWindow>,
     reasoning: Option<ReasoningMode>,
     structured_output: Option<StructuredOutputDescriptor>,
     deadline: Option<Deadline>,
@@ -74,6 +91,7 @@ pub struct OllamaInferenceAttemptInput {
 /// Inputs for one resource-free interactive Ollama session.
 pub struct OllamaSessionProfileInput {
     request_id: RequestId,
+    context_window: Option<crate::OllamaContextWindow>,
     deadline: Option<Deadline>,
 }
 
@@ -83,6 +101,7 @@ impl OllamaSessionProfileInput {
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
+            context_window: None,
             deadline: None,
         }
     }
@@ -94,8 +113,15 @@ impl OllamaSessionProfileInput {
         self
     }
 
-    pub(super) fn into_parts(self) -> (RequestId, Option<Deadline>) {
-        (self.request_id, self.deadline)
+    /// Selects one exact native `options.num_ctx` value for every session turn.
+    #[must_use]
+    pub const fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+        self.context_window = Some(context_window);
+        self
+    }
+
+    pub(super) fn into_parts(self) -> SessionProfileParts {
+        (self.request_id, self.context_window, self.deadline)
     }
 }
 
@@ -111,6 +137,7 @@ impl OllamaInferenceAttemptInput {
             request_id,
             content,
             maximum_output_tokens,
+            context_window: None,
             reasoning: None,
             structured_output: None,
             deadline: None,
@@ -138,20 +165,19 @@ impl OllamaInferenceAttemptInput {
         self
     }
 
-    pub(super) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        OperationContent,
-        NonZeroU64,
-        Option<ReasoningMode>,
-        Option<StructuredOutputDescriptor>,
-        Option<Deadline>,
-    ) {
+    /// Selects one exact native `options.num_ctx` value for the attempt.
+    #[must_use]
+    pub const fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+        self.context_window = Some(context_window);
+        self
+    }
+
+    pub(super) fn into_parts(self) -> InferenceAttemptParts {
         (
             self.request_id,
             self.content,
             self.maximum_output_tokens,
+            self.context_window,
             self.reasoning,
             self.structured_output,
             self.deadline,

@@ -136,7 +136,7 @@ impl OllamaPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(OllamaPreparedInventory {
-            evidence: OllamaPreparedEvidence::from_prepared(self, plan)?,
+            evidence: OllamaPreparedEvidence::from_prepared(self, plan, None)?,
             request,
         })
     }

@@ -1,6 +1,7 @@
 use super::input::OllamaInferenceAttemptInput;
 use super::plan::{
-    OllamaPreparedEvidence, build_plan, instance_with_capabilities, model_route, requirements,
+    OllamaPreparedEvidence, bind_low_level_driver, build_plan, instance_with_capabilities,
+    model_route, requirements,
 };
 use crate::prepared::failure;
 use crate::{OllamaNativeAttachedDriver, OllamaPreparedIntegration};
@@ -43,7 +44,7 @@ impl OllamaPreparedInferenceAttempt {
     /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OllamaNativeAttachedDriver {
-        OllamaNativeAttachedDriver::new()
+        bind_low_level_driver(&self.evidence)
     }
 
     /// Starts the prepared inference attempt.
@@ -71,7 +72,7 @@ impl OllamaPreparedIntegration {
         &self,
         input: OllamaInferenceAttemptInput,
     ) -> Result<OllamaPreparedInferenceAttempt, PreparationFailure> {
-        let (request_id, content, maximum, reasoning, structured_output, deadline) =
+        let (request_id, content, maximum, context_window, reasoning, structured_output, deadline) =
             input.into_parts();
         if maximum.get() > u64::from(u32::MAX) {
             return Err(failure(
@@ -131,7 +132,12 @@ impl OllamaPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(OllamaPreparedInferenceAttempt {
-            evidence: OllamaPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: OllamaPreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity,
+                context_window,
+            )?,
             request,
         })
     }

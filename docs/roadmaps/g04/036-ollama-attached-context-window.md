@@ -1,6 +1,6 @@
 # g04.036 Ollama Attached Context Window
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Depends on: completed g04.035; per-route feature completion programme
@@ -29,18 +29,18 @@ evidence and wire dispatch on only the qualified `/api/chat` profiles.
 
 ## Goals
 
-- [ ] freeze exact qualified-source and current official evidence for
+- [x] freeze exact qualified-source and current official evidence for
       `options.num_ctx`
-- [ ] classify structured inference and interactive replay separately
-- [ ] define one useful positive numeric domain that fails closed before
+- [x] classify structured inference and interactive replay separately
+- [x] define one useful positive numeric domain that fails closed before
       network work
-- [ ] add an adapter-local typed input only to the profiles qualified by the
+- [x] add an adapter-local typed input only to the profiles qualified by the
       evidence card
-- [ ] retain the exact selection in prepared evidence and the bound low-level
+- [x] retain the exact selection in prepared evidence and the bound low-level
       driver used for dispatch
-- [ ] encode `num_ctx` once beside `num_predict` in the native `options` object
-- [ ] preserve byte-identical request bodies when the control is absent
-- [ ] publish qualified dispatch without claiming provider acceptance,
+- [x] encode `num_ctx` once beside `num_predict` in the native `options` object
+- [x] preserve byte-identical request bodies when the control is absent
+- [x] publish qualified dispatch without claiming provider acceptance,
       effective allocation, or resource feasibility
 
 ## Non-Goals
@@ -78,20 +78,20 @@ Those outcomes remain provider/runtime truth.
 
 ### Batch 36.1 — Exact Native Evidence
 
-- [ ] Execute card 098.
+- [x] Execute card 098.
 - [ ] freeze tagged-source and official-documentation specimens
 - [ ] promote Research 184 with numeric, profile, lifecycle, and claim bounds
 
 ### Batch 36.2 — Typed Binding
 
-- [ ] Execute card 099 after card 098.
+- [x] Execute card 099 after card 098.
 - [ ] add the adapter-local value to only the admitted prepared profiles
 - [ ] bind prepared evidence, low-level driver, and native request exactly
 - [ ] preserve the absent path and fail before network work
 
 ### Batch 36.3 — Dispatch And Acceptance
 
-- [ ] Execute card 100 after card 099.
+- [x] Execute card 100 after card 099.
 - [ ] prove exact native bodies and bounded lifecycle behavior
 - [ ] update realized architecture, guides, matrices, programme, and changelog
 
@@ -130,9 +130,9 @@ Those outcomes remain provider/runtime truth.
 
 ## Batch Cards
 
-- [098-ollama-num-ctx-evidence.md](batch-cards/098-ollama-num-ctx-evidence.md) — ready
-- [099-ollama-num-ctx-binding.md](batch-cards/099-ollama-num-ctx-binding.md) — ready after 098
-- [100-ollama-num-ctx-acceptance.md](batch-cards/100-ollama-num-ctx-acceptance.md) — ready after 099
+- [098-ollama-num-ctx-evidence.md](batch-cards/098-ollama-num-ctx-evidence.md) — complete
+- [099-ollama-num-ctx-binding.md](batch-cards/099-ollama-num-ctx-binding.md) — complete
+- [100-ollama-num-ctx-acceptance.md](batch-cards/100-ollama-num-ctx-acceptance.md) — complete
 
 ## References
 

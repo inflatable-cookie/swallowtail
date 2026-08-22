@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Implement g04.036 cards 098-100 for Ollama attached `num_ctx`. Start with exact
-tagged-source evidence and do not claim effective context allocation. Keep
-Contract 029 currentness as a standing lane.
+Compile g04.037 Anthropic Messages `output_config.effort` as the next numbered
+per-route feature milestone. Contract 029 currentness remains a standing lane.
 
 ## Standing Lanes
 

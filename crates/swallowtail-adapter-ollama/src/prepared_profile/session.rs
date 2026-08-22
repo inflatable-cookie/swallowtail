@@ -1,6 +1,7 @@
 use super::input::OllamaSessionProfileInput;
 use super::plan::{
-    OllamaPreparedEvidence, build_plan, instance_with_capabilities, model_route, requirements,
+    OllamaPreparedEvidence, bind_low_level_driver, build_plan, instance_with_capabilities,
+    model_route, requirements,
 };
 use crate::{OllamaNativeAttachedDriver, OllamaPreparedIntegration};
 use swallowtail_core::{
@@ -42,7 +43,7 @@ impl OllamaPreparedSession {
     /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OllamaNativeAttachedDriver {
-        OllamaNativeAttachedDriver::new()
+        bind_low_level_driver(&self.evidence)
     }
 
     /// Opens the prepared resource-free session.
@@ -90,7 +91,7 @@ impl OllamaPreparedIntegration {
         &self,
         input: OllamaSessionProfileInput,
     ) -> Result<OllamaPreparedSession, PreparationFailure> {
-        let (request_id, deadline) = input.into_parts();
+        let (request_id, context_window, deadline) = input.into_parts();
         let capability_requirements = session_capabilities();
         let activity = crate::activity::profile::activity_profile(self).map_err(|error| {
             PreparationFailure::new(
@@ -122,7 +123,12 @@ impl OllamaPreparedIntegration {
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::resource_free_from_plan(&plan, request_id, deadline)?;
         Ok(OllamaPreparedSession {
-            evidence: OllamaPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: OllamaPreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity,
+                context_window,
+            )?,
             request,
         })
     }

@@ -32,6 +32,7 @@ const ROUTE: &str = "ollama.attached";
 /// Low-level driver for one externally managed Ollama native HTTP runtime.
 pub struct OllamaNativeAttachedDriver {
     transport: CurlTransport,
+    context_window: Option<crate::OllamaContextWindow>,
 }
 
 impl OllamaNativeAttachedDriver {
@@ -39,6 +40,17 @@ impl OllamaNativeAttachedDriver {
     #[must_use]
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Binds one exact native `options.num_ctx` value for subsequent dispatch.
+    #[must_use]
+    pub fn with_context_window(mut self, context_window: crate::OllamaContextWindow) -> Self {
+        self.context_window = Some(context_window);
+        self
+    }
+
+    pub(super) fn context_window(&self) -> Option<crate::OllamaContextWindow> {
+        self.context_window
     }
 
     fn validate_plan(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {

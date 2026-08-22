@@ -104,6 +104,6 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md) — ready after 099
-- [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md) — ready after 098
-- [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md) — ready
+- [100-ollama-num-ctx-acceptance.md](./100-ollama-num-ctx-acceptance.md) — complete
+- [099-ollama-num-ctx-binding.md](./099-ollama-num-ctx-binding.md) — complete
+- [098-ollama-num-ctx-evidence.md](./098-ollama-num-ctx-evidence.md) — complete

@@ -103,6 +103,19 @@ fn generation_controls_match_the_frozen_responses_shape() {
 }
 
 #[test]
+fn supported_background_reasoning_values_encode_without_substitution() {
+    let content = OperationContent::new("Say hello").expect("content is valid");
+    for effort in ["none", "low", "medium", "high", "xhigh", "max"] {
+        let reasoning = ReasoningMode::new(effort).expect("reasoning is valid");
+        let request = Request::create("gpt-5.6", &content, 64, Some(&reasoning), None)
+            .expect("reasoning request encodes");
+        let body: Value = serde_json::from_slice(request.body.as_ref().expect("body exists"))
+            .expect("request body is JSON");
+        assert_eq!(body["reasoning"]["effort"], effort);
+    }
+}
+
+#[test]
 fn retrieve_and_cancel_corpus_preserves_every_background_status() {
     let fixtures = [
         ("retrieve-queued.json", BackgroundStatus::Queued),

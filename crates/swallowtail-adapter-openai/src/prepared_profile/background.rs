@@ -241,7 +241,7 @@ fn run_capabilities(
 fn validate_reasoning(reasoning: &ReasoningMode) -> Result<(), PreparationFailure> {
     if matches!(
         reasoning.as_str(),
-        "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max"
+        "none" | "low" | "medium" | "high" | "xhigh" | "max"
     ) {
         Ok(())
     } else {

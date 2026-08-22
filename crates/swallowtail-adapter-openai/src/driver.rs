@@ -42,6 +42,18 @@ impl OpenAiBackgroundDriver {
                 "OpenAI background inference requires the exact public API-key access boundary",
             ));
         }
+        let exact_facade = crate::openai_background_facade_binding();
+        if plan.protocol_facade_id().as_str() != crate::OPENAI_BACKGROUND_FACADE_REVISION
+            || !plan
+                .interface_versions()
+                .any(|binding| binding == &exact_facade)
+            || !plan.assess_interface_version(&exact_facade).is_permitted()
+        {
+            return Err(failure(
+                "swallowtail.openai.facade_binding_rejected",
+                "OpenAI background inference requires the exact qualified Responses facade",
+            ));
+        }
         Ok(())
     }
 }

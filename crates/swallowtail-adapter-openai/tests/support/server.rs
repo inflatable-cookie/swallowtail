@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use std::io::{Read, Write};
 use std::net::{Shutdown, TcpListener, TcpStream};
@@ -23,6 +24,7 @@ const COMPLETED: &str =
 pub enum ServerMode {
     #[default]
     Success,
+    ReasoningVocabulary,
     HoldForCancel,
     CancelRace,
     CancelUnconfirmed,
@@ -141,7 +143,11 @@ fn respond(
     match (request.method.as_str(), request.target.as_str()) {
         ("POST", "/v1/responses") => {
             let attempt = attempts.fetch_add(1, Ordering::SeqCst);
-            if attempt > 0 || !same_json(&request.body, CREATE.as_bytes()) {
+            let create_matches = match mode {
+                ServerMode::ReasoningVocabulary => reasoning_create_matches(&request.body),
+                _ => same_json(&request.body, CREATE.as_bytes()),
+            };
+            if attempt > 0 || !create_matches {
                 write_response(stream, 409, "application/json", "{}");
             } else if mode == ServerMode::DisconnectBeforeIdentity {
                 write_response(stream, 200, "text/event-stream", "");
@@ -217,6 +223,27 @@ fn respond(
         },
         _ => write_response(stream, 404, "application/json", "{}"),
     }
+}
+
+fn reasoning_create_matches(body: &[u8]) -> bool {
+    let Ok(actual) = serde_json::from_slice::<Value>(body) else {
+        return false;
+    };
+    let Some(effort) = actual
+        .get("reasoning")
+        .and_then(|reasoning| reasoning.get("effort"))
+        .and_then(Value::as_str)
+    else {
+        return false;
+    };
+    if !matches!(effort, "none" | "low" | "medium" | "high" | "xhigh" | "max") {
+        return false;
+    }
+    let Ok(mut expected) = serde_json::from_str::<Value>(CREATE) else {
+        return false;
+    };
+    expected["reasoning"] = json!({"effort": effort});
+    actual == expected
 }
 
 fn write_held_stream(stream: &mut TcpStream) {

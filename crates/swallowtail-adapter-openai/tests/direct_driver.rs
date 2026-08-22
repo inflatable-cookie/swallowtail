@@ -53,6 +53,24 @@ fn descriptor_and_policy_expose_only_the_bounded_background_route() {
 }
 
 #[test]
+fn stale_background_facade_fails_before_endpoint_or_credential_effects() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let error = block_on(OpenAiBackgroundDriver::new().start_run(
+        fixture.plan_with_facade("openai-responses-background-2026-07-21"),
+        request("stale-facade"),
+        fixture.services(),
+    ))
+    .err()
+    .expect("stale facade must fail closed");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.openai.facade_binding_rejected"
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
 fn one_create_and_one_reattachment_complete_in_both_host_topologies() {
     for host in ["host.local", "host.remote-authoritative"] {
         let fixture = Fixture::new(ServerMode::Success, host, TimeMode::Pending);

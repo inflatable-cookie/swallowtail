@@ -3,6 +3,7 @@ use crate::{fixture, server, services};
 use fixture::Fixture;
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use serde_json::Value;
 use server::ServerMode;
 use services::TimeMode;
 use std::num::{NonZeroU32, NonZeroU64};
@@ -33,6 +34,7 @@ fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_ho
             .prepare_background_run(profile("prepared-success"))
             .expect("background run prepares");
 
+        assert!(run.request().policy().reasoning_mode().is_none());
         assert_eq!(
             run.plan().protocol_facade_id().as_str(),
             OPENAI_BACKGROUND_FACADE_REVISION
@@ -192,6 +194,65 @@ fn prepared_policy_and_route_drift_fail_before_endpoint_or_credential_effects() 
 }
 
 #[test]
+fn prepared_background_reasoning_values_agree_across_plan_evidence_policy_driver_and_wire() {
+    for (index, value) in ["none", "low", "medium", "high", "xhigh", "max"]
+        .iter()
+        .copied()
+        .enumerate()
+    {
+        let fixture = Fixture::new(
+            ServerMode::ReasoningVocabulary,
+            format!("host.reasoning.{index}").as_str(),
+            TimeMode::Pending,
+        );
+        let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+            .expect("OpenAI background integration prepares");
+        let reasoning = ReasoningMode::new(value).expect("reasoning is valid");
+        let run = prepared
+            .prepare_background_run(
+                profile(&format!("prepared-reasoning-{index}"))
+                    .with_reasoning_mode(reasoning.clone()),
+            )
+            .expect("supported reasoning prepares");
+
+        assert_eq!(run.request().policy().reasoning_mode(), Some(&reasoning));
+        assert!(run.plan().requirements().capabilities().any(|requirement| {
+            requirement.capability() == Capability::ReasoningSelection
+                && requirement
+                    .constraints()
+                    .eq([&CapabilityConstraint::ReasoningMode(reasoning.clone())])
+        }));
+        let compatibility: Vec<_> = run
+            .evidence()
+            .operation()
+            .interface_compatibility()
+            .collect();
+        assert_eq!(compatibility.len(), 1);
+        assert_eq!(
+            compatibility[0].binding().version().as_str(),
+            OPENAI_BACKGROUND_FACADE_REVISION
+        );
+        assert_eq!(
+            compatibility[0]
+                .assessment()
+                .behavior_revision()
+                .expect("qualified behavior revision")
+                .as_str(),
+            "openai.responses-background-v2"
+        );
+
+        let (handle, _events, outcome) = complete(run.start_run(fixture.services()));
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        let request: Value = serde_json::from_slice(&fixture.server.requests()[0].body)
+            .expect("create request is JSON");
+        assert_eq!(request["reasoning"]["effort"], value);
+        assert_eq!(fixture.server.inference_attempts(), 1);
+        assert_eq!(fixture.releases(), 1);
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    }
+}
+
+#[test]
 fn prepared_background_generation_controls_are_exact_and_fail_before_effects() {
     let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
     let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
@@ -228,15 +289,19 @@ fn prepared_background_generation_controls_are_exact_and_fail_before_effects() {
             })
     }));
 
-    let unsupported = profile("prepared-controls-unsupported")
-        .with_reasoning_mode(ReasoningMode::new("ultra").expect("mode is syntactically valid"));
-    let error = prepared
-        .prepare_background_run(unsupported)
-        .expect_err("unsupported reasoning fails");
-    assert_eq!(
-        error.diagnostic().safe().code(),
-        "swallowtail.openai.preparation.reasoning_unsupported"
-    );
+    for (index, value) in ["minimal", "ultra"].iter().copied().enumerate() {
+        let error = prepared
+            .prepare_background_run(
+                profile(&format!("prepared-controls-unsupported-{index}")).with_reasoning_mode(
+                    ReasoningMode::new(value).expect("mode is syntactically valid"),
+                ),
+            )
+            .expect_err("unsupported reasoning fails");
+        assert_eq!(
+            error.diagnostic().safe().code(),
+            "swallowtail.openai.preparation.reasoning_unsupported"
+        );
+    }
     assert!(fixture.server.requests().is_empty());
     assert_eq!(fixture.releases(), 0);
 }

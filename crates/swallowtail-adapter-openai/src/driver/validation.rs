@@ -86,8 +86,9 @@ fn validate_run(
             Capability::OwnedRemoteResourceDeletion => constraints == [&response_deletion],
             Capability::ReasoningSelection => request.policy().reasoning_mode().is_some_and(
                 |reasoning| {
-                    constraints
-                        == [&CapabilityConstraint::ReasoningMode(reasoning.clone())]
+                    supports_reasoning(reasoning.as_str())
+                        && constraints
+                            == [&CapabilityConstraint::ReasoningMode(reasoning.clone())]
                 },
             ),
             Capability::StructuredOutput => request.structured_output().is_some_and(|output| {
@@ -162,4 +163,8 @@ fn validate_run(
         ));
     }
     Ok(())
+}
+
+fn supports_reasoning(value: &str) -> bool {
+    matches!(value, "none" | "low" | "medium" | "high" | "xhigh" | "max")
 }

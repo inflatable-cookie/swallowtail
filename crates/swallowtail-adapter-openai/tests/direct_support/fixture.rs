@@ -4,7 +4,10 @@ use crate::server::{FixtureServer, ServerMode};
 use crate::services::{ThreadServices, TimeMode};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use swallowtail_adapter_openai::openai_background_descriptor;
+use swallowtail_adapter_openai::{
+    OPENAI_BACKGROUND_FACADE_REVISION, openai_background_descriptor,
+    openai_background_facade_binding,
+};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, CancellationScope, Capability,
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
@@ -104,6 +107,10 @@ impl Fixture {
     }
 
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade(OPENAI_BACKGROUND_FACADE_REVISION)
+    }
+
+    pub fn plan_with_facade(&self, facade: &str) -> swallowtail_core::PreflightPlan {
         let descriptor = openai_background_descriptor();
         let access_id = AccessProfileId::new("access.openai").expect("access id is valid");
         let requirements = capability_requirements();
@@ -117,11 +124,11 @@ impl Fixture {
             InstanceOwnership::ExternalAttached,
             access_id.clone(),
             SupportAuthority::ProviderSupported,
-            ProtocolFacadeId::new("openai-responses-background-2026-07-21")
-                .expect("facade is valid"),
+            ProtocolFacadeId::new(facade).expect("facade is valid"),
             InstancePolicyId::new("public-api-key").expect("policy is valid"),
             capabilities.clone(),
-        );
+        )
+        .with_interface_versions([openai_background_facade_binding()]);
         let route = ModelRoute::new(
             ModelRouteId::new("openai-gpt-5-6").expect("route id is valid"),
             ModelRouteRevision::new("1").expect("revision is valid"),
@@ -164,6 +171,7 @@ impl Fixture {
         .with_ownership_modes([InstanceOwnership::ExternalAttached])
         .with_host_services(host_services.clone())
         .with_capabilities(requirements)
+        .with_interface_versions([openai_background_facade_binding()])
         .require_model_route();
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services)

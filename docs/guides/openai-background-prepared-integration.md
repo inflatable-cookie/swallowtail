@@ -49,10 +49,12 @@ unverified-newer range.
 - `ProviderRetentionPolicy::TemporaryAllowed`
 - exactly one allowed stream reattachment
 
-The input may additionally select reasoning `none`, `minimal`, `low`,
-`medium`, `high`, `xhigh`, or `max`, and one inline JSON Schema 2020-12 object
-with provider-native enforcement. These remain explicit GPT-5.6 controls;
-Swallowtail does not infer them from a model name or catalogue.
+The input may additionally select reasoning `none`, `low`, `medium`, `high`,
+`xhigh`, or `max`, and one inline JSON Schema 2020-12 object with
+provider-native enforcement. These remain explicit GPT-5.6 controls;
+Swallowtail does not infer them from a model name or catalogue. `minimal` and
+other values are rejected during preparation before endpoint, credential,
+request, or provider work.
 
 The full constructor keeps all three provider-operation policies visible.
 `background_with_temporary_retention_and_one_reattachment` is the named

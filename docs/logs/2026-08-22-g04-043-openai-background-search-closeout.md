@@ -25,7 +25,10 @@ They do not prove the exact composition required by this route: search events
 through background streaming and one reattachment, source/output terminal
 truth, search failure/rejection shape, account/project policy, or portable
 activity and facade mapping. No deliver-now row exists. Cards 120 and 121
-were not executed.
+were not executed. Review also identified an inherited reasoning mismatch:
+the exact GPT-5.6 model page omits `minimal`, while the current guide and
+preparation validator admit it. The search lane records this as named
+follow-up `g04.043-R1` and does not change those surfaces.
 
 ## Route-Local Surfaces
 
@@ -80,6 +83,11 @@ Passed:
 no code finding and no `PAPERCUTS.md` entry. Card 120/121 binding-only checks
 have no subject because no binding was admitted.
 
+Review correction revalidation on 2026-08-23 also passed focused OpenAI
+validation, affected-package verification, examples, route QA, Northstar QA,
+all research/log/roadmap/g04/batch-card/Next Task index gates, and
+`git diff --check`.
+
 ## Unresolved
 
 A later lane may reopen the candidate only with exact official or provider
@@ -88,3 +96,8 @@ source continuity across stream/reattach/retrieve, account/project access,
 failure and usage truth, and the private facade/activity mapping. No live
 provider proof was attempted. Contract 029 currentness remains in its
 standing lane and was not changed.
+
+Named follow-up `g04.043-R1` must separately reconcile the official GPT-5.6
+reasoning effort list with the current prepared guide, validator, route-local
+tests, and shared production claim. It is not part of the blocked search
+binding cards.

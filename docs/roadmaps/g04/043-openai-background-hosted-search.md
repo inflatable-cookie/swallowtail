@@ -3,7 +3,7 @@
 Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-22
-Updated: 2026-08-22
+Updated: 2026-08-23
 Depends on: per-route feature completion programme; g01.023; g03.030
 Vision tags: explicit selection, provider truth, provider-owned tools
 Contract refs: 009, 010, 011, 014, 021, 029, 037, 041, 044, 052
@@ -11,9 +11,11 @@ Research: 015, 049, 050, 067, 191
 
 ## Problem
 
-`openai.background` already binds exact `gpt-5.6`, reasoning, output bounds,
+`openai.background` already binds exact `gpt-5.6`, output bounds,
 provider-native structured output, temporary retention, bounded stream
-reattachment, cancellation, detachment, and reconciliation. It still rejects
+reattachment, cancellation, detachment, and reconciliation. It also exposes a
+prepared reasoning selection, but exact-model support for `minimal` is an
+inherited mismatch recorded as follow-up `g04.043-R1`. It still rejects
 `ExternalSearchPolicy::Enabled` and encodes no provider-owned tool.
 
 Current official OpenAI documentation names the Responses `web_search` tool
@@ -178,4 +180,15 @@ lifecycle fields, not the exact composed `openai.background` search route.
 The current adapter also has no search event/item parser or source-aware
 terminal representation. Cards 120 and 121 are therefore blocked. The
 existing `openai-responses-background-2026-07-21` facade point, tool-free
-request bytes, and route claim remain unchanged.
+request bytes, and search claim remain unchanged. The inherited exact-model
+reasoning mismatch is recorded as named follow-up `g04.043-R1` below.
+
+## Named Follow-Up
+
+`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is outside
+the search binding lane. The exact GPT-5.6 model page lists
+`none|low|medium|high|xhigh|max`, while the current OpenAI background guide and
+preparation validator also admit `minimal`. The follow-up must reconcile the
+guide, preparation code, route-local tests, and orchestrator-owned production
+claim before reasoning support is described as exact. This lane records the
+mismatch and does not change those surfaces.

@@ -3,6 +3,7 @@
 Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-22
+Updated: 2026-08-23
 Milestone: [g04.043 OpenAI Background Hosted Search](../043-openai-background-hosted-search.md)
 Depends on: Research 015, 049, 050, and 067
 
@@ -93,5 +94,6 @@ They do not establish the exact composed background request, search-event
 continuity through one reattachment, retrieved source/output truth, account
 policy, or activity/facade mapping. Independent field documentation is not
 promoted to route support. No deliver-now row exists. Cards 120 and 121 are
-blocked and were not executed; the existing tool-free production claim is
-unchanged.
+blocked and were not executed; the existing tool-free search claim is
+unchanged. The inherited `minimal` reasoning mismatch is recorded as named
+follow-up `g04.043-R1`, not absorbed into search implementation.

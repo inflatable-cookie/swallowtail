@@ -3,7 +3,7 @@
 Status: complete on review PR; not merged
 Owner: Tom
 PR: https://github.com/inflatable-cookie/swallowtail/pull/36
-Evidence head: `e66d6f2e`
+Evidence head: `4cb679d0`
 
 Card 106 replaces the reservation with route-local evidence. The orchestrator
 records merge and shared-surface closeout separately.

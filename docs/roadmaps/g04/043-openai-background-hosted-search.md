@@ -185,10 +185,10 @@ reasoning mismatch is recorded as named follow-up `g04.043-R1` below.
 
 ## Named Follow-Up
 
-`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is promoted
-to g04.044 and remains outside the search binding lane. The exact GPT-5.6 model page lists
-`none|low|medium|high|xhigh|max`, while the current OpenAI background guide and
-preparation validator also admit `minimal`. The follow-up must reconcile the
-guide, preparation code, route-local tests, and orchestrator-owned production
-claim before reasoning support is described as exact. This lane records the
-mismatch and does not change those surfaces. Cards 122-123 own the correction.
+`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` was promoted
+to g04.044 and is complete through cards 122-123. The exact GPT-5.6 model page
+lists `none|low|medium|high|xhigh|max`; the corrected OpenAI background guide,
+preparation validator, driver agreement checks, tests, and production claim
+now use that set and reject `minimal` before effects. The correction binds a
+new exact opaque facade point and private behavior revision. The search lane
+remains unchanged and no search capability shipped.

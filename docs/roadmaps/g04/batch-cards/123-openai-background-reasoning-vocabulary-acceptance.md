@@ -1,10 +1,12 @@
 # 123 OpenAI Background Reasoning Vocabulary Acceptance
 
-Status: planned after card 122
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Milestone: [g04.044 OpenAI Background Reasoning Vocabulary Correction](../044-openai-background-reasoning-vocabulary-correction.md)
 Depends on: card 122
+
+Completed on worker branch `t3code/openai-background-reasoning-correction`.
 
 ## Goal
 
@@ -35,15 +37,15 @@ review-ready route-local closeout with an explicit next-minor delta.
 
 ## Acceptance Criteria
 
-- [ ] all six admitted values and failure classes have deterministic coverage
-- [ ] `minimal` cannot prepare, dispatch, or reach provider work
-- [ ] no alias, clamp, default, retry, fallback, or sibling route appears
-- [ ] global `ReasoningMode` and other route-qualified values remain unchanged
-- [ ] exact facade and behavior revisions are visible and consistently bound
-- [ ] default QA performs no credential, account, external request, or paid work
-- [ ] route-local docs describe the corrected exact set and breaking status
-- [ ] closeout records PR/head truth without claiming merge or release
-- [ ] named gates pass
+- [x] all six admitted values and failure classes have deterministic coverage
+- [x] `minimal` cannot prepare, dispatch, or reach provider work
+- [x] no alias, clamp, default, retry, fallback, or sibling route appears
+- [x] global `ReasoningMode` and other route-qualified values remain unchanged
+- [x] exact facade and behavior revisions are visible and consistently bound
+- [x] default QA performs no credential, account, external request, or paid work
+- [x] route-local docs describe the corrected exact set and breaking status
+- [x] closeout records PR/head truth without claiming merge or release
+- [x] named gates pass
 
 ## Validation
 

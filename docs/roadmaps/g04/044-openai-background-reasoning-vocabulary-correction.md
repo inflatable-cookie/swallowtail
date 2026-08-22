@@ -1,6 +1,6 @@
 # g04.044 OpenAI Background Reasoning Vocabulary Correction
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Depends on: per-route feature completion programme; g04.043; Research 191
@@ -27,18 +27,18 @@ facade truth without aliasing or fallback.
 
 ## Goals
 
-- [ ] replace the inherited seven-value claim with exact
+- [x] replace the inherited seven-value claim with exact
       `none|low|medium|high|xhigh|max` truth
-- [ ] reject `minimal` at preparation with the existing safe unsupported-value
+- [x] reject `minimal` at preparation with the existing safe unsupported-value
       diagnostic and no endpoint, credential, request, or provider effect
-- [ ] preserve the provider-neutral `ReasoningMode` vocabulary for routes that
+- [x] preserve the provider-neutral `ReasoningMode` vocabulary for routes that
       qualify `minimal`
-- [ ] preserve absent reasoning and every admitted value across input, plan,
+- [x] preserve absent reasoning and every admitted value across input, plan,
       prepared evidence, request policy, driver validation, and exact wire
-- [ ] publish a new exact opaque background-facade point and private behavior
+- [x] publish a new exact opaque background-facade point and private behavior
       revision rather than rewriting the July point
-- [ ] classify the guarantee shrink as a Contract 036 next-minor change
-- [ ] close named follow-up `g04.043-R1` with deterministic route-local proof
+- [x] classify the guarantee shrink as a Contract 036 next-minor change
+- [x] close named follow-up `g04.043-R1` with deterministic route-local proof
 
 ## Non-Goals
 
@@ -73,31 +73,40 @@ It must not change workspace versions or create a release.
 
 ### Batch 44.1 — Exact Vocabulary And Facade Correction
 
-- [ ] Execute card 122.
-- [ ] remove only `minimal` from the exact GPT-5.6 preparation mapping
-- [ ] bind a new exact opaque facade point and private behavior revision
-- [ ] preserve the six admitted values and absent path without substitution
+- [x] Execute card 122.
+- [x] remove only `minimal` from the exact GPT-5.6 preparation mapping
+- [x] bind a new exact opaque facade point and private behavior revision
+- [x] preserve the six admitted values and absent path without substitution
 
 ### Batch 44.2 — Route-Local Acceptance
 
-- [ ] Execute card 123 after card 122.
-- [ ] prove every admitted value, explicit `minimal` rejection, facade drift,
+- [x] Execute card 123 after card 122.
+- [x] prove every admitted value, explicit `minimal` rejection, facade drift,
       plan/evidence/driver agreement, exact request bytes, and zero effects
-- [ ] update route-local guidance and follow-up records; report the shared
+- [x] update route-local guidance and follow-up records; report the shared
       next-minor closeout delta
 
 ## Acceptance Criteria
 
-- [ ] exactly `none|low|medium|high|xhigh|max` prepare for exact GPT-5.6
-- [ ] `minimal`, foreign values, and old/new facade drift fail before effects
-- [ ] no unsupported value is aliased, clamped, defaulted, retried, or routed
-- [ ] the global `ReasoningMode` type and other production routes are unchanged
-- [ ] absent reasoning preserves current request behavior
-- [ ] plan, evidence, policy, driver, and wire carry the same admitted value
-- [ ] the new opaque facade point and behavior revision are exact and qualified
-- [ ] default QA uses no credential, account, external request, or paid work
-- [ ] route-local docs and tests state only dispatch truth proved by the route
-- [ ] closeout records the breaking next-minor requirement without releasing
+- [x] exactly `none|low|medium|high|xhigh|max` prepare for exact GPT-5.6
+- [x] `minimal`, foreign values, and old/new facade drift fail before effects
+- [x] no unsupported value is aliased, clamped, defaulted, retried, or routed
+- [x] the global `ReasoningMode` type and other production routes are unchanged
+- [x] absent reasoning preserves current request behavior
+- [x] plan, evidence, policy, driver, and wire carry the same admitted value
+- [x] the new opaque facade point and behavior revision are exact and qualified
+- [x] default QA uses no credential, account, external request, or paid work
+- [x] route-local docs and tests state only dispatch truth proved by the route
+- [x] closeout records the breaking next-minor requirement without releasing
+
+## Completion
+
+Cards 122-123 are complete on the worker branch. The exact route now admits
+only `none|low|medium|high|xhigh|max`; `minimal` and foreign values fail in
+preparation before effects. The corrected mapping is bound to
+`openai-responses-background-2026-08-23` with private behavior revision
+`openai.responses-background-v2`. The July point remains historical and is not
+retained as a supported way to request the removed value.
 
 ## Lane Runway
 

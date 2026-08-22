@@ -230,16 +230,20 @@ inherited `minimal` reasoning claim, which conflicts with the exact model page.
 
 ## Named Follow-Up
 
-`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` is promoted
-into g04.044 cards 122-123. They must reconcile the official GPT-5.6 effort
-list with the prepared guide, `validate_reasoning`, route-local tests, and the
-production facade claim. This research record supplies the evidence but does
-not itself alter the guide, preparation code, matrices, or shared claim.
+`g04.043-R1 — reconcile OpenAI background reasoning vocabulary` was promoted
+into g04.044 cards 122-123 and is now resolved there. The route-local guide,
+`validate_reasoning`, driver agreement checks, deterministic tests, and
+production facade claim now admit exactly the official GPT-5.6 set
+`none|low|medium|high|xhigh|max`; `minimal` is rejected before effects. The
+corrected mapping uses a new exact opaque facade point and private behavior
+revision. This research record remains the evidence source and does not
+rewrite its historical July corpus or the search disposition.
 
 ## Decision
 
 Card 119 is complete as an evidence stop. Cards 120 and 121 are blocked and
-were not executed. The adapter, fixtures, prepared integration guide, public
-API baseline, shared architecture, matrices, and changelog remain unchanged.
-After PR 42 merged, the orchestrator promoted the inherited reasoning mismatch
-into g04.044 rather than absorbing it into search implementation.
+were not executed. The search adapter behavior, July evidence fixtures,
+shared architecture, matrices, and changelog remain unchanged by that lane.
+After PR 42 merged, g04.044 separately corrected the inherited reasoning
+mismatch in the adapter and prepared guide without absorbing any search
+implementation.

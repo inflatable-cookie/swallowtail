@@ -5,6 +5,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
+- Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
+  raising the doctor god-file baseline from 41 to 42 errors.
+- Impact: the completed feature lane leaves structural health worse and makes
+  later doctor comparisons noisier.
+- Fix: split model-parameter preparation and rejection proofs into a focused
+  test module without reducing coverage.
+- Surface: `crates/swallowtail-adapter-cursor/tests/prepared_suite.rs`.
+
 ### [ ] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
 - Friction: PR 31 added a 566-line Kimi Platform lifecycle integration test,
   raising the doctor god-file baseline from 40 to 41 errors.

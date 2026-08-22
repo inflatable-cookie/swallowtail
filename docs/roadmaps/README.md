@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Compile the Ollama attached `num_ctx` per-route feature milestone. Do not
-implement it in this lane. Keep Contract 029 currentness as a standing lane.
+Implement g04.036 cards 098-100 for Ollama attached `num_ctx`. Start with exact
+tagged-source evidence and do not claim effective context allocation. Keep
+Contract 029 currentness as a standing lane.
 
 ## Standing Lanes
 

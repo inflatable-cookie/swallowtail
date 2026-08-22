@@ -50,7 +50,10 @@ families do not interrupt this programme by default.
 - [g04.035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md)
   is complete. Research 183, cards 095-097, and typed headless model-parameter
   dispatch are realized on `cursor-agent.headless`.
-- Next numbered milestone: compile Ollama attached `num_ctx`.
+- [g04.036 Ollama Attached Context Window](./036-ollama-attached-context-window.md)
+  is ready. Cards 098-100 start with exact `num_ctx` evidence, then bind and
+  prove only the Research 184 deliver-now native `/api/chat` profiles.
+- Next after g04.036: compile Anthropic Messages `output_config.effort`.
 
 ## Exclusions
 

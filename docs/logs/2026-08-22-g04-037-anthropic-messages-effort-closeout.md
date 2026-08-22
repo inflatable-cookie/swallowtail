@@ -4,7 +4,7 @@ Status: completed
 Owner: Tom
 Branch: `t3code/anthropic-messages-effort`
 PR: [#37](https://github.com/inflatable-cookie/swallowtail/pull/37)
-Implementation head: `185204f2b8413c88ec882141d517239752cce29e`
+Implementation head: `283fe50d2fd9aa714b60d9bed84ec67767588b57`
 
 This is the route-local worker closeout. The orchestrator records merge and
 shared-surface closeout separately. No merge, release, live provider request,

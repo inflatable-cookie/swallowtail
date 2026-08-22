@@ -1,6 +1,6 @@
 # 104 DeepSeek Reasoning Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-22
 Milestone: [g04.038 DeepSeek Continuation Reasoning Controls](../038-deepseek-continuation-reasoning-controls.md)
@@ -56,6 +56,24 @@ the current facade without a contract or compatibility-segment change.
 - no useful exact value/profile combination survives
 - selection cannot remain fixed through every continuation attempt
 - safe binding needs aliasing, raw strings, or a generic thinking control
+
+## Closeout
+
+Card 104 promoted Research 186 on 2026-08-22. The exact deliver-now subset is
+`deepseek-v4-pro` on `deepseek-openai-chat-2026-07-22`, with portable reasoning
+values `low`, `high`, and `max` mapped byte-for-byte and fixed
+`thinking.type=enabled`. `medium`, `xhigh`, aliases, V4 Flash, and thinking
+disable remain withheld or rejected. The current facade and Contract 030
+remain sufficient; no production code or shared claim surface changed.
+
+Validation passed:
+
+- `effigy validate:focused swallowtail-adapter-deepseek`
+- `effigy qa:northstar`
+- `effigy qa:docs:index:research`
+- `git diff --check`
+
+Auto-continuation: card 105 is admitted.
 
 ## Out Of Scope
 

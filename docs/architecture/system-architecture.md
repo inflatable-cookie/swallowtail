@@ -413,14 +413,18 @@ OpenHands adds a package without a production route.
   identities; transport loss, provider failure, protocol drift, and
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
-- `swallowtail-adapter-qwen` implements maintained Qwen Code
+- `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1` and `0.21.0..=0.21.15` headless behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
   process cleanup, and `AmbientHost` isolation without a sandbox claim; the
   production driver passes the provider-neutral one-shot profile under local
-  and remote-authoritative host identities. Its separate safe-mode stream-JSON
+  and remote-authoritative host identities. Exact `0.21.15` additionally binds
+  portable `low|medium|high|xhigh|max` reasoning for `qwen3.8-max` and
+  `qwen3.8-max-preview` through a bounded private `initialize` then
+  `set_effort` control exchange before the user message; earlier behavior
+  segments do not inherit that capability. Its separate safe-mode stream-JSON
   control operation verifies and calls `get_available_models`, then closes and
   joins the ephemeral child without opening a model session. The `0.21.0`
   segment records upstream filtering of image-only catalogue entries

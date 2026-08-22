@@ -645,12 +645,13 @@ Official
 `--max-tool-calls`, `model.reasoningEffort` / `/effort`
 `low|medium|high|xhigh|max`.
 
-Swallowtail: `--safe-mode --approval-mode default`, fixed wall/tool/turn
-caps. Matrix: reasoning No, output limit No, search No.
+Swallowtail: `--safe-mode --approval-mode default`, fixed wall/tool/turn caps,
+and exact `0.21.15` reasoning selection for `qwen3.8-max` and
+`qwen3.8-max-preview`. Matrix: reasoning Yes, output limit No, search No.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Effort | `/effort` / `model.reasoningEffort` | not mapped | yes | yes | family currently rejects reasoning |
+| Effort | `/effort` / `model.reasoningEffort` | exact private stream-JSON control on `0.21.15` | delivered for two exact models | yes | no retroactive claim before `0.21.15` |
 | Approval | `--approval-mode` / `--yolo` | fixed `default` | other modes unused | only-if: never yolo by default | — |
 | Turn/tool caps | official flags | fixed constants | consumer override unused | yes | — |
 
@@ -1043,5 +1044,19 @@ and cards 113-115 form one serial evidence-first lane. Exact `0.21.15` process
 transport, model qualification, clamp, default, and run/turn/replacement
 lifetime proof must precede binding. A global setting, `/effort`, user-config
 mutation, or unleased synthetic config root is a stop. Cline thinking remains
-a separate later boolean spawn-control family. Parked families remain outside
+a separate later spawn-control family. Parked families remain outside
 this selection. Do not bulk-promote the remaining inventory.
+
+## Qwen Delivery And Next Selection (2026-08-22)
+
+Qwen headless reasoning selection is delivered through g04.041 and PR 40 at
+`709d197c`. Exact package `0.21.15` admits `low`, `medium`, `high`, `xhigh`, and
+`max` only for `qwen3.8-max` and `qwen3.8-max-preview` through the private
+`initialize` then `set_effort` control exchange. Earlier `0.21.x` behavior is
+not promoted.
+
+Cline thinking controls are the next planning family. g04.042 must recheck the
+current official and exact package surfaces for ACP and headless separately,
+including syntax, value normalization, model dependence, spawn lifetime, and
+absent-path behavior. Kiro remains parked with the other deferred route
+surfaces. Do not implement until the evidence gate and cards are compiled.

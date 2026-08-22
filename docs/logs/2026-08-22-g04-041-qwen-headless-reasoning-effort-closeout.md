@@ -1,6 +1,6 @@
 # 2026-08-22 g04.041 Qwen Headless Reasoning Effort Closeout
 
-Status: worker PR pending review
+Status: merged; shared closeout complete
 Owner: Tom
 Milestone: g04.041
 Cards: 113-115
@@ -19,8 +19,8 @@ acceptance coverage are complete in the selected worker worktree.
 - Base/head before worker changes: `a4440b4f917aa065bcc1e946deabecad87841acf`
 - Closeout metadata is pushed on the same PR branch.
 - PR: https://github.com/inflatable-cookie/swallowtail/pull/40
-- Reviewed head: pending orchestrator review
-- Merge: not performed
+- Reviewed head: `709d197cd59fdb42a9dea5fe5b0156610b093a3d`
+- Merge: literal fast-forward of reviewed head onto `main`, 2026-08-22
 
 ## Changed route-local surfaces
 
@@ -75,6 +75,15 @@ The review-fix implementation restores the inherited Effigy doctor baseline:
 371 findings (326 warnings, 45 errors). No new papercut or threshold exception
 was recorded.
 
-Do not claim merge or edit shared architecture, matrices, changelog, programme,
-front doors, indexes, matrix assertions, or package manifests on the worker
-branch.
+## Orchestrator closeout
+
+The orchestrator accepted exact head `709d197c` after reproducing 48 focused
+tests, affected-package proof, route and Northstar QA, semantic API, diff
+cleanliness, and the inherited doctor baseline. All five exact-head CI jobs
+were green. The reviewed head then landed unchanged through a literal
+fast-forward merge.
+
+Shared closeout records the Qwen reasoning capability in architecture, route
+and feature matrices, the changelog, programme, roadmap front doors, indexes,
+and matrix assertions. Cline thinking controls are the next planning family;
+Kiro and the other parked families remain outside that selection.

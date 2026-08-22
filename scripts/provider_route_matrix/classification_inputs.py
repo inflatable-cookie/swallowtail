@@ -73,7 +73,6 @@ generation_control_classifications = {
     ("output_token_limit", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("structured_output", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("output_token_limit", "qwen.headless"): "contract_or_corpus_required",
-    ("reasoning_selection", "qwen.headless"): "contract_or_corpus_required",
     ("structured_output", "qwen.headless"): "contract_or_corpus_required",
     ("output_token_limit", "alibaba.conversations"): "upstream_unsupported",
     ("reasoning_selection", "alibaba.conversations"): "contract_or_corpus_required",

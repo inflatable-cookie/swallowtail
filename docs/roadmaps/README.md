@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Implement g04.041 cards 113-115 in order. Card 113 must first prove exact Qwen
-Code `0.21.15` process-private reasoning transport, model/value qualification,
-clamp/default behavior, and run/turn/replacement lifetime. Continue to binding
-only for Research 189 deliver-now rows. Contract 029 currentness stays standing.
+Compile g04.042 for Cline thinking controls. Recheck the current official and
+exact package surfaces for `cline.acp` and `cline.headless`, classify each
+transport independently, and make binding cards ready only for exact
+deliver-now rows. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

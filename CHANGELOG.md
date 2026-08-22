@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add exact Qwen Code `0.21.15` reasoning selection for `qwen3.8-max` and
+  `qwen3.8-max-preview` through portable `low`, `medium`, `high`, `xhigh`, and
+  `max` values on structured runs, first and resumed turns, and fresh
+  replacement; a bounded private stream-JSON control exchange rejects ambient
+  override or substitution before the user message without claiming provider-
+  effective reasoning depth; Research 189, g04.041
 - add exact xAI Responses WebSocket reasoning selection for `grok-4.5`
   (`low`, `medium`, `high`) and `grok-4.6` (`low`, `medium`, `high`,
   `xhigh`), plus positive `max_output_tokens` through `2_147_483_647`, on

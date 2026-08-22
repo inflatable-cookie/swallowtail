@@ -101,7 +101,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [186 DeepSeek Reasoning Control Evidence](./186-deepseek-reasoning-control-evidence.md)
 - [187 xAI Responses Control Evidence](./187-xai-responses-control-evidence.md)
 - [188 Copilot CLI ACP Effort Evidence](./188-copilot-cli-acp-effort-evidence.md) — promoted evidence stop; no deliver-now value on exact `1.0.80`
-- [189 Qwen Headless Reasoning Effort Evidence](./189-qwen-headless-reasoning-effort-evidence.md) — reserved for g04 card 113
+- [189 Qwen Headless Reasoning Effort Evidence](./189-qwen-headless-reasoning-effort-evidence.md) — complete; exact `0.21.15` deliver-now subset promoted through g04.041
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

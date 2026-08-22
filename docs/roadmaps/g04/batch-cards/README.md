@@ -2,6 +2,9 @@
 
 ## Completed
 
+- [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md)
+- [114-qwen-headless-reasoning-effort-binding.md](./114-qwen-headless-reasoning-effort-binding.md)
+- [113-qwen-headless-reasoning-effort-evidence.md](./113-qwen-headless-reasoning-effort-evidence.md)
 - [110-copilot-cli-acp-effort-evidence.md](./110-copilot-cli-acp-effort-evidence.md)
 - [109-xai-responses-control-acceptance.md](./109-xai-responses-control-acceptance.md)
 - [108-xai-responses-control-binding.md](./108-xai-responses-control-binding.md)
@@ -117,9 +120,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md) — ready after 114
-- [114-qwen-headless-reasoning-effort-binding.md](./114-qwen-headless-reasoning-effort-binding.md) — ready after 113 and a non-empty Research 189 deliver-now set
-- [113-qwen-headless-reasoning-effort-evidence.md](./113-qwen-headless-reasoning-effort-evidence.md) — ready
+None. g04.042 is not yet compiled.
 
 ## Blocked
 

@@ -55,10 +55,11 @@ and selection policy.
 - [g04.038 DeepSeek Continuation Reasoning Controls](038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
 - [g04.039 xAI Responses Reasoning And Output Bounds](039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
 - [g04.040 Copilot CLI ACP Session Effort](040-copilot-cli-acp-session-effort.md) — stopped after card 110 and merged through PR 39 at `da0871d5`; cards 111-112 blocked
-- [g04.041 Qwen Headless Reasoning Effort](041-qwen-headless-reasoning-effort.md) — ready, cards 113-115
+- [g04.041 Qwen Headless Reasoning Effort](041-qwen-headless-reasoning-effort.md) — complete and merged through PR 40 at `709d197c`, cards 113-115
 
-Do not roll over: 41 numbered roadmaps exist; 001-039 are complete, 040 stopped
-after its evidence gate, and 041 is ready; target 30-50.
+Do not roll over: 41 numbered roadmaps exist; 001-039 and 041 are complete, 040
+stopped after its evidence gate, and g04.042 is the next compilation target;
+target 30-50.
 
 ## Current Checkpoint
 
@@ -102,9 +103,9 @@ after its evidence gate, and 041 is ready; target 30-50.
   Research 188 proves exact Copilot CLI ACP `1.0.80` model-entitles startup
   effort and may substitute the selected model's default; the route selects no
   model, so cards 111-112 are blocked and no reasoning control shipped
-- g04.041 is compiled and ready: cards 113-115 own exact Qwen `0.21.15`
-  reasoning transport evidence and conditional model-qualified binding;
-  Research 189 and the route-local closeout are reserved
+- g04.041 is on `main` at `709d197c` through PR 40: exact Qwen `0.21.15`
+  reasoning selection is realized for `qwen3.8-max` and
+  `qwen3.8-max-preview`; cards 113-115 are complete
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -116,9 +117,11 @@ after its evidence gate, and 041 is ready; target 30-50.
    attachment are proved; the recorded disposition retains both Pi routes.
 2. g04.035-039 completed the initial five per-route feature families.
 3. g04.040 stopped honestly after its exact evidence gate.
-4. g04.041 cards 113-115 are ready as one serial Qwen headless reasoning lane.
-   Exact `0.21.15` transport, model, clamp, default, and lifetime evidence in
-   card 113 gates cards 114-115. Contract 029 currentness remains standing.
+4. g04.041 cards 113-115 delivered exact Qwen headless reasoning selection and
+   merged through PR 40 at `709d197c`.
+5. Compile g04.042 next for Cline thinking controls, with ACP and headless
+   transport evidence classified independently. Contract 029 currentness
+   remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -131,7 +134,7 @@ New route-family research does not pre-empt this sequence.
 - [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106
 - [039 xAI Responses Reasoning And Output Bounds](./039-xai-responses-reasoning-output-bounds.md) — complete and merged through PR 38 at `e9ae1a49`, cards 107-109
 - [040 Copilot CLI ACP Session Effort](./040-copilot-cli-acp-session-effort.md) — stopped after card 110 and merged through PR 39 at `da0871d5`; cards 111-112 blocked
-- [041 Qwen Headless Reasoning Effort](./041-qwen-headless-reasoning-effort.md) — ready, cards 113-115
+- [041 Qwen Headless Reasoning Effort](./041-qwen-headless-reasoning-effort.md) — complete and merged through PR 40 at `709d197c`, cards 113-115
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

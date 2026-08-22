@@ -1,8 +1,9 @@
 # g04.041 Qwen Headless Reasoning Effort
 
-Status: completed; worker PR pending review
+Status: completed and merged
 Owner: Tom
 Created: 2026-08-22
+Merged: PR 40 at `709d197c`, reviewed head `709d197c`, 2026-08-22
 Depends on: per-route feature completion programme; g04.026
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 011, 020, 029, 033, 037, 040, 050, 052
@@ -125,8 +126,7 @@ reason to weaken Contract 033 or 040.
 - this milestone: Qwen headless reasoning-effort evidence and conditional
   binding
 - execution topology: one serial worker lane, cards 113-115
-- next route family: selected by orchestrator closeout from the remaining
-  per-route feature inventory
+- next route family: Cline thinking controls, selected for g04.042 compilation
 
 ## Decision Gates
 
@@ -148,14 +148,13 @@ reason to weaken Contract 033 or 040.
 
 ## Closeout
 
-Cards 113-115 are complete in the worker worktree. Research 189 admits only
-the exact `0.21.15` DashScope rows for `qwen3.8-max` and
+Cards 113-115 are complete and merged through PR 40 at `709d197c`. Research
+189 admits only the exact `0.21.15` DashScope rows for `qwen3.8-max` and
 `qwen3.8-max-preview`, all five canonical values. The route-local guide,
 fixtures, prepared adapter, deterministic acceptance tests, and
 package-specific API baseline are updated. The operator-authorized Qwen line
-in the shared unreleased package list makes the package API gate pass. The PR
-and reviewed head are recorded in the route-local closeout log after push; no
-merge is claimed.
+in the shared unreleased package list makes the package API gate pass. The
+reviewed head landed unchanged through a literal fast-forward merge.
 
 ## References
 

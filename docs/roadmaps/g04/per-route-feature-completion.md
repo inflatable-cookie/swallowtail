@@ -71,16 +71,18 @@ families do not interrupt this programme by default.
   the selected model's default. The route selects no model, so cards 111-112
   are blocked and `reasoning_selection` remains `No`.
 - [g04.041 Qwen Headless Reasoning Effort](./041-qwen-headless-reasoning-effort.md)
-  is compiled and ready. Research 189 and cards 113-115 form one serial lane;
-  exact `0.21.15` process transport, model/value, clamp/default, and lifetime
-  evidence gates any binding.
+  is complete and merged through PR 40 at `709d197c`. Research 189 and cards
+  113-115 realize exact `0.21.15` process-private reasoning selection for
+  `qwen3.8-max` and `qwen3.8-max-preview` across runs, turns, resume, and fresh
+  replacement.
 
-## Next Worker Boundary
+## Next Planning Boundary
 
-Execute g04.041 cards 113-115 in one isolated worker lane. Card 113 may inspect
-official and exact package evidence without install, login, config mutation, or
-provider prompts. Cards 114-115 run only when Research 189 admits at least one
-exact model/value row through a process-private Contract 040 transport.
+Compile g04.042 for Cline thinking controls. Recheck the current official and
+exact package surfaces for `cline.acp` and `cline.headless`, keep their
+transport claims separate, and admit only exact values that cannot be aliased,
+clamped, defaulted, or inferred. This is a planning checkpoint; no worker is
+ready until the milestone and cards are compiled and pushed.
 
 ## Exclusions
 

@@ -160,9 +160,11 @@ The orchestrator requested three changes on `86d6178d`. All are applied.
 3. This record now states the review head and the head-recording convention
    instead of a stale implementation hash.
 
-The red `Pinned MSRV floor` job was the already-recorded OpenCode cancellation
-fixture `BrokenPipe` panic, not a lane regression. It was rerun after this
-push.
+The red `Pinned MSRV floor` job on `86d6178d` was the already-recorded OpenCode
+cancellation fixture `BrokenPipe` panic, not a lane regression. The push of
+`95af1dcc` triggered a fresh run, and all five CI jobs passed on that head:
+stable format/lint/test/guides, documentation and semantic API, pinned MSRV
+floor, dependency security, and external Git-source consumer.
 
 ## Unresolved
 

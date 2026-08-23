@@ -32,10 +32,15 @@ field, or Contract 029 currentness change landed here. The route remains exact
 Worker validation passed: focused package validation (31 tests), affected-
 package verification, examples, route QA, Northstar QA, research/log/roadmap/
 g04/batch-card index QA, next-action QA, package API, and `git diff --check`.
-No credentials, account state, live provider request, or paid work was used.
+Review requested a split of the new maximum-turn proofs out of
+`tests/prepared_facade.rs`; they now live in
+`tests/prepared_facade/max_turns.rs`. `effigy doctor` after that split
+reproduces the inherited baseline: 376 god-file findings (330 warn / 46 err)
+plus generated-in-src. No credentials, account state, live provider request,
+or paid work was used.
 
 PR: https://github.com/inflatable-cookie/swallowtail/pull/51
-Worker head: `cb04d1e24d8c5a5e334711e573c3539b0205d21c`
+Implementation commit: `cb04d1e24d8c5a5e334711e573c3539b0205d21c`
 This closeout does not claim merge.
 
 ## Shared Closeout Delta

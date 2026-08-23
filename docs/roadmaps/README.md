@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.048 cards 133-135 serially in one isolated worker lane. Card 133
-must promote Research 195 with exact Gemini Live context-window-compression
-truth. Continue to conditional cards 134-135 only for a non-empty deliver-now
-set; otherwise stop after evidence. Contract 029 currentness stays standing.
+Compile g04.049 from the remaining promoted per-route feature inventory.
+Recheck current production-route, contract, and official-source truth before
+selecting one coherent route-local control family. No route or control is
+preselected. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

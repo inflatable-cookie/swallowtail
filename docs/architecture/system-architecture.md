@@ -1467,11 +1467,16 @@ reasoning depth, or exact generated length. OpenAI Realtime binds
 24 kHz PCM, manual input commit, native response cancellation, and no planned
 rollover. Gemini Live binds `gemini-3.1-flash-live-preview`, 16 kHz input,
 24 kHz output, exact `minimal|low|medium|high` thinking selection, and an
-optional positive output-token maximum through `65_536` under opaque facade
-point `...BidiGenerateContent.thinking-output-max-2026-08-23`. Both choices
-remain fixed through initial setup, exactly one provider-planned rollover at an
-idle boundary, and fresh restoration; omission preserves the current setup
-bytes. Each retains bounded chunks, two serial
+optional positive output-token maximum through `65_536`. Its prepared profile
+also admits the adapter-local default-only
+`GeminiLiveContextWindowCompression::sliding_window()` selection under opaque
+facade point
+`...BidiGenerateContent.thinking-output-max-context-compression-2026-08-23`.
+The selected controls remain fixed through initial setup, exactly one provider-
+planned rollover at an idle boundary, and fresh restoration; omission preserves
+the prior setup bytes. Compression dispatch claims neither provider acceptance
+nor effective compression, and no portable capability or shared realtime
+carrier represents it. Each realtime route retains bounded chunks, two serial
 responses, endpoint and credential leases, connection cleanup, and the
 unchanged low-level driver. No common method hides their model selection,
 media events, cancellation truth, billed evidence, retry posture, or rollover.

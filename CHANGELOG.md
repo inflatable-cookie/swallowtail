@@ -7,6 +7,14 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed Gemini Live adapter-local default-only context-window compression
+  for `gemini-3.1-flash-live-preview`: selected
+  `GeminiLiveContextWindowCompression::sliding_window()` dispatches exact
+  `contextWindowCompression.slidingWindow = {}` on initial setup, one planned
+  rollover, and fresh restoration; omission preserves prior setup bytes,
+  explicit trigger and target token forms remain withheld, no portable
+  capability or shared request field is added, and dispatch does not claim
+  provider acceptance or effective compression; Research 195, g04.048
 - add exact Gemini Live caller-selected output-token maximum for
   `gemini-3.1-flash-live-preview`: positive values through `65_536` dispatch as
   `generationConfig.maxOutputTokens` on initial setup, one planned rollover,

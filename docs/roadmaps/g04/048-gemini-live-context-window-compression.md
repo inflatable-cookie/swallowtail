@@ -1,6 +1,6 @@
 # g04.048 Gemini Live Context-Window Compression
 
-Status: complete on worker branch; pending review and merge
+Status: complete; merged through PR 47 at `47848056`
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23

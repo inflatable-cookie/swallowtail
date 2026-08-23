@@ -1273,3 +1273,18 @@ Default-only sliding window is a candidate, not preapproved. A shared runtime
 carrier, generic context knob, live provider proof, long-session guarantee,
 retained-history claim, another model/route, and later feature family remain
 out of scope.
+
+## Gemini Live Context-Window-Compression Closeout (2026-08-23)
+
+g04.048 completed and merged through PR 47 at `47848056`. Exact model
+`gemini-3.1-flash-live-preview` now exposes adapter-local default-only
+`contextWindowCompression.slidingWindow = {}` dispatch on opaque facade point
+`...BidiGenerateContent.thinking-output-max-context-compression-2026-08-23`.
+Omission preserves the prior setup bytes. One planned rollover and fresh
+restoration preserve the selected object. Explicit trigger and target token
+forms remain withheld, and provider acceptance or effective compression is not
+claimed.
+
+The remaining promoted rows stay input to g04.049 compilation. Recheck exact
+current route, contract, and official-source truth before selecting one
+coherent control family; no route or control is preselected.

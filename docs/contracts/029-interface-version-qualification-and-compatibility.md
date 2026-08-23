@@ -296,11 +296,11 @@ other.
 ## Gemini Live Mapping
 
 The current Gemini Live claim binds exact opaque facade point
-`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23`
+`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-context-compression-2026-08-23`
 on axis `gemini.live-facade` to behavior revision
-`gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3` and claim
-revision `gemini.live-preview-window-3`. The adapter-owned prepared model-route
-revision is `prepared-3`.
+`gemini.live-preview-manual-pcm-rollover-thinking-output-max-context-compression-v4`
+and claim revision `gemini.live-preview-window-4`. The adapter-owned prepared
+model-route revision is `prepared-4`.
 
 The pre-thinking exact point
 `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent` and
@@ -308,9 +308,13 @@ behavior revision `gemini.live-preview-manual-pcm-rollover-v1`, and the later
 thinking-capable point
 `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23`
 with behavior revision `gemini.live-preview-manual-pcm-rollover-thinking-v2`,
-remain frozen historical evidence. Neither is a second supported opaque claim.
-The current driver rejects a plan carrying either superseded point before
-endpoint, credential, or socket work.
+and the later output-maximum point
+`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23`
+with behavior revision
+`gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3`, remain frozen
+historical evidence. None is a second supported opaque claim. The current
+driver rejects a plan carrying any superseded point before endpoint,
+credential, or socket work.
 
 Exact model `gemini-3.1-flash-live-preview` admits caller-selected
 `minimal|low|medium|high` through the current point. Omission remains distinct:
@@ -320,12 +324,22 @@ immutable across initial setup, one planned rollover, and fresh restoration.
 This qualifies dispatch only; provider acceptance and effective reasoning depth
 remain unclaimed.
 
-The same current point admits an optional caller-selected positive output-token
+The current point admits an optional caller-selected positive output-token
 maximum in `1..=65_536`. It dispatches exactly as
 `generationConfig.maxOutputTokens` and remains immutable across initial setup,
 one planned rollover, and fresh restoration. Omission leaves the member absent
 and claims no `OutputTokenLimit`. This also qualifies dispatch only; provider
 acceptance and effective generated length remain unclaimed.
+
+The current point also admits an optional adapter-local default-only
+`GeminiLiveContextWindowCompression::sliding_window()` selection. It dispatches
+exactly as `contextWindowCompression.slidingWindow = {}` and remains immutable
+across initial setup, one planned rollover, and fresh restoration. Omission
+keeps the member absent and preserves the prior setup bytes. Explicit
+`triggerTokens` and `targetTokens` forms remain withheld. This qualifies setup
+dispatch only; provider acceptance, effective compression, retained history,
+duration, savings, and semantic continuity remain unclaimed. No portable
+capability or shared realtime request field represents the selection.
 
 ## Acceptance
 

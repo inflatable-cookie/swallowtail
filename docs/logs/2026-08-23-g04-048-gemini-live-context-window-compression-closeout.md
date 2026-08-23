@@ -1,12 +1,13 @@
 # 2026-08-23 g04.048 Gemini Live Context-Window Compression Closeout
 
-Status: worker complete; PR 47 open
+Status: complete; merged through PR 47 at `47848056`
 Owner: Tom
 Milestone: g04.048
 Cards: 133-135 complete
 Research: 195 promoted
 PR: https://github.com/inflatable-cookie/swallowtail/pull/47
 Worker implementation commit: `35b1b282`
+Reviewed and merged head: `47848056`
 Worker branch: `t3code/gemini-live-context-compression`
 
 ## Outcome
@@ -51,23 +52,22 @@ call was performed.
 
 ## Result
 
-Worker implementation and validation are complete. PR 47 is open against
-`main`; the worker implementation head is `35b1b282`. This closeout update is a
-follow-up documentation commit. No merge is claimed.
+PR 47 fast-forwarded to `main` at exact reviewed head `47848056`. GitHub records
+that head as the merge commit. The route-local implementation and reserved
+shared closeout delta are complete.
 
 ## Shared Closeout Delta
 
-The worker did not apply shared surfaces. The orchestrator should apply this
-delta after review and merge:
+The orchestrator applied the reserved shared delta after merge:
 
 - architecture: record the Gemini adapter-local typed prepared selection; keep
   portable capabilities and the shared realtime carrier unchanged
 - route/feature matrices: mark only `gemini.live` default-only context-window
   compression as available/dispatch-only; leave sibling routes unchanged
-- programme/front door: close g04.048 after merge and choose the next route
-  only through the existing programme lane
-- indexes: promote Research 195, close this log, close cards 133-135, and move
-  the sole `docs/roadmaps/README.md` Next Task pointer only after merge
+- programme/front door: g04.048 is closed and g04.049 compilation is next;
+  route and control selection remain open to inventory reassessment
+- indexes: Research 195 is promoted, cards 133-135 are complete, and the sole
+  `docs/roadmaps/README.md` Next Task pointer now names g04.049 compilation
 - changelog: record the additive route-local default-only dispatch surface and
   its withheld numeric forms; do not claim effective compression
 - Contract 029: record the current exact facade/private behavior/claim point

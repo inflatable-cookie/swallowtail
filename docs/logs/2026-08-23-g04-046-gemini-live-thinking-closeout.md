@@ -7,7 +7,8 @@ Cards: 127-129 complete
 Branch: `t3code/read-gemini-live-thinking-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-5d9a1a44`
 Base: `382ab3863046bbb6bb4e3dbe048fd3369aeee0c9` (`origin/main` at dispatch)
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/45
+Implementation head: `cfdf8ece`
 
 ## Outcome
 
@@ -107,7 +108,13 @@ merge closeout.
   validate:focused` and `effigy package:verify-affected` for the same three
   packages, `effigy package:api`, `effigy qa:northstar`, and
   `git diff --check`.
-- Card 129 gates are recorded in the PR body.
+- Card 129 gates passed: `effigy check:examples`, `effigy qa:routes`, `effigy
+  qa:northstar`, all six named research/log/roadmap/batch-card and next-action
+  index selectors, `effigy package:api`, and `git diff --check`.
+- Two lane-created doctor warnings appeared when the new coverage landed in one
+  file each; splitting `live_reasoning_wire.rs` and
+  `live_protocol/reasoning_tests.rs` returned the scan to the inherited
+  baseline exactly.
 - The inherited doctor baseline remains 371 god-file findings (326 warnings,
   45 errors) plus one generated-in-src warning. No lane-created doctor finding
   was introduced.

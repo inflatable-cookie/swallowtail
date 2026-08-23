@@ -31,4 +31,3 @@ compilation.
 
 Execute g04.046 cards 127-129 serially in one isolated worker worktree and open
 one PR.
-

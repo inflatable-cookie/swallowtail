@@ -18,4 +18,3 @@ The worker must record required architecture, route/feature matrix,
 programme, index, changelog, API-baseline, assertion, and Next Task changes
 here without editing shared surfaces. The orchestrator applies the admitted
 delta only after review and merge.
-

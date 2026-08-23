@@ -81,4 +81,3 @@ and contract boundaries.
 - production binding, guide/matrix claims, other Gemini routes/models,
   `thinkingBudget`, context compression, thought summaries, live work, or
   shared closeout surfaces
-

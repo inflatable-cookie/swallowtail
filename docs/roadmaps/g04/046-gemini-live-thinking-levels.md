@@ -175,4 +175,3 @@ weakened to make the field fit.
 - [Realtime Prepared Integration](../../guides/realtime-prepared-integration.md)
 - [Gemini 3.1 Flash Live Preview](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-live-preview)
 - [Gemini Live API Capabilities](https://ai.google.dev/gemini-api/docs/live-api/capabilities)
-

@@ -83,4 +83,3 @@ restoration, omission, rejection, and sibling fail-closed tests pass.
 
 - shared docs/indexes, other Gemini controls/routes/models, live provider work,
   release, or merge
-

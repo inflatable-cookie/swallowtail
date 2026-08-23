@@ -21,4 +21,3 @@ rollover truth, compatibility classification, and a route/value deliver-now
 table.
 
 No capability or implementation claim follows from this reservation.
-

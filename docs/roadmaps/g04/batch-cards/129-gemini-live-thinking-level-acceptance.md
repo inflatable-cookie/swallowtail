@@ -81,4 +81,3 @@ Auto-continuation: No.
 
 - live provider verification, publication, merge, shared front-door edits, or
   later feature selection
-

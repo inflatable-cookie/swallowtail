@@ -14,11 +14,12 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted per-route feature inventory inside g04. Recheck
-current route, contract, and official-source truth, then present one coherent
-next control family for operator selection. Do not compile g04.051 or close the
-generation before that selection. New route families remain de-prioritized.
-Contract 029 currentness stays standing.
+Await operator selection on the recommended exact `qwen.headless` `0.21.15`
+caller-decreasing turn/tool-budget family. If selected, compile one evidence-
+first g04 roadmap; otherwise reassess the promoted inventory from the operator's
+direction. Do not compile g04.051 or close the generation before that selection.
+New route families remain de-prioritized. Contract 029 currentness stays
+standing.
 
 ## Standing Lanes
 

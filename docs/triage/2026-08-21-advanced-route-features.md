@@ -1378,3 +1378,43 @@ This note remains the promoted inventory for active g04 planning. The next pass
 must reassess the remaining rows and present one coherent route-local family
 for operator selection before compiling cards. No family is preselected and
 the generation remains open.
+
+## Post-g04.050 Reassessment (2026-08-23)
+
+Disposition: recommend caller-decreasing turn and tool-call budgets on exact
+`qwen.headless` `0.21.15`; await operator selection before compiling another
+roadmap.
+
+The current route already dispatches `--max-session-turns 24` and
+`--max-tool-calls 16` on structured runs and every turn child. Current official
+[headless documentation](https://qwenlm.github.io/qwen-code-docs/en/users/features/headless/)
+defines the first as a run turn cap and the second as a cumulative top-level
+tool-call budget. The exact
+[`v0.21.15` source](https://github.com/QwenLM/qwen-code/tree/v0.21.15)
+validates integer turn limits, validates tool-call limits, and aborts before an
+over-budget tool executes. Swallowtail's read-only tool allowlist, native
+60-second wall bound, mandatory host deadline, exact model route, reasoning
+handshake, and private continuation lifecycle already compose with the fixed
+values.
+
+If selected, the evidence gate should try to qualify only a typed
+caller-decreasing domain: `1..=24` turns and `0..=16` tool calls, initially at
+exact package `0.21.15`. Omission must retain the current `24` / `16` argv.
+Preparation, immutable plan, request, every first/resumed/replacement child,
+reasoning-selected children, terminal classification, and early mismatch
+rejection must agree. The gate must settle whether a zero tool budget has
+useful route truth and whether the turn counter is exact across this route's
+one-prompt child shape before admitting either row.
+
+This is an adapter-local execution-budget family, not a portable output-token,
+reasoning, context, permission, or billing control. It does not select approval
+modes, expand the tool set, expose subagents, change the 60-second native wall
+bound, or qualify earlier/later package points.
+
+Other conspicuous rows are weaker next steps. Anthropic adaptive thinking
+requires new thinking-block stream handling and private-block preservation
+before it can compose with direct tool continuation. Codex verbosity is
+silently ignored by the exact harness when the selected model lacks support,
+while the app-server model catalogue does not expose that support bit.
+Mistral's caller max-turns control remains eligible but is narrower than the
+already-frozen Qwen pair. These observations do not select those families.

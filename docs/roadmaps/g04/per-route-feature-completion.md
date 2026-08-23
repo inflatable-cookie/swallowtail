@@ -128,10 +128,10 @@ families do not interrupt this programme by default.
 
 ## Next Planning Boundary
 
-Keep g04 active. Recheck the remaining promoted inventory and present one
-coherent next route-local control family for operator selection before
-compiling another roadmap. Do not close the generation without explicit
-operator direction.
+Keep g04 active. The post-g04.050 reassessment recommends exact
+`qwen.headless` `0.21.15` caller-decreasing turn/tool budgets. Await operator
+selection before compiling another roadmap. Do not close the generation
+without explicit operator direction.
 
 ## Exclusions
 

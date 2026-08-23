@@ -91,14 +91,22 @@ fn admitted_output_maxima_serialize_to_exact_setup_frames() {
         .to_json(),
         expected("client-setup-resume-max-65536.json")
     );
-    let mode = ReasoningMode::new("low").expect("mode is valid");
-    assert_eq!(
-        ClientFrame::Setup {
-            handle: None,
-            thinking_level: thinking_level(&mode).expect("low maps"),
-            maximum_output_tokens: Some(maximum(1024)),
-        }
-        .to_json(),
-        expected("client-setup-max-1024-thinking-low.json")
-    );
+    for (portable, corpus) in [
+        ("minimal", "client-setup-max-1024.json"),
+        ("low", "client-setup-max-1024-thinking-low.json"),
+        ("medium", "client-setup-max-1024-thinking-medium.json"),
+        ("high", "client-setup-max-1024-thinking-high.json"),
+    ] {
+        let mode = ReasoningMode::new(portable).expect("mode is valid");
+        assert_eq!(
+            ClientFrame::Setup {
+                handle: None,
+                thinking_level: thinking_level(&mode).expect("admitted value maps"),
+                maximum_output_tokens: Some(maximum(1024)),
+            }
+            .to_json(),
+            expected(corpus),
+            "maximum 1024 composes with {portable}"
+        );
+    }
 }

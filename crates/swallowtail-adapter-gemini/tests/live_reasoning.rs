@@ -172,8 +172,8 @@ fn request_plan_and_value_drift_reject_before_endpoint_or_credential_work() {
 fn the_superseded_facade_point_is_named_and_no_longer_executable() {
     assert_eq!(
         GEMINI_LIVE_SUPERSEDED_FACADE_REVISION,
-        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23",
-        "the thinking-capable proof keeps its exact historical point"
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
+        "the pre-thinking proof keeps its exact historical point"
     );
     let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
     let failure = block_on(

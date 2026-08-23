@@ -6,7 +6,8 @@ Milestone: g04.047
 Cards: 130-132
 Research: 194
 PR: https://github.com/inflatable-cookie/swallowtail/pull/46
-Head: `dc6037b259aeffea327452e588c27d82b13a44b1`
+Implementation head: `dc6037b259aeffea327452e588c27d82b13a44b1`
+Record / review-fix tip: follows the implementation head on this branch
 
 ## Outcome
 
@@ -26,8 +27,11 @@ Delivered:
   `gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3`
 - claim `gemini.live-preview-window-3`
 - model-route revision `prepared-3`
-- superseded thinking-capable point retained as
-  `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`
+- pre-thinking historical point retained unchanged as
+  `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION` (`...BidiGenerateContent`)
+- thinking-capable historical point retained as
+  `GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION`
+  (`...thinking-2026-08-23`)
 
 Omission preserves current initial and resume setup bytes and claims no
 output-limit capability. Selected maxima remain immutable across initial
@@ -44,16 +48,21 @@ Worker evidence:
 - `effigy check:examples`
 - `effigy package:api` after updating the unreleased Gemini baseline
 - remaining card-132 index and route gates recorded in the PR body
+- Effigy doctor god-file baseline restored to the inherited 371 findings
+  (326 warnings, 45 errors) by keeping `plan_with_maximum` off
+  `tests/live_support/fixture.rs`
 
 No live Gemini call, credential, account inspection, or paid work.
 
 ## Shared-Surface Delta
 
-Worker branch did not edit shared front doors. After review and merge, the
-orchestrator should apply:
+Worker branch restores shared indexes to `origin/main` and does not claim
+shared front-door edits. After review and merge, the orchestrator should apply:
 
 | Surface | Required delta |
 | --- | --- |
+| `docs/research/README.md` | replace Research 194 "reserved" with promoted deliver-now summary |
+| `docs/logs/README.md` | replace g04.047 closeout "reserved" with worker-complete / merged status |
 | `docs/architecture/system-architecture.md` | note Gemini Live optional output-token maximum on the current facade point |
 | `docs/guides/provider-route-matrix.md` | update `gemini.live` row facade point and mention optional `1..=65536` maximum |
 | route/feature matrices / programme / indexes | if they still say thinking-only facade or omit output maximum |
@@ -68,5 +77,6 @@ orchestrator should apply:
 - branch: `t3code/review-gemini-live-output-maximum`
 - planning base ancestor: `c51e3e9898c6ea08e217d0d981d2b982e0a5590b`
 - evidence commit: `8d3717a010ea496c7f231fd6f4e576dfd4d05c9f`
-- binding/acceptance commit: `dc6037b259aeffea327452e588c27d82b13a44b1`
+- implementation head: `dc6037b259aeffea327452e588c27d82b13a44b1`
+- later record/review-fix commits follow that implementation head
 - worker does not merge

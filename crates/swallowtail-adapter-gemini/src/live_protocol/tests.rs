@@ -37,6 +37,12 @@ pub(super) fn expected(name: &str) -> Value {
         "client-setup-max-1024-thinking-low.json" => {
             fixture!("client-setup-max-1024-thinking-low.json")
         }
+        "client-setup-max-1024-thinking-medium.json" => {
+            fixture!("client-setup-max-1024-thinking-medium.json")
+        }
+        "client-setup-max-1024-thinking-high.json" => {
+            fixture!("client-setup-max-1024-thinking-high.json")
+        }
         "client-activity-start.json" => fixture!("client-activity-start.json"),
         "client-audio.json" => fixture!("client-audio.json"),
         "client-activity-end.json" => fixture!("client-activity-end.json"),

@@ -133,15 +133,6 @@ impl LiveFixture {
         self.plan_with_capabilities(requirements)
     }
 
-    pub fn plan_with_maximum(&self, maximum: u64) -> swallowtail_core::PreflightPlan {
-        let mut requirements = capabilities();
-        requirements.push(CapabilityRequirement::new(
-            Capability::OutputTokenLimit,
-            [CapabilityConstraint::OutputTokenMaximum(maximum)],
-        ));
-        self.plan_with_capabilities(requirements)
-    }
-
     pub fn plan_with_capabilities(
         &self,
         requirements: Vec<CapabilityRequirement>,

@@ -188,9 +188,9 @@ The thinking-level fixtures differ only in `thinkingLevel` and, for resume,
 | `...BidiGenerateContent.thinking-output-max-2026-08-23` | Mint as the exact new facade point for thinking-capable plus output-maximum behavior |
 | `gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3` | Mint as the private behavior revision for the new point |
 | `gemini.live-preview-window-3` | Mint as the claim revision |
-| `...BidiGenerateContent.thinking-2026-08-23` | Retain verbatim as the superseded thinking-capable proof; not a supported claim |
-| `gemini.live-preview-manual-pcm-rollover-thinking-v2` | Retain verbatim as the frozen proof of the superseded thinking point |
-| `...BidiGenerateContent` | Retain as deeper historical proof named by Research 193; still not a supported claim |
+| `...BidiGenerateContent.thinking-2026-08-23` | Retain verbatim as `GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION`; not a supported claim |
+| `gemini.live-preview-manual-pcm-rollover-thinking-v2` | Retain verbatim as the frozen proof of the thinking-superseded point |
+| `...BidiGenerateContent` | Retain verbatim as `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`, the pre-thinking proof from Research 193; still not a supported claim |
 | another Gemini model, API version, or route | Reject; no inference |
 
 Adding optional `OutputTokenLimit` changes capability behavior on the exact
@@ -202,14 +202,18 @@ a claim that the provider renamed its RPC. The provider surface itself is
 unchanged: `maxOutputTokens` is an existing `GenerationConfig` member of the
 same `v1beta` `BidiGenerateContent` method.
 
-The thinking-capable proof is kept, not erased.
-`...thinking-2026-08-23` and
-`gemini.live-preview-manual-pcm-rollover-thinking-v2` remain named verbatim
-here and become `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`. The frozen thinking
-corpus frames remain byte-unchanged, and a deterministic test must prove a plan
-bound to the superseded thinking point is rejected before endpoint, credential,
-or socket work. The driver continues to require the exact current facade, so
-the deeper historical `...BidiGenerateContent` point stays non-executable.
+Both historical proofs are kept, not erased, under separate public constants:
+
+- `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION` remains the pre-thinking point
+  `...BidiGenerateContent` with frozen `-v1` behavior, exactly as Research 193
+  and PR 45 published it;
+- `GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION` names the thinking-capable
+  point `...thinking-2026-08-23` with frozen `-thinking-v2` behavior.
+
+The frozen thinking corpus frames remain byte-unchanged. Deterministic tests
+must prove a plan bound to either historical point is rejected before endpoint,
+credential, or socket work. The driver continues to require the exact current
+facade, so neither historical point is executable.
 
 `swallowtail-core` still permits only one exact opaque segment. The thinking
 point cannot remain a concurrent live claim. Consumers must publish a new
@@ -307,8 +311,9 @@ Research 194 promotes the following deliver-now subset for card 131:
 - exact model `gemini-3.1-flash-live-preview`
 - exact new facade point
   `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23`,
-  with the superseded thinking point and its `-thinking-v2` behavior retained as
-  frozen evidence
+  with both historical points retained as frozen evidence under
+  `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION` (`...BidiGenerateContent`) and
+  `GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION` (`...thinking-2026-08-23`)
 - new adapter-private behavior revision
   `gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3` and claim
   revision `gemini.live-preview-window-3`

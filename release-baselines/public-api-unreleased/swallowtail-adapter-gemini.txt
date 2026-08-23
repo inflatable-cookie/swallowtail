@@ -192,6 +192,7 @@ pub const swallowtail_adapter_gemini::GEMINI_LIVE_MAX_OUTPUT_TOKENS: u64
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ROUTE_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION: &str
 pub const swallowtail_adapter_gemini::GEMINI_MODELS_ACCESS_PROFILE_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_MODELS_CONFIGURED_INSTANCE_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_MODELS_ENDPOINT: &str

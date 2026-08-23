@@ -4,10 +4,13 @@ use futures_executor::block_on;
 use live_support::{Call, LiveFixture, LiveScenario, TimeMode, config, rollover_policy};
 use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
-    GEMINI_LIVE_FACADE_REVISION, GEMINI_LIVE_MAX_OUTPUT_TOKENS, GeminiLiveDriver,
-    GeminiLiveSessionProfileInput, prepare_gemini_live,
+    GEMINI_LIVE_FACADE_REVISION, GEMINI_LIVE_MAX_OUTPUT_TOKENS,
+    GEMINI_LIVE_SUPERSEDED_FACADE_REVISION, GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION,
+    GeminiLiveDriver, GeminiLiveSessionProfileInput, prepare_gemini_live,
 };
-use swallowtail_core::{Capability, CapabilityConstraint, PreflightPlan, ReasoningMode};
+use swallowtail_core::{
+    Capability, CapabilityConstraint, CapabilityRequirement, PreflightPlan, ReasoningMode,
+};
 use swallowtail_runtime::{OpenRealtimeMediaSessionRequest, RealtimeMediaSessionDriver, RequestId};
 
 const ADMITTED: [u64; 3] = [1, 1_024, 65_536];
@@ -25,6 +28,20 @@ fn planned_maximum(plan: &PreflightPlan) -> Option<Vec<CapabilityConstraint>> {
         .capabilities()
         .find(|required| required.capability() == Capability::OutputTokenLimit)
         .map(|required| required.constraints().cloned().collect())
+}
+
+fn plan_with_maximum(fixture: &LiveFixture, value: u64) -> PreflightPlan {
+    let mut requirements: Vec<CapabilityRequirement> = fixture
+        .plan()
+        .requirements()
+        .capabilities()
+        .cloned()
+        .collect();
+    requirements.push(CapabilityRequirement::new(
+        Capability::OutputTokenLimit,
+        [CapabilityConstraint::OutputTokenMaximum(value)],
+    ));
+    fixture.plan_with_capabilities(requirements)
 }
 
 #[test]
@@ -158,9 +175,9 @@ fn request_plan_and_value_drift_reject_before_endpoint_or_credential_work() {
             fixture.plan(),
             base.clone().with_maximum_output_tokens(maximum(1_024)),
         ),
-        (fixture.plan_with_maximum(1_024), base.clone()),
+        (plan_with_maximum(&fixture, 1_024), base.clone()),
         (
-            fixture.plan_with_maximum(1),
+            plan_with_maximum(&fixture, 1),
             base.with_maximum_output_tokens(maximum(1_024)),
         ),
     ];
@@ -175,6 +192,76 @@ fn request_plan_and_value_drift_reject_before_endpoint_or_credential_work() {
         assert_eq!(
             failure.diagnostic().code(),
             "swallowtail.gemini.live_preflight_rejected"
+        );
+    }
+    assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
+    assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
+    assert!(fixture.server.frames().is_empty());
+}
+
+#[test]
+fn agreed_out_of_domain_maximum_rejects_before_endpoint_or_credential_work() {
+    let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
+    let failure = block_on(
+        GeminiLiveDriver::new().open_realtime_media_session(
+            plan_with_maximum(&fixture, 65_537),
+            OpenRealtimeMediaSessionRequest::new(
+                RequestId::new("output-max-out-of-domain").expect("request id is valid"),
+                config(),
+                None,
+            )
+            .with_planned_connection_rollover(rollover_policy())
+            .with_maximum_output_tokens(maximum(65_537)),
+            fixture.services(),
+        ),
+    )
+    .err()
+    .expect("agreed out-of-domain maximum is rejected");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.gemini.live_preflight_rejected"
+    );
+    assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
+    assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
+    assert!(fixture.server.frames().is_empty());
+}
+
+#[test]
+fn both_historical_facade_points_are_named_and_no_longer_executable() {
+    assert_eq!(
+        GEMINI_LIVE_SUPERSEDED_FACADE_REVISION,
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
+        "the pre-thinking proof keeps its exact historical point"
+    );
+    assert_eq!(
+        GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION,
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23",
+        "the thinking-capable proof keeps its exact historical point"
+    );
+    let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
+    for (label, facade) in [
+        ("pre-thinking", GEMINI_LIVE_SUPERSEDED_FACADE_REVISION),
+        ("thinking", GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION),
+    ] {
+        let failure = block_on(
+            GeminiLiveDriver::new().open_realtime_media_session(
+                fixture.plan_with_facade(facade),
+                OpenRealtimeMediaSessionRequest::new(
+                    RequestId::new(format!("historical-facade-{label}"))
+                        .expect("request id is valid"),
+                    config(),
+                    None,
+                )
+                .with_planned_connection_rollover(rollover_policy()),
+                fixture.services(),
+            ),
+        )
+        .err()
+        .expect("a plan on a historical facade point is rejected");
+        assert_eq!(
+            failure.diagnostic().code(),
+            "swallowtail.gemini.live_preflight_rejected",
+            "{label} historical point rejects before effects"
         );
     }
     assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);

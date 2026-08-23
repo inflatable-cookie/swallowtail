@@ -1,6 +1,6 @@
 # 146 Mistral Vibe Headless Maximum-Turn Binding
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -38,14 +38,14 @@ validation, and command construction.
 
 ## Acceptance Criteria
 
-- [ ] only Research 199 deliver-now values prepare
-- [ ] selection, plan/evidence, driver, and argv agree exactly
-- [ ] caller omission remains byte- and behavior-stable at `--max-turns 8`
-- [ ] invalid, raised, zero/negative when withheld, unbounded, aliased, and
+- [x] only Research 199 deliver-now values prepare
+- [x] selection, plan/evidence, driver, and argv agree exactly
+- [x] caller omission remains byte- and behavior-stable at `--max-turns 8`
+- [x] invalid, raised, zero/negative when withheld, unbounded, aliased, and
       mismatched values reject before effects
-- [ ] prompt, output, plan agent, trust, workdir, access, deadline,
+- [x] prompt, output, plan agent, trust, workdir, access, deadline,
       cancellation, failure, diagnostics, and cleanup remain unchanged
-- [ ] no shared runtime, portable capability, sibling route, retry, fallback,
+- [x] no shared runtime, portable capability, sibling route, retry, fallback,
       provider-acceptance, effective-work, quality, latency, cost, or billing
       claim enters the API
 

@@ -6,6 +6,7 @@ swallowtail-adapter-deepseek
 swallowtail-adapter-gemini
 swallowtail-adapter-kimi-platform
 swallowtail-adapter-llama-cpp
+swallowtail-adapter-mistral-vibe
 swallowtail-adapter-ollama
 swallowtail-adapter-openai
 swallowtail-adapter-pi

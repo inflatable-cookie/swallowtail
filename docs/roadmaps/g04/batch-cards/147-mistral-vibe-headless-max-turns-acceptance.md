@@ -1,6 +1,6 @@
 # 147 Mistral Vibe Headless Maximum-Turn Acceptance
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -37,16 +37,16 @@ effective-work, quality, latency, cost, or billing truth.
 
 ## Acceptance Criteria
 
-- [ ] every admitted state and rejected boundary has deterministic coverage
-- [ ] omission and selected dispatch truth remain exact and distinct
-- [ ] counter and terminal claims do not exceed Research 199 evidence
-- [ ] default QA performs no install, login, setup, credential, catalogue,
+- [x] every admitted state and rejected boundary has deterministic coverage
+- [x] omission and selected dispatch truth remain exact and distinct
+- [x] counter and terminal claims do not exceed Research 199 evidence
+- [x] default QA performs no install, login, setup, credential, catalogue,
       external request, provider prompt, or paid work
-- [ ] docs do not infer provider acceptance, effective work, quality, latency,
+- [x] docs do not infer provider acceptance, effective work, quality, latency,
       cost, billing, or output-token enforcement from turn-limit dispatch
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass
 
 ## Validation
 

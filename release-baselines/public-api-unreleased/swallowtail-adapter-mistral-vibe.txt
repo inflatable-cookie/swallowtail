@@ -31,12 +31,20 @@ pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun
 impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun
 pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::max_turns(&self) -> core::option::Option<swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns>
 pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput
 impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput
 pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput::with_max_turns(self, swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns) -> Self
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns(_)
+impl swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns
+pub const swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns::MAX: u8
+pub const swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns::MIN: u8
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns::get(self) -> u8
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeMaxTurns::try_new(u8) -> core::option::Option<Self>
 pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_LOCAL_ACCOUNT_AUDIENCE: &str
 pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_RELEASE_AXIS: &str

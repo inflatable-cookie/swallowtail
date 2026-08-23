@@ -1,4 +1,5 @@
 use super::MistralVibeHeadlessPreparedIntegration;
+use crate::MistralVibeMaxTurns;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
@@ -19,6 +20,7 @@ pub struct MistralVibeHeadlessRunProfileInput {
     content: OperationContent,
     working_resource: WorkingResourceRef,
     deadline: Deadline,
+    max_turns: Option<MistralVibeMaxTurns>,
 }
 
 impl MistralVibeHeadlessRunProfileInput {
@@ -35,7 +37,23 @@ impl MistralVibeHeadlessRunProfileInput {
             content,
             working_resource,
             deadline,
+            max_turns: None,
         }
+    }
+
+    /// Selects an admitted caller-decreasing `--max-turns` bound.
+    ///
+    /// Omission keeps the current argv byte `8`.
+    #[must_use]
+    pub const fn with_max_turns(mut self, max_turns: MistralVibeMaxTurns) -> Self {
+        self.max_turns = Some(max_turns);
+        self
+    }
+
+    /// Returns the caller-selected bound, if any.
+    #[must_use]
+    pub(crate) const fn max_turns(&self) -> Option<MistralVibeMaxTurns> {
+        self.max_turns
     }
 }
 
@@ -45,6 +63,7 @@ pub struct MistralVibeHeadlessPreparedRun {
     evidence: PreparedOperationEvidence,
     request: StructuredRunRequest,
     environment: swallowtail_runtime::EnvironmentRef,
+    max_turns: Option<MistralVibeMaxTurns>,
 }
 
 impl MistralVibeHeadlessPreparedIntegration {
@@ -94,6 +113,7 @@ impl MistralVibeHeadlessPreparedIntegration {
             .with_provider_retention(ProviderRetentionPolicy::Prohibited)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        let max_turns = input.max_turns();
         let request = StructuredRunRequest::new(input.request_id, input.content, policy)
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);
@@ -105,6 +125,7 @@ impl MistralVibeHeadlessPreparedIntegration {
             )?,
             request,
             environment: self.environment().clone(),
+            max_turns,
         })
     }
 }
@@ -128,10 +149,17 @@ impl MistralVibeHeadlessPreparedRun {
         &self.request
     }
 
+    /// Returns the selected maximum-turn bound, if the caller supplied one.
     #[must_use]
+    pub const fn max_turns(&self) -> Option<MistralVibeMaxTurns> {
+        self.max_turns
+    }
+
     /// Creates the low-level headless driver as an explicit escape hatch.
+    #[must_use]
     pub fn low_level_driver(&self) -> crate::MistralVibeHeadlessDriver {
         crate::MistralVibeHeadlessDriver::new(self.environment.clone())
+            .with_max_turns(self.max_turns)
     }
 
     /// Starts the single prepared print run.

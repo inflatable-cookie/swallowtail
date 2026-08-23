@@ -12,11 +12,13 @@ mod command;
 mod discovery;
 mod driver;
 mod failure;
+mod max_turns;
 mod prepared;
 mod selection;
 
 pub use access::{MISTRAL_VIBE_LOCAL_ACCOUNT_AUDIENCE, mistral_vibe_local_config_access_profile};
 pub use driver::{MistralVibeHeadlessDriver, mistral_vibe_headless_descriptor};
+pub use max_turns::MistralVibeMaxTurns;
 pub use prepared::{
     MistralVibeHeadlessPreparationInput, MistralVibeHeadlessPreparationProbe,
     MistralVibeHeadlessPreparedIntegration, MistralVibeHeadlessPreparedRun,

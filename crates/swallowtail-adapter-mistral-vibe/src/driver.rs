@@ -6,7 +6,7 @@ mod handle;
 mod pump;
 mod validation;
 
-use crate::{command::arguments, failure::failure};
+use crate::{MistralVibeMaxTurns, command::arguments, failure::failure};
 use handle::{VibeHeadlessCancellation, VibeHeadlessRunHandle};
 use std::sync::Arc;
 use swallowtail_core::{
@@ -28,13 +28,23 @@ const EVENT_CAPACITY: usize = 4098;
 /// Low-level structured-run driver for installed `vibe --prompt --output streaming`.
 pub struct MistralVibeHeadlessDriver {
     environment: EnvironmentRef,
+    max_turns: Option<MistralVibeMaxTurns>,
 }
 
 impl MistralVibeHeadlessDriver {
     /// Binds the isolated launch environment. Credentials stay host-owned.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            max_turns: None,
+        }
+    }
+
+    /// Copies an admitted or omitted maximum-turn selection onto the driver.
+    pub(crate) const fn with_max_turns(mut self, max_turns: Option<MistralVibeMaxTurns>) -> Self {
+        self.max_turns = max_turns;
+        self
     }
 
     /// Returns the approved process environment.
@@ -156,7 +166,7 @@ impl MistralVibeHeadlessDriver {
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
-        .with_arguments(arguments(&cwd, request.content().as_str()))
+        .with_arguments(arguments(&cwd, request.content().as_str(), self.max_turns))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
         let process = match process_service.start(scope.clone(), process_request).await {

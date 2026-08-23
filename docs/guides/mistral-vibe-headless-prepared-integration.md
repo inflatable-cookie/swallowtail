@@ -60,9 +60,16 @@ content, a read-only working resource, and a host deadline. There is no model
 route or auto-approve option. Call `prepare_run`, inspect `evidence()`,
 `plan()`, and `request()`, then `start_run`.
 
+Optional `with_max_turns` accepts only `MistralVibeMaxTurns` values `1..=8`.
+Omission keeps the current argv byte `--max-turns 8`. The flag is always
+emitted; upstream unbounded omission stays impossible. This is a per-child cap
+on completed assistant LLM turns, not a Contract 040 output-token limit and not
+proof of less provider work. Native conversation-limit stderr still fails
+closed as `swallowtail.mistral-vibe.headless.max_turns`.
+
 The driver owns one joined stdio child and performs this sequence:
 
-1. spawn `vibe --prompt <text> --output streaming --max-turns 8 --trust
+1. spawn `vibe --prompt <text> --output streaming --max-turns <1..=8, default 8> --trust
    --agent plan --workdir <cwd>`
 2. close stdin immediately; the prompt is argv, not a stdin document
 3. decode streaming NDJSON (`message`, `reasoning`, `effect`; skip

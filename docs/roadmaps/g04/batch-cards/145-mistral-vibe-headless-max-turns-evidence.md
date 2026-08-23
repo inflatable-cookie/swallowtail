@@ -1,6 +1,6 @@
 # 145 Mistral Vibe Headless Maximum-Turn Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -54,22 +54,22 @@ extraction, or host configuration change is authorized.
 
 ## Acceptance Criteria
 
-- [ ] exact official and `2.24.2` evidence is frozen with source identity and
+- [x] exact official and `2.24.2` evidence is frozen with source identity and
       complete specimen digests
-- [ ] upstream parser domain and Swallowtail caller-decreasing domain are distinct
-- [ ] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
+- [x] upstream parser domain and Swallowtail caller-decreasing domain are distinct
+- [x] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
       unbounded states have explicit dispositions
-- [ ] turn definition, check/increment order, off-by-one boundary, and
+- [x] turn definition, check/increment order, off-by-one boundary, and
       child-local lifetime are explicit
-- [ ] process exit, stderr, stream, terminal, partial-event, cancellation,
+- [x] process exit, stderr, stream, terminal, partial-event, cancellation,
       deadline, failure, and cleanup truth is explicit or withheld
-- [ ] plan/evidence representation and feature-local revision are explicit
-- [ ] Research 199 is promoted with a deliver-now table or honest empty set
-- [ ] no production code, shared capability, matrix, contract, currentness, or
+- [x] plan/evidence representation and feature-local revision are explicit
+- [x] Research 199 is promoted with a deliver-now table or honest empty set
+- [x] no production code, shared capability, matrix, contract, currentness, or
       sibling-route change lands
-- [ ] `effigy validate:focused swallowtail-adapter-mistral-vibe` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-mistral-vibe` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 146 only when Research 199 admits a non-empty exact
 value/profile set with truthful counter and terminal semantics.

@@ -29,20 +29,20 @@ preserves the current `--max-turns 8` command.
 
 ## Goals
 
-- [ ] freeze current official and exact `2.24.2` parsing, counting,
+- [x] freeze current official and exact `2.24.2` parsing, counting,
       enforcement, terminal, and cleanup evidence
-- [ ] classify candidate values `1..=8`, zero, negative, fractional, values
+- [x] classify candidate values `1..=8`, zero, negative, fractional, values
       above eight, and upstream unbounded omission
-- [ ] settle the exact assistant-turn definition and pre-turn enforcement
-- [ ] distinguish native limit truth from host deadline, output-token, tool,
+- [x] settle the exact assistant-turn definition and pre-turn enforcement
+- [x] distinguish native limit truth from host deadline, output-token, tool,
       cost, provider-completion, and quality claims
-- [ ] promote Research 199 with an exact deliver-now table or honest stop
-- [ ] preserve caller omission as exact current `--max-turns 8` argv and
+- [x] promote Research 199 with an exact deliver-now table or honest stop
+- [x] preserve caller omission as exact current `--max-turns 8` argv and
       behavior
-- [ ] bind only admitted values through typed adapter-local input, immutable
+- [x] bind only admitted values through typed adapter-local input, immutable
       plan/evidence, driver validation, and command construction
-- [ ] reject invalid or mismatched values before process start or prompt
-- [ ] publish deterministic dispatch and terminal truth without claiming
+- [x] reject invalid or mismatched values before process start or prompt
+- [x] publish deterministic dispatch and terminal truth without claiming
       provider acceptance, effective work, latency, cost, or billing
 
 ## Non-Goals
@@ -86,38 +86,38 @@ empty Research 199 deliver-now set is an honest stop.
 
 ### Batch 52.1 — Exact Maximum-Turn Evidence
 
-- [ ] Execute card 145.
-- [ ] freeze official and exact-release parsing, counting, enforcement, and
+- [x] Execute card 145.
+- [x] freeze official and exact-release parsing, counting, enforcement, and
       terminal evidence
-- [ ] promote Research 199 with domain and terminal dispositions
+- [x] promote Research 199 with domain and terminal dispositions
 
 ### Batch 52.2 — Conditional Maximum-Turn Binding
 
-- [ ] Execute card 146 only when card 145 admits a non-empty deliver-now set.
-- [ ] add the smallest typed adapter-local caller-decreasing selection
-- [ ] preserve omission and every fixed route boundary
-- [ ] bind admitted values through preparation, plan/evidence, driver, and argv
+- [x] Execute card 146 only when card 145 admits a non-empty deliver-now set.
+- [x] add the smallest typed adapter-local caller-decreasing selection
+- [x] preserve omission and every fixed route boundary
+- [x] bind admitted values through preparation, plan/evidence, driver, and argv
 
 ### Batch 52.3 — Route-Local Acceptance
 
-- [ ] Execute card 147 only after card 146.
-- [ ] prove admitted, omitted, rejected, terminal, and lifecycle truth
-- [ ] update route-local guidance and reserve the shared closeout delta
+- [x] Execute card 147 only after card 146.
+- [x] prove admitted, omitted, rejected, terminal, and lifecycle truth
+- [x] update route-local guidance and reserve the shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 199 deliver-now values prepare
-- [ ] omission preserves exact current `--max-turns 8` argv and behavior
-- [ ] input, plan/evidence, driver, and command agree exactly
-- [ ] invalid values and knowable mismatches reject before effects
-- [ ] streaming, agent, trust, workdir, deadline, access, cancellation,
+- [x] only Research 199 deliver-now values prepare
+- [x] omission preserves exact current `--max-turns 8` argv and behavior
+- [x] input, plan/evidence, driver, and command agree exactly
+- [x] invalid values and knowable mismatches reject before effects
+- [x] streaming, agent, trust, workdir, deadline, access, cancellation,
       failure, and cleanup remain unchanged
-- [ ] terminal claims do not exceed exact source and deterministic fixture truth
-- [ ] no portable output-token, generic budget, effective-work, quality,
+- [x] terminal claims do not exceed exact source and deterministic fixture truth
+- [x] no portable output-token, generic budget, effective-work, quality,
       latency, price, or billing claim is introduced
-- [ ] default QA performs no install, login, credential, catalogue, prompt, or
+- [x] default QA performs no install, login, credential, catalogue, prompt, or
       paid work
-- [ ] g04.052 closes only this route-local family; g04 remains active until the
+- [x] g04.052 closes only this route-local family; g04 remains active until the
       operator directs otherwise
 
 ## Lane Runway

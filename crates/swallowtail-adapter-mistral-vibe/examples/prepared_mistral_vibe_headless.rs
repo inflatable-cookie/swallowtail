@@ -3,7 +3,7 @@
 use swallowtail_adapter_mistral_vibe::{
     MistralVibeHeadlessPreparationInput, MistralVibeHeadlessPreparationProbe,
     MistralVibeHeadlessPreparedIntegration, MistralVibeHeadlessPreparedRun,
-    MistralVibeHeadlessRunProfileInput, prepare_mistral_vibe_headless,
+    MistralVibeHeadlessRunProfileInput, MistralVibeMaxTurns, prepare_mistral_vibe_headless,
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, PreparationFailure, RuntimeFailure, TerminalOutcome,
@@ -22,6 +22,14 @@ fn prepare_run(
     input: MistralVibeHeadlessRunProfileInput,
 ) -> Result<MistralVibeHeadlessPreparedRun, PreparationFailure> {
     integration.prepare_run(input)
+}
+
+fn prepare_run_with_max_turns(
+    integration: &MistralVibeHeadlessPreparedIntegration,
+    input: MistralVibeHeadlessRunProfileInput,
+    turns: MistralVibeMaxTurns,
+) -> Result<MistralVibeHeadlessPreparedRun, PreparationFailure> {
+    integration.prepare_run(input.with_max_turns(turns))
 }
 
 async fn execute_run(

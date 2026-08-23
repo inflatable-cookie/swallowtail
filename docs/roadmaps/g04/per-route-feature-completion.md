@@ -114,16 +114,18 @@ families do not interrupt this programme by default.
   `gemini-3.1-flash-live-preview`, preserve omission bytes, withhold explicit
   numeric forms, and retain one-rollover/restoration truth.
 - [g04.049 OpenAI Background Service Tier](./049-openai-background-service-tier.md)
-  is compiled. Research 196 and card 136 must freeze the complete Responses
-  request/returned tier domain, exact `gpt-5.6` applicability, access gates,
-  and ordinary/detached/reconciled profile truth. Cards 137-138 are conditional
-  on a non-empty deliver-now set.
+  is complete and merged through PR 48 at `06c00e6c`. Research 196 and cards
+  136-138 realize adapter-local explicit `service_tier: "default"` dispatch on
+  ordinary attached runs and one in-process reattachment. Omission preserves
+  prior bytes; detachment and selected-tier restart reconciliation fail closed;
+  returned-tier observation and all other values remain withheld.
 
 ## Next Planning Boundary
 
-Execute g04.049 cards 136-138 serially. Start with Research 196 evidence and
-continue only for exact deliver-now values and lifecycle profiles. The worker
-must not absorb the separate Bedrock exact-pin mismatch or another route.
+Compile g04.050 from the remaining promoted inventory. Recheck exact current
+route, contract, and official-source truth before selecting one coherent
+route-local control family. Treat it as g04's final roadmap, then reassess the
+generation boundary.
 
 ## Exclusions
 

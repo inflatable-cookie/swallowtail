@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Implement g04.049 cards 136-138 serially in one worker lane. Start with exact
-OpenAI Background service-tier evidence in card 136. Continue to cards 137-138
-only for a non-empty Research 196 deliver-now set. Contract 029 currentness
-stays standing.
+Compile g04.050 from the remaining promoted per-route feature inventory.
+Recheck current production-route, contract, and official-source truth before
+selecting one coherent route-local control family. Treat g04.050 as the final
+roadmap in this generation unless the operator changes the generation boundary.
+Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

@@ -7,6 +7,16 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed OpenAI Background adapter-local standard service-tier selection:
+  `OpenAiBackgroundServiceTier::standard()` dispatches exact Responses
+  `service_tier: "default"` on ordinary attached runs and one in-process
+  reattachment; omission preserves prior create bytes, active-run detachment
+  rejects before effects, selected-tier checkpoints reject restart
+  reconciliation before network work, and returned tier, price, latency,
+  capacity, entitlement, and provider acceptance remain unclaimed; the exact
+  facade advances to
+  `openai-responses-background-2026-08-23-service-tier`; Research 196,
+  g04.049
 - add typed Gemini Live adapter-local default-only context-window compression
   for `gemini-3.1-flash-live-preview`: selected
   `GeminiLiveContextWindowCompression::sliding_window()` dispatches exact

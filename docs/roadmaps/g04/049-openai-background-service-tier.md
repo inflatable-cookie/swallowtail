@@ -1,6 +1,6 @@
 # g04.049 OpenAI Background Service Tier
 
-Status: complete; awaiting review
+Status: complete; merged through PR 48 at `06c00e6c`
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23

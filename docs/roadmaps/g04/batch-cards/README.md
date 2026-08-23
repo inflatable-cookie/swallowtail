@@ -2,14 +2,15 @@
 
 ## Planned
 
-- [138-openai-background-service-tier-acceptance.md](./138-openai-background-service-tier-acceptance.md) — conditional on card 137
-- [137-openai-background-service-tier-binding.md](./137-openai-background-service-tier-binding.md) — conditional on a non-empty Research 196 deliver-now set
-- [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md) — ready
+No cards are compiled. g04.050 selection is the next planning task.
 
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [138-openai-background-service-tier-acceptance.md](./138-openai-background-service-tier-acceptance.md)
+- [137-openai-background-service-tier-binding.md](./137-openai-background-service-tier-binding.md)
+- [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md)
 - [135-gemini-live-context-window-compression-acceptance.md](./135-gemini-live-context-window-compression-acceptance.md)
 - [134-gemini-live-context-window-compression-binding.md](./134-gemini-live-context-window-compression-binding.md)
 - [133-gemini-live-context-window-compression-evidence.md](./133-gemini-live-context-window-compression-evidence.md)
@@ -138,7 +139,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Active
 
-- [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md) — ready; cards 137-138 remain conditional
+None. g04.050 selection is the next planning task.
 
 ## Blocked
 

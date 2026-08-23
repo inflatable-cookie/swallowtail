@@ -182,7 +182,7 @@
       "id": "openai.background",
       "driver": "swallowtail.openai.background",
       "transport": "https-sse-with-reattachment",
-      "qualified": "openai-responses-background-2026-08-23",
+      "qualified": "openai-responses-background-2026-08-23-service-tier",
       "ordinary_profiles": [
         {
           "operation": "structured-run",

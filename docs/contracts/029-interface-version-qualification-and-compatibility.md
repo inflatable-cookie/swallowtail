@@ -293,6 +293,27 @@ They do not extend the guarantee or inherit new command, tool, session, or
 subagent authority. `pi.rpc` and `oh-my-pi.rpc` cannot substitute for each
 other.
 
+## OpenAI Background Mapping
+
+The current OpenAI Background claim binds exact opaque facade point
+`openai-responses-background-2026-08-23-service-tier` on axis
+`openai.responses-background-facade` to behavior revision
+`openai.responses-background-v3` and claim revision
+`openai.responses-background-window-1`. The earlier point
+`openai-responses-background-2026-08-23` with behavior revision
+`openai.responses-background-v2` remains frozen historical evidence and is not
+a second executable segment.
+
+The current point admits adapter-local explicit `service_tier: "default"` only
+for ordinary attached runs and one in-process reattachment. Omission remains
+distinct and preserves the earlier create bytes. The binding qualifies
+requested and dispatched state only; it does not observe the returned tier or
+claim project configuration, price, latency, capacity, entitlement, fallback,
+or provider acceptance. Active-run detachment rejects before effects, and an
+adapter-owned cursor marker makes selected-tier checkpoints non-reconcilable
+before network work. Other current request and returned-tier spellings remain
+withheld.
+
 ## Gemini Live Mapping
 
 The current Gemini Live claim binds exact opaque facade point

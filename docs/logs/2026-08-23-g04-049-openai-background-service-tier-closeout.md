@@ -1,6 +1,6 @@
 # 2026-08-23 g04.049 OpenAI Background Service Tier Closeout
 
-Status: complete; PR updated after review
+Status: complete; merged
 Owner: Tom
 Milestone: g04.049
 Cards: 136-138 complete
@@ -8,9 +8,9 @@ Branch: `t3code/read-background-service-tier-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
 PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
-Head: `12269e40`
-Review: orchestrator asked to make the selected-tier checkpoint boundary real; selected-default checkpoints now reject restart reconciliation before network
-Merge: none; worker must not merge
+Head: `06c00e6c`
+Review: approved at exact head after the selected-tier checkpoint fix
+Merge: fast-forwarded to `main`; GitHub records `06c00e6c`
 
 The launcher-provided worktree and branch differ from the handoff
 placeholders. They were used as supplied.
@@ -54,20 +54,18 @@ Changed:
 
 ## Shared-Surface Closeout
 
-Recorded here for orchestrator merge closeout; not applied on this branch:
+Applied by the orchestrator after merge:
 
-- architecture and route/feature matrices should name dispatch-only explicit
+- architecture and route/feature matrices name dispatch-only explicit
   `default` on ordinary attached + one in-process reattachment, withheld
   detachment/reconciliation, and facade
   `openai-responses-background-2026-08-23-service-tier`
 - `crates/swallowtail-testkit/tests/fixtures/direct-activity-applicability.json`
-  still lists qualified `openai-responses-background-2026-08-23`
-- `CHANGELOG.md` should record the additive dispatch-only selection and the
+  names qualified `openai-responses-background-2026-08-23-service-tier`
+- `CHANGELOG.md` records the additive dispatch-only selection and the
   new opaque facade point
-- programme/front doors and the sole Next Task stay on the dispatch text
-  until orchestrator merge closeout
-- batch-card, research, and log indexes still describe card 136 as ready /
-  Research 196 as reserved until orchestrator updates them
+- programme/front doors close g04.049 and point only to g04.050 compilation
+- batch-card, research, and log indexes record the completed lane
 - Contract 029 currentness remains in its standing lane
 
 ## Validation

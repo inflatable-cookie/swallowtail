@@ -1315,3 +1315,21 @@ lane. Its resolved Cargo SDK and qualified public SDK identity currently
 disagree; the exact-pin currentness rule requires explicit operator authority
 before reopening that family. g04.049 does not hide that correction inside
 feature work.
+
+## OpenAI Background Service-Tier Closeout (2026-08-23)
+
+g04.049 completed and merged through PR 48 at `06c00e6c`. Exact model
+`gpt-5.6` now exposes adapter-local explicit Responses
+`service_tier: "default"` dispatch on ordinary attached runs and one in-process
+reattachment under opaque facade point
+`openai-responses-background-2026-08-23-service-tier`. Omission preserves prior
+create bytes. Active-run detachment and restart reconciliation of a
+selected-tier checkpoint fail closed before provider work. Returned tier,
+project settings, price, latency, capacity, entitlement, fallback, and provider
+acceptance remain unclaimed; `auto`, `flex`, `priority`, `fast`, `ultrafast`,
+and `scale` remain withheld.
+
+The remaining promoted rows stay input to g04.050 compilation. Recheck exact
+current route, contract, and official-source truth before selecting one coherent
+control family. g04.050 is the final roadmap in g04 unless the operator changes
+the generation boundary.

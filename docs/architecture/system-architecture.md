@@ -1425,14 +1425,28 @@ Background creation, required temporary provider retention, and maximum-one
 cursor reattachment remain explicit inputs. `store=false` does not become a
 no-retention claim.
 
+The prepared profile may select exact adapter-local standard processing through
+`OpenAiBackgroundServiceTier::standard()` on ordinary attached runs and one
+in-process reattachment. The current opaque facade point
+`openai-responses-background-2026-08-23-service-tier` dispatches exact
+`service_tier: "default"` while omission preserves the prior request bytes.
+This proves requested and dispatched state only; returned tier, project
+settings, price, latency, capacity, entitlement, and provider acceptance remain
+unobserved. Active-run detachment rejects before effects. A selected-tier
+checkpoint carries an adapter-owned non-reconcilable cursor marker, so restart
+reconciliation rejects it before network work rather than losing selected
+truth. `auto`, `flex`, `priority`, `fast`, `ultrafast`, and `scale` remain
+withheld.
+
 Starting the prepared value delegates to the existing structured-run driver.
 One create request remains one inference attempt. Cursor reattachment, bounded
 retrieve, and native cancel manage that attempt and cannot replay input or
 select another route. Provider response identity, stream cursor, runtime run,
 local attachment, cancellation request, and terminal provider truth remain
-separate. The facade adds no cross-process recovery, polling loop, retry,
-fallback, durable consumer storage, ChatGPT access, Codex access, subscription
-OAuth, or community OAuth route.
+separate. Restart support is read-only exact-run reconciliation from a qualified
+checkpoint, not cross-process execution recovery or resume. The facade adds no
+polling loop, retry, fallback, durable consumer storage, ChatGPT access, Codex
+access, subscription OAuth, or community OAuth route.
 
 Anthropic Managed Agents now has a prepared provider-hosted harness surface
 separate from Anthropic Messages direct inference. Preparation binds the

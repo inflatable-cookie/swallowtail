@@ -8,6 +8,7 @@ use services::TimeMode;
 use std::num::{NonZeroU32, NonZeroU64};
 use swallowtail_adapter_openai::{OpenAiBackgroundDriver, openai_background_descriptor};
 use swallowtail_core::OwnedRemoteResourceKind;
+use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, OperationPolicy,
     ProviderCancellationOutcome, ProviderExecutionPolicy, ProviderObservation,
@@ -65,6 +66,24 @@ fn stale_background_facade_fails_before_endpoint_or_credential_effects() {
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.openai.facade_binding_rejected"
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn minimal_reasoning_fails_before_endpoint_or_credential_effects() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let error = block_on(OpenAiBackgroundDriver::new().start_run(
+        fixture.plan_with_reasoning("minimal"),
+        request_with_reasoning("minimal", "minimal"),
+        fixture.services(),
+    ))
+    .err()
+    .expect("minimal reasoning must fail closed");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.openai.capability_constraint_rejected"
     );
     assert!(fixture.server.requests().is_empty());
     assert_eq!(fixture.releases(), 0);
@@ -247,6 +266,14 @@ fn deadline_and_pre_identity_disconnect_remain_safe_and_distinct() {
 
 fn request(id: &str) -> StructuredRunRequest {
     base_request(id, background_policy())
+}
+
+fn request_with_reasoning(id: &str, reasoning: &str) -> StructuredRunRequest {
+    base_request(
+        id,
+        background_policy()
+            .with_reasoning_mode(ReasoningMode::new(reasoning).expect("reasoning mode is valid")),
+    )
 }
 
 fn base_request(id: &str, policy: OperationPolicy) -> StructuredRunRequest {

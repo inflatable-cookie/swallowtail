@@ -15,7 +15,7 @@ use swallowtail_core::{
     EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
     ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
-    ProtocolFacadeId, ProviderId, RuntimeReadiness, SupportAuthority, preflight,
+    ProtocolFacadeId, ProviderId, ReasoningMode, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -110,10 +110,22 @@ impl Fixture {
         self.plan_with_facade(OPENAI_BACKGROUND_FACADE_REVISION)
     }
 
+    pub fn plan_with_reasoning(&self, reasoning: &str) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade_and_reasoning(OPENAI_BACKGROUND_FACADE_REVISION, Some(reasoning))
+    }
+
     pub fn plan_with_facade(&self, facade: &str) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade_and_reasoning(facade, None)
+    }
+
+    fn plan_with_facade_and_reasoning(
+        &self,
+        facade: &str,
+        reasoning: Option<&str>,
+    ) -> swallowtail_core::PreflightPlan {
         let descriptor = openai_background_descriptor();
         let access_id = AccessProfileId::new("access.openai").expect("access id is valid");
-        let requirements = capability_requirements();
+        let requirements = capability_requirements(reasoning);
         let capabilities = CapabilityProfile::new(requirements.clone());
         let instance = ConfiguredInstance::new(
             ConfiguredInstanceId::new("openai.public").expect("instance id is valid"),
@@ -180,8 +192,8 @@ impl Fixture {
     }
 }
 
-fn capability_requirements() -> Vec<CapabilityRequirement> {
-    vec![
+fn capability_requirements(reasoning: Option<&str>) -> Vec<CapabilityRequirement> {
+    let mut requirements = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
@@ -207,7 +219,16 @@ fn capability_requirements() -> Vec<CapabilityRequirement> {
                 CancellationScope::StructuredRun,
             )],
         ),
-    ]
+    ];
+    if let Some(reasoning) = reasoning {
+        requirements.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new(reasoning).expect("reasoning is valid"),
+            )],
+        ));
+    }
+    requirements
 }
 
 struct TrackingCredential {

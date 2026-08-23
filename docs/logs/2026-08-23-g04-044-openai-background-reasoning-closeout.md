@@ -26,8 +26,10 @@ not silently rewritten or retained as a supported route claim.
 - `crates/swallowtail-adapter-openai/src/prepared_profile/background.rs` now
   validates the exact six-value set.
 - `crates/swallowtail-adapter-openai/src/selection.rs` publishes the new exact
-  facade point and behavior revision across configured instance, model route,
-  operation requirements, claim, prepared evidence, and activity basis.
+  facade point through the configured instance, facade binding, operation
+  requirements, claim, prepared evidence, and activity basis. The model-route
+  record retains model/provider identity and capability truth; it does not bind
+  an interface version.
 - Driver validation rejects stale facade plans before endpoint or credential
   acquisition. Deterministic route tests cover absent reasoning, every
   admitted value through plan/evidence/policy/driver/wire, explicit
@@ -50,8 +52,18 @@ The worker did not edit shared surfaces outside the named route lane.
   of previously guaranteed `minimal` is a breaking route guarantee shrink and
   requires an explicit next-minor source-release and release-note delta. No
   release or version mutation belongs to this lane.
-- Programme, front doors, and indexes: no content change is required for the
-  route-local correction; existing links remain valid.
+- Programme, front doors, and indexes: after merge, the orchestrator must move
+  cards 122-123 from Planned to Completed in
+  `docs/roadmaps/g04/batch-cards/README.md`; change the g04.044 entries from
+  ready to complete in `docs/roadmaps/g04/README.md`,
+  `docs/roadmaps/g04/per-route-feature-completion.md`, and the g04.044
+  milestone's Batch Cards section; record the merged PR/head in the g04
+  checkpoint; remove `reserved` from this closeout's entry in
+  `docs/logs/README.md`; refresh the g04 status in
+  `docs/roadmaps/generation-index.md`; and replace the execution pointer in
+  `docs/roadmaps/README.md` and the programme's Next Planning Boundary with
+  the orchestrator-selected next task. The worker leaves those shared status,
+  index, and front-door surfaces unchanged.
 - `docs/roadmaps/README.md`: leave the sole Next Task pointer in place until
   the orchestrator performs merge closeout and selects the next lane.
 

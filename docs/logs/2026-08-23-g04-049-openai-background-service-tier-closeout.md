@@ -8,7 +8,7 @@ Branch: `t3code/read-background-service-tier-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
 PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
-Head: `efa1e5eb`
+Head: `12269e40`
 Review: orchestrator asked to make the selected-tier checkpoint boundary real; selected-default checkpoints now reject restart reconciliation before network
 Merge: none; worker must not merge
 

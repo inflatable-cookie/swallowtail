@@ -1,8 +1,9 @@
 # 127 Gemini Live Thinking-Level Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.046 Gemini Live Thinking Levels](../046-gemini-live-thinking-levels.md)
 Depends on: Research 021; g01.033
 
@@ -47,21 +48,21 @@ secret-free repository/source inspection are sufficient for this gate.
 
 ## Acceptance Criteria
 
-- [ ] exact model, Live facade, field, and candidate values are source-backed
-- [ ] initial, resume, omission, restoration, and current behavior truth are
+- [x] exact model, Live facade, field, and candidate values are source-backed
+- [x] initial, resume, omission, restoration, and current behavior truth are
       explicit
-- [ ] every candidate value has a deliver-now, gated, withheld, or obsolete
+- [x] every candidate value has a deliver-now, gated, withheld, or obsolete
       disposition
-- [ ] facade point/private behavior revision and exact applicability are
+- [x] facade point/private behavior revision and exact applicability are
       explicit
-- [ ] acceptance, effectiveness, and thought disclosure are not inferred from
+- [x] acceptance, effectiveness, and thought disclosure are not inferred from
       dispatch
-- [ ] Research 193 is promoted with a route/value deliver-now table
-- [ ] no production code, capability, guide, matrix, or compatibility claim
+- [x] Research 193 is promoted with a route/value deliver-now table
+- [x] no production code, capability, guide, matrix, or compatibility claim
       changes during evidence
-- [ ] `effigy validate:focused swallowtail-adapter-gemini` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-gemini` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 128 only when Research 193 admits at least one exact
 route/value row and preserves the current omission, rollover, restoration,

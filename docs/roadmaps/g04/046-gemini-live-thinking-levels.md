@@ -1,8 +1,9 @@
 # g04.046 Gemini Live Thinking Levels
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Depends on: per-route feature completion programme; g01.033; g04.045
 Vision tags: explicit selection, provider truth, realtime continuity
 Contract refs: 011, 027, 029, 037, 040, 050, 052
@@ -33,13 +34,13 @@ access boundary, rollover semantics, or claims beyond dispatch.
 
 ## Goals
 
-- [ ] freeze current official exact-model and Live-facade evidence for
+- [x] freeze current official exact-model and Live-facade evidence for
       `thinkingLevel`
-- [ ] classify exact portable mappings for
+- [x] classify exact portable mappings for
       `minimal|low|medium|high` and reject every other value without aliasing
-- [ ] prove that omitted selection retains the current exact `MINIMAL` setup
+- [x] prove that omitted selection retains the current exact `MINIMAL` setup
       frame while remaining distinct from an explicit caller selection
-- [ ] decide the exact opaque facade point and private behavior revision
+- [x] decide the exact opaque facade point and private behavior revision
 - [ ] bind only Research 193 deliver-now rows through typed prepared input,
       immutable plan/evidence, the realtime request, driver validation, and
       setup serialization
@@ -100,10 +101,10 @@ weakened to make the field fit.
 
 ### Batch 46.1 — Exact Model And Live-Facade Evidence
 
-- [ ] Execute card 127.
-- [ ] freeze current official model/Live documentation and exact current
+- [x] Execute card 127.
+- [x] freeze current official model/Live documentation and exact current
       route, setup, resume, and prepared-facade evidence
-- [ ] promote Research 193 with value, omission, continuity, version, and
+- [x] promote Research 193 with value, omission, continuity, version, and
       compatibility dispositions
 
 ### Batch 46.2 — Conditional Prepared Binding
@@ -159,7 +160,7 @@ weakened to make the field fit.
 
 ## Batch Cards
 
-- [127-gemini-live-thinking-level-evidence.md](batch-cards/127-gemini-live-thinking-level-evidence.md) — ready
+- [127-gemini-live-thinking-level-evidence.md](batch-cards/127-gemini-live-thinking-level-evidence.md) — complete
 - [128-gemini-live-thinking-level-binding.md](batch-cards/128-gemini-live-thinking-level-binding.md) — conditional
 - [129-gemini-live-thinking-level-acceptance.md](batch-cards/129-gemini-live-thinking-level-acceptance.md) — conditional
 

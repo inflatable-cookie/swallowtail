@@ -7,7 +7,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 | --- | --- | --- | --- |
 | `xai.responses-websocket` | `swallowtail-adapter-xai`; `swallowtail.xai.websocket` | `XaiPreparedResponsesRun`; `XaiPreparedResponsesSession` | Responses WebSocket; one bounded response without continuation, or serial text turns with private continuation and billed cost |
 | `openai.realtime` | `swallowtail-adapter-openai`; `swallowtail.openai.realtime` | `OpenAiPreparedRealtimeSession` | Realtime WebSocket; manual PCM input, audio/transcript output, native response cancellation |
-| `gemini.live` | `swallowtail-adapter-gemini`; `swallowtail.gemini.live` | `GeminiPreparedLiveSession` | Gemini Live raw WebSocket; asymmetric PCM, local interruption, one provider-planned rollover |
+| `gemini.live` | `swallowtail-adapter-gemini`; `swallowtail.gemini.live` | `GeminiPreparedLiveSession` | Gemini Live raw WebSocket; asymmetric PCM, local interruption, one provider-planned rollover, qualified thinking-level selection |
 
 They share provider-neutral prepared evidence. They do not share a connection
 constructor, turn method, cancellation claim, rollover policy, media format,
@@ -139,6 +139,27 @@ Generative Language `v1beta` WebSocket, exact
 - exactly one provider-planned connection rollover
 - optional operation deadline
 
+`GeminiLiveSessionProfileInput::with_reasoning_mode` adds one optional
+thinking level. The route admits exactly `minimal`, `low`, `medium`, and
+`high`, and maps them to the qualified setup values `MINIMAL`, `LOW`,
+`MEDIUM`, and `HIGH`. Every other value, including `off`, `default`, `xhigh`,
+`max`, and any numeric budget, is rejected before endpoint, credential, or
+socket work. Nothing is clamped, aliased, or substituted.
+
+The selection is fixed at preparation and immutable for the session: the same
+level is sent on the initial setup, on the one planned rollover setup, and on
+a fresh working-state restoration. Omitting the selection keeps the route's
+existing fixed setup bytes, which already carry `MINIMAL`, and claims no
+reasoning capability. An explicit `minimal` selection serializes identically
+but is a planned `ReasoningSelection` in the capability profile, plan, and
+prepared evidence.
+
+Swallowtail claims qualified dispatch only. The Live surface's setup
+acknowledgement carries no fields, so provider acceptance, effective reasoning
+depth, and thought-summary disclosure are not claimed or observable here.
+Thought summaries, `includeThoughts`, and `thinkingBudget` remain out of
+scope.
+
 Rollover uses only the latest in-memory resumable handle after provider
 `GoAway`, at an idle turn boundary, under the unchanged plan. It is not retry,
 unexpected reconnect, stream reattachment, consumer resume, or durable
@@ -195,8 +216,9 @@ The routes also expose no attachments, structured output, consumer callbacks,
 working resources, public load/resume, reconciliation, provider-session
 management, background execution, or cross-process stream reattachment. xAI
 reports billed cost and exposes the qualified text reasoning/output controls;
-OpenAI exposes the qualified Realtime output-token maximum; Gemini permits the
-planned rollover.
+OpenAI exposes the qualified Realtime output-token maximum and rejects a
+realtime reasoning selection before any endpoint or credential work; Gemini
+permits the planned rollover and the qualified thinking-level selection.
 
 ## Failures, Promotion, And Validation
 

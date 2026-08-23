@@ -172,3 +172,31 @@ fn invalid_media_request_rejects_before_access_or_connection() {
     assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
     assert!(fixture.server.frames().is_empty());
 }
+
+#[test]
+fn realtime_reasoning_selection_rejects_before_access_or_connection() {
+    let fixture = RealtimeFixture::new(RealtimeScenario::TwoTurns, TimeMode::Pending);
+    let error = block_on(
+        OpenAiRealtimeDriver::new().open_realtime_media_session(
+            fixture.plan(),
+            OpenRealtimeMediaSessionRequest::new(
+                RequestId::new("reasoning").expect("request id is valid"),
+                config(),
+                None,
+            )
+            .with_reasoning_mode(
+                swallowtail_core::ReasoningMode::new("low").expect("mode is valid"),
+            ),
+            fixture.services(),
+        ),
+    )
+    .err()
+    .expect("unsupported realtime reasoning is rejected");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.openai.realtime_preflight_rejected"
+    );
+    assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
+    assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
+    assert!(fixture.server.frames().is_empty());
+}

@@ -1,6 +1,6 @@
 # g04.046 Gemini Live Thinking Levels
 
-Status: active
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -44,11 +44,11 @@ access boundary, rollover semantics, or claims beyond dispatch.
 - [x] bind only Research 193 deliver-now rows through typed prepared input,
       immutable plan/evidence, the realtime request, driver validation, and
       setup serialization
-- [ ] retain the same selected level across initial setup, one planned
+- [x] retain the same selected level across initial setup, one planned
       rollover/resume setup, and fresh realtime working-state restoration
-- [ ] preserve media, transcription, activity, usage, cancellation, deadline,
+- [x] preserve media, transcription, activity, usage, cancellation, deadline,
       rollover, credential, socket, and joined-cleanup truth
-- [ ] publish only exact route-local dispatch truth
+- [x] publish only exact route-local dispatch truth
 
 ## Non-Goals
 
@@ -116,27 +116,27 @@ weakened to make the field fit.
 
 ### Batch 46.3 — Route-Local Acceptance
 
-- [ ] Execute card 129 only after card 128.
-- [ ] prove exact initial, rollover, restoration, omission, rejection, and
+- [x] Execute card 129 only after card 128.
+- [x] prove exact initial, rollover, restoration, omission, rejection, and
       unchanged lifecycle behavior
-- [ ] update route-local guidance and record the deferred shared closeout delta
+- [x] update route-local guidance and record the deferred shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 193 deliver-now values prepare
-- [ ] input, capability constraint, plan, evidence, request, driver, and every
+- [x] only Research 193 deliver-now values prepare
+- [x] input, capability constraint, plan, evidence, request, driver, and every
       setup frame agree exactly
-- [ ] omission preserves the current `MINIMAL` initial and resume setup bytes
-- [ ] unsupported and drifted selections fail before endpoint, credential, or
+- [x] omission preserves the current `MINIMAL` initial and resume setup bytes
+- [x] unsupported and drifted selections fail before endpoint, credential, or
       socket work
-- [ ] no value is clamped, aliased, substituted, inferred, retried, or routed
-- [ ] one planned rollover and fresh restoration retain the selected level
+- [x] no value is clamped, aliased, substituted, inferred, retried, or routed
+- [x] one planned rollover and fresh restoration retain the selected level
       without turning either path into retry or consumer resume
-- [ ] existing media, transcription, activity, usage, cancellation, deadline,
+- [x] existing media, transcription, activity, usage, cancellation, deadline,
       provider failure, and cleanup behavior remain intact
-- [ ] docs claim dispatch only; provider acceptance, effectiveness, and thought
+- [x] docs claim dispatch only; provider acceptance, effectiveness, and thought
       disclosure remain unclaimed
-- [ ] default QA uses no credential, account, provider request, or paid work
+- [x] default QA uses no credential, account, provider request, or paid work
 
 ## Lane Runway
 
@@ -162,7 +162,7 @@ weakened to make the field fit.
 
 - [127-gemini-live-thinking-level-evidence.md](batch-cards/127-gemini-live-thinking-level-evidence.md) — complete
 - [128-gemini-live-thinking-level-binding.md](batch-cards/128-gemini-live-thinking-level-binding.md) — complete
-- [129-gemini-live-thinking-level-acceptance.md](batch-cards/129-gemini-live-thinking-level-acceptance.md) — ready
+- [129-gemini-live-thinking-level-acceptance.md](batch-cards/129-gemini-live-thinking-level-acceptance.md) — complete
 
 ## References
 

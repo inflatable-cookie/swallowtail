@@ -13,8 +13,8 @@ use swallowtail_core::{
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, MediaFormat, ModelId,
     ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     PlannedConnectionRolloverPolicy, PreflightContext, ProtocolFacadeId, ProviderId,
-    RealtimeMediaConfig, RealtimeMediaRequirements, RuntimeReadiness, SessionAccessPolicy,
-    SessionProviderStatePolicy, SupportAuthority, preflight,
+    RealtimeMediaConfig, RealtimeMediaRequirements, ReasoningMode, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -116,9 +116,24 @@ impl LiveFixture {
     }
 
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {
+        self.plan_with_capabilities(capabilities())
+    }
+
+    pub fn plan_with_reasoning(&self, mode: &ReasoningMode) -> swallowtail_core::PreflightPlan {
+        let mut requirements = capabilities();
+        requirements.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+        self.plan_with_capabilities(requirements)
+    }
+
+    pub fn plan_with_capabilities(
+        &self,
+        requirements: Vec<CapabilityRequirement>,
+    ) -> swallowtail_core::PreflightPlan {
         let descriptor = gemini_live_descriptor();
         let access_id = AccessProfileId::new("gemini.authorization-api-key.project").unwrap();
-        let requirements = capabilities();
         let profile = CapabilityProfile::new(requirements.clone());
         let instance = ConfiguredInstance::new(
             ConfiguredInstanceId::new("gemini.public.live-preview").unwrap(),

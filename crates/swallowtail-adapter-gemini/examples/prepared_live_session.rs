@@ -4,7 +4,8 @@ use swallowtail_adapter_gemini::{
     GeminiLivePreparationInput, GeminiLivePreparedIntegration, GeminiLiveSessionProfileInput,
     GeminiPreparedLiveSession, prepare_gemini_live,
 };
-use swallowtail_runtime::{HostServices, PreparationFailure};
+use swallowtail_core::ReasoningMode;
+use swallowtail_runtime::{Deadline, HostServices, PreparationFailure, RequestId};
 
 fn prepare_integration(
     input: GeminiLivePreparationInput,
@@ -18,6 +19,15 @@ fn prepare_session(
     input: GeminiLiveSessionProfileInput,
 ) -> Result<GeminiPreparedLiveSession, PreparationFailure> {
     integration.prepare_live_session(input)
+}
+
+fn select_thinking_level(
+    request_id: RequestId,
+    deadline: Option<Deadline>,
+    mode: ReasoningMode,
+) -> GeminiLiveSessionProfileInput {
+    GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(request_id, deadline)
+        .with_reasoning_mode(mode)
 }
 
 fn main() {}

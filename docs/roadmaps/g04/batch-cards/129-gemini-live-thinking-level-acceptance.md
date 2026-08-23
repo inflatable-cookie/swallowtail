@@ -1,8 +1,9 @@
 # 129 Gemini Live Thinking-Level Acceptance
 
-Status: conditional; awaiting card 128
+Status: complete
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.046 Gemini Live Thinking Levels](../046-gemini-live-thinking-levels.md)
 Depends on: card 128
 
@@ -36,17 +37,17 @@ continuity behavior, then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted and rejected value has deterministic coverage
-- [ ] initial, rollover/resume, fresh restoration, and omission bytes are exact
-- [ ] default QA performs no credential, account, external request, provider
+- [x] every admitted and rejected value has deterministic coverage
+- [x] initial, rollover/resume, fresh restoration, and omission bytes are exact
+- [x] default QA performs no credential, account, external request, provider
       prompt, or paid work
-- [ ] docs distinguish requested, planned, and dispatched from accepted and
+- [x] docs distinguish requested, planned, and dispatched from accepted and
       effective reasoning
-- [ ] no thought-summary disclosure, numeric budget, sibling-route behavior,
+- [x] no thought-summary disclosure, numeric budget, sibling-route behavior,
       or compatibility point is inferred
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside the named code and route-local docs boundary
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside the named code and route-local docs boundary
+- [x] named gates pass
 
 ## Validation
 

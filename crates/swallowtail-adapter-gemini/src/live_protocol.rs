@@ -7,4 +7,6 @@ pub(crate) use handle::RolloverState;
 pub(crate) use server::{ServerEvent, parse_server_frame};
 
 #[cfg(test)]
+mod reasoning_tests;
+#[cfg(test)]
 mod tests;

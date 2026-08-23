@@ -20,10 +20,16 @@ macro_rules! fixture {
     };
 }
 
-fn expected(name: &str) -> Value {
+pub(super) fn expected(name: &str) -> Value {
     let bytes: &[u8] = match name {
         "client-setup-initial.json" => fixture!("client-setup-initial.json"),
         "client-setup-resume.json" => fixture!("client-setup-resume.json"),
+        "client-setup-thinking-low.json" => fixture!("client-setup-thinking-low.json"),
+        "client-setup-thinking-medium.json" => fixture!("client-setup-thinking-medium.json"),
+        "client-setup-thinking-high.json" => fixture!("client-setup-thinking-high.json"),
+        "client-setup-resume-thinking-high.json" => {
+            fixture!("client-setup-resume-thinking-high.json")
+        }
         "client-activity-start.json" => fixture!("client-activity-start.json"),
         "client-audio.json" => fixture!("client-audio.json"),
         "client-activity-end.json" => fixture!("client-activity-end.json"),

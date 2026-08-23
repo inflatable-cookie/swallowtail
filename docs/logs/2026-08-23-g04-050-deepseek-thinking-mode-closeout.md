@@ -1,6 +1,6 @@
 # 2026-08-23 g04.050 DeepSeek Thinking Mode Closeout
 
-Status: worker-complete
+Status: merged
 Owner: Tom
 Milestone: g04.050
 
@@ -23,19 +23,22 @@ later turns, restoration, and private replay remain enabled-only and unchanged.
 The facade, private behavior revision, model route, cache acceptance, and
 Contract 029 currentness claim did not change.
 
-Validation passed: focused package validation (45 tests), affected-package
-verification, examples, route QA, Northstar QA, research/log/roadmap index
-QA, next-action QA, package API, and `git diff --check`. No credentials,
-account state, live provider request, paid work, or merge was used.
+Worker validation passed: focused package validation (45 tests), affected-
+package verification, examples, route QA, Northstar QA, research/log/roadmap
+index QA, next-action QA, package API, and `git diff --check`. Exact-head CI
+passed after rerunning one unrelated Codex deadline fixture flake. No
+credentials, account state, live provider request, or paid work was used.
 
 PR: [#49](https://github.com/inflatable-cookie/swallowtail/pull/49).
 Implementation head at PR creation: `ac0378d6d5ce7f1a2cae4463d6606362a6a1e4a6`.
-Worker branch: `t3code/review-deepseek-thinking-handoff`. No merge performed;
-the final pushed head after this closeout record is reported by the worker.
+Worker branch: `t3code/review-deepseek-thinking-handoff`. PR 49 merged by exact
+fast-forward at `52413da0bcee940d006e800fa36fb111b156b8af`.
 
 ## Shared Closeout Delta
 
-Not applied by this worker. The orchestrator must decide any changes to shared
-architecture, Contract 029, route/feature matrices, programme/front-door
-indexes, changelog, the g04 generation boundary, and the sole Next Task
-pointer after review and merge.
+Applied after merge. Architecture, route/feature matrices, programme and index
+truth, changelog, and the promoted triage disposition now describe disabled
+structured runs and enabled-only continuation. Contract 029, the opaque facade,
+private behavior revision, model route, and currentness claim remain unchanged.
+g04 closes at 50 roadmaps. The sole Next Task opens g05 planning from the
+remaining promoted per-route inventory.

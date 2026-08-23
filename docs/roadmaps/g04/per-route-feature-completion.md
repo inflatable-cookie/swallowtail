@@ -120,16 +120,17 @@ families do not interrupt this programme by default.
   prior bytes; detachment and selected-tier restart reconciliation fail closed;
   returned-tier observation and all other values remain withheld.
 - [g04.050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md)
-  is ready as g04's final numbered roadmap. Research 197 and cards 139-141
-  qualify explicit `thinking.type=disabled` only for exact V4 Pro one-request
-  structured runs. Binding remains conditional; direct continuation stays
-  enabled-only because its bounded tool loop requires private reasoning replay.
+  is complete and merged through PR 49 at `52413da0`. Research 197 and cards
+  139-141 realize adapter-local explicit `thinking.type=disabled` only for
+  exact V4 Pro one-request structured runs, without a portable reasoning
+  selection. Direct continuation stays enabled-only because its bounded tool
+  loop requires private reasoning replay.
 
 ## Next Planning Boundary
 
-Execute g04.050 cards 139-141 serially. Card 139 must produce an exact
-Research 197 deliver-now set or honest stop before binding. After merge,
-reassess and close the g04 generation boundary.
+g04 is closed at 50 roadmaps. Open g05 planning by rechecking the remaining
+promoted inventory, selecting one coherent next route-local control family,
+and defining the new generation direction before compiling execution cards.
 
 ## Exclusions
 

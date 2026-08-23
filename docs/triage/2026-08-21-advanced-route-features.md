@@ -1363,3 +1363,17 @@ and does not enter this lane.
 g04.050 is the final numbered roadmap in g04. After its evidence, review,
 merge, and closeout, reassess and close the generation boundary rather than
 compiling g04.051.
+
+## DeepSeek Structured-Run Thinking-Mode Closeout (2026-08-23)
+
+g04.050 completed and merged through PR 49 at `52413da0`. Exact
+`deepseek-v4-pro` one-request structured runs now expose adapter-local
+`DeepSeekThinkingMode::disabled()`: requests send
+`thinking.type=disabled`, omit `reasoning_effort`, and carry no portable
+`ReasoningSelection`. Ordinary disabled responses remain available; non-null
+private `reasoning_content` fails closed. Enabled `low|high|max` runs and every
+direct-continuation path remain enabled-only and unchanged.
+
+This note remains the promoted inventory for g05 planning. g04 closes at 50
+roadmaps. The next planning pass must reassess the remaining rows and select one
+coherent route-local family before compiling cards; none is preselected here.

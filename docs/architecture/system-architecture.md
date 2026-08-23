@@ -1387,20 +1387,24 @@ compatible tool fields.
 DeepSeek preparation accepts only the exact `https://api.deepseek.com` target,
 `api.deepseek.com` Open Platform API-key profile, dated OpenAI facade, and
 `deepseek-v4-pro` route. Catalogue stays route-free. Run preparation requires
-exact `low`, `high`, or `max` reasoning, an explicit output bound, and
-acceptance of unmanaged provider caching; it emits one tool-free request and
-retains no continuation. Session preparation requires the same exact reasoning
-selection,
+an explicit output bound, acceptance of unmanaged provider caching, and either
+exact enabled `low`, `high`, or `max` reasoning or adapter-local disabled
+thinking. Enabled runs emit `thinking.type=enabled` with the selected
+`reasoning_effort`; disabled runs emit `thinking.type=disabled`, omit
+`reasoning_effort`, carry no portable `ReasoningSelection`, and fail closed if
+the response contains non-null private `reasoning_content`. Both forms emit one
+tool-free request and retain no continuation. Session preparation requires an
+exact enabled reasoning selection,
 consumer-declared tools, and explicit acceptance of provider-managed cache
 without management authority. Opening returns the existing direct-
 continuation session. Each user turn authorizes its first attempt; only
 correlated tool-result submission authorizes another. Private reasoning
 replay and the fixed selected effort continue through every attempt and fresh
-restoration. Thinking stays fixed to `enabled`; `medium`, `xhigh`, aliases, and
-thinking disable reject before effects. Attempt bounds, cancellation, deadline,
-zeroization, and credential-last cleanup remain in the low-level driver. Shared
-JSON and SSE structure creates no cross-provider model, credential, lifecycle,
-or fallback path.
+restoration. Direct continuation stays fixed to `enabled`; `medium`, `xhigh`,
+aliases, and disabled session composition reject before effects. Attempt
+bounds, cancellation, deadline, zeroization, and credential-last cleanup remain
+in the low-level driver. Shared JSON and SSE structure creates no cross-provider
+model, credential, lifecycle, or fallback path.
 
 Alibaba Model Studio now adds a prepared provider-conversation surface over
 the existing Singapore workspace driver. Preparation binds the exact regional

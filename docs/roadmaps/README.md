@@ -5,7 +5,8 @@ shape.
 
 ## Current Generation
 
-- [g04 Route Readiness And Connection Admission](g04/README.md) — active
+- No active generation — g05 planning is the next task
+- [g04 Route Readiness And Connection Admission](g04/README.md) — completed
 - [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — completed
 - [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
 - [g01 Swallowtail Foundation](g01/README.md) — completed
@@ -14,11 +15,11 @@ shape.
 
 ## Next Task
 
-Execute g04.050 DeepSeek structured-run thinking mode cards 139-141 serially in
-one isolated worker lane. Card 139 must promote Research 197 with an exact
-deliver-now set or honest stop before conditional cards 140-141 execute. Direct
-continuation remains enabled-only. After merge closeout, reassess and close the
-g04 generation boundary. Contract 029 currentness stays standing.
+Open g05 planning from the remaining promoted per-route feature inventory.
+Recheck current route, contract, and official-source truth; select one coherent
+next control family, define the generation direction, and compile only its
+first evidence-led roadmap and cards. New route families remain de-prioritized.
+Contract 029 currentness stays standing.
 
 ## Standing Lanes
 
@@ -39,7 +40,7 @@ first standing lane. It does not keep a generation open.
   facade, activity, compatibility, and lifecycle generation
 - [g03/README.md](g03/README.md) — completed compatibility-maintenance and
   consumer-proven hardening generation
-- [g04/README.md](g04/README.md) — active route-readiness and
+- [g04/README.md](g04/README.md) — completed route-readiness and
   connection-admission generation
 
 ## Generation Shape

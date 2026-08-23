@@ -11,7 +11,7 @@ Updated: 2026-08-23
 | `g01` | completed | Standalone authority, runtime kernel, integration landscape, representative drivers, consumer adoption, compatibility foundations, and broad provider coverage. |
 | `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
 | `g03` | completed | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
-| `g04` | active | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
+| `g04` | completed | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
 
 ## Generation Size
 
@@ -30,12 +30,11 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 resets roadmap and batch-card numbering. Its sequencing baseline is route
-readiness and connection admission for consuming applications. It begins with
-a repository-local inventory of existing Swallowtail records against the
-consumer connection lifecycle. It does not imply a connection server,
-credential store, UI, router, or implementation before evidence and operator
-decisions agree.
+g04 closed at 50 roadmaps: 46 completed milestones and four honest evidence
+stops. It realized route readiness and connection admission, widened proved
+addable coverage, added the Pi SDK sidecar, requalified Gemini CLI enterprise
+API-key access, and established the per-route feature completion programme.
+That programme remains available for g05 planning; it does not keep g04 open.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
@@ -43,13 +42,9 @@ goal and does not keep g04 or any later generation open. See
 
 ## Rollover Rule
 
-g04 should normally run for 30-50 roadmaps. It has 45 numbered roadmaps:
-001-039, 041, and 044 are complete; 040, 042, and 043 stopped after their
-evidence gates; 045 is planned. The next task is to execute g04.045's exact
-Claude Code headless structured-output evidence gate and only its conditional
-binding runway. A completed readiness tranche or standing currentness does not
-create a new generation. Rollover requires a substantial run, clean
-disposition of unfinished work, and an explicit sequencing reset.
+g04 reached the normal 30-50 roadmap boundary and is closed. g05 does not yet
+have a selected direction or compiled roadmap. Open it through the sole Next
+Task pointer after reassessing the remaining promoted per-route inventory.
 
 
 ## Next Task

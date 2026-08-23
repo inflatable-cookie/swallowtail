@@ -2,14 +2,15 @@
 
 ## Planned
 
-- [141-deepseek-structured-run-thinking-mode-acceptance.md](./141-deepseek-structured-run-thinking-mode-acceptance.md) — conditional on card 140
-- [140-deepseek-structured-run-thinking-mode-binding.md](./140-deepseek-structured-run-thinking-mode-binding.md) — conditional on a non-empty Research 197 deliver-now set
-- [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md) — ready
+None. g04 is closed.
 
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [141-deepseek-structured-run-thinking-mode-acceptance.md](./141-deepseek-structured-run-thinking-mode-acceptance.md)
+- [140-deepseek-structured-run-thinking-mode-binding.md](./140-deepseek-structured-run-thinking-mode-binding.md)
+- [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md)
 - [138-openai-background-service-tier-acceptance.md](./138-openai-background-service-tier-acceptance.md)
 - [137-openai-background-service-tier-binding.md](./137-openai-background-service-tier-binding.md)
 - [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md)
@@ -138,10 +139,6 @@ Cards 070-071 remain unused gaps, not tasks.
 - [003-first-route-readiness-tranche-selection.md](./003-first-route-readiness-tranche-selection.md)
 - [002-route-readiness-gap-and-contract-fit.md](./002-route-readiness-gap-and-contract-fit.md)
 - [001-route-readiness-surface-inventory.md](./001-route-readiness-surface-inventory.md)
-
-## Active
-
-- [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md) — ready; cards 140-141 remain conditional
 
 ## Blocked
 

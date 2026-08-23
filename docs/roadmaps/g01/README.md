@@ -3,7 +3,7 @@
 Status: completed
 Owner: Tom
 Updated: 2026-07-24
-Disposition: closed at 49 roadmaps; g04 active
+Disposition: closed at 49 roadmaps; g04 completed; g05 planning next
 
 ## Purpose
 

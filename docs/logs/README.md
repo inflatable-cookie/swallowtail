@@ -12,7 +12,7 @@ cluster by delivery generation:
 - **g01** — foundation: contract kernel, runtime records, Codex proof drivers
 - **g02** — stabilization: provider-wide prepared facades, activity,
   compatibility, lifecycle, and release discipline
-- **g04** — active: route readiness, connection admission, and consumer-driven
+- **g04** — completed: route readiness, connection admission, and consumer-driven
   model selection
 - **g03** — completed: compatibility maintenance and consumer-proven hardening
 
@@ -23,8 +23,9 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04 Generation Closeout](./2026-08-23-g04-generation-closeout.md)
 - [2026-08-23 g04.050 DeepSeek Thinking Mode Compiled](./2026-08-23-g04-050-deepseek-thinking-mode-compiled.md)
-- [2026-08-23 g04.050 DeepSeek Thinking Mode Closeout](./2026-08-23-g04-050-deepseek-thinking-mode-closeout.md) — reserved
+- [2026-08-23 g04.050 DeepSeek Thinking Mode Closeout](./2026-08-23-g04-050-deepseek-thinking-mode-closeout.md) — merged through PR 49 at `52413da0`
 - [2026-08-23 g04.049 OpenAI Background Service Tier Merged](./2026-08-23-g04-049-openai-background-service-tier-merged.md)
 - [2026-08-23 g04.049 OpenAI Background Service Tier Compiled](./2026-08-23-g04-049-openai-background-service-tier-compiled.md)
 - [2026-08-23 g04.049 OpenAI Background Service Tier Closeout](./2026-08-23-g04-049-openai-background-service-tier-closeout.md) — merged through PR 48 at `06c00e6c`

@@ -1,8 +1,9 @@
 # g04 Route Readiness And Connection Admission
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-19
+Disposition: closed at 50 roadmaps; g05 planning next
 
 ## Purpose
 
@@ -33,7 +34,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | completed | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
+| Establish and execute the first official per-route feature tranche one route and one control family at a time. | completed | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
 
 ## Planned Next Roadmaps
 
@@ -64,12 +65,11 @@ and selection policy.
 - [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [g04.048 Gemini Live Context-Window Compression](048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
-- [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — ready, cards 139-141
+- [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 
-Do not roll over during execution: 50 numbered roadmaps exist; 001-039, 041,
-044, and 046-049 are complete; 040, 042, 043, and 045 stopped after their
-evidence gates; 050 is ready. Reassess and close the generation boundary only
-after g04.050 evidence, review, merge, and closeout.
+g04 closes at 50 numbered roadmaps: 46 completed milestones and four honest
+evidence stops at 040, 042, 043, and 045. Remaining per-route feature work
+crosses the generation boundary only after g05 planning selects its direction.
 
 ## Current Checkpoint
 
@@ -152,13 +152,13 @@ after g04.050 evidence, review, merge, and closeout.
   ordinary attached runs and one in-process reattachment; omission preserves
   prior bytes, detachment and selected-tier restart reconciliation fail closed,
   and returned-tier truth remains unclaimed
-- g04.050 is compiled as the final g04 roadmap: Research 197 and cards 139-141
-  qualify explicit DeepSeek V4 Pro non-thinking mode for one-request structured
-  runs; direct continuation remains enabled-only and binding is conditional on
-  card 139's exact deliver-now set
+- g04.050 is on `main` at `52413da0` through PR 49: Research 197 and cards
+  139-141 realize adapter-local explicit `thinking.type=disabled` for exact
+  DeepSeek V4 Pro one-request structured runs; enabled reasoning and every
+  direct-continuation path remain enabled-only
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- Generation stays active. Rollover waits for 30-50 roadmaps
+- g04 is closed at 50 roadmaps; g05 has not yet been opened or compiled
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -187,9 +187,11 @@ after g04.050 evidence, review, merge, and closeout.
     window-compression dispatch and merged through PR 47 at `47848056`.
 12. g04.049 cards 136-138 delivered dispatch-only OpenAI Background
     `service_tier: "default"` and merged through PR 48 at `06c00e6c`.
-13. g04.050 is compiled as the final roadmap in g04. Execute cards 139-141
-    serially, then reassess and close the generation boundary after merge.
-    Contract 029 currentness remains standing.
+13. g04.050 cards 139-141 delivered exact adapter-local disabled thinking for
+    DeepSeek V4 Pro one-request structured runs and merged through PR 49 at
+    `52413da0`; direct continuation remains enabled-only.
+14. g04 closes at 50 roadmaps. Open g05 through a planning reassessment of the
+    remaining promoted per-route inventory. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -211,7 +213,7 @@ New route-family research does not pre-empt this sequence.
 - [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [049 OpenAI Background Service Tier](./049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
-- [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — ready, cards 139-141
+- [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

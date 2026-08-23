@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed DeepSeek V4 Pro adapter-local non-thinking selection for one-request
+  structured runs: `DeepSeekThinkingMode::disabled()` dispatches exact
+  `thinking.type=disabled`, omits `reasoning_effort`, and carries no portable
+  `ReasoningSelection`; ordinary responses remain available while unexpected
+  private `reasoning_content` fails closed, and every direct-continuation path
+  remains enabled-only; Research 197, g04.050
 - add typed OpenAI Background adapter-local standard service-tier selection:
   `OpenAiBackgroundServiceTier::standard()` dispatches exact Responses
   `service_tier: "default"` on ordinary attached runs and one in-process
@@ -59,9 +65,10 @@ annotated Git tags from the canonical repository.
   effort; Research 185, g04.037
 - add exact DeepSeek V4 Pro reasoning selection for `low`, `high`, and `max`
   across structured runs, tool continuation, later turns, and fresh local
-  restoration; `thinking.type` remains fixed to `enabled`, private reasoning
-  replay remains adapter-held, and dispatch does not claim provider acceptance
-  or effective depth; Research 186, g04.038
+  restoration; the reasoning-selected path and all direct continuation remain
+  fixed to `thinking.type=enabled`, private reasoning replay remains adapter-
+  held, and dispatch does not claim provider acceptance or effective depth;
+  Research 186, g04.038
 - add typed Ollama adapter-local context-window selection (`OllamaContextWindow`,
   `with_context_window`) on structured inference and interactive session
   profiles, with Research 184 positive-domain dispatch of `options.num_ctx`

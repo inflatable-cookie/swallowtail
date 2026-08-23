@@ -1,6 +1,6 @@
 # 2026-08-23 g04.051 Qwen Headless Budgets Closeout
 
-Status: worker-complete; awaiting review
+Status: merged
 Owner: Tom
 Milestone: g04.051
 
@@ -45,23 +45,20 @@ paid work was used.
 PR: [#50](https://github.com/inflatable-cookie/swallowtail/pull/50).
 Implementation commit: `87a59f8a879ebc92c66ce094332645da99308524`.
 Worker branch: `t3code/follow-qwen-headless-budgets-handoff`.
-No merge was performed.
+Review requested and received the focused test split before approval. The
+branch was restacked onto current `main`; all five exact-head CI jobs passed.
+PR 50 fast-forwarded to `main` at `9807e322eb86aad453e03c3b4de4059ec11b9364`.
 
 ## Shared Closeout Delta
 
-Orchestrator after merge; this worker did not apply it.
+The orchestrator applied the shared closeout after merge:
 
-- architecture: record adapter-local Qwen `0.21.15` caller-decreasing turn/tool
-  budgets on `qwen.headless`
-- Contract 029: currentness range unchanged; optional feature-local name
-  `qwen-code.headless.v0.21.15-turn-tool-budgets` if the claim should record
-  the exact-version gate
-- route and feature matrices: selected turns `1..=24`, tools `0..=16`,
-  omission `24` / `16`, wall time `60s`
-- per-route feature programme: close this Qwen budget family
-- research/log/roadmap/g04/batch-card indexes: Research 198 promoted; cards
-  142-144 complete; g04.051 complete at the merged head
-- `CHANGELOG.md`: unreleased `swallowtail-adapter-qwen` budget types
-- `docs/roadmaps/README.md` Next Task: reassess remaining per-route inventory
-  inside g04; keep g04 open until explicit operator direction
-- do not close or roll g04
+- architecture and route/feature matrices record the exact adapter-local
+  Qwen `0.21.15` budgets, omission, and child-local counter lifetime
+- Contract 029 currentness range and existing exact `0.21.15` behavior point
+  remain unchanged; this adapter-local addition does not create another claim
+- the programme and research/log/roadmap/g04/batch-card indexes close Research
+  198, cards 142-144, and g04.051 at the merged head
+- `CHANGELOG.md` records the unreleased `swallowtail-adapter-qwen` budget types
+- the sole Next Task pointer returns to remaining per-route inventory triage
+- g04 remains active and unrolled at explicit operator direction

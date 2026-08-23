@@ -110,7 +110,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [195 Gemini Live Context-Window-Compression Evidence](./195-gemini-live-context-window-compression-evidence.md) — promoted through g04.048; exact default-only sliding-window setup dispatch delivered, explicit numeric forms withheld
 - [196 OpenAI Background Service-Tier Evidence](./196-openai-background-service-tier-evidence.md) — promoted through g04.049; explicit `default` dispatch delivered on ordinary attached and one-reattachment profiles, other values and returned-tier observation withheld
 - [197 DeepSeek Structured-Run Thinking-Mode Evidence](./197-deepseek-structured-run-thinking-mode-evidence.md) — promoted through g04.050; exact V4 Pro one-request structured runs admit adapter-local disabled thinking while direct continuation remains enabled-only
-- [198 Qwen Headless Turn And Tool Budget Evidence](./198-qwen-headless-turn-and-tool-budget-evidence.md) — reserved for g04.051 card 142
+- [198 Qwen Headless Turn And Tool Budget Evidence](./198-qwen-headless-turn-and-tool-budget-evidence.md) — promoted through g04.051; exact Qwen Code `0.21.15` caller-decreasing turn `1..=24` and tool-call `0..=16` budgets delivered across every child shape
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

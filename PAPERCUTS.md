@@ -5,16 +5,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
-### [ ] Qwen budget proof raises the god-file error baseline — 2026-08-23
-- Friction: PR 50 adds a 441-line `prepared_facade/budgets.rs`, raising doctor
-  findings from 376 to 377 and error-level findings from 46 to 47 while the
-  worker closeout reports the inherited baseline unchanged.
-- Impact: the feature proof leaves structural health worse and records false
-  validation evidence for later review and closeout.
-- Fix: split run/version/terminal and session/replacement budget proofs into
-  focused test modules, then record the actual unchanged baseline.
-- Surface: `swallowtail-adapter-qwen` prepared-facade budget acceptance tests.
-
 ### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,
   `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above
@@ -116,6 +106,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: DeepSeek driver cancellation test; tag CI Stable job.
 
 ## Closed
+
+### [x] Qwen budget proof raises the god-file error baseline — 2026-08-23
+- Friction: PR 50 added a 441-line `prepared_facade/budgets.rs`, raising doctor
+  findings from 376 to 377 and error-level findings from 46 to 47 while the
+  worker closeout reported the inherited baseline unchanged.
+- Impact: the feature proof left structural health worse and recorded false
+  validation evidence for later review and closeout.
+- Fix: split run/version/terminal and session/replacement budget proofs into
+  focused modules; the reviewed head restored 376 findings (330 warning / 46
+  error) and fast-forwarded through PR 50 at `9807e322`.
+- Surface: `swallowtail-adapter-qwen` prepared-facade budget acceptance tests.
 
 ### [x] Worker-local environment file dirties the planning checkout — 2026-08-21
 - Friction: `.agents.local.env` is an intended machine-local worktree-path

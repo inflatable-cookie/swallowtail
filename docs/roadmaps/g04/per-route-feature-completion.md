@@ -126,17 +126,16 @@ families do not interrupt this programme by default.
   selection. Direct continuation stays enabled-only because its bounded tool
   loop requires private reasoning replay.
 - [g04.051 Qwen Headless Turn And Tool Budgets](./051-qwen-headless-turn-and-tool-budgets.md)
-  is ready. Research 198 and cards 142-144 first gate, then conditionally bind,
-  exact Qwen Code `0.21.15` caller-decreasing turn/tool budgets across runs and
-  every turn child. Omission preserves `24` / `16`; wall time and tool
-  permissions remain fixed.
+  is complete and merged through PR 50 at `9807e322`. Research 198 and cards
+  142-144 realize exact Qwen Code `0.21.15` caller-decreasing turn budgets
+  `1..=24` and tool-call budgets `0..=16` across runs and every turn child.
+  Omission preserves `24` / `16`; wall time and tool permissions remain fixed.
 
 ## Next Planning Boundary
 
-Execute g04.051 cards 142-144 serially. Card 142 may close with an honest
-Research 198 evidence stop; cards 143-144 require a non-empty exact deliver-now
-set. After review and merge, reassess the remaining promoted inventory. Keep
-g04 active until explicit operator direction.
+Reassess the remaining promoted per-route inventory and compile the next
+bounded feature family only after selecting its exact transport and control
+boundary. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

@@ -428,7 +428,11 @@ OpenHands adds a package without a production route.
   portable `low|medium|high|xhigh|max` reasoning for `qwen3.8-max` and
   `qwen3.8-max-preview` through a bounded private `initialize` then
   `set_effort` control exchange before the user message; earlier behavior
-  segments do not inherit that capability. Its separate safe-mode stream-JSON
+  segments do not inherit that capability. The same exact package also admits
+  adapter-local caller-decreasing session-turn budgets `1..=24` and tool-call
+  budgets `0..=16`; omission keeps `24` / `16`, and each structured-run,
+  first-turn, resumed-turn, or fresh-replacement child owns a new process-local
+  counter. Its separate safe-mode stream-JSON
   control operation verifies and calls `get_available_models`, then closes and
   joins the ephemeral child without opening a model session. The `0.21.0`
   segment records upstream filtering of image-only catalogue entries

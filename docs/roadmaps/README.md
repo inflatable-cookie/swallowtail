@@ -14,13 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.051 cards 142-144 serially in one worker lane. Card 142 must first
-promote Research 198 with exact Qwen Code `0.21.15` turn/tool-budget,
-child-lifetime, and terminal truth. Continue to cards 143-144 only for a non-
-empty deliver-now set; an evidence stop is valid. After review and merge,
-reconcile g04.051 and reassess the remaining per-route inventory. Keep g04
-open until explicit operator direction. Contract 029 currentness stays
-standing.
+Reassess the remaining per-route feature inventory and select the next exact
+transport/control family before compiling another bounded lane. Keep g04 open
+until explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

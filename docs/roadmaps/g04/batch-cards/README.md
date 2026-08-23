@@ -2,14 +2,16 @@
 
 ## Planned
 
-- [142-qwen-headless-turn-and-tool-budget-evidence.md](./142-qwen-headless-turn-and-tool-budget-evidence.md) — ready
-- [143-qwen-headless-turn-and-tool-budget-binding.md](./143-qwen-headless-turn-and-tool-budget-binding.md) — conditional on Research 198
-- [144-qwen-headless-turn-and-tool-budget-acceptance.md](./144-qwen-headless-turn-and-tool-budget-acceptance.md) — conditional on card 143
+None. Reassess the remaining per-route inventory before compiling another
+bounded family.
 
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [144-qwen-headless-turn-and-tool-budget-acceptance.md](./144-qwen-headless-turn-and-tool-budget-acceptance.md)
+- [143-qwen-headless-turn-and-tool-budget-binding.md](./143-qwen-headless-turn-and-tool-budget-binding.md)
+- [142-qwen-headless-turn-and-tool-budget-evidence.md](./142-qwen-headless-turn-and-tool-budget-evidence.md)
 - [141-deepseek-structured-run-thinking-mode-acceptance.md](./141-deepseek-structured-run-thinking-mode-acceptance.md)
 - [140-deepseek-structured-run-thinking-mode-binding.md](./140-deepseek-structured-run-thinking-mode-binding.md)
 - [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md)

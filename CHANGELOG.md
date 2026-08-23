@@ -7,6 +7,13 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed exact-Qwen-Code-`0.21.15` caller-decreasing headless budgets:
+  `QwenSessionTurnBudget` admits `1..=24` and `QwenToolCallBudget` admits
+  `0..=16` across structured runs, first and resumed turns, and fresh
+  replacement children; omission preserves `--max-session-turns 24` and
+  `--max-tool-calls 16`, the fixed 60-second wall bound and tool policy remain
+  unchanged, and the process-local counters reset for every child; Research
+  198, g04.051
 - add typed DeepSeek V4 Pro adapter-local non-thinking selection for one-request
   structured runs: `DeepSeekThinkingMode::disabled()` dispatches exact
   `thinking.type=disabled`, omits `reasoning_effort`, and carries no portable

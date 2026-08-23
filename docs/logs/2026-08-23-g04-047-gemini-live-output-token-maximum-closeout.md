@@ -5,7 +5,8 @@ Owner: Tom
 Milestone: g04.047
 Cards: 130-132
 Research: 194
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/46
+Head: `dc6037b259aeffea327452e588c27d82b13a44b1`
 
 ## Outcome
 
@@ -66,4 +67,6 @@ orchestrator should apply:
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-3e5e8041`
 - branch: `t3code/review-gemini-live-output-maximum`
 - planning base ancestor: `c51e3e9898c6ea08e217d0d981d2b982e0a5590b`
+- evidence commit: `8d3717a010ea496c7f231fd6f4e576dfd4d05c9f`
+- binding/acceptance commit: `dc6037b259aeffea327452e588c27d82b13a44b1`
 - worker does not merge

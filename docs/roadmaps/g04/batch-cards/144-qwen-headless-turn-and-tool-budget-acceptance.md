@@ -98,8 +98,11 @@ latency, billing, or operation-wide counting.
 Named validation passed in the worker worktree: focused package validation
 (55 tests), affected-package verification, examples, route QA, Northstar QA,
 research/log/roadmap indexes, next-action QA, package API, and diff checks.
-No credentials, account state, live provider request, paid work, or merge was
-used. The worker PR is [#50](https://github.com/inflatable-cookie/swallowtail/pull/50), opened
+Review requested a split of `tests/prepared_facade/budgets.rs`; coverage is
+unchanged in `budget_runs.rs` and `budget_sessions.rs`. `effigy doctor`
+after the split matches the inherited 376 god-file findings (330 warn / 46
+err) plus generated-in-src. No credentials, account state, live provider
+request, paid work, or merge was used. The worker PR is [#50](https://github.com/inflatable-cookie/swallowtail/pull/50), opened
 from `t3code/follow-qwen-headless-budgets-handoff` at implementation commit
 `87a59f8a879ebc92c66ce094332645da99308524`; no merge was performed.
 

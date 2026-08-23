@@ -34,5 +34,7 @@ include!("prepared_facade/reasoning_rejections.rs");
 include!("prepared_facade/sessions.rs");
 include!("prepared_facade/reasoning_sessions.rs");
 include!("prepared_facade/budgets.rs");
+include!("prepared_facade/budget_runs.rs");
+include!("prepared_facade/budget_sessions.rs");
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/support.rs");

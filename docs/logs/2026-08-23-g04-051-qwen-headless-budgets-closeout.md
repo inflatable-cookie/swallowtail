@@ -34,10 +34,13 @@ Contract 029 edit landed here.
 
 Worker validation passed: focused package validation (55 tests), affected-
 package verification, examples, route QA, Northstar QA, research/log/roadmap
-index QA, next-action QA, package API, and `git diff --check`. No credentials,
-account state, live provider request, or paid work was used. Doctor baseline
-remains inherited: 376 god-file findings (330 warn / 46 err) plus
-generated-in-src.
+index QA, next-action QA, package API, and `git diff --check`. Review
+requested a split of `tests/prepared_facade/budgets.rs`; run/version/terminal
+proofs now live in `budget_runs.rs` and session/replacement proofs in
+`budget_sessions.rs`. `effigy doctor` after that split reproduces the
+inherited baseline: 376 god-file findings (330 warn / 46 err) plus
+generated-in-src. No credentials, account state, live provider request, or
+paid work was used.
 
 PR: [#50](https://github.com/inflatable-cookie/swallowtail/pull/50).
 Implementation commit: `87a59f8a879ebc92c66ce094332645da99308524`.

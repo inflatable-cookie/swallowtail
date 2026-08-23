@@ -125,7 +125,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-No cards are currently planned. g04.046 compilation owns the next selection.
+- [129-gemini-live-thinking-level-acceptance.md](./129-gemini-live-thinking-level-acceptance.md) — conditional on card 128
+- [128-gemini-live-thinking-level-binding.md](./128-gemini-live-thinking-level-binding.md) — conditional on a non-empty Research 193 deliver-now set
+- [127-gemini-live-thinking-level-evidence.md](./127-gemini-live-thinking-level-evidence.md) — ready
 
 ## Blocked
 

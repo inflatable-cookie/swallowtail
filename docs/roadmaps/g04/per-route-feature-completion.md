@@ -95,13 +95,18 @@ families do not interrupt this programme by default.
   deliver-now row because runtime linkage, the full keyword subset, an
   immutable retry bound, and valid terminal/lifecycle truth remain unqualified.
   Cards 125-126 are blocked and no schema capability shipped.
+- [g04.046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md)
+  is planned. Research 193 and cards 127-129 will qualify exact
+  `minimal|low|medium|high` selection on fixed model
+  `gemini-3.1-flash-live-preview`, preserving current `MINIMAL` omission bytes
+  and one-rollover/restoration truth. Binding remains conditional on card 127.
 
 ## Next Planning Boundary
 
-Compile g04.046 by rechecking the remaining promoted inventory against current
-production-route and contract truth, then select one coherent route-local
-control family. Do not start implementation or select a release inside the
-compilation lane.
+Execute g04.046 cards 127-129 serially. Card 127 owns exact model/facade,
+value, omission, continuity, and Contract 029 evidence. Cards 128-129 proceed
+only for Research 193 deliver-now rows. Do not widen into budgets, compression,
+thought summaries, other Gemini routes/models, or live work.
 
 ## Exclusions
 

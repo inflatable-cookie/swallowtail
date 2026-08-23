@@ -1173,3 +1173,23 @@ The remaining promoted inventory stays selection input. Compile g04.046 by
 rechecking current production-route and contract truth, then select one
 coherent route-local control family. No implementation card or provider/control
 is preselected by this closeout.
+
+## Gemini Live Thinking-Level Selection (2026-08-23)
+
+The reassessment selects caller-selectable thinking levels on `gemini.live`
+for [`g04.046`](../roadmaps/g04/046-gemini-live-thinking-levels.md). The exact
+production route already fixes `gemini-3.1-flash-live-preview`, hosted
+`v1beta` raw WebSocket, project authorization API-key access, manual PCM,
+output transcription, and one provider-planned rollover. Its current initial
+and resume setup fixtures already send `thinkingLevel=MINIMAL`, but the route
+does not expose or claim caller reasoning selection.
+
+Current official exact-model and Live API documentation lists Thinking and
+`minimal|low|medium|high` on this model. Research 193 and cards 127-129 form
+one serial evidence-first lane. Card 127 must freeze exact facade/model/field
+truth, preserve omission bytes, prove rollover/restoration stability, and
+select a Contract 029 point before cards 128-129 may bind anything.
+
+`thinkingBudget`, context compression, `includeThoughts`, thought summaries,
+another Gemini route/model, consumer login, and live provider work stay out of
+scope. No later feature family is selected by this compilation.

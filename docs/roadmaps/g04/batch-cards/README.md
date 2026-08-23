@@ -2,7 +2,7 @@
 
 ## Planned
 
-None. g04 is closed.
+None. g04 remains active with no next card compiled.
 
 Cards 070-071 remain unused gaps, not tasks.
 

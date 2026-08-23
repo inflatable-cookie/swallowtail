@@ -128,9 +128,10 @@ families do not interrupt this programme by default.
 
 ## Next Planning Boundary
 
-g04 is closed at 50 roadmaps. Open g05 planning by rechecking the remaining
-promoted inventory, selecting one coherent next route-local control family,
-and defining the new generation direction before compiling execution cards.
+Keep g04 active. Recheck the remaining promoted inventory and present one
+coherent next route-local control family for operator selection before
+compiling another roadmap. Do not close the generation without explicit
+operator direction.
 
 ## Exclusions
 

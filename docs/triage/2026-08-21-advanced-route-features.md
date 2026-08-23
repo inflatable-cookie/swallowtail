@@ -1374,6 +1374,7 @@ g04.050 completed and merged through PR 49 at `52413da0`. Exact
 private `reasoning_content` fails closed. Enabled `low|high|max` runs and every
 direct-continuation path remain enabled-only and unchanged.
 
-This note remains the promoted inventory for g05 planning. g04 closes at 50
-roadmaps. The next planning pass must reassess the remaining rows and select one
-coherent route-local family before compiling cards; none is preselected here.
+This note remains the promoted inventory for active g04 planning. The next pass
+must reassess the remaining rows and present one coherent route-local family
+for operator selection before compiling cards. No family is preselected and
+the generation remains open.

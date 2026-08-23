@@ -40,5 +40,6 @@ Applied after merge. Architecture, route/feature matrices, programme and index
 truth, changelog, and the promoted triage disposition now describe disabled
 structured runs and enabled-only continuation. Contract 029, the opaque facade,
 private behavior revision, model route, and currentness claim remain unchanged.
-g04 closes at 50 roadmaps. The sole Next Task opens g05 planning from the
-remaining promoted per-route inventory.
+g04 remains active at 50 roadmaps. The sole Next Task reassesses the remaining
+promoted per-route inventory inside g04; generation closure waits for explicit
+operator direction.

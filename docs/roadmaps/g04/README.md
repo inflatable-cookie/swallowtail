@@ -1,9 +1,8 @@
 # g04 Route Readiness And Connection Admission
 
-Status: completed
+Status: active
 Owner: Tom
 Created: 2026-08-19
-Disposition: closed at 50 roadmaps; g05 planning next
 
 ## Purpose
 
@@ -34,7 +33,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | completed | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Establish and execute the first official per-route feature tranche one route and one control family at a time. | completed | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
+| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
 
 ## Planned Next Roadmaps
 
@@ -67,9 +66,10 @@ and selection policy.
 - [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
 - [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 
-g04 closes at 50 numbered roadmaps: 46 completed milestones and four honest
-evidence stops at 040, 042, 043, and 045. Remaining per-route feature work
-crosses the generation boundary only after g05 planning selects its direction.
+g04 has 50 numbered roadmaps: 46 completed milestones and four honest evidence
+stops at 040, 042, 043, and 045. The generation remains active at operator
+direction. Reassess the remaining promoted inventory before compiling another
+roadmap or closing the generation.
 
 ## Current Checkpoint
 
@@ -158,7 +158,8 @@ crosses the generation boundary only after g05 planning selects its direction.
   direct-continuation path remain enabled-only
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 is closed at 50 roadmaps; g05 has not yet been opened or compiled
+- g04 remains active at 50 roadmaps; no g04.051 is compiled and generation
+  closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -190,8 +191,9 @@ crosses the generation boundary only after g05 planning selects its direction.
 13. g04.050 cards 139-141 delivered exact adapter-local disabled thinking for
     DeepSeek V4 Pro one-request structured runs and merged through PR 49 at
     `52413da0`; direct continuation remains enabled-only.
-14. g04 closes at 50 roadmaps. Open g05 through a planning reassessment of the
-    remaining promoted per-route inventory. Contract 029 remains standing.
+14. g04 remains active at operator direction. Reassess the remaining promoted
+    per-route inventory before compiling g04.051 or closing the generation.
+    Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 

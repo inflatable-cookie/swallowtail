@@ -2,6 +2,9 @@
 
 ## Completed
 
+- [129-gemini-live-thinking-level-acceptance.md](./129-gemini-live-thinking-level-acceptance.md)
+- [128-gemini-live-thinking-level-binding.md](./128-gemini-live-thinking-level-binding.md)
+- [127-gemini-live-thinking-level-evidence.md](./127-gemini-live-thinking-level-evidence.md)
 - [124-claude-code-headless-structured-output-evidence.md](./124-claude-code-headless-structured-output-evidence.md) — evidence stop
 - [123-openai-background-reasoning-vocabulary-acceptance.md](./123-openai-background-reasoning-vocabulary-acceptance.md)
 - [122-openai-background-reasoning-vocabulary-correction.md](./122-openai-background-reasoning-vocabulary-correction.md)
@@ -122,12 +125,6 @@
 ## Active
 
 Cards 070-071 remain unused gaps, not tasks.
-
-## Planned
-
-- [129-gemini-live-thinking-level-acceptance.md](./129-gemini-live-thinking-level-acceptance.md) — conditional on card 128
-- [128-gemini-live-thinking-level-binding.md](./128-gemini-live-thinking-level-binding.md) — conditional on a non-empty Research 193 deliver-now set
-- [127-gemini-live-thinking-level-evidence.md](./127-gemini-live-thinking-level-evidence.md) — ready
 
 ## Blocked
 

@@ -7,6 +7,13 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add exact Gemini Live reasoning selection for
+  `gemini-3.1-flash-live-preview` through portable `minimal`, `low`, `medium`,
+  and `high` values on initial setup, one planned rollover, and fresh
+  restoration; omission keeps the existing `MINIMAL` bytes without claiming a
+  caller selection, unsupported values and sibling OpenAI Realtime use fail
+  before effects, and dispatch does not claim provider acceptance or effective
+  reasoning depth; Research 193, g04.046
 - add exact Qwen Code `0.21.15` reasoning selection for `qwen3.8-max` and
   `qwen3.8-max-preview` through portable `low`, `medium`, `high`, `xhigh`, and
   `max` values on structured runs, first and resumed turns, and fresh

@@ -98,7 +98,6 @@ generation_control_classifications = {
     ("reasoning_selection", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
     ("structured_output", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
     ("output_token_limit", "gemini.live"): "ready_existing_contract",
-    ("reasoning_selection", "gemini.live"): "contract_or_corpus_required",
     ("structured_output", "gemini.live"): "upstream_unsupported",
     ("reasoning_selection", "llama-cpp.attached"): "contract_or_corpus_required",
     ("structured_output", "llama-cpp.attached"): "contract_or_corpus_required",

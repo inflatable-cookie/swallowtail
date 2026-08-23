@@ -96,17 +96,17 @@ families do not interrupt this programme by default.
   immutable retry bound, and valid terminal/lifecycle truth remain unqualified.
   Cards 125-126 are blocked and no schema capability shipped.
 - [g04.046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md)
-  is planned. Research 193 and cards 127-129 will qualify exact
-  `minimal|low|medium|high` selection on fixed model
-  `gemini-3.1-flash-live-preview`, preserving current `MINIMAL` omission bytes
-  and one-rollover/restoration truth. Binding remains conditional on card 127.
+  is complete and merged through PR 45 at `04cc22f2`. Research 193 and cards
+  127-129 realize exact `minimal|low|medium|high` dispatch on fixed model
+  `gemini-3.1-flash-live-preview`, preserve current `MINIMAL` omission bytes,
+  and keep one-rollover/restoration truth under a new opaque facade point.
 
 ## Next Planning Boundary
 
-Execute g04.046 cards 127-129 serially. Card 127 owns exact model/facade,
-value, omission, continuity, and Contract 029 evidence. Cards 128-129 proceed
-only for Research 193 deliver-now rows. Do not widen into budgets, compression,
-thought summaries, other Gemini routes/models, or live work.
+Compile g04.047 by reassessing the remaining promoted inventory against current
+production-route, contract, and official-source truth. Select one coherent
+route-local control family; no provider or control is preselected by this
+closeout. New route families do not interrupt the programme.
 
 ## Exclusions
 

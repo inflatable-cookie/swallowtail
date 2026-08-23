@@ -60,11 +60,11 @@ and selection policy.
 - [g04.043 OpenAI Background Hosted Search](043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
 - [g04.044 OpenAI Background Reasoning Vocabulary Correction](044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 - [g04.045 Claude Code Headless Structured Output](045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
-- [g04.046 Gemini Live Thinking Levels](046-gemini-live-thinking-levels.md) — planned, cards 127-129
+- [g04.046 Gemini Live Thinking Levels](046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 
-Do not roll over: 46 numbered roadmaps exist; 001-039, 041, and 044 are
-complete; 040, 042, 043, and 045 stopped after their evidence gates; 046 is
-planned; target 30-50.
+Do not roll over: 46 numbered roadmaps exist; 001-039, 041, 044, and 046 are
+complete; 040, 042, 043, and 045 stopped after their evidence gates; target
+30-50.
 
 ## Current Checkpoint
 
@@ -128,11 +128,10 @@ planned; target 30-50.
   withholds delivery because runtime linkage, the full keyword subset, an
   immutable retry bound, and valid terminal/lifecycle truth remain unqualified;
   cards 125-126 are blocked and no schema capability shipped
-- g04.046 is planned: Research 193 and cards 127-129 form one serial
-  evidence-first lane for exact `gemini.live` thinking levels. Card 127 must
-  prove the current model/facade, `minimal|low|medium|high`, preserved
-  `MINIMAL` omission bytes, rollover/restoration stability, and Contract 029
-  revision before binding
+- g04.046 is on `main` at `04cc22f2` through PR 45: Research 193 and cards
+  127-129 realize exact `minimal|low|medium|high` dispatch for
+  `gemini-3.1-flash-live-preview`, preserve `MINIMAL` omission bytes, and keep
+  one-rollover/restoration truth under a new opaque facade point
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -156,9 +155,11 @@ planned; target 30-50.
 8. g04.045 stopped honestly after Research 192 and card 124; PR 44 landed the
    evidence at `8a2640ea` without a structured-output capability claim. Cards
    125-126 are blocked.
-9. g04.046 selects exact `gemini.live` thinking levels. Execute cards 127-129
-   serially, with cards 128-129 conditional on a non-empty Research 193
-   deliver-now set. Contract 029 currentness remains standing.
+9. g04.046 cards 127-129 delivered exact `gemini.live` thinking levels and
+   merged through PR 45 at `04cc22f2`.
+10. Compile g04.047 from the remaining promoted per-route feature inventory;
+    no provider or control is preselected. Contract 029 currentness remains
+    standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -176,7 +177,7 @@ New route-family research does not pre-empt this sequence.
 - [043 OpenAI Background Hosted Search](./043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
 - [044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 - [045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
-- [046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md) — planned, cards 127-129
+- [046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

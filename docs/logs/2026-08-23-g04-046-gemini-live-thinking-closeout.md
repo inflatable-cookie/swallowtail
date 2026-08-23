@@ -1,6 +1,6 @@
 # 2026-08-23 g04.046 Gemini Live Thinking Levels Closeout
 
-Status: delivered on the worker branch; review round 1 changes applied
+Status: merged through PR 45 at `04cc22f2`; shared closeout applied
 Owner: Tom
 Milestone: g04.046
 Cards: 127-129 complete
@@ -9,6 +9,7 @@ Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-5d9a1a44`
 Base: `382ab3863046bbb6bb4e3dbe048fd3369aeee0c9` (`origin/main` at dispatch)
 PR: https://github.com/inflatable-cookie/swallowtail/pull/45
 Review: changes requested on `86d6178d`; findings 1-3 applied
+Merge: fast-forwarded to `main` at `04cc22f2` on 2026-08-23
 Implementation head: recorded in the operator report and the PR body at each
 push; the final commit on this branch carries only this record
 
@@ -80,16 +81,16 @@ live Gemini call and used no credential, account inspection, or paid work.
 - `docs/guides/realtime-prepared-integration.md` states dispatch qualification
   only and names the rejected values.
 
-## Shared-Surface Delta
+## Shared-Surface Closeout
 
-The worker did not edit shared surfaces. The following delta is required at
-merge closeout.
+The worker did not edit shared surfaces. The orchestrator applied the reserved
+delta after fast-forward merge.
 
 - `docs/architecture/system-architecture.md`: no architecture change; the
   realized Gemini Live route shape is unchanged.
-- Route/feature matrices and shared matrix assertions: `gemini.live` gains
-  reasoning selection as an available per-route feature. No other cell changes.
-- Contract 029 records: the `gemini.live-facade` axis now qualifies the exact
+- Route/feature matrices and shared matrix assertions now mark `gemini.live`
+  reasoning selection available. No other feature cell changed.
+- Contract 029 now records that the `gemini.live-facade` axis qualifies the exact
   point `...BidiGenerateContent.thinking-2026-08-23` with private behavior
   `gemini.live-preview-manual-pcm-rollover-thinking-v2` and claim
   `gemini.live-preview-window-2`. The former point and its `-v1` behavior are
@@ -100,20 +101,19 @@ merge closeout.
   name the former Gemini Live facade point in the standing currentness lane.
   Both are other lanes' records and were not edited here; the currentness lane
   needs the new point at its next checkpoint.
-- `CHANGELOG.md`: additive public API on `swallowtail-runtime` and
+- `CHANGELOG.md` now records additive public API on `swallowtail-runtime` and
   `swallowtail-adapter-gemini`, plus the OpenAI Realtime fail-closed rejection
   of a previously nonexistent field. No guarantee shrinks. No release, tag, or
   workspace-version mutation was selected.
 - `release-baselines/public-api-unreleased/`: this branch already adds
   `swallowtail-adapter-gemini` and refreshes `swallowtail-runtime`. No released
   baseline was edited.
-- `docs/research/README.md` and `docs/logs/README.md`: Research 193's entry
-  still reads "reserved for g04.046 card 127" and the closeout entry still
-  reads "reserved". Both need the delivered text at merge closeout. The worker
-  reverted its edits to these shared indexes after review finding 2.
-- Programme, front doors, and indexes: record cards 127-129 and g04.046
-  complete once the PR merges.
-- The sole Next Task advances only after orchestrator review and merge.
+- `docs/research/README.md` and `docs/logs/README.md` now record Research 193
+  promoted and g04.046 merged. The worker correctly left both reserved.
+- Programme, front doors, and indexes now record cards 127-129 and g04.046
+  complete through PR 45.
+- The sole Next Task now points to g04.047 compilation from the remaining
+  promoted per-route feature inventory.
 
 ## Validation
 

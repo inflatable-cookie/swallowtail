@@ -23,8 +23,9 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04.046 Gemini Live Thinking Levels Merged](./2026-08-23-g04-046-gemini-live-thinking-merged.md)
 - [2026-08-23 g04.046 Gemini Live Thinking Levels Compiled](./2026-08-23-g04-046-gemini-live-thinking-compiled.md)
-- [2026-08-23 g04.046 Gemini Live Thinking Levels Closeout](./2026-08-23-g04-046-gemini-live-thinking-closeout.md) — reserved
+- [2026-08-23 g04.046 Gemini Live Thinking Levels Closeout](./2026-08-23-g04-046-gemini-live-thinking-closeout.md) — merged through PR 45 at `04cc22f2`
 - [2026-08-23 g04.045 Claude Code Headless Structured Output Compiled](./2026-08-23-g04-045-claude-code-headless-structured-output-compiled.md)
 - [2026-08-23 g04.045 Claude Code Headless Structured Output Closeout](./2026-08-23-g04-045-claude-code-headless-structured-output-closeout.md) — stopped after evidence and merged through PR 44 at `8a2640ea`
 - [2026-08-23 g04.044 OpenAI Background Reasoning Correction Compiled](./2026-08-23-g04-044-openai-background-reasoning-compiled.md)

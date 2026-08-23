@@ -293,6 +293,30 @@ They do not extend the guarantee or inherit new command, tool, session, or
 subagent authority. `pi.rpc` and `oh-my-pi.rpc` cannot substitute for each
 other.
 
+## Gemini Live Mapping
+
+The current Gemini Live claim binds exact opaque facade point
+`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23`
+on axis `gemini.live-facade` to behavior revision
+`gemini.live-preview-manual-pcm-rollover-thinking-v2` and claim revision
+`gemini.live-preview-window-2`. The adapter-owned prepared model-route revision
+is `prepared-2`.
+
+The earlier exact point
+`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent` and
+behavior revision `gemini.live-preview-manual-pcm-rollover-v1` remain frozen
+historical evidence. They are not a second supported opaque claim, and the
+current driver rejects a plan carrying that superseded point before endpoint,
+credential, or socket work.
+
+Exact model `gemini-3.1-flash-live-preview` admits caller-selected
+`minimal|low|medium|high` through the current point. Omission remains distinct:
+it dispatches the route's fixed `MINIMAL` setup on initial and planned-rollover
+connections without claiming `ReasoningSelection`. One selected value remains
+immutable across initial setup, one planned rollover, and fresh restoration.
+This qualifies dispatch only; provider acceptance and effective reasoning depth
+remain unclaimed.
+
 ## Acceptance
 
 - exact runtime observations remain distinct from compatibility claims

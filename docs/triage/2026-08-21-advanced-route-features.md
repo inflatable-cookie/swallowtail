@@ -1193,3 +1193,16 @@ select a Contract 029 point before cards 128-129 may bind anything.
 `thinkingBudget`, context compression, `includeThoughts`, thought summaries,
 another Gemini route/model, consumer login, and live provider work stay out of
 scope. No later feature family is selected by this compilation.
+
+## Gemini Live Thinking-Level Closeout (2026-08-23)
+
+g04.046 completed and merged through PR 45 at `04cc22f2`. Exact model
+`gemini-3.1-flash-live-preview` now exposes dispatch-qualified
+`minimal|low|medium|high` selection on a new opaque facade point. Omission keeps
+the existing `MINIMAL` setup without claiming caller selection; one planned
+rollover and fresh restoration preserve the selected level. Provider acceptance
+and effective reasoning depth remain unclaimed.
+
+This note remains the promoted selection inventory. The remaining rows stay
+input to g04.047 compilation; no provider or control is preselected. New route
+families and hosted OAuth remain outside this programme.

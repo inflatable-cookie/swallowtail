@@ -2,7 +2,11 @@
 
 ## Planned
 
-No compiled card is ready. Cards 070-071 remain unused gaps, not tasks.
+- [135-gemini-live-context-window-compression-acceptance.md](./135-gemini-live-context-window-compression-acceptance.md) — conditional on card 134
+- [134-gemini-live-context-window-compression-binding.md](./134-gemini-live-context-window-compression-binding.md) — conditional on a non-empty Research 195 deliver-now set
+- [133-gemini-live-context-window-compression-evidence.md](./133-gemini-live-context-window-compression-evidence.md) — ready
+
+Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
@@ -131,7 +135,8 @@ No compiled card is ready. Cards 070-071 remain unused gaps, not tasks.
 
 ## Active
 
-No card is active. Compile g04.048 before dispatching more feature work.
+Card 133 is ready. Execute cards 133-135 serially; cards 134-135 remain
+conditional on the evidence gate.
 
 ## Blocked
 

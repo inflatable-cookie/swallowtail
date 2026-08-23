@@ -107,12 +107,17 @@ families do not interrupt this programme by default.
   `gemini-3.1-flash-live-preview`, preserve omission bytes, compose with every
   admitted thinking level, and keep one-rollover/restoration truth under the
   new opaque facade point.
+- [g04.048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md)
+  is planned. Contract 027 now permits only an evidence-qualified,
+  adapter-local extension. Research 195 and card 133 must close exact setup
+  shapes, integer form, domain, omission, composition, handle, rollover, and
+  restoration truth before conditional cards 134-135 may bind anything.
 
 ## Next Planning Boundary
 
-Compile g04.048 from the remaining promoted inventory. Recheck the current
-production route, governing contracts, and official sources before selecting
-one coherent route-local control family. No route or control is preselected.
+Execute g04.048 cards 133-135 serially in one worker lane. Card 133 is the
+evidence gate. Continue to cards 134-135 only for a non-empty Research 195
+deliver-now set; otherwise stop honestly after evidence.
 
 ## Exclusions
 

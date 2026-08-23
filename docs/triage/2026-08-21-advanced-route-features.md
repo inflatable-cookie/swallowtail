@@ -1245,3 +1245,31 @@ generated length remain unclaimed.
 The remaining promoted rows stay input to g04.048 compilation. Recheck exact
 current route, contract, and official-source truth before selecting one
 coherent control family; no route or control is preselected.
+
+## Gemini Live Context-Window-Compression Selection (2026-08-23)
+
+The reassessment selects `gemini.live`
+`BidiGenerateContentSetup.contextWindowCompression` for
+[`g04.048`](../roadmaps/g04/048-gemini-live-context-window-compression.md).
+The exact route already fixes model `gemini-3.1-flash-live-preview`, hosted
+`v1beta` raw WebSocket, project authorization API-key access, manual PCM,
+output transcription, caller thinking/output maximum, and one planned
+rollover.
+
+Current official Google material explicitly names context-window compression
+on Live and shows `{ "slidingWindow": {} }` with this exact model. It describes
+provider defaults for omitted trigger/target values and says compression can
+extend sessions, but setup completion returns no applied-configuration fields.
+Exact explicit numeric domain and JSON integer representation remain open.
+
+Contract 027 now permits a later evidence-qualified route-local extension
+without creating a portable context capability or weakening rollover truth.
+Research 195 and card 133 must close exact shapes, wire form, domain, omission,
+thinking/output composition, latest-resumable-handle behavior, restoration,
+and Contract 029 revision. Cards 134-135 are conditional on a non-empty
+deliver-now set.
+
+Default-only sliding window is a candidate, not preapproved. A shared runtime
+carrier, generic context knob, live provider proof, long-session guarantee,
+retained-history claim, another model/route, and later feature family remain
+out of scope.

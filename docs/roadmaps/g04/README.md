@@ -62,8 +62,9 @@ and selection policy.
 - [g04.045 Claude Code Headless Structured Output](045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
 - [g04.046 Gemini Live Thinking Levels](046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 - [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
+- [g04.048 Gemini Live Context-Window Compression](048-gemini-live-context-window-compression.md) — planned, cards 133-135; card 133 ready, cards 134-135 conditional
 
-Do not roll over: 47 numbered roadmaps exist; 001-039, 041, 044, and 046-047
+Do not roll over: 48 numbered roadmaps exist; 001-039, 041, 044, and 046-047
 are complete; 040, 042, 043, and 045 stopped after their evidence gates;
 target 30-50.
 
@@ -138,6 +139,9 @@ target 30-50.
   `generationConfig.maxOutputTokens` dispatch for `gemini.live`, preserve
   omission bytes, compose with every admitted thinking level, and keep one-
   rollover/restoration truth under a new opaque facade point
+- g04.048 is compiled: Contract 027 permits an evidence-qualified route-local
+  context-compression extension; Research 195 is reserved; card 133 is ready
+  and cards 134-135 are conditional on a non-empty deliver-now set
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -165,9 +169,9 @@ target 30-50.
    merged through PR 45 at `04cc22f2`.
 10. g04.047 cards 130-132 delivered exact Gemini Live output-token-maximum
     dispatch and merged through PR 46 at `c2878262`.
-11. Compile g04.048 from the remaining promoted per-route feature inventory;
-    no route or control is preselected. Contract 029 currentness remains
-    standing.
+11. g04.048 selects Gemini Live context-window compression. Execute cards
+    133-135 serially; card 133 is the evidence gate and cards 134-135 remain
+    conditional. Contract 029 currentness remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -187,6 +191,7 @@ New route-family research does not pre-empt this sequence.
 - [045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
 - [046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 - [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
+- [048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md) — planned, cards 133-135
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

@@ -159,6 +159,36 @@ function calls, context compression, durable handle storage, consumer resume,
 unexpected reconnect, replay, retry, fallback, aliases, devices, playback,
 resampling, transcoding, and default live authentication.
 
+## Later Gemini Live Context-Compression Extension
+
+The first-subset exclusion remains historical truth. A later exact
+`gemini.live` facade point may add optional
+`BidiGenerateContentSetup.contextWindowCompression` only when dated official
+evidence closes the accepted configuration shapes, integer encoding, numeric
+domain, omission semantics, and exact model/facade applicability.
+
+This extension is adapter-local. It does not create a portable context-window
+capability, a shared realtime request field, a token-counting API, or a claim
+that another route supports compression. The prepared Gemini profile owns one
+typed optional selection; its plan, evidence, driver, initial setup, rollover
+setup, and fresh working-state restoration must agree exactly. Omission must
+retain the prior setup bytes. No adapter default, clamp, alias, substitution,
+or inferred provider limit is allowed.
+
+One selected configuration is immutable for the operation. Provider permission
+to change setup at session resumption does not authorize Swallowtail to change
+it during planned rollover. Compression also does not weaken handle truth: the
+driver still waits for the latest resumable handle and terminates when the
+existing rollover gate cannot be satisfied.
+
+Setup dispatch proves only dispatch. Setup completion does not echo this
+configuration. Documentation and capability evidence cannot claim provider
+acceptance, the effective trigger point, retained history, semantic continuity,
+long-session duration, token savings, or successful compression without a
+separate exact observation surface. Because sliding-window compression may
+evict earlier conversational context, it is not a strengthening of the
+runtime continuity guarantee.
+
 ## Conformance
 
 Deterministic fixtures must prove:

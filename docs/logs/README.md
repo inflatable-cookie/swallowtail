@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04.048 Gemini Live Context-Window Compression Compiled](./2026-08-23-g04-048-gemini-live-context-window-compression-compiled.md)
+- [2026-08-23 g04.048 Gemini Live Context-Window Compression Closeout](./2026-08-23-g04-048-gemini-live-context-window-compression-closeout.md) — reserved
 - [2026-08-23 g04.047 Gemini Live Output-Token Maximum Merged](./2026-08-23-g04-047-gemini-live-output-token-maximum-merged.md)
 - [2026-08-23 g04.047 Gemini Live Output-Token Maximum Compiled](./2026-08-23-g04-047-gemini-live-output-token-maximum-compiled.md)
 - [2026-08-23 g04.047 Gemini Live Output-Token Maximum Closeout](./2026-08-23-g04-047-gemini-live-output-token-maximum-closeout.md) — merged through PR 46 at `c2878262`

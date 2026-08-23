@@ -23,8 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-24 g04.053 Qoder Maximum Turns Compiled](./2026-08-24-g04-053-qoder-max-turns-compiled.md)
+- [2026-08-24 g04.053 Qoder Maximum Turns Closeout](./2026-08-24-g04-053-qoder-max-turns-closeout.md) — reserved
 - [2026-08-23 g04.052 Mistral Vibe Maximum Turns Compiled](./2026-08-23-g04-052-mistral-vibe-max-turns-compiled.md)
-- [2026-08-23 g04.052 Mistral Vibe Maximum Turns Closeout](./2026-08-23-g04-052-mistral-vibe-max-turns-closeout.md) — reserved
+- [2026-08-23 g04.052 Mistral Vibe Maximum Turns Closeout](./2026-08-23-g04-052-mistral-vibe-max-turns-closeout.md) — merged through PR 51 at `2fb24536`
 - [2026-08-23 g04.051 Qwen Headless Budgets Compiled](./2026-08-23-g04-051-qwen-headless-budgets-compiled.md)
 - [2026-08-23 g04.051 Qwen Headless Budgets Closeout](./2026-08-23-g04-051-qwen-headless-budgets-closeout.md) — merged through PR 50 at `9807e322`
 - [2026-08-23 g04.050 DeepSeek Thinking Mode Compiled](./2026-08-23-g04-050-deepseek-thinking-mode-compiled.md)

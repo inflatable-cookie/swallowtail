@@ -7,6 +7,11 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed exact-Mistral-Vibe-`2.24.2` caller-decreasing maximum turns:
+  `MistralVibeMaxTurns` admits `1..=8` for one headless print child; omission
+  preserves `--max-turns 8`, native limit remains provider-failed, and the
+  fixed plan agent, trust, working-resource, deadline, cancellation, and
+  cleanup boundaries remain unchanged; Research 199, g04.052
 - add typed exact-Qwen-Code-`0.21.15` caller-decreasing headless budgets:
   `QwenSessionTurnBudget` admits `1..=24` and `QwenToolCallBudget` admits
   `0..=16` across structured runs, first and resumed turns, and fresh

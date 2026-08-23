@@ -111,7 +111,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [196 OpenAI Background Service-Tier Evidence](./196-openai-background-service-tier-evidence.md) — promoted through g04.049; explicit `default` dispatch delivered on ordinary attached and one-reattachment profiles, other values and returned-tier observation withheld
 - [197 DeepSeek Structured-Run Thinking-Mode Evidence](./197-deepseek-structured-run-thinking-mode-evidence.md) — promoted through g04.050; exact V4 Pro one-request structured runs admit adapter-local disabled thinking while direct continuation remains enabled-only
 - [198 Qwen Headless Turn And Tool Budget Evidence](./198-qwen-headless-turn-and-tool-budget-evidence.md) — promoted through g04.051; exact Qwen Code `0.21.15` caller-decreasing turn `1..=24` and tool-call `0..=16` budgets delivered across every child shape
-- [199 Mistral Vibe Headless Maximum-Turn Evidence](./199-mistral-vibe-headless-max-turns-evidence.md) — reserved by g04.052 card 145; candidate positive `1..=8` domain is not yet qualified
+- [199 Mistral Vibe Headless Maximum-Turn Evidence](./199-mistral-vibe-headless-max-turns-evidence.md) — promoted through g04.052; exact Vibe `2.24.2` admits caller-decreasing positive `1..=8`, omission keeps `8`, and native limit remains provider-failed
+- [200 Qoder Headless Maximum-Turn Evidence](./200-qoder-headless-max-turns-evidence.md) — reserved by g04.053 card 148; candidate caller-decreasing `1..=8` domain is not yet qualified
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

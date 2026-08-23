@@ -1468,3 +1468,37 @@ price/token limits, tools, and later releases remain outside this lane.
 No later route-control family is selected. After g04.052 review, merge, and
 shared closeout, reassess the remaining promoted inventory. g04 remains open
 until explicit operator direction.
+
+## Post-g04.052 Reassessment (2026-08-24)
+
+Disposition: select caller-decreasing maximum turns on exact
+`qoder.headless` `1.1.25` and compile g04.053.
+
+Research 151 and the realized route already freeze a positive native
+`--max-turns` requirement, unbounded flag omission, exact fixed value `8`, a
+distinct `error_max_turns` result with `num_turns`, and joined one-child
+cleanup. This makes Qoder the strongest remaining evidence-first candidate:
+the transport and terminal are already route-qualified, while the missing
+caller control is bounded and adapter-local.
+
+The exact public domain is not preselected by those facts. Research 200 and
+card 148 must settle parser breadth, counter definition, increment/check order,
+off-by-one behavior, child lifetime, `num_turns`, partial events, process exit,
+terminal classification, cancellation, deadline, and cleanup. The candidate
+domain is caller-decreasing `1..=8`; omission must retain exact
+`--max-turns 8`. Cards 149-150 remain conditional on a non-empty deliver-now
+table.
+
+This is not Contract 040 `OutputTokenLimit`, a generic budget, or a permission
+change. `dont_ask`, stream-json, no-session-persistence, workdir, local access,
+host deadline, auth, version, and currentness remain fixed. Qoder ACP, SDK
+stdio, TUI, continuation, model selection, yolo, login, and later releases stay
+outside the lane.
+
+Other remaining controls have weaker immediate fit: Mistral agent profiles
+cross write/approval posture; Kiro effort and agent selection need exact
+model/profile entitlement evidence; OpenCode search and task permissions widen
+authority; Claude headless maximum turns are absent from exact `2.1.238` help;
+managed-agent and Bedrock controls cross operator-owned configuration or
+model-specific schema boundaries. They remain promoted inventory, not rejected
+work.

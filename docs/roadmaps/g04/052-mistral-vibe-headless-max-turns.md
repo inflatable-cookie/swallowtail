@@ -1,9 +1,9 @@
 # g04.052 Mistral Vibe Headless Maximum Turns
 
-Status: ready
+Status: completed and merged through PR 51 at `2fb24536`
 Owner: Tom
 Created: 2026-08-23
-Updated: 2026-08-23
+Updated: 2026-08-24
 Depends on: per-route feature completion programme; Research 150
 Vision tags: explicit selection, bounded execution, route-local controls
 Contract refs: 008, 011, 029, 033, 037, 040, 052
@@ -143,9 +143,9 @@ empty Research 199 deliver-now set is an honest stop.
 
 ## Batch Cards
 
-- [145-mistral-vibe-headless-max-turns-evidence.md](batch-cards/145-mistral-vibe-headless-max-turns-evidence.md) — ready
-- [146-mistral-vibe-headless-max-turns-binding.md](batch-cards/146-mistral-vibe-headless-max-turns-binding.md) — conditional
-- [147-mistral-vibe-headless-max-turns-acceptance.md](batch-cards/147-mistral-vibe-headless-max-turns-acceptance.md) — conditional
+- [145-mistral-vibe-headless-max-turns-evidence.md](batch-cards/145-mistral-vibe-headless-max-turns-evidence.md) — complete
+- [146-mistral-vibe-headless-max-turns-binding.md](batch-cards/146-mistral-vibe-headless-max-turns-binding.md) — complete
+- [147-mistral-vibe-headless-max-turns-acceptance.md](batch-cards/147-mistral-vibe-headless-max-turns-acceptance.md) — complete
 
 ## References
 
@@ -166,8 +166,9 @@ empty Research 199 deliver-now set is an honest stop.
 
 ## Closeout
 
-Reserved. The worker closes only route-local Research 199, cards 145-147,
-guide, fixtures, example/API evidence, and this milestone. Shared architecture,
-Contract 029 disposition, route/feature matrices, programme/front-door
-indexes, changelog, sole Next Task, and merge truth remain for the orchestrator
-after review and merge. g04 closure is not authorized.
+PR 51 merged fast-forward-only at exact head `2fb24536`. Research 199 admits
+typed caller-decreasing values `1..=8`; omission keeps exact `--max-turns 8`,
+and native limit remains provider-failed. Shared architecture, route/feature
+matrices, programme and indexes, changelog, and Next Task were reconciled on
+2026-08-24. Contract 029 remains exact `2.24.2` and qualified-only. g04 remains
+open by operator direction.

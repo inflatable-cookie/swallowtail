@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.052 cards 145-147 serially: exact Mistral Vibe `2.24.2`
-maximum-turn evidence, then conditional adapter-local binding and acceptance.
-Stop honestly after card 145 if Research 199 admits no deliver-now row. Keep
+Execute g04.053 cards 148-150 serially: exact Qoder `1.1.25` maximum-turn
+evidence, then conditional adapter-local binding and acceptance. Stop honestly
+after card 148 if Research 200 admits no deliver-now row. Keep
 g04 open until explicit operator direction. Contract 029 currentness stays
 standing.
 

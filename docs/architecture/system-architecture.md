@@ -221,9 +221,11 @@ OpenHands adds a package without a production route.
   `ReasoningSelection` and retains its exact absent-effort argv.
 - `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.24.2`
   discovery and one bounded `vibe --prompt --output streaming` structured
-  run with `--max-turns 8 --trust --agent plan --workdir` through
-  `prepare_mistral_vibe_headless`. `vibe-acp`, TUI, `--continue`/`--resume`,
-  teleport, and `--auto-approve`/`--yolo` stay out.
+  run with typed caller-decreasing `MistralVibeMaxTurns` `1..=8`; omission
+  keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir` through
+  `prepare_mistral_vibe_headless`. Native limit remains provider-failed.
+  `vibe-acp`, TUI, `--continue`/`--resume`, teleport, and
+  `--auto-approve`/`--yolo` stay out.
 - `swallowtail-adapter-qoder` implements exact npm `1.1.25` discovery and one
   bounded `qodercli --print --output-format stream-json` structured run with
   `--permission-mode dont_ask --max-turns 8 --no-session-persistence --cwd`

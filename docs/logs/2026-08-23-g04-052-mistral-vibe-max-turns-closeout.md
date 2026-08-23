@@ -1,6 +1,6 @@
 # 2026-08-23 g04.052 Mistral Vibe Maximum Turns Closeout
 
-Status: worker complete; not merged
+Status: merged through PR 51 at `2fb24536`
 Owner: Tom
 Milestone: g04.052
 
@@ -41,11 +41,12 @@ or paid work was used.
 
 PR: https://github.com/inflatable-cookie/swallowtail/pull/51
 Implementation commit: `cb04d1e24d8c5a5e334711e573c3539b0205d21c`
-This closeout does not claim merge.
+Reviewed exact head: `2fb24536e1a17c9bc36132c9ffd94938da653ac0`
+Merged fast-forward-only: 2026-08-23
 
 ## Shared Closeout Delta
 
-Reserved for the orchestrator after review and merge:
+Completed by the orchestrator after review and merge:
 
 - architecture and route/feature matrices record only the exact delivered
   adapter-local Mistral Vibe maximum-turn truth (`1..=8`, omission keeps `8`,
@@ -58,3 +59,8 @@ Reserved for the orchestrator after review and merge:
   `MistralVibeMaxTurns` public API
 - the sole Next Task returns to remaining per-route inventory reassessment
 - g04 remains active and unrolled until explicit operator direction
+
+All required CI passed on the exact merged head. The first Stable attempt hit
+the inherited OpenCode cancellation-fixture broken-pipe flake; the in-place
+retry passed all 2,284 workspace tests. Local focused validation remained
+31/31 and doctor reproduced 376 findings (330 warning / 46 error).

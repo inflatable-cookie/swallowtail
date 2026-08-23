@@ -131,14 +131,19 @@ families do not interrupt this programme by default.
   `1..=24` and tool-call budgets `0..=16` across runs and every turn child.
   Omission preserves `24` / `16`; wall time and tool permissions remain fixed.
 - [g04.052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md)
-  is ready. Research 199 and cards 145-147 form one serial evidence-first lane
-  for exact Vibe `2.24.2` caller-decreasing positive maximum turns. Candidate
-  values are `1..=8`; caller omission preserves `--max-turns 8`. Binding and
-  acceptance remain conditional on a non-empty exact deliver-now table.
+  is complete and merged through PR 51 at `2fb24536`. Research 199 and cards
+  145-147 realize exact Vibe `2.24.2` caller-decreasing positive maximum turns
+  `1..=8`; caller omission preserves `--max-turns 8`, and native limit remains
+  provider-failed.
+- [g04.053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) is
+  ready. Research 200 and cards 148-150 form one serial evidence-first lane for
+  exact Qoder `1.1.25` caller-decreasing maximum turns. Candidate values are
+  `1..=8`; caller omission preserves `--max-turns 8`. Binding and acceptance
+  remain conditional on a non-empty exact deliver-now table.
 
 ## Next Planning Boundary
 
-Execute g04.052 serially. After its evidence, review, merge, and shared
+Execute g04.053 serially. After its evidence, review, merge, and shared
 closeout, reassess the remaining promoted per-route inventory before compiling
 another bounded family. Keep g04 active until explicit operator direction.
 

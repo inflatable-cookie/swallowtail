@@ -39,13 +39,13 @@ by Research 191 and bind the correction to a new exact opaque facade point.
 
 ## Acceptance Criteria
 
-- [ ] the six Research 191 values prepare on exact GPT-5.6
-- [ ] `minimal` and foreign values reject before effects
-- [ ] absent reasoning retains current request behavior
-- [ ] the new facade point and behavior revision bind every relevant surface
-- [ ] stale facade, plan, evidence, policy, and driver combinations fail closed
-- [ ] no public generic-value or fallback surface is added
-- [ ] other routes and global reasoning syntax are unchanged
+- [x] the six Research 191 values prepare on exact GPT-5.6
+- [x] `minimal` and foreign values reject before effects
+- [x] absent reasoning retains current request behavior
+- [x] the new facade point and behavior revision bind every relevant surface
+- [x] stale facade, plan, evidence, policy, and driver combinations fail closed
+- [x] no public generic-value or fallback surface is added
+- [x] other routes and global reasoning syntax are unchanged
 
 ## Validation
 

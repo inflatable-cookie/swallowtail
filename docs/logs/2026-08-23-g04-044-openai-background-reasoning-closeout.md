@@ -55,10 +55,9 @@ The worker did not edit shared surfaces outside the named route lane.
 - Programme, front doors, and indexes: after merge, the orchestrator must move
   cards 122-123 from Planned to Completed in
   `docs/roadmaps/g04/batch-cards/README.md`; change the g04.044 entries from
-  ready to complete in `docs/roadmaps/g04/README.md`,
-  `docs/roadmaps/g04/per-route-feature-completion.md`, and the g04.044
-  milestone's Batch Cards section; record the merged PR/head in the g04
-  checkpoint; remove `reserved` from this closeout's entry in
+  ready to complete in `docs/roadmaps/g04/README.md` and
+  `docs/roadmaps/g04/per-route-feature-completion.md`; record the merged
+  PR/head in the g04 checkpoint; remove `reserved` from this closeout's entry in
   `docs/logs/README.md`; refresh the g04 status in
   `docs/roadmaps/generation-index.md`; and replace the execution pointer in
   `docs/roadmaps/README.md` and the programme's Next Planning Boundary with

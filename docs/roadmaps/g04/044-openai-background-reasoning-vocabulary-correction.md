@@ -131,8 +131,8 @@ retained as a supported way to request the removed value.
 
 ## Batch Cards
 
-- [122-openai-background-reasoning-vocabulary-correction.md](batch-cards/122-openai-background-reasoning-vocabulary-correction.md) — ready
-- [123-openai-background-reasoning-vocabulary-acceptance.md](batch-cards/123-openai-background-reasoning-vocabulary-acceptance.md) — planned after card 122
+- [122-openai-background-reasoning-vocabulary-correction.md](batch-cards/122-openai-background-reasoning-vocabulary-correction.md) — complete
+- [123-openai-background-reasoning-vocabulary-acceptance.md](batch-cards/123-openai-background-reasoning-vocabulary-acceptance.md) — complete
 
 ## References
 

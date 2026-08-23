@@ -43,12 +43,13 @@ goal and does not keep g04 or any later generation open. See
 
 ## Rollover Rule
 
-g04 should normally run for 30-50 roadmaps. It has 44 numbered roadmaps:
+g04 should normally run for 30-50 roadmaps. It has 45 numbered roadmaps:
 001-039, 041, and 044 are complete; 040, 042, and 043 stopped after their
-evidence gates. The next task is to compile g04.045 from the remaining
-per-route feature programme. A completed readiness tranche or standing
-currentness does not create a new generation. Rollover requires a substantial
-run, clean disposition of unfinished work, and an explicit sequencing reset.
+evidence gates; 045 is planned. The next task is to execute g04.045's exact
+Claude Code headless structured-output evidence gate and only its conditional
+binding runway. A completed readiness tranche or standing currentness does not
+create a new generation. Rollover requires a substantial run, clean
+disposition of unfinished work, and an explicit sequencing reset.
 
 
 ## Next Task

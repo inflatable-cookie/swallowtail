@@ -456,8 +456,11 @@ permission/question exchange. Headless reasoning is a different branch.
 
 ### `kimi-code.headless`
 
-Official: `kimi --model --prompt --output-format stream-json` plus
-`--thinking` / `--plan` / `--yolo` from the same CLI.
+Exact selected TypeScript package `0.38.0`: `kimi --model --prompt
+--output-format stream-json`. Current official `--thinking` documentation is
+for the newer Python CLI line and does not amend this exact package claim.
+Earlier exact prompt-mode evidence says `--plan` cannot compose with prompt
+mode.
 
 Swallowtail: model + prompt + stream-json. Matrix: reasoning No on
 TypeScript headless. Does not enable
@@ -465,8 +468,8 @@ TypeScript headless. Does not enable
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Thinking | `--thinking` / `--no-thinking` | not passed | yes | yes | ACP Yes does not promote headless |
-| Plan | `--plan` | not passed | yes | yes | — |
+| Thinking | current Python CLI `--thinking` / `--no-thinking`; not frozen on exact TypeScript `0.38.0` | not passed | unconfirmed on selected route | no until exact package evidence | no cross-product/version-line promotion |
+| Plan | exact earlier package exposes `--plan` but rejects prompt composition | not passed | incompatible on selected headless command | no | prompt-mode evidence is binding |
 | Effort levels | `KIMI_MODEL_THINKING_EFFORT` | not passed | yes | only-if | env override ≠ typed input |
 
 ### `muse-code.headless`
@@ -1133,3 +1136,26 @@ The remaining promoted inventory stays selection input. Compile g04.045 by
 rechecking current production-route and contract truth, then select one
 coherent route-local control family. No implementation card is ready and no
 specific provider/control is preselected by this closeout.
+
+## Claude Code Headless Structured Output Selection (2026-08-23)
+
+The reassessment selects `claude-code.headless` `--json-schema` for
+[`g04.045`](../roadmaps/g04/045-claude-code-headless-structured-output.md).
+The route already owns a bounded structured-run request, exact model, optional
+reasoning, read-only Plan-mode tools, working-resource authority, activity,
+usage, cancellation, and cleanup. Contracts 039 and 040 already state the
+structured-output and enforcement boundary.
+
+Selection is not qualification. Exact `2.1.238` currentness reused earlier
+selected help and does not freeze `--json-schema`. Response-only Research 121
+also proves that the flag may use a model-visible schema tool, retry, and exit
+zero with `structured_output: null`. Research 192 and card 124 must therefore
+settle exact package syntax, dialect/subset, enforcement source, attempt bound,
+terminal failure, version, and selected-command composition. Cards 125-126 are
+conditional on a non-empty deliver-now set. No earlier version, response-only
+route, capability, or matrix claim is promoted by compilation.
+
+Kimi headless thinking and plan were not selected. Current thinking docs refer
+to a newer Python CLI line, not Swallowtail's exact TypeScript `0.38.0` axis;
+earlier exact evidence rejects prompt plus `--plan`. No later feature family is
+selected here.

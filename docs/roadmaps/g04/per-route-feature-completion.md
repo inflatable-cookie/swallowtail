@@ -89,13 +89,17 @@ families do not interrupt this programme by default.
   122-123 correct exact GPT-5.6 reasoning to
   `none|low|medium|high|xhigh|max`, remove unqualified `minimal`, version the
   corrected opaque facade truth, and prove early rejection.
+- [g04.045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md)
+  is planned. Research 192 and cards 124-126 must prove exact `2.1.238`
+  `--json-schema` dialect, enforcement, attempt bounds, terminal truth, and
+  selected-command composition before any route-local binding.
 
 ## Next Planning Boundary
 
-Compile g04.045 from the remaining promoted inventory. Reassess current
-production-route and contract truth, select one coherent route-local control
-family, and compile evidence-first cards. Do not start implementation or
-select a release during this planning pass.
+Execute g04.045 cards 124-126 in one serial worker lane. Card 124 is the exact
+package evidence gate. Cards 125-126 run only for a non-empty Research 192
+deliver-now set. Do not select the next route family or a release inside the
+worker lane.
 
 ## Exclusions
 

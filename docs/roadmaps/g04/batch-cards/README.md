@@ -124,7 +124,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-No cards are planned. Compile g04.045 before implementation.
+- [126-claude-code-headless-structured-output-acceptance.md](./126-claude-code-headless-structured-output-acceptance.md) — conditional on card 125
+- [125-claude-code-headless-structured-output-binding.md](./125-claude-code-headless-structured-output-binding.md) — conditional on a non-empty Research 192 deliver-now set
+- [124-claude-code-headless-structured-output-evidence.md](./124-claude-code-headless-structured-output-evidence.md) — ready
 
 ## Blocked
 

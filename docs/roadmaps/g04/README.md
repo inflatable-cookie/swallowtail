@@ -59,9 +59,11 @@ and selection policy.
 - [g04.042 Cline Thinking Controls](042-cline-thinking-controls.md) — stopped after card 116 and merged through PR 41 at `27b34c7d`; cards 117-118 blocked
 - [g04.043 OpenAI Background Hosted Search](043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
 - [g04.044 OpenAI Background Reasoning Vocabulary Correction](044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
+- [g04.045 Claude Code Headless Structured Output](045-claude-code-headless-structured-output.md) — planned, cards 124-126
 
-Do not roll over: 44 numbered roadmaps exist; 001-039, 041, and 044 are
-complete; 040, 042, and 043 stopped after their evidence gates; target 30-50.
+Do not roll over: 45 numbered roadmaps exist; 001-039, 041, and 044 are
+complete; 040, 042, and 043 stopped after their evidence gates; 045 is
+planned; target 30-50.
 
 ## Current Checkpoint
 
@@ -120,6 +122,10 @@ complete; 040, 042, and 043 stopped after their evidence gates; target 30-50.
   corrected to `none|low|medium|high|xhigh|max`; cards 122-123 remove
   unqualified `minimal`, bind a new opaque facade point, and prove rejection
   before effects
+- g04.045 is planned: card 124 must freeze exact Claude Code `2.1.238`
+  headless JSON Schema, enforcement, attempt, terminal-result, and composition
+  evidence; cards 125-126 are conditional on a non-empty Research 192
+  deliver-now set
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -140,9 +146,11 @@ complete; 040, 042, and 043 stopped after their evidence gates; target 30-50.
 7. g04.044 cards 122-123 corrected the exact GPT-5.6 reasoning vocabulary and
    merged through PR 43 at `bdb7ea88`; Contract 036 now requires a next-minor
    source release without selecting one.
-8. Compile g04.045 from the remaining promoted per-route feature gaps. Select
-   one coherent route-local control family only after current route and
-   contract truth are rechecked. Contract 029 currentness remains standing.
+8. g04.045 selects exact Claude Code headless structured output after the
+   remaining route and contract truth was rechecked. Research 192 and card 124
+   must settle dialect, enforcement, attempts, terminal result, and selected-
+   command composition before cards 125-126 may run. Contract 029 currentness
+   remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -159,6 +167,7 @@ New route-family research does not pre-empt this sequence.
 - [042 Cline Thinking Controls](./042-cline-thinking-controls.md) — stopped after card 116 and merged through PR 41 at `27b34c7d`; cards 117-118 blocked
 - [043 OpenAI Background Hosted Search](./043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
 - [044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
+- [045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md) — planned, cards 124-126
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

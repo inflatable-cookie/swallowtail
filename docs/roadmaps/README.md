@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Compile g04.045 from the remaining promoted per-route feature gaps. Reassess
-current production-route and contract truth, select one coherent route-local
-control family, and compile an evidence-first milestone and cards before any
-implementation. Contract 029 currentness stays standing.
+Execute g04.045 cards 124-126 in order. First freeze exact Claude Code
+`2.1.238` headless JSON Schema, enforcement, attempt, terminal-result, and
+compatibility truth in Research 192. Continue to binding and acceptance only
+for a non-empty deliver-now set. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

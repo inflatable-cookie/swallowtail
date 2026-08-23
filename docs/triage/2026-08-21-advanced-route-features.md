@@ -1229,3 +1229,19 @@ anything.
 Client-side truncation, effective generated-length claims, reasoning changes,
 another Gemini route/model, consumer login, live provider work, and sibling-
 route changes stay out of scope. No later feature family is selected here.
+
+## Gemini Live Output-Token-Maximum Closeout (2026-08-23)
+
+g04.047 completed and merged through PR 46 at `c2878262`. Exact model
+`gemini-3.1-flash-live-preview` now exposes dispatch-qualified positive
+`1..=65_536` selection through `generationConfig.maxOutputTokens` on opaque
+facade point
+`...BidiGenerateContent.thinking-output-max-2026-08-23`. Omission preserves
+the existing setup bytes and claims no output-token capability. One planned
+rollover and fresh restoration preserve the selected maximum, including when
+it composes with any admitted thinking level. Provider acceptance and effective
+generated length remain unclaimed.
+
+The remaining promoted rows stay input to g04.048 compilation. Recheck exact
+current route, contract, and official-source truth before selecting one
+coherent control family; no route or control is preselected.

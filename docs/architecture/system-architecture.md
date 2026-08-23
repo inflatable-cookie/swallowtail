@@ -282,6 +282,7 @@ OpenHands adds a package without a production route.
   Developer API Models branch performs bounded paginated discovery, while the
   Gemini Live production driver binds exact
   `v1beta` preview setup, asymmetric audio, manual activity, output, usage,
+  caller-selected thinking level, optional positive output-token maximum,
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
@@ -609,8 +610,9 @@ Crate status:
   ambient configuration and transcript retention; a separate direct
   realtime-media driver binds exact
   Gemini Live preview identity, host-approved query-key raw WebSocket access,
-  asymmetric PCM, manual activity, two serial turns, one private-handle
-  planned rollover, local-only interruption, and joined credential-last close
+  asymmetric PCM, manual activity, caller-selected thinking level, optional
+  positive output-token maximum, two serial turns, one private-handle planned
+  rollover, local-only interruption, and joined credential-last close
 - `swallowtail-adapter-kimi` — realized for pinned initialization, isolated
   harness state, delegated membership auth, exact persistent bindings, new,
   load, ordered replay, resume, prompt, bounded text replacement, native turn
@@ -1464,8 +1466,12 @@ reasoning depth, or exact generated length. OpenAI Realtime binds
 `gpt-realtime-2.1`, mono
 24 kHz PCM, manual input commit, native response cancellation, and no planned
 rollover. Gemini Live binds `gemini-3.1-flash-live-preview`, 16 kHz input,
-24 kHz output, local interruption truth, and exactly one provider-planned
-rollover at an idle boundary. Each retains bounded chunks, two serial
+24 kHz output, exact `minimal|low|medium|high` thinking selection, and an
+optional positive output-token maximum through `65_536` under opaque facade
+point `...BidiGenerateContent.thinking-output-max-2026-08-23`. Both choices
+remain fixed through initial setup, exactly one provider-planned rollover at an
+idle boundary, and fresh restoration; omission preserves the current setup
+bytes. Each retains bounded chunks, two serial
 responses, endpoint and credential leases, connection cleanup, and the
 unchanged low-level driver. No common method hides their model selection,
 media events, cancellation truth, billed evidence, retry posture, or rollover.

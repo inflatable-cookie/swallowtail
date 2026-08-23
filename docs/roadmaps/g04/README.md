@@ -61,11 +61,11 @@ and selection policy.
 - [g04.044 OpenAI Background Reasoning Vocabulary Correction](044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 - [g04.045 Claude Code Headless Structured Output](045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
 - [g04.046 Gemini Live Thinking Levels](046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
-- [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — planned, cards 130-132; card 130 ready
+- [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 
-Do not roll over: 47 numbered roadmaps exist; 001-039, 041, 044, and 046 are
-complete; 040, 042, 043, and 045 stopped after their evidence gates; 047 is
-planned; target 30-50.
+Do not roll over: 47 numbered roadmaps exist; 001-039, 041, 044, and 046-047
+are complete; 040, 042, 043, and 045 stopped after their evidence gates;
+target 30-50.
 
 ## Current Checkpoint
 
@@ -133,10 +133,11 @@ planned; target 30-50.
   127-129 realize exact `minimal|low|medium|high` dispatch for
   `gemini-3.1-flash-live-preview`, preserve `MINIMAL` omission bytes, and keep
   one-rollover/restoration truth under a new opaque facade point
-- g04.047 is compiled: Research 194 and cards 130-132 form one serial
-  evidence-first lane for exact `gemini.live`
-  `generationConfig.maxOutputTokens`; card 130 is ready and cards 131-132 are
-  conditional on a non-empty exact deliver-now set
+- g04.047 is on `main` at `c2878262` through PR 46: Research 194 and cards
+  130-132 realize exact positive `1..=65_536`
+  `generationConfig.maxOutputTokens` dispatch for `gemini.live`, preserve
+  omission bytes, compose with every admitted thinking level, and keep one-
+  rollover/restoration truth under a new opaque facade point
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -162,9 +163,11 @@ planned; target 30-50.
    125-126 are blocked.
 9. g04.046 cards 127-129 delivered exact `gemini.live` thinking levels and
    merged through PR 45 at `04cc22f2`.
-10. g04.047 selects Gemini Live output-token maximum and compiles cards
-    130-132. Execute card 130 first; cards 131-132 remain conditional on
-    Research 194. Contract 029 currentness remains standing.
+10. g04.047 cards 130-132 delivered exact Gemini Live output-token-maximum
+    dispatch and merged through PR 46 at `c2878262`.
+11. Compile g04.048 from the remaining promoted per-route feature inventory;
+    no route or control is preselected. Contract 029 currentness remains
+    standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -183,7 +186,7 @@ New route-family research does not pre-empt this sequence.
 - [044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 - [045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md) — stopped after card 124 and merged through PR 44 at `8a2640ea`; cards 125-126 blocked
 - [046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
-- [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — planned, cards 130-132; card 130 ready
+- [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

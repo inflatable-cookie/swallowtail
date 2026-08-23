@@ -223,8 +223,8 @@ generation_control_no_cells = {
     for feature in ["output_token_limit", "reasoning_selection", "structured_output"]
     if row[feature] == "No"
 }
-if len(generation_control_no_cells) != 85:
-    raise SystemExit("generation-control inventory must contain exactly 85 No cells")
+if len(generation_control_no_cells) != 84:
+    raise SystemExit("generation-control inventory must contain exactly 84 No cells")
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
@@ -234,6 +234,13 @@ reasoning_by_route = {
 }
 if reasoning_by_route.get("gemini.live") != "Yes":
     raise SystemExit("Gemini Live reasoning selection is not realized")
+
+output_limit_by_route = {
+    row["route_id"]: row["output_token_limit"]
+    for row in rows
+}
+if output_limit_by_route.get("gemini.live") != "Yes":
+    raise SystemExit("Gemini Live output-token maximum is not realized")
 
 input_callback_no_cells = {
     (feature, row["route_id"])
@@ -287,7 +294,7 @@ if classification_counts != Counter(
         "contract_or_corpus_required": 79,
         "upstream_unsupported": 178,
         "operation_shape_not_applicable": 64,
-        "ready_existing_contract": 4,
+        "ready_existing_contract": 3,
         "ready_operator_hold": 4,
         "composite_partial_only": 6,
         "shared_contract_expansion_required": 2,

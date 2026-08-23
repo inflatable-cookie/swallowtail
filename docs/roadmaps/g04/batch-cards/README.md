@@ -2,12 +2,13 @@
 
 ## Planned
 
-- [132-gemini-live-output-token-maximum-acceptance.md](./132-gemini-live-output-token-maximum-acceptance.md) — conditional on card 131
-- [131-gemini-live-output-token-maximum-binding.md](./131-gemini-live-output-token-maximum-binding.md) — conditional on Research 194
-- [130-gemini-live-output-token-maximum-evidence.md](./130-gemini-live-output-token-maximum-evidence.md) — ready
+No compiled card is ready. Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [132-gemini-live-output-token-maximum-acceptance.md](./132-gemini-live-output-token-maximum-acceptance.md)
+- [131-gemini-live-output-token-maximum-binding.md](./131-gemini-live-output-token-maximum-binding.md)
+- [130-gemini-live-output-token-maximum-evidence.md](./130-gemini-live-output-token-maximum-evidence.md)
 - [129-gemini-live-thinking-level-acceptance.md](./129-gemini-live-thinking-level-acceptance.md)
 - [128-gemini-live-thinking-level-binding.md](./128-gemini-live-thinking-level-binding.md)
 - [127-gemini-live-thinking-level-evidence.md](./127-gemini-live-thinking-level-evidence.md)
@@ -130,8 +131,7 @@
 
 ## Active
 
-Card 130 is ready. Cards 131-132 are conditional. Cards 070-071 remain unused
-gaps, not tasks.
+No card is active. Compile g04.048 before dispatching more feature work.
 
 ## Blocked
 

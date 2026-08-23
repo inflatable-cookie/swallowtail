@@ -1,6 +1,6 @@
 # g04.047 Gemini Live Output-Token Maximum
 
-Status: complete pending merge
+Status: complete and merged through PR 46 at `c2878262`
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23

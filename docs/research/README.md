@@ -106,7 +106,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [191 OpenAI Background Web Search Evidence](./191-openai-background-web-search-evidence.md) — promoted evidence stop; no exact composed search row, with GPT-5.6 reasoning correction promoted to g04.044
 - [192 Claude Code Headless Structured Output Evidence](./192-claude-code-headless-structured-output-evidence.md) — promoted evidence stop; exact `2.1.238` admits no deliver-now schema row
 - [193 Gemini Live Thinking-Level Evidence](./193-gemini-live-thinking-level-evidence.md) — promoted through g04.046; exact `gemini-3.1-flash-live-preview` admits dispatch of `minimal|low|medium|high` on the thinking-capable facade point
-- [194 Gemini Live Output-Token-Maximum Evidence](./194-gemini-live-output-token-maximum-evidence.md) — reserved for g04.047 card 130
+- [194 Gemini Live Output-Token-Maximum Evidence](./194-gemini-live-output-token-maximum-evidence.md) — promoted through g04.047; exact `gemini-3.1-flash-live-preview` admits positive `1..=65_536` dispatch through `generationConfig.maxOutputTokens`
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

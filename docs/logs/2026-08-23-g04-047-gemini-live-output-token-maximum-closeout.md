@@ -1,13 +1,14 @@
 # 2026-08-23 g04.047 Gemini Live Output-Token Maximum Closeout
 
-Status: worker complete; awaiting review and merge
+Status: merged through PR 46 at `c2878262`; shared closeout applied
 Owner: Tom
 Milestone: g04.047
-Cards: 130-132
+Cards: 130-132 complete
 Research: 194
 PR: https://github.com/inflatable-cookie/swallowtail/pull/46
-Implementation head: `dc6037b259aeffea327452e588c27d82b13a44b1`
-Record / review-fix tip: follows the implementation head on this branch
+Review: changes requested on `ab850d3f`; all four findings applied
+Merge: fast-forwarded to `main` at `c2878262` on 2026-08-23
+Implementation and reviewed head: `c2878262c8d1bdc34810c5edc8f84e6235938a43`
 
 ## Outcome
 
@@ -51,25 +52,32 @@ Worker evidence:
 - Effigy doctor god-file baseline restored to the inherited 371 findings
   (326 warnings, 45 errors) by keeping `plan_with_maximum` off
   `tests/live_support/fixture.rs`
+- independent review validation: 80 focused tests, affected-package proof,
+  semantic API, diff check, and inherited doctor-baseline confirmation
+- all five required GitHub CI jobs passed on exact merged head `c2878262`; the
+  stable job needed reruns after two unrelated cancellation-fixture flakes,
+  each of which passed in isolation
 
 No live Gemini call, credential, account inspection, or paid work.
 
-## Shared-Surface Delta
+## Shared-Surface Closeout
 
-Worker branch restores shared indexes to `origin/main` and does not claim
-shared front-door edits. After review and merge, the orchestrator should apply:
+The worker correctly restored shared indexes to `origin/main`. The orchestrator
+applied the reserved delta after fast-forward merge.
 
-| Surface | Required delta |
-| --- | --- |
-| `docs/research/README.md` | replace Research 194 "reserved" with promoted deliver-now summary |
-| `docs/logs/README.md` | replace g04.047 closeout "reserved" with worker-complete / merged status |
-| `docs/architecture/system-architecture.md` | note Gemini Live optional output-token maximum on the current facade point |
-| `docs/guides/provider-route-matrix.md` | update `gemini.live` row facade point and mention optional `1..=65536` maximum |
-| route/feature matrices / programme / indexes | if they still say thinking-only facade or omit output maximum |
-| `CHANGELOG.md` | unreleased note for Gemini Live output-token maximum |
-| Contract 029 currentness | no widening; record exact new opaque point only if the checkpoint inventory tracks it |
-| `docs/roadmaps/README.md` Next Task | advance after merge closeout; do not leave g04.047 as sole next task |
-| matrix assertions / shared package lists | only if they pin the previous facade literal |
+- Research 194, the log index, cards 130-132, milestone g04.047, the programme,
+  and generation checkpoint now record the promoted and merged result.
+- Architecture, the provider route matrix, and the generated solution-feature
+  matrix now record the optional positive maximum and current opaque facade.
+  Only the `gemini.live` output-token-limit cell changed from `No` to `Yes`.
+- Contract 029 records the new current opaque point and preserves both earlier
+  points as frozen, non-executable evidence. Standing currentness checkpoint
+  records remain unchanged until their next named run.
+- The changelog records the additive route-local control and its dispatch-only
+  evidence boundary. No release, tag, or workspace-version mutation was
+  selected.
+- The sole Next Task now points to g04.048 compilation from the remaining
+  promoted per-route feature inventory. No route or control is preselected.
 
 ## Worktree / Branch
 
@@ -77,6 +85,5 @@ shared front-door edits. After review and merge, the orchestrator should apply:
 - branch: `t3code/review-gemini-live-output-maximum`
 - planning base ancestor: `c51e3e9898c6ea08e217d0d981d2b982e0a5590b`
 - evidence commit: `8d3717a010ea496c7f231fd6f4e576dfd4d05c9f`
-- implementation head: `dc6037b259aeffea327452e588c27d82b13a44b1`
-- later record/review-fix commits follow that implementation head
+- reviewed and merged head: `c2878262c8d1bdc34810c5edc8f84e6235938a43`
 - worker does not merge

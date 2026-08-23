@@ -7,6 +7,13 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add exact Gemini Live caller-selected output-token maximum for
+  `gemini-3.1-flash-live-preview`: positive values through `65_536` dispatch as
+  `generationConfig.maxOutputTokens` on initial setup, one planned rollover,
+  and fresh restoration; omission preserves the existing setup bytes, the
+  maximum composes with every admitted thinking level, unsupported values fail
+  before effects, and dispatch does not claim provider acceptance or effective
+  generated length; Research 194, g04.047
 - add exact Gemini Live reasoning selection for
   `gemini-3.1-flash-live-preview` through portable `minimal`, `low`, `medium`,
   and `high` values on initial setup, one planned rollover, and fresh

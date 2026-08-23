@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Compile g04.047 from the remaining promoted per-route feature inventory.
-Recheck current production-route, contract, and official-source truth, then
-select one coherent route-local control family. Do not start a new route family
-or bulk-implement the inventory. Contract 029 currentness stays standing.
+Execute g04.047 cards 130-132 serially. Start with exact Gemini Live
+`maxOutputTokens` evidence in card 130; continue to binding and acceptance only
+for a non-empty Research 194 deliver-now set. Do not use a live provider call,
+change reasoning semantics, add a shared runtime carrier, or start another
+route family. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

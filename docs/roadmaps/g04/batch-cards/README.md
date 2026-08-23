@@ -1,5 +1,11 @@
 # g04 Batch Cards
 
+## Planned
+
+- [132-gemini-live-output-token-maximum-acceptance.md](./132-gemini-live-output-token-maximum-acceptance.md) — conditional on card 131
+- [131-gemini-live-output-token-maximum-binding.md](./131-gemini-live-output-token-maximum-binding.md) — conditional on Research 194
+- [130-gemini-live-output-token-maximum-evidence.md](./130-gemini-live-output-token-maximum-evidence.md) — ready
+
 ## Completed
 
 - [129-gemini-live-thinking-level-acceptance.md](./129-gemini-live-thinking-level-acceptance.md)
@@ -124,7 +130,8 @@
 
 ## Active
 
-Cards 070-071 remain unused gaps, not tasks.
+Card 130 is ready. Cards 131-132 are conditional. Cards 070-071 remain unused
+gaps, not tasks.
 
 ## Blocked
 

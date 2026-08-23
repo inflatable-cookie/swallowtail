@@ -1206,3 +1206,26 @@ and effective reasoning depth remain unclaimed.
 This note remains the promoted selection inventory. The remaining rows stay
 input to g04.047 compilation; no provider or control is preselected. New route
 families and hosted OAuth remain outside this programme.
+
+## Gemini Live Output-Token-Maximum Selection (2026-08-23)
+
+The reassessment selects caller output-token maximum on `gemini.live` for
+[`g04.047`](../roadmaps/g04/047-gemini-live-output-token-maximum.md). The exact
+production route already fixes `gemini-3.1-flash-live-preview`, hosted
+`v1beta` raw WebSocket, project authorization API-key access, manual PCM,
+output transcription, caller thinking levels, and one provider-planned
+rollover. The shared realtime request already carries an optional positive
+maximum, so no new provider-neutral carrier is needed.
+
+Current official references say `BidiGenerateContentSetup` accepts a
+`GenerationConfig`, define `GenerationConfig.maxOutputTokens`, and list 65,536
+as this exact model's output-token limit. The generation-config reference also
+warns that not every parameter is configurable for every model. Research 194
+and cards 130-132 therefore form one serial evidence-first lane. Card 130 must
+prove the exact Live/model composition, close the numeric domain, preserve
+omission bytes, and select a Contract 029 point before cards 131-132 may bind
+anything.
+
+Client-side truncation, effective generated-length claims, reasoning changes,
+another Gemini route/model, consumer login, live provider work, and sibling-
+route changes stay out of scope. No later feature family is selected here.

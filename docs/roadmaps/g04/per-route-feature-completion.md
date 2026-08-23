@@ -100,13 +100,17 @@ families do not interrupt this programme by default.
   127-129 realize exact `minimal|low|medium|high` dispatch on fixed model
   `gemini-3.1-flash-live-preview`, preserve current `MINIMAL` omission bytes,
   and keep one-rollover/restoration truth under a new opaque facade point.
+- [g04.047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md)
+  is planned. Research 194 and cards 130-132 form one serial evidence-first
+  lane. Card 130 must prove the exact Live field and positive numeric domain;
+  cards 131-132 remain conditional.
 
 ## Next Planning Boundary
 
-Compile g04.047 by reassessing the remaining promoted inventory against current
-production-route, contract, and official-source truth. Select one coherent
-route-local control family; no provider or control is preselected by this
-closeout. New route families do not interrupt the programme.
+Execute g04.047 cards 130-132 serially. Start with exact-model and Live-facade
+evidence for `generationConfig.maxOutputTokens`. Continue only for a non-empty
+Research 194 deliver-now set. New route families do not interrupt the
+programme.
 
 ## Exclusions
 

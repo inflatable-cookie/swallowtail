@@ -2,6 +2,16 @@ use std::num::NonZeroU64;
 use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig, ReasoningMode};
 use swallowtail_runtime::{Deadline, RequestId};
 
+type GeminiLiveSessionProfileParts = (
+    RequestId,
+    RealtimeMediaConfig,
+    Option<Deadline>,
+    PlannedConnectionRolloverPolicy,
+    Option<ReasoningMode>,
+    Option<NonZeroU64>,
+    Option<crate::GeminiLiveContextWindowCompression>,
+);
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Consumer inputs for one bounded Gemini Live media session.
 pub struct GeminiLiveSessionProfileInput {
@@ -11,6 +21,7 @@ pub struct GeminiLiveSessionProfileInput {
     rollover: PlannedConnectionRolloverPolicy,
     reasoning_mode: Option<ReasoningMode>,
     maximum_output_tokens: Option<NonZeroU64>,
+    context_window_compression: Option<crate::GeminiLiveContextWindowCompression>,
 }
 
 impl GeminiLiveSessionProfileInput {
@@ -29,6 +40,7 @@ impl GeminiLiveSessionProfileInput {
             rollover,
             reasoning_mode: None,
             maximum_output_tokens: None,
+            context_window_compression: None,
         }
     }
 
@@ -46,6 +58,16 @@ impl GeminiLiveSessionProfileInput {
         self
     }
 
+    /// Selects the exact provider-default sliding-window compression shape.
+    #[must_use]
+    pub const fn with_context_window_compression(
+        mut self,
+        compression: crate::GeminiLiveContextWindowCompression,
+    ) -> Self {
+        self.context_window_compression = Some(compression);
+        self
+    }
+
     /// Creates the qualified manual PCM profile with one planned rollover.
     #[must_use]
     pub fn manual_pcm_with_one_rollover(request_id: RequestId, deadline: Option<Deadline>) -> Self {
@@ -57,16 +79,7 @@ impl GeminiLiveSessionProfileInput {
         )
     }
 
-    pub(super) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        RealtimeMediaConfig,
-        Option<Deadline>,
-        PlannedConnectionRolloverPolicy,
-        Option<ReasoningMode>,
-        Option<NonZeroU64>,
-    ) {
+    pub(super) fn into_parts(self) -> GeminiLiveSessionProfileParts {
         (
             self.request_id,
             self.config,
@@ -74,6 +87,7 @@ impl GeminiLiveSessionProfileInput {
             self.rollover,
             self.reasoning_mode,
             self.maximum_output_tokens,
+            self.context_window_compression,
         )
     }
 }

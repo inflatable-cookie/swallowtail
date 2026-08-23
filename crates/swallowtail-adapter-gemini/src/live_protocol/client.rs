@@ -1,4 +1,5 @@
 use super::handle::ProviderSessionHandle;
+use crate::GeminiLiveContextWindowCompression;
 use crate::live::MODEL_RESOURCE;
 use base64::Engine;
 use serde_json::{Value, json};
@@ -9,6 +10,7 @@ pub(crate) enum ClientFrame<'a> {
         handle: Option<&'a ProviderSessionHandle>,
         thinking_level: &'a str,
         maximum_output_tokens: Option<NonZeroU64>,
+        context_window_compression: Option<GeminiLiveContextWindowCompression>,
     },
     ActivityStart,
     Audio(&'a [u8]),
@@ -22,6 +24,7 @@ impl ClientFrame<'_> {
                 handle,
                 thinking_level,
                 maximum_output_tokens,
+                context_window_compression,
             } => {
                 let session_resumption =
                     handle.map_or_else(|| json!({}), |handle| json!({"handle": handle.expose()}));
@@ -37,7 +40,7 @@ impl ClientFrame<'_> {
                 if let Some(maximum) = maximum_output_tokens {
                     generation_config["maxOutputTokens"] = json!(maximum.get());
                 }
-                json!({
+                let mut setup = json!({
                     "setup": {
                         "model": MODEL_RESOURCE,
                         "generationConfig": generation_config,
@@ -48,7 +51,11 @@ impl ClientFrame<'_> {
                         "sessionResumption": session_resumption,
                         "outputAudioTranscription": {}
                     }
-                })
+                });
+                if context_window_compression.is_some() {
+                    setup["setup"]["contextWindowCompression"] = json!({"slidingWindow": {}});
+                }
+                setup
             }
             Self::ActivityStart => json!({"realtimeInput": {"activityStart": {}}}),
             Self::Audio(bytes) => json!({

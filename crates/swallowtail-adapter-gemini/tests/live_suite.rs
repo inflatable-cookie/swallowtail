@@ -3,6 +3,8 @@ mod live_support;
 
 #[path = "live_conformance.rs"]
 mod live_conformance;
+#[path = "live_context_compression.rs"]
+mod live_context_compression;
 #[path = "live_failures.rs"]
 mod live_failures;
 #[path = "live_output_maximum.rs"]

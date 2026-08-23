@@ -1,6 +1,6 @@
 # g04.048 Gemini Live Context-Window Compression
 
-Status: planned
+Status: complete on worker branch; pending review and merge
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -30,20 +30,37 @@ Qualify and, only when exact evidence permits, bind the smallest route-local
 Gemini Live sliding-window compression subset without changing route, model,
 media, reasoning, output maximum, access, rollover, or lifecycle truth.
 
+## Outcome
+
+Promoted Research 195 and bound the non-empty deliver-now set: omission plus
+the exact default-only `GeminiLiveContextWindowCompression::sliding_window()`
+shape, serialized as `contextWindowCompression.slidingWindow = {}`. Explicit
+trigger and target token forms remain withheld because their exact
+model-specific numeric domain and rejection behavior are not closed.
+
+The current exact facade is
+`...BidiGenerateContent.thinking-output-max-context-compression-2026-08-23`,
+with private behavior
+`gemini.live-preview-manual-pcm-rollover-thinking-output-max-context-compression-v4`,
+claim `gemini.live-preview-window-4`, and model-route revision `prepared-4`.
+Selected compression remains immutable across initial setup, one planned
+rollover/resume setup, and fresh realtime restoration. Omission retains prior
+setup bytes. Documentation claims dispatch only.
+
 ## Goals
 
-- [ ] freeze current official exact-model, Live-reference, session-management,
+- [x] freeze current official exact-model, Live-reference, session-management,
       and best-practices evidence
-- [ ] classify omitted, provider-default sliding window, and explicit
+- [x] classify omitted, provider-default sliding window, and explicit
       trigger/target shapes, including integer encoding and rejection domain
-- [ ] promote Research 195 with a precise deliver-now table or an honest stop
-- [ ] preserve prior setup bytes when compression is omitted
-- [ ] bind only admitted shapes through adapter-local typed prepared state
-- [ ] keep one selected configuration immutable across initial setup, planned
+- [x] promote Research 195 with a precise deliver-now table or an honest stop
+- [x] preserve prior setup bytes when compression is omitted
+- [x] bind only admitted shapes through adapter-local typed prepared state
+- [x] keep one selected configuration immutable across initial setup, planned
       rollover/resume setup, and fresh working-state restoration
-- [ ] compose with every admitted thinking level and both omitted/selected
+- [x] compose with every admitted thinking level and both omitted/selected
       output maximum
-- [ ] publish setup-dispatch truth without acceptance, effectiveness,
+- [x] publish setup-dispatch truth without acceptance, effectiveness,
       retention, duration, or token-saving claims
 
 ## Non-Goals
@@ -93,41 +110,41 @@ preapprove a numeric value or claim effective compression.
 
 ### Batch 48.1 — Exact Compression Evidence
 
-- [ ] Execute card 133.
-- [ ] freeze official and repository evidence, exact shapes, domain, omission,
+- [x] Execute card 133.
+- [x] freeze official and repository evidence, exact shapes, domain, omission,
       continuity, composition, and version dispositions
-- [ ] promote Research 195 with a deliver-now table or stop
+- [x] promote Research 195 with a deliver-now table or stop
 
 ### Batch 48.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 134 only if card 133 admits a non-empty deliver-now set.
-- [ ] bind one exact typed Gemini selection through prepared state, driver
+- [x] Execute card 134 because card 133 admits a non-empty deliver-now set.
+- [x] bind one exact typed Gemini selection through prepared state, driver
       validation, and initial/resume setup encoding
-- [ ] mint the Research 195 Contract 029 facade/private behavior revisions
+- [x] mint the Research 195 Contract 029 facade/private behavior revisions
 
 ### Batch 48.3 — Route-Local Acceptance
 
-- [ ] Execute card 135 only after card 134.
-- [ ] prove exact omission, admitted forms, rollover, restoration, composition,
+- [x] Execute card 135 only after card 134.
+- [x] prove exact omission, admitted forms, rollover, restoration, composition,
       rejection, and unchanged lifecycle behavior
-- [ ] update route-local guidance and reserve the shared closeout delta
+- [x] update route-local guidance and reserve the shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 195 deliver-now shapes prepare
-- [ ] input, plan, evidence, driver, and every setup frame agree exactly
-- [ ] omission preserves prior initial and resume setup bytes
-- [ ] unsupported and drifted values fail before endpoint, credential, or
+- [x] only Research 195 deliver-now shapes prepare
+- [x] input, plan, evidence, driver, and every setup frame agree exactly
+- [x] omission preserves prior initial and resume setup bytes
+- [x] unsupported and drifted values fail before endpoint, credential, or
       socket work
-- [ ] no value is defaulted by the adapter, clamped, aliased, substituted,
+- [x] no value is defaulted by the adapter, clamped, aliased, substituted,
       inferred, retried, or routed elsewhere
-- [ ] one planned rollover and fresh restoration retain the selected config
-- [ ] every thinking/output-maximum combination composes without semantic drift
-- [ ] resumable-handle, media, transcription, activity, usage, cancellation,
+- [x] one planned rollover and fresh restoration retain the selected config
+- [x] every thinking/output-maximum combination composes without semantic drift
+- [x] resumable-handle, media, transcription, activity, usage, cancellation,
       deadline, provider failure, and joined cleanup truth remain intact
-- [ ] docs claim dispatch only; provider acceptance and effective compression
+- [x] docs claim dispatch only; provider acceptance and effective compression
       remain unclaimed
-- [ ] default QA performs no credential, account, provider request, or paid work
+- [x] default QA performs no credential, account, provider request, or paid work
 
 ## Lane Runway
 
@@ -153,9 +170,9 @@ preapprove a numeric value or claim effective compression.
 
 ## Batch Cards
 
-- [133-gemini-live-context-window-compression-evidence.md](batch-cards/133-gemini-live-context-window-compression-evidence.md) — ready
-- [134-gemini-live-context-window-compression-binding.md](batch-cards/134-gemini-live-context-window-compression-binding.md) — conditional
-- [135-gemini-live-context-window-compression-acceptance.md](batch-cards/135-gemini-live-context-window-compression-acceptance.md) — conditional
+- [133-gemini-live-context-window-compression-evidence.md](batch-cards/133-gemini-live-context-window-compression-evidence.md) — done
+- [134-gemini-live-context-window-compression-binding.md](batch-cards/134-gemini-live-context-window-compression-binding.md) — done
+- [135-gemini-live-context-window-compression-acceptance.md](batch-cards/135-gemini-live-context-window-compression-acceptance.md) — done
 
 ## References
 

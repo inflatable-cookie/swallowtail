@@ -1,6 +1,6 @@
 # 134 Gemini Live Context-Window-Compression Binding
 
-Status: conditional
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,13 @@ Depends on: card 133; promoted Research 195 with a non-empty deliver-now set
 Bind only Research 195's exact Gemini Live compression shapes through
 adapter-local typed prepared state, immutable plan/evidence, driver validation,
 and initial/resumed setup serialization.
+
+## Outcome
+
+Bound only the Research 195 default-only selection through typed prepared
+input, immutable evidence, a bound driver, and exact initial/resume setup
+serialization. No portable capability, shared realtime carrier, or numeric
+trigger/target API was added.
 
 ## Scope
 
@@ -42,14 +49,14 @@ and initial/resumed setup serialization.
 
 ## Acceptance Criteria
 
-- [ ] only Research 195 deliver-now shapes prepare
-- [ ] input, plan, evidence, driver, and setup bytes agree exactly
-- [ ] omission preserves prior initial and resume setup bytes
-- [ ] one planned rollover and fresh restoration retain the selection
-- [ ] thinking and output-maximum controls compose without drift
-- [ ] unsupported values and every knowable mismatch reject before effects
-- [ ] no shared runtime, portable capability, or sibling route changes
-- [ ] no adapter default, alias, clamp, substitution, retry, or fallback enters
+- [x] only Research 195 deliver-now shapes prepare
+- [x] input, plan, evidence, driver, and setup bytes agree exactly
+- [x] omission preserves prior initial and resume setup bytes
+- [x] one planned rollover and fresh restoration retain the selection
+- [x] thinking and output-maximum controls compose without drift
+- [x] unsupported values and every knowable mismatch reject before effects
+- [x] no shared runtime, portable capability, or sibling route changes
+- [x] no adapter default, alias, clamp, substitution, retry, or fallback enters
       the API
 
 ## Validation

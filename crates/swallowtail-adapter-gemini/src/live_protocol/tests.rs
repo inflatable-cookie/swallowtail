@@ -43,6 +43,12 @@ pub(super) fn expected(name: &str) -> Value {
         "client-setup-max-1024-thinking-high.json" => {
             fixture!("client-setup-max-1024-thinking-high.json")
         }
+        "client-setup-compression-initial.json" => {
+            fixture!("client-setup-compression-initial.json")
+        }
+        "client-setup-compression-resume.json" => {
+            fixture!("client-setup-compression-resume.json")
+        }
         "client-activity-start.json" => fixture!("client-activity-start.json"),
         "client-audio.json" => fixture!("client-audio.json"),
         "client-activity-end.json" => fixture!("client-activity-end.json"),
@@ -60,10 +66,7 @@ fn exact_preview_route_access_and_asymmetric_media_posture_is_frozen() {
         EndpointAudience::new("generativelanguage.googleapis.com").unwrap(),
         SupportAuthority::ProviderSupported,
     );
-    let facade = ProtocolFacadeId::new(
-        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23",
-    )
-    .unwrap();
+    let facade = ProtocolFacadeId::new(crate::GEMINI_LIVE_FACADE_REVISION).unwrap();
     let model = ModelId::new("gemini-3.1-flash-live-preview").unwrap();
     let input = MediaFormat::audio(
         AudioEncoding::Pcm16LittleEndian,
@@ -101,6 +104,7 @@ fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
             handle: None,
             thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
             maximum_output_tokens: None,
+            context_window_compression: None,
         }
         .to_json(),
         expected("client-setup-initial.json")
@@ -111,6 +115,7 @@ fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
             handle: Some(&handle),
             thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
             maximum_output_tokens: None,
+            context_window_compression: None,
         }
         .to_json(),
         expected("client-setup-resume.json")
@@ -126,6 +131,32 @@ fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
     assert_eq!(
         ClientFrame::ActivityEnd.to_json(),
         expected("client-activity-end.json")
+    );
+}
+
+#[test]
+fn default_sliding_window_setup_frames_match_the_frozen_compression_corpus() {
+    let compression = Some(crate::GeminiLiveContextWindowCompression::sliding_window());
+    assert_eq!(
+        ClientFrame::Setup {
+            handle: None,
+            thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
+            maximum_output_tokens: None,
+            context_window_compression: compression,
+        }
+        .to_json(),
+        expected("client-setup-compression-initial.json")
+    );
+    let handle = ProviderSessionHandle::new("fixture-private-handle-2".to_owned());
+    assert_eq!(
+        ClientFrame::Setup {
+            handle: Some(&handle),
+            thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
+            maximum_output_tokens: None,
+            context_window_compression: compression,
+        }
+        .to_json(),
+        expected("client-setup-compression-resume.json")
     );
 }
 

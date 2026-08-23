@@ -31,13 +31,25 @@ const INSTANCE_POLICY: &str = "gemini-live-preview-authorization-key-manual-audi
 
 #[derive(Clone, Default)]
 /// Low-level driver for Gemini Live preview realtime-media sessions.
-pub struct GeminiLiveDriver;
+pub struct GeminiLiveDriver {
+    context_window_compression: Option<crate::GeminiLiveContextWindowCompression>,
+}
 
 impl GeminiLiveDriver {
     /// Creates the stateless Live protocol driver.
     #[must_use]
     pub fn new() -> Self {
-        Self
+        Self::default()
+    }
+
+    /// Binds the exact adapter-local compression selection to this driver.
+    #[must_use]
+    pub(crate) const fn with_context_window_compression(
+        mut self,
+        compression: crate::GeminiLiveContextWindowCompression,
+    ) -> Self {
+        self.context_window_compression = Some(compression);
+        self
     }
 
     fn validate(

@@ -1,6 +1,6 @@
 # 135 Gemini Live Context-Window-Compression Acceptance
 
-Status: conditional
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,14 @@ Depends on: card 134
 Prove exact compression setup dispatch, preserved omission, control
 composition, and continuity behavior, then produce one review-ready route-local
 closeout.
+
+## Outcome
+
+Deterministic coverage proves exact default-only dispatch, omission byte
+preservation, rollover and fresh restoration continuity, handle privacy, and
+composition with every admitted thinking level plus omitted and representative
+output maxima. The route-local guide, Research 195, milestone, cards, example,
+and reserved closeout record the dispatch-only boundary.
 
 ## Scope
 
@@ -39,18 +47,18 @@ closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted form and rejected value class has deterministic coverage
-- [ ] initial, rollover/resume, restoration, composition, and omission bytes
+- [x] every admitted form and rejected value class has deterministic coverage
+- [x] initial, rollover/resume, restoration, composition, and omission bytes
       are exact
-- [ ] default QA performs no credential, account, external request, provider
+- [x] default QA performs no credential, account, external request, provider
       prompt, or paid work
-- [ ] docs distinguish selected/planned/dispatched compression from accepted or
+- [x] docs distinguish selected/planned/dispatched compression from accepted or
       effective behavior
-- [ ] no retained-history, duration, token-saving, sibling-route, or
+- [x] no retained-history, duration, token-saving, sibling-route, or
       compatibility claim is inferred
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass
 
 ## Validation
 

@@ -153,27 +153,46 @@ rejected before endpoint, credential, or socket work. The adapter never
 clamps, aliases, invents a default, truncates client-side, or reports an
 effective generated length.
 
-Both selections are fixed at preparation and immutable for the session: the
-same values are sent on the initial setup, on the one planned rollover setup,
-and on a fresh working-state restoration. Omitting reasoning keeps the route's
-existing fixed setup bytes, which already carry `MINIMAL`, and claims no
-reasoning capability. An explicit `minimal` selection serializes identically
-but is a planned `ReasoningSelection` in the capability profile, plan, and
-prepared evidence. Omitting the output maximum leaves `maxOutputTokens` absent
-and claims no `OutputTokenLimit` capability.
+`GeminiLiveSessionProfileInput::with_context_window_compression` adds the one
+admitted adapter-local compression selection:
+`GeminiLiveContextWindowCompression::sliding_window()`. It serializes the
+exact top-level setup member
+`contextWindowCompression: { slidingWindow: {} }`. This is a provider-default
+selection; the adapter does not choose, expose, clamp, or infer token values.
+Explicit `triggerTokens` and `targetTokens` forms remain withheld because the
+exact accepted numeric domain and model-specific rejection behavior are not
+closed.
+
+All three selections are fixed at preparation and immutable for the session:
+the same values are sent on the initial setup, on the one planned rollover
+setup, and on a fresh working-state restoration. Omission preserves the prior
+setup bytes: reasoning keeps the route's fixed `MINIMAL` value and claims no
+reasoning capability, output maximum leaves `maxOutputTokens` absent and
+claims no `OutputTokenLimit` capability, and compression sends no
+`contextWindowCompression` member. An explicit `minimal` selection serializes
+identically but is a planned `ReasoningSelection` in the capability profile,
+plan, and prepared evidence.
 
 Swallowtail claims qualified dispatch only. The Live surface's setup
 acknowledgement carries no fields, so provider acceptance, effective reasoning
 depth, thought-summary disclosure, and effective generated length are not
-claimed or observable here. Thought summaries, `includeThoughts`, and
+claimed or observable here. The same boundary applies to compression: no
+effective trigger, retained-history, duration, token-saving, or semantic
+continuity guarantee is claimed. Thought summaries, `includeThoughts`, and
 `thinkingBudget` remain out of scope.
 
-The thinking-plus-output-maximum behavior is qualified at its own exact opaque
-facade point, `GEMINI_LIVE_FACADE_REVISION`. Two earlier points remain named and
-non-executable: `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION` for the pre-thinking
-proof, and `GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION` for the
-thinking-capable proof. Neither is a supported claim; a plan carrying either is
-rejected before endpoint, credential, or socket work. Publish a new
+The thinking-plus-output-maximum-plus-compression behavior is qualified at its
+own exact opaque facade point,
+`google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-context-compression-2026-08-23`,
+through `GEMINI_LIVE_FACADE_REVISION`. Its private behavior revision is
+`gemini.live-preview-manual-pcm-rollover-thinking-output-max-context-compression-v4`,
+claim is `gemini.live-preview-window-4`, and prepared model-route revision is
+`prepared-4`. Three earlier points remain named and non-executable:
+`GEMINI_LIVE_SUPERSEDED_FACADE_REVISION` for the pre-thinking proof,
+`GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION` for the thinking-capable
+proof, and `GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION` for the
+output-maximum proof. None is a supported claim; a plan carrying any of them
+is rejected before endpoint, credential, or socket work. Publish a new
 configured-instance revision when moving to the current point.
 
 Rollover uses only the latest in-memory resumable handle after provider

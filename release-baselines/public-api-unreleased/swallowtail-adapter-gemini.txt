@@ -75,6 +75,9 @@ pub struct swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput
 impl swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput
 pub const fn swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_gemini::GeminiHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput::with_owned_transcript_cleanup(self) -> Self
+pub struct swallowtail_adapter_gemini::GeminiLiveContextWindowCompression
+impl swallowtail_adapter_gemini::GeminiLiveContextWindowCompression
+pub const fn swallowtail_adapter_gemini::GeminiLiveContextWindowCompression::sliding_window() -> Self
 pub struct swallowtail_adapter_gemini::GeminiLiveDriver
 impl swallowtail_adapter_gemini::GeminiLiveDriver
 pub fn swallowtail_adapter_gemini::GeminiLiveDriver::new() -> Self
@@ -86,6 +89,7 @@ pub const fn swallowtail_adapter_gemini::GeminiLivePreparationInput::new(swallow
 pub struct swallowtail_adapter_gemini::GeminiLivePreparedEvidence
 impl swallowtail_adapter_gemini::GeminiLivePreparedEvidence
 pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::context_window_compression(&self) -> core::option::Option<swallowtail_adapter_gemini::GeminiLiveContextWindowCompression>
 pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub struct swallowtail_adapter_gemini::GeminiLivePreparedIntegration
@@ -102,6 +106,7 @@ pub struct swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
 impl swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
 pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_context_window_compression(self, swallowtail_adapter_gemini::GeminiLiveContextWindowCompression) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
 pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub struct swallowtail_adapter_gemini::GeminiModelsDriver
@@ -191,6 +196,7 @@ pub const swallowtail_adapter_gemini::GEMINI_LIVE_FACADE_REVISION: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MAX_OUTPUT_TOKENS: u64
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION: &str
 pub const swallowtail_adapter_gemini::GEMINI_MODELS_ACCESS_PROFILE_ID: &str

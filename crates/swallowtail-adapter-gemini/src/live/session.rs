@@ -43,6 +43,7 @@ pub(super) struct GeminiLiveSession {
     pub(super) deadline: Option<swallowtail_runtime::Deadline>,
     pub(super) thinking_level: &'static str,
     pub(super) maximum_output_tokens: Option<std::num::NonZeroU64>,
+    pub(super) context_window_compression: Option<crate::GeminiLiveContextWindowCompression>,
     historical_cleanup: CleanupOutcome,
 }
 
@@ -53,6 +54,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
         request: OpenRealtimeMediaSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>> {
+        let context_window_compression = self.context_window_compression;
         Box::pin(async move {
             services.require_execution_host(plan.execution_host_id())?;
             Self::validate(&plan, &request, &services)?;
@@ -83,6 +85,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
                     handle: None,
                     thinking_level,
                     maximum_output_tokens,
+                    context_window_compression,
                 }
                 .to_json(),
             )
@@ -130,6 +133,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
                 deadline: request.deadline(),
                 thinking_level,
                 maximum_output_tokens,
+                context_window_compression,
                 historical_cleanup: CleanupOutcome::NotApplicable,
             }) as Box<dyn RealtimeMediaSessionHandle>)
         })

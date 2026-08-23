@@ -19,6 +19,7 @@ impl GeminiLiveSession {
                         handle: Some(handle),
                         thinking_level: self.thinking_level,
                         maximum_output_tokens: self.maximum_output_tokens,
+                        context_window_compression: self.context_window_compression,
                     }
                     .to_json()
                 })

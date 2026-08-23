@@ -18,6 +18,7 @@ fn every_admitted_thinking_level_serializes_to_its_exact_setup_frame() {
             handle: None,
             thinking_level: thinking_level(&mode("minimal")).expect("minimal maps"),
             maximum_output_tokens: None,
+            context_window_compression: None,
         }
         .to_json(),
         expected("client-setup-initial.json")
@@ -32,6 +33,7 @@ fn every_admitted_thinking_level_serializes_to_its_exact_setup_frame() {
                 handle: None,
                 thinking_level: thinking_level(&mode(portable)).expect("admitted value maps"),
                 maximum_output_tokens: None,
+                context_window_compression: None,
             }
             .to_json(),
             expected(corpus)
@@ -43,6 +45,7 @@ fn every_admitted_thinking_level_serializes_to_its_exact_setup_frame() {
             handle: Some(&handle),
             thinking_level: thinking_level(&mode("high")).expect("high maps"),
             maximum_output_tokens: None,
+            context_window_compression: None,
         }
         .to_json(),
         expected("client-setup-resume-thinking-high.json")
@@ -76,6 +79,7 @@ fn admitted_output_maxima_serialize_to_exact_setup_frames() {
                 handle: None,
                 thinking_level: OMITTED_THINKING_LEVEL,
                 maximum_output_tokens: Some(maximum(value)),
+                context_window_compression: None,
             }
             .to_json(),
             expected(corpus)
@@ -87,6 +91,7 @@ fn admitted_output_maxima_serialize_to_exact_setup_frames() {
             handle: Some(&handle),
             thinking_level: OMITTED_THINKING_LEVEL,
             maximum_output_tokens: Some(maximum(65_536)),
+            context_window_compression: None,
         }
         .to_json(),
         expected("client-setup-resume-max-65536.json")
@@ -103,6 +108,7 @@ fn admitted_output_maxima_serialize_to_exact_setup_frames() {
                 handle: None,
                 thinking_level: thinking_level(&mode).expect("admitted value maps"),
                 maximum_output_tokens: Some(maximum(1024)),
+                context_window_compression: None,
             }
             .to_json(),
             expected(corpus),

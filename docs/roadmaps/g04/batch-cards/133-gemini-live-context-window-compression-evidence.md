@@ -1,6 +1,6 @@
 # 133 Gemini Live Context-Window-Compression Evidence
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,15 @@ Depends on: Research 021, 193, 194; g04.047; Contract 027 extension
 Freeze current exact-model and Live-facade context-window-compression behavior,
 then define the smallest adapter-local subset that can satisfy Contracts 027,
 037, and 040.
+
+## Outcome
+
+Research 195 is promoted with a non-empty deliver-now set: omission and the
+exact default-only sliding-window object
+`{ "slidingWindow": {} }`. Explicit trigger and target token forms are
+withheld because their exact model-specific numeric domain and rejection
+behavior remain open. The selected facade/private behavior/claim/model-route
+revisions are recorded in Research 195. Cards 134-135 proceeded.
 
 ## Method
 
@@ -50,20 +59,20 @@ secret-free repository/source inspection are sufficient for this gate.
 
 ## Acceptance Criteria
 
-- [ ] exact model, Live facade, configuration shapes, integer form, and domain
+- [x] exact model, Live facade, configuration shapes, integer form, and domain
       are source-backed or explicitly withheld
-- [ ] omission, initial/resume setup, restoration, handle truth, and control
+- [x] omission, initial/resume setup, restoration, handle truth, and control
       composition are explicit
-- [ ] every candidate shape/value class is deliver-now, gated, withheld, or
+- [x] every candidate shape/value class is deliver-now, gated, withheld, or
       obsolete
-- [ ] facade/private behavior/claim/model-route revisions are explicit
-- [ ] acceptance, effective trigger, retained history, duration, and savings
+- [x] facade/private behavior/claim/model-route revisions are explicit
+- [x] acceptance, effective trigger, retained history, duration, and savings
       are not inferred from dispatch
-- [ ] Research 195 is promoted with an exact deliver-now table
-- [ ] no production code, capability, matrix, or compatibility claim changes
-- [ ] `effigy validate:focused swallowtail-adapter-gemini` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] Research 195 is promoted with an exact deliver-now table
+- [x] no production code, capability, matrix, or compatibility claim changes
+- [x] `effigy validate:focused swallowtail-adapter-gemini` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 134 only when Research 195 admits a non-empty exact
 configuration set and preserves omission, composition, rollover, restoration,

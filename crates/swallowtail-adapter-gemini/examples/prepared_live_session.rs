@@ -2,8 +2,8 @@
 
 use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
-    GeminiLivePreparationInput, GeminiLivePreparedIntegration, GeminiLiveSessionProfileInput,
-    GeminiPreparedLiveSession, prepare_gemini_live,
+    GeminiLiveContextWindowCompression, GeminiLivePreparationInput, GeminiLivePreparedIntegration,
+    GeminiLiveSessionProfileInput, GeminiPreparedLiveSession, prepare_gemini_live,
 };
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{Deadline, HostServices, PreparationFailure, RequestId};
@@ -38,6 +38,14 @@ fn select_output_maximum(
 ) -> GeminiLiveSessionProfileInput {
     GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(request_id, deadline)
         .with_maximum_output_tokens(maximum)
+}
+
+fn select_context_window_compression(
+    request_id: RequestId,
+    deadline: Option<Deadline>,
+) -> GeminiLiveSessionProfileInput {
+    GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(request_id, deadline)
+        .with_context_window_compression(GeminiLiveContextWindowCompression::sliding_window())
 }
 
 fn main() {}

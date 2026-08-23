@@ -9,18 +9,21 @@ use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperatio
 /// Immutable access and preflight evidence for a Gemini Live session.
 pub struct GeminiLivePreparedEvidence {
     operation: PreparedOperationEvidence,
+    context_window_compression: Option<crate::GeminiLiveContextWindowCompression>,
 }
 
 impl GeminiLivePreparedEvidence {
     pub(super) fn from_prepared(
         prepared: &GeminiLivePreparedIntegration,
         plan: PreflightPlan,
+        context_window_compression: Option<crate::GeminiLiveContextWindowCompression>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan(
                 plan,
                 prepared.access_evidence().clone(),
             )?,
+            context_window_compression,
         })
     }
 
@@ -41,6 +44,14 @@ impl GeminiLivePreparedEvidence {
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }
+
+    /// Returns the exact adapter-local compression selection, if present.
+    #[must_use]
+    pub const fn context_window_compression(
+        &self,
+    ) -> Option<crate::GeminiLiveContextWindowCompression> {
+        self.context_window_compression
+    }
 }
 
 pub(super) fn model_route(
@@ -50,7 +61,7 @@ pub(super) fn model_route(
     ModelRoute::new(
         swallowtail_core::ModelRouteId::new(crate::GEMINI_LIVE_MODEL_ROUTE_ID)
             .expect("static Gemini Live route id is valid"),
-        swallowtail_core::ModelRouteRevision::new("prepared-3")
+        swallowtail_core::ModelRouteRevision::new("prepared-4")
             .expect("static Gemini Live route revision is valid"),
         prepared.instance().id().clone(),
         swallowtail_core::ModelId::new(crate::GEMINI_LIVE_MODEL_ID)

@@ -5,8 +5,9 @@ use live_support::{Call, LiveFixture, LiveScenario, TimeMode, config, rollover_p
 use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
     GEMINI_LIVE_FACADE_REVISION, GEMINI_LIVE_MAX_OUTPUT_TOKENS,
-    GEMINI_LIVE_SUPERSEDED_FACADE_REVISION, GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION,
-    GeminiLiveDriver, GeminiLiveSessionProfileInput, prepare_gemini_live,
+    GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION, GEMINI_LIVE_SUPERSEDED_FACADE_REVISION,
+    GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION, GeminiLiveDriver,
+    GeminiLiveSessionProfileInput, prepare_gemini_live,
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, PreflightPlan, ReasoningMode,
@@ -227,7 +228,7 @@ fn agreed_out_of_domain_maximum_rejects_before_endpoint_or_credential_work() {
 }
 
 #[test]
-fn both_historical_facade_points_are_named_and_no_longer_executable() {
+fn all_historical_facade_points_are_named_and_no_longer_executable() {
     assert_eq!(
         GEMINI_LIVE_SUPERSEDED_FACADE_REVISION,
         "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
@@ -238,10 +239,19 @@ fn both_historical_facade_points_are_named_and_no_longer_executable() {
         "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23",
         "the thinking-capable proof keeps its exact historical point"
     );
+    assert_eq!(
+        GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION,
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23",
+        "the output-maximum proof keeps its exact historical point"
+    );
     let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
     for (label, facade) in [
         ("pre-thinking", GEMINI_LIVE_SUPERSEDED_FACADE_REVISION),
         ("thinking", GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION),
+        (
+            "output-maximum",
+            GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION,
+        ),
     ] {
         let failure = block_on(
             GeminiLiveDriver::new().open_realtime_media_session(

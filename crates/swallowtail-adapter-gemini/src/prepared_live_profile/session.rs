@@ -44,7 +44,12 @@ impl GeminiPreparedLiveSession {
     /// Creates the stateless low-level Live driver.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiLiveDriver {
-        GeminiLiveDriver::new()
+        match self.evidence.context_window_compression() {
+            Some(compression) => {
+                GeminiLiveDriver::new().with_context_window_compression(compression)
+            }
+            None => GeminiLiveDriver::new(),
+        }
     }
 
     /// Opens the prepared media session using the supplied host services.
@@ -96,8 +101,15 @@ impl GeminiLivePreparedIntegration {
         &self,
         input: GeminiLiveSessionProfileInput,
     ) -> Result<GeminiPreparedLiveSession, PreparationFailure> {
-        let (request_id, config, deadline, rollover, reasoning_mode, maximum_output_tokens) =
-            input.into_parts();
+        let (
+            request_id,
+            config,
+            deadline,
+            rollover,
+            reasoning_mode,
+            maximum_output_tokens,
+            context_window_compression,
+        ) = input.into_parts();
         if config != crate::gemini_live_media_config() {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -145,7 +157,11 @@ impl GeminiLivePreparedIntegration {
             request = request.with_maximum_output_tokens(maximum);
         }
         Ok(GeminiPreparedLiveSession {
-            evidence: GeminiLivePreparedEvidence::from_prepared(self, plan)?,
+            evidence: GeminiLivePreparedEvidence::from_prepared(
+                self,
+                plan,
+                context_window_compression,
+            )?,
             request,
         })
     }

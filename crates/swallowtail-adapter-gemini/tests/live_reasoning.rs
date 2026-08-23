@@ -58,7 +58,7 @@ fn every_admitted_level_prepares_with_exact_capability_plan_and_request() {
         );
         assert_eq!(
             operation.plan().protocol_facade_id().as_str(),
-            "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23"
+            "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-context-compression-2026-08-23"
         );
         assert_eq!(
             operation.plan().model_id().expect("model bound").as_str(),

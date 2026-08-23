@@ -66,11 +66,12 @@ and selection policy.
 - [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
 - [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [g04.051 Qwen Headless Turn And Tool Budgets](051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
+- [g04.052 Mistral Vibe Headless Maximum Turns](052-mistral-vibe-headless-max-turns.md) — ready, cards 145-147
 
-g04 has 51 numbered roadmaps: 47 completed milestones and four honest evidence
-stops at 040, 042, 043, and 045. The operator keeps the generation active.
-Reassess the remaining per-route inventory before compiling another bounded
-family; do not close g04 without explicit operator direction.
+g04 has 52 numbered roadmaps: 47 completed milestones, four honest evidence
+stops at 040, 042, 043, and 045, and one ready milestone. The operator keeps
+the generation active. Execute g04.052 serially; do not close g04 without
+explicit operator direction.
 
 ## Current Checkpoint
 
@@ -160,9 +161,12 @@ family; do not close g04 without explicit operator direction.
 - g04.051 is on `main` at `9807e322` through PR 50: Research 198 and cards
   142-144 realize exact Qwen Code `0.21.15` caller-decreasing turn budgets
   `1..=24` and tool-call budgets `0..=16` across every child shape
+- g04.052 is compiled and ready: Research 199 and cards 145-147 form one
+  serial evidence-first lane for exact Mistral Vibe `2.24.2`
+  caller-decreasing maximum turns
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 51 roadmaps; generation closure awaits explicit
+- g04 remains active at 52 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -198,9 +202,9 @@ family; do not close g04 without explicit operator direction.
 14. g04.051 cards 142-144 delivered exact Qwen Code `0.21.15` caller-
     decreasing turn and tool-call budgets and merged through PR 50 at
     `9807e322`.
-15. g04 remains active at operator direction. Reassess the remaining per-route
-    inventory before compiling another bounded family. Contract 029 remains
-    standing.
+15. g04.052 compiles exact Mistral Vibe `2.24.2` caller-decreasing maximum-
+    turn evidence and conditional binding as cards 145-147.
+16. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -224,6 +228,7 @@ New route-family research does not pre-empt this sequence.
 - [049 OpenAI Background Service Tier](./049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
 - [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [051 Qwen Headless Turn And Tool Budgets](./051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
+- [052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md) — ready, cards 145-147
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

@@ -1434,3 +1434,37 @@ approval posture, model route, credentials, and currentness do not change.
 No later route-control family is selected. After this lane is reviewed and
 merged, reassess the promoted inventory. g04 remains open until explicit
 operator direction.
+
+## Post-g04.051 Reassessment (2026-08-23)
+
+Disposition: select caller-decreasing maximum turns on exact
+`mistral-vibe.headless` `2.24.2` and compile g04.052.
+
+The current route already dispatches `--max-turns 8`. Current official
+[README documentation](https://github.com/mistralai/mistral-vibe/blob/v2.24.2/README.md)
+defines the flag as a limit on assistant turns. Exact
+[`v2.24.2` source](https://github.com/mistralai/mistral-vibe/tree/v2.24.2)
+parses an integer, installs `TurnLimitMiddleware`, checks the step counter
+before a turn, and stops with a native turn-limit reason. The current
+Swallowtail route already maps the programmatic limit exit separately from
+successful `end_turn` and joins the child.
+
+This is enough to compile an evidence-first lane, not to qualify a public
+domain. Exact source accepts broader values: zero stops before an assistant
+turn, negative values are not rejected at argparse, and omitting the flag is
+unbounded. Research 199 and card 145 must settle the turn definition,
+off-by-one behavior, useful positive subset, process/stderr/stream/terminal
+truth, partial events, cancellation, deadline, and cleanup. The candidate
+public subset is positive `1..=8`; caller omission must retain exact
+`--max-turns 8` argv.
+
+Cards 146-147 are conditional on a non-empty deliver-now table. The control
+stays adapter-local and is not Contract 040 `OutputTokenLimit`. Output
+streaming, plan agent, trust, workdir, access, host deadline, cancellation,
+failure, cleanup, exact release membership, and qualified-only currentness do
+not change. Vibe ACP, TUI, continuation, teleport, auth, model selection,
+price/token limits, tools, and later releases remain outside this lane.
+
+No later route-control family is selected. After g04.052 review, merge, and
+shared closeout, reassess the remaining promoted inventory. g04 remains open
+until explicit operator direction.

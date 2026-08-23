@@ -14,9 +14,11 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory and select the next exact
-transport/control family before compiling another bounded lane. Keep g04 open
-until explicit operator direction. Contract 029 currentness stays standing.
+Execute g04.052 cards 145-147 serially: exact Mistral Vibe `2.24.2`
+maximum-turn evidence, then conditional adapter-local binding and acceptance.
+Stop honestly after card 145 if Research 199 admits no deliver-now row. Keep
+g04 open until explicit operator direction. Contract 029 currentness stays
+standing.
 
 ## Standing Lanes
 

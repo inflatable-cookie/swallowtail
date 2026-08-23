@@ -130,12 +130,17 @@ families do not interrupt this programme by default.
   142-144 realize exact Qwen Code `0.21.15` caller-decreasing turn budgets
   `1..=24` and tool-call budgets `0..=16` across runs and every turn child.
   Omission preserves `24` / `16`; wall time and tool permissions remain fixed.
+- [g04.052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md)
+  is ready. Research 199 and cards 145-147 form one serial evidence-first lane
+  for exact Vibe `2.24.2` caller-decreasing positive maximum turns. Candidate
+  values are `1..=8`; caller omission preserves `--max-turns 8`. Binding and
+  acceptance remain conditional on a non-empty exact deliver-now table.
 
 ## Next Planning Boundary
 
-Reassess the remaining promoted per-route inventory and compile the next
-bounded feature family only after selecting its exact transport and control
-boundary. Keep g04 active until explicit operator direction.
+Execute g04.052 serially. After its evidence, review, merge, and shared
+closeout, reassess the remaining promoted per-route inventory before compiling
+another bounded family. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

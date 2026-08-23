@@ -2,8 +2,9 @@
 
 ## Planned
 
-None. Reassess the remaining per-route inventory before compiling another
-bounded family.
+- [147-mistral-vibe-headless-max-turns-acceptance.md](./147-mistral-vibe-headless-max-turns-acceptance.md) — conditional on card 146
+- [146-mistral-vibe-headless-max-turns-binding.md](./146-mistral-vibe-headless-max-turns-binding.md) — conditional on a non-empty Research 199 deliver-now set
+- [145-mistral-vibe-headless-max-turns-evidence.md](./145-mistral-vibe-headless-max-turns-evidence.md) — ready
 
 Cards 070-071 remain unused gaps, not tasks.
 

@@ -1,6 +1,6 @@
 # 144 Qwen Headless Turn And Tool Budget Acceptance
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -37,17 +37,17 @@ terminal, provider, quality, latency, or billing truth.
 
 ## Acceptance Criteria
 
-- [ ] every admitted state and rejected boundary has deterministic coverage
-- [ ] omission and selected dispatch truth remain exact and distinct
-- [ ] counter and terminal claims do not exceed Research 198 evidence
-- [ ] ordinary/reasoning and run/session child lifecycles remain exact
-- [ ] default QA performs no install, login, credential, catalogue, external
+- [x] every admitted state and rejected boundary has deterministic coverage
+- [x] omission and selected dispatch truth remain exact and distinct
+- [x] counter and terminal claims do not exceed Research 198 evidence
+- [x] ordinary/reasoning and run/session child lifecycles remain exact
+- [x] default QA performs no install, login, credential, catalogue, external
       request, provider prompt, or paid work
-- [ ] docs do not infer provider acceptance, completed work, quality, latency,
+- [x] docs do not infer provider acceptance, completed work, quality, latency,
       billing, or operation-wide counting from child-local dispatch
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass
 
 ## Validation
 
@@ -83,4 +83,21 @@ Auto-continuation: No.
 
 - live provider verification, shared front-door edits, publication, merge, or
   g04 closure
+
+## Closeout
+
+Card 144 added deterministic prepared-facade coverage for omitted `24` / `16`,
+independent omission, selected `1` / `0`, reasoning-selected first/resume/
+replacement children at `8` / `4`, unqualified-version rejection, native
+exit 55, and budget/plan version mismatch before process start. Existing
+ordinary, reasoning, session, cancellation, deadline, failure, and cleanup
+tests remain green. The prepared guide and Research 198 describe dispatch and
+terminal truth without claiming provider acceptance, completed work, quality,
+latency, billing, or operation-wide counting.
+
+Named validation passed in the worker worktree: focused package validation
+(55 tests), affected-package verification, examples, route QA, Northstar QA,
+research/log/roadmap indexes, next-action QA, package API, and diff checks.
+No credentials, account state, live provider request, paid work, or merge was
+used. PR/head truth is recorded in the reserved closeout after the PR opens.
 

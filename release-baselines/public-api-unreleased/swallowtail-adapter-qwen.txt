@@ -3,6 +3,13 @@ pub struct swallowtail_adapter_qwen::QwenCatalogueProfileInput
 impl swallowtail_adapter_qwen::QwenCatalogueProfileInput
 pub const fn swallowtail_adapter_qwen::QwenCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
 pub const fn swallowtail_adapter_qwen::QwenCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_qwen::QwenHeadlessBudgets
+impl swallowtail_adapter_qwen::QwenHeadlessBudgets
+pub const fn swallowtail_adapter_qwen::QwenHeadlessBudgets::omitted() -> Self
+pub const fn swallowtail_adapter_qwen::QwenHeadlessBudgets::session_turns(&self) -> core::option::Option<swallowtail_adapter_qwen::QwenSessionTurnBudget>
+pub const fn swallowtail_adapter_qwen::QwenHeadlessBudgets::tool_calls(&self) -> core::option::Option<swallowtail_adapter_qwen::QwenToolCallBudget>
+pub const fn swallowtail_adapter_qwen::QwenHeadlessBudgets::with_session_turns(self, swallowtail_adapter_qwen::QwenSessionTurnBudget) -> Self
+pub const fn swallowtail_adapter_qwen::QwenHeadlessBudgets::with_tool_calls(self, swallowtail_adapter_qwen::QwenToolCallBudget) -> Self
 pub struct swallowtail_adapter_qwen::QwenHeadlessDriver
 impl swallowtail_adapter_qwen::QwenHeadlessDriver
 pub const fn swallowtail_adapter_qwen::QwenHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
@@ -34,6 +41,7 @@ pub const fn swallowtail_adapter_qwen::QwenPreparedCatalogue::request(&self) -> 
 pub struct swallowtail_adapter_qwen::QwenPreparedEvidence
 impl swallowtail_adapter_qwen::QwenPreparedEvidence
 pub const fn swallowtail_adapter_qwen::QwenPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_qwen::QwenPreparedEvidence::budgets(&self) -> swallowtail_adapter_qwen::QwenHeadlessBudgets
 pub const fn swallowtail_adapter_qwen::QwenPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
 pub const fn swallowtail_adapter_qwen::QwenPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
 pub const fn swallowtail_adapter_qwen::QwenPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
@@ -75,11 +83,27 @@ pub struct swallowtail_adapter_qwen::QwenRunProfileInput
 impl swallowtail_adapter_qwen::QwenRunProfileInput
 pub const fn swallowtail_adapter_qwen::QwenRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_qwen::QwenModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_qwen::QwenRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const fn swallowtail_adapter_qwen::QwenRunProfileInput::with_session_turn_budget(self, swallowtail_adapter_qwen::QwenSessionTurnBudget) -> Self
+pub const fn swallowtail_adapter_qwen::QwenRunProfileInput::with_tool_call_budget(self, swallowtail_adapter_qwen::QwenToolCallBudget) -> Self
 pub struct swallowtail_adapter_qwen::QwenSessionProfileInput
 impl swallowtail_adapter_qwen::QwenSessionProfileInput
 pub const fn swallowtail_adapter_qwen::QwenSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_qwen::QwenModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
 pub const fn swallowtail_adapter_qwen::QwenSessionProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_qwen::QwenSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const fn swallowtail_adapter_qwen::QwenSessionProfileInput::with_session_turn_budget(self, swallowtail_adapter_qwen::QwenSessionTurnBudget) -> Self
+pub const fn swallowtail_adapter_qwen::QwenSessionProfileInput::with_tool_call_budget(self, swallowtail_adapter_qwen::QwenToolCallBudget) -> Self
+pub struct swallowtail_adapter_qwen::QwenSessionTurnBudget(_)
+impl swallowtail_adapter_qwen::QwenSessionTurnBudget
+pub const swallowtail_adapter_qwen::QwenSessionTurnBudget::MAX: u8
+pub const swallowtail_adapter_qwen::QwenSessionTurnBudget::MIN: u8
+pub const fn swallowtail_adapter_qwen::QwenSessionTurnBudget::get(self) -> u8
+pub const fn swallowtail_adapter_qwen::QwenSessionTurnBudget::try_new(u8) -> core::option::Option<Self>
+pub struct swallowtail_adapter_qwen::QwenToolCallBudget(_)
+impl swallowtail_adapter_qwen::QwenToolCallBudget
+pub const swallowtail_adapter_qwen::QwenToolCallBudget::MAX: u8
+pub const swallowtail_adapter_qwen::QwenToolCallBudget::MIN: u8
+pub const fn swallowtail_adapter_qwen::QwenToolCallBudget::get(self) -> u8
+pub const fn swallowtail_adapter_qwen::QwenToolCallBudget::try_new(u8) -> core::option::Option<Self>
 pub const swallowtail_adapter_qwen::PINNED_QWEN_CODE_COMMIT: &str
 pub const swallowtail_adapter_qwen::PINNED_QWEN_CODE_VERSION: &str
 pub const swallowtail_adapter_qwen::QWEN_CODE_AXIS: &str

@@ -75,7 +75,7 @@ impl QwenPreparedIntegration {
         &self,
         input: QwenRunProfileInput,
     ) -> Result<QwenPreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline, reasoning) =
+        let (request_id, model, content, working_resource, deadline, reasoning, budgets) =
             input.into_parts();
         let activity = activity_profile(self)?;
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
@@ -87,6 +87,7 @@ impl QwenPreparedIntegration {
                 reasoning,
             )?;
         }
+        crate::budgets::validate_preparation(self.observation().version().version(), budgets)?;
         let mut capability_requirements = run_capabilities()
             .iter()
             .map(|(capability, constraints)| {
@@ -130,7 +131,9 @@ impl QwenPreparedIntegration {
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(QwenPreparedRun {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity, reasoning)?,
+            evidence: QwenPreparedEvidence::from_prepared(
+                self, plan, activity, reasoning, budgets,
+            )?,
             request,
         })
     }

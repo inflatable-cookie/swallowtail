@@ -7,6 +7,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod budgets;
 mod catalogue;
 mod command;
 mod control;
@@ -31,8 +32,9 @@ pub use prepared_catalogue::{
     QwenCatalogueProfileInput, QwenPreparedCatalogue, prepare_qwen_catalogue,
 };
 pub use prepared_profile::{
-    QwenModelSelection, QwenPreparedEvidence, QwenPreparedRun, QwenPreparedSession,
-    QwenRunProfileInput, QwenSessionProfileInput,
+    QwenHeadlessBudgets, QwenModelSelection, QwenPreparedEvidence, QwenPreparedRun,
+    QwenPreparedSession, QwenRunProfileInput, QwenSessionProfileInput, QwenSessionTurnBudget,
+    QwenToolCallBudget,
 };
 pub use selection::{
     QWEN_CODE_AXIS, QWEN_CODE_BASELINE_VERSION, QWEN_CODE_LATEST_QUALIFIED_VERSION,

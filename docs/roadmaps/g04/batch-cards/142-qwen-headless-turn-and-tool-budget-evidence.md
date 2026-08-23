@@ -1,6 +1,6 @@
 # 142 Qwen Headless Turn And Tool Budget Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -55,23 +55,23 @@ configuration change is authorized.
 
 ## Acceptance Criteria
 
-- [ ] exact official and `0.21.15` evidence is frozen with source identity and
+- [x] exact official and `0.21.15` evidence is frozen with source identity and
       complete specimen digests
-- [ ] upstream parser domains and Swallowtail caller-decreasing domains are
+- [x] upstream parser domains and Swallowtail caller-decreasing domains are
       distinct
-- [ ] zero-tool usefulness and pre-dispatch enforcement are explicit
-- [ ] turn/tool counter definitions and child-local lifetimes are explicit
-- [ ] run, first, resumed, replacement, ordinary, and reasoning-selected
+- [x] zero-tool usefulness and pre-dispatch enforcement are explicit
+- [x] turn/tool counter definitions and child-local lifetimes are explicit
+- [x] run, first, resumed, replacement, ordinary, and reasoning-selected
       profiles have dispositions
-- [ ] process exit, stderr, stream, terminal, partial-event, and cleanup truth
+- [x] process exit, stderr, stream, terminal, partial-event, and cleanup truth
       is explicit or withheld
-- [ ] plan/evidence representation and compatibility revision are explicit
-- [ ] Research 198 is promoted with a deliver-now table or honest empty set
-- [ ] no production code, shared capability, matrix, contract, or currentness
+- [x] plan/evidence representation and compatibility revision are explicit
+- [x] Research 198 is promoted with a deliver-now table or honest empty set
+- [x] no production code, shared capability, matrix, contract, or currentness
       claim changes
-- [ ] `effigy validate:focused swallowtail-adapter-qwen` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-qwen` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 143 only when Research 198 admits a non-empty exact
 value/profile set with truthful child and terminal semantics.
@@ -89,4 +89,19 @@ value/profile set with truthful child and terminal semantics.
 
 - production binding, guide/matrix claims, another Qwen version/route, live
   work, wall-time selection, permission/tool expansion, release, or merge
+
+## Closeout
+
+Card 142 promoted Research 198 on 2026-08-23. The deliver-now set is
+caller-decreasing per-child `--max-session-turns` `1..=24` and
+`--max-tool-calls` `0..=16` on exact package `0.21.15`, including ordinary
+and reasoning-selected structured runs plus first, resumed, and fresh
+replacement children. Omission keeps current `24` / `16`. Zero-tool is
+useful: first tool tick aborts before dispatch. Counters are process-local
+and reset on every child. Terminal truth stays exit 53 / 55 with plain
+stderr on `stream-json`; Swallowtail already classifies those exits.
+
+Cards 143-144 are admitted because the deliver-now set is non-empty. No
+shared capability, Contract 029 edit, or currentness-range change is
+required on the worker branch.
 

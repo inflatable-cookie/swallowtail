@@ -71,11 +71,13 @@ impl QwenSessionHandle {
                 .with_arguments(
                     match (self.reasoning.is_some(), expected_session.as_deref()) {
                         (true, Some(session_id)) => {
-                            resumed_reasoning_arguments(&self.model, session_id)
+                            resumed_reasoning_arguments(&self.model, session_id, self.budgets)
                         }
-                        (true, None) => reasoning_arguments(&self.model),
-                        (false, Some(session_id)) => resumed_arguments(&self.model, session_id),
-                        (false, None) => arguments(&self.model),
+                        (true, None) => reasoning_arguments(&self.model, self.budgets),
+                        (false, Some(session_id)) => {
+                            resumed_arguments(&self.model, session_id, self.budgets)
+                        }
+                        (false, None) => arguments(&self.model, self.budgets),
                     },
                 )
                 .with_environment([self.environment.clone()])

@@ -89,7 +89,8 @@ impl QwenPreparedIntegration {
         &self,
         input: QwenSessionProfileInput,
     ) -> Result<QwenPreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, deadline, reasoning) = input.into_parts();
+        let (request_id, model, working_resource, deadline, reasoning, budgets) =
+            input.into_parts();
         let activity = activity_profile(self)?;
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         if let Some(reasoning) = reasoning.as_ref() {
@@ -100,6 +101,7 @@ impl QwenPreparedIntegration {
                 reasoning,
             )?;
         }
+        crate::budgets::validate_preparation(self.observation().version().version(), budgets)?;
         let mut session_capabilities = session_capabilities();
         if let Some(reasoning) = reasoning.as_ref() {
             session_capabilities.push(CapabilityRequirement::new(
@@ -141,7 +143,9 @@ impl QwenPreparedIntegration {
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?
             .with_options(options);
         Ok(QwenPreparedSession {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity, reasoning)?,
+            evidence: QwenPreparedEvidence::from_prepared(
+                self, plan, activity, reasoning, budgets,
+            )?,
             request,
         })
     }

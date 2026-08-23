@@ -1,4 +1,5 @@
 use crate::DRIVER_ID;
+use crate::budgets::QwenHeadlessBudgets;
 use crate::command::{arguments, reasoning_arguments};
 use crate::control::establish_reasoning_and_write_user;
 use crate::handle::{QwenProcessCancellation, QwenRunHandle};
@@ -21,17 +22,30 @@ const EVENT_CAPACITY: usize = 4098;
 /// Low-level driver for installed Qwen Code CLI operations.
 pub struct QwenHeadlessDriver {
     environment: EnvironmentRef,
+    budgets: QwenHeadlessBudgets,
 }
 
 impl QwenHeadlessDriver {
     /// Creates a Qwen driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            budgets: QwenHeadlessBudgets::omitted(),
+        }
+    }
+
+    pub(crate) const fn with_budgets(mut self, budgets: QwenHeadlessBudgets) -> Self {
+        self.budgets = budgets;
+        self
     }
 
     pub(crate) const fn environment(&self) -> &EnvironmentRef {
         &self.environment
+    }
+
+    pub(crate) const fn budgets(&self) -> QwenHeadlessBudgets {
+        self.budgets
     }
 }
 
@@ -109,6 +123,7 @@ impl QwenHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         let selection = validate(&plan, &request, &services)?;
+        crate::budgets::validate_runtime(&selection, self.budgets)?;
         let task_service = services
             .task()
             .cloned()
@@ -139,9 +154,9 @@ impl QwenHeadlessDriver {
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
             .with_arguments(if request.policy().reasoning_mode().is_some() {
-                reasoning_arguments(&model)
+                reasoning_arguments(&model, self.budgets)
             } else {
-                arguments(&model)
+                arguments(&model, self.budgets)
             })
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);

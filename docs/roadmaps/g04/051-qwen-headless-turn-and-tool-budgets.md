@@ -1,6 +1,6 @@
 # g04.051 Qwen Headless Turn And Tool Budgets
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -32,20 +32,20 @@ command.
 
 ## Goals
 
-- [ ] freeze current official and exact `0.21.15` parsing, counter, lifetime,
+- [x] freeze current official and exact `0.21.15` parsing, counter, lifetime,
       terminal, and version evidence
-- [ ] classify candidate turns `1..=24` and tool calls `0..=16` without
+- [x] classify candidate turns `1..=24` and tool calls `0..=16` without
       treating those ranges as prequalified
-- [ ] settle zero-tool usefulness and exact turn accounting for this route's
+- [x] settle zero-tool usefulness and exact turn accounting for this route's
       one-prompt child shape
-- [ ] classify ordinary and reasoning-selected structured runs, first turns,
+- [x] classify ordinary and reasoning-selected structured runs, first turns,
       resumed turns, and fresh replacement children
-- [ ] promote Research 198 with an exact deliver-now table or honest stop
-- [ ] preserve omission as exact current `24` / `16` argv and behavior
-- [ ] bind only admitted values through typed adapter-local input, immutable
+- [x] promote Research 198 with an exact deliver-now table or honest stop
+- [x] preserve omission as exact current `24` / `16` argv and behavior
+- [x] bind only admitted values through typed adapter-local input, immutable
       plan/evidence, driver validation, and every spawned child
-- [ ] reject invalid or mismatched values before process start or user prompt
-- [ ] publish deterministic dispatch and terminal truth without claiming
+- [x] reject invalid or mismatched values before process start or user prompt
+- [x] publish deterministic dispatch and terminal truth without claiming
       provider acceptance, completed work, quality, latency, or billing
 
 ## Non-Goals
@@ -86,38 +86,38 @@ An empty Research 198 deliver-now set is an honest stop.
 
 ### Batch 51.1 — Exact Budget Evidence
 
-- [ ] Execute card 142.
-- [ ] freeze official and exact-package parsing, counting, lifetime, and
+- [x] Execute card 142.
+- [x] freeze official and exact-package parsing, counting, lifetime, and
       terminal evidence
-- [ ] promote Research 198 with domain/profile/terminal dispositions
+- [x] promote Research 198 with domain/profile/terminal dispositions
 
 ### Batch 51.2 — Conditional Budget Binding
 
-- [ ] Execute card 143 only when card 142 admits a non-empty deliver-now set.
-- [ ] add typed adapter-local caller-decreasing selection
-- [ ] preserve omission and every fixed safety boundary
-- [ ] bind admitted values across every child shape
+- [x] Execute card 143 only when card 142 admits a non-empty deliver-now set.
+- [x] add typed adapter-local caller-decreasing selection
+- [x] preserve omission and every fixed safety boundary
+- [x] bind admitted values across every child shape
 
 ### Batch 51.3 — Route-Local Acceptance
 
-- [ ] Execute card 144 only after card 143.
-- [ ] prove admitted, omitted, composed, rejected, terminal, and lifecycle truth
-- [ ] update route-local guidance and reserve the shared closeout delta
+- [x] Execute card 144 only after card 143.
+- [x] prove admitted, omitted, composed, rejected, terminal, and lifecycle truth
+- [x] update route-local guidance and reserve the shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 198 deliver-now values and profiles prepare
-- [ ] omission preserves current `24` / `16` argv and behavior
-- [ ] input, plan/evidence, driver, and every child command agree exactly
-- [ ] reasoning-selected and ordinary children retain their existing transport
-- [ ] invalid values and knowable mismatches reject before effects
-- [ ] native wall time, host deadline, tool set, approval mode, and credentials
+- [x] only Research 198 deliver-now values and profiles prepare
+- [x] omission preserves current `24` / `16` argv and behavior
+- [x] input, plan/evidence, driver, and every child command agree exactly
+- [x] reasoning-selected and ordinary children retain their existing transport
+- [x] invalid values and knowable mismatches reject before effects
+- [x] native wall time, host deadline, tool set, approval mode, and credentials
       are unchanged
-- [ ] budget exits, stderr, stream, terminal, cancellation, and cleanup are
+- [x] budget exits, stderr, stream, terminal, cancellation, and cleanup are
       represented only to the exact proved boundary
-- [ ] default QA performs no install, login, credential, catalogue, prompt, or
+- [x] default QA performs no install, login, credential, catalogue, prompt, or
       paid work
-- [ ] g04.051 closes only this route-local family; g04 remains active until the
+- [x] g04.051 closes only this route-local family; g04 remains active until the
       operator directs otherwise
 
 ## Lane Runway
@@ -143,9 +143,9 @@ An empty Research 198 deliver-now set is an honest stop.
 
 ## Batch Cards
 
-- [142-qwen-headless-turn-and-tool-budget-evidence.md](batch-cards/142-qwen-headless-turn-and-tool-budget-evidence.md) — ready
-- [143-qwen-headless-turn-and-tool-budget-binding.md](batch-cards/143-qwen-headless-turn-and-tool-budget-binding.md) — conditional
-- [144-qwen-headless-turn-and-tool-budget-acceptance.md](batch-cards/144-qwen-headless-turn-and-tool-budget-acceptance.md) — conditional
+- [142-qwen-headless-turn-and-tool-budget-evidence.md](batch-cards/142-qwen-headless-turn-and-tool-budget-evidence.md) — complete
+- [143-qwen-headless-turn-and-tool-budget-binding.md](batch-cards/143-qwen-headless-turn-and-tool-budget-binding.md) — complete
+- [144-qwen-headless-turn-and-tool-budget-acceptance.md](batch-cards/144-qwen-headless-turn-and-tool-budget-acceptance.md) — complete
 
 ## References
 
@@ -164,4 +164,24 @@ An empty Research 198 deliver-now set is an honest stop.
 - [Qwen Headless Prepared Integration](../../guides/qwen-headless-prepared-integration.md)
 - [Qwen Headless Mode](https://qwenlm.github.io/qwen-code-docs/en/users/features/headless/)
 - [Qwen Code v0.21.15](https://github.com/QwenLM/qwen-code/tree/v0.21.15)
+
+## Closeout
+
+g04.051 closes the Qwen headless caller-decreasing turn/tool-budget family at
+the route-local dispatch boundary. Research 198 admits exact package
+`0.21.15` turns `1..=24` and tool calls `0..=16`. Omission keeps `--max-session-turns
+24 --max-tool-calls 16`. Wall time stays `60s`. Counters are process-local
+and reset on every child. Terminal truth is exit 53 / 55 with plain
+`stream-json` stderr; Swallowtail already maps those to
+`native_turn_limit` and `native_budget`.
+
+Cards 142-144 bound that subset through adapter-local types, immutable
+plan/evidence, driver validation, and every structured-run, first, resumed,
+and fresh-replacement child. No shared capability, portable policy field, or
+Contract 029 edit landed on the worker branch. g04 stays open.
+
+The reserved closeout names the shared delta for the orchestrator:
+architecture, Contract 029, route/feature matrices, programme/front-door
+indexes, changelog, the g04 generation boundary, and the sole Next Task
+pointer remain untouched by this worker.
 

@@ -1,4 +1,5 @@
 use crate::QwenPreparedIntegration;
+use crate::budgets::QwenHeadlessBudgets;
 use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, EndpointAuthorization, EntitlementState, ExecutionLayer,
@@ -15,6 +16,7 @@ pub struct QwenPreparedEvidence {
     environment: swallowtail_runtime::EnvironmentRef,
     operation: PreparedOperationEvidence,
     reasoning_mode: Option<swallowtail_core::ReasoningMode>,
+    budgets: QwenHeadlessBudgets,
 }
 
 impl QwenPreparedEvidence {
@@ -23,11 +25,13 @@ impl QwenPreparedEvidence {
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
         reasoning_mode: Option<swallowtail_core::ReasoningMode>,
+        budgets: QwenHeadlessBudgets,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
             reasoning_mode,
+            budgets,
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
@@ -72,8 +76,14 @@ impl QwenPreparedEvidence {
         self.reasoning_mode.as_ref()
     }
 
+    /// Returns the admitted per-child turn and tool budgets.
+    #[must_use]
+    pub const fn budgets(&self) -> QwenHeadlessBudgets {
+        self.budgets
+    }
+
     pub(super) fn low_level_driver(&self) -> crate::QwenHeadlessDriver {
-        crate::QwenHeadlessDriver::new(self.environment.clone())
+        crate::QwenHeadlessDriver::new(self.environment.clone()).with_budgets(self.budgets)
     }
 }
 

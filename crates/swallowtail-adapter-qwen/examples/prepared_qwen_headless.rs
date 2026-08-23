@@ -2,7 +2,8 @@
 
 use swallowtail_adapter_qwen::{
     QwenPreparationInput, QwenPreparationProbe, QwenPreparedIntegration, QwenPreparedRun,
-    QwenPreparedSession, QwenRunProfileInput, QwenSessionProfileInput, prepare_qwen_headless,
+    QwenPreparedSession, QwenRunProfileInput, QwenSessionProfileInput, QwenSessionTurnBudget,
+    QwenToolCallBudget, prepare_qwen_headless,
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, InteractiveSessionHandle, PreparationFailure, RuntimeFailure,
@@ -29,6 +30,19 @@ fn prepare_session(
     input: QwenSessionProfileInput,
 ) -> Result<QwenPreparedSession, PreparationFailure> {
     integration.prepare_session(input)
+}
+
+fn prepare_run_with_budgets(
+    integration: &QwenPreparedIntegration,
+    input: QwenRunProfileInput,
+    turns: QwenSessionTurnBudget,
+    tools: QwenToolCallBudget,
+) -> Result<QwenPreparedRun, PreparationFailure> {
+    integration.prepare_run(
+        input
+            .with_session_turn_budget(turns)
+            .with_tool_call_budget(tools),
+    )
 }
 
 async fn open_session(

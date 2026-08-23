@@ -2,6 +2,7 @@ mod lifecycle;
 mod turn;
 
 use self::lifecycle::{ActiveSlot, SessionCancellation, close_active};
+use crate::budgets::QwenHeadlessBudgets;
 use crate::validation::{failure, unsupported};
 use crate::{DRIVER_ID, QwenHeadlessDriver};
 use std::sync::{Arc, Mutex};
@@ -36,6 +37,7 @@ pub(super) struct QwenSessionHandle {
     pub(super) environment: swallowtail_runtime::EnvironmentRef,
     pub(super) target: swallowtail_core::InstanceTargetRef,
     pub(super) reasoning: Option<ReasoningMode>,
+    pub(super) budgets: QwenHeadlessBudgets,
 }
 
 impl InteractiveSessionDriver for QwenHeadlessDriver {
@@ -47,6 +49,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             let selection = validate_open(&plan, &request, &services)?;
+            crate::budgets::validate_runtime(&selection, self.budgets())?;
             let active = Arc::new(Mutex::new(None));
             let state = Arc::new(Mutex::new(SessionState {
                 provider_session_id: None,
@@ -84,6 +87,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
                 environment: self.environment().clone(),
                 target: plan.instance_target_ref().clone(),
                 reasoning: request.options().reasoning_mode().cloned(),
+                budgets: self.budgets(),
             }) as Box<dyn InteractiveSessionHandle>)
         })
     }

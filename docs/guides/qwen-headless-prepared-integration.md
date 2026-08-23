@@ -50,9 +50,10 @@ prompt content, read-only working resource, and mandatory host deadline. Call
 `prepare_run`, inspect its plan and request, then `start_run`.
 
 The plan binds prompt bytes over stdin, partial stream-JSON output, the frozen
-read-only and excluded-tool sets, a 60-second native wall time, at most 16 tool
-calls, and at most 24 session turns. Provider retention is allowed, but the run
-exposes no reusable provider identity.
+read-only and excluded-tool sets, and a 60-second native wall time. Omitted
+turn/tool budgets keep the current command bytes: at most 16 tool calls and at
+most 24 Qwen session turns **per child**. Provider retention is allowed, but
+the run exposes no reusable provider identity.
 
 Take the event stream and terminal outcome immediately and poll them
 concurrently. Drain assistant, tool, usage, and terminal events, then close the
@@ -83,6 +84,36 @@ create a synthetic configuration root. It proves requested, planned,
 dispatched, and Qwen-control accepted values only; it does not claim
 provider-effective or response-observed reasoning. The exact evidence is in
 [Research 189](../research/189-qwen-headless-reasoning-effort-evidence.md).
+
+### Exact Turn And Tool Budgets
+
+Turn and tool budgets are qualified only at package `0.21.15`. They are
+adapter-local caller-decreasing limits for one Qwen child: session turns
+`1..=24` and tool calls `0..=16`. Other package points, raised values,
+unlimited `-1`, turn budget `0`, fractions, and aliases stay withheld or
+invalid. An omitted field keeps the current `--max-session-turns 24` or
+`--max-tool-calls 16` bytes. Wall time stays `60s`.
+
+Supply a selected value through `with_session_turn_budget` /
+`with_tool_call_budget` on `QwenRunProfileInput` or
+`QwenSessionProfileInput`, using `QwenSessionTurnBudget` (`1..=24`) and
+`QwenToolCallBudget` (`0..=16`). Inspect the admitted pair on
+`QwenPreparedEvidence::budgets` as `QwenHeadlessBudgets`. The prepared
+evidence and every spawned child — structured run, first turn, resumed turn,
+and fresh replacement — must emit the same integers. Counters are
+process-local and reset on every child, including `--resume`. They do not
+reduce Swallowtail's separate interactive session bound of 24 host turns,
+prove that the provider completed less work, or become portable generation
+controls.
+
+Zero tool calls can still produce assistant text. The first tool request
+aborts before dispatch. Overrun is a process exit: 53 for the turn cap and 55
+for a native run budget (tool-call or wall-time). This route's `stream-json`
+output writes those failures as stderr plus exit code, not a stronger
+semantic stream event. Swallowtail already classifies those exits as
+`swallowtail.qwen.headless.native_turn_limit` and
+`swallowtail.qwen.headless.native_budget`. Exact evidence is in
+[Research 198](../research/198-qwen-headless-turn-and-tool-budget-evidence.md).
 
 ## Interactive Continuation
 

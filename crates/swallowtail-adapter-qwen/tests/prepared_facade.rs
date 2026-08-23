@@ -6,9 +6,10 @@ use futures_executor::block_on;
 use std::sync::Arc;
 use support::{FakeProcessService, PendingTimeService, ScriptedProcessService, host_services_for};
 use swallowtail_adapter_qwen::{
-    QWEN_CODE_AXIS, QwenCatalogueProfileInput, QwenHeadlessDriver, QwenModelSelection,
-    QwenPreparationInput, QwenPreparationProbe, QwenRunProfileInput, QwenSessionProfileInput,
-    prepare_qwen_catalogue, prepare_qwen_headless,
+    QWEN_CODE_AXIS, QwenCatalogueProfileInput, QwenHeadlessBudgets, QwenHeadlessDriver,
+    QwenModelSelection, QwenPreparationInput, QwenPreparationProbe, QwenRunProfileInput,
+    QwenSessionProfileInput, QwenSessionTurnBudget, QwenToolCallBudget, prepare_qwen_catalogue,
+    prepare_qwen_headless,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -32,5 +33,6 @@ include!("prepared_facade/reasoning_dispatch.rs");
 include!("prepared_facade/reasoning_rejections.rs");
 include!("prepared_facade/sessions.rs");
 include!("prepared_facade/reasoning_sessions.rs");
+include!("prepared_facade/budgets.rs");
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/support.rs");

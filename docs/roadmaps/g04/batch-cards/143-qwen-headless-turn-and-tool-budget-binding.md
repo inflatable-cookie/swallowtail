@@ -1,6 +1,6 @@
 # 143 Qwen Headless Turn And Tool Budget Binding
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -41,15 +41,15 @@ every admitted child command.
 
 ## Acceptance Criteria
 
-- [ ] only Research 198 deliver-now values and profiles prepare
-- [ ] selection, plan/evidence, driver, and every child argv agree exactly
-- [ ] omission remains byte- and behavior-stable at `24` / `16`
-- [ ] ordinary and reasoning-selected run/session behavior is unchanged
-- [ ] invalid values, aliases, unlimited values, raised bounds, and knowable
+- [x] only Research 198 deliver-now values and profiles prepare
+- [x] selection, plan/evidence, driver, and every child argv agree exactly
+- [x] omission remains byte- and behavior-stable at `24` / `16`
+- [x] ordinary and reasoning-selected run/session behavior is unchanged
+- [x] invalid values, aliases, unlimited values, raised bounds, and knowable
       mismatches reject before effects
-- [ ] wall time, host deadline, tool set, approval posture, credentials, model,
+- [x] wall time, host deadline, tool set, approval posture, credentials, model,
       resume, cancellation, and cleanup remain unchanged
-- [ ] no shared runtime, portable capability, sibling route, retry, fallback,
+- [x] no shared runtime, portable capability, sibling route, retry, fallback,
       provider-acceptance, quality, latency, or billing claim enters the API
 
 ## Validation
@@ -79,4 +79,13 @@ terminal, rejection, and lifecycle preservation pass.
 
 - route guide, shared closeout, live provider work, another version/profile,
   wall-time selection, release, publication, or merge
+
+## Closeout
+
+Card 143 bound Research 198's exact `0.21.15` subset through
+`QwenSessionTurnBudget`, `QwenToolCallBudget`, and `QwenHeadlessBudgets` on
+prepared input, evidence, driver, and every child command. Omission still
+emits `--max-session-turns 24 --max-tool-calls 16`. Selected values reject
+on any other qualified package before process start. No shared capability
+or portable policy field was added.
 

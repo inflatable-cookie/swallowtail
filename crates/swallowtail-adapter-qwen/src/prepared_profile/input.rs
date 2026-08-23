@@ -1,3 +1,4 @@
+use crate::budgets::{QwenHeadlessBudgets, QwenSessionTurnBudget, QwenToolCallBudget};
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, WorkingResourceRef};
 
@@ -46,6 +47,7 @@ pub struct QwenRunProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Deadline,
     reasoning_mode: Option<ReasoningMode>,
+    budgets: QwenHeadlessBudgets,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -56,6 +58,7 @@ pub struct QwenSessionProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     reasoning_mode: Option<ReasoningMode>,
+    budgets: QwenHeadlessBudgets,
 }
 
 impl QwenSessionProfileInput {
@@ -72,6 +75,7 @@ impl QwenSessionProfileInput {
             working_resource,
             deadline: None,
             reasoning_mode: None,
+            budgets: QwenHeadlessBudgets::omitted(),
         }
     }
 
@@ -89,6 +93,20 @@ impl QwenSessionProfileInput {
         self
     }
 
+    /// Selects an admitted per-child session-turn budget.
+    #[must_use]
+    pub const fn with_session_turn_budget(mut self, budget: QwenSessionTurnBudget) -> Self {
+        self.budgets = self.budgets.with_session_turns(budget);
+        self
+    }
+
+    /// Selects an admitted per-child tool-call budget.
+    #[must_use]
+    pub const fn with_tool_call_budget(mut self, budget: QwenToolCallBudget) -> Self {
+        self.budgets = self.budgets.with_tool_calls(budget);
+        self
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
@@ -97,6 +115,7 @@ impl QwenSessionProfileInput {
         WorkingResourceRef,
         Option<Deadline>,
         Option<ReasoningMode>,
+        QwenHeadlessBudgets,
     ) {
         (
             self.request_id,
@@ -104,6 +123,7 @@ impl QwenSessionProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.budgets,
         )
     }
 }
@@ -125,6 +145,7 @@ impl QwenRunProfileInput {
             working_resource,
             deadline,
             reasoning_mode: None,
+            budgets: QwenHeadlessBudgets::omitted(),
         }
     }
 
@@ -132,6 +153,20 @@ impl QwenRunProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    /// Selects an admitted per-child session-turn budget.
+    #[must_use]
+    pub const fn with_session_turn_budget(mut self, budget: QwenSessionTurnBudget) -> Self {
+        self.budgets = self.budgets.with_session_turns(budget);
+        self
+    }
+
+    /// Selects an admitted per-child tool-call budget.
+    #[must_use]
+    pub const fn with_tool_call_budget(mut self, budget: QwenToolCallBudget) -> Self {
+        self.budgets = self.budgets.with_tool_calls(budget);
         self
     }
 
@@ -144,6 +179,7 @@ impl QwenRunProfileInput {
         WorkingResourceRef,
         Deadline,
         Option<ReasoningMode>,
+        QwenHeadlessBudgets,
     ) {
         (
             self.request_id,
@@ -152,6 +188,7 @@ impl QwenRunProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.budgets,
         )
     }
 }

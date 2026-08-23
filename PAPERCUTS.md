@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Qwen budget proof raises the god-file error baseline — 2026-08-23
+- Friction: PR 50 adds a 441-line `prepared_facade/budgets.rs`, raising doctor
+  findings from 376 to 377 and error-level findings from 46 to 47 while the
+  worker closeout reports the inherited baseline unchanged.
+- Impact: the feature proof leaves structural health worse and records false
+  validation evidence for later review and closeout.
+- Fix: split run/version/terminal and session/replacement budget proofs into
+  focused test modules, then record the actual unchanged baseline.
+- Surface: `swallowtail-adapter-qwen` prepared-facade budget acceptance tests.
+
 ### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,
   `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above

@@ -1,6 +1,6 @@
 # 137 OpenAI Background Service-Tier Binding
 
-Status: blocked; card 136 evidence stop
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -44,15 +44,15 @@ driver validation, exact request encoding, and qualified response parsing.
 
 ## Acceptance Criteria
 
-- [ ] only Research 196 deliver-now values and profiles prepare
-- [ ] input, plan/evidence, driver, request bytes, and admitted observations
+- [x] only Research 196 deliver-now values and profiles prepare
+- [x] input, plan/evidence, driver, request bytes, and admitted observations
       agree exactly
-- [ ] omission preserves the prior create request
-- [ ] aliases, unknown values, unqualified access, and drift reject before
+- [x] omission preserves the prior create request
+- [x] aliases, unknown values, unqualified access, and drift reject before
       effects where knowable
-- [ ] reasoning, structured output, reattachment, and lifecycle behavior remain
+- [x] reasoning, structured output, reattachment, and lifecycle behavior remain
       unchanged
-- [ ] no shared runtime, portable capability, sibling route, project setting,
+- [x] no shared runtime, portable capability, sibling route, project setting,
       retry, fallback, cost, latency, or capacity claim enters the API
 
 ## Validation
@@ -84,9 +84,13 @@ composition, rejection, and every admitted lifecycle profile pass.
 
 ## Closeout
 
-Not executed. Research 196 admits no deliver-now value or profile. Official
-docs freeze the complete enum, Fast aliasing, Ultrafast access control, and
-requested-versus-returned drift, but this route cannot prove access,
-observation, or durable selected/returned truth. There is no typed input,
-plan constraint, prepared evidence, driver binding, request field, or
-response parser to implement.
+Bound Research 196's dispatch-only `default` row through
+`OpenAiBackgroundServiceTier::standard()`, optional
+`OpenAiBackgroundRunProfileInput::with_service_tier`, prepared evidence, and
+`OpenAiBackgroundDriver::with_service_tier`. Create encoding adds
+`service_tier: "default"` only when selected. Omission keeps the prior fixture
+bytes. Detachment plus `default` rejects before effects. Reconciliation does
+not restore a create field. `auto`, `flex`, `priority`, `fast`, `ultrafast`,
+and `scale` are not constructible. Returned `service_tier` is ignored.
+Facade `openai-responses-background-2026-08-23-service-tier`, behavior
+`openai.responses-background-v3`, claim `openai.responses-background-window-1`.

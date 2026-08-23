@@ -9,6 +9,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 /// Prepared background-run evidence, including observable activity support.
 pub struct OpenAiBackgroundPreparedEvidence {
     operation: PreparedOperationEvidence,
+    service_tier: Option<crate::OpenAiBackgroundServiceTier>,
 }
 
 impl OpenAiBackgroundPreparedEvidence {
@@ -16,6 +17,7 @@ impl OpenAiBackgroundPreparedEvidence {
         prepared: &OpenAiBackgroundPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        service_tier: Option<crate::OpenAiBackgroundServiceTier>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
@@ -23,6 +25,7 @@ impl OpenAiBackgroundPreparedEvidence {
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
+            service_tier,
         })
     }
 
@@ -48,6 +51,12 @@ impl OpenAiBackgroundPreparedEvidence {
     /// Returns the immutable background-run preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    #[must_use]
+    /// Returns the exact adapter-local service-tier selection, if present.
+    pub const fn service_tier(&self) -> Option<crate::OpenAiBackgroundServiceTier> {
+        self.service_tier
     }
 }
 

@@ -2,7 +2,9 @@ use super::{
     BackgroundStatus, BackgroundStream, Method, ProviderEvent, ProviderFailureKind, Request,
     Response, SseDecoder, parse_deletion, parse_failure, parse_snapshot, require_success,
 };
-use crate::{ENDPOINT_AUDIENCE, INTEGRATION_FAMILY, SUPPORT_AUTHORITY};
+use crate::{
+    ENDPOINT_AUDIENCE, INTEGRATION_FAMILY, OpenAiBackgroundServiceTier, SUPPORT_AUTHORITY,
+};
 use serde_json::Value;
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{OperationContent, SchemaDocument, StructuredOutputDescriptor};
@@ -16,8 +18,8 @@ const REATTACHED: &[u8] =
 #[test]
 fn create_and_management_requests_match_the_frozen_public_api_shape() {
     let content = OperationContent::new("Say hello").expect("content is valid");
-    let create =
-        Request::create("gpt-5.6", &content, 64, None, None).expect("create request is valid");
+    let create = Request::create("gpt-5.6", &content, 64, None, None, None)
+        .expect("create request is valid");
     let expected: Value = serde_json::from_slice(include_bytes!(
         "../../tests/fixtures/openai-responses-2026-07-21/create-request.json"
     ))
@@ -89,8 +91,15 @@ fn generation_controls_match_the_frozen_responses_shape() {
     )
     .expect("schema descriptor is valid");
     let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
-    let request = Request::create("gpt-5.6", &content, 64, Some(&reasoning), Some(&schema))
-        .expect("generation controls encode");
+    let request = Request::create(
+        "gpt-5.6",
+        &content,
+        64,
+        Some(&reasoning),
+        Some(&schema),
+        None,
+    )
+    .expect("generation controls encode");
     let expected: Value = serde_json::from_slice(include_bytes!(
         "../../tests/fixtures/openai-responses-2026-07-21/generation-controls-request.json"
     ))
@@ -103,16 +112,110 @@ fn generation_controls_match_the_frozen_responses_shape() {
 }
 
 #[test]
+fn generation_controls_compose_with_default_service_tier() {
+    let content = OperationContent::new("Return one fixture result").expect("content is valid");
+    let schema = StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid");
+    let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+    let request = Request::create(
+        "gpt-5.6",
+        &content,
+        64,
+        Some(&reasoning),
+        Some(&schema),
+        Some(OpenAiBackgroundServiceTier::standard()),
+    )
+    .expect("generation controls compose with standard service tier");
+    let body: Value = serde_json::from_slice(request.body.as_ref().expect("request has body"))
+        .expect("request body is JSON");
+    let expected: Value = serde_json::from_slice(include_bytes!(
+        "../../tests/fixtures/openai-responses-2026-07-21/generation-controls-request.json"
+    ))
+    .expect("fixture is JSON");
+    assert_eq!(body["reasoning"], expected["reasoning"]);
+    assert_eq!(body["text"], expected["text"]);
+    assert_eq!(body["service_tier"], "default");
+}
+
+#[test]
 fn supported_background_reasoning_values_encode_without_substitution() {
     let content = OperationContent::new("Say hello").expect("content is valid");
     for effort in ["none", "low", "medium", "high", "xhigh", "max"] {
         let reasoning = ReasoningMode::new(effort).expect("reasoning is valid");
-        let request = Request::create("gpt-5.6", &content, 64, Some(&reasoning), None)
+        let request = Request::create("gpt-5.6", &content, 64, Some(&reasoning), None, None)
             .expect("reasoning request encodes");
         let body: Value = serde_json::from_slice(request.body.as_ref().expect("body exists"))
             .expect("request body is JSON");
         assert_eq!(body["reasoning"]["effort"], effort);
     }
+}
+
+#[test]
+fn default_service_tier_encodes_and_withheld_values_are_not_constructible() {
+    let content = OperationContent::new("Say hello").expect("content is valid");
+    let request = Request::create(
+        "gpt-5.6",
+        &content,
+        64,
+        None,
+        None,
+        Some(OpenAiBackgroundServiceTier::standard()),
+    )
+    .expect("standard service tier encodes");
+    let expected: Value = serde_json::from_slice(include_bytes!(
+        "../../tests/fixtures/openai-responses-2026-07-21/create-request-default-service-tier.json"
+    ))
+    .expect("fixture is JSON");
+    assert_eq!(
+        serde_json::from_slice::<Value>(request.body.as_ref().expect("request has body"))
+            .expect("request body is JSON"),
+        expected
+    );
+    assert_eq!(OpenAiBackgroundServiceTier::standard().as_str(), "default");
+    assert_eq!(
+        OpenAiBackgroundServiceTier::parse("default"),
+        Some(OpenAiBackgroundServiceTier::standard())
+    );
+    for value in [
+        "auto",
+        "flex",
+        "priority",
+        "fast",
+        "ultrafast",
+        "scale",
+        "Default",
+        "standard",
+        "",
+        "unknown",
+    ] {
+        assert_eq!(OpenAiBackgroundServiceTier::parse(value), None);
+    }
+}
+
+#[test]
+fn returned_service_tier_is_ignored_by_snapshot_parsing() {
+    let completed = parse_snapshot(fixture("retrieve-completed.json")).expect("completed parses");
+    let mismatched = parse_snapshot(
+        br#"{"id":"resp_fixture_123","status":"completed","service_tier":"priority","output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Hello"}]}],"usage":{"input_tokens":1,"output_tokens":2,"total_tokens":3}}"#,
+    )
+    .expect("mismatched returned tier still parses");
+    let missing = parse_snapshot(
+        br#"{"id":"resp_fixture_123","status":"completed","output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Hello"}]}],"usage":{"input_tokens":1,"output_tokens":2,"total_tokens":3}}"#,
+    )
+    .expect("absent returned tier still parses");
+    assert_eq!(mismatched.response_id, completed.response_id);
+    assert_eq!(mismatched.status, completed.status);
+    assert_eq!(mismatched.output_text, completed.output_text);
+    assert_eq!(missing.response_id, completed.response_id);
+    assert_eq!(missing.status, completed.status);
 }
 
 #[test]

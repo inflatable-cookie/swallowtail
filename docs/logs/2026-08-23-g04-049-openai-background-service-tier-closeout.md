@@ -1,15 +1,15 @@
 # 2026-08-23 g04.049 OpenAI Background Service Tier Closeout
 
-Status: stopped after evidence; PR opened
+Status: complete; PR updated after review
 Owner: Tom
 Milestone: g04.049
-Cards: 136 complete; 137-138 blocked
+Cards: 136-138 complete
 Branch: `t3code/read-background-service-tier-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
 PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
-Head: `fe5e327b`
-Review: awaiting orchestrator review
+Head: recorded on this branch after the review-fix commit
+Review: orchestrator asked to reclassify explicit `default`; that subset is now bound
 Merge: none; worker must not merge
 
 The launcher-provided worktree and branch differ from the handoff
@@ -17,67 +17,64 @@ placeholders. They were used as supplied.
 
 ## Outcome
 
-Card 136 is complete as an evidence stop. Research 196 freezes current
-official OpenAI Responses create, retrieve, streaming-events schema, Fast
-mode, Flex, background, and exact `gpt-5.6-sol` surfaces with secret-free
-specimens and digests. The complete current enum is
-`auto|default|flex|scale|priority|fast|ultrafast`. Omission behaves as
-project-configured `auto`. `fast` is a GPT-5.6 request alias of returned
-`priority`. `ultrafast` is access-controlled. `scale` is schema-only. The
-returned tier may differ from the request, including Fast ramp-rate
-downgrade to `default`.
+Research 196 now admits one deliver-now row: explicit Responses
+`service_tier: "default"` as dispatch-only on ordinary attached runs and one
+in-process reattachment. Official docs distinguish `default` from `auto`.
+There is no documented enrollment gate. Contract 040 allows qualified dispatch
+without claiming acceptance or effective value.
 
-The route's public API-key payg profile does not prove project settings or
-tier enrollment. Current `ResponseSnapshot` and portable
-`ProviderObservation` cannot expose returned-tier observation without a new
-adapter-local or shared API. `ProviderRunCheckpoint` cannot retain selected
-or returned tier, so detachment and reconciliation profiles are withheld.
-No value/profile is dispatch-only-safe under those gaps. Deliver-now rows:
-none. Cards 137 and 138 were not executed.
+Cards 137-138 bind that subset through `OpenAiBackgroundServiceTier::standard()`,
+optional prepared input, evidence, driver, and create encoding. Omission keeps
+the prior fixture bytes. Detachment plus `default` rejects before effects.
+Reconciliation does not restore a selected tier. Returned `service_tier` is
+ignored. `auto`, `flex`, `priority`, `fast`, `ultrafast`, and `scale` are not
+constructible.
+
+Current executable facade is
+`openai-responses-background-2026-08-23-service-tier` with private behavior
+`openai.responses-background-v3`. Claim id stays
+`openai.responses-background-window-1` as one Maintained exact segment. The
+2026-08-23 / v2 point is superseded proof and is not executable.
 
 ## Route-Local Surfaces
 
 Changed:
 
-- `docs/research/196-openai-background-service-tier-evidence.md`: promoted
-  evidence stop with official source digests, secret-free specimens, exact
-  enum/access/observation/lifecycle dispositions, and empty deliver-now set
-- `docs/roadmaps/g04/049-openai-background-service-tier.md`: stopped after
-  card 136; cards 137-138 blocked; current facade and omitted-create claim
-  retained
-- `docs/roadmaps/g04/batch-cards/136-openai-background-service-tier-evidence.md`:
-  complete with evidence-stop closeout
-- `docs/roadmaps/g04/batch-cards/137-openai-background-service-tier-binding.md`:
-  blocked; not executed
-- `docs/roadmaps/g04/batch-cards/138-openai-background-service-tier-acceptance.md`:
-  blocked; not executed
+- `crates/swallowtail-adapter-openai/**`: typed standard-tier selection,
+  preparation rejection with detachment, create encoding, facade/behavior
+  mint, fixtures, and tests
+- `docs/guides/openai-background-prepared-integration.md`
+- `docs/research/196-openai-background-service-tier-evidence.md`
+- `docs/roadmaps/g04/049-openai-background-service-tier.md`
+- cards 136-138
+- `release-baselines/public-api-unreleased/packages.txt` and
+  `swallowtail-adapter-openai.txt`
 - this closeout log
-
-Unchanged: `crates/swallowtail-adapter-openai/**`, OpenAI route fixtures,
-`docs/guides/openai-background-prepared-integration.md`, the unreleased
-package API baseline, and all shared surfaces.
 
 ## Shared-Surface Closeout
 
 Recorded here for orchestrator merge closeout; not applied on this branch:
 
-- architecture and route/feature matrices remain unchanged because no
-  service-tier behavior shipped
-- `CHANGELOG.md` remains unchanged because the lane changed no production
-  behavior
+- architecture and route/feature matrices should name dispatch-only explicit
+  `default` on ordinary attached + one in-process reattachment, withheld
+  detachment/reconciliation, and facade
+  `openai-responses-background-2026-08-23-service-tier`
+- `crates/swallowtail-testkit/tests/fixtures/direct-activity-applicability.json`
+  still lists qualified `openai-responses-background-2026-08-23`
+- `CHANGELOG.md` should record the additive dispatch-only selection and the
+  new opaque facade point
 - programme/front doors and the sole Next Task stay on the dispatch text
   until orchestrator merge closeout
 - batch-card, research, and log indexes still describe card 136 as ready /
   Research 196 as reserved until orchestrator updates them
 - Contract 029 currentness remains in its standing lane
-- matrix assertions and release baselines remain unchanged
 
 ## Validation
 
 Passed:
 
 - `cargo fmt -p swallowtail-adapter-openai`
-- `effigy validate:focused swallowtail-adapter-openai` — 54 tests passed
+- `effigy validate:focused swallowtail-adapter-openai` — 62 tests passed
 - `effigy package:verify-affected swallowtail-adapter-openai`
 - `effigy check:examples`
 - `effigy qa:routes`
@@ -93,15 +90,11 @@ Passed:
 
 `effigy doctor` reproduces the inherited baseline: 374 god-file findings
 (329 warnings, 45 errors) and one generated-in-src warning. This lane added
-no code finding and no `PAPERCUTS.md` entry. Card 137/138 binding-only
-checks have no subject because no binding was admitted.
+no `PAPERCUTS.md` entry.
 
 ## Unresolved
 
-A later lane may reopen the candidate only with exact official or provider
-evidence for this caller's access/enrollment, a route-local observation path
-that keeps requested and returned tier distinct without a shared portable
-API, and durable selected/returned truth across ordinary, detached, and
-reconciled profiles, or an explicit ordinary-run-only subset that does not
-need those surfaces. No live provider proof was attempted. Contract 029
-currentness was not changed.
+Withheld until later exact evidence: `auto`, `flex`, `priority`, `fast`,
+`ultrafast`, `scale`, returned-tier observation, and selected-tier retention
+across detachment or restart reconciliation. No live provider proof was
+attempted. Contract 029 currentness was not changed.

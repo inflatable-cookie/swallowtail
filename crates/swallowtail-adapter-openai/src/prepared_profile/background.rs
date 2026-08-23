@@ -45,7 +45,10 @@ impl OpenAiPreparedBackgroundRun {
     #[must_use]
     /// Returns the public low-level background driver.
     pub fn low_level_driver(&self) -> OpenAiBackgroundDriver {
-        OpenAiBackgroundDriver::new()
+        match self.evidence.service_tier() {
+            Some(service_tier) => OpenAiBackgroundDriver::new().with_service_tier(service_tier),
+            None => OpenAiBackgroundDriver::new(),
+        }
     }
 
     /// Starts the single provider inference attempt.
@@ -91,7 +94,15 @@ impl OpenAiBackgroundPreparedIntegration {
             provider_retention,
             stream_reattachment,
             active_run_detachment,
+            service_tier,
         ) = input.into_parts();
+        if service_tier.is_some() && active_run_detachment {
+            return Err(failure(
+                PreparationStage::Preflight,
+                "swallowtail.openai.preparation.service_tier_profile_unsupported",
+                "OpenAI background service-tier selection is unsupported with active-run detachment",
+            ));
+        }
         if provider_execution != ProviderExecutionPolicy::Background {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -171,7 +182,12 @@ impl OpenAiBackgroundPreparedIntegration {
             request = request.with_structured_output(output);
         }
         Ok(OpenAiPreparedBackgroundRun {
-            evidence: OpenAiBackgroundPreparedEvidence::from_prepared(self, plan, activity)?,
+            evidence: OpenAiBackgroundPreparedEvidence::from_prepared(
+                self,
+                plan,
+                activity,
+                service_tier,
+            )?,
             request,
         })
     }

@@ -1,6 +1,6 @@
 # 136 OpenAI Background Service-Tier Evidence
 
-Status: complete; evidence stop
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -75,7 +75,9 @@ secret-free repository/source inspection are sufficient for this gate.
 
 Auto-continue to card 137 only when Research 196 admits a non-empty exact
 value/profile set that preserves omission, composition, lifecycle, access,
-checkpoint, observation, and contract boundaries. Research 196 admits none.
+checkpoint, observation, and contract boundaries. Research 196 admits explicit
+`default` as dispatch-only for ordinary attached runs and one in-process
+reattachment.
 
 ## Stop Conditions
 
@@ -101,10 +103,12 @@ create bytes. `fast` is a GPT-5.6 request alias of returned `priority`.
 `ultrafast` is access-controlled. `scale` is schema-only. Returned tier may
 differ from the request.
 
-The public payg profile does not prove project settings or tier enrollment.
-The current route cannot expose returned-tier observation without a new
-adapter-local or shared observation API. Checkpoints cannot retain
-selected/returned tier. Deliver-now rows: none. Cards 137 and 138 are blocked
-and were not executed. The current
-`openai-responses-background-2026-08-23` facade and omitted create bytes stay
-unchanged.
+The public payg profile does not prove project settings or Fast/Flex/Ultrafast
+enrollment. Official docs distinguish explicit `default` from `auto`; there is
+no documented enrollment gate for `default`. The current route cannot expose
+returned-tier observation, so that row is dispatch-only. Checkpoints cannot
+retain selected/returned tier, so detachment and reconciliation stay withheld.
+Deliver-now: explicit `default` on ordinary attached + one in-process
+reattachment. Cards 137 and 138 execute that subset. The new facade point is
+`openai-responses-background-2026-08-23-service-tier`. Omitted create bytes
+stay unchanged.

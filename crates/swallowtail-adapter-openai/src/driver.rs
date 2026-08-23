@@ -17,6 +17,7 @@ const ROUTE: &str = "openai.background";
 /// Low-level driver for one provider-managed OpenAI background response.
 pub struct OpenAiBackgroundDriver {
     transport: CurlTransport,
+    service_tier: Option<crate::OpenAiBackgroundServiceTier>,
 }
 
 impl OpenAiBackgroundDriver {
@@ -24,6 +25,16 @@ impl OpenAiBackgroundDriver {
     /// Creates a background Responses driver using the adapter transport.
     pub fn new() -> Self {
         Self::default()
+    }
+
+    #[must_use]
+    /// Binds the exact adapter-local service-tier selection to this driver.
+    pub(crate) const fn with_service_tier(
+        mut self,
+        service_tier: crate::OpenAiBackgroundServiceTier,
+    ) -> Self {
+        self.service_tier = Some(service_tier);
+        self
     }
 
     fn validate_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {

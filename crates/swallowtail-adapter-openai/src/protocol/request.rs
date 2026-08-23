@@ -1,3 +1,4 @@
+use crate::OpenAiBackgroundServiceTier;
 use crate::failure::failure;
 use serde_json::{Value, json};
 use swallowtail_core::ReasoningMode;
@@ -36,6 +37,7 @@ impl Request {
         maximum_output_tokens: u64,
         reasoning: Option<&ReasoningMode>,
         structured_output: Option<&StructuredOutputDescriptor>,
+        service_tier: Option<OpenAiBackgroundServiceTier>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -72,6 +74,9 @@ impl Request {
                     "schema": schema
                 }
             });
+        }
+        if let Some(service_tier) = service_tier {
+            request["service_tier"] = json!(service_tier.as_str());
         }
         let body = serde_json::to_vec(&request).expect("create request JSON serializes");
         Ok(Self {

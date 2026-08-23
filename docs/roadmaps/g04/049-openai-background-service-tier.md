@@ -1,6 +1,6 @@
 # g04.049 OpenAI Background Service Tier
 
-Status: stopped after evidence
+Status: complete; awaiting review
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -39,12 +39,12 @@ access, billing, or compatibility truth.
       including aliases, defaults, access gates, and resolved-value drift
 - [x] classify ordinary, detachable, and reconciled run profiles separately
 - [x] promote Research 196 with an exact deliver-now table or honest stop
-- [ ] preserve prior request bytes and claims when service tier is omitted
-- [ ] bind only admitted values through typed adapter-local prepared state
-- [ ] keep input, plan/evidence, driver, request body, and deterministic
+- [x] preserve prior request bytes and claims when service tier is omitted
+- [x] bind only admitted values through typed adapter-local prepared state
+- [x] keep input, plan/evidence, driver, request body, and deterministic
       response parsing in exact agreement
-- [ ] compose with every admitted reasoning value and structured-output mode
-- [ ] publish requested/dispatched/resolved truth only where the exact route
+- [x] compose with every admitted reasoning value and structured-output mode
+- [x] publish requested/dispatched/resolved truth only where the exact route
       exposes it; never infer price, latency, capacity, or entitlement
 
 ## Non-Goals
@@ -64,7 +64,8 @@ The lane is restricted to route `openai.background`, driver
 `swallowtail.openai.background`, exact model route
 `openai.public.gpt-5.6.background`, model `gpt-5.6` (the documented alias for
 `gpt-5.6-sol`), axis `openai.responses-background-facade`, and current exact
-facade point `openai-responses-background-2026-08-23`.
+facade point `openai-responses-background-2026-08-23-service-tier`. The
+superseded point `openai-responses-background-2026-08-23` is historical.
 
 Card 136 must enumerate the exact current create-request and returned-response
 service-tier domains rather than copying a partial prose list. It must
@@ -104,35 +105,34 @@ An empty Research 196 deliver-now set is an honest stop.
 
 ### Batch 49.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 137 only when card 136 admits a non-empty deliver-now set.
-- [ ] bind one exact typed selection through preparation, evidence, driver,
+- [x] Execute card 137 only when card 136 admits a non-empty deliver-now set.
+- [x] bind one exact typed selection through preparation, evidence, driver,
       request encoding, and qualified response parsing
-- [ ] preserve exact omission and every existing lifecycle path
+- [x] preserve exact omission and every existing lifecycle path
 
-Card 137 is blocked. Research 196 admits no deliver-now row.
+Card 137 binds dispatch-only explicit `default` for ordinary attached runs and
+one in-process reattachment. Detachment and reconciliation stay withheld.
 
 ### Batch 49.3 — Route-Local Acceptance
 
-- [ ] Execute card 138 only after card 137.
-- [ ] prove admitted values, rejected boundaries, composition, reattachment,
+- [x] Execute card 138 only after card 137.
+- [x] prove admitted values, rejected boundaries, composition, reattachment,
       cancellation, deletion, and every admitted detachment disposition
-- [ ] update route-local guidance and reserve the shared closeout delta
-
-Card 138 is blocked. There is no admitted dispatch to prove.
+- [x] update route-local guidance and reserve the shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 196 deliver-now values and profiles prepare
-- [ ] omission preserves the prior create request exactly
-- [ ] input, plan/evidence, driver, request, and any reported response tier
+- [x] only Research 196 deliver-now values and profiles prepare
+- [x] omission preserves the prior create request exactly
+- [x] input, plan/evidence, driver, request, and any reported response tier
       agree without default substitution or aliasing
-- [ ] unsupported values and every knowable drift reject before effects
-- [ ] reasoning and structured output compose without semantic drift
-- [ ] reattachment, cancellation, deletion, detachment, and reconciliation
+- [x] unsupported values and every knowable drift reject before effects
+- [x] reasoning and structured output compose without semantic drift
+- [x] reattachment, cancellation, deletion, detachment, and reconciliation
       retain their existing truth
-- [ ] no project/account setting, tier entitlement, cost, latency, capacity,
+- [x] no project/account setting, tier entitlement, cost, latency, capacity,
       acceptance, or fallback claim is inferred
-- [ ] default QA performs no credential, account, provider, or paid work
+- [x] default QA performs no credential, account, provider, or paid work
 
 ## Lane Runway
 
@@ -159,9 +159,9 @@ Card 138 is blocked. There is no admitted dispatch to prove.
 
 ## Batch Cards
 
-- [136-openai-background-service-tier-evidence.md](batch-cards/136-openai-background-service-tier-evidence.md) — complete; evidence stop
-- [137-openai-background-service-tier-binding.md](batch-cards/137-openai-background-service-tier-binding.md) — blocked
-- [138-openai-background-service-tier-acceptance.md](batch-cards/138-openai-background-service-tier-acceptance.md) — blocked
+- [136-openai-background-service-tier-evidence.md](batch-cards/136-openai-background-service-tier-evidence.md) — complete
+- [137-openai-background-service-tier-binding.md](batch-cards/137-openai-background-service-tier-binding.md) — complete
+- [138-openai-background-service-tier-acceptance.md](batch-cards/138-openai-background-service-tier-acceptance.md) — complete
 
 ## References
 
@@ -182,14 +182,12 @@ Card 138 is blocked. There is no admitted dispatch to prove.
 - [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode)
 - [Flex processing](https://developers.openai.com/api/docs/guides/flex-processing)
 
-## Evidence Stop
+## Dispatch-Only Default
 
-Research 196 is promoted, but its deliver-now set is empty. Official OpenAI
-documentation freezes the complete current `service_tier` enum, omission as
-project-configured `auto`, Fast request aliasing to returned `priority` on
-GPT-5.6, access-controlled Ultrafast, schema-only `scale`, and
-requested-versus-returned drift. It does not prove this payg caller's
-enrollment, a current-API observation path, or durable selected/returned
-truth across detachment and reconciliation. Cards 137 and 138 are therefore
-blocked. The existing `openai-responses-background-2026-08-23` facade point
-and omitted create bytes remain unchanged.
+Research 196 admits explicit `default` as dispatch-only for ordinary attached
+runs and one in-process reattachment. Official docs distinguish `default` from
+`auto`; there is no documented enrollment gate. Cards 137 and 138 bind that
+subset to facade `openai-responses-background-2026-08-23-service-tier` and
+behavior `openai.responses-background-v3`. Detachment, reconciliation, `auto`,
+`flex`, `priority`, `fast`, `ultrafast`, and `scale` stay withheld. Omitted
+create bytes remain unchanged. Returned `service_tier` is not observed.

@@ -22,6 +22,7 @@ mod realtime;
 mod realtime_protocol;
 mod realtime_selection;
 mod selection;
+mod service_tier;
 mod transport;
 
 pub use driver::{OpenAiBackgroundDriver, openai_background_descriptor};
@@ -63,6 +64,7 @@ pub use selection::{
     openai_background_facade_binding, openai_background_facade_claim, openai_background_instance,
     openai_background_model_route, openai_background_requirements,
 };
+pub use service_tier::OpenAiBackgroundServiceTier;
 
 pub(crate) const ENDPOINT_AUDIENCE: &str = OPENAI_BACKGROUND_ENDPOINT_AUDIENCE;
 pub(crate) const INTEGRATION_FAMILY: &str = "openai";

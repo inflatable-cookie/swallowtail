@@ -145,7 +145,7 @@ fn respond(
             let attempt = attempts.fetch_add(1, Ordering::SeqCst);
             let create_matches = match mode {
                 ServerMode::ReasoningVocabulary => reasoning_create_matches(&request.body),
-                _ => same_json(&request.body, CREATE.as_bytes()),
+                _ => omitted_or_default_create_matches(&request.body),
             };
             if attempt > 0 || !create_matches {
                 write_response(stream, 409, "application/json", "{}");
@@ -225,8 +225,18 @@ fn respond(
     }
 }
 
+fn omitted_or_default_create_matches(body: &[u8]) -> bool {
+    let Some(actual) = admitted_create_body(body) else {
+        return false;
+    };
+    let Ok(expected) = serde_json::from_str::<Value>(CREATE) else {
+        return false;
+    };
+    actual == expected
+}
+
 fn reasoning_create_matches(body: &[u8]) -> bool {
-    let Ok(actual) = serde_json::from_slice::<Value>(body) else {
+    let Some(actual) = admitted_create_body(body) else {
         return false;
     };
     let Some(effort) = actual
@@ -244,6 +254,21 @@ fn reasoning_create_matches(body: &[u8]) -> bool {
     };
     expected["reasoning"] = json!({"effort": effort});
     actual == expected
+}
+
+fn admitted_create_body(body: &[u8]) -> Option<Value> {
+    let mut actual = serde_json::from_slice::<Value>(body).ok()?;
+    match actual.get("service_tier") {
+        None => Some(actual),
+        Some(Value::String(value)) if value == "default" => {
+            actual
+                .as_object_mut()
+                .expect("create request is an object")
+                .remove("service_tier");
+            Some(actual)
+        }
+        _ => None,
+    }
 }
 
 fn write_held_stream(stream: &mut TcpStream) {
@@ -273,11 +298,6 @@ fn write_held_stream(stream: &mut TcpStream) {
             break;
         }
     }
-}
-
-fn same_json(actual: &[u8], expected: &[u8]) -> bool {
-    serde_json::from_slice::<serde_json::Value>(actual).ok()
-        == serde_json::from_slice::<serde_json::Value>(expected).ok()
 }
 
 fn write_response(stream: &mut TcpStream, status: u16, content_type: &str, body: &str) {

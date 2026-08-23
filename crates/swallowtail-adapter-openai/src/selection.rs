@@ -20,7 +20,8 @@ pub const OPENAI_BACKGROUND_ACCESS_PROFILE_ID: &str = "openai.public-api.api-key
 /// Canonical configured-instance identity for background Responses.
 pub const OPENAI_BACKGROUND_CONFIGURED_INSTANCE_ID: &str = "openai.public.responses-background";
 /// Exact qualified revision of the background Responses facade.
-pub const OPENAI_BACKGROUND_FACADE_REVISION: &str = "openai-responses-background-2026-08-23";
+pub const OPENAI_BACKGROUND_FACADE_REVISION: &str =
+    "openai-responses-background-2026-08-23-service-tier";
 /// Exact model identity qualified for the background route.
 pub const OPENAI_BACKGROUND_MODEL_ID: &str = "gpt-5.6";
 /// Canonical model-route identity for background Responses.
@@ -28,7 +29,7 @@ pub const OPENAI_BACKGROUND_MODEL_ROUTE_ID: &str = "openai.public.gpt-5.6.backgr
 
 const OPENAI_PROVIDER_ID: &str = "openai";
 const OPENAI_BACKGROUND_FACADE_AXIS: &str = "openai.responses-background-facade";
-const OPENAI_BACKGROUND_BEHAVIOR_REVISION: &str = "openai.responses-background-v2";
+const OPENAI_BACKGROUND_BEHAVIOR_REVISION: &str = "openai.responses-background-v3";
 
 #[must_use]
 /// Builds the provider-supported public API-key access profile.

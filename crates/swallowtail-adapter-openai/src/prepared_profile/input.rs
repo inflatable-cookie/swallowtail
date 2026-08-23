@@ -17,6 +17,7 @@ type OpenAiBackgroundRunParts = (
     ProviderRetentionPolicy,
     StreamReattachmentPolicy,
     bool,
+    Option<crate::OpenAiBackgroundServiceTier>,
 );
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -61,6 +62,7 @@ pub struct OpenAiBackgroundRunProfileInput {
     provider_retention: ProviderRetentionPolicy,
     stream_reattachment: StreamReattachmentPolicy,
     active_run_detachment: bool,
+    service_tier: Option<crate::OpenAiBackgroundServiceTier>,
 }
 
 impl OpenAiBackgroundRunProfileInput {
@@ -89,6 +91,7 @@ impl OpenAiBackgroundRunProfileInput {
             provider_retention,
             stream_reattachment,
             active_run_detachment: false,
+            service_tier: None,
         }
     }
 
@@ -134,6 +137,19 @@ impl OpenAiBackgroundRunProfileInput {
         self
     }
 
+    #[must_use]
+    /// Selects exact standard-processing service tier for ordinary attached runs.
+    ///
+    /// This is dispatch-only. It is rejected with active-run detachment and is
+    /// not restored from a checkpoint during reconciliation.
+    pub const fn with_service_tier(
+        mut self,
+        service_tier: crate::OpenAiBackgroundServiceTier,
+    ) -> Self {
+        self.service_tier = Some(service_tier);
+        self
+    }
+
     pub(super) fn into_parts(self) -> OpenAiBackgroundRunParts {
         (
             self.request_id,
@@ -147,6 +163,7 @@ impl OpenAiBackgroundRunProfileInput {
             self.provider_retention,
             self.stream_reattachment,
             self.active_run_detachment,
+            self.service_tier,
         )
     }
 }

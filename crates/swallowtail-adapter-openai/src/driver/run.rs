@@ -30,6 +30,7 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 maximum,
                 request.policy().reasoning_mode(),
                 request.structured_output(),
+                self.service_tier,
             )?;
             let scope = operation_scope(request.request_id().as_str())?;
             let run_id = RuntimeRunId::new(format!(

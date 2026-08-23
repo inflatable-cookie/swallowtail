@@ -1,6 +1,6 @@
 # 138 OpenAI Background Service-Tier Acceptance
 
-Status: blocked; card 136 evidence stop
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -38,17 +38,17 @@ route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted value/profile and rejected boundary has deterministic
+- [x] every admitted value/profile and rejected boundary has deterministic
       coverage
-- [ ] request and returned-tier truth stay distinct and exact
-- [ ] omission, composition, reattachment, and lifecycle behavior are exact
-- [ ] default QA performs no credential, account, external request, provider
+- [x] request and returned-tier truth stay distinct and exact
+- [x] omission, composition, reattachment, and lifecycle behavior are exact
+- [x] default QA performs no credential, account, external request, provider
       prompt, or paid work
-- [ ] docs do not infer acceptance, entitlement, project configuration, price,
+- [x] docs do not infer acceptance, entitlement, project configuration, price,
       latency, capacity, fallback, or billing from dispatch
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass
 
 ## Validation
 
@@ -86,8 +86,11 @@ Auto-continuation: No.
 
 ## Closeout
 
-Not executed. Card 137 produced no binding because Research 196 has an empty
-deliver-now set. There is no admitted request, returned-tier observation,
-composition, reattachment, detachment, or reconciliation behavior to
-exercise. The adapter, fixtures, guide, and public API baseline remain
-unchanged; the shared-surface delta is recorded in the route-local closeout.
+Deterministic protocol and prepared-facade coverage prove omitted bytes,
+explicit `default` evidence/driver/wire agreement, composition with absent and
+every admitted reasoning value plus structured output, alias/unknown rejection,
+detachment rejection, ignored returned `service_tier`, and preserved
+reattachment/cancel/delete. The OpenAI Background prepared guide, Research 196,
+cards 136-138, g04.049, this closeout, and the unreleased OpenAI public-api
+baseline record the dispatch-only subset. Shared indexes, architecture,
+CHANGELOG, and Next Task stay for orchestrator merge closeout.

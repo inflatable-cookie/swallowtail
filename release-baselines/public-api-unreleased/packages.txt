@@ -7,6 +7,7 @@ swallowtail-adapter-gemini
 swallowtail-adapter-kimi-platform
 swallowtail-adapter-llama-cpp
 swallowtail-adapter-ollama
+swallowtail-adapter-openai
 swallowtail-adapter-pi
 swallowtail-adapter-qwen
 swallowtail-adapter-xai

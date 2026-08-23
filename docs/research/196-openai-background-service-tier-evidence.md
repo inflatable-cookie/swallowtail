@@ -1,10 +1,10 @@
 # 196 OpenAI Background Service-Tier Evidence
 
-Status: promoted; evidence stop
+Status: promoted; dispatch-only deliver-now for explicit `default`
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
-Card: g04.049 / 136
+Card: g04.049 / 136-138
 
 ## Question
 
@@ -24,12 +24,15 @@ guarantees. Markdown bodies are the documented page form obtained by appending
 The route is `openai.background`, driver `swallowtail.openai.background`,
 exact model route `openai.public.gpt-5.6.background`, model `gpt-5.6`, axis
 `openai.responses-background-facade`, current facade point
-`openai-responses-background-2026-08-23`, private behavior
-`openai.responses-background-v2`, and claim
-`openai.responses-background-window-1`. The only candidate is adapter-local
+`openai-responses-background-2026-08-23-service-tier`, private behavior
+`openai.responses-background-v3`, and claim
+`openai.responses-background-window-1`. The superseded point
+`openai-responses-background-2026-08-23` / `openai.responses-background-v2`
+is historical proof, not executable. The only candidate is adapter-local
 typed selection of Responses `service_tier`.
 
-The adapter implementation and fixtures were inspected but not changed. No
+The adapter implementation and fixtures were inspected for card 136, then
+updated for cards 137-138 to bind only the admitted ordinary-run subset. No
 live provider operation, credential work, account inspection, project-setting
 read, enrollment check, quota lookup, or paid inference was used. The
 specimens below are secret-free documentation-shape specimens, not captured
@@ -125,8 +128,10 @@ support. It proves no project setting, Flex enrollment, Fast/Priority
 enrollment, Ultrafast entitlement, Scale capacity purchase, quota, or
 region/account gate.
 
-- `default` is described as standard processing, but this caller’s project
-  default is unobserved
+- `default` is standard processing. Official docs distinguish it from `auto`.
+  Explicit `default` selects standard pricing and performance. Project-default
+  uncertainty is not an access blocker for this value. There is no documented
+  enrollment gate.
 - `auto` requires that unobserved project setting
 - Flex may return `429 Resource Unavailable` without charge; official retry
   advice is exponential backoff or dropping back to `auto`/omission
@@ -146,10 +151,10 @@ These states stay distinct:
 | State | Meaning | Proven here? |
 | --- | --- | --- |
 | omitted | field absent from create bytes | yes; current fixture |
-| requested | explicit create `service_tier` | documented |
-| planned / dispatched | adapter prepared/driver/request agreement | not present today |
+| requested | explicit create `service_tier` | documented; explicit `default` is bound |
+| planned / dispatched | adapter prepared/driver/request agreement | yes for explicit `default` on ordinary attached + one in-process reattachment |
 | provider-accepted | create accepted the requested value | not proven without a live or fixture response |
-| returned | Response `service_tier` | documented; may differ |
+| returned | Response `service_tier` | documented; may differ; parser ignores the field |
 | effective / billed | processing mode actually used and charged | returned field is the documented actual-mode signal; no billed-cost mapping exists on this route |
 | observed | consumer-visible returned tier | current route does not expose it |
 
@@ -167,20 +172,20 @@ ignored, so a returned tier is neither validated nor failed closed.
 Exposing exact returned-tier observation through the current route-local API
 would require a new adapter-local public surface or a shared
 `ProviderObservation` variant. Both are outside this lane. Dispatch-only
-delivery is allowed only for values whose safe use does not need resolved-tier
-evidence.
+delivery is admitted for explicit `default` on ordinary attached runs and one
+in-process reattachment: requested, planned, and dispatched states only. The
+parser continues to ignore returned `service_tier` and does not fail closed on
+absence or mismatch.
 
-Every explicit value is in the official “parameter set, returned value may
-differ” regime. Fast mode documents silent downgrade to `default` with
-standard billing. Flex and Ultrafast change cost, capacity, or access. Safe
-use of those values requires resolved-tier evidence. Dispatch-only is
-withheld.
+`auto`, `flex`, `priority`, `fast`, `ultrafast`, and `scale` remain withheld.
+Safe use of those values requires resolved-tier evidence, access proof, or a
+canonical request spelling this route will not alias.
 
 ### Lifecycle profiles
 
 Ordinary attached runs keep selected input in process memory. One in-process
-reattachment uses the same memory. Current create fixtures omit `service_tier`;
-adding a value would change those bytes.
+reattachment uses the same memory. Explicit `default` is therefore retainable
+for those profiles without a checkpoint change.
 
 `ProviderRunCheckpoint` stores plan fingerprint, runtime run id, provider
 response id, and an opaque sequence cursor. It does not store a selected or
@@ -191,12 +196,12 @@ from project defaults or invented into the shared checkpoint.
 
 Detachment and reconciliation therefore cannot retain selected versus returned
 tier without a shared checkpoint or contract change. Those profiles are
-withheld. A narrower ordinary-run subset may proceed only when the other
-gates also pass. They do not.
+withheld. Explicit `default` plus `with_active_run_detachment` rejects before
+effects. Reconciliation does not restore a create `service_tier` field.
 
 Background, stream, store, cancel, and delete docs do not mention
 `service_tier`. The field sits on the same create/retrieve object this route
-already uses. Independent field presence is not admission.
+already uses. Independent field presence is not admission of withheld values.
 
 ### Composition and omission
 
@@ -207,20 +212,21 @@ Current omitted create bytes are the frozen fixture:
 
 Reasoning `none|low|medium|high|xhigh|max` and absent/selected provider-native
 structured output already compose on that omitted path. Official create
-documents `service_tier` independently of `reasoning` and `text.format`. There
-is no composed official specimen for every admitted reasoning value plus
-structured output plus each enum member plus this route’s lifecycle. Because
-no value is deliver-now, that composition is not a binding gap; it remains a
-reopen requirement.
+documents `service_tier` independently of `reasoning` and `text.format`.
+Explicit `default` composes with those same reasoning values and with absent
+or selected structured output on ordinary attached runs. Omitted-path bytes
+stay unchanged.
 
 ### Facade
 
-Any admitted value would change exact opaque facade behavior and would need a
-new facade point, private behavior revision, and model-route revision while
-retaining `openai-responses-background-2026-08-23` /
-`openai.responses-background-v2` as superseded proof. No value is admitted, so
-the current point, private behavior, claim id, and model-route identity stay
-unchanged. Contract 029 currentness is not widened.
+Admitted explicit `default` changes exact opaque facade behavior. The current
+executable point is `openai-responses-background-2026-08-23-service-tier`
+with private behavior `openai.responses-background-v3`. The claim id stays
+`openai.responses-background-window-1` as one Maintained exact segment. The
+prior point `openai-responses-background-2026-08-23` /
+`openai.responses-background-v2` is retained as superseded proof and is not
+executable. Direct `OpenAiBackgroundDriver::new()` still omits `service_tier`.
+Contract 029 currentness is not widened.
 
 ## Secret-Free Specimens
 
@@ -236,16 +242,18 @@ bodies. Digests cover the compact JSON shown, with no trailing newline.
 
 S1 is the compact form of
 `crates/swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/create-request.json`.
-It is the current production create shape.
+It remains the omitted production create shape.
 
-### S2 — illustrative explicit `default`
+### S2 — explicit `default`
 
 ```json
 {"model":"gpt-5.6","input":[{"role":"user","content":[{"type":"input_text","text":"<user-input>"}]}],"background":true,"stream":true,"store":false,"max_output_tokens":256,"service_tier":"default"}
 ```
 
-Not admitted. Shows the extra create field without claiming project access or
-returned-tier equality.
+Admitted as dispatch-only on ordinary attached runs and one in-process
+reattachment. Does not claim project access, returned-tier equality, cost, or
+latency. The production fixture uses `max_output_tokens: 64` and the same
+`service_tier` field.
 
 ### S3 — illustrative Fast request alias `fast`
 
@@ -298,46 +306,46 @@ caller can request or receive it.
 | --- | --- | --- |
 | Omission / absent `service_tier` | unchanged | Current create fixture and encoder omit the field. Preserve those bytes. |
 | Explicit `auto` | withheld | Distinct from omission; depends on unobserved project settings. |
-| Explicit `default` | withheld | Standard processing is documented, but returned mode may differ, this caller’s project default is unobserved, and the current route cannot expose resolved-tier evidence. |
+| Explicit `default` on ordinary attached + one in-process reattachment | deliver-now, dispatch-only | Official docs distinguish `default` from `auto`; no enrollment gate; selected input stays in process memory. Claims requested/planned/dispatched only. |
+| Explicit `default` with `with_active_run_detachment` | withheld; reject before effects | Checkpoint cannot retain selected/returned tier. |
+| Restart reconciliation | withheld | No create field; selected truth is not in the checkpoint. |
 | `flex` | withheld | Beta/limited availability, possible `429`, official fallback is `auto`/omission, no access proof. |
 | `fast` | withheld | Request alias of Fast mode; GPT-5.6 returns `priority`. Not an admissible public alias. |
 | `priority` | withheld | Canonical Fast request/returned spelling for GPT-5.6; silent downgrade to `default` is documented; access and observation are missing. |
 | `ultrafast` | withheld | Explicitly access-controlled. Public payg profile does not prove entitlement. |
 | `scale` | withheld | Schema-only; no field-docstring request/response meaning. |
 | Unknown future strings | withheld | Fail closed; not aliases. |
-| Ordinary attached run with any explicit value | withheld | Observation and access gates fail. |
-| One in-process reattachment with any explicit value | withheld | Same as ordinary; no admitted selection to retain in memory. |
-| Controlled detachment | withheld | Checkpoint cannot retain selected/returned tier without a shared change. |
-| Restart reconciliation | withheld | Retrieve can carry returned tier; selected truth is not in the checkpoint. |
-| Reasoning `none\|low\|medium\|high\|xhigh\|max` with omitted tier | unchanged | Existing omitted-path composition remains the claim. |
-| Provider-native structured output with omitted tier | unchanged | Existing omitted-path composition remains the claim. |
+| Reasoning `none\|low\|medium\|high\|xhigh\|max` with omitted or explicit `default` | compose | Existing omitted-path composition remains; explicit `default` composes on ordinary runs. |
+| Provider-native structured output with omitted or explicit `default` | compose | Same as reasoning. |
 | Account/project access, enrollment, quota, capacity | evidence-gated | No live inspection is authorized or available. |
 
 ## Candidate Disposition
 
-Deliver-now rows: none.
+Deliver-now rows:
 
-The candidate is an evidence stop, not deliver-now. Official docs freeze the
-complete current enum, omission-as-`auto`, Fast aliasing, Ultrafast access
-control, and requested-versus-returned drift. They do not establish this
-route’s access, a current-API observation path, or durable selected/returned
-truth across detachment and reconciliation.
+| Value | Profile | Observation | Disposition |
+| --- | --- | --- | --- |
+| omission | all existing profiles | none | unchanged; no `service_tier` field |
+| explicit `default` | ordinary attached + one in-process reattachment | dispatch-only | deliver-now |
+| explicit `default` + `with_active_run_detachment` | — | — | reject before effects |
+| reconciliation | — | — | no create field; do not restore selected tier |
+| `auto`, `flex`, `priority`, `fast`, `ultrafast`, `scale`, unknown | all | — | withheld / reject at the type boundary |
 
-No new portable contract is required to explain the stop. Adding a portable
-Fast/speed/priority capability, a shared generation-control field, or a
-checkpoint mutation would exceed this lane. The missing proof is access,
-observation, and lifecycle retention, not a reason to widen Contracts 021,
-029, 037, 040, 048, or 049.
+Contract 040 allows qualified dispatch without claiming acceptance or effective
+value. g04.049 allows dispatch-only when those limitations are documented.
+Gemini Live recent controls use that posture.
 
-The current opaque facade point
-`openai-responses-background-2026-08-23` remains unchanged. No private
-behavior revision is assigned because no additive behavior has been admitted.
-The adapter runtime, omitted create bytes, reasoning, structured output,
-retention, reattachment, cancellation, deletion, detachment, and
-reconciliation behavior stay as they are.
+Do not claim accepted, effective, billed, observed returned tier, cost, or
+latency. Do not fail closed on missing or mismatched returned `service_tier`.
+
+No new portable contract is required. Adding a portable Fast/speed/priority
+capability, a shared generation-control field, or a checkpoint mutation would
+exceed this lane.
 
 ## Decision
 
-Card 136 is complete as an evidence stop. Cards 137 and 138 are blocked and
-were not executed. No service-tier selection, request field, or returned-tier
-parser is admitted.
+Card 136 admits explicit `default` as dispatch-only deliver-now for ordinary
+attached runs and one in-process reattachment. Cards 137 and 138 bind that
+subset to facade `openai-responses-background-2026-08-23-service-tier` and
+behavior `openai.responses-background-v3`. Detachment, reconciliation, `auto`,
+`flex`, `priority`, `fast`, `ultrafast`, and `scale` stay withheld.

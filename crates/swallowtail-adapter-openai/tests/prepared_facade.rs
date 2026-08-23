@@ -10,7 +10,7 @@ use std::num::{NonZeroU32, NonZeroU64};
 use swallowtail_adapter_openai::{
     OPENAI_BACKGROUND_FACADE_REVISION, OPENAI_BACKGROUND_MODEL_ID,
     OPENAI_BACKGROUND_MODEL_ROUTE_ID, OpenAiBackgroundModelSelection,
-    OpenAiBackgroundRunProfileInput, prepare_openai_background,
+    OpenAiBackgroundRunProfileInput, OpenAiBackgroundServiceTier, prepare_openai_background,
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, ModelId, ModelRouteId, ModelRouteRevision,
@@ -35,6 +35,7 @@ fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_ho
             .expect("background run prepares");
 
         assert!(run.request().policy().reasoning_mode().is_none());
+        assert_eq!(run.evidence().service_tier(), None);
         assert_eq!(
             run.plan().protocol_facade_id().as_str(),
             OPENAI_BACKGROUND_FACADE_REVISION
@@ -238,7 +239,7 @@ fn prepared_background_reasoning_values_agree_across_plan_evidence_policy_driver
                 .behavior_revision()
                 .expect("qualified behavior revision")
                 .as_str(),
-            "openai.responses-background-v2"
+            "openai.responses-background-v3"
         );
 
         let (handle, _events, outcome) = complete(run.start_run(fixture.services()));
@@ -304,6 +305,173 @@ fn prepared_background_generation_controls_are_exact_and_fail_before_effects() {
     }
     assert!(fixture.server.requests().is_empty());
     assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn prepared_background_default_service_tier_agrees_across_evidence_driver_and_wire() {
+    let selected = OpenAiBackgroundServiceTier::standard();
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let run = prepared
+        .prepare_background_run(profile("prepared-service-tier").with_service_tier(selected))
+        .expect("standard service tier prepares");
+    assert_eq!(run.evidence().service_tier(), Some(selected));
+    assert_eq!(
+        run.plan().protocol_facade_id().as_str(),
+        OPENAI_BACKGROUND_FACADE_REVISION
+    );
+    let compatibility: Vec<_> = run
+        .evidence()
+        .operation()
+        .interface_compatibility()
+        .collect();
+    assert_eq!(compatibility.len(), 1);
+    assert_eq!(
+        compatibility[0]
+            .assessment()
+            .behavior_revision()
+            .expect("qualified behavior revision")
+            .as_str(),
+        "openai.responses-background-v3"
+    );
+
+    let (handle, _events, outcome) = complete(run.start_run(fixture.services()));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    let request: Value =
+        serde_json::from_slice(&fixture.server.requests()[0].body).expect("create request is JSON");
+    assert_eq!(request["service_tier"], "default");
+    assert!(!request["service_tier"].is_null());
+    assert_eq!(
+        fixture.server.requests()[0].target.as_str(),
+        "/v1/responses"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 1);
+    assert_eq!(fixture.releases(), 1);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn prepared_background_omitted_service_tier_keeps_prior_create_bytes() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let run = prepared
+        .prepare_background_run(profile("prepared-omitted-service-tier"))
+        .expect("omitted service tier prepares");
+    assert_eq!(run.evidence().service_tier(), None);
+    let (handle, _events, outcome) = complete(run.start_run(fixture.services()));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    let request: Value =
+        serde_json::from_slice(&fixture.server.requests()[0].body).expect("create request is JSON");
+    assert!(request.get("service_tier").is_none());
+    let expected: Value = serde_json::from_slice(include_bytes!(
+        "fixtures/openai-responses-2026-07-21/create-request.json"
+    ))
+    .expect("omitted fixture is JSON");
+    assert_eq!(request, expected);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn prepared_background_default_service_tier_composes_with_reasoning_and_structured_output() {
+    for (index, value) in ["none", "low", "medium", "high", "xhigh", "max"]
+        .iter()
+        .copied()
+        .enumerate()
+    {
+        let fixture = Fixture::new(
+            ServerMode::ReasoningVocabulary,
+            format!("host.service-tier.reasoning.{index}").as_str(),
+            TimeMode::Pending,
+        );
+        let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+            .expect("OpenAI background integration prepares");
+        let reasoning = ReasoningMode::new(value).expect("reasoning is valid");
+        let run = prepared
+            .prepare_background_run(
+                profile(&format!("prepared-service-tier-reasoning-{index}"))
+                    .with_reasoning_mode(reasoning.clone())
+                    .with_service_tier(OpenAiBackgroundServiceTier::standard()),
+            )
+            .expect("composed reasoning and service tier prepare");
+        assert_eq!(run.request().policy().reasoning_mode(), Some(&reasoning));
+        assert_eq!(
+            run.evidence().service_tier(),
+            Some(OpenAiBackgroundServiceTier::standard())
+        );
+        let (handle, _events, outcome) = complete(run.start_run(fixture.services()));
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        let request: Value = serde_json::from_slice(&fixture.server.requests()[0].body)
+            .expect("create request is JSON");
+        assert_eq!(request["reasoning"]["effort"], value);
+        assert_eq!(request["service_tier"], "default");
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    }
+
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let run = prepared
+        .prepare_background_run(
+            profile("prepared-service-tier-schema")
+                .with_structured_output(schema())
+                .with_service_tier(OpenAiBackgroundServiceTier::standard()),
+        )
+        .expect("composed structured output and service tier prepare");
+    assert!(run.request().structured_output().is_some());
+    assert_eq!(
+        run.evidence().service_tier(),
+        Some(OpenAiBackgroundServiceTier::standard())
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn prepared_background_service_tier_rejects_detachment_before_effects() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let error = prepared
+        .prepare_background_run(
+            profile("prepared-service-tier-detach")
+                .with_service_tier(OpenAiBackgroundServiceTier::standard())
+                .with_active_run_detachment(),
+        )
+        .expect_err("service tier with detachment fails");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.openai.preparation.service_tier_profile_unsupported"
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn prepared_background_default_service_tier_preserves_cancel_and_reattachment() {
+    let raced = Fixture::new(ServerMode::CancelRace, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(raced.preparation_input(), &raced.services())
+        .expect("OpenAI background integration prepares");
+    let run = prepared
+        .prepare_background_run(
+            profile("prepared-service-tier-cancel")
+                .with_service_tier(OpenAiBackgroundServiceTier::standard()),
+        )
+        .expect("standard service tier prepares");
+    let mut handle = block_on(run.start_run(raced.services())).expect("run starts");
+    assert_eq!(
+        block_on(handle.cancellation().request()).expect("cancel request succeeds"),
+        swallowtail_runtime::CancellationAcknowledgement::Requested
+    );
+    let outcome = consume(&mut handle);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    let request: Value =
+        serde_json::from_slice(&raced.server.requests()[0].body).expect("create request is JSON");
+    assert_eq!(request["service_tier"], "default");
+    assert_eq!(raced.server.inference_attempts(), 1);
+    assert_eq!(raced.releases(), 1);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
 }
 
 fn profile(id: &str) -> OpenAiBackgroundRunProfileInput {

@@ -188,6 +188,7 @@ Research 196 admits explicit `default` as dispatch-only for ordinary attached
 runs and one in-process reattachment. Official docs distinguish `default` from
 `auto`; there is no documented enrollment gate. Cards 137 and 138 bind that
 subset to facade `openai-responses-background-2026-08-23-service-tier` and
-behavior `openai.responses-background-v3`. Detachment, reconciliation, `auto`,
+behavior `openai.responses-background-v3`. Detachment stays withheld.
+Selected-tier checkpoints are rejected before restart reconciliation. `auto`,
 `flex`, `priority`, `fast`, `ultrafast`, and `scale` stay withheld. Omitted
 create bytes remain unchanged. Returned `service_tier` is not observed.

@@ -185,19 +185,23 @@ canonical request spelling this route will not alias.
 
 Ordinary attached runs keep selected input in process memory. One in-process
 reattachment uses the same memory. Explicit `default` is therefore retainable
-for those profiles without a checkpoint change.
+for those profiles without a shared checkpoint change.
 
 `ProviderRunCheckpoint` stores plan fingerprint, runtime run id, provider
-response id, and an opaque sequence cursor. It does not store a selected or
-returned service tier. Controlled detachment persists only that checkpoint.
-Restart reconciliation sends one `GET /v1/responses/{id}`. Retrieve can carry
-a returned tier, but selected/requested truth is gone unless reconstructed
-from project defaults or invented into the shared checkpoint.
+response id, and an opaque sequence cursor. Shared checkpoint fields do not
+carry selected or returned service tier. The adapter-owned cursor marks a
+selected-tier run as non-reconcilable. Controlled detachment persists only
+the shared checkpoint, so selected truth would disappear. Restart
+reconciliation would send one `GET /v1/responses/{id}` and could carry a
+returned tier, but selected/requested truth is gone unless reconstructed from
+project defaults or invented into the shared checkpoint.
 
-Detachment and reconciliation therefore cannot retain selected versus returned
-tier without a shared checkpoint or contract change. Those profiles are
-withheld. Explicit `default` plus `with_active_run_detachment` rejects before
-effects. Reconciliation does not restore a create `service_tier` field.
+Detachment and restart reconciliation therefore cannot retain selected versus
+returned tier without a shared checkpoint or contract change. Those profiles
+are withheld. Explicit `default` plus `with_active_run_detachment` rejects
+before effects. A checkpoint exported from a selected-tier run is rejected by
+`prepare_run_reconciliation` before network work. Reconciliation does not
+restore a create `service_tier` field.
 
 Background, stream, store, cancel, and delete docs do not mention
 `service_tier`. The field sits on the same create/retrieve object this route
@@ -307,8 +311,8 @@ caller can request or receive it.
 | Omission / absent `service_tier` | unchanged | Current create fixture and encoder omit the field. Preserve those bytes. |
 | Explicit `auto` | withheld | Distinct from omission; depends on unobserved project settings. |
 | Explicit `default` on ordinary attached + one in-process reattachment | deliver-now, dispatch-only | Official docs distinguish `default` from `auto`; no enrollment gate; selected input stays in process memory. Claims requested/planned/dispatched only. |
-| Explicit `default` with `with_active_run_detachment` | withheld; reject before effects | Checkpoint cannot retain selected/returned tier. |
-| Restart reconciliation | withheld | No create field; selected truth is not in the checkpoint. |
+| Explicit `default` with `with_active_run_detachment` | withheld; reject before effects | Shared checkpoint cannot retain selected/returned tier. |
+| Restart reconciliation of a selected-tier run | withheld; reject before effects | Adapter-owned cursor marks the checkpoint non-reconcilable; selected truth is not in shared checkpoint fields. |
 | `flex` | withheld | Beta/limited availability, possible `429`, official fallback is `auto`/omission, no access proof. |
 | `fast` | withheld | Request alias of Fast mode; GPT-5.6 returns `priority`. Not an admissible public alias. |
 | `priority` | withheld | Canonical Fast request/returned spelling for GPT-5.6; silent downgrade to `default` is documented; access and observation are missing. |
@@ -328,7 +332,7 @@ Deliver-now rows:
 | omission | all existing profiles | none | unchanged; no `service_tier` field |
 | explicit `default` | ordinary attached + one in-process reattachment | dispatch-only | deliver-now |
 | explicit `default` + `with_active_run_detachment` | — | — | reject before effects |
-| reconciliation | — | — | no create field; do not restore selected tier |
+| reconciliation of a selected-tier checkpoint | — | — | reject before network; do not restore selected tier |
 | `auto`, `flex`, `priority`, `fast`, `ultrafast`, `scale`, unknown | all | — | withheld / reject at the type boundary |
 
 Contract 040 allows qualified dispatch without claiming acceptance or effective

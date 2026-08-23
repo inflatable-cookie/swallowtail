@@ -9,7 +9,7 @@ Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
 PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
 Head: `efa1e5eb`
-Review: orchestrator asked to reclassify explicit `default`; that subset is now bound
+Review: orchestrator asked to make the selected-tier checkpoint boundary real; selected-default checkpoints now reject restart reconciliation before network
 Merge: none; worker must not merge
 
 The launcher-provided worktree and branch differ from the handoff
@@ -26,9 +26,10 @@ without claiming acceptance or effective value.
 Cards 137-138 bind that subset through `OpenAiBackgroundServiceTier::standard()`,
 optional prepared input, evidence, driver, and create encoding. Omission keeps
 the prior fixture bytes. Detachment plus `default` rejects before effects.
-Reconciliation does not restore a selected tier. Returned `service_tier` is
-ignored. `auto`, `flex`, `priority`, `fast`, `ultrafast`, and `scale` are not
-constructible.
+Selected-tier checkpoints use an adapter-owned non-reconcilable cursor;
+`prepare_run_reconciliation` rejects them before network work. Returned
+`service_tier` is ignored. `auto`, `flex`, `priority`, `fast`, `ultrafast`, and
+`scale` are not constructible.
 
 Current executable facade is
 `openai-responses-background-2026-08-23-service-tier` with private behavior
@@ -74,7 +75,7 @@ Recorded here for orchestrator merge closeout; not applied on this branch:
 Passed:
 
 - `cargo fmt -p swallowtail-adapter-openai`
-- `effigy validate:focused swallowtail-adapter-openai` — 62 tests passed
+- `effigy validate:focused swallowtail-adapter-openai` — 63 tests passed
 - `effigy package:verify-affected swallowtail-adapter-openai`
 - `effigy check:examples`
 - `effigy qa:routes`

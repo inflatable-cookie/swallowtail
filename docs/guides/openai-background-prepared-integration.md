@@ -61,8 +61,9 @@ encodes Responses `service_tier: "default"`. This is dispatch-only: Swallowtail
 claims requested, planned, and dispatched state only. It does not observe,
 claim, or infer the returned processing tier, price, latency, capacity, or
 project setting. Do not combine this selection with `with_active_run_detachment`;
-preparation rejects that profile before effects. Restart reconciliation does
-not restore a selected tier from the checkpoint. `auto`, `flex`, `priority`,
+preparation rejects that profile before effects. A checkpoint from a
+selected-tier run cannot be reconciled; preparation rejects it before network
+work and does not restore a selected tier. `auto`, `flex`, `priority`,
 `fast`, `ultrafast`, and `scale` are not constructible. Omission remains the
 prior create shape and is not an explicit `auto`.
 

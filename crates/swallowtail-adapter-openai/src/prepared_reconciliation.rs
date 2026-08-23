@@ -190,10 +190,20 @@ impl OpenAiBackgroundPreparedIntegration {
                 )
             })?;
         crate::checkpoint::decode_cursor(&checkpoint).map_err(|error| {
-            PreparationFailure::new(
-                PreparationStage::Preflight,
-                Diagnostic::new(error.diagnostic().clone()),
-            )
+            if error.diagnostic().code()
+                == "swallowtail.openai.run_checkpoint_service_tier_unsupported"
+            {
+                failure(
+                    PreparationStage::Preflight,
+                    "swallowtail.openai.preparation.reconciliation_service_tier_unsupported",
+                    "OpenAI background service-tier selection cannot be reconciled from a checkpoint",
+                )
+            } else {
+                PreparationFailure::new(
+                    PreparationStage::Preflight,
+                    Diagnostic::new(error.diagnostic().clone()),
+                )
+            }
         })?;
         let agreement = ProviderRunReconciliationAgreement::new(
             checkpoint,

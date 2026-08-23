@@ -5,7 +5,7 @@ use std::num::NonZeroU64;
 use swallowtail_adapter_openai::{
     OPENAI_BACKGROUND_MODEL_ID, OPENAI_BACKGROUND_MODEL_ROUTE_ID, OpenAiBackgroundModelSelection,
     OpenAiBackgroundReconciliationInput, OpenAiBackgroundRunProfileInput,
-    prepare_openai_background,
+    OpenAiBackgroundServiceTier, prepare_openai_background,
 };
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
 use swallowtail_runtime::{
@@ -269,6 +269,55 @@ fn reconciliation_cancellation_and_elapsed_deadline_fail_before_provider_observa
             .count(),
         0
     );
+}
+
+#[test]
+fn selected_default_checkpoint_rejects_reconciliation_before_network() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let run = prepared
+        .prepare_background_run(
+            profile("selected-default-reconcile")
+                .with_service_tier(OpenAiBackgroundServiceTier::standard()),
+        )
+        .expect("standard service tier prepares");
+    let original_plan = run.plan().clone();
+    let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+    let mut events = handle.take_events().expect("events exist");
+    let terminal = handle.take_terminal_outcome().expect("terminal exists");
+    let persisted = block_on(async {
+        loop {
+            let event = events
+                .next()
+                .await
+                .expect("checkpoint event exists")
+                .expect("event succeeds");
+            if let Some(checkpoint) = event.run_reconciliation_checkpoint() {
+                break checkpoint
+                    .export_persisted(&original_plan)
+                    .expect("checkpoint persists");
+            }
+        }
+    });
+    let outcome = block_on(async {
+        while let Some(event) = events.next().await {
+            event.expect("event succeeds");
+        }
+        terminal.await
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let requests_after_run = fixture.server.requests().len();
+
+    let error = prepared
+        .prepare_run_reconciliation(reconciliation_input("reject-selected-default", persisted))
+        .expect_err("selected-tier checkpoint must not reconcile");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.openai.preparation.reconciliation_service_tier_unsupported"
+    );
+    assert_eq!(fixture.server.requests().len(), requests_after_run);
 }
 
 fn detach_with_checkpoint(

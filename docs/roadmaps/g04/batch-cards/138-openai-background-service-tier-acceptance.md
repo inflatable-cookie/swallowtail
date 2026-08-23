@@ -89,8 +89,9 @@ Auto-continuation: No.
 Deterministic protocol and prepared-facade coverage prove omitted bytes,
 explicit `default` evidence/driver/wire agreement, composition with absent and
 every admitted reasoning value plus structured output, alias/unknown rejection,
-detachment rejection, ignored returned `service_tier`, and preserved
-reattachment/cancel/delete. The OpenAI Background prepared guide, Research 196,
-cards 136-138, g04.049, this closeout, and the unreleased OpenAI public-api
-baseline record the dispatch-only subset. Shared indexes, architecture,
-CHANGELOG, and Next Task stay for orchestrator merge closeout.
+detachment rejection, selected-tier checkpoint rejection before network,
+ignored returned `service_tier`, and preserved reattachment/cancel/delete.
+The OpenAI Background prepared guide, Research 196, cards 136-138, g04.049,
+this closeout, and the unreleased OpenAI public-api baseline record the
+dispatch-only subset. Shared indexes, architecture, CHANGELOG, and Next Task
+stay for orchestrator merge closeout.

@@ -140,8 +140,9 @@ impl OpenAiBackgroundRunProfileInput {
     #[must_use]
     /// Selects exact standard-processing service tier for ordinary attached runs.
     ///
-    /// This is dispatch-only. It is rejected with active-run detachment and is
-    /// not restored from a checkpoint during reconciliation.
+    /// This is dispatch-only. It is rejected with active-run detachment.
+    /// Selected-tier checkpoints are marked in the adapter-owned cursor and
+    /// restart reconciliation rejects them before network work.
     pub const fn with_service_tier(
         mut self,
         service_tier: crate::OpenAiBackgroundServiceTier,

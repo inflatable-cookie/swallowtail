@@ -89,8 +89,10 @@ Bound Research 196's dispatch-only `default` row through
 `OpenAiBackgroundRunProfileInput::with_service_tier`, prepared evidence, and
 `OpenAiBackgroundDriver::with_service_tier`. Create encoding adds
 `service_tier: "default"` only when selected. Omission keeps the prior fixture
-bytes. Detachment plus `default` rejects before effects. Reconciliation does
-not restore a create field. `auto`, `flex`, `priority`, `fast`, `ultrafast`,
+bytes. Detachment plus `default` rejects before effects. Selected-tier
+checkpoints are marked non-reconcilable in the adapter-owned cursor;
+`prepare_run_reconciliation` rejects them before network work.
+`auto`, `flex`, `priority`, `fast`, `ultrafast`,
 and `scale` are not constructible. Returned `service_tier` is ignored.
 Facade `openai-responses-background-2026-08-23-service-tier`, behavior
 `openai.responses-background-v3`, claim `openai.responses-background-window-1`.

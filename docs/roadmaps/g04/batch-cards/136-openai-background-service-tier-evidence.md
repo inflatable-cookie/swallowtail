@@ -107,7 +107,8 @@ The public payg profile does not prove project settings or Fast/Flex/Ultrafast
 enrollment. Official docs distinguish explicit `default` from `auto`; there is
 no documented enrollment gate for `default`. The current route cannot expose
 returned-tier observation, so that row is dispatch-only. Checkpoints cannot
-retain selected/returned tier, so detachment and reconciliation stay withheld.
+retain selected/returned tier in shared fields, so detachment stays withheld
+and a selected-tier checkpoint is rejected before restart reconciliation.
 Deliver-now: explicit `default` on ordinary attached + one in-process
 reattachment. Cards 137 and 138 execute that subset. The new facade point is
 `openai-responses-background-2026-08-23-service-tier`. Omitted create bytes

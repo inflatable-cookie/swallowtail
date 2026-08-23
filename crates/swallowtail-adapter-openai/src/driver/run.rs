@@ -90,6 +90,7 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 // Guard: await_response_identity consumed at least one
                 // stream event above, so a sequence exists.
                 stream.last_sequence().expect("response identity carries a cursor"),
+                self.service_tier,
             )?;
             event_sender.send(
                 RuntimeEvent::new(sequence, RuntimeEventKind::Progress)

@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-23 g04.045 Claude Code Headless Structured Output Compiled](./2026-08-23-g04-045-claude-code-headless-structured-output-compiled.md)
-- [2026-08-23 g04.045 Claude Code Headless Structured Output Closeout](./2026-08-23-g04-045-claude-code-headless-structured-output-closeout.md) — reserved
+- [2026-08-23 g04.045 Claude Code Headless Structured Output Closeout](./2026-08-23-g04-045-claude-code-headless-structured-output-closeout.md) — stopped after evidence and merged through PR 44 at `8a2640ea`
 - [2026-08-23 g04.044 OpenAI Background Reasoning Correction Compiled](./2026-08-23-g04-044-openai-background-reasoning-compiled.md)
 - [2026-08-23 g04.044 OpenAI Background Reasoning Correction Closeout](./2026-08-23-g04-044-openai-background-reasoning-closeout.md) — merged through PR 43 at `bdb7ea88`
 - [2026-08-22 g04.043 OpenAI Background Search Compiled](./2026-08-22-g04-043-openai-background-search-compiled.md)

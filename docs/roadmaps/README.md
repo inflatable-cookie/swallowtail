@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Execute g04.045 cards 124-126 in order. First freeze exact Claude Code
-`2.1.238` headless JSON Schema, enforcement, attempt, terminal-result, and
-compatibility truth in Research 192. Continue to binding and acceptance only
-for a non-empty deliver-now set. Contract 029 currentness stays standing.
+Compile g04.046 by rechecking the remaining promoted per-route feature
+inventory against current production-route and contract truth, then select one
+coherent route-local control family. Do not start implementation before its
+evidence gate and conditional cards are explicit. Contract 029 currentness
+stays standing.
 
 ## Standing Lanes
 

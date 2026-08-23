@@ -1159,3 +1159,17 @@ Kimi headless thinking and plan were not selected. Current thinking docs refer
 to a newer Python CLI line, not Swallowtail's exact TypeScript `0.38.0` axis;
 earlier exact evidence rejects prompt plus `--plan`. No later feature family is
 selected here.
+
+## Claude Code Headless Structured Output Closeout (2026-08-23)
+
+g04.045 stopped after Research 192 and card 124, then merged through PR 44 at
+`8a2640ea`. Exact `2.1.238` local validation admits declared draft-07 and
+rejects declared draft-2019-09 and draft-2020-12. Delivery remains withheld:
+the full CLI-to-SDK runtime linkage and keyword subset, immutable retry bound,
+and valid terminal/lifecycle truth are unqualified. Cards 125-126 are blocked;
+no structured-output capability shipped.
+
+The remaining promoted inventory stays selection input. Compile g04.046 by
+rechecking current production-route and contract truth, then select one
+coherent route-local control family. No implementation card or provider/control
+is preselected by this closeout.

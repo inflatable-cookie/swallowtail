@@ -2,6 +2,7 @@
 
 ## Completed
 
+- [124-claude-code-headless-structured-output-evidence.md](./124-claude-code-headless-structured-output-evidence.md) — evidence stop
 - [123-openai-background-reasoning-vocabulary-acceptance.md](./123-openai-background-reasoning-vocabulary-acceptance.md)
 - [122-openai-background-reasoning-vocabulary-correction.md](./122-openai-background-reasoning-vocabulary-correction.md)
 - [119-openai-background-search-evidence.md](./119-openai-background-search-evidence.md)
@@ -124,12 +125,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [126-claude-code-headless-structured-output-acceptance.md](./126-claude-code-headless-structured-output-acceptance.md) — conditional on card 125
-- [125-claude-code-headless-structured-output-binding.md](./125-claude-code-headless-structured-output-binding.md) — conditional on a non-empty Research 192 deliver-now set
-- [124-claude-code-headless-structured-output-evidence.md](./124-claude-code-headless-structured-output-evidence.md) — ready
+No cards are currently planned. g04.046 compilation owns the next selection.
 
 ## Blocked
 
+- [126-claude-code-headless-structured-output-acceptance.md](./126-claude-code-headless-structured-output-acceptance.md) — card 125 did not execute
+- [125-claude-code-headless-structured-output-binding.md](./125-claude-code-headless-structured-output-binding.md) — Research 192 admits no deliver-now schema row
 - [121-openai-background-search-acceptance.md](./121-openai-background-search-acceptance.md) — no deliver-now search binding to accept
 - [120-openai-background-search-binding.md](./120-openai-background-search-binding.md) — Research 191 admits no deliver-now search row
 - [118-cline-thinking-control-acceptance.md](./118-cline-thinking-control-acceptance.md) — no deliver-now route/value row or binding to accept

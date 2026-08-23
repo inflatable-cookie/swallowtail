@@ -1,6 +1,6 @@
 # 2026-08-23 g04.045 Claude Code Headless Structured Output Closeout
 
-Status: stopped after evidence; PR open
+Status: stopped after evidence; merged
 Owner: Tom
 Milestone: g04.045
 Cards: 124-126
@@ -9,6 +9,7 @@ Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-0098ce5a`
 Base: `1fe9066676a1568b1910a80656879dc395c9a50e` (`origin/main` at dispatch)
 Worker implementation head: `9c81b327`
 PR: [#44](https://github.com/inflatable-cookie/swallowtail/pull/44)
+Merge head: `8a2640ea4543430efa4766eeae9f2b0e4eee54eb`
 
 ## Outcome
 
@@ -53,11 +54,12 @@ guide capability claims, did not execute.
   added deterministic corpus assertions
 - this closeout log
 
-Unchanged: `crates/swallowtail-adapter-claude-agent/src/**`, existing headless
-and response-only fixtures, `docs/guides/claude-agent-prepared-integration.md`,
-the package-specific public API baseline, and all shared architecture,
-contracts, route/feature matrices, programme, indexes, changelog, release,
-and Next Task surfaces.
+The worker PR left `crates/swallowtail-adapter-claude-agent/src/**`, existing
+headless and response-only fixtures, the prepared-integration guide, public API
+baseline, and all shared surfaces unchanged. This post-merge closeout updates
+only programme, triage, indexes, milestone/card status, and Next Task truth; it
+does not change architecture, contracts, route/feature matrices, changelog,
+release, or package API claims.
 
 ## Shared-Surface Delta
 
@@ -74,8 +76,9 @@ surfaces. There is no admitted capability delta:
 - `docs/roadmaps/README.md` and g04 Next Task: move the pointer after this
   reviewed stop; no next feature family is selected by this lane
 
-The orchestrator applies any admitted shared-surface delta after review and
-merge. This worker does not edit it.
+The orchestrator applied this shared-surface delta after PR 44 merged. The next
+planning checkpoint is g04.046 compilation from the remaining promoted
+per-route feature inventory; no feature family is preselected here.
 
 ## Validation
 

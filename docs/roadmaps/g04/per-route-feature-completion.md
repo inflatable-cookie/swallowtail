@@ -90,16 +90,18 @@ families do not interrupt this programme by default.
   `none|low|medium|high|xhigh|max`, remove unqualified `minimal`, version the
   corrected opaque facade truth, and prove early rejection.
 - [g04.045 Claude Code Headless Structured Output](./045-claude-code-headless-structured-output.md)
-  is planned. Research 192 and cards 124-126 must prove exact `2.1.238`
-  `--json-schema` dialect, enforcement, attempt bounds, terminal truth, and
-  selected-command composition before any route-local binding.
+  stopped after card 124 and merged through PR 44 at `8a2640ea`. Research 192
+  establishes draft-07 at the exact local validation boundary but admits no
+  deliver-now row because runtime linkage, the full keyword subset, an
+  immutable retry bound, and valid terminal/lifecycle truth remain unqualified.
+  Cards 125-126 are blocked and no schema capability shipped.
 
 ## Next Planning Boundary
 
-Execute g04.045 cards 124-126 in one serial worker lane. Card 124 is the exact
-package evidence gate. Cards 125-126 run only for a non-empty Research 192
-deliver-now set. Do not select the next route family or a release inside the
-worker lane.
+Compile g04.046 by rechecking the remaining promoted inventory against current
+production-route and contract truth, then select one coherent route-local
+control family. Do not start implementation or select a release inside the
+compilation lane.
 
 ## Exclusions
 

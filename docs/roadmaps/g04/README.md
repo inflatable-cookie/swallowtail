@@ -63,10 +63,11 @@ and selection policy.
 - [g04.046 Gemini Live Thinking Levels](046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 - [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [g04.048 Gemini Live Context-Window Compression](048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
+- [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — ready, cards 136-138; binding and acceptance conditional on Research 196
 
-Do not roll over: 48 numbered roadmaps exist; 001-039, 041, 044, and 046-048
-are complete; 040, 042, 043, and 045 stopped after their evidence gates;
-target 30-50.
+Do not roll over: 49 numbered roadmaps exist; 001-039, 041, 044, and 046-048
+are complete; 040, 042, 043, and 045 stopped after their evidence gates; 049
+is ready; target 30-50.
 
 ## Current Checkpoint
 
@@ -144,6 +145,10 @@ target 30-50.
   `contextWindowCompression.slidingWindow = {}` dispatch, preserve omission
   bytes, withhold explicit numeric forms, and keep one-rollover/restoration
   truth under a new opaque facade point
+- g04.049 is compiled: card 136 must promote Research 196 with the complete
+  OpenAI Background service-tier request/response, access, observation, and
+  lifecycle disposition; cards 137-138 are conditional on a non-empty exact
+  deliver-now set
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -173,8 +178,9 @@ target 30-50.
     dispatch and merged through PR 46 at `c2878262`.
 11. g04.048 cards 133-135 delivered exact default-only Gemini Live context-
     window-compression dispatch and merged through PR 47 at `47848056`.
-12. Compile g04.049 from the remaining promoted inventory. No route or control
-    is preselected. Contract 029 currentness remains standing.
+12. g04.049 selects OpenAI Background `service_tier`. Execute card 136 first;
+    continue to cards 137-138 only for a non-empty Research 196 deliver-now
+    set. Contract 029 currentness remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -195,6 +201,7 @@ New route-family research does not pre-empt this sequence.
 - [046 Gemini Live Thinking Levels](./046-gemini-live-thinking-levels.md) — complete and merged through PR 45 at `04cc22f2`, cards 127-129
 - [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
+- [049 OpenAI Background Service Tier](./049-openai-background-service-tier.md) — ready, cards 136-138; cards 137-138 conditional
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

@@ -2,7 +2,9 @@
 
 ## Planned
 
-No compiled card is ready.
+- [138-openai-background-service-tier-acceptance.md](./138-openai-background-service-tier-acceptance.md) — conditional on card 137
+- [137-openai-background-service-tier-binding.md](./137-openai-background-service-tier-binding.md) — conditional on a non-empty Research 196 deliver-now set
+- [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md) — ready
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -136,7 +138,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Active
 
-No card is active. Compile g04.049 before dispatching another worker lane.
+- [136-openai-background-service-tier-evidence.md](./136-openai-background-service-tier-evidence.md) — ready; cards 137-138 remain conditional
 
 ## Blocked
 

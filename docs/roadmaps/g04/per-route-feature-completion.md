@@ -113,12 +113,17 @@ families do not interrupt this programme by default.
   `contextWindowCompression.slidingWindow = {}` dispatch on fixed model
   `gemini-3.1-flash-live-preview`, preserve omission bytes, withhold explicit
   numeric forms, and retain one-rollover/restoration truth.
+- [g04.049 OpenAI Background Service Tier](./049-openai-background-service-tier.md)
+  is compiled. Research 196 and card 136 must freeze the complete Responses
+  request/returned tier domain, exact `gpt-5.6` applicability, access gates,
+  and ordinary/detached/reconciled profile truth. Cards 137-138 are conditional
+  on a non-empty deliver-now set.
 
 ## Next Planning Boundary
 
-Compile g04.049 from the remaining promoted inventory. Recheck exact current
-route, contract, and official-source truth before selecting one coherent
-route-local control family. No route or control is preselected.
+Execute g04.049 cards 136-138 serially. Start with Research 196 evidence and
+continue only for exact deliver-now values and lifecycle profiles. The worker
+must not absorb the separate Bedrock exact-pin mismatch or another route.
 
 ## Exclusions
 

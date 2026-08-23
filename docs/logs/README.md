@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04.049 OpenAI Background Service Tier Compiled](./2026-08-23-g04-049-openai-background-service-tier-compiled.md)
+- [2026-08-23 g04.049 OpenAI Background Service Tier Closeout](./2026-08-23-g04-049-openai-background-service-tier-closeout.md) — reserved
 - [2026-08-23 g04.048 Gemini Live Context-Window Compression Merged](./2026-08-23-g04-048-gemini-live-context-window-compression-merged.md)
 - [2026-08-23 g04.048 Gemini Live Context-Window Compression Compiled](./2026-08-23-g04-048-gemini-live-context-window-compression-compiled.md)
 - [2026-08-23 g04.048 Gemini Live Context-Window Compression Closeout](./2026-08-23-g04-048-gemini-live-context-window-compression-closeout.md) — merged through PR 47 at `47848056`

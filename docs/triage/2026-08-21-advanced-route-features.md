@@ -1288,3 +1288,30 @@ claimed.
 The remaining promoted rows stay input to g04.049 compilation. Recheck exact
 current route, contract, and official-source truth before selecting one
 coherent control family; no route or control is preselected.
+
+## OpenAI Background Service-Tier Selection (2026-08-23)
+
+The reassessment selects `openai.background` Responses `service_tier` for
+[`g04.049`](../roadmaps/g04/049-openai-background-service-tier.md). The exact
+route already fixes model `gpt-5.6`, public Responses, reasoning, output bounds,
+structured output, temporary retention, one stream reattachment, cancellation,
+deletion, controlled detachment, and exact-run reconciliation.
+
+Current official OpenAI create and retrieve references place `service_tier` on
+the same request and returned Response object. They name project-default
+`auto`, standard `default`, Flex, Fast/Priority, and access-controlled
+Ultrafast behavior. The returned value may differ from the requested value.
+This is a route-local operational selection, not a portable Fast or quality
+control.
+
+Research 196 and card 136 must close the complete current request/response
+enum, exact `gpt-5.6` applicability, aliases, account/project access gates,
+requested-versus-returned truth, omission bytes, reasoning/structured-output
+composition, and ordinary/detached/reconciled lifecycle profiles. Cards
+137-138 are conditional on a non-empty deliver-now set.
+
+Bedrock Runtime service-performance controls remain promoted but are not this
+lane. Its resolved Cargo SDK and qualified public SDK identity currently
+disagree; the exact-pin currentness rule requires explicit operator authority
+before reopening that family. g04.049 does not hide that correction inside
+feature work.

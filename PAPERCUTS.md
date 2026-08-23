@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
+- Friction: the context-compression batch left `live_protocol/tests.rs`,
+  `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above
+  the warning threshold, raising doctor findings from 371 to 374.
+- Impact: later feature lanes inherit noisier structural-health evidence even
+  though the error-level baseline is unchanged.
+- Fix: split protocol encoding, context-compression, and output-maximum proofs
+  into focused test modules without reducing route-local coverage.
+- Surface: `swallowtail-adapter-gemini` Live protocol and acceptance tests.
+
 ### [ ] evidence-download cwd steals later repo commands — 2026-08-22
 - Friction: a disposable evidence directory became the persistent shell cwd, so later `effigy` and `git diff --check` ran outside the worktree.
 - Impact: card-gate commands fail with missing-catalog or "not a git repository" errors after an otherwise successful evidence fetch.

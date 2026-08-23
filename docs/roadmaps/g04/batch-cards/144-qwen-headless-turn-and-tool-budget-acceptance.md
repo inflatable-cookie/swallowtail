@@ -99,5 +99,7 @@ Named validation passed in the worker worktree: focused package validation
 (55 tests), affected-package verification, examples, route QA, Northstar QA,
 research/log/roadmap indexes, next-action QA, package API, and diff checks.
 No credentials, account state, live provider request, paid work, or merge was
-used. PR/head truth is recorded in the reserved closeout after the PR opens.
+used. The worker PR is [#50](https://github.com/inflatable-cookie/swallowtail/pull/50), opened
+from `t3code/follow-qwen-headless-budgets-handoff` at implementation commit
+`87a59f8a879ebc92c66ce094332645da99308524`; no merge was performed.
 

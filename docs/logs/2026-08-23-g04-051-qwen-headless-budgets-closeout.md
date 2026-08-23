@@ -39,7 +39,9 @@ account state, live provider request, or paid work was used. Doctor baseline
 remains inherited: 376 god-file findings (330 warn / 46 err) plus
 generated-in-src.
 
-PR: pending. Worker branch: `t3code/follow-qwen-headless-budgets-handoff`.
+PR: [#50](https://github.com/inflatable-cookie/swallowtail/pull/50).
+Implementation commit: `87a59f8a879ebc92c66ce094332645da99308524`.
+Worker branch: `t3code/follow-qwen-headless-budgets-handoff`.
 No merge was performed.
 
 ## Shared Closeout Delta

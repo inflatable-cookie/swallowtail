@@ -1333,3 +1333,33 @@ The remaining promoted rows stay input to g04.050 compilation. Recheck exact
 current route, contract, and official-source truth before selecting one coherent
 control family. g04.050 is the final roadmap in g04 unless the operator changes
 the generation boundary.
+
+## DeepSeek Structured-Run Thinking-Mode Selection (2026-08-23)
+
+The final g04 reassessment selects explicit non-thinking mode on
+`deepseek.continuation` one-request structured runs for
+[`g04.050`](../roadmaps/g04/050-deepseek-structured-run-thinking-mode.md).
+Exact model `deepseek-v4-pro` and the current OpenAI Chat Completions facade
+already support enabled `low|high|max` reasoning. Current official DeepSeek
+schema and Thinking Mode guidance independently name
+`thinking.type=enabled|disabled` and list V4 Pro as supporting both modes.
+
+Research 186 withheld disabled mode because the route has no qualified typed
+control and because direct continuation depends on bounded private
+`reasoning_content` replay. Research 197 and card 139 must now settle exact
+disabled request composition, effort omission, response behavior, cache truth,
+plan/evidence representation, and facade revision. Cards 140-141 are
+conditional on a non-empty structured-run deliver-now set. Direct continuation
+remains enabled-only; no portable `ReasoningMode("none")` or generic thinking
+capability is planned.
+
+Ollama attached `think=max` was reassessed but not selected. The current
+selected-model catalogue advertises only generic `thinking` capability, not
+exact levels, while exact runtime 0.32.15 maps `max` to `high` for
+Harmony/GPT-OSS. Swallowtail cannot promise an exact distinct mode from that
+evidence. Bedrock exact-pin correction still needs separate operator authority
+and does not enter this lane.
+
+g04.050 is the final numbered roadmap in g04. After its evidence, review,
+merge, and closeout, reassess and close the generation boundary rather than
+compiling g04.051.

@@ -64,11 +64,12 @@ and selection policy.
 - [g04.047 Gemini Live Output-Token Maximum](047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [g04.048 Gemini Live Context-Window Compression](048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
+- [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — ready, cards 139-141
 
-Do not roll over yet: 49 numbered roadmaps exist; 001-039, 041, 044, and
-046-049 are complete; 040, 042, 043, and 045 stopped after their evidence
-gates. Compile g04.050 as the final roadmap in this generation, then reassess
-the generation boundary.
+Do not roll over during execution: 50 numbered roadmaps exist; 001-039, 041,
+044, and 046-049 are complete; 040, 042, 043, and 045 stopped after their
+evidence gates; 050 is ready. Reassess and close the generation boundary only
+after g04.050 evidence, review, merge, and closeout.
 
 ## Current Checkpoint
 
@@ -151,6 +152,10 @@ the generation boundary.
   ordinary attached runs and one in-process reattachment; omission preserves
   prior bytes, detachment and selected-tier restart reconciliation fail closed,
   and returned-tier truth remains unclaimed
+- g04.050 is compiled as the final g04 roadmap: Research 197 and cards 139-141
+  qualify explicit DeepSeek V4 Pro non-thinking mode for one-request structured
+  runs; direct continuation remains enabled-only and binding is conditional on
+  card 139's exact deliver-now set
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -182,9 +187,9 @@ the generation boundary.
     window-compression dispatch and merged through PR 47 at `47848056`.
 12. g04.049 cards 136-138 delivered dispatch-only OpenAI Background
     `service_tier: "default"` and merged through PR 48 at `06c00e6c`.
-13. Compile g04.050 from the remaining promoted inventory as the final roadmap
-    in g04, then reassess the generation boundary. Contract 029 currentness
-    remains standing.
+13. g04.050 is compiled as the final roadmap in g04. Execute cards 139-141
+    serially, then reassess and close the generation boundary after merge.
+    Contract 029 currentness remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -206,6 +211,7 @@ New route-family research does not pre-empt this sequence.
 - [047 Gemini Live Output-Token Maximum](./047-gemini-live-output-token-maximum.md) — complete and merged through PR 46 at `c2878262`, cards 130-132
 - [048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [049 OpenAI Background Service Tier](./049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
+- [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — ready, cards 139-141
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

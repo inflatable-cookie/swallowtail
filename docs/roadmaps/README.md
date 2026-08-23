@@ -14,11 +14,11 @@ shape.
 
 ## Next Task
 
-Compile g04.050 from the remaining promoted per-route feature inventory.
-Recheck current production-route, contract, and official-source truth before
-selecting one coherent route-local control family. Treat g04.050 as the final
-roadmap in this generation unless the operator changes the generation boundary.
-Contract 029 currentness stays standing.
+Execute g04.050 DeepSeek structured-run thinking mode cards 139-141 serially in
+one isolated worker lane. Card 139 must promote Research 197 with an exact
+deliver-now set or honest stop before conditional cards 140-141 execute. Direct
+continuation remains enabled-only. After merge closeout, reassess and close the
+g04 generation boundary. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

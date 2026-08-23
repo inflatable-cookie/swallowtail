@@ -2,7 +2,9 @@
 
 ## Planned
 
-No cards are compiled. g04.050 selection is the next planning task.
+- [141-deepseek-structured-run-thinking-mode-acceptance.md](./141-deepseek-structured-run-thinking-mode-acceptance.md) — conditional on card 140
+- [140-deepseek-structured-run-thinking-mode-binding.md](./140-deepseek-structured-run-thinking-mode-binding.md) — conditional on a non-empty Research 197 deliver-now set
+- [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md) — ready
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -139,7 +141,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Active
 
-None. g04.050 selection is the next planning task.
+- [139-deepseek-structured-run-thinking-mode-evidence.md](./139-deepseek-structured-run-thinking-mode-evidence.md) — ready; cards 140-141 remain conditional
 
 ## Blocked
 

@@ -109,6 +109,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [194 Gemini Live Output-Token-Maximum Evidence](./194-gemini-live-output-token-maximum-evidence.md) — promoted through g04.047; exact `gemini-3.1-flash-live-preview` admits positive `1..=65_536` dispatch through `generationConfig.maxOutputTokens`
 - [195 Gemini Live Context-Window-Compression Evidence](./195-gemini-live-context-window-compression-evidence.md) — promoted through g04.048; exact default-only sliding-window setup dispatch delivered, explicit numeric forms withheld
 - [196 OpenAI Background Service-Tier Evidence](./196-openai-background-service-tier-evidence.md) — promoted through g04.049; explicit `default` dispatch delivered on ordinary attached and one-reattachment profiles, other values and returned-tier observation withheld
+- [197 DeepSeek Structured-Run Thinking-Mode Evidence](./197-deepseek-structured-run-thinking-mode-evidence.md) — reserved for g04.050 card 139
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

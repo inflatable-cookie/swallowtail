@@ -1,10 +1,14 @@
 # 125 Claude Code Headless Structured Output Binding
 
-Status: conditional; awaiting card 124
+Status: blocked; card 124 evidence stop
 Owner: Tom
 Created: 2026-08-23
 Milestone: [g04.045 Claude Code Headless Structured Output](../045-claude-code-headless-structured-output.md)
 Depends on: card 124; promoted Research 192 with a non-empty deliver-now set
+
+Card 124 promoted Research 192 with an empty deliver-now set. No typed
+structured-output input, prepared plan, policy, driver, argv, parser, or
+behavior revision is admitted by this lane.
 
 ## Goal
 
@@ -74,4 +78,3 @@ failure, absent-path, and zero-provider-work rejection tests pass.
 
 - shared docs/indexes, other Claude routes or flags, live provider work,
   release, or merge
-

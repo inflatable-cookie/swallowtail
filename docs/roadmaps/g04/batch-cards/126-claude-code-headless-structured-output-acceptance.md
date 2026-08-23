@@ -1,10 +1,14 @@
 # 126 Claude Code Headless Structured Output Acceptance
 
-Status: conditional; awaiting card 125
+Status: blocked; card 125 blocked
 Owner: Tom
 Created: 2026-08-23
 Milestone: [g04.045 Claude Code Headless Structured Output](../045-claude-code-headless-structured-output.md)
 Depends on: card 125
+
+Card 125 is blocked because Research 192 has no deliver-now schema row. No
+structured-output dispatch or route-local guide capability claim exists to
+accept.
 
 ## Goal
 
@@ -76,4 +80,3 @@ Auto-continuation: No.
 
 - live provider verification, publication, merge, shared front-door edits, or
   later feature selection
-

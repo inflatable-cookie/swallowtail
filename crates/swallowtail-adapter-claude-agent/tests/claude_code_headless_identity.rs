@@ -10,6 +10,8 @@ use swallowtail_core::{
 
 const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.238/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.238/protocol.json");
+const STRUCTURED_OUTPUT: &str =
+    include_str!("fixtures/claude-code-2.1.238/headless-structured-output.json");
 
 #[test]
 fn identity_and_claim_qualify_2_1_238_as_compatible_extension() {
@@ -99,6 +101,78 @@ fn identity_and_claim_qualify_2_1_238_as_compatible_extension() {
             .as_str(),
         CLAUDE_CODE_HEADLESS_AXIS
     );
+}
+
+#[test]
+fn structured_output_evidence_fixture_is_secret_free_and_fail_closed() {
+    let evidence: Value = serde_json::from_str(STRUCTURED_OUTPUT)
+        .expect("Claude Code 2.1.238 structured-output corpus is valid JSON");
+
+    assert_eq!(evidence["axis"], CLAUDE_CODE_HEADLESS_AXIS);
+    assert_eq!(evidence["version"], "2.1.238");
+    assert_eq!(evidence["provider_prompt_sent"], false);
+    assert_eq!(evidence["credentials_used"], false);
+    assert_eq!(
+        evidence["help"]["json_schema_flag"],
+        "--json-schema <schema>"
+    );
+    assert_eq!(evidence["help"]["max_turns_flag_present"], false);
+
+    let parse_cases = evidence["schema_parse_specimens"]
+        .as_array()
+        .expect("schema parse specimens are an array");
+    assert_eq!(
+        parse_cases[0]["stderr"],
+        "Error: --json-schema is not valid JSON: JSON Parse error: Expected '}'"
+    );
+    assert_eq!(
+        parse_cases[1]["stderr"],
+        "Error: --json-schema is not a valid JSON Schema: data/required must be array"
+    );
+    assert_eq!(
+        parse_cases[2]["stderr"],
+        "Error: --json-schema is not a valid JSON Schema: strict mode: unknown keyword: \"x-unsupported\""
+    );
+
+    let arguments = evidence["selected_headless_command"]["arguments"]
+        .as_array()
+        .expect("selected command arguments are an array");
+    for required in [
+        "--input-format",
+        "--output-format",
+        "--no-session-persistence",
+        "--permission-mode",
+        "--tools",
+        "--mcp-config",
+        "--strict-mcp-config",
+        "--json-schema",
+    ] {
+        assert!(arguments.iter().any(|argument| argument == required));
+    }
+
+    assert_eq!(
+        evidence["stream_without_structured_output"]["init"]["tools"],
+        serde_json::json!(["Glob", "Grep", "Read", "StructuredOutput"])
+    );
+    assert_eq!(
+        evidence["stream_without_structured_output"]["result"]["subtype"],
+        "success"
+    );
+    assert_eq!(
+        evidence["stream_without_structured_output"]["result"]["structured_output_field"],
+        "absent"
+    );
+    assert_eq!(
+        evidence["implementation_signals"]["contract_040_enforcement_classification"],
+        "HarnessValidated"
+    );
+    assert!(evidence["implementation_signals"]["exact_retry_count"].is_null());
+    assert!(evidence["implementation_signals"]["preflight_bindable_retry_bound"].is_null());
+    assert_eq!(
+        evidence["disposition"]["deliver_now_rows"],
+        serde_json::json!([])
+    );
+    assert_eq!(evidence["disposition"]["schema_absent_path"], "unchanged");
 }
 
 fn version(value: &str) -> InterfaceVersion {

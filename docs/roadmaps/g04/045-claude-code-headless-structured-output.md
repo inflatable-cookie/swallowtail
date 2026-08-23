@@ -1,8 +1,9 @@
 # g04.045 Claude Code Headless Structured Output
 
-Status: planned
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Depends on: per-route feature completion programme; g01.039; g04.028
 Vision tags: explicit selection, provider truth, structured output
 Contract refs: 011, 029, 033, 037, 039, 040, 044, 052
@@ -33,22 +34,23 @@ attempt-budget, plan-mode, tool, model, usage, or terminal-result truth.
 
 ## Goals
 
-- [ ] freeze exact `2.1.238` package, source, help, and secret-free protocol
+- [x] freeze exact `2.1.238` package, source, help, and secret-free protocol
       evidence for `--json-schema` on the selected headless command
-- [ ] identify the exact accepted schema dialect and subset; reject aliases,
+- [x] identify the exact accepted schema dialect and subset; reject aliases,
       unsupported keywords, and inferred draft compatibility
-- [ ] classify enforcement as exactly `ProviderNative` or
+- [x] classify enforcement as exactly `ProviderNative` or
       `HarnessValidated` under Contract 040
-- [ ] prove the exact model-visible tool, turn, attempt, retry, null-result,
+- [x] prove the exact model-visible tool, turn, attempt, retry, null-result,
       exit-status, usage, and malformed-terminal behavior
-- [ ] classify composition with stream JSON, Plan mode, `Read,Glob,Grep`,
+- [x] classify composition with stream JSON, Plan mode, `Read,Glob,Grep`,
       no session persistence, model selection, every qualified reasoning mode,
       working-resource authority, deadline, cancellation, and cleanup
-- [ ] decide the exact Contract 029 facade point and behavior revision
+- [x] decide the exact Contract 029 facade point and behavior revision
 - [ ] bind only Research 192 deliver-now schema rows through typed prepared
       input, immutable plan/evidence, request policy, driver, argv, and parser
-- [ ] preserve the exact schema-absent command and result behavior
-- [ ] prove deterministic acceptance and publish only exact route-local truth
+- [x] preserve the exact schema-absent command and result behavior
+- [x] prove deterministic evidence coverage and publish only exact route-local
+      truth
 
 ## Non-Goals
 
@@ -90,12 +92,15 @@ weaken Contracts 039 or 040 to make the flag fit.
 
 ### Batch 45.1 — Exact Package And Structured-Result Evidence
 
-- [ ] Execute card 124.
-- [ ] freeze current official docs, exact `2.1.238` package source/help, and
+- [x] Execute card 124.
+- [x] freeze current official docs, exact `2.1.238` package source/help, and
       deterministic valid, invalid, unsatisfiable, malformed, and absent-schema
       specimens
-- [ ] promote Research 192 with schema, enforcement, retry, result, version,
+- [x] promote Research 192 with schema, enforcement, retry, result, version,
       and compatibility dispositions
+
+Card 124 stopped the lane. The exact dialect, immutable retry bound, and valid
+structured terminal path were not qualified.
 
 ### Batch 45.2 — Conditional Prepared Binding
 
@@ -105,6 +110,8 @@ weaken Contracts 039 or 040 to make the flag fit.
 - [ ] preserve schema absence exactly and reject plan/evidence/driver drift
       before process work
 
+Card 125 is blocked because Research 192 admits no deliver-now row.
+
 ### Batch 45.3 — Route-Local Acceptance
 
 - [ ] Execute card 126 only after card 125.
@@ -112,21 +119,24 @@ weaken Contracts 039 or 040 to make the flag fit.
       absent-path behavior
 - [ ] update route-local guidance and report the deferred shared closeout delta
 
+Card 126 is blocked because card 125 did not execute. The guide stays accurate
+without a schema capability claim.
+
 ## Acceptance Criteria
 
-- [ ] only Research 192 deliver-now schema rows prepare
+- [x] only Research 192 deliver-now schema rows prepare; the set is empty
 - [ ] descriptor, dialect, enforcement source, attempt budget, plan,
       evidence, policy, driver, argv, and terminal parser agree exactly
-- [ ] schema absence preserves the current command and ordinary text result
-- [ ] no prompt emulation, raw provider options, unbounded retry, null success,
+- [x] schema absence preserves the current command and ordinary text result
+- [x] no prompt emulation, raw provider options, unbounded retry, null success,
       or inferred schema draft enters the mapping
-- [ ] existing Plan-mode tools, read-only working resource, model, reasoning,
+- [x] existing Plan-mode tools, read-only working resource, model, reasoning,
       activity, usage, cancellation, and cleanup truth remain intact
-- [ ] every knowable mismatch fails before process work; terminal and provider
+- [x] every knowable mismatch fails before process work; terminal and provider
       failures remain explicit after dispatch
-- [ ] default QA uses no credential, account, install, provider prompt, or paid
+- [x] default QA uses no credential, account, install, provider prompt, or paid
       operation
-- [ ] docs distinguish requested, planned, dispatched, accepted, effective,
+- [x] docs distinguish requested, planned, dispatched, accepted, effective,
       observed, and returned structured-output truth
 
 ## Lane Runway
@@ -159,6 +169,20 @@ weaken Contracts 039 or 040 to make the flag fit.
 - [125-claude-code-headless-structured-output-binding.md](batch-cards/125-claude-code-headless-structured-output-binding.md) — conditional
 - [126-claude-code-headless-structured-output-acceptance.md](batch-cards/126-claude-code-headless-structured-output-acceptance.md) — conditional
 
+## Evidence Stop
+
+Research 192 has no deliver-now schema row. Exact `2.1.238` local evidence
+shows that `--json-schema` parses and adds a model-visible `StructuredOutput`
+tool beside the fixed tools, but the exact dialect is unresolved, retry
+attempts have no immutable bindable maximum, and a valid provider-produced
+terminal structured result was not available without a live prompt. The
+implementation is classified `HarnessValidated` for Contract 040, but that
+classification does not admit a capability.
+
+Cards 125 and 126 are blocked. No production adapter, prepared input, driver,
+guide capability, behavior revision, compatibility range, matrix, or release
+claim changes. The schema-absent headless route remains the current claim.
+
 ## References
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md)
@@ -171,3 +195,4 @@ weaken Contracts 039 or 040 to make the flag fit.
 - [Claude Agent Prepared Integration](../../guides/claude-agent-prepared-integration.md)
 - [Claude Code CLI Reference](https://code.claude.com/docs/en/cli-reference)
 - [Claude Code Headless Mode](https://code.claude.com/docs/en/headless)
+- [Claude Agent SDK Structured Outputs](https://code.claude.com/docs/en/agent-sdk/structured-outputs)

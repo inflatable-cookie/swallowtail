@@ -1,6 +1,6 @@
 # 124 Claude Code Headless Structured Output Evidence
 
-Status: planned
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-23
 Milestone: [g04.045 Claude Code Headless Structured Output](../045-claude-code-headless-structured-output.md)
@@ -53,24 +53,27 @@ the host `claude` executable.
 
 ## Acceptance Criteria
 
-- [ ] official and exact `2.1.238` sources and specimens are frozen with dates
+- [x] official and exact `2.1.238` sources and specimens are frozen with dates
       and digests
-- [ ] selected-command composition and schema dialect/subset are explicit
-- [ ] enforcement source, model-visible tool behavior, attempts, turns,
+- [x] selected-command composition and schema dialect/subset are explicit;
+      exact dialect remains unresolved
+- [x] enforcement source, model-visible tool behavior, attempts, turns,
       retries, exit, null result, and terminal shape are explicit
-- [ ] reasoning, schema-absent, activity, usage, cancellation, and cleanup
+- [x] reasoning, schema-absent, activity, usage, cancellation, and cleanup
       compatibility are explicit
-- [ ] facade revision and exact-version disposition are explicit
-- [ ] Research 192 is promoted with a route/schema deliver-now table
-- [ ] no production code, capability, guide, matrix, or compatibility claim
+- [x] facade revision and exact-version disposition are explicit
+- [x] Research 192 is promoted with a route/schema deliver-now table
+- [x] no production code, capability, guide, matrix, or compatibility claim
       changes during evidence
-- [ ] `effigy validate:focused swallowtail-adapter-claude-agent` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-claude-agent` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 125 only when Research 192 admits at least one exact
 schema subset with qualifying enforcement, an exact bounded attempt policy,
 unambiguous non-null terminal structured output, and no contract gap.
+
+The deliver-now set is empty. Card 125 is blocked.
 
 ## Stop Conditions
 
@@ -87,4 +90,3 @@ unambiguous non-null terminal structured output, and no contract gap.
 
 - production binding, guide/matrix claims, or shared closeout surfaces
 - response-only, ACP, another version range, another Claude flag, or live work
-

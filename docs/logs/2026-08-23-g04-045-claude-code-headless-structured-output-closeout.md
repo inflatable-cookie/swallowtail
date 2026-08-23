@@ -1,13 +1,14 @@
 # 2026-08-23 g04.045 Claude Code Headless Structured Output Closeout
 
-Status: stopped after evidence; PR pending
+Status: stopped after evidence; PR open
 Owner: Tom
 Milestone: g04.045
 Cards: 124-126
 Branch: `t3code/review-headless-structured-output`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-0098ce5a`
 Base: `1fe9066676a1568b1910a80656879dc395c9a50e` (`origin/main` at dispatch)
-PR: pending
+Worker implementation head: `9c81b327`
+PR: [#44](https://github.com/inflatable-cookie/swallowtail/pull/44)
 
 ## Outcome
 

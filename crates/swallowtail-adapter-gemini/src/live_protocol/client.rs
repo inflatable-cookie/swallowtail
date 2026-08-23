@@ -6,6 +6,7 @@ use serde_json::{Value, json};
 pub(crate) enum ClientFrame<'a> {
     Setup {
         handle: Option<&'a ProviderSessionHandle>,
+        thinking_level: &'a str,
     },
     ActivityStart,
     Audio(&'a [u8]),
@@ -15,7 +16,10 @@ pub(crate) enum ClientFrame<'a> {
 impl ClientFrame<'_> {
     pub(crate) fn to_json(&self) -> Value {
         match self {
-            Self::Setup { handle } => {
+            Self::Setup {
+                handle,
+                thinking_level,
+            } => {
                 let session_resumption =
                     handle.map_or_else(|| json!({}), |handle| json!({"handle": handle.expose()}));
                 json!({
@@ -28,7 +32,7 @@ impl ClientFrame<'_> {
                                     "prebuiltVoiceConfig": {"voiceName": "Kore"}
                                 }
                             },
-                            "thinkingConfig": {"thinkingLevel": "MINIMAL"}
+                            "thinkingConfig": {"thinkingLevel": thinking_level}
                         },
                         "realtimeInputConfig": {
                             "automaticActivityDetection": {"disabled": true},

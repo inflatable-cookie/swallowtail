@@ -92,6 +92,14 @@ impl OpenAiRealtimeDriver {
             (None, None) => {}
             _ => return Err(rejected("output maximum differs from preflight")),
         }
+        if request.reasoning_mode().is_some()
+            || plan
+                .requirements()
+                .capabilities()
+                .any(|requirement| requirement.capability() == Capability::ReasoningSelection)
+        {
+            return Err(rejected("reasoning selection is not supported"));
+        }
         if request.config() != &realtime_config()
             || plan
                 .requirements()
@@ -176,6 +184,9 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             }
             "media format or bounds differ from preflight" => {
                 "OpenAI Realtime media format or bounds differ from preflight"
+            }
+            "reasoning selection is not supported" => {
+                "OpenAI Realtime does not support realtime reasoning selection"
             }
             "output maximum differs from preflight" => {
                 "OpenAI Realtime output maximum differs from preflight"

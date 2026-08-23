@@ -41,6 +41,7 @@ pub(super) struct GeminiLiveSession {
     pub(super) turn_index: u32,
     pub(super) activity_open: bool,
     pub(super) deadline: Option<swallowtail_runtime::Deadline>,
+    pub(super) thinking_level: &'static str,
     historical_cleanup: CleanupOutcome,
 }
 
@@ -69,11 +70,18 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
             };
             let connections = ConnectionRegistry::default();
             connections.add(worker.clone());
+            let thinking_level =
+                crate::live_reasoning::setup_thinking_level(request.reasoning_mode())
+                    .expect("validated reasoning selection maps to an exact level");
             let mut updates = worker.take_updates().expect("new worker owns updates");
             if let Err(error) = configure(
                 &worker,
                 &mut updates,
-                ClientFrame::Setup { handle: None }.to_json(),
+                ClientFrame::Setup {
+                    handle: None,
+                    thinking_level,
+                }
+                .to_json(),
             )
             .await
             {
@@ -117,6 +125,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
                 turn_index: 0,
                 activity_open: false,
                 deadline: request.deadline(),
+                thinking_level,
                 historical_cleanup: CleanupOutcome::NotApplicable,
             }) as Box<dyn RealtimeMediaSessionHandle>)
         })

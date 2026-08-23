@@ -1,8 +1,9 @@
 # 128 Gemini Live Thinking-Level Binding
 
-Status: conditional; awaiting card 127
+Status: complete
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.046 Gemini Live Thinking Levels](../046-gemini-live-thinking-levels.md)
 Depends on: card 127; promoted Research 193 with a non-empty deliver-now set
 
@@ -46,15 +47,15 @@ validation, and initial/resumed setup serialization.
 
 ## Acceptance Criteria
 
-- [ ] only Research 193 deliver-now values prepare
-- [ ] input, capability constraint, plan, evidence, request, driver, and setup
+- [x] only Research 193 deliver-now values prepare
+- [x] input, capability constraint, plan, evidence, request, driver, and setup
       bytes agree exactly
-- [ ] omission preserves current initial and resume setup bytes
-- [ ] one planned rollover and fresh restoration retain the selected level
-- [ ] unsupported values and every knowable drift reject before effects
-- [ ] sibling OpenAI Realtime rejects an unsupported shared-request reasoning
+- [x] omission preserves current initial and resume setup bytes
+- [x] one planned rollover and fresh restoration retain the selected level
+- [x] unsupported values and every knowable drift reject before effects
+- [x] sibling OpenAI Realtime rejects an unsupported shared-request reasoning
       field and retains its ordinary absent behavior
-- [ ] no alias, clamp, substitution, numeric translation, retry, or fallback
+- [x] no alias, clamp, substitution, numeric translation, retry, or fallback
       enters the API
 
 ## Validation

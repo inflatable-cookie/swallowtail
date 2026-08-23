@@ -1494,9 +1494,11 @@ pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::maximum_outpu
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::new(swallowtail_runtime::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::Deadline>) -> Self
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::planned_connection_rollover(&self) -> swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::provider_state_policy(&self) -> swallowtail_core::session_provider_state::SessionProviderStatePolicy
+pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::request_id(&self) -> &swallowtail_runtime::RequestId
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
 pub const fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::with_planned_connection_rollover(self, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
+pub fn swallowtail_runtime::OpenRealtimeMediaSessionRequest::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub struct swallowtail_runtime::OpenSessionRequest
 impl swallowtail_runtime::OpenSessionRequest
 pub const fn swallowtail_runtime::OpenSessionRequest::access_policy(&self) -> &swallowtail_core::session_access::SessionAccessPolicy

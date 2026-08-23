@@ -1,8 +1,13 @@
 use super::input::GeminiLiveSessionProfileInput;
-use super::plan::{GeminiLivePreparedEvidence, build_plan, model_route};
+use super::plan::{
+    GeminiLivePreparedEvidence, build_plan, instance_with_capabilities, model_route,
+};
 use crate::prepared_live::failure;
 use crate::{GeminiLiveDriver, GeminiLivePreparedIntegration};
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, PreflightPlan,
+    ReasoningMode,
+};
 use swallowtail_runtime::{
     BoxFuture, HostServices, OpenRealtimeMediaSessionRequest, PreparationFailure, PreparationStage,
     PreparedWorkingStateRestoration, RealtimeMediaSessionDriver, RealtimeMediaSessionHandle,
@@ -90,7 +95,7 @@ impl GeminiLivePreparedIntegration {
         &self,
         input: GeminiLiveSessionProfileInput,
     ) -> Result<GeminiPreparedLiveSession, PreparationFailure> {
-        let (request_id, config, deadline, rollover) = input.into_parts();
+        let (request_id, config, deadline, rollover, reasoning_mode) = input.into_parts();
         if config != crate::gemini_live_media_config() {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -105,13 +110,40 @@ impl GeminiLivePreparedIntegration {
                 "Gemini Live preparation requires exactly one planned connection rollover",
             ));
         }
-        let route = model_route(self);
-        let plan = build_plan(self, &route)?;
-        let request = OpenRealtimeMediaSessionRequest::new(request_id, config, deadline)
+        if reasoning_mode
+            .as_ref()
+            .is_some_and(|mode| crate::live_reasoning::thinking_level(mode).is_none())
+        {
+            return Err(failure(
+                PreparationStage::Preflight,
+                "swallowtail.gemini.live_preparation.reasoning_value_unsupported",
+                "Gemini Live preparation admits only minimal, low, medium, or high thinking",
+            ));
+        }
+        let capability_requirements = capabilities(reasoning_mode.as_ref());
+        let capability_profile = CapabilityProfile::new(capability_requirements.clone());
+        let instance = instance_with_capabilities(self, capability_profile.clone());
+        let route = model_route(self, capability_profile);
+        let plan = build_plan(self, &instance, &route, capability_requirements)?;
+        let mut request = OpenRealtimeMediaSessionRequest::new(request_id, config, deadline)
             .with_planned_connection_rollover(rollover);
+        if let Some(mode) = reasoning_mode {
+            request = request.with_reasoning_mode(mode);
+        }
         Ok(GeminiPreparedLiveSession {
             evidence: GeminiLivePreparedEvidence::from_prepared(self, plan)?,
             request,
         })
     }
+}
+
+fn capabilities(mode: Option<&ReasoningMode>) -> Vec<CapabilityRequirement> {
+    let mut capabilities = crate::gemini_live_base_capabilities();
+    if let Some(mode) = mode {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+    }
+    capabilities
 }

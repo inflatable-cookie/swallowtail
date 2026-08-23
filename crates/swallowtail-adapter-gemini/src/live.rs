@@ -69,6 +69,7 @@ impl GeminiLiveDriver {
             return Err(rejected("preview model route is not exact"));
         }
         validate_capabilities(plan)?;
+        validate_reasoning(plan, request)?;
         validate_planned_connection_rollover_plan(plan, request.planned_connection_rollover())?;
         if request.planned_connection_rollover()
             != PlannedConnectionRolloverPolicy::Bounded(NonZeroU32::new(1).unwrap())
@@ -135,6 +136,28 @@ fn validate_capabilities(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
+fn validate_reasoning(
+    plan: &PreflightPlan,
+    request: &OpenRealtimeMediaSessionRequest,
+) -> Result<(), RuntimeFailure> {
+    let planned = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::ReasoningSelection);
+    match (request.reasoning_mode(), planned) {
+        (None, None) => Ok(()),
+        (Some(mode), Some(required))
+            if crate::live_reasoning::thinking_level(mode).is_some()
+                && required
+                    .constraints()
+                    .eq([&CapabilityConstraint::ReasoningMode(mode.clone())]) =>
+        {
+            Ok(())
+        }
+        _ => Err(rejected("reasoning selection differs from preflight")),
+    }
+}
+
 /// Describes the hosted Gemini Live realtime-media role and host needs.
 #[must_use]
 pub fn gemini_live_descriptor() -> DriverDescriptor {
@@ -190,6 +213,9 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             }
             "cancellation scope is not ActiveResponse" => {
                 "Gemini Live requires active-response cancellation"
+            }
+            "reasoning selection differs from preflight" => {
+                "Gemini Live reasoning selection differs from preflight"
             }
             _ => "Gemini Live required host services are unavailable",
         },

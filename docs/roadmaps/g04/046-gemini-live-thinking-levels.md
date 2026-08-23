@@ -41,7 +41,7 @@ access boundary, rollover semantics, or claims beyond dispatch.
 - [x] prove that omitted selection retains the current exact `MINIMAL` setup
       frame while remaining distinct from an explicit caller selection
 - [x] decide the exact opaque facade point and private behavior revision
-- [ ] bind only Research 193 deliver-now rows through typed prepared input,
+- [x] bind only Research 193 deliver-now rows through typed prepared input,
       immutable plan/evidence, the realtime request, driver validation, and
       setup serialization
 - [ ] retain the same selected level across initial setup, one planned
@@ -109,10 +109,10 @@ weakened to make the field fit.
 
 ### Batch 46.2 — Conditional Prepared Binding
 
-- [ ] Execute card 128 only if card 127 admits a non-empty deliver-now set.
-- [ ] carry exact reasoning through shared request state and the owning Gemini
+- [x] Execute card 128 only if card 127 admits a non-empty deliver-now set.
+- [x] carry exact reasoning through shared request state and the owning Gemini
       prepared route
-- [ ] reject unsupported values and request/plan/driver drift before effects
+- [x] reject unsupported values and request/plan/driver drift before effects
 
 ### Batch 46.3 — Route-Local Acceptance
 
@@ -161,8 +161,8 @@ weakened to make the field fit.
 ## Batch Cards
 
 - [127-gemini-live-thinking-level-evidence.md](batch-cards/127-gemini-live-thinking-level-evidence.md) — complete
-- [128-gemini-live-thinking-level-binding.md](batch-cards/128-gemini-live-thinking-level-binding.md) — conditional
-- [129-gemini-live-thinking-level-acceptance.md](batch-cards/129-gemini-live-thinking-level-acceptance.md) — conditional
+- [128-gemini-live-thinking-level-binding.md](batch-cards/128-gemini-live-thinking-level-binding.md) — complete
+- [129-gemini-live-thinking-level-acceptance.md](batch-cards/129-gemini-live-thinking-level-acceptance.md) — ready
 
 ## References
 

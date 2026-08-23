@@ -1,7 +1,7 @@
 use crate::{Deadline, RequestId};
 use std::num::NonZeroU64;
 use swallowtail_core::{
-    PlannedConnectionRolloverPolicy, RealtimeMediaConfig, SessionProviderStatePolicy,
+    PlannedConnectionRolloverPolicy, RealtimeMediaConfig, ReasoningMode, SessionProviderStatePolicy,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -11,6 +11,7 @@ pub struct OpenRealtimeMediaSessionRequest {
     config: RealtimeMediaConfig,
     deadline: Option<Deadline>,
     maximum_output_tokens: Option<NonZeroU64>,
+    reasoning_mode: Option<ReasoningMode>,
     provider_state_policy: SessionProviderStatePolicy,
     planned_connection_rollover: PlannedConnectionRolloverPolicy,
 }
@@ -28,6 +29,7 @@ impl OpenRealtimeMediaSessionRequest {
             config,
             deadline,
             maximum_output_tokens: None,
+            reasoning_mode: None,
             provider_state_policy: SessionProviderStatePolicy::Prohibited,
             planned_connection_rollover: PlannedConnectionRolloverPolicy::Disabled,
         }
@@ -62,6 +64,19 @@ impl OpenRealtimeMediaSessionRequest {
     /// Returns the optional maximum output-token bound.
     pub const fn maximum_output_tokens(&self) -> Option<NonZeroU64> {
         self.maximum_output_tokens
+    }
+
+    #[must_use]
+    /// Sets one exact portable reasoning selection for the session.
+    pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(mode);
+        self
+    }
+
+    #[must_use]
+    /// Returns the optional portable reasoning selection.
+    pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
+        self.reasoning_mode.as_ref()
     }
 
     #[must_use]

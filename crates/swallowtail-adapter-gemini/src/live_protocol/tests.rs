@@ -78,13 +78,18 @@ fn exact_preview_route_access_and_asymmetric_media_posture_is_frozen() {
 #[test]
 fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
     assert_eq!(
-        ClientFrame::Setup { handle: None }.to_json(),
+        ClientFrame::Setup {
+            handle: None,
+            thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
+        }
+        .to_json(),
         expected("client-setup-initial.json")
     );
     let handle = ProviderSessionHandle::new("fixture-private-handle-2".to_owned());
     assert_eq!(
         ClientFrame::Setup {
-            handle: Some(&handle)
+            handle: Some(&handle),
+            thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
         }
         .to_json(),
         expected("client-setup-resume.json")

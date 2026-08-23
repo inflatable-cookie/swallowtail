@@ -17,6 +17,7 @@ impl GeminiLiveSession {
                 state.handle().map(|handle| {
                     ClientFrame::Setup {
                         handle: Some(handle),
+                        thinking_level: self.thinking_level,
                     }
                     .to_json()
                 })

@@ -1,4 +1,4 @@
-use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
+use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig, ReasoningMode};
 use swallowtail_runtime::{Deadline, RequestId};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -8,6 +8,7 @@ pub struct GeminiLiveSessionProfileInput {
     config: RealtimeMediaConfig,
     deadline: Option<Deadline>,
     rollover: PlannedConnectionRolloverPolicy,
+    reasoning_mode: Option<ReasoningMode>,
 }
 
 impl GeminiLiveSessionProfileInput {
@@ -24,7 +25,15 @@ impl GeminiLiveSessionProfileInput {
             config,
             deadline,
             rollover,
+            reasoning_mode: None,
         }
+    }
+
+    /// Selects one exact thinking level for every setup frame in the session.
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(mode);
+        self
     }
 
     /// Creates the qualified manual PCM profile with one planned rollover.
@@ -45,7 +54,14 @@ impl GeminiLiveSessionProfileInput {
         RealtimeMediaConfig,
         Option<Deadline>,
         PlannedConnectionRolloverPolicy,
+        Option<ReasoningMode>,
     ) {
-        (self.request_id, self.config, self.deadline, self.rollover)
+        (
+            self.request_id,
+            self.config,
+            self.deadline,
+            self.rollover,
+            self.reasoning_mode,
+        )
     }
 }

@@ -60,7 +60,7 @@ pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
             InterfaceCompatibilityClaimId::new,
-            "gemini.live-preview-window-1",
+            "gemini.live-preview-window-2",
         ),
         id(InterfaceVersionAxis::new, FACADE_AXIS),
         InterfaceVersionScheme::Opaque,
@@ -69,7 +69,7 @@ pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
             id(InterfaceVersion::new, GEMINI_LIVE_FACADE_REVISION),
             id(
                 InterfaceBehaviorRevision::new,
-                "gemini.live-preview-manual-pcm-rollover-v1",
+                "gemini.live-preview-manual-pcm-rollover-thinking-v2",
             ),
             InterfaceSupportStatus::Maintained,
         )],
@@ -156,6 +156,15 @@ pub fn gemini_live_model_route(
 /// Declares host, access, capability, media, and rollover requirements.
 #[must_use]
 pub fn gemini_live_requirements(host: ExecutionHostId) -> OperationRequirements {
+    gemini_live_requirements_with_capabilities(host, capabilities())
+}
+
+/// Declares the same fixed route with an explicit operation capability set.
+#[must_use]
+pub fn gemini_live_requirements_with_capabilities(
+    host: ExecutionHostId,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
         OperationShape::InteractiveSession,
@@ -176,7 +185,7 @@ pub fn gemini_live_requirements(host: ExecutionHostId) -> OperationRequirements 
         HostServiceKind::Network,
         HostServiceKind::Credential,
     ])
-    .with_capabilities(capabilities())
+    .with_capabilities(capabilities)
     .with_interface_versions([gemini_live_facade_binding()])
     .with_session_access_policy(SessionAccessPolicy::resource_free())
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
@@ -186,6 +195,12 @@ pub fn gemini_live_requirements(host: ExecutionHostId) -> OperationRequirements 
     ))
     .with_planned_connection_rollover(gemini_live_rollover_policy())
     .require_model_route()
+}
+
+/// Returns the fixed capability set the route always requires.
+#[must_use]
+pub fn gemini_live_base_capabilities() -> Vec<CapabilityRequirement> {
+    capabilities()
 }
 
 fn capabilities() -> Vec<CapabilityRequirement> {

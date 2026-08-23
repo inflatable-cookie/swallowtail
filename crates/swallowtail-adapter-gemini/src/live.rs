@@ -70,6 +70,7 @@ impl GeminiLiveDriver {
         }
         validate_capabilities(plan)?;
         validate_reasoning(plan, request)?;
+        validate_output_maximum(plan, request)?;
         validate_planned_connection_rollover_plan(plan, request.planned_connection_rollover())?;
         if request.planned_connection_rollover()
             != PlannedConnectionRolloverPolicy::Bounded(NonZeroU32::new(1).unwrap())
@@ -158,6 +159,28 @@ fn validate_reasoning(
     }
 }
 
+fn validate_output_maximum(
+    plan: &PreflightPlan,
+    request: &OpenRealtimeMediaSessionRequest,
+) -> Result<(), RuntimeFailure> {
+    let planned = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::OutputTokenLimit);
+    match (request.maximum_output_tokens(), planned) {
+        (None, None) => Ok(()),
+        (Some(maximum), Some(required))
+            if maximum.get() <= crate::GEMINI_LIVE_MAX_OUTPUT_TOKENS
+                && required
+                    .constraints()
+                    .eq([&CapabilityConstraint::OutputTokenMaximum(maximum.get())]) =>
+        {
+            Ok(())
+        }
+        _ => Err(rejected("output maximum differs from preflight")),
+    }
+}
+
 /// Describes the hosted Gemini Live realtime-media role and host needs.
 #[must_use]
 pub fn gemini_live_descriptor() -> DriverDescriptor {
@@ -216,6 +239,9 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             }
             "reasoning selection differs from preflight" => {
                 "Gemini Live reasoning selection differs from preflight"
+            }
+            "output maximum differs from preflight" => {
+                "Gemini Live output-token maximum differs from preflight"
             }
             _ => "Gemini Live required host services are unavailable",
         },

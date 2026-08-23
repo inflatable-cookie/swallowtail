@@ -1,6 +1,6 @@
 # 132 Gemini Live Output-Token-Maximum Acceptance
 
-Status: conditional
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,14 @@ Depends on: card 131
 Prove exact Gemini Live output-maximum dispatch, preserved omission, reasoning
 composition, and continuity behavior, then produce one review-ready route-local
 closeout.
+
+## Outcome
+
+Deterministic coverage proves domain bounds `1`, `1024`, and `65536`, rejection
+of `65537`, omission byte preservation, reasoning composition, one planned
+rollover, and fresh restoration. Route-local guide, example, Research 194,
+cards, milestone, and closeout record the delivery; shared matrices remain
+deferred to orchestrator merge.
 
 ## Scope
 
@@ -41,19 +49,19 @@ closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted boundary and rejected value class has deterministic
+- [x] every admitted boundary and rejected value class has deterministic
       coverage
-- [ ] initial, rollover/resume, fresh restoration, composition, and omission
+- [x] initial, rollover/resume, fresh restoration, composition, and omission
       bytes are exact
-- [ ] default QA performs no credential, account, external request, provider
+- [x] default QA performs no credential, account, external request, provider
       prompt, or paid work
-- [ ] docs distinguish requested, planned, and dispatched maximum from accepted
+- [x] docs distinguish requested, planned, and dispatched maximum from accepted
       and effective generated length
-- [ ] no token-count, truncation, sibling-route, or compatibility point is
+- [x] no token-count, truncation, sibling-route, or compatibility point is
       inferred
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside the named code and route-local docs boundary
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside the named code and route-local docs boundary
+- [x] named gates pass
 
 ## Validation
 

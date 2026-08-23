@@ -102,6 +102,7 @@ pub struct swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
 impl swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
 pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
 pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub struct swallowtail_adapter_gemini::GeminiModelsDriver
 impl swallowtail_adapter_gemini::GeminiModelsDriver
@@ -187,6 +188,7 @@ pub const swallowtail_adapter_gemini::GEMINI_LIVE_CONFIGURED_INSTANCE_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_ENDPOINT: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_ENDPOINT_AUDIENCE: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_MAX_OUTPUT_TOKENS: u64
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ROUTE_ID: &str
 pub const swallowtail_adapter_gemini::GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str

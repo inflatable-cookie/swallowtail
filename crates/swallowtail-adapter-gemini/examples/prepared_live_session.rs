@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
     GeminiLivePreparationInput, GeminiLivePreparedIntegration, GeminiLiveSessionProfileInput,
     GeminiPreparedLiveSession, prepare_gemini_live,
@@ -28,6 +29,15 @@ fn select_thinking_level(
 ) -> GeminiLiveSessionProfileInput {
     GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(request_id, deadline)
         .with_reasoning_mode(mode)
+}
+
+fn select_output_maximum(
+    request_id: RequestId,
+    deadline: Option<Deadline>,
+    maximum: NonZeroU64,
+) -> GeminiLiveSessionProfileInput {
+    GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(request_id, deadline)
+        .with_maximum_output_tokens(maximum)
 }
 
 fn main() {}

@@ -3,7 +3,8 @@ use super::plan::{
     GeminiLivePreparedEvidence, build_plan, instance_with_capabilities, model_route,
 };
 use crate::prepared_live::failure;
-use crate::{GeminiLiveDriver, GeminiLivePreparedIntegration};
+use crate::{GEMINI_LIVE_MAX_OUTPUT_TOKENS, GeminiLiveDriver, GeminiLivePreparedIntegration};
+use std::num::NonZeroU64;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, PreflightPlan,
     ReasoningMode,
@@ -95,7 +96,8 @@ impl GeminiLivePreparedIntegration {
         &self,
         input: GeminiLiveSessionProfileInput,
     ) -> Result<GeminiPreparedLiveSession, PreparationFailure> {
-        let (request_id, config, deadline, rollover, reasoning_mode) = input.into_parts();
+        let (request_id, config, deadline, rollover, reasoning_mode, maximum_output_tokens) =
+            input.into_parts();
         if config != crate::gemini_live_media_config() {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -120,7 +122,16 @@ impl GeminiLivePreparedIntegration {
                 "Gemini Live preparation admits only minimal, low, medium, or high thinking",
             ));
         }
-        let capability_requirements = capabilities(reasoning_mode.as_ref());
+        if maximum_output_tokens
+            .is_some_and(|maximum| maximum.get() > GEMINI_LIVE_MAX_OUTPUT_TOKENS)
+        {
+            return Err(failure(
+                PreparationStage::Preflight,
+                "swallowtail.gemini.live_preparation.output_limit_invalid",
+                "Gemini Live output-token maximum must be between 1 and 65536",
+            ));
+        }
+        let capability_requirements = capabilities(reasoning_mode.as_ref(), maximum_output_tokens);
         let capability_profile = CapabilityProfile::new(capability_requirements.clone());
         let instance = instance_with_capabilities(self, capability_profile.clone());
         let route = model_route(self, capability_profile);
@@ -130,6 +141,9 @@ impl GeminiLivePreparedIntegration {
         if let Some(mode) = reasoning_mode {
             request = request.with_reasoning_mode(mode);
         }
+        if let Some(maximum) = maximum_output_tokens {
+            request = request.with_maximum_output_tokens(maximum);
+        }
         Ok(GeminiPreparedLiveSession {
             evidence: GeminiLivePreparedEvidence::from_prepared(self, plan)?,
             request,
@@ -137,12 +151,21 @@ impl GeminiLivePreparedIntegration {
     }
 }
 
-fn capabilities(mode: Option<&ReasoningMode>) -> Vec<CapabilityRequirement> {
+fn capabilities(
+    mode: Option<&ReasoningMode>,
+    maximum: Option<NonZeroU64>,
+) -> Vec<CapabilityRequirement> {
     let mut capabilities = crate::gemini_live_base_capabilities();
     if let Some(mode) = mode {
         capabilities.push(CapabilityRequirement::new(
             Capability::ReasoningSelection,
             [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+    }
+    if let Some(maximum) = maximum {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::OutputTokenLimit,
+            [CapabilityConstraint::OutputTokenMaximum(maximum.get())],
         ));
     }
     capabilities

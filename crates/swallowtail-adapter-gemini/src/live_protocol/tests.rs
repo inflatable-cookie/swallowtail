@@ -30,6 +30,13 @@ pub(super) fn expected(name: &str) -> Value {
         "client-setup-resume-thinking-high.json" => {
             fixture!("client-setup-resume-thinking-high.json")
         }
+        "client-setup-max-1.json" => fixture!("client-setup-max-1.json"),
+        "client-setup-max-1024.json" => fixture!("client-setup-max-1024.json"),
+        "client-setup-max-65536.json" => fixture!("client-setup-max-65536.json"),
+        "client-setup-resume-max-65536.json" => fixture!("client-setup-resume-max-65536.json"),
+        "client-setup-max-1024-thinking-low.json" => {
+            fixture!("client-setup-max-1024-thinking-low.json")
+        }
         "client-activity-start.json" => fixture!("client-activity-start.json"),
         "client-audio.json" => fixture!("client-audio.json"),
         "client-activity-end.json" => fixture!("client-activity-end.json"),
@@ -48,7 +55,7 @@ fn exact_preview_route_access_and_asymmetric_media_posture_is_frozen() {
         SupportAuthority::ProviderSupported,
     );
     let facade = ProtocolFacadeId::new(
-        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23",
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23",
     )
     .unwrap();
     let model = ModelId::new("gemini-3.1-flash-live-preview").unwrap();
@@ -87,6 +94,7 @@ fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
         ClientFrame::Setup {
             handle: None,
             thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
+            maximum_output_tokens: None,
         }
         .to_json(),
         expected("client-setup-initial.json")
@@ -96,6 +104,7 @@ fn exact_client_setup_activity_and_audio_frames_match_the_frozen_corpus() {
         ClientFrame::Setup {
             handle: Some(&handle),
             thinking_level: crate::live_reasoning::OMITTED_THINKING_LEVEL,
+            maximum_output_tokens: None,
         }
         .to_json(),
         expected("client-setup-resume.json")

@@ -5,6 +5,10 @@ mod live_support;
 mod live_conformance;
 #[path = "live_failures.rs"]
 mod live_failures;
+#[path = "live_output_maximum.rs"]
+mod live_output_maximum;
+#[path = "live_output_maximum_wire.rs"]
+mod live_output_maximum_wire;
 #[path = "live_prepared_facade.rs"]
 mod live_prepared_facade;
 #[path = "live_reasoning.rs"]

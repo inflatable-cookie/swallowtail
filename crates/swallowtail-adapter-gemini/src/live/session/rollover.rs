@@ -18,6 +18,7 @@ impl GeminiLiveSession {
                     ClientFrame::Setup {
                         handle: Some(handle),
                         thinking_level: self.thinking_level,
+                        maximum_output_tokens: self.maximum_output_tokens,
                     }
                     .to_json()
                 })

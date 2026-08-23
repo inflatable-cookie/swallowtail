@@ -1,3 +1,4 @@
+use std::num::NonZeroU64;
 use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig, ReasoningMode};
 use swallowtail_runtime::{Deadline, RequestId};
 
@@ -9,6 +10,7 @@ pub struct GeminiLiveSessionProfileInput {
     deadline: Option<Deadline>,
     rollover: PlannedConnectionRolloverPolicy,
     reasoning_mode: Option<ReasoningMode>,
+    maximum_output_tokens: Option<NonZeroU64>,
 }
 
 impl GeminiLiveSessionProfileInput {
@@ -26,6 +28,7 @@ impl GeminiLiveSessionProfileInput {
             deadline,
             rollover,
             reasoning_mode: None,
+            maximum_output_tokens: None,
         }
     }
 
@@ -33,6 +36,13 @@ impl GeminiLiveSessionProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(mode);
+        self
+    }
+
+    /// Selects one exact positive output-token maximum for every setup frame.
+    #[must_use]
+    pub const fn with_maximum_output_tokens(mut self, maximum: NonZeroU64) -> Self {
+        self.maximum_output_tokens = Some(maximum);
         self
     }
 
@@ -55,6 +65,7 @@ impl GeminiLiveSessionProfileInput {
         Option<Deadline>,
         PlannedConnectionRolloverPolicy,
         Option<ReasoningMode>,
+        Option<NonZeroU64>,
     ) {
         (
             self.request_id,
@@ -62,6 +73,7 @@ impl GeminiLiveSessionProfileInput {
             self.deadline,
             self.rollover,
             self.reasoning_mode,
+            self.maximum_output_tokens,
         )
     }
 }

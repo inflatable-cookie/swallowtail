@@ -2,11 +2,13 @@ use super::handle::ProviderSessionHandle;
 use crate::live::MODEL_RESOURCE;
 use base64::Engine;
 use serde_json::{Value, json};
+use std::num::NonZeroU64;
 
 pub(crate) enum ClientFrame<'a> {
     Setup {
         handle: Option<&'a ProviderSessionHandle>,
         thinking_level: &'a str,
+        maximum_output_tokens: Option<NonZeroU64>,
     },
     ActivityStart,
     Audio(&'a [u8]),
@@ -19,21 +21,26 @@ impl ClientFrame<'_> {
             Self::Setup {
                 handle,
                 thinking_level,
+                maximum_output_tokens,
             } => {
                 let session_resumption =
                     handle.map_or_else(|| json!({}), |handle| json!({"handle": handle.expose()}));
+                let mut generation_config = json!({
+                    "responseModalities": ["AUDIO"],
+                    "speechConfig": {
+                        "voiceConfig": {
+                            "prebuiltVoiceConfig": {"voiceName": "Kore"}
+                        }
+                    },
+                    "thinkingConfig": {"thinkingLevel": thinking_level}
+                });
+                if let Some(maximum) = maximum_output_tokens {
+                    generation_config["maxOutputTokens"] = json!(maximum.get());
+                }
                 json!({
                     "setup": {
                         "model": MODEL_RESOURCE,
-                        "generationConfig": {
-                            "responseModalities": ["AUDIO"],
-                            "speechConfig": {
-                                "voiceConfig": {
-                                    "prebuiltVoiceConfig": {"voiceName": "Kore"}
-                                }
-                            },
-                            "thinkingConfig": {"thinkingLevel": thinking_level}
-                        },
+                        "generationConfig": generation_config,
                         "realtimeInputConfig": {
                             "automaticActivityDetection": {"disabled": true},
                             "activityHandling": "NO_INTERRUPTION"

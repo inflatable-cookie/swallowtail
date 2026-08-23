@@ -23,18 +23,20 @@ pub const GEMINI_LIVE_ACCESS_PROFILE_ID: &str = "gemini.authorization-api-key.pr
 /// Stable configured-instance identifier for the hosted Live route.
 pub const GEMINI_LIVE_CONFIGURED_INSTANCE_ID: &str = "gemini.public.live-preview";
 /// Exact opaque protocol-facade revision qualified by this adapter.
-pub const GEMINI_LIVE_FACADE_REVISION: &str =
-    "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23";
-/// Historical facade point qualified before caller-selected thinking levels.
+pub const GEMINI_LIVE_FACADE_REVISION: &str = "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-2026-08-23";
+/// Historical facade point qualified for thinking levels before output maxima.
 ///
-/// It names the frozen `gemini.live-preview-manual-pcm-rollover-v1` proof. It
-/// is not a supported route claim, and the driver rejects plans that carry it.
+/// It names the frozen `gemini.live-preview-manual-pcm-rollover-thinking-v2`
+/// proof. It is not a supported route claim, and the driver rejects plans that
+/// carry it.
 pub const GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str =
-    "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
+    "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23";
 /// Provider model identifier selected for the Live preview route.
 pub const GEMINI_LIVE_MODEL_ID: &str = "gemini-3.1-flash-live-preview";
 /// Stable Swallowtail model-route identifier for the Live preview model.
 pub const GEMINI_LIVE_MODEL_ROUTE_ID: &str = "gemini-3-1-flash-live-preview";
+/// Exact positive output-token maximum admitted for this Live model.
+pub const GEMINI_LIVE_MAX_OUTPUT_TOKENS: u64 = 65_536;
 
 const FACADE_AXIS: &str = "gemini.live-facade";
 
@@ -66,7 +68,7 @@ pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
             InterfaceCompatibilityClaimId::new,
-            "gemini.live-preview-window-2",
+            "gemini.live-preview-window-3",
         ),
         id(InterfaceVersionAxis::new, FACADE_AXIS),
         InterfaceVersionScheme::Opaque,
@@ -75,7 +77,7 @@ pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
             id(InterfaceVersion::new, GEMINI_LIVE_FACADE_REVISION),
             id(
                 InterfaceBehaviorRevision::new,
-                "gemini.live-preview-manual-pcm-rollover-thinking-v2",
+                "gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3",
             ),
             InterfaceSupportStatus::Maintained,
         )],

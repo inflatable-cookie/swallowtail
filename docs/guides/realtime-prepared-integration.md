@@ -146,25 +146,34 @@ thinking level. The route admits exactly `minimal`, `low`, `medium`, and
 `max`, and any numeric budget, is rejected before endpoint, credential, or
 socket work. Nothing is clamped, aliased, or substituted.
 
-The selection is fixed at preparation and immutable for the session: the same
-level is sent on the initial setup, on the one planned rollover setup, and on
-a fresh working-state restoration. Omitting the selection keeps the route's
+`GeminiLiveSessionProfileInput::with_maximum_output_tokens` adds one optional
+positive output-token maximum. The route admits exactly `1..=65_536` and maps
+the value to setup `generationConfig.maxOutputTokens`. Values above 65,536 are
+rejected before endpoint, credential, or socket work. The adapter never
+clamps, aliases, invents a default, truncates client-side, or reports an
+effective generated length.
+
+Both selections are fixed at preparation and immutable for the session: the
+same values are sent on the initial setup, on the one planned rollover setup,
+and on a fresh working-state restoration. Omitting reasoning keeps the route's
 existing fixed setup bytes, which already carry `MINIMAL`, and claims no
 reasoning capability. An explicit `minimal` selection serializes identically
 but is a planned `ReasoningSelection` in the capability profile, plan, and
-prepared evidence.
+prepared evidence. Omitting the output maximum leaves `maxOutputTokens` absent
+and claims no `OutputTokenLimit` capability.
 
 Swallowtail claims qualified dispatch only. The Live surface's setup
 acknowledgement carries no fields, so provider acceptance, effective reasoning
-depth, and thought-summary disclosure are not claimed or observable here.
-Thought summaries, `includeThoughts`, and `thinkingBudget` remain out of
-scope.
+depth, thought-summary disclosure, and effective generated length are not
+claimed or observable here. Thought summaries, `includeThoughts`, and
+`thinkingBudget` remain out of scope.
 
-The thinking-capable behavior is qualified at its own exact opaque facade
-point, `GEMINI_LIVE_FACADE_REVISION`. The point qualified before it is retained
-as `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`; it is not a supported claim, and a
-plan carrying it is rejected before endpoint, credential, or socket work.
-Publish a new configured-instance revision when moving to the current point.
+The thinking-plus-output-maximum behavior is qualified at its own exact opaque
+facade point, `GEMINI_LIVE_FACADE_REVISION`. The thinking-capable point
+qualified before it is retained as `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`; it
+is not a supported claim, and a plan carrying it is rejected before endpoint,
+credential, or socket work. Publish a new configured-instance revision when
+moving to the current point.
 
 Rollover uses only the latest in-memory resumable handle after provider
 `GoAway`, at an idle turn boundary, under the unchanged plan. It is not retry,

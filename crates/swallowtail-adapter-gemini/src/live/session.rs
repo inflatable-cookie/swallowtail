@@ -42,6 +42,7 @@ pub(super) struct GeminiLiveSession {
     pub(super) activity_open: bool,
     pub(super) deadline: Option<swallowtail_runtime::Deadline>,
     pub(super) thinking_level: &'static str,
+    pub(super) maximum_output_tokens: Option<std::num::NonZeroU64>,
     historical_cleanup: CleanupOutcome,
 }
 
@@ -73,6 +74,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
             let thinking_level =
                 crate::live_reasoning::setup_thinking_level(request.reasoning_mode())
                     .expect("validated reasoning selection maps to an exact level");
+            let maximum_output_tokens = request.maximum_output_tokens();
             let mut updates = worker.take_updates().expect("new worker owns updates");
             if let Err(error) = configure(
                 &worker,
@@ -80,6 +82,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
                 ClientFrame::Setup {
                     handle: None,
                     thinking_level,
+                    maximum_output_tokens,
                 }
                 .to_json(),
             )
@@ -126,6 +129,7 @@ impl RealtimeMediaSessionDriver for GeminiLiveDriver {
                 activity_open: false,
                 deadline: request.deadline(),
                 thinking_level,
+                maximum_output_tokens,
                 historical_cleanup: CleanupOutcome::NotApplicable,
             }) as Box<dyn RealtimeMediaSessionHandle>)
         })

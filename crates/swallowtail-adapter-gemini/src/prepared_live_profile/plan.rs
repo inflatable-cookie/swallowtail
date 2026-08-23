@@ -50,7 +50,7 @@ pub(super) fn model_route(
     ModelRoute::new(
         swallowtail_core::ModelRouteId::new(crate::GEMINI_LIVE_MODEL_ROUTE_ID)
             .expect("static Gemini Live route id is valid"),
-        swallowtail_core::ModelRouteRevision::new("prepared-2")
+        swallowtail_core::ModelRouteRevision::new("prepared-3")
             .expect("static Gemini Live route revision is valid"),
         prepared.instance().id().clone(),
         swallowtail_core::ModelId::new(crate::GEMINI_LIVE_MODEL_ID)

@@ -1,6 +1,6 @@
 # 131 Gemini Live Output-Token-Maximum Binding
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,16 @@ Depends on: card 130; promoted Research 194 with a non-empty deliver-now set
 Bind only Research 194's exact Gemini Live output-token maximum through typed
 prepared input, immutable plan/evidence, the existing realtime request, driver
 validation, and initial/resumed setup serialization.
+
+## Outcome
+
+Bound `1..=65_536` through
+`GeminiLiveSessionProfileInput::with_maximum_output_tokens`, existing
+`OpenRealtimeMediaSessionRequest`, `OutputTokenLimit` /
+`OutputTokenMaximum`, and setup `generationConfig.maxOutputTokens`. Advanced
+facade to `...thinking-output-max-2026-08-23`, behavior
+`...thinking-output-max-v3`, claim `gemini.live-preview-window-3`, and
+model-route `prepared-3`, retaining the thinking-capable point as superseded.
 
 ## Scope
 
@@ -46,15 +56,15 @@ validation, and initial/resumed setup serialization.
 
 ## Acceptance Criteria
 
-- [ ] only Research 194 deliver-now values prepare
-- [ ] input, capability constraint, plan, evidence, request, driver, and setup
+- [x] only Research 194 deliver-now values prepare
+- [x] input, capability constraint, plan, evidence, request, driver, and setup
       bytes agree exactly
-- [ ] omission preserves current initial and resume setup bytes
-- [ ] one planned rollover and fresh restoration retain the selected maximum
-- [ ] selected and omitted reasoning compose without drift
-- [ ] unsupported values and every knowable mismatch reject before effects
-- [ ] no shared runtime or sibling realtime behavior changes
-- [ ] no alias, clamp, substitution, truncation, retry, or fallback enters the
+- [x] omission preserves current initial and resume setup bytes
+- [x] one planned rollover and fresh restoration retain the selected maximum
+- [x] selected and omitted reasoning compose without drift
+- [x] unsupported values and every knowable mismatch reject before effects
+- [x] no shared runtime or sibling realtime behavior changes
+- [x] no alias, clamp, substitution, truncation, retry, or fallback enters the
       API
 
 ## Validation

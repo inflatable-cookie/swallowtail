@@ -1,6 +1,6 @@
 # g04.047 Gemini Live Output-Token Maximum
 
-Status: in progress
+Status: complete pending merge
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -36,23 +36,23 @@ dispatch.
 
 ## Goals
 
-- [ ] freeze current official exact-model, Live-facade, `GenerationConfig`,
+- [x] freeze current official exact-model, Live-facade, `GenerationConfig`,
       and `maxOutputTokens` evidence
-- [ ] classify the exact positive numeric domain without deriving setter
+- [x] classify the exact positive numeric domain without deriving setter
       support from the model catalogue alone
-- [ ] prove that omitted maximum retains the current exact initial and resumed
+- [x] prove that omitted maximum retains the current exact initial and resumed
       setup bytes
-- [ ] decide the exact opaque facade point and private behavior revision
-- [ ] bind only a Research 194 deliver-now maximum through typed prepared
+- [x] decide the exact opaque facade point and private behavior revision
+- [x] bind only a Research 194 deliver-now maximum through typed prepared
       input, immutable plan/evidence, the existing realtime request, driver
       validation, and setup serialization
-- [ ] retain the same selected maximum across initial setup, one planned
+- [x] retain the same selected maximum across initial setup, one planned
       rollover/resume setup, and fresh realtime working-state restoration
-- [ ] compose with every admitted thinking level without changing thinking
+- [x] compose with every admitted thinking level without changing thinking
       vocabulary, defaults, or claims
-- [ ] preserve media, transcription, activity, usage, cancellation, deadline,
+- [x] preserve media, transcription, activity, usage, cancellation, deadline,
       rollover, credential, socket, and joined-cleanup truth
-- [ ] publish only exact route-local dispatch truth
+- [x] publish only exact route-local dispatch truth
 
 ## Non-Goals
 
@@ -108,34 +108,34 @@ weakened and a live provider call must not be introduced to make the field fit.
 
 ### Batch 47.2 — Conditional Prepared Binding
 
-- [ ] Execute card 131 only if card 130 admits a non-empty deliver-now set.
-- [ ] carry the exact maximum through Gemini prepared state and the existing
+- [x] Execute card 131 only if card 130 admits a non-empty deliver-now set.
+- [x] carry the exact maximum through Gemini prepared state and the existing
       shared request
-- [ ] reject unsupported values and request/plan/driver drift before effects
+- [x] reject unsupported values and request/plan/driver drift before effects
 
 ### Batch 47.3 — Route-Local Acceptance
 
-- [ ] Execute card 132 only after card 131.
-- [ ] prove exact initial, rollover, restoration, omission, composition,
+- [x] Execute card 132 only after card 131.
+- [x] prove exact initial, rollover, restoration, omission, composition,
       rejection, and unchanged lifecycle behavior
-- [ ] update route-local guidance and record the deferred shared closeout delta
+- [x] update route-local guidance and record the deferred shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 194 deliver-now values prepare
-- [ ] input, capability constraint, plan, evidence, request, driver, and every
+- [x] only Research 194 deliver-now values prepare
+- [x] input, capability constraint, plan, evidence, request, driver, and every
       setup frame agree exactly
-- [ ] omission preserves current initial and resume setup bytes
-- [ ] unsupported and drifted maxima fail before endpoint, credential, or
+- [x] omission preserves current initial and resume setup bytes
+- [x] unsupported and drifted maxima fail before endpoint, credential, or
       socket work
-- [ ] no value is clamped, aliased, substituted, inferred, retried, or routed
-- [ ] one planned rollover and fresh restoration retain the selected maximum
-- [ ] selected reasoning and selected maximum compose without semantic drift
-- [ ] existing media, transcription, activity, usage, cancellation, deadline,
+- [x] no value is clamped, aliased, substituted, inferred, retried, or routed
+- [x] one planned rollover and fresh restoration retain the selected maximum
+- [x] selected reasoning and selected maximum compose without semantic drift
+- [x] existing media, transcription, activity, usage, cancellation, deadline,
       provider failure, and cleanup behavior remain intact
-- [ ] docs claim dispatch only; provider acceptance and effective generated
+- [x] docs claim dispatch only; provider acceptance and effective generated
       length remain unclaimed
-- [ ] default QA uses no credential, account, provider request, or paid work
+- [x] default QA uses no credential, account, provider request, or paid work
 
 ## Lane Runway
 
@@ -160,8 +160,8 @@ weakened and a live provider call must not be introduced to make the field fit.
 ## Batch Cards
 
 - [130-gemini-live-output-token-maximum-evidence.md](batch-cards/130-gemini-live-output-token-maximum-evidence.md) — done
-- [131-gemini-live-output-token-maximum-binding.md](batch-cards/131-gemini-live-output-token-maximum-binding.md) — ready
-- [132-gemini-live-output-token-maximum-acceptance.md](batch-cards/132-gemini-live-output-token-maximum-acceptance.md) — conditional
+- [131-gemini-live-output-token-maximum-binding.md](batch-cards/131-gemini-live-output-token-maximum-binding.md) — done
+- [132-gemini-live-output-token-maximum-acceptance.md](batch-cards/132-gemini-live-output-token-maximum-acceptance.md) — done
 
 ## References
 

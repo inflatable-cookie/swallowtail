@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-23 g04.047 Gemini Live Output-Token Maximum Compiled](./2026-08-23-g04-047-gemini-live-output-token-maximum-compiled.md)
-- [2026-08-23 g04.047 Gemini Live Output-Token Maximum Closeout](./2026-08-23-g04-047-gemini-live-output-token-maximum-closeout.md) — reserved
+- [2026-08-23 g04.047 Gemini Live Output-Token Maximum Closeout](./2026-08-23-g04-047-gemini-live-output-token-maximum-closeout.md) — worker complete; awaiting review/merge
 - [2026-08-23 g04.046 Gemini Live Thinking Levels Merged](./2026-08-23-g04-046-gemini-live-thinking-merged.md)
 - [2026-08-23 g04.046 Gemini Live Thinking Levels Compiled](./2026-08-23-g04-046-gemini-live-thinking-compiled.md)
 - [2026-08-23 g04.046 Gemini Live Thinking Levels Closeout](./2026-08-23-g04-046-gemini-live-thinking-closeout.md) — merged through PR 45 at `04cc22f2`

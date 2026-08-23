@@ -133,6 +133,21 @@ fn structured_output_evidence_fixture_is_secret_free_and_fail_closed() {
         parse_cases[2]["stderr"],
         "Error: --json-schema is not a valid JSON Schema: strict mode: unknown keyword: \"x-unsupported\""
     );
+    assert_eq!(parse_cases[3]["case"], "declared-draft-07");
+    assert_eq!(parse_cases[3]["local_validation"], "accepted");
+    assert_eq!(
+        parse_cases[3]["no_authentication_result"]["subtype"],
+        "success"
+    );
+    assert_eq!(parse_cases[3]["no_authentication_result"]["is_error"], true);
+    assert_eq!(
+        parse_cases[4]["stderr"],
+        "Error: --json-schema is not a valid JSON Schema: no schema with key or ref \"https://json-schema.org/draft/2019-09/schema\""
+    );
+    assert_eq!(
+        parse_cases[5]["stderr"],
+        "Error: --json-schema is not a valid JSON Schema: no schema with key or ref \"https://json-schema.org/draft/2020-12/schema\""
+    );
 
     let arguments = evidence["selected_headless_command"]["arguments"]
         .as_array()
@@ -165,6 +180,18 @@ fn structured_output_evidence_fixture_is_secret_free_and_fail_closed() {
     assert_eq!(
         evidence["implementation_signals"]["contract_040_enforcement_classification"],
         "HarnessValidated"
+    );
+    assert_eq!(
+        evidence["schema_dialect"]["official_sdk_dialect"],
+        "draft-07"
+    );
+    assert_eq!(
+        evidence["schema_dialect"]["exact_cli_declared_draft"],
+        "draft-07 at local validation boundary"
+    );
+    assert_eq!(
+        evidence["schema_dialect"]["exact_keyword_subset"],
+        "unresolved"
     );
     assert!(evidence["implementation_signals"]["exact_retry_count"].is_null());
     assert!(evidence["implementation_signals"]["preflight_bindable_retry_bound"].is_null());

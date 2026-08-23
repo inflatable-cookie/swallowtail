@@ -55,10 +55,11 @@ the host `claude` executable.
 
 - [x] official and exact `2.1.238` sources and specimens are frozen with dates
       and digests
-- [x] selected-command composition and schema dialect/subset are explicit;
-      exact dialect remains unresolved
-- [x] enforcement source, model-visible tool behavior, attempts, turns,
-      retries, exit, null result, and terminal shape are explicit
+- [x] selected-command composition and the draft-07 local validation boundary
+      are explicit; the full keyword subset and runtime applicability remain
+      unresolved
+- [x] enforcement source, model-visible tool behavior, observed turns and
+      rejections, and remaining retry/terminal gaps are explicit
 - [x] reasoning, schema-absent, activity, usage, cancellation, and cleanup
       compatibility are explicit
 - [x] facade revision and exact-version disposition are explicit

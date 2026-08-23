@@ -40,6 +40,29 @@
       "stderr": "Error: --json-schema is not a valid JSON Schema: strict mode: unknown keyword: \"x-unsupported\""
     },
     {
+      "case": "declared-draft-07",
+      "input": "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"string\"}}}",
+      "local_validation": "accepted",
+      "no_authentication_result": {
+        "subtype": "success",
+        "is_error": true,
+        "structured_output_field": "absent",
+        "process_exit_status": 1
+      }
+    },
+    {
+      "case": "declared-draft-2019-09",
+      "input": "{\"$schema\":\"https://json-schema.org/draft/2019-09/schema\",\"type\":\"object\"}",
+      "exit_status": 1,
+      "stderr": "Error: --json-schema is not a valid JSON Schema: no schema with key or ref \"https://json-schema.org/draft/2019-09/schema\""
+    },
+    {
+      "case": "declared-draft-2020-12",
+      "input": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\"}",
+      "exit_status": 1,
+      "stderr": "Error: --json-schema is not a valid JSON Schema: no schema with key or ref \"https://json-schema.org/draft/2020-12/schema\""
+    },
+    {
       "case": "format-annotation",
       "input": "{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"string\",\"format\":\"date-time\"}}}",
       "local_validation": "accepted",
@@ -120,9 +143,15 @@
   },
   "schema_dialect": {
     "documented_name": "JSON Schema",
-    "exact_draft": "unresolved",
+    "official_sdk_dialect": "draft-07",
+    "official_newer_draft_policy": "declared newer versions are rejected",
+    "exact_cli_declared_draft": "draft-07 at local validation boundary",
+    "exact_cli_newer_drafts": ["draft-2019-09 rejected", "draft-2020-12 rejected"],
+    "runtime_applicability": "local CLI parser agrees; full structured-output SDK/runtime linkage remains unqualified",
+    "exact_keyword_subset": "unresolved",
     "observed_subset": [
       "object schema accepted",
+      "declared draft-07 accepted at local validation boundary",
       "unknown keyword rejected in strict mode",
       "format accepted as an annotation"
     ]

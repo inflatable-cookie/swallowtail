@@ -37,7 +37,7 @@ does not amend the separate response-only or Claude Agent ACP claims.
 | [`@anthropic-ai/claude-code@2.1.238` registry record](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.238) | wrapper package identity and published package metadata | 2026-08-23 | integrity `sha512-8AgGrM8qxsA5B8KU/MvVND/fMUsF3vZQxeYjz+1Z/rGx/ZmNr0iqjfmUVKVASKN7P9OzkAUHoXgKEpyvgRfUkA==`; shasum `a8ba2539a61441b7a268a07dc2bf5623534fd127`; tarball `6a7b0ef9b12feea02d7c166b16d2674edca7658daeb137efb4c85d9e5371b6ea` |
 | [`@anthropic-ai/claude-code-darwin-arm64@2.1.238` registry record](https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/2.1.238) | native platform package selected by the wrapper | 2026-08-23 | integrity `sha512-/v6LuTgudzxPrpPOb54+Sg7m/O5NVOYE5YDPxWhxjS7IweNjbQIaY+eKFhnooE199YogqrEqrml0jibWdbVnOw==`; shasum `d658798e7455ac0db9baf43b3461234b2466cf2a`; tarball `0769cc2f4173a652c8c61c292010270c2036b0fd7400b5aa0487661c927c7c8e` |
 | Native `claude` binary, Darwin arm64 | exact executable version and implementation strings | 2026-08-23 | binary `1c196c456373b57818ae87df84aecee96cb659448c0d6a6bbb401ac5758431b2`; extracted strings `bcd71d117806ac85d72dfbaf10c281d30ba59c58b60f2f572a11b35faa3c7b61` |
-| `headless-structured-output.json` | sanitized deterministic specimen corpus | 2026-08-23 | `24f18d83b20cea17dfee49eb4fdf0709b9bccef3b0d2003a2b9a39f6a4630a3c` |
+| `headless-structured-output.json` | sanitized deterministic specimen corpus | 2026-08-23 | `0edb95ec3936279ca87e9d8394fb355bf6b84dbd89b1ccaacc30f6ee7b2241e1` |
 
 The wrapper package was published at `2026-08-20T18:01:54.712Z`. The exact
 point is held for this lane; later published versions are not inherited by
@@ -67,9 +67,19 @@ a deterministic 200000-byte description passed local schema validation and
 reached the same no-authentication gate. The observed size behavior does not
 establish an upper limit.
 
-The exact draft or dialect is not named. The observed strict keyword behavior
-and documented `format` annotation are not enough to infer a draft, a portable
-keyword subset, or compatibility with an arbitrary JSON Schema descriptor.
+The official Agent SDK source names JSON Schema draft-07 as its validation
+dialect and says schemas declaring a newer version are rejected. Exact
+`2.1.238` CLI specimens agree at the local validation boundary: a schema
+declaring `http://json-schema.org/draft-07/schema#` is accepted and reaches the
+no-authentication gate, while declarations for draft-2019-09 and draft-2020-12
+are rejected with the frozen `no schema with key or ref` diagnostics.
+
+This establishes draft-07 as the documented and locally observed declared
+dialect. It does not prove the full CLI-to-Agent-SDK implementation linkage or
+the complete keyword subset used by an effective structured-output run. The
+portable descriptor therefore remains withheld until those runtime boundaries
+are qualified; `format` annotation acceptance and strict unknown-keyword
+rejection do not fill that gap.
 
 ## Selected Command And Secret-Free Specimen
 
@@ -117,11 +127,12 @@ implementation signals for:
 - structured-output retraction and surviving-valid-output messages
 
 The current Agent SDK documentation independently describes validation,
-re-prompting, a retry limit, and failure when no structured output survives.
-Together with the exact CLI binary's model-visible tool and retry signals,
-Contract 040 classifies this implementation as `HarnessValidated`, not
-`ProviderNative`. This is an evidence classification, not an admitted
-capability.
+re-prompting, a retry limit, draft-07 validation, and failure when no
+structured output survives. Together with the exact CLI binary's model-visible
+tool and retry signals, Contract 040 classifies this implementation as
+`HarnessValidated`, not `ProviderNative`. This is an evidence classification,
+not an admitted capability. The exact CLI-to-SDK runtime linkage remains an
+applicability gap even though the local draft declarations agree.
 
 The exact retry maximum remains unknown and is not bindable from the selected
 CLI surface. A hidden positive retry count without an immutable preflight
@@ -140,7 +151,8 @@ to fill those gaps.
 | Row | Exact evidence | Disposition |
 | --- | --- | --- |
 | schema absent | Existing route fixtures and prepared tests preserve current command and ordinary result behavior | unchanged; remains the only accepted headless schema row |
-| valid object schema | Local parse succeeds; selected command composes; `StructuredOutput` appears beside fixed tools | withheld; exact dialect, retry bound, valid terminal result, and full route composition are not qualified |
+| valid object schema with declared draft-07 | Local parse succeeds; selected command composes; `StructuredOutput` appears beside fixed tools | withheld; full keyword subset, CLI-to-SDK runtime linkage, retry bound, valid terminal result, and full route composition are not qualified |
+| declared draft-2019-09 or draft-2020-12 | Exact local parser rejects both declarations | rejection evidence only; newer declared drafts are not admitted |
 | `format` annotation | Local parse succeeds and official CLI describes it as an annotation | withheld; annotation acceptance is not validation semantics |
 | malformed, invalid, unknown-keyword schema | Exact local rejection diagnostics are frozen | rejection evidence only; not a capability row |
 | large schema | 200000-byte description reaches authentication gate | no size limit or portable bound admitted |
@@ -160,5 +172,5 @@ matrix row, or compatibility-range change follows from this record.
 Card 124 is complete as an evidence stop. Cards 125 and 126 are blocked and
 were not executed. The exact evidence is sufficient to retain the current
 route and to reject a future schema request until a named package surface
-exposes an exact dialect, immutable attempt bound, valid terminal result, and
-full lifecycle composition.
+exposes the complete draft-07 keyword subset and CLI runtime linkage, an
+immutable attempt bound, valid terminal result, and full lifecycle composition.

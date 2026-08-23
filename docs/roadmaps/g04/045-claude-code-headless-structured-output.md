@@ -36,15 +36,18 @@ attempt-budget, plan-mode, tool, model, usage, or terminal-result truth.
 
 - [x] freeze exact `2.1.238` package, source, help, and secret-free protocol
       evidence for `--json-schema` on the selected headless command
-- [x] identify the exact accepted schema dialect and subset; reject aliases,
-      unsupported keywords, and inferred draft compatibility
+- [x] classify the documented and locally observed draft-07 validation
+      boundary; reject aliases, unsupported keywords, and inferred draft
+      compatibility while retaining the full keyword-subset gap
 - [x] classify enforcement as exactly `ProviderNative` or
       `HarnessValidated` under Contract 040
-- [x] prove the exact model-visible tool, turn, attempt, retry, null-result,
-      exit-status, usage, and malformed-terminal behavior
-- [x] classify composition with stream JSON, Plan mode, `Read,Glob,Grep`,
-      no session persistence, model selection, every qualified reasoning mode,
-      working-resource authority, deadline, cancellation, and cleanup
+- [x] classify the exact model-visible tool, observed turn/exit/malformed
+      behavior, and remaining attempt, retry, null-result, usage, and terminal
+      gaps
+- [x] classify selected-command composition with stream JSON, Plan mode,
+      `Read,Glob,Grep`, no session persistence, model selection, and the
+      existing route controls; retain unresolved effective-runtime lifecycle
+      composition
 - [x] decide the exact Contract 029 facade point and behavior revision
 - [ ] bind only Research 192 deliver-now schema rows through typed prepared
       input, immutable plan/evidence, request policy, driver, argv, and parser
@@ -69,7 +72,7 @@ attempt-budget, plan-mode, tool, model, usage, or terminal-result truth.
 
 The lane is restricted to production route `claude-code.headless`, driver
 `swallowtail.claude-code.headless`, axis
-`claude-code-headless-stream-json`, exact first evidence point `2.1.238`, and
+`claude-code.headless-stream-json`, exact first evidence point `2.1.238`, and
 the existing private behavior `claude-code.headless.stream-json.v1`.
 
 Research 192 must freeze the exact package implementation and deterministic
@@ -99,8 +102,9 @@ weaken Contracts 039 or 040 to make the flag fit.
 - [x] promote Research 192 with schema, enforcement, retry, result, version,
       and compatibility dispositions
 
-Card 124 stopped the lane. The exact dialect, immutable retry bound, and valid
-structured terminal path were not qualified.
+Card 124 stopped the lane. Draft-07 is established at the documented and
+local parser boundary, but the full keyword subset, CLI-to-SDK runtime linkage,
+immutable retry bound, and valid structured terminal path were not qualified.
 
 ### Batch 45.2 — Conditional Prepared Binding
 
@@ -165,19 +169,20 @@ without a schema capability claim.
 
 ## Batch Cards
 
-- [124-claude-code-headless-structured-output-evidence.md](batch-cards/124-claude-code-headless-structured-output-evidence.md) — planned
-- [125-claude-code-headless-structured-output-binding.md](batch-cards/125-claude-code-headless-structured-output-binding.md) — conditional
-- [126-claude-code-headless-structured-output-acceptance.md](batch-cards/126-claude-code-headless-structured-output-acceptance.md) — conditional
+- [124-claude-code-headless-structured-output-evidence.md](batch-cards/124-claude-code-headless-structured-output-evidence.md) — complete; evidence stop
+- [125-claude-code-headless-structured-output-binding.md](batch-cards/125-claude-code-headless-structured-output-binding.md) — blocked
+- [126-claude-code-headless-structured-output-acceptance.md](batch-cards/126-claude-code-headless-structured-output-acceptance.md) — blocked
 
 ## Evidence Stop
 
 Research 192 has no deliver-now schema row. Exact `2.1.238` local evidence
 shows that `--json-schema` parses and adds a model-visible `StructuredOutput`
-tool beside the fixed tools, but the exact dialect is unresolved, retry
-attempts have no immutable bindable maximum, and a valid provider-produced
-terminal structured result was not available without a live prompt. The
-implementation is classified `HarnessValidated` for Contract 040, but that
-classification does not admit a capability.
+tool beside the fixed tools. Official SDK guidance and exact local CLI probes
+establish draft-07 at the validation boundary; the full keyword subset,
+CLI-to-SDK runtime linkage, retry attempts, and valid provider-produced
+terminal structured result remain unqualified. The implementation is
+classified `HarnessValidated` for Contract 040, but that classification does
+not admit a capability.
 
 Cards 125 and 126 are blocked. No production adapter, prepared input, driver,
 guide capability, behavior revision, compatibility range, matrix, or release

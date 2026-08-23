@@ -26,8 +26,10 @@ The exact package exposes `--json-schema` and locally validates an object schema
 On the selected stream-JSON Plan-mode command it adds a model-visible
 `StructuredOutput` tool beside `Read`, `Glob`, and `Grep`. The native binary
 contains validation and retry signals, so Contract 040 classifies enforcement
-as `HarnessValidated`. The exact draft/subset is unresolved, the retry maximum
-is not bindable from the CLI/package surface, and no valid provider-produced
+as `HarnessValidated`. Official SDK guidance and exact local CLI probes
+establish draft-07 at the validation boundary; full keyword subset and
+CLI-to-SDK runtime applicability remain unqualified. The retry maximum is not
+bindable from the CLI/package surface, and no valid provider-produced
 structured terminal result was qualified without a live prompt. The sanitized
 no-auth specimen also records a `success` subtype with `is_error: true`, exit
 `1`, and no `structured_output`; subtype alone is not acceptance truth.

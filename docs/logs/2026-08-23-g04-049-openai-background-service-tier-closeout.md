@@ -1,14 +1,15 @@
 # 2026-08-23 g04.049 OpenAI Background Service Tier Closeout
 
-Status: stopped after evidence; PR pending
+Status: stopped after evidence; PR opened
 Owner: Tom
 Milestone: g04.049
 Cards: 136 complete; 137-138 blocked
 Branch: `t3code/read-background-service-tier-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
-PR: pending
-Review: awaiting worker evidence and PR
+PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
+Head: `fe5e327b`
+Review: awaiting orchestrator review
 Merge: none; worker must not merge
 
 The launcher-provided worktree and branch differ from the handoff

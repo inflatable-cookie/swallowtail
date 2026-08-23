@@ -41,7 +41,7 @@ impl GeminiPreparedLiveSession {
         &self.request
     }
 
-    /// Creates the stateless low-level Live driver.
+    /// Returns the low-level Live driver bound to this prepared session's selection.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiLiveDriver {
         match self.evidence.context_window_compression() {

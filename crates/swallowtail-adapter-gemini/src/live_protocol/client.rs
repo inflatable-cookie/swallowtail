@@ -55,7 +55,7 @@ impl ClientFrame<'_> {
                 if context_window_compression.is_some() {
                     setup["setup"]["contextWindowCompression"] = json!({"slidingWindow": {}});
                 }
-                setup
+                canonicalize_setup(setup)
             }
             Self::ActivityStart => json!({"realtimeInput": {"activityStart": {}}}),
             Self::Audio(bytes) => json!({
@@ -69,4 +69,9 @@ impl ClientFrame<'_> {
             Self::ActivityEnd => json!({"realtimeInput": {"activityEnd": {}}}),
         }
     }
+}
+
+fn canonicalize_setup(mut setup: Value) -> Value {
+    setup.sort_all_objects();
+    setup
 }

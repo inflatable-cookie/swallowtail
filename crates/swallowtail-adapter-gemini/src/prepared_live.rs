@@ -70,7 +70,7 @@ impl GeminiLivePreparedIntegration {
         self.available_host_services.iter().copied()
     }
 
-    /// Creates the stateless low-level Live driver.
+    /// Returns an unbound low-level Live driver with compression omitted.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::GeminiLiveDriver {
         crate::GeminiLiveDriver::new()

@@ -118,13 +118,24 @@ fn selected_default_sliding_window_survives_one_planned_rollover() {
     }
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 
+    let frames = fixture.server.frames();
+    let setup_frames = raw_setup_frames(&frames);
     assert_eq!(
-        compression_values(&fixture.server.frames()),
+        setup_frames[0],
+        include_str!("fixtures/gemini-live-2026-07-22/client-setup-compression-initial.json")
+            .trim()
+    );
+    assert_eq!(
+        setup_frames[1],
+        include_str!("fixtures/gemini-live-2026-07-22/client-setup-compression-resume.json").trim()
+    );
+    assert_eq!(
+        compression_values(&frames),
         vec![Some(json!({"slidingWindow": {}})); 2]
     );
-    assert_eq!(handles(&fixture.server.frames())[0], None);
+    assert_eq!(handles(&frames)[0], None);
     assert_eq!(
-        handles(&fixture.server.frames())[1],
+        handles(&frames)[1],
         Some("fixture-private-handle-2".to_owned())
     );
     assert_eq!(fixture.calls.count(Call::CredentialRelease), 1);
@@ -199,10 +210,7 @@ fn omitted_compression_keeps_prior_initial_and_resume_setup_bytes() {
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 
     let frames = fixture.server.frames();
-    let setup_frames: Vec<_> = frames
-        .iter()
-        .filter(|frame| frame.contains("\"setup\""))
-        .collect();
+    let setup_frames = raw_setup_frames(&frames);
     assert_eq!(compression_values(&frames), vec![None, None]);
     assert_eq!(
         setup_frames[0],
@@ -212,6 +220,14 @@ fn omitted_compression_keeps_prior_initial_and_resume_setup_bytes() {
         setup_frames[1],
         include_str!("fixtures/gemini-live-2026-07-22/client-setup-resume.json").trim()
     );
+}
+
+fn raw_setup_frames(frames: &[String]) -> Vec<&str> {
+    frames
+        .iter()
+        .filter(|frame| frame.contains("\"setup\""))
+        .map(String::as_str)
+        .collect()
 }
 
 #[test]

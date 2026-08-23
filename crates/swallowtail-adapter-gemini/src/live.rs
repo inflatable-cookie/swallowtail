@@ -36,7 +36,7 @@ pub struct GeminiLiveDriver {
 }
 
 impl GeminiLiveDriver {
-    /// Creates the stateless Live protocol driver.
+    /// Creates a Live protocol driver with compression omitted.
     #[must_use]
     pub fn new() -> Self {
         Self::default()

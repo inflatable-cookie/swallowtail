@@ -96,4 +96,7 @@ claiming provider acceptance or effective mode.
 Named validation passed in the worker worktree: focused package validation,
 affected-package verification, examples, route QA, Northstar QA, research/log/
 roadmap indexes, next-action QA, package API, and diff checks. No credentials,
-account state, live provider request, paid work, or merge was used.
+account state, live provider request, paid work, or merge was used. The worker
+PR is [#49](https://github.com/inflatable-cookie/swallowtail/pull/49), opened
+from `t3code/review-deepseek-thinking-handoff` at implementation commit
+`ac0378d6d5ce7f1a2cae4463d6606362a6a1e4a6`; no merge was performed.

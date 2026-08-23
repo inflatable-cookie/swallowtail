@@ -28,7 +28,10 @@ verification, examples, route QA, Northstar QA, research/log/roadmap index
 QA, next-action QA, package API, and `git diff --check`. No credentials,
 account state, live provider request, paid work, or merge was used.
 
-PR and final pushed head are recorded in the worker handoff after publication.
+PR: [#49](https://github.com/inflatable-cookie/swallowtail/pull/49).
+Implementation head at PR creation: `ac0378d6d5ce7f1a2cae4463d6606362a6a1e4a6`.
+Worker branch: `t3code/review-deepseek-thinking-handoff`. No merge performed;
+the final pushed head after this closeout record is reported by the worker.
 
 ## Shared Closeout Delta
 

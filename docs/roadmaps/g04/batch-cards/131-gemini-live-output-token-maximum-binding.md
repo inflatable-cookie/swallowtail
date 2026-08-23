@@ -1,6 +1,6 @@
 # 131 Gemini Live Output-Token-Maximum Binding
 
-Status: conditional
+Status: ready
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23

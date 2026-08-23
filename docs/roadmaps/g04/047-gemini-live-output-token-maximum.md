@@ -1,13 +1,13 @@
 # g04.047 Gemini Live Output-Token Maximum
 
-Status: planned
+Status: in progress
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
 Depends on: per-route feature completion programme; g04.046
 Vision tags: explicit selection, provider truth, realtime continuity
 Contract refs: 011, 027, 029, 037, 040, 050, 052
-Research: 021, 193; 194 to be produced by card 130
+Research: 021, 193, 194
 
 ## Problem
 
@@ -100,10 +100,10 @@ weakened and a live provider call must not be introduced to make the field fit.
 
 ### Batch 47.1 — Exact Model And Live-Facade Evidence
 
-- [ ] Execute card 130.
-- [ ] freeze current official model, Live, and generation-config evidence plus
+- [x] Execute card 130.
+- [x] freeze current official model, Live, and generation-config evidence plus
       exact current route and fixture truth
-- [ ] promote Research 194 with applicability, domain, omission, continuity,
+- [x] promote Research 194 with applicability, domain, omission, continuity,
       version, and compatibility dispositions
 
 ### Batch 47.2 — Conditional Prepared Binding
@@ -159,8 +159,8 @@ weakened and a live provider call must not be introduced to make the field fit.
 
 ## Batch Cards
 
-- [130-gemini-live-output-token-maximum-evidence.md](batch-cards/130-gemini-live-output-token-maximum-evidence.md) — ready
-- [131-gemini-live-output-token-maximum-binding.md](batch-cards/131-gemini-live-output-token-maximum-binding.md) — conditional
+- [130-gemini-live-output-token-maximum-evidence.md](batch-cards/130-gemini-live-output-token-maximum-evidence.md) — done
+- [131-gemini-live-output-token-maximum-binding.md](batch-cards/131-gemini-live-output-token-maximum-binding.md) — ready
 - [132-gemini-live-output-token-maximum-acceptance.md](batch-cards/132-gemini-live-output-token-maximum-acceptance.md) — conditional
 
 ## References

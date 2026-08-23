@@ -1,6 +1,6 @@
 # 130 Gemini Live Output-Token-Maximum Evidence
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -12,6 +12,17 @@ Depends on: Research 021; Research 193; g04.046
 Freeze current exact-model and Live-facade `maxOutputTokens` behavior, then
 define the smallest positive Gemini Live output-maximum subset that can
 satisfy Contracts 027, 037, and 040.
+
+## Outcome
+
+Promoted Research 194 with a non-empty deliver-now set: exact model
+`gemini-3.1-flash-live-preview`, facade point
+`...BidiGenerateContent.thinking-output-max-2026-08-23`, private behavior
+`gemini.live-preview-manual-pcm-rollover-thinking-output-max-v3`, claim
+`gemini.live-preview-window-3`, model-route `prepared-3`, and positive domain
+`1..=65_536` mapped to `generationConfig.maxOutputTokens`. Omission,
+reasoning composition, rollover immutability, and dispatch-only Contract 040
+truth are explicit. Auto-continue to card 131.
 
 ## Method
 
@@ -58,21 +69,21 @@ secret-free repository/source inspection are sufficient for this gate.
 
 ## Acceptance Criteria
 
-- [ ] exact model, Live facade, field applicability, and numeric domain are
+- [x] exact model, Live facade, field applicability, and numeric domain are
       source-backed or explicitly withheld
-- [ ] initial, resume, omission, restoration, reasoning composition, and
+- [x] initial, resume, omission, restoration, reasoning composition, and
       current behavior truth are explicit
-- [ ] every candidate value class has a deliver-now, gated, withheld, or
+- [x] every candidate value class has a deliver-now, gated, withheld, or
       obsolete disposition
-- [ ] facade point/private behavior revision and exact applicability are
+- [x] facade point/private behavior revision and exact applicability are
       explicit
-- [ ] acceptance and effective generated length are not inferred from dispatch
-- [ ] Research 194 is promoted with an exact route/value deliver-now table
-- [ ] no production code, capability, guide, matrix, or compatibility claim
+- [x] acceptance and effective generated length are not inferred from dispatch
+- [x] Research 194 is promoted with an exact route/value deliver-now table
+- [x] no production code, capability, guide, matrix, or compatibility claim
       changes during evidence
-- [ ] `effigy validate:focused swallowtail-adapter-gemini` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-gemini` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 131 only when Research 194 admits a non-empty exact
 positive domain and preserves current omission, reasoning, rollover,

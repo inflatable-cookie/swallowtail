@@ -8,7 +8,7 @@ Branch: `t3code/read-background-service-tier-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-12466bfd`
 Base: `8d49f7049e4372fc304580a5f75ce7d77983ca45` (`origin/main` at dispatch)
 PR: [#48](https://github.com/inflatable-cookie/swallowtail/pull/48)
-Head: recorded on this branch after the review-fix commit
+Head: `efa1e5eb`
 Review: orchestrator asked to reclassify explicit `default`; that subset is now bound
 Merge: none; worker must not merge
 

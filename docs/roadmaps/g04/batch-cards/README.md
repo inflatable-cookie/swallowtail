@@ -2,7 +2,9 @@
 
 ## Planned
 
-None. g04 remains active with no next card compiled.
+- [142-qwen-headless-turn-and-tool-budget-evidence.md](./142-qwen-headless-turn-and-tool-budget-evidence.md) — ready
+- [143-qwen-headless-turn-and-tool-budget-binding.md](./143-qwen-headless-turn-and-tool-budget-binding.md) — conditional on Research 198
+- [144-qwen-headless-turn-and-tool-budget-acceptance.md](./144-qwen-headless-turn-and-tool-budget-acceptance.md) — conditional on card 143
 
 Cards 070-071 remain unused gaps, not tasks.
 

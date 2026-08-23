@@ -1418,3 +1418,19 @@ silently ignored by the exact harness when the selected model lacks support,
 while the app-server model catalogue does not expose that support bit.
 Mistral's caller max-turns control remains eligible but is narrower than the
 already-frozen Qwen pair. These observations do not select those families.
+
+## Qwen Turn/Tool Budget Compilation (2026-08-23)
+
+The operator selected the post-g04.050 recommendation. g04.051, Research 198,
+and cards 142-144 now form one serial evidence-first lane for exact
+`qwen.headless` `0.21.15` caller-decreasing turn/tool budgets.
+
+Card 142 owns zero-tool usefulness, turn-count exactness, child-local lifetime,
+terminal classification, and ordinary/reasoning composition. Cards 143-144 are
+conditional on a non-empty deliver-now table. Omission remains the existing
+`24` turns and `16` tool calls. Native wall time, host deadline, tool set,
+approval posture, model route, credentials, and currentness do not change.
+
+No later route-control family is selected. After this lane is reviewed and
+merged, reassess the promoted inventory. g04 remains open until explicit
+operator direction.

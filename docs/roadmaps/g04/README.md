@@ -65,11 +65,13 @@ and selection policy.
 - [g04.048 Gemini Live Context-Window Compression](048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [g04.049 OpenAI Background Service Tier](049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
 - [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
+- [g04.051 Qwen Headless Turn And Tool Budgets](051-qwen-headless-turn-and-tool-budgets.md) — ready, cards 142-144
 
-g04 has 50 numbered roadmaps: 46 completed milestones and four honest evidence
-stops at 040, 042, 043, and 045. The generation remains active at operator
-direction. Reassess the remaining promoted inventory before compiling another
-roadmap or closing the generation.
+g04 has 51 numbered roadmaps: 46 completed milestones, four honest evidence
+stops at 040, 042, 043, and 045, and one ready milestone at 051. The operator
+selected this extension and keeps the generation active. Execute the ready
+cards before another inventory decision; do not close g04 without explicit
+operator direction.
 
 ## Current Checkpoint
 
@@ -156,10 +158,12 @@ roadmap or closing the generation.
   139-141 realize adapter-local explicit `thinking.type=disabled` for exact
   DeepSeek V4 Pro one-request structured runs; enabled reasoning and every
   direct-continuation path remain enabled-only
+- g04.051 is ready: cards 142-144 gate exact Qwen Code `0.21.15` caller-
+  decreasing turn/tool budgets through Research 198 before any binding
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 50 roadmaps; no g04.051 is compiled and generation
-  closure awaits explicit operator direction
+- g04 remains active at 51 roadmaps; generation closure awaits explicit
+  operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -191,9 +195,11 @@ roadmap or closing the generation.
 13. g04.050 cards 139-141 delivered exact adapter-local disabled thinking for
     DeepSeek V4 Pro one-request structured runs and merged through PR 49 at
     `52413da0`; direct continuation remains enabled-only.
-14. g04 remains active at operator direction. Reassess the remaining promoted
-    per-route inventory before compiling g04.051 or closing the generation.
-    Contract 029 remains standing.
+14. The operator selected exact Qwen Code `0.21.15` caller-decreasing turn and
+    tool-call budgets. g04.051 and cards 142-144 are compiled as one serial,
+    evidence-first lane; card 142 may stop honestly.
+15. g04 remains active at operator direction. Execute g04.051 before another
+    inventory decision. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -216,6 +222,7 @@ New route-family research does not pre-empt this sequence.
 - [048 Gemini Live Context-Window Compression](./048-gemini-live-context-window-compression.md) — complete and merged through PR 47 at `47848056`, cards 133-135
 - [049 OpenAI Background Service Tier](./049-openai-background-service-tier.md) — complete and merged through PR 48 at `06c00e6c`, cards 136-138
 - [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
+- [051 Qwen Headless Turn And Tool Budgets](./051-qwen-headless-turn-and-tool-budgets.md) — ready, cards 142-144
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

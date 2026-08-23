@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-23 g04.051 Qwen Headless Budgets Compiled](./2026-08-23-g04-051-qwen-headless-budgets-compiled.md)
+- [2026-08-23 g04.051 Qwen Headless Budgets Closeout](./2026-08-23-g04-051-qwen-headless-budgets-closeout.md) — reserved
 - [2026-08-23 g04.050 DeepSeek Thinking Mode Compiled](./2026-08-23-g04-050-deepseek-thinking-mode-compiled.md)
 - [2026-08-23 g04.050 DeepSeek Thinking Mode Closeout](./2026-08-23-g04-050-deepseek-thinking-mode-closeout.md) — merged through PR 49 at `52413da0`
 - [2026-08-23 g04.049 OpenAI Background Service Tier Merged](./2026-08-23-g04-049-openai-background-service-tier-merged.md)

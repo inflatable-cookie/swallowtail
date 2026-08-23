@@ -14,11 +14,12 @@ shape.
 
 ## Next Task
 
-Await operator selection on the recommended exact `qwen.headless` `0.21.15`
-caller-decreasing turn/tool-budget family. If selected, compile one evidence-
-first g04 roadmap; otherwise reassess the promoted inventory from the operator's
-direction. Do not compile g04.051 or close the generation before that selection.
-New route families remain de-prioritized. Contract 029 currentness stays
+Execute g04.051 cards 142-144 serially in one worker lane. Card 142 must first
+promote Research 198 with exact Qwen Code `0.21.15` turn/tool-budget,
+child-lifetime, and terminal truth. Continue to cards 143-144 only for a non-
+empty deliver-now set; an evidence stop is valid. After review and merge,
+reconcile g04.051 and reassess the remaining per-route inventory. Keep g04
+open until explicit operator direction. Contract 029 currentness stays
 standing.
 
 ## Standing Lanes

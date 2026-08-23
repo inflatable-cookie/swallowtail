@@ -6,8 +6,7 @@ Created: 2026-08-23
 Milestone: [g04.044 OpenAI Background Reasoning Vocabulary Correction](../044-openai-background-reasoning-vocabulary-correction.md)
 Depends on: Research 191; g04.043 evidence stop
 
-Completed on worker branch `t3code/openai-background-reasoning-correction` in
-commit `a8cad66`.
+Completed through PR 43 and merged to `main` at `bdb7ea88`.
 
 ## Goal
 
@@ -60,7 +59,7 @@ git diff --check
 
 Card 122 passed its six-value mapping, explicit `minimal` rejection, facade
 revision, absent path, and zero-effect gates. Card 123 acceptance and
-route-local closeout follow on the same worker branch.
+route-local closeout completed in the same merged lane.
 
 ## Stop Conditions
 

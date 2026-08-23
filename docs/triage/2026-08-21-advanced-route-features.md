@@ -1120,3 +1120,16 @@ with cards 122-123. The correction is route-local, uses a new exact opaque
 facade point, permits no alias or fallback, and requires a Contract 036
 next-minor disposition. No later feature family is selected by this
 compilation.
+
+## OpenAI Reasoning Correction Closeout And Next Planning Boundary (2026-08-23)
+
+g04.044 completed through PR 43 at `bdb7ea88`. Exact GPT-5.6
+`openai.background` reasoning now admits
+`none|low|medium|high|xhigh|max`; unqualified `minimal` fails before effects
+under a new opaque facade point. Contract 036 classifies the guarantee shrink
+as next-minor release material without selecting a release.
+
+The remaining promoted inventory stays selection input. Compile g04.045 by
+rechecking current production-route and contract truth, then select one
+coherent route-local control family. No implementation card is ready and no
+specific provider/control is preselected by this closeout.

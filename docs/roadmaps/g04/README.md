@@ -58,11 +58,10 @@ and selection policy.
 - [g04.041 Qwen Headless Reasoning Effort](041-qwen-headless-reasoning-effort.md) — complete and merged through PR 40 at `709d197c`, cards 113-115
 - [g04.042 Cline Thinking Controls](042-cline-thinking-controls.md) — stopped after card 116 and merged through PR 41 at `27b34c7d`; cards 117-118 blocked
 - [g04.043 OpenAI Background Hosted Search](043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
-- [g04.044 OpenAI Background Reasoning Vocabulary Correction](044-openai-background-reasoning-vocabulary-correction.md) — ready, cards 122-123
+- [g04.044 OpenAI Background Reasoning Vocabulary Correction](044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 
-Do not roll over: 44 numbered roadmaps exist; 001-039 and 041 are complete;
-040, 042, and 043 stopped after their evidence gates; 044 is ready; target
-30-50.
+Do not roll over: 44 numbered roadmaps exist; 001-039, 041, and 044 are
+complete; 040, 042, and 043 stopped after their evidence gates; target 30-50.
 
 ## Current Checkpoint
 
@@ -117,10 +116,10 @@ Do not roll over: 44 numbered roadmaps exist; 001-039 and 041 are complete;
   Research 191 proves individual `web_search`, model, bound, source, and
   background fields but not the exact composed route; cards 120-121 are
   blocked and no search behavior shipped
-- g04.044 is ready: Research 191 also proves exact GPT-5.6 reasoning
-  `none|low|medium|high|xhigh|max`, while the current guide and validator
-  additionally admit unqualified `minimal`; cards 122-123 correct and prove
-  that route-local mismatch through a new opaque facade point
+- g04.044 is on `main` at `bdb7ea88` through PR 43: exact GPT-5.6 reasoning is
+  corrected to `none|low|medium|high|xhigh|max`; cards 122-123 remove
+  unqualified `minimal`, bind a new opaque facade point, and prove rejection
+  before effects
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -138,10 +137,12 @@ Do not roll over: 44 numbered roadmaps exist; 001-039 and 041 are complete;
    PR 41 at `27b34c7d`.
 6. g04.043 stopped honestly after Research 191 and card 119; PR 42 landed the
    evidence at `685dbf1a` without a search claim.
-7. Execute g04.044 cards 122-123 in one serial worker lane. Correct only the
-   exact GPT-5.6 reasoning vocabulary, version the new facade truth, prove
-   early rejection, and record the Contract 036 next-minor disposition.
-   Contract 029 currentness remains standing.
+7. g04.044 cards 122-123 corrected the exact GPT-5.6 reasoning vocabulary and
+   merged through PR 43 at `bdb7ea88`; Contract 036 now requires a next-minor
+   source release without selecting one.
+8. Compile g04.045 from the remaining promoted per-route feature gaps. Select
+   one coherent route-local control family only after current route and
+   contract truth are rechecked. Contract 029 currentness remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -157,7 +158,7 @@ New route-family research does not pre-empt this sequence.
 - [041 Qwen Headless Reasoning Effort](./041-qwen-headless-reasoning-effort.md) — complete and merged through PR 40 at `709d197c`, cards 113-115
 - [042 Cline Thinking Controls](./042-cline-thinking-controls.md) — stopped after card 116 and merged through PR 41 at `27b34c7d`; cards 117-118 blocked
 - [043 OpenAI Background Hosted Search](./043-openai-background-hosted-search.md) — stopped after card 119 and merged through PR 42 at `685dbf1a`; cards 120-121 blocked
-- [044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md) — ready, cards 122-123
+- [044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md) — complete and merged through PR 43 at `bdb7ea88`, cards 122-123
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

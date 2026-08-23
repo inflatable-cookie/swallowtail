@@ -44,14 +44,15 @@ goal and does not keep g04 or any later generation open. See
 ## Rollover Rule
 
 g04 should normally run for 30-50 roadmaps. It has 44 numbered roadmaps:
-001-039 and 041 are complete, 040, 042, and 043 stopped after their evidence
-gates, and 044 is ready. A completed readiness tranche or standing currentness
-does not create a new generation. Rollover requires a substantial run, clean
-disposition of unfinished work, and an explicit sequencing reset.
+001-039, 041, and 044 are complete; 040, 042, and 043 stopped after their
+evidence gates. The next task is to compile g04.045 from the remaining
+per-route feature programme. A completed readiness tranche or standing
+currentness does not create a new generation. Rollover requires a substantial
+run, clean disposition of unfinished work, and an explicit sequencing reset.
 
 
 ## Next Task
 
-Implement the active roadmap card named by the
-[roadmaps front door](README.md#next-task). This index records generation
-status; the batch pointer stays in the front door.
+Implement the active task named by the [roadmaps front door](README.md#next-task).
+This index records generation status; the sole actionable pointer stays in the
+front door.

@@ -2,6 +2,8 @@
 
 ## Completed
 
+- [123-openai-background-reasoning-vocabulary-acceptance.md](./123-openai-background-reasoning-vocabulary-acceptance.md)
+- [122-openai-background-reasoning-vocabulary-correction.md](./122-openai-background-reasoning-vocabulary-correction.md)
 - [119-openai-background-search-evidence.md](./119-openai-background-search-evidence.md)
 - [116-cline-thinking-control-evidence.md](./116-cline-thinking-control-evidence.md)
 - [115-qwen-headless-reasoning-effort-acceptance.md](./115-qwen-headless-reasoning-effort-acceptance.md)
@@ -122,8 +124,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Planned
 
-- [123-openai-background-reasoning-vocabulary-acceptance.md](./123-openai-background-reasoning-vocabulary-acceptance.md) — after card 122
-- [122-openai-background-reasoning-vocabulary-correction.md](./122-openai-background-reasoning-vocabulary-correction.md) — ready
+No cards are planned. Compile g04.045 before implementation.
 
 ## Blocked
 

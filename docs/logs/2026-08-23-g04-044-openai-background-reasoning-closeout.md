@@ -1,6 +1,6 @@
 # 2026-08-23 g04.044 OpenAI Background Reasoning Correction Closeout
 
-Status: complete; review and merge remain operator-owned
+Status: complete and merged
 Owner: Tom
 Milestone: g04.044
 Cards: 122-123
@@ -9,8 +9,8 @@ Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-4946f4f4`
 Base: `1b3b5bb243a14eeacc9475cc9efa595f4e009321`
 Implementation commit: `a8cad66`
 PR: https://github.com/inflatable-cookie/swallowtail/pull/43
-Review: awaiting orchestrator
-Merge: none; worker must not merge
+Review: accepted at exact head `bdb7ea88d850ef6610ade2d581a58fc076f980f2`
+Merge: PR 43 fast-forwarded to `main` at `bdb7ea88d850ef6610ade2d581a58fc076f980f2`
 
 ## Outcome
 
@@ -39,32 +39,23 @@ not silently rewritten or retained as a supported route claim.
 
 ## Shared-Surface Closeout Delta
 
-The worker did not edit shared surfaces outside the named route lane.
+The worker did not edit shared surfaces outside the named route lane. Merge
+closeout applied the following shared delta on `main`.
 
 - `docs/architecture/system-architecture.md`: no architecture change; the
   existing realized OpenAI background route shape remains accurate.
-- Route/feature/activity matrices and shared matrix assertions: the feature
-  posture remains reasoning selection available, but
-  `crates/swallowtail-testkit/tests/fixtures/direct-activity-applicability.json`
-  still names the historical July facade and needs an orchestrator-side
-  current-point update after review/merge. No shared matrix file was edited.
-- Contract 036 / changelog / release notes / workspace versions: the removal
-  of previously guaranteed `minimal` is a breaking route guarantee shrink and
-  requires an explicit next-minor source-release and release-note delta. No
-  release or version mutation belongs to this lane.
-- Programme, front doors, and indexes: after merge, the orchestrator must move
-  cards 122-123 from Planned to Completed in
-  `docs/roadmaps/g04/batch-cards/README.md`; change the g04.044 entries from
-  ready to complete in `docs/roadmaps/g04/README.md` and
-  `docs/roadmaps/g04/per-route-feature-completion.md`; record the merged
-  PR/head in the g04 checkpoint; remove `reserved` from this closeout's entry in
-  `docs/logs/README.md`; refresh the g04 status in
-  `docs/roadmaps/generation-index.md`; and replace the execution pointer in
-  `docs/roadmaps/README.md` and the programme's Next Planning Boundary with
-  the orchestrator-selected next task. The worker leaves those shared status,
-  index, and front-door surfaces unchanged.
-- `docs/roadmaps/README.md`: leave the sole Next Task pointer in place until
-  the orchestrator performs merge closeout and selects the next lane.
+- Route/feature/activity matrices and shared matrix assertions: feature posture
+  remains reasoning selection available. The direct-activity fixture now names
+  the corrected August facade point; no capability cell changed.
+- Contract 036 and `CHANGELOG.md` classify removal of previously guaranteed
+  `minimal` as a breaking guarantee shrink. The next source release must
+  advance the coordinated pre-1.0 minor and carry the named release-note
+  delta. No release, tag, or workspace-version mutation was selected.
+- Programme, front doors, and indexes record cards 122-123 and g04.044 complete,
+  PR 43 at `bdb7ea88`, and g04 still active at 44 numbered roadmaps.
+- The sole Next Task is now a planning boundary: reassess the remaining
+  promoted per-route feature gaps, select one coherent route-local control
+  family, and compile g04.045. No implementation card is ready yet.
 
 ## Validation
 
@@ -82,11 +73,16 @@ The worker did not edit shared surfaces outside the named route lane.
 - Package verification retained existing unused-patch warnings; API
   documentation retained the inherited Ollama broken-link warning. Both
   selectors passed, and no OpenAI warning was added.
+- Exact PR head `bdb7ea88d850ef6610ade2d581a58fc076f980f2` passed all five
+  CI jobs. The first MSRV attempt hit an unrelated OpenCode deadline assertion;
+  its one rerun passed before merge.
+- Merge closeout passed focused `swallowtail-testkit` validation (93 tests),
+  affected package proof, route/activity matrices, Northstar QA, log/roadmap/
+  g04/batch-card indexes, the sole-next-action gate, and `git diff --check`.
 
 ## Unresolved
 
-- Orchestrator review is pending; merge remains unauthorized.
-- Shared activity-inventory correction and the Contract 036 next-minor
-  release-facing delta remain outside this worker branch.
-- No planning decision is needed for the route-local correction. Release
-  selection, publication, and merge remain separate operator decisions.
+- The next g04 route/control family is intentionally unselected until the
+  g04.045 planning pass rechecks current route and contract truth.
+- Release selection, tagging, publication, and workspace-version mutation
+  remain operator-owned and unselected.

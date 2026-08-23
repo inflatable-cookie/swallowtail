@@ -101,7 +101,7 @@ It must not change workspace versions or create a release.
 
 ## Completion
 
-Cards 122-123 are complete on the worker branch. The exact route now admits
+Cards 122-123 are complete and merged through PR 43 at `bdb7ea88`. The exact route now admits
 only `none|low|medium|high|xhigh|max`; `minimal` and foreign values fail in
 preparation before effects. The corrected mapping is bound to
 `openai-responses-background-2026-08-23` with private behavior revision
@@ -113,8 +113,8 @@ retained as a supported way to request the removed value.
 - predecessor: g04.043 OpenAI background search evidence stop
 - this milestone: exact GPT-5.6 reasoning-vocabulary correction
 - execution topology: one serial worker lane, cards 122-123
-- next route family: selected by the orchestrator after review and merge
-  closeout; no later family is precompiled here
+- next route family: selected while compiling g04.045 from the remaining
+  promoted per-route feature inventory; no implementation card is ready yet
 
 ## Decision Gates
 

@@ -44,6 +44,13 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Correct the exact GPT-5.6 `openai.background` reasoning vocabulary to
+  `none`, `low`, `medium`, `high`, `xhigh`, and `max`; the previously
+  guaranteed but unqualified `minimal` value now fails before endpoint,
+  credential, request, or provider work. The corrected mapping uses opaque
+  facade point `openai-responses-background-2026-08-23` and private behavior
+  revision `openai.responses-background-v2`. This guaranteed-behavior shrink
+  requires the next source release to advance the pre-1.0 minor; g04.044.
 - Raised qualified Gemini CLI ACP and headless ceilings from their previous
   `0.51.0` and `0.51.0..=0.52.0` bounds to maintained
   `0.51.0..=0.56.0` on their separate version axes. Official published

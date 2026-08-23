@@ -266,6 +266,6 @@ currentness is a standing Contract 029 lane, not a g04 goal. See
 
 ## Next Task
 
-Implement the active roadmap card named by the
-[roadmaps front door](README.md#next-task). The long-term plan stays the
-staged adoption sequence; it does not own the current batch pointer.
+Implement the active task named by the [roadmaps front door](README.md#next-task).
+The long-term plan stays the staged adoption sequence; it does not own the
+current batch pointer.

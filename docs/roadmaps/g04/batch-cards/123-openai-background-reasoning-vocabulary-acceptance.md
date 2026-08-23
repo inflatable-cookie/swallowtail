@@ -6,7 +6,7 @@ Created: 2026-08-23
 Milestone: [g04.044 OpenAI Background Reasoning Vocabulary Correction](../044-openai-background-reasoning-vocabulary-correction.md)
 Depends on: card 122
 
-Completed on worker branch `t3code/openai-background-reasoning-correction`.
+Completed through PR 43 and merged to `main` at `bdb7ea88`.
 
 ## Goal
 

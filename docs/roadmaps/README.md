@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.044 cards 122-123 for the exact GPT-5.6 background reasoning-
-vocabulary correction in one serial worker lane. Remove only unqualified
-`minimal`, bind the corrected mapping to a new opaque facade point, and prove
-fail-closed behavior. Contract 029 currentness stays standing.
+Compile g04.045 from the remaining promoted per-route feature gaps. Reassess
+current production-route and contract truth, select one coherent route-local
+control family, and compile an evidence-first milestone and cards before any
+implementation. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

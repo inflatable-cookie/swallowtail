@@ -85,15 +85,17 @@ families do not interrupt this programme by default.
   proves the individual search fields but not the exact composed background
   route. Cards 120-121 are blocked and no search capability shipped.
 - [g04.044 OpenAI Background Reasoning Vocabulary Correction](./044-openai-background-reasoning-vocabulary-correction.md)
-  is ready. Research 191 proves exact GPT-5.6 reasoning
-  `none|low|medium|high|xhigh|max`; cards 122-123 remove unqualified `minimal`,
-  version the corrected opaque facade truth, and prove early rejection.
+  is complete and merged through PR 43 at `bdb7ea88`. Research 191 and cards
+  122-123 correct exact GPT-5.6 reasoning to
+  `none|low|medium|high|xhigh|max`, remove unqualified `minimal`, version the
+  corrected opaque facade truth, and prove early rejection.
 
 ## Next Planning Boundary
 
-Execute g04.044 cards 122-123 in one serial worker lane. Keep the correction
-route-local, preserve global reasoning vocabulary, add no fallback, and record
-the Contract 036 next-minor disposition without selecting a release.
+Compile g04.045 from the remaining promoted inventory. Reassess current
+production-route and contract truth, select one coherent route-local control
+family, and compile evidence-first cards. Do not start implementation or
+select a release during this planning pass.
 
 ## Exclusions
 

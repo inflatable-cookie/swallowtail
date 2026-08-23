@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-23
 
 ## Purpose
 
@@ -147,13 +147,14 @@ Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
 
-The immutable tagged release remains `v0.3.2`. The selected next coordinated
-source version is compatible patch `0.3.3`. Ten additive packages, eleven
-additive production routes, additive public items on existing packages, newly
-qualified provider-interface versions, and fail-closed OpenHands-without-a-route
-preserve the `v0.3.2` public and guaranteed-behavior baseline. No breaking API,
-capability removal, range shrink, MSRV raise, or verified-target removal is
-selected, so Contract 036 requires a patch rather than `v0.4.0`.
+The immutable tagged release is `v0.3.3`. Current source after that tag removes
+the previously guaranteed but unqualified `minimal` reasoning value from exact
+GPT-5.6 `openai.background` preparation. That guaranteed-behavior shrink is
+breaking under this contract: the next source release from current `main` must
+advance the coordinated pre-1.0 minor rather than use `0.3.4`. This
+classification does not select, tag, or authorize a release; the eventual
+release notes must name the removed value, the corrected opaque facade point,
+and the fail-before-effects upgrade behavior.
 
 Breaking changes include removing or incompatibly changing public items,
 raising MSRV, shrinking a guaranteed provider range, removing a capability or

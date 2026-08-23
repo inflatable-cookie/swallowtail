@@ -34,8 +34,9 @@ package verification, examples, route QA, Northstar QA, research/log/roadmap/
 g04/batch-card index QA, next-action QA, package API, and `git diff --check`.
 No credentials, account state, live provider request, or paid work was used.
 
-PR URL and exact worker head are recorded after push. This closeout does not
-claim merge.
+PR: https://github.com/inflatable-cookie/swallowtail/pull/51
+Worker head: `cb04d1e24d8c5a5e334711e573c3539b0205d21c`
+This closeout does not claim merge.
 
 ## Shared Closeout Delta
 

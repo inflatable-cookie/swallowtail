@@ -1,12 +1,13 @@
 # g04.049 OpenAI Background Service Tier
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Depends on: per-route feature completion programme; g04.044
 Vision tags: explicit selection, provider truth, operational controls
 Contract refs: 009, 011, 014, 021, 029, 037, 040, 048, 049, 052
-Research: 102, 191; 196 to be produced by card 136
+Research: 102, 191, 196
 
 ## Problem
 
@@ -32,12 +33,12 @@ access, billing, or compatibility truth.
 
 ## Goals
 
-- [ ] freeze current official Responses create, retrieve, streaming,
+- [x] freeze current official Responses create, retrieve, streaming,
       background, exact-model, and service-tier evidence
-- [ ] classify omission and every current request/response enum value,
+- [x] classify omission and every current request/response enum value,
       including aliases, defaults, access gates, and resolved-value drift
-- [ ] classify ordinary, detachable, and reconciled run profiles separately
-- [ ] promote Research 196 with an exact deliver-now table or honest stop
+- [x] classify ordinary, detachable, and reconciled run profiles separately
+- [x] promote Research 196 with an exact deliver-now table or honest stop
 - [ ] preserve prior request bytes and claims when service tier is omitted
 - [ ] bind only admitted values through typed adapter-local prepared state
 - [ ] keep input, plan/evidence, driver, request body, and deterministic
@@ -96,10 +97,10 @@ An empty Research 196 deliver-now set is an honest stop.
 
 ### Batch 49.1 — Exact Service-Tier Evidence
 
-- [ ] Execute card 136.
-- [ ] freeze official and repository request, response, lifecycle, access, and
+- [x] Execute card 136.
+- [x] freeze official and repository request, response, lifecycle, access, and
       facade evidence
-- [ ] promote Research 196 with value/profile/observation dispositions
+- [x] promote Research 196 with value/profile/observation dispositions
 
 ### Batch 49.2 — Conditional Adapter-Local Binding
 
@@ -108,12 +109,16 @@ An empty Research 196 deliver-now set is an honest stop.
       request encoding, and qualified response parsing
 - [ ] preserve exact omission and every existing lifecycle path
 
+Card 137 is blocked. Research 196 admits no deliver-now row.
+
 ### Batch 49.3 — Route-Local Acceptance
 
 - [ ] Execute card 138 only after card 137.
 - [ ] prove admitted values, rejected boundaries, composition, reattachment,
       cancellation, deletion, and every admitted detachment disposition
 - [ ] update route-local guidance and reserve the shared closeout delta
+
+Card 138 is blocked. There is no admitted dispatch to prove.
 
 ## Acceptance Criteria
 
@@ -154,9 +159,9 @@ An empty Research 196 deliver-now set is an honest stop.
 
 ## Batch Cards
 
-- [136-openai-background-service-tier-evidence.md](batch-cards/136-openai-background-service-tier-evidence.md) — ready
-- [137-openai-background-service-tier-binding.md](batch-cards/137-openai-background-service-tier-binding.md) — conditional
-- [138-openai-background-service-tier-acceptance.md](batch-cards/138-openai-background-service-tier-acceptance.md) — conditional
+- [136-openai-background-service-tier-evidence.md](batch-cards/136-openai-background-service-tier-evidence.md) — complete; evidence stop
+- [137-openai-background-service-tier-binding.md](batch-cards/137-openai-background-service-tier-binding.md) — blocked
+- [138-openai-background-service-tier-acceptance.md](batch-cards/138-openai-background-service-tier-acceptance.md) — blocked
 
 ## References
 
@@ -174,3 +179,17 @@ An empty Research 196 deliver-now set is an honest stop.
 - [Responses Create](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)
 - [Responses Retrieve](https://developers.openai.com/api/reference/cli/resources/responses/methods/retrieve)
 - [GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
+- [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode)
+- [Flex processing](https://developers.openai.com/api/docs/guides/flex-processing)
+
+## Evidence Stop
+
+Research 196 is promoted, but its deliver-now set is empty. Official OpenAI
+documentation freezes the complete current `service_tier` enum, omission as
+project-configured `auto`, Fast request aliasing to returned `priority` on
+GPT-5.6, access-controlled Ultrafast, schema-only `scale`, and
+requested-versus-returned drift. It does not prove this payg caller's
+enrollment, a current-API observation path, or durable selected/returned
+truth across detachment and reconciliation. Cards 137 and 138 are therefore
+blocked. The existing `openai-responses-background-2026-08-23` facade point
+and omitted create bytes remain unchanged.

@@ -1,8 +1,9 @@
 # 137 OpenAI Background Service-Tier Binding
 
-Status: conditional
+Status: blocked; card 136 evidence stop
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.049 OpenAI Background Service Tier](../049-openai-background-service-tier.md)
 Depends on: card 136; promoted Research 196 with a non-empty deliver-now set
 
@@ -80,3 +81,12 @@ composition, rejection, and every admitted lifecycle profile pass.
 
 - shared docs/indexes, other controls/routes/models, live provider work,
   release, or merge
+
+## Closeout
+
+Not executed. Research 196 admits no deliver-now value or profile. Official
+docs freeze the complete enum, Fast aliasing, Ultrafast access control, and
+requested-versus-returned drift, but this route cannot prove access,
+observation, or durable selected/returned truth. There is no typed input,
+plan constraint, prepared evidence, driver binding, request field, or
+response parser to implement.

@@ -1,8 +1,9 @@
 # 136 OpenAI Background Service-Tier Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.049 OpenAI Background Service Tier](../049-openai-background-service-tier.md)
 Depends on: Research 102 and 191; g04.044
 
@@ -58,23 +59,23 @@ secret-free repository/source inspection are sufficient for this gate.
 
 ## Acceptance Criteria
 
-- [ ] exact request/response domains, aliases, defaults, model applicability,
+- [x] exact request/response domains, aliases, defaults, model applicability,
       access gates, and unknown-value posture are source-backed or withheld
-- [ ] requested, dispatched, returned, effective, and billed truth are distinct
-- [ ] ordinary, reattached, detached, and reconciled profile dispositions are
+- [x] requested, dispatched, returned, effective, and billed truth are distinct
+- [x] ordinary, reattached, detached, and reconciled profile dispositions are
       explicit
-- [ ] omission, reasoning/structured-output composition, and lifecycle truth
+- [x] omission, reasoning/structured-output composition, and lifecycle truth
       are explicit
-- [ ] facade/private behavior/claim/model-route revisions are explicit
-- [ ] Research 196 is promoted with an exact deliver-now table
-- [ ] no production code, capability, matrix, or compatibility claim changes
-- [ ] `effigy validate:focused swallowtail-adapter-openai` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] facade/private behavior/claim/model-route revisions are explicit
+- [x] Research 196 is promoted with an exact deliver-now table
+- [x] no production code, capability, matrix, or compatibility claim changes
+- [x] `effigy validate:focused swallowtail-adapter-openai` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 137 only when Research 196 admits a non-empty exact
 value/profile set that preserves omission, composition, lifecycle, access,
-checkpoint, observation, and contract boundaries.
+checkpoint, observation, and contract boundaries. Research 196 admits none.
 
 ## Stop Conditions
 
@@ -89,3 +90,21 @@ checkpoint, observation, and contract boundaries.
 
 - production binding, guide/matrix claims, another OpenAI route/model, live
   work, or shared closeout surfaces
+
+## Closeout
+
+Research 196 is promoted with current official OpenAI source digests and
+secret-free omitted-create plus illustrative request/response specimens. The
+complete current enum is
+`auto|default|flex|scale|priority|fast|ultrafast`. Omission stays the current
+create bytes. `fast` is a GPT-5.6 request alias of returned `priority`.
+`ultrafast` is access-controlled. `scale` is schema-only. Returned tier may
+differ from the request.
+
+The public payg profile does not prove project settings or tier enrollment.
+The current route cannot expose returned-tier observation without a new
+adapter-local or shared observation API. Checkpoints cannot retain
+selected/returned tier. Deliver-now rows: none. Cards 137 and 138 are blocked
+and were not executed. The current
+`openai-responses-background-2026-08-23` facade and omitted create bytes stay
+unchanged.

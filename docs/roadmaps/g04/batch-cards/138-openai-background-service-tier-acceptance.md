@@ -1,8 +1,9 @@
 # 138 OpenAI Background Service-Tier Acceptance
 
-Status: conditional
+Status: blocked; card 136 evidence stop
 Owner: Tom
 Created: 2026-08-23
+Updated: 2026-08-23
 Milestone: [g04.049 OpenAI Background Service Tier](../049-openai-background-service-tier.md)
 Depends on: card 137
 
@@ -82,3 +83,11 @@ Auto-continuation: No.
 
 - live provider verification, publication, merge, shared front-door edits, or
   later feature selection
+
+## Closeout
+
+Not executed. Card 137 produced no binding because Research 196 has an empty
+deliver-now set. There is no admitted request, returned-tier observation,
+composition, reattachment, detachment, or reconciliation behavior to
+exercise. The adapter, fixtures, guide, and public API baseline remain
+unchanged; the shared-surface delta is recorded in the route-local closeout.

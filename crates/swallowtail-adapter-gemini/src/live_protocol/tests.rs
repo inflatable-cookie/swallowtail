@@ -48,7 +48,7 @@ fn exact_preview_route_access_and_asymmetric_media_posture_is_frozen() {
         SupportAuthority::ProviderSupported,
     );
     let facade = ProtocolFacadeId::new(
-        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23",
     )
     .unwrap();
     let model = ModelId::new("gemini-3.1-flash-live-preview").unwrap();

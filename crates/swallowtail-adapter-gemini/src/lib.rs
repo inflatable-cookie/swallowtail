@@ -40,10 +40,11 @@ pub use live::{GeminiLiveDriver, gemini_live_descriptor};
 pub use live_selection::{
     GEMINI_LIVE_ACCESS_PROFILE_ID, GEMINI_LIVE_CONFIGURED_INSTANCE_ID, GEMINI_LIVE_ENDPOINT,
     GEMINI_LIVE_ENDPOINT_AUDIENCE, GEMINI_LIVE_FACADE_REVISION, GEMINI_LIVE_MODEL_ID,
-    GEMINI_LIVE_MODEL_ROUTE_ID, gemini_live_access_profile, gemini_live_base_capabilities,
-    gemini_live_facade_binding, gemini_live_facade_claim, gemini_live_instance,
-    gemini_live_media_config, gemini_live_model_route, gemini_live_requirements,
-    gemini_live_requirements_with_capabilities, gemini_live_rollover_policy,
+    GEMINI_LIVE_MODEL_ROUTE_ID, GEMINI_LIVE_SUPERSEDED_FACADE_REVISION, gemini_live_access_profile,
+    gemini_live_base_capabilities, gemini_live_facade_binding, gemini_live_facade_claim,
+    gemini_live_instance, gemini_live_media_config, gemini_live_model_route,
+    gemini_live_requirements, gemini_live_requirements_with_capabilities,
+    gemini_live_rollover_policy,
 };
 pub use prepared::{
     GeminiPreparationInput, GeminiPreparationProbe, GeminiPreparedIntegration, prepare_gemini_acp,

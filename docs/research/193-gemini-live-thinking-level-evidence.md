@@ -14,10 +14,10 @@ bind caller-selected `minimal|low|medium|high` through
 `generationConfig.thinkingConfig.thinkingLevel` while satisfying Contracts
 027, 037, and 040?
 
-Yes, for dispatch. All four values are admitted deliver-now on the unchanged
-facade point with a new adapter-private behavior revision. Provider
-acceptance, effective reasoning depth, and thought disclosure remain
-unclaimed.
+Yes, for dispatch. All four values are admitted deliver-now at a new exact
+opaque facade point with a new adapter-private behavior revision, while the
+superseded point and its proof are retained verbatim. Provider acceptance,
+effective reasoning depth, and thought disclosure remain unclaimed.
 
 ## Method And Evidence Boundary
 
@@ -203,25 +203,41 @@ reasoning input. The deterministic fixtures
 | Item | Disposition |
 | --- | --- |
 | `gemini-3.1-flash-live-preview` | Deliver now; the only qualified model |
-| `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent` | Keep the current facade point unchanged |
-| `gemini.live-preview-manual-pcm-rollover-v1` | Supersede with `gemini.live-preview-manual-pcm-rollover-thinking-v2` |
-| `gemini.live-preview-window-1` | Supersede with `gemini.live-preview-window-2` |
+| `...BidiGenerateContent.thinking-2026-08-23` | Mint as the exact new facade point for the thinking-capable behavior |
+| `gemini.live-preview-manual-pcm-rollover-thinking-v2` | Mint as the private behavior revision for the new point |
+| `gemini.live-preview-window-2` | Mint as the claim revision |
+| `...BidiGenerateContent` | Retain verbatim as the superseded historical point; not a supported claim |
+| `gemini.live-preview-manual-pcm-rollover-v1` | Retain verbatim as the frozen proof of the superseded point |
 | another Gemini model, API version, or route | Reject; no inference |
 
-The facade point does not move. The provider RPC surface named by that opaque
-string is unchanged: `thinkingConfig` is an existing `GenerationConfig` member
-of the same `v1beta` `BidiGenerateContent` method, and this route already
-dispatches it. Minting a new point would assert a provider change that did not
-happen, and Contract 029 permits only exact one-point segments on an opaque
-axis.
+The adapter-private behavior changes: the driver stops encoding a fixed
+constant and starts encoding a caller-selected level in both setup frames.
+Contract 029's upgrade workflow requires a compatibility milestone when
+capability behavior changes, so the thinking-capable behavior is qualified at
+its own exact opaque point rather than replacing the meaning of the former one.
 
-The adapter-private behavior does change. The driver stops encoding a fixed
-constant and starts encoding a caller-selected level in both setup frames,
-which is the capability-behavior change Contract 029's upgrade workflow
-requires a new private behavior revision for. Because the axis is opaque and
-single-point, the revision advances in place on the same segment and the claim
-revision advances with it. The `-v1` behavior is historical from that point;
-it is not retained as a second supported claim and is not rewritten.
+The point keeps the provider RPC name and adds a dated Swallowtail
+qualification suffix, matching the repository's dated facade points. It is an
+opaque Swallowtail qualification label, not a claim that the provider renamed
+its RPC. The provider surface itself is unchanged: `thinkingConfig` is an
+existing `GenerationConfig` member of the same `v1beta` `BidiGenerateContent`
+method.
+
+The former proof is kept, not erased. `...BidiGenerateContent` and
+`gemini.live-preview-manual-pcm-rollover-v1` remain named verbatim here and in
+`GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`, the frozen corpus frames for that
+behavior remain byte-unchanged, and a deterministic test proves a plan bound to
+the superseded point is rejected before endpoint, credential, or socket work.
+
+The former point cannot also remain a live claim segment. `swallowtail-core`
+enforces "Opaque version windows permit one exact segment only", and a driver
+descriptor holds one claim per axis. Keeping both as concurrent qualified
+segments would require weakening Contract 029's opaque-axis rule, which this
+lane's decision gates forbid. The retained-proof form above is the same shape
+g04.044 used when the OpenAI background point advanced.
+
+Consumers must publish a new configured-instance revision when they move to the
+new point. The adapter-owned model-route revision advances to `prepared-2`.
 
 ### Portable value mapping
 
@@ -302,9 +318,9 @@ qualified-only single-point claim.
 Research 193 promotes the following deliver-now subset for card 128:
 
 - exact model `gemini-3.1-flash-live-preview`
-- exact facade point
-  `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent`,
-  unchanged
+- exact new facade point
+  `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23`,
+  with the superseded point and its `-v1` behavior retained as frozen evidence
 - new adapter-private behavior revision
   `gemini.live-preview-manual-pcm-rollover-thinking-v2` and claim revision
   `gemini.live-preview-window-2`

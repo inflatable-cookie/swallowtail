@@ -3,7 +3,8 @@ use crate::live_support;
 use futures_executor::block_on;
 use live_support::{Call, LiveFixture, LiveScenario, TimeMode, config, rollover_policy};
 use swallowtail_adapter_gemini::{
-    GeminiLiveDriver, GeminiLiveSessionProfileInput, prepare_gemini_live,
+    GEMINI_LIVE_SUPERSEDED_FACADE_REVISION, GeminiLiveDriver, GeminiLiveSessionProfileInput,
+    prepare_gemini_live,
 };
 use swallowtail_core::{Capability, CapabilityConstraint, PreflightPlan, ReasoningMode};
 use swallowtail_runtime::{OpenRealtimeMediaSessionRequest, RealtimeMediaSessionDriver, RequestId};
@@ -57,7 +58,7 @@ fn every_admitted_level_prepares_with_exact_capability_plan_and_request() {
         );
         assert_eq!(
             operation.plan().protocol_facade_id().as_str(),
-            "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
+            "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23"
         );
         assert_eq!(
             operation.plan().model_id().expect("model bound").as_str(),
@@ -162,6 +163,37 @@ fn request_plan_and_value_drift_reject_before_endpoint_or_credential_work() {
             "swallowtail.gemini.live_preflight_rejected"
         );
     }
+    assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
+    assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
+    assert!(fixture.server.frames().is_empty());
+}
+
+#[test]
+fn the_superseded_facade_point_is_named_and_no_longer_executable() {
+    assert_eq!(
+        GEMINI_LIVE_SUPERSEDED_FACADE_REVISION,
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
+        "the pre-thinking proof keeps its exact historical point"
+    );
+    let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
+    let failure = block_on(
+        GeminiLiveDriver::new().open_realtime_media_session(
+            fixture.plan_with_facade(GEMINI_LIVE_SUPERSEDED_FACADE_REVISION),
+            OpenRealtimeMediaSessionRequest::new(
+                RequestId::new("superseded-facade").expect("request id is valid"),
+                config(),
+                None,
+            )
+            .with_planned_connection_rollover(rollover_policy()),
+            fixture.services(),
+        ),
+    )
+    .err()
+    .expect("a plan on the superseded facade point is rejected");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.gemini.live_preflight_rejected"
+    );
     assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
     assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
     assert!(fixture.server.frames().is_empty());

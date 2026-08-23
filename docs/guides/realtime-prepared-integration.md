@@ -160,6 +160,12 @@ depth, and thought-summary disclosure are not claimed or observable here.
 Thought summaries, `includeThoughts`, and `thinkingBudget` remain out of
 scope.
 
+The thinking-capable behavior is qualified at its own exact opaque facade
+point, `GEMINI_LIVE_FACADE_REVISION`. The point qualified before it is retained
+as `GEMINI_LIVE_SUPERSEDED_FACADE_REVISION`; it is not a supported claim, and a
+plan carrying it is rejected before endpoint, credential, or socket work.
+Publish a new configured-instance revision when moving to the current point.
+
 Rollover uses only the latest in-memory resumable handle after provider
 `GoAway`, at an idle turn boundary, under the unchanged plan. It is not retry,
 unexpected reconnect, stream reattachment, consumer resume, or durable

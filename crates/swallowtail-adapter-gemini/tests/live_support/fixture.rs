@@ -3,7 +3,8 @@ use super::services::{CallLog, ThreadServices, TimeMode, TrackingCredential, Tra
 use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use std::sync::Arc;
 use swallowtail_adapter_gemini::{
-    GeminiLivePreparationInput, gemini_live_access_profile, gemini_live_descriptor,
+    GEMINI_LIVE_FACADE_REVISION, GeminiLivePreparationInput, gemini_live_access_profile,
+    gemini_live_descriptor,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AudioEncoding, Capability,
@@ -119,6 +120,10 @@ impl LiveFixture {
         self.plan_with_capabilities(capabilities())
     }
 
+    pub fn plan_with_facade(&self, facade: &str) -> swallowtail_core::PreflightPlan {
+        self.build_plan(capabilities(), facade)
+    }
+
     pub fn plan_with_reasoning(&self, mode: &ReasoningMode) -> swallowtail_core::PreflightPlan {
         let mut requirements = capabilities();
         requirements.push(CapabilityRequirement::new(
@@ -132,6 +137,14 @@ impl LiveFixture {
         &self,
         requirements: Vec<CapabilityRequirement>,
     ) -> swallowtail_core::PreflightPlan {
+        self.build_plan(requirements, GEMINI_LIVE_FACADE_REVISION)
+    }
+
+    fn build_plan(
+        &self,
+        requirements: Vec<CapabilityRequirement>,
+        facade: &str,
+    ) -> swallowtail_core::PreflightPlan {
         let descriptor = gemini_live_descriptor();
         let access_id = AccessProfileId::new("gemini.authorization-api-key.project").unwrap();
         let profile = CapabilityProfile::new(requirements.clone());
@@ -144,10 +157,7 @@ impl LiveFixture {
             InstanceOwnership::ExternalAttached,
             access_id.clone(),
             SupportAuthority::ProviderSupported,
-            ProtocolFacadeId::new(
-                "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent",
-            )
-            .unwrap(),
+            ProtocolFacadeId::new(facade).unwrap(),
             InstancePolicyId::new("gemini-live-preview-authorization-key-manual-audio").unwrap(),
             profile.clone(),
         );

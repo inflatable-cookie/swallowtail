@@ -72,7 +72,7 @@ fn assert_topology(host: &str) {
     );
     assert_eq!(
         plan.protocol_facade_id().as_str(),
-        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
+        "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23"
     );
     let mut session = open(
         &fixture,

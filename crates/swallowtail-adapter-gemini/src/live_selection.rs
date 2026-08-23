@@ -24,6 +24,12 @@ pub const GEMINI_LIVE_ACCESS_PROFILE_ID: &str = "gemini.authorization-api-key.pr
 pub const GEMINI_LIVE_CONFIGURED_INSTANCE_ID: &str = "gemini.public.live-preview";
 /// Exact opaque protocol-facade revision qualified by this adapter.
 pub const GEMINI_LIVE_FACADE_REVISION: &str =
+    "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-2026-08-23";
+/// Historical facade point qualified before caller-selected thinking levels.
+///
+/// It names the frozen `gemini.live-preview-manual-pcm-rollover-v1` proof. It
+/// is not a supported route claim, and the driver rejects plans that carry it.
+pub const GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str =
     "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
 /// Provider model identifier selected for the Live preview route.
 pub const GEMINI_LIVE_MODEL_ID: &str = "gemini-3.1-flash-live-preview";

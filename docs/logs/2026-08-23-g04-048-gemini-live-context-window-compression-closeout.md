@@ -1,10 +1,13 @@
 # 2026-08-23 g04.048 Gemini Live Context-Window Compression Closeout
 
-Status: worker complete; PR pending
+Status: worker complete; PR 47 open
 Owner: Tom
 Milestone: g04.048
 Cards: 133-135 complete
 Research: 195 promoted
+PR: https://github.com/inflatable-cookie/swallowtail/pull/47
+Worker implementation commit: `35b1b282`
+Worker branch: `t3code/gemini-live-context-compression`
 
 ## Outcome
 
@@ -48,8 +51,9 @@ call was performed.
 
 ## Result
 
-Worker implementation and validation are complete. PR and commit head will be
-recorded here after the worker commit and push. No merge is claimed.
+Worker implementation and validation are complete. PR 47 is open against
+`main`; the worker implementation head is `35b1b282`. This closeout update is a
+follow-up documentation commit. No merge is claimed.
 
 ## Shared Closeout Delta
 

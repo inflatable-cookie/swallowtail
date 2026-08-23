@@ -10,7 +10,7 @@ use futures_util::StreamExt;
 use swallowtail_adapter_deepseek::{
     DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_MODEL_ID, DeepSeekCatalogueProfileInput,
     DeepSeekDirectDriver, DeepSeekModelSelection, DeepSeekRunProfileInput,
-    DeepSeekSessionProfileInput, deepseek_v4_config, prepare_deepseek_direct,
+    DeepSeekSessionProfileInput, DeepSeekThinkingMode, deepseek_v4_config, prepare_deepseek_direct,
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, ModelId, ModelRouteId, ModelRouteRevision,
@@ -385,6 +385,54 @@ fn one_request_structured_run_prepares_on_both_host_topologies() {
     }
 }
 
+#[test]
+fn disabled_structured_run_binds_without_reasoning_selection_or_effort() {
+    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredNonThinkingSuccess);
+    let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+        .expect("DeepSeek integration prepares");
+    let run = prepared
+        .prepare_run(DeepSeekRunProfileInput::new_with_thinking_mode(
+            RequestId::new("prepared-disabled-run").expect("request id"),
+            model(DEEPSEEK_MODEL_ID),
+            OperationContent::new("one non-thinking request").expect("content"),
+            DeepSeekThinkingMode::disabled(),
+            std::num::NonZeroU64::new(512).expect("maximum"),
+            ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
+        ))
+        .expect("disabled structured run prepares");
+
+    assert!(run.request().policy().reasoning_mode().is_none());
+    assert_plan_has_no_reasoning(run.plan());
+    assert_eq!(
+        run.evidence().thinking_mode(),
+        Some(DeepSeekThinkingMode::disabled())
+    );
+    assert!(run.evidence().reasoning_mode().is_none());
+    assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+
+    let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+    let mut events = handle.take_events().expect("events");
+    let terminal = handle.take_terminal_outcome().expect("terminal");
+    let (collected, outcome) = block_on(async {
+        let mut collected = Vec::new();
+        while let Some(event) = events.next().await {
+            collected.push(event.expect("event succeeds"));
+        }
+        (collected, terminal.await)
+    });
+    assert_observable_activity_trace(run.evidence().observable_activity(), &collected);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.attempts(), 1);
+    assert_eq!(fixture.releases(), 1);
+
+    let body: serde_json::Value =
+        serde_json::from_slice(&fixture.server.requests()[0].body).expect("request JSON");
+    assert_eq!(body["thinking"]["type"], "disabled");
+    assert!(body.get("reasoning_effort").is_none());
+    assert_eq!(body["tools"], serde_json::json!([]));
+}
+
 fn session_input(id: &str, model_id: &str) -> DeepSeekSessionProfileInput {
     session_input_with_reasoning(id, model_id, "high")
 }
@@ -416,6 +464,15 @@ fn assert_plan_binds_reasoning(plan: &swallowtail_core::PreflightPlan, mode: &st
         Some(CapabilityConstraint::ReasoningMode(selected)) if selected.as_str() == mode
     ));
     assert!(constraints.next().is_none());
+}
+
+fn assert_plan_has_no_reasoning(plan: &swallowtail_core::PreflightPlan) {
+    assert!(
+        !plan
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::ReasoningSelection)
+    );
 }
 
 fn model(model_id: &str) -> DeepSeekModelSelection {

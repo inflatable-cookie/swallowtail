@@ -1,6 +1,7 @@
 use super::private::{PrivateAccumulator, PrivateContinuation};
 use super::response::Usage;
 use super::{ProtocolFailure, ProtocolFailureKind};
+use crate::DeepSeekThinkingMode;
 use crate::selection::DEEPSEEK_MODEL_ID;
 use serde_json::Value;
 use swallowtail_core::DirectContinuationConfig;
@@ -13,6 +14,10 @@ pub(crate) struct FinalAttempt {
     pub(crate) reasoning: PrivateContinuation,
     pub(crate) finish_reason: String,
     pub(crate) usage: Usage,
+}
+
+pub(crate) struct FinalOutput {
+    pub(crate) output: String,
 }
 
 impl std::fmt::Debug for FinalAttempt {
@@ -38,10 +43,18 @@ pub(crate) struct FinalStreamParser {
     finish_reason: Option<String>,
     usage: Option<Usage>,
     done: bool,
+    thinking_mode: Option<DeepSeekThinkingMode>,
 }
 
 impl FinalStreamParser {
     pub(crate) fn new(config: &DirectContinuationConfig) -> Self {
+        Self::new_with_thinking_mode(config, None)
+    }
+
+    pub(crate) fn new_with_thinking_mode(
+        config: &DirectContinuationConfig,
+        thinking_mode: Option<DeepSeekThinkingMode>,
+    ) -> Self {
         Self {
             decoder: Some(SseDecoder::default()),
             maximum_records: config.maximum_stream_records_per_attempt().get() as usize,
@@ -52,6 +65,7 @@ impl FinalStreamParser {
             finish_reason: None,
             usage: None,
             done: false,
+            thinking_mode,
         }
     }
 
@@ -73,7 +87,28 @@ impl FinalStreamParser {
         Ok(updates)
     }
 
-    pub(crate) fn finish(mut self) -> Result<FinalAttempt, ProtocolFailure> {
+    pub(crate) fn finish(self) -> Result<FinalAttempt, ProtocolFailure> {
+        let maximum_private_bytes = self.maximum_private_bytes;
+        let (output, finish_reason, usage, reasoning) = self.finish_parts()?;
+        Ok(FinalAttempt {
+            output,
+            reasoning: PrivateContinuation::new(reasoning, maximum_private_bytes)?,
+            finish_reason,
+            usage,
+        })
+    }
+
+    pub(crate) fn finish_without_private(self) -> Result<FinalOutput, ProtocolFailure> {
+        let (output, _, _, reasoning) = self.finish_parts()?;
+        if !reasoning.is_empty() {
+            return Err(ProtocolFailure::new(
+                ProtocolFailureKind::UnknownSemanticField,
+            ));
+        }
+        Ok(FinalOutput { output })
+    }
+
+    fn finish_parts(mut self) -> Result<(String, String, Usage, Vec<u8>), ProtocolFailure> {
         self.decoder
             .take()
             .expect("active decoder exists")
@@ -86,12 +121,12 @@ impl FinalStreamParser {
         {
             return Err(ProtocolFailure::new(ProtocolFailureKind::IncompleteStream));
         }
-        Ok(FinalAttempt {
-            output: self.output,
-            reasoning: PrivateContinuation::new(self.reasoning.take(), self.maximum_private_bytes)?,
-            finish_reason: self.finish_reason.take().expect("validated finish reason"),
-            usage: self.usage.expect("validated usage"),
-        })
+        Ok((
+            self.output,
+            self.finish_reason.take().expect("validated finish reason"),
+            self.usage.expect("validated usage"),
+            self.reasoning.take(),
+        ))
     }
 
     fn apply(
@@ -157,13 +192,17 @@ impl FinalStreamParser {
             ));
         }
         allow_unknowns(&choice.delta.unknown_fields, &["reasoning_content"])?;
+        let reasoning = unknown_optional_string(&choice.delta.unknown_fields, "reasoning_content")?;
+        if self.thinking_mode.is_some() && reasoning.is_some() {
+            return Err(ProtocolFailure::new(
+                ProtocolFailureKind::UnknownSemanticField,
+            ));
+        }
         if let Some(content) = choice.delta.content {
             self.output.push_str(&content);
             updates.push(FinalStreamUpdate::Output(content));
         }
-        if let Some(value) =
-            unknown_optional_string(&choice.delta.unknown_fields, "reasoning_content")?
-        {
+        if let Some(value) = reasoning {
             self.reasoning.push(value, self.maximum_private_bytes)?;
         }
         if let Some(reason) = choice.finish_reason {
@@ -192,6 +231,19 @@ pub(crate) fn parse_final_stream(
         let _ = parser.push(fragment)?;
     }
     parser.finish()
+}
+
+#[cfg(test)]
+pub(crate) fn parse_final_output_with_thinking_mode(
+    bytes: &[u8],
+    config: &DirectContinuationConfig,
+    thinking_mode: Option<DeepSeekThinkingMode>,
+) -> Result<FinalOutput, ProtocolFailure> {
+    let mut parser = FinalStreamParser::new_with_thinking_mode(config, thinking_mode);
+    for fragment in bytes.chunks(7) {
+        let _ = parser.push(fragment)?;
+    }
+    parser.finish_without_private()
 }
 
 fn allow_unknowns(fields: &[UnknownField], allowed: &[&str]) -> Result<(), ProtocolFailure> {

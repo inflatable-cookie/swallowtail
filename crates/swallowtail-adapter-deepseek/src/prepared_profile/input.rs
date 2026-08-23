@@ -1,3 +1,4 @@
+use crate::DeepSeekThinkingMode;
 use std::num::NonZeroU64;
 use swallowtail_core::{
     ModelId, ModelRouteId, ModelRouteRevision, ProviderInferenceCachePolicy, ReasoningMode,
@@ -17,7 +18,8 @@ pub struct DeepSeekRunProfileInput {
     request_id: RequestId,
     model: DeepSeekModelSelection,
     content: OperationContent,
-    reasoning: ReasoningMode,
+    reasoning: Option<ReasoningMode>,
+    thinking_mode: Option<DeepSeekThinkingMode>,
     maximum_output_tokens: NonZeroU64,
     cache_policy: ProviderInferenceCachePolicy,
     deadline: Option<Deadline>,
@@ -38,7 +40,30 @@ impl DeepSeekRunProfileInput {
             request_id,
             model,
             content,
-            reasoning,
+            reasoning: Some(reasoning),
+            thinking_mode: None,
+            maximum_output_tokens,
+            cache_policy,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    /// Creates input for the exact adapter-local disabled thinking mode.
+    pub const fn new_with_thinking_mode(
+        request_id: RequestId,
+        model: DeepSeekModelSelection,
+        content: OperationContent,
+        thinking_mode: DeepSeekThinkingMode,
+        maximum_output_tokens: NonZeroU64,
+        cache_policy: ProviderInferenceCachePolicy,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            content,
+            reasoning: None,
+            thinking_mode: Some(thinking_mode),
             maximum_output_tokens,
             cache_policy,
             deadline: None,
@@ -52,13 +77,15 @@ impl DeepSeekRunProfileInput {
         self
     }
 
+    #[allow(clippy::type_complexity)]
     pub(super) fn into_parts(
         self,
     ) -> (
         RequestId,
         DeepSeekModelSelection,
         OperationContent,
-        ReasoningMode,
+        Option<ReasoningMode>,
+        Option<DeepSeekThinkingMode>,
         NonZeroU64,
         ProviderInferenceCachePolicy,
         Option<Deadline>,
@@ -68,6 +95,7 @@ impl DeepSeekRunProfileInput {
             self.model,
             self.content,
             self.reasoning,
+            self.thinking_mode,
             self.maximum_output_tokens,
             self.cache_policy,
             self.deadline,

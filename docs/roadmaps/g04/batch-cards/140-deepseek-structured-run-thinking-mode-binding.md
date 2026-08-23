@@ -1,6 +1,6 @@
 # 140 DeepSeek Structured-Run Thinking-Mode Binding
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -40,13 +40,13 @@ validation, and exact request encoding.
 
 ## Acceptance Criteria
 
-- [ ] only Research 197 deliver-now structured-run states prepare
-- [ ] selected mode, plan/evidence, driver, and request bytes agree exactly
-- [ ] enabled `low|high|max` calls and all continuation paths are unchanged
-- [ ] disabled mode carries no false reasoning capability or effort selection
-- [ ] aliases, unknown values, unsupported profiles, and knowable drift reject
+- [x] only Research 197 deliver-now structured-run states prepare
+- [x] selected mode, plan/evidence, driver, and request bytes agree exactly
+- [x] enabled `low|high|max` calls and all continuation paths are unchanged
+- [x] disabled mode carries no false reasoning capability or effort selection
+- [x] aliases, unknown values, unsupported profiles, and knowable drift reject
       before effects
-- [ ] no shared runtime, portable capability, sibling route, retry, fallback,
+- [x] no shared runtime, portable capability, sibling route, retry, fallback,
       quality, latency, price, or provider-acceptance claim enters the API
 
 ## Validation
@@ -75,3 +75,20 @@ composition, rejection, and enabled-continuation preservation pass.
 
 - route guide, shared closeout, live provider work, another DeepSeek profile,
   release, publication, or merge
+
+## Closeout
+
+Card 140 bound the one Research 197 deliver-now state through the public
+adapter-local `DeepSeekThinkingMode::disabled()` type and
+`DeepSeekRunProfileInput::new_with_thinking_mode`. Existing `new` input keeps
+the enabled `low|high|max` path. Disabled preparation removes
+`ReasoningSelection` from the immutable plan and leaves the shared request
+policy without a portable reasoning value; prepared evidence and the bound
+driver retain the typed mode.
+
+The request encoder emits `thinking.type=disabled` and omits
+`reasoning_effort`. Driver validation requires the disabled mode, omitted
+reasoning policy, and plan without `ReasoningSelection` to agree before access
+leases or endpoint work. Sessions and all continuation/replay encoders remain
+enabled-only. No shared capability, contract, facade, model, currentness, or
+provider-acceptance claim changed.

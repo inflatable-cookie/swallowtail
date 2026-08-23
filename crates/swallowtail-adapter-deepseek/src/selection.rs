@@ -201,6 +201,37 @@ pub fn deepseek_v4_run_requirements(
     execution_host_id: ExecutionHostId,
     access_profile_id: AccessProfileId,
 ) -> OperationRequirements {
+    deepseek_v4_run_requirements_for_thinking(execution_host_id, access_profile_id, true)
+}
+
+pub(crate) fn deepseek_v4_run_requirements_without_reasoning(
+    execution_host_id: ExecutionHostId,
+    access_profile_id: AccessProfileId,
+) -> OperationRequirements {
+    deepseek_v4_run_requirements_for_thinking(execution_host_id, access_profile_id, false)
+}
+
+fn deepseek_v4_run_requirements_for_thinking(
+    execution_host_id: ExecutionHostId,
+    access_profile_id: AccessProfileId,
+    include_reasoning: bool,
+) -> OperationRequirements {
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(Capability::OutputTokenLimit, []),
+        CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
+    ];
+    if include_reasoning {
+        capabilities.push(deepseek_reasoning_requirement());
+    }
+    capabilities.push(CapabilityRequirement::new(
+        Capability::Interruption,
+        [CapabilityConstraint::CancellationScope(
+            CancellationScope::StructuredRun,
+        )],
+    ));
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
         OperationShape::StructuredRun,
@@ -221,20 +252,7 @@ pub fn deepseek_v4_run_requirements(
         HostServiceKind::Network,
         HostServiceKind::Credential,
     ])
-    .with_capabilities([
-        CapabilityRequirement::new(Capability::StructuredRun, []),
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::OutputTokenLimit, []),
-        CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
-        deepseek_reasoning_requirement(),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [CapabilityConstraint::CancellationScope(
-                CancellationScope::StructuredRun,
-            )],
-        ),
-    ])
+    .with_capabilities(capabilities)
     .with_interface_versions([deepseek_facade_binding()])
     .require_model_route()
 }

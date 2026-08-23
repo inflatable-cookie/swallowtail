@@ -1,6 +1,6 @@
 # 141 DeepSeek Structured-Run Thinking-Mode Acceptance
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
@@ -38,16 +38,16 @@ without claiming provider acceptance or effective mode.
 
 ## Acceptance Criteria
 
-- [ ] every admitted state and rejected boundary has deterministic coverage
-- [ ] enabled and disabled dispatch truth remains exact and distinct
-- [ ] continuation/private-replay behavior is unchanged and enabled-only
-- [ ] default QA performs no credential, account, external request, provider
+- [x] every admitted state and rejected boundary has deterministic coverage
+- [x] enabled and disabled dispatch truth remains exact and distinct
+- [x] continuation/private-replay behavior is unchanged and enabled-only
+- [x] default QA performs no credential, account, external request, provider
       prompt, or paid work
-- [ ] docs do not infer acceptance, effective mode, quality, latency, price,
+- [x] docs do not infer acceptance, effective mode, quality, latency, price,
       cache effect, or private reasoning from dispatch
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] closeout records PR/head truth without claiming merge
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass
 
 ## Validation
 
@@ -83,3 +83,17 @@ Auto-continuation: No.
 
 - live provider verification, publication, merge, shared front-door edits, or
   post-g04 generation planning
+
+## Closeout
+
+Card 141 added deterministic protocol and prepared-facade coverage for the
+disabled structured-run request, ordinary no-private-reasoning response, and
+private-reasoning drift rejection. Existing enabled effort, continuation,
+restoration, cancellation, deadline, failure, and cleanup tests remain green.
+The prepared guide and Research 197 now describe dispatch truth without
+claiming provider acceptance or effective mode.
+
+Named validation passed in the worker worktree: focused package validation,
+affected-package verification, examples, route QA, Northstar QA, research/log/
+roadmap indexes, next-action QA, package API, and diff checks. No credentials,
+account state, live provider request, paid work, or merge was used.

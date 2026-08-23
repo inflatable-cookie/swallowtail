@@ -9,17 +9,19 @@ impl StructuredRunDriver for DeepSeekDirectDriver {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             require_services(&services, true)?;
-            validate_run(&plan, &request, &services)?;
+            let thinking_mode = self.thinking_mode;
+            validate_run(&plan, &request, &services, thinking_mode)?;
             let maximum = request
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
-            let reasoning = request
-                .policy()
-                .reasoning_mode()
-                .expect("validated reasoning selection");
-            let body =
-                encode_structured(request.content().as_str(), maximum, reasoning).map_err(protocol)?;
+            let body = encode_structured(
+                request.content().as_str(),
+                maximum,
+                request.policy().reasoning_mode(),
+                thinking_mode,
+            )
+            .map_err(protocol)?;
             let wire = HttpRequest::completion(body, true);
             let scope = operation_scope("run", request.request_id().as_str())?;
             let run_id =
@@ -79,6 +81,7 @@ impl StructuredRunDriver for DeepSeekDirectDriver {
                             events.clone(),
                             cancellation,
                             deadline,
+                            thinking_mode,
                             swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
                         )
                         .await;
@@ -118,6 +121,7 @@ fn validate_run(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
+    thinking_mode: Option<DeepSeekThinkingMode>,
 ) -> Result<(), RuntimeFailure> {
     if plan.requirements().driver_role() != swallowtail_core::DriverRole::StructuredRun
         || plan
@@ -153,14 +157,20 @@ fn validate_run(
             "DeepSeek maximum output tokens exceed the selected request range",
         ));
     }
-    let reasoning = request
-        .policy()
-        .reasoning_mode()
-        .ok_or_else(|| unsupported("an omitted reasoning selection"))?;
-    if !deepseek_reasoning_mode_is_supported(reasoning)
-        || !deepseek_plan_supports_reasoning(plan, reasoning)
-    {
-        return Err(unsupported("an unsupported reasoning selection"));
+    match (thinking_mode, request.policy().reasoning_mode()) {
+        (None, Some(reasoning))
+            if deepseek_reasoning_mode_is_supported(reasoning)
+                && deepseek_plan_supports_reasoning(plan, reasoning) => {}
+        (Some(_), None)
+            if !plan
+                .requirements()
+                .capabilities()
+                .any(|requirement| requirement.capability() == Capability::ReasoningSelection) => {}
+        _ => {
+            return Err(unsupported(
+                "an unsupported thinking or reasoning selection",
+            ));
+        }
     }
     if request.working_resource().is_some() {
         return Err(unsupported("a working resource"));

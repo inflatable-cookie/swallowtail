@@ -138,7 +138,11 @@ impl DeepSeekPreparedIntegration {
         })?;
         Ok(DeepSeekPreparedSession {
             evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(
-                self, plan, activity, reasoning,
+                self,
+                plan,
+                activity,
+                Some(reasoning),
+                None,
             )?,
             request,
         })

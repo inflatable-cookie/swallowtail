@@ -1,13 +1,13 @@
 # g04.050 DeepSeek Structured-Run Thinking Mode
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-23
 Updated: 2026-08-23
 Depends on: per-route feature completion programme; g04.038
 Vision tags: explicit selection, provider truth, route-local controls
 Contract refs: 009, 011, 014, 024, 029, 030, 037, 040, 041, 052
-Research: 023, 186, 197 reserved by card 139
+Research: 023, 186, 197 promoted by card 139
 
 ## Problem
 
@@ -32,20 +32,20 @@ effort ladder and the enabled-only direct-continuation boundary.
 
 ## Goals
 
-- [ ] freeze current official Chat Completions, Thinking Mode, model, tool,
+- [x] freeze current official Chat Completions, Thinking Mode, model, tool,
       cache, and response evidence
-- [ ] classify explicit enabled, explicit disabled, omission, effort-field
+- [x] classify explicit enabled, explicit disabled, omission, effort-field
       presence, response `reasoning_content`, and unknown future values
-- [ ] classify one-request structured runs and direct continuation separately
-- [ ] promote Research 197 with an exact deliver-now table or honest stop
-- [ ] preserve every existing enabled request and public constructor
-- [ ] bind only admitted structured-run state through typed adapter-local
+- [x] classify one-request structured runs and direct continuation separately
+- [x] promote Research 197 with an exact deliver-now table or honest stop
+- [x] preserve every existing enabled request and public constructor
+- [x] bind only admitted structured-run state through typed adapter-local
       input, immutable plan/evidence, driver, and exact request encoding
-- [ ] omit `reasoning_effort` and portable `ReasoningSelection` when disabled
+- [x] omit `reasoning_effort` and portable `ReasoningSelection` when disabled
       unless exact evidence proves another representation
-- [ ] reject disabled continuation and every field/profile mismatch before
+- [x] reject disabled continuation and every field/profile mismatch before
       endpoint, credential, or provider work
-- [ ] publish dispatch truth without exposing private reasoning or claiming
+- [x] publish dispatch truth without exposing private reasoning or claiming
       provider acceptance, effective mode, quality, latency, or price
 
 ## Non-Goals
@@ -92,39 +92,39 @@ Research 197 deliver-now set is an honest stop.
 
 ### Batch 50.1 — Exact Thinking-Mode Evidence
 
-- [ ] Execute card 139.
-- [ ] freeze official and repository request, response, model, cache, facade,
+- [x] Execute card 139.
+- [x] freeze official and repository request, response, model, cache, facade,
       and lifecycle evidence
-- [ ] promote Research 197 with value/profile/field dispositions
+- [x] promote Research 197 with value/profile/field dispositions
 
 ### Batch 50.2 — Conditional Structured-Run Binding
 
-- [ ] Execute card 140 only when card 139 admits a non-empty deliver-now set.
-- [ ] add one typed adapter-local structured-run selection
-- [ ] preserve enabled input, plan, evidence, driver, and request behavior
-- [ ] keep direct continuation enabled-only
+- [x] Execute card 140 only when card 139 admits a non-empty deliver-now set.
+- [x] add one typed adapter-local structured-run selection
+- [x] preserve enabled input, plan, evidence, driver, and request behavior
+- [x] keep direct continuation enabled-only
 
 ### Batch 50.3 — Route-Local Acceptance
 
-- [ ] Execute card 141 only after card 140.
-- [ ] prove admitted and rejected request, response, composition, and lifecycle
+- [x] Execute card 141 only after card 140.
+- [x] prove admitted and rejected request, response, composition, and lifecycle
       boundaries
-- [ ] update route-local guidance and reserve the shared closeout delta
+- [x] update route-local guidance and reserve the shared closeout delta
 
 ## Acceptance Criteria
 
-- [ ] only Research 197 deliver-now model/value/profile combinations prepare
-- [ ] enabled `low|high|max` request bytes and continuation behavior remain
+- [x] only Research 197 deliver-now model/value/profile combinations prepare
+- [x] enabled `low|high|max` request bytes and continuation behavior remain
       unchanged
-- [ ] disabled structured runs carry exact mode truth without a false portable
+- [x] disabled structured runs carry exact mode truth without a false portable
       reasoning selection
-- [ ] input, plan/evidence, driver, request, and qualified response parsing
+- [x] input, plan/evidence, driver, request, and qualified response parsing
       agree without defaults, aliases, or fallback
-- [ ] disabled continuation and every knowable mismatch reject before effects
-- [ ] private reasoning remains undisclosed and unmanaged-cache acceptance
+- [x] disabled continuation and every knowable mismatch reject before effects
+- [x] private reasoning remains undisclosed and unmanaged-cache acceptance
       remains exact
-- [ ] default QA performs no credential, account, provider, or paid work
-- [ ] g04.050 closes one route-local family and leaves generation-boundary
+- [x] default QA performs no credential, account, provider, or paid work
+- [x] g04.050 closes one route-local family and leaves generation-boundary
       reassessment to the orchestrator after merge
 
 ## Lane Runway
@@ -152,9 +152,9 @@ Research 197 deliver-now set is an honest stop.
 
 ## Batch Cards
 
-- [139-deepseek-structured-run-thinking-mode-evidence.md](batch-cards/139-deepseek-structured-run-thinking-mode-evidence.md) — ready
-- [140-deepseek-structured-run-thinking-mode-binding.md](batch-cards/140-deepseek-structured-run-thinking-mode-binding.md) — conditional
-- [141-deepseek-structured-run-thinking-mode-acceptance.md](batch-cards/141-deepseek-structured-run-thinking-mode-acceptance.md) — conditional
+- [139-deepseek-structured-run-thinking-mode-evidence.md](batch-cards/139-deepseek-structured-run-thinking-mode-evidence.md) — complete
+- [140-deepseek-structured-run-thinking-mode-binding.md](batch-cards/140-deepseek-structured-run-thinking-mode-binding.md) — complete
+- [141-deepseek-structured-run-thinking-mode-acceptance.md](batch-cards/141-deepseek-structured-run-thinking-mode-acceptance.md) — complete
 
 ## References
 
@@ -169,3 +169,25 @@ Research 197 deliver-now set is an honest stop.
 - [DeepSeek Chat Completions API](https://api-docs.deepseek.com/api/create-chat-completion/)
 - [DeepSeek Thinking Mode](https://api-docs.deepseek.com/guides/thinking_mode/)
 - [DeepSeek Models And Pricing](https://api-docs.deepseek.com/quick_start/pricing/)
+
+## Closeout
+
+g04.050 closes the DeepSeek V4 Pro structured-run thinking-mode family at the
+route-local dispatch boundary. The only new selection is
+`DeepSeekThinkingMode::disabled()` for one-request structured runs. It has
+typed input/evidence/driver binding, no portable `ReasoningSelection`, no
+`reasoning_effort`, and explicit `thinking.type=disabled`. Existing enabled
+`low|high|max` structured runs and every direct-continuation path remain
+unchanged and enabled-only.
+
+The worker validated deterministic protocol and prepared-facade behavior,
+including ordinary disabled responses and fail-closed private-reasoning drift.
+The current facade, private behavior revision, model route, cache acceptance,
+and Contract 029 currentness claim remain unchanged. No provider acceptance,
+effective mode, quality, latency, price, cache-effect, or private-reasoning
+claim was added.
+
+The reserved closeout names the shared delta for the orchestrator: architecture,
+Contract 029, route/feature matrices, programme/front-door indexes, changelog,
+the g04 generation boundary, and the sole Next Task pointer remain untouched
+by this worker.

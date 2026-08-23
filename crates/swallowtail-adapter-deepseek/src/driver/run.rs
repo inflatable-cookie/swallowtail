@@ -2,6 +2,7 @@ use super::DeepSeekDirectDriver;
 use super::access::AccessLeases;
 use super::catalogue::{operation_scope, require_services};
 use super::lifecycle::{cleanup_result, merge_cleanup};
+use crate::DeepSeekThinkingMode;
 use crate::failure::{failure, protocol, unsupported};
 use crate::protocol::{
     FinalStreamParser, FinalStreamUpdate, HttpRequest, Usage, encode_structured,

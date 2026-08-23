@@ -1,5 +1,6 @@
 use super::private::PrivateContinuation;
 use super::{ProtocolFailure, ProtocolFailureKind};
+use crate::DeepSeekThinkingMode;
 use crate::selection::DEEPSEEK_MODEL_ID;
 use serde_json::{Value, json};
 use swallowtail_core::ReasoningMode;
@@ -22,14 +23,16 @@ pub(crate) fn encode_initial(
         tools,
         false,
         8_192,
-        reasoning,
+        Some(reasoning),
+        None,
     )
 }
 
 pub(crate) fn encode_structured(
     user: &str,
     maximum_output_tokens: u64,
-    reasoning: &ReasoningMode,
+    reasoning: Option<&ReasoningMode>,
+    thinking_mode: Option<DeepSeekThinkingMode>,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     encode(
         vec![ChatMessage::new("user", user)],
@@ -37,6 +40,7 @@ pub(crate) fn encode_structured(
         true,
         maximum_output_tokens,
         reasoning,
+        thinking_mode,
     )
 }
 
@@ -74,7 +78,8 @@ pub(crate) fn encode_after_tool(
         tools,
         true,
         8_192,
-        reasoning_mode,
+        Some(reasoning_mode),
+        None,
     )
 }
 
@@ -120,14 +125,26 @@ fn encode(
     tools: &[ToolSpec],
     stream: bool,
     maximum_output_tokens: u64,
-    reasoning: &ReasoningMode,
+    reasoning: Option<&ReasoningMode>,
+    thinking_mode: Option<DeepSeekThinkingMode>,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     let mut request = ChatRequest::new(DEEPSEEK_MODEL_ID, messages, stream, stream);
-    for (name, value) in [
-        ("max_tokens", json!(maximum_output_tokens)),
-        ("reasoning_effort", json!(reasoning.as_str())),
-        ("thinking", json!({"type":"enabled"})),
-        (
+    request
+        .insert_extension("max_tokens", json!(maximum_output_tokens))
+        .map_err(invalid)?;
+    if let Some(reasoning) = reasoning {
+        request
+            .insert_extension("reasoning_effort", json!(reasoning.as_str()))
+            .map_err(invalid)?;
+    }
+    request
+        .insert_extension(
+            "thinking",
+            json!({"type": thinking_mode.map_or("enabled", |mode| mode.as_str())}),
+        )
+        .map_err(invalid)?;
+    request
+        .insert_extension(
             "tools",
             Value::Array(
                 tools
@@ -144,10 +161,8 @@ fn encode(
                     })
                     .collect(),
             ),
-        ),
-    ] {
-        request.insert_extension(name, value).map_err(invalid)?;
-    }
+        )
+        .map_err(invalid)?;
     encode_request(&request, CodecLimits::default()).map_err(invalid)
 }
 

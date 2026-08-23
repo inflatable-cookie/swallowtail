@@ -36,6 +36,7 @@ pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::observable_
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::thinking_mode(&self) -> core::option::Option<swallowtail_adapter_deepseek::DeepSeekThinkingMode>
 pub struct swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
 impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
@@ -71,10 +72,15 @@ pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::prepare_working_st
 pub struct swallowtail_adapter_deepseek::DeepSeekRunProfileInput
 impl swallowtail_adapter_deepseek::DeepSeekRunProfileInput
 pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_core::model::ReasoningMode, core::num::nonzero::NonZeroU64, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
+pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::new_with_thinking_mode(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_adapter_deepseek::DeepSeekThinkingMode, core::num::nonzero::NonZeroU64, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
 pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub struct swallowtail_adapter_deepseek::DeepSeekSessionProfileInput
 impl swallowtail_adapter_deepseek::DeepSeekSessionProfileInput
 pub fn swallowtail_adapter_deepseek::DeepSeekSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_core::model::ReasoningMode, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekThinkingMode
+impl swallowtail_adapter_deepseek::DeepSeekThinkingMode
+pub const fn swallowtail_adapter_deepseek::DeepSeekThinkingMode::as_str(self) -> &'static str
+pub const fn swallowtail_adapter_deepseek::DeepSeekThinkingMode::disabled() -> Self
 pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID: &str
 pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID: &str

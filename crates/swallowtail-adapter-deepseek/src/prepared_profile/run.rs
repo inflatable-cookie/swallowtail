@@ -1,7 +1,10 @@
 use super::input::DeepSeekRunProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
-use crate::selection::{deepseek_reasoning_mode_is_supported, deepseek_requirements_for_reasoning};
+use crate::selection::{
+    deepseek_reasoning_mode_is_supported, deepseek_requirements_for_reasoning,
+    deepseek_v4_run_requirements_without_reasoning,
+};
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
@@ -40,7 +43,11 @@ impl DeepSeekPreparedRun {
     #[must_use]
     /// Returns the low-level direct driver.
     pub fn low_level_driver(&self) -> DeepSeekDirectDriver {
-        DeepSeekDirectDriver::new()
+        let driver = DeepSeekDirectDriver::new();
+        match self.evidence.thinking_mode() {
+            Some(thinking_mode) => driver.with_thinking_mode(thinking_mode),
+            None => driver,
+        }
     }
 
     /// Starts the bound one-attempt structured run.
@@ -74,35 +81,49 @@ impl DeepSeekPreparedIntegration {
         &self,
         input: DeepSeekRunProfileInput,
     ) -> Result<DeepSeekPreparedRun, PreparationFailure> {
-        let (request_id, model, content, reasoning, maximum, cache_policy, deadline) =
+        let (request_id, model, content, reasoning, thinking_mode, maximum, cache_policy, deadline) =
             input.into_parts();
-        if !deepseek_reasoning_mode_is_supported(&reasoning)
+        let selection_is_supported = match (&reasoning, thinking_mode) {
+            (Some(reasoning), None) => deepseek_reasoning_mode_is_supported(reasoning),
+            (None, Some(_)) => true,
+            _ => false,
+        };
+        if !selection_is_supported
             || maximum.get() > u64::from(u32::MAX)
             || cache_policy != ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority
         {
             return Err(failure(
                 PreparationStage::Preflight,
                 "swallowtail.deepseek.preparation.run_options_rejected",
-                "DeepSeek structured runs require an exact supported reasoning selection, a supported output-token limit, and explicit unmanaged-cache acceptance",
+                "DeepSeek structured runs require an exact supported reasoning selection or adapter-local thinking mode, a supported output-token limit, and explicit unmanaged-cache acceptance",
             ));
         }
         let activity = crate::activity::profile::activity_profile(false);
-        let base_requirements = crate::deepseek_v4_run_requirements(
-            self.instance().execution_host_id().clone(),
-            self.access_profile().id().clone(),
-        );
+        let base_requirements = if reasoning.is_some() {
+            crate::deepseek_v4_run_requirements(
+                self.instance().execution_host_id().clone(),
+                self.access_profile().id().clone(),
+            )
+        } else {
+            deepseek_v4_run_requirements_without_reasoning(
+                self.instance().execution_host_id().clone(),
+                self.access_profile().id().clone(),
+            )
+        };
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(base_requirements.capabilities().cloned()),
             &activity,
         );
-        let requirements = deepseek_requirements_for_reasoning(
-            base_requirements.with_capabilities(capabilities.iter().map(
-                |(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                },
-            )),
-            &reasoning,
-        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
+        let requirements = if let Some(reasoning) = reasoning.as_ref() {
+            deepseek_requirements_for_reasoning(requirements, reasoning)
+        } else {
+            requirements
+        };
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         if route.model_id().as_str() != crate::DEEPSEEK_MODEL_ID {
@@ -113,18 +134,23 @@ impl DeepSeekPreparedIntegration {
             ));
         }
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
-        let mut request = StructuredRunRequest::new(
-            request_id,
-            content,
-            OperationPolicy::offline().with_reasoning_mode(reasoning.clone()),
-        )
-        .with_maximum_output_tokens(maximum);
+        let policy = reasoning
+            .as_ref()
+            .map_or_else(OperationPolicy::offline, |reasoning| {
+                OperationPolicy::offline().with_reasoning_mode(reasoning.clone())
+            });
+        let mut request = StructuredRunRequest::new(request_id, content, policy)
+            .with_maximum_output_tokens(maximum);
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
         Ok(DeepSeekPreparedRun {
             evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(
-                self, plan, activity, reasoning,
+                self,
+                plan,
+                activity,
+                reasoning,
+                thinking_mode,
             )?,
             request,
         })

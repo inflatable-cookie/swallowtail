@@ -14,6 +14,7 @@ mod prepared;
 mod prepared_profile;
 mod protocol;
 mod selection;
+mod thinking;
 mod transport;
 
 pub use addable::{
@@ -34,3 +35,4 @@ pub use selection::{
     deepseek_facade_binding, deepseek_facade_claim, deepseek_v4_config, deepseek_v4_requirements,
     deepseek_v4_run_requirements, validate_deepseek_request_plan,
 };
+pub use thinking::DeepSeekThinkingMode;

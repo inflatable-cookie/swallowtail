@@ -77,11 +77,15 @@ the same value as `reasoning_effort`; the adapter never clamps, aliases, or
 reports an effective reasoning depth. `medium`, `xhigh`, provider aliases, and
 unknown values fail before endpoint or credential work.
 
-Every admitted profile sends `thinking: {"type":"enabled"}`. DeepSeek
-documents `disabled` upstream, but this route has no qualified typed control
-for that independent field. It remains withheld for structured runs, and
-continuation cannot admit it because the existing tool-bearing proof requires
-private `reasoning_content` replay.
+The existing constructor sends `thinking: {"type":"enabled"}`. Structured
+runs also admit the adapter-local
+`DeepSeekThinkingMode::disabled()` selection through
+`DeepSeekRunProfileInput::new_with_thinking_mode`. That selection is copied
+into prepared evidence and the configured driver; its plan has no portable
+`ReasoningSelection`, and its request sends `thinking: {"type":"disabled"}`
+with `reasoning_effort` absent. It does not claim provider acceptance or an
+effective mode. Disabled mode remains unavailable for continuation because
+the existing tool-bearing proof requires private `reasoning_content` replay.
 
 The route distinguishes dispatched request fields from provider acceptance,
 effective reasoning depth, and observed private continuation. Deterministic
@@ -92,11 +96,16 @@ consumer output or durable session material.
 
 ## One-Request Structured Run
 
-`prepare_run` requires the exact `deepseek-v4-pro` route, `low`, `high`, or
-`max` reasoning, text content, positive output-token limit, optional host
-deadline, and explicit
+`prepare_run` requires the exact `deepseek-v4-pro` route and either `low`,
+`high`, or `max` portable reasoning, or the adapter-local
+`DeepSeekThinkingMode::disabled()` structured-run selection. It also requires
+text content, a positive output-token limit, optional host deadline, and explicit
 `ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority`.
-`start_run` sends one tool-free streamed request.
+The disabled request carries no portable reasoning selection or effort field;
+the existing reasoning constructor remains byte-compatible. `start_run` sends
+one tool-free streamed request. A disabled response with non-null
+`reasoning_content` is rejected as protocol drift; an absent private field is
+not evidence of effective mode.
 
 Take and drain events and terminal concurrently, then close the run. Assistant
 output, reasoning, usage, rate and request correlation, provider failure,

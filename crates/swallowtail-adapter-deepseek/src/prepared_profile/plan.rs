@@ -11,6 +11,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 pub struct DeepSeekPreparedEvidence {
     operation: PreparedOperationEvidence,
     reasoning_mode: Option<ReasoningMode>,
+    thinking_mode: Option<crate::DeepSeekThinkingMode>,
 }
 
 impl DeepSeekPreparedEvidence {
@@ -24,6 +25,7 @@ impl DeepSeekPreparedEvidence {
                 prepared.access_evidence().clone(),
             )?,
             reasoning_mode: None,
+            thinking_mode: None,
         })
     }
 
@@ -31,7 +33,8 @@ impl DeepSeekPreparedEvidence {
         prepared: &DeepSeekPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
-        reasoning_mode: ReasoningMode,
+        reasoning_mode: Option<ReasoningMode>,
+        thinking_mode: Option<crate::DeepSeekThinkingMode>,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
@@ -39,7 +42,8 @@ impl DeepSeekPreparedEvidence {
                 prepared.access_evidence().clone(),
                 activity_profile,
             )?,
-            reasoning_mode: Some(reasoning_mode),
+            reasoning_mode,
+            thinking_mode,
         })
     }
 
@@ -71,6 +75,12 @@ impl DeepSeekPreparedEvidence {
     /// Returns the exact reasoning selection bound to this operation, if any.
     pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
         self.reasoning_mode.as_ref()
+    }
+
+    #[must_use]
+    /// Returns the exact adapter-local thinking-mode selection, if any.
+    pub const fn thinking_mode(&self) -> Option<crate::DeepSeekThinkingMode> {
+        self.thinking_mode
     }
 }
 

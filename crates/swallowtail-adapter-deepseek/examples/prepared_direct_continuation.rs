@@ -1,11 +1,14 @@
 #![allow(dead_code)]
 
+use std::num::NonZeroU64;
 use swallowtail_adapter_deepseek::{
-    DeepSeekCatalogueProfileInput, DeepSeekPreparationInput, DeepSeekPreparedCatalogue,
-    DeepSeekPreparedIntegration, DeepSeekPreparedSession, DeepSeekSessionProfileInput,
-    prepare_deepseek_direct,
+    DeepSeekCatalogueProfileInput, DeepSeekModelSelection, DeepSeekPreparationInput,
+    DeepSeekPreparedCatalogue, DeepSeekPreparedIntegration, DeepSeekPreparedRun,
+    DeepSeekPreparedSession, DeepSeekRunProfileInput, DeepSeekSessionProfileInput,
+    DeepSeekThinkingMode, prepare_deepseek_direct,
 };
-use swallowtail_runtime::{HostServices, PreparationFailure};
+use swallowtail_core::ProviderInferenceCachePolicy;
+use swallowtail_runtime::{HostServices, OperationContent, PreparationFailure, RequestId};
 
 fn prepare_integration(
     input: DeepSeekPreparationInput,
@@ -26,6 +29,24 @@ fn prepare_session(
     input: DeepSeekSessionProfileInput,
 ) -> Result<DeepSeekPreparedSession, PreparationFailure> {
     integration.prepare_session(input)
+}
+
+fn prepare_disabled_run(
+    integration: &DeepSeekPreparedIntegration,
+    request_id: RequestId,
+    model: DeepSeekModelSelection,
+    content: OperationContent,
+    maximum_output_tokens: NonZeroU64,
+    cache_policy: ProviderInferenceCachePolicy,
+) -> Result<DeepSeekPreparedRun, PreparationFailure> {
+    integration.prepare_run(DeepSeekRunProfileInput::new_with_thinking_mode(
+        request_id,
+        model,
+        content,
+        DeepSeekThinkingMode::disabled(),
+        maximum_output_tokens,
+        cache_policy,
+    ))
 }
 
 fn main() {}

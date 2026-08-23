@@ -6,6 +6,7 @@ mod run;
 mod session;
 mod turn;
 
+use crate::DeepSeekThinkingMode;
 use crate::failure::failure;
 use crate::selection::{DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_PROVIDER_ID, deepseek_facade_claim};
 use crate::transport::CurlTransport;
@@ -22,6 +23,7 @@ pub(crate) const DRIVER_ID: &str = "swallowtail.deepseek.direct";
 /// Low-level DeepSeek catalogue, structured-run, and continuation driver.
 pub struct DeepSeekDirectDriver {
     transport: CurlTransport,
+    thinking_mode: Option<DeepSeekThinkingMode>,
 }
 
 impl DeepSeekDirectDriver {
@@ -29,6 +31,11 @@ impl DeepSeekDirectDriver {
     /// Creates a driver using the package's bounded HTTP/SSE transport.
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub(crate) fn with_thinking_mode(mut self, thinking_mode: DeepSeekThinkingMode) -> Self {
+        self.thinking_mode = Some(thinking_mode);
+        self
     }
 
     fn validate_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {

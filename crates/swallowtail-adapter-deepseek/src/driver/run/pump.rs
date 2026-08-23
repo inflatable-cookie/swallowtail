@@ -1,3 +1,4 @@
+#[allow(clippy::too_many_arguments)]
 async fn pump_run(
     mut subscription: Subscription,
     mut access: AccessLeases,
@@ -5,9 +6,10 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    thinking_mode: Option<crate::DeepSeekThinkingMode>,
     activity_operation_id: swallowtail_runtime::ActivityOperationId,
 ) -> TerminalOutcome {
-    let mut parser = FinalStreamParser::new(&deepseek_v4_config());
+    let mut parser = FinalStreamParser::new_with_thinking_mode(&deepseek_v4_config(), thinking_mode);
     let mut sequence = 1;
     let mut output = None;
     let activity = crate::activity::DeepSeekActivityProjection::new(activity_operation_id);
@@ -20,9 +22,17 @@ async fn pump_run(
             Signal::Closed if cancellation.cancelled.load(Ordering::SeqCst) => {
                 break TerminalStatus::Cancelled;
             }
-            Signal::Closed => match parser.finish().map_err(protocol) {
-                Ok(final_attempt) => {
-                    let content = match OperationContent::new(final_attempt.output) {
+            Signal::Closed => match (if thinking_mode.is_some() {
+                parser
+                    .finish_without_private()
+                    .map(|final_output| final_output.output)
+            } else {
+                parser.finish().map(|final_attempt| final_attempt.output)
+            })
+            .map_err(protocol)
+            {
+                Ok(output_text) => {
+                    let content = match OperationContent::new(output_text) {
                         Ok(content) => content,
                         Err(_) => {
                             let diagnostic = SafeDiagnostic::new(

@@ -18,6 +18,10 @@ const FINAL_TWO: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-2-final.sse"
 ));
+const FINAL_STRUCTURED_NON_THINKING: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/tests/fixtures/deepseek-openai-chat-2026-07-22/structured-disabled-final.sse"
+));
 const FINAL_THREE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-3-final.sse"
@@ -31,6 +35,8 @@ const DISCONNECT: &str = include_str!(concat!(
 pub enum ServerScenario {
     Success,
     StructuredSuccess,
+    #[allow(dead_code)]
+    StructuredNonThinkingSuccess,
     StructuredWait,
     ProviderError,
     DisconnectAfterTool,
@@ -183,6 +189,13 @@ fn respond(
                     FINAL_TWO,
                     Some("structured-request"),
                 ),
+                (ServerScenario::StructuredNonThinkingSuccess, 1) => write_stream_response(
+                    stream,
+                    200,
+                    "text/event-stream",
+                    FINAL_STRUCTURED_NON_THINKING,
+                    Some("structured-disabled-request"),
+                ),
                 (ServerScenario::StructuredWait, 1) => wait_for_stop(stream),
                 (_, 1) => write_response(stream, 200, "application/json", TOOL, Some("request-1")),
                 (ServerScenario::Success, 2) => write_response(
@@ -229,6 +242,23 @@ fn write_response(
         body.len()
     )
     .expect("fixture response writes");
+}
+
+fn write_stream_response(
+    stream: &mut TcpStream,
+    status: u16,
+    content_type: &str,
+    body: &str,
+    request_id: Option<&str>,
+) {
+    let request_header =
+        request_id.map_or_else(String::new, |id| format!("x-request-id: {id}\r\n"));
+    write!(
+        stream,
+        "HTTP/1.1 {status} Fixture\r\nContent-Type: {content_type}\r\n{request_header}Content-Length: {}\r\nConnection: close\r\n\r\n{body}\n",
+        body.len() + 1
+    )
+    .expect("fixture stream response writes");
 }
 
 fn wait_for_stop(stream: &mut TcpStream) {

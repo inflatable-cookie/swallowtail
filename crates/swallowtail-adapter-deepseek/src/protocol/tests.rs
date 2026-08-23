@@ -1,8 +1,11 @@
 use super::request::{ToolSpec, encode_after_tool, encode_initial, encode_later_user};
 use super::response::{ProviderFailureKind, classify_failure, parse_tool_attempt};
-use super::stream::parse_final_stream;
+use super::stream::{parse_final_output_with_thinking_mode, parse_final_stream};
 use super::*;
-use crate::{DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, deepseek_v4_config};
+use crate::{
+    DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, DeepSeekThinkingMode,
+    deepseek_v4_config,
+};
 use serde_json::{Value, json};
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::DirectInferenceAttemptId;
@@ -189,6 +192,39 @@ fn exact_reasoning_effort_ladder_is_encoded_without_aliasing() {
         assert_eq!(actual["reasoning_effort"], mode);
         assert_eq!(actual["thinking"]["type"], "enabled");
     }
+}
+
+#[test]
+fn disabled_structured_run_omits_effort_and_rejects_private_reasoning() {
+    let disabled = DeepSeekThinkingMode::disabled();
+    let actual =
+        fixture_json(&encode_structured("Answer once", 512, None, Some(disabled)).unwrap());
+    assert_eq!(actual["thinking"]["type"], "disabled");
+    assert!(actual.get("reasoning_effort").is_none());
+    assert_eq!(actual["tools"], json!([]));
+
+    let mut disabled_fixture = include_bytes!(
+        "../../tests/fixtures/deepseek-openai-chat-2026-07-22/structured-disabled-final.sse"
+    )
+    .to_vec();
+    disabled_fixture.push(b'\n');
+    let final_output = parse_final_output_with_thinking_mode(
+        &disabled_fixture,
+        &deepseek_v4_config(),
+        Some(disabled),
+    )
+    .expect("disabled response has no private reasoning");
+    assert_eq!(final_output.output, "London is 18 C and clear.");
+    assert!(
+        parse_final_output_with_thinking_mode(
+            include_bytes!(
+                "../../tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-2-final.sse"
+            ),
+            &deepseek_v4_config(),
+            Some(disabled),
+        )
+        .is_err()
+    );
 }
 
 #[test]

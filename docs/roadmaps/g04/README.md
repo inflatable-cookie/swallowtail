@@ -72,11 +72,12 @@ and selection policy.
 - [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
 - [g04.056 llama.cpp Owned Context Size](056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 - [g04.057 Grok Build ACP Reasoning Selection](057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
+- [g04.058 Antigravity Headless Agent Profile Selection](058-antigravity-headless-agent-profile-selection.md) — planned, card 161 ready; cards 162-163 conditional
 
-g04 has 57 numbered roadmaps: 52 completed milestones and five honest evidence
-stops at 040, 042, 043, 045, and 057. The operator keeps the generation active.
-Reassess the remaining per-route feature inventory next; do not close g04
-without explicit operator direction.
+g04 has 58 numbered roadmaps: 52 completed milestones, five honest evidence
+stops at 040, 042, 043, 045, and 057, and one planned milestone. The operator
+keeps the generation active. Execute g04.058 next; do not close g04 without
+explicit operator direction.
 
 ## Current Checkpoint
 
@@ -185,9 +186,12 @@ without explicit operator direction.
 - g04.057 is stopped on `main` at `0b8639a7` through PR 56: Research 204 and
   card 158 freeze exact Grok ACP response-channel presence but no confirmed
   effort selection; cards 159-160 are blocked
+- g04.058 is compiled: Research 205 and card 161 own exact Antigravity agent-
+  profile listing, id, dispatch, confirmation, fallback, authority, and
+  lifecycle evidence; cards 162-163 are conditional
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 57 roadmaps; generation closure awaits explicit
+- g04 remains active at 58 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -234,8 +238,9 @@ without explicit operator direction.
 19. g04.057 stopped honestly after Research 204 and card 158; PR 56 landed the
     exact response-channel evidence at `0b8639a7` without a reasoning-selection
     claim. Cards 159-160 are blocked.
-20. Reassess the remaining per-route feature inventory before compiling the
-    next route-local lane.
+20. g04.058 and cards 161-163 compile Antigravity headless agent-profile
+    selection as one serial evidence-first lane. Card 161 is ready; later cards
+    are conditional.
 21. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -266,6 +271,7 @@ New route-family research does not pre-empt this sequence.
 - [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
 - [056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 - [057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
+- [058 Antigravity Headless Agent Profile Selection](./058-antigravity-headless-agent-profile-selection.md) — planned, card 161 ready; cards 162-163 conditional
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

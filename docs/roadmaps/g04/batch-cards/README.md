@@ -1,5 +1,11 @@
 # g04 Batch Cards
 
+## Planned
+
+- [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — ready
+- [162-antigravity-headless-agent-profile-binding.md](./162-antigravity-headless-agent-profile-binding.md) — conditional on Research 205
+- [163-antigravity-headless-agent-profile-acceptance.md](./163-antigravity-headless-agent-profile-acceptance.md) — conditional on card 162
+
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed

@@ -1575,3 +1575,35 @@ Contract 040 could admit a request-field mapping only after exact confirmation.
 No route claim, driver, matrix, public API, or production code changes. The
 false changelog lead is removed above. Reassess the remaining per-route feature
 inventory before selecting the next lane. g04 stays open at operator direction.
+
+## Post-g04.057 Reassessment And g04.058 Compilation (2026-08-24)
+
+Disposition: select `antigravity.headless` agent-profile selection and compile
+g04.058 as one serial evidence-first lane.
+
+Exact qualified CLI `1.1.17` help exposes `--agent` plus `agent` and `agents`
+listing commands. Current official headless documentation names `agy agents`,
+describes `--agent` as a run selection, and states that stream-JSON `init.agent`
+appears when explicitly selected. The production route already validates exact
+model and `permission_mode=request-review` in that same init envelope while
+holding resource access, isolation, effort, schema, deadline, conversation,
+and child lifecycle in one immutable prepared shape.
+
+Selection is not qualification. Research 205 and card 161 must freeze the
+complete bounded listing/id shape, custom/account visibility, invalid or stale
+selection behavior, silent fallback, exact init confirmation, version floor,
+and composition with structured runs and exact-id continuation. Agent display
+labels, profile bodies, prompts, tools, settings files, and account identity do
+not become public data or values. Cards 162-163 continue only for a non-empty
+exact deliver-now set.
+
+Profile selection does not grant resource, tool, permission, subagent,
+isolation, or session authority. Omission keeps current argv. Continuation must
+reassert and confirm one immutable profile on every admitted child rather than
+infer inheritance from the conversation id.
+
+Adjacent Claude headless autocompact and maximum-turn controls are absent from
+exact `2.1.241` help. Codex verbosity lacks model support evidence. llama.cpp
+reasoning remains model/template-semantic. OpenCode permission controls widen
+authority. Those families remain promoted but unselected. g04 stays open at
+operator direction.

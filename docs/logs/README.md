@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-24 g04.058 Antigravity Headless Agent Profile Compiled](./2026-08-24-g04-058-antigravity-headless-agent-profile-compiled.md)
+- [2026-08-24 g04.058 Antigravity Headless Agent Profile Closeout](./2026-08-24-g04-058-antigravity-headless-agent-profile-closeout.md) — reserved
 - [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Compiled](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-compiled.md)
 - [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Closeout](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-closeout.md) — stopped after card 158 and fast-forwarded through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [2026-08-24 g04.056 llama.cpp Owned Context Size Compiled](./2026-08-24-g04-056-llama-cpp-owned-context-size-compiled.md)

@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory after the g04.057 Grok ACP
-reasoning evidence stop, then compile the next meaningful route-local lane.
-Keep g04 open until explicit operator direction. Contract 029 currentness stays
+Execute g04.058 card 161, Antigravity headless agent-profile evidence. Continue
+to cards 162-163 only for a non-empty exact Research 205 deliver-now set. Keep
+g04 open until explicit operator direction. Contract 029 currentness stays
 standing.
 
 ## Standing Lanes

@@ -1,13 +1,13 @@
 # g04.057 Grok Build ACP Reasoning Selection
 
-Status: planned
+Status: stopped
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Depends on: per-route feature completion programme; Research 130 and 163
 Vision tags: explicit selection, negotiated harness options, route-local controls
 Contract refs: 011, 017, 023, 029, 034, 037, 040, 041, 052
-Research: 130, 163; 204 reserved
+Research: 130, 163, 204
 
 ## Problem
 
@@ -32,19 +32,19 @@ current wire and behavior.
 
 ## Goals
 
-- [ ] freeze current official and exact package/source/handshake evidence for
+- [x] freeze current official and exact package/source/handshake evidence for
       ACP effort advertisement, selection, confirmation, defaults, and lifetime
-- [ ] classify deprecated `0.2.114..=0.2.117`, maintained `1.0.4..=1.0.5`,
+- [x] classify deprecated `0.2.114..=0.2.117`, maintained `1.0.4..=1.0.5`,
       permitted later stable points, and incompatible gaps separately
-- [ ] bind every candidate value to the exact route-fixed model
-- [ ] distinguish advertised, selectable, requested, accepted, effective, and
+- [x] bind every candidate value to the exact route-fixed model
+- [x] distinguish advertised, selectable, requested, accepted, effective, and
       observed reasoning truth
-- [ ] promote Research 204 with an exact deliver-now table or honest stop
+- [x] promote Research 204 with an exact deliver-now table or honest stop
 - [ ] map only admitted values through portable `ReasoningSelection`, immutable
       plan/evidence, request options/policy, and adapter-private ACP values
 - [ ] require exact effective confirmation before returning a ready session or
       sending the structured run's first prompt
-- [ ] preserve omission, working-resource, access, callback, cancellation,
+- [x] preserve omission, working-resource, access, callback, cancellation,
       provider-retention, attachment, and cleanup behavior
 - [ ] prove malformed, ambiguous, rejected, missing-confirmation, drift, and
       post-allocation failures without a live prompt
@@ -91,10 +91,10 @@ Contract 034 does not authorize mutation of a previously persisted session.
 
 ### Batch 57.1 — Exact ACP Option Evidence
 
-- [ ] Execute card 158.
-- [ ] freeze exact snapshot, request, confirmation, value, model, version,
+- [x] Execute card 158.
+- [x] freeze exact snapshot, request, confirmation, value, model, version,
       omission, failure, and lifetime evidence
-- [ ] promote Research 204 with an exact deliver-now table or empty set
+- [x] promote Research 204 with an exact deliver-now table or empty set
 
 ### Batch 57.2 — Conditional Prepared Binding
 
@@ -150,9 +150,9 @@ Contract 034 does not authorize mutation of a previously persisted session.
 
 ## Batch Cards
 
-- [158-grok-build-acp-reasoning-selection-evidence.md](batch-cards/158-grok-build-acp-reasoning-selection-evidence.md) — ready
-- [159-grok-build-acp-reasoning-selection-binding.md](batch-cards/159-grok-build-acp-reasoning-selection-binding.md) — conditional
-- [160-grok-build-acp-reasoning-selection-acceptance.md](batch-cards/160-grok-build-acp-reasoning-selection-acceptance.md) — conditional
+- [158-grok-build-acp-reasoning-selection-evidence.md](batch-cards/158-grok-build-acp-reasoning-selection-evidence.md) — complete
+- [159-grok-build-acp-reasoning-selection-binding.md](batch-cards/159-grok-build-acp-reasoning-selection-binding.md) — blocked
+- [160-grok-build-acp-reasoning-selection-acceptance.md](batch-cards/160-grok-build-acp-reasoning-selection-acceptance.md) — blocked
 
 ## References
 

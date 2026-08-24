@@ -1,6 +1,6 @@
 # 160 Grok Build ACP Reasoning-Selection Acceptance
 
-Status: conditional
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -90,3 +90,9 @@ Auto-continuation: No.
 
 - authenticated provider prompt, shared front-door edits, publication, merge,
   generation rollover, or g04 closure
+
+## Closeout
+
+Not executed. No negotiation, omission-vs-selected, or confirmation proofs to
+add. Current empty-options wire already matches Research 204's omission path.
+Guide still says reasoning selection is not qualified.

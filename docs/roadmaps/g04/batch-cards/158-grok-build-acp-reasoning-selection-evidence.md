@@ -1,6 +1,6 @@
 # 158 Grok Build ACP Reasoning-Selection Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -53,21 +53,21 @@ prompt, or perform paid work.
 
 ## Acceptance Criteria
 
-- [ ] current official and exact package/source/handshake specimens are frozen
+- [x] current official and exact package/source/handshake specimens are frozen
       with identity and complete-body digests
-- [ ] advertisement, selectability, request, acceptance, effectiveness, and
+- [x] advertisement, selectability, request, acceptance, effectiveness, and
       observation are distinct
-- [ ] every candidate version/model/value and lifecycle has a disposition
-- [ ] private option id/value and exact confirmation rules are explicit
-- [ ] omission, ambiguity, drift, failure-after-allocation, and provider-state
+- [x] every candidate version/model/value and lifecycle has a disposition
+- [x] private option id/value and exact confirmation rules are explicit
+- [x] omission, ambiguity, drift, failure-after-allocation, and provider-state
       retention truth are explicit
-- [ ] `UnverifiedNewer` inheritance and revision posture are explicit
-- [ ] Research 204 is promoted with a non-empty exact set or honest stop
-- [ ] no production code, shared matrix, contract, currentness, or sibling route
+- [x] `UnverifiedNewer` inheritance and revision posture are explicit
+- [x] Research 204 is promoted with a non-empty exact set or honest stop
+- [x] no production code, shared matrix, contract, currentness, or sibling route
       changes
-- [ ] `effigy validate:focused swallowtail-adapter-grok` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-grok` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 159 only when Research 204 admits a non-empty exact set
 with one bounded snapshot, one exact selection request, and effective
@@ -85,3 +85,10 @@ confirmation before readiness/first prompt.
 
 - production binding, shared closeout, another Grok feature/route, live prompt,
   release, publication, merge, generation rollover, or g04 closure
+
+## Closeout
+
+Research 204 is an honest empty set. Exact `0.2.114`, `1.0.4`, and `1.0.5`
+binaries advertise `reasoning_efforts` in catalog/initialize observation and
+contain no `session/set_config_option`. Official ACP `session/new` is `cwd` plus
+empty MCP servers. Cards 159-160 stay blocked. No production code.

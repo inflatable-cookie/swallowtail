@@ -1,6 +1,6 @@
 # 159 Grok Build ACP Reasoning-Selection Binding
 
-Status: conditional
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -87,3 +87,10 @@ post-allocation cleanup, and doctor-baseline checks pass.
 
 - route guide, shared matrices/indexes, live provider work, another Grok
   control, release, publication, merge, generation rollover, or g04 closure
+
+## Closeout
+
+Not executed. Research 204 admits no deliver-now row. Binding portable
+`ReasoningSelection` would invent a `session/set_config_option` channel the
+exact binaries do not implement, or copy CLI/`GROK_CONFIG`/open-time `_meta`
+hints that substitute defaults and ignore unsupported values.

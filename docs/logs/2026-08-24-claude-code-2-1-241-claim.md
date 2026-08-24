@@ -16,7 +16,11 @@ generation status were left alone.
 
 ## Validation
 
-Named at the claim card; recorded after the one validation round.
+- `cargo fmt -p swallowtail-adapter-claude-agent` passed
+- `scripts/validate-focused-packages.sh swallowtail-adapter-claude-agent` passed (102 tests, clippy `-D warnings`)
+- `scripts/verify-affected-packages.sh swallowtail-adapter-claude-agent` passed
+
+No `effigy` binary on this host; the named scripts are the task equivalents.
 
 ## Next
 

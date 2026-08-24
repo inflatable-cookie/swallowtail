@@ -1,11 +1,12 @@
 # 165 Deep Agents ACP Model Selection Binding
 
-Status: ready
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Milestone: [g04.059 Deep Agents ACP Model Selection](../059-deepagents-acp-model-selection.md)
 Depends on: card 164; non-empty Research 206 deliver-now table
+Blocked by: Research 206 empty deliver-now set
 
 ## Goal
 

@@ -73,12 +73,12 @@ and selection policy.
 - [g04.056 llama.cpp Owned Context Size](056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 - [g04.057 Grok Build ACP Reasoning Selection](057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [g04.058 Antigravity Headless Agent Profile Selection](058-antigravity-headless-agent-profile-selection.md) — stopped after card 161; Research 205 empty set; cards 162-163 blocked
-- [g04.059 Deep Agents ACP Model Selection](059-deepagents-acp-model-selection.md) — ready, cards 164-166
+- [g04.059 Deep Agents ACP Model Selection](059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
 
-g04 has 59 numbered roadmaps: 52 completed milestones, six honest evidence
-stops at 040, 042, 043, 045, 057, and 058, and one ready milestone. The
-operator keeps the generation active. Execute g04.059 next; do not close g04
-without explicit operator direction.
+g04 has 59 numbered roadmaps: 52 completed milestones and seven honest
+evidence stops at 040, 042, 043, 045, 057, 058, and 059. The operator keeps
+the generation active. Reassess the remaining per-route inventory next; do
+not close g04 without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -190,9 +190,10 @@ without explicit operator direction.
 - g04.058 is stopped after card 161: Research 205 is an empty deliver-now set
   (host-local listing, missing selected `init.agent`, unproved fail-closed
   invalid `--agent`, custom-profile authority risk); cards 162-163 are blocked
-- g04.059 is ready: cards 164-166 freeze exact Deep Agents ACP `--model`,
-  provider/access, fallback, confirmation, and lifecycle truth before any
-  conditional binding
+- g04.059 is stopped after card 164: Research 206 is an empty deliver-now set
+  (generic access profile, silent CLI default on missing `--model` value,
+  post-spawn construction, no ACP model confirmation); cards 165-166 are
+  blocked
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 59 roadmaps; generation closure awaits explicit
@@ -244,9 +245,10 @@ without explicit operator direction.
     claim. Cards 159-160 are blocked.
 20. g04.058 stopped honestly after Research 205 and card 161 with an empty
     deliver-now set; cards 162-163 are blocked.
-21. g04.059 is compiled as cards 164-166: exact Deep Agents ACP model evidence
-    first, then conditional typed binding and acceptance.
+21. g04.059 stopped honestly after Research 206 and card 164 with an empty
+    deliver-now set; cards 165-166 are blocked.
 22. g04 remains active at operator direction. Contract 029 remains standing.
+    Reassess the remaining per-route inventory before the next lane.
 
 New route-family research does not pre-empt this sequence.
 
@@ -277,7 +279,7 @@ New route-family research does not pre-empt this sequence.
 - [056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 - [057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [058 Antigravity Headless Agent Profile Selection](./058-antigravity-headless-agent-profile-selection.md) — stopped after card 161; Research 205 empty set; cards 162-163 blocked
-- [059 Deep Agents ACP Model Selection](./059-deepagents-acp-model-selection.md) — ready, cards 164-166
+- [059 Deep Agents ACP Model Selection](./059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

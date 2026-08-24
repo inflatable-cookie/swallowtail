@@ -6,9 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md)
-- [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — conditional on non-empty Research 206
-- [166-deepagents-acp-model-selection-acceptance.md](./166-deepagents-acp-model-selection-acceptance.md) — after card 165
+- [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md) — complete; Research 206 empty deliver-now set
+- [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — blocked; Research 206 empty set
+- [166-deepagents-acp-model-selection-acceptance.md](./166-deepagents-acp-model-selection-acceptance.md) — blocked; Research 206 empty set
 
 ## Blocked
 

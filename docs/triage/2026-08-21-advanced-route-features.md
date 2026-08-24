@@ -568,7 +568,7 @@ Official
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Model | `--model` | not passed | yes | yes | host keys still required |
+| Model | `--model` | not passed | yes | no for now: Research 206 empty set — generic access profile cannot prove provider agreement before spawn; CLI silent default on missing value; post-spawn construction; no ACP model confirmation | host keys still required; do not expose unbounded string |
 | Skills / memory | `--skills`, `--memory` | not passed | yes | only-if | host paths, not prompt text |
 | Workspace | `--workspace` | cwd from working resource | unused flag | no | resource already bound |
 
@@ -1656,3 +1656,14 @@ OpenCode permission controls widen authority. Claude headless controls remain
 absent from exact help; Codex verbosity lacks model-support evidence;
 llama.cpp reasoning remains model/template semantic. g04 stays open at
 operator direction.
+
+## Post-g04.059 Evidence Stop (2026-08-24)
+
+Disposition: stop. Research 206 is an empty deliver-now set. Cards 165-166
+are blocked. Exact `deepagents-acp@0.1.25` advertises `--model`, but the
+generic host-owned access profile cannot prove provider agreement before
+spawn, the CLI silently retains its default when `--model` lacks a usable
+value, model construction runs after spawn at `session/new`, and
+initialize/`session/new` expose no model confirmation field. Production
+continues without `--model`. Reassess the remaining per-route inventory
+before the next route-local lane. g04 stays open at operator direction.

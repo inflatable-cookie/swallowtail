@@ -14,11 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.059 cards 164-166 serially: freeze exact
-`deepagents-acp@0.1.25` `--model` grammar, provider/access agreement,
-fallback, confirmation, and session lifecycle; continue to typed binding and
-acceptance only for a non-empty Research 206 deliver-now set. Keep g04 open
-until explicit operator direction. Contract 029 currentness stays standing.
+Reassess the remaining per-route feature inventory after g04.059's Research
+206 empty deliver-now stop. Keep g04 open until explicit operator direction.
+Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

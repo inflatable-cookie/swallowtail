@@ -1,9 +1,10 @@
 # 166 Deep Agents ACP Model Selection Acceptance
 
-Status: ready
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
+Blocked by: Research 206 empty deliver-now set; card 165 not executed
 Milestone: [g04.059 Deep Agents ACP Model Selection](../059-deepagents-acp-model-selection.md)
 Depends on: card 165
 

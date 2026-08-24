@@ -1,6 +1,6 @@
 # g04.059 Deep Agents ACP Model Selection
 
-Status: ready
+Status: stopped
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -33,20 +33,22 @@ lifecycle authority.
 
 ## Goals
 
-- [ ] freeze exact `0.1.25` CLI parser, model grammar, default, provider
+- [x] freeze exact `0.1.25` CLI parser, model grammar, default, provider
       dispatch, invalid-selection, fallback, and authentication evidence
-- [ ] distinguish current official documentation from exact package source
-- [ ] identify a bounded provider/model set that agrees with a named
+- [x] distinguish current official documentation from exact package source
+- [x] identify a bounded provider/model set that agrees with a named
       host-owned provider-key access profile, or stop with an empty set
-- [ ] distinguish requested, planned, dispatched, accepted, effective, and
+- [x] distinguish requested, planned, dispatched, accepted, effective, and
       observed model truth
-- [ ] classify whether initialize, session creation, or events confirm the
+- [x] classify whether initialize, session creation, or events confirm the
       selected model and what exact no-fallback source proof can support
-- [ ] promote Research 206 with an exact deliver-now table or honest stop
+- [x] promote Research 206 with an exact deliver-now table or honest stop
 - [ ] bind only admitted rows through typed prepared inputs, immutable
       plan/request agreement, and one exact `--model <value>` pair
+      (blocked: Research 206 empty set)
 - [ ] prove omission, invalid/mismatched selection, missing/wrong host key,
       cancellation, deadline, terminal failure, and cleanup truth
+      (blocked: Research 206 empty set)
 
 ## Non-Goals
 
@@ -99,42 +101,45 @@ fall back. If neither is possible, the deliver-now set is empty.
 
 ### Batch 59.1 — Exact Model Evidence
 
-- [ ] Execute card 164.
-- [ ] freeze source, grammar, provider, auth, fallback, confirmation, and
+- [x] Execute card 164.
+- [x] freeze source, grammar, provider, auth, fallback, confirmation, and
       lifecycle evidence
-- [ ] promote Research 206 with an exact deliver-now table or empty set
+- [x] promote Research 206 with an exact deliver-now table or empty set
 
 ### Batch 59.2 — Conditional Prepared Binding
 
 - [ ] Execute card 165 only when card 164 admits a non-empty deliver-now set.
+      Blocked: Research 206 empty set.
 - [ ] bind the smallest typed provider/model surface through preparation,
       plan, request, child command, and restoration agreement
 
 ### Batch 59.3 — Route-Local Acceptance
 
-- [ ] Execute card 166 only after card 165.
+- [ ] Execute card 166 only after card 165. Blocked: card 165 not executed.
 - [ ] prove exact argv, omission, mismatch, failure, lifecycle, and docs truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 206 deliver-now rows prepare
+- [x] only Research 206 deliver-now rows prepare (vacuous: empty set; no
+      binding)
 - [ ] route, package, provider, model, access profile, plan, request, and argv
-      agree before spawn
+      agree before spawn (blocked)
 - [ ] explicit selection emits exactly one `--model <provider:model>` pair and
-      omission emits neither token
+      omission emits neither token (blocked; omission already emits neither)
 - [ ] unknown, malformed, unsupported, or access-mismatched values fail before
-      provider effects and never fall back
+      provider effects and never fall back (blocked)
 - [ ] effective/observed model is claimed only where exact evidence supports it
+      (vacuous: no claim added)
 - [ ] one selection is immutable for the owned child/session and any admitted
-      fresh replacement
-- [ ] working resource, ambient isolation, host-owned credentials, ACP
+      fresh replacement (blocked)
+- [x] working resource, ambient isolation, host-owned credentials, ACP
       permissions, host callbacks, deadline, cancellation, and cleanup remain
       unchanged
-- [ ] stable diagnostics disclose no key, prompt, output, raw provider payload,
+- [x] stable diagnostics disclose no key, prompt, output, raw provider payload,
       account identity, endpoint, or host path
-- [ ] default QA performs no install, login, provider prompt, external
+- [x] default QA performs no install, login, provider prompt, external
       inference request, credential capture, or paid work
-- [ ] g04.059 closes only this route-local family; g04 remains active
+- [x] g04.059 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 

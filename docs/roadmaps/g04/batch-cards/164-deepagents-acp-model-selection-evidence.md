@@ -1,6 +1,6 @@
 # 164 Deep Agents ACP Model Selection Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -52,22 +52,22 @@ provider prompt, perform external inference, or incur paid work.
 
 ## Acceptance Criteria
 
-- [ ] official and exact artifact/source specimens have identities and full
+- [x] official and exact artifact/source specimens have identities and full
       digests
-- [ ] exact parser, provider, model, default, alias, invalid, auth, and fallback
+- [x] exact parser, provider, model, default, alias, invalid, auth, and fallback
       paths are explicit
-- [ ] requested, planned, dispatched, accepted, effective, and observed states
+- [x] requested, planned, dispatched, accepted, effective, and observed states
       remain distinct
-- [ ] every candidate provider/model/access/lifecycle row has a disposition
-- [ ] any non-empty set has pre-spawn access agreement and no silent fallback
-- [ ] Research 206 is promoted with a non-empty exact set or honest stop
-- [ ] no production code, public API, matrix, contract, or currentness change
-- [ ] `effigy validate:focused swallowtail-adapter-deepagents` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] every candidate provider/model/access/lifecycle row has a disposition
+- [x] any non-empty set has pre-spawn access agreement and no silent fallback
+      (vacuous: deliver-now set is empty)
+- [x] Research 206 is promoted with a non-empty exact set or honest stop
+- [x] no production code, public API, matrix, contract, or currentness change
+- [x] `effigy validate:focused swallowtail-adapter-deepagents` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
-Auto-continue to card 165 only when Research 206 admits a non-empty exact set
-with bounded syntax, provider/access agreement, and no model/provider fallback.
+Research 206 promotes an empty deliver-now set. Do not continue to card 165.
 
 ## Stop Conditions
 

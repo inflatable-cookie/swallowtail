@@ -7,10 +7,10 @@ Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: cards 148-149; promoted Research 200
 
-Card 149 is blocked because card 148 is paused for operator claim
-reconciliation and Research 200 has no deliver-now row. No typed maximum-turn
-dispatch exists to accept. The guide's `--max-turns 8` / omit-unbounded story
-is not treated as accurate until reconciliation.
+Card 149 is blocked because Research 200 has no deliver-now row and the
+operator forbids a caller max-turns feature. No typed maximum-turn dispatch
+exists to accept. Guide and corpus now state historical inert argv `8`,
+factory ceiling `1000`, and decoder-only `error_max_turns`.
 
 ## Goal
 
@@ -23,8 +23,8 @@ close the route-local lane without closing g04.
 1. Prove every admitted boundary value and representative interior value.
 2. Prove omission retains exact current argv and behavior.
 3. Prove invalid values and prepared/driver drift reject before effects.
-4. Preserve exact `error_max_turns` provider-failed truth and distinguish it
-   from success, cancellation, and host deadline.
+4. Preserve exact `error_max_turns` provider-failed decoder truth and
+   distinguish it from success, cancellation, and host deadline.
 5. Prove fixed permission, output, persistence, workdir, access, and cleanup
    boundaries remain unchanged.
 6. Update Qoder guide, example, route-local fixtures, public API baseline, cards,
@@ -42,9 +42,7 @@ close the route-local lane without closing g04.
 - [ ] default validation performs no install, login, prompt, or paid work
 - [ ] g04.053 closes only this family; g04 remains open
 
-Not executed. No binding landed. Do not treat the guide, `require_max_turns`,
-or omit-unbounded fixture claims as settled. Decoder mapping of synthetic
-`error_max_turns` remains distinct from argv-8 AgentLoop enforcement.
+Not executed. No binding landed.
 
 ## Validation
 

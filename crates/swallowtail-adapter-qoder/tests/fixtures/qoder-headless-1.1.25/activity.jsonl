@@ -1,7 +1,7 @@
 {"case":"system-init","envelope":{"type":"system","subtype":"init"},"expected":{"portable":"run_metadata","agent_activity":false}}
 {"case":"assistant-text","envelope":{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Qoder display text."}]}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
 {"case":"result-success","envelope":{"type":"result","subtype":"success","is_error":false},"expected":{"semantics":"separate_terminal_truth","stop_reason":"end_turn"}}
-{"case":"result-max-turns","envelope":{"type":"result","subtype":"error_max_turns","is_error":true,"errors":["Maximum turns exceeded"]},"expected":{"semantics":"separate_terminal_truth","stop_reason":"bounded_limit"}}
+{"case":"result-max-turns","envelope":{"type":"result","subtype":"error_max_turns","is_error":true,"errors":["Maximum turns exceeded"]},"expected":{"semantics":"separate_terminal_truth","stop_reason":"bounded_limit","decoder_only":true,"does_not_prove_argv_bound":true}}
 {"case":"result-abort","envelope":{"type":"result","subtype":"error_during_execution","is_error":true,"errors":["Operation aborted"],"terminal_reason":"aborted_streaming"},"expected":{"semantics":"separate_terminal_truth","stop_reason":"cancelled"}}
 {"case":"usage-excluded","envelope":{"type":"result","subtype":"success","usage":{"private":"excluded"},"total_cost_usd":0},"expected":{"stable_diagnostics":false,"raw_payload":"excluded"}}
 {"case":"stream-event-unselected","envelope":{"type":"stream_event","event":{"type":"content_block_delta","delta":{"type":"text_delta","text":"partial"}}},"expected":{"semantics":"not_emitted_on_selected_wire"}}

@@ -2,9 +2,11 @@
 
 Use `swallowtail-adapter-qoder` for the installed Qoder stream-json print
 run. The route is `qoder.headless`; the driver ID is
-`swallowtail.qoder.headless`. It owns one bounded
+`swallowtail.qoder.headless`. It owns one
 `qodercli --print --output-format stream-json --permission-mode dont_ask
 --max-turns 8 --no-session-persistence --cwd` child over stream-json NDJSON.
+Exact `1.1.25` retains `--max-turns 8` as historical inert argv; the selected
+CLI headless factory AgentLoop ceiling is `1000`, not `8`.
 
 This is a separate family from Qoder ACP, SDK stdio, the TUI, and the `qoder`
 IDE dispatcher. Swallowtail does not pass `--yolo`, `bypass_permissions`, or
@@ -50,8 +52,9 @@ Wrong axis (`qoder.acp` is not this route), wrong audience, a credential
 reference, a model route, or an unqualified release fails before stream work.
 
 Do not pass `--yolo`, `bypass_permissions`, or `accept_edits`. Must pass
-`dont_ask`, `--max-turns 8`, and `--no-session-persistence`. Pretty-printed
-JSON dump is not this streaming decoder.
+`dont_ask` and `--no-session-persistence`. Route argv also always includes
+historical inert `--max-turns 8` (does not set AgentLoop `maxTurns`).
+Pretty-printed JSON dump is not this streaming decoder.
 
 ## One Bounded Print Run
 
@@ -70,9 +73,11 @@ The driver owns one joined stdio child and performs this sequence:
 4. join process and task cleanup on terminal or abort
 
 ACP JSON-RPC, SDK stdio, TUI, `--yolo` / `bypass_permissions` /
-`accept_edits`, and the `qoder` IDE dispatcher stay unselected. `error_max_turns`
-fails closed. Host abort during streaming maps to Cancelled. Unknown stream
-types and post-result extras fail closed. The host deadline is required.
+`accept_edits`, and the `qoder` IDE dispatcher stay unselected. Synthetic
+`error_max_turns` / `Maximum turns exceeded` fails closed as provider-failed
+(decoder mapping only; not proof that argv `8` stops at turn 8). Host abort
+during streaming maps to Cancelled. Unknown stream types and post-result
+extras fail closed. The host deadline is required.
 
 Take the run's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation kills the child and joins. Close the run separately

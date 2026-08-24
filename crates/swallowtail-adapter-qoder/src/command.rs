@@ -1,4 +1,7 @@
-/// Required positive CLI turn bound. The host process deadline is the Swallowtail timeout.
+/// Historical inert argv value for `--max-turns`. Exact `1.1.25` selected CLI
+/// headless factory hardcodes AgentLoop `maxTurns` to `1000`; this string only
+/// populates Config `maxSessionTurns` (text-error formatter). The host process
+/// deadline is the Swallowtail timeout.
 pub(crate) const MAXIMUM_TURNS: &str = "8";
 
 /// Headless argv. ACP, SDK stdio, TUI, yolo, and session restore stay out.

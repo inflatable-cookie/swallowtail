@@ -67,13 +67,13 @@ and selection policy.
 - [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [g04.051 Qwen Headless Turn And Tool Budgets](051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
 - [g04.052 Mistral Vibe Headless Maximum Turns](052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
-- [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — paused for operator claim reconciliation, cards 148-150
+- [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — complete; evidence stop and claim correction, cards 148-150
 - [g04.054 Codex 0.149.1 Useful Newer](054-codex-0-149-1-useful-newer.md) — standing currentness, completed
 - [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
 
-g04 has 55 numbered roadmaps: 50 completed milestones, four honest evidence
-stops at 040, 042, 043, and 045, and one ready milestone. The operator keeps
-the generation active. Execute g04.053 serially; do not close g04 without
+g04 has 55 numbered roadmaps: 51 completed milestones, four honest evidence
+stops at 040, 042, 043, and 045. The operator keeps the generation active.
+After g04.053 merge, reassess remaining inventory; do not close g04 without
 explicit operator direction.
 
 ## Current Checkpoint
@@ -167,9 +167,10 @@ explicit operator direction.
 - g04.052 is on `main` at `2fb24536` through PR 51: Research 199 and cards
   145-147 realize exact Mistral Vibe `2.24.2` caller-decreasing maximum turns
   `1..=8`, with omission fixed at `8` and native limit provider-failed
-- g04.053 is compiled and ready: Research 200 and cards 148-150 form one
-  serial evidence-first lane for exact Qoder `1.1.25` caller-decreasing
-  maximum turns
+- g04.053 is complete through PR 54 as an evidence stop and claim correction:
+  Research 200 empty deliver-now; historical inert `--max-turns 8`; factory
+  AgentLoop ceiling `1000`; `error_max_turns` decoder-only; cards 149-150
+  blocked
 - g04.054 standing currentness is complete: Research 201 and cards 151-152
   qualify Codex exec and app-server through official `0.149.1` without moving
   the generation pointer
@@ -216,8 +217,8 @@ explicit operator direction.
     `9807e322`.
 15. g04.052 cards 145-147 delivered exact Mistral Vibe `2.24.2` caller-
     decreasing maximum turns and merged through PR 51 at `2fb24536`.
-16. g04.053 compiles exact Qoder `1.1.25` caller-decreasing maximum-turn
-    evidence and conditional binding as cards 148-150.
+16. g04.053 completed exact Qoder `1.1.25` maximum-turn evidence stop and
+    claim correction as cards 148-150 through PR 54 (no caller binding).
 17. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -243,7 +244,7 @@ New route-family research does not pre-empt this sequence.
 - [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [051 Qwen Headless Turn And Tool Budgets](./051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
 - [052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
-- [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — paused for operator claim reconciliation, cards 148-150
+- [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — complete; evidence stop and claim correction, cards 148-150
 - [054 Codex 0.149.1 Useful Newer](./054-codex-0-149-1-useful-newer.md) — completed (standing currentness), cards 151-152
 - [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097

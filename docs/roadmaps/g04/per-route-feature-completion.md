@@ -136,16 +136,17 @@ families do not interrupt this programme by default.
   `1..=8`; caller omission preserves `--max-turns 8`, and native limit remains
   provider-failed.
 - [g04.053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) is
-  ready. Research 200 and cards 148-150 form one serial evidence-first lane for
-  exact Qoder `1.1.25` caller-decreasing maximum turns. Candidate values are
-  `1..=8`; caller omission preserves `--max-turns 8`. Binding and acceptance
-  remain conditional on a non-empty exact deliver-now table.
+  complete as an evidence stop and claim correction through PR 54. Research
+  200 admits no deliver-now caller-decreasing row. Historical inert argv
+  `--max-turns 8` is retained; factory AgentLoop ceiling is `1000`;
+  `error_max_turns` is decoder-only. Cards 149-150 stay blocked. No caller
+  max-turns feature ships.
 
 ## Next Planning Boundary
 
-Execute g04.053 serially. After its evidence, review, merge, and shared
-closeout, reassess the remaining promoted per-route inventory before compiling
-another bounded family. Keep g04 active until explicit operator direction.
+After g04.053 review, merge, and shared closeout, reassess the remaining
+promoted per-route inventory before compiling another bounded family. Keep g04
+active until explicit operator direction.
 
 ## Exclusions
 

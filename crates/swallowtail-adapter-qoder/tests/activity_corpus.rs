@@ -46,6 +46,14 @@ fn qoder_corpus_keeps_usage_acp_and_partial_stream_out_of_stable_activity() {
         "bounded_limit"
     );
     assert_eq!(
+        case(&cases, "result-max-turns")["expected"]["decoder_only"],
+        true
+    );
+    assert_eq!(
+        case(&cases, "result-max-turns")["expected"]["does_not_prove_argv_bound"],
+        true
+    );
+    assert_eq!(
         case(&cases, "result-abort")["expected"]["stop_reason"],
         "cancelled"
     );

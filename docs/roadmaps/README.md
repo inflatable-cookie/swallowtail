@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.053 cards 148-150 serially: exact Qoder `1.1.25` maximum-turn
-evidence, then conditional adapter-local binding and acceptance. Stop honestly
-after card 148 if Research 200 admits no deliver-now row. Keep
-g04 open until explicit operator direction. Contract 029 currentness stays
+After merge of g04.053 PR 54 (Qoder max-turns evidence stop and claim
+correction), reassess the remaining promoted per-route inventory. Keep g04
+open until explicit operator direction. Contract 029 currentness stays
 standing.
 
 ## Standing Lanes

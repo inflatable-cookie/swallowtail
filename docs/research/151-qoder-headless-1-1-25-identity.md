@@ -3,7 +3,8 @@
 Status: promoted
 Owner: Tom
 Date: 2026-08-19
-Card: g03 batch 278
+Updated: 2026-08-24
+Card: g03 batch 278; max-turns Authority reconciled under g04.053 / Research 200
 
 ## Question
 
@@ -122,9 +123,15 @@ Swallowtail must pass `--permission-mode dont_ask`. It must not pass
 contract. Research 145 already named Qoder permission modes as
 adapter-private.
 
-`--max-turns` is hideHelp with no bound unless passed. Swallowtail must
-pass a positive bound. The fixture example `1` is not production
-policy; the driver maps the host process deadline.
+`--max-turns` is hideHelp. CLI values are raw strings copied onto Config
+`maxSessionTurns` (text-error formatter). The selected CLI headless
+QueryEngine factory hardcodes AgentLoop `maxTurns` to `1000`
+(`kN`); argv does not set that ceiling. Swallowtail retains historical
+inert argv `--max-turns 8` for exact `1.1.25` compatibility and does not
+omit the flag from route argv. Fixture example `1` is corpus-only, not
+production policy. Synthetic `error_max_turns` fixtures prove decoder
+mapping only (Research 200). The host process deadline remains the
+Swallowtail timeout.
 
 `--no-session-persistence` is documented as print-only. Swallowtail
 passes it so this run does not write a restoreable session.

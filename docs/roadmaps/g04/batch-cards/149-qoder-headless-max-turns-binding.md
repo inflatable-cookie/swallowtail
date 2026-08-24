@@ -1,16 +1,16 @@
 # 149 Qoder Headless Maximum-Turn Binding
 
-Status: blocked; card 148 claim reconciliation pending
+Status: blocked; Research 200 empty deliver-now
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: card 148; promoted Research 200
 
-Card 148 has not closed. Research 200 admits no deliver-now set and pauses for
-operator reconciliation of contradicted qualified-route max-turns claims. No
-typed maximum-turn input, prepared plan, driver argv selection, or behavior
-revision is admitted by this lane.
+Card 148 completed an evidence stop and claim correction. Research 200 admits
+no deliver-now caller-decreasing set. Operator forbids adding a caller-
+selectable max-turn feature. No typed maximum-turn input, prepared plan,
+driver argv selection, or behavior revision is admitted.
 
 ## Goal
 
@@ -23,7 +23,7 @@ through typed run input, immutable plan/evidence, driver agreement, and argv.
    is `1..=8`; Research 200 is authoritative.
 2. Carry the selection through `QoderHeadlessRunProfileInput`, prepared run,
    immutable evidence/plan truth, driver, and command construction.
-3. Preserve omission as exact `--max-turns 8`; never omit the native flag.
+3. Preserve historical inert `--max-turns 8`; never omit the native flag.
 4. Reject invalid values, route/version drift, and selection mismatch before
    process start or prompt.
 5. Preserve stream-json, `dont_ask`, no-session-persistence, workdir, local
@@ -40,9 +40,8 @@ through typed run input, immutable plan/evidence, driver agreement, and argv.
       `OutputTokenLimit` is added
 - [ ] all fixed Qoder route boundaries remain unchanged
 
-Not executed. Research 200 admits no deliver-now value and requires operator
-claim reconciliation before card 148 can close. Binding argv `--max-turns N`
-would overstate AgentLoop enforcement on exact `1.1.25`.
+Not executed. Research 200 admits no deliver-now value. Binding argv
+`--max-turns N` would overstate AgentLoop enforcement on exact `1.1.25`.
 
 ## Validation
 

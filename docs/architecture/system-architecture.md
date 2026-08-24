@@ -227,11 +227,13 @@ OpenHands adds a package without a production route.
   `vibe-acp`, TUI, `--continue`/`--resume`, teleport, and
   `--auto-approve`/`--yolo` stay out.
 - `swallowtail-adapter-qoder` implements exact npm `1.1.25` discovery and one
-  bounded `qodercli --print --output-format stream-json` structured run with
-  `--permission-mode dont_ask --max-turns 8 --no-session-persistence --cwd`
-  through `prepare_qoder_headless`. `--acp`, SDK stdio, TUI, `--yolo` /
-  `bypass_permissions` / `accept_edits`, and the `qoder` IDE dispatcher stay
-  out.
+  `qodercli --print --output-format stream-json` structured run with
+  `--permission-mode dont_ask`, historical inert `--max-turns 8`,
+  `--no-session-persistence --cwd` through `prepare_qoder_headless`. Exact
+  selected CLI headless factory AgentLoop ceiling is `1000`; argv `8` does
+  not set that ceiling. `error_max_turns` mapping is decoder-only. `--acp`,
+  SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`, and the
+  `qoder` IDE dispatcher stay out.
 - `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
   loopback spawn `python -m openhands.agent_server --host 127.0.0.1`, and
   `prepare_openhands_agent_server`. `openhands.agent-server` is not a

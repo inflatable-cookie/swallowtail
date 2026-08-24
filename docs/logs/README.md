@@ -28,7 +28,7 @@ then conformance closeout.
 - [2026-08-24 Codex 0.149.1 Claim](./2026-08-24-codex-0-149-1-claim.md)
 - [2026-08-24 Codex 0.149.1 Identity](./2026-08-24-codex-0-149-1-identity.md)
 - [2026-08-24 g04.053 Qoder Maximum Turns Compiled](./2026-08-24-g04-053-qoder-max-turns-compiled.md)
-- [2026-08-24 g04.053 Qoder Maximum Turns Closeout](./2026-08-24-g04-053-qoder-max-turns-closeout.md) — paused for operator claim reconciliation; PR 54
+- [2026-08-24 g04.053 Qoder Maximum Turns Closeout](./2026-08-24-g04-053-qoder-max-turns-closeout.md) — complete; evidence stop and claim correction; PR 54
 - [2026-08-23 g04.052 Mistral Vibe Maximum Turns Compiled](./2026-08-23-g04-052-mistral-vibe-max-turns-compiled.md)
 - [2026-08-23 g04.052 Mistral Vibe Maximum Turns Closeout](./2026-08-23-g04-052-mistral-vibe-max-turns-closeout.md) — merged through PR 51 at `2fb24536`
 - [2026-08-23 g04.051 Qwen Headless Budgets Compiled](./2026-08-23-g04-051-qwen-headless-budgets-compiled.md)

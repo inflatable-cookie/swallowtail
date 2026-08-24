@@ -33,6 +33,18 @@ fn frozen_identity_keeps_print_stream_json_separate_from_acp_sdk_and_yolo() {
     );
     assert_eq!(identity["identity_decision"]["require_max_turns"], true);
     assert_eq!(
+        identity["identity_decision"]["max_turns_argv_historical_inert"],
+        true
+    );
+    assert_eq!(
+        identity["identity_decision"]["max_turns_argv_sets_agent_loop"],
+        false
+    );
+    assert_eq!(
+        identity["identity_decision"]["max_turns_agent_loop_factory"],
+        1000
+    );
+    assert_eq!(
         identity["identity_decision"]["require_no_session_persistence"],
         true
     );
@@ -54,6 +66,17 @@ fn frozen_identity_keeps_print_stream_json_separate_from_acp_sdk_and_yolo() {
         true
     );
     assert_eq!(protocol["authority"]["require_max_turns"], true);
+    assert_eq!(
+        protocol["authority"]["max_turns_argv_historical_inert"],
+        true
+    );
+    assert_eq!(
+        protocol["authority"]["max_turns_argv_sets_agent_loop"],
+        false
+    );
+    assert_eq!(protocol["authority"]["max_turns_agent_loop_factory"], 1000);
+    assert_eq!(protocol["limit_fixture_decoder_only"], true);
+    assert_eq!(protocol["limit_fixture_does_not_prove_argv_bound"], true);
     assert_eq!(
         protocol["authority"]["require_no_session_persistence"],
         true
@@ -142,7 +165,7 @@ fn named_corpus_files_stay_wired_to_the_first_driver() {
         "bypass-not-swallowtail-authority",
         "accept-edits-not-swallowtail-authority",
         "omit-permission-mode-inherits-host-default",
-        "omit-max-turns-unbounded",
+        "omit-max-turns-not-route-argv",
         "omit-no-session-persistence",
         "ide-dispatcher-not-this-route",
         "malformed-json",
@@ -178,6 +201,8 @@ fn success_limit_and_abort_streams_are_stream_json_not_acp() {
     let limit: Value =
         serde_json::from_str(LIMIT.lines().nth(1).expect("limit result")).expect("limit result");
     assert_eq!(limit["subtype"], "error_max_turns");
+    assert_eq!(limit["num_turns"], 1);
+    // Synthetic decoder fixture only; AgentLoop factory ceiling is 1000.
 
     let activity_cases: Vec<_> = ACTIVITY
         .lines()

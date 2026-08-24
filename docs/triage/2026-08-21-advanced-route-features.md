@@ -604,10 +604,11 @@ Swallowtail: `--agent plan --max-turns 8 --trust`. Does not pass
 ### `qoder.headless`
 
 Swallowtail-recorded official:
-`--permission-mode dont_ask`, `--max-turns 8`,
-`--no-session-persistence`. Does not pass `--yolo`,
-`bypass_permissions`, `accept_edits`. Independent official page not
-re-fetched; extra flags unconfirmed.
+`--permission-mode dont_ask`, historical inert `--max-turns 8`,
+`--no-session-persistence`. Exact selected CLI headless factory AgentLoop
+ceiling is `1000`; argv `8` does not set it. `error_max_turns` mapping is
+decoder-only. Does not pass `--yolo`, `bypass_permissions`, `accept_edits`.
+Independent official page not re-fetched; extra flags unconfirmed.
 
 ### `deepseek-harness.jsonrpc`
 
@@ -1469,31 +1470,16 @@ No later route-control family is selected. After g04.052 review, merge, and
 shared closeout, reassess the remaining promoted inventory. g04 remains open
 until explicit operator direction.
 
-## Post-g04.052 Reassessment (2026-08-24)
+## Post-g04.053 Claim Correction (2026-08-24)
 
-Disposition: select caller-decreasing maximum turns on exact
-`qoder.headless` `1.1.25` and compile g04.053.
+Disposition: evidence stop with claim/corpus correction. Research 200 admits
+no deliver-now caller-decreasing row. Operator retains historical inert argv
+`--max-turns 8`, records factory AgentLoop ceiling `1000`, and narrows
+`error_max_turns` to decoder-only. Cards 149-150 stay blocked. No caller
+max-turns feature ships. g04 remains open.
 
-Research 151 and the realized route already freeze a positive native
-`--max-turns` requirement, unbounded flag omission, exact fixed value `8`, a
-distinct `error_max_turns` result with `num_turns`, and joined one-child
-cleanup. This makes Qoder the strongest remaining evidence-first candidate:
-the transport and terminal are already route-qualified, while the missing
-caller control is bounded and adapter-local.
-
-The exact public domain is not preselected by those facts. Research 200 and
-card 148 must settle parser breadth, counter definition, increment/check order,
-off-by-one behavior, child lifetime, `num_turns`, partial events, process exit,
-terminal classification, cancellation, deadline, and cleanup. The candidate
-domain is caller-decreasing `1..=8`; omission must retain exact
-`--max-turns 8`. Cards 149-150 remain conditional on a non-empty deliver-now
-table.
-
-This is not Contract 040 `OutputTokenLimit`, a generic budget, or a permission
-change. `dont_ask`, stream-json, no-session-persistence, workdir, local access,
-host deadline, auth, version, and currentness remain fixed. Qoder ACP, SDK
-stdio, TUI, continuation, model selection, yolo, login, and later releases stay
-outside the lane.
+Earlier Post-g04.052 reassessment that treated omit as AgentLoop-unbounded and
+argv `8` as a required loop bound is superseded by Research 200.
 
 Other remaining controls have weaker immediate fit: Mistral agent profiles
 cross write/approval posture; Kiro effort and agent selection need exact

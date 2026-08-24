@@ -1,6 +1,6 @@
 # 148 Qoder Headless Maximum-Turn Evidence
 
-Status: blocked; awaiting operator claim reconciliation
+Status: complete; evidence stop and claim correction
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -29,7 +29,8 @@ limit terminal, and cleanup Swallowtail can represent exactly.
 6. Define the typed adapter-local carrier and feature-local revision required
    by any admitted subset. Do not add production code on this card.
 7. Replace Research 200's reservation with a deliver-now table or honest empty
-   set. Do not edit shared closeout surfaces.
+   set. Reconcile contradicted qualified-route claims under operator direction
+   without changing runtime argv bytes.
 
 No login, install, credential/account inspection, provider prompt, paid work,
 or host configuration change is authorized.
@@ -38,36 +39,31 @@ or host configuration change is authorized.
 
 - [x] exact official and `1.1.25` evidence is frozen with identities and digests
 - [x] parser domain and caller-decreasing public candidate are distinguished
-- [ ] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
-      unbounded states have explicit dispositions reconciled with the qualified
-      route (blocked: AgentLoop facts contradict prior omit-unbounded /
-      required-bound-8 claims)
+- [x] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
+      route-omit dispositions match exact AgentLoop wiring and operator claim
+      correction
 - [x] turn definition, check/increment order, off-by-one boundary, child-local
       lifetime, and `num_turns` relationship are explicit
 - [x] process, result envelope, stream, terminal, partial-event, cancellation,
       deadline, failure, and cleanup truth is explicit or withheld
-- [ ] plan/evidence representation and feature-local revision are explicit
-      after claim reconciliation
+- [x] plan/evidence representation and feature-local revision are explicit
+      (none; historical inert argv retained)
 - [x] Research 200 contains a deliver-now table or honest empty set
-- [x] no production code, shared capability, matrix, contract, currentness, or
-      sibling-route change lands on this card alone
+- [x] no caller-selectable max-turns feature, shared capability, matrix
+      capability row, contract, currentness, or sibling-route change lands
+- [x] contradicted claims are reconciled (Research 151, guide, architecture,
+      matrices, fixtures, command comment) while preserving argv `--max-turns 8`
 
-## Evidence And Pause
+## Evidence Stop And Claim Correction
 
-Research 200 freezes exact digests and admits no deliver-now caller-decreasing
-row: selected CLI headless QueryEngine factory (`entrypoint: "cli"`) hardcodes
-AgentLoop `maxTurns: kN` (`1000`); CLI `--max-turns` only populates Config
-`maxSessionTurns` for the text-error formatter.
+Research 200 admits no deliver-now caller-decreasing row. Selected CLI headless
+QueryEngine factory hardcodes AgentLoop `maxTurns: kN` (`1000`); CLI
+`--max-turns` only populates Config `maxSessionTurns` for the text-error
+formatter.
 
-That falsifies the AgentLoop reading of Research 151 / guide /
-`require_max_turns` / `omit-max-turns-unbounded` / `command.rs` "required
-positive CLI turn bound" claims. Decoder mapping of synthetic `error_max_turns`
-(`limit.jsonl` `num_turns: 1`) remains distinct from proving argv `8` stops at
-turn 8.
-
-Card 148 is **not** complete. Cards 149-150 stay blocked. Production adapter,
-guide, and fixtures are untouched pending operator planning: either rewrite
-corpus claims to match factory `1000`, or change the qualified route.
+Operator disposition: retain historical inert `--max-turns 8`; rewrite claims
+to factory ceiling `1000`; narrow `error_max_turns` to decoder-only; do not
+remove the flag; do not add a caller feature. Cards 149-150 remain blocked.
 
 ## Validation
 
@@ -75,6 +71,7 @@ corpus claims to match factory `1000`, or change the qualified route.
 - `effigy qa:docs:index:roadmaps:g04`
 - `effigy qa:docs:index:roadmaps:batch-cards`
 - `effigy qa:docs:index:logs`
+- `effigy validate:focused swallowtail-adapter-qoder`
 - `git diff --check`
 
 ## Stop Conditions
@@ -83,5 +80,3 @@ corpus claims to match factory `1000`, or change the qualified route.
 - Stop if decisive evidence requires live provider work.
 - Stop if the feature needs a shared capability, contract/currentness change,
   sibling route, or breaking API.
-- Pause for operator if exact evidence contradicts the qualified route's
-  existing max-turns claims rather than only a proposed caller option.

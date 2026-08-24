@@ -1,6 +1,6 @@
 # 2026-08-24 g04.053 Qoder Maximum Turns Closeout
 
-Status: complete; evidence stop and claim correction; awaiting review and merge
+Status: complete; evidence stop and claim correction; merged
 Owner: Tom
 Milestone: g04.053
 Cards: 148-150
@@ -8,6 +8,7 @@ Branch: `t3code/qoder-headless-max-turns`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-8e7b4cb9`
 Base: restacked on `origin/main` after PR 52/53 (`a2ebf148` lineage)
 PR: https://github.com/inflatable-cookie/swallowtail/pull/54
+Merge: fast-forward to `main` at `aaf753b7` after five green hosted checks
 
 ## Result
 
@@ -40,13 +41,13 @@ remove the flag.
 
 No production argv or public API change.
 
-## Shared Closeout Delta
+## Shared Closeout
 
-Reserved for the orchestrator after review and merge:
-
-- programme / sole Next Task after this family
-- any remaining index polish beyond this PR
-- g04 remains open until explicit operator direction
+- PR 54 was approved on exact head `aaf753b7` and fast-forwarded to `main`.
+- A cancelled pinned-MSRV attempt was not accepted; the exact test passed
+  locally and the hosted rerun completed all five checks green.
+- The sole Next Task is remaining promoted per-route inventory reassessment.
+- g04 remains open until explicit operator direction.
 
 ## Validation
 
@@ -56,5 +57,5 @@ Reserved for the orchestrator after review and merge:
 
 ## Next
 
-PR 54. Do not merge from this lane. After merge, orchestrator advances Next
-Task and reassesses remaining inventory.
+Reassess the remaining promoted per-route inventory. Keep g04 open until
+explicit operator direction.

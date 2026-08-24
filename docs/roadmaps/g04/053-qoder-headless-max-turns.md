@@ -155,5 +155,6 @@ reconciled under operator direction.
 ## Closeout
 
 Route-local Research 200, cards 148-150, claim correction, and this milestone
-close the family. Shared Next Task after merge remains for the orchestrator.
-g04 closure is not authorized.
+close the family. PR 54 landed by fast-forward at `aaf753b7`; the shared Next
+Task is remaining promoted-inventory reassessment. g04 closure is not
+authorized.

@@ -73,8 +73,8 @@ and selection policy.
 
 g04 has 55 numbered roadmaps: 51 completed milestones, four honest evidence
 stops at 040, 042, 043, and 045. The operator keeps the generation active.
-After g04.053 merge, reassess remaining inventory; do not close g04 without
-explicit operator direction.
+After g04.053 landed through PR 54 at `aaf753b7`, reassess remaining inventory;
+do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
 

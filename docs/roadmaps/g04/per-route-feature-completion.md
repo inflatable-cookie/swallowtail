@@ -144,7 +144,7 @@ families do not interrupt this programme by default.
 
 ## Next Planning Boundary
 
-After g04.053 review, merge, and shared closeout, reassess the remaining
+After g04.053 landed through PR 54 at `aaf753b7`, reassess the remaining
 promoted per-route inventory before compiling another bounded family. Keep g04
 active until explicit operator direction.
 

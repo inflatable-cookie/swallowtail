@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
+- Friction: PR 54's first pinned-MSRV run stalled for six hours in
+  `resume_fails_closed_on_replay_evidence`; one local exact-head run also
+  stalled, while immediate reruns passed on Rust 1.95.0 and Stable.
+- Impact: an unrelated Qoder documentation head can remain non-green until the
+  hosted timeout or a successful rerun.
+- Fix: make the replay-event/`session_switch` response ordering deterministic
+  in the Pi sidecar fixture and bound the failure proof so it cannot wait
+  indefinitely.
+- Surface: Pi SDK sidecar `ReplayDuringResume` fixture; pinned-MSRV CI.
+
 ### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,
   `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above

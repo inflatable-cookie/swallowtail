@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-After merge of g04.053 PR 54 (Qoder max-turns evidence stop and claim
-correction), reassess the remaining promoted per-route inventory. Keep g04
-open until explicit operator direction. Contract 029 currentness stays
-standing.
+Reassess the remaining promoted per-route inventory after g04.053 landed as
+the Qoder max-turns evidence stop and claim correction through PR 54 at
+`aaf753b7`. Keep g04 open until explicit operator direction. Contract 029
+currentness stays standing.
 
 ## Standing Lanes
 

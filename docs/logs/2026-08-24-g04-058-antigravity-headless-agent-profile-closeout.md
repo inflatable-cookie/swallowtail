@@ -63,9 +63,10 @@ observation. Doctor was not re-run; inherited baseline remains 378 findings
 
 ## PR
 
-- URL: pending
+- URL: https://github.com/inflatable-cookie/swallowtail/pull/57
 - base: `main`
 - head: `t3code/antigravity-agent-profile-selection`
+- evidence commit: `8a9e1717`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-9c9cb362`
 - approved head: pending
 - merge: not authorized

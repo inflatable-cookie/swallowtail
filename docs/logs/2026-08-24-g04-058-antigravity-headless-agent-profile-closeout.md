@@ -70,6 +70,7 @@ corrections:
 
 No production code. Doctor was not re-run; inherited baseline remains 378
 findings (332 warnings / 46 errors) plus one generated-in-src warning.
+All five required GitHub CI jobs passed on exact merged head `8796be65`.
 
 ## PR
 
@@ -79,12 +80,12 @@ findings (332 warnings / 46 errors) plus one generated-in-src warning.
 - prior evidence commit: `8a9e1717`
 - review-correction content: `e8b58088`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-9c9cb362`
-- approved head: pending
-- merge: not authorized
+- approved head: `8796be65ee8dc38dc4a708b6390742b6a2c91a7a`
+- merge: fast-forwarded to `main` through PR 57 at `8796be65`
 
 ## Shared Closeout
 
-Pending review and merge:
+Applied by the orchestrator after the fast-forward merge:
 
 - `docs/research/README.md`: 205 reserved → promoted evidence stop; empty set
 - `docs/logs/README.md`: this closeout reserved → complete
@@ -102,6 +103,6 @@ Pending review and merge:
 
 ## Next
 
-g04.058 stops after card 161. Reassess the remaining per-route feature
-inventory before compiling the next meaningful route-local lane. g04 stays open
-until explicit operator direction.
+g04.058 and the shared triage correction are reconciled. Reassess the remaining
+per-route feature inventory before compiling the next meaningful route-local
+lane. g04 stays open until explicit operator direction.

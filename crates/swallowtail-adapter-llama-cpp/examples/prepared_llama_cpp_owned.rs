@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_llama_cpp::{
-    LlamaCppOwnedPreparationInput, LlamaCppOwnedPreparedIntegration, LlamaCppPreparedServingStart,
-    prepare_llama_cpp_owned,
+    LlamaCppContextSize, LlamaCppOwnedPreparationInput, LlamaCppOwnedPreparedIntegration,
+    LlamaCppOwnedServingSelection, LlamaCppPreparedServingStart, prepare_llama_cpp_owned,
 };
 use swallowtail_runtime::{Deadline, HostServices, PreparationFailure, ScopeId, ServingInstanceId};
 
@@ -20,6 +20,13 @@ fn prepare_start(
     deadline: Deadline,
 ) -> Result<LlamaCppPreparedServingStart, PreparationFailure> {
     integration.prepare_serving_start(scope, serving_instance_id, deadline)
+}
+
+fn with_context_size(
+    serving: LlamaCppOwnedServingSelection,
+    context_size: LlamaCppContextSize,
+) -> LlamaCppOwnedServingSelection {
+    serving.with_context_size(context_size)
 }
 
 fn main() {}

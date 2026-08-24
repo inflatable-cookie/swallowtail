@@ -4,7 +4,8 @@ Deterministic lifecycle evidence for the pinned `b10069` owned-serving driver.
 The fixture freezes the tagged `listening on <address>` startup record and
 malformed, duplicate, and non-loopback rejection cases. HTTP readiness reuses
 the bounded health, properties, and single-model catalogue fixture with build
-`b10069-178a6c449`.
+`b10069-178a6c449`. Optional `--ctx-size N` is adapter-local launch
+configuration; readiness still does not decode nested `/props` `n_ctx`.
 
 No llama.cpp binary or model is installed or executed by default tests.
 

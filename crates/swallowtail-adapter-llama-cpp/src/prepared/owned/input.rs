@@ -10,17 +10,44 @@ use swallowtail_runtime::PreparedAccessEvidence;
 pub struct LlamaCppOwnedServingSelection {
     artifact: ModelArtifactBinding,
     model: LlamaCppModelSelection,
+    context_size: Option<crate::LlamaCppContextSize>,
 }
 
 impl LlamaCppOwnedServingSelection {
     /// Creates one explicit artifact-backed serving selection.
+    ///
+    /// Caller omission leaves context size unset and preserves the current
+    /// no-`--ctx-size` launch.
     #[must_use]
     pub const fn new(artifact: ModelArtifactBinding, model: LlamaCppModelSelection) -> Self {
-        Self { artifact, model }
+        Self {
+            artifact,
+            model,
+            context_size: None,
+        }
     }
 
-    pub(super) fn into_parts(self) -> (ModelArtifactBinding, LlamaCppModelSelection) {
-        (self.artifact, self.model)
+    /// Selects one exact positive `--ctx-size` value for owned serving.
+    #[must_use]
+    pub const fn with_context_size(mut self, context_size: crate::LlamaCppContextSize) -> Self {
+        self.context_size = Some(context_size);
+        self
+    }
+
+    /// Returns the selected context size when one was supplied.
+    #[must_use]
+    pub const fn context_size(&self) -> Option<crate::LlamaCppContextSize> {
+        self.context_size
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        ModelArtifactBinding,
+        LlamaCppModelSelection,
+        Option<crate::LlamaCppContextSize>,
+    ) {
+        (self.artifact, self.model, self.context_size)
     }
 }
 

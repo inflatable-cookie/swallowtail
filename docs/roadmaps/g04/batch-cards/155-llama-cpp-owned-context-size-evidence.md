@@ -1,6 +1,6 @@
 # 155 llama.cpp Owned Context-Size Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -52,22 +52,26 @@ authorized.
 
 ## Acceptance Criteria
 
-- [ ] exact current official and `b10069` evidence is frozen with source
+- [x] exact current official and `b10069` evidence is frozen with source
       identity and complete specimen digests
-- [ ] parser domain and Swallowtail's useful public domain are distinct
-- [ ] omission, zero, positive, negative, fractional, overflow, above-training,
+- [x] parser domain and Swallowtail's useful public domain are distinct
+- [x] omission, zero, positive, negative, fractional, overflow, above-training,
       and resource-infeasible states have explicit dispositions
-- [ ] request, dispatch, acceptance, effectiveness, and observation are
+- [x] request, dispatch, acceptance, effectiveness, and observation are
       separated
-- [ ] model metadata, host memory, allocation, and context-clamp dependencies
+- [x] model metadata, host memory, allocation, and context-clamp dependencies
       are explicit
-- [ ] immutable start evidence/specification and revision posture are explicit
-- [ ] Research 203 is promoted with a deliver-now table or honest empty set
-- [ ] no production code, shared capability, matrix, contract, currentness, or
+- [x] immutable start evidence/specification and revision posture are explicit
+- [x] Research 203 is promoted with a deliver-now table or honest empty set
+- [x] no production code, shared capability, matrix, contract, currentness, or
       sibling-route change lands
-- [ ] `effigy validate:focused swallowtail-adapter-llama-cpp` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-llama-cpp` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
+
+Research 203 admits dispatch-only `1..=2147483647` as `--ctx-size N`, preserves
+omission, and rejects explicit zero. Accepted, effective, and observed states
+are withheld. Validation checkboxes close with the cards 156-157 batch.
 
 Auto-continue to card 156 only when Research 203 admits a non-empty exact
 value/profile set with truthful application and lifecycle semantics.

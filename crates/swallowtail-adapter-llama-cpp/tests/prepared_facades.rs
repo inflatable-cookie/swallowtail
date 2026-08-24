@@ -10,10 +10,10 @@ use prepared_support::{
 };
 use std::num::NonZeroU64;
 use swallowtail_adapter_llama_cpp::{
-    LlamaCppAttachedPreparationInput, LlamaCppCatalogueProfileInput, LlamaCppInferenceProfileInput,
-    LlamaCppModelSelection, LlamaCppOwnedPreparationInput, LlamaCppOwnedServingSelection,
-    llama_cpp_attached_access_profile, llama_cpp_owned_access_profile, prepare_llama_cpp_attached,
-    prepare_llama_cpp_owned,
+    LlamaCppAttachedPreparationInput, LlamaCppCatalogueProfileInput, LlamaCppContextSize,
+    LlamaCppInferenceProfileInput, LlamaCppModelSelection, LlamaCppOwnedPreparationInput,
+    LlamaCppOwnedServingSelection, llama_cpp_attached_access_profile,
+    llama_cpp_owned_access_profile, prepare_llama_cpp_attached, prepare_llama_cpp_owned,
 };
 use swallowtail_core::{
     AccessProfile, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
@@ -172,6 +172,54 @@ fn owned_facade_returns_only_after_readiness_and_preserves_cleanup_order() {
 }
 
 #[test]
+fn owned_facade_binds_context_size_across_evidence_driver_and_argv() {
+    let omitted = owned_start(None);
+    assert_eq!(omitted.evidence().context_size(), None);
+    assert_eq!(omitted.prepared.context_size(), None);
+    assert_eq!(
+        omitted.fixture.owned.arguments(),
+        [
+            "--model",
+            "/private/models/fixture.gguf",
+            "--alias",
+            "swallowtail-fixture-stories260k",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "0",
+            "--offline",
+            "--no-ui",
+            "--no-agent",
+        ]
+    );
+
+    for value in [1_u32, 4096, i32::MAX as u32] {
+        let selected = LlamaCppContextSize::from_u64(u64::from(value)).expect("admitted value");
+        let started = owned_start(Some(selected));
+        assert_eq!(started.evidence().context_size(), Some(selected));
+        assert_eq!(started.prepared.context_size(), Some(selected));
+        assert_eq!(
+            started.fixture.owned.arguments(),
+            [
+                "--model".to_owned(),
+                "/private/models/fixture.gguf".to_owned(),
+                "--alias".to_owned(),
+                "swallowtail-fixture-stories260k".to_owned(),
+                "--host".to_owned(),
+                "127.0.0.1".to_owned(),
+                "--port".to_owned(),
+                "0".to_owned(),
+                "--offline".to_owned(),
+                "--no-ui".to_owned(),
+                "--no-agent".to_owned(),
+                "--ctx-size".to_owned(),
+                value.to_string(),
+            ]
+        );
+    }
+}
+
+#[test]
 fn owned_preparation_rejects_host_drift_before_effects() {
     let fixture = OwnedFixture::new(FixtureServer::start(), ScriptedOwnedServices::exited());
     let services = fixture.services();
@@ -209,6 +257,63 @@ fn evidence(access: &AccessProfile) -> PreparedAccessEvidence {
         RuntimeReadiness::Ready,
         SupportAuthority::IntegrationMaintainerSupported,
     ))
+}
+
+struct OwnedStart {
+    fixture: OwnedFixture,
+    prepared: swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration,
+    evidence: swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence,
+}
+
+impl OwnedStart {
+    fn evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence {
+        &self.evidence
+    }
+}
+
+fn owned_start(context_size: Option<LlamaCppContextSize>) -> OwnedStart {
+    let server =
+        FixtureServer::start_with(PropertiesFixture::VersionMismatch, StreamFixture::Success);
+    let startup = STARTUP_SUCCESS.replace("{{ENDPOINT}}", server.endpoint());
+    let fixture = OwnedFixture::new(
+        server,
+        ScriptedOwnedServices::new(startup, ProcessStop::Graceful),
+    );
+    let services = fixture.services();
+    let access = llama_cpp_owned_access_profile();
+    let mut serving =
+        LlamaCppOwnedServingSelection::new(fixture.artifact(), model_selection("llama-cpp-b10069"));
+    if let Some(context_size) = context_size {
+        serving = serving.with_context_size(context_size);
+    }
+    let prepared = prepare_llama_cpp_owned(
+        LlamaCppOwnedPreparationInput::new(
+            ConfiguredInstanceId::new("llama-cpp.owned.ctx").unwrap(),
+            InstanceRevision::new("1").unwrap(),
+            fixture.host_id(),
+            InstanceTargetRef::new("llama-server.b10069").unwrap(),
+            access.clone(),
+            evidence(&access),
+            serving,
+        ),
+        &services,
+    )
+    .expect("owned integration prepares");
+    let start = prepared
+        .prepare_serving_start(
+            ScopeId::new("owned-scope-ctx").unwrap(),
+            ServingInstanceId::new("owned-instance-ctx").unwrap(),
+            Deadline::at(MonotonicInstant::from_ticks(10_000)),
+        )
+        .expect("serving start prepares");
+    assert_eq!(start.evidence().context_size(), context_size);
+    let handle = block_on(start.start(services)).expect("ready handle is returned");
+    assert_eq!(block_on(handle.stop()), CleanupOutcome::Clean);
+    OwnedStart {
+        fixture,
+        prepared,
+        evidence: start.evidence().clone(),
+    }
 }
 
 fn model_selection(prefix: &str) -> LlamaCppModelSelection {

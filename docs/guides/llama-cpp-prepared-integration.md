@@ -96,11 +96,27 @@ lifecycle plan.
 The route binds exact opaque b10069/178a6c449 behavior on
 `llama.cpp.owned-runtime`; it has no unverified-newer posture.
 
-Call `prepare_serving_start`, inspect the lifecycle plan and
-`StartServingRequest`, then `start`. The operation acquires the artifact,
-launches one offline loopback-only process, observes its bounded stderr
-endpoint, publishes host endpoint authority, and verifies health, properties,
-and catalogue identity. Only then does it return `OwnedServingHandle`.
+`LlamaCppOwnedServingSelection::new` omits context size and keeps the current
+eleven-argument launch with no `--ctx-size`. Optional
+`with_context_size` accepts one `LlamaCppContextSize` in `1..=2147483647` and
+dispatches exact `--ctx-size N`. Explicit zero is not an omission alias and
+cannot be constructed. Prepared evidence, the configured driver, and argv must
+agree. Dispatch does not prove provider acceptance, effective allocation, pad
+or train-cap outcome, model fit, or resource feasibility. Readiness still
+checks health, build, alias, and catalogue identity only; it does not decode
+nested `/props` `n_ctx`.
+
+`low_level_driver` and generic role dispatch remain Contract 037 caller
+authority: the caller must keep `with_context_size`, extracted evidence, and
+any `(plan, request)` tuple consistent. Prepared `start` is the fail-closed
+path.
+
+Call `prepare_serving_start`, inspect the lifecycle plan,
+`StartServingRequest`, and selected context size, then `start`. The operation
+acquires the artifact, launches one offline loopback-only process, observes
+its bounded stderr endpoint, publishes host endpoint authority, and verifies
+health, properties, and catalogue identity. Only then does it return
+`OwnedServingHandle`.
 
 Call `stop` exactly once during shutdown. It stops and joins the child,
 invalidates endpoint authority, then releases the artifact lease. Failure or

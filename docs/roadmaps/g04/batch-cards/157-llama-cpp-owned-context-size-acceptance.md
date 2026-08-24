@@ -1,6 +1,6 @@
 # 157 llama.cpp Owned Context-Size Acceptance
 
-Status: blocked pending card 156
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -40,15 +40,15 @@ inference capacity, output, quality, latency, cost, or billing truth.
 
 ## Acceptance Criteria
 
-- [ ] every admitted state and rejected boundary has deterministic coverage
-- [ ] omission and selected dispatch truth remain exact and distinct
-- [ ] docs do not infer effective allocation, model fit, inference capacity,
+- [x] every admitted state and rejected boundary has deterministic coverage
+- [x] omission and selected dispatch truth remain exact and distinct
+- [x] docs do not infer effective allocation, model fit, inference capacity,
       output, quality, latency, cost, or billing from dispatch or readiness
-- [ ] default QA performs no download, install, model load, server launch,
+- [x] default QA performs no download, install, model load, server launch,
       external request, credential, or paid work
 - [ ] closeout records PR/head truth without claiming merge
-- [ ] worker changes stay inside named code and route-local docs
-- [ ] named gates pass
+- [x] worker changes stay inside named code and route-local docs
+- [x] named gates pass except PR URL, recorded after push
 
 ## Validation
 

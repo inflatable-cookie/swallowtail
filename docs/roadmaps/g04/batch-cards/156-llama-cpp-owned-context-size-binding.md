@@ -1,6 +1,6 @@
 # 156 llama.cpp Owned Context-Size Binding
 
-Status: blocked pending card 155
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -40,16 +40,20 @@ driver validation, and launch construction.
 
 ## Acceptance Criteria
 
-- [ ] only Research 203 deliver-now values prepare
-- [ ] selection, immutable evidence/specification, driver, and argv agree
-- [ ] caller omission remains byte- and behavior-stable with no context flag
-- [ ] invalid, zero when withheld, negative, overflow, aliased, and mismatched
+- [x] only Research 203 deliver-now values prepare
+- [x] selection, immutable evidence/specification, driver, and argv agree
+- [x] caller omission remains byte- and behavior-stable with no context flag
+- [x] invalid, zero when withheld, negative, overflow, aliased, and mismatched
       values reject before effects
-- [ ] artifact, endpoint, readiness, access, deadline, cancellation, failure,
+- [x] artifact, endpoint, readiness, access, deadline, cancellation, failure,
       diagnostics, stop, and release remain unchanged
-- [ ] no shared runtime control, attached-route behavior, model/hardware-fit,
+- [x] no shared runtime control, attached-route behavior, model/hardware-fit,
       effective-context, inference, output, quality, latency, cost, or billing
       claim enters the API
+
+Typed `LlamaCppContextSize` rejects zero, overflow, and non-positive values
+before a serving selection can carry them. Omission stays `new(artifact, model)`.
+Named validation runs with card 157.
 
 ## Validation
 

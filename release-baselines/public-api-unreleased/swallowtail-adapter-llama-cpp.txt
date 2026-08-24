@@ -34,6 +34,11 @@ pub struct swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput
 impl swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppContextSize(_)
+impl swallowtail_adapter_llama_cpp::LlamaCppContextSize
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::as_u32(self) -> u32
+pub fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::from_u64(u64) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::new(core::num::nonzero::NonZeroU32) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub struct swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput
 impl swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_llama_cpp::LlamaCppModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
@@ -44,6 +49,7 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppModelSelection::new(swallowt
 pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::new() -> Self
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
 impl core::default::Default for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::default() -> Self
 impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
@@ -59,6 +65,7 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparationInput::new(s
 pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::artifact(&self) -> &swallowtail_core::model_artifact::ModelArtifactBinding
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expected_build(&self) -> &'static str
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expected_commit(&self) -> &'static str
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
@@ -69,6 +76,7 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::ac
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::artifact(&self) -> &swallowtail_core::model_artifact::ModelArtifactBinding
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::expected_build(&self) -> &'static str
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::expected_commit(&self) -> &'static str
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
@@ -76,7 +84,9 @@ pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::low_leve
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::prepare_serving_start(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::identity::ServingInstanceId, swallowtail_runtime::time::Deadline) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::new(swallowtail_core::model_artifact::ModelArtifactBinding, swallowtail_adapter_llama_cpp::LlamaCppModelSelection) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
 pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 impl swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
@@ -110,6 +120,8 @@ pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_BUILD: &str
 pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_COMMIT: &str
 pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_ENDPOINT_AUDIENCE: &str
 pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_RUNTIME_REVISION: &str
+pub const swallowtail_adapter_llama_cpp::MAXIMUM: u32
+pub const swallowtail_adapter_llama_cpp::MINIMUM: u32
 pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_access_profile() -> swallowtail_core::access::AccessProfile
 pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_descriptor() -> swallowtail_core::registration::DriverDescriptor

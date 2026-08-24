@@ -2,14 +2,13 @@
 
 ## Planned
 
-- [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md) — conditional on card 156
-- [156-llama-cpp-owned-context-size-binding.md](./156-llama-cpp-owned-context-size-binding.md) — conditional on a non-empty Research 203 deliver-now set
-- [155-llama-cpp-owned-context-size-evidence.md](./155-llama-cpp-owned-context-size-evidence.md) — ready
-
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md)
+- [156-llama-cpp-owned-context-size-binding.md](./156-llama-cpp-owned-context-size-binding.md)
+- [155-llama-cpp-owned-context-size-evidence.md](./155-llama-cpp-owned-context-size-evidence.md)
 - [154-claude-code-2-1-241-claim.md](./154-claude-code-2-1-241-claim.md)
 - [153-claude-code-2-1-241-identity.md](./153-claude-code-2-1-241-identity.md)
 - [152-codex-0-149-1-claim.md](./152-codex-0-149-1-claim.md)

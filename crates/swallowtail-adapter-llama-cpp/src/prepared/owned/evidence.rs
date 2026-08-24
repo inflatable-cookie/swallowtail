@@ -7,6 +7,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 pub struct LlamaCppOwnedPreparedEvidence {
     operation: PreparedOperationEvidence,
     artifact: ModelArtifactBinding,
+    context_size: Option<crate::LlamaCppContextSize>,
 }
 
 impl LlamaCppOwnedPreparedEvidence {
@@ -17,6 +18,7 @@ impl LlamaCppOwnedPreparedEvidence {
         Ok(Self {
             operation: PreparedOperationEvidence::from_plan(plan, prepared.evidence.clone())?,
             artifact: prepared.artifact.clone(),
+            context_size: prepared.context_size(),
         })
     }
 
@@ -48,5 +50,11 @@ impl LlamaCppOwnedPreparedEvidence {
     #[must_use]
     pub const fn expected_commit(&self) -> &'static str {
         crate::LLAMA_CPP_OWNED_COMMIT
+    }
+
+    /// Returns the selected `--ctx-size` value when one was prepared.
+    #[must_use]
+    pub const fn context_size(&self) -> Option<crate::LlamaCppContextSize> {
+        self.context_size
     }
 }

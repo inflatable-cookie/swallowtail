@@ -21,12 +21,13 @@ use startup::{
 
 pub(super) const OWNED_DRIVER_ID: &str = "swallowtail.llama-cpp.owned-b10069-openai-chat";
 const OWNED_ROUTE: &str = "llama-cpp.owned";
-const EXECUTABLE_ARGUMENTS: usize = 11;
+const OWNED_BASE_ARGUMENTS: usize = 11;
 
 #[derive(Clone)]
 /// Low-level lifecycle driver for a host-owned ephemeral llama.cpp server.
 pub struct LlamaCppOwnedDriver {
     facade: LlamaCppAttachedDriver,
+    context_size: Option<crate::LlamaCppContextSize>,
 }
 
 impl LlamaCppOwnedDriver {
@@ -40,7 +41,21 @@ impl LlamaCppOwnedDriver {
                 "llama-cpp-owned-b10069",
                 OWNED_ROUTE,
             ),
+            context_size: None,
         }
+    }
+
+    /// Configures one adapter-local `--ctx-size` selection for low-level dispatch.
+    ///
+    /// The caller owns agreement between this value, any extracted prepared
+    /// evidence, and the `(plan, request)` pair passed to
+    /// [`swallowtail_runtime::ServingInstanceDriver::start`]. Prepared
+    /// [`crate::LlamaCppPreparedServingStart::start`] remains the fail-closed
+    /// path.
+    #[must_use]
+    pub fn with_context_size(mut self, context_size: crate::LlamaCppContextSize) -> Self {
+        self.context_size = Some(context_size);
+        self
     }
 
     fn validate_start(
@@ -109,7 +124,7 @@ impl LlamaCppOwnedDriver {
                 request.artifact().clone(),
             )
             .await?;
-        let arguments = launch_arguments(&artifact, &alias);
+        let arguments = launch_arguments(&artifact, &alias, self.context_size);
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
@@ -201,8 +216,12 @@ impl Default for LlamaCppOwnedDriver {
     }
 }
 
-fn launch_arguments(artifact: &ModelArtifactLease, alias: &str) -> Vec<String> {
-    let arguments = vec![
+fn launch_arguments(
+    artifact: &ModelArtifactLease,
+    alias: &str,
+    context_size: Option<crate::LlamaCppContextSize>,
+) -> Vec<String> {
+    let mut arguments = vec![
         "--model".to_owned(),
         artifact.materialized().as_driver_value().to_owned(),
         "--alias".to_owned(),
@@ -215,7 +234,14 @@ fn launch_arguments(artifact: &ModelArtifactLease, alias: &str) -> Vec<String> {
         "--no-ui".to_owned(),
         "--no-agent".to_owned(),
     ];
-    debug_assert_eq!(arguments.len(), EXECUTABLE_ARGUMENTS);
+    if let Some(context_size) = context_size {
+        arguments.push("--ctx-size".to_owned());
+        arguments.push(context_size.as_u32().to_string());
+    }
+    debug_assert_eq!(
+        arguments.len(),
+        OWNED_BASE_ARGUMENTS + usize::from(context_size.is_some()) * 2
+    );
     arguments
 }
 

@@ -1,13 +1,13 @@
 # g04.056 llama.cpp Owned Context Size
 
-Status: planned; card 155 ready
+Status: implemented pending review; cards 155-157 complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Depends on: per-route feature completion programme; Research 008
 Vision tags: explicit selection, bounded serving, route-local controls
 Contract refs: 007, 008, 011, 018, 029, 037, 040, 052
-Research: 008; 203 reserved by card 155
+Research: 008; 203 promoted, dispatch-only deliver-now
 
 ## Problem
 
@@ -30,21 +30,21 @@ retain the current launch command with no `--ctx-size` argument.
 
 ## Goals
 
-- [ ] freeze current official and exact `b10069` parser, storage, model-clamp,
+- [x] freeze current official and exact `b10069` parser, storage, model-clamp,
       allocation, readiness, property, and failure evidence
-- [ ] classify omission, explicit zero, positive values, negatives, overflow,
+- [x] classify omission, explicit zero, positive values, negatives, overflow,
       values above model training context, and resource-infeasible values
-- [ ] distinguish requested, dispatched, accepted, effective, and observed
+- [x] distinguish requested, dispatched, accepted, effective, and observed
       context-size truth
-- [ ] decide whether `/props`, another bounded readiness field, or no selected
+- [x] decide whether `/props`, another bounded readiness field, or no selected
       surface confirms the applied value
-- [ ] keep the control inside the `llama-cpp.owned` serving profile
-- [ ] promote Research 203 with an exact deliver-now table or honest stop
-- [ ] bind only admitted values through typed adapter-local input, immutable
+- [x] keep the control inside the `llama-cpp.owned` serving profile
+- [x] promote Research 203 with an exact deliver-now table or honest stop
+- [x] bind only admitted values through typed adapter-local input, immutable
       start evidence/specification, driver validation, and launch arguments
-- [ ] reject invalid or mismatched values before artifact acquisition or
+- [x] reject invalid or mismatched values before artifact acquisition or
       process start when knowable
-- [ ] prove launch, readiness, failure, stop, endpoint invalidation, and
+- [x] prove launch, readiness, failure, stop, endpoint invalidation, and
       artifact release without a live model
 
 ## Non-Goals
@@ -88,36 +88,36 @@ not become a generic settings map.
 
 ### Batch 56.1 — Exact Context-Size Evidence
 
-- [ ] Execute card 155.
-- [ ] freeze official and exact-build domain, application, observation, and
+- [x] Execute card 155.
+- [x] freeze official and exact-build domain, application, observation, and
       lifecycle evidence
-- [ ] promote Research 203 with exact value/profile dispositions
+- [x] promote Research 203 with exact value/profile dispositions
 
 ### Batch 56.2 — Conditional Owned-Serving Binding
 
-- [ ] Execute card 156 only when card 155 admits a non-empty deliver-now set.
-- [ ] add the smallest typed adapter-local selection and immutable agreement
+- [x] Execute card 156 only when card 155 admits a non-empty deliver-now set.
+- [x] add the smallest typed adapter-local selection and immutable agreement
 
 ### Batch 56.3 — Route-Local Acceptance
 
-- [ ] Execute card 157 only after card 156.
-- [ ] prove admitted, omitted, rejected, readiness, failure, and cleanup truth
+- [x] Execute card 157 only after card 156.
+- [x] prove admitted, omitted, rejected, readiness, failure, and cleanup truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 203 deliver-now values prepare
-- [ ] omission preserves exact current launch arguments and behavior
-- [ ] selected input, immutable evidence/specification, driver, and argv agree
-- [ ] invalid and knowably mismatched values reject before effects
-- [ ] effective context size is claimed only when an exact bounded selected
+- [x] only Research 203 deliver-now values prepare
+- [x] omission preserves exact current launch arguments and behavior
+- [x] selected input, immutable evidence/specification, driver, and argv agree
+- [x] invalid and knowably mismatched values reject before effects
+- [x] effective context size is claimed only when an exact bounded selected
       surface confirms it
-- [ ] artifact, endpoint, process, readiness, stop, and release ordering remain
+- [x] artifact, endpoint, process, readiness, stop, and release ordering remain
       unchanged
-- [ ] no portable composer, model-fit, hardware-fit, allocation, inference,
+- [x] no portable composer, model-fit, hardware-fit, allocation, inference,
       output, quality, latency, cost, or billing claim is introduced
-- [ ] default QA performs no download, install, model load, process launch,
+- [x] default QA performs no download, install, model load, process launch,
       external request, credential, or paid work
-- [ ] g04.056 closes only this route-local family; g04 remains active
+- [x] g04.056 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 
@@ -141,9 +141,9 @@ not become a generic settings map.
 
 ## Batch Cards
 
-- [155-llama-cpp-owned-context-size-evidence.md](batch-cards/155-llama-cpp-owned-context-size-evidence.md) — ready
-- [156-llama-cpp-owned-context-size-binding.md](batch-cards/156-llama-cpp-owned-context-size-binding.md) — conditional
-- [157-llama-cpp-owned-context-size-acceptance.md](batch-cards/157-llama-cpp-owned-context-size-acceptance.md) — conditional
+- [155-llama-cpp-owned-context-size-evidence.md](batch-cards/155-llama-cpp-owned-context-size-evidence.md) — complete
+- [156-llama-cpp-owned-context-size-binding.md](batch-cards/156-llama-cpp-owned-context-size-binding.md) — complete
+- [157-llama-cpp-owned-context-size-acceptance.md](batch-cards/157-llama-cpp-owned-context-size-acceptance.md) — complete
 
 ## References
 

@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-24 g04.056 llama.cpp Owned Context Size Compiled](./2026-08-24-g04-056-llama-cpp-owned-context-size-compiled.md)
+- [2026-08-24 g04.056 llama.cpp Owned Context Size Closeout](./2026-08-24-g04-056-llama-cpp-owned-context-size-closeout.md) — reserved
 - [2026-08-24 Claude Code 2.1.241 Claim](./2026-08-24-claude-code-2-1-241-claim.md)
 - [2026-08-24 Claude Code 2.1.241 Identity](./2026-08-24-claude-code-2-1-241-identity.md)
 - [2026-08-24 Codex 0.149.1 Claim](./2026-08-24-codex-0-149-1-claim.md)

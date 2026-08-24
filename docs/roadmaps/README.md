@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted per-route inventory after g04.053 landed as
-the Qoder max-turns evidence stop and claim correction through PR 54 at
-`aaf753b7`. Keep g04 open until explicit operator direction. Contract 029
-currentness stays standing.
+Execute g04.056 card 155: freeze exact `llama-cpp.owned` `b10069` context-size
+evidence and promote Research 203 with a non-empty deliver-now table or honest
+stop. Continue to cards 156-157 only through their named gates. Keep g04 open
+until explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

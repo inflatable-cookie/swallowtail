@@ -141,12 +141,18 @@ families do not interrupt this programme by default.
   `--max-turns 8` is retained; factory AgentLoop ceiling is `1000`;
   `error_max_turns` is decoder-only. Cards 149-150 stay blocked. No caller
   max-turns feature ships.
+- [g04.056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md)
+  is compiled. Research 203 and cards 155-157 form one serial evidence-first
+  lane for exact owned runtime `b10069-178a6c449`. Card 155 must settle a
+  useful positive domain, model/host dependencies, application-state truth,
+  immutable start representation, and revision posture. Caller omission keeps
+  the current no-flag launch; cards 156-157 are conditional.
 
-## Next Planning Boundary
+## Current Execution Boundary
 
-After g04.053 landed through PR 54 at `aaf753b7`, reassess the remaining
-promoted per-route inventory before compiling another bounded family. Keep g04
-active until explicit operator direction.
+Execute g04.056 card 155. Continue to cards 156-157 only for a non-empty exact
+Research 203 deliver-now set and no stop condition. Keep g04 active until
+explicit operator direction.
 
 ## Exclusions
 

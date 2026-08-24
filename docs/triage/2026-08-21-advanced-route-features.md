@@ -852,8 +852,9 @@ set stops at `high`.
 
 ### `llama-cpp.attached`
 
-Official server: `--reasoning`, `--reasoning-effort`,
-`--reasoning-budget`, `--ctx-size` at **server** start.
+Official server controls vary by build. Exact attached `b9910` and owned
+`b10069` evidence must be checked independently; server-start flags are not
+per-request OpenAI-chat fields.
 Attached route is OpenAI-chat HTTP against an already-running server.
 Swallowtail: output-token bound only.
 
@@ -864,13 +865,15 @@ Swallowtail: output-token bound only.
 
 ### `llama-cpp.owned`
 
-Serving lifecycle only. Official `--ctx-size`, `--reasoning`,
-`--reasoning-effort`, `--n-predict` belong on `llama-server` start.
+Serving lifecycle only. Exact `b10069` documents `--ctx-size`, `--reasoning`,
+`--reasoning-budget`, and `--n-predict` on `llama-server` start. It does not
+document the earlier inventory's `--reasoning-effort` spelling.
 Inference stays on a separately prepared attached route.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Ctx / reasoning at serve | `--ctx-size`, `--reasoning-effort` | not on serving input | yes | only-if: serving profile, not message composer | no inference role |
+| Ctx at serve | `--ctx-size` | not on serving input | yes | only-if: serving profile, not message composer | no inference role |
+| Reasoning at serve | `--reasoning`, `--reasoning-budget` | not on serving input | yes | only-if: exact model/template semantics and serving profile | no inference role; not selected |
 
 ## Feature-gap inventory
 
@@ -962,7 +965,7 @@ Unconfirmed flags are omitted.
 82. `ollama.attached` / `options.num_ctx`
 83. `ollama.attached` / think `max`
 84. `llama-cpp.owned` / `--ctx-size`
-85. `llama-cpp.owned` / `--reasoning-effort`
+85. `llama-cpp.owned` / `--reasoning` + `--reasoning-budget`
 
 Not counted as gaps: catalogue-only rows; `llama-cpp.attached`
 unconfirmed per-request reasoning; Alibaba unconfirmed facade fields;
@@ -1488,3 +1491,31 @@ authority; Claude headless maximum turns are absent from exact `2.1.238` help;
 managed-agent and Bedrock controls cross operator-owned configuration or
 model-specific schema boundaries. They remain promoted inventory, not rejected
 work.
+
+## Post-g04.053 Reassessment And g04.056 Compilation (2026-08-24)
+
+Disposition: select exact `llama-cpp.owned` `b10069` `--ctx-size` and compile
+g04.056 as one serial evidence-first lane.
+
+The route already owns one exact operator-approved executable, GGUF artifact,
+offline loopback child, bounded startup observation, health/properties/catalogue
+readiness, endpoint authority, stop, and artifact release. Exact tagged
+`b10069` documentation exposes `-c, --ctx-size N`, with `0` meaning loaded from
+model metadata. An explicit selection therefore fits the serving profile
+without becoming a message-composer or attached-inference control.
+
+Selection is not qualification. Research 203 and card 155 must settle parser
+breadth, useful positive domain, model-training clamp, host-resource failure,
+effective-value observation, immutable start representation, and exact
+revision posture. Caller omission keeps the current command with no
+`--ctx-size`. Explicit zero is not an omission alias by inference. Cards
+156-157 continue only for a non-empty deliver-now set.
+
+This reassessment also corrects the adjacent exact-build note: tagged `b10069`
+documents `--reasoning` and `--reasoning-budget`, not
+`--reasoning-effort`. That reasoning family remains promoted but unselected;
+its model/template semantics are a separate gate. Ollama `think=max` remains
+withheld because exact `0.32.15` maps it to `high` for Harmony/GPT-OSS rather
+than proving a distinct mode. Claude max turns remains absent from exact
+`2.1.241` help. Authority-widening and parked families remain outside this
+lane.

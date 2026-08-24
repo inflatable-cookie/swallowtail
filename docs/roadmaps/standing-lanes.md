@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-22
+Updated: 2026-08-24
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -25,21 +25,18 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Gemini CLI ACP and headless `0.56.0` (g04.034,
-cards 093-094). The immediately preceding claim is Kimi Code ACP, headless,
-and local-server `0.38.0` (g04.032, PR 30). Neither changes the generation
+Last one-family claim: Codex CLI `0.149.1` across exec and app-server
+(g04.054, cards 151-152). The immediately preceding claim is Gemini CLI ACP
+and headless `0.56.0` (g04.034, cards 093-094). Neither changes the generation
 pointer.
 
 ### Completed Family
 
-Gemini CLI requalification is complete. Host `0.53.0` and official stable
-`0.56.0` were compared on separate ACP and headless axes under the enterprise
-API-key posture. Both axes are compatible extensions through `0.56.0`; Code
-Assist browser login and individual-account service remain outside the route.
-The first unpublished stable, `0.56.1`, remains permitted `UnverifiedNewer`.
-
-g04.034 and cards 093-094 compile that work. No live prompt, authentication,
-host update, or contract decision was required.
+Codex CLI `0.149.1` is a compatible extension of the shared `codex.cli` axis.
+Exec and app-server retain their existing behavior revisions and gaps; the
+first unpublished stable, `0.149.2`, remains permitted `UnverifiedNewer`.
+g04.054 and cards 151-152 compile the work. No provider prompt, live session,
+authentication, install, or host update was required.
 
 ### Do Not
 

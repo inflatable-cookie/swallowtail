@@ -28,11 +28,11 @@ Claim:
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or consumer
 checks.
 
-Do not edit `docs/roadmaps/README.md` or `docs/roadmaps/g04/README.md`.
+Keep `docs/roadmaps/README.md` on g04.053. Update the g04 and batch-card
+indexes for this completed standing-currentness work.
 
 ## Out Of Scope
 
-- Gemini requalification (deferred)
 - Provider prompt, live catalogue, live session, install, or host update
 - Mapping unused surfaces (`--thread-source`, exec fork, thread fork,
   top-level fork, builtin providers, tui export, async hooks)

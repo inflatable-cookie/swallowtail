@@ -34,7 +34,7 @@ In docs:
 - Update `docs/research/README.md` to index 201
 - Update `docs/logs/README.md`
 - Do not rewrite `docs/roadmaps/README.md` Next Task
-- Do not edit `docs/roadmaps/g04/README.md`
+- Update the g04 milestone/checkpoint and batch-card indexes
 
 ## Validation
 
@@ -55,7 +55,6 @@ Auto-continuation: No. Next Task stays on the generation's actual work.
 
 ## Out Of Scope
 
-- Gemini requalification (deferred)
 - Workspace `qa`, broad `qa:docs`, live probes, MSRV, consumer checks
 - Mapping unused surfaces
 - Provider work

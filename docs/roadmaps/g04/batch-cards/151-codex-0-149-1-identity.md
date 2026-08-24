@@ -40,8 +40,7 @@ differ by unmapped `--thread-source`.
 
 ## Out Of Scope
 
-- Gemini requalification (deferred)
 - Mapping unused surfaces
 - Provider work
 - Decoder updates
-- Editing `docs/roadmaps/README.md` or `docs/roadmaps/g04/README.md`
+- Moving `docs/roadmaps/README.md` away from g04.053

@@ -67,7 +67,7 @@ and selection policy.
 - [g04.050 DeepSeek Structured-Run Thinking Mode](050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [g04.051 Qwen Headless Turn And Tool Budgets](051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
 - [g04.052 Mistral Vibe Headless Maximum Turns](052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
-- [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — ready, cards 148-150
+- [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — paused for operator claim reconciliation, cards 148-150
 - [g04.054 Codex 0.149.1 Useful Newer](054-codex-0-149-1-useful-newer.md) — standing currentness, completed
 - [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
 
@@ -243,7 +243,7 @@ New route-family research does not pre-empt this sequence.
 - [050 DeepSeek Structured-Run Thinking Mode](./050-deepseek-structured-run-thinking-mode.md) — complete and merged through PR 49 at `52413da0`, cards 139-141
 - [051 Qwen Headless Turn And Tool Budgets](./051-qwen-headless-turn-and-tool-budgets.md) — complete and merged through PR 50 at `9807e322`, cards 142-144
 - [052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
-- [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — ready, cards 148-150
+- [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — paused for operator claim reconciliation, cards 148-150
 - [054 Codex 0.149.1 Useful Newer](./054-codex-0-149-1-useful-newer.md) — completed (standing currentness), cards 151-152
 - [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097

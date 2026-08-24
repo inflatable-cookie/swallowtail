@@ -10,7 +10,6 @@ Cards 070-071 remain unused gaps, not tasks.
 - [153-claude-code-2-1-241-identity.md](./153-claude-code-2-1-241-identity.md)
 - [152-codex-0-149-1-claim.md](./152-codex-0-149-1-claim.md)
 - [151-codex-0-149-1-identity.md](./151-codex-0-149-1-identity.md)
-- [148-qoder-headless-max-turns-evidence.md](./148-qoder-headless-max-turns-evidence.md) — complete; evidence stop
 - [147-mistral-vibe-headless-max-turns-acceptance.md](./147-mistral-vibe-headless-max-turns-acceptance.md)
 - [146-mistral-vibe-headless-max-turns-binding.md](./146-mistral-vibe-headless-max-turns-binding.md)
 - [145-mistral-vibe-headless-max-turns-evidence.md](./145-mistral-vibe-headless-max-turns-evidence.md)
@@ -152,7 +151,8 @@ Cards 070-071 remain unused gaps, not tasks.
 ## Blocked
 
 - [150-qoder-headless-max-turns-acceptance.md](./150-qoder-headless-max-turns-acceptance.md) — card 149 did not execute
-- [149-qoder-headless-max-turns-binding.md](./149-qoder-headless-max-turns-binding.md) — Research 200 admits no deliver-now row
+- [149-qoder-headless-max-turns-binding.md](./149-qoder-headless-max-turns-binding.md) — card 148 claim reconciliation pending
+- [148-qoder-headless-max-turns-evidence.md](./148-qoder-headless-max-turns-evidence.md) — Research 200 contradicting qualified-route max-turns claims; awaiting operator
 - [126-claude-code-headless-structured-output-acceptance.md](./126-claude-code-headless-structured-output-acceptance.md) — card 125 did not execute
 - [125-claude-code-headless-structured-output-binding.md](./125-claude-code-headless-structured-output-binding.md) — Research 192 admits no deliver-now schema row
 - [121-openai-background-search-acceptance.md](./121-openai-background-search-acceptance.md) — no deliver-now search binding to accept

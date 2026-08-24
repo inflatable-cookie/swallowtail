@@ -1,6 +1,6 @@
 # 200 Qoder Headless Maximum-Turn Evidence
 
-Status: promoted; evidence stop
+Status: promoted; claim reconciliation paused for operator
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -15,22 +15,55 @@ boundary?
 
 ## Decision
 
-No. Research 200 admits an empty deliver-now set.
+No deliver-now caller-decreasing binding is admitted.
 
-Exact `@qoder-ai/qodercli@1.1.25` registers `--max-turns <count>` and copies a
-parsed value onto Config `maxSessionTurns`. The selected print / QueryEngine
-path does **not** pass that value into AgentLoop `maxTurns`. Headless session
-construction hardcodes `maxTurns: kN` where `kN = 1000`. `getMaxSessionTurns()`
-is used only for the text-output error line, not for the loop bound.
+Exact `@qoder-ai/qodercli@1.1.25` registers `--max-turns <count>` as a raw
+string option (no Commander `argParser`) and copies the parsed value onto
+Config `maxSessionTurns`. The selected CLI headless QueryEngine factory
+(`entrypoint: "cli"`, headless transcript writer) constructs the engine with
+literal `maxTurns: kN` where `kN = 1000`. QueryEngine.driveQuery then passes
+`maxTurns: this.config.maxTurns ?? kN` into AgentLoop. `getMaxSessionTurns()`
+is used only by the text-output `error_max_turns` formatter, not by AgentLoop.
 
-Caller selection of argv `--max-turns N` therefore cannot be proven to enforce
-N conversation turns on this route. Binding `1..=8` would overstate dispatch
-truth. Current fixed argv `--max-turns 8` remains historically required by
-Research 151 and route fixtures; this card does not change production code.
+Therefore:
 
-Zero, negative, fractional, raised, overflow, and upstream flag omission stay
-withheld or forbidden. No shared `Capability`, Contract 040
-`OutputTokenLimit`, or Contract 029 change is admitted.
+1. Caller argv `--max-turns N` is **not** proven to enforce N AgentLoop turns
+   on this route. Binding public `1..=8` would overstate dispatch truth.
+2. The same wiring **contradicts** existing qualified-route claims that treat
+   flag omission as AgentLoop-unbounded and `--max-turns 8` as a required
+   positive headless **loop** bound. Those claims must be reconciled before
+   card 148 closes. Correcting them may change the qualified route (adapter
+   argv, fixtures, guide), so this lane pauses for operator planning rather
+   than preserving the invalidated assumption or silently rewriting production
+   surfaces.
+
+Zero, negative, fractional, raised, and overflow stay withheld or invalid. No
+shared `Capability`, Contract 040 `OutputTokenLimit`, or Contract 029 change
+is admitted from this record alone.
+
+## Contradiction With Existing Qualified Claims
+
+These corpus / route surfaces still assert truths Research 200 falsifies for
+the selected stream-json print path:
+
+| Surface | Current claim | Exact `1.1.25` selected-path fact |
+| --- | --- | --- |
+| Research 151 Authority | `--max-turns` has no bound unless passed; Swallowtail must pass a positive bound | CLI populates `maxSessionTurns` only; AgentLoop bound is factory `kN` (`1000`) whether or not the flag is passed |
+| `command.rs` | `Required positive CLI turn bound`; always emits `--max-turns 8` | argv `8` is not proven to set AgentLoop `maxTurns` to 8 |
+| Guide | Must pass `--max-turns 8` | Same; documents a historically required argv, not a proven loop cap of 8 |
+| Fixtures | `require_max_turns: true`; `omit-max-turns-unbounded`; `omit_max_turns_forbidden` | Upstream flag omission leaves `maxSessionTurns` at settings/`-1`, but the selected factory still hardcodes AgentLoop `maxTurns: 1000`. Omission is not AgentLoop-unbounded on this path |
+| `limit.jsonl` | `error_max_turns` with `num_turns: 1` | Synthetic decoder fixture. It proves the adapter maps that envelope to `swallowtail.qoder.headless.max_turns`. It does **not** prove argv `8` produces a limit at turn 8. The selected factory AgentLoop ceiling is 1000 |
+
+Distinct truths that remain:
+
+- Decoder maps a synthetically supplied `error_max_turns` / `Maximum turns
+  exceeded` envelope to provider-failed (fixture + unit tests).
+- Production still emits fixed argv `--max-turns 8` today.
+- Official docs still describe `--max-turns` as a conversation-turn limit.
+
+Do not treat the guide, Research 151 Authority paragraph, or fixture
+`require_max_turns` / omit-unbounded story as settled until the operator picks
+a reconciliation plan.
 
 ## Frozen Official Evidence
 
@@ -95,9 +128,12 @@ qodercli --print --output-format stream-json --permission-mode dont_ask
 `MAXIMUM_TURNS` is fixed `"8"` in `command.rs`. Prepared input carries no turn
 selection. Driver joins one child; stream-json `error_max_turns` with
 `is_error: true` maps to `ProviderFailed` /
-`swallowtail.qoder.headless.max_turns`. Fixture `limit.jsonl` freezes
-`errors: ["Maximum turns exceeded"]` and `num_turns: 1`. Cancellation and host
-deadline stay distinct. `stream_event` remains ignored.
+`swallowtail.qoder.headless.max_turns`.
+
+Fixture `limit.jsonl` freezes a synthetic envelope
+`errors: ["Maximum turns exceeded"]` and `num_turns: 1`. That freezes decoder
+classification only. Cancellation and host deadline stay distinct.
+`stream_event` remains ignored.
 
 ## Parser Domains Versus Swallowtail Domains
 
@@ -107,7 +143,8 @@ Commander registers:
 .addOption(new ni("--max-turns <count>", "Maximum turns per query").hideHelp())
 ```
 
-No `.argParser`, choices, min, or max. After parse:
+No `.argParser`, choices, min, or max. The CLI value is therefore a **raw
+string**. After parse:
 
 ```js
 void 0 !== t.maxTurns && (QA.maxSessionTurns = t.maxTurns)
@@ -115,18 +152,19 @@ void 0 !== t.maxTurns && (QA.maxSessionTurns = t.maxTurns)
 
 Config construction defaults `this.maxSessionTurns = A.maxSessionTurns ?? -1`.
 Settings schema labels `model.maxSessionTurns` default `-1` (telemetry
-snapshot treats that as `"unlimited"`).
+snapshot treats that as `"unlimited"`). That domain is Config /
+text-formatter only on the selected path.
 
-| Input class | Upstream | Swallowtail |
-| --- | --- | --- |
-| caller omission | flag omitted → `maxSessionTurns` stays settings/`-1` | retain current argv `8`; not a deliver-now selector |
-| `1..=8` | commander accepts; copied to `maxSessionTurns` only | **withheld**; not wired into AgentLoop `maxTurns` |
-| `9..` / raised | parser-accepted into `maxSessionTurns` | withheld; caller-increasing and unwired |
-| `0` / negative | not proven useful; settings default `-1` means unbounded | withheld/invalid |
-| fractional / non-number | commander coercion not frozen as public domain | invalid |
-| overflow / huge | not proven | withheld |
-| upstream flag omission | unbounded (`maxSessionTurns` `-1` / unset) | forbidden |
-| cron/goal/agent `maxTurns` | separate surfaces | not this route |
+| Input class | Upstream Config `maxSessionTurns` | Selected AgentLoop `maxTurns` | Swallowtail disposition |
+| --- | --- | --- | --- |
+| caller omission of public selector | N/A (adapter still emits argv `8` today) | factory `kN` (`1000`) | not a deliver-now selector; claim about "required loop bound 8" is unsettled |
+| upstream flag omission | settings / `-1` | factory `kN` (`1000`) | not AgentLoop-unbounded; fixture/guide "unbounded omit" claim is unsettled |
+| `1..=8` as argv | raw string copied to `maxSessionTurns` | still factory `kN` unless engine `config.maxTurns` is set — it is not on this factory | **withhold**; not wired into AgentLoop |
+| `9..` / raised | parser-accepted into `maxSessionTurns` | same factory `kN` | withheld; caller-increasing and unwired |
+| `0` / negative | raw string accepted into `maxSessionTurns`; settings `-1` means unlimited in telemetry | factory `kN` | withheld/invalid |
+| fractional / non-number | raw string stored; no Commander coercion | factory `kN` | invalid for public domain |
+| overflow / huge | not proven | factory `kN` | withheld |
+| cron/goal/agent `maxTurns` | separate surfaces | separate | not this route |
 
 `--max-output-tokens` stays unmapped.
 
@@ -151,9 +189,17 @@ QueryEngine.driveQuery passes:
 maxTurns: this.config.maxTurns ?? kN
 ```
 
-with package constant `kN = 1e3` (1000). Headless / print session factories
-construct QueryEngine config with literal `maxTurns: kN` (four sites). They do
-not read `config.getMaxSessionTurns()`.
+with package constant `kN = 1e3` (1000).
+
+**Decisive selected-path site:** the CLI headless session QueryEngine
+construction with `entrypoint: "cli"` (`Kio`) and headless transcript writer
+(`"headless_writer_created"`) sets literal `maxTurns: kN`. It does not read
+`config.getMaxSessionTurns()`.
+
+Three other literal `maxTurns: kN` sites exist in the same bundle (ACP
+`entrypoint: "acp"`, remote-control `entrypoint: "remote-control"`, and a
+TUI/input path). They are not this route's selected print factory and are not
+cited as route evidence beyond noting they also hardcode `kN`.
 
 `getMaxSessionTurns()` appears only as:
 
@@ -162,7 +208,7 @@ not read `config.getMaxSessionTurns()`.
    `Error: Reached max turns (${getMaxSessionTurns()})`
 
 Therefore CLI `--max-turns` affects the text diagnostic string's reported
-bound, not the AgentLoop cap used by stream-json print.
+bound, not the AgentLoop cap used by the selected stream-json print path.
 
 Lifetime is one print child. Continue/resume/teleport/ACP/SDK/TUI/goal/cron
 paths are unselected.
@@ -182,8 +228,11 @@ buildResultError("error_max_turns", {
 Result schema admits subtype `error_max_turns` with `is_error: true` and
 `num_turns`. Stream-json exit helper `oHn` sets `process.exitCode` from
 `is_error` (1 on error). Text formatter `sHn` writes a max-turns line and also
-exits 1. Fixture and adapter already map this to provider-failed, not
-Completed.
+exits 1.
+
+Swallowtail already maps that subtype to provider-failed, not Completed, via
+deterministic fixtures. That decoder truth is separate from proving argv `8`
+is the AgentLoop ceiling.
 
 Earlier assistant `OutputDelta` events may exist before the terminal result.
 They must not flip the native limit into success. Current finalize attaches
@@ -198,17 +247,18 @@ No typed adapter-local carrier is admitted. A future binding would need exact
 wiring of caller value into AgentLoop `maxTurns` (or a package revision that
 does so), then immutable plan/evidence agreement. That is outside this card.
 
-Feature-local revision: none. Existing route behavior and fixed argv `8`
-remain.
+Feature-local revision: none until claim reconciliation settles whether fixed
+argv `8`, `require_max_turns`, and omit-forbidden remain part of the qualified
+route.
 
 ## Deliver-Now Table
 
 | Release | Profile | Turns | Disposition | Reason |
 | --- | --- | --- | --- | --- |
-| `1.1.25` | ordinary structured run | omit | retain current | argv `8`; not a new selector |
-| `1.1.25` | ordinary structured run | `1..=8` | **withhold** | CLI value not wired into AgentLoop `maxTurns` |
+| `1.1.25` | ordinary structured run | omit public selector | not deliver-now; claim unsettled | adapter still emits argv `8`; not proven as AgentLoop bound 8 |
+| `1.1.25` | ordinary structured run | `1..=8` | **withhold** | CLI value not wired into AgentLoop `maxTurns` on selected factory |
 | `1.1.25` | ordinary structured run | raised / zero / negative / fraction / overflow | withhold/invalid | see parser table |
-| any | any | upstream flag omission | forbidden | unbounded |
+| any | any | upstream flag omission | claim unsettled | Config `-1` ≠ AgentLoop unbounded; selected factory still `kN` |
 | any other release | any | selected | reject before start | route is exact `1.1.25` only |
 | any | ACP / SDK / TUI / continue / resume / goal / cron | — | not applicable | not this route |
 | any | `--max-output-tokens` | — | not applicable | unmapped sibling |
@@ -217,10 +267,21 @@ Deliver-now rows: **none**.
 
 ## Behavior Revision And Compatibility
 
-Keep existing `qoder.headless` exact `1.1.25` qualified-only membership and
-current fixed `--max-turns 8` command. No Contract 029 point, private behavior
-revision, guide capability, matrix row, or public API change follows from this
-record.
+Do not close card 148 or declare private behavior / guide / fixture claims
+unchanged. Research 200 falsifies the AgentLoop reading of those claims for
+exact `1.1.25`.
+
+Operator planning must choose how to reconcile the qualified route, for
+example:
+
+- keep emitting `--max-turns 8` as historical argv while rewriting corpus
+  claims to state the real AgentLoop ceiling is factory `1000`, and narrow
+  `error_max_turns` proofs to decoder-only; or
+- change adapter/fixtures/guide (`require_max_turns`, omit handling, comments)
+  to match exact wiring — which is a qualified-route change, not docs-only.
+
+This worker lane does not pick that plan. No Contract 029 point, matrix row,
+or public API change follows from this record alone.
 
 ## Validation
 

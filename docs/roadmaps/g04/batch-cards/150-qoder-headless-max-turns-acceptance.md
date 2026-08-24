@@ -7,8 +7,10 @@ Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: cards 148-149; promoted Research 200
 
-Card 149 is blocked because Research 200 has no deliver-now row. No typed
-maximum-turn dispatch or guide capability claim exists to accept.
+Card 149 is blocked because card 148 is paused for operator claim
+reconciliation and Research 200 has no deliver-now row. No typed maximum-turn
+dispatch exists to accept. The guide's `--max-turns 8` / omit-unbounded story
+is not treated as accurate until reconciliation.
 
 ## Goal
 
@@ -40,9 +42,9 @@ close the route-local lane without closing g04.
 - [ ] default validation performs no install, login, prompt, or paid work
 - [ ] g04.053 closes only this family; g04 remains open
 
-Not executed. No binding landed. Guide stays accurate without a caller
-maximum-turn capability claim. Fixed `--max-turns 8` and existing
-`error_max_turns` fixture truth remain.
+Not executed. No binding landed. Do not treat the guide, `require_max_turns`,
+or omit-unbounded fixture claims as settled. Decoder mapping of synthetic
+`error_max_turns` remains distinct from argv-8 AgentLoop enforcement.
 
 ## Validation
 

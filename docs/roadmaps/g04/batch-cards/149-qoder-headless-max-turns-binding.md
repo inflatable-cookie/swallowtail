@@ -1,15 +1,16 @@
 # 149 Qoder Headless Maximum-Turn Binding
 
-Status: blocked; card 148 evidence stop
+Status: blocked; card 148 claim reconciliation pending
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: card 148; promoted Research 200
 
-Card 148 promoted Research 200 with an empty deliver-now set. No typed
-maximum-turn input, prepared plan, driver argv selection, or behavior revision
-is admitted by this lane.
+Card 148 has not closed. Research 200 admits no deliver-now set and pauses for
+operator reconciliation of contradicted qualified-route max-turns claims. No
+typed maximum-turn input, prepared plan, driver argv selection, or behavior
+revision is admitted by this lane.
 
 ## Goal
 
@@ -39,8 +40,9 @@ through typed run input, immutable plan/evidence, driver agreement, and argv.
       `OutputTokenLimit` is added
 - [ ] all fixed Qoder route boundaries remain unchanged
 
-Not executed. Research 200 admits no deliver-now value. Binding argv
-`--max-turns N` would overstate AgentLoop enforcement on exact `1.1.25`.
+Not executed. Research 200 admits no deliver-now value and requires operator
+claim reconciliation before card 148 can close. Binding argv `--max-turns N`
+would overstate AgentLoop enforcement on exact `1.1.25`.
 
 ## Validation
 

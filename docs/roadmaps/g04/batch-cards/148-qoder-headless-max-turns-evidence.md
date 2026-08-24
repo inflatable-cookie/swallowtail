@@ -1,6 +1,6 @@
 # 148 Qoder Headless Maximum-Turn Evidence
 
-Status: complete; evidence stop
+Status: blocked; awaiting operator claim reconciliation
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -38,29 +38,43 @@ or host configuration change is authorized.
 
 - [x] exact official and `1.1.25` evidence is frozen with identities and digests
 - [x] parser domain and caller-decreasing public candidate are distinguished
-- [x] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
-      unbounded states have explicit dispositions
+- [ ] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
+      unbounded states have explicit dispositions reconciled with the qualified
+      route (blocked: AgentLoop facts contradict prior omit-unbounded /
+      required-bound-8 claims)
 - [x] turn definition, check/increment order, off-by-one boundary, child-local
       lifetime, and `num_turns` relationship are explicit
 - [x] process, result envelope, stream, terminal, partial-event, cancellation,
       deadline, failure, and cleanup truth is explicit or withheld
-- [x] plan/evidence representation and feature-local revision are explicit
+- [ ] plan/evidence representation and feature-local revision are explicit
+      after claim reconciliation
 - [x] Research 200 contains a deliver-now table or honest empty set
 - [x] no production code, shared capability, matrix, contract, currentness, or
-      sibling-route change lands
+      sibling-route change lands on this card alone
 
-## Evidence Stop
+## Evidence And Pause
 
-Research 200 admits no deliver-now row. Exact `1.1.25` copies CLI `--max-turns`
-onto Config `maxSessionTurns`, but QueryEngine/AgentLoop uses hardcoded
-`maxTurns: kN` (`1000`) on the print path. Caller-decreasing `1..=8` cannot be
-bound honestly. Cards 149-150 are blocked.
+Research 200 freezes exact digests and admits no deliver-now caller-decreasing
+row: selected CLI headless QueryEngine factory (`entrypoint: "cli"`) hardcodes
+AgentLoop `maxTurns: kN` (`1000`); CLI `--max-turns` only populates Config
+`maxSessionTurns` for the text-error formatter.
+
+That falsifies the AgentLoop reading of Research 151 / guide /
+`require_max_turns` / `omit-max-turns-unbounded` / `command.rs` "required
+positive CLI turn bound" claims. Decoder mapping of synthetic `error_max_turns`
+(`limit.jsonl` `num_turns: 1`) remains distinct from proving argv `8` stops at
+turn 8.
+
+Card 148 is **not** complete. Cards 149-150 stay blocked. Production adapter,
+guide, and fixtures are untouched pending operator planning: either rewrite
+corpus claims to match factory `1000`, or change the qualified route.
 
 ## Validation
 
 - `effigy qa:docs:index:research`
 - `effigy qa:docs:index:roadmaps:g04`
 - `effigy qa:docs:index:roadmaps:batch-cards`
+- `effigy qa:docs:index:logs`
 - `git diff --check`
 
 ## Stop Conditions
@@ -69,3 +83,5 @@ bound honestly. Cards 149-150 are blocked.
 - Stop if decisive evidence requires live provider work.
 - Stop if the feature needs a shared capability, contract/currentness change,
   sibling route, or breaking API.
+- Pause for operator if exact evidence contradicts the qualified route's
+  existing max-turns claims rather than only a proposed caller option.

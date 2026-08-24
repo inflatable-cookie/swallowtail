@@ -41,9 +41,9 @@ inference capacity, output, quality, latency, cost, and billing stay withheld.
 
 Named card 157 gates passed: focused adapter tests (53), verify-affected,
 examples, routes, northstar, research/logs/roadmap/g04/batch-card/next-action
-indexes, public API, and `git diff --check`. Inherited doctor baseline remains
-376 god-file findings (330 warnings, 46 errors) plus one generated-in-src
-warning.
+indexes, public API, and `git diff --check`. Doctor reports 378 god-file
+findings (332 warnings, 46 errors) plus one generated-in-src warning. The two
+new warnings are recorded in `PAPERCUTS.md` for later test-module splitting.
 
 - PR: https://github.com/inflatable-cookie/swallowtail/pull/55
 - reviewed and merged head: `54d021e4e90ee6b77af76d662be208835e2e95a6`

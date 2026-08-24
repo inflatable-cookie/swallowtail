@@ -2,6 +2,10 @@
 
 ## Planned
 
+- [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — ready
+- [159-grok-build-acp-reasoning-selection-binding.md](./159-grok-build-acp-reasoning-selection-binding.md) — conditional on Research 204
+- [160-grok-build-acp-reasoning-selection-acceptance.md](./160-grok-build-acp-reasoning-selection-acceptance.md) — conditional on card 159
+
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed

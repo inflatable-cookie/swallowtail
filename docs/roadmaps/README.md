@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory and compile the next
-numbered route-local milestone. Keep g04 open until explicit operator
-direction. Contract 029 currentness stays standing.
+Execute g04.057 card 158, Grok Build ACP reasoning-selection evidence. Continue
+to cards 159-160 only for a non-empty exact Research 204 deliver-now set. Keep
+g04 open until explicit operator direction. Contract 029 currentness stays
+standing.
 
 ## Standing Lanes
 

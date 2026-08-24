@@ -5,6 +5,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
+- Friction: PR 55 expanded `prepared_facades.rs` and `owned_driver.rs` past the
+  warning threshold, raising doctor findings from 376 to 378 while its worker
+  closeout reported the inherited baseline unchanged.
+- Impact: later lanes inherit noisier structural-health evidence and a stale
+  validation record.
+- Fix: split context-size prepared-facade and owned-driver proofs into focused
+  test modules without reducing lifecycle coverage; correct the closeout
+  baseline to 378 findings (332 warnings / 46 errors).
+- Surface: `swallowtail-adapter-llama-cpp` context-size acceptance tests;
+  g04.056 closeout evidence.
+
 ### [ ] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
 - Friction: PR 54's first pinned-MSRV run stalled for six hours in
   `resume_fails_closed_on_replay_evidence`; one local exact-head run also

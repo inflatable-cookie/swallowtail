@@ -1525,3 +1525,34 @@ withheld because exact `0.32.15` maps it to `high` for Harmony/GPT-OSS rather
 than proving a distinct mode. Claude max turns remains absent from exact
 `2.1.241` help. Authority-widening and parked families remain outside this
 lane.
+
+## Post-g04.056 Reassessment And g04.057 Compilation (2026-08-24)
+
+Disposition: select `grok-build.acp` reasoning selection and compile g04.057 as
+one serial evidence-first lane.
+
+The route fixes `grok-4.5` on deprecated `0.2.114..=0.2.117` and `grok-4.6`
+on maintained `1.0.4..=1.0.5`. Existing secret-free handshakes expose
+`low|medium|high` for the former and add `xhigh` for the latter. Contract 034
+already defines the typed negotiated-session-option boundary, and the
+structured-run shape creates one operation-private provider session before its
+first prompt. This gives reasoning selection a credible insertion point on both
+public operation shapes without model inference.
+
+Selection is not qualification. Research 204 and card 158 must freeze the
+exact ACP option snapshot, private id/value mapping, one selection request,
+effective confirmation, new-session lifetime, omission, drift, failure after
+provider-session allocation, and `UnverifiedNewer` inheritance. Advertisement,
+CLI `--effort`, and changelog text alone are insufficient. Attachment recovery,
+load, and resume do not inherit mutation authority.
+
+Cards 159-160 continue only for a non-empty exact version/model/value table.
+The candidate values are `low|medium|high` for `grok-4.5` and those plus
+`xhigh` for `grok-4.6`; none are prequalified. `off`, `minimal`, `max`, aliases,
+clamping, default substitution, headless argv, web search, subagents,
+permissions, and hosted xAI routes stay outside the lane.
+
+Adjacent llama.cpp reasoning remains weaker: exact `b10069` exposes server
+flags, but the qualified ChatML owned-serving profile does not prove a useful
+model/template semantic effect. Other authority-widening controls remain
+promoted inventory, not selected work. g04 stays open at operator direction.

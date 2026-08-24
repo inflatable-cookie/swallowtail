@@ -147,11 +147,17 @@ families do not interrupt this programme by default.
   owned runtime `b10069-178a6c449`. Values `1..=2147483647` dispatch as
   `--ctx-size N`; omission preserves the no-flag launch. Acceptance,
   effectiveness, observation, model fit, and allocation remain withheld.
+- [g04.057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md)
+  is planned. Research 204 and card 158 must freeze the exact option snapshot,
+  private value mapping, selection request, effective confirmation, new-session
+  lifetime, version/model rows, and failure-after-allocation truth. Cards
+  159-160 are conditional on a non-empty deliver-now set.
 
 ## Current Execution Boundary
 
-Reassess the remaining route-local inventory and compile the next coherent
-control family. Keep g04 active until explicit operator direction.
+Execute g04.057 card 158 in one serial worker lane. Continue to cards 159-160
+only when Research 204 admits exact selectable and confirmed rows. Keep g04
+active until explicit operator direction.
 
 ## Exclusions
 

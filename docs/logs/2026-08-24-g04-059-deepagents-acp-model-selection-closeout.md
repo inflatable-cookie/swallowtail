@@ -66,9 +66,10 @@ errors) plus one generated-in-src warning.
 
 ## PR
 
-- URL: pending
+- URL: https://github.com/inflatable-cookie/swallowtail/pull/58
 - base: current pushed `main`
 - head: `t3code/review-deepagents-acp-model-selection`
+- evidence commit: `c0f803aa`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-7a377ef9`
 - merge: do not merge; operator authorizes separately
 

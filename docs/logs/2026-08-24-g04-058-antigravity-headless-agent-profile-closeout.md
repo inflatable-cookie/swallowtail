@@ -76,8 +76,8 @@ findings (332 warnings / 46 errors) plus one generated-in-src warning.
 - URL: https://github.com/inflatable-cookie/swallowtail/pull/57
 - base: `main`
 - head: `t3code/antigravity-agent-profile-selection`
-- evidence commit: `8a9e1717`
-- review corrections: pending push after this closeout edit
+- prior evidence commit: `8a9e1717`
+- review-correction head: `e8b58088`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-9c9cb362`
 - approved head: pending
 - merge: not authorized

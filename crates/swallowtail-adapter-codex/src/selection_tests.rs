@@ -81,7 +81,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     for version in [
         "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0",
         "0.149.1",
-    ] {}
+    ] {
         assert_eq!(
             claim
                 .classify(binding(version).version())

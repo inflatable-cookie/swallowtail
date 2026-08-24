@@ -87,7 +87,7 @@ fn prepared_compatibility_keeps_deprecated_and_unverified_newer_visible() {
         ("0.149.0", Some(InterfaceSupportStatus::Maintained)),
         ("0.149.1", Some(InterfaceSupportStatus::Maintained)),
         ("0.149.2", None),
-    ] {}
+    ] {
         let fixture = fixture(CodexPreparedDriver::StructuredExec, "host.local", "codex");
         let (process, _) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
         let prepared = block_on(prepare_codex(

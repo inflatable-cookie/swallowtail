@@ -128,7 +128,7 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
         (ExecutionTopologyFixture::remote_authoritative(), "0.149.1"),
         (ExecutionTopologyFixture::local(), "0.149.2"),
         (ExecutionTopologyFixture::remote_authoritative(), "0.149.2"),
-    ] {}
+    ] {
         let (process, state) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
         let services = host_services_for(topology.execution_host_id().clone(), process)
             .with_time(Arc::new(PendingTime));

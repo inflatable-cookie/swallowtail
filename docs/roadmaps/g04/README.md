@@ -187,8 +187,8 @@ without explicit operator direction.
   card 158 freeze exact Grok ACP response-channel presence but no confirmed
   effort selection; cards 159-160 are blocked
 - g04.058 is stopped after card 161: Research 205 is an empty deliver-now set
-  (invalid `--agent` fail-open, host-local listing, authority composition
-  risk); cards 162-163 are blocked
+  (host-local listing, missing selected `init.agent`, unproved fail-closed
+  invalid `--agent`, custom-profile authority risk); cards 162-163 are blocked
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 58 roadmaps; generation closure awaits explicit

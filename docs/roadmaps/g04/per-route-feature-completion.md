@@ -153,9 +153,10 @@ families do not interrupt this programme by default.
   value confirmation. Cards 159-160 are blocked. No reasoning-selection feature
   ships.
 - [g04.058 Antigravity Headless Agent Profile Selection](./058-antigravity-headless-agent-profile-selection.md)
-  stopped after card 161. Research 205 is an empty deliver-now set: invalid
-  `--agent` fail-open, host-local listing, and authority composition risk.
-  Cards 162-163 are blocked. No agent-profile feature ships.
+  stopped after card 161. Research 205 is an empty deliver-now set: host-local
+  listing, missing selected `init.agent`, unproved fail-closed invalid
+  `--agent` on the qualified range, and custom-profile authority risk. Cards
+  162-163 are blocked. No agent-profile feature ships.
 
 ## Current Execution Boundary
 

@@ -15,7 +15,8 @@ shape.
 ## Next Task
 
 g04.058 stopped after card 161: Research 205 is an empty deliver-now set
-(invalid `--agent` fail-open; host-local listing; authority composition risk).
+(host-local listing; missing selected `init.agent`; unproved fail-closed
+invalid `--agent` on the qualified range; custom-profile authority risk).
 Cards 162-163 stay blocked. Reassess the remaining per-route feature inventory
 before compiling the next meaningful route-local lane. Keep g04 open until
 explicit operator direction. Contract 029 currentness stays standing.

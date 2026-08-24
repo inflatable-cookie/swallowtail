@@ -8,7 +8,7 @@ Depends on: per-route feature completion programme; Research 079, 080, 177
 Vision tags: explicit selection, route-local controls, exact confirmation
 Contract refs: 011, 023, 029, 033, 037, 040, 041, 052
 Research: 079, 080, 177, 205
-Stop reason: Research 205 empty deliver-now set — invalid `--agent` fail-open, host-local listing, authority composition risk
+Stop reason: Research 205 empty deliver-now set — host-local listing, missing selected `init.agent`, unproved fail-closed invalid `--agent` on qualified range, custom-profile authority risk
 
 ## Problem
 

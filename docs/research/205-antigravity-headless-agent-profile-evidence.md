@@ -5,6 +5,9 @@ Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Card: g04.058 / 161
+Correction: 2026-08-24 review — empty set rests on authorized evidence only;
+live `--print` probes recorded as authority-boundary incidents, not as
+qualified `1.1.9..=1.1.17` fail-open proof
 
 ## Question
 
@@ -16,30 +19,28 @@ truth?
 
 ## Method And Boundary
 
-Evidence was frozen on 2026-08-24 from:
+Authorized evidence frozen on 2026-08-24:
 
 - current official public Antigravity CLI documentation
 - frozen secret-free fixtures under `antigravity-cli-1.1.9` and identity corpora
   through `1.1.17`
 - Research 079 / 080 / 177
 - promptless host help and `agy agents` listing shape checks
-- one invalid-selection probe that was intended to fail before a provider turn
 
 No install, login, account/config/profile mutation, credential capture, or
 account-identity recording. Profile bodies, instructions, tool lists, and paths
-were not read.
+were not read. Card 161 does not authorize provider prompts or paid work.
 
-Boundary breach to record honestly: the invalid-`--agent` probe used
-`--print` / `--output-format json` expecting a pre-init failure comparable to
-invalid `--model`. The host returned `status: SUCCESS` with a model response
-and nonzero usage. That is fail-open evidence, not an authorized inference
-lane. No further provider prompts were sent after that observation.
+Qualified claims remain Research 177's `1.1.9..=1.1.17`. Host PATH initially
+reported `agy` `1.1.9` with stdout help byte-identical to the frozen fixture.
+Later in the same session the same PATH reported `1.1.19` and moved help text
+to stderr. `1.1.19` is live `UnverifiedNewer` observation only. It is not
+newly qualified.
 
-Host PATH initially reported `agy` `1.1.9` with stdout help byte-identical to
-the frozen fixture. Later in the same session the same PATH reported `1.1.19`
-and moved help text to stderr. `1.1.19` is treated only as live
-`UnverifiedNewer` observation. It is not newly qualified. Qualified claims
-remain Research 177's `1.1.9..=1.1.17`.
+Two `--print` probes ran during the session despite the card boundary. They
+are recorded below as authority-boundary incidents only. They do not qualify
+fail-open behavior for `1.1.9..=1.1.17` because the executing binary version
+was not frozen clearly enough across the host drift.
 
 ## Frozen Sources
 
@@ -54,7 +55,18 @@ remain Research 177's `1.1.9..=1.1.17`.
 | fixture `antigravity-cli-1.1.9/help.txt` | exact `--agent`, `agent`, `agents` on qualified baseline | frozen | `c64e4bf74262cebba7d161d29e1632682f64f844c6ca1a718c77a1fa4e8f8343` |
 | live host help stderr after PATH reported `1.1.19` | `--agent` / `agents` still present on UnverifiedNewer host | 2026-08-24 | `a89116526092091e84c15d6e2c7866c5630510d0f57b3ff82be406e2225a2736` |
 | Research 177 + `antigravity-cli-1.1.17` identity/protocol | selected route through `1.1.17`; help delta since `1.1.15` is `mcp`; decoder corpus stays `1.1.9` | 2026-08-21 | see Research 177 |
-| decoder init fixtures under `antigravity-cli-1.1.9/*.jsonl` | selected and omitted runs; no `init.agent` field | frozen | success init `8e800f4c…`; structured `a16e904f…`; continuation `64968e79…` |
+
+Decoder init-line SHA-256 values under
+`crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.1.9/`
+(first line of each file; none contain `init.agent`):
+
+| Fixture | SHA-256 |
+| --- | --- |
+| `headless-success.jsonl` init line | `8e800f4c92d28f1963fdd2d53b26f54d79f627e76e1c4d9da332c32e88ace4b8` |
+| `headless-structured.jsonl` init line | `a16e904f8330dfd4c5adcb78b436cd8907356d1a364fc43b4c68e492c44382a2` |
+| `continuation-first.jsonl` init line | `64968e793384cb19013dd6e7f9a998cb5ed04e46f53418532bd253af47a42221` |
+| `continuation-second.jsonl` init line | `64968e793384cb19013dd6e7f9a998cb5ed04e46f53418532bd253af47a42221` |
+| `continuation-mismatch.jsonl` init line | `ef52dfaa89ee98b6057d2c8747aa3955cedeb0bf65ae56897641187942b1ffbe` |
 
 ## Advertisement Versus Selection
 
@@ -98,31 +110,27 @@ catalogue and is not an agent-definition API.
 Official headless docs explicitly say unknown `--model` does not silently fall
 back in headless mode. They do not make that promise for `--agent`.
 
-Live invalid-selection probe on this host:
+Exact qualified `1.1.9..=1.1.17` evidence does **not** freeze fail-closed
+invalid/unavailable/stale `--agent` behavior. No version-pinned pre-init
+failure specimen exists in fixtures, public docs, or Research 079/080/177.
+Without that proof, deliver-now cannot claim no silent fallback on the
+qualified range.
 
-```text
-agy -p noop --model gemini-3.6-flash-high \
-  --agent swallowtail-nonexistent-agent-zzzz \
-  --output-format json --print-timeout 5s
-```
+## Authority-Boundary Incidents
 
-Observed:
+Card 161 forbids provider prompts. Two unauthorized `--print` probes still
+ran. They are incidents, not qualified evidence:
 
-| Field | Value |
-| --- | --- |
-| exit | `0` |
-| JSON `status` | `SUCCESS` |
-| response text | present |
-| usage | nonzero input/output/thinking tokens |
-| stderr | empty |
-| fallback language | none required — the run completed as an ordinary success |
-| stdout SHA-256 | `51da1803f9b6c8f6ee9271c413cde72cfc103b0e0c9b755fa3b060287956fafb` |
+| Incident | Argv shape | Observed | Notes |
+| --- | --- | --- | --- |
+| 1 | `--print noop --model gemini-3.6-flash-high --agent swallowtail-nonexistent-agent-zzzz --output-format json --print-timeout 5s` | exit `0`; JSON `status: SUCCESS`; response present; nonzero usage; stderr empty; stdout SHA-256 `51da1803f9b6c8f6ee9271c413cde72cfc103b0e0c9b755fa3b060287956fafb` | intended as pre-init failure check; crossed into a provider turn |
+| 2 | same shape with whitespace-only `--agent` | exit `0`; JSON `status: SUCCESS`; response present | second provider turn in the same session |
 
-Whitespace-only `--agent` also returned `SUCCESS` on a follow-up probe before
-provider work was stopped.
-
-This is silent fail-open to an ambient/default agent path. It fails the
-deliver-now gate that requires no silent fallback.
+Host PATH drifted from reported `1.1.9` to reported `1.1.19` during the
+session, so the binary that executed those probes is not frozen as exact
+qualified `1.1.9..=1.1.17`. Treat the outcomes only as out-of-scope /
+`UnverifiedNewer` incident notes. Do not project them onto the qualified
+window.
 
 Conversation ids, response bodies, and account-visible catalogue text are not
 retained in this research record.
@@ -133,11 +141,9 @@ Official docs place `init.agent` in the stream-JSON init payload only when
 `--agent` overrides. Existing decoder fixtures for success, structured output,
 and continuation omit `init.agent` entirely. The parser never reads it.
 
-Because invalid ids can still succeed, a later `init.agent` equality check
-cannot by itself prove that Swallowtail dispatched a caller-selected profile
-rather than an ambient default. Missing `init.agent` after an explicit
-`--agent` would be ambiguous under fail-open behavior. Exact selected
-confirmation is therefore not deliverable on this evidence.
+Without a selected `init.agent` specimen and without proved fail-closed
+invalid handling on the qualified range, exact confirmation before accepted
+output is not deliverable.
 
 ## Authority And Composition
 
@@ -157,29 +163,37 @@ immutable prepared plan. Exact evidence does not prove that composition.
 | Lifecycle | Disposition |
 | --- | --- |
 | Structured-run omission | retain current argv; do not infer an ambient agent id |
-| Structured-run explicit `--agent` | advertised; not deliver-now because invalid ids fail open and authority composition is unproved |
-| Continuation first / resumed / replacement child | no evidence that conversation id restores or reasserts a profile; reassertion would inherit the same fail-open and authority gaps |
-| Invalid / unknown / stale id | live host success without error — stop |
-| `UnverifiedNewer` (including live `1.1.19`) | no private mapping to inherit; keep omission path |
+| Structured-run explicit `--agent` | advertised; not deliver-now — fail-closed invalid handling unproved, selected `init.agent` missing, authority composition unproved |
+| Continuation first / resumed / replacement child | no evidence that conversation id restores or reasserts a profile; same gaps block delivery |
+| Invalid / unknown / stale id | fail-closed semantics unproved on qualified range |
+| `UnverifiedNewer` (including live `1.1.19`) | no private mapping to inherit; keep omission path; live `--print` incidents stay out of scope |
 
 ## Version / Operation / Profile Disposition
 
-| Version | Operation | Profile id | Listed | Dispatched | Confirmed `init.agent` | No silent fallback | Authority-safe | Deliver-now |
+| Version | Operation | Profile id | Listed | Dispatched | Confirmed `init.agent` | Fail-closed invalid | Authority-safe | Deliver-now |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1.1.9..=1.1.17` | structured run | any caller id | host-local only | argv possible | unproved | **no** — live invalid id succeeded | **no** — custom profiles may change tools/instructions | no |
-| `1.1.9..=1.1.17` | exact-id continuation child | any caller id | host-local only | unproved | unproved | no | no | no |
+| `1.1.9..=1.1.17` | structured run | any caller id | host-local only | argv possible | unproved — fixtures omit field | unproved on qualified range | **no** — custom profiles may change tools/instructions | no |
+| `1.1.9..=1.1.17` | exact-id continuation child | any caller id | host-local only | unproved | unproved | unproved | no | no |
 | `1.1.9..=1.1.17` | any | omission | n/a | none today | n/a | n/a | current path retained | n/a — omission is not a selection row |
-| live `1.1.19` | any | any | empty on later probes | not qualified | not qualified | observed fail-open | not qualified | no |
+| live `1.1.19` | any | any | empty on later probes | not qualified | not qualified | incident-only; not a qualified claim | not qualified | no |
 
-No row is deliver-now. The empty set is fail-open invalid selection plus
-unbounded host-local identity and authority composition risk. It is not because
-`--agent` or `init.agent` are undocumented.
+No row is deliver-now. The empty set rests on authorized evidence:
+
+1. host-local unstable listing — no bounded portable profile-id domain
+2. official custom-agent authority risk — tools/instructions may change
+3. missing selected `init.agent` fixture / confirmation path
+4. unproved fail-closed invalid/unavailable/stale `--agent` semantics on the
+   exact qualified range
+
+It is not because `--agent` or `init.agent` are undocumented, and it is not
+because the unauthorized live `--print` incidents prove qualified fail-open.
 
 ## Application, Failure, And Revision Posture
 
 Requested, planned, dispatched, accepted, effective, and observed remain
-distinct. Docs and help can request. Live host can dispatch argv. Acceptance
-requires exact confirmation and fail-closed invalid handling. Those are absent.
+distinct. Docs and help can request. Acceptance requires exact confirmation
+and fail-closed invalid handling. Those remain unproved on the qualified
+range.
 
 No adapter-local `AntigravityAgentProfileId`, prepared input, plan constraint,
 request member, argv emission, or init check is proposed. No behavior, driver,
@@ -193,7 +207,8 @@ Research 205 promotes an empty deliver-now set.
 Cards 162-163 stay blocked. A later lane may reopen this family only when exact
 qualified evidence shows:
 
-1. invalid/unavailable/stale ids fail closed before accepted output
+1. invalid/unavailable/stale ids fail closed before accepted output on a
+   version-pinned qualified binary
 2. a bounded profile-id domain that does not require private profile bodies
 3. exact `init.agent` equality on every selected child before output acceptance
 4. composition that retains prepared resource, permission, tool, isolation, and

@@ -4,32 +4,43 @@ Status: complete
 Owner: Tom
 Milestone: g04.058
 Cards: 161 complete; 162-163 blocked
+Correction: 2026-08-24 review alignment — empty set on authorized evidence;
+live `--print` probes are authority-boundary incidents only
 
 ## Result
 
 Research 205 is an honest empty deliver-now set. Exact qualified help and
 current official docs advertise `--agent`, `agy agents`, and selected
-`init.agent`, but invalid `--agent` selection fail-opens to a successful
-provider run on the live host, listing ids are host-local/unstable, and custom
-profiles may change instructions and tools. Cards 162-163 stay blocked. No
-production code. No public API change. g04 stays open.
+`init.agent`, but authorized evidence does not freeze a portable profile-id
+domain, selected `init.agent` confirmation, fail-closed invalid handling on
+`1.1.9..=1.1.17`, or authority-safe composition with custom profiles. Cards
+162-163 stay blocked. No production code. No public API change. g04 stays
+open.
 
 ## Evidence Table
 
-| Version | Operation | Profile id | Listed | Dispatched | Confirmed | No silent fallback | Authority-safe | Deliver-now |
+| Version | Operation | Profile id | Listed | Dispatched | Confirmed | Fail-closed invalid | Authority-safe | Deliver-now |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1.1.9..=1.1.17` | structured run | any caller id | host-local only | argv possible | unproved | no | no | no |
-| `1.1.9..=1.1.17` | exact-id continuation | any caller id | host-local only | unproved | unproved | no | no | no |
-| live `1.1.19` | any | any | empty later probes | not qualified | not qualified | observed fail-open | not qualified | no |
+| `1.1.9..=1.1.17` | structured run | any caller id | host-local only | argv possible | unproved | unproved | no | no |
+| `1.1.9..=1.1.17` | exact-id continuation | any caller id | host-local only | unproved | unproved | unproved | no | no |
+| live `1.1.19` | any | any | empty later probes | not qualified | not qualified | incident-only | not qualified | no |
+
+Empty-set basis (authorized):
+
+1. host-local unstable `agy agents` listing
+2. official custom-agent tool/instruction authority risk
+3. missing selected `init.agent` fixture
+4. unproved fail-closed invalid `--agent` semantics on the qualified range
 
 Official headless docs promise no silent fallback for unknown `--model` only.
-They do not make that promise for `--agent`. Live probe
-`--agent swallowtail-nonexistent-agent-zzzz` returned JSON `status: SUCCESS`
-with nonzero usage. Existing decoder fixtures omit `init.agent`. Production
-argv still omits `--agent`.
+They do not make that promise for `--agent`. Existing decoder fixtures omit
+`init.agent`. Production argv still omits `--agent`.
 
-The empty set is fail-open invalid selection plus host-local identity and
-authority composition risk, not missing documentation of the flag.
+Two unauthorized `--print` probes (nonexistent id and whitespace-only
+`--agent`) returned JSON `status: SUCCESS` with provider usage. Host PATH
+drifted `1.1.9` → `1.1.19` during the session, so those outcomes are
+authority-boundary / `UnverifiedNewer` incidents only. They are not projected
+onto exact qualified `1.1.9..=1.1.17`.
 
 Omission retains current wire. `UnverifiedNewer` has no private mapping to
 inherit. No behavior, driver, claim, matrix, guide, or configured-instance
@@ -44,7 +55,8 @@ does not inspect `init.agent`.
 
 ## Validation
 
-Card 161 gates passed on this branch:
+Card 161 gates passed on the evidence head, then re-run after review
+corrections:
 
 - `effigy validate:focused swallowtail-adapter-antigravity` — 33 tests passed
 - `effigy qa:northstar`
@@ -56,10 +68,8 @@ Card 161 gates passed on this branch:
 - `effigy qa:docs:next-action:roadmaps`
 - `git diff --check`
 
-No production code. Default validation used no install, login, account
-mutation, or further provider prompts after the recorded invalid-selection
-observation. Doctor was not re-run; inherited baseline remains 378 findings
-(332 warnings / 46 errors) plus one generated-in-src warning.
+No production code. Doctor was not re-run; inherited baseline remains 378
+findings (332 warnings / 46 errors) plus one generated-in-src warning.
 
 ## PR
 
@@ -67,6 +77,7 @@ observation. Doctor was not re-run; inherited baseline remains 378 findings
 - base: `main`
 - head: `t3code/antigravity-agent-profile-selection`
 - evidence commit: `8a9e1717`
+- review corrections: pending push after this closeout edit
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-9c9cb362`
 - approved head: pending
 - merge: not authorized
@@ -85,7 +96,8 @@ Pending review and merge:
 - architecture/contracts/matrix/guide: no claim edit; `--agent` remains not
   passed
 - `docs/triage/2026-08-21-advanced-route-features.md` Antigravity agent-profile
-  row: record fail-open invalid selection and empty Research 205 stop
+  row: record Research 205 empty stop without projecting live incidents onto
+  the qualified range
 - g04 remains open; no rollover
 
 ## Next

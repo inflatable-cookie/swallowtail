@@ -74,11 +74,13 @@ selected operation shape.
 
 ## Result
 
-Research 205 is an honest empty deliver-now set. Live invalid `--agent`
-selection returned `SUCCESS` with a provider response. Listing ids are
-host-local and unstable. Official custom agents may change instructions and
-tool permissions. Existing fixtures omit `init.agent`. Cards 162-163 stay
-blocked. No production code.
+Research 205 is an honest empty deliver-now set on authorized evidence:
+host-local unstable listing, missing selected `init.agent` fixture, unproved
+fail-closed invalid `--agent` semantics on `1.1.9..=1.1.17`, and official
+custom-agent tool/instruction authority risk. Two unauthorized `--print`
+probes ran and are recorded as authority-boundary incidents only; they are not
+projected onto the qualified range. Cards 162-163 stay blocked. No production
+code.
 
 ## Stop Conditions
 

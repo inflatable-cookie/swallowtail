@@ -77,7 +77,7 @@ findings (332 warnings / 46 errors) plus one generated-in-src warning.
 - base: `main`
 - head: `t3code/antigravity-agent-profile-selection`
 - prior evidence commit: `8a9e1717`
-- review-correction head: `2d6a3ffe`
+- review-correction content: `e8b58088`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-9c9cb362`
 - approved head: pending
 - merge: not authorized

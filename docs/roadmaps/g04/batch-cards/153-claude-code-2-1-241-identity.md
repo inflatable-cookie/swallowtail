@@ -44,7 +44,6 @@ Auto-continue to claim card 154.
 
 ## Out Of Scope
 
-- Gemini requalification (deferred)
 - Codex
 - Qwen
 - Ollama
@@ -52,4 +51,4 @@ Auto-continue to claim card 154.
 - Flattening onto Claude Agent ACP
 - Provider work
 - Decoder updates
-- Editing `docs/roadmaps/README.md` or `docs/roadmaps/g04/README.md`
+- Moving `docs/roadmaps/README.md` away from g04.053

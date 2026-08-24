@@ -69,8 +69,9 @@ and selection policy.
 - [g04.052 Mistral Vibe Headless Maximum Turns](052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
 - [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — ready, cards 148-150
 - [g04.054 Codex 0.149.1 Useful Newer](054-codex-0-149-1-useful-newer.md) — standing currentness, completed
+- [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
 
-g04 has 54 numbered roadmaps: 49 completed milestones, four honest evidence
+g04 has 55 numbered roadmaps: 50 completed milestones, four honest evidence
 stops at 040, 042, 043, and 045, and one ready milestone. The operator keeps
 the generation active. Execute g04.053 serially; do not close g04 without
 explicit operator direction.
@@ -172,9 +173,12 @@ explicit operator direction.
 - g04.054 standing currentness is complete: Research 201 and cards 151-152
   qualify Codex exec and app-server through official `0.149.1` without moving
   the generation pointer
+- g04.055 standing currentness is complete: Research 202 and cards 153-154
+  qualify Claude Code headless and response-only through official `2.1.241`
+  without moving the generation pointer
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 54 roadmaps; generation closure awaits explicit
+- g04 remains active at 55 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -241,6 +245,7 @@ New route-family research does not pre-empt this sequence.
 - [052 Mistral Vibe Headless Maximum Turns](./052-mistral-vibe-headless-max-turns.md) — complete and merged through PR 51 at `2fb24536`, cards 145-147
 - [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — ready, cards 148-150
 - [054 Codex 0.149.1 Useful Newer](./054-codex-0-149-1-useful-newer.md) — completed (standing currentness), cards 151-152
+- [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

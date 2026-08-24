@@ -20,9 +20,9 @@ Named family only. This run does not rank other families.
 | --- | --- | --- | --- | --- |
 | 1 | Claude Code | not installed | headless `2.1.220..=2.1.238`; response-only `2.1.227..=2.1.238` | operator-named family; official npm `latest` is `2.1.241` |
 
-Gemini stays deferred. Do not flatten this family onto Claude Agent ACP.
-Do not split headless and response-only into separate currentness runs.
-Do not touch Codex, Qwen, or Ollama.
+Do not flatten this family onto Claude Agent ACP. Do not split headless and
+response-only into separate currentness runs. Do not touch Codex, Qwen, or
+Ollama.
 
 ## Method
 

@@ -24,4 +24,4 @@ No `effigy` binary on this host; the named scripts are the task equivalents.
 
 ## Next
 
-Resume the generation's actual Next Task. Gemini stays deferred.
+Resume g04.053 Qoder max turns.

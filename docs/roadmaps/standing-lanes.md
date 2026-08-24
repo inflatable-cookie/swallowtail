@@ -25,18 +25,19 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Codex CLI `0.149.1` across exec and app-server
-(g04.054, cards 151-152). The immediately preceding claim is Gemini CLI ACP
-and headless `0.56.0` (g04.034, cards 093-094). Neither changes the generation
-pointer.
+Last one-family claim: Claude Code headless and response-only `2.1.241`
+(g04.055, cards 153-154). The immediately preceding claim is Codex CLI
+`0.149.1` across exec and app-server (g04.054, cards 151-152). Neither changes
+the generation pointer.
 
 ### Completed Family
 
-Codex CLI `0.149.1` is a compatible extension of the shared `codex.cli` axis.
-Exec and app-server retain their existing behavior revisions and gaps; the
-first unpublished stable, `0.149.2`, remains permitted `UnverifiedNewer`.
-g04.054 and cards 151-152 compile the work. No provider prompt, live session,
-authentication, install, or host update was required.
+Claude Code `2.1.241` is a compatible extension of the separate headless and
+response-only stream-JSON axes. Published intermediates `2.1.239` and
+`2.1.240` are qualified; the first unpublished stable, `2.1.242`, remains
+permitted `UnverifiedNewer`. g04.055 and cards 153-154 compile the work. No
+provider prompt, live session, authentication, install, or host update was
+required.
 
 ### Do Not
 

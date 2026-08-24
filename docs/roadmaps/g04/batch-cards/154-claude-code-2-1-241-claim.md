@@ -43,7 +43,7 @@ In docs:
 - Write identity and claim logs
 - Index family research and logs
 - Do not rewrite `docs/roadmaps/README.md` Next Task
-- Do not edit `docs/roadmaps/g04/README.md`
+- Update the g04 milestone/checkpoint and batch-card indexes
 
 ## Validation
 
@@ -69,7 +69,6 @@ Auto-continuation: No. Next Task stays on the generation's actual work.
 
 ## Out Of Scope
 
-- Gemini requalification (deferred)
 - Codex
 - Qwen
 - Ollama

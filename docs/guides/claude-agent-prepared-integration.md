@@ -280,7 +280,7 @@ version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification: the qualified segment ends at `2.1.241`, while newer stable
 versions are provisional until evidence moves that boundary. The static
-deny-list is empty as of 2026-08-18.
+deny-list is empty as of 2026-08-24.
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools

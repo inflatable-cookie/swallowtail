@@ -10,6 +10,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [154-claude-code-2-1-241-claim.md](./154-claude-code-2-1-241-claim.md)
+- [153-claude-code-2-1-241-identity.md](./153-claude-code-2-1-241-identity.md)
 - [152-codex-0-149-1-claim.md](./152-codex-0-149-1-claim.md)
 - [151-codex-0-149-1-identity.md](./151-codex-0-149-1-identity.md)
 - [147-mistral-vibe-headless-max-turns-acceptance.md](./147-mistral-vibe-headless-max-turns-acceptance.md)

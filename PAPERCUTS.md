@@ -5,18 +5,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
-### [ ] Antigravity invalid-`--agent` probe crossed into a provider turn — 2026-08-24
-- Friction: card 161 authorized promptless help/listing and expected invalid
-  `--agent` to fail before init, like invalid `--model`. The live probe used
-  `--print` / `--output-format json` and received `status: SUCCESS` with usage.
-- Impact: research had to record a boundary breach and stop further probes;
-  fail-open evidence is decisive but was not obtained inside the preferred
-  promptless envelope.
-- Fix: document that Antigravity agent invalid-selection proofs must assume
-  possible provider work unless a version-pinned pre-init failure is first
-  proved from help/docs/fixtures; prefer fixture or extracted-binary evidence
-  before any `--print` probe.
-- Surface: g04.058 / Research 205 invalid-`--agent` evidence; Antigravity
+### [ ] Antigravity invalid-`--agent` probes crossed card 161's no-prompt boundary — 2026-08-24
+- Friction: card 161 requires promptless help/listing and forbids provider
+  prompts. Two unauthorized `--print` / `--output-format json` probes still
+  ran: nonexistent `--agent` and a whitespace-only follow-up. Both returned
+  `status: SUCCESS` with usage. The session failed to stop after the first
+  breach.
+- Impact: Research 205 must record both runs as authority-boundary /
+  `UnverifiedNewer` incidents only. They are out of scope for qualification
+  and are not decisive fail-open proof for `1.1.9..=1.1.17`.
+- Fix: treat the card's no-provider-prompt rule as required, not optional;
+  refuse any `--print` probe unless a version-pinned pre-init failure is first
+  proved from help/docs/fixtures or extracted binaries; stop immediately after
+  one boundary breach.
+- Surface: g04.058 / Research 205 invalid-`--agent` incidents; Antigravity
   headless worker method.
 
 ### [ ] Host `agy` auto-updated from 1.1.9 to 1.1.19 mid-research — 2026-08-24

@@ -1627,3 +1627,32 @@ range.
 
 Reassess the remaining per-route inventory before the next route-local lane.
 g04 stays open at operator direction.
+
+## Post-g04.058 Reassessment And g04.059 Compilation (2026-08-24)
+
+Disposition: select `deepagents.acp` model selection and compile g04.059 as
+one serial evidence-first lane.
+
+The production route owns one exact `deepagents-acp@0.1.25` ACP child per
+session and currently passes no extra argv. Current official LangChain docs
+advertise `--model` and `provider:model` selection. That is a credible
+server-start control because one child owns the entire prepared session.
+
+It is not exact-version proof. Research 206 and card 164 must freeze the
+published `0.1.25` CLI parser, provider integrations, omission default,
+aliases, invalid values, missing/wrong provider key, fallback, any ACP model
+confirmation, and fresh-restoration truth. Current documentation and exact
+package source must remain separate evidence classes.
+
+The selected provider must agree with explicit prepared host-owned access
+evidence before spawn. Swallowtail does not inspect, inject, lease, or persist
+key bytes. Missing auth or provider rejection cannot trigger an ambient model
+or provider. If exact evidence cannot support that agreement and a bounded
+no-fallback claim, Research 206 must promote an empty set.
+
+Skills/memory stay out because they bind host paths and agent context. Gemini
+CLI sandbox remains a containment-proof family with weak live testability.
+OpenCode permission controls widen authority. Claude headless controls remain
+absent from exact help; Codex verbosity lacks model-support evidence;
+llama.cpp reasoning remains model/template semantic. g04 stays open at
+operator direction.

@@ -14,12 +14,11 @@ shape.
 
 ## Next Task
 
-g04.058 stopped after card 161: Research 205 is an empty deliver-now set
-(host-local listing; missing selected `init.agent`; unproved fail-closed
-invalid `--agent` on the qualified range; custom-profile authority risk).
-Cards 162-163 stay blocked. Reassess the remaining per-route feature inventory
-before compiling the next meaningful route-local lane. Keep g04 open until
-explicit operator direction. Contract 029 currentness stays standing.
+Execute g04.059 cards 164-166 serially: freeze exact
+`deepagents-acp@0.1.25` `--model` grammar, provider/access agreement,
+fallback, confirmation, and session lifecycle; continue to typed binding and
+acceptance only for a non-empty Research 206 deliver-now set. Keep g04 open
+until explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

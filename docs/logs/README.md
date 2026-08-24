@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-24 g04.059 Deep Agents ACP Model Selection Compiled](./2026-08-24-g04-059-deepagents-acp-model-selection-compiled.md)
+- [2026-08-24 g04.059 Deep Agents ACP Model Selection Closeout](./2026-08-24-g04-059-deepagents-acp-model-selection-closeout.md) — reserved
 - [2026-08-24 g04.058 Antigravity Headless Agent Profile Compiled](./2026-08-24-g04-058-antigravity-headless-agent-profile-compiled.md)
 - [2026-08-24 g04.058 Antigravity Headless Agent Profile Closeout](./2026-08-24-g04-058-antigravity-headless-agent-profile-closeout.md) — stopped after card 161 and fast-forwarded through PR 57 at `8796be65`; Research 205 empty set on authorized evidence; cards 162-163 blocked
 - [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Compiled](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-compiled.md)

@@ -157,12 +157,16 @@ families do not interrupt this programme by default.
   listing, missing selected `init.agent`, unproved fail-closed invalid
   `--agent` on the qualified range, and custom-profile authority risk. Cards
   162-163 are blocked. No agent-profile feature ships.
+- [g04.059 Deep Agents ACP Model Selection](./059-deepagents-acp-model-selection.md)
+  is ready as cards 164-166. Research 206 freezes exact
+  `deepagents-acp@0.1.25` model grammar, provider/access agreement, fallback,
+  confirmation, and child/session lifecycle before any conditional binding.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory before compiling the next
-meaningful route-local lane. Keep g04 active until explicit operator
-direction.
+Execute g04.059 cards 164-166 serially. Card 164 must promote Research 206 with
+a non-empty exact deliver-now set or an honest stop before cards 165-166.
+Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

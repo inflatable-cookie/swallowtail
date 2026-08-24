@@ -46,9 +46,9 @@ inference capacity, output, quality, latency, cost, or billing truth.
       output, quality, latency, cost, or billing from dispatch or readiness
 - [x] default QA performs no download, install, model load, server launch,
       external request, credential, or paid work
-- [ ] closeout records PR/head truth without claiming merge
+- [x] closeout records PR/head truth without claiming merge
 - [x] worker changes stay inside named code and route-local docs
-- [x] named gates pass except PR URL, recorded after push
+- [x] named gates pass
 
 ## Validation
 

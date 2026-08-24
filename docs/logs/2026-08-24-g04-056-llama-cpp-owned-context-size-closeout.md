@@ -41,7 +41,17 @@ Reserved for the orchestrator after review and merge:
 
 ## Validation
 
-Named card 157 gates run on the worker batch. Record exact pass/fail in the PR.
+Named card 157 gates passed: focused adapter tests (53), verify-affected,
+examples, routes, northstar, research/logs/roadmap/g04/batch-card/next-action
+indexes, public API, and `git diff --check`. Inherited doctor baseline remains
+376 god-file findings (330 warnings, 46 errors) plus one generated-in-src
+warning.
+
+- PR: https://github.com/inflatable-cookie/swallowtail/pull/55
+- worker head: `b404458e5f7162eff72d46221f2ec8dac92930c9`
+- branch: `t3code/llama-cpp-context-size`
+- worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d516e14d`
+
 Do not claim merge.
 
 ## Next

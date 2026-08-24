@@ -51,7 +51,12 @@ credential capture, external inference request, or paid work.
 
 ## PR
 
-Pending push. Do not claim merge.
+- URL: https://github.com/inflatable-cookie/swallowtail/pull/56
+- base: `main`
+- head: `t3code/review-acp-reasoning-selection`
+- reviewed worker head: `47e1d8fee35d072082e0d3501922a864d7c1133e`
+- worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-70fd631c`
+- merge: none; do not merge from this worker
 
 ## Shared Closeout
 

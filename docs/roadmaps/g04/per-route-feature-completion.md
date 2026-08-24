@@ -148,16 +148,15 @@ families do not interrupt this programme by default.
   `--ctx-size N`; omission preserves the no-flag launch. Acceptance,
   effectiveness, observation, model fit, and allocation remain withheld.
 - [g04.057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md)
-  is planned. Research 204 and card 158 must freeze the exact option snapshot,
-  private value mapping, selection request, effective confirmation, new-session
-  lifetime, version/model rows, and failure-after-allocation truth. Cards
-  159-160 are conditional on a non-empty deliver-now set.
+  stopped after card 158 and merged through PR 56 at `0b8639a7`. Research 204
+  freezes exact response-channel presence but not effort membership or selected-
+  value confirmation. Cards 159-160 are blocked. No reasoning-selection feature
+  ships.
 
 ## Current Execution Boundary
 
-Execute g04.057 card 158 in one serial worker lane. Continue to cards 159-160
-only when Research 204 admits exact selectable and confirmed rows. Keep g04
-active until explicit operator direction.
+Reassess the remaining per-route feature inventory before compiling the next
+meaningful route-local lane. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

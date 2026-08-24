@@ -71,12 +71,12 @@ and selection policy.
 - [g04.054 Codex 0.149.1 Useful Newer](054-codex-0-149-1-useful-newer.md) — standing currentness, completed
 - [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
 - [g04.056 llama.cpp Owned Context Size](056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
-- [g04.057 Grok Build ACP Reasoning Selection](057-grok-build-acp-reasoning-selection.md) — planned, card 158 ready; cards 159-160 conditional
+- [g04.057 Grok Build ACP Reasoning Selection](057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 
-g04 has 57 numbered roadmaps: 52 completed milestones, four honest evidence
-stops at 040, 042, 043, and 045, and one planned milestone. The operator keeps
-the generation active. Execute g04.057 next; do not close g04 without explicit
-operator direction.
+g04 has 57 numbered roadmaps: 52 completed milestones and five honest evidence
+stops at 040, 042, 043, 045, and 057. The operator keeps the generation active.
+Reassess the remaining per-route feature inventory next; do not close g04
+without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -182,9 +182,9 @@ operator direction.
 - g04.056 is on `main` at `54d021e4` through PR 55: Research 203 and cards
   155-157 realize dispatch-only `LlamaCppContextSize` `1..=2147483647` on exact
   `llama-cpp.owned` `b10069`; omission preserves the no-flag launch
-- g04.057 is compiled: Research 204 and card 158 own exact Grok ACP reasoning-
-  option evidence; cards 159-160 are conditional on selectable, confirmed
-  version/model/value rows
+- g04.057 is stopped on `main` at `0b8639a7` through PR 56: Research 204 and
+  card 158 freeze exact Grok ACP response-channel presence but no confirmed
+  effort selection; cards 159-160 are blocked
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 57 roadmaps; generation closure awaits explicit
@@ -231,9 +231,12 @@ operator direction.
     pointer.
 18. g04.056 cards 155-157 delivered exact owned llama.cpp adapter-local
     `--ctx-size N` dispatch and merged through PR 55 at `54d021e4`.
-19. g04.057 and cards 158-160 compile Grok Build ACP reasoning selection as one
-    serial evidence-first lane. Card 158 is ready; later cards are conditional.
-20. g04 remains active at operator direction. Contract 029 remains standing.
+19. g04.057 stopped honestly after Research 204 and card 158; PR 56 landed the
+    exact response-channel evidence at `0b8639a7` without a reasoning-selection
+    claim. Cards 159-160 are blocked.
+20. Reassess the remaining per-route feature inventory before compiling the
+    next route-local lane.
+21. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -262,7 +265,7 @@ New route-family research does not pre-empt this sequence.
 - [054 Codex 0.149.1 Useful Newer](./054-codex-0-149-1-useful-newer.md) — completed (standing currentness), cards 151-152
 - [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
 - [056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
-- [057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md) — planned, card 158 ready; cards 159-160 conditional
+- [057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

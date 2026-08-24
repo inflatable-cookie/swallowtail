@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Compiled](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-compiled.md)
-- [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Closeout](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-closeout.md) — reserved
+- [2026-08-24 g04.057 Grok Build ACP Reasoning Selection Closeout](./2026-08-24-g04-057-grok-build-acp-reasoning-selection-closeout.md) — stopped after card 158 and fast-forwarded through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [2026-08-24 g04.056 llama.cpp Owned Context Size Compiled](./2026-08-24-g04-056-llama-cpp-owned-context-size-compiled.md)
 - [2026-08-24 g04.056 llama.cpp Owned Context Size Closeout](./2026-08-24-g04-056-llama-cpp-owned-context-size-closeout.md) — merged through PR 55 at `54d021e4`; dispatch-only `--ctx-size N`
 - [2026-08-24 Claude Code 2.1.241 Claim](./2026-08-24-claude-code-2-1-241-claim.md)

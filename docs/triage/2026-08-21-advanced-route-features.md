@@ -423,16 +423,19 @@ Official CLI
 ([docs.x.ai CLI reference](https://docs.x.ai/build/cli/reference)):
 `--effort`, `--always-approve`/`--yolo`, `--sandbox`, `--max-turns`,
 `--no-plan`, `--no-subagents`, `--disable-web-search`, `--allow`/`--deny`.
-Changelog: ACP clients can specify reasoning effort when opening or
-resuming (Grok Build 1.0.x).
+Official ACP docs do not document an effort field. Frozen 1.0.4/1.0.5
+changelog pages do not say ACP clients can select effort on open or resume.
 
 Swallowtail: `grok --no-auto-update agent stdio`. Session-negotiated
 models. Matrix `reasoning_selection` No. 1.0.4–1.0.5 binds `grok-4.6`
-and effort `xhigh` internally without a public reasoning claim.
+and advertises `low|medium|high|xhigh` without a public reasoning claim. Exact
+1.0.5 accepts a fail-open `_meta.reasoningEffort` open-time hint; exact
+`x.ai/sessionConfig.options` effort membership and selected-value confirmation
+remain unfrozen. Exact 1.0.4 has the parser without the new-session apply path.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Effort | `--effort` / ACP open effort | not a public selection | yes | only-if: qualify ACP option on 1.0.4+ | do not flatten onto `xai.responses-websocket` |
+| Effort | CLI `--effort`; exact 1.0.5 unconfirmed open-time hint | not a public selection | yes | only-if: freeze exact response membership and selected-value confirmation | do not infer official ACP open effort or flatten onto `xai.responses-websocket` |
 | Max turns | `--max-turns` | not passed (headless flag; ACP spawn has no extra argv) | yes | only-if | official note: `--max-turns` is headless `-p` |
 | Web search disable | `--disable-web-search` | not passed | yes | only-if | search column is No |
 | Subagents off | `--no-subagents` | not passed | yes | only-if | not a swarm control |
@@ -1556,3 +1559,19 @@ Adjacent llama.cpp reasoning remains weaker: exact `b10069` exposes server
 flags, but the qualified ChatML owned-serving profile does not prove a useful
 model/template semantic effect. Other authority-widening controls remain
 promoted inventory, not selected work. g04 stays open at operator direction.
+
+## Post-g04.057 Evidence Stop (2026-08-24)
+
+Disposition: Research 204 and card 158 stop `grok-build.acp` reasoning
+selection. Cards 159-160 remain blocked.
+
+Exact 1.0.4 and 1.0.5 binaries expose
+`_meta["x.ai/sessionConfig"].options`, but preserved no-prompt handshakes
+discarded the `session/new` body. Frozen evidence does not establish effort
+membership or selected-value confirmation. Exact 1.0.5 accepts a fail-open
+`_meta.reasoningEffort` hint; 1.0.4 does not apply it on `session/new`.
+Contract 040 could admit a request-field mapping only after exact confirmation.
+
+No route claim, driver, matrix, public API, or production code changes. The
+false changelog lead is removed above. Reassess the remaining per-route feature
+inventory before selecting the next lane. g04 stays open at operator direction.

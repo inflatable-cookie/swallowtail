@@ -1,15 +1,10 @@
 # g04 Batch Cards
 
-## Planned
-
-- [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — ready
-- [159-grok-build-acp-reasoning-selection-binding.md](./159-grok-build-acp-reasoning-selection-binding.md) — conditional on Research 204
-- [160-grok-build-acp-reasoning-selection-acceptance.md](./160-grok-build-acp-reasoning-selection-acceptance.md) — conditional on card 159
-
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — complete; Research 204 evidence stop
 - [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md)
 - [156-llama-cpp-owned-context-size-binding.md](./156-llama-cpp-owned-context-size-binding.md)
 - [155-llama-cpp-owned-context-size-evidence.md](./155-llama-cpp-owned-context-size-evidence.md)
@@ -158,6 +153,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Blocked
 
+- [160-grok-build-acp-reasoning-selection-acceptance.md](./160-grok-build-acp-reasoning-selection-acceptance.md) — card 159 did not execute
+- [159-grok-build-acp-reasoning-selection-binding.md](./159-grok-build-acp-reasoning-selection-binding.md) — Research 204 admits no deliver-now row
 - [150-qoder-headless-max-turns-acceptance.md](./150-qoder-headless-max-turns-acceptance.md) — card 149 did not execute
 - [149-qoder-headless-max-turns-binding.md](./149-qoder-headless-max-turns-binding.md) — Research 200 admits no deliver-now row
 - [126-claude-code-headless-structured-output-acceptance.md](./126-claude-code-headless-structured-output-acceptance.md) — card 125 did not execute

@@ -24,7 +24,8 @@ code. No public API change. g04 stays open.
 Exact binaries contain no `session/set_config_option`. Both 1.0.4 and 1.0.5
 insert `_meta["x.ai/sessionConfig"].options` (`1.0.4` offset `107073191`,
 `1.0.5` offset `107433096`). Exact option membership and selected-effort
-truth are not in those binaries or in preserved handshakes. Official ACP
+truth are not recoverable from frozen binary-string evidence or preserved
+handshakes. Official ACP
 `session/new` is `cwd` plus empty `mcpServers`. Current spawn stays
 `grok --no-auto-update agent stdio` with empty `SessionOptions`.
 
@@ -59,12 +60,13 @@ findings (332 warnings / 46 errors) plus one generated-in-src warning.
 - evidence commit: `47e1d8fee35d072082e0d3501922a864d7c1133e`
 - previously reviewed heads: `56dd8dd24834f9bf1f9c23c07e793bb42fffa126`,
   `3dff924831c4b9a03e3d67fa5873bc6d0b7decb4`
+- approved head: `0b8639a712601be58921c05d7f1c84c76072dd61`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-70fd631c`
-- merge: none; do not merge from this worker
+- merge: fast-forwarded to `main` through PR 56 at `0b8639a7`
 
 ## Shared Closeout
 
-Orchestrator-owned after merge. Do not apply on this worker branch:
+Applied by the orchestrator after the fast-forward merge:
 
 - `docs/research/README.md`: 204 reserved → promoted evidence stop; empty set;
   split 1.0.4/1.0.5
@@ -72,9 +74,12 @@ Orchestrator-owned after merge. Do not apply on this worker branch:
 - `docs/roadmaps/README.md` Next Task: leave g04.057 until merge, then
   reassess remaining per-route inventory
 - `docs/roadmaps/g04/README.md` and generation index: g04.057 planned → stopped
+- `docs/roadmaps/g04/batch-cards/README.md`: card 158 complete; cards 159-160
+  blocked
 - architecture, Contract 029, route/feature matrix `reasoning_selection`: keep
   No; no claim edit
-- programme, changelog: no feature delivery
+- per-route programme: record the evidence stop and reassessment boundary;
+  changelog: no feature delivery
 - `docs/triage/2026-08-21-advanced-route-features.md` `grok-build.acp` block:
   drop the "Changelog: ACP clients can specify reasoning effort when opening
   or resuming (Grok Build 1.0.x)" lead. Frozen changelog pages do not contain
@@ -86,6 +91,6 @@ Orchestrator-owned after merge. Do not apply on this worker branch:
 
 ## Next
 
-After review and merge, the orchestrator reconciles g04.057, applies the
-shared-triage correction, and reassesses the remaining per-route inventory.
-g04 stays open until explicit operator direction.
+g04.057 and the shared triage correction are reconciled. Reassess the remaining
+per-route inventory before compiling the next meaningful route-local lane. g04
+stays open until explicit operator direction.

@@ -14,7 +14,7 @@ fn binding(version: &str) -> InterfaceVersionBinding {
 fn exec_claim_is_closed_at_the_corpus_boundaries() {
     let case = ClosedSemanticWindowCase::new(
         InterfaceVersion::new("0.80.0").unwrap(),
-        InterfaceVersion::new("0.149.0").unwrap(),
+        InterfaceVersion::new("0.149.1").unwrap(),
     )
     .with_accepted([
         InterfaceVersion::new("0.81.0").unwrap(),
@@ -29,6 +29,7 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
         InterfaceVersion::new("0.146.0").unwrap(),
         InterfaceVersion::new("0.147.0").unwrap(),
         InterfaceVersion::new("0.148.0").unwrap(),
+        InterfaceVersion::new("0.149.0").unwrap(),
     ])
     .with_rejected([
         InterfaceVersion::new("0.79.0").unwrap(),
@@ -79,7 +80,8 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     }
     for version in [
         "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0",
-    ] {
+        "0.149.1",
+    ] {}
         assert_eq!(
             claim
                 .classify(binding(version).version())
@@ -99,7 +101,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     ] {
         assert!(!claim.supports(binding(version).version()));
     }
-    let unverified = claim.assess(binding("0.149.1").version());
+    let unverified = claim.assess(binding("0.149.2").version());
     assert!(
         unverified.is_permitted(),
         "first unpublished stable above ceiling should be unverified-newer"
@@ -171,6 +173,11 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
             HARD_DELETE_BEHAVIOR,
             InterfaceSupportStatus::Maintained,
         ),
+        (
+            "0.149.1",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
     ];
 
     for (version, behavior, status) in cases {
@@ -189,7 +196,7 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
         assert!(!claim.supports(binding(version).version()));
     }
 
-    let unverified = claim.assess(binding("0.149.1").version());
+    let unverified = claim.assess(binding("0.149.2").version());
     assert!(unverified.is_permitted());
     assert_eq!(
         unverified.behavior_revision().unwrap().as_str(),

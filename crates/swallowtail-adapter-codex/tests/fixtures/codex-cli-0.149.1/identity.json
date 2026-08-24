@@ -1,0 +1,57 @@
+{
+  "axis": "codex.cli",
+  "observed_at": "2026-08-24",
+  "npm_package": "@openai/codex",
+  "npm_latest": true,
+  "host": {
+    "not_installed": true,
+    "note": "Host install was not present; observed official binary only"
+  },
+  "official": {
+    "version": "0.149.1",
+    "cli": "codex-cli 0.149.1",
+    "source": "official-npm-tarball-and-github-release",
+    "published_at": "2026-08-24T00:32:45.066Z",
+    "github_published_at": "2026-08-24T00:28:28Z",
+    "npm_integrity": "sha512-6q5pbcpFbJbqOpkubSDBwXmktQ55aD8eUzGzBF1zASob2DjwhBKDSNGtdZKalfrNJUdTDTPDMmzCXEXs5tMBYA==",
+    "npm_shasum": "37bc183ebd129e01e404e932bcec4ea861c70933",
+    "tarball_sha256": "1616304fd7883b46d8887cf336496e2ae0cdf9a637b7bdf8824baa98c22c5b7b",
+    "darwin_arm64_tarball_sha256": "151f8b96af0529c1267e7438d2cbc6d26213922fa017b96540abaf5f07d792d2",
+    "extracted_cli_sha256": "f0d8762236594359b60cfbe17f4c7e945a3ce8d1c91e74778838c968d250fb6c",
+    "extracted_cli_size": 220552944,
+    "linux_x64_tarball_sha256": "734f865ed62d8be68796e7913651bbc69ad7c63a8c01ee28524ad69b4c9ab401",
+    "linux_x64_cli_sha256": "73dc5888888f411c1f0fa7b81d866e721dcc86b527ce8e3b2cf4708661e823ba",
+    "linux_x64_cli_size": 258227840,
+    "git_tag": "rust-v0.149.1",
+    "tag_object": "980a6d12110b110d29ec13bdcbe14011100b3566",
+    "tag_commit": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "published_stables_from_previous_ceiling": ["0.149.1"],
+  "unpublished_0_149_2": true,
+  "alpha_ignored": "0.150.0-alpha.7",
+  "claim_at_observation": {
+    "latest_qualified": "0.149.0",
+    "posture": "allow_unverified",
+    "classification_of_0_149_0": "qualified_maintained",
+    "classification_of_0_149_1": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "exec_behavior": "codex.exec.jsonl-v1",
+    "app_server_behavior": "codex.app-server.v2.workspace-roots",
+    "lifecycle_behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "raise_latest_qualified_to": "0.149.1",
+    "keep_baseline": true,
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "keep_gaps": ["0.82.0..=0.83.0", "0.108.0", "0.109.0"],
+    "later_unverified_after_qualification": "0.149.2",
+    "map_exec_fork": false,
+    "map_thread_fork": false,
+    "map_top_level_fork": false,
+    "map_thread_source": false,
+    "provider_prompt_sent": false,
+    "live_session": false,
+    "host_install_changed": false
+  }
+}

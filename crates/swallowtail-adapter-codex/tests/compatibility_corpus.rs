@@ -12,6 +12,7 @@ const APP_SERVER_THREAD_RECONCILIATION: &str =
 const CODEX_0_147_RANGE: &str = include_str!("fixtures/compatibility/codex-0-147-range.json");
 const CODEX_0_148_RANGE: &str = include_str!("fixtures/compatibility/codex-0-148-range.json");
 const CODEX_0_149_RANGE: &str = include_str!("fixtures/compatibility/codex-0-149-range.json");
+const CODEX_0_149_1_RANGE: &str = include_str!("fixtures/compatibility/codex-0-149-1-range.json");
 
 include!("compatibility_corpus/exec.rs");
 include!("compatibility_corpus/app_server.rs");
@@ -20,3 +21,4 @@ include!("compatibility_corpus/support.rs");
 include!("compatibility_corpus/range_0_147.rs");
 include!("compatibility_corpus/range_0_148.rs");
 include!("compatibility_corpus/range_0_149.rs");
+include!("compatibility_corpus/range_0_149_1.rs");

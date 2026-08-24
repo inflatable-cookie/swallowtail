@@ -116,6 +116,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)
+- [201 Codex 0.149.1 Identity](./201-codex-0-149-1-identity.md)
 - [172 Codex 0.149.0 Identity](./172-codex-0-149-0-identity.md)
 - [178 Oh My Pi 17.4.0 Identity](./178-oh-my-pi-17-4-0-identity.md)
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)

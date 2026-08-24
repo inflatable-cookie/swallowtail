@@ -122,7 +122,7 @@ fn prepared_app_server_profiles_follow_activity_milestones_without_widening_newe
     .unwrap();
     let newer = prepared(
         CodexPreparedDriver::AppServer,
-        "0.149.1",
+        "0.149.2",
         &RecordingHostServices::default(),
         false,
     )

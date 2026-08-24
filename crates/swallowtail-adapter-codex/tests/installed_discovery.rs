@@ -126,7 +126,9 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
         (ExecutionTopologyFixture::remote_authoritative(), "0.149.0"),
         (ExecutionTopologyFixture::local(), "0.149.1"),
         (ExecutionTopologyFixture::remote_authoritative(), "0.149.1"),
-    ] {
+        (ExecutionTopologyFixture::local(), "0.149.2"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.149.2"),
+    ] {}
         let (process, state) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
         let services = host_services_for(topology.execution_host_id().clone(), process)
             .with_time(Arc::new(PendingTime));
@@ -149,14 +151,14 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
             topology.execution_host_id()
         );
         let observation = outcome.installed_executable_observation().unwrap();
-        if version == "0.149.1" {
+        if version == "0.149.2" {
             let InstalledExecutableCompatibility::UnverifiedNewer(unverified) =
                 observation.compatibility()
             else {
                 panic!("newer version must remain unverified");
             };
             assert_eq!(unverified.version().as_str(), version);
-            assert_eq!(unverified.latest_qualified().as_str(), "0.149.0");
+            assert_eq!(unverified.latest_qualified().as_str(), "0.149.1");
         } else {
             assert!(observation.is_qualified());
         }

@@ -95,6 +95,11 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Raised qualified Codex CLI ceiling from `0.149.0` to `0.149.1` on the
+  `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
+  Compatible-extension: selected mapped flags unchanged, schema bundles
+  byte-identical, ModelListParams unchanged. Exec help differs only by
+  unmapped `--thread-source`. Research 201, g04.054.
 - Correct the exact GPT-5.6 `openai.background` reasoning vocabulary to
   `none`, `low`, `medium`, `high`, `xhigh`, and `max`; the previously
   guaranteed but unqualified `minimal` value now fails before endpoint,

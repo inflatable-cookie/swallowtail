@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-24 Codex 0.149.1 Claim](./2026-08-24-codex-0-149-1-claim.md)
+- [2026-08-24 Codex 0.149.1 Identity](./2026-08-24-codex-0-149-1-identity.md)
 - [2026-08-24 g04.053 Qoder Maximum Turns Compiled](./2026-08-24-g04-053-qoder-max-turns-compiled.md)
 - [2026-08-24 g04.053 Qoder Maximum Turns Closeout](./2026-08-24-g04-053-qoder-max-turns-closeout.md) — reserved
 - [2026-08-23 g04.052 Mistral Vibe Maximum Turns Compiled](./2026-08-23-g04-052-mistral-vibe-max-turns-compiled.md)

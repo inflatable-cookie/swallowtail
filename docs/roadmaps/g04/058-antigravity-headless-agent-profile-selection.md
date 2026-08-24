@@ -1,6 +1,6 @@
 # g04.058 Antigravity Headless Agent Profile Selection
 
-Status: planned
+Status: stopped
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -8,6 +8,7 @@ Depends on: per-route feature completion programme; Research 079, 080, 177
 Vision tags: explicit selection, route-local controls, exact confirmation
 Contract refs: 011, 023, 029, 033, 037, 040, 041, 052
 Research: 079, 080, 177, 205
+Stop reason: Research 205 empty deliver-now set — invalid `--agent` fail-open, host-local listing, authority composition risk
 
 ## Problem
 
@@ -34,16 +35,16 @@ schema, sandbox, permission, stream, and lifecycle behavior.
 
 ## Goals
 
-- [ ] freeze current official and exact `1.1.9..=1.1.17` evidence for
+- [x] freeze current official and exact `1.1.9..=1.1.17` evidence for
       `agy agents`, `--agent`, invalid selection, and `init.agent`
-- [ ] define the smallest safe profile-id domain and whether values are
+- [x] define the smallest safe profile-id domain and whether values are
       installation/account observations or qualified portable inputs
-- [ ] distinguish requested, planned, dispatched, accepted, effective, and
+- [x] distinguish requested, planned, dispatched, accepted, effective, and
       observed profile truth
-- [ ] prove whether selected profiles compose with explicit model, effort,
+- [x] prove whether selected profiles compose with explicit model, effort,
       schema, read-plan mode, provider sandbox, and ambient permissions
-- [ ] classify one-run and exact-id continuation lifetimes separately
-- [ ] promote Research 205 with an exact deliver-now table or honest stop
+- [x] classify one-run and exact-id continuation lifetimes separately
+- [x] promote Research 205 with an exact deliver-now table or honest stop
 - [ ] bind only admitted rows through typed prepared inputs, immutable plan and
       request agreement, exact `--agent`, and `init.agent` confirmation
 - [ ] prove omission, invalid profile, missing/mismatched confirmation,
@@ -93,20 +94,22 @@ the deliver-now set is empty.
 
 ### Batch 58.1 — Exact Profile Evidence
 
-- [ ] Execute card 161.
-- [ ] freeze listing, selection, confirmation, authority, version, failure, and
+- [x] Execute card 161.
+- [x] freeze listing, selection, confirmation, authority, version, failure, and
       lifecycle evidence
-- [ ] promote Research 205 with an exact deliver-now table or empty set
+- [x] promote Research 205 with an exact deliver-now table or empty set
 
 ### Batch 58.2 — Conditional Prepared Binding
 
 - [ ] Execute card 162 only when card 161 admits a non-empty deliver-now set.
+      **Blocked:** Research 205 empty set.
 - [ ] bind one typed profile id through prepared run/session inputs, immutable
       evidence, request agreement, command construction, and stream validation
 
 ### Batch 58.3 — Route-Local Acceptance
 
 - [ ] Execute card 163 only after card 162.
+      **Blocked:** card 162 blocked.
 - [ ] prove exact argv and confirmation on every admitted operation/version
       row while preserving omission, failure, and cleanup truth
 
@@ -153,9 +156,9 @@ the deliver-now set is empty.
 
 ## Batch Cards
 
-- [161-antigravity-headless-agent-profile-evidence.md](batch-cards/161-antigravity-headless-agent-profile-evidence.md) — ready
-- [162-antigravity-headless-agent-profile-binding.md](batch-cards/162-antigravity-headless-agent-profile-binding.md) — conditional
-- [163-antigravity-headless-agent-profile-acceptance.md](batch-cards/163-antigravity-headless-agent-profile-acceptance.md) — conditional
+- [161-antigravity-headless-agent-profile-evidence.md](batch-cards/161-antigravity-headless-agent-profile-evidence.md) — complete; Research 205 empty set
+- [162-antigravity-headless-agent-profile-binding.md](batch-cards/162-antigravity-headless-agent-profile-binding.md) — blocked
+- [163-antigravity-headless-agent-profile-acceptance.md](batch-cards/163-antigravity-headless-agent-profile-acceptance.md) — blocked
 
 ## References
 

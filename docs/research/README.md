@@ -115,7 +115,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [200 Qoder Headless Maximum-Turn Evidence](./200-qoder-headless-max-turns-evidence.md) — promoted; empty deliver-now; claim correction retains historical inert `--max-turns 8`; factory AgentLoop ceiling `1000`; `error_max_turns` decoder-only
 - [203 llama.cpp Owned Context-Size Evidence](./203-llama-cpp-owned-context-size-evidence.md) — promoted through g04.056; exact `b10069` admits dispatch-only `--ctx-size N` for `1..=2147483647`, omission preserved, accepted/effective/observed withheld
 - [204 Grok Build ACP Reasoning-Selection Evidence](./204-grok-build-acp-reasoning-selection-evidence.md) — promoted evidence stop through g04.057; exact 1.0.4/1.0.5 response-channel presence is frozen, but effort membership and selected-value confirmation remain unproved
-- [205 Antigravity Headless Agent-Profile Evidence](./205-antigravity-headless-agent-profile-evidence.md) — reserved for g04.058 exact listing, id, dispatch, confirmation, fallback, authority, and continuation evidence
+- [205 Antigravity Headless Agent-Profile Evidence](./205-antigravity-headless-agent-profile-evidence.md) — promoted evidence stop through g04.058; empty deliver-now; invalid `--agent` fail-open, host-local listing, authority composition risk
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)

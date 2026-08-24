@@ -5,6 +5,31 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Antigravity invalid-`--agent` probe crossed into a provider turn — 2026-08-24
+- Friction: card 161 authorized promptless help/listing and expected invalid
+  `--agent` to fail before init, like invalid `--model`. The live probe used
+  `--print` / `--output-format json` and received `status: SUCCESS` with usage.
+- Impact: research had to record a boundary breach and stop further probes;
+  fail-open evidence is decisive but was not obtained inside the preferred
+  promptless envelope.
+- Fix: document that Antigravity agent invalid-selection proofs must assume
+  possible provider work unless a version-pinned pre-init failure is first
+  proved from help/docs/fixtures; prefer fixture or extracted-binary evidence
+  before any `--print` probe.
+- Surface: g04.058 / Research 205 invalid-`--agent` evidence; Antigravity
+  headless worker method.
+
+### [ ] Host `agy` auto-updated from 1.1.9 to 1.1.19 mid-research — 2026-08-24
+- Friction: PATH `agy` reported `1.1.9` with stdout help matching the frozen
+  fixture, then later reported `1.1.19` with help on stderr during the same
+  card 161 session.
+- Impact: live observations can silently leave the qualified window;
+  `UnverifiedNewer` noise mixes with baseline evidence.
+- Fix: pin or record `agy --version` immediately before every live probe and
+  refuse host probes once the binary drifts from the named qualified range;
+  prefer extracted release artifacts for version-scoped help.
+- Surface: Antigravity host PATH binary; Research 205 method notes.
+
 ### [ ] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
 - Friction: PR 55 expanded `prepared_facades.rs` and `owned_driver.rs` past the
   warning threshold, raising doctor findings from 376 to 378 while its worker

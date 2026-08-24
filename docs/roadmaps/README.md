@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Execute g04.058 card 161, Antigravity headless agent-profile evidence. Continue
-to cards 162-163 only for a non-empty exact Research 205 deliver-now set. Keep
-g04 open until explicit operator direction. Contract 029 currentness stays
-standing.
+g04.058 stopped after card 161: Research 205 is an empty deliver-now set
+(invalid `--agent` fail-open; host-local listing; authority composition risk).
+Cards 162-163 stay blocked. Reassess the remaining per-route feature inventory
+before compiling the next meaningful route-local lane. Keep g04 open until
+explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

@@ -1,11 +1,12 @@
 # 162 Antigravity Headless Agent Profile Binding
 
-Status: conditional
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Milestone: [g04.058 Antigravity Headless Agent Profile Selection](../058-antigravity-headless-agent-profile-selection.md)
 Depends on: card 161; non-empty Research 205 deliver-now table
+Blocked by: Research 205 empty deliver-now set (fail-open invalid `--agent`, host-local listing, authority composition)
 
 ## Goal
 

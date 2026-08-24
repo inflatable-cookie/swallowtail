@@ -258,7 +258,7 @@ Swallowtail already: `--model`, `--effort`, `--mode plan` from
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Agent profile | `--agent` | not passed | yes | only-if: `agy agents` list is bound as exact ids | do not flatten onto Claude `--agent` |
+| Agent profile | `--agent` | not passed | yes | no for now: Research 205 empty set — invalid `--agent` fail-open; host-local `agy agents`; custom profiles may change tools/instructions; `init.agent` unconfirmed | do not flatten onto Claude `--agent` |
 | Permission skip | `--dangerously-skip-permissions` | withheld | official flag unused | no | dangerous-permission withhold |
 | Output tokens | none official | none | none | no | — |
 | Search | not a headless flag | `external_search` No | none confirmed | no | do not invent |
@@ -1607,3 +1607,20 @@ exact `2.1.241` help. Codex verbosity lacks model support evidence. llama.cpp
 reasoning remains model/template-semantic. OpenCode permission controls widen
 authority. Those families remain promoted but unselected. g04 stays open at
 operator direction.
+
+## Post-g04.058 Evidence Stop (2026-08-24)
+
+Disposition: stop. Research 205 is an empty deliver-now set. Cards 162-163
+stay blocked. No `--agent` binding ships.
+
+Exact help and official docs still advertise `--agent`, `agy agents`, and
+selected `init.agent`. Live invalid `--agent` selection returned JSON
+`status: SUCCESS` with nonzero usage, so headless agent selection fail-opens
+rather than matching the documented no-silent-fallback promise for unknown
+`--model`. `agy agents` is host-local and was empty on later promptless probes
+in the same session. Official custom agents may change instructions and tool
+permissions, which current Swallowtail does not pin through `init.tools`.
+Existing decoder fixtures omit `init.agent`. Production argv remains unchanged.
+
+Reassess the remaining per-route inventory before the next route-local lane.
+g04 stays open at operator direction.

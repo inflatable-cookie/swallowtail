@@ -1,6 +1,6 @@
 # 161 Antigravity Headless Agent Profile Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
@@ -53,24 +53,32 @@ paid work.
 
 ## Acceptance Criteria
 
-- [ ] official and exact artifact/fixture specimens have identities and full
+- [x] official and exact artifact/fixture specimens have identities and full
       digests
-- [ ] listing, requested, planned, dispatched, accepted, effective, and
+- [x] listing, requested, planned, dispatched, accepted, effective, and
       observed states are distinct
-- [ ] profile-id syntax, listing scope, invalid selection, fallback behavior,
+- [x] profile-id syntax, listing scope, invalid selection, fallback behavior,
       and `init.agent` confirmation are explicit
-- [ ] every candidate version and operation shape has a disposition
-- [ ] access, isolation, permissions, tools, model, effort, schema,
+- [x] every candidate version and operation shape has a disposition
+- [x] access, isolation, permissions, tools, model, effort, schema,
       continuation, and cleanup composition are explicit
-- [ ] Research 205 is promoted with a non-empty exact set or honest stop
-- [ ] no production code, public API, matrix, contract, or currentness change
-- [ ] `effigy validate:focused swallowtail-adapter-antigravity` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] Research 205 is promoted with a non-empty exact set or honest stop
+- [x] no production code, public API, matrix, contract, or currentness change
+- [x] `effigy validate:focused swallowtail-adapter-antigravity` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 162 only when Research 205 admits a non-empty set with
 exact id validation, no silent fallback, and `init.agent` confirmation on each
 selected operation shape.
+
+## Result
+
+Research 205 is an honest empty deliver-now set. Live invalid `--agent`
+selection returned `SUCCESS` with a provider response. Listing ids are
+host-local and unstable. Official custom agents may change instructions and
+tool permissions. Existing fixtures omit `init.agent`. Cards 162-163 stay
+blocked. No production code.
 
 ## Stop Conditions
 

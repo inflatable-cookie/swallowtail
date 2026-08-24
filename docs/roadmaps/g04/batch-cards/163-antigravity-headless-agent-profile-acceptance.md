@@ -1,11 +1,12 @@
 # 163 Antigravity Headless Agent Profile Acceptance
 
-Status: conditional
+Status: blocked
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Milestone: [g04.058 Antigravity Headless Agent Profile Selection](../058-antigravity-headless-agent-profile-selection.md)
 Depends on: card 162
+Blocked by: Research 205 empty deliver-now set; card 162 blocked
 
 ## Goal
 

@@ -153,17 +153,15 @@ families do not interrupt this programme by default.
   value confirmation. Cards 159-160 are blocked. No reasoning-selection feature
   ships.
 - [g04.058 Antigravity Headless Agent Profile Selection](./058-antigravity-headless-agent-profile-selection.md)
-  is planned. Research 205 and card 161 must freeze exact agent listing and id
-  shape, `--agent` dispatch, invalid-selection fallback, `init.agent`
-  confirmation, authority composition, and structured-run/continuation
-  lifetimes. Cards 162-163 are conditional on a non-empty deliver-now set.
+  stopped after card 161. Research 205 is an empty deliver-now set: invalid
+  `--agent` fail-open, host-local listing, and authority composition risk.
+  Cards 162-163 are blocked. No agent-profile feature ships.
 
 ## Current Execution Boundary
 
-Execute g04.058 card 161 in one serial worker lane. Continue to cards 162-163
-only when Research 205 admits exact profile/version/operation rows with no
-silent fallback and exact init confirmation. Keep g04 active until explicit
-operator direction.
+Reassess the remaining per-route feature inventory before compiling the next
+meaningful route-local lane. Keep g04 active until explicit operator
+direction.
 
 ## Exclusions
 

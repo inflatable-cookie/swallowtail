@@ -2,14 +2,16 @@
 
 ## Planned
 
-- [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — ready
-- [162-antigravity-headless-agent-profile-binding.md](./162-antigravity-headless-agent-profile-binding.md) — conditional on Research 205
-- [163-antigravity-headless-agent-profile-acceptance.md](./163-antigravity-headless-agent-profile-acceptance.md) — conditional on card 162
-
 Cards 070-071 remain unused gaps, not tasks.
+
+## Blocked
+
+- [162-antigravity-headless-agent-profile-binding.md](./162-antigravity-headless-agent-profile-binding.md) — blocked; Research 205 empty set
+- [163-antigravity-headless-agent-profile-acceptance.md](./163-antigravity-headless-agent-profile-acceptance.md) — blocked; card 162 blocked
 
 ## Completed
 
+- [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — complete; Research 205 empty deliver-now set
 - [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — complete; Research 204 evidence stop
 - [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md)
 - [156-llama-cpp-owned-context-size-binding.md](./156-llama-cpp-owned-context-size-binding.md)

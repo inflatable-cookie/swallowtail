@@ -1,6 +1,6 @@
 # g04.056 llama.cpp Owned Context Size
 
-Status: implemented pending review; cards 155-157 complete
+Status: complete and merged through PR 55 at `54d021e4`; cards 155-157 complete
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24

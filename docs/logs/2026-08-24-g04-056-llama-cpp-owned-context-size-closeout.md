@@ -1,6 +1,6 @@
 # 2026-08-24 g04.056 llama.cpp Owned Context Size Closeout
 
-Status: complete pending review and merge
+Status: complete and merged
 Owner: Tom
 Milestone: g04.056
 Cards: 155, 156, 157
@@ -25,16 +25,14 @@ omission, lifecycle ordering, or Contract 029 identity.
 Claimed truth is dispatch only. Pad, train-cap, allocation, model fit,
 inference capacity, output, quality, latency, cost, and billing stay withheld.
 
-## Shared Closeout Delta
-
-Reserved for the orchestrator after review and merge:
+## Shared Closeout
 
 - architecture and route/feature matrices record exact adapter-local owned
   `--ctx-size` dispatch for `1..=2147483647`, omission preserved, and
   accepted/effective/observed withheld
 - Contract 029 exact `b10069-178a6c449` membership does not move
 - programme and research/log/roadmap/g04/batch-card indexes reconcile Research
-  203, cards 155-157, and g04.056 at the merged head
+  203, cards 155-157, and g04.056 at merged head `54d021e4`
 - `CHANGELOG.md` records the unreleased `LlamaCppContextSize` public adapter API
 - the sole Next Task returns to remaining per-route inventory reassessment
 - g04 remains active and unrolled until explicit operator direction
@@ -48,13 +46,12 @@ indexes, public API, and `git diff --check`. Inherited doctor baseline remains
 warning.
 
 - PR: https://github.com/inflatable-cookie/swallowtail/pull/55
-- worker head: `b404458e5f7162eff72d46221f2ec8dac92930c9`
+- reviewed and merged head: `54d021e4e90ee6b77af76d662be208835e2e95a6`
 - branch: `t3code/llama-cpp-context-size`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d516e14d`
 
-Do not claim merge.
-
 ## Next
 
-Orchestrator review of the worker PR. Do not merge, release, move currentness,
-roll g04, or close the generation from this lane.
+Reassess the remaining per-route feature inventory and compile the next
+numbered route-local milestone. Do not release, move currentness, roll g04, or
+close the generation from this lane.

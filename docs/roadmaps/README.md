@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.056 card 155: freeze exact `llama-cpp.owned` `b10069` context-size
-evidence and promote Research 203 with a non-empty deliver-now table or honest
-stop. Continue to cards 156-157 only through their named gates. Keep g04 open
-until explicit operator direction. Contract 029 currentness stays standing.
+Reassess the remaining per-route feature inventory and compile the next
+numbered route-local milestone. Keep g04 open until explicit operator
+direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

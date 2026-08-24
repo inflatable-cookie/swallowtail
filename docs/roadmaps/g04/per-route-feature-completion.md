@@ -142,17 +142,16 @@ families do not interrupt this programme by default.
   `error_max_turns` is decoder-only. Cards 149-150 stay blocked. No caller
   max-turns feature ships.
 - [g04.056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md)
-  is compiled. Research 203 and cards 155-157 form one serial evidence-first
-  lane for exact owned runtime `b10069-178a6c449`. Card 155 must settle a
-  useful positive domain, model/host dependencies, application-state truth,
-  immutable start representation, and revision posture. Caller omission keeps
-  the current no-flag launch; cards 156-157 are conditional.
+  is complete and merged through PR 55 at `54d021e4`. Research 203 and cards
+  155-157 realize adapter-local dispatch-only `LlamaCppContextSize` for exact
+  owned runtime `b10069-178a6c449`. Values `1..=2147483647` dispatch as
+  `--ctx-size N`; omission preserves the no-flag launch. Acceptance,
+  effectiveness, observation, model fit, and allocation remain withheld.
 
 ## Current Execution Boundary
 
-Execute g04.056 card 155. Continue to cards 156-157 only for a non-empty exact
-Research 203 deliver-now set and no stop condition. Keep g04 active until
-explicit operator direction.
+Reassess the remaining route-local inventory and compile the next coherent
+control family. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

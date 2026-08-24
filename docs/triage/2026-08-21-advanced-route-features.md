@@ -1511,6 +1511,12 @@ revision posture. Caller omission keeps the current command with no
 `--ctx-size`. Explicit zero is not an omission alias by inference. Cards
 156-157 continue only for a non-empty deliver-now set.
 
+Closeout: Research 203 admitted positive `1..=2147483647` as dispatch-only.
+Cards 155-157 and PR 55 delivered exact adapter-local `--ctx-size N`, preserved
+omission, and withheld accepted, effective, observed, model-fit, and allocation
+truth. The family is no longer an open gap; remaining inventory awaits a fresh
+reassessment.
+
 This reassessment also corrects the adjacent exact-build note: tagged `b10069`
 documents `--reasoning` and `--reasoning-budget`, not
 `--reasoning-effort`. That reasoning family remains promoted but unselected;

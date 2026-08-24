@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed exact-llama.cpp-owned-`b10069` context-size selection:
+  `LlamaCppContextSize` admits `1..=2147483647` and dispatches exact
+  `--ctx-size N` through immutable prepared serving evidence; omission
+  preserves the prior eleven-argument launch, while runtime acceptance,
+  effective context, model fit, allocation, and observation remain unclaimed;
+  Research 203, g04.056
 - add typed exact-Mistral-Vibe-`2.24.2` caller-decreasing maximum turns:
   `MistralVibeMaxTurns` admits `1..=8` for one headless print child; omission
   preserves `--max-turns 8`, native limit remains provider-failed, and the

@@ -70,11 +70,11 @@ and selection policy.
 - [g04.053 Qoder Headless Maximum Turns](053-qoder-headless-max-turns.md) — complete; evidence stop and claim correction, cards 148-150
 - [g04.054 Codex 0.149.1 Useful Newer](054-codex-0-149-1-useful-newer.md) — standing currentness, completed
 - [g04.055 Claude Code 2.1.241 Useful Newer](055-claude-code-2-1-241-useful-newer.md) — standing currentness, completed
-- [g04.056 llama.cpp Owned Context Size](056-llama-cpp-owned-context-size.md) — planned; card 155 ready, cards 156-157 conditional
+- [g04.056 llama.cpp Owned Context Size](056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 
-g04 has 56 numbered roadmaps: 51 completed milestones, four honest evidence
-stops at 040, 042, 043, and 045, and one planned milestone. The operator keeps
-the generation active. Execute g04.056 card 155 first; do not close g04 without
+g04 has 56 numbered roadmaps: 52 completed milestones and four honest evidence
+stops at 040, 042, 043, and 045. The operator keeps the generation active.
+Reassess the remaining per-route inventory next; do not close g04 without
 explicit operator direction.
 
 ## Current Checkpoint
@@ -178,8 +178,9 @@ explicit operator direction.
 - g04.055 standing currentness is complete: Research 202 and cards 153-154
   qualify Claude Code headless and response-only through official `2.1.241`
   without moving the generation pointer
-- g04.056 is compiled: Research 203 and card 155 own exact `llama-cpp.owned`
-  `b10069` context-size evidence; cards 156-157 are conditional
+- g04.056 is on `main` at `54d021e4` through PR 55: Research 203 and cards
+  155-157 realize dispatch-only `LlamaCppContextSize` `1..=2147483647` on exact
+  `llama-cpp.owned` `b10069`; omission preserves the no-flag launch
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 56 roadmaps; generation closure awaits explicit
@@ -224,9 +225,10 @@ explicit operator direction.
     claim correction as cards 148-150 through PR 54 (no caller binding).
 17. g04.054-055 completed standing currentness without moving the programme
     pointer.
-18. g04.056 is the next serial route-local lane: card 155 evidence first,
-    cards 156-157 only for a non-empty Research 203 deliver-now set.
-19. g04 remains active at operator direction. Contract 029 remains standing.
+18. g04.056 cards 155-157 delivered exact owned llama.cpp adapter-local
+    `--ctx-size N` dispatch and merged through PR 55 at `54d021e4`.
+19. Remaining per-route inventory reassessment is the next planning checkpoint.
+20. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -254,7 +256,7 @@ New route-family research does not pre-empt this sequence.
 - [053 Qoder Headless Maximum Turns](./053-qoder-headless-max-turns.md) — complete; evidence stop and claim correction, cards 148-150
 - [054 Codex 0.149.1 Useful Newer](./054-codex-0-149-1-useful-newer.md) — completed (standing currentness), cards 151-152
 - [055 Claude Code 2.1.241 Useful Newer](./055-claude-code-2-1-241-useful-newer.md) — completed (standing currentness), cards 153-154
-- [056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md) — planned, card 155 ready and cards 156-157 conditional
+- [056 llama.cpp Owned Context Size](./056-llama-cpp-owned-context-size.md) — complete and merged through PR 55 at `54d021e4`, cards 155-157
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

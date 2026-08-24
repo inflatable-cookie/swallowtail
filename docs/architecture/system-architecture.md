@@ -1136,6 +1136,12 @@ path before endpoint and artifact release. Local and remote-authoritative
 fixtures preserve scope and execution-host identity. Its stop authority reaches
 only its owned child; the build-9910 attached driver retains no serving-
 lifecycle role and leaves its external server running.
+The owned serving selection may additionally carry adapter-local
+`LlamaCppContextSize` in `1..=2147483647`. The prepared start retains that
+selection in immutable evidence and dispatches exact `--ctx-size N`; omission
+preserves the prior eleven-argument command. This is dispatch truth only:
+runtime acceptance, padded or training-capped effective context, model fit,
+allocation feasibility, and observation remain unclaimed.
 
 ## Prepared Integration And Bound Operation Layer
 

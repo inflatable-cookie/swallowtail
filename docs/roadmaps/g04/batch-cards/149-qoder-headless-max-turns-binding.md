@@ -1,10 +1,15 @@
 # 149 Qoder Headless Maximum-Turn Binding
 
-Status: conditional on a non-empty Research 200 deliver-now set
+Status: blocked; card 148 evidence stop
 Owner: Tom
 Created: 2026-08-24
+Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: card 148; promoted Research 200
+
+Card 148 promoted Research 200 with an empty deliver-now set. No typed
+maximum-turn input, prepared plan, driver argv selection, or behavior revision
+is admitted by this lane.
 
 ## Goal
 
@@ -33,6 +38,9 @@ through typed run input, immutable plan/evidence, driver agreement, and argv.
 - [ ] no shared `Capability`, generic provider map, or Contract 040
       `OutputTokenLimit` is added
 - [ ] all fixed Qoder route boundaries remain unchanged
+
+Not executed. Research 200 admits no deliver-now value. Binding argv
+`--max-turns N` would overstate AgentLoop enforcement on exact `1.1.25`.
 
 ## Validation
 

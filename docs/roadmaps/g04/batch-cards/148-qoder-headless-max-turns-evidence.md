@@ -1,8 +1,9 @@
 # 148 Qoder Headless Maximum-Turn Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-24
+Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: Research 151; exact route `qoder.headless` `1.1.25`
 
@@ -35,16 +36,25 @@ or host configuration change is authorized.
 
 ## Acceptance Criteria
 
-- [ ] exact official and `1.1.25` evidence is frozen with identities and digests
-- [ ] parser domain and caller-decreasing public candidate are distinguished
-- [ ] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
+- [x] exact official and `1.1.25` evidence is frozen with identities and digests
+- [x] parser domain and caller-decreasing public candidate are distinguished
+- [x] omission, `1..=8`, zero, negative, fractional, raised, overflow, and
       unbounded states have explicit dispositions
-- [ ] turn definition, check/increment order, off-by-one boundary, child-local
+- [x] turn definition, check/increment order, off-by-one boundary, child-local
       lifetime, and `num_turns` relationship are explicit
-- [ ] process, result envelope, stream, terminal, partial-event, cancellation,
+- [x] process, result envelope, stream, terminal, partial-event, cancellation,
       deadline, failure, and cleanup truth is explicit or withheld
-- [ ] plan/evidence representation and feature-local revision are explicit
-- [ ] Research 200 contains a deliver-now table or honest empty set
+- [x] plan/evidence representation and feature-local revision are explicit
+- [x] Research 200 contains a deliver-now table or honest empty set
+- [x] no production code, shared capability, matrix, contract, currentness, or
+      sibling-route change lands
+
+## Evidence Stop
+
+Research 200 admits no deliver-now row. Exact `1.1.25` copies CLI `--max-turns`
+onto Config `maxSessionTurns`, but QueryEngine/AgentLoop uses hardcoded
+`maxTurns: kN` (`1000`) on the print path. Caller-decreasing `1..=8` cannot be
+bound honestly. Cards 149-150 are blocked.
 
 ## Validation
 

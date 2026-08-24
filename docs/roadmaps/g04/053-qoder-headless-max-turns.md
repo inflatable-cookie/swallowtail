@@ -1,13 +1,13 @@
 # g04.053 Qoder Headless Maximum Turns
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Depends on: per-route feature completion programme; Research 151
 Vision tags: explicit selection, bounded execution, route-local controls
 Contract refs: 008, 011, 029, 033, 037, 040, 052
-Research: 151; 200 reserved by card 148
+Research: 151; 200 promoted; empty deliver-now
 
 ## Problem
 
@@ -29,15 +29,15 @@ the current `--max-turns 8` command.
 
 ## Goals
 
-- [ ] freeze current official and exact `1.1.25` parsing, counting,
+- [x] freeze current official and exact `1.1.25` parsing, counting,
       enforcement, result, exit, and cleanup evidence
-- [ ] classify candidate values `1..=8`, zero, negative, fractional, values
+- [x] classify candidate values `1..=8`, zero, negative, fractional, values
       above eight, overflow, and upstream unbounded omission
-- [ ] settle the exact turn definition, check/increment order, one-child
+- [x] settle the exact turn definition, check/increment order, one-child
       lifetime, and `num_turns` relationship
-- [ ] distinguish native limit truth from host deadline, output-token, tool,
+- [x] distinguish native limit truth from host deadline, output-token, tool,
       cost, provider-completion, and quality claims
-- [ ] promote Research 200 with an exact deliver-now table or honest stop
+- [x] promote Research 200 with an exact deliver-now table or honest stop
 - [ ] preserve caller omission as exact current `--max-turns 8` argv
 - [ ] bind only admitted values through typed adapter-local input, immutable
       plan/evidence, driver validation, and command construction
@@ -79,32 +79,41 @@ cancellation, failure mapping, and cleanup remain fixed.
 
 ### Batch 53.1 — Exact Maximum-Turn Evidence
 
-- [ ] Execute card 148.
-- [ ] promote Research 200 with exact domain, counting, and terminal truth
+- [x] Execute card 148.
+- [x] promote Research 200 with exact domain, counting, and terminal truth
+
+Card 148 stopped the lane. Exact `1.1.25` copies CLI `--max-turns` onto Config
+`maxSessionTurns`, but the print QueryEngine path hardcodes AgentLoop
+`maxTurns: kN` (`1000`). Caller-decreasing selection is not exact dispatch.
 
 ### Batch 53.2 — Conditional Maximum-Turn Binding
 
 - [ ] Execute card 149 only when card 148 admits a non-empty deliver-now set.
 - [ ] bind the smallest typed adapter-local caller-decreasing selection
 
+Card 149 is blocked because Research 200 admits no deliver-now row.
+
 ### Batch 53.3 — Route-Local Acceptance
 
 - [ ] Execute card 150 only after card 149.
 - [ ] prove admitted, omitted, rejected, terminal, and lifecycle truth
 
+Card 150 is blocked because card 149 did not execute. The guide stays accurate
+without a caller maximum-turn capability claim.
+
 ## Acceptance Criteria
 
-- [ ] only Research 200 deliver-now values prepare
-- [ ] omission preserves exact current `--max-turns 8` argv and behavior
+- [x] only Research 200 deliver-now values prepare; the set is empty
+- [x] omission preserves exact current `--max-turns 8` argv and behavior
 - [ ] input, plan/evidence, driver, and command agree exactly
 - [ ] invalid values and knowable mismatches reject before effects
-- [ ] fixed output, permission, session, workdir, deadline, access,
+- [x] fixed output, permission, session, workdir, deadline, access,
       cancellation, failure, and cleanup boundaries remain unchanged
-- [ ] terminal claims do not exceed exact source and deterministic fixtures
-- [ ] no portable output-token, generic budget, effective-work, quality,
+- [x] terminal claims do not exceed exact source and deterministic fixtures
+- [x] no portable output-token, generic budget, effective-work, quality,
       latency, price, or billing claim is introduced
-- [ ] default QA performs no install, login, credential, prompt, or paid work
-- [ ] g04.053 closes only this route-local family; g04 remains active
+- [x] default QA performs no install, login, credential, prompt, or paid work
+- [x] g04.053 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 
@@ -129,9 +138,23 @@ cancellation, failure mapping, and cleanup remain fixed.
 
 ## Batch Cards
 
-- [148-qoder-headless-max-turns-evidence.md](batch-cards/148-qoder-headless-max-turns-evidence.md) — ready
-- [149-qoder-headless-max-turns-binding.md](batch-cards/149-qoder-headless-max-turns-binding.md) — conditional
-- [150-qoder-headless-max-turns-acceptance.md](batch-cards/150-qoder-headless-max-turns-acceptance.md) — conditional
+- [148-qoder-headless-max-turns-evidence.md](batch-cards/148-qoder-headless-max-turns-evidence.md) — complete; evidence stop
+- [149-qoder-headless-max-turns-binding.md](batch-cards/149-qoder-headless-max-turns-binding.md) — blocked
+- [150-qoder-headless-max-turns-acceptance.md](batch-cards/150-qoder-headless-max-turns-acceptance.md) — blocked
+
+## Evidence Stop
+
+Research 200 has no deliver-now row. Exact npm `@qoder-ai/qodercli@1.1.25`
+registers `--max-turns <count>` and stores it as Config `maxSessionTurns`. The
+selected stream-json print path constructs QueryEngine with `maxTurns: kN`
+(`1000`) and never feeds `getMaxSessionTurns()` into AgentLoop. Binding
+caller-decreasing `1..=8` would overstate enforcement. Existing fixed argv
+`8`, `error_max_turns` fixture mapping, and joined one-child lifecycle remain
+the claim.
+
+Cards 149 and 150 are blocked. No production adapter, prepared input, driver,
+guide capability, behavior revision, compatibility range, matrix, or release
+claim changes.
 
 ## References
 
@@ -150,8 +173,7 @@ cancellation, failure mapping, and cleanup remain fixed.
 
 ## Closeout
 
-Reserved. The worker closes only route-local Research 200, cards 148-150,
-guide, fixtures, example/API evidence, and this milestone. Shared architecture,
-Contract 029 disposition, route/feature matrices, programme/front-door
-indexes, changelog, sole Next Task, and merge truth remain for the orchestrator
-after review and merge. g04 closure is not authorized.
+Route-local Research 200, cards 148-150, and this milestone record the evidence
+stop. Shared architecture, Contract 029 disposition, route/feature matrices,
+programme/front-door indexes, changelog, sole Next Task, and merge truth remain
+for the orchestrator after review and merge. g04 closure is not authorized.

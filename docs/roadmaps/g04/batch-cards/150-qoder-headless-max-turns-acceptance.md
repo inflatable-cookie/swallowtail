@@ -1,10 +1,14 @@
 # 150 Qoder Headless Maximum-Turn Acceptance
 
-Status: conditional on card 149
+Status: blocked; card 149 blocked
 Owner: Tom
 Created: 2026-08-24
+Updated: 2026-08-24
 Milestone: [g04.053 Qoder Headless Maximum Turns](../053-qoder-headless-max-turns.md)
 Depends on: cards 148-149; promoted Research 200
+
+Card 149 is blocked because Research 200 has no deliver-now row. No typed
+maximum-turn dispatch or guide capability claim exists to accept.
 
 ## Goal
 
@@ -35,6 +39,10 @@ close the route-local lane without closing g04.
 - [ ] route guide and example show typed selection and omission semantics
 - [ ] default validation performs no install, login, prompt, or paid work
 - [ ] g04.053 closes only this family; g04 remains open
+
+Not executed. No binding landed. Guide stays accurate without a caller
+maximum-turn capability claim. Fixed `--max-turns 8` and existing
+`error_max_turns` fixture truth remain.
 
 ## Validation
 

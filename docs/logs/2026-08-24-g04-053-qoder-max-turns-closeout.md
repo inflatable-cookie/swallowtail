@@ -8,7 +8,7 @@ Branch: `t3code/qoder-headless-max-turns`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-8e7b4cb9`
 Base: `f7593490ccf6f7f1f3cf741c04eb20b8112c09e5` (planning); worker started from
 pushed `origin/main` `8a5415fd684246204c9d8ef2a537499bee2a705d`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/54
 
 ## Result
 
@@ -75,5 +75,7 @@ errors); one generated-in-src warning.
 
 ## Next
 
-Open one evidence PR against current `main`. Do not merge. Orchestrator reviews,
-merges, then applies shared closeout and reassesses remaining inventory.
+Evidence PR open: https://github.com/inflatable-cookie/swallowtail/pull/54.
+Do not merge from this lane.
+Orchestrator reviews, merges, then applies shared closeout and reassesses
+remaining inventory.

@@ -225,7 +225,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.238`; later stable
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.241`; later stable
 versions remain visible `UnverifiedNewer`.
 
 See the compile-tested
@@ -235,7 +235,7 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. `2.1.227` through `2.1.238` are
+on the route's explicit known-bad deny-list. `2.1.227` through `2.1.241` are
 qualified; later stable releases run provisionally as `UnverifiedNewer` under
 the same runtime validation. It is a distinct route. It does not weaken or replace
 `claude-code.headless`.
@@ -278,7 +278,7 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification: the qualified segment ends at `2.1.238`, while newer stable
+qualification: the qualified segment ends at `2.1.241`, while newer stable
 versions are provisional until evidence moves that boundary. The static
 deny-list is empty as of 2026-08-18.
 

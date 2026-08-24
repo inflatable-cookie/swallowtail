@@ -95,6 +95,12 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Raised qualified Claude Code headless and response-only ceilings from
+  `2.1.238` to official npm `@anthropic-ai/claude-code` `2.1.241`.
+  Compatible-extension: official extracted `--help` is byte-identical to
+  `2.1.238`. Published intermediates `2.1.239` and `2.1.240` are
+  qualified; `2.1.242` remains visible `UnverifiedNewer`. Research 202,
+  g04.055.
 - Raised qualified Codex CLI ceiling from `0.149.0` to `0.149.1` on the
   `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
   Compatible-extension: selected mapped flags unchanged, schema bundles

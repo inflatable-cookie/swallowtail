@@ -120,6 +120,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [172 Codex 0.149.0 Identity](./172-codex-0-149-0-identity.md)
 - [178 Oh My Pi 17.4.0 Identity](./178-oh-my-pi-17-4-0-identity.md)
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)
+- [202 Claude Code 2.1.241 Identity](./202-claude-code-2-1-241-identity.md)
 - [175 Claude Code 2.1.238 Identity](./175-claude-code-2-1-238-identity.md)
 - [174 Ollama 0.32.15 Identity](./174-ollama-0-32-15-identity.md)
 - [166 Oh My Pi 17.3.8 Identity](./166-oh-my-pi-17-3-8-identity.md)

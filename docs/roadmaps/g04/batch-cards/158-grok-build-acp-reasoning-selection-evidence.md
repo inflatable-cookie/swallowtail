@@ -88,7 +88,9 @@ confirmation before readiness/first prompt.
 
 ## Closeout
 
-Research 204 is an honest empty set. Exact `0.2.114`, `1.0.4`, and `1.0.5`
-binaries advertise `reasoning_efforts` in catalog/initialize observation and
-contain no `session/set_config_option`. Official ACP `session/new` is `cwd` plus
-empty MCP servers. Cards 159-160 stay blocked. No production code.
+Research 204 is an honest empty set. Split 1.0.4 from 1.0.5: 1.0.5 applies a
+`session/new` `_meta.reasoningEffort` hint with ignore-on-unsupported; 1.0.4
+has the parser without that new-session path. Neither exposes a Contract 034
+snapshot, `session/set_config_option`, or effective confirmation. Official ACP
+`session/new` is `cwd` plus empty MCP servers. Cards 159-160 stay blocked. No
+production code.

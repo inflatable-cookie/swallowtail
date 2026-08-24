@@ -90,7 +90,8 @@ post-allocation cleanup, and doctor-baseline checks pass.
 
 ## Closeout
 
-Not executed. Research 204 admits no deliver-now row. Binding portable
-`ReasoningSelection` would invent a `session/set_config_option` channel the
-exact binaries do not implement, or copy CLI/`GROK_CONFIG`/open-time `_meta`
-hints that substitute defaults and ignore unsupported values.
+Not executed. Research 204 admits no deliver-now row. Exact 1.0.5's open-time
+`_meta.reasoningEffort` hint is request-dispatchable and fail-open; it is not a
+negotiated selectable option. Binding portable `ReasoningSelection` would treat
+that hint, CLI `--effort`, or `GROK_CONFIG` defaults as Contract 034
+confirmation.

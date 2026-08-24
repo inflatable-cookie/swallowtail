@@ -17,8 +17,12 @@ exact handshakes record bounded effort sets, but consumers cannot select one:
 interactive preparation rejects non-empty `SessionOptions`, and structured-run
 preparation exposes no reasoning input.
 
-Current official Grok Build documentation says ACP clients can select reasoning
-effort when opening or resuming a session. That is a lead, not qualification.
+Current official ACP docs and the stdio example open a session with `cwd` and
+empty MCP servers. They do not document an ACP effort field. A planning triage
+note attributed open/resume effort selection to the 1.0.x changelog; the frozen
+changelog pages do not contain that sentence. Exact 1.0.5 binaries apply an
+open-time `_meta.reasoningEffort` hint with fail-open ignore; 1.0.4 has the
+parser without that new-session path. Neither is Contract 034 confirmation.
 Swallowtail must freeze the exact option snapshot, private option id and values,
 selection request, effective confirmation, lifetime, and version/model mapping
 before enabling portable `ReasoningSelection`.
@@ -68,9 +72,9 @@ current wire and behavior.
 The lane is restricted to route `grok-build.acp`, driver
 `swallowtail.grok-build.acp`, axis `grok-build.executable`, ACP v1 stdio, and
 the existing delegated subscription access profile. Exact deprecated versions
-`0.2.114..=0.2.117` bind `grok-4.5`; maintained `1.0.4..=1.0.5` bind
-`grok-4.6`. Mid-gap `0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3` remain
-incompatible.
+`0.2.114..=0.2.117` bind `grok-4.5`; maintained `1.0.4` and `1.0.5` bind
+`grok-4.6` but differ on new-session effort application. Mid-gap
+`0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3` remain incompatible.
 
 The initial candidates come only from frozen exact handshakes:
 

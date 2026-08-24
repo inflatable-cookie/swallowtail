@@ -93,6 +93,7 @@ Auto-continuation: No.
 
 ## Closeout
 
-Not executed. No negotiation, omission-vs-selected, or confirmation proofs to
-add. Current empty-options wire already matches Research 204's omission path.
-Guide still says reasoning selection is not qualified.
+Not executed. No negotiation or confirmation proofs to add. Current
+empty-options wire already matches Research 204's omission path. Exact 1.0.5's
+unconfirmed open-time hint is not a selected-readiness proof. Guide still says
+reasoning selection is not qualified.

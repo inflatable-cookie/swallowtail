@@ -5,7 +5,9 @@ Owner: Tom
 Created: 2026-08-24
 Updated: 2026-08-24
 Card: g04.057 / 158
-Correction: 2026-08-24 split exact 1.0.4 from 1.0.5 open-time hint evidence
+Correction: 2026-08-24 split exact 1.0.4 from 1.0.5 open-time hint evidence;
+classify exact `x.ai/sessionConfig` response channel without inferring option
+contents from later source
 
 ## Question
 
@@ -154,12 +156,52 @@ remain `low|medium|high|xhigh`. Later `types.rs` `FromStr` also names
 `none|minimal|max`; unknown strings are ignored. Those extra enum names are
 not handshake-advertised on this route and are not deliver-now.
 
-No binary string shows a client-visible `configOptions` snapshot, a
-`session/set_config_option` request, or a `config_option_update` that
-confirms the effective value. `session/new` success and an internal tracing
-log are not Contract 034 confirmation.
+`session/new` success and an internal tracing log are not confirmation.
 
-## Contract 034 Seam Versus Open-Time Hint
+## Exact `x.ai/sessionConfig` Response Channel
+
+Both maintained binaries insert vendor session-new metadata. Exact strings
+are concatenated in `agent_ops.rs` rodata:
+
+`x.ai/sessionConfig` `options` `x.ai/sessionDetail` `x.ai/schedulerBackgroundLoops`
+
+| Version | Binary SHA-256 | `x.ai/sessionConfig` offset | `insert_session_config_meta` |
+| --- | --- | --- | --- |
+| `1.0.4` | `39366f7756a090b735cc1df8c93a8c0c3c7871555cf6cbb28f9351ca82936485` | `107073191` | present |
+| `1.0.5` | `3dfa7f04fbb5427a8fbead286591543aaecb478b3a0ab222c4329eca1a3b2f86` | `107433096` | present |
+
+Frozen shape from those exact strings: `_meta["x.ai/sessionConfig"].options`,
+plus sibling vendor keys `x.ai/sessionDetail` and
+`x.ai/schedulerBackgroundLoops`. The response channel is not absent.
+
+That does not freeze option membership. Exact 1.0.4 and 1.0.5 contain:
+
+- no `session_config.rs`
+- no `"effort"` option-id string
+- no binary proof that `options` contains effort rows or a `selected` /
+  `currentValue` equal to a requested `_meta.reasoningEffort`
+
+ACP protocol schema types `SessionConfigSelectOption` (4 fields),
+`SessionConfigSelectGroup` (4 fields), `SessionConfigOptionValue`,
+`SessionConfigOptionCategory`, `currentValue`, and `ConfigOptionUpdate` appear
+in both binaries. Those are compiled protocol-crate names, the same class of
+evidence as `config_option_update` schema vocabulary. They do not prove Grok
+fills `x.ai/sessionConfig.options` with effort.
+
+Preserved Research 130/163 handshakes recorded `session/new` success and
+discarded the result body, including `_meta`. Swallowtail fixtures return only
+`{"sessionId": ...}`. There is no retained no-prompt `session/new` payload that
+shows effort/selected truth.
+
+Later public `session_setup.rs` / `agent_ops.rs` / `session_config.rs` name
+effort rows with `selected: Some(effort.value) == current_effort`. That is not
+exact 1.0.4/1.0.5 evidence and is not used as a mapping.
+
+Exact conclusion: 1.0.5's requested `_meta.reasoningEffort` is **not proven**
+to return as a selected effort row. The selected-response confirmation question
+is unanswered from exact package/handshake evidence, so it is not confirmation.
+
+## Contract 034, Contract 040, And Open-Time Hint
 
 Required sequence for a claimed negotiated option:
 
@@ -171,17 +213,24 @@ Required sequence for a claimed negotiated option:
 6. require a response or update that confirms the effective value
 7. return ready / first prompt only after confirmation
 
-Exact qualified Grok ACP does not expose that seam.
+Exact qualified Grok ACP does not expose that **negotiated** seam. Absence of
+`session/set_config_option` does not by itself disqualify an exact open-time
+request-field mapping under Contract 040.
 
-1.0.5's `_meta.reasoningEffort` is an **open-time hint**, not a negotiated
-selectable option:
+Contract 040 keeps requested, planned, dispatched, accepted, effective, and
+observed separate. Dispatch of `_meta.reasoningEffort` would still need:
+
+- no clamp, ignore, or default substitution
+- explicit confirmation of the applied value before an effective claim
+
+1.0.5's `_meta.reasoningEffort` remains an **open-time hint**:
 
 - it is sent on `session/new`, not after a bounded snapshot
 - unsupported and unparsable values are ignored
 - later-source corroboration substitutes last-used/config/catalog defaults
   when the hint is absent
-- there is no correlated selection request and no effective-value confirmation
-  before readiness
+- exact `x.ai/sessionConfig.options` contents are not frozen, so the hint is
+  not proven selected in the `session/new` result
 
 Adjacent non-qualifying surfaces:
 
@@ -192,7 +241,8 @@ Adjacent non-qualifying surfaces:
 | `GROK_CONFIG` `models.default_reasoning_effort` | 1.0.5 binary and current config guide | generic overlay and default substitution |
 | initialize `reasoning_efforts` | advertised values | advertisement is not selectability |
 | 1.0.4 `session/set_model` effort override | apply or ignore from meta | model switching is out of scope; not `session/new` |
-| 1.0.5 `session/new` `_meta.reasoningEffort` | request-dispatchable hint; ignore-on-unsupported | no snapshot, no `set_config_option`, no effective confirmation |
+| 1.0.5 `session/new` `_meta.reasoningEffort` | request-dispatchable hint; ignore-on-unsupported | fail-open; exact `sessionConfig` effort/selected payload unfrozen |
+| 1.0.4/1.0.5 `x.ai/sessionConfig.options` | vendor response channel exists | option membership and selected-effort truth not frozen |
 
 ## Version / Model / Value Disposition
 
@@ -212,17 +262,19 @@ Adjacent non-qualifying surfaces:
 | `1.0.5` | `grok-4.6` | `xhigh` | yes | dispatchable; ignore if unsupported | no | no | no |
 | any qualified | any | `off`/`none`, `minimal`, `max`, aliases | CLI / later enum names | ignore on parse failure | no | no | no |
 
-No row is deliver-now. The empty set is because exact evidence lacks a bounded
-snapshot, a selectable Contract 034 option, and effective confirmation, and
-because 1.0.5 fail-opens on unsupported/unparsable values. It is not because
-the 1.0.5 hint is later-source only.
+No row is deliver-now. The empty set is because exact 1.0.4/1.0.5 evidence does
+not freeze `x.ai/sessionConfig.options` effort/selected truth, 1.0.5 fail-opens
+on unsupported/unparsable values, and preserved handshakes discarded the
+`session/new` result body. It is not because the response channel is absent,
+not because 034 `set_config_option` is required for every mapping, and not
+because the 1.0.5 hint is later-source only.
 
 ## Lifecycle Disposition
 
 | Lifecycle | Disposition |
 | --- | --- |
 | Interactive `session/new` on 1.0.4 | current wire: `cwd` + empty `mcpServers`; parser exists; no new-session apply path |
-| Interactive `session/new` on 1.0.5 | same current Swallowtail wire; provider may apply `_meta.reasoningEffort` internally without snapshot or confirmation |
+| Interactive `session/new` on 1.0.5 | same current Swallowtail wire; provider may apply `_meta.reasoningEffort` and may attach `x.ai/sessionConfig.options`; effort/selected membership is unfrozen |
 | Operation-private structured-run session | same `start_session` path, then one prompt; no reasoning input |
 | Omission | retain current wire; do not infer `high` or any provider default as a selected value |
 | Attachment recovery | empty options already required; 1.0.5 new-session hint does not authorize mutation |
@@ -236,8 +288,9 @@ distinct. 1.0.5 can request an open-time hint. That is not selectable
 negotiated confirmation.
 
 There is no adapter-private option id, category, or `session/set_config_option`
-request shape to freeze. A `session/new` result without a confirming snapshot
-is not enough.
+request shape to freeze. A `session/new` result that may carry
+`x.ai/sessionConfig.options` is not enough without exact effort/selected
+membership.
 
 Post-allocation Contract 034 selection failure does not arise: Swallowtail
 never allocates a session in order to set effort. Existing initialize /
@@ -252,10 +305,11 @@ current public API stays empty `SessionOptions` and no run reasoning member.
 Research 204 promotes an empty deliver-now set.
 
 Cards 159-160 stay blocked. A later lane may reopen this family only when exact
-qualified ACP evidence shows one bounded option snapshot, one selectable
-private value, one correlated selection request, and effective confirmation
-before readiness or first prompt, without default substitution, ignore-on-
-unsupported, model switch, load/resume mutation, or a generic settings map.
+1.0.4/1.0.5 (or a later qualified point) evidence freezes `session/new`
+`x.ai/sessionConfig.options` effort/selected membership, or a Contract 034
+snapshot/selection/confirmation sequence, without ignore-on-unsupported,
+default substitution, model switch, load/resume mutation, or a generic
+settings map.
 
 CLI `--effort`, hosted xAI Responses `reasoning.effort`, UltraCode-style
 aliases, and `GROK_CONFIG` overlays remain out of scope.

@@ -7,11 +7,10 @@ Cards: 158 complete; 159-160 blocked
 
 ## Result
 
-Research 204 is an honest empty deliver-now set. Exact Grok Build ACP
-advertises catalog/initialize `reasoning_efforts` and has no Contract 034
-selection channel. Exact 1.0.5 applies an open-time `_meta.reasoningEffort`
-hint with fail-open ignore; 1.0.4 does not have that new-session path. Cards
-159-160 stay blocked. No production code. No public API change. g04 stays open.
+Research 204 is an honest empty deliver-now set. Exact 1.0.4 and 1.0.5 insert
+`x.ai/sessionConfig.options` but do not freeze effort/selected membership.
+1.0.5's open-time hint fail-opens. Cards 159-160 stay blocked. No production
+code. No public API change. g04 stays open.
 
 ## Evidence Table
 
@@ -22,12 +21,15 @@ hint with fail-open ignore; 1.0.4 does not have that new-session path. Cards
 | `1.0.5` | `grok-4.6` | `low`, `medium`, `high`, `xhigh` | yes | dispatchable; ignore if unsupported | no | no | no |
 | any qualified | any | `off`/`none`, `minimal`, `max`, aliases | CLI / later enum | ignore on parse failure | no | no | no |
 
-Exact binaries contain no `session/set_config_option`. Official ACP
+Exact binaries contain no `session/set_config_option`. Both 1.0.4 and 1.0.5
+insert `_meta["x.ai/sessionConfig"].options` (`1.0.4` offset `107073191`,
+`1.0.5` offset `107433096`). Exact option membership and selected-effort
+truth are not in those binaries or in preserved handshakes. Official ACP
 `session/new` is `cwd` plus empty `mcpServers`. Current spawn stays
 `grok --no-auto-update agent stdio` with empty `SessionOptions`.
 
-The empty set is missing snapshot/confirmation plus 1.0.5 fail-open/default
-behavior, not a claim that the 1.0.5 hint is later-source only.
+The empty set is unfrozen `sessionConfig` effort/selected truth plus 1.0.5
+fail-open, not a missing response channel and not later-source-only.
 
 Omission retains current wire. Attachment recovery stays on the empty-options
 path. Load/resume stay unqualified. `UnverifiedNewer` has no private mapping to
@@ -55,7 +57,8 @@ findings (332 warnings / 46 errors) plus one generated-in-src warning.
 - base: `main`
 - head: `t3code/review-acp-reasoning-selection`
 - evidence commit: `47e1d8fee35d072082e0d3501922a864d7c1133e`
-- previously reviewed head: `56dd8dd24834f9bf1f9c23c07e793bb42fffa126`
+- previously reviewed heads: `56dd8dd24834f9bf1f9c23c07e793bb42fffa126`,
+  `3dff924831c4b9a03e3d67fa5873bc6d0b7decb4`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-70fd631c`
 - merge: none; do not merge from this worker
 

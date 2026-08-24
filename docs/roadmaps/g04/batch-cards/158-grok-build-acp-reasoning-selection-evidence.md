@@ -88,9 +88,8 @@ confirmation before readiness/first prompt.
 
 ## Closeout
 
-Research 204 is an honest empty set. Split 1.0.4 from 1.0.5: 1.0.5 applies a
-`session/new` `_meta.reasoningEffort` hint with ignore-on-unsupported; 1.0.4
-has the parser without that new-session path. Neither exposes a Contract 034
-snapshot, `session/set_config_option`, or effective confirmation. Official ACP
-`session/new` is `cwd` plus empty MCP servers. Cards 159-160 stay blocked. No
-production code.
+Research 204 is an honest empty set. Split 1.0.4 from 1.0.5. Exact binaries
+insert `_meta["x.ai/sessionConfig"].options`; they do not freeze effort/
+selected membership. 1.0.5's open-time hint fail-opens. Preserved handshakes
+discarded the `session/new` body. Cards 159-160 stay blocked. No production
+code.

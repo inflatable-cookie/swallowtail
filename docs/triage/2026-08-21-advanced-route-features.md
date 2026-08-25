@@ -1769,3 +1769,28 @@ Cards 174-175 bind request encoding, omitted SSE grammar, bounded zeroizing
 private replay before `tool_use`, effort composition, and fail-closed
 `thinking_delta`. No `ReasoningSummary` activity. Summarized display, manual
 budgets, and other models stay out. g04 stays open at operator direction.
+
+## Post-g04.062 Reassessment And g04.063 Compilation (2026-08-25)
+
+Disposition: select process-local reasoning effort on `kimi-code.headless` and
+compile g04.063 as one serial evidence-first lane.
+
+The exact 0.38.0 configuration documentation exposes `[thinking].effort`,
+per-model `support_efforts` and `default_effort`, and a temporary
+`KIMI_MODEL_*` environment surface. The exact selected headless renderer,
+options, and prompt-run source remains byte-identical to 0.37.2 through 0.38.0.
+The existing route already selects one exact model and owns one prompt child,
+so a typed process-local binding is a credible route-local candidate.
+
+The evidence warning is decisive: unsupported configured effort may fall back
+to the model default. Research 210 and card 176 must therefore freeze the
+exact key, parser, precedence, executable range, selected model/provider,
+supported/default values, invalid and fallback behavior, and stream-json
+thinking disclosure. No value is prequalified. Cards 177-178 continue only
+for exact rows that cannot be silently substituted, clamped, shadowed, or
+defaulted.
+
+No ACP or local-server promotion, Python `kimi-cli`, raw config/environment
+surface, config mutation, synthetic config root, permission/plan control,
+thought disclosure, currentness movement, generation rollover, or g04 closure
+is authorized.

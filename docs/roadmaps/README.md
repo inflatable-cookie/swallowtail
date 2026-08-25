@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted per-route feature inventory after g04.062.
-Keep g04 open until explicit operator direction. Contract 029 currentness
-stays standing.
+Execute g04.063 cards 176-178 serially: Kimi Code headless reasoning-effort
+evidence, conditional binding, then acceptance. Stop honestly after card 176
+if Research 210 is empty. Keep g04 open until explicit operator direction.
+Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

@@ -6,7 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None.
+- [176-kimi-code-headless-reasoning-effort-evidence.md](./176-kimi-code-headless-reasoning-effort-evidence.md)
+- [177-kimi-code-headless-reasoning-effort-binding.md](./177-kimi-code-headless-reasoning-effort-binding.md) — conditional on non-empty Research 210
+- [178-kimi-code-headless-reasoning-effort-acceptance.md](./178-kimi-code-headless-reasoning-effort-acceptance.md) — conditional on card 177
 
 ## Blocked
 

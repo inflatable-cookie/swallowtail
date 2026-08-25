@@ -179,11 +179,15 @@ families do not interrupt this programme by default.
   `claude-opus-4-7` adapter-local adaptive omitted-display thinking on
   structured attempts and direct continuation, with bounded private replay and
   no thought disclosure.
+- [g04.063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md)
+  is ready. Research 210 must freeze exact process-local transport,
+  version/model/value support, precedence, fallback, stream disclosure, and
+  claim strength before conditional binding and acceptance.
 
 ## Current Execution Boundary
 
-Reassess the remaining promoted per-route inventory. Keep g04 active until
-explicit operator direction.
+Execute g04.063 cards 176-178 serially. Stop honestly after card 176 if
+Research 210 is empty. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

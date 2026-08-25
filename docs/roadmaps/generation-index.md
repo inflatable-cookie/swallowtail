@@ -48,8 +48,9 @@ qualifies under `kimi.headless.stream-json.v2`. The post-v2 reassessment keeps
 177-178 blocked. g04.065 stopped after card 181 and Research 212: exact
 `2.1.241` help omits `ultracode`, parser accepts the hidden value from
 `2.1.203+`, and no deliver-now row was admitted; cards 182-183 blocked.
-g04.066 is ready: Research 213 and cards 184-186 qualify exact Codex Exec
-model verbosity before any adapter-local binding.
+g04.066 is complete pending PR: Research 213 admits exact `0.147.0..=0.149.1`
+openai Responses exec verbosity for seven frozen slugs; cards 184-186 bind
+adapter-local `CodexModelVerbosity`. Live-catalog acceptance remains withheld.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

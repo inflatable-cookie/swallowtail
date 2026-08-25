@@ -1,6 +1,6 @@
 # 184 Codex Exec Model Verbosity Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -54,19 +54,19 @@ any required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official sources, release tag, dates, revisions, and hashes are
+- [x] exact official sources, release tag, dates, revisions, and hashes are
       recorded
-- [ ] CLI/version, provider, selected-model, value, default, and profile rows
+- [x] CLI/version, provider, selected-model, value, default, and profile rows
       are explicit
-- [ ] parser, precedence, omission, unknown, unsupported, ignore, fallback,
+- [x] parser, precedence, omission, unknown, unsupported, ignore, fallback,
       and warning truth is settled
-- [ ] selected/planned/dispatched/accepted/effective/observed claims are split
-- [ ] existing Exec input, plan/evidence, command, composition, and lifecycle
+- [x] selected/planned/dispatched/accepted/effective/observed claims are split
+- [x] existing Exec input, plan/evidence, command, composition, and lifecycle
       seams are audited
-- [ ] Research 213 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 213 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] `effigy validate:focused swallowtail-adapter-codex`, `effigy
+- [x] `effigy validate:focused swallowtail-adapter-codex`, `effigy
       qa:northstar`, relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions

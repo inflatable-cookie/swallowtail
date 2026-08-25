@@ -9,6 +9,8 @@ mod exec_deadline;
 mod exec_run;
 #[path = "exec_validation.rs"]
 mod exec_validation;
+#[path = "exec_verbosity.rs"]
+mod exec_verbosity;
 #[path = "installed_discovery.rs"]
 mod installed_discovery;
 #[path = "prepared.rs"]

@@ -16,6 +16,7 @@ mod exec_handle;
 mod exec_input;
 mod exec_pump;
 mod exec_validation;
+mod model_verbosity;
 mod prepared;
 mod prepared_profile;
 mod rpc;
@@ -38,6 +39,7 @@ pub use addable::{
 };
 pub use app_server::{CodexAppServerDriver, codex_app_server_descriptor};
 pub use exec::{CodexExecDriver, codex_exec_descriptor};
+pub use model_verbosity::CodexModelVerbosity;
 pub use prepared::{
     CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver, CodexPreparedIntegration,
     prepare_codex,

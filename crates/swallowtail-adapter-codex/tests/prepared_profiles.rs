@@ -9,9 +9,9 @@ use support::{
     host_services_with_for, working_resource,
 };
 use swallowtail_adapter_codex::{
-    CODEX_CLI_AXIS, CodexExecProfileInput, CodexModelSelection, CodexPreparationInput,
-    CodexPreparationProbe, CodexPreparedDriver, CodexPreparedSessionKind, CodexSessionProfileInput,
-    codex_chatgpt_subscription_access_profile, prepare_codex,
+    CODEX_CLI_AXIS, CodexExecProfileInput, CodexModelSelection, CodexModelVerbosity,
+    CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver, CodexPreparedSessionKind,
+    CodexSessionProfileInput, codex_chatgpt_subscription_access_profile, prepare_codex,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ActivityContentStream, ActivityDisclosure,

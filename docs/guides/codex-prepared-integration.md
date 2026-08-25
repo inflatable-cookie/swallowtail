@@ -11,7 +11,7 @@ Both routes are in `swallowtail-adapter-codex`; selection is explicit through
 
 | Route | Driver ID and transport | Choose it for | Reject it when |
 | --- | --- | --- | --- |
-| `codex.exec` | `swallowtail.codex.exec`; structured CLI JSONL over stdio | one bounded structured run, optional reasoning, one image, JSON Schema output, or host-approved search | the application needs a reusable session, callbacks, discovery/import, reconciliation, or management |
+| `codex.exec` | `swallowtail.codex.exec`; structured CLI JSONL over stdio | one bounded structured run, optional reasoning, optional adapter-local model verbosity, one image, JSON Schema output, or host-approved search | the application needs a reusable session, callbacks, discovery/import, reconciliation, or management |
 | `codex.app-server` | `swallowtail.codex.app-server`; app-server JSONL RPC over stdio | model and thread catalogues, interactive sessions, tools, questions, plan mode, load/resume, newest-first history pages, reconciliation, or inactive-thread management | the application needs exec-only attachments, structured output, or external search |
 
 There is no fallback between the drivers. A capability on one branch does not
@@ -143,7 +143,7 @@ status composition.
 | `prepare_archive_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_restore_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_delete_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
-| `prepare_structured_exec` | exec | content, model route, model, working resource, network, search, reasoning, deadline, schema, attachment |
+| `prepare_structured_exec` | exec | content, model route, model, working resource, network, search, reasoning, optional adapter-local verbosity, deadline, schema, attachment |
 
 Catalogue, interactive session, and structured run remain different runtime
 roles. Read-only and bounded workspace remain different methods. There is no
@@ -319,6 +319,11 @@ or management. See
 - Structured exec supports no declared tools, at most one image attachment,
   JSON Schema structured output, and either offline execution or host-approved
   external search.
+- `CodexExecProfileInput::with_model_verbosity()` selects closed adapter-local
+  `low|medium|high` on published `0.147.0..=0.149.1` for exact Research 213
+  slugs. Omission leaves the current argv. Dispatch does not prove provider
+  acceptance, live-catalog support, or effective response length. Other
+  versions, models, prefixes, and `codex-auto-review` fail before spawn.
 - Bounded workspace is version-gated. It never replaces the read-only default.
 - Qualified, deprecated, and unverified-newer executable observations remain
   visible. An unverified-newer version is permitted with mileage-may-vary

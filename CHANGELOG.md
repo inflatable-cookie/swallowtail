@@ -24,6 +24,11 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add typed exact-Codex-Exec model verbosity: `CodexModelVerbosity` admits
+  `low|medium|high` on published `0.147.0..=0.149.1` for seven frozen slugs
+  through prepared evidence and `--config model_verbosity="<value>"`; omission
+  preserves the prior argv; live-catalog acceptance and effective length stay
+  unclaimed; Research 213, g04.066
 - add typed exact-llama.cpp-owned-`b10069` context-size selection:
   `LlamaCppContextSize` admits `1..=2147483647` and dispatches exact
   `--ctx-size N` through immutable prepared serving evidence; omission

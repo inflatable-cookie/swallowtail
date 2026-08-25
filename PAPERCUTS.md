@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
+- Friction: `developers.openai.com/codex/config-*` 200-redirects to
+  `learn.chatgpt.com` HTML shells (~0.4–1.2 MiB). Markdown exports exist by
+  appending `.md` and are 11–91 KiB.
+- Impact: hashing the HTML shell does not identify the converted text used as
+  evidence. Current `main` `codex-rs/core/models.json` 404s; the tag stores
+  models at `codex-rs/models-manager/models.json`.
+- Fix: retrieve Learn `.md` exports for Codex config docs; hash those bodies;
+  treat GitHub tag paths as binding and current-main URLs as leads only.
+- Surface: g04.066 / Research 213 official-source retrieval.
+
 ### [ ] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
 - Friction: `platform.claude.com/docs` HTTP bodies are 0.9–2.0 MiB Next.js
   shells with no `Last-Modified` or `ETag`. Several thinking URLs 307-redirect.

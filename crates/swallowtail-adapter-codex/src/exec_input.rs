@@ -1,4 +1,5 @@
 use crate::exec_validation::validate;
+use crate::model_verbosity::CodexModelVerbosity;
 use crate::selection::CodexExecBehavior;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -83,8 +84,9 @@ pub(crate) async fn prepare(
     scope: &ScopeId,
     model: &ModelId,
     behavior: CodexExecBehavior,
+    model_verbosity: Option<CodexModelVerbosity>,
 ) -> Result<PreparedExecInput, RuntimeFailure> {
-    validate(plan, request, services, behavior)?;
+    validate(plan, request, services, behavior, model, model_verbosity)?;
     let attachment_service = services.attachment().cloned();
     let schema_service = services.schema().cloned();
     let mut materializations =
@@ -95,6 +97,13 @@ pub(crate) async fn prepare(
         arguments.extend([
             "--config".to_owned(),
             config_string("model_reasoning_effort", mode.as_str()),
+        ]);
+    }
+
+    if let Some(verbosity) = model_verbosity {
+        arguments.extend([
+            "--config".to_owned(),
+            config_string("model_verbosity", verbosity.as_str()),
         ]);
     }
 

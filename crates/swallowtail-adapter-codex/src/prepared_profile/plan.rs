@@ -1,6 +1,6 @@
 use crate::{
-    CodexPreparedDriver, CodexPreparedIntegration, codex_app_server_descriptor,
-    codex_exec_descriptor,
+    CodexModelVerbosity, CodexPreparedDriver, CodexPreparedIntegration,
+    codex_app_server_descriptor, codex_exec_descriptor,
 };
 use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, Diagnostic,
@@ -15,6 +15,7 @@ pub struct CodexPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
     operation: swallowtail_runtime::PreparedOperationEvidence,
+    model_verbosity: Option<CodexModelVerbosity>,
 }
 
 impl CodexPreparedEvidence {
@@ -29,6 +30,7 @@ impl CodexPreparedEvidence {
                 plan,
                 prepared.access_evidence().clone(),
             )?,
+            model_verbosity: None,
         })
     }
 
@@ -46,6 +48,7 @@ impl CodexPreparedEvidence {
                     prepared.access_evidence().clone(),
                     profile,
                 )?,
+            model_verbosity: None,
         })
     }
 
@@ -77,6 +80,17 @@ impl CodexPreparedEvidence {
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
+    }
+
+    /// Returns the selected adapter-local verbosity when one was prepared.
+    #[must_use]
+    pub const fn model_verbosity(&self) -> Option<CodexModelVerbosity> {
+        self.model_verbosity
+    }
+
+    pub(crate) const fn with_model_verbosity(mut self, verbosity: CodexModelVerbosity) -> Self {
+        self.model_verbosity = Some(verbosity);
+        self
     }
 }
 

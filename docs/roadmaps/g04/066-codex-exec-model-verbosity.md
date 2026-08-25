@@ -1,6 +1,6 @@
 # g04.066 Codex Exec Model Verbosity
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -32,22 +32,22 @@ effective.
 
 ## Goals
 
-- [ ] freeze exact Codex source, schema, model-metadata, parser, and selected
+- [x] freeze exact Codex source, schema, model-metadata, parser, and selected
       Exec command evidence
-- [ ] identify exact CLI/version, provider, selected-model, supported-value,
+- [x] identify exact CLI/version, provider, selected-model, supported-value,
       and default rows
-- [ ] classify config precedence, omission, unknown values, unsupported
+- [x] classify config precedence, omission, unknown values, unsupported
       models/providers, silent ignore, warning, fallback, and failure behavior
-- [ ] distinguish selected, planned, dispatched, provider-accepted, effective,
+- [x] distinguish selected, planned, dispatched, provider-accepted, effective,
       and observed verbosity truth
-- [ ] promote Research 213 with an exact deliver-now table or honest empty set
-- [ ] expose only a closed adapter-local typed verbosity selection admitted by
+- [x] promote Research 213 with an exact deliver-now table or honest empty set
+- [x] expose only a closed adapter-local typed verbosity selection admitted by
       Research 213
-- [ ] bind the selection through prepared input, immutable evidence, driver,
+- [x] bind the selection through prepared input, immutable evidence, driver,
       and exact child arguments
-- [ ] preserve reasoning, search, schema, image, access, retention, activity,
+- [x] preserve reasoning, search, schema, image, access, retention, activity,
       usage, cancellation, deadline, terminal, and joined cleanup truth
-- [ ] prove omission preserves existing argv and selected-model behavior
+- [x] prove omission preserves existing argv and selected-model behavior
 
 ## Non-Goals
 
@@ -98,36 +98,36 @@ An empty Research 213 deliver-now set is an honest stop.
 
 ### Batch 66.1 — Exact Verbosity Evidence
 
-- [ ] Execute card 184.
-- [ ] freeze exact release, model, provider, parser, precedence, and command
+- [x] Execute card 184.
+- [x] freeze exact release, model, provider, parser, precedence, and command
       truth
-- [ ] promote Research 213 with a non-empty exact table or honest empty set
+- [x] promote Research 213 with a non-empty exact table or honest empty set
 
 ### Batch 66.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 185 only when Research 213 admits a non-empty set.
-- [ ] bind only exact version/model/value/profile rows through the existing
+- [x] Execute card 185 only when Research 213 admits a non-empty set.
+- [x] bind only exact version/model/value/profile rows through the existing
       prepared Exec child
 
 ### Batch 66.3 — Route-Local Acceptance
 
-- [ ] Execute card 186 only after card 185.
-- [ ] prove dispatch, omission, rejection, composition, lifecycle, docs, and
+- [x] Execute card 186 only after card 185.
+- [x] prove dispatch, omission, rejection, composition, lifecycle, docs, and
       API truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 213 deliver-now rows prepare
-- [ ] input, model route, plan/evidence, driver, and child argv agree exactly
-- [ ] omission preserves the prior argv and behavior
-- [ ] unsupported models/providers/versions/values and knowable drift reject
+- [x] only Research 213 deliver-now rows prepare
+- [x] input, model route, plan/evidence, driver, and child argv agree exactly
+- [x] omission preserves the prior argv and behavior
+- [x] unsupported models/providers/versions/values and knowable drift reject
       before process or credential effects
-- [ ] verbosity remains distinct from reasoning, service tier, personality,
+- [x] verbosity remains distinct from reasoning, service tier, personality,
       and output-token bounds
-- [ ] every existing Exec composition and lifecycle claim remains exact
-- [ ] docs claim no provider acceptance, effective output length, billing,
+- [x] every existing Exec composition and lifecycle claim remains exact
+- [x] docs claim no provider acceptance, effective output length, billing,
       entitlement, or model support beyond frozen evidence
-- [ ] default QA performs no credential, login, account, provider, or paid work
+- [x] default QA performs no credential, login, account, provider, or paid work
 
 ## Lane Runway
 

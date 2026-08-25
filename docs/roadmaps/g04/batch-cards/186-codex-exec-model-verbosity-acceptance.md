@@ -1,6 +1,6 @@
 # 186 Codex Exec Model Verbosity Acceptance
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -36,16 +36,16 @@ and lifecycle behavior, then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted row and rejected boundary has deterministic coverage
-- [ ] selected model and verbosity remain exact through preparation and argv
-- [ ] omission, composition, activity, usage, cancellation, terminal, and
+- [x] every admitted row and rejected boundary has deterministic coverage
+- [x] selected model and verbosity remain exact through preparation and argv
+- [x] omission, composition, activity, usage, cancellation, terminal, and
       cleanup behavior are exact
-- [ ] default QA performs no credential, login, account, provider request,
+- [x] default QA performs no credential, login, account, provider request,
       external prompt, or paid work
-- [ ] docs do not infer provider acceptance, effective response detail,
+- [x] docs do not infer provider acceptance, effective response detail,
       entitlement, billing, fallback, or unsupported model behavior
-- [ ] closeout records PR/head truth without claiming merge
-- [ ] named gates pass and doctor findings do not increase
+- [x] closeout records PR/head truth without claiming merge
+- [x] named gates pass and doctor findings do not increase
 
 ## Validation
 

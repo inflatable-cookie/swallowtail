@@ -198,14 +198,14 @@ families do not interrupt this programme by default.
   `2.1.203+`, and dynamic workflow topology remains unbounded for binding.
   Cards 182-183 are blocked.
 - [g04.066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md)
-  is ready. Research 213 and cards 184-186 form one serial evidence-first lane
-  for exact release/model/provider-qualified `low|medium|high` verbosity on the
-  maintained suppressed-config Exec child. No value is prequalified.
+  is complete pending PR. Research 213 admits exact `0.147.0..=0.149.1` default
+  openai Responses exec for seven frozen slugs × `low|medium|high`. Cards
+  185-186 bind adapter-local `CodexModelVerbosity`. Live-catalog acceptance and
+  effective length stay withheld.
 
 ## Current Execution Boundary
 
-Execute g04.066 cards 184-186 serially. Stop after card 184 unless Research 213
-admits a non-empty exact model/provider/value/profile set. Keep g04 open until
+Reassess the remaining per-route feature inventory. Keep g04 open until
 explicit operator direction. Contract 029 currentness remains standing.
 
 ## Exclusions

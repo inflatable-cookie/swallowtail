@@ -1,6 +1,7 @@
 use super::*;
 
 mod exec_activity;
+mod exec_verbosity;
 mod provider_session_import;
 mod session;
 mod session_management;

@@ -1,4 +1,10 @@
 pub mod swallowtail_adapter_codex
+pub enum swallowtail_adapter_codex::CodexModelVerbosity
+pub swallowtail_adapter_codex::CodexModelVerbosity::High
+pub swallowtail_adapter_codex::CodexModelVerbosity::Low
+pub swallowtail_adapter_codex::CodexModelVerbosity::Medium
+impl swallowtail_adapter_codex::CodexModelVerbosity
+pub const fn swallowtail_adapter_codex::CodexModelVerbosity::as_str(self) -> &'static str
 pub enum swallowtail_adapter_codex::CodexPreparedDriver
 pub swallowtail_adapter_codex::CodexPreparedDriver::AppServer
 pub swallowtail_adapter_codex::CodexPreparedDriver::StructuredExec
@@ -32,6 +38,7 @@ pub fn swallowtail_adapter_codex::CodexAppServerDriver::reconcile_provider_sessi
 pub struct swallowtail_adapter_codex::CodexExecDriver
 impl swallowtail_adapter_codex::CodexExecDriver
 pub const fn swallowtail_adapter_codex::CodexExecDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub const fn swallowtail_adapter_codex::CodexExecDriver::with_model_verbosity(self, swallowtail_adapter_codex::CodexModelVerbosity) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_codex::CodexExecDriver
 pub fn swallowtail_adapter_codex::CodexExecDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_codex::CodexExecDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -42,6 +49,7 @@ impl swallowtail_adapter_codex::CodexExecProfileInput
 pub const fn swallowtail_adapter_codex::CodexExecProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_adapter_codex::CodexModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::session_access::ExternalNetworkPolicy, swallowtail_core::session_access::ExternalSearchPolicy) -> Self
 pub fn swallowtail_adapter_codex::CodexExecProfileInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
 pub const fn swallowtail_adapter_codex::CodexExecProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_codex::CodexExecProfileInput::with_model_verbosity(self, swallowtail_adapter_codex::CodexModelVerbosity) -> Self
 pub fn swallowtail_adapter_codex::CodexExecProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub fn swallowtail_adapter_codex::CodexExecProfileInput::with_structured_output(self, swallowtail_runtime::schema::StructuredOutputDescriptor) -> Self
 pub fn swallowtail_adapter_codex::CodexExecProfileInput::with_tools(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>) -> Self
@@ -79,6 +87,7 @@ pub struct swallowtail_adapter_codex::CodexPreparedEvidence
 impl swallowtail_adapter_codex::CodexPreparedEvidence
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::model_verbosity(&self) -> core::option::Option<swallowtail_adapter_codex::CodexModelVerbosity>
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -87,6 +96,7 @@ impl swallowtail_adapter_codex::CodexPreparedExec
 pub const fn swallowtail_adapter_codex::CodexPreparedExec::evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedExec::into_parts(self) -> (swallowtail_adapter_codex::CodexPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_codex::CodexPreparedExec::low_level_driver(&self) -> swallowtail_adapter_codex::CodexExecDriver
+pub const fn swallowtail_adapter_codex::CodexPreparedExec::model_verbosity(&self) -> core::option::Option<swallowtail_adapter_codex::CodexModelVerbosity>
 pub const fn swallowtail_adapter_codex::CodexPreparedExec::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedExec::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_codex::CodexPreparedExec::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>

@@ -1,6 +1,6 @@
 # 185 Codex Exec Model Verbosity Binding
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -40,14 +40,14 @@ child arguments.
 
 ## Acceptance Criteria
 
-- [ ] only Research 213 deliver-now rows prepare
-- [ ] input, model route, plan/evidence, driver, and child argv agree exactly
-- [ ] omission preserves the prior command
-- [ ] unsupported values/models/providers/versions and drift reject before
+- [x] only Research 213 deliver-now rows prepare
+- [x] input, model route, plan/evidence, driver, and child argv agree exactly
+- [x] omission preserves the prior command
+- [x] unsupported values/models/providers/versions and drift reject before
       effects
-- [ ] reasoning, search, schema, image, access, retention, and lifecycle
+- [x] reasoning, search, schema, image, access, retention, and lifecycle
       behavior remain unchanged
-- [ ] no shared runtime, portable capability, generic settings, sibling route,
+- [x] no shared runtime, portable capability, generic settings, sibling route,
       provider-acceptance, effective-output, or billing claim enters the API
 
 ## Validation

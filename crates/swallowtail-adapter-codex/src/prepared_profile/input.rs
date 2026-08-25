@@ -1,3 +1,4 @@
+use crate::CodexModelVerbosity;
 use swallowtail_core::{
     ExternalNetworkPolicy, ExternalSearchPolicy, ModelId, ModelRouteId, ModelRouteRevision,
     ProviderSessionCatalogueBounds, ReasoningMode, TurnRef,
@@ -349,6 +350,7 @@ pub struct CodexExecProfileInput {
     external_network: ExternalNetworkPolicy,
     external_search: ExternalSearchPolicy,
     reasoning_mode: Option<ReasoningMode>,
+    model_verbosity: Option<CodexModelVerbosity>,
     deadline: Option<Deadline>,
     attachments: Vec<AttachmentDescriptor>,
     tools: Vec<ToolDeclaration>,
@@ -374,6 +376,7 @@ impl CodexExecProfileInput {
             external_network,
             external_search,
             reasoning_mode: None,
+            model_verbosity: None,
             deadline: None,
             attachments: Vec::new(),
             tools: Vec::new(),
@@ -385,6 +388,13 @@ impl CodexExecProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(mode);
+        self
+    }
+
+    /// Selects one closed adapter-local `model_verbosity` value.
+    #[must_use]
+    pub const fn with_model_verbosity(mut self, verbosity: CodexModelVerbosity) -> Self {
+        self.model_verbosity = Some(verbosity);
         self
     }
 
@@ -428,6 +438,7 @@ impl CodexExecProfileInput {
             external_network: self.external_network,
             external_search: self.external_search,
             reasoning_mode: self.reasoning_mode,
+            model_verbosity: self.model_verbosity,
             deadline: self.deadline,
             attachments: self.attachments,
             tools: self.tools,
@@ -444,6 +455,7 @@ pub(crate) struct CodexExecProfileParts {
     pub external_network: ExternalNetworkPolicy,
     pub external_search: ExternalSearchPolicy,
     pub reasoning_mode: Option<ReasoningMode>,
+    pub model_verbosity: Option<CodexModelVerbosity>,
     pub deadline: Option<Deadline>,
     pub attachments: Vec<AttachmentDescriptor>,
     pub tools: Vec<ToolDeclaration>,

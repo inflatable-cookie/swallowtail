@@ -1,8 +1,9 @@
 use crate::exec::failure;
+use crate::model_verbosity::{self, CodexModelVerbosity};
 use crate::selection::CodexExecBehavior;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, HarnessConfigurationPosture,
-    HostServiceKind, PreflightPlan,
+    HostServiceKind, ModelId, PreflightPlan,
 };
 use swallowtail_runtime::{
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderRetentionPolicy,
@@ -16,8 +17,11 @@ pub(crate) fn validate(
     request: &StructuredRunRequest,
     services: &HostServices,
     behavior: CodexExecBehavior,
+    model: &ModelId,
+    model_verbosity: Option<CodexModelVerbosity>,
 ) -> Result<(), RuntimeFailure> {
     validate_behavior_policy(plan, request, behavior)?;
+    model_verbosity::validate_runtime(plan, behavior, model, model_verbosity)?;
     if request.policy().provider_execution()
         != swallowtail_runtime::ProviderExecutionPolicy::Attached
         || request.policy().provider_recovery()

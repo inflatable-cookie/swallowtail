@@ -4,6 +4,7 @@ use super::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
 };
+use crate::model_verbosity::{self, CodexModelVerbosity};
 use crate::{CodexExecDriver, CodexPreparedDriver, CodexPreparedIntegration};
 use std::collections::BTreeSet;
 use swallowtail_core::{
@@ -44,10 +45,20 @@ impl CodexPreparedExec {
         &self.request
     }
 
+    /// Returns the selected adapter-local verbosity when one was prepared.
+    #[must_use]
+    pub const fn model_verbosity(&self) -> Option<CodexModelVerbosity> {
+        self.evidence.model_verbosity()
+    }
+
     /// Creates the low-level exec driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexExecDriver {
-        CodexExecDriver::new(self.evidence.environment().clone())
+        let mut driver = CodexExecDriver::new(self.evidence.environment().clone());
+        if let Some(verbosity) = self.evidence.model_verbosity() {
+            driver = driver.with_model_verbosity(verbosity);
+        }
+        driver
     }
 
     /// Starts the prepared run with caller-supplied host services.
@@ -77,6 +88,21 @@ impl CodexPreparedIntegration {
     ) -> Result<CodexPreparedExec, PreparationFailure> {
         require_driver(self, CodexPreparedDriver::StructuredExec)?;
         let parts = input.into_parts();
+        let model_verbosity = parts.model_verbosity;
+        if let Some(_verbosity) = model_verbosity {
+            let Some(behavior) =
+                model_verbosity::maintained_exec_behavior(self.observation().compatibility())
+            else {
+                return Err(model_verbosity::reject_preparation());
+            };
+            if !model_verbosity::admits(
+                behavior,
+                self.observation().version().version(),
+                parts.model.model_id(),
+            ) {
+                return Err(model_verbosity::reject_preparation());
+            }
+        }
         let (mut capability_requirements, host_services) = exec_requirements(&parts)?;
         let activity_profile = exec_activity_profile(self)?;
         capability_requirements.extend([
@@ -131,14 +157,15 @@ impl CodexPreparedIntegration {
         if let Some(output) = parts.structured_output {
             request = request.with_structured_output(output);
         }
-        Ok(CodexPreparedExec {
-            evidence: CodexPreparedEvidence::from_prepared_with_activity_profile(
-                self,
-                plan,
-                activity_profile,
-            )?,
-            request,
-        })
+        let mut evidence = CodexPreparedEvidence::from_prepared_with_activity_profile(
+            self,
+            plan,
+            activity_profile,
+        )?;
+        if let Some(verbosity) = model_verbosity {
+            evidence = evidence.with_model_verbosity(verbosity);
+        }
+        Ok(CodexPreparedExec { evidence, request })
     }
 }
 

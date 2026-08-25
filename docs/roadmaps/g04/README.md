@@ -80,11 +80,12 @@ and selection policy.
 - [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180; Research 211 promoted
 - [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
-- [g04.066 Codex Exec Model Verbosity](066-codex-exec-model-verbosity.md) — ready, cards 184-186; Research 213 reserved
+- [g04.066 Codex Exec Model Verbosity](066-codex-exec-model-verbosity.md) — complete pending PR, cards 184-186; Research 213 deliver-now `0.147.0..=0.149.1` seven slugs × `low|medium|high`
 
-g04 has 66 numbered roadmaps: 56 completed milestones, nine honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready
-milestone at 066. The operator keeps the generation active. Do not close g04
+g04 has 66 numbered roadmaps: 57 completed milestones pending the g04.066 PR,
+nine honest evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, and 065,
+and no remaining ready card in this generation. The operator keeps the
+generation active. Do not close g04
 without explicit operator direction.
 
 ## Current Checkpoint
@@ -221,12 +222,13 @@ without explicit operator direction.
   or fail-closed child-environment binding
 - g04.065 stopped after card 181: Research 212 empty deliver-now set; exact
   `2.1.241` help omits `ultracode`; cards 182-183 blocked
-- g04.066 is ready: cards 184-186 qualify exact selected-model
-  `model_verbosity` on `codex.exec`; Research 213 owns the evidence gate
+- g04.066 is complete pending PR: Research 213 admits exact `0.147.0..=0.149.1`
+  openai Responses exec verbosity for seven frozen slugs; cards 185-186 bind
+  adapter-local `CodexModelVerbosity` without raising the Contract 029 ceiling
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 66 roadmaps; execute g04.066 serially; generation
-  closure awaits explicit operator direction
+- g04 remains active at 66 roadmaps; reassess the remaining per-route inventory;
+  generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -295,8 +297,9 @@ without explicit operator direction.
     reasons.
 28. g04.065 stopped after card 181: Research 212 empty deliver-now set; cards
     182-183 blocked.
-29. g04.066 cards 184-186 are ready as one serial Codex Exec model-verbosity
-    lane. Research 213 admits or stops the exact set before binding.
+29. g04.066 is complete pending PR. Research 213 admits exact
+    `0.147.0..=0.149.1` verbosity rows; cards 185-186 bind adapter-local
+    `CodexModelVerbosity`.
 30. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.

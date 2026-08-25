@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.066 cards 184-186 serially for `codex.exec` model verbosity.
-Card 184 must promote Research 213 with an exact non-empty deliver-now table or
-an honest empty set before cards 185-186 may run. Contract 029 currentness
-remains standing. Do not merge, roll the generation, or close g04.
+Reassess the remaining per-route feature inventory after g04.066 Codex Exec
+model verbosity. Contract 029 currentness remains standing. Do not merge, roll
+the generation, or close g04.
 
 ## Standing Lanes
 

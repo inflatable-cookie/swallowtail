@@ -1877,10 +1877,11 @@ separate `support_verbosity` and `default_verbosity` fields. That split permits
 an evidence gate that rejects unsupported model/provider rows before spawn
 without inferring from a model-name prefix.
 
-Research 213 and card 184 must freeze exact `rust-v0.149.1` source, config
+Research 213 and card 184 froze exact `rust-v0.149.1` source, config
 parser/precedence, Responses-provider request mapping, release-tag model rows,
 defaults, silent-ignore/fallback behavior, omission, and claim strength. Cards
-185-186 continue only for exact version/model/provider/value/profile rows that
-can be bound through adapter-local prepared evidence and child argv. No generic
-settings map, app-server promotion, provider prompt, currentness movement,
-generation rollover, or g04 closure is authorized.
+185-186 bound exact `0.147.0..=0.149.1` openai Responses exec rows for seven
+frozen slugs through adapter-local `CodexModelVerbosity`. No generic settings
+map, app-server promotion, provider prompt, currentness movement, generation
+rollover, or g04 closure is authorized. Live-catalog acceptance remains
+withheld.

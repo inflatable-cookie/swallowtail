@@ -2,6 +2,7 @@ use crate::exec_events::ExecEventParser;
 use crate::exec_handle::{CodexExecRunHandle, ProcessCancellation};
 use crate::exec_input::{SharedExecMaterializations, prepare};
 use crate::exec_pump::{cleanup_failed_start, pump};
+use crate::model_verbosity::CodexModelVerbosity;
 use crate::selection::{classify_exec_plan, codex_exec_claim};
 use std::sync::Arc;
 use swallowtail_core::{
@@ -21,13 +22,24 @@ const EVENT_CAPACITY: usize = 256;
 /// Low-level driver for one-shot Codex exec JSONL runs.
 pub struct CodexExecDriver {
     environment: EnvironmentRef,
+    model_verbosity: Option<CodexModelVerbosity>,
 }
 
 impl CodexExecDriver {
     /// Creates an exec driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            model_verbosity: None,
+        }
+    }
+
+    /// Selects one closed adapter-local `model_verbosity` value.
+    #[must_use]
+    pub const fn with_model_verbosity(mut self, verbosity: CodexModelVerbosity) -> Self {
+        self.model_verbosity = Some(verbosity);
+        self
     }
 }
 
@@ -118,7 +130,16 @@ impl CodexExecDriver {
             .expect("request id produces a non-empty run id");
         let parser = ExecEventParser::for_plan(run_id.clone(), &plan)?;
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        let prepared = prepare(&plan, &request, &services, &scope, model, behavior).await?;
+        let prepared = prepare(
+            &plan,
+            &request,
+            &services,
+            &scope,
+            model,
+            behavior,
+            self.model_verbosity,
+        )
+        .await?;
         let (arguments, materializations) = prepared.into_parts();
         let materializations = SharedExecMaterializations::new(materializations);
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());

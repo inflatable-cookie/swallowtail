@@ -120,6 +120,7 @@ impl KimiHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         crate::headless_validation::validate(&plan, &request, &services, &self.credential)?;
+        let selection = crate::selection::select_kimi_headless_plan(&plan)?;
         let task_service = services.task().cloned().expect("validated task service");
         let process_service = services
             .process()
@@ -183,6 +184,7 @@ impl KimiHeadlessDriver {
                         cancellation,
                         deadline,
                         operation_id,
+                        &selection,
                         services,
                     )
                     .await;

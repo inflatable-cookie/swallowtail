@@ -3,7 +3,7 @@
     "engine": "agent-core-v2-run-v2-print",
     "output_format": "stream-json",
     "behavior_revision": "kimi.headless.stream-json.v2",
-    "facade_id": "kimi-headless-stream-json-v2",
+    "public_facade_id": "kimi-headless-stream-json-v1",
     "preamble_meta": "system.version",
     "shared_prompt_json_writer": true
   },

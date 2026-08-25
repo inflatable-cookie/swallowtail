@@ -39,11 +39,12 @@ identity. The membership OAuth credential remains a scoped opaque lease;
 Swallowtail never exposes or persists its value.
 
 ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified. Headless exact
-`0.29.0..=0.37.2` is qualified under the audited legacy agent-core v1
-stream-json corpus (`kimi.headless.stream-json.v1`). Exact `0.38.0` headless
-default dispatch uses agent-core-v2 `runV2Print` and remains visible
-`UnverifiedNewer` until that engine is independently qualified. Later stable
-releases remain visible `UnverifiedNewer`; they do not inherit ACP
+`0.29.0..=0.37.2` remains qualified under the audited legacy agent-core v1
+stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Exact
+`0.38.0` headless qualifies under agent-core-v2 `runV2Print`
+(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble.
+Public facade `kimi-headless-stream-json-v1` covers both revisions. Later
+stable releases remain visible `UnverifiedNewer`; they do not inherit ACP
 catalogue/import support. Older, excluded, and prerelease observations do not
 prepare.
 
@@ -206,10 +207,11 @@ host operating system may still expose process arguments. Consumers that
 cannot accept that host boundary should use another route.
 
 The prepared route qualifies the audited legacy agent-core v1 stream-json
-corpus through exact `0.37.2` (`kimi.headless.stream-json.v1`). Exact
-`0.38.0` qualifies under agent-core-v2 `runV2Print` (`kimi.headless.stream-json.v2`)
-with a source-proved `system.version` preamble before shared JSONL output. The
-adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
+corpus through exact `0.37.2` as `Deprecated` (`kimi.headless.stream-json.v1`).
+Exact `0.38.0` qualifies under agent-core-v2 `runV2Print`
+(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble
+before shared JSONL output. Public facade `kimi-headless-stream-json-v1` covers
+both revisions. The adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
 `KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant, tool activity, retry, and
 terminal events without claiming consumer tool callbacks. Cancellation and
 deadline stop and join the child. Kimi may retain provider state, so the

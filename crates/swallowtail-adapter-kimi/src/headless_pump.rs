@@ -1,5 +1,6 @@
 use crate::headless_events::KimiHeadlessEventParser;
 use crate::headless_handle::KimiHeadlessCancellation;
+use crate::selection::KimiHeadlessPlanSelection;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
@@ -18,9 +19,11 @@ pub(crate) async fn pump(
     cancellation: Arc<KimiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     operation_id: ActivityOperationId,
+    stream: &KimiHeadlessPlanSelection,
     services: HostServices,
 ) -> TerminalOutcome {
-    let mut parser = KimiHeadlessEventParser::new(operation_id);
+    let mut parser =
+        KimiHeadlessEventParser::new(operation_id, stream.behavior(), stream.version());
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

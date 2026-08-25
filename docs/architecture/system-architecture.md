@@ -290,11 +290,15 @@ OpenHands adds a package without a production route.
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
-  route-specific `0.29.0..=0.37.2` behavior segments. Its ACP route owns ambient-host
+  route-specific `0.29.0..=0.38.0` behavior segments. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
-  cleanup. One installed facade requires explicit ACP or headless selection.
+  cleanup. Headless qualifies `0.29.0..=0.37.2` under
+  `kimi.headless.stream-json.v1` and exact `0.38.0` under
+  `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
+  Public facade `kimi-headless-stream-json-v1` covers both revisions. One
+  installed facade requires explicit ACP or headless selection.
   The separate local-server route owns authenticated catalogue, retained
   one-prompt structured execution, interactive callbacks, archive, restore,
   attached topology, and an optional owned foreground child without a

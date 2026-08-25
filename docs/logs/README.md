@@ -23,8 +23,10 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-08-25 g04.064 Kimi Code Headless V2 Closeout](./2026-08-25-g04-064-kimi-code-headless-v2-closeout.md) — complete, cards 179-180; PR pending review
-- [2026-08-25 g04.064 Kimi Code Headless V2 Compiled](./2026-08-25-g04-064-kimi-code-headless-v2-compiled.md) — ready, cards 179-180
+- [2026-08-25 Kimi Code 0.38.0 Headless V2 Claim](./2026-08-25-kimi-code-0-38-0-headless-v2-claim.md)
+- [2026-08-25 Kimi Code 0.38.0 Headless V2 Identity](./2026-08-25-kimi-code-0-38-0-headless-v2-identity.md)
+- [2026-08-25 g04.064 Kimi Code Headless V2 Closeout](./2026-08-25-g04-064-kimi-code-headless-v2-closeout.md) — complete, cards 179-180; PR pending re-review
+- [2026-08-25 g04.064 Kimi Code Headless V2 Compiled](./2026-08-25-g04-064-kimi-code-headless-v2-compiled.md) — complete, cards 179-180
 - [2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Compiled](./2026-08-25-g04-063-kimi-code-headless-reasoning-effort-compiled.md)
 - [2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Closeout](./2026-08-25-g04-063-kimi-code-headless-reasoning-effort-closeout.md) — complete and merged through PR 62 at `5f37ff6b`; evidence stop
 - [2026-08-25 g04.062 Anthropic Adaptive Thinking Compiled](./2026-08-25-g04-062-anthropic-adaptive-thinking-compiled.md)

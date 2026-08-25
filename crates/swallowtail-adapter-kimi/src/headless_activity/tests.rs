@@ -1,4 +1,5 @@
 use crate::headless_events::KimiHeadlessEventParser;
+use crate::selection::KimiHeadlessBehavior;
 use swallowtail_runtime::{
     ActivityKind, ActivityLifecyclePhase, ActivityOperationId, RuntimeEventKind, RuntimeRunId,
 };
@@ -53,7 +54,11 @@ fn parse(input: &str) -> Vec<swallowtail_runtime::ActivityObservation> {
     let operation_id = ActivityOperationId::Run(
         RuntimeRunId::new("kimi-code-headless-activity-fixture").expect("valid run id"),
     );
-    let mut parser = KimiHeadlessEventParser::new(operation_id);
+    let mut parser = KimiHeadlessEventParser::new(
+        operation_id,
+        KimiHeadlessBehavior::StreamJsonV1,
+        &swallowtail_core::InterfaceVersion::new("0.31.1").expect("fixture version"),
+    );
     let mut events = parser.push(input.as_bytes()).expect("fixture parses");
     let (trailing, _) = parser.finish().expect("fixture finishes");
     events.extend(trailing);

@@ -121,7 +121,7 @@ pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
                 version(KIMI_HEADLESS_BASELINE_VERSION).expect("static Kimi version is valid"),
                 version("0.37.2").expect("static Kimi version is valid"),
                 behavior(HEADLESS_BEHAVIOR),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::exact(
                 version("0.38.0").expect("static Kimi version is valid"),
@@ -180,7 +180,7 @@ pub(crate) fn select_kimi_plan(plan: &PreflightPlan) -> Result<KimiPlanSelection
 
 pub(crate) fn select_kimi_headless_plan(
     plan: &PreflightPlan,
-) -> Result<InterfaceVersion, RuntimeFailure> {
+) -> Result<KimiHeadlessPlanSelection, RuntimeFailure> {
     let claim = kimi_headless_claim();
     let mut bindings = plan
         .interface_versions()
@@ -204,20 +204,38 @@ pub(crate) fn select_kimi_headless_plan(
             "Kimi headless executable version is incompatible with this driver",
         ));
     }
-    if KimiHeadlessBehavior::from_revision(
+    let behavior = KimiHeadlessBehavior::from_revision(
         assessment
             .behavior_revision()
             .expect("permitted assessment has a behavior revision")
             .as_str(),
     )
-    .is_none()
-    {
-        return Err(failure(
+    .ok_or_else(|| {
+        failure(
             "swallowtail.kimi.headless.behavior_incompatible",
             "Kimi headless behavior is not mapped by this driver",
-        ));
+        )
+    })?;
+    Ok(KimiHeadlessPlanSelection {
+        behavior,
+        version: binding.version().clone(),
+    })
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct KimiHeadlessPlanSelection {
+    behavior: KimiHeadlessBehavior,
+    version: InterfaceVersion,
+}
+
+impl KimiHeadlessPlanSelection {
+    pub(crate) const fn behavior(&self) -> KimiHeadlessBehavior {
+        self.behavior
     }
-    Ok(binding.version().clone())
+
+    pub(crate) const fn version(&self) -> &InterfaceVersion {
+        &self.version
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -256,7 +274,8 @@ mod tests {
     };
     use swallowtail_core::{
         InstalledExecutableCompatibility, InstalledExecutableObservation,
-        InterfaceCompatibilityAssessment, InterfaceVersion, InterfaceVersionBinding,
+        InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+        InterfaceVersionBinding,
     };
 
     #[test]
@@ -313,6 +332,7 @@ mod tests {
                 panic!("{qualified} remains qualified under v1");
             };
             assert_eq!(matched.behavior_revision().as_str(), HEADLESS_BEHAVIOR);
+            assert_eq!(matched.support_status(), InterfaceSupportStatus::Deprecated);
         }
         let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("0.38.0"))
         else {

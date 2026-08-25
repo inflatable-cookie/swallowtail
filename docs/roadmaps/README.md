@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Keep g04 open until explicit operator direction. Contract 029 currentness
-remains standing; run the checkpoint or pick the next AllowUnverified family
-when the operator triggers currentness. g04.064 completed: Kimi headless exact
-`0.38.0` qualifies under `kimi.headless.stream-json.v2`.
+Reassess g04.063 blocked cards 177-178 for Kimi headless reasoning effort now
+that exact `0.38.0` qualifies under `kimi.headless.stream-json.v2`. Contract
+029 currentness remains standing; run the checkpoint or pick the next
+AllowUnverified family when the operator triggers currentness. g04 stays open
+at operator direction.
 
 ## Standing Lanes
 

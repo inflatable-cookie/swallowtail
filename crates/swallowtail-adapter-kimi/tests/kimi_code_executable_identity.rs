@@ -374,7 +374,7 @@ fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
     assert!(matches!(
         headless_claim.assess(&version("0.37.2")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
                 && matched.behavior_revision().as_str() == "kimi.headless.stream-json.v1"
     ));
     assert!(matches!(
@@ -418,8 +418,8 @@ fn headless_v2_corpus_admits_adapter_private_milestone_at_0_38_0() {
     assert_eq!(identity["identity_decision"]["qualified_exact"], "0.38.0");
     assert_eq!(identity["identity_decision"]["preserve_v1_through"], "0.37.2");
     assert_eq!(
-        protocol["selected_headless_v2"]["facade_id"],
-        "kimi-headless-stream-json-v2"
+        protocol["selected_headless_v2"]["public_facade_id"],
+        "kimi-headless-stream-json-v1"
     );
     assert_eq!(
         protocol["selected_headless_v2"]["preamble_meta"],

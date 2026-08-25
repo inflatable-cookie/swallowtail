@@ -75,10 +75,11 @@ Unmapped extras remain unmapped: reasoning effort env, experimental flag,
 
 Adapter-private milestone behind the existing public structured-run lifecycle.
 
-- keep `0.29.0..=0.37.2` qualified under `kimi.headless.stream-json.v1`
-- qualify exact `0.38.0` under `kimi.headless.stream-json.v2`
-- bind facade `kimi-headless-stream-json-v2` for the v2 revision
-- reuse the v1 JSONL decoder with explicit `system.version` handling
+- keep `0.29.0..=0.37.2` qualified under `kimi.headless.stream-json.v1` as
+  `Deprecated`; exact `0.38.0` is `Maintained` under
+  `kimi.headless.stream-json.v2`
+- keep public facade `kimi-headless-stream-json-v1`; enforce v2 preamble and
+  revision at runtime without a new public facade identity
 - keep synthetic `0.38.1` permitted `UnverifiedNewer` on the v2 revision
 - card 180 applies the production claim edit
 

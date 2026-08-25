@@ -3,7 +3,9 @@ mod terminal;
 
 use crate::failure::failure;
 use crate::headless_activity::KimiHeadlessActivityProjection;
+use crate::selection::KimiHeadlessBehavior;
 use serde_json::Value;
+use swallowtail_core::InterfaceVersion;
 use swallowtail_runtime::{
     ActivityObservation, ActivityOperationId, OperationContent, RuntimeEvent, RuntimeEventKind,
     RuntimeFailure,
@@ -15,6 +17,9 @@ const MAXIMUM_EVENT_COUNT: usize = 4096;
 const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 
 pub(crate) struct KimiHeadlessEventParser {
+    stream_behavior: KimiHeadlessBehavior,
+    expected_version: Option<String>,
+    version_preamble_seen: bool,
     pending: Vec<u8>,
     sequence: u64,
     event_count: usize,
@@ -26,8 +31,19 @@ pub(crate) struct KimiHeadlessEventParser {
 }
 
 impl KimiHeadlessEventParser {
-    pub(crate) fn new(operation_id: ActivityOperationId) -> Self {
+    pub(crate) fn new(
+        operation_id: ActivityOperationId,
+        stream_behavior: KimiHeadlessBehavior,
+        executable_version: &InterfaceVersion,
+    ) -> Self {
+        let expected_version = match stream_behavior {
+            KimiHeadlessBehavior::StreamJsonV2 => Some(executable_version.as_str().to_owned()),
+            KimiHeadlessBehavior::StreamJsonV1 => None,
+        };
         Self {
+            stream_behavior,
+            expected_version,
+            version_preamble_seen: false,
             pending: Vec::new(),
             sequence: 1,
             event_count: 0,
@@ -56,6 +72,10 @@ impl KimiHeadlessEventParser {
     }
 
     pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
+        if self.stream_behavior == KimiHeadlessBehavior::StreamJsonV2 && !self.version_preamble_seen
+        {
+            return Err(malformed_stream());
+        }
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
@@ -92,6 +112,7 @@ impl KimiHeadlessEventParser {
     }
 
     fn parse_assistant(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        self.ensure_turn_output_allowed()?;
         let content = payload.get("content").and_then(Value::as_str);
         let tools = payload
             .get("tool_calls")
@@ -118,6 +139,7 @@ impl KimiHeadlessEventParser {
     }
 
     fn parse_tool(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        self.ensure_turn_output_allowed()?;
         if !non_empty_string(payload, "tool_call_id") || !non_empty_string(payload, "content") {
             return Err(malformed_stream());
         }
@@ -129,6 +151,7 @@ impl KimiHeadlessEventParser {
     fn parse_meta(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         match payload.get("type").and_then(Value::as_str) {
             Some("turn.step.retrying") => {
+                self.ensure_turn_output_allowed()?;
                 for key in ["failed_attempt", "next_attempt", "max_attempts", "delay_ms"] {
                     if payload.get(key).and_then(Value::as_u64).is_none() {
                         return Err(malformed_stream());
@@ -161,6 +184,7 @@ impl KimiHeadlessEventParser {
                 Ok(self.activity_events(activity))
             }
             Some("session.resume_hint") => {
+                self.ensure_turn_output_allowed()?;
                 if !non_empty_string(payload, "session_id")
                     || !non_empty_string(payload, "command")
                     || !non_empty_string(payload, "content")
@@ -178,18 +202,37 @@ impl KimiHeadlessEventParser {
                 }
                 Ok(events)
             }
-            Some("system.version") => {
-                if !non_empty_string(payload, "version") {
-                    return Err(malformed_stream());
+            Some("system.version") => match self.stream_behavior {
+                KimiHeadlessBehavior::StreamJsonV1 => Err(malformed_stream()),
+                KimiHeadlessBehavior::StreamJsonV2 => {
+                    if self.version_preamble_seen {
+                        return Err(malformed_stream());
+                    }
+                    let observed = payload
+                        .get("version")
+                        .and_then(Value::as_str)
+                        .filter(|value| !value.trim().is_empty());
+                    if observed != self.expected_version.as_deref() {
+                        return Err(malformed_stream());
+                    }
+                    self.version_preamble_seen = true;
+                    Ok(Vec::new())
                 }
-                let activity = self.activity.unknown("system.version")?;
-                Ok(self.activity_events(activity))
-            }
+            },
             Some(event_type) if !event_type.trim().is_empty() => {
                 let activity = self.activity.unknown(event_type)?;
                 Ok(self.activity_events(activity))
             }
             _ => Err(malformed_stream()),
+        }
+    }
+
+    fn ensure_turn_output_allowed(&self) -> Result<(), RuntimeFailure> {
+        if self.stream_behavior == KimiHeadlessBehavior::StreamJsonV2 && !self.version_preamble_seen
+        {
+            Err(malformed_stream())
+        } else {
+            Ok(())
         }
     }
 

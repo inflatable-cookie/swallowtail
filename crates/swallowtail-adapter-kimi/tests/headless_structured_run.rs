@@ -1,28 +1,14 @@
-#[allow(dead_code)]
-use crate::discovery_support as support;
-
 use futures_executor::block_on;
-use futures_util::StreamExt;
-use std::sync::Arc;
-use support::{FakeProcessService, ImmediateTime, services, services_with_time};
-use swallowtail_adapter_kimi::{
-    KIMI_CODE_AXIS, KimiHeadlessPreparationInput, KimiHeadlessPreparationProbe,
-    KimiHeadlessPreparedIntegration, KimiHeadlessRunInput, KimiModelSelection,
-    prepare_kimi_headless,
+use super::support::{
+    assert_status, execute, local_topology, prepared, profile,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
-    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    ObservableActivityAvailability, RuntimeReadiness, SupportAuthority,
+    HarnessConfigurationPosture, HarnessIsolation, ObservableActivityAvailability,
 };
 use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
-    ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessExit, ProviderRecoveryPolicy, ProviderRetentionPolicy,
-    RequestId, RuntimeEvent, RuntimeEventKind, ScopeId, StructuredRunDriver, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    CancellationAcknowledgement, CleanupOutcome, OperationContent, ProcessExit,
+    ProviderRecoveryPolicy, ProviderRetentionPolicy, RuntimeEventKind, StructuredRunDriver,
+    TerminalStatus,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,
@@ -136,42 +122,8 @@ fn prepared_route_executes_exact_argv_and_bounded_corpus_in_both_topologies() {
 }
 
 #[test]
-fn v2_headless_corpus_includes_system_version_preamble() {
-    let topology = ExecutionTopologyFixture::local();
-    let prepared = prepared_with_version(topology.execution_host_id().clone(), "0.38.0");
-    assert_eq!(
-        prepared.instance().protocol_facade_id().as_str(),
-        "kimi-headless-stream-json-v2"
-    );
-    let evidence = execute(
-        &profile(
-            &prepared,
-            topology.working_resource().clone(),
-            "v2-complete",
-        ),
-        topology.execution_host_id().clone(),
-        include_str!("fixtures/kimi-code-0.38.0-headless-v2/headless-complete.jsonl"),
-        ProcessExit::new(true, Some(0)),
-    );
-    assert_eq!(evidence.outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(
-        evidence.outcome.output().map(OperationContent::as_str),
-        Some("fixture result")
-    );
-    assert!(evidence.events.iter().any(|event| matches!(
-        event.kind(),
-        RuntimeEventKind::Activity(activity)
-            if matches!(
-                activity.kind(),
-                swallowtail_runtime::ActivityKind::Unknown(namespace)
-                    if namespace.as_str() == "kimi-code.headless.system.version"
-            )
-    )));
-}
-
-#[test]
 fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct() {
-    let topology = ExecutionTopologyFixture::local();
+    let topology = local_topology();
     let prepared = prepared(topology.execution_host_id().clone());
     let profile = profile(&prepared, topology.working_resource().clone(), "failure");
 
@@ -205,9 +157,10 @@ fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct
         assert_status(&evidence.outcome, code, provider);
     }
 
-    let (process, state) = FakeProcessService::held_open();
-    let mut run =
-        block_on(profile.start_run(services(topology.execution_host_id().clone(), process)))
+    let (process, state) = super::discovery_support::FakeProcessService::held_open();
+    let mut run = block_on(
+        profile.start_run(super::support::services(topology.execution_host_id().clone(), process)),
+    )
             .expect("cancellable run starts");
     assert_eq!(
         block_on(run.cancellation().request()).expect("cancellation succeeds"),
@@ -226,11 +179,11 @@ fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct
     assert!(state.force_stopped());
     assert!(state.waited());
 
-    let (process, state) = FakeProcessService::held_open();
-    let mut run = block_on(profile.start_run(services_with_time(
+    let (process, state) = super::discovery_support::FakeProcessService::held_open();
+    let mut run = block_on(profile.start_run(super::support::services_with_time(
         topology.execution_host_id().clone(),
         process,
-        Arc::new(ImmediateTime),
+        std::sync::Arc::new(super::discovery_support::ImmediateTime),
     )))
     .expect("deadline-bound run starts");
     let timed_out = block_on(
@@ -245,7 +198,7 @@ fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct
 
 #[test]
 fn unsupported_input_fails_before_process_start() {
-    let topology = ExecutionTopologyFixture::local();
+    let topology = local_topology();
     let prepared = prepared(topology.execution_host_id().clone());
     let profile = profile(
         &prepared,
@@ -264,11 +217,11 @@ fn unsupported_input_fails_before_process_start() {
                 "json-schema-2020-12",
             )
             .expect("tool is valid")]);
-    let (process, state) = FakeProcessService::completed("");
+    let (process, state) = super::discovery_support::FakeProcessService::completed("");
     let result = block_on(profile.low_level_driver().start_run(
         profile.plan().clone(),
         request,
-        services(topology.execution_host_id().clone(), process),
+        super::support::services(topology.execution_host_id().clone(), process),
     ));
     assert!(result.is_err());
     assert!(!state.started());
@@ -299,163 +252,4 @@ fn provider_neutral_one_shot_and_native_profiles_cover_headless_boundaries() {
     ] {
         assert!(native.covers(assertion), "missing {assertion:?}");
     }
-}
-
-struct RunEvidence {
-    events: Vec<RuntimeEvent>,
-    outcome: TerminalOutcome,
-    request: support::ObservedProcessRequest,
-    stdin_closed: bool,
-}
-
-fn execute(
-    profile: &swallowtail_adapter_kimi::KimiHeadlessPreparedRun,
-    host: ExecutionHostId,
-    output: &str,
-    exit: ProcessExit,
-) -> RunEvidence {
-    let (process, state) = FakeProcessService::with_exit(output, exit);
-    let mut run = block_on(profile.start_run(services(host, process))).expect("run starts");
-    assert!(run.provider_run_ref().is_none());
-    let events = block_on(
-        run.take_events()
-            .expect("event stream is available")
-            .collect::<Vec<_>>(),
-    )
-    .into_iter()
-    .collect::<Result<Vec<_>, _>>()
-    .expect("events are valid");
-    let outcome = block_on(
-        run.take_terminal_outcome()
-            .expect("terminal outcome is available"),
-    );
-    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
-    assert!(state.waited());
-    RunEvidence {
-        events,
-        outcome,
-        request: state.request(),
-        stdin_closed: state.stdin_closed(),
-    }
-}
-
-fn prepared(host: ExecutionHostId) -> KimiHeadlessPreparedIntegration {
-    let access = access_profile();
-    let (process, state) = FakeProcessService::completed("0.31.1\n");
-    let prepared = block_on(prepare_kimi_headless(
-        KimiHeadlessPreparationInput::new(
-            ConfiguredInstanceId::new("kimi.headless.fixture").expect("instance is valid"),
-            InstanceRevision::new("1").expect("revision is valid"),
-            host.clone(),
-            InstalledExecutableTarget::new(
-                ExecutableRef::new("kimi.fixture.executable").expect("executable is valid"),
-                InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("axis is valid"),
-            ),
-            EnvironmentRef::new("kimi.fixture.default-v1-environment")
-                .expect("environment is valid"),
-            access.clone(),
-            PreparedAccessEvidence::caller_asserted(access_status(&access)),
-        ),
-        KimiHeadlessPreparationProbe::new(
-            RequestId::new("kimi-headless-probe").expect("request is valid"),
-            ScopeId::new("kimi-headless-probe").expect("scope is valid"),
-            Deadline::at(MonotonicInstant::from_ticks(1000)),
-            DiscoveryCancellation::new(),
-        ),
-        services(host, process),
-    ))
-    .expect("Kimi headless prepares");
-    assert_eq!(state.request().arguments, ["--version"]);
-    assert_eq!(
-        prepared.observation().version().version().as_str(),
-        "0.31.1"
-    );
-    prepared
-}
-
-fn prepared_with_version(host: ExecutionHostId, version: &str) -> KimiHeadlessPreparedIntegration {
-    let access = access_profile();
-    let (process, state) = FakeProcessService::completed(&format!("{version}\n"));
-    let prepared = block_on(prepare_kimi_headless(
-        KimiHeadlessPreparationInput::new(
-            ConfiguredInstanceId::new("kimi.headless.fixture").expect("instance is valid"),
-            InstanceRevision::new("1").expect("revision is valid"),
-            host.clone(),
-            InstalledExecutableTarget::new(
-                ExecutableRef::new("kimi.fixture.executable").expect("executable is valid"),
-                InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("axis is valid"),
-            ),
-            EnvironmentRef::new("kimi.fixture.default-v1-environment")
-                .expect("environment is valid"),
-            access.clone(),
-            PreparedAccessEvidence::caller_asserted(access_status(&access)),
-        ),
-        KimiHeadlessPreparationProbe::new(
-            RequestId::new("kimi-headless-probe").expect("request is valid"),
-            ScopeId::new("kimi-headless-probe").expect("scope is valid"),
-            Deadline::at(MonotonicInstant::from_ticks(1000)),
-            DiscoveryCancellation::new(),
-        ),
-        services(host, process),
-    ))
-    .expect("Kimi headless prepares");
-    assert_eq!(state.request().arguments, ["--version"]);
-    assert_eq!(prepared.observation().version().version().as_str(), version);
-    prepared
-}
-
-fn profile(
-    prepared: &KimiHeadlessPreparedIntegration,
-    resource: WorkingResourceRef,
-    id: &str,
-) -> swallowtail_adapter_kimi::KimiHeadlessPreparedRun {
-    prepared
-        .prepare_run(
-            KimiHeadlessRunInput::new(
-                RequestId::new(format!("kimi-headless-{id}")).expect("request is valid"),
-                KimiModelSelection::new(
-                    ModelRouteId::new(format!("kimi.headless.{id}")).expect("route is valid"),
-                    ModelRouteRevision::new("1").expect("route revision is valid"),
-                    ModelId::new("kimi-coder").expect("model is valid"),
-                ),
-                OperationContent::new("private Kimi fixture prompt").expect("content is valid"),
-                resource,
-                Deadline::at(MonotonicInstant::from_ticks(1000)),
-            )
-            .accept_managed_recovery(),
-        )
-        .expect("run prepares")
-}
-
-fn access_profile() -> AccessProfile {
-    AccessProfile::new(
-        AccessProfileId::new("kimi.headless.membership").expect("access id is valid"),
-        CredentialMechanism::InteractiveOauth,
-        EntitlementMetering::SubscriptionAllowance,
-        EndpointAudience::new("kimi-code-membership").expect("audience is valid"),
-        SupportAuthority::IntegrationMaintainerSupported,
-    )
-    .with_credential_reference(
-        CredentialRef::new("kimi.fixture.delegated-auth").expect("credential is valid"),
-    )
-}
-
-fn access_status(access: &AccessProfile) -> AccessStatus {
-    AccessStatus::new(
-        access.id().clone(),
-        CredentialState::Ready,
-        EntitlementState::Available,
-        EndpointAuthorization::Allowed,
-        RuntimeReadiness::Ready,
-        SupportAuthority::IntegrationMaintainerSupported,
-    )
-}
-
-fn assert_status(outcome: &TerminalOutcome, code: &str, provider: bool) {
-    let diagnostic = match outcome.status() {
-        TerminalStatus::ProviderFailed(diagnostic) if provider => diagnostic,
-        TerminalStatus::RuntimeFailed(diagnostic) if !provider => diagnostic,
-        status => panic!("unexpected status {status:?}"),
-    };
-    assert_eq!(diagnostic.code(), code);
 }

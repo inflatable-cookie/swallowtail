@@ -211,9 +211,9 @@ without explicit operator direction.
 - g04.063 stopped after card 176 and merged through PR 62 at `5f37ff6b`:
   Research 210 empty deliver-now set; headless qualified ceiling retracted to
   `0.37.2`; cards 177-178 blocked
-- g04.064 is ready: cards 179-180 qualify exact default agent-core-v2
-  headless stream-json at `0.38.0` under a distinct private revision or record
-  an incompatible stop; Research 211 is reserved
+- g04.064 is complete: cards 179-180 qualify exact default agent-core-v2
+  headless stream-json at `0.38.0` under adapter-private
+  `kimi.headless.stream-json.v2`; Research 211 is promoted
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 64 roadmaps; execute g04.064; generation closure awaits
@@ -279,7 +279,7 @@ without explicit operator direction.
     Research 210 empty deliver-now set;
     headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked;
     qualify v2 headless at `0.38.0` or document incompatible stop.
-26. g04.064 is ready as Contract 029 one-family work. Cards 179-180 qualify
+26. g04.064 is complete as Contract 029 one-family work. Cards 179-180 qualified
     exact `0.38.0` default v2 or record an incompatible stop.
 27. g04 remains active at operator direction. Contract 029 remains standing.
 
@@ -317,7 +317,7 @@ New route-family research does not pre-empt this sequence.
 - [061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md) — complete, cards 170-172
 - [062 Anthropic Messages Adaptive Thinking](./062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175
 - [063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; cards 177-178 blocked
-- [064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md) — ready, cards 179-180
+- [064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

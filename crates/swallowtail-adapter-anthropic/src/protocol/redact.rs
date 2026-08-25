@@ -17,12 +17,16 @@ impl RedactedBytes {
         self.0.extend_from_slice(bytes);
     }
 
-    pub(crate) fn len(&self) -> usize {
-        self.0.len()
+    pub(crate) fn push(&mut self, byte: u8) {
+        self.0.push(byte);
     }
 
-    pub(crate) fn into_vec(mut self) -> Vec<u8> {
-        std::mem::take(&mut self.0)
+    pub(crate) fn pop(&mut self) -> Option<u8> {
+        self.0.pop()
+    }
+
+    pub(crate) fn len(&self) -> usize {
+        self.0.len()
     }
 }
 
@@ -45,6 +49,17 @@ impl std::ops::Deref for RedactedBytes {
 
     fn deref(&self) -> &[u8] {
         &self.0
+    }
+}
+
+impl std::io::Write for RedactedBytes {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        self.0.extend_from_slice(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
     }
 }
 
@@ -108,7 +123,11 @@ fn take_secret(
         Some(serde_json::Value::String(secret)) if !secret.trim().is_empty() => {
             Ok(RedactedBytes::from_vec(secret.into_bytes()))
         }
-        _ => Err(protocol_failure(subject)),
+        Some(rejected) => {
+            drop(ZeroizingJson(rejected));
+            Err(protocol_failure(subject))
+        }
+        None => Err(protocol_failure(subject)),
     }
 }
 
@@ -120,24 +139,24 @@ fn splice_direct_body(
     effort: Option<&str>,
     thinking: bool,
 ) -> Result<RedactedBytes, RuntimeFailure> {
-    let mut body = Vec::new();
-    body.extend(br#"{"max_tokens":"#);
-    body.extend(maximum.to_string().into_bytes());
-    body.extend(br#","messages":"#);
+    let mut body = RedactedBytes::from_vec(Vec::new());
+    body.extend_from_slice(br#"{"max_tokens":"#);
+    body.extend_from_slice(maximum.to_string().as_bytes());
+    body.extend_from_slice(br#","messages":"#);
     body.extend_from_slice(messages);
-    body.extend(br#","model":"#);
+    body.extend_from_slice(br#","model":"#);
     serde_json::to_writer(&mut body, model).map_err(|_| protocol_failure("model"))?;
     if let Some(effort) = effort {
-        body.extend(br#","output_config":{"effort":"#);
+        body.extend_from_slice(br#","output_config":{"effort":"#);
         serde_json::to_writer(&mut body, effort).map_err(|_| protocol_failure("effort"))?;
         body.push(b'}');
     }
-    body.extend(br#","stream":true"#);
+    body.extend_from_slice(br#","stream":true"#);
     if thinking {
-        body.extend(br#","thinking":{"display":"omitted","type":"adaptive"}"#);
+        body.extend_from_slice(br#","thinking":{"display":"omitted","type":"adaptive"}"#);
     }
-    body.extend(br#","tool_choice":{"type":"auto"},"tools":"#);
+    body.extend_from_slice(br#","tool_choice":{"type":"auto"},"tools":"#);
     body.extend_from_slice(tools);
     body.push(b'}');
-    Ok(RedactedBytes::from_vec(body))
+    Ok(body)
 }

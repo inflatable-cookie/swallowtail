@@ -51,3 +51,39 @@
             .finish()
             .expect("failed private frame does not remain buffered");
     }
+
+    #[test]
+    fn wrong_typed_signature_fails_without_leaking() {
+        const SIGNATURE: &str = "sig_omitted_fixture_private";
+        let frames = decode(
+            format!(
+                "event: content_block_delta\ndata: {{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{{\"type\":\"signature_delta\",\"signature\":{{\"nested\":\"{SIGNATURE}\"}}}}}}\n\n"
+            )
+            .as_bytes(),
+        )
+        .expect("named frame decodes");
+        let error = parse_event(&frames[0]).expect_err("object signature fails");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.anthropic.protocol_invalid"
+        );
+        assert!(!format!("{error:?}").contains(SIGNATURE));
+    }
+
+    #[test]
+    fn wrong_typed_redacted_data_fails_without_leaking() {
+        const REDACTED: &str = "redacted_fixture_private_data";
+        let frames = decode(
+            format!(
+                "event: content_block_start\ndata: {{\"type\":\"content_block_start\",\"index\":0,\"content_block\":{{\"type\":\"redacted_thinking\",\"data\":{{\"nested\":\"{REDACTED}\"}}}}}}\n\n"
+            )
+            .as_bytes(),
+        )
+        .expect("named frame decodes");
+        let error = parse_event(&frames[0]).expect_err("object redacted data fails");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.anthropic.protocol_invalid"
+        );
+        assert!(!format!("{error:?}").contains(REDACTED));
+    }

@@ -62,3 +62,38 @@ impl Drop for SecretCopy {
         self.0.fill(0);
     }
 }
+
+fn attach_post_body<'easy, 'data>(
+    transfer: &mut curl::easy::Transfer<'easy, 'data>,
+    body: &'data [u8],
+    offset: &'data Cell<usize>,
+) -> Result<(), RuntimeFailure> {
+    transfer
+        .read_function(|into| {
+            let start = offset.get();
+            let rest = body.get(start..).unwrap_or(&[]);
+            let n = rest.len().min(into.len());
+            into[..n].copy_from_slice(&rest[..n]);
+            offset.set(start + n);
+            Ok(n)
+        })
+        .map_err(curl_failure)?;
+    transfer
+        .seek_function(|whence| {
+            let len = body.len() as u64;
+            let current = offset.get() as u64;
+            let next = match whence {
+                SeekFrom::Start(position) => Some(position),
+                SeekFrom::Current(delta) => current.checked_add_signed(delta),
+                SeekFrom::End(delta) => len.checked_add_signed(delta),
+            };
+            match next {
+                Some(position) if position <= len => {
+                    offset.set(position as usize);
+                    SeekResult::Ok
+                }
+                _ => SeekResult::Fail,
+            }
+        })
+        .map_err(curl_failure)
+}

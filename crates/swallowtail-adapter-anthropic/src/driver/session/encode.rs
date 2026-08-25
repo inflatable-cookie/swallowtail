@@ -1,37 +1,38 @@
-fn encode_json_string(out: &mut Vec<u8>, value: &str) -> Result<(), RuntimeFailure> {
+fn encode_json_string(out: &mut RedactedBytes, value: &str) -> Result<(), RuntimeFailure> {
     serde_json::to_writer(&mut *out, value).map_err(|_| history_failure())
 }
 
 fn encode_canonical_json(
-    out: &mut Vec<u8>,
+    out: &mut RedactedBytes,
     value: serde_json::Value,
 ) -> Result<(), RuntimeFailure> {
-    let bytes = serde_json::to_vec(&crate::protocol::canonicalize_json_object_order(value))
-        .map_err(|_| history_failure())?;
-    out.extend_from_slice(&bytes);
-    Ok(())
+    serde_json::to_writer(
+        &mut *out,
+        &crate::protocol::canonicalize_json_object_order(value),
+    )
+    .map_err(|_| history_failure())
 }
 
 fn encode_user_message(content: &str) -> Result<RedactedBytes, RuntimeFailure> {
-    let mut out = Vec::new();
-    out.extend(br#"[{"content":"#);
+    let mut out = RedactedBytes::from_vec(Vec::new());
+    out.extend_from_slice(br#"[{"content":"#);
     encode_json_string(&mut out, content)?;
-    out.extend(br#","role":"user"}]"#);
-    Ok(RedactedBytes::from_vec(out))
+    out.extend_from_slice(br#","role":"user"}]"#);
+    Ok(out)
 }
 
 impl PrivateBlock {
-    fn write_json(&self, out: &mut Vec<u8>) -> Result<(), RuntimeFailure> {
+    fn write_json(&self, out: &mut RedactedBytes) -> Result<(), RuntimeFailure> {
         match self {
             Self::Thinking { signature } => {
-                out.extend(br#"{"signature":"#);
+                out.extend_from_slice(br#"{"signature":"#);
                 encode_json_string(out, signature.as_str()?)?;
-                out.extend(br#","thinking":"","type":"thinking"}"#);
+                out.extend_from_slice(br#","thinking":"","type":"thinking"}"#);
             }
             Self::Redacted { data } => {
-                out.extend(br#"{"data":"#);
+                out.extend_from_slice(br#"{"data":"#);
                 encode_json_string(out, data.as_str()?)?;
-                out.extend(br#","type":"redacted_thinking"}"#);
+                out.extend_from_slice(br#","type":"redacted_thinking"}"#);
             }
         }
         Ok(())
@@ -41,10 +42,10 @@ impl PrivateBlock {
 impl History {
     fn continuation_messages(&self) -> Result<RedactedBytes, RuntimeFailure> {
         let first = self.first.as_ref().ok_or_else(history_failure)?;
-        let mut out = Vec::new();
-        out.extend(br#"[{"content":"#);
+        let mut out = RedactedBytes::from_vec(Vec::new());
+        out.extend_from_slice(br#"[{"content":"#);
         encode_json_string(&mut out, first.user.as_str()?)?;
-        out.extend(br#","role":"user"},{"content":["#);
+        out.extend_from_slice(br#","role":"user"},{"content":["#);
         for (index, block) in first.private.iter().enumerate() {
             if index > 0 {
                 out.push(b',');
@@ -54,16 +55,18 @@ impl History {
         if !first.private.is_empty() {
             out.push(b',');
         }
-        out.extend(br#"{"id":"#);
+        out.extend_from_slice(br#"{"id":"#);
         encode_json_string(&mut out, &first.call_id)?;
-        out.extend(br#","input":"#);
+        out.extend_from_slice(br#","input":"#);
         encode_canonical_json(
             &mut out,
             serde_json::from_slice(&first.arguments.0).map_err(|_| history_failure())?,
         )?;
-        out.extend(br#","name":"#);
+        out.extend_from_slice(br#","name":"#);
         encode_json_string(&mut out, &first.tool_name)?;
-        out.extend(br#","type":"tool_use"}],"role":"assistant"},{"content":[{"content":"#);
+        out.extend_from_slice(
+            br#","type":"tool_use"}],"role":"assistant"},{"content":[{"content":"#,
+        );
         encode_json_string(
             &mut out,
             first
@@ -72,14 +75,14 @@ impl History {
                 .ok_or_else(history_failure)?
                 .as_str()?,
         )?;
-        out.extend(br#","tool_use_id":"#);
+        out.extend_from_slice(br#","tool_use_id":"#);
         encode_json_string(&mut out, &first.call_id)?;
-        out.extend(br#","type":"tool_result"}],"role":"user"}]"#);
-        Ok(RedactedBytes::from_vec(out))
+        out.extend_from_slice(br#","type":"tool_result"}],"role":"user"}]"#);
+        Ok(out)
     }
 
     fn later_messages(&self, user: &str) -> Result<RedactedBytes, RuntimeFailure> {
-        let mut out = self.continuation_messages()?.into_vec();
+        let mut out = self.continuation_messages()?;
         if out.pop() != Some(b']') {
             return Err(history_failure());
         }
@@ -89,11 +92,11 @@ impl History {
             .and_then(|first| first.answer.as_ref())
             .ok_or_else(history_failure)?
             .as_str()?;
-        out.extend(br#",{"content":"#);
+        out.extend_from_slice(br#",{"content":"#);
         encode_json_string(&mut out, answer)?;
-        out.extend(br#","role":"assistant"},{"content":"#);
+        out.extend_from_slice(br#","role":"assistant"},{"content":"#);
         encode_json_string(&mut out, user)?;
-        out.extend(br#","role":"user"}]"#);
-        Ok(RedactedBytes::from_vec(out))
+        out.extend_from_slice(br#","role":"user"}]"#);
+        Ok(out)
     }
 }

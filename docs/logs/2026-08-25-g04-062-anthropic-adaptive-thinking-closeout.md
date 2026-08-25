@@ -30,7 +30,10 @@ closed. Raw SSE frames store payload bytes in `RedactedBytes` with redacted
 `Debug` and zeroizing drop; the decoder wraps drained frames in a zeroizing
 guard before fallible decode and parses private fields without leaving an
 ordinary JSON-string copy. Continuation replay encodes private blocks
-directly into a redacted request body; `Request` Debug and Drop do not
+directly into a redacted request body under that owner for every return path,
+including later-turn splicing. POST upload reads that body in place through a
+libcurl read callback instead of `post_fields_copy`. Rejected `take_secret`
+values stay under the JSON zeroizing guard. `Request` Debug and Drop do not
 expose or retain signatures or redacted thinking as ordinary bytes.
 Fresh restoration is `SessionReplaced` with the prepared selection and no
 private-state recovery.
@@ -54,7 +57,7 @@ manual budget thinking, or g04 closure.
 Worker validation passed on this branch:
 
 - `cargo fmt -p swallowtail-adapter-anthropic`
-- `effigy validate:focused swallowtail-adapter-anthropic` (99 tests)
+- `effigy validate:focused swallowtail-adapter-anthropic` (103 tests)
 - `effigy package:verify-affected swallowtail-adapter-anthropic`
 - `git diff --check`
 - `git diff --check a69b3546eea09c7cf15edea0733a8301dec1e662...HEAD`
@@ -66,7 +69,12 @@ fixtures, and a clean worktree. Those landed on `88bfc0a1`.
 Review round 2 on `88bfc0a1` required a redacted zeroizing outbound replay
 body that does not clone private fields through `serde_json::Value`, inbound
 parse/failure temporaries under a zeroizing guard, and proofs at those
-ownership boundaries instead of leftover-buffer test helpers. Those are
+ownership boundaries instead of leftover-buffer test helpers. Those landed on
+`9ea1cff7`.
+
+Review round 3 on `9ea1cff7` required the replay builder to stay under
+zeroizing ownership through every fallible path, a no-copy curl upload of the
+redacted body, and zeroized rejection of wrong-typed secret JSON. Those are
 applied on this head. The worktree no longer carries `.tmp-research-209/`.
 
 `effigy doctor` reproduces the inherited baseline: 378 god-file findings

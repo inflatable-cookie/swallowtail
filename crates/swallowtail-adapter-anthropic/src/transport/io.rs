@@ -1,5 +1,6 @@
 use crate::protocol::{API_VERSION, Method, SseDecoder, require_success};
-use curl::easy::{Easy, List, WriteError};
+use curl::easy::{Easy, List, SeekResult, WriteError};
+use std::io::SeekFrom;
 use futures_channel::mpsc::TrySendError;
 use std::cell::{Cell, RefCell};
 use url::Url;
@@ -67,7 +68,7 @@ fn configure(
     easy.http_headers(headers).map_err(curl_failure)?;
     if request.method == Method::Post {
         easy.post(true).map_err(curl_failure)?;
-        easy.post_fields_copy(request.body.as_deref().unwrap_or_default())
+        easy.post_field_size(request.body.as_deref().unwrap_or_default().len() as u64)
             .map_err(curl_failure)?;
     }
     Ok(())
@@ -85,8 +86,13 @@ fn perform_request(
     let mut body = Vec::new();
     let mut headers = BTreeMap::new();
     let overflow = Cell::new(false);
+    let upload = Cell::new(0usize);
+    let body_bytes = request.body.as_deref().unwrap_or(&[]);
     {
         let mut transfer = easy.transfer();
+        if request.method == Method::Post {
+            attach_post_body(&mut transfer, body_bytes, &upload)?;
+        }
         transfer
             .header_function(|line| {
                 capture_header(line, &mut headers);
@@ -135,8 +141,13 @@ fn perform_sse(
     let failure_slot = RefCell::new(None);
     let error_body = RefCell::new(Vec::new());
     let mut decoder = SseDecoder::default();
+    let upload = Cell::new(0usize);
+    let body_bytes = request.body.as_deref().unwrap_or(&[]);
     {
         let mut transfer = easy.transfer();
+        if request.method == Method::Post {
+            attach_post_body(&mut transfer, body_bytes, &upload)?;
+        }
         transfer
             .header_function(|line| {
                 if line.starts_with(b"HTTP/") {

@@ -39,8 +39,8 @@ merged through PR 60 at `f21220cd`; Research 208 delivered
 `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`.
 g04.062 is merged through PR 61 at `4ef5c5e9`; Research 209 delivered exact
 Opus 4.7 adaptive omitted-display thinking with private signed-block replay and
-no thought disclosure. g04.063 stopped after card 176; Research 210 empty deliver-now set; cards
-177-178 blocked; no headless reasoning-effort feature ships.
+no thought disclosure. g04.063 stopped after card 176; Research 210 empty deliver-now set; headless
+qualified ceiling retracted to `0.37.2`; cards 177-178 blocked.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

@@ -56,7 +56,10 @@ substituted, clamped, shadowed, or silently defaulted.
 The lane is restricted to route `kimi-code.headless`, driver
 `swallowtail.kimi.headless`, exact executable axis `kimi-code.executable`,
 delegated membership OAuth reference access, and the qualified compatibility
-range `0.29.0..=0.38.0`. Exact 0.38.0 selected headless source is the first
+range `0.29.0..=0.37.2` under legacy v1 corpus. Exact `0.38.0` default
+headless dispatch uses agent-core-v2 `runV2Print`; Research 210 retracted
+headless qualified ceiling to `0.37.2` and left `0.38.0` visible
+`UnverifiedNewer` until v2 stream-json is independently qualified.
 evidence candidate. Research 210 owns any lower version floor or behavior-
 revision split.
 

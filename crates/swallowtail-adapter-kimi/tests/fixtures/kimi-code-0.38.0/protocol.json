@@ -15,6 +15,9 @@
   "selected_headless": {
     "prompt": true,
     "output_format": "stream-json",
+    "default_engine_at_0_38_0": "agent-core-v2-run-v2-print",
+    "qualified_ceiling": "0.37.2",
+    "v1_corpus_byte_identical_to_0_37_2": true,
     "experimental_v2_selected": false
   },
   "selected_acp_command": "acp",

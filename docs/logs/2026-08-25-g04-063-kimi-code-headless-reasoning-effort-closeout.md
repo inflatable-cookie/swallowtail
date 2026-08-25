@@ -19,10 +19,13 @@ fallback to `default_effort` on unsupported configured values. Headless
 Kimi ACP `session/set_config_option` (Research 207) or Qwen `set_effort`
 (Research 189). Ambient `thinking.enabled = false` disables the env overlay on
 both engines. The route's Ambient harness posture does not let the adapter read
-or override user `config.toml`, Swallowtail's qualified mapping targets v1
-source corpus without forcing legacy dispatch, and headless provides no
-session-open catalogue snapshot to freeze per-model `support_efforts` at
-preparation.
+or override user `config.toml`, and headless provides no session-open catalogue
+snapshot to freeze per-model `support_efforts` at preparation.
+
+Headless qualified ceiling is retracted to `0.37.2` under
+`kimi.headless.stream-json.v1`. Exact `0.38.0` headless default dispatch uses
+agent-core-v2 and remains `UnverifiedNewer` until v2 stream-json is independently
+qualified. ACP and local-server `0.38.0` qualifications stand.
 
 ## Validation
 
@@ -34,6 +37,6 @@ preparation.
 
 ## Continuation
 
-g04 remains open. Orchestrator should reassess the remaining per-route feature
-inventory after this evidence stop. Do not close or roll over the generation
-without explicit operator direction.
+g04 remains open. Qualify Kimi headless agent-core-v2 stream-json at exact
+`0.38.0` under an exact revision, or document an incompatible stop. Do not close
+or roll over the generation without explicit operator direction.

@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Orchestrator reassess the remaining per-route feature inventory after g04.063
-evidence stop. Research 210 admits an empty deliver-now set; cards 177-178 stay
-blocked and no Kimi headless reasoning-effort feature ships. Keep g04 open until
-explicit operator direction. Contract 029 currentness stays standing.
+Qualify Kimi headless agent-core-v2 stream-json at exact `0.38.0` under an
+exact revision, or document an incompatible stop. g04.063 evidence stop is
+complete: Research 210 empty deliver-now set, cards 177-178 blocked, headless
+qualified ceiling retracted to `0.37.2`. Keep g04 open until explicit operator
+direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

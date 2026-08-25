@@ -1797,12 +1797,8 @@ is authorized.
 
 ## Post-g04.063 Evidence Stop (2026-08-25)
 
-Disposition: evidence stop after card 176. Research 210 admits an empty
-deliver-now set. Exact `0.38.0` documents `KIMI_MODEL_THINKING_EFFORT`, but
-headless has no fail-closed confirmation transport, ambient
-`thinking.enabled = false` disables the override, Kimi-protocol normalization
-can substitute `default_effort` before env applies, and there is no headless
-catalogue snapshot for selected-model agreement at preparation. Cards 177-178
-stay blocked. No headless reasoning-effort feature ships. Orchestrator should
-reassess the remaining per-route feature inventory. g04 remains open at
-operator direction.
+Disposition: evidence stop after card 176. Research 210 empty deliver-now set.
+Headless qualified ceiling retracted to `0.37.2` because naked `0.38.0`
+default dispatch uses agent-core-v2 `runV2Print`. Cards 177-178 stay blocked.
+Qualify Kimi headless v2 stream-json at `0.38.0` or document incompatible stop.
+g04 remains open at operator direction.

@@ -188,8 +188,9 @@ families do not interrupt this programme by default.
 
 ## Current Execution Boundary
 
-Orchestrator reassess the remaining per-route feature inventory after g04.063
-evidence stop. Keep g04 active until explicit operator direction.
+Orchestrator qualify Kimi headless agent-core-v2 stream-json at exact `0.38.0`
+under an exact revision, or document an incompatible stop. Keep g04 active
+until explicit operator direction.
 
 ## Exclusions
 

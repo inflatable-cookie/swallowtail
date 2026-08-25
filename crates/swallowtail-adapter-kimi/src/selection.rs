@@ -16,7 +16,7 @@ pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.37.2";
 
 pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
 pub(crate) const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
@@ -278,14 +278,16 @@ mod tests {
         assert!(!claim.permits(&version("0.28.1")));
         for qualified in [
             "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0", "0.33.0",
-            "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2", "0.38.0",
+            "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
-        assert!(matches!(
-            claim.assess(&version("0.38.1")),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        for unverified in ["0.38.0", "0.38.1"] {
+            assert!(matches!(
+                claim.assess(&version(unverified)),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ));
+        }
     }
 
     #[test]

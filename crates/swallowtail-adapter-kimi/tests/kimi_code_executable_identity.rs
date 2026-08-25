@@ -107,7 +107,7 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
     assert_eq!(KIMI_HEADLESS_BASELINE_VERSION, "0.29.0");
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.38.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.37.2");
     assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
@@ -121,7 +121,7 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
         ),
         (
             &kimi_headless_claim(),
-            ["0.32.0", "0.34.0", "0.36.1", "0.37.2", "0.38.0"].as_slice(),
+            ["0.32.0", "0.34.0", "0.36.1", "0.37.2"].as_slice(),
         ),
         (
             &kimi_local_server_claim(),
@@ -307,8 +307,12 @@ fn identity_and_claim_qualify_0_38_0_as_compatible_extension() {
         "0.37.2"
     );
     assert_eq!(
-        identity["claim_at_observation"]["classification_of_0_38_0"],
+        identity["claim_at_observation"]["classification_of_0_38_0_headless"],
         "unverified_newer"
+    );
+    assert_eq!(
+        identity["claim_at_observation"]["classification_of_0_38_0_acp_and_local_server"],
+        "qualified_maintained"
     );
 
     assert_eq!(protocol["selected_acp_command"], "acp");
@@ -320,6 +324,14 @@ fn identity_and_claim_qualify_0_38_0_as_compatible_extension() {
     assert_eq!(
         protocol["acp_initialize"]["extracted_agent_version"],
         "0.38.0"
+    );
+    assert_eq!(
+        protocol["selected_headless"]["qualified_ceiling"],
+        "0.37.2"
+    );
+    assert_eq!(
+        protocol["selected_headless"]["default_engine_at_0_38_0"],
+        "agent-core-v2-run-v2-print"
     );
     assert_eq!(protocol["acp_initialize"]["host_paths_discarded"], true);
     assert_eq!(
@@ -341,16 +353,26 @@ fn identity_and_claim_qualify_0_38_0_as_compatible_extension() {
     }
 
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.38.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.37.2");
     assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
-    let claim = kimi_acp_claim();
+    let acp_claim = kimi_acp_claim();
     assert!(matches!(
-        claim.assess(&version("0.38.0")),
+        acp_claim.assess(&version("0.38.0")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        claim.assess(&version("0.38.1")),
+        acp_claim.assess(&version("0.38.1")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    let headless_claim = kimi_headless_claim();
+    assert!(matches!(
+        headless_claim.assess(&version("0.37.2")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        headless_claim.assess(&version("0.38.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

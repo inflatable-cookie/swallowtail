@@ -77,7 +77,7 @@ and selection policy.
 - [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
 - [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete and merged through PR 60 at `f21220cd`, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
 - [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
-- [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176; Research 210 empty deliver-now set; cards 177-178 blocked
+- [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176; Research 210 empty deliver-now set; headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked
 
 g04 has 63 numbered roadmaps: 55 completed milestones, eight honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, and 063. The operator
@@ -105,7 +105,8 @@ per-route inventory; do not close g04 without explicit operator direction.
 - g04.031 is on `main` at `6d86feb6` through PR 27: Oh My Pi RPC
   `17.4.0`; cards 085-086 are complete
 - g04.032 is on `main` at `7889cc63` through PR 30: Kimi Code ACP,
-  headless, and local-server `0.38.0`; cards 087-088 are complete
+  headless qualified through `0.37.2`, and local-server `0.38.0`; cards 087-088
+  are complete; Research 210 retracted headless `0.38.0` qualification
 - g04.033 is on `main` at `9aac2dd1` through PR 32: the Pi SDK sidecar
   route is realized and both Pi routes are retained; cards 089-092 are
   complete
@@ -206,12 +207,13 @@ per-route inventory; do not close g04 without explicit operator direction.
 - g04.062 is complete and merged through PR 61 at `4ef5c5e9`: cards 173-175
   delivered adapter-local adaptive omitted-display thinking on exact
   `claude-opus-4-7` with bounded private replay; Research 209 is promoted
-- g04.063 stopped after card 176: Research 210 is an honest empty deliver-now
-  set; cards 177-178 blocked; no headless reasoning-effort feature ships
+- g04.063 stopped after card 176: Research 210 empty deliver-now set; headless
+  qualified ceiling retracted to `0.37.2`; cards 177-178 blocked; qualify v2
+  headless at `0.38.0` or document incompatible stop
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 63 roadmaps; orchestrator should reassess the remaining
-  per-route inventory; generation closure awaits explicit operator direction
+- g04 remains active at 63 roadmaps; qualify Kimi headless v2 at `0.38.0` or
+  document incompatible stop; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -269,8 +271,9 @@ per-route inventory; do not close g04 without explicit operator direction.
 24. g04.062 cards 173-175 delivered exact `claude-opus-4-7` adapter-local
     adaptive omitted-display thinking with private continuation replay;
     Research 209 is the evidence authority.
-25. g04.063 stopped after card 176. Research 210 is an honest empty deliver-now
-    set; cards 177-178 blocked; no headless reasoning-effort feature ships.
+25. g04.063 stopped after card 176. Research 210 empty deliver-now set;
+    headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked;
+    qualify v2 headless at `0.38.0` or document incompatible stop.
 26. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.

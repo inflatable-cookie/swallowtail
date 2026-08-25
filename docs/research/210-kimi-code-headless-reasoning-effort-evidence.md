@@ -92,6 +92,7 @@ Sibling Kimi ACP effort evidence (Research 207) and plan-mode evidence
 | `apps/kimi-code/src/cli/v2/run-v2-print.ts` @ `0.38.0` | default v2 print runner; agent-core-v2 bootstrap | 2026-08-25 | `ed6343355414859636f4b2e9c7c14fa86da3dee1c7eef7fc086735e5480f4788` |
 | `packages/agent-core-v2/src/kosong/model/thinking.ts` @ `0.38.0` | v2 resolve, normalize, forced effort | 2026-08-25 | `41abc96ed80b71e66e943bc3670bbf30b6ddce2868d260f49350166f954fea78` |
 | `packages/agent-core-v2/src/app/kosongConfig/configSection.ts` @ `0.38.0` | `forcedEffort` → `KIMI_MODEL_THINKING_EFFORT` | 2026-08-25 | `156c159c002b6e0d5a4fddd19e03b31d4788242258c41d3ae9c7e7cfbd9d5710` |
+| `packages/agent-core-v2/src/agent/profile/profileService.ts` @ `0.38.0` | `resolveThinkingState`; `effective = forced ?? base` | 2026-08-25 | `cf876e7dbec3650e62faa24ce88d2087ed2b8ce1a2a4faa5a78a0925d79eb316` |
 | `packages/agent-core/src/agent/config/thinking.ts` @ `0.38.0` | legacy resolve, normalize, env override | 2026-08-25 | `2286a08371e696e2b4400b4e733b87feec878353049b20b8b5cbe34716dbe7d0` |
 | `packages/agent-core/test/agent/config/thinking.test.ts` @ `0.38.0` | kimi-protocol fallback and always_thinking clamp | 2026-08-25 | `2bd6df4496384b8c1d7f2be25679caaecaf7e1aeb20aee97b903e7bf27418266` |
 | `packages/acp-adapter/src/model-catalog.ts` @ `0.38.0` | catalogue projection reference; not headless session surface | 2026-08-25 | `ca27ae18254c9b7f3a2f0c3c2e3687563f21297fcad9e44a8f70b1644ce92629` |
@@ -100,7 +101,22 @@ Sibling Kimi ACP effort evidence (Research 207) and plan-mode evidence
 
 `thinking.ts` in agent-core matches Research 207's cited blob through
 `0.29.0..=0.38.0` on the legacy path. agent-core-v2 `thinking.ts` is the
-parallel resolver on the default npm headless path.
+parallel resolver on the default npm headless path. `profileService.ts` hosts
+`resolveThinkingState` where forced effort overlays base `thinkingLevel`.
+
+## Currentness Repair
+
+Research 210 forced a headless currentness correction bundled with the
+evidence stop. Card 088 had raised headless qualified ceiling to `0.38.0`
+because v1 source blobs stayed byte-identical to `0.37.2`, but npm default
+dispatch at `0.38.0` is agent-core-v2 `runV2Print`. The adapter does not set
+`KIMI_CODE_LEGACY_FLAG`, so the qualified `kimi.headless.stream-json.v1` claim
+did not describe the process launched at `0.38.0`.
+
+Repair: retract headless qualified ceiling to `0.37.2`; keep ACP and
+local-server at `0.38.0`. Exact `0.38.0` headless is visible
+`UnverifiedNewer` until v2 stream-json is independently qualified. Research
+179 errata records the historical card-088 headless over-claim.
 
 ## Candidate Transport
 
@@ -181,7 +197,6 @@ the env overlay is considered.
 | Confirmation | No headless control exchange proves accepted or effective effort before the first prompt; env overlay is not echoed in stream-json output on either engine |
 | Inherited environment | Ambient host may supply `KIMI_MODEL_THINKING_EFFORT`; child-only binding precedence against inherited values is not proved on the Swallowtail process surface |
 | Transport ownership | `ProcessRequest` carries opaque `EnvironmentRef` values resolved by the host; adapter does not set raw `KIMI_MODEL_THINKING_EFFORT` without a host contract extension |
-| Engine routing gap | Swallowtail qualified mapping targets v1 source corpus; npm default dispatch is v2 unless host sets `KIMI_CODE_LEGACY_FLAG`; adapter does not enforce legacy dispatch, so binding cannot assume one engine surface |
 
 Illustrative official model metadata (configuration example, not a live
 catalogue snapshot):

@@ -5,6 +5,16 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+
+- Retract Kimi Code headless qualified ceiling from `0.38.0` to `0.37.2` under
+  existing `kimi.headless.stream-json.v1`. Research 210 proved naked npm
+  `0.38.0` `kimi -p` defaults to agent-core-v2 `runV2Print`, not the legacy v1
+  corpus Swallowtail audited; the adapter does not set `KIMI_CODE_LEGACY_FLAG`.
+  Exact `0.38.0` headless remains visible `UnverifiedNewer` until v2
+  stream-json is independently qualified. ACP and local-server `0.38.0`
+  qualifications stand. Research 210, g04.063.
+
 ### Added
 
 - add typed exact-llama.cpp-owned-`b10069` context-size selection:

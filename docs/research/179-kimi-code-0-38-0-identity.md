@@ -95,7 +95,20 @@ Keep baselines. Keep AllowUnverified. No published intermediates.
 Synthetic later-stable is `0.38.1`. No new public operation. Decoder
 specimens stay on the existing corpora.
 
-## Sources
+## Errata (2026-08-25, Research 210)
+
+Card 088 raised headless qualified ceiling to `0.38.0` alongside ACP and
+local-server because selected v1 headless source blobs (renderer, options,
+`run-prompt.ts` v1 branch) remained byte-identical to `0.37.2`. Research 210
+proved that naked npm `0.38.0` `kimi -p` defaults to agent-core-v2
+`runV2Print`, not the legacy v1 print body, unless `KIMI_CODE_LEGACY_FLAG` is
+truthy. Swallowtail's headless adapter does not set that flag.
+
+Headless qualified ceiling is therefore retracted to `0.37.2` under existing
+`kimi.headless.stream-json.v1`. Exact `0.38.0` headless remains visible
+`UnverifiedNewer` until agent-core-v2 stream-json is independently qualified
+under an exact revision. ACP and local-server `0.38.0` qualifications stand.
+
 
 - npm `@moonshot-ai/kimi-code@0.38.0`
 - [GitHub `0.38.0`](https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai%2Fkimi-code%400.38.0)

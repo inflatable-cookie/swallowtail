@@ -41,14 +41,20 @@
     "baseline_headless": "0.29.0",
     "baseline_local_server": "0.28.1",
     "latest_qualified": "0.37.2",
+    "latest_qualified_headless": "0.37.2",
+    "latest_qualified_acp_and_local_server": "0.38.0",
     "posture": "allow_unverified",
     "classification_of_0_37_2": "qualified_maintained",
-    "classification_of_0_38_0": "unverified_newer"
+    "classification_of_0_38_0": "unverified_newer",
+    "classification_of_0_38_0_headless": "unverified_newer",
+    "classification_of_0_38_0_acp_and_local_server": "qualified_maintained"
   },
   "identity_decision": {
     "shape": "compatible-extension",
     "acp_reuse_behavior": "kimi.acp.reasoning.declared-effort-v2",
     "headless_reuse_behavior": "kimi.headless.stream-json.v1",
+    "headless_qualified_ceiling": "0.37.2",
+    "headless_0_38_0_default_dispatch": "agent-core-v2-run-v2-print",
     "local_server_keep_heartbeat_ping": "0.35.0..=0.38.0",
     "raise_latest_qualified_to": "0.38.0",
     "qualify_intermediates": [],

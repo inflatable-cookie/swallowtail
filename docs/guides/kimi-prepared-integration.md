@@ -39,9 +39,13 @@ identity. The membership OAuth credential remains a scoped opaque lease;
 Swallowtail never exposes or persists its value.
 
 ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified. Headless exact
-`0.29.0..=0.38.0` is qualified. Later stable releases remain visible
-`UnverifiedNewer`; they do not inherit ACP catalogue/import support. Older,
-excluded, and prerelease observations do not prepare.
+`0.29.0..=0.37.2` is qualified under the audited legacy agent-core v1
+stream-json corpus (`kimi.headless.stream-json.v1`). Exact `0.38.0` headless
+default dispatch uses agent-core-v2 `runV2Print` and remains visible
+`UnverifiedNewer` until that engine is independently qualified. Later stable
+releases remain visible `UnverifiedNewer`; they do not inherit ACP
+catalogue/import support. Older, excluded, and prerelease observations do not
+prepare.
 
 ## Prepare The Installation
 
@@ -201,12 +205,15 @@ arguments from stable diagnostics and `ProcessRequest` debug output, but the
 host operating system may still expose process arguments. Consumers that
 cannot accept that host boundary should use another route.
 
-The prepared route binds the audited default v1 print engine and rejects an
-environment that enables `KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant,
-tool activity, retry, and terminal events without claiming consumer tool
-callbacks. Cancellation and deadline stop and join the child. Kimi may retain
-provider state, so the operation requires `DurableAllowed`; no reusable
-session, archive, restore, or delete authority escapes.
+The prepared route qualifies the audited legacy agent-core v1 stream-json
+corpus through exact `0.37.2` (`kimi.headless.stream-json.v1`). Exact
+`0.38.0` default headless dispatch uses agent-core-v2 `runV2Print` and is not
+yet qualified. The adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
+`KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant, tool activity, retry, and
+terminal events without claiming consumer tool callbacks. Cancellation and
+deadline stop and join the child. Kimi may retain provider state, so the
+operation requires `DurableAllowed`; no reusable session, archive, restore,
+or delete authority escapes.
 
 Take the event stream and terminal outcome immediately and poll them
 concurrently, then close the run. Cancellation and deadline stop the child;

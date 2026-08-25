@@ -118,10 +118,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [205 Antigravity Headless Agent-Profile Evidence](./205-antigravity-headless-agent-profile-evidence.md) — promoted evidence stop through g04.058; empty deliver-now on authorized evidence (host-local listing, missing selected `init.agent`, unproved fail-closed invalid `--agent`, authority composition risk)
 - [207 Kimi Code ACP Extended-Effort Evidence](./207-kimi-code-acp-extended-effort-evidence.md) — promoted through g04.060 card 167; exact `0.29.0..=0.38.0` admits snapshot-advertised `xhigh|max` with effective confirmation; foreign rows coexist without public admission
 - [208 Kimi Code ACP Plan-Mode Evidence](./208-kimi-code-acp-plan-mode-evidence.md) — promoted through g04.061 card 170; exact `0.28.1` plus `0.29.0..=0.38.0` admit `HarnessMode::Plan` with snapshot membership and response `currentValue=plan`; `default|auto|yolo` coexist without public admission
-- [210 Kimi Code Headless Reasoning-Effort Evidence](./210-kimi-code-headless-reasoning-effort-evidence.md) — promoted through g04.063 card 176; honest empty deliver-now set; no headless reasoning-effort binding
+- [210 Kimi Code Headless Reasoning-Effort Evidence](./210-kimi-code-headless-reasoning-effort-evidence.md) — promoted through g04.063 card 176; honest empty deliver-now set; headless qualified ceiling retracted to `0.37.2`
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
-- [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md)
+- [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)
 - [201 Codex 0.149.1 Identity](./201-codex-0-149-1-identity.md)

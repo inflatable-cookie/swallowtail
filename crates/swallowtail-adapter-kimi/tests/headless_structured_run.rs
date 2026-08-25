@@ -1,7 +1,5 @@
+use super::support::{assert_status, execute, local_topology, prepared, profile};
 use futures_executor::block_on;
-use super::support::{
-    assert_status, execute, local_topology, prepared, profile,
-};
 use swallowtail_core::{
     HarnessConfigurationPosture, HarnessIsolation, ObservableActivityAvailability,
 };
@@ -158,10 +156,11 @@ fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct
     }
 
     let (process, state) = super::discovery_support::FakeProcessService::held_open();
-    let mut run = block_on(
-        profile.start_run(super::support::services(topology.execution_host_id().clone(), process)),
-    )
-            .expect("cancellable run starts");
+    let mut run = block_on(profile.start_run(super::support::services(
+        topology.execution_host_id().clone(),
+        process,
+    )))
+    .expect("cancellable run starts");
     assert_eq!(
         block_on(run.cancellation().request()).expect("cancellation succeeds"),
         CancellationAcknowledgement::Requested

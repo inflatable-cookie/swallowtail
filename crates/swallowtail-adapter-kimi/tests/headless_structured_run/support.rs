@@ -10,17 +10,15 @@ use swallowtail_adapter_kimi::{
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialRef, CredentialState, EndpointAuthorization, EndpointAudience, EntitlementMetering, EntitlementState,
-    ExecutionHostId, InstanceRevision,
-    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    RuntimeReadiness, SupportAuthority,
+    CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, ModelId,
+    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
-    ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessExit,
-    RequestId, RuntimeEvent, ScopeId, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    ProcessExit, RequestId, RuntimeEvent, ScopeId, TerminalOutcome, TerminalStatus,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 

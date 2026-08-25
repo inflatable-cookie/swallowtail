@@ -30,7 +30,7 @@ In tests and fixtures:
   route, discovery, and foundation assertions as warranted
 - prove v1 behavior remains unchanged through `0.37.2`
 - prove exact `0.38.0` uses only the v2 mapping and mismatched revisions fail
-  before provider work
+  during decode before output acceptance
 - preserve honest retained-state, recovery, retry, cancellation, tool, stderr,
   exit, malformed-stream, incomplete-stream, and unknown-event truth
 

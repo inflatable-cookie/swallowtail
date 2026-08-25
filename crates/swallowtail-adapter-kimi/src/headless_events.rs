@@ -104,6 +104,7 @@ impl KimiHeadlessEventParser {
             Some("tool") => self.parse_tool(&payload),
             Some("meta") => self.parse_meta(&payload),
             Some(role) if !role.trim().is_empty() => {
+                self.ensure_turn_output_allowed()?;
                 let activity = self.activity.unknown(&format!("role.{role}"))?;
                 Ok(self.activity_events(activity))
             }
@@ -220,6 +221,7 @@ impl KimiHeadlessEventParser {
                 }
             },
             Some(event_type) if !event_type.trim().is_empty() => {
+                self.ensure_turn_output_allowed()?;
                 let activity = self.activity.unknown(event_type)?;
                 Ok(self.activity_events(activity))
             }

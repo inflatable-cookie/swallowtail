@@ -30,6 +30,7 @@ ACP and local-server `0.38.0` qualifications are unchanged. Historical Research
 
 ## Validation
 
+- `cargo fmt --all -- --check` — passed
 - `cargo fmt -p swallowtail-adapter-kimi` — passed
 - `effigy validate:focused swallowtail-adapter-kimi` — passed
 - `effigy package:verify-affected swallowtail-adapter-kimi` — passed

@@ -11,6 +11,8 @@ const V2_MALFORMED: &str =
     include_str!("fixtures/kimi-code-0.38.0-headless-v2/headless-malformed.jsonl");
 const V2_UNKNOWN: &str =
     include_str!("fixtures/kimi-code-0.38.0-headless-v2/headless-unknown.jsonl");
+const V2_PROVIDER_FAILURE: &str =
+    include_str!("fixtures/kimi-code-0.38.0-headless-v2/headless-provider-failure.jsonl");
 const V1_COMPLETE: &str = include_str!("fixtures/kimi-code-0.29.1-0.29.2/headless-complete.jsonl");
 
 #[test]
@@ -36,17 +38,15 @@ fn v2_complete_corpus_requires_matching_version_preamble() {
         evidence.outcome.output().map(OperationContent::as_str),
         Some("fixture result")
     );
-    assert!(
-        !evidence.events.iter().any(|event| matches!(
-            event.kind(),
-            RuntimeEventKind::Activity(activity)
-                if matches!(
-                    activity.kind(),
-                    swallowtail_runtime::ActivityKind::Unknown(namespace)
-                        if namespace.as_str() == "kimi-code.headless.system.version"
-                )
-        ))
-    );
+    assert!(!evidence.events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::Activity(activity)
+            if matches!(
+                activity.kind(),
+                swallowtail_runtime::ActivityKind::Unknown(namespace)
+                    if namespace.as_str() == "kimi-code.headless.system.version"
+            )
+    )));
     assert!(evidence.events.iter().any(|event| matches!(
         event.kind(),
         RuntimeEventKind::Activity(activity)
@@ -91,7 +91,7 @@ fn v2_tools_and_retry_corpus_decode_under_v2_revision() {
 }
 
 #[test]
-fn v2_malformed_unknown_and_revision_mismatches_fail_before_provider_work() {
+fn v2_malformed_unknown_and_revision_mismatches_fail_during_decode() {
     let topology = local_topology();
     let prepared_v2 = prepared_with_version(topology.execution_host_id().clone(), "0.38.0");
     let prepared_v1 = prepared(topology.execution_host_id().clone());
@@ -187,6 +187,69 @@ fn v2_malformed_unknown_and_revision_mismatches_fail_before_provider_work() {
         "swallowtail.kimi.headless.malformed_stream",
         false,
     );
+
+    let late_meta_preamble = execute(
+        &profile(
+            &prepared_v2,
+            topology.working_resource().clone(),
+            "v2-late-meta-preamble",
+        ),
+        topology.execution_host_id().clone(),
+        "{\"role\":\"meta\",\"type\":\"future.activity\",\"content\":\"fixture\"}\n{\"role\":\"meta\",\"type\":\"system.version\",\"version\":\"0.38.0\"}\n{\"role\":\"assistant\",\"content\":\"fixture\"}\n{\"role\":\"meta\",\"type\":\"session.resume_hint\",\"session_id\":\"fixture-session\",\"command\":\"kimi -r fixture-session\",\"content\":\"To resume this session: kimi -r fixture-session\"}\n",
+        ProcessExit::new(true, Some(0)),
+    );
+    assert_status(
+        &late_meta_preamble.outcome,
+        "swallowtail.kimi.headless.malformed_stream",
+        false,
+    );
+
+    let late_role_preamble = execute(
+        &profile(
+            &prepared_v2,
+            topology.working_resource().clone(),
+            "v2-late-role-preamble",
+        ),
+        topology.execution_host_id().clone(),
+        "{\"role\":\"error\",\"type\":\"provider_error\",\"message\":\"fixture\"}\n{\"role\":\"meta\",\"type\":\"system.version\",\"version\":\"0.38.0\"}\n{\"role\":\"assistant\",\"content\":\"fixture\"}\n{\"role\":\"meta\",\"type\":\"session.resume_hint\",\"session_id\":\"fixture-session\",\"command\":\"kimi -r fixture-session\",\"content\":\"To resume this session: kimi -r fixture-session\"}\n",
+        ProcessExit::new(true, Some(0)),
+    );
+    assert_status(
+        &late_role_preamble.outcome,
+        "swallowtail.kimi.headless.malformed_stream",
+        false,
+    );
+}
+
+#[test]
+fn v2_provider_failure_role_maps_to_unknown_activity_without_terminal() {
+    let topology = local_topology();
+    let prepared = prepared_with_version(topology.execution_host_id().clone(), "0.38.0");
+    let evidence = execute(
+        &profile(
+            &prepared,
+            topology.working_resource().clone(),
+            "v2-provider-failure",
+        ),
+        topology.execution_host_id().clone(),
+        V2_PROVIDER_FAILURE,
+        ProcessExit::new(true, Some(0)),
+    );
+    assert_status(
+        &evidence.outcome,
+        "swallowtail.kimi.headless.incomplete_stream",
+        false,
+    );
+    assert!(evidence.events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::Activity(activity)
+            if matches!(
+                activity.kind(),
+                swallowtail_runtime::ActivityKind::Unknown(namespace)
+                    if namespace.as_str() == "kimi-code.headless.role.error"
+            )
+    )));
+    assert!(!format!("{:?}", evidence.events).contains("fixture-private-provider-failure"));
 }
 
 #[test]

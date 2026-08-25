@@ -63,7 +63,9 @@ Source-proved stream-json shapes:
 
 Fixture-only or withheld without a live prompt:
 
-- `role":"error"` provider-failure lines (decoder rejects unknown roles today)
+- `role":"error"` provider-failure lines project as namespaced unknown-role
+  activity; terminal classification without `session.resume_hint` stays on exit
+  and incomplete-stream evidence
 - stderr config-warning ordering and content beyond static source inspection
 - goal-mode exit codes and background `exit` / `drain` / `steer` timing
 - authenticated retry/tool payloads beyond structurally empty specimens

@@ -21,7 +21,7 @@
   ],
   "meta_types_fixture_only": ["future.activity"],
   "withheld_without_live_prompt": [
-    "provider_error role line terminal truth",
+    "provider_error role line exit and provider-failure terminal truth",
     "stderr config diagnostic ordering",
     "goal-mode exit codes",
     "background exit/drain/steer timing"

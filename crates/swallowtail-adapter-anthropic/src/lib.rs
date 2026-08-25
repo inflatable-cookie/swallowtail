@@ -21,6 +21,7 @@ mod prepared_profile;
 mod protocol;
 mod reasoning;
 mod selection;
+mod thinking;
 mod transport;
 
 pub use addable::{
@@ -62,3 +63,4 @@ pub use selection::{
     ANTHROPIC_MESSAGES_FACADE_REVISION, anthropic_messages_facade_binding,
     anthropic_messages_facade_claim,
 };
+pub use thinking::AnthropicThinkingMode;

@@ -16,6 +16,7 @@ struct TurnContext {
     endpoint: String,
     tools: Arc<Vec<ToolSpec>>,
     reasoning: Option<swallowtail_core::ReasoningMode>,
+    thinking: Option<crate::AnthropicThinkingMode>,
     state: Arc<Mutex<DirectContinuationState>>,
     history: Arc<Mutex<History>>,
     usable: Arc<AtomicBool>,
@@ -51,7 +52,7 @@ async fn run_turn(
     )
     .await;
     let result = match result {
-        Ok(AttemptOutcome::Tool(call)) if work.attempt.ordinal().get() == 1 => {
+        Ok(AttemptOutcome::Tool { call, private }) if work.attempt.ordinal().get() == 1 => {
             if !context
                 .tools
                 .iter()
@@ -78,7 +79,7 @@ async fn run_turn(
                     .history
                     .lock()
                     .expect("history lock poisoned")
-                    .record_tool(&work.request, &call)
+                    .record_tool(&work.request, &call, private)
                     .and_then(|_| {
                         work.submitter
                             .as_ref()
@@ -188,6 +189,7 @@ async fn run_turn(
                                 .maximum_output_tokens_per_attempt()
                                 .get(),
                             context.reasoning.as_ref(),
+                            context.thinking,
                         )
                         .map_err(|error| TurnFailure::Runtime(error, CleanupOutcome::Clean))?;
                         context.cancelled.store(false, Ordering::SeqCst);
@@ -214,7 +216,7 @@ async fn run_turn(
     // A provider tool call outside the qualified direct-tool exchange is a
     // turn failure: the exchange must not stay open, and the terminal match
     // below owns the single conversion to the provider failure outcome.
-    let tool_failure = matches!(&result, Ok(AttemptOutcome::Tool(_)));
+    let tool_failure = matches!(&result, Ok(AttemptOutcome::Tool { .. }));
     if (result.is_err() || tool_failure)
         && let Some(submitter) = work.submitter.as_ref()
     {
@@ -247,7 +249,7 @@ async fn run_turn(
             TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean)
                 .with_output(OperationContent::new(output).expect("final output is nonempty"))
         }
-        Ok(AttemptOutcome::Tool(_)) => {
+        Ok(AttemptOutcome::Tool { .. }) => {
             invalidate(&context);
             TerminalOutcome::new(
                 TerminalStatus::ProviderFailed(

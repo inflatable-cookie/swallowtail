@@ -13,6 +13,15 @@ mod tests {
     const DISCONNECT: &[u8] = include_bytes!(
         "../../tests/fixtures/anthropic-2023-06-01/disconnect.sse"
     );
+    const THINKING_TEXT: &[u8] = include_bytes!(
+        "../../tests/fixtures/anthropic-2023-06-01/thinking-then-text.sse"
+    );
+    const REDACTED_TOOL: &[u8] = include_bytes!(
+        "../../tests/fixtures/anthropic-2023-06-01/redacted-tool-use.sse"
+    );
+    const THINKING_DELTA: &[u8] = include_bytes!(
+        "../../tests/fixtures/anthropic-2023-06-01/thinking-delta.sse"
+    );
 
     #[test]
     fn messages_effort_is_additive_and_does_not_enable_thinking() {
@@ -25,6 +34,7 @@ mod tests {
             None,
             None,
             Some(&reasoning),
+            None,
         )
         .expect("message request serializes");
         let raw = request.body.expect("request body exists");
@@ -40,7 +50,7 @@ mod tests {
     #[test]
     fn absent_message_effort_keeps_existing_serialized_body() {
         let content = OperationContent::new("fixture prompt").expect("content is valid");
-        let request = Request::message("claude-fixture-primary", &content, 64, None, None, None)
+        let request = Request::message("claude-fixture-primary", &content, 64, None, None, None, None)
             .expect("message request serializes");
         assert_eq!(
             request.body.expect("request body exists"),
@@ -57,6 +67,7 @@ mod tests {
             &[],
             64,
             Some(&reasoning),
+            None,
         )
         .expect("direct message request serializes");
         let body: serde_json::Value =
@@ -67,6 +78,27 @@ mod tests {
         assert_eq!(
             serde_json::to_vec(&body).expect("request body reserializes"),
             br#"{"max_tokens":64,"messages":[],"model":"claude-opus-4-7","output_config":{"effort":"max"},"stream":true,"tool_choice":{"type":"auto"},"tools":[]}"#
+        );
+    }
+
+    #[test]
+    fn adaptive_thinking_is_additive_and_composes_with_effort() {
+        let content = OperationContent::new("fixture prompt").expect("content is valid");
+        let reasoning = ReasoningMode::new("low").expect("reasoning is valid");
+        let request = Request::message(
+            "claude-opus-4-7",
+            &content,
+            64,
+            None,
+            None,
+            Some(&reasoning),
+            Some(crate::AnthropicThinkingMode::adaptive()),
+        )
+        .expect("message request serializes");
+        let raw = request.body.expect("request body exists");
+        assert_eq!(
+            raw,
+            br#"{"max_tokens":64,"messages":[{"content":"fixture prompt","role":"user"}],"model":"claude-opus-4-7","output_config":{"effort":"low"},"stream":true,"thinking":{"display":"omitted","type":"adaptive"}}"#
         );
     }
 
@@ -101,6 +133,42 @@ mod tests {
         decoder.push(DISCONNECT).expect("complete prefix parses");
         let error = decoder.finish().expect_err("partial frame fails");
         assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.sse_disconnected");
+    }
+
+    #[test]
+    fn production_decoder_accepts_omitted_thinking_signature_and_redacted_blocks() {
+        let events: Vec<_> = decode(THINKING_TEXT)
+            .expect("thinking stream decodes")
+            .iter()
+            .map(|frame| parse_event(frame).expect("thinking event parses"))
+            .collect();
+        assert!(matches!(events[1], Event::ContentStart(ContentBlock::Thinking)));
+        match &events[2] {
+            Event::SignatureDelta(bytes) => {
+                assert_eq!(bytes.as_str().expect("signature is utf-8"), "sig_omitted_fixture_private");
+            }
+            other => panic!("signature delta expected, got {other:?}"),
+        }
+        assert!(!format!("{events:?}").contains("sig_omitted_fixture_private"));
+
+        let redacted: Vec<_> = decode(REDACTED_TOOL)
+            .expect("redacted stream decodes")
+            .iter()
+            .map(|frame| parse_event(frame).expect("redacted event parses"))
+            .collect();
+        assert!(matches!(
+            redacted[1],
+            Event::ContentStart(ContentBlock::RedactedThinking { .. })
+        ));
+        assert!(!format!("{redacted:?}").contains("redacted_fixture_private_data"));
+    }
+
+    #[test]
+    fn production_decoder_rejects_thinking_delta_under_omitted_display() {
+        let frames = decode(THINKING_DELTA).expect("prefix decodes");
+        let error = parse_event(&frames[2]).expect_err("thinking delta fails");
+        assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.protocol_invalid");
+        assert!(!format!("{error:?}").contains("secret thought must not leak"));
     }
 
     #[test]

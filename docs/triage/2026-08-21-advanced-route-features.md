@@ -695,14 +695,16 @@ Official Messages
 `web_search_20260318` (Swallowtail uses `web_search_20250305`).
 
 Swallowtail: `maximum_output_tokens`, one PNG, `web_search_20250305`
-with two uses + domain allowlist, and exact `claude-opus-4-7`
-`output_config.effort` on structured and direct-continuation profiles. Matrix:
-`reasoning_selection` Yes for that exact row.
+with two uses + domain allowlist, exact `claude-opus-4-7`
+`output_config.effort` on structured and direct-continuation profiles, and
+adapter-local `AnthropicThinkingMode::adaptive()` omitted-display thinking on
+the same model. Matrix: `reasoning_selection` Yes for that exact effort row.
+Thinking is not a portable capability and adds no `ReasoningSummary` activity.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
 | Effort | `output_config.effort` | exact `low|medium|high|xhigh|max` on `claude-opus-4-7` | no for delivered row | delivered by g04.037 | not UltraCode; not Claude Code `--effort` |
-| Thinking | `thinking` | not mapped | yes | only-if: keep distinct from effort | official: do not pass `adaptive` as effort |
+| Thinking | `thinking` | adapter-local adaptive omitted-display on `claude-opus-4-7`; private replay on continuation | no for delivered omitted row | delivered by g04.062 | official: do not pass `adaptive` as effort; summarized display stays out |
 | Newer search tool | `web_search_20260318` | pinned `20250305` | version pin | only-if: qualify new type | do not silent-upgrade |
 
 ### `kimi-platform.chat`
@@ -1732,7 +1734,6 @@ the independent route truth. Permission widening, generic config, headless
 
 Other remaining candidates are weaker. llama.cpp owned reasoning lacks exact
 model/template semantics; Codex verbosity lacks selected-model support proof;
-Anthropic adaptive thinking needs private thinking-block stream preservation;
 Kiro profiles, OpenCode permissions, sandbox, skills/memory, and multi-agent
 families cross authority or containment boundaries. Ollama `think=max` still
 maps to `high` for the relevant exact family. g04 stays open at operator
@@ -1758,14 +1759,12 @@ and its private session history reconstructs only tool use. Current official
 Anthropic documentation requires the complete signed thinking sequence to be
 returned unmodified with tool results.
 
-Research 209 and card 173 must qualify one exact model/profile row for
-adapter-local adaptive thinking with omitted display. They own the complete
-`thinking` / `redacted_thinking` block grammar, signature and delta handling,
-tool-loop replay rule, bounds, zeroization, output-token interaction, and
-composition with every admitted effort value. Cards 174-175 continue only for
-a non-empty set that needs no new shared contract.
+## Post-g04.062 Delivery (2026-08-25)
 
-No thought text becomes portable output, activity, evidence, or diagnostics.
-Manual token-budget thinking, summarized-display activity, newer web search,
-other Anthropic products/models, and durable private state remain outside the
-lane. g04 stays open at operator direction.
+Disposition: delivered pending review/merge. Research 209 admitted exact
+`claude-opus-4-7` adapter-local `AnthropicThinkingMode::adaptive()` with
+explicit omitted display on structured attempts and direct continuation.
+Cards 174-175 bind request encoding, omitted SSE grammar, bounded zeroizing
+private replay before `tool_use`, effort composition, and fail-closed
+`thinking_delta`. No `ReasoningSummary` activity. Summarized display, manual
+budgets, and other models stay out. g04 stays open at operator direction.

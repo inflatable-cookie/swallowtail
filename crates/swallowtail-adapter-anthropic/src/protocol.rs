@@ -1,4 +1,5 @@
 use crate::failure::failure;
+use crate::thinking::AnthropicThinkingMode;
 use serde::Deserialize;
 use serde_json::json;
 use std::collections::BTreeMap;
@@ -81,6 +82,7 @@ impl Request {
         image: Option<&str>,
         search_domains: Option<&[String]>,
         reasoning: Option<&ReasoningMode>,
+        thinking: Option<AnthropicThinkingMode>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -119,6 +121,9 @@ impl Request {
         if let Some(reasoning) = reasoning {
             body["output_config"] = json!({"effort": reasoning.as_str()});
         }
+        if thinking.is_some() {
+            body["thinking"] = json!({"display": "omitted", "type": "adaptive"});
+        }
         let body = serde_json::to_vec(&canonicalize_json_object_order(body))
             .expect("message request JSON serializes");
         Ok(Self {
@@ -135,6 +140,7 @@ impl Request {
         tools: &[ToolSpec],
         maximum_output_tokens: u64,
         reasoning: Option<&ReasoningMode>,
+        thinking: Option<AnthropicThinkingMode>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -162,6 +168,9 @@ impl Request {
         });
         if let Some(reasoning) = reasoning {
             body["output_config"] = json!({"effort": reasoning.as_str()});
+        }
+        if thinking.is_some() {
+            body["thinking"] = json!({"display": "omitted", "type": "adaptive"});
         }
         let body = serde_json::to_vec(&canonicalize_json_object_order(body))
             .expect("direct-continuation request JSON serializes");

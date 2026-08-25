@@ -1,6 +1,6 @@
 # 173 Anthropic Messages Adaptive-Thinking Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -48,19 +48,19 @@ state. Promote an honest empty set if any required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official source bodies, dates, and hashes are recorded
-- [ ] model/profile/request/display support is explicit and exact
-- [ ] effort, adaptive thinking, manual budget thinking, and omission remain
+- [x] exact official source bodies, dates, and hashes are recorded
+- [x] model/profile/request/display support is explicit and exact
+- [x] effort, adaptive thinking, manual budget thinking, and omission remain
       distinct
-- [ ] stream and private-block grammar is complete enough for fail-closed
+- [x] stream and private-block grammar is complete enough for fail-closed
       parsing and bounded replay
-- [ ] tool continuation preservation and provider rejection truth are explicit
-- [ ] one-attempt disposal and session replay/zeroization boundaries are exact
-- [ ] no readable or hidden thinking disclosure is admitted
-- [ ] Research 209 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] tool continuation preservation and provider rejection truth are explicit
+- [x] one-attempt disposal and session replay/zeroization boundaries are exact
+- [x] no readable or hidden thinking disclosure is admitted
+- [x] Research 209 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, generation rollover, or g04 closure changes
-- [ ] `effigy qa:northstar`, relevant indexes, and `git diff --check` pass
+- [x] `effigy qa:northstar`, relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions
 

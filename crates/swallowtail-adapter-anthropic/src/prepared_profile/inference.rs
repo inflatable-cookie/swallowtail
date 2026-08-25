@@ -43,7 +43,11 @@ impl AnthropicPreparedInferenceAttempt {
     #[must_use]
     /// Returns the low-level Messages driver.
     pub fn low_level_driver(&self) -> AnthropicDirectDriver {
-        AnthropicDirectDriver::new()
+        let driver = AnthropicDirectDriver::new();
+        match self.evidence.thinking_mode() {
+            Some(mode) => driver.with_thinking_mode(mode),
+            None => driver,
+        }
     }
 
     /// Starts the bound one-attempt Messages run.
@@ -82,8 +86,17 @@ impl AnthropicPreparedIntegration {
         &self,
         input: AnthropicInferenceAttemptInput,
     ) -> Result<AnthropicPreparedInferenceAttempt, PreparationFailure> {
-        let (request_id, model, content, maximum, deadline, attachments, web_search, reasoning) =
-            input.into_parts();
+        let (
+            request_id,
+            model,
+            content,
+            maximum,
+            deadline,
+            attachments,
+            web_search,
+            reasoning,
+            thinking,
+        ) = input.into_parts();
         if maximum.get() > u64::from(u32::MAX) {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -93,6 +106,9 @@ impl AnthropicPreparedIntegration {
         }
         if let Some(reasoning) = reasoning.as_ref() {
             crate::reasoning::validate_preparation(model.model_id(), reasoning)?;
+        }
+        if let Some(thinking) = thinking {
+            crate::thinking::validate_preparation(model.model_id(), thinking)?;
         }
         validate_attachments(&attachments)?;
         let search_domains =
@@ -145,7 +161,9 @@ impl AnthropicPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(AnthropicPreparedInferenceAttempt {
-            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(
+                self, plan, activity, thinking,
+            )?,
             request,
             search_domains,
         })

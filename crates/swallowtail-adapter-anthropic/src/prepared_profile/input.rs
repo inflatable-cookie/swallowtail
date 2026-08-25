@@ -13,6 +13,7 @@ type InferenceAttemptParts = (
     Vec<AttachmentDescriptor>,
     Option<AnthropicWebSearchInput>,
     Option<ReasoningMode>,
+    Option<crate::AnthropicThinkingMode>,
 );
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -87,6 +88,7 @@ pub struct AnthropicInferenceAttemptInput {
     attachments: Vec<AttachmentDescriptor>,
     web_search: Option<AnthropicWebSearchInput>,
     reasoning_mode: Option<ReasoningMode>,
+    thinking_mode: Option<crate::AnthropicThinkingMode>,
 }
 
 impl AnthropicInferenceAttemptInput {
@@ -107,6 +109,7 @@ impl AnthropicInferenceAttemptInput {
             attachments: Vec::new(),
             web_search: None,
             reasoning_mode: None,
+            thinking_mode: None,
         }
     }
 
@@ -141,6 +144,13 @@ impl AnthropicInferenceAttemptInput {
         self
     }
 
+    #[must_use]
+    /// Selects adapter-local adaptive omitted-display thinking.
+    pub fn with_thinking_mode(mut self, thinking_mode: crate::AnthropicThinkingMode) -> Self {
+        self.thinking_mode = Some(thinking_mode);
+        self
+    }
+
     pub(super) fn into_parts(self) -> InferenceAttemptParts {
         (
             self.request_id,
@@ -151,6 +161,7 @@ impl AnthropicInferenceAttemptInput {
             self.attachments,
             self.web_search,
             self.reasoning_mode,
+            self.thinking_mode,
         )
     }
 }
@@ -182,6 +193,7 @@ pub struct AnthropicSessionProfileInput {
     model: AnthropicModelSelection,
     tools: Vec<ToolDeclaration>,
     reasoning_mode: Option<ReasoningMode>,
+    thinking_mode: Option<crate::AnthropicThinkingMode>,
 }
 
 impl AnthropicSessionProfileInput {
@@ -197,6 +209,7 @@ impl AnthropicSessionProfileInput {
             model,
             tools: tools.into_iter().collect(),
             reasoning_mode: None,
+            thinking_mode: None,
         }
     }
 
@@ -207,6 +220,13 @@ impl AnthropicSessionProfileInput {
         self
     }
 
+    #[must_use]
+    /// Selects adapter-local adaptive omitted-display thinking.
+    pub fn with_thinking_mode(mut self, thinking_mode: crate::AnthropicThinkingMode) -> Self {
+        self.thinking_mode = Some(thinking_mode);
+        self
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
@@ -214,7 +234,14 @@ impl AnthropicSessionProfileInput {
         AnthropicModelSelection,
         Vec<ToolDeclaration>,
         Option<ReasoningMode>,
+        Option<crate::AnthropicThinkingMode>,
     ) {
-        (self.request_id, self.model, self.tools, self.reasoning_mode)
+        (
+            self.request_id,
+            self.model,
+            self.tools,
+            self.reasoning_mode,
+            self.thinking_mode,
+        )
     }
 }

@@ -82,6 +82,8 @@ bound, and optional deadline. Optional qualified inputs are:
   tool is fixed to at most two uses
 - `with_reasoning_mode` for the promoted exact effort row: model
   `claude-opus-4-7` with `low`, `medium`, `high`, `xhigh`, or `max`
+- `with_thinking_mode(AnthropicThinkingMode::adaptive())` for the promoted
+  adaptive omitted-display row on the same model
 
 Effort is the portable `ReasoningMode` selection for this route. Preparation
 rejects another model, value, or profile before endpoint authorization. It emits
@@ -89,6 +91,20 @@ only the provider-owned `output_config: {"effort": "<exact>"}` field; it does
 not add `thinking`, choose a default, clamp a value, or infer effort from
 output text. Omission retains the existing request body and means no effort
 selection.
+
+Adaptive thinking is a separate adapter-local control. Preparation admits it
+only for exact `claude-opus-4-7`. The request then includes
+`thinking: {"display":"omitted","type":"adaptive"}`. Omission of that selection
+keeps current request bytes: no `thinking` object. The two controls compose
+without defaults, clamps, or shared confirmation. `adaptive` is not an effort
+value. Summarized display, manual `thinking.type=enabled`, and
+`budget_tokens` stay out.
+
+The structured pump accepts omitted thinking and start-complete redacted
+blocks only to validate stream order. It emits no thought text, signature,
+redacted payload, or `ReasoningSummary` activity, and it retains no private
+continuation after terminal. A `thinking_delta` under this omitted-display
+selection fails closed.
 
 The host materializes the opaque attachment. Web search is provider-owned
 external network access, not a consumer tool or general network grant.
@@ -101,23 +117,30 @@ provider failure, and cleanup remain distinct. No result, error, timer, usage,
 or catalogue observation authorizes an automatic retry.
 
 The structured role has no consumer tool loop, structured output, provider
-retention, background execution, or continuation. Its optional effort selection
-is independent of output-token limits, attachments, search, cancellation, and
-model identity.
+retention, background execution, or continuation. Its optional effort and
+adapter-local thinking selections are independent of output-token limits,
+attachments, search, cancellation, and model identity.
 
 ## Direct Tool Continuation And Restart
 
 `AnthropicSessionProfileInput` binds an exact model and one to eight declared
-consumer JSON Schema tools. Add the same exact effort selection to the profile
-when using `claude-opus-4-7`. `prepare_session` returns a resource-free
-interactive profile supporting two user turns and one exact correlated tool
-call/result continuation. Swallowtail relays the tool exchange but never
-selects or executes a tool.
+consumer JSON Schema tools. Add the same exact effort selection and, when using
+`claude-opus-4-7`, the same adapter-local adaptive thinking selection. `prepare_session`
+returns a resource-free interactive profile supporting two user turns and one
+exact correlated tool call/result continuation. Swallowtail relays the tool
+exchange but never selects or executes a tool.
 
-Session effort is fixed at preparation. The plan, evidence, session options,
-and driver must agree; the same `output_config.effort` is sent on the initial
-request, every correlated continuation attempt, every later turn, and a fresh
-working-state restoration. There is no per-turn raw override.
+Session effort and thinking are fixed at preparation. The same
+`output_config.effort` and omitted-display `thinking` object are sent on the
+initial request, every correlated continuation attempt, every later turn, and a
+fresh working-state restoration. There is no per-turn raw override.
+
+When adaptive thinking is selected, the first-assistant thinking and redacted
+blocks are captured in bounded zeroizing memory and replayed unmodified, in
+order, immediately before the correlated `tool_use` block. Adaptive skip with
+no thinking block is valid. A consumer tool result remains the only
+continuation authority. Thought text, signatures, and redacted data never
+enter events, activity, output, callbacks, evidence, or diagnostics.
 
 Call `open_session`, then start turns through the direct-continuation
 interface. Drain events, the tool exchange, and terminal concurrently. A next
@@ -130,6 +153,8 @@ They are not portable output or durable provider-session identity.
 `prepare_working_state_restoration` therefore opens a fresh session and
 returns `SessionReplaced`. It preserves only the interrupted consumer turn ID,
 not prompt, transcript, tool result, private continuation, or terminal truth.
+Restoration repeats the prepared thinking selection and recovers no private
+blocks.
 
 The route exposes no load/resume binding, reconciliation, archive, restore,
 delete, native close, provider-session catalogue/import, billed cost, or
@@ -157,6 +182,17 @@ Keep the effort claim states separate:
   acceptance, subject to the route's normal response handling
 - **effective:** not claimed; no response-text inference establishes provider
   reasoning allocation
+
+Keep the thinking claim states separate:
+
+- **requested:** the consumer supplied `AnthropicThinkingMode::adaptive()`
+- **planned:** prepared evidence carries that adapter-local selection; the
+  shared plan does not grow a thinking capability
+- **dispatched:** the Messages request contains
+  `thinking: {"display":"omitted","type":"adaptive"}`
+- **accepted:** a successful response fixture proves parser acceptance only
+- **effective:** not claimed; blocks, tokens, and prose do not establish
+  thinking depth
 
 The compile-tested
 [`prepared_direct` example](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs)

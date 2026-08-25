@@ -14,6 +14,17 @@ const UNKNOWN: &str = include_str!("../fixtures/anthropic-2023-06-01/unknown-eve
 const DISCONNECT: &str = include_str!("../fixtures/anthropic-2023-06-01/disconnect.sse");
 const TOOL_USE: &str = include_str!("../fixtures/anthropic-2023-06-01/tool-use.sse");
 const WEB_SEARCH: &str = include_str!("../fixtures/anthropic-2023-06-01/web-search.sse");
+const THINKING_THEN_TEXT: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/thinking-then-text.sse");
+const THINKING_TOOL_USE: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/thinking-tool-use.sse");
+const REDACTED_TOOL_USE: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/redacted-tool-use.sse");
+const CONSECUTIVE_THINKING_TOOL_USE: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/consecutive-thinking-tool-use.sse");
+const THINKING_DELTA: &str = include_str!("../fixtures/anthropic-2023-06-01/thinking-delta.sse");
+const THINKING_UNSIGNED: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/thinking-unsigned.sse");
 #[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
@@ -23,6 +34,12 @@ pub enum StreamFixture {
     WaitForCancel,
     ToolContinuation,
     WebSearch,
+    ThinkingThenText,
+    ThinkingDelta,
+    ThinkingUnsigned,
+    ThinkingToolContinuation,
+    RedactedToolContinuation,
+    ConsecutiveThinkingToolContinuation,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -1,12 +1,12 @@
 # g04.062 Anthropic Messages Adaptive Thinking
 
-Status: ready
+Status: complete pending review
 Owner: Tom
 Created: 2026-08-25
 Depends on: g04.037; per-route feature completion programme
 Vision tags: explicit selection, provider truth, private continuation
 Contract refs: 011, 030, 037, 040, 041, 044, 052
-Research: 004, 067, 169, 185; 209 reserved by card 173
+Research: 004, 067, 169, 185, 209
 
 ## Problem
 
@@ -32,24 +32,24 @@ the authorized tool loop.
 
 ## Goals
 
-- [ ] freeze current official model, request, display, stream, tool-loop,
+- [x] freeze current official model, request, display, stream, tool-loop,
       signature, redacted-block, output-token, effort, and compatibility truth
-- [ ] promote Research 209 with an exact deliver-now profile/model table or an
+- [x] promote Research 209 with an exact deliver-now profile/model table or an
       honest empty set
-- [ ] distinguish adapter-local adaptive thinking from portable effort and
+- [x] distinguish adapter-local adaptive thinking from portable effort and
       manual token-budget thinking
-- [ ] expose only an exact typed `AnthropicThinkingMode::adaptive()` selection
+- [x] expose only an exact typed `AnthropicThinkingMode::adaptive()` selection
       admitted by Research 209
-- [ ] bind the selected mode through immutable request and prepared evidence
-- [ ] emit exact `thinking.type=adaptive` plus the qualified omitted-display
+- [x] bind the selected mode through immutable request and prepared evidence
+- [x] emit exact `thinking.type=adaptive` plus the qualified omitted-display
       field without changing omission bytes
-- [ ] accept, bound, and privately retain exact streamed thinking and
+- [x] accept, bound, and privately retain exact streamed thinking and
       redacted-thinking blocks without exposing their content
-- [ ] replay the complete unmodified private block sequence before the
+- [x] replay the complete unmodified private block sequence before the
       correlated tool-use block on the authorized continuation attempt
-- [ ] prove independent composition with omission and every admitted effort
+- [x] prove independent composition with omission and every admitted effort
       value
-- [ ] preserve cancellation, deadline, terminal, restoration, zeroization,
+- [x] preserve cancellation, deadline, terminal, restoration, zeroization,
       diagnostics, access, and facade truth
 
 ## Non-Goals
@@ -104,41 +104,41 @@ block fails closed without fallback.
 
 ### Batch 62.1 — Exact Adaptive-Thinking Evidence
 
-- [ ] Execute card 173.
-- [ ] freeze exact official and route-local request, response, continuation,
+- [x] Execute card 173.
+- [x] freeze exact official and route-local request, response, continuation,
       privacy, effort-composition, and compatibility truth
-- [ ] promote Research 209 with a non-empty exact table or honest empty set
+- [x] promote Research 209 with a non-empty exact table or honest empty set
 
 ### Batch 62.2 — Conditional Private Binding
 
-- [ ] Execute card 174 only when Research 209 admits a non-empty set.
-- [ ] bind the adapter-local mode and exact private block capture/replay path
+- [x] Execute card 174 only when Research 209 admits a non-empty set.
+- [x] bind the adapter-local mode and exact private block capture/replay path
 
 ### Batch 62.3 — Route-Local Acceptance
 
-- [ ] Execute card 175 only after card 174.
-- [ ] prove wire, stream, replay, bounds, redaction, effort composition,
+- [x] Execute card 175 only after card 174.
+- [x] prove wire, stream, replay, bounds, redaction, effort composition,
       lifecycle, API, guide, matrix, and closeout truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 209 exact model/profile rows prepare
-- [ ] request, prepared evidence, driver, stream behavior, and continuation
+- [x] only Research 209 exact model/profile rows prepare
+- [x] request, prepared evidence, driver, stream behavior, and continuation
       replay agree on the same adaptive-thinking selection
-- [ ] omission preserves existing request bytes and response behavior
-- [ ] adaptive thinking remains distinct from portable effort; every admitted
+- [x] omission preserves existing request bytes and response behavior
+- [x] adaptive thinking remains distinct from portable effort; every admitted
       effort value composes independently
-- [ ] one-attempt inference retains no thinking continuation after terminal
-- [ ] direct continuation replays every required private block complete,
+- [x] one-attempt inference retains no thinking continuation after terminal
+- [x] direct continuation replays every required private block complete,
       unmodified, ordered, bounded, route-bound, and zeroized
-- [ ] no thinking text, signature, redacted payload, or raw block reaches a
+- [x] no thinking text, signature, redacted payload, or raw block reaches a
       public event, activity, output, callback, evidence, or diagnostic
-- [ ] malformed, missing, duplicate, reordered, oversized, or contradictory
+- [x] malformed, missing, duplicate, reordered, oversized, or contradictory
       blocks fail closed without retry or fallback
-- [ ] fresh restoration remains `SessionReplaced` and grants no private-state
+- [x] fresh restoration remains `SessionReplaced` and grants no private-state
       recovery
-- [ ] default QA performs no account, credential, provider, or paid work
-- [ ] g04.062 closes only this route-local family; g04 remains active
+- [x] default QA performs no account, credential, provider, or paid work
+- [x] g04.062 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 

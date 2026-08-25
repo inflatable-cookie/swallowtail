@@ -1,5 +1,6 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{PROVIDER_ID, Request, parse_model_page};
+use crate::thinking::AnthropicThinkingMode;
 use crate::transport::CurlTransport;
 use std::sync::Arc;
 use std::sync::atomic::AtomicBool;
@@ -21,6 +22,7 @@ const MAX_CATALOGUE_PAGES: usize = 8;
 /// Low-level Anthropic Messages catalogue, run, and continuation driver.
 pub struct AnthropicDirectDriver {
     transport: CurlTransport,
+    thinking_mode: Option<AnthropicThinkingMode>,
 }
 
 impl AnthropicDirectDriver {
@@ -28,6 +30,13 @@ impl AnthropicDirectDriver {
     /// Creates a driver using the package's bounded HTTP/SSE transport.
     pub fn new() -> Self {
         Self::default()
+    }
+
+    #[must_use]
+    /// Selects adapter-local adaptive omitted-display thinking for later work.
+    pub fn with_thinking_mode(mut self, thinking_mode: AnthropicThinkingMode) -> Self {
+        self.thinking_mode = Some(thinking_mode);
+        self
     }
 
     fn validate_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {

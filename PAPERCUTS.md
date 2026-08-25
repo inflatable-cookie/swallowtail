@@ -5,6 +5,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
+- Friction: `platform.claude.com/docs` HTTP bodies are 0.9–2.0 MiB Next.js
+  shells with no `Last-Modified` or `ETag`. Several thinking URLs 307-redirect.
+  The digestable corpus is converted page text, not the hashed HTML shell.
+- Impact: Research 209 hashes are complete retrieved bodies, but they are
+  noisy compared with DeepSeek's cache-validated docs and do not uniquely
+  identify the converted text an agent actually read.
+- Fix: prefer Anthropic's converted/markdown export when one exists; record
+  both HTTP body and converted-text hashes; treat 307 targets as the corpus
+  page rather than hashing the redirect hop twice.
+- Surface: g04.062 / Research 209 official-source retrieval.
+
 ### [ ] Antigravity invalid-`--agent` probes crossed card 161's no-prompt boundary — 2026-08-24
 - Friction: card 161 requires promptless help/listing and forbids provider
   prompts. Two unauthorized `--print` / `--output-format json` probes still

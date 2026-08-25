@@ -1,6 +1,6 @@
 # 175 Anthropic Messages Adaptive-Thinking Acceptance
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -40,22 +40,22 @@ composition, privacy, lifecycle, and documentation truth.
 
 ## Acceptance Criteria
 
-- [ ] every delivered exact row has deterministic request and stream proof
-- [ ] adaptive thinking never prepares outside Research 209
-- [ ] private replay is complete, exact, ordered, bounded, and correlated
-- [ ] omission and effort composition retain prior behavior
-- [ ] no private thought material reaches any public or diagnostic surface
-- [ ] malformed or contradictory private state fails closed without fallback
-- [ ] cancellation, deadline, terminal, restoration, and cleanup remain exact
-- [ ] guide and matrix distinguish adaptive thinking from effort and disclosure
-- [ ] no sibling route, shared contract/runtime, currentness, release, or
+- [x] every delivered exact row has deterministic request and stream proof
+- [x] adaptive thinking never prepares outside Research 209
+- [x] private replay is complete, exact, ordered, bounded, and correlated
+- [x] omission and effort composition retain prior behavior
+- [x] no private thought material reaches any public or diagnostic surface
+- [x] malformed or contradictory private state fails closed without fallback
+- [x] cancellation, deadline, terminal, restoration, and cleanup remain exact
+- [x] guide and matrix distinguish adaptive thinking from effort and disclosure
+- [x] no sibling route, shared contract/runtime, currentness, release, or
       generation state changes
-- [ ] `cargo fmt -p swallowtail-adapter-anthropic` passes
-- [ ] `effigy validate:focused swallowtail-adapter-anthropic` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-anthropic` passes
-- [ ] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
+- [x] `cargo fmt -p swallowtail-adapter-anthropic` passes
+- [x] `effigy validate:focused swallowtail-adapter-anthropic` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-anthropic` passes
+- [x] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
       relevant index gates, `effigy package:api`, and `git diff --check` pass
-- [ ] `effigy doctor` does not worsen the inherited 378-finding baseline
+- [x] `effigy doctor` does not worsen the inherited 378-finding baseline
 
 ## Stop Conditions
 

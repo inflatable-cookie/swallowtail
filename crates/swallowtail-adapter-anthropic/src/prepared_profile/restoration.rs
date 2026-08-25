@@ -19,6 +19,7 @@ impl AnthropicPreparedSession {
             interrupted_turn_id,
             plan: self.plan().clone(),
             request: self.request().clone(),
+            thinking_mode: self.evidence().thinking_mode(),
         })
     }
 }
@@ -27,6 +28,7 @@ struct AnthropicFreshSessionReplacement {
     interrupted_turn_id: RuntimeTurnId,
     plan: PreflightPlan,
     request: OpenDirectContinuationSessionRequest,
+    thinking_mode: Option<crate::AnthropicThinkingMode>,
 }
 
 impl WorkingStateRestorationOperation for AnthropicFreshSessionReplacement {
@@ -39,7 +41,11 @@ impl WorkingStateRestorationOperation for AnthropicFreshSessionReplacement {
         services: HostServices,
     ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
         Box::pin(async move {
-            let session = AnthropicDirectDriver::new()
+            let driver = match self.thinking_mode {
+                Some(mode) => AnthropicDirectDriver::new().with_thinking_mode(mode),
+                None => AnthropicDirectDriver::new(),
+            };
+            let session = driver
                 .open_direct_continuation_session(self.plan, self.request, services)
                 .await?;
             Ok(WorkingStateRestorationOutcome::SessionReplaced(

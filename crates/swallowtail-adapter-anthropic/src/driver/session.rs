@@ -1,6 +1,8 @@
 use super::{AccessLeases, AnthropicDirectDriver, operation_scope, require_services};
 use crate::failure::{failure, unsupported};
-use crate::protocol::{ContentBlock, Event, Request, ToolSpec, parse_event, provider_failure};
+use crate::protocol::{
+    ContentBlock, Event, RedactedBytes, Request, ToolSpec, parse_event, provider_failure,
+};
 use crate::reasoning::validate_runtime_binding;
 use crate::transport::{StreamItem, Subscription};
 use futures_channel::{mpsc, oneshot};
@@ -40,6 +42,7 @@ struct SessionHandle {
     access: Option<AccessLeases>,
     tools: Arc<Vec<ToolSpec>>,
     reasoning: Option<ReasoningMode>,
+    thinking: Option<crate::AnthropicThinkingMode>,
     state: Arc<Mutex<DirectContinuationState>>,
     history: Arc<Mutex<History>>,
     usable: Arc<AtomicBool>,
@@ -88,6 +91,7 @@ impl InteractiveSessionDriver for AnthropicDirectDriver {
             validate_direct_continuation_plan(&plan, &request)?;
             require_services(&services, true, false)?;
             validate_runtime_binding(&plan, request.options().reasoning_mode())?;
+            crate::thinking::validate_runtime_binding(plan.model_id(), self.thinking_mode)?;
             if request.options().developer_instructions().is_some()
                 || request.options().tools().len() == 0
             {
@@ -95,6 +99,7 @@ impl InteractiveSessionDriver for AnthropicDirectDriver {
             }
             let tools = tool_specs(&request)?;
             let reasoning = request.options().reasoning_mode().cloned();
+            let thinking = self.thinking_mode;
             let scope = operation_scope("session", request.request_id().as_str())?;
             let runtime_id = RuntimeSessionId::new(format!(
                 "anthropic-direct:{}",
@@ -127,9 +132,11 @@ impl InteractiveSessionDriver for AnthropicDirectDriver {
                 access: Some(access),
                 tools: Arc::new(tools),
                 reasoning,
+                thinking,
                 state: Arc::new(Mutex::new(DirectContinuationState::new(config.clone()))),
                 history: Arc::new(Mutex::new(History::new(
                     config.maximum_private_history_bytes().get(),
+                    config.maximum_private_continuation_bytes().get(),
                 ))),
                 usable,
                 active,
@@ -249,6 +256,7 @@ impl SessionHandle {
                 .maximum_output_tokens_per_attempt()
                 .get(),
             self.reasoning.as_ref(),
+            self.thinking,
         )?;
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
@@ -287,6 +295,7 @@ impl SessionHandle {
             endpoint: self.endpoint.clone(),
             tools: Arc::clone(&self.tools),
             reasoning: self.reasoning.clone(),
+            thinking: self.thinking,
             state: Arc::clone(&self.state),
             history: Arc::clone(&self.history),
             usable: Arc::clone(&self.usable),
@@ -370,6 +379,7 @@ impl TurnHandle for TurnHandleImpl {
 
 include!("session/turn.rs");
 include!("session/attempt.rs");
+include!("session/parser.rs");
 include!("session/history.rs");
 include!("session/control.rs");
 include!("session/events.rs");

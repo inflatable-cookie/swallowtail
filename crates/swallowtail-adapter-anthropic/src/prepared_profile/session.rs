@@ -68,7 +68,10 @@ impl AnthropicPreparedSession {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        let driver = AnthropicDirectDriver::new();
+        let driver = match self.evidence.thinking_mode() {
+            Some(mode) => AnthropicDirectDriver::new().with_thinking_mode(mode),
+            None => AnthropicDirectDriver::new(),
+        };
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move {
@@ -85,7 +88,7 @@ impl AnthropicPreparedIntegration {
         &self,
         input: AnthropicSessionProfileInput,
     ) -> Result<AnthropicPreparedSession, PreparationFailure> {
-        let (request_id, model, tools, reasoning) = input.into_parts();
+        let (request_id, model, tools, reasoning, thinking) = input.into_parts();
         if tools.is_empty() || tools.len() > 8 {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -95,6 +98,9 @@ impl AnthropicPreparedIntegration {
         }
         if let Some(reasoning) = reasoning.as_ref() {
             crate::reasoning::validate_preparation(model.model_id(), reasoning)?;
+        }
+        if let Some(thinking) = thinking {
+            crate::thinking::validate_preparation(model.model_id(), thinking)?;
         }
         let config = anthropic_messages_continuation_config();
         let mut capabilities = vec![
@@ -152,7 +158,9 @@ impl AnthropicPreparedIntegration {
             },
         )?;
         Ok(AnthropicPreparedSession {
-            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
+            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(
+                self, plan, activity, thinking,
+            )?,
             request,
         })
     }

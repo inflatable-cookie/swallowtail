@@ -23,7 +23,22 @@ fn respond(
                 (StreamFixture::ToolContinuation, 0) => {
                     respond_sse(stream, &format!("{TOOL_USE}\n"))
                 }
-                (StreamFixture::ToolContinuation, 1 | 2) => respond_sse(stream, SUCCESS),
+                (StreamFixture::ThinkingToolContinuation, 0) => {
+                    respond_sse(stream, &format!("{THINKING_TOOL_USE}\n"))
+                }
+                (StreamFixture::RedactedToolContinuation, 0) => {
+                    respond_sse(stream, &format!("{REDACTED_TOOL_USE}\n"))
+                }
+                (StreamFixture::ConsecutiveThinkingToolContinuation, 0) => {
+                    respond_sse(stream, &format!("{CONSECUTIVE_THINKING_TOOL_USE}\n"))
+                }
+                (
+                    StreamFixture::ToolContinuation
+                    | StreamFixture::ThinkingToolContinuation
+                    | StreamFixture::RedactedToolContinuation
+                    | StreamFixture::ConsecutiveThinkingToolContinuation,
+                    1 | 2,
+                ) => respond_sse(stream, SUCCESS),
                 (StreamFixture::WebSearch, 0) => {
                     respond_sse(stream, &format!("{WEB_SEARCH}\n"))
                 }
@@ -49,9 +64,15 @@ fn stream_body(fixture: StreamFixture) -> &'static str {
         StreamFixture::MidstreamError => MIDSTREAM_ERROR,
         StreamFixture::Unknown => UNKNOWN,
         StreamFixture::Disconnect => DISCONNECT,
+        StreamFixture::ThinkingThenText => THINKING_THEN_TEXT,
+        StreamFixture::ThinkingDelta => THINKING_DELTA,
+        StreamFixture::ThinkingUnsigned => THINKING_UNSIGNED,
         StreamFixture::WaitForCancel
         | StreamFixture::ToolContinuation
-        | StreamFixture::WebSearch => unreachable!(),
+        | StreamFixture::WebSearch
+        | StreamFixture::ThinkingToolContinuation
+        | StreamFixture::RedactedToolContinuation
+        | StreamFixture::ConsecutiveThinkingToolContinuation => unreachable!(),
     }
 }
 

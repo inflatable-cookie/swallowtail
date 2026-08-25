@@ -6,6 +6,7 @@ pub const fn swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput::with
 pub struct swallowtail_adapter_anthropic::AnthropicDirectDriver
 impl swallowtail_adapter_anthropic::AnthropicDirectDriver
 pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::new() -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::with_thinking_mode(self, swallowtail_adapter_anthropic::AnthropicThinkingMode) -> Self
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_anthropic::AnthropicDirectDriver
 pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::open_direct_continuation_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -20,6 +21,7 @@ pub const fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::new(
 pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
 pub const fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_thinking_mode(self, swallowtail_adapter_anthropic::AnthropicThinkingMode) -> Self
 pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_web_search(self, swallowtail_adapter_anthropic::AnthropicWebSearchInput) -> Self
 pub struct swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
 impl swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
@@ -88,6 +90,7 @@ pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::observabl
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::thinking_mode(&self) -> core::option::Option<swallowtail_adapter_anthropic::AnthropicThinkingMode>
 pub struct swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
 impl swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
@@ -145,6 +148,10 @@ pub struct swallowtail_adapter_anthropic::AnthropicSessionProfileInput
 impl swallowtail_adapter_anthropic::AnthropicSessionProfileInput
 pub fn swallowtail_adapter_anthropic::AnthropicSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicModelSelection, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>) -> Self
 pub fn swallowtail_adapter_anthropic::AnthropicSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicSessionProfileInput::with_thinking_mode(self, swallowtail_adapter_anthropic::AnthropicThinkingMode) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicThinkingMode
+impl swallowtail_adapter_anthropic::AnthropicThinkingMode
+pub const fn swallowtail_adapter_anthropic::AnthropicThinkingMode::adaptive() -> Self
 pub struct swallowtail_adapter_anthropic::AnthropicWebSearchInput
 impl swallowtail_adapter_anthropic::AnthropicWebSearchInput
 pub fn swallowtail_adapter_anthropic::AnthropicWebSearchInput::new(impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>) -> Self

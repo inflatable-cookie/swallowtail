@@ -14,11 +14,8 @@ shape.
 
 ## Next Task
 
-Execute g04.062 cards 173-175 serially: exact Anthropic Messages adaptive-
-thinking evidence, conditional private binding, then route-local acceptance.
-Stop honestly after card 173 if Research 209 admits no exact deliver-now row.
-Keep g04 open until explicit operator direction. Contract 029 currentness
-stays standing.
+Review and merge g04.062 Anthropic Messages adaptive thinking. Keep g04 open
+until explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

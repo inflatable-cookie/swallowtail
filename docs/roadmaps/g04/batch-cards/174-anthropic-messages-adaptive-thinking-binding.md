@@ -1,6 +1,6 @@
 # 174 Anthropic Messages Adaptive-Thinking Binding
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -41,20 +41,20 @@ bounded private stream/continuation state.
 
 ## Acceptance Criteria
 
-- [ ] only Research 209 exact rows prepare and dispatch
-- [ ] omission remains byte-identical and effort composes independently
-- [ ] exact adaptive/omitted request bytes are deterministic
-- [ ] structured attempts expose and retain no private thinking content
-- [ ] direct continuation captures and replays the complete private sequence
-- [ ] every private byte is bounded, route-bound, redacted, and zeroized
-- [ ] malformed, incomplete, reordered, oversized, or drifted blocks fail
+- [x] only Research 209 exact rows prepare and dispatch
+- [x] omission remains byte-identical and effort composes independently
+- [x] exact adaptive/omitted request bytes are deterministic
+- [x] structured attempts expose and retain no private thinking content
+- [x] direct continuation captures and replays the complete private sequence
+- [x] every private byte is bounded, route-bound, redacted, and zeroized
+- [x] malformed, incomplete, reordered, oversized, or drifted blocks fail
       before unsafe continuation
-- [ ] restoration remains fresh replacement with no private-state recovery
-- [ ] no shared contract/runtime or breaking public API change
-- [ ] `cargo fmt -p swallowtail-adapter-anthropic` passes
-- [ ] `effigy validate:focused swallowtail-adapter-anthropic` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-anthropic` passes
-- [ ] `git diff --check` passes
+- [x] restoration remains fresh replacement with no private-state recovery
+- [x] no shared contract/runtime or breaking public API change
+- [x] `cargo fmt -p swallowtail-adapter-anthropic` passes
+- [x] `effigy validate:focused swallowtail-adapter-anthropic` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-anthropic` passes
+- [x] `git diff --check` passes
 
 ## Stop Conditions
 

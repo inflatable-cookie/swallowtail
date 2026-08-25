@@ -37,7 +37,13 @@ impl AnthropicDirectDriver {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             require_services(&services, true, request.attachments().len() != 0)?;
-            validate_run(&plan, &request, &services, search_domains.as_deref())?;
+            validate_run(
+                &plan,
+                &request,
+                &services,
+                search_domains.as_deref(),
+                driver.thinking_mode,
+            )?;
             let model = plan.model_id().expect("validated model").as_str().to_owned();
             let maximum = request
                 .maximum_output_tokens()
@@ -62,6 +68,7 @@ impl AnthropicDirectDriver {
                 image.as_ref().map(|image| image.encoded.as_str()),
                 search_domains.as_deref(),
                 request.policy().reasoning_mode(),
+                driver.thinking_mode,
             ) {
                 Ok(message) => message,
                 Err(error) => {
@@ -128,6 +135,7 @@ impl AnthropicDirectDriver {
                             PumpInputs {
                                 attachment,
                                 search_allowed: search_domains.is_some(),
+                                thinking_enabled: driver.thinking_mode.is_some(),
                                 activity_operation_id:
                                     swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
                             },
@@ -173,6 +181,7 @@ fn validate_run(
     request: &StructuredRunRequest,
     services: &HostServices,
     search_domains: Option<&[String]>,
+    thinking: Option<crate::AnthropicThinkingMode>,
 ) -> Result<(), RuntimeFailure> {
     if plan.model_id().is_none()
         || plan.provider_id().is_some_and(|id| id.as_str() != PROVIDER_ID)
@@ -194,6 +203,7 @@ fn validate_run(
         ));
     }
     validate_runtime_binding(plan, request.policy().reasoning_mode())?;
+    crate::thinking::validate_runtime_binding(plan.model_id(), thinking)?;
     if request.working_resource().is_some() {
         return Err(unsupported("a working resource"));
     }

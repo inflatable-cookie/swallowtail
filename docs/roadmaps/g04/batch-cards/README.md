@@ -6,9 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [173-anthropic-messages-adaptive-thinking-evidence.md](./173-anthropic-messages-adaptive-thinking-evidence.md)
-- [174-anthropic-messages-adaptive-thinking-binding.md](./174-anthropic-messages-adaptive-thinking-binding.md) — conditional on non-empty Research 209
-- [175-anthropic-messages-adaptive-thinking-acceptance.md](./175-anthropic-messages-adaptive-thinking-acceptance.md) — after card 174
+None.
 
 ## Blocked
 
@@ -19,6 +17,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [175-anthropic-messages-adaptive-thinking-acceptance.md](./175-anthropic-messages-adaptive-thinking-acceptance.md)
+- [174-anthropic-messages-adaptive-thinking-binding.md](./174-anthropic-messages-adaptive-thinking-binding.md)
+- [173-anthropic-messages-adaptive-thinking-evidence.md](./173-anthropic-messages-adaptive-thinking-evidence.md)
 - [172-kimi-code-acp-plan-mode-acceptance.md](./172-kimi-code-acp-plan-mode-acceptance.md)
 - [171-kimi-code-acp-plan-mode-binding.md](./171-kimi-code-acp-plan-mode-binding.md)
 - [170-kimi-code-acp-plan-mode-evidence.md](./170-kimi-code-acp-plan-mode-evidence.md)

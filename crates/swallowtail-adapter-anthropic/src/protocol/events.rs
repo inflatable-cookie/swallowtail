@@ -8,6 +8,7 @@ pub(crate) enum Event {
     ContentStart(ContentBlock),
     OutputDelta(String),
     InputJsonDelta(String),
+    SignatureDelta(RedactedBytes),
     Citation,
     ContentStop,
     Usage(TokenUsage, String),
@@ -23,6 +24,42 @@ pub(crate) enum ContentBlock {
     ToolUse { id: String, name: String },
     SearchUse { id: String },
     SearchResult { tool_use_id: String },
+    Thinking,
+    RedactedThinking { data: RedactedBytes },
+}
+
+#[derive(Clone, Eq, PartialEq)]
+pub(crate) struct RedactedBytes(Vec<u8>);
+
+impl RedactedBytes {
+    fn from_str(value: &str) -> Self {
+        Self(value.as_bytes().to_vec())
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn as_str(&self) -> Result<&str, RuntimeFailure> {
+        std::str::from_utf8(&self.0).map_err(|_| protocol_failure("private continuation encoding"))
+    }
+
+    pub(crate) fn clone_bytes(&self) -> Vec<u8> {
+        self.0.clone()
+    }
+
+    pub(crate) fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+impl std::fmt::Debug for RedactedBytes {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("[redacted]")
+    }
+}
+
+impl Drop for RedactedBytes {
+    fn drop(&mut self) {
+        self.0.fill(0);
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -68,6 +105,15 @@ pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
 fn parse_content_start(value: &Value) -> Result<Event, RuntimeFailure> {
     let block = match value["type"].as_str() {
         Some("text") => ContentBlock::Text,
+        Some("thinking") => {
+            if value["thinking"].as_str() != Some("") || value["signature"].as_str() != Some("") {
+                return Err(protocol_failure("omitted thinking start"));
+            }
+            ContentBlock::Thinking
+        }
+        Some("redacted_thinking") => ContentBlock::RedactedThinking {
+            data: RedactedBytes::from_str(&required_string(value, "data", "redacted thinking data")?),
+        },
         Some("tool_use") => ContentBlock::ToolUse {
             id: required_string(value, "id", "tool-use id")?,
             name: required_string(value, "name", "tool-use name")?,
@@ -95,6 +141,13 @@ fn parse_content_delta(value: &Value) -> Result<Event, RuntimeFailure> {
             .as_str()
             .map(|text| Event::InputJsonDelta(text.to_owned()))
             .ok_or_else(|| protocol_failure("tool input delta")),
+        Some("signature_delta") => value["signature"]
+            .as_str()
+            .filter(|value| !value.is_empty())
+            .map(RedactedBytes::from_str)
+            .map(Event::SignatureDelta)
+            .ok_or_else(|| protocol_failure("thinking signature")),
+        Some("thinking_delta") => Err(protocol_failure("omitted thinking delta")),
         Some("citations_delta") => Ok(Event::Citation),
         _ => Err(protocol_failure("content delta semantics")),
     }

@@ -54,6 +54,7 @@ fn build_user_messages(
 
 struct History {
     maximum_bytes: u64,
+    maximum_private_bytes: u64,
     first: Option<FirstHistory>,
 }
 
@@ -64,12 +65,42 @@ struct FirstHistory {
     arguments: SecretText,
     result: Option<SecretText>,
     answer: Option<SecretText>,
+    private: Vec<PrivateBlock>,
+}
+
+enum PrivateBlock {
+    Thinking { signature: SecretBytes },
+    Redacted { data: SecretBytes },
+}
+
+impl PrivateBlock {
+    fn json(&self) -> Result<serde_json::Value, RuntimeFailure> {
+        match self {
+            Self::Thinking { signature } => Ok(serde_json::json!({
+                "type": "thinking",
+                "thinking": "",
+                "signature": signature.as_str()?
+            })),
+            Self::Redacted { data } => Ok(serde_json::json!({
+                "type": "redacted_thinking",
+                "data": data.as_str()?
+            })),
+        }
+    }
+
+    fn len(&self) -> usize {
+        match self {
+            Self::Thinking { signature } => signature.len(),
+            Self::Redacted { data } => data.len(),
+        }
+    }
 }
 
 impl History {
-    fn new(maximum_bytes: u64) -> Self {
+    fn new(maximum_bytes: u64, maximum_private_bytes: u64) -> Self {
         Self {
             maximum_bytes,
+            maximum_private_bytes,
             first: None,
         }
     }
@@ -82,6 +113,7 @@ impl History {
         &mut self,
         request: &DirectContinuationTurnRequest,
         call: &DirectToolCall,
+        private: Vec<PrivateBlock>,
     ) -> Result<(), RuntimeFailure> {
         if self.first.is_some() {
             return Err(history_failure());
@@ -93,6 +125,7 @@ impl History {
             arguments: SecretText(call.arguments().as_bytes().to_vec()),
             result: None,
             answer: None,
+            private,
         });
         self.require_bound()
     }
@@ -119,14 +152,20 @@ impl History {
         let first = self.first.as_ref().ok_or_else(history_failure)?;
         let arguments: serde_json::Value =
             serde_json::from_slice(&first.arguments.0).map_err(|_| history_failure())?;
+        let mut content = first
+            .private
+            .iter()
+            .map(PrivateBlock::json)
+            .collect::<Result<Vec<_>, _>>()?;
+        content.push(serde_json::json!({
+            "type":"tool_use",
+            "id":first.call_id,
+            "name":first.tool_name,
+            "input":arguments
+        }));
         Ok(serde_json::json!([
             {"role":"user", "content":first.user.as_str()?},
-            {"role":"assistant", "content":[{
-                "type":"tool_use",
-                "id":first.call_id,
-                "name":first.tool_name,
-                "input":arguments
-            }]},
+            {"role":"assistant", "content":content},
             {"role":"user", "content":[{
                 "type":"tool_result",
                 "tool_use_id":first.call_id,
@@ -160,8 +199,13 @@ impl History {
                 + first.arguments.0.len()
                 + first.result.as_ref().map_or(0, |value| value.0.len())
                 + first.answer.as_ref().map_or(0, |value| value.0.len())
+                + first.private.iter().map(PrivateBlock::len).sum::<usize>()
         });
-        if bytes as u64 > self.maximum_bytes {
+        let private = self
+            .first
+            .as_ref()
+            .map_or(0, |first| first.private.iter().map(PrivateBlock::len).sum::<usize>());
+        if bytes as u64 > self.maximum_bytes || private as u64 > self.maximum_private_bytes {
             Err(failure(
                 "swallowtail.anthropic.history_bound_exceeded",
                 "Anthropic private session history exceeded its selected bound",
@@ -193,8 +237,20 @@ impl Drop for SecretText {
 struct SecretBytes(Vec<u8>);
 
 impl SecretBytes {
+    fn from_redacted(bytes: &RedactedBytes) -> Self {
+        Self(bytes.clone_bytes())
+    }
+
+    fn as_str(&self) -> Result<&str, RuntimeFailure> {
+        std::str::from_utf8(&self.0).map_err(|_| history_failure())
+    }
+
     fn copy(&self) -> Vec<u8> {
         self.0.clone()
+    }
+
+    fn len(&self) -> usize {
+        self.0.len()
     }
 }
 

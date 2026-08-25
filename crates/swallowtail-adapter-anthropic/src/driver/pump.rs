@@ -58,7 +58,7 @@ async fn pump_run(
                     event,
                     &mut state,
                     &mut output,
-                    inputs.search_allowed,
+                    &inputs,
                     &mut search_uses,
                     &mut message_id,
                     &mut search_id,
@@ -227,6 +227,7 @@ async fn pump_run(
 struct PumpInputs {
     attachment: input::SharedAttachment,
     search_allowed: bool,
+    thinking_enabled: bool,
     activity_operation_id: swallowtail_runtime::ActivityOperationId,
 }
 
@@ -234,6 +235,9 @@ enum StreamState {
     Start,
     Message,
     TextContent,
+    Thinking,
+    ThinkingSigned,
+    RedactedThinking,
     SearchUse,
     SearchResult,
     AfterContent,
@@ -257,7 +261,7 @@ fn apply_event(
     event: Event,
     state: &mut StreamState,
     output: &mut String,
-    search_allowed: bool,
+    inputs: &PumpInputs,
     search_uses: &mut u32,
     message_id: &mut Option<String>,
     search_id: &mut Option<String>,
@@ -276,9 +280,26 @@ fn apply_event(
                 message_id.clone().expect("message identity exists"),
             ))
         }
+        (Event::ContentStart(crate::protocol::ContentBlock::Thinking), StreamState::Message | StreamState::AfterContent)
+            if inputs.thinking_enabled =>
+        {
+            *state = StreamState::Thinking;
+            Ok(Applied::None)
+        }
+        (Event::SignatureDelta(_), StreamState::Thinking) if inputs.thinking_enabled => {
+            *state = StreamState::ThinkingSigned;
+            Ok(Applied::None)
+        }
+        (
+            Event::ContentStart(crate::protocol::ContentBlock::RedactedThinking { .. }),
+            StreamState::Message | StreamState::AfterContent,
+        ) if inputs.thinking_enabled => {
+            *state = StreamState::RedactedThinking;
+            Ok(Applied::None)
+        }
         (Event::ContentStart(crate::protocol::ContentBlock::SearchUse { id }),
             StreamState::Message | StreamState::AfterContent,
-        ) if search_allowed && *search_uses < 2 => {
+        ) if inputs.search_allowed && *search_uses < 2 => {
             *search_uses += 1;
             *search_id = Some(id.clone());
             *state = StreamState::SearchUse;
@@ -286,7 +307,7 @@ fn apply_event(
         }
         (Event::ContentStart(crate::protocol::ContentBlock::SearchResult { tool_use_id }),
             StreamState::Message | StreamState::AfterContent,
-        ) if search_allowed && search_id.as_deref() == Some(tool_use_id.as_str()) => {
+        ) if inputs.search_allowed && search_id.as_deref() == Some(tool_use_id.as_str()) => {
             *state = StreamState::SearchResult;
             Ok(Applied::SearchProgress)
         }
@@ -297,15 +318,15 @@ fn apply_event(
                 delta,
             })
         }
-        (Event::Citation, StreamState::TextContent) if search_allowed => {
+        (Event::Citation, StreamState::TextContent) if inputs.search_allowed => {
             Ok(Applied::SearchProgress)
         }
-        (Event::InputJsonDelta(_), StreamState::SearchUse) if search_allowed => {
+        (Event::InputJsonDelta(_), StreamState::SearchUse) if inputs.search_allowed => {
             Ok(Applied::SearchUpdated(
                 search_id.clone().expect("search identity exists"),
             ))
         }
-        (Event::ContentStop, StreamState::TextContent | StreamState::SearchUse) => {
+        (Event::ContentStop, StreamState::TextContent | StreamState::SearchUse | StreamState::ThinkingSigned | StreamState::RedactedThinking) => {
             *state = StreamState::AfterContent;
             Ok(Applied::None)
         }

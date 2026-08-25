@@ -12,6 +12,7 @@ use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 pub struct AnthropicPreparedEvidence {
     operation: PreparedOperationEvidence,
     reasoning_mode: Option<ReasoningMode>,
+    thinking_mode: Option<crate::AnthropicThinkingMode>,
 }
 
 impl AnthropicPreparedEvidence {
@@ -26,6 +27,7 @@ impl AnthropicPreparedEvidence {
                 prepared.access_evidence().clone(),
             )?,
             reasoning_mode,
+            thinking_mode: None,
         })
     }
 
@@ -33,6 +35,7 @@ impl AnthropicPreparedEvidence {
         prepared: &AnthropicPreparedIntegration,
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
+        thinking_mode: Option<crate::AnthropicThinkingMode>,
     ) -> Result<Self, PreparationFailure> {
         let reasoning_mode = reasoning_mode_from_plan(&plan)?;
         Ok(Self {
@@ -42,6 +45,7 @@ impl AnthropicPreparedEvidence {
                 activity_profile,
             )?,
             reasoning_mode,
+            thinking_mode,
         })
     }
 
@@ -73,6 +77,12 @@ impl AnthropicPreparedEvidence {
     /// Returns the exact prepared effort selection, when supplied.
     pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
         self.reasoning_mode.as_ref()
+    }
+
+    #[must_use]
+    /// Returns the adapter-local thinking selection, when supplied.
+    pub const fn thinking_mode(&self) -> Option<crate::AnthropicThinkingMode> {
+        self.thinking_mode
     }
 }
 

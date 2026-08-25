@@ -14,11 +14,12 @@ shape.
 
 ## Next Task
 
-Qualify Kimi headless agent-core-v2 stream-json at exact `0.38.0` under an
-exact revision, or document an incompatible stop. g04.063 evidence stop is
-complete: Research 210 empty deliver-now set, cards 177-178 blocked, headless
-qualified ceiling retracted to `0.37.2`. Keep g04 open until explicit operator
-direction. Contract 029 currentness stays standing.
+Implement g04.064 Kimi Code `0.38.0` Headless V2 Useful Newer, starting with
+identity card 179 and continuing to conditional claim card 180 only when
+Research 211 admits an adapter-private mapping. Qualify the actual default
+agent-core-v2 `runV2Print` stream-json path or document an incompatible stop.
+Keep g04 open until explicit operator direction. Contract 029 currentness stays
+standing.
 
 ## Standing Lanes
 

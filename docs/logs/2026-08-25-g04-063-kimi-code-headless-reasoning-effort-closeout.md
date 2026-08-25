@@ -1,6 +1,6 @@
 # 2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Closeout
 
-Status: complete; evidence stop
+Status: complete and merged through PR 62 at `5f37ff6b`; evidence stop
 Owner: Tom
 Milestone: g04.063
 Cards: 176-178
@@ -40,3 +40,9 @@ qualified. ACP and local-server `0.38.0` qualifications stand.
 g04 remains open. Qualify Kimi headless agent-core-v2 stream-json at exact
 `0.38.0` under an exact revision, or document an incompatible stop. Do not close
 or roll over the generation without explicit operator direction.
+
+## Merge
+
+PR 62 fast-forwarded to `main` at exact reviewed head
+`5f37ff6bf8ef920bb22d87c2e7c3918fa7102301` after all five required checks
+passed.

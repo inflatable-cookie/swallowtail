@@ -4,6 +4,7 @@ Status: stopped
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
+Merged: PR 62 at `5f37ff6b`
 Depends on: g04.032; per-route feature completion programme
 Vision tags: explicit selection, provider truth, installed-route isolation
 Contract refs: 011, 029, 033, 037, 040, 044, 052

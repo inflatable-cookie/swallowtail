@@ -23,8 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-25 g04.064 Kimi Code Headless V2 Compiled](./2026-08-25-g04-064-kimi-code-headless-v2-compiled.md) — ready, cards 179-180
+- [2026-08-25 g04.064 Kimi Code Headless V2 Closeout](./2026-08-25-g04-064-kimi-code-headless-v2-closeout.md) — reserved
 - [2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Compiled](./2026-08-25-g04-063-kimi-code-headless-reasoning-effort-compiled.md)
-- [2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Closeout](./2026-08-25-g04-063-kimi-code-headless-reasoning-effort-closeout.md) — complete; evidence stop
+- [2026-08-25 g04.063 Kimi Code Headless Reasoning Effort Closeout](./2026-08-25-g04-063-kimi-code-headless-reasoning-effort-closeout.md) — complete and merged through PR 62 at `5f37ff6b`; evidence stop
 - [2026-08-25 g04.062 Anthropic Adaptive Thinking Compiled](./2026-08-25-g04-062-anthropic-adaptive-thinking-compiled.md)
 - [2026-08-25 g04.062 Anthropic Adaptive Thinking Closeout](./2026-08-25-g04-062-anthropic-adaptive-thinking-closeout.md) — complete and merged through PR 61 at `4ef5c5e9`; exact Opus 4.7 adaptive omitted-display thinking with bounded private replay
 - [2026-08-25 g04.061 Kimi Code ACP Plan Mode Compiled](./2026-08-25-g04-061-kimi-code-acp-plan-mode-compiled.md)

@@ -6,7 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-Cards 176-178 are complete or blocked after the g04.063 evidence stop.
+- [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md) — ready
+- [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md) — conditional on card 179 and Research 211
 
 ## Blocked
 

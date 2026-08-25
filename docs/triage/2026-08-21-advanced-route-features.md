@@ -1802,3 +1802,16 @@ Headless qualified ceiling retracted to `0.37.2` because naked `0.38.0`
 default dispatch uses agent-core-v2 `runV2Print`. Cards 177-178 stay blocked.
 Qualify Kimi headless v2 stream-json at `0.38.0` or document incompatible stop.
 g04 remains open at operator direction.
+
+## Post-g04.063 Merge And g04.064 Compilation (2026-08-25)
+
+PR 62 fast-forwarded the evidence stop to `main` at `5f37ff6b` after all
+required checks passed. g04 stays open.
+
+Disposition: compile exact Kimi Code headless `0.38.0` default
+agent-core-v2 stream-json qualification as one Contract 029 family lane.
+Card 179 freezes actual v2 source, renderer, JSONL, stderr, terminal, retry,
+tool-activity, cancellation, retained-state, and decoder truth. Card 180 is
+conditional on Research 211 admitting an adapter-private revision. The worker
+must not force legacy v1, use a live account, or turn a public lifecycle change
+into a private compatibility claim. An incompatible stop is acceptable.

@@ -180,17 +180,22 @@ families do not interrupt this programme by default.
   structured attempts and direct continuation, with bounded private replay and
   no thought disclosure.
 - [g04.063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md)
-  stopped after card 176. Research 210 is an honest empty deliver-now set:
+  stopped after card 176 and merged through PR 62 at `5f37ff6b`. Research 210
+  is an honest empty deliver-now set:
   no headless confirmation transport, ambient thinking-disable shadowing,
   Kimi-protocol default fallback before env override, and no headless catalogue
   snapshot for selected-model agreement. Cards 177-178 stay blocked. No
   headless reasoning-effort feature ships.
+- [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md)
+  is ready as one-family Contract 029 work. Card 179 qualifies exact default
+  agent-core-v2 stream-json identity and lifecycle; card 180 applies only an
+  admitted adapter-private v2 claim. A public lifecycle change or live-provider
+  evidence requirement is an incompatible stop.
 
 ## Current Execution Boundary
 
-Orchestrator qualify Kimi headless agent-core-v2 stream-json at exact `0.38.0`
-under an exact revision, or document an incompatible stop. Keep g04 active
-until explicit operator direction.
+Execute g04.064 cards 179-180 serially. Keep g04 active until explicit operator
+direction.
 
 ## Exclusions
 

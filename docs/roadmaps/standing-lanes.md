@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-24
+Updated: 2026-08-25
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -29,6 +29,11 @@ Last one-family claim: Claude Code headless and response-only `2.1.241`
 (g04.055, cards 153-154). The immediately preceding claim is Codex CLI
 `0.149.1` across exec and app-server (g04.054, cards 151-152). Neither changes
 the generation pointer.
+
+Active one-family qualification: Kimi Code headless exact `0.38.0` default
+agent-core-v2 stream-json (g04.064, cards 179-180). The old v1 ceiling remains
+`0.37.2` until Research 211 admits a distinct private v2 revision. An honest
+incompatible stop is required if it does not.
 
 ### Completed Family
 

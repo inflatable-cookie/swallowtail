@@ -260,3 +260,9 @@ impl Drop for SecretBytes {
     }
 }
 
+impl std::fmt::Debug for SecretBytes {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("[redacted]")
+    }
+}
+

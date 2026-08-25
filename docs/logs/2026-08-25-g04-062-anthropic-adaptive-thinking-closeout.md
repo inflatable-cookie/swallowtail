@@ -23,8 +23,13 @@ continuation after terminal. Direct continuation captures the first-assistant
 private sequence in bounded zeroizing memory and replays it unmodified before
 `tool_use` on the correlated result attempt and later-turn history. Adaptive
 skip with no thinking block is valid. `thinking_delta`, missing signatures,
-and thinking without the adapter-local mode fail closed. Fresh restoration is
-`SessionReplaced` with the prepared selection and no private-state recovery.
+and thinking without the adapter-local mode fail closed. Late thinking or
+redacted blocks after public text/tool content fail closed instead of being
+rewritten before `tool_use`. Duplicate signatures and private overflow fail
+closed. Raw SSE frames store payload bytes in `RedactedBytes` with redacted
+`Debug` and zeroizing drop; the decoder buffer is zeroized on finish and drop.
+Fresh restoration is `SessionReplaced` with the prepared selection and no
+private-state recovery.
 
 No shared contract, shared runtime, live Anthropic call, summarized display,
 manual budget thinking, or g04 closure.
@@ -45,7 +50,7 @@ manual budget thinking, or g04 closure.
 Worker validation passed on this branch:
 
 - `cargo fmt -p swallowtail-adapter-anthropic`
-- `effigy validate:focused swallowtail-adapter-anthropic` (94 tests)
+- `effigy validate:focused swallowtail-adapter-anthropic` (97 tests)
 - `effigy package:verify-affected swallowtail-adapter-anthropic`
 - `effigy check:examples`
 - `effigy qa:routes`
@@ -53,6 +58,12 @@ Worker validation passed on this branch:
 - research, logs, roadmaps, g04, batch-card, and next-action index gates
 - `effigy package:api`
 - `git diff --check`
+- `git diff --check a69b3546eea09c7cf15edea0733a8301dec1e662...HEAD`
+
+Review round 1 on `05386dd4` requested raw-frame redaction/zeroization, fail-closed
+late private order, missing overflow/reorder proof, range whitespace on new SSE
+fixtures, and a clean worktree. Those are applied on this head. The worktree no
+longer carries `.tmp-research-209/`.
 
 `effigy doctor` reproduces the inherited baseline: 378 god-file findings
 (332 warnings, 46 errors) plus one generated-in-src warning. Session parser

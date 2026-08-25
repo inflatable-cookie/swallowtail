@@ -21,6 +21,7 @@ struct AttemptParser {
     output: String,
     stop_reason: Option<String>,
     stopped: bool,
+    visible_started: bool,
     private: Vec<PrivateBlock>,
     pending_signature: Option<SecretBytes>,
 }
@@ -47,6 +48,7 @@ impl AttemptParser {
             output: String::new(),
             stop_reason: None,
             stopped: false,
+            visible_started: false,
             private: Vec::new(),
             pending_signature: None,
         }
@@ -77,10 +79,19 @@ impl AttemptParser {
                             "Anthropic thinking content arrived without adaptive thinking selected",
                         ));
                     }
+                    ContentBlock::Thinking | ContentBlock::RedactedThinking { .. }
+                        if self.visible_started =>
+                    {
+                        return Err(failure(
+                            "swallowtail.anthropic.stream_order_invalid",
+                            "Anthropic thinking content arrived after public content",
+                        ));
+                    }
                     ContentBlock::RedactedThinking { data } if self.thinking_enabled => {
                         self.require_private_room(data.len())?;
                     }
                     ContentBlock::ToolUse { id, name } => {
+                        self.visible_started = true;
                         self.tool_id = Some(id.clone());
                         self.tool_name = Some(name.clone());
                         self.assistant_phase =
@@ -111,6 +122,7 @@ impl AttemptParser {
                         )?;
                     }
                     ContentBlock::Text => {
+                        self.visible_started = true;
                         self.assistant_phase =
                             Some(swallowtail_runtime::ActivityAssistantPhase::Final);
                         emit(

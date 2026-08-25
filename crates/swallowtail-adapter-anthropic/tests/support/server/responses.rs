@@ -21,16 +21,28 @@ fn respond(
             match (fixture, attempt) {
                 (StreamFixture::WaitForCancel, 0) => respond_wait_for_cancel(stream),
                 (StreamFixture::ToolContinuation, 0) => {
-                    respond_sse(stream, &format!("{TOOL_USE}\n"))
+                    respond_sse(stream, &terminate_sse(TOOL_USE))
                 }
                 (StreamFixture::ThinkingToolContinuation, 0) => {
-                    respond_sse(stream, &format!("{THINKING_TOOL_USE}\n"))
+                    respond_sse(stream, &terminate_sse(THINKING_TOOL_USE))
                 }
                 (StreamFixture::RedactedToolContinuation, 0) => {
-                    respond_sse(stream, &format!("{REDACTED_TOOL_USE}\n"))
+                    respond_sse(stream, &terminate_sse(REDACTED_TOOL_USE))
                 }
                 (StreamFixture::ConsecutiveThinkingToolContinuation, 0) => {
-                    respond_sse(stream, &format!("{CONSECUTIVE_THINKING_TOOL_USE}\n"))
+                    respond_sse(stream, &terminate_sse(CONSECUTIVE_THINKING_TOOL_USE))
+                }
+                (StreamFixture::LateThinkingAfterTool, 0) => {
+                    respond_sse(stream, &terminate_sse(LATE_THINKING))
+                }
+                (StreamFixture::LateRedactedAfterTool, 0) => {
+                    respond_sse(stream, &terminate_sse(LATE_REDACTED))
+                }
+                (StreamFixture::DuplicateThinkingSignature, 0) => {
+                    respond_sse(stream, &terminate_sse(DUPLICATE_SIGNATURE))
+                }
+                (StreamFixture::OversizedThinkingSignature, 0) => {
+                    respond_sse(stream, &oversized_thinking_signature())
                 }
                 (
                     StreamFixture::ToolContinuation
@@ -38,11 +50,12 @@ fn respond(
                     | StreamFixture::RedactedToolContinuation
                     | StreamFixture::ConsecutiveThinkingToolContinuation,
                     1 | 2,
-                ) => respond_sse(stream, SUCCESS),
+                ) => respond_sse(stream, &terminate_sse(SUCCESS)),
                 (StreamFixture::WebSearch, 0) => {
-                    respond_sse(stream, &format!("{WEB_SEARCH}\n"))
+                    respond_sse(stream, &terminate_sse(WEB_SEARCH))
                 }
-                (_, 0) => respond_sse(stream, stream_body(fixture)),
+                (StreamFixture::Disconnect, 0) => respond_sse(stream, DISCONNECT),
+                (_, 0) => respond_sse(stream, &terminate_sse(stream_body(fixture))),
                 _ => respond_json(
                     stream,
                     409,
@@ -63,17 +76,39 @@ fn stream_body(fixture: StreamFixture) -> &'static str {
         StreamFixture::Success => SUCCESS,
         StreamFixture::MidstreamError => MIDSTREAM_ERROR,
         StreamFixture::Unknown => UNKNOWN,
-        StreamFixture::Disconnect => DISCONNECT,
         StreamFixture::ThinkingThenText => THINKING_THEN_TEXT,
         StreamFixture::ThinkingDelta => THINKING_DELTA,
         StreamFixture::ThinkingUnsigned => THINKING_UNSIGNED,
+        StreamFixture::ThinkingAfterText => THINKING_AFTER_TEXT,
         StreamFixture::WaitForCancel
+        | StreamFixture::Disconnect
         | StreamFixture::ToolContinuation
         | StreamFixture::WebSearch
         | StreamFixture::ThinkingToolContinuation
         | StreamFixture::RedactedToolContinuation
-        | StreamFixture::ConsecutiveThinkingToolContinuation => unreachable!(),
+        | StreamFixture::ConsecutiveThinkingToolContinuation
+        | StreamFixture::LateThinkingAfterTool
+        | StreamFixture::LateRedactedAfterTool
+        | StreamFixture::DuplicateThinkingSignature
+        | StreamFixture::OversizedThinkingSignature => unreachable!(),
     }
+}
+
+fn terminate_sse(body: &str) -> String {
+    if body.ends_with("\n\n") {
+        body.to_owned()
+    } else if body.ends_with('\n') {
+        format!("{body}\n")
+    } else {
+        format!("{body}\n\n")
+    }
+}
+
+fn oversized_thinking_signature() -> String {
+    let signature = "x".repeat(262_145);
+    terminate_sse(&format!(
+        "event: message_start\ndata: {{\"type\":\"message_start\",\"message\":{{\"id\":\"msg_fixture_overflow\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"model\":\"claude-opus-4-7\",\"stop_reason\":null,\"usage\":{{\"input_tokens\":12,\"output_tokens\":1}}}}}}\n\nevent: content_block_start\ndata: {{\"type\":\"content_block_start\",\"index\":0,\"content_block\":{{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}}}}\n\nevent: content_block_delta\ndata: {{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{{\"type\":\"signature_delta\",\"signature\":\"{signature}\"}}}}\n\nevent: content_block_stop\ndata: {{\"type\":\"content_block_stop\",\"index\":0}}\n\nevent: content_block_start\ndata: {{\"type\":\"content_block_start\",\"index\":1,\"content_block\":{{\"type\":\"tool_use\",\"id\":\"toolu_fixture_1\",\"name\":\"lookup_customer\",\"input\":{{}}}}}}\n\nevent: content_block_delta\ndata: {{\"type\":\"content_block_delta\",\"index\":1,\"delta\":{{\"type\":\"input_json_delta\",\"partial_json\":\"{{\\\"customer_id\\\":\\\"customer-fixture\\\"}}\"}}}}\n\nevent: content_block_stop\ndata: {{\"type\":\"content_block_stop\",\"index\":1}}\n\nevent: message_delta\ndata: {{\"type\":\"message_delta\",\"delta\":{{\"stop_reason\":\"tool_use\",\"stop_sequence\":null}},\"usage\":{{\"input_tokens\":12,\"output_tokens\":8}}}}\n\nevent: message_stop\ndata: {{\"type\":\"message_stop\"}}\n"
+    ))
 }
 
 fn authorized(request: &FixtureRequest) -> bool {

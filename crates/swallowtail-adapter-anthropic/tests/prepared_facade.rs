@@ -12,6 +12,8 @@ mod operations;
 mod preparation;
 #[path = "prepared_facade/thinking.rs"]
 mod thinking;
+#[path = "prepared_facade/thinking_order.rs"]
+mod thinking_order;
 #[path = "prepared_facade/thinking_restore.rs"]
 mod thinking_restore;
 #[path = "prepared_facade/thinking_session.rs"]

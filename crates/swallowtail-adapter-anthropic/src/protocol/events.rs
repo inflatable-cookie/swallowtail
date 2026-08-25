@@ -41,6 +41,10 @@ impl RedactedBytes {
         std::str::from_utf8(&self.0).map_err(|_| protocol_failure("private continuation encoding"))
     }
 
+    pub(crate) fn as_bytes(&self) -> &[u8] {
+        &self.0
+    }
+
     pub(crate) fn clone_bytes(&self) -> Vec<u8> {
         self.0.clone()
     }
@@ -74,7 +78,7 @@ pub(crate) enum ProviderErrorKind {
 }
 
 pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
-    let value: Value = parse_json(&frame.data, "stream event")?;
+    let value: Value = parse_json(frame.data.as_bytes(), "stream event")?;
     if value.get("type").and_then(Value::as_str) != Some(frame.name.as_str()) {
         return Err(protocol_failure("stream event type"));
     }
@@ -250,15 +254,31 @@ const fn classification(kind: ProviderErrorKind) -> FailureClassification {
     FailureClassification::new(FailureOrigin::Provider, failure_kind, recovery)
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub(crate) struct SseFrame {
     pub name: String,
-    pub data: Vec<u8>,
+    pub data: RedactedBytes,
+}
+
+impl std::fmt::Debug for SseFrame {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("SseFrame")
+            .field("name", &self.name)
+            .field("data", &self.data)
+            .finish()
+    }
 }
 
 #[derive(Default)]
 pub(crate) struct SseDecoder {
     buffer: Vec<u8>,
+}
+
+impl Drop for SseDecoder {
+    fn drop(&mut self) {
+        self.buffer.fill(0);
+    }
 }
 
 impl SseDecoder {
@@ -279,20 +299,35 @@ impl SseDecoder {
                 2
             };
             self.buffer.drain(..separator);
-            frames.push(decode_frame(&frame)?);
+            let decoded = decode_frame(&frame)?;
+            let mut raw = frame;
+            raw.fill(0);
+            frames.push(decoded);
         }
         Ok(frames)
     }
 
-    pub(crate) fn finish(self) -> Result<(), RuntimeFailure> {
-        if self.buffer.iter().all(u8::is_ascii_whitespace) {
-            Ok(())
-        } else {
+    pub(crate) fn finish(mut self) -> Result<(), RuntimeFailure> {
+        let disconnected = !self.buffer.iter().all(u8::is_ascii_whitespace);
+        self.buffer.fill(0);
+        if disconnected {
             Err(failure(
                 "swallowtail.anthropic.sse_disconnected",
                 "Anthropic SSE disconnected during an event",
             ))
+        } else {
+            Ok(())
         }
+    }
+
+    #[cfg(test)]
+    fn leftover_is_zeroed(&self) -> bool {
+        self.buffer.iter().all(|&byte| byte == 0)
+    }
+
+    #[cfg(test)]
+    fn zeroize_leftover(&mut self) {
+        self.buffer.fill(0);
     }
 }
 
@@ -323,6 +358,6 @@ fn decode_frame(frame: &[u8]) -> Result<SseFrame, RuntimeFailure> {
     }
     Ok(SseFrame {
         name: name.ok_or_else(|| protocol_failure("SSE event name"))?,
-        data,
+        data: RedactedBytes(data),
     })
 }

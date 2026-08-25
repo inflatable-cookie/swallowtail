@@ -240,7 +240,8 @@ enum StreamState {
     RedactedThinking,
     SearchUse,
     SearchResult,
-    AfterContent,
+    AfterPrivate,
+    AfterPublic,
     Delta,
     Complete,
 }
@@ -272,7 +273,7 @@ fn apply_event(
             *state = StreamState::Message;
             Ok(Applied::Usage(usage))
         }
-        (Event::ContentStart(crate::protocol::ContentBlock::Text), StreamState::Message | StreamState::AfterContent) => {
+        (Event::ContentStart(crate::protocol::ContentBlock::Text), StreamState::Message | StreamState::AfterPrivate | StreamState::AfterPublic) => {
             *state = StreamState::TextContent;
             // Guard: StreamState::Message is only reachable after
             // Event::MessageStart set message_id.
@@ -280,7 +281,7 @@ fn apply_event(
                 message_id.clone().expect("message identity exists"),
             ))
         }
-        (Event::ContentStart(crate::protocol::ContentBlock::Thinking), StreamState::Message | StreamState::AfterContent)
+        (Event::ContentStart(crate::protocol::ContentBlock::Thinking), StreamState::Message | StreamState::AfterPrivate)
             if inputs.thinking_enabled =>
         {
             *state = StreamState::Thinking;
@@ -292,13 +293,13 @@ fn apply_event(
         }
         (
             Event::ContentStart(crate::protocol::ContentBlock::RedactedThinking { .. }),
-            StreamState::Message | StreamState::AfterContent,
+            StreamState::Message | StreamState::AfterPrivate,
         ) if inputs.thinking_enabled => {
             *state = StreamState::RedactedThinking;
             Ok(Applied::None)
         }
         (Event::ContentStart(crate::protocol::ContentBlock::SearchUse { id }),
-            StreamState::Message | StreamState::AfterContent,
+            StreamState::Message | StreamState::AfterPrivate | StreamState::AfterPublic,
         ) if inputs.search_allowed && *search_uses < 2 => {
             *search_uses += 1;
             *search_id = Some(id.clone());
@@ -306,7 +307,7 @@ fn apply_event(
             Ok(Applied::SearchStarted(id))
         }
         (Event::ContentStart(crate::protocol::ContentBlock::SearchResult { tool_use_id }),
-            StreamState::Message | StreamState::AfterContent,
+            StreamState::Message | StreamState::AfterPrivate | StreamState::AfterPublic,
         ) if inputs.search_allowed && search_id.as_deref() == Some(tool_use_id.as_str()) => {
             *state = StreamState::SearchResult;
             Ok(Applied::SearchProgress)
@@ -326,17 +327,21 @@ fn apply_event(
                 search_id.clone().expect("search identity exists"),
             ))
         }
-        (Event::ContentStop, StreamState::TextContent | StreamState::SearchUse | StreamState::ThinkingSigned | StreamState::RedactedThinking) => {
-            *state = StreamState::AfterContent;
+        (Event::ContentStop, StreamState::ThinkingSigned | StreamState::RedactedThinking) => {
+            *state = StreamState::AfterPrivate;
+            Ok(Applied::None)
+        }
+        (Event::ContentStop, StreamState::TextContent | StreamState::SearchUse) => {
+            *state = StreamState::AfterPublic;
             Ok(Applied::None)
         }
         (Event::ContentStop, StreamState::SearchResult) => {
-            *state = StreamState::AfterContent;
+            *state = StreamState::AfterPublic;
             Ok(Applied::SearchCompleted(
                 search_id.take().expect("search identity exists"),
             ))
         }
-        (Event::Usage(usage, _), StreamState::AfterContent | StreamState::Delta) => {
+        (Event::Usage(usage, _), StreamState::AfterPrivate | StreamState::AfterPublic | StreamState::Delta) => {
             *state = StreamState::Delta;
             Ok(Applied::Usage(usage))
         }

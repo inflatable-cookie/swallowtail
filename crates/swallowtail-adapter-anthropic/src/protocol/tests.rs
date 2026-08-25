@@ -172,6 +172,38 @@ mod tests {
     }
 
     #[test]
+    fn raw_sse_frames_redact_private_payloads_and_zeroize_leftovers() {
+        let frames = decode(THINKING_TEXT).expect("thinking stream decodes");
+        let item = crate::transport::StreamItem::Frame(
+            frames
+                .iter()
+                .find(|frame| frame.name == "content_block_delta")
+                .cloned()
+                .expect("signature frame exists"),
+        );
+        let dump = format!("{frames:?}{item:?}");
+        assert!(!dump.contains("sig_omitted_fixture_private"));
+        assert!(!dump.contains("secret thought must not leak"));
+
+        let redacted = decode(REDACTED_TOOL).expect("redacted stream decodes");
+        assert!(!format!("{redacted:?}").contains("redacted_fixture_private_data"));
+        drop(frames);
+        drop(item);
+        drop(redacted);
+
+        let mut decoder = SseDecoder::default();
+        decoder
+            .push(&terminated(THINKING_TEXT)[..80])
+            .expect("partial prefix parses");
+        assert!(!decoder.leftover_is_zeroed());
+        decoder.zeroize_leftover();
+        assert!(decoder.leftover_is_zeroed());
+        let error = decoder.finish().expect_err("zeroed leftover still disconnects");
+        assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.sse_disconnected");
+        assert!(!format!("{error:?}").contains("sig_omitted_fixture_private"));
+    }
+
+    #[test]
     fn typed_provider_errors_keep_portable_meaning() {
         let error = provider_failure(ProviderErrorKind::RateLimited, "fixture");
         let classification = error.diagnostic().failure_classification();
@@ -184,8 +216,16 @@ mod tests {
 
     fn decode(bytes: &[u8]) -> Result<Vec<SseFrame>, RuntimeFailure> {
         let mut decoder = SseDecoder::default();
-        let frames = decoder.push(bytes)?;
+        let frames = decoder.push(&terminated(bytes))?;
         decoder.finish()?;
         Ok(frames)
+    }
+
+    fn terminated(bytes: &[u8]) -> Vec<u8> {
+        let mut owned = bytes.to_vec();
+        if !owned.ends_with(b"\n\n") {
+            owned.push(b'\n');
+        }
+        owned
     }
 }

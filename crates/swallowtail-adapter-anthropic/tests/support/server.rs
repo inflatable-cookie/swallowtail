@@ -25,6 +25,14 @@ const CONSECUTIVE_THINKING_TOOL_USE: &str =
 const THINKING_DELTA: &str = include_str!("../fixtures/anthropic-2023-06-01/thinking-delta.sse");
 const THINKING_UNSIGNED: &str =
     include_str!("../fixtures/anthropic-2023-06-01/thinking-unsigned.sse");
+const LATE_THINKING: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/late-thinking-after-tool.sse");
+const LATE_REDACTED: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/late-redacted-after-tool.sse");
+const DUPLICATE_SIGNATURE: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/thinking-duplicate-signature.sse");
+const THINKING_AFTER_TEXT: &str =
+    include_str!("../fixtures/anthropic-2023-06-01/thinking-after-text.sse");
 #[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
@@ -37,9 +45,14 @@ pub enum StreamFixture {
     ThinkingThenText,
     ThinkingDelta,
     ThinkingUnsigned,
+    ThinkingAfterText,
     ThinkingToolContinuation,
     RedactedToolContinuation,
     ConsecutiveThinkingToolContinuation,
+    LateThinkingAfterTool,
+    LateRedactedAfterTool,
+    DuplicateThinkingSignature,
+    OversizedThinkingSignature,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

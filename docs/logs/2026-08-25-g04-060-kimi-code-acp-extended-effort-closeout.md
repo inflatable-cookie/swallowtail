@@ -16,6 +16,7 @@ boolean select rejects `xhigh|max` before host effects. Selection remains
 new-session-only and requires current `thinking` snapshot membership plus
 response `currentValue` confirmation. Foreign advertised rows may coexist;
 they are not public selections. No segment split and no shared contract change.
+PR 59 fast-forwarded the exact reviewed head `dc191750` to `main`.
 
 ## Evidence
 

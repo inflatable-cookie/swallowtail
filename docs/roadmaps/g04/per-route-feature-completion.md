@@ -164,15 +164,20 @@ families do not interrupt this programme by default.
   post-spawn; initialize/`session/new` expose no model confirmation. Cards
   165-166 are blocked. No model-selection feature ships.
 - [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](./060-kimi-code-acp-catalogue-declared-effort-levels.md)
-  completed through cards 167-169. Research 207 admits exact
+  completed and merged through PR 59 at `dc191750`. Research 207 admits exact
   `0.29.0..=0.38.0` snapshot-advertised `xhigh|max` with effective
   confirmation under `kimi.acp.reasoning.declared-effort-v2`. Foreign rows
   coexist without public admission; load/resume remain non-mutating.
+- [g04.061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md) is ready.
+  Research 208 and cards 170-172 form one serial evidence-first lane for exact
+  `HarnessMode::Plan` negotiation without exposing provider `auto|yolo` or
+  changing ambient-isolation truth.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory after g04.060. Keep g04
-active until explicit operator direction.
+Execute g04.061 cards 170-172 serially. Stop honestly after Research 208 when
+the exact mode/application/confirmation set is empty. Keep g04 active until
+explicit operator direction.
 
 ## Exclusions
 

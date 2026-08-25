@@ -23,8 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-25 g04.061 Kimi Code ACP Plan Mode Compiled](./2026-08-25-g04-061-kimi-code-acp-plan-mode-compiled.md)
+- [2026-08-25 g04.061 Kimi Code ACP Plan Mode Closeout](./2026-08-25-g04-061-kimi-code-acp-plan-mode-closeout.md) — reserved
 - [2026-08-25 g04.060 Kimi Code ACP Extended Effort Compiled](./2026-08-25-g04-060-kimi-code-acp-extended-effort-compiled.md)
-- [2026-08-25 g04.060 Kimi Code ACP Extended Effort Closeout](./2026-08-25-g04-060-kimi-code-acp-extended-effort-closeout.md) — complete; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
+- [2026-08-25 g04.060 Kimi Code ACP Extended Effort Closeout](./2026-08-25-g04-060-kimi-code-acp-extended-effort-closeout.md) — complete and merged through PR 59 at `dc191750`; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
 - [2026-08-24 g04.059 Deep Agents ACP Model Selection Compiled](./2026-08-24-g04-059-deepagents-acp-model-selection-compiled.md)
 - [2026-08-24 g04.059 Deep Agents ACP Model Selection Closeout](./2026-08-24-g04-059-deepagents-acp-model-selection-closeout.md) — stopped after card 164 and fast-forwarded through PR 58 at `87876f00`; Research 206 empty set; cards 165-166 blocked
 - [2026-08-24 g04.058 Antigravity Headless Agent Profile Compiled](./2026-08-24-g04-058-antigravity-headless-agent-profile-compiled.md)

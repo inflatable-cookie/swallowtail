@@ -6,9 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [167-kimi-code-acp-extended-effort-evidence.md](./167-kimi-code-acp-extended-effort-evidence.md)
-- [168-kimi-code-acp-extended-effort-binding.md](./168-kimi-code-acp-extended-effort-binding.md) — conditional on non-empty Research 207
-- [169-kimi-code-acp-extended-effort-acceptance.md](./169-kimi-code-acp-extended-effort-acceptance.md) — conditional on card 168
+- [170-kimi-code-acp-plan-mode-evidence.md](./170-kimi-code-acp-plan-mode-evidence.md)
+- [171-kimi-code-acp-plan-mode-binding.md](./171-kimi-code-acp-plan-mode-binding.md) — conditional on non-empty Research 208
+- [172-kimi-code-acp-plan-mode-acceptance.md](./172-kimi-code-acp-plan-mode-acceptance.md) — conditional on card 171
 
 ## Blocked
 
@@ -19,6 +19,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [169-kimi-code-acp-extended-effort-acceptance.md](./169-kimi-code-acp-extended-effort-acceptance.md)
+- [168-kimi-code-acp-extended-effort-binding.md](./168-kimi-code-acp-extended-effort-binding.md)
+- [167-kimi-code-acp-extended-effort-evidence.md](./167-kimi-code-acp-extended-effort-evidence.md)
 - [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md) — complete; Research 206 empty deliver-now set
 - [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — complete; Research 205 empty deliver-now set
 - [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — complete; Research 204 evidence stop

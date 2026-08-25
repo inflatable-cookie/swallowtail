@@ -1700,3 +1700,36 @@ verbosity still lacks exact model-support evidence. Ollama `think=max`
 remains withheld because exact `0.32.15` maps it to `high` for the relevant
 family. Permission, multi-agent, skills, memory, and sandbox families remain
 authority or containment gates. g04 stays open at operator direction.
+
+## Post-g04.060 Reassessment And g04.061 Compilation (2026-08-25)
+
+Disposition: select negotiated plan mode on `kimi-code.acp` and compile
+g04.061 as one serial evidence-first lane.
+
+Exact official Kimi Code `0.38.0` source already projects a `mode` select option
+with `default|plan|auto|yolo`. Its exact dispatcher maps `plan` to
+`setPlanMode(true)` plus manual permission, then rebuilds the config-option
+snapshot. The production route already owns the bounded session-open snapshot,
+one-option selection exchange, effective response confirmation, typed
+`HarnessMode::Plan`, and immutable plan constraint through its existing
+reasoning path and Contracts 012/034.
+
+Selection is not qualification. Research 208 and card 170 must identify the
+first exact qualified version with the full option, request, SDK application,
+permission, response/update, and cleanup path. They must also prove composition
+with every admitted reasoning value and settle load/resume/import/recovery
+without mutation. Cards 171-172 continue only for a non-empty exact set.
+
+Only portable `Plan` is a candidate. Provider `default`, `auto`, and `yolo`
+may coexist as private snapshot rows but do not become public selections.
+Plan mode does not imply process/filesystem containment; `AmbientHost` remains
+the independent route truth. Permission widening, generic config, headless
+`--plan`, Python `kimi-cli`, and sibling Kimi routes remain outside the lane.
+
+Other remaining candidates are weaker. llama.cpp owned reasoning lacks exact
+model/template semantics; Codex verbosity lacks selected-model support proof;
+Anthropic adaptive thinking needs private thinking-block stream preservation;
+Kiro profiles, OpenCode permissions, sandbox, skills/memory, and multi-agent
+families cross authority or containment boundaries. Ollama `think=max` still
+maps to `high` for the relevant exact family. g04 stays open at operator
+direction.

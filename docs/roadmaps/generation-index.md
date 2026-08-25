@@ -30,12 +30,12 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 60 roadmaps: 52 completed milestones, seven honest evidence
+g04 now has 61 roadmaps: 53 completed milestones, seven honest evidence
 stops at 040, 042, 043, 045, 057, 058, and 059. It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
-established the active per-route feature completion programme. g04.060 is ready
-for exact Kimi Code ACP catalogue-declared extended effort evidence and
+established the active per-route feature completion programme. g04.060 is
+merged; g04.061 is ready for exact Kimi Code ACP plan-mode evidence and
 conditional binding.
 
 Contract 029 currentness is a standing lane. It is not a generation runway

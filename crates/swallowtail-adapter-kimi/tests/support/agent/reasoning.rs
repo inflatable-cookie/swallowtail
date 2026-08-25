@@ -36,18 +36,22 @@ impl SharedAgent {
             | Scenario::PlanConfirmationMissing
             | Scenario::PlanDrift
             | Scenario::PlanRejected => {
-                let requested = requested_value(message)?;
-                let effective = if requested == "on" {
-                    "medium"
-                } else {
-                    requested
-                };
                 confirmation(
                     id,
                     &["off", "low", "medium", "high", "xhigh", "max"],
-                    effective,
+                    requested_effort(message)?,
                 )
             }
+            Scenario::PlanMissingAfterReasoning => confirmation_without_mode(
+                id,
+                &["off", "low", "medium", "high", "xhigh", "max"],
+                requested_effort(message)?,
+            ),
+            Scenario::PlanMalformedAfterReasoning => confirmation_with_malformed_mode(
+                id,
+                &["off", "low", "medium", "high", "xhigh", "max"],
+                requested_effort(message)?,
+            ),
             Scenario::ReasoningEffortExtended => {
                 let requested = requested_value(message)?;
                 confirmation(
@@ -88,19 +92,42 @@ impl SharedAgent {
 }
 
 fn confirmation(id: Option<u64>, values: &[&str], current: &str) -> Value {
-    SharedAgent::response(
-        id,
-        json!({"configOptions": [
-            {"id": "model", "currentValue": "kimi-coder"},
-            reasoning_option(values, current)
-        ]}),
-    )
+    confirmation_with(id, values, current, Some(mode_option("default")))
+}
+
+fn confirmation_without_mode(id: Option<u64>, values: &[&str], current: &str) -> Value {
+    confirmation_with(id, values, current, None)
+}
+
+fn confirmation_with_malformed_mode(id: Option<u64>, values: &[&str], current: &str) -> Value {
+    confirmation_with(id, values, current, Some(malformed_mode_option()))
+}
+
+fn confirmation_with(
+    id: Option<u64>,
+    values: &[&str],
+    current: &str,
+    mode: Option<Value>,
+) -> Value {
+    let mut options = vec![
+        json!({"id": "model", "currentValue": "kimi-coder"}),
+        reasoning_option(values, current),
+    ];
+    if let Some(mode) = mode {
+        options.push(mode);
+    }
+    SharedAgent::response(id, json!({"configOptions": options}))
 }
 
 fn requested_value(message: &Value) -> Result<&str, RuntimeFailure> {
     message["params"]["value"]
         .as_str()
         .ok_or_else(fixture_failure)
+}
+
+fn requested_effort(message: &Value) -> Result<&str, RuntimeFailure> {
+    let requested = requested_value(message)?;
+    Ok(if requested == "on" { "medium" } else { requested })
 }
 
 fn reasoning_option(values: &[&str], current: &str) -> Value {

@@ -45,6 +45,8 @@ pub enum Scenario {
     PlanDrift,
     PlanRejected,
     PlanUnknownRow,
+    PlanMissingAfterReasoning,
+    PlanMalformedAfterReasoning,
 }
 
 impl Scenario {

@@ -1,10 +1,11 @@
 use crate::support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, plan_selection};
+use support::{CleanupEvent, FixtureHost, Scenario, plan_reasoning_selection, plan_selection};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{
-    ExecutionHostId, HarnessMode, ResourceAccess, SessionProviderStatePolicy, SessionRef,
+    ExecutionHostId, HarnessMode, ReasoningMode, ResourceAccess, SessionProviderStatePolicy,
+    SessionRef,
 };
 use swallowtail_runtime::{
     InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest, RequestId,
@@ -98,6 +99,62 @@ fn load_and_resume_reject_harness_mode_before_host_effects() {
         );
         assert_eq!(host.credential_acquisitions(), 0);
         assert!(!host.process_started());
+    }
+}
+
+#[test]
+fn composed_plan_membership_uses_the_reasoning_confirmation_snapshot() {
+    for (scenario, expected_code) in [
+        (
+            Scenario::PlanMissingAfterReasoning,
+            "swallowtail.kimi.acp.harness_mode_option_missing",
+        ),
+        (
+            Scenario::PlanMalformedAfterReasoning,
+            "swallowtail.kimi.acp.harness_mode_option_malformed",
+        ),
+    ] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.host.plan.after-reasoning.{expected_code}"))
+                .expect("valid host id");
+        let selected = plan_reasoning_selection(host_id.clone(), "0.29.0", "high");
+        let host = FixtureHost::new(scenario);
+        let error = block_on(
+            driver(selected.credential).open_session(
+                selected.plan,
+                OpenSessionRequest::new(
+                    RequestId::new("kimi-plan-stale-snapshot").expect("valid request"),
+                    selected.resource,
+                    None,
+                    SessionPlanAgreement::explicit(
+                        policy(),
+                        Some(SessionProviderStatePolicy::Prohibited),
+                        None,
+                    ),
+                )
+                .with_options(
+                    SessionOptions::default()
+                        .with_harness_mode(HarnessMode::Plan)
+                        .with_reasoning_mode(ReasoningMode::new("high").expect("valid mode")),
+                ),
+                host.services(host_id),
+            ),
+        )
+        .err()
+        .expect("stale plan membership aborts");
+        assert_eq!(error.diagnostic().code(), expected_code);
+        let sets = host
+            .wire_messages()
+            .into_iter()
+            .filter(|message| {
+                message.get("method").and_then(serde_json::Value::as_str)
+                    == Some("session/set_config_option")
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(sets.len(), 1);
+        assert_eq!(sets[0]["params"]["configId"], "thinking");
+        assert_eq!(host.cleanup_counts(), (1, 1));
+        assert_eq!(host.cleanup_events(), joined_cleanup());
     }
 }
 

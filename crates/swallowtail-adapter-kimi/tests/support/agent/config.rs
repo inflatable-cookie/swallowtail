@@ -74,7 +74,11 @@ impl SharedAgent {
             | Scenario::PlanAmbiguous
             | Scenario::PlanMalformed
             | Scenario::PlanUnknownRow => {}
-            Scenario::PlanConfirmationMissing | Scenario::PlanDrift | Scenario::PlanRejected => {
+            Scenario::PlanConfirmationMissing
+            | Scenario::PlanDrift
+            | Scenario::PlanRejected
+            | Scenario::PlanMissingAfterReasoning
+            | Scenario::PlanMalformedAfterReasoning => {
                 options.push(reasoning_option(
                     &["off", "low", "medium", "high", "xhigh", "max"],
                     "off",

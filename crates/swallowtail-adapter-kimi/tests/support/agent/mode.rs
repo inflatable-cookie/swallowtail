@@ -62,6 +62,12 @@ fn mode_confirmation(id: Option<u64>, current: &str) -> Value {
     )
 }
 
+fn malformed_mode_option() -> Value {
+    let mut option = mode_option("default");
+    option["category"] = Value::String("unmapped_provider_category".to_owned());
+    option
+}
+
 fn mode_option(current: &str) -> Value {
     json!({
         "id": "mode",

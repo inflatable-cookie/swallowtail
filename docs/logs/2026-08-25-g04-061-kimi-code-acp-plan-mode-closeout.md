@@ -25,7 +25,9 @@ gain no harness-mode mutation.
 - focused fixtures cover omission, plan-only dispatch, reasoning composition,
   missing/ambiguous/malformed/unknown-row snapshots, confirmation drift,
   provider rejection, joined cleanup, load/resume rejection before host
-  effects, and visible `UnverifiedNewer`
+  effects, visible `UnverifiedNewer`, and composed plan membership against
+  the reasoning confirmation snapshot rather than the stale `session/new`
+  list
 - Kimi prepared guide and feature-matrix notes distinguish plan mode,
   permission posture, and ambient isolation
 

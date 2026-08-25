@@ -174,9 +174,13 @@ plan constraint, snapshot membership, one set request, and effective
 confirmation. One confirmation never proves the other.
 
 Request order: keep the existing reasoning request first when reasoning is
-present, then send the plan-mode request. Omission of plan sends no mode
-request and preserves the current reasoning-only wire. Omission of reasoning
-sends only the mode request.
+present, then send the plan-mode request. Plan membership is checked against
+the current snapshot immediately before that mode request: `session/new` when
+reasoning is omitted, otherwise the reasoning confirmation snapshot. Exact
+Kimi `session/set_config_option` rebuilds the full `configOptions` list, so
+the pre-reasoning session-open snapshot is not current after thinking
+succeeds. Omission of plan sends no mode request and preserves the current
+reasoning-only wire. Omission of reasoning sends only the mode request.
 
 Every Research 207-admitted reasoning value applicable to the exact version
 composes:

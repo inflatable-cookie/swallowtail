@@ -63,9 +63,10 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 let (provider_id, model_options) =
                     parse_session(&response, plan.model_id().expect("validated model"))?;
                 attachment.connection.set_session_id(provider_id.clone())?;
+                let mut snapshot = response;
                 if let Some(reasoning) = reasoning {
                     let selection = reasoning::prepare_reasoning_selection(
-                        &response,
+                        &snapshot,
                         selected.behavior(),
                         reasoning,
                     )?;
@@ -74,9 +75,10 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                         .set_config_option(&provider_id, "thinking", selection.provider_value())
                         .await?;
                     let _ = selection.confirm(&confirmation, selected.behavior())?;
+                    snapshot = confirmation;
                 }
                 if plan_mode {
-                    mode::prepare_plan_mode(&response)?;
+                    mode::prepare_plan_mode(&snapshot)?;
                     let confirmation = attachment
                         .connection
                         .set_config_option(&provider_id, "mode", "plan")

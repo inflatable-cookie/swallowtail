@@ -111,7 +111,9 @@ caller request, one `session/set_config_option` dispatch, and response
 coexist but never become public selections.
 
 `HarnessMode::Plan` is new-session only on exact `0.28.1` and exact
-`0.29.0..=0.38.0`. The current `mode` select must advertise exact `plan`;
+`0.29.0..=0.38.0`. The current `mode` select must advertise exact `plan`.
+That snapshot is the `session/new` result when reasoning is omitted, or the
+reasoning `session/set_config_option` confirmation when reasoning ran first.
 Swallowtail then sends one `session/set_config_option` `{configId: mode,
 value: plan}` and requires the response `currentValue` to equal `plan`
 before readiness. Provider rows `default`, `auto`, and `yolo` may coexist

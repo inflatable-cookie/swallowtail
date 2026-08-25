@@ -1,6 +1,6 @@
 # 179 Kimi Code 0.38.0 Headless V2 Identity
 
-Status: ready
+Status: complete
 Owner: Tom
 Milestone: [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](../064-kimi-code-0-38-0-headless-v2-useful-newer.md)
 Created: 2026-08-25

@@ -42,8 +42,8 @@ g04.062 is merged through PR 61 at `4ef5c5e9`; Research 209 delivered exact
 Opus 4.7 adaptive omitted-display thinking with private signed-block replay and
 no thought disclosure. g04.063 stopped after card 176 and merged through PR 62
 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling
-retracted to `0.37.2`; cards 177-178 blocked. g04.064 is ready to qualify exact
-`0.38.0` default headless v2 or record an incompatible stop.
+retracted to `0.37.2`; cards 177-178 blocked. g04.064 completed: exact `0.38.0`
+qualifies under `kimi.headless.stream-json.v2`.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

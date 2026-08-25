@@ -1803,6 +1803,13 @@ default dispatch uses agent-core-v2 `runV2Print`. Cards 177-178 stay blocked.
 Qualify Kimi headless v2 stream-json at `0.38.0` or document incompatible stop.
 g04 remains open at operator direction.
 
+## Post-g04.064 Kimi Headless V2 Qualification (2026-08-25)
+
+Disposition: complete through cards 179-180. Research 211 admits adapter-private
+`kimi.headless.stream-json.v2` at exact `0.38.0`. v1 ceiling `0.37.2` stands.
+Synthetic `0.38.1` remains permitted `UnverifiedNewer` on v2. PR pending
+orchestrator review. g04 remains open at operator direction.
+
 ## Post-g04.063 Merge And g04.064 Compilation (2026-08-25)
 
 PR 62 fast-forwarded the evidence stop to `main` at `5f37ff6b` after all

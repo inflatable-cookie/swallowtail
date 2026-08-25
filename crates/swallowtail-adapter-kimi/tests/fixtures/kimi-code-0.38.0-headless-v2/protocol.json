@@ -1,0 +1,32 @@
+{
+  "selected_headless_v2": {
+    "engine": "agent-core-v2-run-v2-print",
+    "output_format": "stream-json",
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "facade_id": "kimi-headless-stream-json-v2",
+    "preamble_meta": "system.version",
+    "shared_prompt_json_writer": true
+  },
+  "selected_source": {
+    "prompt_render_blob_0_37_2_through_0_38_0": "d413a0678dcebb5a0a6f9dda8ce51d53e4b70d55b162afe6635a7d8c1a1536c4",
+    "run_v2_print_blob_0_38_0": "ed6343355414859636f4b2e9c7c14fa86da3dee1c7eef7fc086735e5480f4788",
+    "experimental_v2_blob_0_38_0": "3af45f19704a4f5c5c49112c1ecb6c5f286fb05189922156aff8693c8dd7ae51",
+    "run_prompt_dispatch_blob_0_38_0": "8c9c83561560aaee80ac9a8a749ceed553d542948090975f53a86c80e77e5fc7"
+  },
+  "jsonl_roles": ["meta", "assistant", "tool"],
+  "meta_types_source_proved": [
+    "system.version",
+    "turn.step.retrying",
+    "session.resume_hint"
+  ],
+  "meta_types_fixture_only": ["future.activity"],
+  "withheld_without_live_prompt": [
+    "provider_error role line terminal truth",
+    "stderr config diagnostic ordering",
+    "goal-mode exit codes",
+    "background exit/drain/steer timing"
+  ],
+  "decoder_corpus": "kimi-code-0.38.0-headless-v2",
+  "provider_prompt_sent": false,
+  "host_install_changed": false
+}

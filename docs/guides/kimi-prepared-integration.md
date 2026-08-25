@@ -207,8 +207,9 @@ cannot accept that host boundary should use another route.
 
 The prepared route qualifies the audited legacy agent-core v1 stream-json
 corpus through exact `0.37.2` (`kimi.headless.stream-json.v1`). Exact
-`0.38.0` default headless dispatch uses agent-core-v2 `runV2Print` and is not
-yet qualified. The adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
+`0.38.0` qualifies under agent-core-v2 `runV2Print` (`kimi.headless.stream-json.v2`)
+with a source-proved `system.version` preamble before shared JSONL output. The
+adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
 `KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant, tool activity, retry, and
 terminal events without claiming consumer tool callbacks. Cancellation and
 deadline stop and join the child. Kimi may retain provider state, so the

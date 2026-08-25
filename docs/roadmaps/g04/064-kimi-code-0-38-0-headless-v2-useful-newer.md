@@ -1,6 +1,6 @@
 # g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Depends on: g04.032; g04.063; Contract 029 currentness
@@ -75,8 +75,8 @@ Do not run live probes, consumer checks, release checks, or broad workspace QA.
 
 ## Batch Cards
 
-- [179-kimi-code-0-38-0-headless-v2-identity.md](batch-cards/179-kimi-code-0-38-0-headless-v2-identity.md) — ready
-- [180-kimi-code-0-38-0-headless-v2-claim.md](batch-cards/180-kimi-code-0-38-0-headless-v2-claim.md) — conditional
+- [179-kimi-code-0-38-0-headless-v2-identity.md](batch-cards/179-kimi-code-0-38-0-headless-v2-identity.md) — complete
+- [180-kimi-code-0-38-0-headless-v2-claim.md](batch-cards/180-kimi-code-0-38-0-headless-v2-claim.md) — complete
 
 ## References
 

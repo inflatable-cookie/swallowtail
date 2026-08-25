@@ -178,6 +178,13 @@ impl KimiHeadlessEventParser {
                 }
                 Ok(events)
             }
+            Some("system.version") => {
+                if !non_empty_string(payload, "version") {
+                    return Err(malformed_stream());
+                }
+                let activity = self.activity.unknown("system.version")?;
+                Ok(self.activity_events(activity))
+            }
             Some(event_type) if !event_type.trim().is_empty() => {
                 let activity = self.activity.unknown(event_type)?;
                 Ok(self.activity_events(activity))

@@ -1,0 +1,3 @@
+{"role":"meta","type":"system.version","version":"0.38.0"}
+{"role":"assistant","content":"fixture result"}
+{"role":"meta","type":"session.resume_hint","session_id":"fixture-session","command":"kimi -r fixture-session","content":"To resume this session: kimi -r fixture-session"}

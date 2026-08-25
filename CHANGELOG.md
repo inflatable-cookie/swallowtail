@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- Qualify Kimi Code headless exact `0.38.0` under adapter-private
+  `kimi.headless.stream-json.v2` for default agent-core-v2 `runV2Print`
+  stream-json. Preserve `0.29.0..=0.37.2` under `kimi.headless.stream-json.v1`.
+  Bind facade `kimi-headless-stream-json-v2`, handle source-proved
+  `system.version` preamble meta, and keep synthetic `0.38.1` permitted
+  `UnverifiedNewer` on the v2 revision. Research 211, g04.064.
 - Retract Kimi Code headless qualified ceiling from `0.38.0` to `0.37.2` under
   existing `kimi.headless.stream-json.v1`. Research 210 proved naked npm
   `0.38.0` `kimi -p` defaults to agent-core-v2 `runV2Print`, not the legacy v1

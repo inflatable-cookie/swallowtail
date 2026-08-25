@@ -6,8 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md) — ready
-- [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md) — conditional on card 179 and Research 211
+- [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md) — complete
+- [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md) — complete
 
 ## Blocked
 

@@ -1,0 +1,5 @@
+{"role":"meta","type":"system.version","version":"0.38.0"}
+{"role":"assistant","content":"checking","tool_calls":[{"type":"function","id":"fixture-tool","function":{"name":"ReadFile","arguments":"{\"path\":\"fixture.txt\"}"}}]}
+{"role":"tool","tool_call_id":"fixture-tool","content":"fixture content"}
+{"role":"assistant","content":"done"}
+{"role":"meta","type":"session.resume_hint","session_id":"fixture-session","command":"kimi -r fixture-session","content":"To resume this session: kimi -r fixture-session"}

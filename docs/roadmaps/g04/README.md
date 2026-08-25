@@ -78,7 +78,7 @@ and selection policy.
 - [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete and merged through PR 60 at `f21220cd`, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
 - [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
 - [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked
-- [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — ready, cards 179-180; Research 211 reserved
+- [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180; Research 211 promoted
 
 g04 has 64 numbered roadmaps: 55 completed milestones, eight honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready currentness

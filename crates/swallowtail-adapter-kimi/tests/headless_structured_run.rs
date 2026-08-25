@@ -136,6 +136,40 @@ fn prepared_route_executes_exact_argv_and_bounded_corpus_in_both_topologies() {
 }
 
 #[test]
+fn v2_headless_corpus_includes_system_version_preamble() {
+    let topology = ExecutionTopologyFixture::local();
+    let prepared = prepared_with_version(topology.execution_host_id().clone(), "0.38.0");
+    assert_eq!(
+        prepared.instance().protocol_facade_id().as_str(),
+        "kimi-headless-stream-json-v2"
+    );
+    let evidence = execute(
+        &profile(
+            &prepared,
+            topology.working_resource().clone(),
+            "v2-complete",
+        ),
+        topology.execution_host_id().clone(),
+        include_str!("fixtures/kimi-code-0.38.0-headless-v2/headless-complete.jsonl"),
+        ProcessExit::new(true, Some(0)),
+    );
+    assert_eq!(evidence.outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        evidence.outcome.output().map(OperationContent::as_str),
+        Some("fixture result")
+    );
+    assert!(evidence.events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::Activity(activity)
+            if matches!(
+                activity.kind(),
+                swallowtail_runtime::ActivityKind::Unknown(namespace)
+                    if namespace.as_str() == "kimi-code.headless.system.version"
+            )
+    )));
+}
+
+#[test]
 fn process_failure_malformed_incomplete_cancellation_and_timeout_remain_distinct() {
     let topology = ExecutionTopologyFixture::local();
     let prepared = prepared(topology.execution_host_id().clone());
@@ -336,6 +370,37 @@ fn prepared(host: ExecutionHostId) -> KimiHeadlessPreparedIntegration {
         prepared.observation().version().version().as_str(),
         "0.31.1"
     );
+    prepared
+}
+
+fn prepared_with_version(host: ExecutionHostId, version: &str) -> KimiHeadlessPreparedIntegration {
+    let access = access_profile();
+    let (process, state) = FakeProcessService::completed(&format!("{version}\n"));
+    let prepared = block_on(prepare_kimi_headless(
+        KimiHeadlessPreparationInput::new(
+            ConfiguredInstanceId::new("kimi.headless.fixture").expect("instance is valid"),
+            InstanceRevision::new("1").expect("revision is valid"),
+            host.clone(),
+            InstalledExecutableTarget::new(
+                ExecutableRef::new("kimi.fixture.executable").expect("executable is valid"),
+                InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("axis is valid"),
+            ),
+            EnvironmentRef::new("kimi.fixture.default-v1-environment")
+                .expect("environment is valid"),
+            access.clone(),
+            PreparedAccessEvidence::caller_asserted(access_status(&access)),
+        ),
+        KimiHeadlessPreparationProbe::new(
+            RequestId::new("kimi-headless-probe").expect("request is valid"),
+            ScopeId::new("kimi-headless-probe").expect("scope is valid"),
+            Deadline::at(MonotonicInstant::from_ticks(1000)),
+            DiscoveryCancellation::new(),
+        ),
+        services(host, process),
+    ))
+    .expect("Kimi headless prepares");
+    assert_eq!(state.request().arguments, ["--version"]);
+    assert_eq!(prepared.observation().version().version().as_str(), version);
     prepared
 }
 

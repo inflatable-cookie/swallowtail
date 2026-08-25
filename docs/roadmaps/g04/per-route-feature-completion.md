@@ -187,15 +187,13 @@ families do not interrupt this programme by default.
   snapshot for selected-model agreement. Cards 177-178 stay blocked. No
   headless reasoning-effort feature ships.
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md)
-  is ready as one-family Contract 029 work. Card 179 qualifies exact default
-  agent-core-v2 stream-json identity and lifecycle; card 180 applies only an
-  admitted adapter-private v2 claim. A public lifecycle change or live-provider
-  evidence requirement is an incompatible stop.
+  completed through cards 179-180: exact `0.38.0` qualifies under
+  `kimi.headless.stream-json.v2`; v1 through `0.37.2` preserved.
 
 ## Current Execution Boundary
 
-Execute g04.064 cards 179-180 serially. Keep g04 active until explicit operator
-direction.
+Keep g04 open until explicit operator direction. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

@@ -1,0 +1,32 @@
+{
+  "axis": "kimi-code.executable",
+  "observed_at": "2026-08-25",
+  "npm_package": "@moonshot-ai/kimi-code",
+  "official_version": "0.38.0",
+  "default_dispatch": "agent-core-v2-run-v2-print",
+  "legacy_dispatch": "agent-core-v1-print-with-KIMI_CODE_LEGACY_FLAG",
+  "official": {
+    "version": "0.38.0",
+    "published_at": "2026-08-20T13:13:41.488Z",
+    "npm_integrity": "sha512-O/z6sfjFdoDPPeTnoXzdsJ2U8IqP6K2gD3LsT+Nu8BAlHwdhCjdCQFkFTjIbLBun+aZT6x81ha5FiFt7trEilg==",
+    "npm_tarball_sha256": "d5c047dbfbbdfddf8d20030327e723ea9121af66260983a8556124580d64b549",
+    "github_commit": "0999454bdcb5ddd98f39bffee434dcf0a810f394"
+  },
+  "claim_at_observation": {
+    "baseline_headless": "0.29.0",
+    "latest_qualified_headless": "0.37.2",
+    "classification_of_0_38_0_headless": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "adapter-private-milestone",
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "qualified_exact": "0.38.0",
+    "preserve_v1_through": "0.37.2",
+    "synthetic_unverified_newer": "0.38.1",
+    "shared_jsonl_writer_with_v1": true,
+    "v2_preamble_meta": "system.version",
+    "new_public_operation": false,
+    "provider_prompt_sent": false,
+    "host_install_changed": false
+  }
+}

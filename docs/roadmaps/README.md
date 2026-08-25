@@ -14,12 +14,10 @@ shape.
 
 ## Next Task
 
-Implement g04.064 Kimi Code `0.38.0` Headless V2 Useful Newer, starting with
-identity card 179 and continuing to conditional claim card 180 only when
-Research 211 admits an adapter-private mapping. Qualify the actual default
-agent-core-v2 `runV2Print` stream-json path or document an incompatible stop.
-Keep g04 open until explicit operator direction. Contract 029 currentness stays
-standing.
+Keep g04 open until explicit operator direction. Contract 029 currentness
+remains standing; run the checkpoint or pick the next AllowUnverified family
+when the operator triggers currentness. g04.064 completed: Kimi headless exact
+`0.38.0` qualifies under `kimi.headless.stream-json.v2`.
 
 ## Standing Lanes
 

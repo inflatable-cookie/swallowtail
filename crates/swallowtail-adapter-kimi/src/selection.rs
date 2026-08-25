@@ -16,11 +16,12 @@ pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.37.2";
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 
 pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
 pub(crate) const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "kimi.headless.stream-json.v1";
+pub(crate) const HEADLESS_BEHAVIOR_V2: &str = "kimi.headless.stream-json.v2";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -115,12 +116,19 @@ pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::new(
-            version(KIMI_HEADLESS_BASELINE_VERSION).expect("static Kimi version is valid"),
-            version(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION).expect("static Kimi version is valid"),
-            behavior(HEADLESS_BEHAVIOR),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(KIMI_HEADLESS_BASELINE_VERSION).expect("static Kimi version is valid"),
+                version("0.37.2").expect("static Kimi version is valid"),
+                behavior(HEADLESS_BEHAVIOR),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                version("0.38.0").expect("static Kimi version is valid"),
+                behavior(HEADLESS_BEHAVIOR_V2),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Kimi headless compatibility claim is valid")
@@ -196,9 +204,13 @@ pub(crate) fn select_kimi_headless_plan(
             "Kimi headless executable version is incompatible with this driver",
         ));
     }
-    if assessment
-        .behavior_revision()
-        .is_none_or(|revision| revision.as_str() != HEADLESS_BEHAVIOR)
+    if KimiHeadlessBehavior::from_revision(
+        assessment
+            .behavior_revision()
+            .expect("permitted assessment has a behavior revision")
+            .as_str(),
+    )
+    .is_none()
     {
         return Err(failure(
             "swallowtail.kimi.headless.behavior_incompatible",
@@ -206,6 +218,22 @@ pub(crate) fn select_kimi_headless_plan(
         ));
     }
     Ok(binding.version().clone())
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum KimiHeadlessBehavior {
+    StreamJsonV1,
+    StreamJsonV2,
+}
+
+impl KimiHeadlessBehavior {
+    pub(crate) fn from_revision(value: &str) -> Option<Self> {
+        match value {
+            HEADLESS_BEHAVIOR => Some(Self::StreamJsonV1),
+            HEADLESS_BEHAVIOR_V2 => Some(Self::StreamJsonV2),
+            _ => None,
+        }
+    }
 }
 
 fn axis() -> InterfaceVersionAxis {
@@ -223,8 +251,8 @@ fn behavior(value: &str) -> InterfaceBehaviorRevision {
 #[cfg(test)]
 mod tests {
     use super::{
-        DECLARED_EFFORT_BEHAVIOR, KIMI_CODE_AXIS, KimiAcpBehavior, kimi_acp_claim,
-        kimi_code_binding, kimi_headless_claim,
+        DECLARED_EFFORT_BEHAVIOR, HEADLESS_BEHAVIOR, HEADLESS_BEHAVIOR_V2, KIMI_CODE_AXIS,
+        KimiAcpBehavior, kimi_acp_claim, kimi_code_binding, kimi_headless_claim,
     };
     use swallowtail_core::{
         InstalledExecutableCompatibility, InstalledExecutableObservation,
@@ -273,21 +301,30 @@ mod tests {
     }
 
     #[test]
-    fn headless_claim_starts_at_the_audited_default_runner() {
+    fn headless_claim_preserves_v1_through_0_37_2_and_qualifies_exact_v2() {
         let claim = kimi_headless_claim();
         assert!(!claim.permits(&version("0.28.1")));
         for qualified in [
             "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0", "0.33.0",
             "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
         ] {
-            assert!(claim.supports(&version(qualified)));
+            let assessment = claim.assess(&version(qualified));
+            let InterfaceCompatibilityAssessment::Qualified(matched) = assessment else {
+                panic!("{qualified} remains qualified under v1");
+            };
+            assert_eq!(matched.behavior_revision().as_str(), HEADLESS_BEHAVIOR);
         }
-        for unverified in ["0.38.0", "0.38.1"] {
-            assert!(matches!(
-                claim.assess(&version(unverified)),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
+        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("0.38.0"))
+        else {
+            panic!("exact 0.38.0 qualifies under v2");
+        };
+        assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            claim.assess(&version("0.38.1"))
+        else {
+            panic!("stable newer release remains unverified");
+        };
+        assert_eq!(newer.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
     }
 
     #[test]

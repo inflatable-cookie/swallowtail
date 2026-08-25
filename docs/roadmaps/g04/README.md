@@ -77,12 +77,12 @@ and selection policy.
 - [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
 - [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete and merged through PR 60 at `f21220cd`, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
 - [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
-- [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — ready, cards 176-178; Research 210 evidence gate
+- [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176; Research 210 empty deliver-now set; cards 177-178 blocked
 
-g04 has 63 numbered roadmaps: 55 completed milestones, seven honest evidence
-stops at 040, 042, 043, 045, 057, 058, and 059, and ready g04.063. The operator
-keeps the generation active. Execute cards 176-178 serially; do not close g04
-without explicit operator direction.
+g04 has 63 numbered roadmaps: 55 completed milestones, eight honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, and 063. The operator
+keeps the generation active. Orchestrator should reassess the remaining
+per-route inventory; do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -206,13 +206,12 @@ without explicit operator direction.
 - g04.062 is complete and merged through PR 61 at `4ef5c5e9`: cards 173-175
   delivered adapter-local adaptive omitted-display thinking on exact
   `claude-opus-4-7` with bounded private replay; Research 209 is promoted
-- g04.063 is ready: cards 176-178 select Kimi Code headless reasoning effort
-  behind Research 210's exact transport, version/model/value, precedence,
-  fallback, disclosure, and claim-strength gate
+- g04.063 stopped after card 176: Research 210 is an honest empty deliver-now
+  set; cards 177-178 blocked; no headless reasoning-effort feature ships
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 63 roadmaps; next move is g04.063 card 176; generation
-  closure awaits explicit operator direction
+- g04 remains active at 63 roadmaps; orchestrator should reassess the remaining
+  per-route inventory; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -270,9 +269,8 @@ without explicit operator direction.
 24. g04.062 cards 173-175 delivered exact `claude-opus-4-7` adapter-local
     adaptive omitted-display thinking with private continuation replay;
     Research 209 is the evidence authority.
-25. g04.063 is compiled as one serial Kimi Code headless reasoning-effort lane.
-    Card 176 and Research 210 own the exact no-fallback evidence gate; cards
-    177-178 are conditional.
+25. g04.063 stopped after card 176. Research 210 is an honest empty deliver-now
+    set; cards 177-178 blocked; no headless reasoning-effort feature ships.
 26. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -308,7 +306,7 @@ New route-family research does not pre-empt this sequence.
 - [060 Kimi Code ACP Catalogue-Declared Effort Levels](./060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169
 - [061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md) — complete, cards 170-172
 - [062 Anthropic Messages Adaptive Thinking](./062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175
-- [063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md) — ready, cards 176-178
+- [063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md) — stopped after card 176; Research 210 empty deliver-now set; cards 177-178 blocked
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

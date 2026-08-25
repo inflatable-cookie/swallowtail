@@ -6,12 +6,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [176-kimi-code-headless-reasoning-effort-evidence.md](./176-kimi-code-headless-reasoning-effort-evidence.md)
-- [177-kimi-code-headless-reasoning-effort-binding.md](./177-kimi-code-headless-reasoning-effort-binding.md) — conditional on non-empty Research 210
-- [178-kimi-code-headless-reasoning-effort-acceptance.md](./178-kimi-code-headless-reasoning-effort-acceptance.md) — conditional on card 177
+Cards 176-178 are complete or blocked after the g04.063 evidence stop.
 
 ## Blocked
 
+- [177-kimi-code-headless-reasoning-effort-binding.md](./177-kimi-code-headless-reasoning-effort-binding.md) — blocked; Research 210 empty deliver-now set
+- [178-kimi-code-headless-reasoning-effort-acceptance.md](./178-kimi-code-headless-reasoning-effort-acceptance.md) — blocked; card 177 blocked
 - [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — blocked; Research 206 empty set
 - [166-deepagents-acp-model-selection-acceptance.md](./166-deepagents-acp-model-selection-acceptance.md) — blocked; Research 206 empty set
 - [162-antigravity-headless-agent-profile-binding.md](./162-antigravity-headless-agent-profile-binding.md) — blocked; Research 205 empty set
@@ -29,6 +29,7 @@ Cards 070-071 remain unused gaps, not tasks.
 - [168-kimi-code-acp-extended-effort-binding.md](./168-kimi-code-acp-extended-effort-binding.md)
 - [167-kimi-code-acp-extended-effort-evidence.md](./167-kimi-code-acp-extended-effort-evidence.md)
 - [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md) — complete; Research 206 empty deliver-now set
+- [176-kimi-code-headless-reasoning-effort-evidence.md](./176-kimi-code-headless-reasoning-effort-evidence.md) — complete; Research 210 evidence stop
 - [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — complete; Research 205 empty deliver-now set
 - [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — complete; Research 204 evidence stop
 - [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md)

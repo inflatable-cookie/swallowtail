@@ -1,8 +1,9 @@
 # 176 Kimi Code Headless Reasoning-Effort Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-25
+Updated: 2026-08-25
 Milestone: [g04.063 Kimi Code Headless Reasoning Effort](../063-kimi-code-headless-reasoning-effort.md)
 Depends on: Research 017, 046, 056, 066, 068, 074, 159, 179; Contracts 029, 040, 044
 
@@ -44,16 +45,16 @@ if any required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official source bodies/packages, dates, and hashes are recorded
-- [ ] exact environment/config key, parser, precedence, and lifetime are named
-- [ ] exact version/model/value support and defaults are explicit
-- [ ] fallback, alias, clamp, ignore, invalid, and ambient override are settled
-- [ ] stream-json disclosure and provider-state lifetime are explicit
-- [ ] claim strength is split by planned/dispatched/accepted/effective/observed
-- [ ] Research 210 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] exact official source bodies/packages, dates, and hashes are recorded
+- [x] exact environment/config key, parser, precedence, and lifetime are named
+- [x] exact version/model/value support and defaults are explicit
+- [x] fallback, alias, clamp, ignore, and ambient override are settled
+- [x] stream-json disclosure and provider-state lifetime are explicit
+- [x] claim strength is split by planned/dispatched/accepted/effective/observed
+- [x] Research 210 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, generation rollover, or g04 closure changes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi`, `effigy qa:northstar`,
+- [x] `effigy validate:focused swallowtail-adapter-kimi`, `effigy qa:northstar`,
       relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions
@@ -67,3 +68,13 @@ if any required fact remains unproved.
 
 - production binding, ACP/local-server/Python promotion, unrelated Kimi
   controls, live access, currentness, release, merge, rollover, or g04 closure
+
+## Closeout
+
+Research 210 is an honest empty deliver-now set. Exact `0.38.0` documents
+`KIMI_MODEL_THINKING_EFFORT` after config resolution, but headless lacks a
+fail-closed confirmation transport, ambient `thinking.enabled = false` disables
+the override, Kimi-protocol normalization can substitute `default_effort` before
+env applies, and there is no headless catalogue snapshot for selected-model
+agreement. Cards 177-178 stay blocked. No headless reasoning-effort feature
+ships.

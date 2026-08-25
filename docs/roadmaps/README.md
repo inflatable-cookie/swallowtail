@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.063 cards 176-178 serially: Kimi Code headless reasoning-effort
-evidence, conditional binding, then acceptance. Stop honestly after card 176
-if Research 210 is empty. Keep g04 open until explicit operator direction.
-Contract 029 currentness stays standing.
+Orchestrator reassess the remaining per-route feature inventory after g04.063
+evidence stop. Research 210 admits an empty deliver-now set; cards 177-178 stay
+blocked and no Kimi headless reasoning-effort feature ships. Keep g04 open until
+explicit operator direction. Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

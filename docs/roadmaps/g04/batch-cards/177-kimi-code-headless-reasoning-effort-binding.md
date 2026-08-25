@@ -1,6 +1,6 @@
 # 177 Kimi Code Headless Reasoning-Effort Binding
 
-Status: ready; conditional on card 176
+Status: blocked; Research 210 empty deliver-now set
 Owner: Tom
 Created: 2026-08-25
 Milestone: [g04.063 Kimi Code Headless Reasoning Effort](../063-kimi-code-headless-reasoning-effort.md)

@@ -1,6 +1,6 @@
 # 178 Kimi Code Headless Reasoning-Effort Acceptance
 
-Status: ready; conditional on card 177
+Status: blocked; card 177 blocked
 Owner: Tom
 Created: 2026-08-25
 Milestone: [g04.063 Kimi Code Headless Reasoning Effort](../063-kimi-code-headless-reasoning-effort.md)

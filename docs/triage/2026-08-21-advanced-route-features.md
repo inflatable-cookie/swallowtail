@@ -1794,3 +1794,15 @@ No ACP or local-server promotion, Python `kimi-cli`, raw config/environment
 surface, config mutation, synthetic config root, permission/plan control,
 thought disclosure, currentness movement, generation rollover, or g04 closure
 is authorized.
+
+## Post-g04.063 Evidence Stop (2026-08-25)
+
+Disposition: evidence stop after card 176. Research 210 admits an empty
+deliver-now set. Exact `0.38.0` documents `KIMI_MODEL_THINKING_EFFORT`, but
+headless has no fail-closed confirmation transport, ambient
+`thinking.enabled = false` disables the override, Kimi-protocol normalization
+can substitute `default_effort` before env applies, and there is no headless
+catalogue snapshot for selected-model agreement at preparation. Cards 177-178
+stay blocked. No headless reasoning-effort feature ships. Orchestrator should
+reassess the remaining per-route feature inventory. g04 remains open at
+operator direction.

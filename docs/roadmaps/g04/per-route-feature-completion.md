@@ -180,14 +180,16 @@ families do not interrupt this programme by default.
   structured attempts and direct continuation, with bounded private replay and
   no thought disclosure.
 - [g04.063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md)
-  is ready. Research 210 must freeze exact process-local transport,
-  version/model/value support, precedence, fallback, stream disclosure, and
-  claim strength before conditional binding and acceptance.
+  stopped after card 176. Research 210 is an honest empty deliver-now set:
+  no headless confirmation transport, ambient thinking-disable shadowing,
+  Kimi-protocol default fallback before env override, and no headless catalogue
+  snapshot for selected-model agreement. Cards 177-178 stay blocked. No
+  headless reasoning-effort feature ships.
 
 ## Current Execution Boundary
 
-Execute g04.063 cards 176-178 serially. Stop honestly after card 176 if
-Research 210 is empty. Keep g04 active until explicit operator direction.
+Orchestrator reassess the remaining per-route feature inventory after g04.063
+evidence stop. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

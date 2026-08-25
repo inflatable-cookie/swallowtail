@@ -1,8 +1,9 @@
 # g04.063 Kimi Code Headless Reasoning Effort
 
-Status: ready
+Status: stopped
 Owner: Tom
 Created: 2026-08-25
+Updated: 2026-08-25
 Depends on: g04.032; per-route feature completion programme
 Vision tags: explicit selection, provider truth, installed-route isolation
 Contract refs: 011, 029, 033, 037, 040, 044, 052
@@ -80,18 +81,19 @@ boundary. Neither prose nor output quality proves reasoning depth.
 
 ### Batch 63.1 — Exact Headless Effort Evidence
 
-- [ ] Execute card 176.
-- [ ] freeze exact version/model/value/transport/precedence/fallback truth
-- [ ] promote Research 210 with a non-empty exact table or honest empty set
+- [x] Execute card 176.
+- [x] freeze exact version/model/value/transport/precedence/fallback truth
+- [x] promote Research 210 with a non-empty exact table or honest empty set
 
 ### Batch 63.2 — Conditional Route-Local Binding
 
-- [ ] Execute card 177 only when Research 210 admits a non-empty set.
+- [ ] Execute card 177 only when Research 210 admits a non-empty set. Blocked:
+      Research 210 empty deliver-now set.
 - [ ] bind only the exact typed rows through the existing child process
 
 ### Batch 63.3 — Route-Local Acceptance
 
-- [ ] Execute card 178 only after card 177.
+- [ ] Execute card 178 only after card 177. Blocked: card 177.
 - [ ] prove dispatch, failure, omission, lifecycle, docs, and API truth
 
 ## Acceptance Criteria

@@ -1,6 +1,6 @@
 # 170 Kimi Code ACP Plan-Mode Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -42,19 +42,19 @@ session becomes ready, or promote an honest empty set.
 
 ## Acceptance Criteria
 
-- [ ] exact first complete plan-mode milestone and preceding boundary are frozen
-- [ ] exact snapshot, request, SDK application, permission, response, and update
+- [x] exact first complete plan-mode milestone and preceding boundary are frozen
+- [x] exact snapshot, request, SDK application, permission, response, and update
       behavior are explicit
-- [ ] every candidate version/value row has requested through effective truth
-- [ ] `default|auto|yolo`, unknown rows, malformed shapes, drift, rejection,
+- [x] every candidate version/value row has requested through effective truth
+- [x] `default|auto|yolo`, unknown rows, malformed shapes, drift, rejection,
       and fallback have explicit dispositions
-- [ ] reasoning composition and every failure-before-readiness path are bounded
-- [ ] load/resume/import/recovery mutation authority is explicitly absent
-- [ ] ambient isolation and manual permission remain independent claims
-- [ ] Research 208 is promoted with a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] reasoning composition and every failure-before-readiness path are bounded
+- [x] load/resume/import/recovery mutation authority is explicitly absent
+- [x] ambient isolation and manual permission remain independent claims
+- [x] Research 208 is promoted with a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, or generation state changes
-- [ ] `effigy qa:northstar`, relevant research/roadmap/log index gates, and
+- [x] `effigy qa:northstar`, relevant research/roadmap/log index gates, and
       `git diff --check` pass
 
 ## Stop Conditions

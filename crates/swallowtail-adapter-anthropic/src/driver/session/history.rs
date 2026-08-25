@@ -35,12 +35,9 @@ fn build_user_messages(
     history: &Arc<Mutex<History>>,
     request: &DirectContinuationTurnRequest,
     attempt: &DirectInferenceAttempt,
-) -> Result<serde_json::Value, RuntimeFailure> {
+) -> Result<RedactedBytes, RuntimeFailure> {
     match attempt.ordinal().get() {
-        1 => Ok(serde_json::json!([{
-            "role": "user",
-            "content": request.content().as_str()
-        }])),
+        1 => encode_user_message(request.content().as_str()),
         3 => history
             .lock()
             .expect("history lock poisoned")
@@ -74,20 +71,6 @@ enum PrivateBlock {
 }
 
 impl PrivateBlock {
-    fn json(&self) -> Result<serde_json::Value, RuntimeFailure> {
-        match self {
-            Self::Thinking { signature } => Ok(serde_json::json!({
-                "type": "thinking",
-                "thinking": "",
-                "signature": signature.as_str()?
-            })),
-            Self::Redacted { data } => Ok(serde_json::json!({
-                "type": "redacted_thinking",
-                "data": data.as_str()?
-            })),
-        }
-    }
-
     fn len(&self) -> usize {
         match self {
             Self::Thinking { signature } => signature.len(),
@@ -148,49 +131,6 @@ impl History {
         self.require_bound()
     }
 
-    fn continuation_messages(&self) -> Result<serde_json::Value, RuntimeFailure> {
-        let first = self.first.as_ref().ok_or_else(history_failure)?;
-        let arguments: serde_json::Value =
-            serde_json::from_slice(&first.arguments.0).map_err(|_| history_failure())?;
-        let mut content = first
-            .private
-            .iter()
-            .map(PrivateBlock::json)
-            .collect::<Result<Vec<_>, _>>()?;
-        content.push(serde_json::json!({
-            "type":"tool_use",
-            "id":first.call_id,
-            "name":first.tool_name,
-            "input":arguments
-        }));
-        Ok(serde_json::json!([
-            {"role":"user", "content":first.user.as_str()?},
-            {"role":"assistant", "content":content},
-            {"role":"user", "content":[{
-                "type":"tool_result",
-                "tool_use_id":first.call_id,
-                "content":first.result.as_ref().ok_or_else(history_failure)?.as_str()?
-            }]}
-        ]))
-    }
-
-    fn later_messages(&self, user: &str) -> Result<serde_json::Value, RuntimeFailure> {
-        let mut messages = self
-            .continuation_messages()?
-            .as_array()
-            .expect("continuation messages are an array")
-            .clone();
-        let answer = self
-            .first
-            .as_ref()
-            .and_then(|first| first.answer.as_ref())
-            .ok_or_else(history_failure)?
-            .as_str()?;
-        messages.push(serde_json::json!({"role":"assistant", "content":answer}));
-        messages.push(serde_json::json!({"role":"user", "content":user}));
-        Ok(serde_json::Value::Array(messages))
-    }
-
     fn require_bound(&self) -> Result<(), RuntimeFailure> {
         let bytes = self.first.as_ref().map_or(0, |first| {
             first.user.0.len()
@@ -225,6 +165,12 @@ impl SecretText {
 
     fn as_str(&self) -> Result<&str, RuntimeFailure> {
         std::str::from_utf8(&self.0).map_err(|_| history_failure())
+    }
+}
+
+impl std::fmt::Debug for SecretText {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("[redacted]")
     }
 }
 

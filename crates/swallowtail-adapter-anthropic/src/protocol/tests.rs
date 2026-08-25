@@ -37,8 +37,8 @@ mod tests {
             None,
         )
         .expect("message request serializes");
-        let raw = request.body.expect("request body exists");
-        let body: serde_json::Value = serde_json::from_slice(&raw).expect("request body parses");
+        let raw = request.body.as_deref().expect("request body exists");
+        let body: serde_json::Value = serde_json::from_slice(raw).expect("request body parses");
         assert_eq!(body["output_config"]["effort"], "xhigh");
         assert!(body.get("thinking").is_none());
         assert_eq!(
@@ -53,7 +53,7 @@ mod tests {
         let request = Request::message("claude-fixture-primary", &content, 64, None, None, None, None)
             .expect("message request serializes");
         assert_eq!(
-            request.body.expect("request body exists"),
+            request.body.as_deref().expect("request body exists"),
             br#"{"max_tokens":64,"messages":[{"content":"fixture prompt","role":"user"}],"model":"claude-fixture-primary","stream":true}"#
         );
     }
@@ -63,7 +63,7 @@ mod tests {
         let reasoning = ReasoningMode::new("max").expect("reasoning is valid");
         let request = Request::direct_message(
             "claude-opus-4-7",
-            serde_json::json!([]),
+            RedactedBytes::from_vec(b"[]".to_vec()),
             &[],
             64,
             Some(&reasoning),
@@ -71,7 +71,7 @@ mod tests {
         )
         .expect("direct message request serializes");
         let body: serde_json::Value =
-            serde_json::from_slice(&request.body.expect("request body exists"))
+            serde_json::from_slice(request.body.as_deref().expect("request body exists"))
                 .expect("request body parses");
         assert_eq!(body["output_config"]["effort"], "max");
         assert!(body.get("thinking").is_none());
@@ -95,7 +95,7 @@ mod tests {
             Some(crate::AnthropicThinkingMode::adaptive()),
         )
         .expect("message request serializes");
-        let raw = request.body.expect("request body exists");
+        let raw = request.body.as_deref().expect("request body exists");
         assert_eq!(
             raw,
             br#"{"max_tokens":64,"messages":[{"content":"fixture prompt","role":"user"}],"model":"claude-opus-4-7","output_config":{"effort":"low"},"stream":true,"thinking":{"display":"omitted","type":"adaptive"}}"#
@@ -145,7 +145,7 @@ mod tests {
         assert!(matches!(events[1], Event::ContentStart(ContentBlock::Thinking)));
         match &events[2] {
             Event::SignatureDelta(bytes) => {
-                assert_eq!(bytes.as_str().expect("signature is utf-8"), "sig_omitted_fixture_private");
+                assert_eq!(bytes.as_bytes(), b"sig_omitted_fixture_private");
             }
             other => panic!("signature delta expected, got {other:?}"),
         }
@@ -172,7 +172,7 @@ mod tests {
     }
 
     #[test]
-    fn raw_sse_frames_redact_private_payloads_and_zeroize_leftovers() {
+    fn raw_sse_frames_redact_private_payloads() {
         let frames = decode(THINKING_TEXT).expect("thinking stream decodes");
         let item = crate::transport::StreamItem::Frame(
             frames
@@ -195,13 +195,12 @@ mod tests {
         decoder
             .push(&terminated(THINKING_TEXT)[..80])
             .expect("partial prefix parses");
-        assert!(!decoder.leftover_is_zeroed());
-        decoder.zeroize_leftover();
-        assert!(decoder.leftover_is_zeroed());
-        let error = decoder.finish().expect_err("zeroed leftover still disconnects");
+        let error = decoder.finish().expect_err("partial leftover still disconnects");
         assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.sse_disconnected");
         assert!(!format!("{error:?}").contains("sig_omitted_fixture_private"));
     }
+
+    include!("privacy_tests.rs");
 
     #[test]
     fn typed_provider_errors_keep_portable_meaning() {

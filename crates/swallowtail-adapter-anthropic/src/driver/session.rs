@@ -381,5 +381,6 @@ include!("session/turn.rs");
 include!("session/attempt.rs");
 include!("session/parser.rs");
 include!("session/history.rs");
+include!("session/encode.rs");
 include!("session/control.rs");
 include!("session/events.rs");

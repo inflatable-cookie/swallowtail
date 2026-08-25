@@ -27,7 +27,11 @@ and thinking without the adapter-local mode fail closed. Late thinking or
 redacted blocks after public text/tool content fail closed instead of being
 rewritten before `tool_use`. Duplicate signatures and private overflow fail
 closed. Raw SSE frames store payload bytes in `RedactedBytes` with redacted
-`Debug` and zeroizing drop; the decoder buffer is zeroized on finish and drop.
+`Debug` and zeroizing drop; the decoder wraps drained frames in a zeroizing
+guard before fallible decode and parses private fields without leaving an
+ordinary JSON-string copy. Continuation replay encodes private blocks
+directly into a redacted request body; `Request` Debug and Drop do not
+expose or retain signatures or redacted thinking as ordinary bytes.
 Fresh restoration is `SessionReplaced` with the prepared selection and no
 private-state recovery.
 
@@ -50,20 +54,20 @@ manual budget thinking, or g04 closure.
 Worker validation passed on this branch:
 
 - `cargo fmt -p swallowtail-adapter-anthropic`
-- `effigy validate:focused swallowtail-adapter-anthropic` (97 tests)
+- `effigy validate:focused swallowtail-adapter-anthropic` (99 tests)
 - `effigy package:verify-affected swallowtail-adapter-anthropic`
-- `effigy check:examples`
-- `effigy qa:routes`
-- `effigy qa:northstar`
-- research, logs, roadmaps, g04, batch-card, and next-action index gates
-- `effigy package:api`
 - `git diff --check`
 - `git diff --check a69b3546eea09c7cf15edea0733a8301dec1e662...HEAD`
 
 Review round 1 on `05386dd4` requested raw-frame redaction/zeroization, fail-closed
 late private order, missing overflow/reorder proof, range whitespace on new SSE
-fixtures, and a clean worktree. Those are applied on this head. The worktree no
-longer carries `.tmp-research-209/`.
+fixtures, and a clean worktree. Those landed on `88bfc0a1`.
+
+Review round 2 on `88bfc0a1` required a redacted zeroizing outbound replay
+body that does not clone private fields through `serde_json::Value`, inbound
+parse/failure temporaries under a zeroizing guard, and proofs at those
+ownership boundaries instead of leftover-buffer test helpers. Those are
+applied on this head. The worktree no longer carries `.tmp-research-209/`.
 
 `effigy doctor` reproduces the inherited baseline: 378 god-file findings
 (332 warnings, 46 errors) plus one generated-in-src warning. Session parser
@@ -72,7 +76,6 @@ under the warning threshold. Default QA used no credentials, account state, or
 paid inference.
 
 PR: [#61](https://github.com/inflatable-cookie/swallowtail/pull/61).
-Implementation head: `fb8e8cab0f5a7a855cbb2877e05b9f550ed6d4de`.
 Worker branch: `t3code/review-anthropic-adaptive-thinking`.
 
 ## Unresolved

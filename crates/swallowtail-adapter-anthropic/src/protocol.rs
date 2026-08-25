@@ -11,12 +11,14 @@ use swallowtail_runtime::{OperationContent, RuntimeFailure};
 pub(crate) const API_VERSION: &str = "2023-06-01";
 pub(crate) const PROVIDER_ID: &str = "anthropic";
 
+include!("protocol/redact.rs");
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct Request {
     pub method: Method,
     pub path: String,
     pub query: Vec<(String, String)>,
-    pub body: Option<Vec<u8>>,
+    pub body: Option<RedactedBytes>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -37,7 +39,7 @@ pub(crate) struct ToolSpec {
 /// The workspace may enable `serde_json/preserve_order` transitively through
 /// ACP dependencies. Rebuilding every object in lexical key order preserves
 /// the pre-change BTreeMap wire shape in both feature configurations.
-fn canonicalize_json_object_order(value: serde_json::Value) -> serde_json::Value {
+pub(crate) fn canonicalize_json_object_order(value: serde_json::Value) -> serde_json::Value {
     match value {
         serde_json::Value::Object(object) => {
             let mut entries: Vec<_> = object
@@ -130,13 +132,13 @@ impl Request {
             method: Method::Post,
             path: "/v1/messages".to_owned(),
             query: Vec::new(),
-            body: Some(body),
+            body: Some(RedactedBytes::from_vec(body)),
         })
     }
 
     pub(crate) fn direct_message(
         model: &str,
-        messages: serde_json::Value,
+        messages: RedactedBytes,
         tools: &[ToolSpec],
         maximum_output_tokens: u64,
         reasoning: Option<&ReasoningMode>,
@@ -158,22 +160,17 @@ impl Request {
                 })
             })
             .collect();
-        let mut body = json!({
-            "model": model,
-            "max_tokens": maximum,
-            "messages": messages,
-            "tools": tools,
-            "tool_choice": {"type": "auto"},
-            "stream": true
-        });
-        if let Some(reasoning) = reasoning {
-            body["output_config"] = json!({"effort": reasoning.as_str()});
-        }
-        if thinking.is_some() {
-            body["thinking"] = json!({"display": "omitted", "type": "adaptive"});
-        }
-        let body = serde_json::to_vec(&canonicalize_json_object_order(body))
-            .expect("direct-continuation request JSON serializes");
+        let tools = serde_json::to_vec(&canonicalize_json_object_order(json!(tools)))
+            .map_err(|_| protocol_failure("tools"))?;
+        let body = splice_direct_body(
+            model,
+            messages.as_bytes(),
+            &tools,
+            maximum,
+            reasoning.map(ReasoningMode::as_str),
+            thinking.is_some(),
+        )?;
+        drop(messages);
         Ok(Self {
             method: Method::Post,
             path: "/v1/messages".to_owned(),

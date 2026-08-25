@@ -11,14 +11,18 @@ Research 210 admits an empty deliver-now set. Card 176 completed the evidence
 gate. Cards 177-178 stay blocked. No headless reasoning-effort feature ships.
 
 Exact `@moonshot-ai/kimi-code@0.38.0` documents process-local
-`KIMI_MODEL_THINKING_EFFORT` after config resolution, with Kimi-protocol
-normalization and fallback to `default_effort` on unsupported configured values.
-Headless `-p --output-format stream-json` exposes no confirmation transport
-comparable to Kimi ACP `session/set_config_option` (Research 207) or Qwen
-`set_effort` (Research 189). Ambient `thinking.enabled = false` disables the env
-override entirely. The route's Ambient harness posture does not let the adapter
-read or override user `config.toml`, and headless provides no session-open
-catalogue snapshot to freeze per-model `support_efforts` at preparation.
+`KIMI_MODEL_THINKING_EFFORT` after config resolution on both the default
+agent-core-v2 headless path (`runV2Print` unless `KIMI_CODE_LEGACY_FLAG` is
+truthy) and the legacy agent-core path, with Kimi-protocol normalization and
+fallback to `default_effort` on unsupported configured values. Headless
+`-p --output-format stream-json` exposes no confirmation transport comparable to
+Kimi ACP `session/set_config_option` (Research 207) or Qwen `set_effort`
+(Research 189). Ambient `thinking.enabled = false` disables the env overlay on
+both engines. The route's Ambient harness posture does not let the adapter read
+or override user `config.toml`, Swallowtail's qualified mapping targets v1
+source corpus without forcing legacy dispatch, and headless provides no
+session-open catalogue snapshot to freeze per-model `support_efforts` at
+preparation.
 
 ## Validation
 

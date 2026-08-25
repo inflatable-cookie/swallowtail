@@ -72,9 +72,11 @@ if any required fact remains unproved.
 ## Closeout
 
 Research 210 is an honest empty deliver-now set. Exact `0.38.0` documents
-`KIMI_MODEL_THINKING_EFFORT` after config resolution, but headless lacks a
-fail-closed confirmation transport, ambient `thinking.enabled = false` disables
-the override, Kimi-protocol normalization can substitute `default_effort` before
-env applies, and there is no headless catalogue snapshot for selected-model
-agreement. Cards 177-178 stay blocked. No headless reasoning-effort feature
-ships.
+`KIMI_MODEL_THINKING_EFFORT` on both the default agent-core-v2 headless path
+(`runV2Print` unless `KIMI_CODE_LEGACY_FLAG` is truthy) and the legacy
+agent-core path, but headless lacks a fail-closed confirmation transport,
+ambient `thinking.enabled = false` disables the override on both engines,
+Kimi-protocol normalization can substitute `default_effort` before env overlay,
+and there is no headless catalogue snapshot for selected-model agreement.
+Swallowtail's qualified v1 source mapping does not force legacy dispatch.
+Cards 177-178 stay blocked. No headless reasoning-effort feature ships.

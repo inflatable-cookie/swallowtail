@@ -2,6 +2,7 @@
 
 Status: complete
 Owner: Tom
+Updated: 2026-08-25
 Milestone: g04.059
 Cards: 164 complete; 165-166 blocked
 
@@ -64,14 +65,24 @@ Code-only gates (`cargo fmt`, `package:verify-affected`, `check:examples`,
 executed. Inherited doctor baseline remains 378 findings (332 warnings / 46
 errors) plus one generated-in-src warning.
 
+All five required GitHub CI jobs passed on exact reviewed and merged head
+`87876f0069c94979e8183679e68776284b4454fe`. The first Stable attempt failed
+in the unrelated OpenCode deadline fixture
+`deadline_after_dispatch_is_joined_unconfirmed_and_releases_access`; the
+failed-job rerun passed all 2,291 workspace tests plus examples, package
+topology, and route/guide contracts without a PR change.
+
 ## PR
 
 - URL: https://github.com/inflatable-cookie/swallowtail/pull/58
 - base: current pushed `main`
 - head: `t3code/review-deepagents-acp-model-selection`
 - evidence commit: `c0f803aa`
+- approved head: `87876f0069c94979e8183679e68776284b4454fe`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-7a377ef9`
-- merge: do not merge; operator authorizes separately
+- review: evidence-backed verdict recorded in PR comments; no changes requested
+- merge: fast-forwarded to `main` through PR 58 at
+  `87876f0069c94979e8183679e68776284b4454fe` after operator authorization
 
 ## Shared Closeout
 

@@ -14,9 +14,11 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory and compile the next
-numbered g04 family. Keep g04 open until explicit operator direction.
-Contract 029 currentness stays standing.
+Execute g04.062 cards 173-175 serially: exact Anthropic Messages adaptive-
+thinking evidence, conditional private binding, then route-local acceptance.
+Stop honestly after card 173 if Research 209 admits no exact deliver-now row.
+Keep g04 open until explicit operator direction. Contract 029 currentness
+stays standing.
 
 ## Standing Lanes
 

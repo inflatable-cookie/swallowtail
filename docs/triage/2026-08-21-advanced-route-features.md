@@ -695,11 +695,13 @@ Official Messages
 `web_search_20260318` (Swallowtail uses `web_search_20250305`).
 
 Swallowtail: `maximum_output_tokens`, one PNG, `web_search_20250305`
-with two uses + domain allowlist. Matrix: `reasoning_selection` No.
+with two uses + domain allowlist, and exact `claude-opus-4-7`
+`output_config.effort` on structured and direct-continuation profiles. Matrix:
+`reasoning_selection` Yes for that exact row.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Effort | `output_config.effort` | not mapped | yes | yes | not UltraCode; not Claude Code `--effort` |
+| Effort | `output_config.effort` | exact `low|medium|high|xhigh|max` on `claude-opus-4-7` | no for delivered row | delivered by g04.037 | not UltraCode; not Claude Code `--effort` |
 | Thinking | `thinking` | not mapped | yes | only-if: keep distinct from effort | official: do not pass `adaptive` as effort |
 | Newer search tool | `web_search_20260318` | pinned `20250305` | version pin | only-if: qualify new type | do not silent-upgrade |
 
@@ -1743,3 +1745,27 @@ Disposition: delivered. Research 208 admitted exact `0.28.1` plus
 `session/set_config_option` `{configId: mode, value: plan}`, and response
 `currentValue=plan`. No behavior-revision split. Provider `auto|yolo` stay
 private. Isolation remains `AmbientHost`. Headless `--plan` stays out.
+
+## Post-g04.061 Reassessment And g04.062 Compilation (2026-08-25)
+
+Disposition: select adaptive thinking on `anthropic.messages` and compile
+g04.062 as one serial evidence-first lane.
+
+Contracts 030 and 044 already authorize bounded provider-private continuation
+while prohibiting hidden-reasoning disclosure. The current route does not meet
+that boundary for adaptive thinking: its SSE grammar rejects thinking blocks
+and its private session history reconstructs only tool use. Current official
+Anthropic documentation requires the complete signed thinking sequence to be
+returned unmodified with tool results.
+
+Research 209 and card 173 must qualify one exact model/profile row for
+adapter-local adaptive thinking with omitted display. They own the complete
+`thinking` / `redacted_thinking` block grammar, signature and delta handling,
+tool-loop replay rule, bounds, zeroization, output-token interaction, and
+composition with every admitted effort value. Cards 174-175 continue only for
+a non-empty set that needs no new shared contract.
+
+No thought text becomes portable output, activity, evidence, or diagnostics.
+Manual token-budget thinking, summarized-display activity, newer web search,
+other Anthropic products/models, and durable private state remain outside the
+lane. g04 stays open at operator direction.

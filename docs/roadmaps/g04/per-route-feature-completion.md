@@ -174,11 +174,17 @@ families do not interrupt this programme by default.
   and response `currentValue=plan`. No new behavior revision;
   `default|auto|yolo` coexist without public admission; load/resume/import
   remain non-mutating; isolation stays `AmbientHost`.
+- [g04.062 Anthropic Messages Adaptive Thinking](./062-anthropic-messages-adaptive-thinking.md)
+  is ready as cards 173-175. Research 209 must freeze an exact adaptive/
+  omitted-display model/profile row and the complete signed private-block
+  grammar. Binding is conditional on bounded zeroizing replay across the
+  consumer-tool loop with no thought disclosure.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory and compile the next
-numbered g04 family. Keep g04 active until explicit operator direction.
+Execute g04.062 cards 173-175 serially. Stop after card 173 if Research 209 is
+empty or requires a shared contract. Keep g04 active until explicit operator
+direction.
 
 ## Exclusions
 

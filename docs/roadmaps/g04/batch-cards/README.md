@@ -6,7 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None.
+- [173-anthropic-messages-adaptive-thinking-evidence.md](./173-anthropic-messages-adaptive-thinking-evidence.md)
+- [174-anthropic-messages-adaptive-thinking-binding.md](./174-anthropic-messages-adaptive-thinking-binding.md) — conditional on non-empty Research 209
+- [175-anthropic-messages-adaptive-thinking-acceptance.md](./175-anthropic-messages-adaptive-thinking-acceptance.md) — after card 174
 
 ## Blocked
 

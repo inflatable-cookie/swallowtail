@@ -79,11 +79,12 @@ and selection policy.
 - [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
 - [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180; Research 211 promoted
+- [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — ready, cards 181-183; Research 212 reserved
 
-g04 has 64 numbered roadmaps: 55 completed milestones, eight honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready currentness
-milestone at 064. The operator keeps the generation active. Do not close g04
-without explicit operator direction.
+g04 has 65 numbered roadmaps: 56 completed milestones, eight honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready milestone
+at 065. The operator keeps the generation active. Do not close g04 without
+explicit operator direction.
 
 ## Current Checkpoint
 
@@ -214,9 +215,14 @@ without explicit operator direction.
 - g04.064 is complete: cards 179-180 qualify exact default agent-core-v2
   headless stream-json at `0.38.0` under adapter-private
   `kimi.headless.stream-json.v2`; Research 211 is promoted
+- post-v2 reassessment keeps g04.063 cards 177-178 blocked: v2 qualification
+  adds no effort confirmation, model-effort snapshot, ambient-config authority,
+  or fail-closed child-environment binding
+- g04.065 is ready: cards 181-183 investigate exact Claude Code headless
+  Ultracode as an adapter-local product setting, not a seventh portable effort
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 64 roadmaps; execute g04.064; generation closure awaits
+- g04 remains active at 65 roadmaps; execute g04.065; generation closure awaits
   explicit operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -279,9 +285,14 @@ without explicit operator direction.
     Research 210 empty deliver-now set;
     headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked;
     qualify v2 headless at `0.38.0` or document incompatible stop.
-26. g04.064 is complete as Contract 029 one-family work. Cards 179-180 qualified
-    exact `0.38.0` default v2 or record an incompatible stop.
-27. g04 remains active at operator direction. Contract 029 remains standing.
+26. g04.064 is complete as Contract 029 one-family work. Cards 179-180
+    qualified exact `0.38.0` default v2 under an adapter-private revision.
+27. Post-v2 reassessment keeps g04.063 cards 177-178 blocked for unchanged
+    confirmation, model-agreement, ambient-config, and environment-authority
+    reasons.
+28. g04.065 cards 181-183 are ready as one serial Claude Code headless
+    Ultracode evidence-first lane.
+29. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -318,6 +329,7 @@ New route-family research does not pre-empt this sequence.
 - [062 Anthropic Messages Adaptive Thinking](./062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175
 - [063 Kimi Code Headless Reasoning Effort](./063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; cards 177-178 blocked
 - [064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180
+- [065 Claude Code Headless Ultracode](./065-claude-code-headless-ultracode.md) — ready, cards 181-183
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

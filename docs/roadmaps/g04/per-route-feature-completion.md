@@ -189,11 +189,18 @@ families do not interrupt this programme by default.
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md)
   completed through cards 179-180: exact `0.38.0` qualifies under
   `kimi.headless.stream-json.v2`; v1 through `0.37.2` preserved.
+- Post-v2 reassessment keeps g04.063 cards 177-178 blocked. Qualifying the v2
+  stream does not add effective effort confirmation, a model-effort snapshot,
+  ambient configuration authority, or a fail-closed child-environment binding.
+- [g04.065 Claude Code Headless Ultracode](./065-claude-code-headless-ultracode.md)
+  is ready through cards 181-183. Research 212 must reconcile current official
+  `--effort ultracode` documentation with the exact `2.1.241` help corpus and
+  bound dynamic workflow/tool/process effects before any adapter-local opt-in.
 
 ## Current Execution Boundary
 
-Keep g04 open until explicit operator direction. Contract 029 currentness
-remains standing.
+Execute g04.065 cards 181-183 serially. Keep g04 open until explicit operator
+direction. Contract 029 currentness remains standing.
 
 ## Exclusions
 

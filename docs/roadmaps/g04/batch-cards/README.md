@@ -6,8 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md) — complete
-- [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md) — complete
+- [181-claude-code-headless-ultracode-evidence.md](./181-claude-code-headless-ultracode-evidence.md) — ready
+- [182-claude-code-headless-ultracode-binding.md](./182-claude-code-headless-ultracode-binding.md) — conditional on Research 212
+- [183-claude-code-headless-ultracode-acceptance.md](./183-claude-code-headless-ultracode-acceptance.md) — conditional on card 182
 
 ## Blocked
 
@@ -20,6 +21,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md)
+- [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md)
 - [175-anthropic-messages-adaptive-thinking-acceptance.md](./175-anthropic-messages-adaptive-thinking-acceptance.md)
 - [174-anthropic-messages-adaptive-thinking-binding.md](./174-anthropic-messages-adaptive-thinking-binding.md)
 - [173-anthropic-messages-adaptive-thinking-evidence.md](./173-anthropic-messages-adaptive-thinking-evidence.md)

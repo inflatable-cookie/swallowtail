@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 64 roadmaps: 55 completed milestones, eight honest evidence stops
-at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready currentness
-milestone at 064. It has realized route
+g04 now has 65 roadmaps: 56 completed milestones, eight honest evidence stops
+at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready milestone at 065.
+It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -43,7 +43,9 @@ Opus 4.7 adaptive omitted-display thinking with private signed-block replay and
 no thought disclosure. g04.063 stopped after card 176 and merged through PR 62
 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling
 retracted to `0.37.2`; cards 177-178 blocked. g04.064 completed: exact `0.38.0`
-qualifies under `kimi.headless.stream-json.v2`.
+qualifies under `kimi.headless.stream-json.v2`. The post-v2 reassessment keeps
+177-178 blocked. g04.065 is ready for exact Claude Code headless Ultracode
+evidence and conditional binding.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

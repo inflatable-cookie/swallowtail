@@ -14,11 +14,11 @@ shape.
 
 ## Next Task
 
-Reassess g04.063 blocked cards 177-178 for Kimi headless reasoning effort now
-that exact `0.38.0` qualifies under `kimi.headless.stream-json.v2`. Contract
-029 currentness remains standing; run the checkpoint or pick the next
-AllowUnverified family when the operator triggers currentness. g04 stays open
-at operator direction.
+Execute g04.065 cards 181-183 serially for Claude Code headless Ultracode.
+Card 181 owns the exact evidence gate; stop honestly if Research 212 is empty
+or dynamic workflow and process-topology truth cannot fit the existing route.
+Contract 029 currentness remains standing. g04 stays open at operator
+direction.
 
 ## Standing Lanes
 

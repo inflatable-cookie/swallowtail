@@ -1822,3 +1822,33 @@ tool-activity, cancellation, retained-state, and decoder truth. Card 180 is
 conditional on Research 211 admitting an adapter-private revision. The worker
 must not force legacy v1, use a live account, or turn a public lifecycle change
 into a private compatibility claim. An incompatible stop is acceptable.
+
+## Post-g04.064 Reassessment And g04.065 Compilation (2026-08-25)
+
+Disposition: keep g04.063 cards 177-178 blocked and select Claude Code
+headless Ultracode as the next serial evidence-first lane.
+
+Kimi v2 qualification fixes the `0.38.0` route identity, parser, and lifecycle
+claim. It does not add a headless effective-value confirmation exchange, a
+session-open model-effort snapshot, authority over ambient
+`thinking.enabled=false`, or an adapter-owned fail-closed binding for
+`KIMI_MODEL_THINKING_EFFORT`. Research 210's empty deliver-now set stands.
+
+The next strongest direct-transport lead is Claude Code's documented
+`--effort ultracode` on `claude-code.headless`. The route already owns one
+selected-model child and exact ordinary effort dispatch, but Ultracode is a
+product setting: it sends `xhigh` and enables dynamic workflow orchestration.
+It is not a seventh portable effort. The exact qualified `2.1.241` help corpus
+also advertises only `low|medium|high|xhigh|max`, so documentation alone is
+not enough.
+
+Research 212 and card 181 must freeze the exact parser, first version, model,
+entitlement, settings, alias/fallback, tool, process, persistence, output, and
+lifecycle truth without a provider prompt. Cards 182-183 continue only for a
+non-empty exact table whose dynamic workflows remain inside the route's fixed
+Plan mode, tools, owned-process scope, no-session persistence, disclosure, and
+cleanup contracts. Separate portable effort conflicts before spawn.
+
+Fast mode, Agent teams, response-only/ACP promotion, raw settings, permission
+widening, and live account work stay outside this lane. g04 remains open at
+operator direction.

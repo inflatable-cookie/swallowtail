@@ -117,6 +117,15 @@ boundary. Neither prose nor output quality proves reasoning depth.
 - execution topology: one serial worker lane, cards 176-178
 - generation boundary: g04 remains open; no closure or rollover is authorized
 
+## Post-v2 Reassessment
+
+Exact `0.38.0` now qualifies under `kimi.headless.stream-json.v2`, but that
+does not change Research 210's effort decision. The v2 route still has no
+headless effective-value confirmation or session-open effort snapshot;
+ambient `thinking.enabled=false` can suppress the override; and the adapter
+still lacks a fail-closed raw child-environment binding for the provider key.
+Cards 177-178 remain blocked. g04.065 is the next route-local family.
+
 ## Decision Gates
 
 - Stop if the exact process-local key, source precedence, model/value support,

@@ -35,8 +35,8 @@ stops at 040, 042, 043, 045, 057, 058, and 059. It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
-complete; Research 208 delivered `HarnessMode::Plan` on exact `0.28.1` plus
-`0.29.0..=0.38.0`.
+merged through PR 60 at `f21220cd`; Research 208 delivered
+`HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

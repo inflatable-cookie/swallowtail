@@ -169,11 +169,11 @@ families do not interrupt this programme by default.
   confirmation under `kimi.acp.reasoning.declared-effort-v2`. Foreign rows
   coexist without public admission; load/resume remain non-mutating.
 - [g04.061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md)
-  completed. Research 208 admits exact `0.28.1` plus `0.29.0..=0.38.0`
-  `HarnessMode::Plan` with snapshot membership and response `currentValue=plan`.
-  No new behavior revision; `default|auto|yolo` coexist without public
-  admission; load/resume/import remain non-mutating; isolation stays
-  `AmbientHost`.
+  completed and merged through PR 60 at `f21220cd`. Research 208 admits exact
+  `0.28.1` plus `0.29.0..=0.38.0` `HarnessMode::Plan` with snapshot membership
+  and response `currentValue=plan`. No new behavior revision;
+  `default|auto|yolo` coexist without public admission; load/resume/import
+  remain non-mutating; isolation stays `AmbientHost`.
 
 ## Current Execution Boundary
 

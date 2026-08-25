@@ -16,6 +16,7 @@ Provider `default|auto|yolo` rows may coexist; they are not public selections
 and do not widen permission. Isolation stays `AmbientHost`. Plan mode is
 prompt-and-tool policy, not containment. Load, resume, import, and recovery
 gain no harness-mode mutation.
+PR 60 fast-forwarded the exact reviewed green head `f21220cd` to `main`.
 
 ## Evidence
 
@@ -33,8 +34,11 @@ gain no harness-mode mutation.
 
 ## Validation
 
-Recorded on the worker PR after the named package, route, docs, API, example,
-doctor, and diff gates.
+Hosted Stable, documentation/API, pinned MSRV, dependency, and source-consumer
+jobs passed on exact head `f21220cd`. Independent review reran 121 focused Kimi
+tests and affected-package verification successfully. `git diff --check`
+passed. Doctor remained at the inherited 378 findings: 332 warnings and 46
+errors, plus the inherited stale graph and generated-source warnings.
 
 ## Generation Boundary
 

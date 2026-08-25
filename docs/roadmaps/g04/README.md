@@ -75,7 +75,7 @@ and selection policy.
 - [g04.058 Antigravity Headless Agent Profile Selection](058-antigravity-headless-agent-profile-selection.md) — stopped after card 161; Research 205 empty set; cards 162-163 blocked
 - [g04.059 Deep Agents ACP Model Selection](059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
 - [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
-- [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
+- [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete and merged through PR 60 at `f21220cd`, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
 
 g04 has 61 numbered roadmaps: 54 completed milestones, seven honest
 evidence stops at 040, 042, 043, 045, 057, 058, and 059. The operator keeps
@@ -198,9 +198,9 @@ not close g04 without explicit operator direction.
   blocked
 - g04.060 is complete through cards 167-169: Research 207 admits exact
   `0.29.0..=0.38.0` snapshot-advertised `xhigh|max` with effective confirmation
-- g04.061 is complete through cards 170-172: Research 208 admits exact `0.28.1`
-  plus `0.29.0..=0.38.0` `HarnessMode::Plan` with snapshot membership and
-  response confirmation
+- g04.061 is complete and merged through PR 60 at `f21220cd`: Research 208
+  admits exact `0.28.1` plus `0.29.0..=0.38.0` `HarnessMode::Plan` with
+  snapshot membership and response confirmation
 - Contract 029 currentness remains standing and does not move the generation
   pointer
 - g04 remains active at 61 roadmaps; next move is a per-route inventory

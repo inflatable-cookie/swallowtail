@@ -109,6 +109,7 @@ Headless qualified ceiling is therefore retracted to `0.37.2` under existing
 `UnverifiedNewer` until agent-core-v2 stream-json is independently qualified
 under an exact revision. ACP and local-server `0.38.0` qualifications stand.
 
+## Sources
 
 - npm `@moonshot-ai/kimi-code@0.38.0`
 - [GitHub `0.38.0`](https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai%2Fkimi-code%400.38.0)

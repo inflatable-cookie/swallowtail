@@ -62,10 +62,9 @@ agent-core.
 Research 179 and the production compatibility claim `kimi.headless.stream-json.v1`
 map the **selected-source** headless corpus to byte-identical v1 print blobs
 (renderer, options, `run-prompt.ts` v1 branch) through `0.38.0`. Fixture
-`experimental_v2_selected: false` records that Swallowtail's qualified mapping
-does not admit agent-core-v2 `run-v2-print` source into the selected corpus;
-that is a Swallowtail selected-source claim, not a claim that npm defaults to
-v1.
+`v2_headless_qualified: false` records that Swallowtail's qualified mapping does
+not admit agent-core-v2 `run-v2-print` source; that is a Swallowtail
+qualification claim, not a claim that npm defaults to v1.
 
 The prepared guide states the route binds the audited v1 print corpus and rejects
 an environment that enables `KIMI_CODE_EXPERIMENTAL_FLAG`. The adapter does not
@@ -240,7 +239,7 @@ agent-core path.
 | ACP / local-server / Python `kimi-cli` | sibling routes; Research 207/208 do not qualify headless |
 | `on` portable value | normalizes to `default_effort` on Kimi protocol before env overlay |
 | `off` on `always_thinking` models | clamped back to model default; not a faithful off claim |
-| agent-core-v2 `runV2Print` | default npm dispatch at `0.38.0`; Swallowtail selected-source mapping stays on v1 corpus (`experimental_v2_selected: false`); not a second deliver-now surface |
+| agent-core-v2 `runV2Print` | default npm dispatch at `0.38.0`; `v2_headless_qualified: false` in fixture records Swallowtail qualification state, not npm dispatch |
 | `KIMI_CODE_LEGACY_FLAG` | selects legacy agent-core v1 print; adapter does not set it |
 | `KIMI_CODE_EXPERIMENTAL_FLAG` | experimental features within either engine; rejected by prepared route policy; does not select engine |
 

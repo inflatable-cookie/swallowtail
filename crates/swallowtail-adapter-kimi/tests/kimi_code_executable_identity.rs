@@ -240,7 +240,7 @@ fn identity_and_claim_qualify_0_37_2_as_compatible_extension() {
 }
 
 #[test]
-fn identity_and_claim_qualify_0_38_0_as_compatible_extension() {
+fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
     let identity: Value =
         serde_json::from_str(IDENTITY_0_38_0).expect("Kimi 0.38.0 identity corpus is valid JSON");
     let protocol: Value =
@@ -333,6 +333,7 @@ fn identity_and_claim_qualify_0_38_0_as_compatible_extension() {
         protocol["selected_headless"]["default_engine_at_0_38_0"],
         "agent-core-v2-run-v2-print"
     );
+    assert_eq!(protocol["selected_headless"]["v2_headless_qualified"], false);
     assert_eq!(protocol["acp_initialize"]["host_paths_discarded"], true);
     assert_eq!(
         protocol["selected_source"]["local_server_heartbeat"],

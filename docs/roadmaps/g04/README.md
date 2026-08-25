@@ -76,12 +76,12 @@ and selection policy.
 - [g04.059 Deep Agents ACP Model Selection](059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
 - [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
 - [g04.061 Kimi Code ACP Plan Mode](061-kimi-code-acp-plan-mode.md) — complete and merged through PR 60 at `f21220cd`, cards 170-172; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
-- [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete pending review/merge, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
+- [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
 
-g04 has 62 numbered roadmaps: 55 completed milestones, seven honest evidence
-stops at 040, 042, 043, 045, 057, 058, and 059, and no remaining ready
-milestone. The operator keeps the generation active. Review and merge
-g04.062; do not close g04 without explicit operator direction.
+g04 has 62 numbered roadmaps: 55 completed milestones and seven honest evidence
+stops at 040, 042, 043, 045, 057, 058, and 059. The operator keeps the
+generation active. Reassess the remaining per-route feature inventory; do not
+close g04 without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -202,13 +202,13 @@ g04.062; do not close g04 without explicit operator direction.
 - g04.061 is complete and merged through PR 60 at `f21220cd`: Research 208
   admits exact `0.28.1` plus `0.29.0..=0.38.0` `HarnessMode::Plan` with
   snapshot membership and response confirmation
-- g04.062 cards 173-175 delivered adapter-local adaptive omitted-display
-  thinking on exact `claude-opus-4-7` with bounded private replay; Research 209
-  is promoted
+- g04.062 is complete and merged through PR 61 at `4ef5c5e9`: cards 173-175
+  delivered adapter-local adaptive omitted-display thinking on exact
+  `claude-opus-4-7` with bounded private replay; Research 209 is promoted
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 62 roadmaps; next move is review/merge of g04.062;
-  generation closure awaits explicit operator direction
+- g04 remains active at 62 roadmaps; next move is a per-route inventory
+  reassessment; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint

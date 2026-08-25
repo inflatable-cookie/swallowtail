@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Review and merge g04.062 Anthropic Messages adaptive thinking. Keep g04 open
-until explicit operator direction. Contract 029 currentness stays standing.
+Reassess the remaining promoted per-route feature inventory after g04.062.
+Keep g04 open until explicit operator direction. Contract 029 currentness
+stays standing.
 
 ## Standing Lanes
 

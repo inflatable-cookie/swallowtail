@@ -1,8 +1,9 @@
 # g04.062 Anthropic Messages Adaptive Thinking
 
-Status: complete pending review
+Status: completed and merged
 Owner: Tom
 Created: 2026-08-25
+Merged: PR 61 at `4ef5c5e9`, reviewed head `4ef5c5e9`, 2026-08-25
 Depends on: g04.037; per-route feature completion programme
 Vision tags: explicit selection, provider truth, private continuation
 Contract refs: 011, 030, 037, 040, 041, 044, 052
@@ -146,6 +147,13 @@ block fails closed without fallback.
 - this milestone: Anthropic Messages adaptive thinking with private replay
 - execution topology: one serial worker lane, cards 173-175
 - generation boundary: g04 remains open; no closure or rollover is authorized
+
+## Closeout
+
+Cards 173-175 are complete and merged through PR 61 at `4ef5c5e9`.
+Research 209 admits exact `claude-opus-4-7` adaptive omitted-display thinking
+on structured attempts and direct continuation. The reviewed green head landed
+unchanged through a literal fast-forward merge. g04 remains open.
 
 ## Decision Gates
 

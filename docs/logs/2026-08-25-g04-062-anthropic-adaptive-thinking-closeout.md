@@ -1,6 +1,6 @@
 # 2026-08-25 g04.062 Anthropic Adaptive Thinking Closeout
 
-Status: worker-complete pending review
+Status: complete and merged
 Owner: Tom
 Milestone: g04.062
 Cards: 173-175
@@ -38,6 +38,8 @@ expose or retain signatures or redacted thinking as ordinary bytes.
 Fresh restoration is `SessionReplaced` with the prepared selection and no
 private-state recovery.
 
+PR 61 fast-forwarded the exact reviewed green head `4ef5c5e9` to `main`.
+
 No shared contract, shared runtime, live Anthropic call, summarized display,
 manual budget thinking, or g04 closure.
 
@@ -54,13 +56,15 @@ manual budget thinking, or g04 closure.
 
 ## Validation
 
-Worker validation passed on this branch:
+Worker and independent review validation passed:
 
 - `cargo fmt -p swallowtail-adapter-anthropic`
 - `effigy validate:focused swallowtail-adapter-anthropic` (103 tests)
 - `effigy package:verify-affected swallowtail-adapter-anthropic`
 - `git diff --check`
 - `git diff --check a69b3546eea09c7cf15edea0733a8301dec1e662...HEAD`
+- hosted Stable, documentation/API, pinned MSRV, dependency, and
+  source-consumer jobs on exact head `4ef5c5e9`
 
 Review round 1 on `05386dd4` requested raw-frame redaction/zeroization, fail-closed
 late private order, missing overflow/reorder proof, range whitespace on new SSE
@@ -86,7 +90,7 @@ paid inference.
 PR: [#61](https://github.com/inflatable-cookie/swallowtail/pull/61).
 Worker branch: `t3code/review-anthropic-adaptive-thinking`.
 
-## Unresolved
+## Continuation
 
-- merge remains operator-authorised
-- g04 stays open; next move is review/merge then inventory reassessment
+g04 stays open. Reassess the remaining promoted per-route feature inventory
+before selecting the next evidence-first lane.

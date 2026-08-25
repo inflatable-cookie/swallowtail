@@ -175,14 +175,15 @@ families do not interrupt this programme by default.
   `default|auto|yolo` coexist without public admission; load/resume/import
   remain non-mutating; isolation stays `AmbientHost`.
 - [g04.062 Anthropic Messages Adaptive Thinking](./062-anthropic-messages-adaptive-thinking.md)
-  complete pending review/merge. Research 209 admits exact `claude-opus-4-7`
-  adapter-local adaptive omitted-display thinking on structured attempts and
-  direct continuation, with bounded private replay and no thought disclosure.
+  completed and merged through PR 61 at `4ef5c5e9`. Research 209 admits exact
+  `claude-opus-4-7` adapter-local adaptive omitted-display thinking on
+  structured attempts and direct continuation, with bounded private replay and
+  no thought disclosure.
 
 ## Current Execution Boundary
 
-Review and merge g04.062. Keep g04 active until explicit operator
-direction. Reassess the remaining per-route inventory after merge.
+Reassess the remaining promoted per-route inventory. Keep g04 active until
+explicit operator direction.
 
 ## Exclusions
 

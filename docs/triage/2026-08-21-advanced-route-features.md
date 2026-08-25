@@ -1761,8 +1761,9 @@ returned unmodified with tool results.
 
 ## Post-g04.062 Delivery (2026-08-25)
 
-Disposition: delivered pending review/merge. Research 209 admitted exact
-`claude-opus-4-7` adapter-local `AnthropicThinkingMode::adaptive()` with
+Disposition: delivered and merged through PR 61 at `4ef5c5e9`. Research 209
+admitted exact `claude-opus-4-7` adapter-local
+`AnthropicThinkingMode::adaptive()` with
 explicit omitted display on structured attempts and direct continuation.
 Cards 174-175 bind request encoding, omitted SSE grammar, bounded zeroizing
 private replay before `tool_use`, effort composition, and fail-closed

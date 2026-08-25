@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-25 g04.062 Anthropic Adaptive Thinking Compiled](./2026-08-25-g04-062-anthropic-adaptive-thinking-compiled.md)
-- [2026-08-25 g04.062 Anthropic Adaptive Thinking Closeout](./2026-08-25-g04-062-anthropic-adaptive-thinking-closeout.md) — worker-complete pending review
+- [2026-08-25 g04.062 Anthropic Adaptive Thinking Closeout](./2026-08-25-g04-062-anthropic-adaptive-thinking-closeout.md) — complete and merged through PR 61 at `4ef5c5e9`; exact Opus 4.7 adaptive omitted-display thinking with bounded private replay
 - [2026-08-25 g04.061 Kimi Code ACP Plan Mode Compiled](./2026-08-25-g04-061-kimi-code-acp-plan-mode-compiled.md)
 - [2026-08-25 g04.061 Kimi Code ACP Plan Mode Closeout](./2026-08-25-g04-061-kimi-code-acp-plan-mode-closeout.md) — complete and merged through PR 60 at `f21220cd`; Research 208 deliver-now `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`
 - [2026-08-25 g04.060 Kimi Code ACP Extended Effort Compiled](./2026-08-25-g04-060-kimi-code-acp-extended-effort-compiled.md)

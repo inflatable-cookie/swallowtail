@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining promoted per-route feature inventory after the g04.065
-Ultracode evidence stop. Card 181 promoted Research 212 with an empty
-deliver-now table; cards 182-183 remain blocked. Contract 029 currentness
-remains standing. g04 stays open at operator direction.
+Execute g04.066 cards 184-186 serially for `codex.exec` model verbosity.
+Card 184 must promote Research 213 with an exact non-empty deliver-now table or
+an honest empty set before cards 185-186 may run. Contract 029 currentness
+remains standing. Do not merge, roll the generation, or close g04.
 
 ## Standing Lanes
 

@@ -197,12 +197,16 @@ families do not interrupt this programme by default.
   `2.1.241` help omits `ultracode`, parser accepts the hidden value from
   `2.1.203+`, and dynamic workflow topology remains unbounded for binding.
   Cards 182-183 are blocked.
+- [g04.066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md)
+  is ready. Research 213 and cards 184-186 form one serial evidence-first lane
+  for exact release/model/provider-qualified `low|medium|high` verbosity on the
+  maintained suppressed-config Exec child. No value is prequalified.
 
 ## Current Execution Boundary
 
-Reassess the remaining promoted per-route feature inventory after the g04.065
-evidence stop. Keep g04 open until explicit operator direction. Contract 029
-currentness remains standing.
+Execute g04.066 cards 184-186 serially. Stop after card 184 unless Research 213
+admits a non-empty exact model/provider/value/profile set. Keep g04 open until
+explicit operator direction. Contract 029 currentness remains standing.
 
 ## Exclusions
 

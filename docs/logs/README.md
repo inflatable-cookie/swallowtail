@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-25 g04.066 Codex Exec Model Verbosity Compiled](./2026-08-25-g04-066-codex-exec-model-verbosity-compiled.md)
+- [2026-08-25 g04.066 Codex Exec Model Verbosity Closeout](./2026-08-25-g04-066-codex-exec-model-verbosity-closeout.md) — reserved
 - [2026-08-25 g04.065 Claude Code Headless Ultracode Compiled](./2026-08-25-g04-065-claude-code-headless-ultracode-compiled.md)
 - [2026-08-25 g04.065 Claude Code Headless Ultracode Closeout](./2026-08-25-g04-065-claude-code-headless-ultracode-closeout.md) — stopped after evidence; Research 212 empty deliver-now set
 - [2026-08-25 Kimi Code 0.38.0 Headless V2 Claim](./2026-08-25-kimi-code-0-38-0-headless-v2-claim.md)

@@ -1852,3 +1852,35 @@ work. Cards 182-183 remain blocked.
 Fast mode, Agent teams, response-only/ACP promotion, raw settings, permission
 widening, and live account work stay outside this lane. g04 remains open at
 operator direction.
+
+## Post-g04.065 Evidence Stop And g04.066 Compilation (2026-08-25)
+
+Disposition: select Codex Exec `model_verbosity` and compile g04.066 as one
+serial evidence-first lane.
+
+Research 212 admits no Claude Code Ultracode row. Hidden parser acceptance does
+not settle selected-model entitlement or contain dynamic workflow topology, so
+cards 182-183 remain blocked.
+
+The remaining inventory was re-ranked by exact transport, selected-model
+binding, lifecycle containment, and fail-closed authority. Claude headless
+Fast and spend controls remain account or billing dependent; Agent teams alter
+process topology; autocompact and maximum turns are absent from exact `2.1.241`
+help; Codex Fast, multi-agent, and personality add separate service/topology or
+product-policy concerns.
+
+Codex Exec verbosity is the strongest next lead. The maintained route selects
+one exact model, owns one ephemeral child, suppresses user config and rules,
+and already passes typed config overrides. Current official schema exposes
+`model_verbosity` as `low|medium|high`, while official model metadata carries
+separate `support_verbosity` and `default_verbosity` fields. That split permits
+an evidence gate that rejects unsupported model/provider rows before spawn
+without inferring from a model-name prefix.
+
+Research 213 and card 184 must freeze exact `rust-v0.149.1` source, config
+parser/precedence, Responses-provider request mapping, release-tag model rows,
+defaults, silent-ignore/fallback behavior, omission, and claim strength. Cards
+185-186 continue only for exact version/model/provider/value/profile rows that
+can be bound through adapter-local prepared evidence and child argv. No generic
+settings map, app-server promotion, provider prompt, currentness movement,
+generation rollover, or g04 closure is authorized.

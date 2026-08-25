@@ -30,8 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 65 roadmaps: 56 completed milestones, nine honest evidence stops
-at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and no ready milestone.
+g04 now has 66 roadmaps: 56 completed milestones, nine honest evidence stops
+at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready milestone
+at 066.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -47,6 +48,8 @@ qualifies under `kimi.headless.stream-json.v2`. The post-v2 reassessment keeps
 177-178 blocked. g04.065 stopped after card 181 and Research 212: exact
 `2.1.241` help omits `ultracode`, parser accepts the hidden value from
 `2.1.203+`, and no deliver-now row was admitted; cards 182-183 blocked.
+g04.066 is ready: Research 213 and cards 184-186 qualify exact Codex Exec
+model verbosity before any adapter-local binding.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

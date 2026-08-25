@@ -6,6 +6,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
+- [184-codex-exec-model-verbosity-evidence.md](./184-codex-exec-model-verbosity-evidence.md)
+- [185-codex-exec-model-verbosity-binding.md](./185-codex-exec-model-verbosity-binding.md) — conditional on Research 213
+- [186-codex-exec-model-verbosity-acceptance.md](./186-codex-exec-model-verbosity-acceptance.md) — conditional on card 185
+
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Blocked

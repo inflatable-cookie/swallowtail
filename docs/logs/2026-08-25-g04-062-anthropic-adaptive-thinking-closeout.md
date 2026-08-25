@@ -60,8 +60,11 @@ extraction replaced the former `attempt.rs` warning; new thinking proofs stay
 under the warning threshold. Default QA used no credentials, account state, or
 paid inference.
 
+PR: [#61](https://github.com/inflatable-cookie/swallowtail/pull/61).
+Implementation head: `fb8e8cab0f5a7a855cbb2877e05b9f550ed6d4de`.
+Worker branch: `t3code/review-anthropic-adaptive-thinking`.
+
 ## Unresolved
 
-- PR URL and exact head SHA after push
 - merge remains operator-authorised
 - g04 stays open; next move is review/merge then inventory reassessment

@@ -1,6 +1,6 @@
 # 2026-08-25 g04.064 Kimi Code Headless V2 Closeout
 
-Status: complete; PR pending orchestrator re-review
+Status: complete; merged
 Owner: Tom
 Milestone: g04.064
 Cards: 179-180
@@ -49,4 +49,6 @@ direction.
 
 ## Merge
 
-None. Merge authority remains with the operator/orchestrator after PR review.
+PR 63 fast-forwarded `main` to exact reviewed head
+`f58eb5f0c0e755c886ecd90b7d0d66fe9df56f1c` on 2026-08-25. All five hosted
+checks were green. Local `HEAD` and `origin/main` matched the merged SHA.

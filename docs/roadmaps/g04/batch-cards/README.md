@@ -6,17 +6,20 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md) — complete; Research 206 empty deliver-now set
-- [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — blocked; Research 206 empty set
-- [166-deepagents-acp-model-selection-acceptance.md](./166-deepagents-acp-model-selection-acceptance.md) — blocked; Research 206 empty set
+- [167-kimi-code-acp-extended-effort-evidence.md](./167-kimi-code-acp-extended-effort-evidence.md)
+- [168-kimi-code-acp-extended-effort-binding.md](./168-kimi-code-acp-extended-effort-binding.md) — conditional on non-empty Research 207
+- [169-kimi-code-acp-extended-effort-acceptance.md](./169-kimi-code-acp-extended-effort-acceptance.md) — conditional on card 168
 
 ## Blocked
 
+- [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — blocked; Research 206 empty set
+- [166-deepagents-acp-model-selection-acceptance.md](./166-deepagents-acp-model-selection-acceptance.md) — blocked; Research 206 empty set
 - [162-antigravity-headless-agent-profile-binding.md](./162-antigravity-headless-agent-profile-binding.md) — blocked; Research 205 empty set
 - [163-antigravity-headless-agent-profile-acceptance.md](./163-antigravity-headless-agent-profile-acceptance.md) — blocked; card 162 blocked
 
 ## Completed
 
+- [164-deepagents-acp-model-selection-evidence.md](./164-deepagents-acp-model-selection-evidence.md) — complete; Research 206 empty deliver-now set
 - [161-antigravity-headless-agent-profile-evidence.md](./161-antigravity-headless-agent-profile-evidence.md) — complete; Research 205 empty deliver-now set
 - [158-grok-build-acp-reasoning-selection-evidence.md](./158-grok-build-acp-reasoning-selection-evidence.md) — complete; Research 204 evidence stop
 - [157-llama-cpp-owned-context-size-acceptance.md](./157-llama-cpp-owned-context-size-acceptance.md)

@@ -1667,3 +1667,36 @@ value, model construction runs after spawn at `session/new`, and
 initialize/`session/new` expose no model confirmation field. Production
 continues without `--model`. Reassess the remaining per-route inventory
 before the next route-local lane. g04 stays open at operator direction.
+
+## Post-g04.059 Reassessment And g04.060 Compilation (2026-08-25)
+
+Disposition: select catalogue-declared extended reasoning levels on
+`kimi-code.acp` and compile g04.060 as one serial evidence-first lane.
+
+The route already negotiates reasoning from the new session's exact
+`thinking` select option, sends one `session/set_config_option`, and requires
+the returned snapshot to confirm the effective value before readiness.
+Swallowtail accepts `off|on|low|medium|high` but rejects any advertised row
+above `high` as malformed.
+
+Exact Kimi Code `0.38.0` source projects the current model's
+`support_efforts` into that ACP option. Its exact source tests include
+`xhigh` and `max`. The selected control therefore has a model-specific wire
+advertisement and confirmation path already inside the qualified transport; it
+does not require model-name inference, a new route, raw configuration, or
+permission expansion.
+
+Research 207 must identify the first qualified source milestone with the full
+snapshot/set/provider/confirmation behavior. The current maintained claim
+spans `0.29.0..=0.38.0`; exact evidence owns any compatibility split. Only
+snapshot-advertised `xhigh` and `max` are candidates. Arbitrary values,
+aliases, clamping, load/resume mutation, headless promotion, and
+`UnverifiedNewer` inheritance stay out.
+
+Codex plan-mode effort was not selected: the current app-server path already
+sends the chosen effort as both turn effort and Plan collaboration settings,
+so the inventory does not yet establish a separate missing control. Codex
+verbosity still lacks exact model-support evidence. Ollama `think=max`
+remains withheld because exact `0.32.15` maps it to `high` for the relevant
+family. Permission, multi-agent, skills, memory, and sandbox families remain
+authority or containment gates. g04 stays open at operator direction.

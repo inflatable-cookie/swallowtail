@@ -163,11 +163,17 @@ families do not interrupt this programme by default.
   retains the default when `--model` lacks a usable value; construction is
   post-spawn; initialize/`session/new` expose no model confirmation. Cards
   165-166 are blocked. No model-selection feature ships.
+- [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](./060-kimi-code-acp-catalogue-declared-effort-levels.md)
+  is ready as cards 167-169. Research 207 must freeze the first qualified
+  version whose current-model ACP `thinking` option advertises, applies, and
+  confirms `xhigh` and `max`. Conditional binding reuses the existing
+  new-session negotiated reasoning path; load/resume remain non-mutating.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory after g04.059's empty
-stop. Keep g04 active until explicit operator direction.
+Execute g04.060 cards 167-169 serially. Stop after card 167 if Research 207 is
+empty or cannot prove an exact version floor plus effective confirmation. Keep
+g04 active until explicit operator direction.
 
 ## Exclusions
 

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-24
+Updated: 2026-08-25
 
 ## Generations
 
@@ -30,12 +30,13 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 59 roadmaps: 52 completed milestones and seven honest evidence
+g04 now has 60 roadmaps: 52 completed milestones, seven honest evidence
 stops at 040, 042, 043, 045, 057, 058, and 059. It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
-established the active per-route feature completion programme. g04.059 stopped
-after Research 206's empty Deep Agents ACP model-selection set.
+established the active per-route feature completion programme. g04.060 is ready
+for exact Kimi Code ACP catalogue-declared extended effort evidence and
+conditional binding.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

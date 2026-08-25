@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-25 g04.060 Kimi Code ACP Extended Effort Compiled](./2026-08-25-g04-060-kimi-code-acp-extended-effort-compiled.md)
+- [2026-08-25 g04.060 Kimi Code ACP Extended Effort Closeout](./2026-08-25-g04-060-kimi-code-acp-extended-effort-closeout.md) — reserved
 - [2026-08-24 g04.059 Deep Agents ACP Model Selection Compiled](./2026-08-24-g04-059-deepagents-acp-model-selection-compiled.md)
 - [2026-08-24 g04.059 Deep Agents ACP Model Selection Closeout](./2026-08-24-g04-059-deepagents-acp-model-selection-closeout.md) — stopped after card 164 and fast-forwarded through PR 58 at `87876f00`; Research 206 empty set; cards 165-166 blocked
 - [2026-08-24 g04.058 Antigravity Headless Agent Profile Compiled](./2026-08-24-g04-058-antigravity-headless-agent-profile-compiled.md)

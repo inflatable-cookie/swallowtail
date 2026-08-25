@@ -1,6 +1,6 @@
 # 172 Kimi Code ACP Plan-Mode Acceptance
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -39,26 +39,26 @@ isolation, compatibility, and documentation truth.
 
 ## Acceptance Criteria
 
-- [ ] every delivered exact version/value row has deterministic evidence
-- [ ] plan mode never prepares or dispatches without exact version and snapshot
+- [x] every delivered exact version/value row has deterministic evidence
+- [x] plan mode never prepares or dispatches without exact version and snapshot
       admission
-- [ ] exact effective confirmation is required before readiness
-- [ ] reasoning composition retains independent selection and confirmation
-- [ ] unsupported, malformed, ambiguous, substituted, rejected, or drifted
+- [x] exact effective confirmation is required before readiness
+- [x] reasoning composition retains independent selection and confirmation
+- [x] unsupported, malformed, ambiguous, substituted, rejected, or drifted
       values never reach a prompt or fall back
-- [ ] omission preserves prior wire and behavior
-- [ ] load/resume/import/recovery remain outside the selection lifecycle
-- [ ] no automatic approval, permission widening, or isolation claim appears
-- [ ] stable diagnostics disclose no provider payload, credential, prompt,
+- [x] omission preserves prior wire and behavior
+- [x] load/resume/import/recovery remain outside the selection lifecycle
+- [x] no automatic approval, permission widening, or isolation claim appears
+- [x] stable diagnostics disclose no provider payload, credential, prompt,
       output, account identity, endpoint, model alias, or host path
-- [ ] guide and matrix distinguish plan mode, permission posture, and isolation
-- [ ] no sibling route, currentness, contract, release, or generation state changes
-- [ ] `cargo fmt -p swallowtail-adapter-kimi` passes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-kimi` passes
-- [ ] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
+- [x] guide and matrix distinguish plan mode, permission posture, and isolation
+- [x] no sibling route, currentness, contract, release, or generation state changes
+- [x] `cargo fmt -p swallowtail-adapter-kimi` passes
+- [x] `effigy validate:focused swallowtail-adapter-kimi` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-kimi` passes
+- [x] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
       relevant index gates, `effigy package:api`, and `git diff --check` pass
-- [ ] `effigy doctor` does not worsen the inherited 378-finding baseline
+- [x] `effigy doctor` does not worsen the inherited 378-finding baseline
 
 ## Stop Conditions
 

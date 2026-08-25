@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.061 cards 170-172 serially. Card 170 must promote Research 208
-with an exact Kimi Code ACP plan-mode version set or an honest stop before
-cards 171-172. Keep g04 open until explicit operator direction. Contract 029
-currentness stays standing.
+Reassess the remaining per-route feature inventory and compile the next
+numbered g04 family. Keep g04 open until explicit operator direction.
+Contract 029 currentness stays standing.
 
 ## Standing Lanes
 

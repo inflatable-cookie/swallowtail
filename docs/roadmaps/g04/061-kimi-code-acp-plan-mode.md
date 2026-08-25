@@ -1,6 +1,6 @@
 # g04.061 Kimi Code ACP Plan Mode
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -36,22 +36,22 @@ ambient isolation truth.
 
 ## Goals
 
-- [ ] freeze the first qualified Kimi Code version with the selected ACP mode
+- [x] freeze the first qualified Kimi Code version with the selected ACP mode
       option, `plan` row, set request, SDK application, and response truth
-- [ ] distinguish requested, planned, dispatched, accepted, effective, and
+- [x] distinguish requested, planned, dispatched, accepted, effective, and
       observed harness-mode state
-- [ ] prove the exact `plan` mapping, including manual permission and no
+- [x] prove the exact `plan` mapping, including manual permission and no
       `auto|yolo` authority widening
-- [ ] split the compatibility behavior revision if the mode path begins inside
+- [x] split the compatibility behavior revision if the mode path begins inside
       the maintained range
-- [ ] promote Research 208 with an exact version/value deliver-now table or an
+- [x] promote Research 208 with an exact version/value deliver-now table or an
       honest empty set
-- [ ] bind only `HarnessMode::Plan` through `SessionOptions`, the immutable
+- [x] bind only `HarnessMode::Plan` through `SessionOptions`, the immutable
       plan, request, current snapshot, and confirmed response
-- [ ] prove composition with every admitted Kimi reasoning selection without
+- [x] prove composition with every admitted Kimi reasoning selection without
       changing model, permission, resource, or first-prompt ordering
-- [ ] keep load, resume, import, and recovery outside harness-mode mutation
-- [ ] update route guidance and feature-matrix truth without presenting plan
+- [x] keep load, resume, import, and recovery outside harness-mode mutation
+- [x] update route guidance and feature-matrix truth without presenting plan
       mode as process or filesystem containment
 
 ## Non-Goals
@@ -111,44 +111,44 @@ attachment.
 
 ### Batch 61.1 — Exact Mode Milestone Evidence
 
-- [ ] Execute card 170.
-- [ ] freeze exact source/artifact, version milestone, option construction,
+- [x] Execute card 170.
+- [x] freeze exact source/artifact, version milestone, option construction,
       selection, application, confirmation, composition, and lifecycle truth
-- [ ] promote Research 208 with a non-empty exact table or honest empty set
+- [x] promote Research 208 with a non-empty exact table or honest empty set
 
 ### Batch 61.2 — Conditional Plan-Mode Binding
 
-- [ ] Execute card 171 only when Research 208 admits a non-empty set.
-- [ ] bind only admitted versions and `HarnessMode::Plan` through the existing
+- [x] Execute card 171 only when Research 208 admits a non-empty set.
+- [x] bind only admitted versions and `HarnessMode::Plan` through the existing
       negotiated session-option surface
 
 ### Batch 61.3 — Route-Local Acceptance
 
-- [ ] Execute card 172 only after card 171.
-- [ ] prove mode/reasoning composition, rejection, confirmation, lifecycle,
+- [x] Execute card 172 only after card 171.
+- [x] prove mode/reasoning composition, rejection, confirmation, lifecycle,
       compatibility, API, guide, matrix, and closeout truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 208 deliver-now version/value rows prepare
-- [ ] request, immutable plan, current snapshot, provider request, response,
+- [x] only Research 208 deliver-now version/value rows prepare
+- [x] request, immutable plan, current snapshot, provider request, response,
       and effective plan mode agree before readiness
-- [ ] `plan` maps to the exact provider behavior proved by source and does not
+- [x] `plan` maps to the exact provider behavior proved by source and does not
       grant `auto`, `yolo`, or another permission posture
-- [ ] unsupported, absent, ambiguous, malformed, substituted, rejected, or
+- [x] unsupported, absent, ambiguous, malformed, substituted, rejected, or
       drifted values fail closed without a prompt
-- [ ] omission and existing reasoning-only wire behavior remain exact
-- [ ] every admitted reasoning value composes without shared confirmation or
+- [x] omission and existing reasoning-only wire behavior remain exact
+- [x] every admitted reasoning value composes without shared confirmation or
       fallback
-- [ ] load, resume, import, and recovery gain no harness-mode mutation
-- [ ] ambient isolation, access, model route, resource, and retention remain
+- [x] load, resume, import, and recovery gain no harness-mode mutation
+- [x] ambient isolation, access, model route, resource, and retention remain
       unchanged and independently visible
-- [ ] no generic provider option, permission widening, sibling-route claim,
+- [x] no generic provider option, permission widening, sibling-route claim,
       or breaking public API appears
-- [ ] default QA performs no install, login, OAuth mutation, provider prompt,
+- [x] default QA performs no install, login, OAuth mutation, provider prompt,
       external inference request, credential capture, or paid work
-- [ ] new tests remain focused and do not worsen the inherited doctor baseline
-- [ ] g04.061 closes only this route-local family; g04 remains active
+- [x] new tests remain focused and do not worsen the inherited doctor baseline
+- [x] g04.061 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 

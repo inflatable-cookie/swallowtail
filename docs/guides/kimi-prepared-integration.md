@@ -11,7 +11,7 @@ Both routes live in `swallowtail-adapter-kimi`:
 
 | Selection | Route, driver ID, and transport | Choose it for | Reject it when |
 | --- | --- | --- | --- |
-| `Acp` | `kimi-code.acp`; `swallowtail.kimi.acp`; ACP v1 over stdio | reusable read-write sessions, negotiated models, reasoning, bounded writes, provider load/resume, or resource-scoped catalogue/import | the application needs a one-prompt run or cannot accept durable Kimi session state |
+| `Acp` | `kimi-code.acp`; `swallowtail.kimi.acp`; ACP v1 over stdio | reusable read-write sessions, negotiated models, reasoning, optional plan mode, bounded writes, provider load/resume, or resource-scoped catalogue/import | the application needs a one-prompt run or cannot accept durable Kimi session state |
 | `Headless` | `kimi-code.headless`; `swallowtail.kimi.headless`; stream JSON over stdio | one explicit-model bounded prompt with qualified provider retry observations | the application needs callbacks, reasoning selection, usage, a reusable binding, or management |
 
 There is no fallback between the branches. The separate local-server route is
@@ -99,18 +99,31 @@ Create a `KimiSessionProfileInput` with:
 - working-resource reference
 - `SessionOptions`
 
-The only portable option is reasoning `off`, `on`, `low`, `medium`, `high`,
-`xhigh`, or `max`. Prepared capability admission follows the selected ACP
-behavior revision: exact `0.28.1` legacy boolean select rejects `xhigh` and
-`max` before host effects; exact `0.29.0..=0.38.0` (and permitted
-`UnverifiedNewer` mapped to declared-effort) may prepare them only when the
-current session-open `thinking` snapshot advertises that exact value.
-Catalogue declaration, caller request, one `session/set_config_option`
-dispatch, and response `currentValue` confirmation stay distinct; foreign
-advertised rows may coexist but never become public selections. Kimi must
-advertise and confirm the exact selection before the first prompt. Load and
-resume cannot redeclare it. Developer instructions, consumer tools, plan mode,
-attachments, and question or permission exchanges are not mapped.
+The portable options are reasoning `off`, `on`, `low`, `medium`, `high`,
+`xhigh`, or `max`, and optional `HarnessMode::Plan`. Prepared capability
+admission for reasoning follows the selected ACP behavior revision: exact
+`0.28.1` legacy boolean select rejects `xhigh` and `max` before host effects;
+exact `0.29.0..=0.38.0` (and permitted `UnverifiedNewer` mapped to
+declared-effort) may prepare them only when the current session-open
+`thinking` snapshot advertises that exact value. Catalogue declaration,
+caller request, one `session/set_config_option` dispatch, and response
+`currentValue` confirmation stay distinct; foreign advertised rows may
+coexist but never become public selections.
+
+`HarnessMode::Plan` is new-session only on exact `0.28.1` and exact
+`0.29.0..=0.38.0`. The current `mode` select must advertise exact `plan`;
+Swallowtail then sends one `session/set_config_option` `{configId: mode,
+value: plan}` and requires the response `currentValue` to equal `plan`
+before readiness. Provider rows `default`, `auto`, and `yolo` may coexist
+in that snapshot; they are not public selections and do not widen permission.
+Plan mode is prompt-and-tool policy, not process or filesystem containment;
+`AmbientHost` remains the independent isolation claim. Reasoning and plan
+mode each need their own plan constraint, snapshot membership, request, and
+confirmation. When both are requested, reasoning is applied first. Kimi must
+advertise and confirm each exact selection before the first prompt. Load,
+resume, import, and recovery cannot redeclare either option. Developer
+instructions, consumer tools, attachments, and question or permission
+exchanges are not mapped.
 
 `KimiPreparedIntegration::prepare_session` derives one immutable plan and its
 matching new-session request. The plan visibly binds:
@@ -121,7 +134,7 @@ matching new-session request. The plan visibly binds:
 - ambient read-write workspace access
 - provider-owned durable state prohibited by Swallowtail
 - load replay, resume, streaming, active-turn interruption, bounded writes,
-  and the selected reasoning mode
+  the selected reasoning mode, and requested `HarnessMode::Plan`
 
 Ambient execution is not containment. It makes no filesystem, descendant, or
 provider-tool network isolation claim. A future provider- or host-enforced

@@ -32,7 +32,10 @@ impl SharedAgent {
             | Scenario::ReasoningEffort300Success
             | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess => {
+            | Scenario::ReasoningNewerSuccess
+            | Scenario::PlanConfirmationMissing
+            | Scenario::PlanDrift
+            | Scenario::PlanRejected => {
                 let requested = requested_value(message)?;
                 let effective = if requested == "on" {
                     "medium"
@@ -69,7 +72,15 @@ impl SharedAgent {
             | Scenario::CatalogueHold
             | Scenario::CatalogueDisconnect
             | Scenario::CatalogueUnsupported
-            | Scenario::CleanupFailure => return Err(fixture_failure()),
+            | Scenario::CleanupFailure
+            | Scenario::PlanSuccess
+            | Scenario::PlanLegacySuccess
+            | Scenario::PlanCeilingSuccess
+            | Scenario::PlanNewerSuccess
+            | Scenario::PlanMissing
+            | Scenario::PlanAmbiguous
+            | Scenario::PlanMalformed
+            | Scenario::PlanUnknownRow => return Err(fixture_failure()),
         };
         Self::enqueue(state, result);
         Ok(())

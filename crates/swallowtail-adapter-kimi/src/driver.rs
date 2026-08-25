@@ -43,6 +43,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 request.options(),
                 &services,
             )?;
+            let plan_mode = mode::requested_plan_mode(request.options());
             let request_id = request.request_id().clone();
             let working_resource = request
                 .working_resource()
@@ -70,9 +71,17 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                     )?;
                     let confirmation = attachment
                         .connection
-                        .set_config_option(&provider_id, selection.provider_value())
+                        .set_config_option(&provider_id, "thinking", selection.provider_value())
                         .await?;
                     let _ = selection.confirm(&confirmation, selected.behavior())?;
+                }
+                if plan_mode {
+                    mode::prepare_plan_mode(&response)?;
+                    let confirmation = attachment
+                        .connection
+                        .set_config_option(&provider_id, "mode", "plan")
+                        .await?;
+                    mode::confirm_plan_mode(&confirmation)?;
                 }
                 let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
                 let binding = SessionResumeBinding::new(
@@ -118,6 +127,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 SessionLifecycleOperation::Load,
                 request.options(),
             )?;
+            mode::reject_attachment_harness_mode(request.options())?;
             require_capability(&plan, Capability::LoadSession)?;
             require_constraint(
                 &plan,
@@ -203,6 +213,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 SessionLifecycleOperation::Resume,
                 request.options(),
             )?;
+            mode::reject_attachment_harness_mode(request.options())?;
             require_capability(&plan, Capability::Resume)?;
             validate_bound_request(
                 &plan,

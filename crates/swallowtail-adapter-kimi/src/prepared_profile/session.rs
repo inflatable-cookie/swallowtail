@@ -7,8 +7,8 @@ use crate::prepared::instance::{acp_behavior, session_capabilities};
 use crate::selection::KimiAcpBehavior;
 use crate::{KimiAcpDriver, KimiPreparedIntegration};
 use swallowtail_core::{
-    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ModelRoute,
-    ReasoningMode,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, HarnessMode,
+    ModelRoute, ReasoningMode,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
@@ -64,7 +64,7 @@ impl KimiPreparedSession {
         request_id: RequestId,
         binding: SessionResumeBinding,
     ) -> Result<LoadSessionRequest, PreparationFailure> {
-        reject_attachment_reasoning(self.request.options())?;
+        reject_attachment_options(self.request.options())?;
         LoadSessionRequest::from_plan(
             self.plan(),
             request_id,
@@ -116,7 +116,7 @@ impl KimiPreparedSession {
         request_id: RequestId,
         binding: SessionResumeBinding,
     ) -> Result<ResumeSessionRequest, PreparationFailure> {
-        reject_attachment_reasoning(self.request.options())?;
+        reject_attachment_options(self.request.options())?;
         ResumeSessionRequest::from_plan(
             self.plan(),
             request_id,
@@ -226,7 +226,12 @@ fn operation_capabilities(
 ) -> Vec<CapabilityRequirement> {
     let mut capabilities = available
         .iter()
-        .filter(|(capability, _)| *capability != Capability::ReasoningSelection)
+        .filter(|(capability, _)| {
+            !matches!(
+                capability,
+                Capability::ReasoningSelection | Capability::HarnessModeSelection
+            )
+        })
         .map(|(capability, constraints)| {
             CapabilityRequirement::new(capability, constraints.iter().cloned())
         })
@@ -235,6 +240,12 @@ fn operation_capabilities(
         capabilities.push(CapabilityRequirement::new(
             Capability::ReasoningSelection,
             [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+    }
+    if let Some(mode) = options.harness_mode() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(mode)],
         ));
     }
     capabilities
@@ -265,7 +276,7 @@ pub(super) fn validate_options(
     if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(failure(
             "swallowtail.kimi.preparation.session_options_unsupported",
-            "Kimi prepared sessions support only the portable reasoning option",
+            "Kimi prepared sessions support only portable reasoning and plan-mode options",
         ));
     }
     if let Some(mode) = options.reasoning_mode()
@@ -276,20 +287,34 @@ pub(super) fn validate_options(
             "Kimi prepared session reasoning mode is unsupported",
         ));
     }
+    if options
+        .harness_mode()
+        .is_some_and(|mode| mode != HarnessMode::Plan)
+    {
+        return Err(failure(
+            "swallowtail.kimi.preparation.harness_mode_unsupported",
+            "Kimi prepared session harness mode is unsupported",
+        ));
+    }
     Ok(())
 }
 
-pub(super) fn reject_attachment_reasoning(
+pub(super) fn reject_attachment_options(
     options: &SessionOptions,
 ) -> Result<(), PreparationFailure> {
     if options.reasoning_mode().is_some() {
-        Err(failure(
+        return Err(failure(
             "swallowtail.kimi.preparation.attachment_reasoning_unsupported",
             "Kimi load and resume cannot redeclare reasoning selection",
-        ))
-    } else {
-        Ok(())
+        ));
     }
+    if options.harness_mode().is_some() {
+        return Err(failure(
+            "swallowtail.kimi.preparation.attachment_harness_mode_unsupported",
+            "Kimi load and resume cannot redeclare harness-mode selection",
+        ));
+    }
+    Ok(())
 }
 
 fn supported_reasoning_mode(mode: &ReasoningMode, behavior: KimiAcpBehavior) -> bool {

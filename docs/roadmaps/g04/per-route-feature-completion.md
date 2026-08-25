@@ -168,16 +168,17 @@ families do not interrupt this programme by default.
   `0.29.0..=0.38.0` snapshot-advertised `xhigh|max` with effective
   confirmation under `kimi.acp.reasoning.declared-effort-v2`. Foreign rows
   coexist without public admission; load/resume remain non-mutating.
-- [g04.061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md) is ready.
-  Research 208 and cards 170-172 form one serial evidence-first lane for exact
-  `HarnessMode::Plan` negotiation without exposing provider `auto|yolo` or
-  changing ambient-isolation truth.
+- [g04.061 Kimi Code ACP Plan Mode](./061-kimi-code-acp-plan-mode.md)
+  completed. Research 208 admits exact `0.28.1` plus `0.29.0..=0.38.0`
+  `HarnessMode::Plan` with snapshot membership and response `currentValue=plan`.
+  No new behavior revision; `default|auto|yolo` coexist without public
+  admission; load/resume/import remain non-mutating; isolation stays
+  `AmbientHost`.
 
 ## Current Execution Boundary
 
-Execute g04.061 cards 170-172 serially. Stop honestly after Research 208 when
-the exact mode/application/confirmation set is empty. Keep g04 active until
-explicit operator direction.
+Reassess the remaining per-route feature inventory and compile the next
+numbered g04 family. Keep g04 active until explicit operator direction.
 
 ## Exclusions
 

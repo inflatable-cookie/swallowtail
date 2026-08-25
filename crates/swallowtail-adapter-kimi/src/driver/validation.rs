@@ -56,6 +56,7 @@ fn validate_request(
     if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(unsupported("non-reasoning session options"));
     }
+    mode::validate_harness_mode_plan(plan, options)?;
     Ok(())
 }
 

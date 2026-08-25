@@ -1,6 +1,6 @@
 # 171 Kimi Code ACP Plan-Mode Binding
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -40,22 +40,22 @@ provider application, and effective confirmation.
 
 ## Acceptance Criteria
 
-- [ ] only Research 208 exact version/value rows prepare
-- [ ] request, immutable plan, runtime agreement, snapshot, and response agree
-- [ ] one exact plan request precedes readiness and effective confirmation
-- [ ] `auto|yolo` never become public selections or implicit permissions
-- [ ] unsupported, missing, malformed, duplicate, substituted, rejected, and
+- [x] only Research 208 exact version/value rows prepare
+- [x] request, immutable plan, runtime agreement, snapshot, and response agree
+- [x] one exact plan request precedes readiness and effective confirmation
+- [x] `auto|yolo` never become public selections or implicit permissions
+- [x] unsupported, missing, malformed, duplicate, substituted, rejected, and
       drifted values fail closed without fallback
-- [ ] omission and reasoning-only wire remain unchanged
-- [ ] every admitted reasoning mode composes with independent confirmation
-- [ ] load/resume/import/recovery gain no harness-mode mutation
-- [ ] ambient isolation, manual permission, access, model, resource, and
+- [x] omission and reasoning-only wire remain unchanged
+- [x] every admitted reasoning mode composes with independent confirmation
+- [x] load/resume/import/recovery gain no harness-mode mutation
+- [x] ambient isolation, manual permission, access, model, resource, and
       provider-state truth remain unchanged
-- [ ] no breaking public API or shared contract/runtime change
-- [ ] `cargo fmt -p swallowtail-adapter-kimi` passes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-kimi` passes
-- [ ] `git diff --check` passes
+- [x] no breaking public API or shared contract/runtime change
+- [x] `cargo fmt -p swallowtail-adapter-kimi` passes
+- [x] `effigy validate:focused swallowtail-adapter-kimi` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-kimi` passes
+- [x] `git diff --check` passes
 
 ## Stop Conditions
 

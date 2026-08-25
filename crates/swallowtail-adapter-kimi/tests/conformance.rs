@@ -95,6 +95,16 @@ fn portable_reasoning_option_has_no_provider_configuration_record() {
     assert!(!debug.contains("set_config_option"));
 }
 
+#[test]
+fn portable_plan_mode_option_has_no_provider_configuration_record() {
+    let options = SessionOptions::default().with_harness_mode(swallowtail_core::HarnessMode::Plan);
+    let debug = format!("{options:?}");
+    assert!(!debug.contains("configOptions"));
+    assert!(!debug.contains("set_config_option"));
+    assert!(!debug.contains("auto"));
+    assert!(!debug.contains("yolo"));
+}
+
 fn version(value: &str) -> InterfaceVersion {
     InterfaceVersion::new(value).expect("valid Kimi version")
 }

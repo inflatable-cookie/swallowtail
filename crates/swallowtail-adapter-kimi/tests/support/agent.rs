@@ -34,6 +34,17 @@ pub enum Scenario {
     ReasoningConfirmationMissing,
     ReasoningDrift,
     ReasoningAlwaysThinking,
+    PlanSuccess,
+    PlanLegacySuccess,
+    PlanCeilingSuccess,
+    PlanNewerSuccess,
+    PlanMissing,
+    PlanAmbiguous,
+    PlanMalformed,
+    PlanConfirmationMissing,
+    PlanDrift,
+    PlanRejected,
+    PlanUnknownRow,
 }
 
 impl Scenario {
@@ -54,7 +65,9 @@ impl Scenario {
             Self::ReasoningEffort300Success => "0.30.0",
             Self::ReasoningEffort310Success => "0.31.0",
             Self::ReasoningEffort311Success => "0.31.1",
-            Self::ReasoningNewerSuccess => "0.38.1",
+            Self::ReasoningNewerSuccess | Self::PlanNewerSuccess => "0.38.1",
+            Self::PlanLegacySuccess => "0.28.1",
+            Self::PlanCeilingSuccess => "0.38.0",
             _ => "0.29.0",
         }
     }
@@ -71,6 +84,36 @@ impl Scenario {
                 | Self::CatalogueDisconnect
                 | Self::CatalogueUnsupported
                 | Self::CleanupFailure
+                | Self::PlanSuccess
+                | Self::PlanLegacySuccess
+                | Self::PlanCeilingSuccess
+                | Self::PlanNewerSuccess
+                | Self::PlanMissing
+                | Self::PlanAmbiguous
+                | Self::PlanMalformed
+                | Self::PlanUnknownRow
+        )
+    }
+
+    fn has_plan(self) -> bool {
+        matches!(
+            self,
+            Self::PlanSuccess
+                | Self::PlanLegacySuccess
+                | Self::PlanCeilingSuccess
+                | Self::PlanNewerSuccess
+                | Self::PlanConfirmationMissing
+                | Self::PlanDrift
+                | Self::PlanRejected
+                | Self::ReasoningLegacySuccess
+                | Self::ReasoningEffortSuccess
+                | Self::ReasoningEffort291Success
+                | Self::ReasoningEffort292Success
+                | Self::ReasoningEffort300Success
+                | Self::ReasoningEffort310Success
+                | Self::ReasoningEffort311Success
+                | Self::ReasoningNewerSuccess
+                | Self::ReasoningEffortExtended
         )
     }
 
@@ -104,77 +147,6 @@ impl SharedAgent {
 
     fn response(id: Option<u64>, result: Value) -> Value {
         json!({"jsonrpc": "2.0", "id": id, "result": result})
-    }
-
-    fn session_configuration(&self) -> Value {
-        let mut options = vec![json!({
-            "type": "select",
-            "id": "model",
-            "name": "Model",
-            "category": "model",
-            "currentValue": "kimi-coder",
-            "options": [
-                {"value": "kimi-coder", "name": "Kimi Coder"},
-                {"value": "kimi-alternate", "name": "Kimi Alternate"}
-            ]
-        })];
-        match self.scenario {
-            Scenario::ReasoningLegacySuccess | Scenario::ReasoningRejected => {
-                options.push(reasoning_option(&["off", "on"], "off"));
-            }
-            Scenario::ReasoningEffortSuccess
-            | Scenario::ReasoningEffort291Success
-            | Scenario::ReasoningEffort292Success
-            | Scenario::ReasoningEffort300Success
-            | Scenario::ReasoningEffort310Success
-            | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess
-            | Scenario::ReasoningConfirmationMissing
-            | Scenario::ReasoningDrift => {
-                options.push(reasoning_option(
-                    &["off", "low", "medium", "high", "xhigh", "max"],
-                    "off",
-                ));
-            }
-            Scenario::ReasoningEffortExtended => {
-                options.push(reasoning_option(
-                    &["off", "low", "medium", "high", "xhigh", "max", "ultra"],
-                    "off",
-                ));
-            }
-            Scenario::ReasoningEffortNarrow => {
-                options.push(reasoning_option(&["off", "low", "medium", "high"], "off"));
-            }
-            Scenario::ReasoningAmbiguous => {
-                let option =
-                    reasoning_option(&["off", "low", "medium", "high", "xhigh", "max"], "off");
-                options.push(option.clone());
-                options.push(option);
-            }
-            Scenario::ReasoningMalformed => {
-                let mut option =
-                    reasoning_option(&["off", "low", "medium", "high", "xhigh", "max"], "off");
-                option["category"] = Value::String("unmapped_provider_category".to_owned());
-                options.push(option);
-            }
-            Scenario::ReasoningAlwaysThinking => {
-                options.push(reasoning_option(
-                    &["low", "medium", "high", "xhigh", "max"],
-                    "medium",
-                ));
-            }
-            Scenario::Complete
-            | Scenario::HoldPrompt
-            | Scenario::DisconnectPrompt
-            | Scenario::CatalogueChanged
-            | Scenario::CataloguePaginated
-            | Scenario::CatalogueHold
-            | Scenario::CatalogueDisconnect
-            | Scenario::CatalogueUnsupported
-            | Scenario::CleanupFailure
-            | Scenario::ReasoningMissing => {}
-        }
-        json!({"configOptions": options})
     }
 
     pub(super) fn handle_write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
@@ -246,7 +218,9 @@ impl SharedAgent {
                 Self::enqueue(&mut state, Self::response(id, self.session_configuration()));
                 enqueue_session_metadata(&mut state);
             }
-            Some("session/set_config_option") => self.set_reasoning(&mut state, id, &message)?,
+            Some("session/set_config_option") => {
+                self.set_config_option(&mut state, id, &message)?
+            }
             Some("session/prompt") => self.prompt(&mut state, id)?,
             Some("session/cancel") => finish_prompt(&mut state, "cancelled"),
             None if id == Some(701) && message.get("result") == Some(&Value::Null) => {
@@ -353,6 +327,8 @@ fn enqueue_session_metadata(state: &mut AgentState) {
 }
 
 include!("agent/reasoning.rs");
+include!("agent/mode.rs");
+include!("agent/config.rs");
 
 fn finish_prompt(state: &mut AgentState, reason: &str) {
     if let Some(id) = state.prompt_id.take() {

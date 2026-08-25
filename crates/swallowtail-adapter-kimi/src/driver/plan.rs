@@ -1,3 +1,4 @@
+mod mode;
 mod reasoning;
 
 /// Low-level driver for installed Kimi Code ACP operations.

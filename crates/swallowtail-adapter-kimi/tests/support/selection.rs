@@ -7,7 +7,7 @@ pub struct FixtureSelection {
 }
 
 pub fn selection(host: ExecutionHostId) -> FixtureSelection {
-    selection_for(host, "0.28.1", None)
+    selection_for(host, "0.28.1", None, false)
 }
 
 pub fn reasoning_selection(
@@ -15,17 +15,30 @@ pub fn reasoning_selection(
     version: &str,
     reasoning: &str,
 ) -> FixtureSelection {
-    selection_for(host, version, Some(reasoning))
+    selection_for(host, version, Some(reasoning), false)
+}
+
+pub fn plan_selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
+    selection_for(host, version, None, true)
+}
+
+pub fn plan_reasoning_selection(
+    host: ExecutionHostId,
+    version: &str,
+    reasoning: &str,
+) -> FixtureSelection {
+    selection_for(host, version, Some(reasoning), true)
 }
 
 pub fn version_selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
-    selection_for(host, version, None)
+    selection_for(host, version, None, false)
 }
 
 fn selection_for(
     host: ExecutionHostId,
     version: &str,
     reasoning: Option<&str>,
+    plan_mode: bool,
 ) -> FixtureSelection {
     let descriptor = swallowtail_adapter_kimi::kimi_acp_descriptor();
     let credential = CredentialRef::new("kimi.fixture.delegated-auth").expect("valid credential");
@@ -70,6 +83,12 @@ fn selection_for(
                         swallowtail_core::ReasoningMode::new(mode).expect("valid reasoning mode"),
                     )
                 }),
+        ),
+        CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
+            )],
         ),
     ]);
     let version_binding =
@@ -120,7 +139,12 @@ fn selection_for(
     ];
     let mut operation_capabilities = capabilities
         .iter()
-        .filter(|(capability, _)| *capability != Capability::ReasoningSelection)
+        .filter(|(capability, _)| {
+            !matches!(
+                capability,
+                Capability::ReasoningSelection | Capability::HarnessModeSelection
+            )
+        })
         .map(|(capability, constraints)| {
             CapabilityRequirement::new(capability, constraints.iter().cloned())
         })
@@ -131,6 +155,14 @@ fn selection_for(
             [CapabilityConstraint::ReasoningMode(
                 swallowtail_core::ReasoningMode::new(reasoning)
                     .expect("fixture reasoning mode is valid"),
+            )],
+        ));
+    }
+    if plan_mode {
+        operation_capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
             )],
         ));
     }

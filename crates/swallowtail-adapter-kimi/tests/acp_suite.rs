@@ -14,6 +14,10 @@ mod activity_corpus;
 mod conformance;
 #[path = "installed_probe.rs"]
 mod installed_probe;
+#[path = "plan_mode_dispatch.rs"]
+mod plan_mode_dispatch;
+#[path = "plan_mode_lifecycle.rs"]
+mod plan_mode_lifecycle;
 #[path = "prepared_facade.rs"]
 mod prepared_facade;
 #[path = "provider_session_acceptance.rs"]

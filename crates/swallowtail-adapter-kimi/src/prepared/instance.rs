@@ -4,9 +4,9 @@ use crate::kimi_acp_descriptor;
 use crate::selection::KimiAcpBehavior;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    HarnessConfigurationPosture, InstalledExecutableCompatibility, InstalledExecutableObservation,
-    InstanceOwnership, InstancePolicyId, InstanceTargetRef, ProtocolFacadeId, ReasoningMode,
-    ResourceAccess, ResourceRepresentation,
+    HarnessConfigurationPosture, HarnessMode, InstalledExecutableCompatibility,
+    InstalledExecutableObservation, InstanceOwnership, InstancePolicyId, InstanceTargetRef,
+    ProtocolFacadeId, ReasoningMode, ResourceAccess, ResourceRepresentation,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
@@ -105,6 +105,10 @@ pub(crate) fn session_capabilities(behavior: KimiAcpBehavior) -> CapabilityProfi
                     ReasoningMode::new(*mode).expect("static Kimi reasoning mode is valid"),
                 )
             }),
+        ),
+        CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
         ),
     ])
 }

@@ -448,14 +448,16 @@ Official CLI
 `--thinking` / `--no-thinking`, `--plan`, `--yolo`/`--afk`, `-m`.
 
 Swallowtail: ACP `SessionOptions` reasoning
-`off|on|low|medium|high`; load/resume/import. No plan mode. No
-permission/question exchange. Headless reasoning is a different branch.
+`off|on|low|medium|high|xhigh|max` with snapshot membership, and optional
+new-session `HarnessMode::Plan`. Load/resume/import do not redeclare either
+control. No permission/question exchange. Headless reasoning is a different
+branch.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
-| Plan mode | `--plan` / `default_plan_mode` | not mapped | yes | only-if: ACP config option exists | do not copy `--plan` argv onto ACP spawn |
+| Plan mode | `--plan` / `default_plan_mode`; ACP `mode=plan` | portable `HarnessMode::Plan` on exact `0.28.1` and `0.29.0..=0.38.0` new sessions | no for ACP plan | delivered | do not copy `--plan` argv onto ACP spawn; `auto|yolo` stay private |
 | YOLO / AFK | `--yolo`, `--afk` | withheld | official unused | no | — |
-| Effort `xhigh`/`max` | config `[thinking].effort` | portable set stops at `high` | yes | only-if: model `support_efforts` | exact mapping; no UI labels |
+| Effort `xhigh`/`max` | config `[thinking].effort` | portable `xhigh|max` on exact `0.29.0..=0.38.0` when advertised and confirmed | no for ACP snapshot-advertised rows | delivered | exact mapping; no UI labels |
 
 ### `kimi-code.headless`
 
@@ -1733,3 +1735,11 @@ Kiro profiles, OpenCode permissions, sandbox, skills/memory, and multi-agent
 families cross authority or containment boundaries. Ollama `think=max` still
 maps to `high` for the relevant exact family. g04 stays open at operator
 direction.
+
+## Post-g04.061 Delivery (2026-08-25)
+
+Disposition: delivered. Research 208 admitted exact `0.28.1` plus
+`0.29.0..=0.38.0` `HarnessMode::Plan` with snapshot membership, one
+`session/set_config_option` `{configId: mode, value: plan}`, and response
+`currentValue=plan`. No behavior-revision split. Provider `auto|yolo` stay
+private. Isolation remains `AmbientHost`. Headless `--plan` stays out.

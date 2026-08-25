@@ -1,6 +1,6 @@
 use super::input::{KimiSessionCatalogueInput, KimiSessionProfileInput};
 use super::plan::{build_plan, build_plan_without_route, failure, instance_with_capabilities};
-use super::session::{reject_attachment_reasoning, validate_options};
+use super::session::{reject_attachment_options, validate_options};
 use crate::prepared::instance::{acp_behavior, session_capabilities};
 use crate::{KimiAcpDriver, KimiPreparedIntegration};
 use swallowtail_core::{
@@ -216,7 +216,7 @@ impl KimiPreparedIntegration {
         let (request_id, model, working_resource, options) = input.into_parts();
         let behavior = acp_behavior(self.observation())?;
         validate_options(&options, behavior)?;
-        reject_attachment_reasoning(&options)?;
+        reject_attachment_options(&options)?;
         let mut capability_requirements = session_capabilities(behavior)
             .iter()
             .map(|(capability, constraints)| {

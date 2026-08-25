@@ -6,9 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [170-kimi-code-acp-plan-mode-evidence.md](./170-kimi-code-acp-plan-mode-evidence.md)
-- [171-kimi-code-acp-plan-mode-binding.md](./171-kimi-code-acp-plan-mode-binding.md) — conditional on non-empty Research 208
-- [172-kimi-code-acp-plan-mode-acceptance.md](./172-kimi-code-acp-plan-mode-acceptance.md) — conditional on card 171
+None.
 
 ## Blocked
 
@@ -19,6 +17,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [172-kimi-code-acp-plan-mode-acceptance.md](./172-kimi-code-acp-plan-mode-acceptance.md)
+- [171-kimi-code-acp-plan-mode-binding.md](./171-kimi-code-acp-plan-mode-binding.md)
+- [170-kimi-code-acp-plan-mode-evidence.md](./170-kimi-code-acp-plan-mode-evidence.md)
 - [169-kimi-code-acp-extended-effort-acceptance.md](./169-kimi-code-acp-extended-effort-acceptance.md)
 - [168-kimi-code-acp-extended-effort-binding.md](./168-kimi-code-acp-extended-effort-binding.md)
 - [167-kimi-code-acp-extended-effort-evidence.md](./167-kimi-code-acp-extended-effort-evidence.md)

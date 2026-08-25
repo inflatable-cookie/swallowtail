@@ -7,7 +7,7 @@ Cards: 184-186
 Branch: `t3code/review-exec-model-verbosity`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-cefe6e71`
 Base: `b19a913834bc45f5f8fad95fa1ac40cd842545cd` (`origin/main` at dispatch)
-PR: pending
+PR: [#65](https://github.com/inflatable-cookie/swallowtail/pull/65)
 
 ## Result
 

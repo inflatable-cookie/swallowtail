@@ -79,7 +79,7 @@ and selection policy.
 - [g04.062 Anthropic Messages Adaptive Thinking](062-anthropic-messages-adaptive-thinking.md) — complete and merged through PR 61 at `4ef5c5e9`, cards 173-175; Research 209 deliver-now `claude-opus-4-7` adaptive omitted-display thinking
 - [g04.063 Kimi Code Headless Reasoning Effort](063-kimi-code-headless-reasoning-effort.md) — stopped after card 176 and merged through PR 62 at `5f37ff6b`; Research 210 empty deliver-now set; headless qualified ceiling retracted to `0.37.2`; cards 177-178 blocked
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180; Research 211 promoted
-- [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — ready, cards 181-183; Research 212 reserved
+- [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
 
 g04 has 65 numbered roadmaps: 56 completed milestones, eight honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, and 063, and one ready milestone
@@ -218,12 +218,12 @@ explicit operator direction.
 - post-v2 reassessment keeps g04.063 cards 177-178 blocked: v2 qualification
   adds no effort confirmation, model-effort snapshot, ambient-config authority,
   or fail-closed child-environment binding
-- g04.065 is ready: cards 181-183 investigate exact Claude Code headless
-  Ultracode as an adapter-local product setting, not a seventh portable effort
+- g04.065 stopped after card 181: Research 212 empty deliver-now set; exact
+  `2.1.241` help omits `ultracode`; cards 182-183 blocked
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 65 roadmaps; execute g04.065; generation closure awaits
-  explicit operator direction
+- g04 remains active at 65 roadmaps; reassess the remaining per-route feature
+  inventory; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -290,8 +290,8 @@ explicit operator direction.
 27. Post-v2 reassessment keeps g04.063 cards 177-178 blocked for unchanged
     confirmation, model-agreement, ambient-config, and environment-authority
     reasons.
-28. g04.065 cards 181-183 are ready as one serial Claude Code headless
-    Ultracode evidence-first lane.
+28. g04.065 stopped after card 181: Research 212 empty deliver-now set; cards
+    182-183 blocked.
 29. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.

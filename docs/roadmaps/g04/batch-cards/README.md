@@ -6,12 +6,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [181-claude-code-headless-ultracode-evidence.md](./181-claude-code-headless-ultracode-evidence.md) — ready
-- [182-claude-code-headless-ultracode-binding.md](./182-claude-code-headless-ultracode-binding.md) — conditional on Research 212
-- [183-claude-code-headless-ultracode-acceptance.md](./183-claude-code-headless-ultracode-acceptance.md) — conditional on card 182
+Cards 070-071 remain unused gaps, not tasks.
 
 ## Blocked
 
+- [182-claude-code-headless-ultracode-binding.md](./182-claude-code-headless-ultracode-binding.md) — blocked; Research 212 empty deliver-now set
+- [183-claude-code-headless-ultracode-acceptance.md](./183-claude-code-headless-ultracode-acceptance.md) — blocked; card 182 blocked
 - [177-kimi-code-headless-reasoning-effort-binding.md](./177-kimi-code-headless-reasoning-effort-binding.md) — blocked; Research 210 empty deliver-now set
 - [178-kimi-code-headless-reasoning-effort-acceptance.md](./178-kimi-code-headless-reasoning-effort-acceptance.md) — blocked; card 177 blocked
 - [165-deepagents-acp-model-selection-binding.md](./165-deepagents-acp-model-selection-binding.md) — blocked; Research 206 empty set
@@ -21,6 +21,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [181-claude-code-headless-ultracode-evidence.md](./181-claude-code-headless-ultracode-evidence.md) — evidence stop; Research 212 empty deliver-now set
 - [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md)
 - [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md)
 - [175-anthropic-messages-adaptive-thinking-acceptance.md](./175-anthropic-messages-adaptive-thinking-acceptance.md)

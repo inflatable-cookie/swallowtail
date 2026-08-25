@@ -1842,12 +1842,12 @@ It is not a seventh portable effort. The exact qualified `2.1.241` help corpus
 also advertises only `low|medium|high|xhigh|max`, so documentation alone is
 not enough.
 
-Research 212 and card 181 must freeze the exact parser, first version, model,
+Research 212 and card 181 froze the exact parser, first version, model,
 entitlement, settings, alias/fallback, tool, process, persistence, output, and
-lifecycle truth without a provider prompt. Cards 182-183 continue only for a
-non-empty exact table whose dynamic workflows remain inside the route's fixed
-Plan mode, tools, owned-process scope, no-session persistence, disclosure, and
-cleanup contracts. Separate portable effort conflicts before spawn.
+lifecycle truth without a provider prompt. Research 212 admits no deliver-now
+row because exact help omits `ultracode`, workflow topology is unbounded under
+the selected Plan-mode command, and model or entitlement truth requires account
+work. Cards 182-183 remain blocked.
 
 Fast mode, Agent teams, response-only/ACP promotion, raw settings, permission
 widening, and live account work stay outside this lane. g04 remains open at

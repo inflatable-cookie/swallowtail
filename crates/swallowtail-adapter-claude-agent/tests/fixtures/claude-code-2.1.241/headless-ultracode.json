@@ -1,0 +1,77 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "version": "2.1.241",
+  "qualified_window": "2.1.220..=2.1.241",
+  "observed_at": "2026-08-25",
+  "provider_prompt_sent": false,
+  "credentials_used": false,
+  "official_docs": {
+    "model_config_sha256": "438f76e45c6224ea2af5a711e5946213b67d5f33735f748f28d6dbfed87fe47d",
+    "workflows_sha256": "5bf0254f3ca0823f20910abfd0d4d6964bdbc2bbbd38ff6f47a3e015f8b77470",
+    "documented_first_support": "2.1.203",
+    "documented_semantics": "xhigh effort plus dynamic workflow orchestration"
+  },
+  "help": {
+    "advertised_effort_choices": ["low", "medium", "high", "xhigh", "max"],
+    "ultracode_advertised_in_help": false,
+    "official_help_sha256_2_1_241": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+    "official_help_byte_identical_to_2_1_238": true
+  },
+  "probed_versions": {
+    "2.1.202": {
+      "npm_integrity_prefix": "sha512-70Hcc/NJuME3K",
+      "darwin_arm64_binary_sha256": "7414f707861e2fe5afef33a466f888a8d2170e5028f5e9d2858f1d3ef45ffca5",
+      "help_sha256": "e3fba9bfce4c126545eaa70c839fe2fbfe3abf02e1243aa846592d2a97dbb3bb",
+      "effort_ultracode_parser": "rejected",
+      "effort_ultracode_stderr": "Warning: Unknown --effort value 'ultracode' — ignoring it and using the default effort. Valid values: low, medium, high, xhigh, max."
+    },
+    "2.1.203": {
+      "npm_integrity_prefix": "sha512-X5sAxPpCLLuxo",
+      "darwin_arm64_binary_sha256": "57b5aec68a35f42036bd2f82836d91c2d2990c2d589fb3465e3ee87142af9a1e",
+      "help_sha256": "e3fba9bfce4c126545eaa70c839fe2fbfe3abf02e1243aa846592d2a97dbb3bb",
+      "help_byte_identical_to_2_1_202": true,
+      "effort_ultracode_parser": "accepted",
+      "effort_ultracode_stderr": null
+    },
+    "2.1.220": {
+      "npm_integrity_prefix": "sha512-ogBrvwkqF9f8o",
+      "darwin_arm64_binary_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "help_sha256": "fcd5b45507c7c602d54d85a300eab288a8a3c6770c6def696ca19a3100725de4",
+      "effort_ultracode_parser": "accepted",
+      "effort_ultracode_stderr": null
+    },
+    "2.1.241": {
+      "npm_integrity": "sha512-S7DWEmJJAsI5taAUjhKm6soXcFJYIVeTH6Lg9kmp3yntFllCP612hGwZ7thOGh8r7YaRUH9+1jCX5A9QGazsxg==",
+      "darwin_arm64_binary_sha256": "1495eb7c42d3b4451f5f1cd38b6d498d22a4a38c802bc2be5c1cf1795e64820d",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "effort_ultracode_parser": "accepted",
+      "effort_ultracode_stderr": null
+    }
+  },
+  "unknown_effort_fallback": {
+    "input": "notavalidvalue",
+    "stderr_template": "Warning: Unknown --effort value '{value}' — ignoring it and using the default effort. Valid values: low, medium, high, xhigh, max.",
+    "observed_at_all_probed_versions": true
+  },
+  "implementation_strings": {
+    "ultracode_product_definition": "xhigh effort plus standing dynamic-workflow orchestration",
+    "menu_line": "- ultracode: xhigh + dynamic workflow orchestration (this session only)",
+    "unavailable_message_2_1_241": "apply_flag_settings: ultracode is not available for this session (dynamic workflows are off, or the model / your organization does not allow xhigh effort)"
+  },
+  "topology_gaps": [
+    "model eligibility for Ultracode not frozen without account work",
+    "entitlement and organization xhigh gates not frozen without account work",
+    "effective dynamic workflow behavior under Plan + Read,Glob,Grep not bounded",
+    "extra tools, subagents, processes, persistence, or disclosure not ruled out"
+  ],
+  "portable_reasoning": {
+    "seventh_reasoning_mode": "rejected",
+    "xhigh_alias": "rejected",
+    "adapter_local_opt_in": "withheld"
+  },
+  "disposition": {
+    "deliver_now_rows": [],
+    "cards_182_183": "blocked",
+    "existing_route": "unchanged"
+  }
+}

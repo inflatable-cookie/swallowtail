@@ -1,8 +1,9 @@
 # 181 Claude Code Headless Ultracode Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-25
+Updated: 2026-08-25
 Milestone: [g04.065 Claude Code Headless Ultracode](../065-claude-code-headless-ultracode.md)
 Depends on: Research 175, 192, 202; Contracts 029, 033, 040, 044
 
@@ -50,19 +51,19 @@ inference. Promote an honest empty set if any required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official sources, selected packages, dates, and hashes are recorded
-- [ ] first supported version and exact selected-model rows are explicit
-- [ ] parser, help, settings, precedence, alias, fallback, and failure truth is
+- [x] exact official sources, selected packages, dates, and hashes are recorded
+- [x] first supported version and exact selected-model rows are explicit
+- [x] parser, help, settings, precedence, alias, fallback, and failure truth is
       settled
-- [ ] access, entitlement, billing, and no-live-proof limits are explicit
-- [ ] dynamic workflow tools/processes/persistence/disclosure are bounded or
+- [x] access, entitlement, billing, and no-live-proof limits are explicit
+- [x] dynamic workflow tools/processes/persistence/disclosure are bounded or
       named as a stop
-- [ ] Ultracode remains distinct from portable reasoning and ordinary `xhigh`
-- [ ] claim strength is split by planned/dispatched/accepted/effective/observed
-- [ ] Research 212 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Ultracode remains distinct from portable reasoning and ordinary `xhigh`
+- [x] claim strength is split by planned/dispatched/accepted/effective/observed
+- [x] Research 212 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, generation rollover, or g04 closure changes
-- [ ] `effigy validate:focused swallowtail-adapter-claude-agent`, `effigy
+- [x] `effigy validate:focused swallowtail-adapter-claude-agent`, `effigy
       qa:northstar`, relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions

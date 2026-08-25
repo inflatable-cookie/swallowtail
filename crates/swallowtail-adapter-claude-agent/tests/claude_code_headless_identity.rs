@@ -12,6 +12,7 @@ const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.241/identity.json"
 const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.241/protocol.json");
 const STRUCTURED_OUTPUT: &str =
     include_str!("fixtures/claude-code-2.1.238/headless-structured-output.json");
+const ULTRACODE: &str = include_str!("fixtures/claude-code-2.1.241/headless-ultracode.json");
 
 #[test]
 fn identity_and_claim_qualify_2_1_241_as_compatible_extension() {
@@ -202,6 +203,49 @@ fn structured_output_evidence_fixture_is_secret_free_and_fail_closed() {
         serde_json::json!([])
     );
     assert_eq!(evidence["disposition"]["schema_absent_path"], "unchanged");
+}
+
+#[test]
+fn ultracode_evidence_fixture_is_secret_free_and_fail_closed() {
+    let evidence: Value = serde_json::from_str(ULTRACODE)
+        .expect("Claude Code 2.1.241 ultracode corpus is valid JSON");
+
+    assert_eq!(evidence["axis"], CLAUDE_CODE_HEADLESS_AXIS);
+    assert_eq!(evidence["version"], "2.1.241");
+    assert_eq!(evidence["provider_prompt_sent"], false);
+    assert_eq!(evidence["credentials_used"], false);
+    assert_eq!(evidence["help"]["ultracode_advertised_in_help"], false);
+    assert_eq!(
+        evidence["help"]["advertised_effort_choices"],
+        serde_json::json!(["low", "medium", "high", "xhigh", "max"])
+    );
+    assert_eq!(
+        evidence["probed_versions"]["2.1.202"]["effort_ultracode_parser"],
+        "rejected"
+    );
+    assert_eq!(
+        evidence["probed_versions"]["2.1.203"]["effort_ultracode_parser"],
+        "accepted"
+    );
+    assert_eq!(
+        evidence["probed_versions"]["2.1.241"]["effort_ultracode_parser"],
+        "accepted"
+    );
+    assert_eq!(
+        evidence["portable_reasoning"]["seventh_reasoning_mode"],
+        "rejected"
+    );
+    assert_eq!(evidence["portable_reasoning"]["xhigh_alias"], "rejected");
+    assert_eq!(
+        evidence["portable_reasoning"]["adapter_local_opt_in"],
+        "withheld"
+    );
+    assert_eq!(
+        evidence["disposition"]["deliver_now_rows"],
+        serde_json::json!([])
+    );
+    assert_eq!(evidence["disposition"]["cards_182_183"], "blocked");
+    assert_eq!(evidence["disposition"]["existing_route"], "unchanged");
 }
 
 fn version(value: &str) -> InterfaceVersion {

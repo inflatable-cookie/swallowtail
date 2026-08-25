@@ -24,7 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-25 g04.065 Claude Code Headless Ultracode Compiled](./2026-08-25-g04-065-claude-code-headless-ultracode-compiled.md)
-- [2026-08-25 g04.065 Claude Code Headless Ultracode Closeout](./2026-08-25-g04-065-claude-code-headless-ultracode-closeout.md) — reserved
+- [2026-08-25 g04.065 Claude Code Headless Ultracode Closeout](./2026-08-25-g04-065-claude-code-headless-ultracode-closeout.md) — stopped after evidence; Research 212 empty deliver-now set
 - [2026-08-25 Kimi Code 0.38.0 Headless V2 Claim](./2026-08-25-kimi-code-0-38-0-headless-v2-claim.md)
 - [2026-08-25 Kimi Code 0.38.0 Headless V2 Identity](./2026-08-25-kimi-code-0-38-0-headless-v2-identity.md)
 - [2026-08-25 g04.064 Kimi Code Headless V2 Closeout](./2026-08-25-g04-064-kimi-code-headless-v2-closeout.md) — complete and merged through PR 63 at `f58eb5f0`; cards 179-180

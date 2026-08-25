@@ -1,8 +1,9 @@
 # g04.065 Claude Code Headless Ultracode
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-25
+Updated: 2026-08-25
 Depends on: g04.055; per-route feature completion programme
 Vision tags: explicit selection, provider truth, installed-route isolation
 Contract refs: 011, 029, 033, 037, 040, 044, 052
@@ -31,16 +32,16 @@ permissions, or adding process topology the route cannot observe and join.
 
 ## Goals
 
-- [ ] freeze exact official documentation, package identity, parser, and
+- [x] freeze exact official documentation, package identity, parser, and
       selected-command evidence
-- [ ] identify the exact first supported version, models, access/entitlement
+- [x] identify the exact first supported version, models, access/entitlement
       posture, and billing semantics
-- [ ] separate the `xhigh` effort component from dynamic workflow orchestration
-- [ ] classify tool, subagent, teammate, process, settings, and persistence
+- [x] separate the `xhigh` effort component from dynamic workflow orchestration
+- [x] classify tool, subagent, teammate, process, settings, and persistence
       effects under the selected headless command
-- [ ] classify invalid, unsupported-model, unavailable-entitlement, fallback,
+- [x] classify invalid, unsupported-model, unavailable-entitlement, fallback,
       alias, clamp, and omission behavior
-- [ ] promote Research 212 with an exact deliver-now table or honest empty set
+- [x] promote Research 212 with an exact deliver-now table or honest empty set
 - [ ] expose only a typed adapter-local Ultracode selection admitted by
       Research 212; never add `ultracode` to portable `ReasoningMode`
 - [ ] bind the selection through prepared input, immutable evidence, driver,
@@ -95,9 +96,9 @@ Ultracode was effective.
 
 ### Batch 65.1 — Exact Ultracode Evidence
 
-- [ ] Execute card 181.
-- [ ] freeze exact package/parser/model/entitlement/workflow/topology truth
-- [ ] promote Research 212 with a non-empty exact table or honest empty set
+- [x] Execute card 181.
+- [x] freeze exact package/parser/model/entitlement/workflow/topology truth
+- [x] promote Research 212 with a non-empty exact table or honest empty set
 
 ### Batch 65.2 — Conditional Route-Local Binding
 
@@ -108,6 +109,17 @@ Ultracode was effective.
 
 - [ ] Execute card 183 only after card 182.
 - [ ] prove dispatch, conflict rejection, omission, lifecycle, docs, and API
+
+## Evidence Stop
+
+Research 212 admits no deliver-now row. Exact help at the qualified ceiling
+`2.1.241` advertises only `low|medium|high|xhigh|max`. Parser acceptance of
+the hidden value begins at `2.1.203`, but model eligibility, entitlement,
+effective workflow behavior, and process-topology containment under the
+selected Plan-mode command remain unproved without account or provider work.
+Ultracode stays a product setting coupled to dynamic workflow orchestration and
+cannot be flattened into portable reasoning or `ReasoningMode::xhigh`. Cards
+182 and 183 are blocked.
 
 ## Acceptance Criteria
 

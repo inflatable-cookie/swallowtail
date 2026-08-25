@@ -1,6 +1,6 @@
 # 183 Claude Code Headless Ultracode Acceptance
 
-Status: conditional; blocked until card 182 completes
+Status: blocked; card 182 blocked
 Owner: Tom
 Created: 2026-08-25
 Milestone: [g04.065 Claude Code Headless Ultracode](../065-claude-code-headless-ultracode.md)

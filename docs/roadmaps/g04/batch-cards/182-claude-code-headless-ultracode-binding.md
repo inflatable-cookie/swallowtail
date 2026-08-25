@@ -1,6 +1,6 @@
 # 182 Claude Code Headless Ultracode Binding
 
-Status: conditional; blocked until Research 212 admits a non-empty set
+Status: blocked; Research 212 empty deliver-now set
 Owner: Tom
 Created: 2026-08-25
 Milestone: [g04.065 Claude Code Headless Ultracode](../065-claude-code-headless-ultracode.md)

@@ -193,14 +193,16 @@ families do not interrupt this programme by default.
   stream does not add effective effort confirmation, a model-effort snapshot,
   ambient configuration authority, or a fail-closed child-environment binding.
 - [g04.065 Claude Code Headless Ultracode](./065-claude-code-headless-ultracode.md)
-  is ready through cards 181-183. Research 212 must reconcile current official
-  `--effort ultracode` documentation with the exact `2.1.241` help corpus and
-  bound dynamic workflow/tool/process effects before any adapter-local opt-in.
+  stopped after card 181. Research 212 admits no deliver-now row: exact
+  `2.1.241` help omits `ultracode`, parser accepts the hidden value from
+  `2.1.203+`, and dynamic workflow topology remains unbounded for binding.
+  Cards 182-183 are blocked.
 
 ## Current Execution Boundary
 
-Execute g04.065 cards 181-183 serially. Keep g04 open until explicit operator
-direction. Contract 029 currentness remains standing.
+Reassess the remaining promoted per-route feature inventory after the g04.065
+evidence stop. Keep g04 open until explicit operator direction. Contract 029
+currentness remains standing.
 
 ## Exclusions
 

@@ -7,7 +7,7 @@ Cards: 181-183
 Branch: `t3code/claude-code-headless-ultracode`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-b3abaea4`
 Base: `7687ea8e1d972925122f3753734bb53bc0ad2d5b` (`origin/main` at dispatch)
-PR: pending
+PR: [#64](https://github.com/inflatable-cookie/swallowtail/pull/64)
 
 ## Outcome
 

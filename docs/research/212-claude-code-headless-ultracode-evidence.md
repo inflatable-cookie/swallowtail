@@ -32,16 +32,16 @@ or Claude Agent ACP claims.
 
 ## Frozen Sources
 
-| Source | Use | Retrieved | SHA-256 |
+| Source | Use | Retrieved | Digest / identity |
 | --- | --- | --- | --- |
-| [Claude Code model configuration](https://code.claude.com/docs/en/model-config.md) | Ultracode definition, `v2.1.203+` requirement, `xhigh` plus workflow orchestration, settings/env limits | 2026-08-25 | `438f76e45c6224ea2af5a711e5946213b67d5f33735f748f28d6dbfed87fe47d` |
-| [Claude Code workflows](https://code.claude.com/docs/en/workflows) | dynamic workflow orchestration, keyword trigger, `/effort ultracode`, disable semantics | 2026-08-25 | `5bf0254f3ca0823f20910abfd0d4d6964bdbc2bbbd38ff6f47a3e015f8b77470` |
-| [`@anthropic-ai/claude-code@2.1.202`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.202) | pre-support boundary | 2026-08-25 | integrity `sha512-70Hcc/NJuME3K...`; shasum `56f99cf3084ff3e9e42fbf4cb59fabb11e9b56fa` |
-| [`@anthropic-ai/claude-code@2.1.203`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.203) | documented first-support point | 2026-08-25 | integrity `sha512-X5sAxPpCLLuxo...`; shasum `c41435ed8fc671f96145f5e1278ddeeda6ba7ced` |
-| [`@anthropic-ai/claude-code@2.1.220`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.220) | qualified baseline | 2026-08-25 | integrity `sha512-ogBrvwkqF9f8o...`; shasum `29e7249f01f9602b78c2d5f3c2f1c8a11b2ebcb4` |
-| [`@anthropic-ai/claude-code@2.1.241`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.241) | qualified ceiling; Research 202 identity | 2026-08-25 | integrity `sha512-S7DWEmJJAsI5taAUjhKm6soXcFJYIVeTH6Lg9kmp3yntFllCP612hGwZ7thOGh8r7YaRUH9+1jCX5A9QGazsxg==`; shasum `150077700180a6f915a486a34b4c34404e4aee59` |
+| [Claude Code model configuration](https://code.claude.com/docs/en/model-config.md) | Ultracode definition, `v2.1.203+` requirement, `xhigh` plus workflow orchestration, settings/env limits | 2026-08-25 | SHA-256 `438f76e45c6224ea2af5a711e5946213b67d5f33735f748f28d6dbfed87fe47d` |
+| [Claude Code workflows](https://code.claude.com/docs/en/workflows) | dynamic workflow orchestration, keyword trigger, `/effort ultracode`, disable semantics | 2026-08-25 | SHA-256 `5bf0254f3ca0823f20910abfd0d4d6964bdbc2bbbd38ff6f47a3e015f8b77470` |
+| [`@anthropic-ai/claude-code@2.1.202`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.202) | pre-support boundary | 2026-08-25 | npm integrity `sha512-70Hcc/NJuME3K...`; shasum `56f99cf3084ff3e9e42fbf4cb59fabb11e9b56fa` |
+| [`@anthropic-ai/claude-code@2.1.203`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.203) | documented first-support point | 2026-08-25 | npm integrity `sha512-X5sAxPpCLLuxo...`; shasum `c41435ed8fc671f96145f5e1278ddeeda6ba7ced` |
+| [`@anthropic-ai/claude-code@2.1.220`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.220) | qualified baseline | 2026-08-25 | npm integrity `sha512-ogBrvwkqF9f8o...`; shasum `29e7249f01f9602b78c2d5f3c2f1c8a11b2ebcb4` |
+| [`@anthropic-ai/claude-code@2.1.241`](https://registry.npmjs.org/@anthropic-ai/claude-code/2.1.241) | qualified ceiling; Research 202 identity | 2026-08-25 | npm integrity `sha512-S7DWEmJJAsI5taAUjhKm6soXcFJYIVeTH6Lg9kmp3yntFllCP612hGwZ7thOGh8r7YaRUH9+1jCX5A9QGazsxg==`; shasum `150077700180a6f915a486a34b4c34404e4aee59` |
 | Darwin arm64 native binaries | exact parser/help/implementation evidence | 2026-08-25 | see `headless-ultracode.json` |
-| `headless-ultracode.json` | sanitized deterministic specimen corpus | 2026-08-25 | fixture hash asserted in tests |
+| `headless-ultracode.json` | sanitized deterministic specimen corpus | 2026-08-25 | parser, help, portable-reasoning, and disposition fields asserted in `claude_code_headless_identity.rs` |
 
 Official documentation describes Ultracode as a Claude Code product setting,
 not a portable model effort level. It sends `xhigh` and additionally enables

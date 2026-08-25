@@ -288,5 +288,8 @@ pub(super) fn reject_attachment_reasoning(
 }
 
 fn supported_reasoning_mode(mode: &ReasoningMode) -> bool {
-    matches!(mode.as_str(), "off" | "on" | "low" | "medium" | "high")
+    matches!(
+        mode.as_str(),
+        "off" | "on" | "low" | "medium" | "high" | "xhigh" | "max"
+    )
 }

@@ -99,10 +99,16 @@ Create a `KimiSessionProfileInput` with:
 - working-resource reference
 - `SessionOptions`
 
-The only portable option is reasoning `off`, `on`, `low`, `medium`, or `high`.
-Kimi must advertise and confirm the exact selection before the first prompt.
-Load and resume cannot redeclare it. Developer instructions, consumer tools,
-plan mode, attachments, and question or permission exchanges are not mapped.
+The only portable option is reasoning `off`, `on`, `low`, `medium`, `high`,
+`xhigh`, or `max`. Exact `0.29.0..=0.38.0` may prepare `xhigh` or `max` only
+when the current session-open `thinking` snapshot advertises that exact value.
+Catalogue declaration, caller request, one `session/set_config_option`
+dispatch, and response `currentValue` confirmation stay distinct; foreign
+advertised rows may coexist but never become public selections. Boolean
+`0.28.1` remains `off|on`. Kimi must advertise and confirm the exact selection
+before the first prompt. Load and resume cannot redeclare it. Developer
+instructions, consumer tools, plan mode, attachments, and question or
+permission exchanges are not mapped.
 
 `KimiPreparedIntegration::prepare_session` derives one immutable plan and its
 matching new-session request. The plan visibly binds:

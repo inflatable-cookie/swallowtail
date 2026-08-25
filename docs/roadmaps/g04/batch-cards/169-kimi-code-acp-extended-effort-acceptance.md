@@ -1,6 +1,6 @@
 # 169 Kimi Code ACP Extended Effort Acceptance
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -35,26 +35,33 @@ compatibility, lifecycle, and documentation truth.
 
 ## Acceptance Criteria
 
-- [ ] every delivered exact version/value row has deterministic evidence
-- [ ] `xhigh` and `max` never prepare or dispatch without snapshot membership
-- [ ] exact response confirmation is required before the session is returned
-- [ ] unsupported, malformed, ambiguous, substituted, or drifted values never
+- [x] every delivered exact version/value row has deterministic evidence
+- [x] `xhigh` and `max` never prepare or dispatch without snapshot membership
+- [x] exact response confirmation is required before the session is returned
+- [x] unsupported, malformed, ambiguous, substituted, or drifted values never
       reach a prompt or fall back
-- [ ] legacy values and omission preserve prior wire and behavior
-- [ ] load/resume/import/recovery remain outside the selection lifecycle
-- [ ] compatibility truth matches the exact source milestone
-- [ ] stable diagnostics disclose no credential, prompt, output, raw provider
+- [x] legacy values and omission preserve prior wire and behavior
+- [x] load/resume/import/recovery remain outside the selection lifecycle
+- [x] compatibility truth matches the exact source milestone
+- [x] stable diagnostics disclose no credential, prompt, output, raw provider
       payload, account identity, endpoint, model alias, or host path
-- [ ] guide and matrix note distinguish catalogue declaration, requested,
+- [x] guide and matrix note distinguish catalogue declaration, requested,
       effective, and observed reasoning
-- [ ] no sibling route, permission, model-selection, currentness, contract,
+- [x] no sibling route, permission, model-selection, currentness, contract,
       release, or generation state changes
-- [ ] `cargo fmt -p swallowtail-adapter-kimi` passes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-kimi` passes
-- [ ] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
+- [x] `cargo fmt -p swallowtail-adapter-kimi` passes
+- [x] `effigy validate:focused swallowtail-adapter-kimi` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-kimi` passes
+- [x] `effigy check:examples`, `effigy qa:routes`, `effigy qa:northstar`,
       relevant index gates, `effigy package:api`, and `git diff --check` pass
-- [ ] `effigy doctor` does not worsen the inherited baseline
+- [x] `effigy doctor` does not worsen the inherited baseline
+
+## Outcome
+
+Fixtures cover advertised `xhigh|max`, foreign-row coexistence, narrow-snapshot
+rejection, legacy values, and UnverifiedNewer visibility. Guide and matrix
+notes updated; Reasoning capability cell unchanged. Shared gates passed;
+doctor baseline unchanged at 378 findings.
 
 ## Stop Conditions
 

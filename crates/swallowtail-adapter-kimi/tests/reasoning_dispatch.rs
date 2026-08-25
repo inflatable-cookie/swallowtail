@@ -22,12 +22,18 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
             ("0.28.1", "on", Scenario::ReasoningLegacySuccess, true),
             ("0.29.0", "high", Scenario::ReasoningEffortSuccess, true),
             ("0.29.0", "on", Scenario::ReasoningEffortSuccess, true),
+            ("0.29.0", "xhigh", Scenario::ReasoningEffortSuccess, true),
+            ("0.29.0", "max", Scenario::ReasoningEffortSuccess, true),
+            ("0.29.0", "max", Scenario::ReasoningEffortExtended, true),
             ("0.29.1", "high", Scenario::ReasoningEffort291Success, true),
             ("0.29.2", "high", Scenario::ReasoningEffort292Success, true),
             ("0.30.0", "high", Scenario::ReasoningEffort300Success, true),
             ("0.31.0", "high", Scenario::ReasoningEffort310Success, true),
             ("0.31.1", "high", Scenario::ReasoningEffort311Success, true),
+            ("0.31.1", "xhigh", Scenario::ReasoningEffort311Success, true),
+            ("0.31.1", "max", Scenario::ReasoningEffort311Success, true),
             ("0.38.1", "high", Scenario::ReasoningNewerSuccess, false),
+            ("0.38.1", "max", Scenario::ReasoningNewerSuccess, false),
         ] {
             let host_id = topology.execution_host_id().clone();
             let selected = reasoning_selection(host_id.clone(), version, mode);
@@ -114,6 +120,18 @@ fn reasoning_shape_rejections_abort_and_join_all_attachment_work() {
             "high",
             "swallowtail.negotiated_reasoning.effective_mismatch",
             1,
+        ),
+        (
+            Scenario::ReasoningEffortNarrow,
+            "xhigh",
+            "swallowtail.kimi.acp.reasoning_value_unsupported",
+            0,
+        ),
+        (
+            Scenario::ReasoningEffortNarrow,
+            "max",
+            "swallowtail.kimi.acp.reasoning_value_unsupported",
+            0,
         ),
     ] {
         let host_id = ExecutionHostId::new(format!(

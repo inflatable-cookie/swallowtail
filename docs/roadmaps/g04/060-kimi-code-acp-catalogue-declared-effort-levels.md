@@ -1,6 +1,6 @@
 # g04.060 Kimi Code ACP Catalogue-Declared Effort Levels
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -37,23 +37,23 @@ access posture, and lifecycle unchanged.
 
 ## Goals
 
-- [ ] freeze the exact first qualified Kimi Code version whose ACP `thinking`
+- [x] freeze the exact first qualified Kimi Code version whose ACP `thinking`
       option projects model `support_efforts` without clamping to `high`
-- [ ] freeze exact `xhigh` and `max` snapshot, selection, provider dispatch,
+- [x] freeze exact `xhigh` and `max` snapshot, selection, provider dispatch,
       confirmation, fallback, model-change, and lifecycle behavior
-- [ ] distinguish catalogue declaration, requested, dispatched, accepted,
+- [x] distinguish catalogue declaration, requested, dispatched, accepted,
       effective, and observed effort truth
-- [ ] split the compatibility behavior revision if older qualified versions do
+- [x] split the compatibility behavior revision if older qualified versions do
       not support the extended rows
-- [ ] promote Research 207 with an exact version/model/value deliver-now table
+- [x] promote Research 207 with an exact version/model/value deliver-now table
       or honest stop
-- [ ] admit only `xhigh` and `max` when the current exact session snapshot
+- [x] admit only `xhigh` and `max` when the current exact session snapshot
       advertises the requested value
-- [ ] require the returned exact config snapshot to retain the option shape and
+- [x] require the returned exact config snapshot to retain the option shape and
       confirm the selected effective value before returning a session
-- [ ] prove omission, legacy values, boolean `on|off`, unsupported values,
+- [x] prove omission, legacy values, boolean `on|off`, unsupported values,
       malformed/ambiguous snapshots, drift, cancellation, and cleanup truth
-- [ ] update route guidance and feature-inventory disposition without changing
+- [x] update route guidance and feature-inventory disposition without changing
       the existing matrix capability cell
 
 ## Non-Goals
@@ -103,41 +103,41 @@ reasoning mutation during later load or resume.
 
 ### Batch 60.1 — Exact Effort Milestone Evidence
 
-- [ ] Execute card 167.
-- [ ] freeze exact source/artifact, version milestone, option construction,
+- [x] Execute card 167.
+- [x] freeze exact source/artifact, version milestone, option construction,
       value, selection, confirmation, fallback, and lifecycle evidence
-- [ ] promote Research 207 with a non-empty exact table or empty set
+- [x] promote Research 207 with a non-empty exact table or empty set
 
 ### Batch 60.2 — Conditional Parser And Compatibility Binding
 
-- [ ] Execute card 168 only when Research 207 admits a non-empty set.
-- [ ] bind only admitted versions and `xhigh|max` through the existing
+- [x] Execute card 168 only when Research 207 admits a non-empty set.
+- [x] bind only admitted versions and `xhigh|max` through the existing
       negotiated reasoning surface and exact config-option exchange
 
 ### Batch 60.3 — Route-Local Acceptance
 
-- [ ] Execute card 169 only after card 168.
-- [ ] prove extended and legacy values, rejection, confirmation, lifecycle,
+- [x] Execute card 169 only after card 168.
+- [x] prove extended and legacy values, rejection, confirmation, lifecycle,
       compatibility, API, guide, matrix-note, and closeout truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 207 deliver-now version/value rows prepare
-- [ ] exact executable behavior, session snapshot, caller selection, request,
+- [x] only Research 207 deliver-now version/value rows prepare
+- [x] exact executable behavior, session snapshot, caller selection, request,
       confirmation, and effective reasoning agree before readiness
-- [ ] `xhigh` and `max` are accepted only when advertised by the current model
-- [ ] unsupported, absent, ambiguous, malformed, substituted, or drifted values
+- [x] `xhigh` and `max` are accepted only when advertised by the current model
+- [x] unsupported, absent, ambiguous, malformed, substituted, or drifted values
       fail closed without a prompt
-- [ ] omission and existing `off|on|low|medium|high` wire behavior remain exact
-- [ ] load, resume, import, and attachment recovery gain no reasoning mutation
-- [ ] boolean and always-thinking option shapes remain truthful for admitted
+- [x] omission and existing `off|on|low|medium|high` wire behavior remain exact
+- [x] load, resume, import, and attachment recovery gain no reasoning mutation
+- [x] boolean and always-thinking option shapes remain truthful for admitted
       versions
-- [ ] no model-name inference, arbitrary provider option, default substitution,
+- [x] no model-name inference, arbitrary provider option, default substitution,
       sibling-route claim, access widening, or public raw config map appears
-- [ ] default QA performs no install, login, OAuth mutation, provider prompt,
+- [x] default QA performs no install, login, OAuth mutation, provider prompt,
       external inference request, credential capture, or paid work
-- [ ] new tests remain focused and do not worsen the inherited doctor baseline
-- [ ] g04.060 closes only this route-local family; g04 remains active
+- [x] new tests remain focused and do not worsen the inherited doctor baseline
+- [x] g04.060 closes only this route-local family; g04 remains active
 
 ## Lane Runway
 

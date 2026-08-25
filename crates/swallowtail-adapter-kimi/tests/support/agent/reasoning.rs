@@ -18,7 +18,11 @@ impl SharedAgent {
                 id,
                 json!({"configOptions": [{"id": "model", "currentValue": "kimi-coder"}]}),
             ),
-            Scenario::ReasoningDrift => confirmation(id, &["off", "low", "medium", "high"], "low"),
+            Scenario::ReasoningDrift => confirmation(
+                id,
+                &["off", "low", "medium", "high", "xhigh", "max"],
+                "low",
+            ),
             Scenario::ReasoningLegacySuccess => {
                 confirmation(id, &["off", "on"], requested_value(message)?)
             }
@@ -35,7 +39,23 @@ impl SharedAgent {
                 } else {
                     requested
                 };
-                confirmation(id, &["off", "low", "medium", "high"], effective)
+                confirmation(
+                    id,
+                    &["off", "low", "medium", "high", "xhigh", "max"],
+                    effective,
+                )
+            }
+            Scenario::ReasoningEffortExtended => {
+                let requested = requested_value(message)?;
+                confirmation(
+                    id,
+                    &["off", "low", "medium", "high", "xhigh", "max", "ultra"],
+                    requested,
+                )
+            }
+            Scenario::ReasoningEffortNarrow => {
+                let requested = requested_value(message)?;
+                confirmation(id, &["off", "low", "medium", "high"], requested)
             }
             Scenario::ReasoningMissing
             | Scenario::ReasoningAmbiguous

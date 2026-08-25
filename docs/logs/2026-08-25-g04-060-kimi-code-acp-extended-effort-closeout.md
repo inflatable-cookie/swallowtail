@@ -1,12 +1,40 @@
 # 2026-08-25 g04.060 Kimi Code ACP Extended Effort Closeout
 
-Status: reserved
+Status: complete
 Owner: Tom
 Milestone: g04.060
 Cards: 167-169
+Research: 207
 
-## Reserved Closeout
+## Outcome
 
-Complete this record from Research 207, the worker PR, exact merged head, and
-shared front-door reconciliation. Record an evidence stop as honestly as a
-delivered binding. Do not close g04 without explicit operator direction.
+Delivered catalogue-declared portable `xhigh` and `max` on route
+`kimi-code.acp` for exact `0.29.0..=0.38.0` under existing
+`kimi.acp.reasoning.declared-effort-v2`. Selection remains new-session-only and
+requires current `thinking` snapshot membership plus response `currentValue`
+confirmation. Foreign advertised rows may coexist; they are not public
+selections. Exact `0.28.1` boolean select is unchanged. No segment split and no
+shared contract change.
+
+## Evidence
+
+- Research 207 promoted with exact source floor at `0.29.0`, preceding boundary
+  `0.28.1`, and byte-identical ACP adapter construction through `0.38.0`
+- focused fixtures cover advertised `xhigh|max`, narrow-snapshot rejection,
+  foreign coexistence, legacy values, drift/malformed paths, and
+  UnverifiedNewer visibility
+- Kimi prepared guide and feature-matrix notes updated; Reasoning cell stays
+  Yes
+
+## Validation
+
+- `cargo fmt -p swallowtail-adapter-kimi`
+- `effigy validate:focused swallowtail-adapter-kimi`
+- `effigy package:verify-affected swallowtail-adapter-kimi`
+- remaining card-169 shared gates recorded in the worker PR
+
+## Generation Boundary
+
+g04.060 closes only this route-local family. g04 remains open for the next
+per-route inventory reassessment unless the operator supplies a different
+direction. Contract 029 currentness stays standing.

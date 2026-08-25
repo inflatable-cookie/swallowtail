@@ -1,6 +1,6 @@
 # 168 Kimi Code ACP Extended Effort Binding
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -38,24 +38,31 @@ effective confirmation, and version behavior.
 
 ## Acceptance Criteria
 
-- [ ] only Research 207 exact version/value rows prepare
-- [ ] `xhigh` and `max` require exact current-snapshot membership
-- [ ] one exact selection request precedes readiness and the response confirms
+- [x] only Research 207 exact version/value rows prepare
+- [x] `xhigh` and `max` require exact current-snapshot membership
+- [x] one exact selection request precedes readiness and the response confirms
       the same effective value
-- [ ] unsupported, absent, malformed, ambiguous, foreign, substituted, and
+- [x] unsupported, absent, malformed, ambiguous, foreign, substituted, and
       drifted values fail closed as Research 207 requires
-- [ ] legacy values, boolean options, omission, and exact current wire remain
+- [x] legacy values, boolean options, omission, and exact current wire remain
       unchanged
-- [ ] compatibility behavior and configured-instance identity match the proved
+- [x] compatibility behavior and configured-instance identity match the proved
       source milestone
-- [ ] load/resume/import/recovery gain no reasoning mutation
-- [ ] access, resource, provider state, cancellation, deadline, terminal, and
+- [x] load/resume/import/recovery gain no reasoning mutation
+- [x] access, resource, provider state, cancellation, deadline, terminal, and
       cleanup truth stay intact
-- [ ] no breaking public API or shared contract/runtime change
-- [ ] `cargo fmt -p swallowtail-adapter-kimi` passes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi` passes
-- [ ] `effigy package:verify-affected swallowtail-adapter-kimi` passes
-- [ ] `git diff --check` passes
+- [x] no breaking public API or shared contract/runtime change
+- [x] `cargo fmt -p swallowtail-adapter-kimi` passes
+- [x] `effigy validate:focused swallowtail-adapter-kimi` passes
+- [x] `effigy package:verify-affected swallowtail-adapter-kimi` passes
+- [x] `git diff --check` passes
+
+## Outcome
+
+Kept `kimi.acp.reasoning.declared-effort-v2` for `0.29.0..=0.38.0`. Extended
+admitted portable modes with `xhigh|max`, allowed foreign advertised rows to
+coexist without public admission, and required snapshot membership plus
+effective confirmation before readiness.
 
 ## Stop Conditions
 

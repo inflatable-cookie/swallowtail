@@ -65,7 +65,9 @@ pub(super) fn prepare_reasoning_selection(
             }
         }
         KimiAcpBehavior::DeclaredEffort => {
-            if !option.values.contains(requested.as_str()) {
+            if !admitted_declared_effort(requested.as_str())
+                || !option.values.contains(requested.as_str())
+            {
                 return Err(unsupported_value());
             }
             requested.as_str()
@@ -151,13 +153,9 @@ fn validate_behavior_shape(
             }
         }
         KimiAcpBehavior::DeclaredEffort => {
-            if option
-                .values
-                .iter()
-                .any(|value| !matches!(*value, "off" | "on" | "low" | "medium" | "high"))
-            {
-                return Err(malformed_option());
-            }
+            // Foreign catalogue rows may coexist with the admitted subset.
+            // Only admitted identifiers prepare; unknown rows do not make the
+            // whole option malformed.
             let has_on = option.values.contains("on");
             let has_concrete = option
                 .values
@@ -169,6 +167,13 @@ fn validate_behavior_shape(
         }
     }
     Ok(())
+}
+
+fn admitted_declared_effort(value: &str) -> bool {
+    matches!(
+        value,
+        "off" | "on" | "low" | "medium" | "high" | "xhigh" | "max"
+    )
 }
 
 fn missing_option(phase: OptionPhase) -> RuntimeFailure {

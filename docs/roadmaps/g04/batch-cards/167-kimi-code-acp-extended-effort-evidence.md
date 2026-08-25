@@ -1,6 +1,6 @@
 # 167 Kimi Code ACP Extended Effort Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-25
 Updated: 2026-08-25
@@ -57,26 +57,35 @@ state, send a provider prompt, perform external inference, or incur paid work.
 
 ## Acceptance Criteria
 
-- [ ] official and exact artifact/source specimens have stable identities and
+- [x] official and exact artifact/source specimens have stable identities and
       complete digests
-- [ ] the first exact qualified extended-effort version is proved, including
+- [x] the first exact qualified extended-effort version is proved, including
       its immediately preceding boundary
-- [ ] `xhigh` and `max` advertisement, request, dispatch, acceptance,
+- [x] `xhigh` and `max` advertisement, request, dispatch, acceptance,
       effectiveness, and observation remain distinct
-- [ ] option shape, model binding, default/fallback, foreign-value, model-change,
+- [x] option shape, model binding, default/fallback, foreign-value, model-change,
       and confirmation rules are explicit
-- [ ] open versus load/resume/import/recovery lifecycle truth is explicit
-- [ ] compatibility segment/revision and `UnverifiedNewer` posture are explicit
-- [ ] Research 207 is promoted with a non-empty exact set or honest stop
-- [ ] no production code, public API, matrix capability cell, contract,
+- [x] open versus load/resume/import/recovery lifecycle truth is explicit
+- [x] compatibility segment/revision and `UnverifiedNewer` posture are explicit
+- [x] Research 207 is promoted with a non-empty exact set or honest stop
+- [x] no production code, public API, matrix capability cell, contract,
       currentness, or sibling route changes
-- [ ] `effigy validate:focused swallowtail-adapter-kimi` passes
-- [ ] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
-- [ ] `git diff --check` passes
+- [x] `effigy validate:focused swallowtail-adapter-kimi` passes
+- [x] `effigy qa:northstar` and `effigy qa:docs:index:research` pass
+- [x] `git diff --check` passes
 
 Auto-continue to card 168 only when Research 207 admits at least one exact
 qualified version for both a snapshot-advertised value and effective response
 confirmation before readiness.
+
+## Outcome
+
+Research 207 promoted with deliver-now rows for portable `xhigh` and `max` on
+exact `0.29.0..=0.38.0` under existing `kimi.acp.reasoning.declared-effort-v2`,
+gated by current-snapshot advertisement and response `currentValue`
+confirmation. Preceding boundary remains exact `0.28.1` boolean select. Foreign
+advertised rows coexist without becoming public selections. No segment split.
+Card 168 is unblocked.
 
 ## Stop Conditions
 

@@ -25,6 +25,8 @@ pub enum Scenario {
     ReasoningEffort310Success,
     ReasoningEffort311Success,
     ReasoningNewerSuccess,
+    ReasoningEffortExtended,
+    ReasoningEffortNarrow,
     ReasoningMissing,
     ReasoningAmbiguous,
     ReasoningMalformed,
@@ -129,20 +131,37 @@ impl SharedAgent {
             | Scenario::ReasoningNewerSuccess
             | Scenario::ReasoningConfirmationMissing
             | Scenario::ReasoningDrift => {
+                options.push(reasoning_option(
+                    &["off", "low", "medium", "high", "xhigh", "max"],
+                    "off",
+                ));
+            }
+            Scenario::ReasoningEffortExtended => {
+                options.push(reasoning_option(
+                    &["off", "low", "medium", "high", "xhigh", "max", "ultra"],
+                    "off",
+                ));
+            }
+            Scenario::ReasoningEffortNarrow => {
                 options.push(reasoning_option(&["off", "low", "medium", "high"], "off"));
             }
             Scenario::ReasoningAmbiguous => {
-                let option = reasoning_option(&["off", "low", "medium", "high"], "off");
+                let option =
+                    reasoning_option(&["off", "low", "medium", "high", "xhigh", "max"], "off");
                 options.push(option.clone());
                 options.push(option);
             }
             Scenario::ReasoningMalformed => {
-                let mut option = reasoning_option(&["off", "low", "medium", "high"], "off");
+                let mut option =
+                    reasoning_option(&["off", "low", "medium", "high", "xhigh", "max"], "off");
                 option["category"] = Value::String("unmapped_provider_category".to_owned());
                 options.push(option);
             }
             Scenario::ReasoningAlwaysThinking => {
-                options.push(reasoning_option(&["low", "medium", "high"], "medium"));
+                options.push(reasoning_option(
+                    &["low", "medium", "high", "xhigh", "max"],
+                    "medium",
+                ));
             }
             Scenario::Complete
             | Scenario::HoldPrompt

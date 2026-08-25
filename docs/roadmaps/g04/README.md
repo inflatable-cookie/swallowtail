@@ -74,12 +74,12 @@ and selection policy.
 - [g04.057 Grok Build ACP Reasoning Selection](057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [g04.058 Antigravity Headless Agent Profile Selection](058-antigravity-headless-agent-profile-selection.md) — stopped after card 161; Research 205 empty set; cards 162-163 blocked
 - [g04.059 Deep Agents ACP Model Selection](059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
-- [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — ready, cards 167-169
+- [g04.060 Kimi Code ACP Catalogue-Declared Effort Levels](060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169; Research 207 deliver-now `xhigh|max` on exact `0.29.0..=0.38.0`
 
-g04 has 60 numbered roadmaps: 52 completed milestones, seven honest
+g04 has 60 numbered roadmaps: 53 completed milestones, seven honest
 evidence stops at 040, 042, 043, 045, 057, 058, and 059. The operator keeps
-the generation active. g04.060 is the ready per-route lane. Do not close g04
-without explicit operator direction.
+the generation active. Next move is per-route inventory reassessment. Do not
+close g04 without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -195,13 +195,12 @@ without explicit operator direction.
   (generic access profile, silent CLI default on missing `--model` value,
   post-spawn construction, no ACP model confirmation); cards 165-166 are
   blocked
-- g04.060 is ready as cards 167-169: Research 207 must freeze the exact Kimi
-  Code ACP version floor and confirmation path for catalogue-declared `xhigh`
-  and `max` before conditional binding
+- g04.060 is complete through cards 167-169: Research 207 admits exact
+  `0.29.0..=0.38.0` snapshot-advertised `xhigh|max` with effective confirmation
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 60 roadmaps; generation closure awaits explicit
-  operator direction
+- g04 remains active at 60 roadmaps; next move is per-route inventory
+  reassessment; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -251,9 +250,8 @@ without explicit operator direction.
     deliver-now set; cards 162-163 are blocked.
 21. g04.059 stopped honestly after Research 206 and card 164 with an empty
     deliver-now set; cards 165-166 are blocked.
-22. g04.060 is compiled as cards 167-169. Research 207 must freeze the exact
-    Kimi ACP extended-effort version floor and confirmation path before
-    conditional binding.
+22. g04.060 cards 167-169 delivered catalogue-declared `xhigh|max` on exact
+    `0.29.0..=0.38.0` under existing `declared-effort-v2`.
 23. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -286,7 +284,7 @@ New route-family research does not pre-empt this sequence.
 - [057 Grok Build ACP Reasoning Selection](./057-grok-build-acp-reasoning-selection.md) — stopped after card 158 and merged through PR 56 at `0b8639a7`; cards 159-160 blocked
 - [058 Antigravity Headless Agent Profile Selection](./058-antigravity-headless-agent-profile-selection.md) — stopped after card 161; Research 205 empty set; cards 162-163 blocked
 - [059 Deep Agents ACP Model Selection](./059-deepagents-acp-model-selection.md) — stopped after card 164; Research 206 empty set; cards 165-166 blocked
-- [060 Kimi Code ACP Catalogue-Declared Effort Levels](./060-kimi-code-acp-catalogue-declared-effort-levels.md) — ready, cards 167-169
+- [060 Kimi Code ACP Catalogue-Declared Effort Levels](./060-kimi-code-acp-catalogue-declared-effort-levels.md) — complete, cards 167-169
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

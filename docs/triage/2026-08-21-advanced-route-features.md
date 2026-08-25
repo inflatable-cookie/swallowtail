@@ -1686,11 +1686,11 @@ advertisement and confirmation path already inside the qualified transport; it
 does not require model-name inference, a new route, raw configuration, or
 permission expansion.
 
-Research 207 must identify the first qualified source milestone with the full
-snapshot/set/provider/confirmation behavior. The current maintained claim
-spans `0.29.0..=0.38.0`; exact evidence owns any compatibility split. Only
-snapshot-advertised `xhigh` and `max` are candidates. Arbitrary values,
-aliases, clamping, load/resume mutation, headless promotion, and
+Research 207 identified exact `0.29.0` as the first declared-effort milestone;
+`0.28.1` remains the boolean boundary; ACP adapter blobs are byte-identical
+through `0.38.0`, so no later split was required. g04.060 delivered
+snapshot-advertised `xhigh` and `max` with effective confirmation. Arbitrary
+values, aliases, clamping, load/resume mutation, headless promotion, and
 `UnverifiedNewer` inheritance stay out.
 
 Codex plan-mode effort was not selected: the current app-server path already

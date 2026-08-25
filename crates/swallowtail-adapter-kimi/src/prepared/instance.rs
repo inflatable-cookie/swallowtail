@@ -71,7 +71,7 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
         ),
         CapabilityRequirement::new(
             Capability::ReasoningSelection,
-            ["off", "on", "low", "medium", "high"]
+            ["off", "on", "low", "medium", "high", "xhigh", "max"]
                 .into_iter()
                 .map(|mode| {
                     CapabilityConstraint::ReasoningMode(

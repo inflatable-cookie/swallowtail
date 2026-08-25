@@ -38,7 +38,8 @@ ACP and local-server `0.38.0` qualifications are unchanged. Historical Research
 - `effigy qa:northstar` — passed
 - docs index and next-action gates — passed
 - `git diff --check` — passed
-- `headless_structured_run.rs` split: v1 module 259 lines; v2 corpus 188 lines
+- `headless_structured_run.rs` split: v1 module 254 lines; v2 corpus 226 lines;
+  v2 protocol guard 74 lines; inherited doctor baseline 378 findings / 46 errors
 
 ## Continuation
 

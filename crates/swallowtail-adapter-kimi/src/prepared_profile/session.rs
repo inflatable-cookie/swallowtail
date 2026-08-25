@@ -3,7 +3,8 @@ use super::plan::{
     KimiPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
 use super::{KimiPreparedSessionFuture, KimiPreparedSessionLoadFuture};
-use crate::prepared::instance::session_capabilities;
+use crate::prepared::instance::{acp_behavior, session_capabilities};
+use crate::selection::KimiAcpBehavior;
 use crate::{KimiAcpDriver, KimiPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ModelRoute,
@@ -195,9 +196,10 @@ impl KimiPreparedIntegration {
         input: KimiSessionProfileInput,
     ) -> Result<KimiPreparedSession, PreparationFailure> {
         let (request_id, model, working_resource, options) = input.into_parts();
-        validate_options(&options)?;
+        let behavior = acp_behavior(self.observation())?;
+        validate_options(&options, behavior)?;
         let activity_profile = super::activity_profile::activity_profile(self)?;
-        let capabilities = with_activity(session_capabilities(), &activity_profile);
+        let capabilities = with_activity(session_capabilities(behavior), &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -256,7 +258,10 @@ fn with_activity(
     CapabilityProfile::new(requirements)
 }
 
-pub(super) fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
+pub(super) fn validate_options(
+    options: &SessionOptions,
+    behavior: KimiAcpBehavior,
+) -> Result<(), PreparationFailure> {
     if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(failure(
             "swallowtail.kimi.preparation.session_options_unsupported",
@@ -264,7 +269,7 @@ pub(super) fn validate_options(options: &SessionOptions) -> Result<(), Preparati
         ));
     }
     if let Some(mode) = options.reasoning_mode()
-        && !supported_reasoning_mode(mode)
+        && !supported_reasoning_mode(mode, behavior)
     {
         return Err(failure(
             "swallowtail.kimi.preparation.reasoning_mode_unsupported",
@@ -287,9 +292,9 @@ pub(super) fn reject_attachment_reasoning(
     }
 }
 
-fn supported_reasoning_mode(mode: &ReasoningMode) -> bool {
-    matches!(
-        mode.as_str(),
-        "off" | "on" | "low" | "medium" | "high" | "xhigh" | "max"
-    )
+fn supported_reasoning_mode(mode: &ReasoningMode, behavior: KimiAcpBehavior) -> bool {
+    behavior
+        .admitted_reasoning_modes()
+        .iter()
+        .any(|admitted| *admitted == mode.as_str())
 }

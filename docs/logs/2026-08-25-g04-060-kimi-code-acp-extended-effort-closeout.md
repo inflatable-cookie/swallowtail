@@ -10,11 +10,12 @@ Research: 207
 
 Delivered catalogue-declared portable `xhigh` and `max` on route
 `kimi-code.acp` for exact `0.29.0..=0.38.0` under existing
-`kimi.acp.reasoning.declared-effort-v2`. Selection remains new-session-only and
-requires current `thinking` snapshot membership plus response `currentValue`
-confirmation. Foreign advertised rows may coexist; they are not public
-selections. Exact `0.28.1` boolean select is unchanged. No segment split and no
-shared contract change.
+`kimi.acp.reasoning.declared-effort-v2`. Prepared capability admission and
+option validation follow that behavior revision, so exact `0.28.1` legacy
+boolean select rejects `xhigh|max` before host effects. Selection remains
+new-session-only and requires current `thinking` snapshot membership plus
+response `currentValue` confirmation. Foreign advertised rows may coexist;
+they are not public selections. No segment split and no shared contract change.
 
 ## Evidence
 

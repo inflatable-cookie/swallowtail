@@ -183,3 +183,66 @@ fn reasoning_is_explicit_for_new_and_rejected_for_load_or_resume() {
     );
     assert!(!host.process_started());
 }
+
+#[test]
+fn extended_effort_modes_follow_declared_effort_behavior_gate() {
+    use swallowtail_core::ReasoningMode;
+    use swallowtail_testkit::assert_negotiated_reasoning_setup_contract;
+
+    let host_id = ExecutionHostId::new("fixture.prepared.legacy-extended").unwrap();
+    let host = FixtureHost::new(Scenario::ReasoningLegacySuccess);
+    let legacy = prepared(&host, host_id, "0.28.1");
+    for mode in ["xhigh", "max"] {
+        let failure = legacy
+            .prepare_session(profile_input(
+                &format!("legacy-{mode}"),
+                SessionOptions::default().with_reasoning_mode(ReasoningMode::new(mode).unwrap()),
+            ))
+            .expect_err("legacy boolean ACP rejects extended effort before host effects");
+        assert_eq!(failure.stage(), PreparationStage::Preflight);
+        assert_eq!(
+            failure.diagnostic().safe().code(),
+            "swallowtail.kimi.preparation.reasoning_mode_unsupported"
+        );
+    }
+    assert!(!host.process_started());
+
+    let host_id = ExecutionHostId::new("fixture.prepared.declared-extended").unwrap();
+    let host = FixtureHost::new(Scenario::ReasoningEffortSuccess);
+    let declared = prepared(&host, host_id, "0.29.0");
+    for mode in ["xhigh", "max"] {
+        let requested = ReasoningMode::new(mode).unwrap();
+        let profile = declared
+            .prepare_session(profile_input(
+                &format!("declared-{mode}"),
+                SessionOptions::default().with_reasoning_mode(requested.clone()),
+            ))
+            .expect("declared-effort ACP prepares extended effort");
+        assert_eq!(
+            profile.request().options().reasoning_mode(),
+            Some(&requested)
+        );
+        assert_negotiated_reasoning_setup_contract(
+            profile.plan(),
+            requested,
+            ReasoningMode::new("different").unwrap(),
+        );
+    }
+    assert!(!host.process_started());
+
+    let host_id = ExecutionHostId::new("fixture.prepared.foreign-effort").unwrap();
+    let host = FixtureHost::new(Scenario::ReasoningEffortExtended);
+    let declared = prepared(&host, host_id, "0.29.0");
+    let failure = declared
+        .prepare_session(profile_input(
+            "foreign-ultra",
+            SessionOptions::default().with_reasoning_mode(ReasoningMode::new("ultra").unwrap()),
+        ))
+        .expect_err("foreign advertised effort remains non-admissible");
+    assert_eq!(failure.stage(), PreparationStage::Preflight);
+    assert_eq!(
+        failure.diagnostic().safe().code(),
+        "swallowtail.kimi.preparation.reasoning_mode_unsupported"
+    );
+    assert!(!host.process_started());
+}

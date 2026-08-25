@@ -18,8 +18,8 @@ pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 
-const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
-const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
+pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
+pub(crate) const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "kimi.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
 
@@ -27,6 +27,23 @@ const MAX_VERSION_BYTES: usize = 64;
 pub(crate) enum KimiAcpBehavior {
     LegacyReasoning,
     DeclaredEffort,
+}
+
+impl KimiAcpBehavior {
+    pub(crate) fn from_revision(value: &str) -> Option<Self> {
+        match value {
+            LEGACY_REASONING_BEHAVIOR => Some(Self::LegacyReasoning),
+            DECLARED_EFFORT_BEHAVIOR => Some(Self::DeclaredEffort),
+            _ => None,
+        }
+    }
+
+    pub(crate) const fn admitted_reasoning_modes(self) -> &'static [&'static str] {
+        match self {
+            Self::LegacyReasoning => &["off", "on", "low", "medium", "high"],
+            Self::DeclaredEffort => &["off", "on", "low", "medium", "high", "xhigh", "max"],
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -135,20 +152,18 @@ pub(crate) fn select_kimi_plan(plan: &PreflightPlan) -> Result<KimiPlanSelection
             "Kimi ACP executable version is incompatible with this driver",
         ));
     }
-    let behavior = match assessment
-        .behavior_revision()
-        .expect("permitted assessment has a behavior revision")
-        .as_str()
-    {
-        LEGACY_REASONING_BEHAVIOR => KimiAcpBehavior::LegacyReasoning,
-        DECLARED_EFFORT_BEHAVIOR => KimiAcpBehavior::DeclaredEffort,
-        _ => {
-            return Err(failure(
-                "swallowtail.kimi.acp.behavior_incompatible",
-                "Kimi ACP executable behavior is not mapped by this driver",
-            ));
-        }
-    };
+    let behavior = KimiAcpBehavior::from_revision(
+        assessment
+            .behavior_revision()
+            .expect("permitted assessment has a behavior revision")
+            .as_str(),
+    )
+    .ok_or_else(|| {
+        failure(
+            "swallowtail.kimi.acp.behavior_incompatible",
+            "Kimi ACP executable behavior is not mapped by this driver",
+        )
+    })?;
     Ok(KimiPlanSelection {
         behavior,
         version: binding.version().clone(),

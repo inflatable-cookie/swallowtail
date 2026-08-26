@@ -6,7 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None.
+- [216-llama-cpp-owned-reasoning-controls-evidence.md](./216-llama-cpp-owned-reasoning-controls-evidence.md) — ready; promote Research 225 or stop honestly
+- [217-llama-cpp-owned-reasoning-controls-binding.md](./217-llama-cpp-owned-reasoning-controls-binding.md) — conditional on a non-empty Research 225 deliver-now set
+- [218-llama-cpp-owned-reasoning-controls-acceptance.md](./218-llama-cpp-owned-reasoning-controls-acceptance.md) — conditional on card 217
 
 ## Blocked
 

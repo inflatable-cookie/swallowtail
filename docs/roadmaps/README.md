@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory and select the next serial
-lane. g04.077 is complete through cards 213-215; Research 224 admits four
-exact `Read` Ask rows at qualified dispatch and application. Keep g04 open.
-Contract 029 currentness remains standing.
+Execute g04.078 cards 216-218 serially for exact `llama-cpp.owned` reasoning
+controls. Card 216 must promote Research 225 with a non-empty exact
+model/template-bound deliver-now set before cards 217-218 run; otherwise stop
+after evidence. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

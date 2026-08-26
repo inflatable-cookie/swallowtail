@@ -5,6 +5,38 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Cline Plan acceptance widens the god-file warning baseline — 2026-08-26
+- Friction: PR 72 expands `tests/prepared_headless_facade.rs` to 395 code
+  lines, raising doctor findings from 378 to 379 while the error count remains
+  46.
+- Impact: later lanes inherit noisier structural-health evidence, and the
+  closeout does not name the committed warning increase separately from local
+  evidence-directory noise.
+- Fix: split default-mode and Plan-mode prepared-facade proofs into focused
+  test modules without reducing coverage; record the 379 finding baseline.
+- Surface: `swallowtail-adapter-cline` prepared headless acceptance tests;
+  g04.073 closeout evidence.
+
+### [ ] Launcher cleanup leaves stale Git worktree registrations — 2026-08-26
+- Friction: the PR 67 launcher worktree directory was removed after merge, but
+  `git worktree list` still reported its branch and path as registered.
+- Impact: follow-on review commands select a nonexistent working directory and
+  fail before repository inspection begins.
+- Fix: have launcher cleanup run safe worktree metadata pruning after removing
+  its owned directory, or retain the directory until Git deregistration finishes.
+- Surface: T3 launcher-owned Swallowtail review worktrees; Git worktree metadata.
+
+### [ ] A `/var` review worktree breaks affected-package path patches — 2026-08-26
+- Friction: macOS canonicalizes a `mktemp` worktree from `/var/...` to
+  `/private/var/...`, while the affected-package verifier writes Cargo patch
+  paths with the non-canonical spelling.
+- Impact: `package:verify-affected` reports unused patches and a locked
+  `Cargo.lock` update even when the reviewed package and lockfile are sound.
+- Fix: canonicalize generated patch paths before writing them, or reject
+  symlink-aliased worktree roots with a clear diagnostic.
+- Surface: `scripts/verify-affected-packages.sh`; disposable review worktrees
+  on macOS.
+
 ### [ ] Isolated HOME for provider probes steals rustup — 2026-08-26
 - Friction: Grok parser probes set `HOME`/`GROK_HOME` to an empty isolated tree
   and left those exports in the agent shell. Later `effigy validate:focused`
@@ -198,6 +230,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `TransportInterrupted` as a documented cancellation race at the stream
   boundary.
 - Surface: DeepSeek driver cancellation test; tag CI Stable job.
+
+### [ ] Docs index QA misses roadmap-status drift — 2026-08-26
+- Friction: PR 73 passed every named docs-index selector while
+  `generation-index.md` still called g04.074 ready and the batch-card index
+  still listed completed card 204 as Ready and blocked cards 205-206 as
+  Planned.
+- Impact: a review-ready closeout can leave the canonical planning indexes in
+  mutually contradictory states despite green validation.
+- Fix: add semantic checks that reconcile milestone/card status and generation
+  counts across roadmap front doors and batch-card indexes.
+- Surface: Effigy Northstar roadmap and batch-card index QA.
 
 ## Closed
 

@@ -2328,3 +2328,39 @@ with `ReadWrite` before process work even though the native CLI would not.
 Raise the claim only for an exact build that proves a local Ask boundary
 independent of ambient sandbox, approval, team, and feature-gate state, or a
 qualified observation channel that reports applied or effective mode.
+
+## Post-g04.077 Reassessment And g04.078 Compilation (2026-08-26)
+
+Disposition: select reasoning selection and budget on `llama-cpp.owned` and
+compile g04.078 as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after Cursor Ask delivery. Codex
+app-server Plan-mode effort is not selected: the route already carries the
+active model and reasoning effort inside the collaboration-mode preset, so a
+second route-local setting would duplicate existing selection. Account and
+billing controls, ambient registries, product personality, writable profiles,
+and process-topology features remain weaker or authority-blocked leads.
+
+Exact llama.cpp `b10069-178a6c449` exposes `--reasoning on|off|auto` and
+`--reasoning-budget -1|0|N`. The owned route controls the exact server child,
+immutable launch plan, operator-supplied model path, context size, readiness,
+cancellation, terminal state, and joined cleanup. This is a credible
+serving-owned seam.
+
+It is not yet a reasoning capability. `auto`, explicit selection, and budget
+behavior depend on the selected GGUF/chat template, reasoning start/end tags,
+formatting, and server application. The operator supplies the model, and a
+non-reasoning template may make a parsed flag ineffective. Card 216 and
+Research 225 must freeze exact parser and precedence, model/template
+applicability, failure or silent-no-op behavior, and prompt-free observation.
+Requested, prepared, dispatched, parser-accepted, applied, effective, and
+observed state stay separate.
+
+Cards 217-218 run only for a non-empty exact Research 225 set whose decisive
+model/template facts can be bound or rejected before process work. Omission
+must preserve the current no-reasoning-argument launch and compose exactly
+with context size. Raw provider values, portable reasoning APIs, model
+download/load, template or format changes, attached-route inference, live
+prompting, currentness, release, generation rollover, and g04 closure stay
+out. If exact behavior needs a live model run or unbound ambient facts, the
+lane stops after card 216.

@@ -1,0 +1,79 @@
+# 217 llama.cpp Owned Reasoning Controls Binding
+
+Status: ready
+Owner: Tom
+Created: 2026-08-26
+Updated: 2026-08-26
+Milestone: [g04.078 llama.cpp Owned Reasoning Controls](../078-llama-cpp-owned-reasoning-controls.md)
+Depends on: card 216; promoted Research 225 with a non-empty deliver-now set
+
+## Goal
+
+Bind only Research 225's exact reasoning rows through closed llama.cpp-local
+types, immutable prepared state, exact-runtime and model/template validation,
+and canonical owned-server argv.
+
+## Scope
+
+1. Add only the adapter-local closed types Research 225 admits. Do not expose
+   raw strings/numbers, generic reasoning effort, provider-neutral budget, or
+   configuration maps.
+2. Preserve existing construction as exact omission. Add a fallible typed
+   selection path only for admitted selection, budget, or composed rows.
+3. Retain admitted values and their exact model/template evidence immutably in
+   the prepared result and low-level owned-driver binding. Keep context-size
+   evidence independent and composable.
+4. Validate exact runtime revision, model/template applicability, prepared
+   state, driver state, and command intent before process work. Reject missing,
+   stale, mismatched, unsupported, or evidence-gated rows.
+5. Dispatch exactly the canonical arguments Research 225 admits. Never infer
+   model capability, accept caller strings, rely on ambient templates, or fall
+   back to another reasoning state after rejection.
+6. Preserve exact no-flag argv for omission and exact context-size argv for
+   every current row. Keep model path, host/port, readiness, working resource,
+   configuration, `AmbientHost`, and provider-state posture unchanged.
+7. Preserve activity, cancellation, deadline, terminal, failure, process
+   ownership, and joined cleanup. Advance an adapter-private behavior revision
+   only when exact evidence requires it.
+
+## Acceptance Criteria
+
+- [ ] only Research 225 deliver-now rows prepare reasoning controls
+- [ ] public seams are closed and llama.cpp-local; no portable or raw API
+      appears
+- [ ] prepared state, driver state, exact runtime, model/template evidence,
+      and argv agree
+- [ ] omission and all context-size rows retain exact prior behavior
+- [ ] unsupported, stale, mismatched, or wider rows reject before process work
+- [ ] docs claim no stronger applied, effective, or observed state than exact
+      evidence supports
+- [ ] serving ownership, readiness, retention, lifecycle, and cleanup do not
+      widen
+
+## Validation
+
+```sh
+cargo fmt -p swallowtail-adapter-llama-cpp
+effigy validate:focused swallowtail-adapter-llama-cpp
+effigy package:verify-affected swallowtail-adapter-llama-cpp
+effigy package:api
+effigy qa:northstar
+git diff --check
+```
+
+Auto-continue to card 218 only when typed preparation, exact evidence gating,
+canonical argv, omission compatibility, rejection, and lifecycle proof pass.
+
+## Stop Conditions
+
+- immutable adapter-local state cannot bind the admitted row without a shared
+  plan or breaking public change
+- model/template evidence can drift or a value can become inert after
+  preparation
+- implementation needs raw configuration, live inference, sibling-route work,
+  shared contract/runtime change, or authority widening
+
+## Out Of Scope
+
+- portable reasoning promotion, another llama.cpp feature/route, live model
+  work, currentness, release, merge, rollover, or g04 closure

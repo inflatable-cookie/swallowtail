@@ -14,6 +14,7 @@ mod driver;
 mod failure;
 mod prepared;
 mod protocol;
+mod reasoning;
 mod selection;
 mod transport;
 
@@ -34,6 +35,7 @@ pub use prepared::{
     LlamaCppPreparedCatalogue, LlamaCppPreparedInferenceAttempt, LlamaCppPreparedServingStart,
     prepare_llama_cpp_attached, prepare_llama_cpp_owned,
 };
+pub use reasoning::LlamaCppReasoningSelection;
 pub use selection::{
     LLAMA_CPP_ATTACHED_ACCESS_PROFILE_ID, LLAMA_CPP_ATTACHED_BUILD, LLAMA_CPP_ATTACHED_COMMIT,
     LLAMA_CPP_ATTACHED_ENDPOINT_AUDIENCE, LLAMA_CPP_ATTACHED_RUNTIME_REVISION,

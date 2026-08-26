@@ -1152,11 +1152,15 @@ fixtures preserve scope and execution-host identity. Its stop authority reaches
 only its owned child; the build-9910 attached driver retains no serving-
 lifecycle role and leaves its external server running.
 The owned serving selection may additionally carry adapter-local
-`LlamaCppContextSize` in `1..=2147483647`. The prepared start retains that
-selection in immutable evidence and dispatches exact `--ctx-size N`; omission
-preserves the prior eleven-argument command. This is dispatch truth only:
-runtime acceptance, padded or training-capped effective context, model fit,
-allocation feasibility, and observation remain unclaimed.
+`LlamaCppContextSize` in `1..=2147483647` and adapter-local
+`LlamaCppReasoningSelection::Disabled`. The prepared start retains both
+selections in immutable evidence and dispatches exact `--ctx-size N` and
+`--reasoning off`; omission of either preserves the prior eleven-argument
+command. This is dispatch truth only: runtime acceptance, padded or
+training-capped effective context, model fit, allocation feasibility, effective
+reasoning behavior, and observation remain unclaimed. Reasoning selection is
+owned-serving configuration; it is not a model reasoning capability and does
+not reach the attached inference route.
 
 ## Prepared Integration And Bound Operation Layer
 

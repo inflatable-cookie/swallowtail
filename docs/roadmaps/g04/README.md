@@ -92,7 +92,7 @@ and selection policy.
 - [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`
 - [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 - [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 admits four exact `Read` Ask rows at qualified dispatch and application
-- [g04.078 llama.cpp Owned Reasoning Controls](078-llama-cpp-owned-reasoning-controls.md) — ready, cards 216-218; Research 225 reserved
+- [g04.078 llama.cpp Owned Reasoning Controls](078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 admits one exact `--reasoning off` row
 
 g04 has 78 numbered roadmaps: 63 completed milestones, fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
@@ -274,9 +274,10 @@ Do not close g04 without explicit operator direction.
   `CursorHeadlessReadMode` binds `--mode ask` for `ResourceAccess::Read` on
   the four exact qualified builds at qualified dispatch and application;
   effective and observed mode stay withheld
-- g04.078 is ready through cards 216-218: Research 225 must prove exact
-  `b10069-178a6c449` reasoning selection, budget, model/template applicability,
-  and observation before conditional binding
+- g04.078 is complete through cards 216-218: closed adapter-local
+  `LlamaCppReasoningSelection::Disabled` dispatches `--reasoning off` on exact
+  `b10069-178a6c449`; `--reasoning on`, `auto`, and every `--reasoning-budget`
+  value stay withheld; effective and observed reasoning stay withheld
 - g04 remains active at 78 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -390,9 +391,10 @@ Do not close g04 without explicit operator direction.
     application, read-only, and observation truth across the four qualified
     builds and promoted four deliver-now `Read` rows; cards 214-215 bound and
     proved one closed Cursor-local selection.
-41. g04.078 is ready. Card 216 and Research 225 gate exact llama.cpp owned
-    reasoning selection and budget on preflight-bindable model/template truth;
-    cards 217-218 are conditional.
+41. g04.078 is complete. Research 225 froze exact llama.cpp owned reasoning
+    parser, precedence, application, and observation truth and promoted one
+    deliver-now row; cards 217-218 bound and proved `--reasoning off` as
+    dispatch-only owned-serving configuration.
 42. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -443,7 +445,7 @@ New route-family research does not pre-empt this sequence.
 - [075 Qwen Headless Plan Mode](./075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan`
 - [076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 - [077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 promoted
-- [078 llama.cpp Owned Reasoning Controls](./078-llama-cpp-owned-reasoning-controls.md) — ready, cards 216-218; Research 225 reserved
+- [078 llama.cpp Owned Reasoning Controls](./078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 promoted
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

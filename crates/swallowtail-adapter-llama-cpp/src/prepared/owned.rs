@@ -7,7 +7,9 @@ pub use evidence::LlamaCppOwnedPreparedEvidence;
 pub use input::{LlamaCppOwnedPreparationInput, LlamaCppOwnedServingSelection};
 
 use super::{preflight_failure, validate_preparation};
-use crate::{LlamaCppContextSize, LlamaCppModelSelection, LlamaCppOwnedDriver};
+use crate::{
+    LlamaCppContextSize, LlamaCppModelSelection, LlamaCppOwnedDriver, LlamaCppReasoningSelection,
+};
 use std::collections::BTreeSet;
 use swallowtail_core::{
     AccessProfile, ConfiguredInstance, HostServiceKind, ModelArtifactBinding, PreflightContext,
@@ -29,6 +31,7 @@ pub struct LlamaCppOwnedPreparedIntegration {
     artifact: ModelArtifactBinding,
     selection: LlamaCppModelSelection,
     context_size: Option<LlamaCppContextSize>,
+    reasoning: Option<LlamaCppReasoningSelection>,
 }
 
 impl LlamaCppOwnedPreparedIntegration {
@@ -74,6 +77,12 @@ impl LlamaCppOwnedPreparedIntegration {
         self.context_size
     }
 
+    /// Returns the selected `--reasoning` value when one was prepared.
+    #[must_use]
+    pub const fn reasoning(&self) -> Option<LlamaCppReasoningSelection> {
+        self.reasoning
+    }
+
     /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.services.iter().copied()
@@ -82,14 +91,17 @@ impl LlamaCppOwnedPreparedIntegration {
     /// Creates the exact low-level owned-server lifecycle driver.
     ///
     /// Prepared `start` remains the fail-closed path. A caller who extracts
-    /// this driver owns agreement with [`Self::context_size`] and the
-    /// `(plan, request)` pair passed to
+    /// this driver owns agreement with [`Self::context_size`],
+    /// [`Self::reasoning`], and the `(plan, request)` pair passed to
     /// [`swallowtail_runtime::ServingInstanceDriver::start`].
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppOwnedDriver {
         let mut driver = LlamaCppOwnedDriver::new();
         if let Some(context_size) = self.context_size {
             driver = driver.with_context_size(context_size);
+        }
+        if let Some(reasoning) = self.reasoning {
+            driver = driver.with_reasoning(reasoning);
         }
         driver
     }
@@ -142,7 +154,7 @@ pub fn prepare_llama_cpp_owned(
     services: &HostServices,
 ) -> Result<LlamaCppOwnedPreparedIntegration, PreparationFailure> {
     let (instance_id, revision, host, target, access, evidence, serving) = input.into_parts();
-    let (artifact, selection, context_size) = serving.into_parts();
+    let (artifact, selection, context_size, reasoning) = serving.into_parts();
     validate_preparation(
         services,
         &host,
@@ -166,6 +178,7 @@ pub fn prepare_llama_cpp_owned(
         artifact,
         selection,
         context_size,
+        reasoning,
     })
 }
 

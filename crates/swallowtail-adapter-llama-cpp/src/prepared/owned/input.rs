@@ -11,19 +11,21 @@ pub struct LlamaCppOwnedServingSelection {
     artifact: ModelArtifactBinding,
     model: LlamaCppModelSelection,
     context_size: Option<crate::LlamaCppContextSize>,
+    reasoning: Option<crate::LlamaCppReasoningSelection>,
 }
 
 impl LlamaCppOwnedServingSelection {
     /// Creates one explicit artifact-backed serving selection.
     ///
-    /// Caller omission leaves context size unset and preserves the current
-    /// no-`--ctx-size` launch.
+    /// Caller omission leaves context size and reasoning unset and preserves
+    /// the current launch with no `--ctx-size` and no reasoning argument.
     #[must_use]
     pub const fn new(artifact: ModelArtifactBinding, model: LlamaCppModelSelection) -> Self {
         Self {
             artifact,
             model,
             context_size: None,
+            reasoning: None,
         }
     }
 
@@ -40,14 +42,31 @@ impl LlamaCppOwnedServingSelection {
         self.context_size
     }
 
+    /// Selects the one admitted `--reasoning` value for owned serving.
+    ///
+    /// The selection composes with `with_context_size`; each flag is
+    /// dispatched at most once.
+    #[must_use]
+    pub const fn with_reasoning(mut self, reasoning: crate::LlamaCppReasoningSelection) -> Self {
+        self.reasoning = Some(reasoning);
+        self
+    }
+
+    /// Returns the selected reasoning value when one was supplied.
+    #[must_use]
+    pub const fn reasoning(&self) -> Option<crate::LlamaCppReasoningSelection> {
+        self.reasoning
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
         ModelArtifactBinding,
         LlamaCppModelSelection,
         Option<crate::LlamaCppContextSize>,
+        Option<crate::LlamaCppReasoningSelection>,
     ) {
-        (self.artifact, self.model, self.context_size)
+        (self.artifact, self.model, self.context_size, self.reasoning)
     }
 }
 

@@ -1,6 +1,6 @@
 # g04.078 llama.cpp Owned Reasoning Controls
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -29,20 +29,29 @@ reasoning selection and budget for `llama-cpp.owned`. Preserve omission as the
 current no-reasoning-argument launch and keep model/template applicability,
 serving state, inference, and observation claims exact.
 
+## Outcome
+
+Research 225 admits one deliver-now row: `--reasoning off`, bound as closed
+adapter-local `LlamaCppReasoningSelection::Disabled` and dispatched only from
+typed preparation. `--reasoning on`, `auto`, and every `--reasoning-budget`
+value are withheld. Omission, context-size argv, runtime identity, and the
+owned lifecycle are unchanged. Effective and observed reasoning behavior stay
+withheld.
+
 ## Goals
 
-- [ ] freeze exact parser, aliases, placement, repetition, precedence,
+- [x] freeze exact parser, aliases, placement, repetition, precedence,
       defaults, diagnostics, and source truth for both candidate flags
-- [ ] freeze exact `on|off|auto` and `-1|0|N` semantics, including chat-template
+- [x] freeze exact `on|off|auto` and `-1|0|N` semantics, including chat-template
       and reasoning-tag dependencies
-- [ ] distinguish requested, prepared, dispatched, parser-accepted, applied,
+- [x] distinguish requested, prepared, dispatched, parser-accepted, applied,
       effective, and observed state
-- [ ] promote Research 225 with an exact deliver-now table or honest empty set
-- [ ] conditionally add only closed adapter-local controls supported by that
+- [x] promote Research 225 with an exact deliver-now table or honest empty set
+- [x] conditionally add only closed adapter-local controls supported by that
       table, with no raw string or provider-neutral capability widening
-- [ ] preserve no-flag launch bytes, context-size composition, exact runtime
+- [x] preserve no-flag launch bytes, context-size composition, exact runtime
       identity, one-child ownership, readiness, and cleanup
-- [ ] prove unsupported model/template, value, version, and stale-evidence rows
+- [x] prove unsupported model/template, value, version, and stale-evidence rows
       reject before process work when delivery proceeds
 
 ## Non-Goals
@@ -88,40 +97,40 @@ No raw provider value enters core or runtime.
 
 ### Batch 78.1 — Exact llama.cpp Reasoning Evidence
 
-- [ ] Execute card 216.
-- [ ] freeze exact parser, precedence, template, application, and observation
+- [x] Execute card 216.
+- [x] freeze exact parser, precedence, template, application, and observation
       truth
-- [ ] promote Research 225 with a non-empty exact table or honest empty set
+- [x] promote Research 225 with a non-empty exact table or honest empty set
 
 ### Batch 78.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 217 only when Research 225 admits a non-empty exact set.
-- [ ] bind only admitted controls through typed preparation and canonical argv
+- [x] Execute card 217 only when Research 225 admits a non-empty exact set.
+- [x] bind only admitted controls through typed preparation and canonical argv
 
 ### Batch 78.3 — Route-Local Acceptance
 
-- [ ] Execute card 218 only after card 217.
-- [ ] prove dispatch, omission, rejection, context composition, and unchanged
+- [x] Execute card 218 only after card 217.
+- [x] prove dispatch, omission, rejection, context composition, and unchanged
       owned-runtime lifecycle truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 225 deliver-now rows prepare reasoning controls
-- [ ] every control is closed, llama.cpp-local, immutable, and exactly
+- [x] only Research 225 deliver-now rows prepare reasoning controls
+- [x] every control is closed, llama.cpp-local, immutable, and exactly
       dispatched
-- [ ] omission retains the exact current launch with no reasoning arguments
-- [ ] docs separate server selection from model/template applicability and
+- [x] omission retains the exact current launch with no reasoning arguments
+- [x] docs separate server selection from model/template applicability and
       effective inference behavior
-- [ ] context size, model path, host/port readiness, process ownership,
+- [x] context size, model path, host/port readiness, process ownership,
       retention, cancellation, terminal, and cleanup truth do not widen
-- [ ] default QA performs no model download/load, prompt, inference, tool
+- [x] default QA performs no model download/load, prompt, inference, tool
       execution, provider work, paid work, or ambient configuration mutation
 
 ## Lane Runway
 
 - predecessor: g04.077 Cursor headless Ask delivery
-- this milestone: exact llama.cpp owned reasoning evidence and conditional
-  binding
+- this milestone: complete; exact llama.cpp owned reasoning evidence and the
+  one admitted binding shipped
 - execution topology: one serial worker lane, cards 216-218
 - generation boundary: g04 remains open; no closure or rollover is authorized
 

@@ -1,6 +1,8 @@
 #[path = "owned_driver/failures.rs"]
 mod failures;
 mod owned_support;
+#[path = "owned_driver/selections.rs"]
+mod selections;
 
 use futures_executor::block_on;
 use owned_support::{
@@ -8,7 +10,8 @@ use owned_support::{
     StreamFixture, assert_order,
 };
 use swallowtail_adapter_llama_cpp::{
-    LlamaCppContextSize, LlamaCppOwnedDriver, llama_cpp_owned_descriptor,
+    LlamaCppContextSize, LlamaCppOwnedDriver, LlamaCppReasoningSelection,
+    llama_cpp_owned_descriptor,
 };
 use swallowtail_core::{DriverRole, HostServiceKind, InstanceOwnership};
 use swallowtail_runtime::{
@@ -241,80 +244,24 @@ fn early_exit_and_build_mismatch_take_the_same_joined_cleanup_path() {
     );
 }
 
-#[test]
-fn selected_context_size_is_appended_and_omission_stays_eleven_arguments() {
-    let server =
-        FixtureServer::start_with(PropertiesFixture::VersionMismatch, StreamFixture::Success);
-    let startup = STARTUP_SUCCESS.replace("{{ENDPOINT}}", server.endpoint());
-    let fixture = OwnedFixture::new(
-        server,
-        ScriptedOwnedServices::new(startup, ProcessStop::Graceful),
-    );
-    let selected = LlamaCppContextSize::from_u64(2048).expect("admitted value");
-    let handle = start_with(&fixture, Some(selected)).expect("owned serving becomes ready");
-    assert_eq!(
-        fixture.owned.arguments(),
-        [
-            "--model".to_owned(),
-            "/private/models/fixture.gguf".to_owned(),
-            "--alias".to_owned(),
-            "swallowtail-fixture-stories260k".to_owned(),
-            "--host".to_owned(),
-            "127.0.0.1".to_owned(),
-            "--port".to_owned(),
-            "0".to_owned(),
-            "--offline".to_owned(),
-            "--no-ui".to_owned(),
-            "--no-agent".to_owned(),
-            "--ctx-size".to_owned(),
-            "2048".to_owned(),
-        ]
-    );
-    assert_eq!(block_on(handle.stop()), CleanupOutcome::Clean);
-}
-
-#[test]
-fn selected_context_size_keeps_joined_cleanup_on_build_mismatch() {
-    let server = FixtureServer::start();
-    let startup = STARTUP_SUCCESS.replace("{{ENDPOINT}}", server.endpoint());
-    let mismatch = OwnedFixture::new(
-        server,
-        ScriptedOwnedServices::new(startup, ProcessStop::Graceful),
-    );
-    let selected = LlamaCppContextSize::from_u64(512).expect("admitted value");
-    let error = start_with(&mismatch, Some(selected))
-        .err()
-        .expect("wrong build fails");
-    assert_eq!(
-        error.diagnostic().code(),
-        "swallowtail.llama_cpp.serving_build_mismatch"
-    );
-    assert_order(
-        &mismatch.owned.calls(),
-        &[
-            OwnedCall::EndpointPublish,
-            OwnedCall::GracefulStop,
-            OwnedCall::ProcessWait,
-            OwnedCall::EndpointRelease,
-            OwnedCall::ArtifactRelease,
-        ],
-    );
-}
-
 fn start(
     fixture: &OwnedFixture,
 ) -> Result<Box<dyn swallowtail_runtime::OwnedServingHandle>, swallowtail_runtime::RuntimeFailure> {
-    start_with(fixture, None)
+    start_with(fixture, None, None)
 }
 
 fn start_with(
     fixture: &OwnedFixture,
     context_size: Option<LlamaCppContextSize>,
+    reasoning: Option<LlamaCppReasoningSelection>,
 ) -> Result<Box<dyn swallowtail_runtime::OwnedServingHandle>, swallowtail_runtime::RuntimeFailure> {
     let plan = fixture.plan();
     let mut driver = LlamaCppOwnedDriver::new();
     if let Some(context_size) = context_size {
         driver = driver.with_context_size(context_size);
+    }
+    if let Some(reasoning) = reasoning {
+        driver = driver.with_reasoning(reasoning);
     }
     block_on(driver.start(
         plan,

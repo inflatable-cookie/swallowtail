@@ -1,0 +1,84 @@
+# 2026-08-26 g04.078 llama.cpp Owned Reasoning Controls Closeout
+
+Status: complete and review-ready
+Owner: Tom
+Milestone: g04.078
+Cards: 216, 217, 218
+
+## Result
+
+Research 225 admits a narrow non-empty deliver-now set: exactly one of the five
+candidate reasoning values. Exact `llama-cpp.owned` `b10069-178a6c449` can
+dispatch `--reasoning off` without changing omission, context-size argv,
+lifecycle ordering, or Contract 029 identity.
+
+- Card 216 froze exact `b10069` parser, precedence, application, and
+  observation truth from tagged source. `--reasoning` accepts a wider value set
+  than the README's `on|off|auto`; `auto` and `-1` store the parser default and
+  write no template kwarg, so they are byte-equivalent to omission. Exact
+  `tools/server/server-context.cpp` evaluates
+  `enable_reasoning != 0 && template_supports_thinking`, so only `off`
+  short-circuits before the template is probed. `on` shares the default's
+  startup result and differs only through a request-time template-kwarg
+  override. `--reasoning-budget` is discarded whole when the applied template
+  has no thinking end tag, and that tag is per-request. Observation is closed:
+  `/props` `chat_template_caps` has exactly eight keys and none reports
+  thinking support, `task_params::to_json` emits no `reasoning_budget_tokens`
+  in either branch, and the one `thinking = %d` line is `LOG_TRC`, above the
+  default verbosity of `3`.
+- Card 217 added closed adapter-local `LlamaCppReasoningSelection` with the one
+  admitted variant `Disabled`, `with_reasoning` on serving selection, immutable
+  prepared evidence, and configured driver argv. No raw string or integer
+  enters the public surface and no rejected value is constructible.
+  `StartServingRequest` is unchanged.
+- Card 218 proved omission keeps the eleven-argument command, `--reasoning off`
+  appends after any `--ctx-size N`, both selections compose without
+  interference, input/evidence/driver/argv agree, and build-mismatch cleanup
+  stays joined with the reasoning flag present.
+
+Claimed truth is dispatch plus applied server state. Effective and observed
+reasoning behavior stay withheld: a chat template need not honor the render
+variable, a consumer request may override it through `chat_template_kwargs`,
+and no readiness channel reports reasoning state. No model reasoning
+capability, portable control, or attached-route reasoning support is implied.
+
+## Shared Closeout
+
+- architecture, guide, and route/feature matrices record exact adapter-local
+  owned `--reasoning off` dispatch, omission preserved, unchanged context-size
+  rows, and effective/observed withheld
+- Contract 029 exact `b10069-178a6c449` membership, driver id, behavior id, and
+  configured-instance revision do not move
+- the attached `b9910` route and its rejection of unqualified reasoning content
+  are untouched
+- programme, triage, and research/log/roadmap/g04/batch-card indexes reconcile
+  Research 225, cards 216-218, and g04.078
+- `CHANGELOG.md` records the unreleased `LlamaCppReasoningSelection` public
+  adapter API
+- the sole Next Task returns to remaining per-route inventory reassessment
+- g04 remains active and unrolled until explicit operator direction
+
+## Validation
+
+Named card 218 gates passed: format, focused adapter tests (59, up from 53),
+verify-affected, examples, public API, northstar,
+research/logs/roadmap/g04/batch-card/next-action indexes, and
+`git diff --check`. Doctor matches the inherited baseline exactly: 380
+god-file findings (334 warnings, 46 errors) plus one generated-in-src warning.
+
+The reasoning proofs first pushed `tests/owned_driver.rs` from warning to
+error (380/333/47). Rather than log that as new debt, its selection proofs
+moved to `tests/owned_driver/selections.rs`, alongside the existing
+`owned_driver/failures.rs` module. The file is a warning again at 260 code
+lines and the baseline is exact. The open g04.056 papercut records the
+remaining `prepared_facades.rs` split and the stale g04.056 baseline figure.
+
+- PR: pending
+- branch: `t3code/llama-cpp-reasoning-controls`
+- worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d2c680cc`
+
+## Next
+
+Reassess the remaining per-route feature inventory and compile the next
+numbered route-local milestone. Do not release, move currentness, roll g04, or
+close the generation from this lane.

@@ -259,17 +259,23 @@ families do not interrupt this programme by default.
   read-only boundary is claimed. Portable `HarnessMode::Ask`, raw modes,
   `--plan`, Agent selection, and force flags stay out.
 - [g04.078 llama.cpp Owned Reasoning Controls](./078-llama-cpp-owned-reasoning-controls.md)
-  is ready. Cards 216-218 gate exact `b10069-178a6c449`
-  `--reasoning on|off|auto` and `--reasoning-budget -1|0|N` through Research
-  225. Delivery requires a non-empty preflight-bindable model/template row;
-  parser acceptance or a silent no-op is insufficient. Omission, context size,
-  owned serving, and one-child lifecycle must remain exact.
+  is complete. Research 225 and cards 216-218 realize adapter-local
+  dispatch-only `LlamaCppReasoningSelection::Disabled` for exact owned runtime
+  `b10069-178a6c449`, dispatched as `--reasoning off`; omission preserves the
+  no-flag launch and every context-size row is unchanged. `off` is the only
+  value whose applied server state is template-independent: exact source
+  short-circuits `enable_thinking` to `false` before the template is probed.
+  `--reasoning on` and `auto` are withheld as an unobservable per-request
+  distinction and an exact synonym for the default. `--reasoning-budget` is
+  withheld entirely because exact source discards it without a template
+  thinking end tag, and no prompt-free channel reports that tag. Effective and
+  observed reasoning behavior stay withheld.
 
 ## Current Execution Boundary
 
-Execute g04.078 cards 216-218 serially. Stop after card 216 when Research 225
-is empty or model/template applicability cannot be bound before process work.
-Keep g04 open. Contract 029 currentness remains standing.
+g04.078 cards 216-218 are complete. Select the next per-route feature candidate
+from the advanced-feature triage tail. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

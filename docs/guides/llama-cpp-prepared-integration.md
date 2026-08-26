@@ -96,23 +96,44 @@ lifecycle plan.
 The route binds exact opaque b10069/178a6c449 behavior on
 `llama.cpp.owned-runtime`; it has no unverified-newer posture.
 
-`LlamaCppOwnedServingSelection::new` omits context size and keeps the current
-eleven-argument launch with no `--ctx-size`. Optional
-`with_context_size` accepts one `LlamaCppContextSize` in `1..=2147483647` and
-dispatches exact `--ctx-size N`. Explicit zero is not an omission alias and
-cannot be constructed. Prepared evidence, the configured driver, and argv must
-agree. Dispatch does not prove provider acceptance, effective allocation, pad
-or train-cap outcome, model fit, or resource feasibility. Readiness still
-checks health, build, alias, and catalogue identity only; it does not decode
-nested `/props` `n_ctx`.
+`LlamaCppOwnedServingSelection::new` omits context size and reasoning and
+keeps the current eleven-argument launch with neither `--ctx-size` nor a
+reasoning argument. Optional `with_context_size` accepts one
+`LlamaCppContextSize` in `1..=2147483647` and dispatches exact `--ctx-size N`.
+Explicit zero is not an omission alias and cannot be constructed. Prepared
+evidence, the configured driver, and argv must agree. Dispatch does not prove
+provider acceptance, effective allocation, pad or train-cap outcome, model fit,
+or resource feasibility. Readiness still checks health, build, alias, and
+catalogue identity only; it does not decode nested `/props` `n_ctx`.
+
+Optional `with_reasoning` accepts `LlamaCppReasoningSelection::Disabled` and
+dispatches exact `--reasoning off`. The two selections compose; each flag is
+emitted at most once, context size first.
+
+Reasoning is serving configuration, not a model capability. Exact `b10069`
+resolves `off` to `enable_reasoning = 0` and the template argument
+`enable_thinking = false` without consulting the chat template, so the
+selection needs no model or template fact before process work. It proves
+nothing further: a chat template need not honor the render variable, a
+consumer request may override it through `chat_template_kwargs`, and no
+readiness channel reports reasoning state. `/props` `chat_template_caps`
+carries `supports_preserve_reasoning`, which describes history retention for a
+different flag and is not a thinking-support signal.
+
+`--reasoning on` and `auto` are withheld because exact source stores `auto` as
+the default and makes `on` distinguishable only inside an unobservable
+per-request template render. `--reasoning-budget` is withheld entirely because
+exact source silently discards it when the applied template has no thinking end
+tag, and that tag is invisible before launch, at readiness, and on `/props`.
+Research 225 holds the exact dispositions.
 
 `low_level_driver` and generic role dispatch remain Contract 037 caller
-authority: the caller must keep `with_context_size`, extracted evidence, and
-any `(plan, request)` tuple consistent. Prepared `start` is the fail-closed
-path.
+authority: the caller must keep `with_context_size`, `with_reasoning`,
+extracted evidence, and any `(plan, request)` tuple consistent. Prepared
+`start` is the fail-closed path.
 
 Call `prepare_serving_start`, inspect the lifecycle plan,
-`StartServingRequest`, and selected context size, then `start`. The operation
+`StartServingRequest`, and selected context size and reasoning, then `start`. The operation
 acquires the artifact, launches one offline loopback-only process, observes
 its bounded stderr endpoint, publishes host endpoint authority, and verifies
 health, properties, and catalogue identity. Only then does it return

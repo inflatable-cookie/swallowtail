@@ -28,6 +28,7 @@ const OWNED_BASE_ARGUMENTS: usize = 11;
 pub struct LlamaCppOwnedDriver {
     facade: LlamaCppAttachedDriver,
     context_size: Option<crate::LlamaCppContextSize>,
+    reasoning: Option<crate::LlamaCppReasoningSelection>,
 }
 
 impl LlamaCppOwnedDriver {
@@ -42,6 +43,7 @@ impl LlamaCppOwnedDriver {
                 OWNED_ROUTE,
             ),
             context_size: None,
+            reasoning: None,
         }
     }
 
@@ -55,6 +57,19 @@ impl LlamaCppOwnedDriver {
     #[must_use]
     pub fn with_context_size(mut self, context_size: crate::LlamaCppContextSize) -> Self {
         self.context_size = Some(context_size);
+        self
+    }
+
+    /// Configures the one admitted `--reasoning` value for low-level dispatch.
+    ///
+    /// The caller owns agreement between this value, any extracted prepared
+    /// evidence, and the `(plan, request)` pair passed to
+    /// [`swallowtail_runtime::ServingInstanceDriver::start`]. Prepared
+    /// [`crate::LlamaCppPreparedServingStart::start`] remains the fail-closed
+    /// path.
+    #[must_use]
+    pub fn with_reasoning(mut self, reasoning: crate::LlamaCppReasoningSelection) -> Self {
+        self.reasoning = Some(reasoning);
         self
     }
 
@@ -124,7 +139,7 @@ impl LlamaCppOwnedDriver {
                 request.artifact().clone(),
             )
             .await?;
-        let arguments = launch_arguments(&artifact, &alias, self.context_size);
+        let arguments = launch_arguments(&artifact, &alias, self.context_size, self.reasoning);
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
@@ -220,6 +235,7 @@ fn launch_arguments(
     artifact: &ModelArtifactLease,
     alias: &str,
     context_size: Option<crate::LlamaCppContextSize>,
+    reasoning: Option<crate::LlamaCppReasoningSelection>,
 ) -> Vec<String> {
     let mut arguments = vec![
         "--model".to_owned(),
@@ -238,9 +254,15 @@ fn launch_arguments(
         arguments.push("--ctx-size".to_owned());
         arguments.push(context_size.as_u32().to_string());
     }
+    if let Some(reasoning) = reasoning {
+        arguments.push("--reasoning".to_owned());
+        arguments.push(reasoning.as_argument_value().to_owned());
+    }
     debug_assert_eq!(
         arguments.len(),
-        OWNED_BASE_ARGUMENTS + usize::from(context_size.is_some()) * 2
+        OWNED_BASE_ARGUMENTS
+            + usize::from(context_size.is_some()) * 2
+            + usize::from(reasoning.is_some()) * 2
     );
     arguments
 }

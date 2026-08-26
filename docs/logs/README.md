@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.078 llama.cpp Owned Reasoning Controls Closeout](./2026-08-26-g04-078-llama-cpp-owned-reasoning-controls-closeout.md) — complete; Research 225 admits one exact `--reasoning off` row; cards 216-218
 - [2026-08-26 g04.078 llama.cpp Owned Reasoning Controls Compiled](./2026-08-26-g04-078-llama-cpp-owned-reasoning-controls-compiled.md) — evidence-first cards 216-218; Research 225 reserved
 - [2026-08-26 g04.077 Cursor Headless Ask Mode Closeout](./2026-08-26-g04-077-cursor-headless-ask-mode-closeout.md) — complete; Research 224 admits four exact `Read` Ask rows at qualified dispatch and application; cards 213-215; PR 76
 - [2026-08-26 g04.077 Cursor Headless Ask Mode Compiled](./2026-08-26-g04-077-cursor-headless-ask-mode-compiled.md) — evidence-first cards 213-215; Research 224 reserved

@@ -14,10 +14,11 @@ shape.
 
 ## Next Task
 
-Execute g04.078 cards 216-218 serially for exact `llama-cpp.owned` reasoning
-controls. Card 216 must promote Research 225 with a non-empty exact
-model/template-bound deliver-now set before cards 217-218 run; otherwise stop
-after evidence. Keep g04 open. Contract 029 currentness remains standing.
+Reassess the remaining per-route feature inventory in the advanced-feature
+triage tail and compile the next numbered route-local milestone. g04.078 is
+complete through cards 216-218: Research 225 admitted one exact
+`--reasoning off` row and it is bound and proved. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Standing Lanes
 

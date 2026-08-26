@@ -1,6 +1,6 @@
 # 217 llama.cpp Owned Reasoning Controls Binding
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -38,16 +38,16 @@ and canonical owned-server argv.
 
 ## Acceptance Criteria
 
-- [ ] only Research 225 deliver-now rows prepare reasoning controls
-- [ ] public seams are closed and llama.cpp-local; no portable or raw API
+- [x] only Research 225 deliver-now rows prepare reasoning controls
+- [x] public seams are closed and llama.cpp-local; no portable or raw API
       appears
-- [ ] prepared state, driver state, exact runtime, model/template evidence,
+- [x] prepared state, driver state, exact runtime, model/template evidence,
       and argv agree
-- [ ] omission and all context-size rows retain exact prior behavior
-- [ ] unsupported, stale, mismatched, or wider rows reject before process work
-- [ ] docs claim no stronger applied, effective, or observed state than exact
+- [x] omission and all context-size rows retain exact prior behavior
+- [x] unsupported, stale, mismatched, or wider rows reject before process work
+- [x] docs claim no stronger applied, effective, or observed state than exact
       evidence supports
-- [ ] serving ownership, readiness, retention, lifecycle, and cleanup do not
+- [x] serving ownership, readiness, retention, lifecycle, and cleanup do not
       widen
 
 ## Validation

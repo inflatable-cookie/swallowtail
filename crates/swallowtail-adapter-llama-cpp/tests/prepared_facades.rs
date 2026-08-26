@@ -12,7 +12,7 @@ use std::num::NonZeroU64;
 use swallowtail_adapter_llama_cpp::{
     LlamaCppAttachedPreparationInput, LlamaCppCatalogueProfileInput, LlamaCppContextSize,
     LlamaCppInferenceProfileInput, LlamaCppModelSelection, LlamaCppOwnedPreparationInput,
-    LlamaCppOwnedServingSelection, llama_cpp_attached_access_profile,
+    LlamaCppOwnedServingSelection, LlamaCppReasoningSelection, llama_cpp_attached_access_profile,
     llama_cpp_owned_access_profile, prepare_llama_cpp_attached, prepare_llama_cpp_owned,
 };
 use swallowtail_core::{
@@ -173,9 +173,11 @@ fn owned_facade_returns_only_after_readiness_and_preserves_cleanup_order() {
 
 #[test]
 fn owned_facade_binds_context_size_across_evidence_driver_and_argv() {
-    let omitted = owned_start(None);
+    let omitted = owned_start(None, None);
     assert_eq!(omitted.evidence().context_size(), None);
     assert_eq!(omitted.prepared.context_size(), None);
+    assert_eq!(omitted.evidence().reasoning(), None);
+    assert_eq!(omitted.prepared.reasoning(), None);
     assert_eq!(
         omitted.fixture.owned.arguments(),
         [
@@ -195,9 +197,11 @@ fn owned_facade_binds_context_size_across_evidence_driver_and_argv() {
 
     for value in [1_u32, 4096, i32::MAX as u32] {
         let selected = LlamaCppContextSize::from_u64(u64::from(value)).expect("admitted value");
-        let started = owned_start(Some(selected));
+        let started = owned_start(Some(selected), None);
         assert_eq!(started.evidence().context_size(), Some(selected));
         assert_eq!(started.prepared.context_size(), Some(selected));
+        assert_eq!(started.evidence().reasoning(), None);
+        assert_eq!(started.prepared.reasoning(), None);
         assert_eq!(
             started.fixture.owned.arguments(),
             [
@@ -217,6 +221,64 @@ fn owned_facade_binds_context_size_across_evidence_driver_and_argv() {
             ]
         );
     }
+}
+
+#[test]
+fn owned_facade_binds_reasoning_across_evidence_driver_and_argv() {
+    let selected = LlamaCppReasoningSelection::Disabled;
+    let started = owned_start(None, Some(selected));
+    assert_eq!(started.evidence().reasoning(), Some(selected));
+    assert_eq!(started.prepared.reasoning(), Some(selected));
+    assert_eq!(started.evidence().context_size(), None);
+    assert_eq!(
+        started.fixture.owned.arguments(),
+        [
+            "--model",
+            "/private/models/fixture.gguf",
+            "--alias",
+            "swallowtail-fixture-stories260k",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "0",
+            "--offline",
+            "--no-ui",
+            "--no-agent",
+            "--reasoning",
+            "off",
+        ]
+    );
+}
+
+#[test]
+fn owned_facade_composes_context_size_and_reasoning_without_interference() {
+    let context_size = LlamaCppContextSize::from_u64(8192).expect("admitted value");
+    let reasoning = LlamaCppReasoningSelection::Disabled;
+    let started = owned_start(Some(context_size), Some(reasoning));
+    assert_eq!(started.evidence().context_size(), Some(context_size));
+    assert_eq!(started.evidence().reasoning(), Some(reasoning));
+    assert_eq!(started.prepared.context_size(), Some(context_size));
+    assert_eq!(started.prepared.reasoning(), Some(reasoning));
+    assert_eq!(
+        started.fixture.owned.arguments(),
+        [
+            "--model",
+            "/private/models/fixture.gguf",
+            "--alias",
+            "swallowtail-fixture-stories260k",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "0",
+            "--offline",
+            "--no-ui",
+            "--no-agent",
+            "--ctx-size",
+            "8192",
+            "--reasoning",
+            "off",
+        ]
+    );
 }
 
 #[test]
@@ -271,7 +333,10 @@ impl OwnedStart {
     }
 }
 
-fn owned_start(context_size: Option<LlamaCppContextSize>) -> OwnedStart {
+fn owned_start(
+    context_size: Option<LlamaCppContextSize>,
+    reasoning: Option<LlamaCppReasoningSelection>,
+) -> OwnedStart {
     let server =
         FixtureServer::start_with(PropertiesFixture::VersionMismatch, StreamFixture::Success);
     let startup = STARTUP_SUCCESS.replace("{{ENDPOINT}}", server.endpoint());
@@ -285,6 +350,9 @@ fn owned_start(context_size: Option<LlamaCppContextSize>) -> OwnedStart {
         LlamaCppOwnedServingSelection::new(fixture.artifact(), model_selection("llama-cpp-b10069"));
     if let Some(context_size) = context_size {
         serving = serving.with_context_size(context_size);
+    }
+    if let Some(reasoning) = reasoning {
+        serving = serving.with_reasoning(reasoning);
     }
     let prepared = prepare_llama_cpp_owned(
         LlamaCppOwnedPreparationInput::new(
@@ -307,6 +375,7 @@ fn owned_start(context_size: Option<LlamaCppContextSize>) -> OwnedStart {
         )
         .expect("serving start prepares");
     assert_eq!(start.evidence().context_size(), context_size);
+    assert_eq!(start.evidence().reasoning(), reasoning);
     let handle = block_on(start.start(services)).expect("ready handle is returned");
     assert_eq!(block_on(handle.stop()), CleanupOutcome::Clean);
     OwnedStart {

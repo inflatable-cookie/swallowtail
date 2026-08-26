@@ -1,6 +1,6 @@
 # 218 llama.cpp Owned Reasoning Controls Acceptance
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -42,15 +42,15 @@ server lifecycle, then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted exact row dispatches canonical arguments
-- [ ] omission, context size, and unsupported rows retain or reject exact
+- [x] every admitted exact row dispatches canonical arguments
+- [x] omission, context size, and unsupported rows retain or reject exact
       prior behavior
-- [ ] prepared, driver, runtime, model/template, and argv mismatches fail
+- [x] prepared, driver, runtime, model/template, and argv mismatches fail
       before process work
-- [ ] no inference effectiveness, isolation, resource, configuration,
+- [x] no inference effectiveness, isolation, resource, configuration,
       retention, or lifecycle claim widens
-- [ ] docs report no stronger reasoning state than exact evidence supports
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] docs report no stronger reasoning state than exact evidence supports
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

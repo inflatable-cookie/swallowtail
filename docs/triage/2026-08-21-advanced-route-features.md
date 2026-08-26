@@ -2364,3 +2364,28 @@ download/load, template or format changes, attached-route inference, live
 prompting, currentness, release, generation rollover, and g04 closure stay
 out. If exact behavior needs a live model run or unbound ambient facts, the
 lane stops after card 216.
+
+### Outcome (2026-08-26)
+
+Research 225 admitted one row and cards 216-218 delivered it. `--reasoning off`
+ships as adapter-local dispatch-only owned-serving configuration. It is the
+only value that needs no model or template fact before process work: exact
+`common/arg.cpp` stores `enable_reasoning = 0`, and exact
+`tools/server/server-context.cpp` evaluates
+`enable_reasoning != 0 && template_supports_thinking`, so `0` short-circuits
+before the template probe.
+
+Everything else was withheld. `auto` stores the parser default and writes no
+template kwarg, so it is byte-equivalent to omission. `on` shares the default's
+startup result and differs only through a request-time
+`chat_template_kwargs` override this serving route cannot observe.
+`--reasoning-budget` is discarded whole by
+`if (!chat_params.thinking_end_tag.empty())` in
+`tools/server/server-common.cpp`, and that tag is produced per request, so
+launch-time `0` or `N` can be silently inert with no warning or log.
+
+Observation is closed on this route: `/props` `chat_template_caps` carries
+exactly eight keys and none reports thinking support, `task_params::to_json`
+emits no `reasoning_budget_tokens` in either branch, and the one
+`thinking = %d` startup line is `LOG_TRC`, above the default verbosity of `3`.
+The triage row for `llama-cpp.owned` reasoning is closed.

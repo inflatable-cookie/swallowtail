@@ -2,7 +2,8 @@
 
 use swallowtail_adapter_llama_cpp::{
     LlamaCppContextSize, LlamaCppOwnedPreparationInput, LlamaCppOwnedPreparedIntegration,
-    LlamaCppOwnedServingSelection, LlamaCppPreparedServingStart, prepare_llama_cpp_owned,
+    LlamaCppOwnedServingSelection, LlamaCppPreparedServingStart, LlamaCppReasoningSelection,
+    prepare_llama_cpp_owned,
 };
 use swallowtail_runtime::{Deadline, HostServices, PreparationFailure, ScopeId, ServingInstanceId};
 
@@ -27,6 +28,12 @@ fn with_context_size(
     context_size: LlamaCppContextSize,
 ) -> LlamaCppOwnedServingSelection {
     serving.with_context_size(context_size)
+}
+
+fn with_reasoning_disabled(
+    serving: LlamaCppOwnedServingSelection,
+) -> LlamaCppOwnedServingSelection {
+    serving.with_reasoning(LlamaCppReasoningSelection::Disabled)
 }
 
 fn main() {}

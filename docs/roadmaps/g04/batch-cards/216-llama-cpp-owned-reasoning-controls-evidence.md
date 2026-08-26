@@ -1,6 +1,6 @@
 # 216 llama.cpp Owned Reasoning Controls Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -63,16 +63,16 @@ deliver-now table or an honest empty set.
 
 ## Acceptance Criteria
 
-- [ ] exact identity, source digests, parser, precedence, and defaults are
+- [x] exact identity, source digests, parser, precedence, and defaults are
       frozen
-- [ ] selection, budget, template/model applicability, application, and
+- [x] selection, budget, template/model applicability, application, and
       observation have exact dispositions
-- [ ] requested, prepared, dispatched, parser-accepted, applied, effective,
+- [x] requested, prepared, dispatched, parser-accepted, applied, effective,
       and observed state remain distinct
-- [ ] production preparation, driver, argv, context-size composition,
+- [x] production preparation, driver, argv, context-size composition,
       fixtures, docs, and API seams are audited
-- [ ] Research 225 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 225 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
 
 ## Validation

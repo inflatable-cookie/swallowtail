@@ -35,6 +35,18 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add closed adapter-local `LlamaCppReasoningSelection` on `llama-cpp.owned`:
+  `Disabled` dispatches canonical `--reasoning off` on exact
+  `b10069-178a6c449` through `LlamaCppOwnedServingSelection::with_reasoning`
+  and `LlamaCppOwnedDriver::with_reasoning`; omission preserves the current
+  no-reasoning-argument launch and every `--ctx-size` row is unchanged.
+  `--reasoning on` and `auto` are withheld as an unobservable per-request
+  distinction and an exact synonym for the default; `--reasoning-budget` is
+  withheld entirely because exact source discards it without a template
+  thinking end tag. This is owned-serving dispatch and applied server state
+  only: effective and observed reasoning behavior, model reasoning
+  capability, and attached-route reasoning support stay unclaimed.
+  Research 225, g04.078
 - add closed Cursor-local `CursorHeadlessReadMode` on `cursor-agent.headless`:
   `Ask` dispatches canonical `--mode ask` on exact `2026.07.01-41b2de7`,
   `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and `2026.08.11-e8db854` with

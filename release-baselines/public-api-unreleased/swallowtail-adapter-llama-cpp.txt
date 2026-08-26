@@ -1,4 +1,8 @@
 pub mod swallowtail_adapter_llama_cpp
+#[non_exhaustive] pub enum swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection
+pub swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection::Disabled
+impl swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection::as_argument_value(self) -> &'static str
 pub struct swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
 impl swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver::new() -> Self
@@ -50,6 +54,7 @@ pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::new() -> Self
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::with_reasoning(self, swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection) -> Self
 impl core::default::Default for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::default() -> Self
 impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
@@ -70,6 +75,7 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expec
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expected_commit(&self) -> &'static str
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
 pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
@@ -82,11 +88,14 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::ex
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
 pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::prepare_serving_start(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::identity::ServingInstanceId, swallowtail_runtime::time::Deadline) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
 pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
 impl swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::new(swallowtail_core::model_artifact::ModelArtifactBinding, swallowtail_adapter_llama_cpp::LlamaCppModelSelection) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_reasoning(self, swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection) -> Self
 pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 impl swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence

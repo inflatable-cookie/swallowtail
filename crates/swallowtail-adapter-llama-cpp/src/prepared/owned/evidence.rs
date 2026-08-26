@@ -8,6 +8,7 @@ pub struct LlamaCppOwnedPreparedEvidence {
     operation: PreparedOperationEvidence,
     artifact: ModelArtifactBinding,
     context_size: Option<crate::LlamaCppContextSize>,
+    reasoning: Option<crate::LlamaCppReasoningSelection>,
 }
 
 impl LlamaCppOwnedPreparedEvidence {
@@ -19,6 +20,7 @@ impl LlamaCppOwnedPreparedEvidence {
             operation: PreparedOperationEvidence::from_plan(plan, prepared.evidence.clone())?,
             artifact: prepared.artifact.clone(),
             context_size: prepared.context_size(),
+            reasoning: prepared.reasoning(),
         })
     }
 
@@ -56,5 +58,11 @@ impl LlamaCppOwnedPreparedEvidence {
     #[must_use]
     pub const fn context_size(&self) -> Option<crate::LlamaCppContextSize> {
         self.context_size
+    }
+
+    /// Returns the selected `--reasoning` value when one was prepared.
+    #[must_use]
+    pub const fn reasoning(&self) -> Option<crate::LlamaCppReasoningSelection> {
+        self.reasoning
     }
 }

@@ -119,6 +119,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   baseline to 378 findings (332 warnings / 46 errors).
 - Surface: `swallowtail-adapter-llama-cpp` context-size acceptance tests;
   g04.056 closeout evidence.
+- Progress 2026-08-26 (g04.078): adding reasoning proofs pushed
+  `owned_driver.rs` from warning to error, so its selection proofs moved to
+  `tests/owned_driver/selections.rs`. That file is a warning again at 260 code
+  lines and doctor returned to the inherited 380/334/46 baseline.
+  `prepared_facades.rs` remains a warning at 381 code lines and still wants the
+  same treatment; the stale g04.056 closeout baseline is still uncorrected.
 
 ### [ ] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
 - Friction: PR 54's first pinned-MSRV run stalled for six hours in

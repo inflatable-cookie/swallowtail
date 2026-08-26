@@ -407,7 +407,7 @@ New route-family research does not pre-empt this sequence.
 - [071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
 - [072 Grok Build ACP Subagents Disabled](./072-grok-build-acp-subagents-disabled.md) — stopped after card 198; Research 219 empty deliver-now set; cards 199-200 blocked
 - [073 Cline Headless Plan Mode](./073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
-- [074 Cline Headless Model Selection](./074-cline-headless-model-selection.md) — ready, cards 204-206; Research 221 reserved
+- [074 Cline Headless Model Selection](./074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

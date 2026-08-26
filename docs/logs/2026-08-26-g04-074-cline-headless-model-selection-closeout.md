@@ -16,9 +16,10 @@ Card 204 completed an exact `cline@3.0.55` package, parser, provider/model
 precedence, membership, persistence, application, output, and production-seam
 audit. Research 221 admits no deliver-now provider/model row. Cards 205 and 206
 are blocked and were not executed. The Cline adapter, prepared facade, child
-argv, fixtures, guide, matrices, and API baseline are unchanged. No install,
-login, account inspection, catalogue request, provider prompt, configuration
-mutation, live probe, or paid operation was used.
+argv, guide, matrices, and API baseline are unchanged; the audit corrected one
+`run_result.model` fixture-truth inaccuracy in the named `3.0.55` corpus. No
+install, login, account inspection, catalogue request, provider prompt,
+configuration mutation, live probe, or paid operation was used.
 
 ## Evidence Stop
 
@@ -83,17 +84,36 @@ provider replacing the host's persisted defaults.
   exact package, parser, provider and model precedence, membership sources,
   validation absence, persistence, observation, production audit, and empty
   deliver-now table
-- cards 204-206, g04.074, g04 README, programme, triage, indexes, sole Next
-  Task, this closeout
+- `crates/swallowtail-adapter-cline/tests/fixtures/cline-headless-3.0.55/`:
+  `success.jsonl` `run_result.model` corrected from a bare string to
+  `{id, provider}`; `protocol.json` gains `run_result_model_shape`,
+  `run_result_model_is_request_echo`,
+  `run_start_requires_unselected_verbose`, and
+  `model_selection_evidence_closed`; `identity.json` freezes
+  `sdk/packages/shared/src/agents/types.ts` and
+  `sdk/packages/agents/src/agent-runtime.ts` and records the object/echo
+  decision
+- `crates/swallowtail-adapter-cline/tests/cline_headless_model_shape.rs`: new
+  test target `run_result_model_is_the_object_shaped_request_echo` pins the
+  shape, the frozen sources, and the request-echo semantics; declared in
+  `Cargo.toml` because the crate sets `autotests = false`. Kept as its own file
+  so neither it nor `cline_headless_identity.rs` crosses a god-file threshold
+- cards 204-206, g04.074, g04 README, generation index, batch-cards index,
+  programme, triage, research/log indexes, sole Next Task, this closeout
 
-No production code, public API, shared contract/runtime, fixture, guide
-capability, matrix, or changelog edit.
+No production code, public API, shared contract/runtime, guide capability,
+matrix, or changelog edit. The corpus change is fixture truth: it adds no
+capability, claim, route, or argv.
 
 ## Validation
 
 Passed:
 
-- `effigy validate:focused swallowtail-adapter-cline`
+- `cargo fmt -p swallowtail-adapter-cline`
+- `effigy validate:focused swallowtail-adapter-cline` — 55/55 tests passed
+- `effigy package:verify-affected swallowtail-adapter-cline`
+- `effigy check:examples`
+- `effigy package:api`
 - `effigy qa:northstar`
 - `effigy qa:docs:index:research`
 - `effigy qa:docs:index:logs`
@@ -103,19 +123,39 @@ Passed:
 - `effigy qa:docs:next-action:roadmaps`
 - `git diff --check`
 
-`effigy doctor` at dispatch reproduced the inherited baseline exactly: 379
-scan findings (333 warnings, 46 errors) plus one generated-in-src finding. No
-drift; unrelated findings were not repaired. Docs-only edits do not change it.
+`effigy doctor` reproduced the inherited baseline exactly: 379 scan findings
+(333 warnings, 46 errors) plus one generated-in-src finding. No drift;
+unrelated findings were not repaired.
 
-## Carried Risk
+The regression guard initially landed inside `cline_headless_identity.rs` and
+pushed that file to 255 code lines, adding one god-file warning (380/334/46).
+That drift was self-inflicted, not inherited, so it was removed by splitting
+the guard into its own test target rather than recorded. Doctor is back at the
+inherited numbers.
 
+## Fixture Truth Repair
+
+Card 204's production audit found that
 `crates/swallowtail-adapter-cline/tests/fixtures/cline-headless-3.0.55/success.jsonl`
-models `run_result.model` as a bare string, while exact `3.0.55` emits a
-`{id, provider}` object. The headless decoder reads only `finishReason` and
-`text` from `run_result`, and `protocol.json` names the field without claiming
-a shape, so no Swallowtail claim is wrong. The example line is still
-inaccurate for the frozen wire and should be corrected in a later Cline
-fixture-truth lane. Card 204 is evidence-only, so it was not changed here.
+modelled `run_result.model` as a bare string, while exact `3.0.55` emits
+`{id, provider, info?}` — `AgentResult.model` in
+`sdk/packages/shared/src/agents/types.ts`, built from `messageModelInfo` in
+`sdk/packages/agents/src/agent-runtime.ts`. The headless decoder reads only
+`finishReason` and `text`, and `protocol.json` named the field without claiming
+a shape, so no Swallowtail claim was wrong — but leaving the named `3.0.55`
+corpus knowingly inaccurate is not an acceptable carry from the card that
+found it.
+
+Repaired here: the fixture carries the object, `identity.json` freezes both SDK
+sources and records `run_result_model_is_object` /
+`run_result_model_is_request_echo`, `protocol.json` declares
+`run_result_model_shape`, and
+`run_result_model_is_the_object_shaped_request_echo` pins the shape, the frozen
+sources, and the echo relationship to `run_start`. The guard was verified
+against a deliberately regressed fixture and fails on the bare string.
+
+No capability, claim, route, argv, driver, or API change: the decoder still
+ignores the field.
 
 ## Continuation
 
@@ -123,6 +163,6 @@ Keep g04 open. Reassess the remaining per-route feature inventory for the next
 serial lane unless the operator supplies a different direction. `cline.headless`
 `-m` is evidence-closed at `3.0.55`; reopening needs a later package point or
 separately authorized configuration handling, not a re-read. The g04.042
-thinking dependency is unchanged, so cards 117-118 stay blocked. Contract 029
-currentness remains standing. Do not compile the next family from this
-closeout.
+thinking dependency is unchanged, so cards 117-118 stay blocked. No carried
+risk remains from this lane. Contract 029 currentness remains standing. Do not
+compile the next family from this closeout.

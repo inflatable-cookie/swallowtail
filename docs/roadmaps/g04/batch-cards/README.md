@@ -4,15 +4,16 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [205-cline-headless-model-selection-binding.md](./205-cline-headless-model-selection-binding.md) — gated on non-empty Research 221
-- [206-cline-headless-model-selection-acceptance.md](./206-cline-headless-model-selection-acceptance.md) — gated on card 205
+No planned cards.
 
 ## Ready
 
-- [204-cline-headless-model-selection-evidence.md](./204-cline-headless-model-selection-evidence.md)
+No ready cards.
 
 ## Blocked
 
+- [205-cline-headless-model-selection-binding.md](./205-cline-headless-model-selection-binding.md) — blocked; Research 221 empty deliver-now set
+- [206-cline-headless-model-selection-acceptance.md](./206-cline-headless-model-selection-acceptance.md) — blocked; card 205 blocked
 - [199-grok-build-acp-subagents-disabled-binding.md](./199-grok-build-acp-subagents-disabled-binding.md) — blocked; Research 219 empty deliver-now set
 - [200-grok-build-acp-subagents-disabled-acceptance.md](./200-grok-build-acp-subagents-disabled-acceptance.md) — blocked; card 199 blocked
 - [196-copilot-cli-acp-built-in-tool-allowlist-binding.md](./196-copilot-cli-acp-built-in-tool-allowlist-binding.md) — blocked; Research 218 empty deliver-now set
@@ -30,6 +31,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [204-cline-headless-model-selection-evidence.md](./204-cline-headless-model-selection-evidence.md) — complete; Research 221 empty deliver-now set
 - [203-cline-headless-plan-mode-acceptance.md](./203-cline-headless-plan-mode-acceptance.md)
 - [202-cline-headless-plan-mode-binding.md](./202-cline-headless-plan-mode-binding.md)
 - [201-cline-headless-plan-mode-evidence.md](./201-cline-headless-plan-mode-evidence.md)

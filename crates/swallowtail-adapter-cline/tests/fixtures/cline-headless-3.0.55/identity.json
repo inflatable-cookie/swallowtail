@@ -36,11 +36,18 @@
     "apps/cli/src/utils/output.ts": "f1b8131f50d69dcacc773d7e968c363c2db3ab508048691a67916c073e257a5e",
     "apps/cli/src/utils/events.ts": "17c46995ebe368936e5907a9548999ad9445171f139ade7e4ddbbbe4afcb1757",
     "apps/cli/src/utils/startup-settings.ts": "ca5868e8d82202d9f57e215ca1f3b857c968bc4e361761a4321131780993fcf7",
-    "apps/cli/src/utils/helpers.ts": "61330c996391129868de943cd04d093532c4e4bee865f4b0b44aca521666488e"
+    "apps/cli/src/utils/helpers.ts": "61330c996391129868de943cd04d093532c4e4bee865f4b0b44aca521666488e",
+    "sdk/packages/shared/src/agents/types.ts": "aaf98184c8f326102872e52ed80e09724ac2268b15d4b72b74e1b97758dcfc91",
+    "sdk/packages/agents/src/agent-runtime.ts": "340976da43ba5bc423cd9094a4cc6a61ec8d34ec853eeba2bc037b1f773333a5"
   },
   "identity_decision": {
     "shape": "new-route",
-    "entrypoint": ["cline", "--json", "--auto-approve", "false"],
+    "entrypoint": [
+      "cline",
+      "--json",
+      "--auto-approve",
+      "false"
+    ],
     "prompt_operand_required": true,
     "stdin_prompt_unselected": true,
     "flatten_onto_acp": false,
@@ -55,6 +62,8 @@
     "live_json_run": false,
     "host_install_changed": false,
     "platform_binary_extracted": false,
-    "claim_change_in_card": false
+    "claim_change_in_card": false,
+    "run_result_model_is_object": true,
+    "run_result_model_is_request_echo": true
   }
 }

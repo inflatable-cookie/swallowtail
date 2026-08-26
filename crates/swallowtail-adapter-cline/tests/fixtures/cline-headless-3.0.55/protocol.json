@@ -1,12 +1,22 @@
 {
-  "selected_command": ["cline", "--json", "--auto-approve", "false"],
+  "selected_command": [
+    "cline",
+    "--json",
+    "--auto-approve",
+    "false"
+  ],
   "transport": "stdio-ndjson-envelopes",
   "framing": {
     "stdout": "one-json-object-per-line",
     "envelope_ts": "iso-8601-from-nowIso",
     "encoder": "emitJsonLine"
   },
-  "first_op": ["spawn", "one prompt operand", "drain envelopes", "join or kill"],
+  "first_op": [
+    "spawn",
+    "one prompt operand",
+    "drain envelopes",
+    "join or kill"
+  ],
   "selected_envelope_types": [
     "run_start",
     "agent_event",
@@ -14,8 +24,13 @@
     "run_abort_requested",
     "run_aborted"
   ],
-  "stderr_envelope_types": ["error"],
-  "unmapped_envelope_types": ["team_event", "team_restored"],
+  "stderr_envelope_types": [
+    "error"
+  ],
+  "unmapped_envelope_types": [
+    "team_event",
+    "team_restored"
+  ],
   "docs_ask_say_schema": "stale-documentation-not-this-wire",
   "agent_event_nested_types": [
     "iteration_start",
@@ -26,7 +41,11 @@
     "error",
     "notice"
   ],
-  "content_start_types": ["text", "reasoning", "tool"],
+  "content_start_types": [
+    "text",
+    "reasoning",
+    "tool"
+  ],
   "run_start_fields": [
     "providerId",
     "modelId",
@@ -44,6 +63,13 @@
     "text",
     "model"
   ],
+  "run_result_model_shape": {
+    "id": "string",
+    "provider": "string",
+    "info": "optional-model-info"
+  },
+  "run_result_model_is_request_echo": true,
+  "run_start_requires_unselected_verbose": true,
   "finish_reason_map": {
     "completed": "end_turn",
     "aborted": "cancelled"
@@ -83,10 +109,16 @@
     "-p",
     "--plan"
   ],
-  "optional_unmapped_until_driver": ["--timeout", "-m", "--model", "--thinking"],
+  "optional_unmapped_until_driver": [
+    "--timeout",
+    "-m",
+    "--model",
+    "--thinking"
+  ],
   "acp_is_mutually_exclusive": true,
   "decoder_corpus": "cline-headless-3.0.55",
   "provider_prompt_sent": false,
   "live_json_run": false,
-  "host_install_changed": false
+  "host_install_changed": false,
+  "model_selection_evidence_closed": "research-221-empty-deliver-now-set"
 }

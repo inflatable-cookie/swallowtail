@@ -74,7 +74,8 @@ empty set when it does not.
       audited
 - [x] Research 221 contains a non-empty exact table or honest empty set
 - [x] no production code, public API, shared contract/runtime, currentness,
-      release, merge, rollover, or g04 closure changes
+      release, merge, rollover, or g04 closure changes (the audited
+      `run_result.model` fixture-truth correction adds no claim)
 - [x] focused Cline validation, Northstar QA, research indexes, and diff checks
       pass
 
@@ -124,13 +125,19 @@ applied model.
 Three stop conditions fire independently: ambient provider identity, open
 model membership, and unavoidable durable configuration mutation. Cards 205
 and 206 are blocked and were not executed. No production code, public API,
-shared contract, runtime, fixture, guide, matrix, currentness, release, merge,
+shared contract, runtime, guide, matrix, currentness, release, merge,
 rollover, or g04 closure changed.
 
-One audit note carried forward: `tests/fixtures/cline-headless-3.0.55/success.jsonl`
-models `run_result.model` as a bare string while the exact source emits a
-`{id, provider}` object. The decoder ignores the field, so no claim is wrong,
-but the example line is inaccurate for the frozen wire.
+The audit found one inaccuracy in the named corpus and repaired it here:
+`tests/fixtures/cline-headless-3.0.55/success.jsonl` modelled
+`run_result.model` as a bare string while exact `3.0.55` emits
+`{id, provider, info?}`. The decoder reads only `finishReason` and `text`, so
+no Swallowtail claim depended on it, but a knowingly inaccurate `3.0.55`
+corpus is not an acceptable carry. The fixture now carries the object,
+`identity.json` freezes the two SDK sources behind the shape, `protocol.json`
+declares `run_result_model_shape` and `run_result_model_is_request_echo`, and
+`run_result_model_is_the_object_shaped_request_echo` pins it. This is fixture
+truth only: no capability, claim, route, argv, or API change.
 
 ## Stop Conditions
 

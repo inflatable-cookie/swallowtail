@@ -39,6 +39,10 @@ name = "cline_headless_identity"
 path = "tests/cline_headless_identity.rs"
 
 [[test]]
+name = "cline_headless_model_shape"
+path = "tests/cline_headless_model_shape.rs"
+
+[[test]]
 name = "activity_corpus"
 path = "tests/activity_corpus.rs"
 

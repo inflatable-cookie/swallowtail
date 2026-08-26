@@ -327,12 +327,16 @@ value Swallowtail placed in argv. An echo of the request is not acceptance
 evidence that the provider applied it. `run_result` is also absent on the
 abort and non-completed paths.
 
-One audit note: the named fixture
-`tests/fixtures/cline-headless-3.0.55/success.jsonl` models `run_result.model`
-as a bare string, while the exact source emits the `{id, provider}` object.
-The Swallowtail decoder reads only `finishReason` and `text` from
-`run_result`, so nothing depends on the shape and no claim is wrong, but the
-example line is inaccurate for the frozen wire.
+One audit finding, corrected in this card: the named fixture
+`tests/fixtures/cline-headless-3.0.55/success.jsonl` modelled `run_result.model`
+as a bare string, while the exact source emits the `{id, provider}` object. The
+Swallowtail decoder reads only `finishReason` and `text` from `run_result`, so
+no claim depended on the shape, but the named `3.0.55` corpus was inaccurate
+for the frozen wire. The fixture now carries the object,
+`identity.json` freezes `sdk/packages/shared/src/agents/types.ts` and
+`sdk/packages/agents/src/agent-runtime.ts` behind it, `protocol.json` declares
+`run_result_model_shape` and `run_result_model_is_request_echo`, and a named
+identity test pins all of it so the shape cannot regress.
 
 Requested, planned, and dispatched states are Swallowtail-owned.
 Parser-accepted and CLI-applied states are source-visible. Provider-applied
@@ -429,8 +433,10 @@ Research 221 promotes no deliver-now `cline.headless` provider/model row. The
 deliver-now set is empty.
 
 Card 205 must not bind a `ModelRoute`. Card 206 has no dispatch to prove. The
-Cline adapter, its fixtures, the headless guide, the route and feature
-matrices, and the unreleased package API baseline are unchanged.
+Cline adapter, the headless guide, the route and feature matrices, and the
+unreleased package API baseline are unchanged. The only corpus change is the
+`run_result.model` shape correction described above, which fixes fixture truth
+and adds no capability, claim, or route.
 
 A later lane may reopen this only with an exact package point that fixes
 provider identity from route facts, closes model membership before provider

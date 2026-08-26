@@ -198,9 +198,9 @@ families do not interrupt this programme by default.
   `2.1.203+`, and dynamic workflow topology remains unbounded for binding.
   Cards 182-183 are blocked.
 - [g04.066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md)
-  is complete pending PR. Research 213 admits exact `0.147.0`, `0.148.0`,
-  `0.149.0`, and `0.149.1` default openai Responses exec for seven frozen slugs
-  × `low|medium|high`. Cards 185-186 bind adapter-local
+  is complete and merged through PR 65 at `46070dfd`. Research 213 admits exact
+  `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` default openai Responses exec
+  for seven frozen slugs × `low|medium|high`. Cards 185-186 bind adapter-local
   `CodexModelVerbosity`. Live-catalog acceptance and effective length stay
   withheld.
 

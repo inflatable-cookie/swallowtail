@@ -233,13 +233,18 @@ families do not interrupt this programme by default.
   provider and model into shared durable settings before the run with no way to
   disable or scope it. Cards 205-206 are blocked. The g04.042 thinking
   dependency is not removed.
+- [g04.075 Qwen Headless Plan Mode](./075-qwen-headless-plan-mode.md) is ready.
+  Research 222 and cards 207-209 form one serial evidence-first lane for
+  portable `HarnessMode::Plan` on exact maintained `0.21.15`, `0.22.0`, and
+  `0.22.1`. Binding is conditional on complete exact Plan behavior across
+  structured runs, turns, reasoning-control children, resume, and fresh
+  replacement. `auto-edit|auto|yolo` and writable authority stay out.
 
 ## Current Execution Boundary
 
-g04.074 is closed at card 204 with an empty Research 221 set. Reassess the
-remaining per-route feature inventory for the next serial lane unless the
-operator supplies a different direction. Keep g04 open. Contract 029
-currentness remains standing.
+Execute g04.075 cards 207-209 serially. Stop after card 207 when Research 222
+is empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

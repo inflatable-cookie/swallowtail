@@ -2156,3 +2156,36 @@ The g04.042 thinking dependency is unchanged: cards 117-118 stay blocked for
 the same absent provider/model selection. Keep g04 open. Do not compile the
 next per-route family from this note. Contract 029 currentness remains
 standing.
+
+## Post-g04.074 Reassessment And g04.075 Compilation (2026-08-26)
+
+Disposition: select fixed-argument Plan on `qwen.headless` and compile g04.075
+as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after Cline model routing stopped on
+ambient provider identity, open membership, and unavoidable shared-settings
+mutation. Another Cline thinking pass cannot remove those gates. Account and
+billing controls, ambient model/tool registries, product personality, writable
+profiles, and process-topology features remain weaker next leads.
+
+Qwen headless has a closed fixed-argument seam. Exact maintained evidence for
+`0.21.15`, `0.22.0`, and `0.22.1` freezes a shared approval-mode parser with
+`plan|default|auto-edit|auto|yolo`. Swallowtail already owns every run or turn
+child and emits explicit `--safe-mode --approval-mode default`, a read-tool
+allowlist, a write/process/tool denylist, one read-only working resource,
+bounded turns/tools/time, exact model binding, optional exact reasoning, and
+joined cleanup.
+
+That is a credible portable Plan candidate, not a delivery decision. Card 207
+and Research 222 must prove exact Plan semantics and precedence, safe-mode and
+tool-filter composition, output truth, ambient-state behavior, and immutable
+reapplication on structured runs, reasoning-control children, later turns,
+resume, and fresh replacement. Parser acceptance, argv dispatch, prompt text,
+or tool absence alone cannot establish applied or effective Plan behavior.
+
+Only portable `HarnessMode::Plan` is eligible. Omission retains exact
+`--approval-mode default`. `auto-edit|auto|yolo`, raw provider modes, writable
+authority, generic tool policy, provider sandbox claims, sibling routes,
+currentness, release, generation rollover, and g04 closure remain out. If no
+exact point proves the full behavior without provider work, Research 222 must
+promote an empty set and the lane stops after card 207.

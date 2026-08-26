@@ -4,11 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-No planned cards.
+- [208-qwen-headless-plan-mode-binding.md](./208-qwen-headless-plan-mode-binding.md) — planned; conditional on Research 222
+- [209-qwen-headless-plan-mode-acceptance.md](./209-qwen-headless-plan-mode-acceptance.md) — planned; conditional on card 208
 
 ## Ready
 
-No ready cards.
+- [207-qwen-headless-plan-mode-evidence.md](./207-qwen-headless-plan-mode-evidence.md) — ready
 
 ## Blocked
 

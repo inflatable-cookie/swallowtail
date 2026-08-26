@@ -8,7 +8,7 @@ Branch: `t3code/review-cursor-ask-mode-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-dcac6f7e`
 Base: `4319e7ce1a7b5154226c5ffb405f6b2db079f38f` (`origin/main` at dispatch)
 Planning base ancestor: `c12eeaf3ac041d66b31bd4cd26dd569efc1e6efd`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/76
 
 ## Result
 

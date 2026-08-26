@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 77 roadmaps: 62 completed milestones, fourteen honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
-076, and one ready milestone at 077. The generation has realized route
+g04 now has 77 roadmaps: 62 completed milestones and fifteen honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
+and 077. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -89,9 +89,12 @@ shell-exec helper whose Darwin support check is binary presence and whose
 filesystem/network policy still reads ambient `sandbox.json`, config, team,
 and feature-gate state. Cards 211-212 are blocked. Omission remains
 `AmbientHost` with no sandbox argument.
-g04.077 is the sole ready serial lane. Card 213 qualifies exact Cursor
-headless Ask behavior; cards 214-215 run only for a non-empty Research 224
-deliver-now set.
+g04.077 stopped after card 213. Research 224 is an empty deliver-now set:
+exact `--mode ask` parses identically on all four qualified builds and is
+immutable for a print run, but applies only as agent-store metadata and an
+`AgentMode.ASK` wire field, its one local effect is an inert shell-exec
+sandbox policy type, and the qualified stream reports no mode. Cards 214-215
+are blocked. No ready lane remains; the next family needs reassessment.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

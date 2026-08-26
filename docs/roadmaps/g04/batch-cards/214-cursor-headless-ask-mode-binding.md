@@ -1,6 +1,6 @@
 # 214 Cursor Headless Ask-Mode Binding
 
-Status: planned; conditional on Research 224
+Status: blocked; Research 224 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26

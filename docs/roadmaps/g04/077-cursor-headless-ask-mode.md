@@ -1,6 +1,6 @@
 # g04.077 Cursor Headless Ask Mode
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -33,18 +33,18 @@ retention, deadline, cancellation, activity, terminal, and cleanup truth.
 
 ## Goals
 
-- [ ] freeze exact parser, alias, placement, repetition, precedence,
+- [x] freeze exact parser, alias, placement, repetition, precedence,
       configuration, source, and output truth for `--mode ask`
-- [ ] prove the exact behavioral and read-only boundary independently from
+- [x] prove the exact behavioral and read-only boundary independently from
       resource access, process isolation, permissions, tools, and trust
-- [ ] promote Research 224 with an exact deliver-now table or honest empty set
+- [x] promote Research 224 with an exact deliver-now table or honest empty set
 - [ ] conditionally add one closed adapter-local Ask selection with no raw mode
       string or provider-neutral API widening
-- [ ] preserve omission as the exact current `Read` to `--mode plan` mapping
+- [x] preserve omission as the exact current `Read` to `--mode plan` mapping
       and `ReadWrite` no-mode argv
-- [ ] prove Ask composes with every qualified Cursor headless model-parameter
+- [x] prove Ask composes with every qualified Cursor headless model-parameter
       tuple without changing its support set
-- [ ] preserve exact one-child lifecycle and default-QA boundaries
+- [x] preserve exact one-child lifecycle and default-QA boundaries
 
 ## Non-Goals
 
@@ -94,10 +94,10 @@ insufficient to claim an effective read-only Q&A posture.
 
 ### Batch 77.1 — Exact Cursor Ask Evidence
 
-- [ ] Execute card 213.
-- [ ] freeze exact parser, precedence, configuration, behavioral, output, and
+- [x] Execute card 213.
+- [x] freeze exact parser, precedence, configuration, behavioral, output, and
       access truth
-- [ ] promote Research 224 with a non-empty exact table or honest empty set
+- [x] promote Research 224 with a non-empty exact table or honest empty set
 
 ### Batch 77.2 — Conditional Adapter-Local Binding
 
@@ -112,17 +112,37 @@ insufficient to claim an effective read-only Q&A posture.
 
 ## Acceptance Criteria
 
-- [ ] only Research 224 deliver-now rows prepare Ask
+- [x] only Research 224 deliver-now rows prepare Ask
 - [ ] Ask selection is closed, Cursor-local, immutable, and exactly dispatched
-- [ ] existing `Read` still dispatches `--mode plan`; `ReadWrite` still omits
-      `--mode`; Ask plus `ReadWrite` rejects before process work
-- [ ] docs distinguish qualified dispatch from parser acceptance, application,
+- [x] existing `Read` still dispatches `--mode plan`; `ReadWrite` still omits
+      `--mode`; Ask is not prepared, so no Ask/`ReadWrite` pair exists
+- [x] docs distinguish qualified dispatch from parser acceptance, application,
       effectiveness, and observation
-- [ ] access, working resource, isolation, configuration, tools, permissions,
+- [x] access, working resource, isolation, configuration, tools, permissions,
       trust, retention, and lifecycle claims do not widen
-- [ ] all qualified model-parameter rows retain exact membership and argv
-- [ ] default QA performs no install, login, account inspection, provider
+- [x] all qualified model-parameter rows retain exact membership and argv
+- [x] default QA performs no install, login, account inspection, provider
       prompt, tool execution, paid work, ambient config mutation, or live run
+
+## Outcome
+
+Stopped after card 213. Research 224 promotes an empty deliver-now set.
+
+Selection truth is strong: `--mode ask` parses exactly and identically on all
+four qualified builds, is case-sensitive and closed to `plan` and `ask`, has no
+persisted-config or environment competitor, and cannot be switched mid-run in
+print mode. `--plan` beats `--mode ask` in `chat.ts`.
+
+Behavioral truth is not. Exact source applies Ask as agent-store metadata
+`"search"` and `AgentMode.ASK` on the outbound `UserMessage`, and stops there.
+Its only local consumer selects a shell-exec sandbox policy type, which is
+inert on this route's argv and ambient-controlled otherwise. No tool registry,
+approval path, or write refusal keys on Ask, and qualified stream JSON reports
+no mode. The read-only exploration posture that motivates Ask lives on an
+unobservable backend.
+
+Cards 214-215 are blocked. Production preparation, argv, driver, fixtures,
+guide, matrices, and API baseline are unchanged.
 
 ## Lane Runway
 

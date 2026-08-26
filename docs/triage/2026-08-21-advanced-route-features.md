@@ -2297,3 +2297,31 @@ modes, Agent, force/yolo/auto-review, sandboxing, live provider work,
 currentness, release, generation rollover, and g04 closure stay out. If exact
 behavior cannot be proved without provider work or ambient widening, the lane
 stops after card 213.
+
+## g04.077 Cursor Ask Outcome (2026-08-26)
+
+Disposition: withdraw Cursor headless Ask from the deliverable inventory until
+new exact evidence appears.
+
+Card 213 and Research 224 froze the full chain on all four qualified builds.
+Selection is exact and closed: commander `.choices(["plan","ask"])` with no
+default, case-sensitive, rejecting `agent`, empty, and list values; no
+persisted-config or environment key competes; a fresh headless session
+inherits no mode metadata; and headless refuses model-initiated switch-mode
+requests. `--plan` beats `--mode ask` in `chat.ts`.
+
+Application stops at the wire. `--mode ask` becomes agent-store metadata
+`"search"` and `AgentMode.ASK` on the outbound `UserMessage`. The only local
+consumer of Ask picks `workspace_readonly` instead of `workspace_readwrite`
+for the shell-exec sandbox policy, and only when the sandbox is available —
+which this route's argv never makes true, and which ambient `sandbox.mode`,
+team, and feature-gate state control when it is. No tool registry, approval
+path, or write refusal keys on Ask, and the qualified stream reports no mode.
+
+Binding Ask would add a second read-mode token whose only proved difference
+from `--mode plan` is the enum the backend receives. That is public surface
+without provable behavior, so the inventory keeps Ask out.
+
+Reopen only for an exact build that proves a local Ask boundary independent of
+ambient sandbox, approval, team, and feature-gate state, or a qualified
+observation channel that reports applied or effective mode.

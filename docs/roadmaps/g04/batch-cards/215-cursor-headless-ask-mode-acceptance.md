@@ -1,6 +1,6 @@
 # 215 Cursor Headless Ask-Mode Acceptance
 
-Status: planned; conditional on card 214
+Status: blocked; Research 224 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26

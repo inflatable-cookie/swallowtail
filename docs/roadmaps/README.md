@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.077 Cursor Headless Ask Mode as one serial evidence-first lane:
-card 213, then cards 214-215 only if Research 224 admits a non-empty exact
-deliver-now set. Keep g04 open. Contract 029 currentness remains standing.
+Reassess the remaining per-route feature inventory and select the next serial
+lane. g04.077 stopped after card 213 with an empty Research 224 deliver-now
+set; cards 214-215 are blocked. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Standing Lanes
 

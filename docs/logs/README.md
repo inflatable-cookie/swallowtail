@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.077 Cursor Headless Ask Mode Closeout](./2026-08-26-g04-077-cursor-headless-ask-mode-closeout.md) — stopped after card 213; Research 224 empty deliver-now set; cards 214-215 blocked
 - [2026-08-26 g04.077 Cursor Headless Ask Mode Compiled](./2026-08-26-g04-077-cursor-headless-ask-mode-compiled.md) — evidence-first cards 213-215; Research 224 reserved
 - [2026-08-26 g04.076 Cursor Headless Provider Sandbox Closeout](./2026-08-26-g04-076-cursor-headless-provider-sandbox-closeout.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked; PR 75
 - [2026-08-26 g04.076 Cursor Headless Provider Sandbox Compiled](./2026-08-26-g04-076-cursor-headless-provider-sandbox-compiled.md) — evidence-first cards 210-212; Research 223 reserved

@@ -4,14 +4,14 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [214-cursor-headless-ask-mode-binding.md](./214-cursor-headless-ask-mode-binding.md) — conditional on a non-empty Research 224 deliver-now set
-- [215-cursor-headless-ask-mode-acceptance.md](./215-cursor-headless-ask-mode-acceptance.md) — conditional on card 214
-
 ## Ready
 
-- [213-cursor-headless-ask-mode-evidence.md](./213-cursor-headless-ask-mode-evidence.md) — exact Ask parser, precedence, behavior, and observation evidence
+None.
 
 ## Blocked
+
+- [214-cursor-headless-ask-mode-binding.md](./214-cursor-headless-ask-mode-binding.md) — blocked; Research 224 empty deliver-now set
+- [215-cursor-headless-ask-mode-acceptance.md](./215-cursor-headless-ask-mode-acceptance.md) — blocked; card 214 blocked
 
 - [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — blocked; Research 223 empty deliver-now set
 - [212-cursor-headless-provider-sandbox-acceptance.md](./212-cursor-headless-provider-sandbox-acceptance.md) — blocked; card 211 blocked
@@ -35,6 +35,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [213-cursor-headless-ask-mode-evidence.md](./213-cursor-headless-ask-mode-evidence.md) — evidence stop; Research 224 empty deliver-now set
 - [210-cursor-headless-provider-sandbox-evidence.md](./210-cursor-headless-provider-sandbox-evidence.md) — evidence stop; Research 223 empty deliver-now set
 - [209-qwen-headless-plan-mode-acceptance.md](./209-qwen-headless-plan-mode-acceptance.md)
 - [208-qwen-headless-plan-mode-binding.md](./208-qwen-headless-plan-mode-binding.md)

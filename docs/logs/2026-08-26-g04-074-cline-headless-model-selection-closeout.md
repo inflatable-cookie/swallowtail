@@ -8,7 +8,7 @@ Branch: `t3code/review-headless-model-selection`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-cba8f57c`
 Base: `60cc3ec7e50568ee56fe3575eb53f8d4835bed7b` (`origin/main` at dispatch)
 Planning base ancestor: `279a53c0f8ddf5896e457dd57eb3b639ae07d272`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/73
 
 ## Result
 

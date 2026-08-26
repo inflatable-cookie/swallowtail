@@ -24,7 +24,9 @@ Claim:
 
 - If compatible-extension: raise latest-qualified to `0.84.3`
 - Keep unpublished `0.83.1` incompatible
-- Update tests, Pi RPC guide, and Pi RPC matrix rows
+- Update tests, Pi RPC guide, Pi RPC matrix rows, and current Pi RPC
+  architecture ceiling statements through `0.84.3`
+- Keep the separate SDK-sidecar exact `0.84.2` architecture statements
 - Pass `effigy validate:focused swallowtail-adapter-pi`
 - Pass `effigy package:verify-affected swallowtail-adapter-pi`
 
@@ -43,7 +45,7 @@ batch-card indexes for this completed standing-currentness work.
   `powershell`, bundled bin path, streaming `usage`)
 - Decoder updates unless adapter mapping changed
 - Next Task or generation-pointer changes
-- Architecture or contract ceiling rewrites
+- Contract ceiling rewrites
 
 ## Batch Cards
 

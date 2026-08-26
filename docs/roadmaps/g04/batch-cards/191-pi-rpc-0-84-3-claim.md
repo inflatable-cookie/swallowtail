@@ -33,6 +33,9 @@ In docs:
 
 - Update Pi RPC prepared-integration guide
 - Update Pi RPC feature-matrix version column
+- Refresh current Pi RPC ceiling statements in
+  `docs/architecture/system-architecture.md` through `0.84.3`
+- Keep the separate SDK-sidecar exact `0.84.2` architecture statements
 - Add `CHANGELOG.md` Unreleased entry
 - Write identity and claim logs
 - Index family research and logs
@@ -57,6 +60,7 @@ consumer checks.
   revisions
 - `0.83.1` remains incompatible
 - `0.84.4` remains permitted UnverifiedNewer
+- Current Pi RPC architecture ceilings name `0.84.3`
 - Decoder specimens remain
 - Named adapter gates pass
 
@@ -69,4 +73,4 @@ Auto-continuation: No. Next Task stays on the generation's actual work.
 - Workspace `qa`, broad `qa:docs`, live probes, MSRV, consumer checks
 - Mapping unused surfaces
 - Provider work
-- Next Task changes, architecture, or contract edits
+- Next Task changes or contract edits

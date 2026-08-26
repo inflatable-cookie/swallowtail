@@ -318,6 +318,108 @@ fn identity_and_claim_qualify_17_4_0_as_compatible_extension() {
     );
 }
 
+const IDENTITY_0_18_0_5: &str = include_str!("fixtures/oh-my-pi-18.0.5/identity.json");
+const PROTOCOL_0_18_0_5: &str = include_str!("fixtures/oh-my-pi-18.0.5/protocol.json");
+
+#[test]
+fn identity_stops_18_0_5_after_official_latest_moved() {
+    let identity: Value = serde_json::from_str(IDENTITY_0_18_0_5)
+        .expect("Oh My Pi 18.0.5 identity corpus is valid JSON");
+    let protocol: Value = serde_json::from_str(PROTOCOL_0_18_0_5)
+        .expect("Oh My Pi 18.0.5 protocol corpus is valid JSON");
+
+    assert_eq!(identity["axis"], OH_MY_PI_PACKAGE_AXIS);
+    assert_eq!(identity["version"], "18.0.5");
+    assert_eq!(identity["npm_package"], "@oh-my-pi/pi-coding-agent");
+    assert_eq!(identity["assigned_official_latest"], "18.0.5");
+    assert_eq!(identity["npm_latest"], "18.0.6");
+    assert_eq!(identity["npm_latest_moved_during_run"], true);
+    assert_eq!(
+        identity["npm_integrity"],
+        "sha512-4bDndTceC6R5gFLS+FnkSiDBrlVbAt2EjL9ca4K29Qd5R+fpxOaad3dOQSenKXd1y3Ot/MfoNGrfH2dXr5hpSA=="
+    );
+    assert_eq!(identity["local_cli"], serde_json::Value::Null);
+    assert!(is_sha256(
+        identity["extracted_cli_sha256"]
+            .as_str()
+            .expect("extracted 18.0.5 digest is text")
+    ));
+    assert_eq!(identity["unpublished_18_0_2"], true);
+    assert_eq!(identity["mapped_rpc_sources_identical_to_v17_4_0"], false);
+    assert_eq!(identity["mapped_rpc_framing_identical_to_v17_4_0"], true);
+    assert_eq!(identity["pi_package_latest"], "0.84.3");
+
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "stop");
+    assert_eq!(
+        decision["stop_reasons"],
+        serde_json::json!(["official-latest-moved-during-run"])
+    );
+    assert_eq!(decision["this_run_silent_inheritance"], false);
+    assert_eq!(decision["this_run_claim"], false);
+    assert_eq!(decision["eighteen_segment_unsettled"], true);
+    assert_eq!(decision["later_identity_needed_for"], "18.0.6");
+    assert_eq!(decision["operator_segment_decision_needed"], true);
+    assert_eq!(decision["raise_same_17_x_window"], false);
+    assert_eq!(decision["keep_latest_qualified"], "17.4.0");
+    assert_eq!(decision["claim_card"], false);
+    assert_eq!(decision["mix_pi_package_axis"], false);
+    assert_eq!(decision["map_option_details"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["host_install_changed"], false);
+    assert!(decision.get("new_milestone").is_none());
+    assert!(decision.get("seventeen_and_eighteen_stay_separate").is_none());
+
+    let flags = protocol["help_selected_flags_present"]
+        .as_array()
+        .expect("selected flags are an array");
+    for required in [
+        "--mode",
+        "--no-session",
+        "--provider",
+        "--model",
+        "--tools",
+        "--no-extensions",
+        "--no-skills",
+        "--no-rules",
+        "--no-prewalk",
+        "--approval-mode",
+        "--no-tools",
+    ] {
+        assert!(
+            flags.iter().any(|flag| flag == required),
+            "missing selected flag {required}"
+        );
+    }
+    assert_eq!(protocol["selected_mode"], "rpc");
+    assert_eq!(protocol["rpc_md_unchanged_from_v17_4_0"], false);
+    assert_eq!(protocol["mapped_rpc_framing_identical_to_v17_4_0"], true);
+    assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
+    assert_eq!(protocol["provider_prompt_sent"], false);
+
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "17.4.0"
+    );
+
+    let claim = oh_my_pi_rpc_claim();
+    assert!(matches!(
+        claim.assess(&version("17.4.0")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    for value in ["17.4.1", "17.4.2", "18.0.5", "18.0.6"] {
+        assert!(
+            matches!(
+                claim.assess(&version(value)),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ),
+            "{value} stays UnverifiedNewer"
+        );
+    }
+}
+
 fn is_sha256(value: &str) -> bool {
     value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
 }

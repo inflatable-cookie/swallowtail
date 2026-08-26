@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 Oh My Pi 18 Identity](./2026-08-26-oh-my-pi-18-identity.md) — identity stop; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim; 18.x segment unset
 - [2026-08-26 Qwen Headless 0.22.1 Claim](./2026-08-26-qwen-headless-0-22-1-claim.md)
 - [2026-08-26 Qwen Headless 0.22.1 Identity](./2026-08-26-qwen-headless-0-22-1-identity.md)
 - [2026-08-26 Pi RPC 0.84.3 Claim](./2026-08-26-pi-rpc-0-84-3-claim.md)

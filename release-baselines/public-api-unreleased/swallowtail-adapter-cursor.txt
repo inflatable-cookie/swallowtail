@@ -4,6 +4,9 @@ pub swallowtail_adapter_cursor::CursorHeadlessContext::OneMillion
 pub swallowtail_adapter_cursor::CursorHeadlessContext::ThreeHundredK
 pub enum swallowtail_adapter_cursor::CursorHeadlessFast
 pub swallowtail_adapter_cursor::CursorHeadlessFast::Standard
+pub enum swallowtail_adapter_cursor::CursorHeadlessReadMode
+pub swallowtail_adapter_cursor::CursorHeadlessReadMode::Ask
+pub swallowtail_adapter_cursor::CursorHeadlessReadMode::Plan
 pub enum swallowtail_adapter_cursor::CursorPreparedDriver
 pub swallowtail_adapter_cursor::CursorPreparedDriver::Acp
 pub swallowtail_adapter_cursor::CursorPreparedDriver::Catalogue
@@ -44,6 +47,8 @@ pub struct swallowtail_adapter_cursor::CursorHeadlessDriver
 impl swallowtail_adapter_cursor::CursorHeadlessDriver
 pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
 pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::read_mode(&self) -> core::option::Option<swallowtail_adapter_cursor::CursorHeadlessReadMode>
+pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::with_read_mode(self, swallowtail_adapter_cursor::CursorHeadlessReadMode) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cursor::CursorHeadlessDriver
 pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -58,6 +63,7 @@ pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_fast(self,
 pub struct swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
 impl swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
 pub const fn swallowtail_adapter_cursor::CursorHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_cursor::CursorHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::session_access::ResourceAccess, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_cursor::CursorHeadlessRunProfileInput::with_read_mode(self, swallowtail_adapter_cursor::CursorHeadlessReadMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_cursor::CursorPreparationInput
 impl swallowtail_adapter_cursor::CursorPreparationInput
 pub const fn swallowtail_adapter_cursor::CursorPreparationInput::driver(&self) -> swallowtail_adapter_cursor::CursorPreparedDriver
@@ -119,6 +125,7 @@ impl swallowtail_adapter_cursor::CursorPreparedHeadlessRun
 pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::low_level_driver(&self) -> swallowtail_adapter_cursor::CursorHeadlessDriver
 pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::read_mode(&self) -> core::option::Option<swallowtail_adapter_cursor::CursorHeadlessReadMode>
 pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const swallowtail_adapter_cursor::CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str

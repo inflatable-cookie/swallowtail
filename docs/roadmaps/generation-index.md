@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 77 roadmaps: 62 completed milestones and fifteen honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 077. The generation has realized route
+g04 now has 77 roadmaps: 63 completed milestones and fourteen honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
+076. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -89,12 +89,13 @@ shell-exec helper whose Darwin support check is binary presence and whose
 filesystem/network policy still reads ambient `sandbox.json`, config, team,
 and feature-gate state. Cards 211-212 are blocked. Omission remains
 `AmbientHost` with no sandbox argument.
-g04.077 stopped after card 213. Research 224 is an empty deliver-now set:
-exact `--mode ask` parses identically on all four qualified builds and is
-immutable for a print run, but applies only as agent-store metadata and an
-`AgentMode.ASK` wire field, its one local effect is an inert shell-exec
-sandbox policy type, and the qualified stream reports no mode. Cards 214-215
-are blocked. No ready lane remains; the next family needs reassessment.
+g04.077 is complete. Research 224 admits four deliver-now rows and cards
+213-215 bound one closed Cursor-local `CursorHeadlessReadMode`: `--mode ask`
+dispatches for `ResourceAccess::Read` on the four exact qualified builds,
+omission keeps the exact Plan and no-mode defaults, and read-write authority
+plus newer unverified releases reject before process work. Effective and
+observed mode stay withheld. No ready lane remains; the next family needs
+reassessment.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

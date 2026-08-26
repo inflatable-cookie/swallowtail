@@ -33,6 +33,7 @@ pub use descriptor::{
 };
 pub use discovery::CursorAcpDriver;
 pub use headless::CursorHeadlessDriver;
+pub use headless_command::CursorHeadlessReadMode;
 pub use headless_model_parameters::{CursorHeadlessContext, CursorHeadlessFast};
 pub use prepared::{
     CursorAcpSessionProfileInput, CursorCatalogueProfileInput, CursorHeadlessModelSelection,

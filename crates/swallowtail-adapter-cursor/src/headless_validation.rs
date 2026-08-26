@@ -1,4 +1,5 @@
 use crate::failure::failure;
+use crate::headless_command::CursorHeadlessReadMode;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
@@ -116,6 +117,24 @@ pub(crate) fn validate(
         (false, true) => Ok(ResourceAccess::ReadWrite),
         _ => Err(plan_mismatch("working-resource authority")),
     }
+}
+
+pub(crate) fn validate_read_mode(
+    plan: &PreflightPlan,
+    access: ResourceAccess,
+    selection: Option<CursorHeadlessReadMode>,
+) -> Result<Option<CursorHeadlessReadMode>, RuntimeFailure> {
+    if let Some(selected) = selection {
+        if access != ResourceAccess::Read {
+            return Err(unsupported(
+                "an explicit read mode with read-write working-resource authority",
+            ));
+        }
+        if selected == CursorHeadlessReadMode::Ask {
+            crate::selection::validate_cursor_headless_ask_release(plan)?;
+        }
+    }
+    Ok(crate::headless_command::resolve(access, selection))
 }
 
 fn require_service(

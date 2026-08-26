@@ -1,6 +1,6 @@
 # 215 Cursor Headless Ask-Mode Acceptance
 
-Status: blocked; Research 224 empty deliver-now set
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -44,16 +44,16 @@ lifecycle, then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted exact row dispatches canonical `--mode ask`
-- [ ] Plan/no-mode defaults and unsupported rows retain or reject exact prior
+- [x] every admitted exact row dispatches canonical `--mode ask`
+- [x] Plan/no-mode defaults and unsupported rows retain or reject exact prior
       behavior
-- [ ] prepared, driver, version, access, and argv mismatches fail before
+- [x] prepared, driver, version, access, and argv mismatches fail before
       process work
-- [ ] Ask composes with all qualified model parameters without semantic drift
-- [ ] no isolation, permission, tool, resource, configuration, account,
+- [x] Ask composes with all qualified model parameters without semantic drift
+- [x] no isolation, permission, tool, resource, configuration, account,
       retention, or lifecycle claim widens
-- [ ] docs report no stronger mode state than exact evidence supports
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] docs report no stronger mode state than exact evidence supports
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

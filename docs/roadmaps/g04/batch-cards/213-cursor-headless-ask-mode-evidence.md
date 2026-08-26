@@ -1,12 +1,12 @@
 # 213 Cursor Headless Ask-Mode Evidence
 
-Status: complete; evidence stop
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
 Milestone: [g04.077 Cursor Headless Ask Mode](../077-cursor-headless-ask-mode.md)
 Depends on: Research 077, 087, 135, 183, and 223; Contracts 010, 023, 029, 033, 034, and 037
-Promoted: [Research 224](../../../research/224-cursor-headless-ask-mode-evidence.md) — empty deliver-now set
+Promoted: [Research 224](../../../research/224-cursor-headless-ask-mode-evidence.md) — four exact `Read` Ask rows at qualified dispatch and application
 
 ## Goal
 
@@ -96,21 +96,21 @@ provider work.
 
 ## Outcome
 
-Research 224 is promoted with an empty deliver-now set. Cards 214-215 are
-blocked and were not executed.
+Research 224 is promoted with four deliver-now rows: `--mode ask` with
+`ResourceAccess::Read` on each exact qualified build, at qualified dispatch
+and application only. Cards 214-215 continued.
 
 `--mode ask` parses exactly and identically on all four qualified builds,
 rejects `agent`, case-folded, empty, and list values, and is immutable for a
 print run: no persisted config key competes with it, and headless refuses
 model-initiated switch-mode requests. `--plan` beats `--mode ask` in
-`chat.ts`; Swallowtail sends neither today.
+`chat.ts`; Swallowtail sends neither today. Exact source applies Ask as store
+metadata `"search"` and `AgentMode.ASK` on the outbound `UserMessage`.
 
-The stop is behavioral. Exact source applies Ask as store metadata `"search"`
-and `AgentMode.ASK` on the outbound `UserMessage`, but establishes no local
-read-only boundary. Its single local consumer picks a shell-exec sandbox
-policy type, which is inert without `--sandbox` and ambient-controlled when it
-is not. Qualified stream JSON reports no mode. Production preparation, argv,
-fixtures, guide, and API baseline are unchanged.
+Effective and observed mode are withheld. Ask's only local consumer picks a
+shell-exec sandbox policy type, which is inert without `--sandbox` and
+ambient-controlled when it is not, and qualified stream JSON reports no mode.
+No locally enforced read-only boundary may be claimed.
 
 ## Stop Conditions
 

@@ -2300,28 +2300,31 @@ stops after card 213.
 
 ## g04.077 Cursor Ask Outcome (2026-08-26)
 
-Disposition: withdraw Cursor headless Ask from the deliverable inventory until
-new exact evidence appears.
+Disposition: deliver Cursor headless Ask as one closed Cursor-local selection
+at qualified dispatch and application; withhold effective and observed mode.
 
 Card 213 and Research 224 froze the full chain on all four qualified builds.
 Selection is exact and closed: commander `.choices(["plan","ask"])` with no
 default, case-sensitive, rejecting `agent`, empty, and list values; no
 persisted-config or environment key competes; a fresh headless session
 inherits no mode metadata; and headless refuses model-initiated switch-mode
-requests. `--plan` beats `--mode ask` in `chat.ts`.
+requests. `--plan` beats `--mode ask` in `chat.ts`. Application is exact too:
+`--mode ask` becomes agent-store metadata `"search"` and `AgentMode.ASK` on
+the outbound `UserMessage`.
 
-Application stops at the wire. `--mode ask` becomes agent-store metadata
-`"search"` and `AgentMode.ASK` on the outbound `UserMessage`. The only local
-consumer of Ask picks `workspace_readonly` instead of `workspace_readwrite`
-for the shell-exec sandbox policy, and only when the sandbox is available —
-which this route's argv never makes true, and which ambient `sandbox.mode`,
-team, and feature-gate state control when it is. No tool registry, approval
-path, or write refusal keys on Ask, and the qualified stream reports no mode.
+The claim stops there. Ask's only local consumer picks `workspace_readonly`
+instead of `workspace_readwrite` for the shell-exec sandbox policy, and only
+when the sandbox is available — which this route's argv never makes true, and
+which ambient `sandbox.mode`, team, and feature-gate state control when it is.
+No tool registry, approval path, or write refusal keys on Ask, and the
+qualified stream reports no mode.
 
-Binding Ask would add a second read-mode token whose only proved difference
-from `--mode plan` is the enum the backend receives. That is public surface
-without provable behavior, so the inventory keeps Ask out.
+That bounds the documentation, not the dispatch. Cards 214-215 bound Ask
+through `CursorHeadlessReadMode` at the same tier the route already uses for
+`--mode plan` and Research 183 model parameters. Read-only intent still comes
+from the declared `ResourceAccess::Read` authority, and Swallowtail rejects Ask
+with `ReadWrite` before process work even though the native CLI would not.
 
-Reopen only for an exact build that proves a local Ask boundary independent of
-ambient sandbox, approval, team, and feature-gate state, or a qualified
-observation channel that reports applied or effective mode.
+Raise the claim only for an exact build that proves a local Ask boundary
+independent of ambient sandbox, approval, team, and feature-gate state, or a
+qualified observation channel that reports applied or effective mode.

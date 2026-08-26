@@ -91,11 +91,11 @@ and selection policy.
 - [g04.074 Cline Headless Model Selection](074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`
 - [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
-- [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — stopped after card 213; Research 224 empty deliver-now set; cards 214-215 blocked
+- [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 admits four exact `Read` Ask rows at qualified dispatch and application
 
-g04 has 77 numbered roadmaps: 62 completed milestones and fifteen honest
+g04 has 77 numbered roadmaps: 63 completed milestones and fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 077. The operator keeps the generation active.
+074, and 076. The operator keeps the generation active.
 Do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
@@ -268,11 +268,10 @@ Do not close g04 without explicit operator direction.
 - g04.076 stopped after card 210: Research 223 empty deliver-now set; exact
   `--sandbox enabled` parses, but the helper is shell-exec only and the native
   boundary is not preflight-bindable; cards 211-212 blocked
-- g04.077 stopped after card 213: Research 224 empty deliver-now set; exact
-  `--mode ask` parses and is immutable per print run, but applies only as
-  agent-store metadata and an `AgentMode.ASK` wire field with no local
-  read-only boundary and no mode in the qualified stream; cards 214-215
-  blocked
+- g04.077 is complete through cards 213-215: closed Cursor-local
+  `CursorHeadlessReadMode` binds `--mode ask` for `ResourceAccess::Read` on
+  the four exact qualified builds at qualified dispatch and application;
+  effective and observed mode stay withheld
 - g04 remains active at 77 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -382,10 +381,10 @@ Do not close g04 without explicit operator direction.
     `--sandbox enabled` parses on the four qualified builds, but the helper is
     shell-exec only and the native boundary is not preflight-bindable; cards
     211-212 blocked.
-40. g04.077 stopped after card 213. Research 224 froze exact Ask parser,
-    precedence, application, read-only, and observation truth across the four
-    qualified builds and promoted an empty deliver-now set; cards 214-215 are
-    blocked.
+40. g04.077 is complete. Research 224 froze exact Ask parser, precedence,
+    application, read-only, and observation truth across the four qualified
+    builds and promoted four deliver-now `Read` rows; cards 214-215 bound and
+    proved one closed Cursor-local selection.
 41. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.

@@ -1,6 +1,6 @@
 # 214 Cursor Headless Ask-Mode Binding
 
-Status: blocked; Research 224 empty deliver-now set
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -40,15 +40,15 @@ selection, immutable prepared state, exact-version validation, and canonical
 
 ## Acceptance Criteria
 
-- [ ] only Research 224 deliver-now rows prepare Ask
-- [ ] the public seam is closed and Cursor-local; no portable or raw mode API
+- [x] only Research 224 deliver-now rows prepare Ask
+- [x] the public seam is closed and Cursor-local; no portable or raw mode API
       appears
-- [ ] prepared state, driver state, exact version, access, and argv agree
-- [ ] existing `Read` Plan and `ReadWrite` no-mode paths remain exact
-- [ ] unsupported, mismatched, stale, or wider rows reject before process work
-- [ ] Ask does not imply isolation, containment, permissions, tools, approval,
+- [x] prepared state, driver state, exact version, access, and argv agree
+- [x] existing `Read` Plan and `ReadWrite` no-mode paths remain exact
+- [x] unsupported, mismatched, stale, or wider rows reject before process work
+- [x] Ask does not imply isolation, containment, permissions, tools, approval,
       network, or configuration suppression
-- [ ] model parameters, retention, lifecycle, and cleanup claims do not widen
+- [x] model parameters, retention, lifecycle, and cleanup claims do not widen
 
 ## Validation
 

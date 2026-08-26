@@ -1,6 +1,6 @@
 # g04.077 Cursor Headless Ask Mode
 
-Status: stopped after evidence
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -38,7 +38,7 @@ retention, deadline, cancellation, activity, terminal, and cleanup truth.
 - [x] prove the exact behavioral and read-only boundary independently from
       resource access, process isolation, permissions, tools, and trust
 - [x] promote Research 224 with an exact deliver-now table or honest empty set
-- [ ] conditionally add one closed adapter-local Ask selection with no raw mode
+- [x] conditionally add one closed adapter-local Ask selection with no raw mode
       string or provider-neutral API widening
 - [x] preserve omission as the exact current `Read` to `--mode plan` mapping
       and `ReadWrite` no-mode argv
@@ -101,21 +101,21 @@ insufficient to claim an effective read-only Q&A posture.
 
 ### Batch 77.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 214 only when Research 224 admits a non-empty set.
-- [ ] bind only admitted Ask rows through typed preparation and canonical argv
+- [x] Execute card 214 only when Research 224 admits a non-empty set.
+- [x] bind only admitted Ask rows through typed preparation and canonical argv
 
 ### Batch 77.3 — Route-Local Acceptance
 
-- [ ] Execute card 215 only after card 214.
-- [ ] prove dispatch, defaults, rejection, model composition, and unchanged
+- [x] Execute card 215 only after card 214.
+- [x] prove dispatch, defaults, rejection, model composition, and unchanged
       lifecycle truth
 
 ## Acceptance Criteria
 
 - [x] only Research 224 deliver-now rows prepare Ask
-- [ ] Ask selection is closed, Cursor-local, immutable, and exactly dispatched
+- [x] Ask selection is closed, Cursor-local, immutable, and exactly dispatched
 - [x] existing `Read` still dispatches `--mode plan`; `ReadWrite` still omits
-      `--mode`; Ask is not prepared, so no Ask/`ReadWrite` pair exists
+      `--mode`; Ask plus `ReadWrite` rejects before process work
 - [x] docs distinguish qualified dispatch from parser acceptance, application,
       effectiveness, and observation
 - [x] access, working resource, isolation, configuration, tools, permissions,
@@ -126,23 +126,26 @@ insufficient to claim an effective read-only Q&A posture.
 
 ## Outcome
 
-Stopped after card 213. Research 224 promotes an empty deliver-now set.
+Complete through cards 213-215.
 
-Selection truth is strong: `--mode ask` parses exactly and identically on all
-four qualified builds, is case-sensitive and closed to `plan` and `ask`, has no
-persisted-config or environment competitor, and cannot be switched mid-run in
-print mode. `--plan` beats `--mode ask` in `chat.ts`.
+Research 224 admits four deliver-now rows: `--mode ask` with
+`ResourceAccess::Read` on each exact qualified build, at qualified dispatch
+and application only. Selection is exact, case-sensitive, closed to `plan` and
+`ask`, has no persisted-config or environment competitor, and cannot be
+switched mid-run in print mode.
 
-Behavioral truth is not. Exact source applies Ask as agent-store metadata
-`"search"` and `AgentMode.ASK` on the outbound `UserMessage`, and stops there.
-Its only local consumer selects a shell-exec sandbox policy type, which is
-inert on this route's argv and ambient-controlled otherwise. No tool registry,
-approval path, or write refusal keys on Ask, and qualified stream JSON reports
-no mode. The read-only exploration posture that motivates Ask lives on an
-unobservable backend.
+`CursorHeadlessReadMode` binds it as one closed Cursor-local selection.
+Omission preserves the exact defaults; `with_read_mode` rejects any selection
+on `ReadWrite`; `prepare_run` rejects Ask on a release that is not exactly
+qualified; the resolved mode is frozen on the prepared run and carried to the
+low-level driver, which re-validates access and release before process work
+and never falls back.
 
-Cards 214-215 are blocked. Production preparation, argv, driver, fixtures,
-guide, matrices, and API baseline are unchanged.
+Effective and observed mode are withheld. Ask's only local consumer selects a
+shell-exec sandbox policy type that is inert on this route's argv and
+ambient-controlled otherwise, and the qualified stream reports no mode. Docs,
+matrices, and tests claim qualified dispatch and application only, never a
+locally enforced read-only boundary.
 
 ## Lane Runway
 

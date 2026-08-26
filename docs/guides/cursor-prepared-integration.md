@@ -99,6 +99,22 @@ Read authority selects Cursor plan mode; read-write remains ambient and
 explicit. The prepared path does not request dangerous force flags or optional
 sandboxing.
 
+Call `with_read_mode` to select an exact Cursor read mode instead of the
+default. `CursorHeadlessReadMode::Plan` reproduces the `Read` default argv and
+`CursorHeadlessReadMode::Ask` dispatches canonical `--mode ask`. A selection
+requires `Read` authority and rejects read-write before any process work; Ask
+additionally requires an exactly qualified Cursor release, so a newer
+unverified build is refused rather than downgraded. The resolved mode is fixed
+at preparation, readable through `read_mode`, and carried to the low-level
+driver unchanged.
+
+Ask is qualified at dispatch only. Cursor accepts the token and sends the mode
+with the request; it does not give Swallowtail a locally enforced read-only
+boundary, and the qualified stream reports no applied or effective mode. Ask
+grants and withholds no working-resource, isolation, permission, tool,
+approval, or network authority — read-only intent still comes from the `Read`
+working-resource authority you declare.
+
 Call `prepare_run`, then `start_run`. Drain streaming assistant, thinking,
 tool, result, usage, and terminal events before `close`. Cancellation and
 deadline stop the owned child; cleanup joins it. Durable provider state may

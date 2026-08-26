@@ -15,9 +15,9 @@ shape.
 ## Next Task
 
 Reassess the remaining per-route feature inventory and select the next serial
-lane. g04.077 stopped after card 213 with an empty Research 224 deliver-now
-set; cards 214-215 are blocked. Keep g04 open. Contract 029 currentness
-remains standing.
+lane. g04.077 is complete through cards 213-215; Research 224 admits four
+exact `Read` Ask rows at qualified dispatch and application. Keep g04 open.
+Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

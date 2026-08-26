@@ -247,22 +247,23 @@ families do not interrupt this programme by default.
   `sandbox.json`/config/team/feature-gate state can widen or disable the
   boundary, and print-mode denial is approval rather than process containment.
   Cards 211-212 are blocked. Omission stays `AmbientHost` with no flag.
-- [g04.077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md)
-  stopped after card 213. Research 224 is an empty deliver-now set: exact
-  `--mode ask` parses identically on all four qualified builds and is
-  immutable for a print run with no persisted-config competitor, but exact
-  source applies it only as agent-store metadata and an `AgentMode.ASK` field
-  on the outbound message. Its single local consumer picks a shell-exec
-  sandbox policy type that is inert without `--sandbox` and ambient-controlled
-  otherwise, no tool or approval path keys on Ask, and stream JSON reports no
-  mode. Cards 214-215 are blocked. `Read` keeps `--mode plan`; `ReadWrite`
-  keeps no mode.
+- [g04.077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md) is
+  complete. Cards 213-215 delivered one closed Cursor-local
+  `CursorHeadlessReadMode`. Research 224 admits four deliver-now rows:
+  `--mode ask` with `ResourceAccess::Read` on each exact qualified build, at
+  qualified dispatch and application only. Omission keeps `Read` on
+  `--mode plan` and `ReadWrite` on no mode. Read-write authority and newer
+  unverified releases reject before process work. Effective and observed mode
+  stay withheld: Ask's only local consumer is an inert shell-exec sandbox
+  policy type and the qualified stream reports no mode, so no locally enforced
+  read-only boundary is claimed. Portable `HarnessMode::Ask`, raw modes,
+  `--plan`, Agent selection, and force flags stay out.
 
 ## Current Execution Boundary
 
-g04.077 stopped after card 213 with an empty Research 224 set. Reassess the
-remaining per-route feature inventory for the next serial lane. Keep g04 open.
-Contract 029 currentness remains standing.
+g04.077 is complete. Reassess the remaining per-route feature inventory for
+the next serial lane. Keep g04 open. Contract 029 currentness remains
+standing.
 
 ## Exclusions
 

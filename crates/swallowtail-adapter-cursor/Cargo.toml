@@ -41,6 +41,10 @@ name = "headless_suite"
 path = "tests/headless_suite.rs"
 
 [[test]]
+name = "headless_ask_suite"
+path = "tests/headless_ask_suite.rs"
+
+[[test]]
 name = "prepared_suite"
 path = "tests/prepared_suite.rs"
 

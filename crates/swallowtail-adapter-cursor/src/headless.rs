@@ -1,4 +1,4 @@
-use crate::headless_command::arguments;
+use crate::headless_command::{CursorHeadlessReadMode, arguments};
 use crate::headless_handle::{CursorHeadlessCancellation, CursorHeadlessRunHandle};
 use crate::headless_pump::{cleanup_failed_start, pump};
 use std::sync::Arc;
@@ -15,19 +15,46 @@ const EVENT_CAPACITY: usize = 4098;
 /// Low-level driver for one-shot Cursor stream-JSON runs.
 pub struct CursorHeadlessDriver {
     environment: EnvironmentRef,
+    read_mode: Option<CursorHeadlessReadMode>,
 }
 
 impl CursorHeadlessDriver {
     /// Creates a headless driver using the approved execution environment.
+    ///
+    /// Without an explicit read mode the driver keeps the exact default argv:
+    /// `ResourceAccess::Read` dispatches `--mode plan` and
+    /// `ResourceAccess::ReadWrite` dispatches no mode.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            read_mode: None,
+        }
+    }
+
+    /// Binds one exact Cursor-local read mode to this driver.
+    ///
+    /// The selection is rejected before process work unless the preflight plan
+    /// carries `ResourceAccess::Read`, and `Ask` additionally requires an
+    /// exactly qualified Cursor release. A newer unverified release, a
+    /// read-write plan, or a mismatched low-level use fails closed; the driver
+    /// never falls back to another mode.
+    #[must_use]
+    pub fn with_read_mode(mut self, read_mode: CursorHeadlessReadMode) -> Self {
+        self.read_mode = Some(read_mode);
+        self
     }
 
     /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
+    }
+
+    /// Returns the exact Cursor-local read mode bound to this driver.
+    #[must_use]
+    pub const fn read_mode(&self) -> Option<CursorHeadlessReadMode> {
+        self.read_mode
     }
 }
 
@@ -50,6 +77,8 @@ impl CursorHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         let access = crate::headless_validation::validate(&plan, &request, &services)?;
+        let read_mode =
+            crate::headless_validation::validate_read_mode(&plan, access, self.read_mode)?;
         let task_service = services.task().cloned().expect("validated task service");
         let process_service = services
             .process()
@@ -71,7 +100,7 @@ impl CursorHeadlessDriver {
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
-        .with_arguments(arguments(&model, access))
+        .with_arguments(arguments(&model, read_mode))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
         let process: Arc<dyn ProcessHandle> = Arc::from(

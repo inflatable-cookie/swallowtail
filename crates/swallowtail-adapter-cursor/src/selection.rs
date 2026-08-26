@@ -1,7 +1,8 @@
 use swallowtail_core::{
-    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
-    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+    InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
+    InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture, InterfaceSupportStatus,
+    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, InterfaceVersionScheme,
+    InterfaceVersionSegment, PreflightPlan,
 };
 use swallowtail_runtime::RuntimeFailure;
 
@@ -204,6 +205,44 @@ pub(crate) fn validate_cursor_headless_plan(plan: &PreflightPlan) -> Result<(), 
         ));
     }
     Ok(())
+}
+
+pub(crate) fn headless_release_is_exactly_qualified(binding: &InterfaceVersionBinding) -> bool {
+    let claim = cursor_headless_claim();
+    binding.axis() == claim.axis()
+        && matches!(
+            claim.assess(binding.version()),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.behavior_revision().as_str() == CURSOR_HEADLESS_BEHAVIOR
+        )
+}
+
+pub(crate) fn validate_cursor_headless_ask_release(
+    plan: &PreflightPlan,
+) -> Result<(), RuntimeFailure> {
+    let claim = cursor_headless_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let Some(binding) = bindings.next() else {
+        return Err(ask_unqualified());
+    };
+    if bindings.next().is_some() {
+        return Err(ask_unqualified());
+    }
+    if claim.assess(binding.version()) != plan.assess_interface_version(binding)
+        || !headless_release_is_exactly_qualified(binding)
+    {
+        return Err(ask_unqualified());
+    }
+    Ok(())
+}
+
+fn ask_unqualified() -> RuntimeFailure {
+    failure(
+        "swallowtail.cursor.headless.ask_mode_unqualified",
+        "Cursor headless Ask mode requires an exactly qualified Cursor release",
+    )
 }
 
 pub(crate) fn validate_cursor_catalogue_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {

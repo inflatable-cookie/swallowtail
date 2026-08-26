@@ -1,6 +1,6 @@
 # 224 Cursor Headless Ask-Mode Evidence
 
-Status: promoted; evidence stop
+Status: promoted
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -225,21 +225,27 @@ registry, no edit/write tool exclusion, and no local refusal keyed to mode.
 Tool exclusion is the separate `--exclude-tools` mechanism validated against
 the `ToolCall` proto field list.
 
-Two consequences follow:
+Three consequences follow, and all three bound the claim rather than the
+dispatch:
 
-- On the exact production argv, `--mode ask` has no local read-only effect at
-  all. Read-only is a backend behavior on an unobservable server.
+- On the exact production argv, `--mode ask` has no local read-only effect.
+  Read-only is backend behavior on an unobservable server.
 - Where Ask does have a local effect, it is ambient. Turning on
   `sandbox.mode` in `~/.cursor/cli-config.json`, a project file, or a team
-  overlay changes what Ask means, and Swallowtail binds none of that before
-  spawn.
+  overlay changes what Ask means locally, and Swallowtail binds none of that
+  before spawn.
+- Nothing in the CLI rejects `--mode ask` against a writable working
+  resource; the write and edit tools stay registered. The exact `/ask`
+  slash-command string ("Toggle ask mode (Q&A, read-only; no edits or command
+  execution)") and the current docs row ("Read-only exploration without making
+  changes") are labels in the artifact and on a mutable page, not an enforced
+  boundary in this source.
 
-Ask also does not compose as a boundary with access. Nothing in the CLI
-rejects `--mode ask` against a writable working resource, and the write and
-edit tools stay registered. The exact `/ask` slash-command string ("Toggle ask
-mode (Q&A, read-only; no edits or command execution)") and the current docs
-row ("Read-only exploration without making changes") are labels in the
-artifact and on a mutable page, not an enforced boundary in this source.
+Swallowtail therefore may not claim a locally enforced read-only boundary from
+Ask, and the binding admits Ask only alongside `ResourceAccess::Read`, where
+read-only intent already comes from declared working-resource authority. The
+last point is a fact about the native CLI, not about this route: Swallowtail's
+preflight rejects Ask with `ReadWrite` before any process work.
 
 ## Access, Model Parameters, And Defaults
 
@@ -266,79 +272,122 @@ telemetry, not stdout.
 
 Absence of edits in a transcript is not mode evidence.
 
-## Production Audit
+## Production Audit At Card 213
 
-`CursorHeadlessRunProfileInput` has no mode member.
-`headless_command::arguments(model, access)` is the entire mode surface: it
-appends `--mode plan` when `access == ResourceAccess::Read` and nothing
-otherwise. `CursorPreparedHeadlessRun::low_level_driver` returns
+Before card 214, `CursorHeadlessRunProfileInput` had no mode member.
+`headless_command::arguments(model, access)` was the entire mode surface: it
+appended `--mode plan` when `access == ResourceAccess::Read` and nothing
+otherwise. `CursorPreparedHeadlessRun::low_level_driver` returned
 `CursorHeadlessDriver::new(environment)`, and `headless_validation::validate`
-derives access from the plan's `WorkingResource` capability constraint. There
-is no adapter-local carrier between prepared state and the driver.
+derived access from the plan's `WorkingResource` capability constraint. There
+was no adapter-local carrier between prepared state and the driver.
 
-A closed Ask binding would therefore need either adapter-private driver state
-plus a fail-closed check that the state matches the prepared evidence, or a
-portable plan change the milestone forbids. That seam is buildable, but it is
-only worth building for a behavior the exact source proves.
+Card 214 added exactly that carrier: adapter-private driver state plus a
+fail-closed check against the prepared plan's access and exact release. No
+portable plan change was needed. See **Production Binding** below.
 
-Existing tests already assert `--mode plan` for `Read`, no `--mode` for
-`ReadWrite`, and one `--model` argument. The guide claims dispatch only —
-"Read authority selects Cursor plan mode" — and makes no read-only
-enforcement claim. Nothing in the current surface overclaims, and nothing
-needs correction.
+Existing tests already asserted `--mode plan` for `Read`, no `--mode` for
+`ReadWrite`, and one `--model` argument; card 215 extends them rather than
+replacing them. The guide claimed dispatch only — "Read authority selects
+Cursor plan mode" — and made no read-only enforcement claim. Nothing in the
+prior surface overclaimed, and nothing needed correction.
 
 ## Claim Strength
 
+Ask is admitted at qualified dispatch and application. Effective and observed
+mode are explicitly withheld.
+
 | State | Ask on the four exact builds |
 | --- | --- |
-| requested | would be a Swallowtail-side selection; not implemented |
-| prepared | not implemented |
-| dispatched | canonical single `--mode ask` token is constructible |
+| requested | `CursorHeadlessReadMode::Ask` on a `Read` profile input |
+| prepared | resolved and frozen at preparation; rejects read-write authority and any release that is not exactly qualified |
+| dispatched | exactly one canonical `--mode ask` token in the existing argv position |
 | parser-accepted | yes; exact, case-sensitive, closed to `plan` and `ask` |
 | applied | yes; store metadata `"search"` and `AgentMode.ASK` on the outbound `UserMessage`, immutable for a print run |
-| effective | unproved; backend behavior, not in these artifacts |
-| observed | no; stream JSON emits no mode field |
+| effective | withheld; backend behavior, not in these artifacts |
+| observed | withheld; stream JSON emits no mode field |
 
 ## Classification
 
-| Build | Access | Value | Parser | Selection immutable | Local read-only boundary | Ambient widening frozen | Observation | Deliver-now |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `2026.07.01-41b2de7` | `Read` | `--mode ask` | yes | yes | no; sandbox policy type only, inert without `--sandbox` | no; `sandbox.mode` / team / gate change the meaning | no | no |
-| `2026.07.23-e383d2b` | `Read` | `--mode ask` | yes | yes | no | no | no | no |
-| `2026.08.04-aaa8809` | `Read` | `--mode ask` | yes | yes | no | no | no | no |
-| `2026.08.11-e8db854` | `Read` | `--mode ask` | yes | yes | no | no | no | no |
-| any qualified | `ReadWrite` | `--mode ask` | yes | yes | no; CLI does not reject Ask against a writable resource | no | no | no |
-| any qualified | any | `--plan` with `--mode ask` | yes | `--plan` wins | n/a | n/a | n/a | no |
-| any qualified | any | `--mode agent` / `ASK` / `''` / list | no | n/a | n/a | n/a | n/a | no |
-| any qualified | `Read` | `--mode plan` | yes | yes | same tier as Ask | n/a | no | current production; unchanged |
-| any qualified | `ReadWrite` | omitted | n/a | n/a | n/a | ambient config unchanged | n/a | current production; unchanged |
-| calendar gaps / `UnverifiedNewer` | any | any | no inheritance | n/a | n/a | n/a | n/a | no |
+| Build | Access | Value | Parser | Selection immutable | Applied state | Effective / observed | Deliver-now |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `2026.07.01-41b2de7` | `Read` | `--mode ask` | yes | yes | metadata `"search"`; `AgentMode.ASK` | withheld | **yes**, dispatch and application only |
+| `2026.07.23-e383d2b` | `Read` | `--mode ask` | yes | yes | metadata `"search"`; `AgentMode.ASK` | withheld | **yes**, dispatch and application only |
+| `2026.08.04-aaa8809` | `Read` | `--mode ask` | yes | yes | metadata `"search"`; `AgentMode.ASK` | withheld | **yes**, dispatch and application only |
+| `2026.08.11-e8db854` | `Read` | `--mode ask` | yes | yes | metadata `"search"`; `AgentMode.ASK` | withheld | **yes**, dispatch and application only |
+| any qualified | `ReadWrite` | `--mode ask` | yes | yes | n/a | n/a | no; Swallowtail rejects before process work |
+| any qualified | any | `--plan` with `--mode ask` | yes | `--plan` wins | n/a | n/a | no; Swallowtail never sends `--plan` |
+| any qualified | any | `--mode agent` / `ASK` / `''` / list | no | n/a | n/a | n/a | no |
+| any qualified | `Read` | `--mode plan` | yes | yes | metadata `"plan"`; `AgentMode.PLAN` | withheld | current production; unchanged |
+| any qualified | `ReadWrite` | omitted | n/a | n/a | Agent default | n/a | current production; unchanged |
+| calendar gaps / `UnverifiedNewer` | any | `--mode ask` | no inheritance | n/a | n/a | n/a | no |
 
-No row is deliver-now.
+Four deliver-now rows. Every one is `ResourceAccess::Read` on an exactly
+qualified build, at dispatch and application strength only.
 
-The empty set is not because `--mode ask` is missing, weakly parsed, or
-overridable. Selection is exact, closed, case-sensitive, immutable for a print
-run, and free of persisted-config competition — a cleaner precedence story
-than Research 223 found for `--sandbox`. The stop is behavioral: the exact
-source establishes no read-only boundary for Ask on this route. Its only local
-consequence is a shell-exec sandbox policy type that Swallowtail's argv leaves
-inert and that ambient state controls when it is not inert. The read-only
-exploration posture a consumer would select Ask *for* lives on an unobservable
-backend, and nothing in the qualified stream reports it.
+## Why This Tier And Not More
 
-Binding Ask at the surviving evidence tier would deliver a second read-mode
-token whose only proved difference from `--mode plan` is which enum the
-backend receives, described in docs as a mode Swallowtail cannot verify. That
-is a wider public surface for no provable behavior.
+The admitted claim stops where the artifacts stop.
+
+`getIsAskMode` has one consumer, and it selects a shell-exec sandbox policy
+type — `workspace_readonly` instead of `workspace_readwrite` — gated on
+`sandboxAvailable`. This route sends no `--sandbox` and both the default and
+host configs hold `sandbox.mode: "disabled"`, so that branch is inert here;
+where it is not inert, ambient `cli-config.json`, project state, team
+overlays, and feature gates decide it. No tool registry, approval path, or
+write refusal keys on Ask.
+
+Ask therefore must not be documented, tested, or sold as a locally enforced
+read-only boundary. Read-only intent on this route continues to come from the
+`ResourceAccess::Read` working-resource authority the consumer declares, which
+is exactly why the binding admits Ask only alongside it.
+
+Two facts are separate and both hold. The native CLI does not reject
+`--mode ask` against a writable working resource; Swallowtail does, before any
+process work. That is a Swallowtail preflight guarantee about what this route
+dispatches, not a claim about what Cursor would tolerate.
+
+The inert-or-ambient sandbox path bounds the claim. It does not erase the
+exact dispatch and application behavior the four builds prove, which is the
+same tier at which the route already binds `--mode plan` and at which
+Research 183 binds Cursor-local model parameters without effective-value
+confirmation.
+
+## Production Binding
+
+`CursorHeadlessReadMode` is the closed adapter-local type. It carries `Plan`
+and `Ask` and no raw string, and it is not portable `HarnessMode`.
+
+- `CursorHeadlessRunProfileInput::new` is unchanged: `Read` resolves to
+  `--mode plan`, `ReadWrite` resolves to no mode.
+- `with_read_mode` is the only selection path. It rejects any selection on
+  `ReadWrite` with
+  `swallowtail.cursor.headless.read_mode_access_rejected`.
+- `prepare_run` rejects `Ask` on a release that is not exactly qualified with
+  `swallowtail.cursor.headless.ask_mode_unqualified`. `UnverifiedNewer` does
+  not inherit Ask; the existing behavior revision is unchanged because all
+  four qualified builds share identical Ask semantics.
+- The resolved mode is stored on `CursorPreparedHeadlessRun`, readable through
+  `read_mode`, and passed to `CursorHeadlessDriver::with_read_mode`. It cannot
+  drift after preparation.
+- The low-level driver re-validates access and exact release before process
+  work and never falls back to Plan or Agent after a rejected selection.
+- `HarnessIsolation::AmbientHost`, `HarnessConfigurationPosture::Ambient`,
+  `ProviderRetentionPolicy::DurableAllowed`, working-resource authority,
+  `--trust`, model rendering, activity, usage, cancellation, deadline,
+  terminal, and joined cleanup are untouched.
 
 ## Promotion
 
-Research 224 promotes an empty deliver-now set.
+Research 224 promotes four deliver-now rows: `--mode ask` with
+`ResourceAccess::Read` on exact `2026.07.01-41b2de7`, `2026.07.23-e383d2b`,
+`2026.08.04-aaa8809`, and `2026.08.11-e8db854`, at qualified dispatch and
+application only.
 
-Cards 214-215 stay blocked. A later lane may reopen this family only when an
-exact qualified build can prove a local Ask boundary that does not depend on
-ambient sandbox, approval, team, or feature-gate state — or when a qualified
-observation channel reports applied or effective mode — without login, account
+Effective and observed mode remain withheld. A later lane may raise the claim
+only when an exact qualified build proves a local Ask boundary independent of
+ambient sandbox, approval, team, and feature-gate state, or when a qualified
+observation channel reports applied or effective mode, without login, account
 inspection, provider prompt, tool execution, paid work, or ambient config
 mutation.
 

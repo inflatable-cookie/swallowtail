@@ -386,7 +386,10 @@ OpenHands adds a package without a production route.
   fast, context, and effort on Research 183 deliver-now tuples only, renders
   them canonically into one `--model` argv, binds qualified high effort to
   portable `ReasoningSelection` on `claude-opus-4-8` and `claude-opus-5`,
-  sends prompts on stdin, uses plan mode for read-only execution, projects
+  sends prompts on stdin, uses plan mode for read-only execution by default,
+  accepts one closed adapter-local Ask selection that dispatches canonical
+  `--mode ask` on exactly qualified releases with read authority only,
+  projects
   exact assistant, thinking, correlated tool, usage, and terminal evidence,
   and joins every cancellation, deadline, success, or failure path. Dispatch
   does not prove provider acceptance. All four qualified calendar
@@ -1359,7 +1362,14 @@ prepared integration type. Catalogue binds no model route. ACP binds one
 ambient read-write durable session without model selection. Headless requires an explicit model plus read-only or read-write resource
 authority for one durable structured run. Typed fast, context, and effort
 prepare only on Research 183 deliver-now tuples; qualified high effort also
-binds `ReasoningSelection` on the named Opus models. Each operation retains
+binds `ReasoningSelection` on the named Opus models. `CursorHeadlessReadMode`
+is a closed Cursor-local read-mode selection: omission keeps `Read` on
+`--mode plan` and `ReadWrite` on no mode, `Ask` requires read authority and an
+exactly qualified release, and the resolved value is fixed at preparation and
+carried to the low-level driver. Ask is provider behavior at qualified
+dispatch only. It is not portable `HarnessMode`, grants no isolation,
+containment, permission, tool, approval, or network authority, and the
+qualified stream reports no applied or effective mode. Each operation retains
 exact driver, transport,
 facade, access, host, target, release assessment, and observable-activity
 evidence. The facade adds no fallback, generic prompt method, credential

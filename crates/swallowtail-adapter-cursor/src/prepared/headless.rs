@@ -1,4 +1,5 @@
 use super::CursorPreparedHeadlessIntegration;
+use crate::headless_command::CursorHeadlessReadMode;
 use crate::headless_model_parameters::{
     CursorHeadlessContext, CursorHeadlessFast, CursorHeadlessModelParameters, render_model_id,
     validate_combination, validate_plain_model_id,
@@ -11,8 +12,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
-    PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeFailure,
-    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
+    PreparationStage, PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle,
+    RuntimeFailure, StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -87,6 +88,7 @@ pub struct CursorHeadlessRunProfileInput {
     working_resource: WorkingResourceRef,
     resource_access: ResourceAccess,
     deadline: Deadline,
+    read_mode: Option<CursorHeadlessReadMode>,
 }
 
 impl CursorHeadlessRunProfileInput {
@@ -107,7 +109,35 @@ impl CursorHeadlessRunProfileInput {
             working_resource,
             resource_access,
             deadline,
+            read_mode: None,
         }
+    }
+
+    /// Selects one exact Cursor-local read mode for this run.
+    ///
+    /// Omitting the selection keeps the exact current mapping: `Read`
+    /// dispatches `--mode plan` and `ReadWrite` dispatches no mode. A
+    /// selection requires `ResourceAccess::Read`, and
+    /// [`CursorHeadlessReadMode::Ask`] additionally requires an exactly
+    /// qualified Cursor release at preparation. Both modes are provider
+    /// behavior only: neither grants or withholds working-resource,
+    /// isolation, permission, tool, approval, or network authority, and the
+    /// qualified stream does not report which mode was applied.
+    pub fn with_read_mode(
+        self,
+        read_mode: CursorHeadlessReadMode,
+    ) -> Result<Self, PreparationFailure> {
+        if self.resource_access != ResourceAccess::Read {
+            return Err(super::failure(
+                PreparationStage::Preflight,
+                "swallowtail.cursor.headless.read_mode_access_rejected",
+                "Cursor headless read-mode selection requires read working-resource authority",
+            ));
+        }
+        Ok(Self {
+            read_mode: Some(read_mode),
+            ..self
+        })
     }
 }
 
@@ -117,6 +147,7 @@ pub struct CursorPreparedHeadlessRun {
     evidence: PreparedOperationEvidence,
     request: StructuredRunRequest,
     environment: swallowtail_runtime::EnvironmentRef,
+    read_mode: Option<CursorHeadlessReadMode>,
 }
 
 impl CursorPreparedHeadlessIntegration {
@@ -126,6 +157,18 @@ impl CursorPreparedHeadlessIntegration {
         input: CursorHeadlessRunProfileInput,
     ) -> Result<CursorPreparedHeadlessRun, PreparationFailure> {
         let activity = super::activity::headless(self.observation())?;
+        if input.read_mode == Some(CursorHeadlessReadMode::Ask)
+            && !crate::selection::headless_release_is_exactly_qualified(
+                self.observation().version(),
+            )
+        {
+            return Err(super::failure(
+                PreparationStage::Preflight,
+                "swallowtail.cursor.headless.ask_mode_unqualified",
+                "Cursor headless Ask mode requires an exactly qualified Cursor release",
+            ));
+        }
+        let read_mode = crate::headless_command::resolve(input.resource_access, input.read_mode);
         let model = input.model;
         let rendered_model_id = model.resolved_model_id()?;
         let effort = model.parameters().effort().cloned();
@@ -190,6 +233,7 @@ impl CursorPreparedHeadlessIntegration {
             )?,
             request,
             environment: self.environment().clone(),
+            read_mode,
         })
     }
 }
@@ -213,10 +257,25 @@ impl CursorPreparedHeadlessRun {
         &self.request
     }
 
+    /// Returns the exact Cursor read mode this run dispatches, if any.
+    ///
+    /// `Read` runs report the selected or default mode; `ReadWrite` runs
+    /// report `None` and dispatch no `--mode` argument. The value is fixed at
+    /// preparation and cannot drift afterwards. It records requested and
+    /// dispatched intent only, never applied or effective provider behavior.
+    #[must_use]
+    pub const fn read_mode(&self) -> Option<CursorHeadlessReadMode> {
+        self.read_mode
+    }
+
     /// Creates the low-level driver bound to this prepared run.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::CursorHeadlessDriver {
-        crate::CursorHeadlessDriver::new(self.environment.clone())
+        let driver = crate::CursorHeadlessDriver::new(self.environment.clone());
+        match self.read_mode {
+            Some(read_mode) => driver.with_read_mode(read_mode),
+            None => driver,
+        }
     }
 
     /// Starts the prepared run with caller-supplied host services.

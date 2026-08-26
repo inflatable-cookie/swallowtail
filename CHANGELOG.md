@@ -35,6 +35,15 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add closed Cursor-local `CursorHeadlessReadMode` on `cursor-agent.headless`:
+  `Ask` dispatches canonical `--mode ask` on exact `2026.07.01-41b2de7`,
+  `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and `2026.08.11-e8db854` with
+  `ResourceAccess::Read` only; omission keeps `Read` on `--mode plan` and
+  `ReadWrite` on no mode; read-write authority and newer unverified releases
+  reject before process work; Ask is qualified dispatch and application only,
+  claims no locally enforced read-only boundary, and adds no portable
+  `HarnessMode`, isolation, permission, tool, approval, or network authority;
+  Research 224, g04.077
 - add optional portable `HarnessMode::Plan` on `qwen.headless` exact
   `0.21.15`, `0.22.0`, and `0.22.1` as canonical `--approval-mode plan`;
   omission keeps `--approval-mode default`; applied `session_start.permission_mode`

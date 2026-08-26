@@ -78,11 +78,20 @@ pub fn headless_plan(
     target: &str,
     resource_access: ResourceAccess,
 ) -> PreflightPlan {
+    headless_plan_with_release(host, target, resource_access, "2026.07.01-41b2de7")
+}
+
+#[allow(dead_code)]
+pub fn headless_plan_with_release(
+    host: ExecutionHostId,
+    target: &str,
+    resource_access: ResourceAccess,
+    release: &str,
+) -> PreflightPlan {
     let descriptor = cursor_headless_descriptor();
     let access_id = AccessProfileId::new("access.cursor.subscription").expect("valid access id");
     let access = cursor_subscription_access_profile(access_id.clone());
-    let version = cursor_agent_release_binding("2026.07.01-41b2de7")
-        .expect("fixture Cursor release is valid");
+    let version = cursor_agent_release_binding(release).expect("fixture Cursor release is valid");
     let capabilities = headless_capabilities(resource_access);
     let profile = CapabilityProfile::new(capabilities.clone());
     let instance = ConfiguredInstance::new(

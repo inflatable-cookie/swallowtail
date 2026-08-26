@@ -158,7 +158,11 @@ impl ClineHeadlessDriver {
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
-        .with_arguments(arguments(&cwd, request.content().as_str()))
+        .with_arguments(arguments(
+            &cwd,
+            request.content().as_str(),
+            request.policy().harness_mode(),
+        ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
         let process = match process_service.start(scope.clone(), process_request).await {

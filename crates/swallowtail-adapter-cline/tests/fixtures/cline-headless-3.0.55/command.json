@@ -22,7 +22,18 @@
     "hub",
     "kanban",
     "-k",
-    "--key"
+    "--key",
+    "--plan"
+  ],
+  "plan_example_argv": [
+    "cline",
+    "--json",
+    "--auto-approve",
+    "false",
+    "--plan",
+    "-c",
+    "opaque-working-resource",
+    "opaque fixture prompt"
   ],
   "auto_approve_true_forbidden": ["--auto-approve", "true"],
   "stdin": "not-the-prompt-channel",

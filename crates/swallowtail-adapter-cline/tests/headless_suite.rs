@@ -232,15 +232,100 @@ fn missing_deadline_fails_before_process_start() {
     assert!(!host.started());
 }
 
+#[test]
+fn plan_places_canonical_flag_before_cwd_and_does_not_select_act_flags() {
+    let host_id = ExecutionHostId::new("fixture.host.plan").expect("host");
+    let selected = support::selection_with_plan(host_id.clone());
+    let host = FixtureHost::scripted([SUCCESS]);
+    let mut handle = block_on(driver().start_run(
+        selected.plan,
+        request_with_plan("plan", selected.resource),
+        host.services(host_id),
+    ))
+    .expect("plan run starts");
+    let outcome = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    let observed = host.observed();
+    assert_eq!(
+        observed.arguments,
+        [
+            "--json",
+            "--auto-approve",
+            "false",
+            "--plan",
+            "-c",
+            FIXTURE_CWD,
+            "private fixture prompt"
+        ]
+    );
+    for forbidden in ["--acp", "--id", "--yolo", "--zen", "-p"] {
+        assert!(
+            !observed
+                .arguments
+                .iter()
+                .any(|argument| argument == forbidden),
+            "{forbidden} must not be selected for cline.headless Plan"
+        );
+    }
+    assert!(
+        !observed
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--auto-approve", "true"])
+    );
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(host.joined());
+}
+
+#[test]
+fn plan_without_capability_rejects_before_process_start() {
+    let host_id = ExecutionHostId::new("fixture.host.plan.unadvertised").expect("host");
+    let selected = support::selection(host_id.clone());
+    let host = FixtureHost::scripted([SUCCESS]);
+    let result = block_on(driver().start_run(
+        selected.plan,
+        request_with_plan("plan-unadvertised", selected.resource),
+        host.services(host_id),
+    ));
+    assert!(result.is_err());
+    assert!(!host.started());
+}
+
 fn driver() -> ClineHeadlessDriver {
     ClineHeadlessDriver::new(EnvironmentRef::new("cline.fixture.isolated").expect("environment"))
 }
 
 fn request(id: &str, resource: swallowtail_runtime::WorkingResourceRef) -> StructuredRunRequest {
-    let policy = OperationPolicy::offline()
+    request_with_policy(id, resource, omit_policy())
+}
+
+fn request_with_plan(
+    id: &str,
+    resource: swallowtail_runtime::WorkingResourceRef,
+) -> StructuredRunRequest {
+    request_with_policy(
+        id,
+        resource,
+        omit_policy().with_harness_mode(swallowtail_core::HarnessMode::Plan),
+    )
+}
+
+fn omit_policy() -> OperationPolicy {
+    OperationPolicy::offline()
         .with_provider_retention(ProviderRetentionPolicy::Prohibited)
         .with_harness_isolation(HarnessIsolation::AmbientHost)
-        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+}
+
+fn request_with_policy(
+    id: &str,
+    resource: swallowtail_runtime::WorkingResourceRef,
+    policy: OperationPolicy,
+) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(format!("cline-headless-{id}")).expect("request"),
         OperationContent::new("private fixture prompt").expect("prompt"),

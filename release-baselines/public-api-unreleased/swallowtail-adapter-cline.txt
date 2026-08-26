@@ -39,13 +39,16 @@ pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::prepare_run(
 pub struct swallowtail_adapter_cline::ClineHeadlessPreparedRun
 impl swallowtail_adapter_cline::ClineHeadlessPreparedRun
 pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_cline::ClineHeadlessDriver
 pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_cline::ClineHeadlessRunProfileInput
 impl swallowtail_adapter_cline::ClineHeadlessRunProfileInput
+pub const fn swallowtail_adapter_cline::ClineHeadlessRunProfileInput::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub const fn swallowtail_adapter_cline::ClineHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_cline::ClineHeadlessRunProfileInput::with_harness_mode(self, swallowtail_core::harness_mode::HarnessMode) -> Self
 pub struct swallowtail_adapter_cline::ClinePreparationInput
 impl swallowtail_adapter_cline::ClinePreparationInput
 pub const fn swallowtail_adapter_cline::ClinePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self

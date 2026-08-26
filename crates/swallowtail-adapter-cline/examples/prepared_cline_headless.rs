@@ -4,6 +4,7 @@ use swallowtail_adapter_cline::{
     ClineHeadlessPreparationInput, ClineHeadlessPreparationProbe, ClineHeadlessPreparedIntegration,
     ClineHeadlessPreparedRun, ClineHeadlessRunProfileInput, prepare_cline_headless,
 };
+use swallowtail_core::HarnessMode;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, PreparationFailure, RuntimeFailure, TerminalOutcome,
 };
@@ -21,6 +22,13 @@ fn prepare_run(
     input: ClineHeadlessRunProfileInput,
 ) -> Result<ClineHeadlessPreparedRun, PreparationFailure> {
     integration.prepare_run(input)
+}
+
+fn prepare_run_with_plan(
+    integration: &ClineHeadlessPreparedIntegration,
+    input: ClineHeadlessRunProfileInput,
+) -> Result<ClineHeadlessPreparedRun, PreparationFailure> {
+    integration.prepare_run(input.with_harness_mode(HarnessMode::Plan))
 }
 
 async fn execute_run(

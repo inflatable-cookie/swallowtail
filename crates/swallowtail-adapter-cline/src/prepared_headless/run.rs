@@ -2,7 +2,7 @@ use super::ClineHeadlessPreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
-    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
+    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
     HostServiceKind, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
     ResourceAccess, ResourceRepresentation, RuntimeReadiness, SupportAuthority, preflight,
 };
@@ -19,6 +19,7 @@ pub struct ClineHeadlessRunProfileInput {
     content: OperationContent,
     working_resource: WorkingResourceRef,
     deadline: Deadline,
+    harness_mode: Option<HarnessMode>,
 }
 
 impl ClineHeadlessRunProfileInput {
@@ -35,7 +36,24 @@ impl ClineHeadlessRunProfileInput {
             content,
             working_resource,
             deadline,
+            harness_mode: None,
         }
+    }
+
+    /// Selects portable Plan for the one JSON child.
+    ///
+    /// Omission keeps the current argv and provider-default mode. Only
+    /// `HarnessMode::Plan` is admitted.
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
+        self
+    }
+
+    /// Returns the caller-selected portable mode, if any.
+    #[must_use]
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.harness_mode
     }
 }
 
@@ -90,10 +108,23 @@ impl ClineHeadlessPreparedIntegration {
                 swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
             )
         })?;
-        let policy = OperationPolicy::offline()
+        let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::Prohibited)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        match input.harness_mode {
+            None => {}
+            Some(HarnessMode::Plan) => {
+                policy = policy.with_harness_mode(HarnessMode::Plan);
+            }
+            Some(_) => {
+                return Err(super::failure(
+                    PreparationStage::Preflight,
+                    "swallowtail.cline.headless.preparation.harness_mode_unsupported",
+                    "Cline headless admits only portable Plan",
+                ));
+            }
+        }
         let request = StructuredRunRequest::new(input.request_id, input.content, policy)
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);
@@ -129,6 +160,12 @@ impl ClineHeadlessPreparedRun {
     }
 
     #[must_use]
+    /// Returns the caller-selected portable mode copied onto the request policy.
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.request.policy().harness_mode()
+    }
+
+    #[must_use]
     /// Creates the low-level headless driver as an explicit escape hatch.
     pub fn low_level_driver(&self) -> crate::ClineHeadlessDriver {
         crate::ClineHeadlessDriver::new(self.environment.clone())
@@ -151,6 +188,10 @@ pub(super) fn advertised_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ObservableActivity, []),
+        CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
+        ),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(

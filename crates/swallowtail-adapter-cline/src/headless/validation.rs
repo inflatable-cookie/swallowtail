@@ -1,7 +1,7 @@
 use crate::failure::headless_unsupported;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
-    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessMode, HostServiceKind, InstanceOwnership,
     PreflightPlan, ResourceAccess, ResourceRepresentation, SupportAuthority,
 };
 use swallowtail_runtime::{
@@ -69,11 +69,21 @@ pub(super) fn validate(
     if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
         || request.policy().reasoning_mode().is_some()
-        || request.policy().harness_mode().is_some()
     {
         return Err(headless_unsupported(
-            "consumer network, search, reasoning, or harness mode",
+            "consumer network, search, or reasoning",
         ));
+    }
+    match request.policy().harness_mode() {
+        None => {}
+        Some(HarnessMode::Plan) => require_constraint(
+            plan,
+            Capability::HarnessModeSelection,
+            CapabilityConstraint::HarnessMode(HarnessMode::Plan),
+        )?,
+        Some(_) => {
+            return Err(headless_unsupported("harness mode"));
+        }
     }
     if request.working_resource().is_none() || request.deadline().is_none() {
         return Err(headless_unsupported("missing working resource or deadline"));

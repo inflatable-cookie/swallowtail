@@ -1,5 +1,6 @@
 swallowtail-adapter-anthropic
 swallowtail-adapter-claude-agent
+swallowtail-adapter-cline
 swallowtail-adapter-codex
 swallowtail-adapter-cursor
 swallowtail-adapter-deepseek

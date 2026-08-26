@@ -109,6 +109,36 @@ fn named_corpus_files_stay_wired_to_the_first_driver() {
             .any(|pair| pair == ["--auto-approve", "true"]),
         "example argv must not pass --auto-approve true"
     );
+    assert!(
+        !argv.contains(&"--plan"),
+        "omit example argv must not place --plan"
+    );
+
+    let plan_argv = command["plan_example_argv"]
+        .as_array()
+        .expect("plan example argv")
+        .iter()
+        .map(|value| value.as_str().expect("argv text"))
+        .collect::<Vec<_>>();
+    assert_eq!(
+        plan_argv,
+        [
+            "cline",
+            "--json",
+            "--auto-approve",
+            "false",
+            "--plan",
+            "-c",
+            "opaque-working-resource",
+            "opaque fixture prompt"
+        ]
+    );
+    for forbidden in ["--acp", "--id", "--yolo", "--zen", "-p"] {
+        assert!(
+            !plan_argv.contains(&forbidden),
+            "{forbidden} must not appear on the headless Plan example argv"
+        );
+    }
 
     let plan: Value = serde_json::from_str(CORPUS_PLAN).expect("corpus plan");
     assert_eq!(plan["route"], "cline.headless");

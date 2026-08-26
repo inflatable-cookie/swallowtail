@@ -2,8 +2,9 @@
 //!
 //! `cline.acp` binds host-approved `cline --acp` for initialize plus one bounded
 //! `session/prompt`. `cline.headless` binds `cline --json --auto-approve false`
-//! for one bounded print run. Hub/TUI, `--id`, and `--auto-approve true` stay
-//! out of both routes.
+//! for one bounded print run, with optional portable `HarnessMode::Plan` as
+//! canonical `--plan`. Hub/TUI, `--id`, and `--auto-approve true` stay out of
+//! both routes.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]

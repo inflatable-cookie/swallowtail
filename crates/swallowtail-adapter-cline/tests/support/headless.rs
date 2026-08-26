@@ -14,7 +14,7 @@ use swallowtail_core::{
     AccessProfileId, AccessRequirement, AccessStatus, AdapterId, Capability, CapabilityConstraint,
     CapabilityProfile, CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId,
     CredentialState, DriverRole, EndpointAuthorization, EntitlementState, ExecutionHostId,
-    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HarnessMode, InstanceOwnership,
     InstancePolicyId, InstanceRevision, InstanceTargetRef, OperationRequirements, OperationShape,
     PreflightContext, PreflightPlan, ProtocolFacadeId, ResourceAccess, ResourceRepresentation,
     RuntimeReadiness, SupportAuthority, preflight,
@@ -365,10 +365,18 @@ pub struct FixtureSelection {
 }
 
 pub fn selection(host: ExecutionHostId) -> FixtureSelection {
+    selection_with_plan_capability(host, false)
+}
+
+pub fn selection_with_plan(host: ExecutionHostId) -> FixtureSelection {
+    selection_with_plan_capability(host, true)
+}
+
+fn selection_with_plan_capability(host: ExecutionHostId, plan: bool) -> FixtureSelection {
     let descriptor = cline_headless_descriptor();
     let access_id = AccessProfileId::new("cline.fixture.local-account").expect("valid access id");
     let instance_id = ConfiguredInstanceId::new("cline.fixture.instance").expect("valid instance");
-    let capabilities = CapabilityProfile::new([
+    let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ObservableActivity, []),
@@ -385,7 +393,14 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ]);
+    ];
+    if plan {
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
+        ));
+    }
+    let capabilities = CapabilityProfile::new(capability_requirements);
     let version_binding = cline_package_binding(CLINE_PACKAGE_VERSION).expect("fixture version");
     let instance = ConfiguredInstance::new(
         instance_id,

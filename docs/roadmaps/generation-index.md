@@ -66,9 +66,10 @@ g04.071 stopped after card 195 and Research 218: exact `1.0.80` parses
 `--available-tools` and stores it on ACP `session/new`, but built-in
 membership, unknown-name failure, available/excluded precedence, and host
 MCP/plugin registry composition remain unbound; cards 196-197 blocked.
-g04.072 is ready as cards 198-200: Research 219 must qualify exact maintained
-Grok Build ACP launch-time `--no-subagents` suppression before any adapter-local
-binding.
+g04.072 stopped after card 198 and Research 219: exact `1.0.4`/`1.0.5` parse
+root `--no-subagents` before `agent stdio`, but unauthenticated initialize does
+not expose applied suppression and spawn-path coverage stays unfrozen; cards
+199-200 blocked.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

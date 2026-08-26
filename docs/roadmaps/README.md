@@ -14,12 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.072 cards 198-200 serially. Start with exact Grok Build ACP
-`--no-subagents` evidence and Research 219. Continue to binding and acceptance
-only when Research 219 admits a non-empty exact set with effective suppression
-proved across the named ACP lifecycles. Otherwise stop honestly after card
-198. Keep g04 open. Contract 029 currentness remains standing. Do not merge,
-roll the generation, or close g04.
+Reassess the remaining per-route feature inventory for the next serial lane
+unless the operator supplies a different direction. g04.072 stopped after card
+198: Research 219 is an empty deliver-now set. Keep g04 open. Contract 029
+currentness remains standing. Do not merge, roll the generation, or close g04.
 
 ## Standing Lanes
 

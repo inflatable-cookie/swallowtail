@@ -1,6 +1,6 @@
 # g04.072 Grok Build ACP Subagents Disabled
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -32,19 +32,19 @@ authority.
 
 ## Goals
 
-- [ ] freeze exact maintained-package parser, configuration, agent-construction,
+- [x] freeze exact maintained-package parser, configuration, agent-construction,
       subagent-tool, ACP-session, override, and failure truth
-- [ ] determine whether `--no-subagents` is effective and immutable across the
+- [x] determine whether `--no-subagents` is effective and immutable across the
       complete owned child lifetime without a provider prompt
-- [ ] distinguish requested restriction, argv dispatch, parser acceptance,
+- [x] distinguish requested restriction, argv dispatch, parser acceptance,
       configuration application, tool removal, attempted spawn, and effect
-- [ ] promote Research 219 with an exact deliver-now table or honest empty set
+- [x] promote Research 219 with an exact deliver-now table or honest empty set
 - [ ] conditionally expose only the adapter-local disabled profile admitted by
       Research 219
 - [ ] bind the selection through prepared input, immutable evidence, driver,
       exact argv, and fresh replacement
-- [ ] preserve current argv and behavior when the selection is absent
-- [ ] preserve existing ACP activity, permission, cancellation, failure, and
+- [x] preserve current argv and behavior when the selection is absent
+- [x] preserve existing ACP activity, permission, cancellation, failure, and
       joined-cleanup truth
 
 ## Non-Goals
@@ -93,10 +93,10 @@ observation and operator-control claims stay unchanged.
 
 ### Batch 72.1 — Exact Disabled-Topology Evidence
 
-- [ ] Execute card 198.
-- [ ] freeze exact package, parser, configuration, subagent registration/spawn,
+- [x] Execute card 198.
+- [x] freeze exact package, parser, configuration, subagent registration/spawn,
       lifecycle, override, and failure truth
-- [ ] promote Research 219 with a non-empty exact table or honest empty set
+- [x] promote Research 219 with a non-empty exact table or honest empty set
 
 ### Batch 72.2 — Conditional Adapter-Local Binding
 
@@ -132,6 +132,8 @@ observation and operator-control claims stay unchanged.
   conditional binding
 - execution topology: one serial worker lane, cards 198-200
 - generation boundary: g04 remains open; no closure or rollover is authorized
+- stop: card 198 promoted Research 219 as an empty set; cards 199-200 blocked;
+  current `grok --no-auto-update agent stdio` argv retained
 
 ## Decision Gates
 
@@ -159,7 +161,7 @@ observation and operator-control claims stay unchanged.
 - [Research 130 Grok 1.0.4 Milestone Handshake](../../research/130-grok-1-0-4-milestone-handshake.md)
 - [Research 163 Grok 1.0.5 Identity](../../research/163-grok-1-0-5-identity.md)
 - [Research 204 Grok Build ACP Reasoning Selection](../../research/204-grok-build-acp-reasoning-selection-evidence.md)
-- Research 219 Grok Build ACP Subagents Disabled (reserved)
+- [Research 219 Grok Build ACP Subagents Disabled](../../research/219-grok-build-acp-subagents-disabled-evidence.md) — promoted empty deliver-now set
 - [Contract 023 Harness Operation Isolation](../../contracts/023-harness-operation-isolation-and-native-boundary.md)
 - [Contract 029 Interface Version Qualification](../../contracts/029-interface-version-qualification-and-compatibility.md)
 - [Contract 033 Harness Configuration Posture](../../contracts/033-harness-configuration-posture.md)

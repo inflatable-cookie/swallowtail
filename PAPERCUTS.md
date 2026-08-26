@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Isolated HOME for provider probes steals rustup — 2026-08-26
+- Friction: Grok parser probes set `HOME`/`GROK_HOME` to an empty isolated tree
+  and left those exports in the agent shell. Later `effigy validate:focused`
+  ran cargo through rustup with `rustup home` under the isolated tree and no
+  toolchain.
+- Impact: docs-only closeout validation fails with `rustup could not choose a
+  version of cargo` even though host rustup is healthy.
+- Fix: restore `HOME` after isolated provider probes, or run later cargo/effigy
+  with an explicit host `HOME` and `env -u GROK_HOME`.
+- Surface: g04.072 / Research 219 isolated extracted-binary help and initialize.
+
 ### [ ] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
 - Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB
   Next.js shells. Markdown exports exist by appending `.md` and are 11–348 KiB.

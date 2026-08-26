@@ -127,6 +127,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [216 Qwen Headless 0.22.1 Identity](./216-qwen-headless-0-22-1-identity.md) — promoted through g04.069 cards 192-193; official npm `0.22.1` via published `0.22.0` is a compatible extension of exact `0.21.15` reasoning-control; unpublished `0.21.16` stays a gap
 - [217 Oh My Pi 18 Identity](./217-oh-my-pi-18-identity.md) — promoted identity stop through g04.070 card 194; assigned official `18.0.5`; observed npm `latest` `18.0.6`; no claim; 18.x segment unset
 - [218 Copilot CLI ACP Built-In Tool Allowlist Evidence](./218-copilot-cli-acp-built-in-tool-allowlist-evidence.md) — promoted evidence stop through g04.071 card 195; exact `1.0.80` parses `--available-tools`; no closed built-in table independent of ambient MCP/plugins; no deliver-now row
+- [219 Grok Build ACP Subagents-Disabled Evidence](./219-grok-build-acp-subagents-disabled-evidence.md) — promoted evidence stop through g04.072 card 198; exact `1.0.4`/`1.0.5` parse root `--no-subagents`; initialize does not expose applied suppression; no deliver-now row
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210
@@ -215,6 +216,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [066 Non-ACP Harness Activity Inventory And Corpus](./066-non-acp-harness-activity-inventory-and-corpus.md)
 - [067 Direct Activity Applicability And Corpus](./067-direct-activity-applicability-and-corpus.md)
 - [072 Subagent Topology, Observation, And Control Evidence](./072-subagent-topology-observation-and-control-evidence.md)
+- [219 Grok Build ACP Subagents-Disabled Evidence](./219-grok-build-acp-subagents-disabled-evidence.md) — promoted evidence stop; exact `1.0.4`/`1.0.5` parse `--no-subagents`; no deliver-now row
 - [098 Portable Activity Key And Cross-Operation Isolation](./098-portable-activity-key-and-cross-operation-isolation.md)
 - [120 Codex Collab Spawn Child-Thread Admission Evidence](./120-codex-collab-spawn-admission-evidence.md)
 - [121 Claude Code Response-Only Structured Route](./121-claude-code-response-only-structured-route.md)

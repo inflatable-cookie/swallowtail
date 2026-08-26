@@ -1,8 +1,9 @@
 # 200 Grok Build ACP Subagents-Disabled Acceptance
 
-Status: planned; gated on card 199
+Status: blocked; card 199 blocked
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.072 Grok Build ACP Subagents Disabled](../072-grok-build-acp-subagents-disabled.md)
 Depends on: card 199
 

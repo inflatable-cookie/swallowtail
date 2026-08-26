@@ -2020,3 +2020,21 @@ If exact evidence cannot prove complete immutable suppression without a
 provider prompt, account inspection, tool/subagent execution, or paid work,
 Research 219 must promote an empty deliver-now set and the lane stops after
 card 198. Keep g04 open. Contract 029 currentness remains standing.
+
+## Post-g04.072 Evidence Stop (2026-08-26)
+
+Disposition: stop after card 198. Research 219 admits no deliver-now row.
+
+Exact `@xai-official/grok@1.0.4`/`1.0.5` darwin-arm64 binaries parse root
+`--no-subagents` before `agent stdio` and reject the flag on the ACP
+subcommand. Repeats fail at parse. `--subagents` is not a clap option.
+Unauthenticated initialize with and without the flag is structurally identical
+after stripping `agentInstanceId`; `subagent_stop` and `deep-research` remain
+advertised. Exact spawn-path application and env/config/`--agents` override
+behavior are unfrozen. Later public `resolve(--subagents)` does not match these
+packages.
+
+Current `grok --no-auto-update agent stdio` argv, empty `SessionOptions`,
+observe-and-stop permission, and `AmbientHost` stay unchanged. Do not compile
+the next per-route family from this note. Keep g04 open at operator direction.
+Contract 029 currentness remains standing.

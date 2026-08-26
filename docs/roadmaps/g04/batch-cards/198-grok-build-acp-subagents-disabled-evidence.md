@@ -1,6 +1,6 @@
 # 198 Grok Build ACP Subagents-Disabled Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -57,21 +57,21 @@ connected to exact effective spawn suppression without provider work.
 
 ## Acceptance Criteria
 
-- [ ] official and exact package/source evidence is frozen with complete
+- [x] official and exact package/source evidence is frozen with complete
       identities and decisive digests
-- [ ] parser, placement, duplicate, precedence, omission, and failure truth is
+- [x] parser, placement, duplicate, precedence, omission, and failure truth is
       settled for every maintained exact version
-- [ ] every ACP session and spawn path has an exact disposition
-- [ ] dispatch, parsing, application, registry effect, spawn effect, and
+- [x] every ACP session and spawn path has an exact disposition
+- [x] dispatch, parsing, application, registry effect, spawn effect, and
       containment claims remain separate
-- [ ] ambient config, stored state, plugins, session metadata, replacement, and
+- [x] ambient config, stored state, plugins, session metadata, replacement, and
       later-version inheritance are explicit
-- [ ] production input, plan/evidence, driver, argv, activity, permission, and
+- [x] production input, plan/evidence, driver, argv, activity, permission, and
       lifecycle seams are audited
-- [ ] Research 219 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 219 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] focused Grok validation, Northstar QA, research indexes, and diff checks
+- [x] focused Grok validation, Northstar QA, research indexes, and diff checks
       pass
 
 ## Validation

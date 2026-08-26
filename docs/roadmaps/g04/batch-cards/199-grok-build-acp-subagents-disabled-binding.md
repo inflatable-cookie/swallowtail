@@ -1,8 +1,9 @@
 # 199 Grok Build ACP Subagents-Disabled Binding
 
-Status: planned; gated on Research 219
+Status: blocked; Research 219 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.072 Grok Build ACP Subagents Disabled](../072-grok-build-acp-subagents-disabled.md)
 Depends on: card 198; promoted Research 219 with a non-empty deliver-now set
 

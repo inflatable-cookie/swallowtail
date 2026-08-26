@@ -215,16 +215,17 @@ families do not interrupt this programme by default.
   and host MCP/plugin registry composition remain unbound. Cards 196-197 are
   blocked.
 - [g04.072 Grok Build ACP Subagents Disabled](./072-grok-build-acp-subagents-disabled.md)
-  is ready as cards 198-200. Research 219 must connect exact maintained-package
-  `--no-subagents` parsing to immutable effective suppression across every
-  owned ACP lifecycle. Only a non-empty exact set proceeds past card 198.
+  stopped after card 198. Research 219 admits no deliver-now row: exact
+  `1.0.4`/`1.0.5` parse root `--no-subagents` before `agent stdio`, but
+  unauthenticated initialize does not expose applied suppression and spawn-path
+  coverage stays unfrozen. Cards 199-200 are blocked.
 
 ## Current Execution Boundary
 
-Execute g04.072 cards 198-200 serially. Stop after card 198 if Research 219 is
-empty or effective suppression is not exact. Do not select or compile the next
-family from the worker closeout. Keep g04 open. Contract 029 currentness
-remains standing.
+Reassess the remaining per-route feature inventory for the next serial lane
+unless the operator supplies a different direction. Do not select or compile
+the next family from the worker closeout. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Exclusions
 

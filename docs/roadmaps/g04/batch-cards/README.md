@@ -4,15 +4,14 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [199-grok-build-acp-subagents-disabled-binding.md](./199-grok-build-acp-subagents-disabled-binding.md) — gated on non-empty Research 219
-- [200-grok-build-acp-subagents-disabled-acceptance.md](./200-grok-build-acp-subagents-disabled-acceptance.md) — gated on card 199
-
 ## Ready
 
-- [198-grok-build-acp-subagents-disabled-evidence.md](./198-grok-build-acp-subagents-disabled-evidence.md)
+None.
 
 ## Blocked
 
+- [199-grok-build-acp-subagents-disabled-binding.md](./199-grok-build-acp-subagents-disabled-binding.md) — blocked; Research 219 empty deliver-now set
+- [200-grok-build-acp-subagents-disabled-acceptance.md](./200-grok-build-acp-subagents-disabled-acceptance.md) — blocked; card 199 blocked
 - [196-copilot-cli-acp-built-in-tool-allowlist-binding.md](./196-copilot-cli-acp-built-in-tool-allowlist-binding.md) — blocked; Research 218 empty deliver-now set
 - [197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md](./197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md) — blocked; card 196 blocked
 - [188-opencode-http-web-search-binding.md](./188-opencode-http-web-search-binding.md) — blocked; Research 214 empty deliver-now set
@@ -28,6 +27,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [198-grok-build-acp-subagents-disabled-evidence.md](./198-grok-build-acp-subagents-disabled-evidence.md) — evidence stop; Research 219 empty deliver-now set
 - [195-copilot-cli-acp-built-in-tool-allowlist-evidence.md](./195-copilot-cli-acp-built-in-tool-allowlist-evidence.md) — evidence stop; Research 218 empty deliver-now set
 - [194-oh-my-pi-18-identity.md](./194-oh-my-pi-18-identity.md) — identity stop; Research 217; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim
 - [193-qwen-headless-0-22-1-claim.md](./193-qwen-headless-0-22-1-claim.md)

@@ -133,26 +133,29 @@ fn selected_qwen_budgets_dispatch_exact_child_argv_on_0_21_15() {
 #[test]
 fn selected_qwen_budgets_reject_unqualified_version_and_keep_native_terminals() {
     let turns = QwenSessionTurnBudget::try_new(2).expect("admitted turns");
-    let host_id = ExecutionHostId::new("fixture.qwen.budget.reject.0.19.11").expect("valid host");
-    let (discovery_process, _) = FakeProcessService::completed("0.19.11\n");
-    let (discovery_services, _) = host_services_for(
-        host_id.clone(),
-        discovery_process,
-        Arc::new(PendingTimeService),
-    );
-    let prepared = block_on(prepare_qwen_headless(
-        preparation_input(host_id),
-        probe(),
-        discovery_services,
-    ))
-    .expect("baseline Qwen prepares");
-    let error = prepared
-        .prepare_run(budget_run_input("reject").with_session_turn_budget(turns))
-        .expect_err("selected budgets require 0.21.15");
-    assert_eq!(
-        error.diagnostic().safe().code(),
-        "swallowtail.qwen.preparation.budget_unsupported"
-    );
+    for version in ["0.19.11", "0.22.0", "0.22.1"] {
+        let host_id = ExecutionHostId::new(format!("fixture.qwen.budget.reject.{version}"))
+            .expect("valid host");
+        let (discovery_process, _) = FakeProcessService::completed(&format!("{version}\n"));
+        let (discovery_services, _) = host_services_for(
+            host_id.clone(),
+            discovery_process,
+            Arc::new(PendingTimeService),
+        );
+        let prepared = block_on(prepare_qwen_headless(
+            preparation_input(host_id),
+            probe(),
+            discovery_services,
+        ))
+        .expect("Qwen prepares");
+        let error = prepared
+            .prepare_run(budget_run_input("reject").with_session_turn_budget(turns))
+            .expect_err("selected budgets require exact 0.21.15");
+        assert_eq!(
+            error.diagnostic().safe().code(),
+            "swallowtail.qwen.preparation.budget_unsupported"
+        );
+    }
 
     let host_id = ExecutionHostId::new("fixture.qwen.budget.terminal").expect("valid host");
     let (discovery_process, _) = FakeProcessService::completed("0.21.15\n");

@@ -2,7 +2,7 @@
 
 ## Result
 
-Card 190 froze official npm `@qwen-code/qwen-code` `0.22.1` against the
+Card 192 froze official npm `@qwen-code/qwen-code` `0.22.1` against the
 `0.21.15` claim. Host was not installed. `cli-entry.js` and
 `reasoning-effort.ts` are byte-identical from `0.21.15` through
 `0.22.1`. `0.22.0` stream types and catalogue controller match
@@ -12,9 +12,9 @@ Card 190 froze official npm `@qwen-code/qwen-code` `0.22.1` against the
 unmapped. Published intermediate is `0.22.0`. Unpublished `0.21.16`
 stays a gap. No `v0.22.1` GitHub tag; npm gitHead `2755dbe` is the
 public release commit. Production claims stayed at `0.21.15` in this
-card. Decision for card 191: compatible extension of
+card. Decision for card 193: compatible extension of
 `qwen-code.headless.v0.21.15-reasoning-control` through `0.22.1`.
 
 ## Next
 
-Raise the qualified ceiling on card 191.
+Raise the qualified ceiling on card 193.

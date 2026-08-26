@@ -1,9 +1,9 @@
-# 215 Qwen Headless 0.22.1 Identity
+# 216 Qwen Headless 0.22.1 Identity
 
 Status: promoted
 Owner: Tom
 Date: 2026-08-26
-Card: g04 batch 190
+Card: g04 batch 192
 
 ## Question
 
@@ -93,7 +93,7 @@ Decoder specimen remains `qwen-code-v0.19.11`.
 
 No new mapped public operation. No live session required.
 
-## Segment decision for card 191
+## Segment decision for card 193
 
 Compatible extension of existing
 `qwen-code.headless.v0.21.15-reasoning-control`. Same axis. Keep

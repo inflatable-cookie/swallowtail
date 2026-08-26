@@ -1,4 +1,4 @@
-# g04.068 Qwen Headless 0.22.1 Useful Newer
+# g04.069 Qwen Headless 0.22.1 Useful Newer
 
 Status: completed
 Owner: Tom
@@ -34,7 +34,9 @@ Claim:
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
 
-Do not edit `docs/roadmaps/README.md` or g04 generation status.
+Do not edit `docs/roadmaps/README.md` Next Task. Index this milestone
+in `docs/roadmaps/g04/README.md`, `docs/roadmaps/g04/batch-cards/README.md`,
+and `docs/roadmaps/generation-index.md`. Keep g04 open.
 
 ## Out Of Scope
 
@@ -51,12 +53,12 @@ Do not edit `docs/roadmaps/README.md` or g04 generation status.
 
 ## Batch Cards
 
-- [190-qwen-headless-0-22-1-identity.md](batch-cards/190-qwen-headless-0-22-1-identity.md) — completed
-- [191-qwen-headless-0-22-1-claim.md](batch-cards/191-qwen-headless-0-22-1-claim.md) — completed
+- [192-qwen-headless-0-22-1-identity.md](batch-cards/192-qwen-headless-0-22-1-identity.md) — completed
+- [193-qwen-headless-0-22-1-claim.md](batch-cards/193-qwen-headless-0-22-1-claim.md) — completed
 
 ## References
 
-- [Research 215 Qwen Headless 0.22.1 Identity](../../research/215-qwen-headless-0-22-1-identity.md)
+- [Research 216 Qwen Headless 0.22.1 Identity](../../research/216-qwen-headless-0-22-1-identity.md)
 - [Contract 029 Interface Version Qualification And Compatibility](../../contracts/029-interface-version-qualification-and-compatibility.md)
 - [Version Currentness Checkpoint](../../guides/version-currentness-checkpoint.md)
 - [Standing Lanes](../standing-lanes.md)

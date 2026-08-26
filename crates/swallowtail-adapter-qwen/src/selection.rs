@@ -74,7 +74,7 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
                 version("0.21.14").expect("static Qwen version is valid"),
                 InterfaceBehaviorRevision::new(CATALOGUE_FILTER_BEHAVIOR)
                     .expect("static Qwen behavior revision is valid"),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::exact(
                 version("0.21.15").expect("static Qwen version is valid"),
@@ -150,7 +150,9 @@ fn version(value: &str) -> Option<InterfaceVersion> {
 #[cfg(test)]
 mod tests {
     use super::{REASONING_CONTROL_BEHAVIOR, qwen_code_binding, qwen_headless_claim};
-    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+    use swallowtail_core::{
+        InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+    };
 
     #[test]
     fn claim_qualifies_both_segments_and_keeps_later_stable_unverified() {
@@ -161,38 +163,38 @@ mod tests {
         ] {
             assert!(claim.supports(&version(candidate)));
         }
-        assert_eq!(
-            claim
-                .assess(&version("0.20.1"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            "qwen-code.headless.v0.19.11"
-        );
-        assert_eq!(
-            claim
-                .assess(&version("0.21.0"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            "qwen-code.headless.v0.21.0-catalogue-filter"
-        );
-        assert_eq!(
-            claim
-                .assess(&version("0.21.15"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            REASONING_CONTROL_BEHAVIOR
-        );
-        assert_eq!(
-            claim
-                .assess(&version("0.22.1"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            REASONING_CONTROL_BEHAVIOR
-        );
+        assert!(matches!(
+            claim.assess(&version("0.20.1")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
+                    && matched.behavior_revision().as_str() == "qwen-code.headless.v0.19.11"
+        ));
+        assert!(matches!(
+            claim.assess(&version("0.21.0")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
+                    && matched.behavior_revision().as_str()
+                        == "qwen-code.headless.v0.21.0-catalogue-filter"
+        ));
+        assert!(matches!(
+            claim.assess(&version("0.21.14")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
+                    && matched.behavior_revision().as_str()
+                        == "qwen-code.headless.v0.21.0-catalogue-filter"
+        ));
+        assert!(matches!(
+            claim.assess(&version("0.21.15")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+                    && matched.behavior_revision().as_str() == REASONING_CONTROL_BEHAVIOR
+        ));
+        assert!(matches!(
+            claim.assess(&version("0.22.1")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+                    && matched.behavior_revision().as_str() == REASONING_CONTROL_BEHAVIOR
+        ));
         assert!(!claim.permits(&version("0.20.2")));
         assert!(!claim.permits(&version("0.21.16")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =

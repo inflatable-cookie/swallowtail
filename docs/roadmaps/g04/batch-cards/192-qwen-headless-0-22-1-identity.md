@@ -1,8 +1,8 @@
-# 190 Qwen Headless 0.22.1 Identity
+# 192 Qwen Headless 0.22.1 Identity
 
 Status: completed
 Owner: Tom
-Milestone: [g04.068 Qwen Headless 0.22.1 Useful Newer](../068-qwen-headless-0-22-1-useful-newer.md)
+Milestone: [g04.069 Qwen Headless 0.22.1 Useful Newer](../069-qwen-headless-0-22-1-useful-newer.md)
 Created: 2026-08-26
 
 ## Task
@@ -21,7 +21,7 @@ claims in this card.
 5. Classify unmapped additions
 6. Write identity fixture under
    `crates/swallowtail-adapter-qwen/tests/fixtures/qwen-code-0.22.1/`
-7. Write research record 215
+7. Write research record 216
 8. Name segment shape
 
 No provider prompt. No live session. Host install not present and not
@@ -36,13 +36,13 @@ filter, and `set_effort` stay. `0.22.0` types/controller match
 ## Acceptance
 
 - Identity fixture written
-- Research 215 promoted
+- Research 216 promoted
 - Shape named: compatible-extension
 - No production claim edit
 - Passes `effigy validate:focused swallowtail-adapter-qwen` at the
   claim card
 
-Auto-continue to claim card 191.
+Auto-continue to claim card 193.
 
 ## Out Of Scope
 
@@ -52,4 +52,4 @@ Auto-continue to claim card 191.
 - Flattening onto Model Studio or ACP
 - Provider work
 - Decoder updates
-- Moving `docs/roadmaps/README.md` or g04 generation status
+- Moving `docs/roadmaps/README.md` Next Task

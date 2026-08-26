@@ -98,7 +98,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version("0.21.2")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
                 && matched.behavior_revision().as_str()
                     == "qwen-code.headless.v0.21.0-catalogue-filter"
     ));
@@ -109,7 +109,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
         assert!(matches!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "qwen-code.headless.v0.21.0-catalogue-filter"
         ));
@@ -194,12 +194,12 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version("0.21.13")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         claim.assess(&version("0.21.14")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
                 && matched.behavior_revision().as_str()
                     == "qwen-code.headless.v0.21.0-catalogue-filter"
     ));
@@ -301,7 +301,7 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version("0.21.14")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
                 && matched.behavior_revision().as_str()
                     == "qwen-code.headless.v0.21.0-catalogue-filter"
     ));

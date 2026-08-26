@@ -368,7 +368,11 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
     assert_eq!(decision["provider_prompt_sent"], false);
     assert_eq!(decision["host_install_changed"], false);
     assert!(decision.get("new_milestone").is_none());
-    assert!(decision.get("seventeen_and_eighteen_stay_separate").is_none());
+    assert!(
+        decision
+            .get("seventeen_and_eighteen_stay_separate")
+            .is_none()
+    );
 
     let flags = protocol["help_selected_flags_present"]
         .as_array()

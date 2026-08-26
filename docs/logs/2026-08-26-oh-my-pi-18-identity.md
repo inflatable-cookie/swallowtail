@@ -13,7 +13,11 @@ and operator decision.
 Same-line `17.4.1` / `17.4.2` are a later 17.x useful-newer card. No
 provider prompt. Host install unchanged.
 
+Restacked onto corrected PR 68 (`619fd209`). Numbers: Research 217 /
+g04.070 / card 194.
+
 Validation: `cargo fmt -p swallowtail-adapter-oh-my-pi`; focused
-adapter proof; northstar-equivalent; research / logs / g04 /
-batch-card / roadmaps-front-door index gates. No package verify,
-workspace `qa`, live probes, MSRV, or consumer checks.
+adapter proof (46 tests); northstar-equivalent; research / logs /
+g04 / batch-card index-equivalent. Next Task still `Reassess`.
+npm `latest` still `18.0.6`. No package verify, workspace `qa`, live
+probes, MSRV, or consumer checks.

@@ -52,6 +52,12 @@ future 18.x segment.
       and operator decision
 - [x] No production claim edit
 - [x] No claim card
+- [x] `cargo fmt -p swallowtail-adapter-oh-my-pi`
+- [x] `validate:focused swallowtail-adapter-oh-my-pi` (46 tests)
+- [x] northstar-equivalent (spine / contains / Current Vision)
+- [x] index-equivalent: research, logs, g04 README, batch-cards
+- [x] Next Task still `Reassess`
+- [x] npm `latest` recheck still `18.0.6`
 
 Auto-continue: No.
 

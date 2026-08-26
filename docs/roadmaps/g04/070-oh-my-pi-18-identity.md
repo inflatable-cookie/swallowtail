@@ -31,6 +31,9 @@ Claim:
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
 
+Focused adapter proof passed. Northstar-equivalent and g04 / research /
+logs / batch-card index-equivalent passed. No package verify.
+
 ## Out Of Scope
 
 - Gemini requalification (deferred)

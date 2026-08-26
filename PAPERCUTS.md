@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
+- Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB
+  Next.js shells. Markdown exports exist by appending `.md` and are 11–348 KiB.
+- Impact: hashing the HTML shell does not identify the converted text used as
+  evidence. Research 188 hashed HTML; Research 218 hashes `.md` as the corpus
+  and records HTML only as corroboration.
+- Fix: retrieve GitHub docs `.md` exports for Copilot CLI reference pages;
+  hash those bodies; treat HTML as SPA corroboration only.
+- Surface: g04.071 / Research 218 official-source retrieval.
+
 ### [ ] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
 - Friction: `developers.openai.com/codex/config-*` 200-redirects to
   `learn.chatgpt.com` HTML shells (~0.4–1.2 MiB). Markdown exports exist by

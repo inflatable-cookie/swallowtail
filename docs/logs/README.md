@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.071 Copilot CLI ACP Built-In Tool Allowlist Closeout](./2026-08-26-g04-071-copilot-cli-acp-built-in-tool-allowlist-closeout.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
 - [2026-08-26 g04.071 Copilot CLI ACP Built-In Tool Allowlist Compiled](./2026-08-26-g04-071-copilot-cli-acp-built-in-tool-allowlist-compiled.md) — evidence-first cards 195-197; Research 218 reserved
 - [2026-08-26 Oh My Pi 18 Identity](./2026-08-26-oh-my-pi-18-identity.md) — identity stop; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim; 18.x segment unset
 - [2026-08-26 Qwen Headless 0.22.1 Claim](./2026-08-26-qwen-headless-0-22-1-claim.md)

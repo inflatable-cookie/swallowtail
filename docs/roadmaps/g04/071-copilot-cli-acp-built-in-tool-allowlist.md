@@ -1,8 +1,9 @@
 # g04.071 Copilot CLI ACP Built-In Tool Allowlist
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Depends on: g04.040; per-route feature completion programme
 Vision tags: explicit selection, provider truth, installed-route isolation
 Contract refs: 011, 023, 029, 033, 037, 041, 044, 052
@@ -31,15 +32,15 @@ permission broadening, or an isolation claim.
 
 ## Goals
 
-- [ ] freeze current official documentation and exact `1.0.80` package/source
+- [x] freeze current official documentation and exact `1.0.80` package/source
       evidence for parser syntax, delimiter rules, built-in tool identifiers,
       registry composition, precedence, defaults, and failures
-- [ ] identify a useful closed built-in allowlist whose membership and effect
+- [x] identify a useful closed built-in allowlist whose membership and effect
       do not depend on model, account, extension, MCP, ambient configuration,
       or live-provider inference
-- [ ] distinguish requested restriction, startup dispatch, parser acceptance,
+- [x] distinguish requested restriction, startup dispatch, parser acceptance,
       registry filtering, permission request, tool invocation, and effect
-- [ ] promote Research 218 with an exact deliver-now table or honest empty set
+- [x] promote Research 218 with an exact deliver-now table or honest empty set
 - [ ] conditionally expose only a closed adapter-local selection admitted by
       Research 218
 - [ ] bind that selection through prepared input, immutable evidence, driver,
@@ -97,10 +98,10 @@ remain observe-and-stop and are cancelled; the allowlist grants nothing.
 
 ### Batch 71.1 — Exact Allowlist Evidence
 
-- [ ] Execute card 195.
-- [ ] freeze exact package, parser, registry, identifier, filtering, lifetime,
+- [x] Execute card 195.
+- [x] freeze exact package, parser, registry, identifier, filtering, lifetime,
       permission, and failure truth
-- [ ] promote Research 218 with a non-empty exact table or honest empty set
+- [x] promote Research 218 with a non-empty exact table or honest empty set
 
 ### Batch 71.2 — Conditional Adapter-Local Binding
 
@@ -113,6 +114,18 @@ remain observe-and-stop and are cancelled; the allowlist grants nothing.
 - [ ] Execute card 197 only after card 196.
 - [ ] prove dispatch, omission, rejection, replacement, permissions,
       lifecycle, docs, and API truth
+
+## Evidence Stop
+
+Research 218 admits no deliver-now row. Exact `1.0.80` parses
+`--available-tools` through commander `[tools...]` plus `T5`/`xW` and stores
+the list on ACP `session/new`. Bare or empty input collapses to omitted.
+Unknown names warn rather than fail spawn. Documented identifiers are not a
+closed JS table; bare names match any registry source; ACP still loads host
+MCP and `github-mcp-server` when the client sends `mcpServers: []`; available/
+excluded precedence is unfrozen. Current `copilot --acp --stdio` argv, unmapped
+fixtures, observe-and-stop permission, and `AmbientHost` stay unchanged. Cards
+196 and 197 are blocked.
 
 ## Acceptance Criteria
 

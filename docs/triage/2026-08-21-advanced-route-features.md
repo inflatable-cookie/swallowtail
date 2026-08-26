@@ -1969,3 +1969,20 @@ other isolation boundary. If exact evidence cannot sustain that separation or
 a stable useful set, Research 218 must promote an empty deliver-now set and the
 lane stops after card 195. Keep g04 open. Contract 029 currentness remains
 standing.
+
+## Post-g04.071 Evidence Stop (2026-08-26)
+
+Disposition: stop Copilot CLI ACP built-in tool allowlist after card 195.
+Research 218 is an empty deliver-now set. Cards 196-197 remain blocked.
+
+Exact `1.0.80` parses `--available-tools` through commander `[tools...]` plus
+`T5`/`xW` and stores the list on ACP `session/new`. Bare or empty input
+collapses to omitted. Unknown names warn rather than fail spawn. Documented
+identifiers are not a closed JS table; bare names match any registry source;
+ACP still loads host MCP and `github-mcp-server` when the client sends
+`mcpServers: []`; available/excluded precedence is unfrozen.
+
+Current `copilot --acp --stdio` argv, unmapped fixtures, observe-and-stop
+permission, guide, and `AmbientHost` stay unchanged. Do not compile the next
+per-route family from this note. Keep g04 open at operator direction.
+Contract 029 currentness remains standing.

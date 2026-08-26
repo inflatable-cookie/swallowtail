@@ -1,8 +1,9 @@
 # 195 Copilot CLI ACP Built-In Tool Allowlist Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.071 Copilot CLI ACP Built-In Tool Allowlist](../071-copilot-cli-acp-built-in-tool-allowlist.md)
 Depends on: Research 149, Research 188; Contracts 023, 029, 033, 041
 
@@ -56,20 +57,20 @@ claim. Promote an honest empty set if any required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official sources, package artifacts, dates, identities, integrity,
+- [x] exact official sources, package artifacts, dates, identities, integrity,
       revisions, and hashes are recorded
-- [ ] parser syntax, delimiter, normalization, duplicate, empty, unknown,
+- [x] parser syntax, delimiter, normalization, duplicate, empty, unknown,
       precedence, omission, and failure truth is settled
-- [ ] fixed built-ins are separated from ambient/model/account/extension/MCP
+- [x] fixed built-ins are separated from ambient/model/account/extension/MCP
       registry contributions
-- [ ] requested/dispatched/accepted/filtered/permission/invocation/effect claims
+- [x] requested/dispatched/accepted/filtered/permission/invocation/effect claims
       remain distinct
-- [ ] production input, plan/evidence, driver, command, permission, replacement,
+- [x] production input, plan/evidence, driver, command, permission, replacement,
       activity, and lifecycle seams are audited
-- [ ] Research 218 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 218 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] `effigy validate:focused swallowtail-adapter-copilot-cli`, `effigy
+- [x] `effigy validate:focused swallowtail-adapter-copilot-cli`, `effigy
       qa:northstar`, relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions

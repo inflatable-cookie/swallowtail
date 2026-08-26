@@ -209,17 +209,16 @@ families do not interrupt this programme by default.
   backends depend on attached-server provider/env facts and a post-create
   session checksum. Cards 188-189 are blocked.
 - [g04.071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md)
-  is ready as cards 195-197. Card 195 and Research 218 must prove exact
-  `1.0.80` parser, registry, built-in identifier, filtering, permission, and
-  failure truth. Only a closed adapter-local allowlist can proceed; an empty
-  deliver-now set is an honest stop.
+  stopped after card 195. Research 218 admits no deliver-now row: exact
+  `1.0.80` parses `--available-tools` and stores it on ACP `session/new`, but
+  built-in membership, unknown-name failure, available/excluded precedence,
+  and host MCP/plugin registry composition remain unbound. Cards 196-197 are
+  blocked.
 
 ## Current Execution Boundary
 
-Execute g04.071 serially. Start with card 195. Continue to cards 196-197 only
-when Research 218 admits a non-empty exact set; otherwise stop after evidence.
-Do not select or compile the next family from the worker closeout. Keep g04
-open. Contract 029 currentness remains standing.
+g04.071 stopped after evidence. Do not select or compile the next family from
+the worker closeout. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

@@ -2,17 +2,16 @@
 
 ## Planned
 
-- [196-copilot-cli-acp-built-in-tool-allowlist-binding.md](./196-copilot-cli-acp-built-in-tool-allowlist-binding.md) — gated by Research 218 non-empty deliver-now set
-- [197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md](./197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md) — gated by card 196
-
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [195-copilot-cli-acp-built-in-tool-allowlist-evidence.md](./195-copilot-cli-acp-built-in-tool-allowlist-evidence.md)
+No ready cards.
 
 ## Blocked
 
+- [196-copilot-cli-acp-built-in-tool-allowlist-binding.md](./196-copilot-cli-acp-built-in-tool-allowlist-binding.md) — blocked; Research 218 empty deliver-now set
+- [197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md](./197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md) — blocked; card 196 blocked
 - [188-opencode-http-web-search-binding.md](./188-opencode-http-web-search-binding.md) — blocked; Research 214 empty deliver-now set
 - [189-opencode-http-web-search-acceptance.md](./189-opencode-http-web-search-acceptance.md) — blocked; card 188 blocked
 - [182-claude-code-headless-ultracode-binding.md](./182-claude-code-headless-ultracode-binding.md) — blocked; Research 212 empty deliver-now set
@@ -26,6 +25,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [195-copilot-cli-acp-built-in-tool-allowlist-evidence.md](./195-copilot-cli-acp-built-in-tool-allowlist-evidence.md) — evidence stop; Research 218 empty deliver-now set
 - [194-oh-my-pi-18-identity.md](./194-oh-my-pi-18-identity.md) — identity stop; Research 217; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim
 - [193-qwen-headless-0-22-1-claim.md](./193-qwen-headless-0-22-1-claim.md)
 - [192-qwen-headless-0-22-1-identity.md](./192-qwen-headless-0-22-1-identity.md)

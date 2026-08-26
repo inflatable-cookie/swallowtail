@@ -1,6 +1,6 @@
 # 196 Copilot CLI ACP Built-In Tool Allowlist Binding
 
-Status: planned; gated by Research 218
+Status: blocked; Research 218 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.071 Copilot CLI ACP Built-In Tool Allowlist](../071-copilot-cli-acp-built-in-tool-allowlist.md)

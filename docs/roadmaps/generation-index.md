@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 71 roadmaps: 60 completed milestones, ten honest evidence stops
-at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and one ready
-milestone at 071.
+g04 now has 71 roadmaps: 60 completed milestones, eleven honest evidence stops
+at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, and 071, and no ready
+milestone.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -62,11 +62,10 @@ pointer. g04.069 standing currentness is complete: Research 216 and cards
 the generation pointer. g04.070 standing currentness identity stop is
 complete: Research 217 and card 194 freeze assigned official `18.0.5`;
 observed `latest` `18.0.6`; no claim; the 18.x segment stays unset.
-g04.071 is ready as one serial evidence-first Copilot CLI ACP built-in tool-
-allowlist lane. Card 195 and Research 218 must prove exact `1.0.80` parser,
-registry, identifiers, filtering, permission, and failure truth before any
-binding; cards 196-197 are conditional.
-
+g04.071 stopped after card 195 and Research 218: exact `1.0.80` parses
+`--available-tools` and stores it on ACP `session/new`, but built-in
+membership, unknown-name failure, available/excluded precedence, and host
+MCP/plugin registry composition remain unbound; cards 196-197 blocked.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

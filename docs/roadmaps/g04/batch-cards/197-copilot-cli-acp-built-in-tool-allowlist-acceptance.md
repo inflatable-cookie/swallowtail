@@ -1,6 +1,6 @@
 # 197 Copilot CLI ACP Built-In Tool Allowlist Acceptance
 
-Status: planned; gated by card 196
+Status: blocked; card 196 blocked
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.071 Copilot CLI ACP Built-In Tool Allowlist](../071-copilot-cli-acp-built-in-tool-allowlist.md)

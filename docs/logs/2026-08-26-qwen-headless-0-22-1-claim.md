@@ -16,7 +16,12 @@ generation status were left alone.
 
 ## Validation
 
-Named adapter gates run after this card.
+- `cargo fmt -p swallowtail-adapter-qwen` passed
+- `bash scripts/validate-focused-packages.sh swallowtail-adapter-qwen` passed (56 tests, clippy `-D warnings`)
+- `bash scripts/verify-affected-packages.sh swallowtail-adapter-qwen` passed
+- Official `latest` stayed `0.22.1` through the run
+
+No `effigy` binary on this host; the named scripts are the task equivalents.
 
 ## Next
 

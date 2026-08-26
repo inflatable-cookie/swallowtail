@@ -8,7 +8,7 @@ Branch: `t3code/cursor-headless-provider-sandbox`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-a9727dc6`
 Base: `bf8f16269f149af6b4a6f9238e1af46d4ff66f13` (`origin/main` at dispatch)
 Planning base ancestor: `9afc07eede0ab175a3c8fc4b834448043c356f9b`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/75
 
 ## Result
 

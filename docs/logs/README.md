@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.073 Cline Headless Plan Mode Compiled](./2026-08-26-g04-073-cline-headless-plan-mode-compiled.md) — evidence-first cards 201-203; Research 220 reserved
 - [2026-08-26 g04.072 Grok Build ACP Subagents Disabled Closeout](./2026-08-26-g04-072-grok-build-acp-subagents-disabled-closeout.md) — stopped after card 198; Research 219 empty deliver-now set; cards 199-200 blocked
 - [2026-08-26 g04.072 Grok Build ACP Subagents Disabled Compiled](./2026-08-26-g04-072-grok-build-acp-subagents-disabled-compiled.md) — evidence-first cards 198-200; Research 219 reserved
 - [2026-08-26 g04.071 Copilot CLI ACP Built-In Tool Allowlist Closeout](./2026-08-26-g04-071-copilot-cli-acp-built-in-tool-allowlist-closeout.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked; PR 70

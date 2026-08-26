@@ -2038,3 +2038,39 @@ Current `grok --no-auto-update agent stdio` argv, empty `SessionOptions`,
 observe-and-stop permission, and `AmbientHost` stay unchanged. Do not compile
 the next per-route family from this note. Keep g04 open at operator direction.
 Contract 029 currentness remains standing.
+
+## Post-g04.072 Reassessment And g04.073 Compilation (2026-08-26)
+
+Disposition: select fixed-argument Plan mode on `cline.headless` and compile
+g04.073 as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after three ambient-registry or hidden-
+effect lanes stopped. Kimi headless Plan was rejected before compilation
+because exact prompt-mode evidence already says `--plan` cannot compose with
+the selected command. Cline ACP Plan was also rejected: exact `3.0.55` returns
+into ACP without carrying the parsed root mode.
+
+Cline headless is different. Exact qualified source parses explicit `--plan`
+before persisted global settings, then carries the resolved mode into the
+one-run config, system prompt, mode-tagged input, tool preset, and a command
+guard that runs before approval. The production route already owns the exact
+JSON child, explicit `--auto-approve false`, read-only working resource, host
+deadline, event stream, cancellation, and joined cleanup. Contract 034 permits
+portable `HarnessMode::Plan` through a fixed process argument when behavior is
+equivalent.
+
+That is a credible exact-package lead, not a delivery decision. Card 201 and
+Research 220 must freeze parser conflicts and placement, ambient precedence,
+every tool and write-capable seam, Plan-to-Act behavior, output confirmation,
+retained state, and full one-run lifecycle. The JSON wire does not report mode
+without unselected verbosity, so source-level application must remain distinct
+from an effective-value observation.
+
+Only portable `Plan` is a candidate. `act|yolo|zen`, raw flags, runtime mode
+switching, ACP, model/thinking work, and permission widening stay out. Plan is
+provider behavior, not containment: configuration remains `Ambient`, isolation
+remains `AmbientHost`, and command blocking cannot establish complete
+filesystem, network, shell, process, sandbox, or descendant containment. If
+exact behavior is not equivalent or can widen to Act inside the selected run,
+Research 220 must promote an empty deliver-now set and the lane stops after
+card 201. Keep g04 open. Contract 029 currentness remains standing.

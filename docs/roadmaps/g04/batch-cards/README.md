@@ -4,9 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
+- [202-cline-headless-plan-mode-binding.md](./202-cline-headless-plan-mode-binding.md) — gated on non-empty Research 220
+- [203-cline-headless-plan-mode-acceptance.md](./203-cline-headless-plan-mode-acceptance.md) — gated on card 202
+
 ## Ready
 
-None.
+- [201-cline-headless-plan-mode-evidence.md](./201-cline-headless-plan-mode-evidence.md)
 
 ## Blocked
 

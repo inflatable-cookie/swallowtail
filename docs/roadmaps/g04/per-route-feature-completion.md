@@ -219,13 +219,20 @@ families do not interrupt this programme by default.
   `1.0.4`/`1.0.5` parse root `--no-subagents` before `agent stdio`, but
   unauthenticated initialize does not expose applied suppression and spawn-path
   coverage stays unfrozen. Cards 199-200 are blocked.
+- [g04.073 Cline Headless Plan Mode](./073-cline-headless-plan-mode.md) is
+  ready. Exact qualified `3.0.55` source carries explicit `--plan` through
+  persisted-setting precedence into the one-run config, prompt, mode-tagged
+  turn, tool preset, and pre-approval command guard. Research 220 and card 201
+  must prove complete behavior and portable `HarnessMode::Plan` equivalence;
+  cards 202-203 are gated. ACP, mode switching, authority widening, and live
+  provider work stay out.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory for the next serial lane
-unless the operator supplies a different direction. Do not select or compile
-the next family from the worker closeout. Keep g04 open. Contract 029
-currentness remains standing.
+Execute g04.073 cards 201-203 serially. Continue past Research 220 only for a
+non-empty exact Cline headless Plan row. Do not select or compile the next
+family from the worker closeout. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

@@ -1,3 +1,4 @@
+use crate::selection::QwenPlanSelection;
 use crate::validation::failure;
 use swallowtail_core::{
     Capability, CapabilityConstraint, Diagnostic, HarnessMode, InterfaceVersion, PreflightPlan,
@@ -29,10 +30,11 @@ pub(crate) fn validate_preparation(
 }
 
 pub(crate) fn validate_runtime_binding(
+    selection: &QwenPlanSelection,
     plan: &PreflightPlan,
     harness_mode: Option<HarnessMode>,
 ) -> Result<(), RuntimeFailure> {
-    if binding_matches(plan, harness_mode) {
+    if binding_matches(selection, plan, harness_mode) {
         Ok(())
     } else {
         Err(failure(
@@ -50,7 +52,11 @@ pub(crate) fn approval_arg(harness_mode: Option<HarnessMode>) -> &'static str {
     }
 }
 
-fn binding_matches(plan: &PreflightPlan, harness_mode: Option<HarnessMode>) -> bool {
+fn binding_matches(
+    selection: &QwenPlanSelection,
+    plan: &PreflightPlan,
+    harness_mode: Option<HarnessMode>,
+) -> bool {
     let requirements = plan
         .requirements()
         .capabilities()
@@ -61,9 +67,7 @@ fn binding_matches(plan: &PreflightPlan, harness_mode: Option<HarnessMode>) -> b
         ([requirement], Some(HarnessMode::Plan)) => {
             let constraints = requirement.constraints().cloned().collect::<Vec<_>>();
             constraints == [CapabilityConstraint::HarnessMode(HarnessMode::Plan)]
-                && plan
-                    .interface_versions()
-                    .any(|binding| supports(binding.version()))
+                && supports(selection.version())
         }
         _ => false,
     }

@@ -234,7 +234,7 @@ fn validate_open(
         plan,
         request.options().reasoning_mode(),
     )?;
-    crate::plan_mode::validate_runtime_binding(plan, request.options().harness_mode())?;
+    crate::plan_mode::validate_runtime_binding(&selection, plan, request.options().harness_mode())?;
     if request.working_resource().is_none()
         || request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         || request.provider_state_policy()

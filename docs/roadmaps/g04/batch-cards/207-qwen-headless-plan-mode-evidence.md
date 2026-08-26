@@ -103,4 +103,3 @@ provider prompt.
 - production binding, other approval modes, writable profiles, tool-policy
   changes, live provider work, currentness, release, merge, rollover, or g04
   closure
-

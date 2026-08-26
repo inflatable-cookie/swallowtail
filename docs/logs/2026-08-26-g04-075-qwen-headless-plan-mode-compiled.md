@@ -50,4 +50,3 @@ pre-authorized by parser presence.
 Execute g04.075 cards 207-209 serially. Stop after card 207 if Research 222 is
 empty or any decision gate fires. Keep g04 open. Contract 029 currentness
 remains standing.
-

@@ -6,7 +6,9 @@ mod task;
 mod time;
 
 #[allow(unused_imports)]
-pub use preflight::{plan, plan_for, request, request_for, working_resource};
+pub use preflight::{
+    plan, plan_for, plan_request, plan_with_decoy_plan_axis, request, request_for, working_resource,
+};
 #[allow(unused_imports)]
 pub use process::{FakeProcessService, ProcessState, ScriptedProcessService};
 pub use task::TaskState;

@@ -260,9 +260,9 @@ Do not close g04 without explicit operator direction.
   `3.0.55` leaves provider identity ambient, never validates `-m`, and persists
   the resolved provider/model to shared settings before the run; cards 205-206
   blocked
-- g04.075 is ready: Research 222 and cards 207-209 form one serial
-  evidence-first Qwen headless Plan lane; binding is conditional on exact
-  portable behavior across every child shape
+- g04.075 is complete: cards 207-209 delivered exact `qwen.headless`
+  `0.21.15`/`0.22.0`/`0.22.1` `HarnessMode::Plan` as canonical
+  `--approval-mode plan`; Research 222 promoted; omission retained
 - g04 remains active at 75 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`

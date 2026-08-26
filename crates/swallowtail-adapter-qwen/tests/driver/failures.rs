@@ -1,3 +1,4 @@
+use super::support::{plan_request, plan_with_decoy_plan_axis};
 use super::*;
 
 #[test]
@@ -103,4 +104,21 @@ fn native_budget_exits_have_separate_provider_failure_codes() {
         assert_status_code(&terminal, expected, true);
         assert_eq!(cleanup, CleanupOutcome::Clean);
     }
+}
+
+#[test]
+fn decoy_axis_plan_version_cannot_admit_unqualified_qwen_plan() {
+    let (process, state) = FakeProcessService::completed("");
+    let error = block_on(driver().start_run(
+        plan_with_decoy_plan_axis(),
+        plan_request("plan-decoy-axis"),
+        host_services(process, Arc::new(PendingTimeService)),
+    ))
+    .err()
+    .expect("decoy-axis Plan must reject");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.qwen.headless.harness_mode_mismatch"
+    );
+    assert!(!state.started());
 }

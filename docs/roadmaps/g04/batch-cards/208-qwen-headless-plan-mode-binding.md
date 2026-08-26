@@ -77,4 +77,3 @@ omission, rejection, composition, and lifecycle proof passes.
 
 - shared closeout selection, another Qwen feature/route, live provider work,
   currentness, release, merge, rollover, or g04 closure
-

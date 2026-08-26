@@ -82,4 +82,3 @@ git diff --check
 
 - another feature/route, currentness, release, publication, merge, generation
   rollover, or g04 closure
-

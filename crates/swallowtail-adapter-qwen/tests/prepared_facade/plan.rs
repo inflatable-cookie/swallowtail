@@ -157,18 +157,17 @@ fn qwen_plan_session_reapplies_the_same_approval_mode_on_resume_and_replacement(
         profile.request().options().harness_mode(),
         Some(HarnessMode::Plan)
     );
+    let interrupted = RuntimeTurnId::new("lost-qwen-plan-turn").expect("valid turn");
+    let restoration = profile.prepare_working_state_restoration(interrupted.clone());
     assert_eq!(
-        profile
-            .prepare_working_state_restoration(
-                RuntimeTurnId::new("lost-qwen-plan-turn").expect("valid turn")
-            )
-            .method(),
+        restoration.method(),
         WorkingStateRestorationMethod::FreshSessionReplacement
     );
 
     let first_turn = plan_first_turn_jsonl("0.21.15");
     let continued_turn = plan_continued_turn_jsonl("0.21.15");
-    let (process, states) = ScriptedProcessService::completed(&[&first_turn, &continued_turn]);
+    let (process, states) =
+        ScriptedProcessService::completed(&[&first_turn, &continued_turn, &first_turn]);
     let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
 
@@ -206,6 +205,44 @@ fn qwen_plan_session_reapplies_the_same_approval_mode_on_resume_and_replacement(
         flag_value(&states[1].request().arguments, "--resume"),
         Some("123e4567-e89b-12d3-a456-426614174000")
     );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let restored = block_on(restoration.restore(services.clone())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replaced) = restored else {
+        panic!("plan restoration reports a fresh replacement");
+    };
+    assert_eq!(replaced.interrupted_turn_id(), &interrupted);
+    let (_, mut replacement) = replaced.into_parts();
+    let mut turn = block_on(
+        replacement.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("qwen-plan-replacement-turn").expect("valid turn"),
+                OperationContent::new("replacement plan prompt").expect("valid content"),
+            )
+            .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
+            services,
+        ),
+    )
+    .expect("replacement turn starts");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("replacement terminal is available"),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+
+    let replacement_arguments = states[2].request().arguments;
+    assert_eq!(
+        flag_value(&replacement_arguments, "--approval-mode"),
+        Some("plan")
+    );
+    assert!(!replacement_arguments
+        .iter()
+        .any(|argument| argument == "--resume"));
+    assert!(!replacement_arguments
+        .iter()
+        .any(|argument| argument == "--continue"));
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
 }
 
 #[test]

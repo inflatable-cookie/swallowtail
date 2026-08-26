@@ -185,4 +185,3 @@ reasoning, budget, session, terminal, cancellation, or cleanup paths.
 - [Contract 034 Negotiated Harness Session Options](../../contracts/034-negotiated-harness-session-options.md)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Qwen Headless Prepared Integration](../../guides/qwen-headless-prepared-integration.md)
-

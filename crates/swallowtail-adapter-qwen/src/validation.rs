@@ -86,7 +86,7 @@ pub(crate) fn validate(
         plan,
         request.policy().reasoning_mode(),
     )?;
-    crate::plan_mode::validate_runtime_binding(plan, request.policy().harness_mode())?;
+    crate::plan_mode::validate_runtime_binding(&selection, plan, request.policy().harness_mode())?;
     if request.working_resource().is_none() {
         return Err(unsupported("missing working resource"));
     }

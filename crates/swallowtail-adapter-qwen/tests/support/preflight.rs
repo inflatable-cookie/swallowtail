@@ -4,12 +4,12 @@ use swallowtail_core::{
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
     EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    ExtensionNamespace, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, InterfaceVersion,
-    InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
-    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
-    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
-    SupportAuthority, preflight,
+    ExtensionNamespace, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
+    HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
+    PreflightPlan, ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation,
+    RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
     Deadline, MonotonicInstant, OperationContent, OperationPolicy, ProviderRetentionPolicy,
@@ -32,14 +32,50 @@ pub fn plan_for(topology: &swallowtail_testkit::ExecutionTopologyFixture) -> Pre
     )
 }
 
+pub fn plan_with_decoy_plan_axis() -> PreflightPlan {
+    let mut requirements = capabilities();
+    requirements.push(CapabilityRequirement::new(
+        Capability::HarnessModeSelection,
+        [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
+    ));
+    bound_plan_with(
+        ExecutionHostId::new("host.local").expect("host id is valid"),
+        ConfiguredInstanceId::new("qwen-headless.local").expect("instance id is valid"),
+        InstanceTargetRef::new("qwen-executable").expect("target is valid"),
+        [
+            qwen_package("0.19.11"),
+            InterfaceVersionBinding::new(
+                InterfaceVersionAxis::new("spoof.plan").expect("axis is valid"),
+                InterfaceVersion::new("0.21.15").expect("version is valid"),
+            ),
+        ],
+        requirements,
+    )
+}
+
 fn bound_plan(
     host: ExecutionHostId,
     instance_id: ConfiguredInstanceId,
     target: InstanceTargetRef,
 ) -> PreflightPlan {
+    bound_plan_with(
+        host,
+        instance_id,
+        target,
+        [qwen_package("0.19.11")],
+        capabilities(),
+    )
+}
+
+fn bound_plan_with(
+    host: ExecutionHostId,
+    instance_id: ConfiguredInstanceId,
+    target: InstanceTargetRef,
+    instance_versions: impl IntoIterator<Item = InterfaceVersionBinding>,
+    requirements: Vec<CapabilityRequirement>,
+) -> PreflightPlan {
     let descriptor = qwen_headless_descriptor();
     let access_id = AccessProfileId::new("access.qwen-headless").expect("access id is valid");
-    let requirements = capabilities();
     let profile = CapabilityProfile::new(requirements.clone());
     let instance = ConfiguredInstance::new(
         instance_id,
@@ -54,10 +90,7 @@ fn bound_plan(
         InstancePolicyId::new("read-only-ambient-host").expect("policy is valid"),
         profile.clone(),
     )
-    .with_interface_versions([InterfaceVersionBinding::new(
-        InterfaceVersionAxis::new("qwen-code.package").expect("axis is valid"),
-        InterfaceVersion::new("0.19.11").expect("version is valid"),
-    )])
+    .with_interface_versions(instance_versions)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
     let route = ModelRoute::new(
         ModelRouteId::new("qwen-model-route").expect("route id is valid"),
@@ -106,10 +139,7 @@ fn bound_plan(
     .with_capabilities(requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_interface_versions([InterfaceVersionBinding::new(
-        InterfaceVersionAxis::new("qwen-code.package").expect("axis is valid"),
-        InterfaceVersion::new("0.19.11").expect("version is valid"),
-    )])
+    .with_interface_versions([qwen_package("0.19.11")])
     .require_model_route();
     preflight(
         &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)
@@ -121,6 +151,20 @@ fn bound_plan(
 
 pub fn request(id: &str) -> StructuredRunRequest {
     request_for(id, working_resource())
+}
+
+pub fn plan_request(id: &str) -> StructuredRunRequest {
+    StructuredRunRequest::new(
+        RequestId::new(id).expect("request id is valid"),
+        OperationContent::new("fixture-private-prompt").expect("content is valid"),
+        OperationPolicy::offline()
+            .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
+            .with_harness_isolation(HarnessIsolation::AmbientHost)
+            .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+            .with_harness_mode(HarnessMode::Plan),
+    )
+    .with_working_resource(working_resource())
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000)))
 }
 
 pub fn request_for(id: &str, resource: WorkingResourceRef) -> StructuredRunRequest {
@@ -138,6 +182,13 @@ pub fn request_for(id: &str, resource: WorkingResourceRef) -> StructuredRunReque
 
 pub fn working_resource() -> WorkingResourceRef {
     WorkingResourceRef::new("workspace.main").expect("resource is valid")
+}
+
+fn qwen_package(version: &str) -> InterfaceVersionBinding {
+    InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new("qwen-code.package").expect("axis is valid"),
+        InterfaceVersion::new(version).expect("version is valid"),
+    )
 }
 
 fn capabilities() -> Vec<CapabilityRequirement> {

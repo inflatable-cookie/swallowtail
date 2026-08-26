@@ -70,10 +70,9 @@ g04.072 stopped after card 198 and Research 219: exact `1.0.4`/`1.0.5` parse
 root `--no-subagents` before `agent stdio`, but unauthenticated initialize does
 not expose applied suppression and spawn-path coverage stays unfrozen; cards
 199-200 blocked.
-g04.073 is ready: exact Cline `3.0.55` headless source carries explicit Plan
-through precedence, config, prompt, tool-preset, and command-guard seams;
-Research 220 and card 201 must prove complete portable equivalence before
-cards 202-203 may bind it.
+g04.073 is complete: cards 201-203 delivered exact `cline.headless` `3.0.55`
+`HarnessMode::Plan` as canonical `--plan`; Research 220 promoted; omission
+retained; observation withheld.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

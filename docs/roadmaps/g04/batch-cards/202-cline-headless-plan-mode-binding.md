@@ -1,6 +1,6 @@
 # 202 Cline Headless Plan-Mode Binding
 
-Status: planned; gated on Research 220
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -40,13 +40,13 @@ validation, and canonical child argv.
 
 ## Acceptance Criteria
 
-- [ ] only Research 220 deliver-now rows prepare
-- [ ] input, capability, plan/evidence, driver, and exact argv agree
-- [ ] omission retains exact prior argv and provider-default behavior
-- [ ] unsupported, mismatched, drifting, or behaviorally weaker rows reject
+- [x] only Research 220 deliver-now rows prepare
+- [x] input, capability, plan/evidence, driver, and exact argv agree
+- [x] omission retains exact prior argv and provider-default behavior
+- [x] unsupported, mismatched, drifting, or behaviorally weaker rows reject
       before process work
-- [ ] no runtime mode mutation or sibling-route behavior appears
-- [ ] permission, tools, isolation, configuration, resources, account access,
+- [x] no runtime mode mutation or sibling-route behavior appears
+- [x] permission, tools, isolation, configuration, resources, account access,
       model, retention, lifecycle, and cleanup claims do not widen
 
 ## Validation

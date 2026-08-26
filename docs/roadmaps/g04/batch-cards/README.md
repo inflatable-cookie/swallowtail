@@ -4,12 +4,9 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [202-cline-headless-plan-mode-binding.md](./202-cline-headless-plan-mode-binding.md) — gated on non-empty Research 220
-- [203-cline-headless-plan-mode-acceptance.md](./203-cline-headless-plan-mode-acceptance.md) — gated on card 202
-
 ## Ready
 
-- [201-cline-headless-plan-mode-evidence.md](./201-cline-headless-plan-mode-evidence.md)
+None.
 
 ## Blocked
 
@@ -30,6 +27,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [203-cline-headless-plan-mode-acceptance.md](./203-cline-headless-plan-mode-acceptance.md)
+- [202-cline-headless-plan-mode-binding.md](./202-cline-headless-plan-mode-binding.md)
+- [201-cline-headless-plan-mode-evidence.md](./201-cline-headless-plan-mode-evidence.md)
 - [198-grok-build-acp-subagents-disabled-evidence.md](./198-grok-build-acp-subagents-disabled-evidence.md) — evidence stop; Research 219 empty deliver-now set
 - [195-copilot-cli-acp-built-in-tool-allowlist-evidence.md](./195-copilot-cli-acp-built-in-tool-allowlist-evidence.md) — evidence stop; Research 218 empty deliver-now set
 - [194-oh-my-pi-18-identity.md](./194-oh-my-pi-18-identity.md) — identity stop; Research 217; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim

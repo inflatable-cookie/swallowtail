@@ -201,12 +201,15 @@ OpenHands adds a package without a production route.
   official, `--print`, ACP, or native `session/stop`.
 - `swallowtail-adapter-cline` implements two exact `3.0.55` routes: ACP v1
   stdio on `cline --acp`, and envelope-NDJSON headless on
-  `cline --json --auto-approve false`. Credentials stay host-owned
+  `cline --json --auto-approve false` with optional portable
+  `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
   flattening one family onto the other stay out. Neither route exposes portable
   reasoning selection: ACP parses then discards `--thinking` and hard-codes
   thinking off, while headless resolves and may normalize the value against an
   unselected provider/model and emits no selected-argv acknowledgement.
+  Headless Plan is provider behavior, not isolation; omission keeps the current
+  argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
 - `swallowtail-adapter-goose` implements exact GitHub `1.46.0` ACP on
   `goose acp`. Credentials stay host-owned local config.
   `--with-builtin`, `goose configure`, `goose serve`, and `GooseMode`

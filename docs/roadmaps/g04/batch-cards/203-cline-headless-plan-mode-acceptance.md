@@ -1,6 +1,6 @@
 # 203 Cline Headless Plan-Mode Acceptance
 
-Status: planned; gated on card 202
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -41,15 +41,15 @@ produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted row and rejected boundary has deterministic coverage
-- [ ] preparation, Plan dispatch, omission, and compatibility remain exact
-- [ ] provider behavior, mode application, observation, permission, tools,
+- [x] every admitted row and rejected boundary has deterministic coverage
+- [x] preparation, Plan dispatch, omission, and compatibility remain exact
+- [x] provider behavior, mode application, observation, permission, tools,
       resources, and isolation truth stay separate
-- [ ] existing route lifecycle, activity, failure, retention, and cleanup
+- [x] existing route lifecycle, activity, failure, retention, and cleanup
       assertions pass
-- [ ] public docs claim only exact frozen Plan behavior and dispatch truth
-- [ ] package API drift is intentional and recorded when applicable
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] public docs claim only exact frozen Plan behavior and dispatch truth
+- [x] package API drift is intentional and recorded when applicable
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

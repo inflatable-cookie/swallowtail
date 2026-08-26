@@ -14,12 +14,8 @@ shape.
 
 ## Next Task
 
-Execute g04.073 cards 201-203 serially. Start with exact Cline headless
-`--plan` evidence and Research 220. Continue to binding and acceptance only
-when Research 220 admits a non-empty exact `HarnessMode::Plan` row with the
-complete fixed-argument behavior proved. Otherwise stop honestly after card
-201. Keep g04 open. Contract 029 currentness remains standing. Do not merge,
-roll the generation, or close g04.
+Reassess remaining per-route inventory. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Standing Lanes
 

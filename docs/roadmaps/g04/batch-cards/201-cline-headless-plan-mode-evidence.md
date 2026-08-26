@@ -1,6 +1,6 @@
 # 201 Cline Headless Plan-Mode Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -61,21 +61,21 @@ be tied to complete immutable Plan behavior without provider work.
 
 ## Acceptance Criteria
 
-- [ ] exact artifact/source identities and decisive digests are frozen
-- [ ] parser, precedence, omission, duplicate/conflict, and failure truth is
+- [x] exact artifact/source identities and decisive digests are frozen
+- [x] parser, precedence, omission, duplicate/conflict, and failure truth is
       settled
-- [ ] prompt, tool, guard, Plan-to-Act, output, retention, and lifecycle paths
+- [x] prompt, tool, guard, Plan-to-Act, output, retention, and lifecycle paths
       have exact dispositions
-- [ ] behavioral Plan equivalence is separated from isolation, permission,
+- [x] behavioral Plan equivalence is separated from isolation, permission,
       resource, shell, process, network, and account authority
-- [ ] requested, planned, dispatched, accepted, applied/effective, and observed
+- [x] requested, planned, dispatched, accepted, applied/effective, and observed
       states are not conflated
-- [ ] production preparation, plan/evidence, driver, argv, fixtures, docs, and
+- [x] production preparation, plan/evidence, driver, argv, fixtures, docs, and
       API seams are audited
-- [ ] Research 220 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 220 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] focused Cline validation, Northstar QA, research indexes, and diff checks
+- [x] focused Cline validation, Northstar QA, research indexes, and diff checks
       pass
 
 ## Validation

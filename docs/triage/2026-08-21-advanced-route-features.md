@@ -519,13 +519,14 @@ Swallowtail: `cline --acp` only. Observe/cancel permissions. Never
 
 Official: `cline --json --auto-approve <bool> -p --thinking -m -t`.
 
-Swallowtail: `--json --auto-approve false`. No model, no thinking, no
-`--plan`. CLI `--timeout` unselected (host deadline used).
+Swallowtail: `--json --auto-approve false`, optional canonical `--plan`.
+No model, no thinking. CLI `--timeout` unselected (host deadline used).
+Omission is not implicit Plan. Plan is provider behavior, not isolation.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
 | Thinking | `--thinking` | not passed | yes | yes | do not flatten onto `cline.acp` without repeating qualification |
-| Plan | `-p` | not passed | yes | yes | — |
+| Plan | `-p` / `--plan` | optional `HarnessMode::Plan` as `--plan` | no | delivered | Research 220; exact `3.0.55` only; `act\|yolo\|zen` withheld |
 | Model | `-m` | not passed | yes | yes | — |
 
 ### `goose.acp`
@@ -2074,3 +2075,13 @@ filesystem, network, shell, process, sandbox, or descendant containment. If
 exact behavior is not equivalent or can widen to Act inside the selected run,
 Research 220 must promote an empty deliver-now set and the lane stops after
 card 201. Keep g04 open. Contract 029 currentness remains standing.
+
+## Post-g04.073 Delivery (2026-08-26)
+
+Disposition: delivered. Research 220 admitted exact `cline.headless` `3.0.55`
+portable `HarnessMode::Plan` as canonical `--plan` before `-c <cwd> <prompt>`.
+Omission keeps `--json --auto-approve false -c <cwd> <prompt>`. No behavior
+revision. Observation withheld. `act|yolo|zen`, ACP `--plan`, and Plan-to-Act
+stay out. Plan is provider behavior, not containment. Isolation remains
+`AmbientHost`. Do not compile the next per-route family from this note. Keep
+g04 open at operator direction. Contract 029 currentness remains standing.

@@ -1,6 +1,6 @@
 # g04.073 Cline Headless Plan Mode
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -38,19 +38,19 @@ ceiling.
 
 ## Goals
 
-- [ ] freeze exact `3.0.55` parser, precedence, prompt, tool-preset, command-
+- [x] freeze exact `3.0.55` parser, precedence, prompt, tool-preset, command-
       guard, mode-switch, output, terminal, persistence, and lifecycle truth
-- [ ] determine whether the complete headless behavior is equivalent to
+- [x] determine whether the complete headless behavior is equivalent to
       portable `HarnessMode::Plan` without a live provider prompt
-- [ ] distinguish requested, planned, argv-dispatched, parser-accepted,
+- [x] distinguish requested, planned, argv-dispatched, parser-accepted,
       applied, effective, and observed mode state
-- [ ] promote Research 220 with an exact deliver-now table or honest empty set
-- [ ] conditionally bind only `HarnessMode::Plan` through prepared input,
+- [x] promote Research 220 with an exact deliver-now table or honest empty set
+- [x] conditionally bind only `HarnessMode::Plan` through prepared input,
       immutable plan/evidence, driver, and canonical child argv
-- [ ] prove omission preserves exact current argv and provider-default mode
-- [ ] retain `--auto-approve false`, read-only working-resource policy,
+- [x] prove omission preserves exact current argv and provider-default mode
+- [x] retain `--auto-approve false`, read-only working-resource policy,
       `AmbientHost`, cancellation, terminal, and joined-cleanup truth
-- [ ] keep ACP, model, thinking, timeout, permissions, and mode switching out
+- [x] keep ACP, model, thinking, timeout, permissions, and mode switching out
 
 ## Non-Goals
 
@@ -110,37 +110,37 @@ is admitted by this lane.
 
 ### Batch 73.1 — Exact Headless Plan Evidence
 
-- [ ] Execute card 201.
-- [ ] freeze exact package, parser, precedence, Plan semantics, tool/guard,
+- [x] Execute card 201.
+- [x] freeze exact package, parser, precedence, Plan semantics, tool/guard,
       mode-switch, lifecycle, output, and persistence truth
-- [ ] promote Research 220 with a non-empty exact table or honest empty set
+- [x] promote Research 220 with a non-empty exact table or honest empty set
 
 ### Batch 73.2 — Conditional Portable Binding
 
-- [ ] Execute card 202 only when Research 220 admits a non-empty set.
-- [ ] bind only exact `3.0.55` `HarnessMode::Plan` through the prepared
+- [x] Execute card 202 only when Research 220 admits a non-empty set.
+- [x] bind only exact `3.0.55` `HarnessMode::Plan` through the prepared
       structured-run surface and canonical argv
 
 ### Batch 73.3 — Route-Local Acceptance
 
-- [ ] Execute card 203 only after card 202.
-- [ ] prove dispatch, omission, rejection, mode separation, lifecycle, docs,
+- [x] Execute card 203 only after card 202.
+- [x] prove dispatch, omission, rejection, mode separation, lifecycle, docs,
       API, and compatibility truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 220 deliver-now rows prepare
-- [ ] request, immutable plan, prepared evidence, driver, and child argv agree
-- [ ] exact source proves the selected fixed argument is behaviorally
+- [x] only Research 220 deliver-now rows prepare
+- [x] request, immutable plan, prepared evidence, driver, and child argv agree
+- [x] exact source proves the selected fixed argument is behaviorally
       equivalent to portable `HarnessMode::Plan`
-- [ ] omission preserves prior argv and provider-default mode behavior
-- [ ] unsupported, mismatched, drifting, overrideable, or behaviorally weaker
+- [x] omission preserves prior argv and provider-default mode behavior
+- [x] unsupported, mismatched, drifting, overrideable, or behaviorally weaker
       rows reject before process work when knowable
-- [ ] Plan mode grants no permission, configuration, filesystem/network,
+- [x] Plan mode grants no permission, configuration, filesystem/network,
       sandbox, shell, process, descendant, model, or account authority
-- [ ] existing one-run activity, terminal, cancellation, deadline, failure,
+- [x] existing one-run activity, terminal, cancellation, deadline, failure,
       retention, and joined cleanup remain exact
-- [ ] default QA performs no install, login, account inspection, provider
+- [x] default QA performs no install, login, account inspection, provider
       prompt, tool execution, or paid request
 
 ## Lane Runway
@@ -178,7 +178,7 @@ is admitted by this lane.
 - [Research 144 Primary Wave Source And Route Gate](../../research/144-primary-wave-source-and-route-gate.md)
 - [Research 147 Cline Headless Identity](../../research/147-cline-headless-3-0-55-identity.md)
 - [Research 190 Cline Thinking Controls](../../research/190-cline-thinking-control-evidence.md)
-- Research 220 Cline Headless Plan Mode — reserved by card 201
+- [Research 220 Cline Headless Plan Mode](../../research/220-cline-headless-plan-mode-evidence.md)
 - [Contract 012 Interactive Session Options](../../contracts/012-interactive-session-options-and-callback-exchange.md)
 - [Contract 023 Harness Isolation](../../contracts/023-harness-operation-isolation-and-native-boundary.md)
 - [Contract 029 Interface Version Qualification](../../contracts/029-interface-version-qualification-and-compatibility.md)

@@ -220,19 +220,16 @@ families do not interrupt this programme by default.
   unauthenticated initialize does not expose applied suppression and spawn-path
   coverage stays unfrozen. Cards 199-200 are blocked.
 - [g04.073 Cline Headless Plan Mode](./073-cline-headless-plan-mode.md) is
-  ready. Exact qualified `3.0.55` source carries explicit `--plan` through
-  persisted-setting precedence into the one-run config, prompt, mode-tagged
-  turn, tool preset, and pre-approval command guard. Research 220 and card 201
-  must prove complete behavior and portable `HarnessMode::Plan` equivalence;
-  cards 202-203 are gated. ACP, mode switching, authority widening, and live
-  provider work stay out.
+  complete. Cards 201-203 delivered exact `3.0.55` portable
+  `HarnessMode::Plan` as canonical `--plan`. Research 220 promoted. Omission
+  retains `--json --auto-approve false -c <cwd> <prompt>`. Observation
+  withheld. Plan is provider behavior, not isolation. ACP, `act|yolo|zen`,
+  mode switching, authority widening, and live provider work stay out.
 
 ## Current Execution Boundary
 
-Execute g04.073 cards 201-203 serially. Continue past Research 220 only for a
-non-empty exact Cline headless Plan row. Do not select or compile the next
-family from the worker closeout. Keep g04 open. Contract 029 currentness
-remains standing.
+Reassess remaining per-route inventory. Do not compile the next family from
+this closeout. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

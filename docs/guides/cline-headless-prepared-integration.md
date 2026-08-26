@@ -51,17 +51,28 @@ reference, a model route, or an unqualified package fails before JSON work.
 
 Create `ClineHeadlessRunProfileInput::new` with request identity, prompt
 content, a read-only working resource, and a host deadline. There is no model
-route or auto-approve option. Call `prepare_run`, inspect `evidence()`,
-`plan()`, and `request()`, then `start_run`.
+route or auto-approve option. Optional
+`with_harness_mode(HarnessMode::Plan)` selects portable Plan. Omission keeps
+the current argv and provider-default mode; it is not implicit Plan. Call
+`prepare_run`, inspect `evidence()`, `plan()`, `request()`, and
+`harness_mode()`, then `start_run`.
 
 The driver owns one joined stdio child and performs this sequence:
 
-1. spawn `cline --json --auto-approve false` plus `-c <cwd>` and one prompt
-   operand
+1. spawn `cline --json --auto-approve false` plus optional canonical `--plan`,
+   then `-c <cwd>` and one prompt operand
 2. close stdin immediately; the prompt is argv, not a stdin document
 3. decode envelope NDJSON (`run_start`, `agent_event`, `run_result`,
    `run_aborted`)
 4. join process and task cleanup on terminal or abort
+
+Selected Plan is a fixed process argument. Exact `3.0.55` applies it to the
+one-run config, system prompt, mode-tagged user input, plan tool preset, and
+`run_commands` blacklist. That is provider Plan behavior, not filesystem,
+network, shell, process, sandbox, or descendant containment. The JSON child
+does not register `switch_to_act_mode`. Observation of effective mode stays
+withheld: the selected argv does not pass `--verbose`. `act`, `yolo`, and
+`zen` are not public values.
 
 Docs `ask`/`say` is the wrong wire. `--acp`, `--id`, `--yolo`, `--zen`, hub,
 and TUI stay unselected. CLI `--timeout` is unselected; the host deadline is

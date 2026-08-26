@@ -5,6 +5,8 @@ Owner: Tom
 Milestone: g04.075
 Cards: 207-209
 Research: 222
+PR: https://github.com/inflatable-cookie/swallowtail/pull/74
+Head: `fd750c5aa3797ffa75a5955a875c327d20319ff4`
 
 ## Outcome
 

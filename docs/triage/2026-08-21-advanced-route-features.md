@@ -522,12 +522,13 @@ Official: `cline --json --auto-approve <bool> -p --thinking -m -t`.
 Swallowtail: `--json --auto-approve false`, optional canonical `--plan`.
 No model, no thinking. CLI `--timeout` unselected (host deadline used).
 Omission is not implicit Plan. Plan is provider behavior, not isolation.
+`-m` is evidence-closed at this package point by Research 221.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
 | Thinking | `--thinking` | not passed | yes | yes | do not flatten onto `cline.acp` without repeating qualification |
 | Plan | `-p` / `--plan` | optional `HarnessMode::Plan` as `--plan` | no | delivered | Research 220; exact `3.0.55` only; `act\|yolo\|zen` withheld |
-| Model | `-m` | not passed | yes | yes | — |
+| Model | `-m` | not passed | evidence-closed | no | Research 221; exact `3.0.55` leaves provider ambient, never validates `-m`, and persists the selection to shared settings |
 
 ### `goose.acp`
 
@@ -2118,3 +2119,40 @@ ambient settings, Research 221 must promote an empty deliver-now set and the
 lane stops after card 204. Thinking remains outside this lane; a delivered
 model route would only permit a later reassessment of g04.042. Keep g04 open.
 Contract 029 currentness remains standing.
+
+## Post-g04.074 Evidence Stop (2026-08-26)
+
+Disposition: stopped after evidence. Research 221 admits no deliver-now
+`cline.headless` provider/model row on exact `3.0.55`. Cards 205-206 are
+blocked. `cline.headless` / `--model` is now recorded as evidence-closed at
+this package point, not merely unassessed.
+
+Three independent gates fire. Provider identity stays ambient: without `-P` it
+resolves to `lastUsedProvider` from durable settings, else the literal `cline`,
+and no current route or access fact derives a provider — audience
+`cline.local-account` names the shared provider-settings store, not a provider
+choice. Model membership stays open: explicit `-m` bypasses persisted state,
+the resolved catalogue, and the hardcoded fallback with no validation, no
+provider/model agreement check, and no invalid-model exit path, and the routing
+layer explicitly accommodates unlisted ids, so rejection is post-spawn at best.
+Explicit selection mutates durable ambient configuration: `saveProviderSettings`
+writes the resolved provider and model into `~/.cline/settings/providers.json`
+and moves `lastUsedProvider` before the run, into a file the CLI, VS Code
+extension, and hub share, with no flag to disable or scope the write.
+
+Observation does not rescue a marginal case. `run_start` stays behind an
+unselected `--verbose`, and `run_result.model` echoes the requested config
+rather than a provider-confirmed applied model.
+
+Contract 020 forbids turning any bundled, live, or account-scoped catalogue
+into a preflight allowlist. Contract 033 grants no configuration mutation
+authority and prohibits the synthesized configuration root that would be the
+only containment. Reopening needs a later package point that fixes provider
+identity from route facts, closes membership before provider effects, and
+either omits or scopes the settings write — or separately authorized
+Swallowtail configuration authority. A re-read of `3.0.55` will not change it.
+
+The g04.042 thinking dependency is unchanged: cards 117-118 stay blocked for
+the same absent provider/model selection. Keep g04 open. Do not compile the
+next per-route family from this note. Contract 029 currentness remains
+standing.

@@ -1,6 +1,6 @@
 # g04.074 Cline Headless Model Selection
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -34,22 +34,24 @@ ceiling.
 
 ## Goals
 
-- [ ] freeze exact `3.0.55` parser, provider/model resolution, membership,
+- [x] freeze exact `3.0.55` parser, provider/model resolution, membership,
       validation, fallback, persistence, application, output, and lifecycle
       truth
-- [ ] determine whether any exact provider/model pair is closed and
-      preflight-validatable without a live account, catalogue, or prompt
-- [ ] distinguish requested route, planned route, argv dispatch, parser
+- [x] determine whether any exact provider/model pair is closed and
+      preflight-validatable without a live account, catalogue, or prompt —
+      none is
+- [x] distinguish requested route, planned route, argv dispatch, parser
       acceptance, selected provider/model, applied/effective model, and
       observation
-- [ ] promote Research 221 with an exact deliver-now table or honest empty set
+- [x] promote Research 221 with an exact deliver-now table or honest empty set
 - [ ] conditionally bind only Research 221 rows through prepared input,
-      immutable `ModelRoute`, plan/evidence, driver, and canonical argv
-- [ ] prove omission preserves exact current argv and ambient provider/model
-      behavior
+      immutable `ModelRoute`, plan/evidence, driver, and canonical argv — no
+      row qualified; nothing bound
+- [x] prove omission preserves exact current argv and ambient provider/model
+      behavior — unchanged, because nothing was added
 - [ ] compose an admitted model route with optional portable Plan without
-      widening either feature
-- [ ] preserve current access, configuration, isolation, activity,
+      widening either feature — no admitted route
+- [x] preserve current access, configuration, isolation, activity,
       cancellation, terminal, retention, and joined-cleanup truth
 
 ## Non-Goals
@@ -118,22 +120,55 @@ model.
 
 ### Batch 74.1 — Exact Provider/Model Evidence
 
-- [ ] Execute card 204.
-- [ ] freeze exact package, parser, provider/model resolution, membership,
+- [x] Execute card 204.
+- [x] freeze exact package, parser, provider/model resolution, membership,
       fallback, persistence, application, output, and lifecycle truth
-- [ ] promote Research 221 with a non-empty exact table or honest empty set
+- [x] promote Research 221 with a non-empty exact table or honest empty set —
+      promoted with an explicit empty set
 
 ### Batch 74.2 — Conditional Model-Route Binding
 
-- [ ] Execute card 205 only when Research 221 admits a non-empty set.
+- [ ] Execute card 205 only when Research 221 admits a non-empty set — not
+      executed; Research 221 is empty and card 205 is blocked
 - [ ] bind only exact provider/model rows through prepared input, immutable
       route/plan/evidence, driver, and canonical argv
 
 ### Batch 74.3 — Route-Local Acceptance
 
-- [ ] Execute card 206 only after card 205.
+- [ ] Execute card 206 only after card 205 — not executed; card 206 is blocked
 - [ ] prove dispatch, omission, rejection, Plan composition, authority
       separation, lifecycle, docs, and API truth
+
+## Outcome
+
+Stopped after card 204. Research 221 is promoted with an empty deliver-now
+set; cards 205 and 206 are blocked.
+
+Three decision gates fire independently on exact `3.0.55`:
+
+- provider identity stays ambient. Without `-P` it is `lastUsedProvider` from
+  durable settings, else the literal `cline`. No current route or access fact
+  derives a provider, so an adapter-fixed argument is unproven and a caller
+  selector is out of scope.
+- model membership stays open. Explicit `-m` bypasses persisted state, the
+  catalogue, and the hardcoded fallback with no validation, no provider/model
+  agreement check, and no invalid-model exit path. Unlisted ids are explicitly
+  accommodated downstream, so rejection is post-spawn at best. Contract 020
+  forbids turning any catalogue into a preflight allowlist.
+- explicit selection mutates durable ambient configuration.
+  `saveProviderSettings` writes the resolved provider and model into
+  `~/.cline/settings/providers.json` and moves `lastUsedProvider` before the
+  run. The file is shared with the VS Code extension and hub. No flag disables
+  or scopes the write, and the only containment is a synthesized configuration
+  root Contract 033 prohibits.
+
+Observation would not have rescued a marginal case: `run_start` stays behind
+an unselected `--verbose`, and `run_result.model` echoes the requested config
+rather than a provider-confirmed applied model.
+
+The Cline adapter, prepared facade, child argv, fixtures, guide, matrices, and
+API baseline are unchanged. The g04.042 thinking dependency is not removed.
+g04 stays open and Contract 029 currentness stays standing.
 
 ## Acceptance Criteria
 

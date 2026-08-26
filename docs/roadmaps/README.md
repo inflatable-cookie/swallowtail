@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.074 Cline headless model-selection cards 204-206 serially. Stop
-after card 204 if Research 221 admits no exact provider/model row. Keep g04
-open. Contract 029 currentness remains standing.
+Reassess the remaining per-route feature inventory and select the next serial
+lane. g04.074 stopped after card 204 with an empty Research 221 set; cards
+205-206 are blocked and `cline.headless` `-m` is evidence-closed at `3.0.55`.
+Keep g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

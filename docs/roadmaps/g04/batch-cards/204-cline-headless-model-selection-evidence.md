@@ -1,6 +1,6 @@
 # 204 Cline Headless Model-Selection Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -61,21 +61,21 @@ empty set when it does not.
 
 ## Acceptance Criteria
 
-- [ ] exact artifact/source identities and decisive digests are frozen
-- [ ] parser, provider/model precedence, membership, fallback, application,
+- [x] exact artifact/source identities and decisive digests are frozen
+- [x] parser, provider/model precedence, membership, fallback, application,
       persistence, failure, output, and lifecycle truth is settled
-- [ ] configured-instance, access-audience, provider, model, and route
+- [x] configured-instance, access-audience, provider, model, and route
       agreement is explicit
-- [ ] requested, planned, dispatched, parsed, selected, applied/effective, and
+- [x] requested, planned, dispatched, parsed, selected, applied/effective, and
       observed state is not conflated
-- [ ] configuration reads and writes are reconciled with Contract 033 rather
+- [x] configuration reads and writes are reconciled with Contract 033 rather
       than treated as incidental provider behavior
-- [ ] production plan/evidence, driver, argv, fixtures, docs, and API seams are
+- [x] production plan/evidence, driver, argv, fixtures, docs, and API seams are
       audited
-- [ ] Research 221 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 221 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] focused Cline validation, Northstar QA, research indexes, and diff checks
+- [x] focused Cline validation, Northstar QA, research indexes, and diff checks
       pass
 
 ## Validation
@@ -95,6 +95,42 @@ git diff --check
 Auto-continue to card 205 only when Research 221 admits a non-empty exact
 `cline.headless` `3.0.55` provider/model row with preflight-validatable
 membership, configuration authority, and complete route agreement.
+
+## Outcome
+
+Complete. Research 221 is promoted with an explicit empty deliver-now set.
+
+Exact `3.0.55` parses `-m/--model` and `-P/--provider` as raw commander value
+options and copies both without trim, alias, or validation. Explicit
+`args.model` wins the `modelId` chain outright; explicit `-P` wins the
+provider chain only when non-empty after trim, otherwise the provider silently
+reverts to `lastUsedProvider` and then `cline`. Nothing compares the model to
+`knownModels`, to the selected provider, or to any table, and unlisted ids are
+explicitly accommodated downstream, so an invalid or mismatched identifier
+fails only inside the child at provider request time.
+
+`saveProviderSettings` runs unconditionally before the run on the headless
+path, writes the resolved provider and model into
+`~/.cline/settings/providers.json`, and moves `lastUsedProvider`. The file is
+shared with the VS Code extension and hub. No flag disables or scopes the
+write; only a synthesized configuration root would contain it. Failure is
+swallowed because `writeln` is a no-op in JSON mode.
+
+`run_start` remains behind an unselected `--verbose`. `run_result.model` is
+emitted on the selected argv but is `{id, provider}` derived from the
+requested config, so it is a request echo rather than a provider-confirmed
+applied model.
+
+Three stop conditions fire independently: ambient provider identity, open
+model membership, and unavoidable durable configuration mutation. Cards 205
+and 206 are blocked and were not executed. No production code, public API,
+shared contract, runtime, fixture, guide, matrix, currentness, release, merge,
+rollover, or g04 closure changed.
+
+One audit note carried forward: `tests/fixtures/cline-headless-3.0.55/success.jsonl`
+models `run_result.model` as a bare string while the exact source emits a
+`{id, provider}` object. The decoder ignores the field, so no claim is wrong,
+but the example line is inaccurate for the frozen wire.
 
 ## Stop Conditions
 

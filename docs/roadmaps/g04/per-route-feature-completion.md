@@ -226,15 +226,19 @@ families do not interrupt this programme by default.
   withheld. Plan is provider behavior, not isolation. ACP, `act|yolo|zen`,
   mode switching, authority widening, and live provider work stay out.
 - [g04.074 Cline Headless Model Selection](./074-cline-headless-model-selection.md)
-  is ready. Research 221 and card 204 must settle exact provider/model
-  membership, ambient provider precedence, fallback, configuration mutation,
-  application, and observation before cards 205-206 may bind any model route.
+  stopped after card 204. Research 221 admits no deliver-now row: exact
+  `3.0.55` parses `-m/--model` and `-P/--provider`, but provider identity stays
+  ambient without `-P`, explicit `-m` is never validated against membership or
+  against the selected provider, and `saveProviderSettings` writes the resolved
+  provider and model into shared durable settings before the run with no way to
+  disable or scope it. Cards 205-206 are blocked. The g04.042 thinking
+  dependency is not removed.
 
 ## Current Execution Boundary
 
-Execute g04.074 cards 204-206 serially. Stop after card 204 if Research 221 is
-empty or exact provider/model agreement needs ambient state, a live catalogue,
-silent fallback, or new configuration authority. Keep g04 open. Contract 029
+g04.074 is closed at card 204 with an empty Research 221 set. Reassess the
+remaining per-route feature inventory for the next serial lane unless the
+operator supplies a different direction. Keep g04 open. Contract 029
 currentness remains standing.
 
 ## Exclusions

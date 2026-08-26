@@ -1,6 +1,6 @@
 # 205 Cline Headless Model-Selection Binding
 
-Status: planned
+Status: blocked
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -78,3 +78,18 @@ argv, omission, rejection, Plan composition, and lifecycle proof passes.
 
 - thinking delivery, shared closeout selection, another Cline feature/route,
   live provider work, currentness, release, merge, rollover, or g04 closure
+
+## Blocked
+
+Blocked by card 204. Research 221 promotes an empty deliver-now set, so there
+is no exact `cline.headless` `3.0.55` provider/model row to bind.
+
+Exact `3.0.55` leaves provider identity ambient without `-P` and offers no
+route-derived reason to fix one, never validates an explicit `-m` against
+membership or against the selected provider, and persists the resolved
+provider and model into shared durable settings before the run with no way to
+disable or scope the write. Any one of those is a stop; all three hold.
+
+Do not bind a `ModelRoute`, extend `ClineHeadlessRunProfileInput`, or emit
+`-m`/`-P` on this route. Reopening requires a later package point or
+separately authorized configuration handling, not a re-read of `3.0.55`.

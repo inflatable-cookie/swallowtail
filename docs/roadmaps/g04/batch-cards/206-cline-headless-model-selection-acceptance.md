@@ -1,6 +1,6 @@
 # 206 Cline Headless Model-Selection Acceptance
 
-Status: planned
+Status: blocked
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -85,3 +85,10 @@ MSRV, release, and consumer checks are not authorized by this card.
 
 - another feature/route, thinking delivery, live provider acceptance,
   currentness, release, merge, generation rollover, or g04 closure
+
+## Blocked
+
+Blocked by card 205, which is blocked by card 204. Research 221 admits no
+deliver-now row, so there is no exact model dispatch, rejection boundary, or
+Plan composition to prove. The Cline adapter, fixtures, guide, matrices, and
+API baseline stay unchanged.

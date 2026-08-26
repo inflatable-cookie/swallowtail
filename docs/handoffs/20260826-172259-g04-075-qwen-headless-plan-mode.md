@@ -10,23 +10,23 @@ owner: Tom
 created: 2026-08-26
 updated: 2026-08-26
 handoff_path: /Users/tom/Dev/worktrees/swallowtail-review-pr69/docs/handoffs/20260826-172259-g04-075-qwen-headless-plan-mode.md
-base_required: pushed-stacked-planning-branch
-tags: [coordination, handoff, worker, pr, stacked]
+base_required: pushed-main-descendant-planning-branch
+tags: [coordination, handoff, worker, pr]
 ---
 
 ## What This Thread Was Doing
 
 The orchestrator reviewed g04.074 through exact head
-`f22f2f9c41c3a4b8d67f4f0e46d5431b61f77560`. That PR is review-clean but
-unmerged. Updated-head CI run 32988163157 passed four jobs and failed one
-unrelated OpenCode cancellation test on a fixture-server `BrokenPipe`; the
-exact failed test passed locally unchanged and the failed job was requeued.
+`f22f2f9c41c3a4b8d67f4f0e46d5431b61f77560`. Updated-head CI run 32988163157
+passed after one unrelated OpenCode cancellation-test retry. PR 73 then
+fast-forwarded `main` to that exact reviewed head with no merge commit.
 
 The orchestrator then followed the roadmap continuation rule, reassessed the
 remaining per-route feature inventory, and selected Qwen headless fixed-
 argument Plan as the next serial evidence-first lane. It compiled g04.075,
 cards 207-209, Research 222, the programme/front-door updates, triage
-disposition, and compilation log on a planning branch stacked over PR 73.
+disposition, and compilation log on a planning branch that now descends
+directly from `main`.
 
 This is one bounded manual implementation thread. Start from this file without
 a copied transcript or a second prompt. Do not spawn internal agents; the
@@ -52,11 +52,11 @@ tool absence alone is insufficient.
 - **Parent PR:** [PR 73](https://github.com/inflatable-cookie/swallowtail/pull/73)
 - **Parent branch:** `t3code/review-headless-model-selection`
 - **Parent exact head:** `f22f2f9c41c3a4b8d67f4f0e46d5431b61f77560`
-- **Parent review state:** review-clean; not merged; updated-head CI retry
-  queued after an unrelated OpenCode cancellation-test `BrokenPipe`
+- **Parent review state:** merged by fast-forward to `main`; all five exact-head
+  CI jobs green after one unrelated OpenCode cancellation-test retry
 - **Planning branch:** `orchestrator/g04-075-qwen-headless-plan-mode`
 - **Planning commit before this handoff:** `c51c3c80`
-- **Planning ancestry:** parent PR exact head, then g04.075 compilation
+- **Planning ancestry:** current `main` exact head, then g04.075 compilation
 - **Planning checkout:** clean dedicated orchestrator worktree before this
   handoff commit
 - **Worker mode:** implementation worker dispatched by the orchestrator; this
@@ -85,7 +85,7 @@ tool absence alone is insufficient.
   proved across every selected child shape
 - **Remaining card budget:** three cards; stop after card 207 when evidence is
   empty or any decision gate fires
-- **Dispatch topology:** one serial worker lane; one stacked reviewable PR; no
+- **Dispatch topology:** one serial worker lane; one reviewable PR; no
   internal agents or subagents
 - **Parallel safety check:** serial because evidence determines whether the
   binding and acceptance cards exist and every card touches the same Qwen route
@@ -107,8 +107,7 @@ tool absence alone is insufficient.
 - **Inherited doctor baseline:** 379 findings: 333 warnings and 46 errors,
   plus one generated-in-src finding; record drift, do not repair unrelated
   findings
-- **PR base:** `t3code/review-headless-model-selection` while PR 73 remains
-  open; restack onto current `main` only after PR 73 lands
+- **PR base:** current pushed `main`
 - **PR head:** worker branch
 - **PR URL:** pending
 - **Review state:** awaiting worker evidence and PR
@@ -236,20 +235,19 @@ production binding.
    matrices, API baseline, and sole Next Task required by the actual
    disposition.
 3. Push the selected worker branch.
-4. Open one reviewable stacked PR against
-   `t3code/review-headless-model-selection` while PR 73 remains open. The PR
-   must include the g04.075 planning and handoff commits plus the worker lane.
-   If PR 73 lands before PR creation, rebase/restack onto fetched `main` and
-   target `main` instead. Never merge a stale base into the worker branch.
+4. Open one reviewable PR against current pushed `main`. The PR must include
+   the g04.075 planning and handoff commits plus the worker lane. Before push,
+   fetch and require the worker branch to remain a linear descendant of
+   `origin/main`; never merge a stale base into the worker branch.
 5. Link the parent PR, milestone, cards, Research 222, changed surfaces,
    evidence, validation, and unresolved items in the PR body.
 6. Report the PR URL and exact head to the operator. Do not merge.
 
 ### Review and merge path
 
-The orchestrator reviews the PR against canonical refs, exact parent/head,
-diff, and checks. When PR 73 lands, the worker PR must be fast-forward
-restacked onto current `main` before merge review.
+The orchestrator reviews the PR against canonical refs, exact base/head, diff,
+and checks. Any later `main` movement must be handled by a fast-forward-only
+restack before merge review.
 
 When orchestrator and worker share a GitHub identity, formal self-approval is
 unavailable. The orchestrator posts the evidence-backed verdict as a PR

@@ -83,8 +83,9 @@ and selection policy.
 - [g04.066 Codex Exec Model Verbosity](066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186; Research 213 deliver-now on exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1`; seven slugs × `low|medium|high`
 - [g04.067 OpenCode HTTP Web Search](067-opencode-http-web-search.md) — stopped after card 187; Research 214 empty deliver-now set; cards 188-189 blocked
 - [g04.068 Pi RPC 0.84.3 Useful Newer](068-pi-rpc-0-84-3-useful-newer.md) — standing currentness, completed
+- [g04.069 Qwen Headless 0.22.1 Useful Newer](069-qwen-headless-0-22-1-useful-newer.md) — standing currentness, completed
 
-g04 has 68 numbered roadmaps: 58 completed milestones, ten honest evidence
+g04 has 69 numbered roadmaps: 59 completed milestones, ten honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and no ready
 milestone. The operator keeps the generation active. Do not close g04
 without explicit operator direction.
@@ -233,9 +234,12 @@ without explicit operator direction.
 - g04.068 standing currentness is complete: Research 215 and cards 190-191
   qualify Pi RPC through official `0.84.3` without moving the generation
   pointer
+- g04.069 standing currentness is complete: Research 216 and cards 192-193
+  qualify Qwen headless through official `0.22.1` without moving the
+  generation pointer
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 68 roadmaps; reassess the remaining per-route
+- g04 remains active at 69 roadmaps; reassess the remaining per-route
   inventory; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -313,7 +317,10 @@ without explicit operator direction.
 31. g04.068 standing currentness is complete. Research 215 and cards 190-191
     qualify Pi RPC through official `0.84.3` without moving the generation
     pointer.
-32. g04 remains active at operator direction. Contract 029 remains standing.
+32. g04.069 standing currentness is complete. Research 216 and cards 192-193
+    qualify Qwen headless through official `0.22.1` without moving the
+    generation pointer.
+33. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -354,6 +361,7 @@ New route-family research does not pre-empt this sequence.
 - [066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186
 - [067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md) — stopped after card 187; Research 214 empty deliver-now set; cards 188-189 blocked
 - [068 Pi RPC 0.84.3 Useful Newer](./068-pi-rpc-0-84-3-useful-newer.md) — completed (standing currentness), cards 190-191
+- [069 Qwen Headless 0.22.1 Useful Newer](./069-qwen-headless-0-22-1-useful-newer.md) — completed (standing currentness), cards 192-193
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

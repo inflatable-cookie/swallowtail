@@ -23,6 +23,8 @@ None.
 
 ## Completed
 
+- [193-qwen-headless-0-22-1-claim.md](./193-qwen-headless-0-22-1-claim.md)
+- [192-qwen-headless-0-22-1-identity.md](./192-qwen-headless-0-22-1-identity.md)
 - [191-pi-rpc-0-84-3-claim.md](./191-pi-rpc-0-84-3-claim.md)
 - [190-pi-rpc-0-84-3-identity.md](./190-pi-rpc-0-84-3-identity.md)
 - [187-opencode-http-web-search-evidence.md](./187-opencode-http-web-search-evidence.md) — evidence stop; Research 214 empty deliver-now set

@@ -2207,3 +2207,38 @@ not send. Cards 207-209 bound portable `HarnessMode::Plan`. Omission keeps
 observed. `auto-edit|auto|yolo` stay withheld.
 
 Keep g04 open. Contract 029 currentness remains standing.
+
+## Post-g04.075 Reassessment And g04.076 Compilation (2026-08-26)
+
+Disposition: select provider sandboxing on `cursor-agent.headless` and compile
+g04.076 as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after Qwen Plan delivery. Account and
+billing controls, ambient model/tool registries, product personality, writable
+profiles, and process-topology features remain weaker leads. Cursor sandboxing
+is a material containment gap on a production route with an exact owned-child
+seam and an existing portable isolation boundary.
+
+All four qualified Cursor builds expose `--sandbox enabled|disabled`.
+Swallowtail already owns one explicit-model structured child, binds
+`Read|ReadWrite`, adds `--mode plan` only for `Read`, records
+`HarnessIsolation::AmbientHost`, and proves deadline, cancellation, activity,
+terminal, durable state, and joined cleanup. Current official Cursor material
+describes native filesystem, network, and subprocess restrictions.
+
+That is a credible candidate, not a containment claim. Current material also
+says sandboxing applies to supported terminal commands, incompatible commands
+may move toward approval, and user/project/team path or network configuration
+can alter the boundary. Card 210 and Research 223 must bind exact build,
+platform/backend, configuration precedence, filesystem/network/subprocess
+rules, approval and escape paths, fallback, observation, and both access
+profiles. Mutable current documentation cannot backport semantics to an exact
+artifact.
+
+Only `HarnessIsolation::ProviderEnforced` through canonical
+`--sandbox enabled` is eligible. Omission remains exact no-flag
+`AmbientHost`. `disabled`, raw configuration, network/path policy, host
+isolation, force/yolo/auto-review, approval exchange, sibling routes, live
+provider work, currentness, release, generation rollover, and g04 closure stay
+out. If no exact preflight-bound row proves the full Contract 023 boundary,
+Research 223 must promote an empty set and the lane stops after card 210.

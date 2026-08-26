@@ -240,12 +240,19 @@ families do not interrupt this programme by default.
   `session_start.permission_mode` is observed. Plan is provider behavior, not
   isolation. `auto-edit|auto|yolo`, `/plan`, `set_permission_mode`, writable
   authority, and live provider work stay out.
+- [g04.076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md)
+  is ready. Research 223 and cards 210-212 form one serial evidence-first lane
+  for exact `cursor-agent.headless` `--sandbox enabled` as a candidate
+  `HarnessIsolation::ProviderEnforced` profile. Exact build/platform,
+  filesystem/network/subprocess, ambient configuration, approval, escape,
+  fallback, and observation truth gate any binding. Omission stays
+  `AmbientHost` with no flag.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory after g04.075 and compile
-the next serial family. Keep g04 open. Contract 029 currentness remains
-standing.
+Execute g04.076 cards 210-212 serially. Stop after card 210 when Research 223
+is empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

@@ -4,9 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
+- [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — planned; conditional on Research 223
+- [212-cursor-headless-provider-sandbox-acceptance.md](./212-cursor-headless-provider-sandbox-acceptance.md) — planned; conditional on card 211
+
 ## Ready
 
-None.
+- [210-cursor-headless-provider-sandbox-evidence.md](./210-cursor-headless-provider-sandbox-evidence.md) — ready
 
 ## Blocked
 

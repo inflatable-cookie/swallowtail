@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.076 Cursor Headless Provider Sandbox Compiled](./2026-08-26-g04-076-cursor-headless-provider-sandbox-compiled.md) — evidence-first cards 210-212; Research 223 reserved
 - [2026-08-26 g04.075 Qwen Headless Plan Mode Closeout](./2026-08-26-g04-075-qwen-headless-plan-mode-closeout.md) — complete; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`; cards 207-209
 - [2026-08-26 g04.075 Qwen Headless Plan Mode Compiled](./2026-08-26-g04-075-qwen-headless-plan-mode-compiled.md) — evidence-first cards 207-209; Research 222 reserved
 - [2026-08-26 g04.074 Cline Headless Model Selection Closeout](./2026-08-26-g04-074-cline-headless-model-selection-closeout.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked

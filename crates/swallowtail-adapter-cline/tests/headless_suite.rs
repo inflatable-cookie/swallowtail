@@ -286,12 +286,36 @@ fn plan_without_capability_rejects_before_process_start() {
     let host_id = ExecutionHostId::new("fixture.host.plan.unadvertised").expect("host");
     let selected = support::selection(host_id.clone());
     let host = FixtureHost::scripted([SUCCESS]);
-    let result = block_on(driver().start_run(
+    let error = block_on(driver().start_run(
         selected.plan,
         request_with_plan("plan-unadvertised", selected.resource),
         host.services(host_id),
-    ));
-    assert!(result.is_err());
+    ))
+    .err()
+    .expect("Plan request cannot use a plan without HarnessModeSelection");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.cline.headless.harness_mode_mismatch"
+    );
+    assert!(!host.started());
+}
+
+#[test]
+fn omitted_request_rejects_plan_bearing_plan_before_process_start() {
+    let host_id = ExecutionHostId::new("fixture.host.omit.plan-plan").expect("host");
+    let selected = support::selection_with_plan(host_id.clone());
+    let host = FixtureHost::scripted([SUCCESS]);
+    let error = block_on(driver().start_run(
+        selected.plan,
+        request("omit-vs-plan", selected.resource),
+        host.services(host_id),
+    ))
+    .err()
+    .expect("omitted request cannot use a Plan-bearing plan");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.cline.headless.harness_mode_mismatch"
+    );
     assert!(!host.started());
 }
 

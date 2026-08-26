@@ -93,6 +93,13 @@ fn prepared_run_names_cline_headless_and_package_then_drains_one_print() {
     assert_prepared_operation_evidence_matches_plan(run.evidence(), run.plan());
     assert_eq!(run.harness_mode(), None);
     assert_eq!(run.request().policy().harness_mode(), None);
+    assert!(
+        run.plan()
+            .requirements()
+            .capabilities()
+            .all(|required| required.capability() != Capability::HarnessModeSelection),
+        "omitted prepared run must not require Plan"
+    );
     assert_eq!(
         run.plan().driver_identity().id().as_str(),
         "swallowtail.cline.headless"

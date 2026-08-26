@@ -74,16 +74,15 @@ pub(super) fn validate(
             "consumer network, search, or reasoning",
         ));
     }
-    match request.policy().harness_mode() {
-        None => {}
-        Some(HarnessMode::Plan) => require_constraint(
-            plan,
-            Capability::HarnessModeSelection,
-            CapabilityConstraint::HarnessMode(HarnessMode::Plan),
-        )?,
-        Some(_) => {
-            return Err(headless_unsupported("harness mode"));
-        }
+    let requested_mode = request.policy().harness_mode();
+    let planned_mode = planned_harness_mode(plan);
+    if requested_mode != planned_mode
+        || requested_mode.is_some() && requested_mode != Some(HarnessMode::Plan)
+    {
+        return Err(crate::failure::failure(
+            "swallowtail.cline.headless.harness_mode_mismatch",
+            "Cline headless harness mode does not match its preflight-bound plan",
+        ));
     }
     if request.working_resource().is_none() || request.deadline().is_none() {
         return Err(headless_unsupported("missing working resource or deadline"));
@@ -116,6 +115,20 @@ pub(super) fn validate(
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
     )?;
     Ok(())
+}
+
+fn planned_harness_mode(plan: &PreflightPlan) -> Option<HarnessMode> {
+    plan.requirements()
+        .capabilities()
+        .find(|requirement| requirement.capability() == Capability::HarnessModeSelection)
+        .and_then(|requirement| {
+            requirement
+                .constraints()
+                .find_map(|constraint| match constraint {
+                    CapabilityConstraint::HarnessMode(mode) => Some(*mode),
+                    _ => None,
+                })
+        })
 }
 
 fn require_service(

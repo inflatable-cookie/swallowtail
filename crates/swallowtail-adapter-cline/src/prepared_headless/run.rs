@@ -72,8 +72,30 @@ impl ClineHeadlessPreparedIntegration {
         input: ClineHeadlessRunProfileInput,
     ) -> Result<ClineHeadlessPreparedRun, PreparationFailure> {
         let activity = super::activity::profile(self.observation())?;
-        let capabilities = super::activity::with_activity(advertised_capabilities(), &activity);
-        let instance = instance_with_capabilities(self.instance(), capabilities.clone());
+        let instance_capabilities =
+            super::activity::with_activity(advertised_capabilities(), &activity);
+        let instance = instance_with_capabilities(self.instance(), instance_capabilities.clone());
+        let policy = OperationPolicy::offline()
+            .with_provider_retention(ProviderRetentionPolicy::Prohibited)
+            .with_harness_isolation(HarnessIsolation::AmbientHost)
+            .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
+        let (operation_capabilities, policy) = match input.harness_mode {
+            None => (
+                without_harness_mode_selection(&instance_capabilities),
+                policy,
+            ),
+            Some(HarnessMode::Plan) => (
+                instance_capabilities.clone(),
+                policy.with_harness_mode(HarnessMode::Plan),
+            ),
+            Some(_) => {
+                return Err(super::failure(
+                    PreparationStage::Preflight,
+                    "swallowtail.cline.headless.preparation.harness_mode_unsupported",
+                    "Cline headless admits only portable Plan",
+                ));
+            }
+        };
         let requirements = OperationRequirements::new(
             ExecutionLayer::HarnessInteraction,
             OperationShape::StructuredRun,
@@ -88,9 +110,13 @@ impl ClineHeadlessPreparedIntegration {
             HostServiceKind::Time,
             HostServiceKind::WorkingResource,
         ])
-        .with_capabilities(capabilities.iter().map(|(capability, constraints)| {
-            CapabilityRequirement::new(capability, constraints.iter().cloned())
-        }))
+        .with_capabilities(
+            operation_capabilities
+                .iter()
+                .map(|(capability, constraints)| {
+                    CapabilityRequirement::new(capability, constraints.iter().cloned())
+                }),
+        )
         .with_interface_versions([self.observation().version().clone()])
         .with_harness_isolation(HarnessIsolation::AmbientHost)
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
@@ -108,23 +134,6 @@ impl ClineHeadlessPreparedIntegration {
                 swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
             )
         })?;
-        let mut policy = OperationPolicy::offline()
-            .with_provider_retention(ProviderRetentionPolicy::Prohibited)
-            .with_harness_isolation(HarnessIsolation::AmbientHost)
-            .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
-        match input.harness_mode {
-            None => {}
-            Some(HarnessMode::Plan) => {
-                policy = policy.with_harness_mode(HarnessMode::Plan);
-            }
-            Some(_) => {
-                return Err(super::failure(
-                    PreparationStage::Preflight,
-                    "swallowtail.cline.headless.preparation.harness_mode_unsupported",
-                    "Cline headless admits only portable Plan",
-                ));
-            }
-        }
         let request = StructuredRunRequest::new(input.request_id, input.content, policy)
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);
@@ -181,6 +190,17 @@ impl ClineHeadlessPreparedRun {
         let request = self.request.clone();
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
+}
+
+fn without_harness_mode_selection(capabilities: &CapabilityProfile) -> CapabilityProfile {
+    CapabilityProfile::new(
+        capabilities
+            .iter()
+            .filter(|(capability, _)| *capability != Capability::HarnessModeSelection)
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
+    )
 }
 
 pub(super) fn advertised_capabilities() -> CapabilityProfile {

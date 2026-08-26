@@ -73,7 +73,12 @@ moved to `tests/owned_driver/selections.rs`, alongside the existing
 lines and the baseline is exact. The open g04.056 papercut records the
 remaining `prepared_facades.rs` split and the stale g04.056 baseline figure.
 
-- PR: pending
+CI needed one rerun. The first Stable run aborted in
+`swallowtail-adapter-opencode` on a fixture-server `ConnectionReset` during
+drop, which is the open 2026-08-22 OpenCode papercut and not this lane's code;
+the branch touches no OpenCode file and the rerun passed all five checks.
+
+- PR: https://github.com/inflatable-cookie/swallowtail/pull/77
 - branch: `t3code/llama-cpp-reasoning-controls`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d2c680cc`
 

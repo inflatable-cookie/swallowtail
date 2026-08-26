@@ -174,6 +174,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   writing the abandoned response, while preserving failures for other write
   errors.
 - Surface: OpenCode prepared-facade HTTP fixture response writer; MSRV CI.
+- Recurrence 2026-08-26 (PR 77): the same writer aborted the Stable job, not
+  just MSRV, this time as `ConnectionReset` in
+  `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`.
+  The drop-time panic is non-unwinding, so the run dies with SIGABRT and
+  cancels 887 unrelated tests. A plain rerun went green, and the branch touched
+  no OpenCode file. Still open and now blocking unrelated lanes.
 
 ### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,

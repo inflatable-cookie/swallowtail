@@ -90,10 +90,10 @@ fn corpus_keeps_unselected_commands_and_extensions_outside_authority() {
 
 #[test]
 fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.84.2");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.84.3");
     let claim = pi_rpc_claim();
     for candidate in [
-        "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.2",
+        "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.2", "0.84.3",
     ] {
         assert!(claim.supports(&version(candidate)));
     }
@@ -101,10 +101,10 @@ fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
         assert!(!claim.permits(&version(unsupported)));
     }
     assert!(matches!(
-        claim.assess(&version("0.84.3")),
+        claim.assess(&version("0.84.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    assert!(!claim.permits(&version("0.84.3-rc.1")));
+    assert!(!claim.permits(&version("0.84.4-rc.1")));
 }
 
 fn version(value: &str) -> InterfaceVersion {

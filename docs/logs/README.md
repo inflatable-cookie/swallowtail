@@ -23,8 +23,13 @@ then conformance closeout.
 
 ## Entries
 
+<<<<<<< HEAD
 - [2026-08-26 g04.067 OpenCode HTTP Web Search Compiled](./2026-08-26-g04-067-opencode-http-web-search-compiled.md)
 - [2026-08-26 g04.067 OpenCode HTTP Web Search Closeout](./2026-08-26-g04-067-opencode-http-web-search-closeout.md) — reserved
+=======
+- [2026-08-26 Pi RPC 0.84.3 Claim](./2026-08-26-pi-rpc-0-84-3-claim.md)
+- [2026-08-26 Pi RPC 0.84.3 Identity](./2026-08-26-pi-rpc-0-84-3-identity.md)
+>>>>>>> c570e4ae (Qualify Pi RPC through official 0.84.3)
 - [2026-08-25 g04.066 Codex Exec Model Verbosity Compiled](./2026-08-25-g04-066-codex-exec-model-verbosity-compiled.md)
 - [2026-08-25 g04.066 Codex Exec Model Verbosity Closeout](./2026-08-25-g04-066-codex-exec-model-verbosity-closeout.md) — complete and merged through PR 65 at `46070dfd`
 - [2026-08-25 g04.065 Claude Code Headless Ultracode Compiled](./2026-08-25-g04-065-claude-code-headless-ultracode-compiled.md)

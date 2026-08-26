@@ -1,0 +1,98 @@
+{
+  "axis": "pi.package",
+  "observed_at": "2026-08-26",
+  "npm_package": "@earendil-works/pi-coding-agent",
+  "npm_latest": true,
+  "not_oh_my_pi": true,
+  "oh_my_pi_latest_at_observation": "18.0.6",
+  "host": {
+    "not_installed": true,
+    "note": "Host `pi` was not on PATH; missing install is not a gap. Official npm tarball, GitHub tag, selected git blobs, extracted dist, and changelog compared. No host install or update."
+  },
+  "official": {
+    "version": "0.84.3",
+    "source": "official-npm-tarball",
+    "published_at": "2026-08-24T11:09:37.600Z",
+    "npm_integrity": "sha512-Yr2p9PubrbFZmYEPYI+C8KmZP9xlFuLDnAG64RtU0ZDgrdiXYWa+y7WGyJO5OlqPliOkVCMd9IzVszO3/t0D0w==",
+    "npm_shasum": "c040a5c2cfacd996731ce302a323269f124c8bdc",
+    "npm_git_head": "bfb004d4418ff05c6f909eaaab856cbe75c1fde0",
+    "github_tag": "v0.84.3",
+    "github_tag_commit": "4e58f324fae8ebfa98a3d45181fb248072a2afac",
+    "github_release_published_at": "2026-08-24T11:09:57Z",
+    "tarball_sha256": "d07dc417f78a14dac376a878b6556b51961f118f79771ee375333dc51356bc75",
+    "package_json_sha256": "6c0bfa4558a0de32fb54fa97ca73397753ec7d4ad7d0ba607790920168de751f",
+    "extracted_cli_sha256": "840d1e8e689ed9e4937bcb00b9a810e02a8567d9afb10a47097f11ca93ea1521",
+    "extracted_cli_size": 710,
+    "extracted_bundle_cli_sha256": "1c3a5094b54aae9ae98c66516ce8c6578140363d081471ca7e91f9cb8c23dc8a",
+    "extracted_bundle_cli_size": 629
+  },
+  "research_140_ceiling": "0.84.2",
+  "published_stables_from_previous_ceiling": ["0.84.3"],
+  "unpublished_0_83_1": true,
+  "unpublished_0_84_4": true,
+  "npm_git_head_two_commits_after_github_tag": true,
+  "npm_git_head_delta_files": [
+    ".github/workflows/build-binaries.yml",
+    "packages/agent/CHANGELOG.md",
+    "packages/ai/CHANGELOG.md",
+    "packages/client/CHANGELOG.md",
+    "packages/coding-agent/CHANGELOG.md",
+    "packages/protocol/CHANGELOG.md",
+    "packages/server/CHANGELOG.md",
+    "packages/session-backends/sqlite-node/CHANGELOG.md",
+    "packages/telemetry/CHANGELOG.md",
+    "packages/tui/CHANGELOG.md"
+  ],
+  "selected_blobs_at_0_84_3": {
+    "rpc_docs": "f92c12e8e626d0f4c7ea24a966fb656d4738cfa2",
+    "rpc_types": "5957eebc717658694592b27d047a20089851e7ae",
+    "rpc_mode": "1b5d8a6567b948ad1bbf06862800ab6555d615bd",
+    "jsonl": "8962c734021eee0d39d3a35ad8b5c020b0c2c14b",
+    "session_cwd": "79960df1f7d4bebffa8fecfcb2aca3a3044bdd92",
+    "json_event": "c0c04fde0d7305bb8c07151c17498df8a25fb1d8",
+    "args": "8ad5da63e5cce1ee17476d061b3798359818fc97"
+  },
+  "selected_blobs_identical_to_0_84_2": [
+    "rpc_types",
+    "rpc_mode",
+    "jsonl",
+    "session_cwd"
+  ],
+  "extracted_dist_identical_to_0_84_2": [
+    "dist/cli.js",
+    "dist/modes/rpc/rpc-types.js",
+    "dist/modes/rpc/rpc-mode.js",
+    "dist/modes/rpc/jsonl.js",
+    "dist/core/session-cwd.js"
+  ],
+  "frozen_corpus_ceiling": "0.80.10",
+  "claim_at_observation": {
+    "baseline": "0.80.10",
+    "latest_qualified": "0.84.2",
+    "posture": "allow_unverified",
+    "classification_of_0_84_2": "qualified_maintained",
+    "classification_of_0_84_3": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_v0_83_0_exact": true,
+    "extend_private_v0_84_0": "0.84.0..=0.84.3",
+    "v0_84_0_behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+    "raise_latest_qualified_to": "0.84.3",
+    "keep_baseline": "0.80.10",
+    "keep_unpublished_0_83_1": true,
+    "later_unverified_after_qualification": "0.84.4",
+    "map_streaming_usage": false,
+    "map_toolcall_start_id_and_tool_name": false,
+    "map_end_of_options_delimiter": false,
+    "map_powershell_tool": false,
+    "map_bundled_bin_path": false,
+    "map_bash_or_session_switch": false,
+    "flatten_to_oh_my_pi": false,
+    "new_public_mapped_operation": false,
+    "new_milestone": false,
+    "provider_prompt_sent": false,
+    "live_rpc_session": false,
+    "host_install_changed": false
+  }
+}

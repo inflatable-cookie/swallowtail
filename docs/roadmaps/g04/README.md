@@ -88,10 +88,11 @@ and selection policy.
 - [g04.071 Copilot CLI ACP Built-In Tool Allowlist](071-copilot-cli-acp-built-in-tool-allowlist.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
 - [g04.072 Grok Build ACP Subagents Disabled](072-grok-build-acp-subagents-disabled.md) — stopped after card 198; Research 219 empty deliver-now set; cards 199-200 blocked
 - [g04.073 Cline Headless Plan Mode](073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
+- [g04.074 Cline Headless Model Selection](074-cline-headless-model-selection.md) — ready, cards 204-206; Research 221 evidence-first provider/model agreement gate
 
-g04 has 73 numbered roadmaps: 61 completed milestones, twelve honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, and 072, and no
-remaining ready milestone. The operator keeps the generation active. Do not close
+g04 has 74 numbered roadmaps: 61 completed milestones, twelve honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, and 072, and one
+ready milestone at 074. The operator keeps the generation active. Do not close
 g04 without explicit operator direction.
 
 ## Current Checkpoint
@@ -254,7 +255,10 @@ g04 without explicit operator direction.
 - g04.073 is complete: cards 201-203 delivered exact `cline.headless` `3.0.55`
   `HarnessMode::Plan` as canonical `--plan`; Research 220 promoted; omission
   retained; observation withheld
-- g04 remains active at 73 roadmaps; generation closure awaits explicit
+- g04.074 is ready: cards 204-206 and Research 221 test whether any exact
+  provider/model row can bind without ambient provider drift, open membership,
+  fallback, or unauthorized settings mutation
+- g04 remains active at 74 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -350,7 +354,10 @@ g04 without explicit operator direction.
     `HarnessMode::Plan` as canonical `--plan`. Research 220 promoted.
     Omission retained. Observation withheld. `act|yolo|zen` and ACP `--plan`
     stay out. Plan is provider behavior, not isolation.
-37. g04 remains active at operator direction. Contract 029 remains standing.
+37. g04.074 is ready as cards 204-206. Research 221 must settle exact
+    provider/model membership, provider agreement, fallback, configuration
+    mutation, application, and observation before any binding.
+38. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -396,6 +403,7 @@ New route-family research does not pre-empt this sequence.
 - [071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
 - [072 Grok Build ACP Subagents Disabled](./072-grok-build-acp-subagents-disabled.md) — stopped after card 198; Research 219 empty deliver-now set; cards 199-200 blocked
 - [073 Cline Headless Plan Mode](./073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
+- [074 Cline Headless Model Selection](./074-cline-headless-model-selection.md) — ready, cards 204-206; Research 221 reserved
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

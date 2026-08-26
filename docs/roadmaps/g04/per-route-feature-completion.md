@@ -225,11 +225,17 @@ families do not interrupt this programme by default.
   retains `--json --auto-approve false -c <cwd> <prompt>`. Observation
   withheld. Plan is provider behavior, not isolation. ACP, `act|yolo|zen`,
   mode switching, authority widening, and live provider work stay out.
+- [g04.074 Cline Headless Model Selection](./074-cline-headless-model-selection.md)
+  is ready. Research 221 and card 204 must settle exact provider/model
+  membership, ambient provider precedence, fallback, configuration mutation,
+  application, and observation before cards 205-206 may bind any model route.
 
 ## Current Execution Boundary
 
-Reassess remaining per-route inventory. Do not compile the next family from
-this closeout. Keep g04 open. Contract 029 currentness remains standing.
+Execute g04.074 cards 204-206 serially. Stop after card 204 if Research 221 is
+empty or exact provider/model agreement needs ambient state, a live catalogue,
+silent fallback, or new configuration authority. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Exclusions
 

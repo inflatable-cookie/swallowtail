@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 73 roadmaps: 60 completed milestones, twelve honest evidence stops
+g04 now has 74 roadmaps: 61 completed milestones, twelve honest evidence stops
 at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, and 072, and one
-ready milestone at 073.
+ready milestone at 074.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -73,6 +73,9 @@ not expose applied suppression and spawn-path coverage stays unfrozen; cards
 g04.073 is complete: cards 201-203 delivered exact `cline.headless` `3.0.55`
 `HarnessMode::Plan` as canonical `--plan`; Research 220 promoted; omission
 retained; observation withheld.
+g04.074 is ready: cards 204-206 and Research 221 test whether any exact Cline
+headless provider/model row can bind without ambient provider drift, open or
+dynamic membership, silent fallback, or unauthorized settings mutation.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

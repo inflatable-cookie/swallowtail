@@ -4,9 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
+- [205-cline-headless-model-selection-binding.md](./205-cline-headless-model-selection-binding.md) — gated on non-empty Research 221
+- [206-cline-headless-model-selection-acceptance.md](./206-cline-headless-model-selection-acceptance.md) — gated on card 205
+
 ## Ready
 
-None.
+- [204-cline-headless-model-selection-evidence.md](./204-cline-headless-model-selection-evidence.md)
 
 ## Blocked
 

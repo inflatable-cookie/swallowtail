@@ -2085,3 +2085,36 @@ revision. Observation withheld. `act|yolo|zen`, ACP `--plan`, and Plan-to-Act
 stay out. Plan is provider behavior, not containment. Isolation remains
 `AmbientHost`. Do not compile the next per-route family from this note. Keep
 g04 open at operator direction. Contract 029 currentness remains standing.
+
+## Post-g04.073 Reassessment And g04.074 Compilation (2026-08-26)
+
+Disposition: select exact Cline headless model routing and compile g04.074 as
+one serial evidence-first lane.
+
+The original 85-item inventory is a dated research baseline, not a live queue:
+it still names controls delivered by g04.035 onward. The programme progress and
+route guides now own current disposition. After reconciling those surfaces,
+`cline.headless --model` is the strongest remaining dependency-shaped lead.
+The route already owns one exact JSON child and optional Plan, while g04.042
+names absent provider/model selection as the blocker behind headless thinking.
+
+Exact `3.0.55` source gives a real but conditional seam. Explicit `args.model`
+wins over persisted and catalogue/default model state. Provider identity,
+however, resolves independently from explicit argv, ambient last-used settings,
+or `cline`; model membership may come from mutable provider resolution; and the
+CLI attempts to persist the resolved provider/model before the run.
+
+Card 204 and Research 221 must therefore settle closed model membership,
+configured-instance and access-audience agreement, provider fixing, invalid and
+unknown fallback, settings mutation, application, output observation, omission,
+and optional Plan composition. An adapter-fixed provider argument is eligible
+only when exact evidence derives it from current route facts. Caller provider
+selection, API keys, open model strings, live catalogue authority, and new
+configuration authority stay out.
+
+If provider/model agreement remains ambient or post-spawn, membership is open,
+unknown models silently fall back, or explicit selection necessarily mutates
+ambient settings, Research 221 must promote an empty deliver-now set and the
+lane stops after card 204. Thinking remains outside this lane; a delivered
+model route would only permit a later reassessment of g04.042. Keep g04 open.
+Contract 029 currentness remains standing.

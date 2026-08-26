@@ -38,6 +38,16 @@ value are withheld. Omission, context-size argv, runtime identity, and the
 owned lifecycle are unchanged. Effective and observed reasoning behavior stay
 withheld.
 
+The lane adds no new pre-process rejection class. Because the admitted type is
+closed and total, unadmitted reasoning values are unconstructible rather than
+rejected. Prepared, access, host-service, deadline, and model-route mismatches
+keep rejecting before artifact acquisition and process start, exactly as
+before. The exact executable build is still verified only after launch, during
+`/props` readiness, and a mismatch keeps the joined stop, endpoint, and
+artifact-release ordering. Research 225 records that no preflight
+model/template source exists on this route; the admitted row needs none,
+because its applied server state is template-independent.
+
 ## Goals
 
 - [x] freeze exact parser, aliases, placement, repetition, precedence,
@@ -51,8 +61,9 @@ withheld.
       table, with no raw string or provider-neutral capability widening
 - [x] preserve no-flag launch bytes, context-size composition, exact runtime
       identity, one-child ownership, readiness, and cleanup
-- [x] prove unsupported model/template, value, version, and stale-evidence rows
-      reject before process work when delivery proceeds
+- [x] keep unadmitted reasoning values unconstructible, keep prepared, access,
+      service, deadline, and route rejection before process work, and verify
+      the exact executable build after launch with joined cleanup
 
 ## Non-Goals
 

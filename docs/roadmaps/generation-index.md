@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 78 roadmaps: 63 completed milestones, fourteen honest evidence
+g04 now has 78 roadmaps: 64 completed milestones and fourteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
-076, and one ready milestone. The generation has realized route
+076. No milestone is ready. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -95,10 +95,14 @@ dispatches for `ResourceAccess::Read` on the four exact qualified builds,
 omission keeps the exact Plan and no-mode defaults, and read-write authority
 plus newer unverified releases reject before process work. Effective and
 observed mode stay withheld.
-g04.078 is ready. Cards 216-218 and Research 225 gate exact
-`b10069-178a6c449` `--reasoning` and `--reasoning-budget` through
-preflight-bindable model/template applicability. Binding and acceptance are
-conditional on a non-empty exact deliver-now set.
+g04.078 is complete. Research 225 admits one deliver-now row and cards
+216-218 bound one closed adapter-local `LlamaCppReasoningSelection`:
+`Disabled` dispatches `--reasoning off` on exact `b10069-178a6c449`, omission
+keeps the exact no-reasoning-argument launch, and every `--ctx-size` row is
+unchanged. `off` is the only value needing no model or chat-template fact,
+because exact source short-circuits `enable_thinking` to `false` before the
+template is probed. `--reasoning on`, `auto`, and every `--reasoning-budget`
+value are withheld. Effective and observed reasoning stay withheld.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

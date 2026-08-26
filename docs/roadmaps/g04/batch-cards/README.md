@@ -6,9 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [216-llama-cpp-owned-reasoning-controls-evidence.md](./216-llama-cpp-owned-reasoning-controls-evidence.md) — ready; promote Research 225 or stop honestly
-- [217-llama-cpp-owned-reasoning-controls-binding.md](./217-llama-cpp-owned-reasoning-controls-binding.md) — conditional on a non-empty Research 225 deliver-now set
-- [218-llama-cpp-owned-reasoning-controls-acceptance.md](./218-llama-cpp-owned-reasoning-controls-acceptance.md) — conditional on card 217
+No batch card is ready.
 
 ## Blocked
 
@@ -34,6 +32,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [218-llama-cpp-owned-reasoning-controls-acceptance.md](./218-llama-cpp-owned-reasoning-controls-acceptance.md)
+- [217-llama-cpp-owned-reasoning-controls-binding.md](./217-llama-cpp-owned-reasoning-controls-binding.md)
+- [216-llama-cpp-owned-reasoning-controls-evidence.md](./216-llama-cpp-owned-reasoning-controls-evidence.md) — complete; Research 225 admits one exact `--reasoning off` row
 - [215-cursor-headless-ask-mode-acceptance.md](./215-cursor-headless-ask-mode-acceptance.md)
 - [214-cursor-headless-ask-mode-binding.md](./214-cursor-headless-ask-mode-binding.md)
 - [213-cursor-headless-ask-mode-evidence.md](./213-cursor-headless-ask-mode-evidence.md) — complete; Research 224 admits four exact `Read` Ask rows

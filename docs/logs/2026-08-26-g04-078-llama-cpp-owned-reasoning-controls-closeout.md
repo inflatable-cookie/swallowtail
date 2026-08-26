@@ -36,6 +36,19 @@ lifecycle ordering, or Contract 029 identity.
   interference, input/evidence/driver/argv agree, and build-mismatch cleanup
   stays joined with the reasoning flag present.
 
+The lane adds no new pre-process rejection class. The closed one-variant type
+makes every unadmitted reasoning value unconstructible rather than rejected.
+Prepared, access, host-service, deadline, and model-route mismatches keep
+rejecting before artifact acquisition and process start, unchanged. The exact
+executable build is still verified only after launch through `/props`
+readiness, and card 218 proves a mismatch keeps the joined stop, wait,
+endpoint-release, and artifact-release ordering with the reasoning flag
+present. Research 225 records that this route has no preflight model/template
+source; the admitted row needs none, because its applied server state is
+template-independent. The completed roadmap and card criteria were corrected to
+say exactly this rather than claim a pre-process exact-runtime gate the
+implementation does not provide.
+
 Claimed truth is dispatch plus applied server state. Effective and observed
 reasoning behavior stay withheld: a chat template need not honor the render
 variable, a consumer request may override it through `chat_template_kwargs`,
@@ -46,7 +59,12 @@ capability, portable control, or attached-route reasoning support is implied.
 
 - architecture, guide, and route/feature matrices record exact adapter-local
   owned `--reasoning off` dispatch, omission preserved, unchanged context-size
-  rows, and effective/observed withheld
+  rows, and effective/observed withheld; argv arithmetic is stated exactly, as
+  omitting both selections preserving eleven arguments rather than omitting
+  either
+- the generation index, g04 index, and batch-card index move g04.078 to
+  complete: 64 completed milestones, fourteen evidence stops, no ready
+  milestone, and cards 216-218 under Completed
 - Contract 029 exact `b10069-178a6c449` membership, driver id, behavior id, and
   configured-instance revision do not move
 - the attached `b9910` route and its rejection of unqualified reasoning content

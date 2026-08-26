@@ -44,11 +44,25 @@ and canonical owned-server argv.
 - [x] prepared state, driver state, exact runtime, model/template evidence,
       and argv agree
 - [x] omission and all context-size rows retain exact prior behavior
-- [x] unsupported, stale, mismatched, or wider rows reject before process work
+- [x] unadmitted reasoning values are unconstructible; prepared, access,
+      host-service, deadline, and model-route mismatches reject before process
+      work; the exact executable build is verified after launch
 - [x] docs claim no stronger applied, effective, or observed state than exact
       evidence supports
 - [x] serving ownership, readiness, retention, lifecycle, and cleanup do not
       widen
+
+## Realized Boundary
+
+Scope item 4 is realized as far as this route allows, and no further. The
+closed one-variant type makes every unadmitted reasoning value unconstructible,
+so there is no new pre-dispatch reject class. Prepared, access, host-service,
+deadline, and model-route validation keeps rejecting before artifact
+acquisition and process start. Exact runtime revision is checked as declared
+configuration during preflight; the actual executable build is verified only
+after launch through `/props`. Research 225 found no preflight model/template
+source, and the admitted row needs none because its applied server state is
+template-independent.
 
 ## Validation
 

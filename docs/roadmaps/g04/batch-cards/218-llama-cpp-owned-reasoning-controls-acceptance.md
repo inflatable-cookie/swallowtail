@@ -43,14 +43,26 @@ server lifecycle, then produce one review-ready route-local closeout.
 ## Acceptance Criteria
 
 - [x] every admitted exact row dispatches canonical arguments
-- [x] omission, context size, and unsupported rows retain or reject exact
-      prior behavior
-- [x] prepared, driver, runtime, model/template, and argv mismatches fail
-      before process work
+- [x] omission and context size retain exact prior behavior; unadmitted
+      reasoning values remain unconstructible
+- [x] prepared, driver, access, host-service, deadline, model-route, and argv
+      mismatches fail before process work; exact executable build mismatch
+      fails after launch with joined cleanup; no preflight model/template
+      source exists and the admitted row needs none
 - [x] no inference effectiveness, isolation, resource, configuration,
       retention, or lifecycle claim widens
 - [x] docs report no stronger reasoning state than exact evidence supports
 - [x] one review-ready worker PR contains the complete lane or honest stop
+
+## Realized Boundary
+
+Scope item 4 is realized as far as this route allows, and no further.
+Unadmitted reasoning values are unconstructible rather than rejected, so no
+test asserts a pre-dispatch reasoning reject. Exact-build mismatch is proved on
+the post-launch readiness path: `selected_reasoning_keeps_joined_cleanup_on_build_mismatch`
+asserts the joined publish, stop, wait, endpoint-release, artifact-release
+ordering with the reasoning flag present. Model/template applicability has no
+preflight source on this route.
 
 ## Validation
 

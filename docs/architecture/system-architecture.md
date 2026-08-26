@@ -1155,12 +1155,13 @@ The owned serving selection may additionally carry adapter-local
 `LlamaCppContextSize` in `1..=2147483647` and adapter-local
 `LlamaCppReasoningSelection::Disabled`. The prepared start retains both
 selections in immutable evidence and dispatches exact `--ctx-size N` and
-`--reasoning off`; omission of either preserves the prior eleven-argument
-command. This is dispatch truth only: runtime acceptance, padded or
-training-capped effective context, model fit, allocation feasibility, effective
-reasoning behavior, and observation remain unclaimed. Reasoning selection is
-owned-serving configuration; it is not a model reasoning capability and does
-not reach the attached inference route.
+`--reasoning off`, in that order, each at most once. Omitting both preserves
+the prior eleven-argument command; selecting one adds two arguments and
+selecting both adds four. This is dispatch truth only: runtime acceptance,
+padded or training-capped effective context, model fit, allocation
+feasibility, effective reasoning behavior, and observation remain unclaimed.
+Reasoning selection is owned-serving configuration; it is not a model reasoning
+capability and does not reach the attached inference route.
 
 ## Prepared Integration And Bound Operation Layer
 

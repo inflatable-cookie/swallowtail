@@ -94,9 +94,9 @@ and selection policy.
 - [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 admits four exact `Read` Ask rows at qualified dispatch and application
 - [g04.078 llama.cpp Owned Reasoning Controls](078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 admits one exact `--reasoning off` row
 
-g04 has 78 numbered roadmaps: 63 completed milestones, fourteen honest
+g04 has 78 numbered roadmaps: 64 completed milestones and fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, and 076, and one ready milestone. The operator keeps the generation
+074, and 076. No milestone is ready. The operator keeps the generation
 active.
 Do not close g04 without explicit operator direction.
 

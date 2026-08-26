@@ -31,6 +31,12 @@ const CATALOGUE: &str =
     "Available models\n\nauto - Auto (current, default)\nfixture-model - Fixture Model\n";
 const HEADLESS: &str =
     include_str!("fixtures/cursor-agent-2026.07.01-41b2de7/headless-success.jsonl");
+const QUALIFIED_RELEASES: [&str; 4] = [
+    "2026.07.01-41b2de7",
+    "2026.07.23-e383d2b",
+    "2026.08.04-aaa8809",
+    "2026.08.11-e8db854",
+];
 
 #[test]
 fn explicit_routes_prepare_only_their_typed_operations() {
@@ -336,62 +342,84 @@ fn evidence(access_id: AccessProfileId) -> PreparedAccessEvidence {
 
 #[test]
 fn prepared_read_mode_is_immutable_and_agrees_with_the_driver_and_argv() {
-    let host_id = host_id();
-    let CursorPreparedIntegration::Headless(headless) =
-        prepare(CursorPreparedDriver::Headless, host_id.clone()).expect("headless prepares")
-    else {
-        panic!("headless route remains explicit");
-    };
-
-    let default_read = headless
-        .prepare_run(headless_input(ResourceAccess::Read))
-        .expect("default read run prepares");
-    assert_eq!(default_read.read_mode(), Some(CursorHeadlessReadMode::Plan));
-    assert_eq!(
-        default_read.low_level_driver().read_mode(),
-        Some(CursorHeadlessReadMode::Plan)
-    );
-
-    let write = headless
-        .prepare_run(headless_input(ResourceAccess::ReadWrite))
-        .expect("write run prepares");
-    assert_eq!(write.read_mode(), None);
-    assert_eq!(write.low_level_driver().read_mode(), None);
-
-    let ask = headless
-        .prepare_run(
-            headless_input(ResourceAccess::Read)
-                .with_read_mode(CursorHeadlessReadMode::Ask)
-                .expect("ask selection is admitted for read authority"),
+    for release in QUALIFIED_RELEASES {
+        let host_id = host_id();
+        let CursorPreparedIntegration::Headless(headless) = prepare_release(
+            CursorPreparedDriver::Headless,
+            host_id.clone(),
+            &format!("{release}\n"),
         )
-        .expect("ask run prepares");
-    assert_eq!(ask.read_mode(), Some(CursorHeadlessReadMode::Ask));
-    assert_eq!(
-        ask.low_level_driver().read_mode(),
-        Some(CursorHeadlessReadMode::Ask)
-    );
-    assert_eq!(
-        ask.plan().model_id().map(ModelId::as_str),
-        Some("fixture-model")
-    );
-    assert_eq!(
-        ask.evidence().binding().driver_identity().id().as_str(),
-        "swallowtail.cursor-agent.headless"
-    );
+        .unwrap_or_else(|_| panic!("headless prepares on {release}")) else {
+            panic!("headless route remains explicit");
+        };
 
-    let operation_host = support::FixtureHost::completed([stdout(HEADLESS)]);
-    let mut handle =
-        block_on(ask.start_run(operation_host.services(host_id))).expect("prepared ask run starts");
-    let _events = block_on(handle.take_events().expect("events").collect::<Vec<_>>());
-    let terminal = block_on(handle.take_terminal_outcome().expect("terminal"));
-    assert_eq!(terminal.status(), &TerminalStatus::Completed);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
-    assert!(
-        operation_host
-            .observed()
-            .arguments
-            .ends_with(&["--mode".to_owned(), "ask".to_owned()])
-    );
+        let default_read = headless
+            .prepare_run(headless_input(ResourceAccess::Read))
+            .unwrap_or_else(|_| panic!("default read run prepares on {release}"));
+        assert_eq!(
+            default_read.read_mode(),
+            Some(CursorHeadlessReadMode::Plan),
+            "{release}"
+        );
+        assert_eq!(
+            default_read.low_level_driver().read_mode(),
+            Some(CursorHeadlessReadMode::Plan),
+            "{release}"
+        );
+
+        let write = headless
+            .prepare_run(headless_input(ResourceAccess::ReadWrite))
+            .unwrap_or_else(|_| panic!("write run prepares on {release}"));
+        assert_eq!(write.read_mode(), None, "{release}");
+        assert_eq!(write.low_level_driver().read_mode(), None, "{release}");
+
+        let ask = headless
+            .prepare_run(
+                headless_input(ResourceAccess::Read)
+                    .with_read_mode(CursorHeadlessReadMode::Ask)
+                    .unwrap_or_else(|_| panic!("ask selection is admitted on {release}")),
+            )
+            .unwrap_or_else(|_| panic!("ask run prepares on {release}"));
+        assert_eq!(
+            ask.read_mode(),
+            Some(CursorHeadlessReadMode::Ask),
+            "{release}"
+        );
+        assert_eq!(
+            ask.low_level_driver().read_mode(),
+            Some(CursorHeadlessReadMode::Ask),
+            "{release}"
+        );
+        assert_eq!(
+            ask.plan().model_id().map(ModelId::as_str),
+            Some("fixture-model"),
+            "{release}"
+        );
+        assert_eq!(
+            ask.evidence().binding().driver_identity().id().as_str(),
+            "swallowtail.cursor-agent.headless",
+            "{release}"
+        );
+
+        let operation_host = support::FixtureHost::completed([stdout(HEADLESS)]);
+        let mut handle = block_on(ask.start_run(operation_host.services(host_id)))
+            .unwrap_or_else(|_| panic!("prepared ask run starts on {release}"));
+        let _events = block_on(handle.take_events().expect("events").collect::<Vec<_>>());
+        let terminal = block_on(handle.take_terminal_outcome().expect("terminal"));
+        assert_eq!(terminal.status(), &TerminalStatus::Completed, "{release}");
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean, "{release}");
+
+        let arguments = operation_host.observed().arguments;
+        assert!(
+            arguments.ends_with(&["--mode".to_owned(), "ask".to_owned()]),
+            "{release}"
+        );
+        assert_eq!(
+            arguments.iter().filter(|value| *value == "--mode").count(),
+            1,
+            "{release}"
+        );
+    }
 }
 
 #[test]

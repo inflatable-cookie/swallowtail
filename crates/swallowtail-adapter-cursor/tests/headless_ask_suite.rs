@@ -16,65 +16,79 @@ use swallowtail_runtime::{
 };
 
 const FIXTURE: &str = "tests/fixtures/cursor-agent-2026.07.01-41b2de7/headless-success.jsonl";
+const QUALIFIED_RELEASES: [&str; 4] = [
+    "2026.07.01-41b2de7",
+    "2026.07.23-e383d2b",
+    "2026.08.04-aaa8809",
+    "2026.08.11-e8db854",
+];
 
 #[test]
-fn ask_selection_dispatches_exactly_one_canonical_ask_mode() {
-    let host_id = local_host();
-    let host = FixtureHost::completed([stdout(&fixture())]);
-    let mut handle = block_on(ask_driver().start_run(
-        plan::headless_plan(
-            host_id.clone(),
-            "cursor.fixture.executable",
-            ResourceAccess::Read,
-        ),
-        request("ask-success"),
-        host.services(host_id),
-    ))
-    .expect("ask run starts");
-    let _events = block_on(
-        handle
-            .take_events()
-            .expect("event stream")
-            .collect::<Vec<_>>(),
-    );
-    let terminal = block_on(handle.take_terminal_outcome().expect("terminal future"));
-    assert_eq!(terminal.status(), &TerminalStatus::Completed);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+fn every_promoted_release_dispatches_exactly_one_canonical_ask_mode() {
+    for release in QUALIFIED_RELEASES {
+        let host_id = local_host();
+        let host = FixtureHost::completed([stdout(&fixture())]);
+        let handle = block_on(ask_driver().start_run(
+            plan::headless_plan_with_release(
+                host_id.clone(),
+                "cursor.fixture.executable",
+                ResourceAccess::Read,
+                release,
+            ),
+            request("ask-per-release"),
+            host.services(host_id),
+        ))
+        .unwrap_or_else(|_| panic!("ask run starts on {release}"));
+        drain_completed(handle, release);
 
-    let observed = host.observed();
-    assert_eq!(
-        observed.arguments,
-        [
-            "--print",
-            "--output-format",
-            "stream-json",
-            "--model",
-            "fixture-model",
-            "--trust",
-            "--mode",
-            "ask",
-        ]
-    );
-    assert_eq!(
-        observed
-            .arguments
-            .iter()
-            .filter(|value| *value == "--mode")
-            .count(),
-        1
-    );
-    for rejected in ["plan", "--plan", "--force", "--yolo", "--sandbox"] {
-        assert!(!observed.arguments.iter().any(|value| value == rejected));
+        let observed = host.observed();
+        assert_eq!(
+            observed.arguments,
+            [
+                "--print",
+                "--output-format",
+                "stream-json",
+                "--model",
+                "fixture-model",
+                "--trust",
+                "--mode",
+                "ask",
+            ],
+            "{release}"
+        );
+        assert_eq!(
+            observed
+                .arguments
+                .iter()
+                .filter(|value| *value == "--mode")
+                .count(),
+            1,
+            "{release}"
+        );
+        for rejected in ["plan", "--plan", "--force", "--yolo", "--sandbox"] {
+            assert!(
+                !observed.arguments.iter().any(|value| value == rejected),
+                "{release}"
+            );
+        }
+        assert_eq!(
+            observed.environments,
+            ["cursor.fixture.environment"],
+            "{release}"
+        );
+        assert_eq!(
+            observed.working_resource.as_deref(),
+            Some("workspace.main"),
+            "{release}"
+        );
     }
-    assert_eq!(observed.environments, ["cursor.fixture.environment"]);
-    assert_eq!(observed.working_resource.as_deref(), Some("workspace.main"));
 }
 
 #[test]
 fn explicit_plan_selection_keeps_the_exact_read_default_argv() {
     let host_id = local_host();
     let host = FixtureHost::completed([stdout(&fixture())]);
-    let mut handle = block_on(
+    let handle = block_on(
         CursorHeadlessDriver::new(
             EnvironmentRef::new("cursor.fixture.environment").expect("environment"),
         )
@@ -90,14 +104,7 @@ fn explicit_plan_selection_keeps_the_exact_read_default_argv() {
         ),
     )
     .expect("explicit plan run starts");
-    let _events = block_on(
-        handle
-            .take_events()
-            .expect("event stream")
-            .collect::<Vec<_>>(),
-    );
-    let _terminal = block_on(handle.take_terminal_outcome().expect("terminal future"));
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    drain_completed(handle, "explicit plan");
     assert!(
         host.observed()
             .arguments
@@ -154,6 +161,12 @@ fn ask_selection_rejects_unqualified_releases_before_process_work() {
     }
 }
 
+/// Proves argv composition only. The shared success fixture is bound to
+/// `fixture-model`, so a parameterized run terminates as a malformed stream;
+/// the model-to-stream correlation is proved elsewhere. What matters here is
+/// that Ask changes neither the rendered `--model` nor the one-model-argument
+/// rule, and that `--mode ask` stays canonical alongside every qualified
+/// parameter tuple.
 #[test]
 fn ask_selection_composes_with_qualified_model_parameters() {
     for model in [
@@ -168,7 +181,7 @@ fn ask_selection_composes_with_qualified_model_parameters() {
         let reasoning = model.contains("effort=high").then_some("high");
         let host_id = local_host();
         let host = FixtureHost::completed([stdout(&fixture())]);
-        let mut handle = block_on(ask_driver().start_run(
+        let handle = block_on(ask_driver().start_run(
             plan::headless_plan_with_model(
                 host_id.clone(),
                 "cursor.fixture.executable",
@@ -180,14 +193,7 @@ fn ask_selection_composes_with_qualified_model_parameters() {
             host.services(host_id),
         ))
         .unwrap_or_else(|_| panic!("ask composes with {model}"));
-        let _events = block_on(
-            handle
-                .take_events()
-                .expect("event stream")
-                .collect::<Vec<_>>(),
-        );
-        let _terminal = block_on(handle.take_terminal_outcome().expect("terminal future"));
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        drain(handle);
 
         let arguments = host.observed().arguments;
         assert!(
@@ -204,6 +210,29 @@ fn ask_selection_composes_with_qualified_model_parameters() {
             "{model}"
         );
     }
+}
+
+fn drain(mut handle: Box<dyn swallowtail_runtime::RunHandle>) {
+    let _events = block_on(
+        handle
+            .take_events()
+            .expect("event stream")
+            .collect::<Vec<_>>(),
+    );
+    let _terminal = block_on(handle.take_terminal_outcome().expect("terminal future"));
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+}
+
+fn drain_completed(mut handle: Box<dyn swallowtail_runtime::RunHandle>, label: &str) {
+    let _events = block_on(
+        handle
+            .take_events()
+            .expect("event stream")
+            .collect::<Vec<_>>(),
+    );
+    let terminal = block_on(handle.take_terminal_outcome().expect("terminal future"));
+    assert_eq!(terminal.status(), &TerminalStatus::Completed, "{label}");
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean, "{label}");
 }
 
 fn ask_driver() -> CursorHeadlessDriver {

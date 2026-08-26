@@ -27,6 +27,11 @@ precedent require, since the route already binds `--mode plan` and Research
 Research 224, the cards, and this closeout were revised accordingly, and the
 binding was delivered.
 
+A second review found the Ask acceptance drove only `2026.07.01-41b2de7`, so
+the "every admitted exact row dispatches canonical `--mode ask`" criterion was
+not yet earned. Both the prepared and dispatch suites now loop all four
+promoted releases.
+
 ## Evidence
 
 Selection is exact and closed. All four qualified builds register
@@ -125,11 +130,23 @@ Passed:
 - `git diff --check`
 
 `effigy doctor` matches the inherited baseline: `scan.god-files` 380 findings
-(334 warnings, 46 errors) and `scan.generated-in-src` one warning. Adding the
-Ask coverage first pushed `tests/headless_suite.rs` past the 400-code-line
-error threshold; splitting it into `tests/headless_ask_suite.rs` returned the
-scan to baseline rather than recording new drift. `tests/prepared_suite.rs`
-was already an error finding before this lane and remains one.
+(334 warnings, 46 errors) and `scan.generated-in-src` one warning. Two
+intermediate states drifted and were fixed rather than recorded: the Ask
+coverage first pushed `tests/headless_suite.rs` past the 400-code-line error
+threshold, and the per-release coverage then pushed the extracted
+`tests/headless_ask_suite.rs` past the 250-code-line warning threshold. The
+first was resolved by extracting the Ask suite, the second by folding the
+single-release dispatch test into the per-release loop and sharing one
+drain-and-close helper. `tests/prepared_suite.rs` was already an error finding
+before this lane and remains one.
+
+Sharing that helper surfaced a real gap: the Ask model-composition test had
+been discarding its terminal outcome, and those runs in fact end in
+`swallowtail.cursor.headless.malformed_stream` because the shared success
+fixture is bound to `fixture-model`. The test now asserts only what it proves
+— that Ask changes neither the rendered `--model` nor the one-model-argument
+rule — and says so in a doc comment. Model-to-stream correlation stays proved
+where it already was.
 
 Evidence used no install, host-binary replacement, login, account inspection,
 catalogue, provider prompt, tool execution, paid work, ambient config

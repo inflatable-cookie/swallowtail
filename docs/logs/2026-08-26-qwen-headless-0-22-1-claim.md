@@ -17,10 +17,16 @@ alone. g04 stays open.
 
 ## Validation
 
+Restack onto `main` `5d29d58a` as Research 216 / g04.069 / cards 192-193:
+
 - `cargo fmt -p swallowtail-adapter-qwen` passed
 - `bash scripts/validate-focused-packages.sh swallowtail-adapter-qwen` passed (56 tests, clippy `-D warnings`)
 - `bash scripts/verify-affected-packages.sh swallowtail-adapter-qwen` passed
-- Official `latest` stayed `0.22.1` through the run
+- `bash scripts/check-provider-route-matrix.sh` passed
+- Northstar-equivalent: spine paths, required contains, and `## Current Vision` present
+- Index-equivalent: research, logs, g04 README, batch-cards, and roadmaps front door
+- Next-action-equivalent: front-door verb `Reassess` is allowed
+- Official `latest` stayed `0.22.1` through the restack
 
 No `effigy` binary on this host; the named scripts are the task equivalents.
 

@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory for the next serial lane
-unless the operator supplies a different direction. Keep g04 open. Contract
-029 currentness remains standing.
+Execute g04.077 Cursor Headless Ask Mode as one serial evidence-first lane:
+card 213, then cards 214-215 only if Research 224 admits a non-empty exact
+deliver-now set. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

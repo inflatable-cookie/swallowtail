@@ -4,9 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
+- [214-cursor-headless-ask-mode-binding.md](./214-cursor-headless-ask-mode-binding.md) — conditional on a non-empty Research 224 deliver-now set
+- [215-cursor-headless-ask-mode-acceptance.md](./215-cursor-headless-ask-mode-acceptance.md) — conditional on card 214
+
 ## Ready
 
-None.
+- [213-cursor-headless-ask-mode-evidence.md](./213-cursor-headless-ask-mode-evidence.md) — exact Ask parser, precedence, behavior, and observation evidence
 
 ## Blocked
 

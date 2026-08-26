@@ -91,11 +91,12 @@ and selection policy.
 - [g04.074 Cline Headless Model Selection](074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`
 - [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
+- [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — ready, cards 213-215; Research 224 reserved
 
-g04 has 76 numbered roadmaps: 62 completed milestones and fourteen honest
+g04 has 77 numbered roadmaps: 62 completed milestones, fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, and 076. The operator keeps the generation
-active.
+074, and 076, and one ready milestone at 077. The operator keeps the
+generation active.
 Do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
@@ -268,7 +269,9 @@ Do not close g04 without explicit operator direction.
 - g04.076 stopped after card 210: Research 223 empty deliver-now set; exact
   `--sandbox enabled` parses, but the helper is shell-exec only and the native
   boundary is not preflight-bindable; cards 211-212 blocked
-- g04 remains active at 76 roadmaps; generation closure awaits explicit
+- g04.077 is ready as cards 213-215: exact Cursor headless Ask evidence first,
+  then conditional adapter-local binding and acceptance
+- g04 remains active at 77 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -377,7 +380,10 @@ Do not close g04 without explicit operator direction.
     `--sandbox enabled` parses on the four qualified builds, but the helper is
     shell-exec only and the native boundary is not preflight-bindable; cards
     211-212 blocked.
-40. g04 remains active at operator direction. Contract 029 remains standing.
+40. g04.077 is ready as one serial evidence-first lane. Card 213 must freeze
+    exact Ask parser, precedence, read-only behavior, and observation truth;
+    cards 214-215 run only for a non-empty Research 224 deliver-now set.
+41. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -426,6 +432,7 @@ New route-family research does not pre-empt this sequence.
 - [074 Cline Headless Model Selection](./074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [075 Qwen Headless Plan Mode](./075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan`
 - [076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
+- [077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md) — ready, cards 213-215; Research 224 reserved
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

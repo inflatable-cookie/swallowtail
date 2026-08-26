@@ -2260,3 +2260,40 @@ Cards 211-212 stay blocked. Omission remains `AmbientHost` with no sandbox
 argument.
 
 Keep g04 open. Contract 029 currentness remains standing.
+
+## Post-g04.076 Reassessment And g04.077 Compilation (2026-08-26)
+
+Disposition: select Ask on `cursor-agent.headless` and compile g04.077 as one
+serial evidence-first lane.
+
+The remaining inventory was re-ranked after the Cursor sandbox evidence stop.
+Account and billing controls, ambient model/tool registries, product
+personality, writable profiles, and process-topology features remain weaker
+leads. Claude headless autocompact is concrete, but current official docs state
+that `CLAUDE_CODE_AUTO_COMPACT_WINDOW` overrides the CLI flag and saved
+settings. The selected execution host clears ambient environment and applies
+an opaque approved environment reference, so the adapter cannot preflight that
+override without new environment-inspection authority.
+
+Cursor Ask has a smaller authority seam. The four exact qualified builds
+expose `--mode ask` beside Plan; prompt-free probes accept `ask|plan` and reject
+Agent, case variants, invalid, and empty values. Current official documentation
+describes Ask as read-only exploration and Q&A. The route owns the exact child,
+working-resource access, explicit model and parameters, ambient configuration,
+deadline, cancellation, activity, terminal result, durable retention, and
+joined cleanup. Existing `Read` selects `--mode plan`; `ReadWrite` omits mode.
+
+That evidence qualifies investigation, not delivery. Card 213 and Research
+224 must freeze exact source, parser and repeated-value precedence,
+configuration interaction, mode application, read-only behavior, tool/write
+seams, stream observation, and all four qualified builds. Ask is eligible only
+as a closed Cursor-local selection for `ResourceAccess::Read`. It does not add
+portable `HarnessMode`, isolation, containment, permissions, tools, approval,
+network, or writable authority. Existing Plan and no-mode behavior must remain
+exact.
+
+Cards 214-215 run only for a non-empty exact Research 224 set. Raw provider
+modes, Agent, force/yolo/auto-review, sandboxing, live provider work,
+currentness, release, generation rollover, and g04 closure stay out. If exact
+behavior cannot be proved without provider work or ambient widening, the lane
+stops after card 213.

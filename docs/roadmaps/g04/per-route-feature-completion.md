@@ -247,12 +247,16 @@ families do not interrupt this programme by default.
   `sandbox.json`/config/team/feature-gate state can widen or disable the
   boundary, and print-mode denial is approval rather than process containment.
   Cards 211-212 are blocked. Omission stays `AmbientHost` with no flag.
+- [g04.077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md) is
+  ready. Card 213 freezes exact Ask parser, precedence, read-only behavior,
+  configuration, and observation truth across the four qualified builds.
+  Cards 214-215 bind and accept only a non-empty Research 224 deliver-now set.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory for the next serial lane
-unless the operator supplies a different direction. Keep g04 open. Contract
-029 currentness remains standing.
+Execute g04.077 cards 213-215 serially. Stop after card 213 if Research 224 is
+empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

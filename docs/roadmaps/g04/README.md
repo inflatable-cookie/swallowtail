@@ -373,10 +373,10 @@ Do not close g04 without explicit operator direction.
 38. g04.075 delivered exact Qwen headless Plan as cards 207-209 and Research
     222. Portable `HarnessMode::Plan` is canonical `--approval-mode plan`;
     omission retains `default`; `auto-edit|auto|yolo` stay out.
-39. g04.076 compiles exact Cursor headless provider sandboxing as cards
-    210-212 and Research 223. Only `HarnessIsolation::ProviderEnforced` through
-    `--sandbox enabled` is eligible. Exact platform, configuration, escape,
-    approval, and fallback truth gate any binding.
+39. g04.076 stopped after card 210. Research 223 is an empty deliver-now set:
+    `--sandbox enabled` parses on the four qualified builds, but the helper is
+    shell-exec only and the native boundary is not preflight-bindable; cards
+    211-212 blocked.
 40. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -425,7 +425,7 @@ New route-family research does not pre-empt this sequence.
 - [073 Cline Headless Plan Mode](./073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
 - [074 Cline Headless Model Selection](./074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [075 Qwen Headless Plan Mode](./075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan`
-- [076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md) — ready, cards 210-212; Research 223 reserved
+- [076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

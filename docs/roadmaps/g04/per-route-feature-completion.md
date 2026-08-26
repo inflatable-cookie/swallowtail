@@ -214,11 +214,17 @@ families do not interrupt this programme by default.
   built-in membership, unknown-name failure, available/excluded precedence,
   and host MCP/plugin registry composition remain unbound. Cards 196-197 are
   blocked.
+- [g04.072 Grok Build ACP Subagents Disabled](./072-grok-build-acp-subagents-disabled.md)
+  is ready as cards 198-200. Research 219 must connect exact maintained-package
+  `--no-subagents` parsing to immutable effective suppression across every
+  owned ACP lifecycle. Only a non-empty exact set proceeds past card 198.
 
 ## Current Execution Boundary
 
-g04.071 stopped after evidence. Do not select or compile the next family from
-the worker closeout. Keep g04 open. Contract 029 currentness remains standing.
+Execute g04.072 cards 198-200 serially. Stop after card 198 if Research 219 is
+empty or effective suppression is not exact. Do not select or compile the next
+family from the worker closeout. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

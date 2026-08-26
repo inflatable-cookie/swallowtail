@@ -4,9 +4,12 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
+- [199-grok-build-acp-subagents-disabled-binding.md](./199-grok-build-acp-subagents-disabled-binding.md) — gated on non-empty Research 219
+- [200-grok-build-acp-subagents-disabled-acceptance.md](./200-grok-build-acp-subagents-disabled-acceptance.md) — gated on card 199
+
 ## Ready
 
-No ready cards.
+- [198-grok-build-acp-subagents-disabled-evidence.md](./198-grok-build-acp-subagents-disabled-evidence.md)
 
 ## Blocked
 

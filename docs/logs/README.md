@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 g04.072 Grok Build ACP Subagents Disabled Compiled](./2026-08-26-g04-072-grok-build-acp-subagents-disabled-compiled.md) — evidence-first cards 198-200; Research 219 reserved
 - [2026-08-26 g04.071 Copilot CLI ACP Built-In Tool Allowlist Closeout](./2026-08-26-g04-071-copilot-cli-acp-built-in-tool-allowlist-closeout.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked; PR 70
 - [2026-08-26 g04.071 Copilot CLI ACP Built-In Tool Allowlist Compiled](./2026-08-26-g04-071-copilot-cli-acp-built-in-tool-allowlist-compiled.md) — evidence-first cards 195-197; Research 218 reserved
 - [2026-08-26 Oh My Pi 18 Identity](./2026-08-26-oh-my-pi-18-identity.md) — identity stop; assigned official `18.0.5`; observed `latest` `18.0.6`; no claim; 18.x segment unset

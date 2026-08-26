@@ -86,11 +86,12 @@ and selection policy.
 - [g04.069 Qwen Headless 0.22.1 Useful Newer](069-qwen-headless-0-22-1-useful-newer.md) — standing currentness, completed
 - [g04.070 Oh My Pi 18 Identity](070-oh-my-pi-18-identity.md) — standing currentness identity stop, completed; card 194
 - [g04.071 Copilot CLI ACP Built-In Tool Allowlist](071-copilot-cli-acp-built-in-tool-allowlist.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
+- [g04.072 Grok Build ACP Subagents Disabled](072-grok-build-acp-subagents-disabled.md) — ready, cards 198-200; Research 219 reserved
 
-g04 has 71 numbered roadmaps: 60 completed milestones, eleven honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, and 071. The
-operator keeps the generation active. Do not close g04 without explicit
-operator direction.
+g04 has 72 numbered roadmaps: 60 completed milestones, eleven honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, and 071, and one
+ready milestone at 072. The operator keeps the generation active. Do not close
+g04 without explicit operator direction.
 
 ## Current Checkpoint
 
@@ -246,7 +247,9 @@ operator direction.
   pointer
 - g04.071 stopped after card 195: Research 218 empty deliver-now set; cards
   196-197 blocked
-- g04 remains active at 71 roadmaps; generation closure awaits explicit
+- g04.072 is ready: cards 198-200 test an exact Grok Build ACP launch-time
+  subagents-disabled profile; Research 219 is reserved
+- g04 remains active at 72 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -334,7 +337,11 @@ operator direction.
 34. g04.071 stopped after card 195: Research 218 empty deliver-now set; exact
     `1.0.80` parses `--available-tools` but cannot freeze a closed built-in
     table independent of ambient MCP/plugins; cards 196-197 blocked.
-35. g04 remains active at operator direction. Contract 029 remains standing.
+35. g04.072 cards 198-200 are ready as one serial evidence-first lane for exact
+    Grok Build ACP `--no-subagents`. Research 219 must prove effective
+    suppression across the owned child lifecycles; parser acceptance alone
+    stops the lane.
+36. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -378,6 +385,7 @@ New route-family research does not pre-empt this sequence.
 - [069 Qwen Headless 0.22.1 Useful Newer](./069-qwen-headless-0-22-1-useful-newer.md) — completed (standing currentness), cards 192-193
 - [070 Oh My Pi 18 Identity](./070-oh-my-pi-18-identity.md) — completed (standing currentness identity stop), card 194
 - [071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md) — stopped after card 195; Research 218 empty deliver-now set; cards 196-197 blocked
+- [072 Grok Build ACP Subagents Disabled](./072-grok-build-acp-subagents-disabled.md) — ready, cards 198-200; Research 219 reserved
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

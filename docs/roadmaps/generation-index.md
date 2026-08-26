@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 71 roadmaps: 60 completed milestones, eleven honest evidence stops
-at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, and 071, and no ready
-milestone.
+g04 now has 72 roadmaps: 60 completed milestones, eleven honest evidence stops
+at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, and 071, and one ready
+milestone at 072.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -66,6 +66,9 @@ g04.071 stopped after card 195 and Research 218: exact `1.0.80` parses
 `--available-tools` and stores it on ACP `session/new`, but built-in
 membership, unknown-name failure, available/excluded precedence, and host
 MCP/plugin registry composition remain unbound; cards 196-197 blocked.
+g04.072 is ready as cards 198-200: Research 219 must qualify exact maintained
+Grok Build ACP launch-time `--no-subagents` suppression before any adapter-local
+binding.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

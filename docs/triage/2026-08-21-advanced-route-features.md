@@ -1986,3 +1986,37 @@ Current `copilot --acp --stdio` argv, unmapped fixtures, observe-and-stop
 permission, guide, and `AmbientHost` stay unchanged. Do not compile the next
 per-route family from this note. Keep g04 open at operator direction.
 Contract 029 currentness remains standing.
+
+## Post-g04.071 Reassessment And g04.072 Compilation (2026-08-26)
+
+Disposition: select Grok Build ACP launch-time subagent suppression and compile
+g04.072 as one serial evidence-first lane for `--no-subagents`.
+
+The remaining inventory was re-ranked after three tool-availability leads
+stopped on ambient registry or backend truth. Claude Code headless
+`--max-turns` was rejected before compilation because exact qualified
+`2.1.241` help is unchanged from `2.1.238` and does not expose the current-docs
+flag. Grok Build exact installed `1.0.5` instead accepts `--no-subagents` as a
+global option before `agent stdio`, on a route that already owns the child
+process, immutable launch evidence, both ACP operation shapes, replacement,
+cancellation, and joined cleanup.
+
+That is a credible exact-package lead, not an effectiveness claim. Card 198 and
+Research 219 must trace `1.0.4..=1.0.5` parser state through configuration,
+agent construction, every subagent registry/spawn path, new and later ACP
+sessions, operation-private runs, attachment recovery, and replacement.
+Current public source may corroborate exact artifacts but cannot substitute for
+them. Parser acceptance, help, and binary strings alone are insufficient.
+
+Only a disabled-only adapter-local profile may proceed to cards 199-200. There
+is no explicit enabled value, raw flag, generic topology map, agent-definition
+surface, or portable child-control capability. Omission retains exact current
+argv. Effective `--no-subagents` would be one provider-native topology
+restriction; it would not add child observation or direct control, grant
+permission, remove ordinary process tools, or prove sandbox, filesystem,
+network, read-only, or OS descendant-process containment.
+
+If exact evidence cannot prove complete immutable suppression without a
+provider prompt, account inspection, tool/subagent execution, or paid work,
+Research 219 must promote an empty deliver-now set and the lane stops after
+card 198. Keep g04 open. Contract 029 currentness remains standing.

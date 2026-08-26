@@ -1,14 +1,14 @@
-# 188 Pi RPC 0.84.3 Claim
+# 191 Pi RPC 0.84.3 Claim
 
 Status: completed
 Owner: Tom
-Milestone: [g04.067 Pi RPC 0.84.3 Useful Newer](../067-pi-rpc-0-84-3-useful-newer.md)
+Milestone: [g04.068 Pi RPC 0.84.3 Useful Newer](../068-pi-rpc-0-84-3-useful-newer.md)
 Created: 2026-08-26
 
 ## Task
 
 Raise the Pi RPC `pi.package` qualified ceiling from `0.84.2` to official
-`0.84.3` after identity card 187 confirms compatible-extension.
+`0.84.3` after identity card 190 confirms compatible-extension.
 
 ## Edit Set
 

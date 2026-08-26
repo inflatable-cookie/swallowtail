@@ -1,4 +1,4 @@
-# g04.067 Pi RPC 0.84.3 Useful Newer
+# g04.068 Pi RPC 0.84.3 Useful Newer
 
 Status: completed
 Owner: Tom
@@ -46,12 +46,12 @@ Do not edit `docs/roadmaps/README.md` or g04 generation status.
 
 ## Batch Cards
 
-- [187-pi-rpc-0-84-3-identity.md](batch-cards/187-pi-rpc-0-84-3-identity.md) — completed
-- [188-pi-rpc-0-84-3-claim.md](batch-cards/188-pi-rpc-0-84-3-claim.md) — completed
+- [190-pi-rpc-0-84-3-identity.md](batch-cards/190-pi-rpc-0-84-3-identity.md) — completed
+- [191-pi-rpc-0-84-3-claim.md](batch-cards/191-pi-rpc-0-84-3-claim.md) — completed
 
 ## References
 
-- [Research 214 Pi RPC 0.84.3 Identity](../../research/214-pi-rpc-0-84-3-identity.md)
+- [Research 215 Pi RPC 0.84.3 Identity](../../research/215-pi-rpc-0-84-3-identity.md)
 - [Contract 029 Interface Version Qualification And Compatibility](../../contracts/029-interface-version-qualification-and-compatibility.md)
 - [Version Currentness Checkpoint](../../guides/version-currentness-checkpoint.md)
 - [Standing Lanes](../standing-lanes.md)

@@ -12,7 +12,7 @@ annotated Git tags from the canonical repository.
   `0.80.10` through `0.84.3`, unpublished `0.83.1` stays incompatible, and
   `0.84.0` keeps private message-update-delta; `toolcall_start` extras,
   `--`, `powershell`, bundled bin path, and streaming `usage` stay
-  unmapped. Research 214, g04.067.
+  unmapped. Research 215, g04.068.
 - Qualify Kimi Code headless exact `0.38.0` under adapter-private
   `kimi.headless.stream-json.v2` for default agent-core-v2 `runV2Print`
   stream-json. Deprecate `0.29.0..=0.37.2` under

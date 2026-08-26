@@ -1,8 +1,8 @@
-# 187 Pi RPC 0.84.3 Identity
+# 190 Pi RPC 0.84.3 Identity
 
 Status: completed
 Owner: Tom
-Milestone: [g04.067 Pi RPC 0.84.3 Useful Newer](../067-pi-rpc-0-84-3-useful-newer.md)
+Milestone: [g04.068 Pi RPC 0.84.3 Useful Newer](../068-pi-rpc-0-84-3-useful-newer.md)
 Created: 2026-08-26
 
 ## Task
@@ -18,7 +18,7 @@ evidence. Name segment shape. Do not edit production claims in this card.
 3. Classify unmapped additions
 4. Write identity fixture under
    `crates/swallowtail-adapter-pi/tests/fixtures/pi-rpc-0.84.3/`
-5. Write research record 214
+5. Write research record 215
 6. Name segment shape
 
 No provider prompt. No live session. Host install not present and not
@@ -33,13 +33,13 @@ and bundled bin path stay unmapped.
 ## Acceptance
 
 - Identity fixture written
-- Research 214 promoted
+- Research 215 promoted
 - Shape named: compatible-extension
 - No production claim edit
 - Passes `effigy validate:focused swallowtail-adapter-pi` at the claim
   card
 
-Auto-continue to claim card 188.
+Auto-continue to claim card 191.
 
 ## Out Of Scope
 

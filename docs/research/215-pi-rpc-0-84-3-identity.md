@@ -1,9 +1,9 @@
-# 214 Pi RPC 0.84.3 Identity
+# 215 Pi RPC 0.84.3 Identity
 
 Status: promoted
 Owner: Tom
 Date: 2026-08-26
-Card: g04 batch 187
+Card: g04 batch 190
 
 ## Question
 
@@ -107,7 +107,7 @@ Compatible extension of the mapped strict-LF subset on the existing
   `pi-rpc-0.80.10-0.83.0` compatibility rows stay unchanged.
 - Do not flatten onto Oh My Pi. Do not raise the SDK sidecar pin.
 
-Card 188 owns the claim change.
+Card 191 owns the claim change.
 
 ## Sources
 

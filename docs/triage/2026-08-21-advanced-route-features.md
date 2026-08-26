@@ -1934,3 +1934,38 @@ The current deny-first session JSON, Disabled search claims, guide, and
 feature-matrix `search No` row stay unchanged. Do not compile the next
 per-route family from this note. Keep g04 open at operator direction.
 Contract 029 currentness remains standing.
+
+## Post-g04.067 Reassessment And g04.071 Compilation (2026-08-26)
+
+Disposition: select Copilot CLI ACP built-in tool availability and compile
+g04.071 as one serial evidence-first lane, narrowed to a closed
+`--available-tools` allowlist.
+
+The remaining inventory was re-ranked after the OpenCode search stop. Codex
+personality remains product-policy/prompt surface; Fast remains account/billing
+surface; multi-agent remains topology. Remaining model and effort leads still
+lack selected-value or effective confirmation. Copilot's server-start tool
+filter instead aligns with an exact process lifetime already owned by the
+route.
+
+Current official GitHub documentation names `--available-tools` and
+`--excluded-tools`, applies them at ACP server start, and says the allowlist
+takes precedence. Swallowtail exact `1.0.80` evidence already records both
+flags as intentionally unmapped, owns one child and one session, validates
+immutable preparation, observes and cancels permission requests, and repeats
+the same plan on fresh context-losing replacement.
+
+That is a credible evidence path, not a delivery decision. Card 195 and
+Research 218 must freeze the exact `1.0.80` parser, delimiters, built-in tool
+identifiers, registry assembly, unknown-name handling, filtering point,
+permission behavior, and ambient extension/MCP/model/account effects. Only a
+useful closed subset independent of those ambient facts can proceed to cards
+196-197. Raw tool strings, `--excluded-tools`, consumer tools, MCP, extensions,
+permission bypass, and shared tool vocabulary remain out.
+
+The filter is provider-native behavior, not containment. It grants no
+permission and proves no filesystem, process, network, sandbox, read-only, or
+other isolation boundary. If exact evidence cannot sustain that separation or
+a stable useful set, Research 218 must promote an empty deliver-now set and the
+lane stops after card 195. Keep g04 open. Contract 029 currentness remains
+standing.

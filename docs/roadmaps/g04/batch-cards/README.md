@@ -2,11 +2,14 @@
 
 ## Planned
 
+- [196-copilot-cli-acp-built-in-tool-allowlist-binding.md](./196-copilot-cli-acp-built-in-tool-allowlist-binding.md) — gated by Research 218 non-empty deliver-now set
+- [197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md](./197-copilot-cli-acp-built-in-tool-allowlist-acceptance.md) — gated by card 196
+
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None.
+- [195-copilot-cli-acp-built-in-tool-allowlist-evidence.md](./195-copilot-cli-acp-built-in-tool-allowlist-evidence.md)
 
 ## Blocked
 

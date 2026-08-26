@@ -85,10 +85,11 @@ and selection policy.
 - [g04.068 Pi RPC 0.84.3 Useful Newer](068-pi-rpc-0-84-3-useful-newer.md) — standing currentness, completed
 - [g04.069 Qwen Headless 0.22.1 Useful Newer](069-qwen-headless-0-22-1-useful-newer.md) — standing currentness, completed
 - [g04.070 Oh My Pi 18 Identity](070-oh-my-pi-18-identity.md) — standing currentness identity stop, completed; card 194
+- [g04.071 Copilot CLI ACP Built-In Tool Allowlist](071-copilot-cli-acp-built-in-tool-allowlist.md) — ready; evidence-first cards 195-197; Research 218 reserved
 
-g04 has 70 numbered roadmaps: 60 completed milestones, ten honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and no ready
-milestone. The operator keeps the generation active. Do not close g04
+g04 has 71 numbered roadmaps: 60 completed milestones, ten honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and one ready
+milestone at 071. The operator keeps the generation active. Do not close g04
 without explicit operator direction.
 
 ## Current Checkpoint
@@ -243,8 +244,11 @@ without explicit operator direction.
   no claim; the 18.x segment stays unset
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 70 roadmaps; reassess the remaining per-route
-  inventory; generation closure awaits explicit operator direction
+- g04.071 is ready as cards 195-197: exact Copilot CLI `1.0.80` built-in tool-
+  allowlist evidence first, with conditional binding only after Research 218
+  admits a non-empty set
+- g04 remains active at 71 roadmaps; generation closure awaits explicit
+  operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -328,7 +332,11 @@ without explicit operator direction.
     and card 194 freeze assigned official `18.0.5`; observed `latest`
     `18.0.6`; no claim. Exact-current `18.0.6` needs a later identity and
     operator segment decision.
-34. g04 remains active at operator direction. Contract 029 remains standing.
+34. g04.071 is compiled as one serial evidence-first Copilot CLI ACP built-in
+    tool-allowlist lane. Card 195 and Research 218 must prove exact `1.0.80`
+    parser, registry, identifier, filtering, permission, and failure truth.
+    Cards 196-197 are conditional on a non-empty deliver-now set.
+35. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -371,6 +379,7 @@ New route-family research does not pre-empt this sequence.
 - [068 Pi RPC 0.84.3 Useful Newer](./068-pi-rpc-0-84-3-useful-newer.md) — completed (standing currentness), cards 190-191
 - [069 Qwen Headless 0.22.1 Useful Newer](./069-qwen-headless-0-22-1-useful-newer.md) — completed (standing currentness), cards 192-193
 - [070 Oh My Pi 18 Identity](./070-oh-my-pi-18-identity.md) — completed (standing currentness identity stop), card 194
+- [071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md) — ready, evidence-first cards 195-197
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

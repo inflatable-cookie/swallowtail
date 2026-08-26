@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory for the next serial lane.
-g04.067 stopped after card 187; Research 214 is an empty deliver-now set;
-cards 188-189 are blocked. Keep g04 open. Contract 029 currentness remains
-standing. Do not merge, roll the generation, or close g04.
+Execute g04.071 card 195, Copilot CLI ACP built-in tool-allowlist evidence.
+Continue to cards 196-197 only if Research 218 admits a non-empty exact set;
+otherwise stop honestly after evidence. Keep g04 open. Contract 029 currentness
+remains standing. Do not merge, roll the generation, or close g04.
 
 ## Standing Lanes
 

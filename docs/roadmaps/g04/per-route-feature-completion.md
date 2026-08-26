@@ -208,13 +208,18 @@ families do not interrupt this programme by default.
   `v1.18.20` registers `websearch`, but visibility and Exa/Parallel MCP
   backends depend on attached-server provider/env facts and a post-create
   session checksum. Cards 188-189 are blocked.
+- [g04.071 Copilot CLI ACP Built-In Tool Allowlist](./071-copilot-cli-acp-built-in-tool-allowlist.md)
+  is ready as cards 195-197. Card 195 and Research 218 must prove exact
+  `1.0.80` parser, registry, built-in identifier, filtering, permission, and
+  failure truth. Only a closed adapter-local allowlist can proceed; an empty
+  deliver-now set is an honest stop.
 
 ## Current Execution Boundary
 
-Keep g04 open. Reassess the remaining per-route feature inventory for the next
-serial lane unless the operator supplies a different direction. Do not compile
-the next family from this evidence stop. Contract 029 currentness remains
-standing.
+Execute g04.071 serially. Start with card 195. Continue to cards 196-197 only
+when Research 218 admits a non-empty exact set; otherwise stop after evidence.
+Do not select or compile the next family from the worker closeout. Keep g04
+open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

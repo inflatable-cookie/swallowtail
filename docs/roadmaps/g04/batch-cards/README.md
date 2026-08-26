@@ -4,12 +4,9 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [208-qwen-headless-plan-mode-binding.md](./208-qwen-headless-plan-mode-binding.md) — planned; conditional on Research 222
-- [209-qwen-headless-plan-mode-acceptance.md](./209-qwen-headless-plan-mode-acceptance.md) — planned; conditional on card 208
-
 ## Ready
 
-- [207-qwen-headless-plan-mode-evidence.md](./207-qwen-headless-plan-mode-evidence.md) — ready
+None.
 
 ## Blocked
 
@@ -32,6 +29,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [209-qwen-headless-plan-mode-acceptance.md](./209-qwen-headless-plan-mode-acceptance.md)
+- [208-qwen-headless-plan-mode-binding.md](./208-qwen-headless-plan-mode-binding.md)
+- [207-qwen-headless-plan-mode-evidence.md](./207-qwen-headless-plan-mode-evidence.md)
 - [204-cline-headless-model-selection-evidence.md](./204-cline-headless-model-selection-evidence.md) — complete; Research 221 empty deliver-now set
 - [203-cline-headless-plan-mode-acceptance.md](./203-cline-headless-plan-mode-acceptance.md)
 - [202-cline-headless-plan-mode-binding.md](./202-cline-headless-plan-mode-binding.md)

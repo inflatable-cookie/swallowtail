@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.075 Qwen Headless Plan Mode cards 207-209 serially. Stop after
-card 207 when Research 222 is empty or any decision gate fires. Keep
-`auto-edit|auto|yolo`, writable authority, currentness, release, and g04
-closure out. Contract 029 currentness remains standing.
+Reassess the remaining per-route feature inventory after g04.075 Qwen
+headless Plan and compile the next serial family. Keep g04 open. Contract
+029 currentness remains standing.
 
 ## Standing Lanes
 

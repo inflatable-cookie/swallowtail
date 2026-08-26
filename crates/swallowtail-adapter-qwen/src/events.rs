@@ -18,6 +18,7 @@ const MAXIMUM_EVENT_COUNT: usize = 4096;
 pub(crate) struct QwenEventParser {
     model: ModelId,
     expected_version: InterfaceVersion,
+    expected_permission_mode: &'static str,
     expected_session_id: Option<String>,
     pending: Vec<u8>,
     sequence: u64,
@@ -40,6 +41,7 @@ impl QwenEventParser {
         Self {
             model,
             expected_version,
+            expected_permission_mode: "default",
             expected_session_id,
             pending: Vec::new(),
             sequence: 1,
@@ -51,6 +53,11 @@ impl QwenEventParser {
             terminal_seen: false,
             activity: QwenActivityProjection::new(operation_id),
         }
+    }
+
+    pub(crate) fn with_permission_mode(mut self, permission_mode: &'static str) -> Self {
+        self.expected_permission_mode = permission_mode;
+        self
     }
 
     pub(crate) fn push(&mut self, bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -123,7 +130,8 @@ impl QwenEventParser {
         if subtype == "session_start" {
             if self.session_id.is_some()
                 || payload.get("model").and_then(Value::as_str) != Some(self.model.as_str())
-                || payload.get("permission_mode").and_then(Value::as_str) != Some("default")
+                || payload.get("permission_mode").and_then(Value::as_str)
+                    != Some(self.expected_permission_mode)
                 || payload.get("qwen_code_version").and_then(Value::as_str)
                     != Some(self.expected_version.as_str())
             {

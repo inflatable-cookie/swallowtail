@@ -5,7 +5,7 @@ use crate::prepared::instance::run_capabilities;
 use crate::{QwenHeadlessDriver, QwenPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
-    HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessMode, ModelRoute,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, ProviderRetentionPolicy,
@@ -75,8 +75,16 @@ impl QwenPreparedIntegration {
         &self,
         input: QwenRunProfileInput,
     ) -> Result<QwenPreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline, reasoning, budgets) =
-            input.into_parts();
+        let (
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline,
+            reasoning,
+            harness_mode,
+            budgets,
+        ) = input.into_parts();
         let activity = activity_profile(self)?;
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         if let Some(reasoning) = reasoning.as_ref() {
@@ -85,6 +93,12 @@ impl QwenPreparedIntegration {
                 &provider_id,
                 &model_id,
                 reasoning,
+            )?;
+        }
+        if let Some(harness_mode) = harness_mode {
+            crate::plan_mode::validate_preparation(
+                self.observation().version().version(),
+                harness_mode,
             )?;
         }
         crate::budgets::validate_preparation(self.observation().version().version(), budgets)?;
@@ -98,6 +112,12 @@ impl QwenPreparedIntegration {
             capability_requirements.push(CapabilityRequirement::new(
                 Capability::ReasoningSelection,
                 [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+            ));
+        }
+        if harness_mode == Some(HarnessMode::Plan) {
+            capability_requirements.push(CapabilityRequirement::new(
+                Capability::HarnessModeSelection,
+                [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
             ));
         }
         let capabilities =
@@ -127,12 +147,20 @@ impl QwenPreparedIntegration {
         if let Some(reasoning) = reasoning.clone() {
             policy = policy.with_reasoning_mode(reasoning);
         }
+        if let Some(HarnessMode::Plan) = harness_mode {
+            policy = policy.with_harness_mode(HarnessMode::Plan);
+        }
         let request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(QwenPreparedRun {
             evidence: QwenPreparedEvidence::from_prepared(
-                self, plan, activity, reasoning, budgets,
+                self,
+                plan,
+                activity,
+                reasoning,
+                harness_mode,
+                budgets,
             )?,
             request,
         })

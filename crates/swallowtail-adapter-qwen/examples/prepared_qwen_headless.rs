@@ -5,6 +5,7 @@ use swallowtail_adapter_qwen::{
     QwenPreparedSession, QwenRunProfileInput, QwenSessionProfileInput, QwenSessionTurnBudget,
     QwenToolCallBudget, prepare_qwen_headless,
 };
+use swallowtail_core::HarnessMode;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, InteractiveSessionHandle, PreparationFailure, RuntimeFailure,
     TerminalOutcome,
@@ -30,6 +31,13 @@ fn prepare_session(
     input: QwenSessionProfileInput,
 ) -> Result<QwenPreparedSession, PreparationFailure> {
     integration.prepare_session(input)
+}
+
+fn prepare_run_with_plan(
+    integration: &QwenPreparedIntegration,
+    input: QwenRunProfileInput,
+) -> Result<QwenPreparedRun, PreparationFailure> {
+    integration.prepare_run(input.with_harness_mode(HarnessMode::Plan))
 }
 
 fn prepare_run_with_budgets(

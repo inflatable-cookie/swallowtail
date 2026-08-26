@@ -15,9 +15,9 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
     CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, ExtensionNamespace, HarnessConfigurationPosture,
-    HarnessIsolation, InstalledExecutableCompatibility, InstanceRevision, InterfaceVersionAxis,
-    ModelId, ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, ProviderId,
-    ReasoningMode, RuntimeReadiness, SupportAuthority,
+    HarnessIsolation, HarnessMode, InstalledExecutableCompatibility, InstanceRevision,
+    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, ProviderId, ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -29,6 +29,7 @@ use swallowtail_runtime::{
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
 include!("prepared_facade/runs.rs");
+include!("prepared_facade/plan.rs");
 include!("prepared_facade/reasoning_dispatch.rs");
 include!("prepared_facade/reasoning_rejections.rs");
 include!("prepared_facade/sessions.rs");

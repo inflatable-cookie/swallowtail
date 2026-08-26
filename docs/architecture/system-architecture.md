@@ -429,7 +429,8 @@ OpenHands adds a package without a production route.
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
-  `0.19.11..=0.20.1` and `0.21.0..=0.21.15` headless behavior segments with
+  `0.19.11..=0.20.1`, `0.21.0..=0.21.15`, and `0.22.0..=0.22.1` headless
+  behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
@@ -443,7 +444,10 @@ OpenHands adds a package without a production route.
   adapter-local caller-decreasing session-turn budgets `1..=24` and tool-call
   budgets `0..=16`; omission keeps `24` / `16`, and each structured-run,
   first-turn, resumed-turn, or fresh-replacement child owns a new process-local
-  counter. Its separate safe-mode stream-JSON
+  counter. Exact `0.21.15`, `0.22.0`, and `0.22.1` also admit optional
+  portable `HarnessMode::Plan` as canonical `--approval-mode plan`; omission
+  keeps `default` and is not implicit Plan. Plan is provider behavior, not
+  isolation. Its separate safe-mode stream-JSON
   control operation verifies and calls `get_available_models`, then closes and
   joins the ephemeral child without opening a model session. The `0.21.0`
   segment records upstream filtering of image-only catalogue entries

@@ -1,5 +1,7 @@
 use crate::budgets::{QwenHeadlessBudgets, QwenSessionTurnBudget, QwenToolCallBudget};
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode};
+use swallowtail_core::{
+    HarnessMode, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode,
+};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, WorkingResourceRef};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -47,6 +49,7 @@ pub struct QwenRunProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Deadline,
     reasoning_mode: Option<ReasoningMode>,
+    harness_mode: Option<HarnessMode>,
     budgets: QwenHeadlessBudgets,
 }
 
@@ -58,6 +61,7 @@ pub struct QwenSessionProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     reasoning_mode: Option<ReasoningMode>,
+    harness_mode: Option<HarnessMode>,
     budgets: QwenHeadlessBudgets,
 }
 
@@ -75,6 +79,7 @@ impl QwenSessionProfileInput {
             working_resource,
             deadline: None,
             reasoning_mode: None,
+            harness_mode: None,
             budgets: QwenHeadlessBudgets::omitted(),
         }
     }
@@ -90,6 +95,16 @@ impl QwenSessionProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    /// Selects portable Plan for every child of this session.
+    ///
+    /// Omission keeps `--approval-mode default`. Only `HarnessMode::Plan` is
+    /// admitted, and only on exact `0.21.15`, `0.22.0`, and `0.22.1`.
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
         self
     }
 
@@ -115,6 +130,7 @@ impl QwenSessionProfileInput {
         WorkingResourceRef,
         Option<Deadline>,
         Option<ReasoningMode>,
+        Option<HarnessMode>,
         QwenHeadlessBudgets,
     ) {
         (
@@ -123,6 +139,7 @@ impl QwenSessionProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.harness_mode,
             self.budgets,
         )
     }
@@ -145,6 +162,7 @@ impl QwenRunProfileInput {
             working_resource,
             deadline,
             reasoning_mode: None,
+            harness_mode: None,
             budgets: QwenHeadlessBudgets::omitted(),
         }
     }
@@ -153,6 +171,16 @@ impl QwenRunProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    /// Selects portable Plan for the structured-run child.
+    ///
+    /// Omission keeps `--approval-mode default`. Only `HarnessMode::Plan` is
+    /// admitted, and only on exact `0.21.15`, `0.22.0`, and `0.22.1`.
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
         self
     }
 
@@ -179,6 +207,7 @@ impl QwenRunProfileInput {
         WorkingResourceRef,
         Deadline,
         Option<ReasoningMode>,
+        Option<HarnessMode>,
         QwenHeadlessBudgets,
     ) {
         (
@@ -188,6 +217,7 @@ impl QwenRunProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.harness_mode,
             self.budgets,
         )
     }

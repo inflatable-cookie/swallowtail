@@ -35,6 +35,10 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add optional portable `HarnessMode::Plan` on `qwen.headless` exact
+  `0.21.15`, `0.22.0`, and `0.22.1` as canonical `--approval-mode plan`;
+  omission keeps `--approval-mode default`; applied `session_start.permission_mode`
+  is observed; `auto-edit|auto|yolo` stay unselected; Research 222, g04.075
 - add typed exact-Codex-Exec model verbosity: `CodexModelVerbosity` admits
   `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
   `0.149.1` for seven frozen slugs

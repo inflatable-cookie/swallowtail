@@ -1,6 +1,6 @@
 # 209 Qwen Headless Plan-Mode Acceptance
 
-Status: planned; conditional on card 208
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.075 Qwen Headless Plan Mode](../075-qwen-headless-plan-mode.md)
@@ -39,17 +39,17 @@ produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted exact row dispatches canonical Plan on every child shape
-- [ ] omission and all unsupported rows retain or reject exact prior behavior
-- [ ] request, plan, evidence, driver, replacement, and argv mismatches fail
+- [x] every admitted exact row dispatches canonical Plan on every child shape
+- [x] omission and all unsupported rows retain or reject exact prior behavior
+- [x] request, plan, evidence, driver, replacement, and argv mismatches fail
       before process work
-- [ ] Plan composes with model/reasoning/budgets without changing their
+- [x] Plan composes with model/reasoning/budgets without changing their
       membership or semantics
-- [ ] no permission, tool, resource, configuration, isolation, sandbox,
+- [x] no permission, tool, resource, configuration, isolation, sandbox,
       shell/process/network, account, retention, or lifecycle claim widens
-- [ ] docs and matrices distinguish requested/dispatched/applied/effective/
+- [x] docs and matrices distinguish requested/dispatched/applied/effective/
       observed truth
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

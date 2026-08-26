@@ -2,6 +2,8 @@
 //!
 //! Installed discovery, model catalogue, one-shot structured runs, and
 //! turn-scoped interactive sessions share one explicit headless CLI route.
+//! Exact `0.21.15`, `0.22.0`, and `0.22.1` admit optional portable
+//! `HarnessMode::Plan` as `--approval-mode plan`.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
@@ -15,6 +17,7 @@ mod discovery;
 mod driver;
 mod events;
 mod handle;
+mod plan_mode;
 mod prepared;
 mod prepared_catalogue;
 mod prepared_profile;

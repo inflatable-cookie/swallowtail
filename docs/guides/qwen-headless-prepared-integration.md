@@ -61,6 +61,25 @@ concurrently. Drain assistant, tool, usage, and terminal events, then close the
 run. Cancellation or deadline stops and joins the child. Terminal status and
 cleanup remain separate.
 
+### Exact Plan Selection
+
+Plan is qualified only at packages `0.21.15`, `0.22.0`, and `0.22.1`.
+`with_harness_mode(HarnessMode::Plan)` selects portable Plan. Omission keeps
+`--approval-mode default` and is not implicit Plan. Other Qwen approval values
+stay unselected.
+
+The prepared plan, request policy, evidence, and every child argv must retain
+the same selection. Selected Plan replaces only the approval value with
+canonical `plan`. `--safe-mode`, exclude-tools, read-only working resource,
+`AmbientHost`, model, reasoning, and budgets stay independent. Plan is
+provider behavior, not filesystem, network, sandbox, shell, process, or
+descendant containment.
+
+Applied mode is observed on the selected stream-json wire as
+`session_start.permission_mode`. Requested and planned values are
+Swallowtail-owned. Exact evidence is in
+[Research 222](../research/222-qwen-headless-plan-mode-evidence.md).
+
 ### Exact Reasoning Selection
 
 Reasoning selection is qualified only at package `0.21.15`, provider

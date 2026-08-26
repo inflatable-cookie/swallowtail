@@ -154,9 +154,9 @@ impl QwenHeadlessDriver {
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
             .with_arguments(if request.policy().reasoning_mode().is_some() {
-                reasoning_arguments(&model, self.budgets)
+                reasoning_arguments(&model, self.budgets, request.policy().harness_mode())
             } else {
-                arguments(&model, self.budgets)
+                arguments(&model, self.budgets, request.policy().harness_mode())
             })
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);
@@ -201,6 +201,7 @@ impl QwenHeadlessDriver {
                 let process = Arc::clone(&process);
                 let operation_id = ActivityOperationId::Run(run_id.clone());
                 let services = services.clone();
+                let harness_mode = request.policy().harness_mode();
                 async move {
                     let outcome = pump(
                         process,
@@ -212,6 +213,7 @@ impl QwenHeadlessDriver {
                         operation_id,
                         buffered_values,
                         services,
+                        harness_mode,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

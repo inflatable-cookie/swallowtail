@@ -89,11 +89,11 @@ and selection policy.
 - [g04.072 Grok Build ACP Subagents Disabled](072-grok-build-acp-subagents-disabled.md) — stopped after card 198; Research 219 empty deliver-now set; cards 199-200 blocked
 - [g04.073 Cline Headless Plan Mode](073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
 - [g04.074 Cline Headless Model Selection](074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
-- [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — ready, cards 207-209; Research 222 reserved
+- [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`
 
-g04 has 75 numbered roadmaps: 61 completed milestones, thirteen honest
+g04 has 75 numbered roadmaps: 62 completed milestones and thirteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-and 074, plus one ready milestone at 075. The operator keeps the generation active.
+and 074. The operator keeps the generation active.
 Do not close g04 without explicit operator direction.
 
 ## Current Checkpoint

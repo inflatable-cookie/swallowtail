@@ -1,6 +1,6 @@
 # 208 Qwen Headless Plan-Mode Binding
 
-Status: planned; conditional on Research 222
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.075 Qwen Headless Plan Mode](../075-qwen-headless-plan-mode.md)
@@ -39,15 +39,15 @@ validation, and canonical child argv.
 
 ## Acceptance Criteria
 
-- [ ] only Research 222 deliver-now rows prepare
-- [ ] input, capability, plan/evidence, driver, and every exact child argv
+- [x] only Research 222 deliver-now rows prepare
+- [x] input, capability, plan/evidence, driver, and every exact child argv
       agree
-- [ ] omission retains exact prior argv and provider-default behavior
-- [ ] unsupported, mismatched, drifting, or behaviorally weaker rows reject
+- [x] omission retains exact prior argv and provider-default behavior
+- [x] unsupported, mismatched, drifting, or behaviorally weaker rows reject
       before process work
-- [ ] no runtime mode mutation, provider-mode vocabulary, writable profile,
+- [x] no runtime mode mutation, provider-mode vocabulary, writable profile,
       or sibling-route behavior appears
-- [ ] permission, tools, isolation, configuration, resources, account access,
+- [x] permission, tools, isolation, configuration, resources, account access,
       model, reasoning, budgets, retention, lifecycle, and cleanup claims do
       not widen
 

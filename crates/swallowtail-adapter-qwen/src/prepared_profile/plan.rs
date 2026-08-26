@@ -16,6 +16,7 @@ pub struct QwenPreparedEvidence {
     environment: swallowtail_runtime::EnvironmentRef,
     operation: PreparedOperationEvidence,
     reasoning_mode: Option<swallowtail_core::ReasoningMode>,
+    harness_mode: Option<swallowtail_core::HarnessMode>,
     budgets: QwenHeadlessBudgets,
 }
 
@@ -25,12 +26,14 @@ impl QwenPreparedEvidence {
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
         reasoning_mode: Option<swallowtail_core::ReasoningMode>,
+        harness_mode: Option<swallowtail_core::HarnessMode>,
         budgets: QwenHeadlessBudgets,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
             reasoning_mode,
+            harness_mode,
             budgets,
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
@@ -74,6 +77,12 @@ impl QwenPreparedEvidence {
     #[must_use]
     pub const fn reasoning_mode(&self) -> Option<&swallowtail_core::ReasoningMode> {
         self.reasoning_mode.as_ref()
+    }
+
+    /// Returns the portable harness mode selected during preparation.
+    #[must_use]
+    pub const fn harness_mode(&self) -> Option<swallowtail_core::HarnessMode> {
+        self.harness_mode
     }
 
     /// Returns the admitted per-child turn and tool budgets.

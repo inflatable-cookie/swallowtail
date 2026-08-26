@@ -1,6 +1,6 @@
 # 207 Qwen Headless Plan-Mode Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.075 Qwen Headless Plan Mode](../075-qwen-headless-plan-mode.md)
@@ -55,19 +55,19 @@ provider work.
 
 ## Acceptance Criteria
 
-- [ ] exact artifact/source identities and decisive digests are frozen
-- [ ] parser, precedence, omission, invalid/repeated, and failure truth is
+- [x] exact artifact/source identities and decisive digests are frozen
+- [x] parser, precedence, omission, invalid/repeated, and failure truth is
       settled
-- [ ] Plan semantics, safe-mode/tool composition, mode-change seams, output,
+- [x] Plan semantics, safe-mode/tool composition, mode-change seams, output,
       persistence, and every child lifecycle have exact dispositions
-- [ ] behavioral Plan equivalence is separated from permission, resource,
+- [x] behavioral Plan equivalence is separated from permission, resource,
       isolation, sandbox, shell/process/network, and account authority
-- [ ] requested, planned, dispatched, accepted, applied/effective, and observed
+- [x] requested, planned, dispatched, accepted, applied/effective, and observed
       states are not conflated
-- [ ] production preparation, plan/evidence, driver, argv, fixtures, docs, and
+- [x] production preparation, plan/evidence, driver, argv, fixtures, docs, and
       API seams are audited
-- [ ] Research 222 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 222 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
 
 ## Validation

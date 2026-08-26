@@ -4,7 +4,7 @@ mod buffered;
 mod stream;
 use serde_json::Value;
 use std::sync::Arc;
-use swallowtail_core::{InterfaceVersion, ModelId, SafeDiagnostic};
+use swallowtail_core::{HarnessMode, InterfaceVersion, ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
     HostServices, ProcessHandle, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
@@ -26,6 +26,7 @@ pub(crate) async fn pump(
     operation_id: ActivityOperationId,
     buffered_values: Vec<serde_json::Value>,
     services: HostServices,
+    harness_mode: Option<HarnessMode>,
 ) -> TerminalOutcome {
     pump_with_session(
         process,
@@ -33,7 +34,8 @@ pub(crate) async fn pump(
         cancellation,
         deadline,
         QwenPumpContext::new(model, expected_version, None, operation_id)
-            .with_buffered_values(buffered_values),
+            .with_buffered_values(buffered_values)
+            .with_permission_mode(crate::plan_mode::approval_arg(harness_mode)),
         services,
     )
     .await
@@ -51,6 +53,7 @@ pub(crate) struct QwenPumpContext {
     expected_session_id: Option<String>,
     operation_id: ActivityOperationId,
     buffered_values: Vec<Value>,
+    permission_mode: &'static str,
 }
 
 impl QwenPumpContext {
@@ -66,11 +69,17 @@ impl QwenPumpContext {
             expected_session_id,
             operation_id,
             buffered_values: Vec::new(),
+            permission_mode: "default",
         }
     }
 
     pub(crate) fn with_buffered_values(mut self, buffered_values: Vec<Value>) -> Self {
         self.buffered_values = buffered_values;
+        self
+    }
+
+    pub(crate) fn with_permission_mode(mut self, permission_mode: &'static str) -> Self {
+        self.permission_mode = permission_mode;
         self
     }
 }
@@ -88,7 +97,8 @@ pub(crate) async fn pump_with_session(
         context.expected_version,
         context.expected_session_id,
         context.operation_id,
-    );
+    )
+    .with_permission_mode(context.permission_mode);
     if let Err(failure) =
         buffered::push_buffered_values(&mut parser, &events, context.buffered_values)
     {

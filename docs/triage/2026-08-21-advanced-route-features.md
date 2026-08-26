@@ -656,15 +656,17 @@ Official
 `--max-tool-calls`, `model.reasoningEffort` / `/effort`
 `low|medium|high|xhigh|max`.
 
-Swallowtail: `--safe-mode --approval-mode default`, fixed wall/tool/turn caps,
-and exact `0.21.15` reasoning selection for `qwen3.8-max` and
-`qwen3.8-max-preview`. Matrix: reasoning Yes, output limit No, search No.
+Swallowtail: `--safe-mode --approval-mode default` with optional portable
+`HarnessMode::Plan` as `--approval-mode plan` on exact `0.21.15`, `0.22.0`,
+and `0.22.1`; fixed wall/tool/turn caps; and exact `0.21.15` reasoning
+selection for `qwen3.8-max` and `qwen3.8-max-preview`. Matrix: reasoning Yes,
+output limit No, search No.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
 | Effort | `/effort` / `model.reasoningEffort` | exact private stream-JSON control on `0.21.15` | delivered for two exact models | yes | no retroactive claim before `0.21.15` |
-| Approval | `--approval-mode` / `--yolo` | fixed `default` | other modes unused | only-if: never yolo by default | — |
-| Turn/tool caps | official flags | fixed constants | consumer override unused | yes | — |
+| Approval | `--approval-mode` / `--yolo` | optional `HarnessMode::Plan` as `--approval-mode plan` on exact `0.21.15`, `0.22.0`, `0.22.1`; omission keeps `default` | `auto-edit\|auto\|yolo` withheld | no | Plan is provider behavior; yolo stays out |
+| Turn/tool caps | official flags | adapter-local caller-decreasing budgets on `0.21.15` | other package points unused | yes | no retroactive claim before `0.21.15` |
 
 ### `kimi-code.local-server`
 
@@ -948,7 +950,7 @@ Unconfirmed flags are omitted.
 54. `mistral-vibe.headless` / `--agent` beyond `plan`
 55. `mistral-vibe.headless` / consumer `--max-turns`
 56. `qwen.headless` / `model.reasoningEffort`
-57. `qwen.headless` / `--approval-mode` beyond `default`
+57. `qwen.headless` / `--approval-mode` beyond `default` — Plan delivered on exact `0.21.15`, `0.22.0`, `0.22.1`; `auto-edit|auto|yolo` remain withheld
 58. `qwen.headless` / consumer turn/tool caps
 59. `antigravity.headless` / `--agent`
 60. `opencode.http` / `websearch` permission
@@ -2189,3 +2191,19 @@ authority, generic tool policy, provider sandbox claims, sibling routes,
 currentness, release, generation rollover, and g04 closure remain out. If no
 exact point proves the full behavior without provider work, Research 222 must
 promote an empty set and the lane stops after card 207.
+
+## Post-g04.075 Closeout (2026-08-26)
+
+Disposition: `qwen.headless` Plan is delivered on exact `0.21.15`, `0.22.0`,
+and `0.22.1`. Reassess the remaining inventory before compiling another
+serial family.
+
+Research 222 proved `--approval-mode plan` is a complete fixed-argument Plan
+posture: CLI wins settings and safe-mode defaults, `isPlanModeBlocked`
+enforces it, text-input children omit `exit_plan_mode`, and stream-json
+children cannot complete plan-exit without a host operation this route does
+not send. Cards 207-209 bound portable `HarnessMode::Plan`. Omission keeps
+`--approval-mode default`. Applied `session_start.permission_mode` is
+observed. `auto-edit|auto|yolo` stay withheld.
+
+Keep g04 open. Contract 029 currentness remains standing.

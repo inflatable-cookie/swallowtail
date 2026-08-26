@@ -8,7 +8,7 @@ use crate::{DRIVER_ID, QwenHeadlessDriver};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, HarnessConfigurationPosture,
-    HarnessIsolation, InstanceOwnership, PreflightPlan, ReasoningMode, ResourceAccess,
+    HarnessIsolation, HarnessMode, InstanceOwnership, PreflightPlan, ReasoningMode, ResourceAccess,
     SessionProviderStatePolicy, SessionRef,
 };
 use swallowtail_runtime::{
@@ -37,6 +37,7 @@ pub(super) struct QwenSessionHandle {
     pub(super) environment: swallowtail_runtime::EnvironmentRef,
     pub(super) target: swallowtail_core::InstanceTargetRef,
     pub(super) reasoning: Option<ReasoningMode>,
+    pub(super) harness_mode: Option<HarnessMode>,
     pub(super) budgets: QwenHeadlessBudgets,
 }
 
@@ -87,6 +88,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
                 environment: self.environment().clone(),
                 target: plan.instance_target_ref().clone(),
                 reasoning: request.options().reasoning_mode().cloned(),
+                harness_mode: request.options().harness_mode(),
                 budgets: self.budgets(),
             }) as Box<dyn InteractiveSessionHandle>)
         })
@@ -232,6 +234,7 @@ fn validate_open(
         plan,
         request.options().reasoning_mode(),
     )?;
+    crate::plan_mode::validate_runtime_binding(plan, request.options().harness_mode())?;
     if request.working_resource().is_none()
         || request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         || request.provider_state_policy()
@@ -239,7 +242,6 @@ fn validate_open(
         || request.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient)
         || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
         || request.options().developer_instructions().is_some()
-        || request.options().harness_mode().is_some()
         || request.options().tools().next().is_some()
         || request.options().idioms().is_some()
     {

@@ -1,6 +1,6 @@
 # g04.075 Qwen Headless Plan Mode
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -37,19 +37,19 @@ lifecycle.
 
 ## Goals
 
-- [ ] freeze exact `0.21.15`, `0.22.0`, and `0.22.1` parser, precedence,
+- [x] freeze exact `0.21.15`, `0.22.0`, and `0.22.1` parser, precedence,
       mode application, tool policy, control exchange, continuation, output,
       terminal, persistence, and lifecycle truth
-- [ ] distinguish requested, planned, argv-dispatched, parser-accepted,
+- [x] distinguish requested, planned, argv-dispatched, parser-accepted,
       applied, effective, and observed approval mode
-- [ ] determine whether any exact point admits portable `HarnessMode::Plan`
+- [x] determine whether any exact point admits portable `HarnessMode::Plan`
       without provider prompting or ambient configuration mutation
-- [ ] promote Research 222 with an exact deliver-now table or honest empty set
-- [ ] conditionally bind only admitted Plan rows through prepared input,
+- [x] promote Research 222 with an exact deliver-now table or honest empty set
+- [x] conditionally bind only admitted Plan rows through prepared input,
       immutable plan/evidence, driver, and canonical child argv
-- [ ] prove omission preserves exact `--approval-mode default` across runs,
+- [x] prove omission preserves exact `--approval-mode default` across runs,
       turns, resume, and fresh replacement
-- [ ] preserve `--safe-mode`, exact tool filters, model/reasoning/budgets,
+- [x] preserve `--safe-mode`, exact tool filters, model/reasoning/budgets,
       read-only working-resource policy, `AmbientHost`, cancellation, and
       joined cleanup
 
@@ -105,39 +105,39 @@ reasoning, budget, session, terminal, cancellation, or cleanup paths.
 
 ### Batch 75.1 — Exact Qwen Plan Evidence
 
-- [ ] Execute card 207.
-- [ ] freeze exact parser, precedence, Plan semantics, safe-mode/tool
+- [x] Execute card 207.
+- [x] freeze exact parser, precedence, Plan semantics, safe-mode/tool
       composition, child/replacement lifecycle, output, and persistence truth
-- [ ] promote Research 222 with a non-empty exact table or honest empty set
+- [x] promote Research 222 with a non-empty exact table or honest empty set
 
 ### Batch 75.2 — Conditional Portable Binding
 
-- [ ] Execute card 208 only when Research 222 admits a non-empty set.
-- [ ] bind only admitted exact `HarnessMode::Plan` rows through preparation,
+- [x] Execute card 208 only when Research 222 admits a non-empty set.
+- [x] bind only admitted exact `HarnessMode::Plan` rows through preparation,
       immutable plan/evidence, validation, and canonical argv
 
 ### Batch 75.3 — Route-Local Acceptance
 
-- [ ] Execute card 209 only after card 208.
-- [ ] prove dispatch, omission, rejection, reasoning/budget composition,
+- [x] Execute card 209 only after card 208.
+- [x] prove dispatch, omission, rejection, reasoning/budget composition,
       child/replacement consistency, docs, API, and lifecycle truth
 
 ## Acceptance Criteria
 
-- [ ] only Research 222 deliver-now rows prepare
-- [ ] request, immutable plan, prepared evidence, driver, and every child argv
+- [x] only Research 222 deliver-now rows prepare
+- [x] request, immutable plan, prepared evidence, driver, and every child argv
       agree on the selected mode
-- [ ] exact source proves selected Plan behavior is equivalent to portable
+- [x] exact source proves selected Plan behavior is equivalent to portable
       `HarnessMode::Plan`
-- [ ] omission preserves exact `default` argv and behavior
-- [ ] unsupported, mismatched, drifting, overrideable, or behaviorally weaker
+- [x] omission preserves exact `default` argv and behavior
+- [x] unsupported, mismatched, drifting, overrideable, or behaviorally weaker
       rows reject before process work when knowable
-- [ ] current model, reasoning, budgets, safe mode, tool filters, session
+- [x] current model, reasoning, budgets, safe mode, tool filters, session
       continuity, activity, terminal, cancellation, deadline, retention, and
       joined cleanup remain exact
-- [ ] no permission, configuration, filesystem/network, sandbox, shell,
+- [x] no permission, configuration, filesystem/network, sandbox, shell,
       process, descendant, account, or billing claim widens
-- [ ] default QA performs no install, login, account inspection, provider
+- [x] default QA performs no install, login, account inspection, provider
       prompt, tool execution, or paid request
 
 ## Lane Runway

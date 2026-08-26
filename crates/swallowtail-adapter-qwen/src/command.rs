@@ -1,7 +1,12 @@
 use crate::budgets::QwenHeadlessBudgets;
-use swallowtail_core::ModelId;
+use crate::plan_mode;
+use swallowtail_core::{HarnessMode, ModelId};
 
-pub(crate) fn arguments(model: &ModelId, budgets: QwenHeadlessBudgets) -> Vec<String> {
+pub(crate) fn arguments(
+    model: &ModelId,
+    budgets: QwenHeadlessBudgets,
+    harness_mode: Option<HarnessMode>,
+) -> Vec<String> {
     insert_budget_values(
         [
             "--input-format",
@@ -11,7 +16,7 @@ pub(crate) fn arguments(model: &ModelId, budgets: QwenHeadlessBudgets) -> Vec<St
             "--include-partial-messages",
             "--safe-mode",
             "--approval-mode",
-            "default",
+            plan_mode::approval_arg(harness_mode),
             "--model",
             model.as_str(),
             "--core-tools",
@@ -48,14 +53,19 @@ pub(crate) fn resumed_arguments(
     model: &ModelId,
     session_id: &str,
     budgets: QwenHeadlessBudgets,
+    harness_mode: Option<HarnessMode>,
 ) -> Vec<String> {
-    let mut arguments = arguments(model, budgets);
+    let mut arguments = arguments(model, budgets, harness_mode);
     arguments.extend(["--resume".to_owned(), session_id.to_owned()]);
     arguments
 }
 
-pub(crate) fn reasoning_arguments(model: &ModelId, budgets: QwenHeadlessBudgets) -> Vec<String> {
-    let mut arguments = arguments(model, budgets);
+pub(crate) fn reasoning_arguments(
+    model: &ModelId,
+    budgets: QwenHeadlessBudgets,
+    harness_mode: Option<HarnessMode>,
+) -> Vec<String> {
+    let mut arguments = arguments(model, budgets, harness_mode);
     replace_input_format(&mut arguments);
     arguments
 }
@@ -64,8 +74,9 @@ pub(crate) fn resumed_reasoning_arguments(
     model: &ModelId,
     session_id: &str,
     budgets: QwenHeadlessBudgets,
+    harness_mode: Option<HarnessMode>,
 ) -> Vec<String> {
-    let mut arguments = reasoning_arguments(model, budgets);
+    let mut arguments = reasoning_arguments(model, budgets, harness_mode);
     arguments.extend(["--resume".to_owned(), session_id.to_owned()]);
     arguments
 }
@@ -76,5 +87,65 @@ fn replace_input_format(arguments: &mut [String]) {
         .find(|argument| argument.as_str() == "text")
     {
         *input_format = "stream-json".to_owned();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{arguments, resumed_arguments};
+    use crate::budgets::QwenHeadlessBudgets;
+    use swallowtail_core::{HarnessMode, ModelId};
+
+    fn model() -> ModelId {
+        ModelId::new("qwen3-coder-plus").expect("valid model")
+    }
+
+    #[test]
+    fn omission_keeps_explicit_default_approval_mode() {
+        let args = arguments(&model(), QwenHeadlessBudgets::omitted(), None);
+        assert_eq!(
+            args.windows(2)
+                .find(|pair| pair[0] == "--approval-mode")
+                .map(|pair| pair[1].as_str()),
+            Some("default")
+        );
+        assert!(args.iter().any(|argument| argument == "--safe-mode"));
+        assert!(!args.iter().any(|argument| argument == "plan"));
+    }
+
+    #[test]
+    fn plan_replaces_only_the_approval_value() {
+        let args = arguments(
+            &model(),
+            QwenHeadlessBudgets::omitted(),
+            Some(HarnessMode::Plan),
+        );
+        assert_eq!(
+            args.windows(2)
+                .find(|pair| pair[0] == "--approval-mode")
+                .map(|pair| pair[1].as_str()),
+            Some("plan")
+        );
+        assert!(args.iter().any(|argument| argument == "--safe-mode"));
+        let resumed = resumed_arguments(
+            &model(),
+            "session-fixture-1",
+            QwenHeadlessBudgets::omitted(),
+            Some(HarnessMode::Plan),
+        );
+        assert_eq!(
+            resumed
+                .windows(2)
+                .find(|pair| pair[0] == "--approval-mode")
+                .map(|pair| pair[1].as_str()),
+            Some("plan")
+        );
+        assert_eq!(
+            resumed
+                .windows(2)
+                .find(|pair| pair[0] == "--resume")
+                .map(|pair| pair[1].as_str()),
+            Some("session-fixture-1")
+        );
     }
 }

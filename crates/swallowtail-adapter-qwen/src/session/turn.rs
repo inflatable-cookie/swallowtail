@@ -70,14 +70,22 @@ impl QwenSessionHandle {
             ProcessRequest::new(ExecutableRef::from_instance_target(&self.target))
                 .with_arguments(
                     match (self.reasoning.is_some(), expected_session.as_deref()) {
-                        (true, Some(session_id)) => {
-                            resumed_reasoning_arguments(&self.model, session_id, self.budgets)
+                        (true, Some(session_id)) => resumed_reasoning_arguments(
+                            &self.model,
+                            session_id,
+                            self.budgets,
+                            self.harness_mode,
+                        ),
+                        (true, None) => {
+                            reasoning_arguments(&self.model, self.budgets, self.harness_mode)
                         }
-                        (true, None) => reasoning_arguments(&self.model, self.budgets),
-                        (false, Some(session_id)) => {
-                            resumed_arguments(&self.model, session_id, self.budgets)
-                        }
-                        (false, None) => arguments(&self.model, self.budgets),
+                        (false, Some(session_id)) => resumed_arguments(
+                            &self.model,
+                            session_id,
+                            self.budgets,
+                            self.harness_mode,
+                        ),
+                        (false, None) => arguments(&self.model, self.budgets, self.harness_mode),
                     },
                 )
                 .with_environment([self.environment.clone()])
@@ -139,6 +147,7 @@ impl QwenSessionHandle {
         let task_expected = expected_session.clone();
         let task_turn_id = request.turn_id().clone();
         let task_services = self.services.clone();
+        let task_harness_mode = self.harness_mode;
         let task = self.services.task().expect("validated Qwen task").spawn(
             scope,
             Box::pin(async move {
@@ -153,7 +162,8 @@ impl QwenSessionHandle {
                         task_expected,
                         ActivityOperationId::Turn(task_turn_id),
                     )
-                    .with_buffered_values(buffered_values),
+                    .with_buffered_values(buffered_values)
+                    .with_permission_mode(crate::plan_mode::approval_arg(task_harness_mode)),
                     task_services,
                 )
                 .await;

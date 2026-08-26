@@ -30,7 +30,7 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 67 roadmaps: 57 completed milestones, nine honest evidence stops
+g04 now has 68 roadmaps: 58 completed milestones, nine honest evidence stops
 at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready milestone
 at 067.
 It has realized route
@@ -55,6 +55,9 @@ verbosity for seven frozen slugs; cards 184-186 bind adapter-local
 g04.067 is ready as one serial OpenCode HTTP web-search evidence-first lane:
 Research 214 and card 187 must settle exact tool/backend availability,
 permission, shared policy, and profile truth before conditional cards 188-189.
+g04.068 standing currentness is complete: Research 215 and cards 190-191
+qualify Pi RPC through official `0.84.3` without moving the generation
+pointer.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

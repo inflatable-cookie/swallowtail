@@ -23,6 +23,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [191-pi-rpc-0-84-3-claim.md](./191-pi-rpc-0-84-3-claim.md)
+- [190-pi-rpc-0-84-3-identity.md](./190-pi-rpc-0-84-3-identity.md)
 - [186-codex-exec-model-verbosity-acceptance.md](./186-codex-exec-model-verbosity-acceptance.md)
 - [185-codex-exec-model-verbosity-binding.md](./185-codex-exec-model-verbosity-binding.md)
 - [184-codex-exec-model-verbosity-evidence.md](./184-codex-exec-model-verbosity-evidence.md)

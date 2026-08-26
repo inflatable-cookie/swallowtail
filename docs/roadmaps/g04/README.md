@@ -82,8 +82,9 @@ and selection policy.
 - [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
 - [g04.066 Codex Exec Model Verbosity](066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186; Research 213 deliver-now on exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1`; seven slugs × `low|medium|high`
 - [g04.067 OpenCode HTTP Web Search](067-opencode-http-web-search.md) — ready, cards 187-189; Research 214 evidence-first
+- [g04.068 Pi RPC 0.84.3 Useful Newer](068-pi-rpc-0-84-3-useful-newer.md) — standing currentness, completed
 
-g04 has 67 numbered roadmaps: 57 completed milestones, nine honest evidence
+g04 has 68 numbered roadmaps: 58 completed milestones, nine honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready
 milestone at 067. The operator keeps the generation active. Do not close g04
 without explicit operator direction.
@@ -229,9 +230,12 @@ without explicit operator direction.
 - g04.067 is ready: Research 214 and card 187 gate exact OpenCode HTTP
   `websearch` tool/backend availability, session permission, shared policy, and
   profile truth before conditional cards 188-189
+- g04.068 standing currentness is complete: Research 215 and cards 190-191
+  qualify Pi RPC through official `0.84.3` without moving the generation
+  pointer
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 67 roadmaps; execute cards 187-189 serially;
+- g04 remains active at 68 roadmaps; execute cards 187-189 serially;
   generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -307,7 +311,10 @@ without explicit operator direction.
 30. g04.067 is ready as one serial evidence-first lane. Card 187 must settle
     exact OpenCode `websearch` availability, permissions, policy, and profile
     rows before conditional cards 188-189.
-31. g04 remains active at operator direction. Contract 029 remains standing.
+31. g04.068 standing currentness is complete. Research 215 and cards 190-191
+    qualify Pi RPC through official `0.84.3` without moving the generation
+    pointer.
+32. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -347,6 +354,7 @@ New route-family research does not pre-empt this sequence.
 - [065 Claude Code Headless Ultracode](./065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
 - [066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186
 - [067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md) — ready, cards 187-189
+- [068 Pi RPC 0.84.3 Useful Newer](./068-pi-rpc-0-84-3-useful-newer.md) — completed (standing currentness), cards 190-191
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

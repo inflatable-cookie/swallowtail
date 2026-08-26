@@ -37,7 +37,7 @@ In docs:
 - Write identity and claim logs
 - Index family research and logs
 - Do not rewrite `docs/roadmaps/README.md` Next Task
-- Do not edit g04 generation status
+- Update the g04 milestone/checkpoint and batch-card indexes
 
 ## Validation
 

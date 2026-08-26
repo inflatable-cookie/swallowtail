@@ -31,7 +31,8 @@ Claim:
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
 
-Do not edit `docs/roadmaps/README.md` or g04 generation status.
+Do not edit `docs/roadmaps/README.md` Next Task. Update the g04 and
+batch-card indexes for this completed standing-currentness work.
 
 ## Out Of Scope
 

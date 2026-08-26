@@ -6,13 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- none
-
-## Complete Pending PR
-
-- [184-codex-exec-model-verbosity-evidence.md](./184-codex-exec-model-verbosity-evidence.md)
-- [185-codex-exec-model-verbosity-binding.md](./185-codex-exec-model-verbosity-binding.md)
-- [186-codex-exec-model-verbosity-acceptance.md](./186-codex-exec-model-verbosity-acceptance.md)
+- [187-opencode-http-web-search-evidence.md](./187-opencode-http-web-search-evidence.md)
+- [188-opencode-http-web-search-binding.md](./188-opencode-http-web-search-binding.md) — conditional on Research 214
+- [189-opencode-http-web-search-acceptance.md](./189-opencode-http-web-search-acceptance.md) — conditional on card 188
 
 ## Blocked
 
@@ -27,6 +23,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [186-codex-exec-model-verbosity-acceptance.md](./186-codex-exec-model-verbosity-acceptance.md)
+- [185-codex-exec-model-verbosity-binding.md](./185-codex-exec-model-verbosity-binding.md)
+- [184-codex-exec-model-verbosity-evidence.md](./184-codex-exec-model-verbosity-evidence.md)
 - [181-claude-code-headless-ultracode-evidence.md](./181-claude-code-headless-ultracode-evidence.md) — evidence stop; Research 212 empty deliver-now set
 - [180-kimi-code-0-38-0-headless-v2-claim.md](./180-kimi-code-0-38-0-headless-v2-claim.md)
 - [179-kimi-code-0-38-0-headless-v2-identity.md](./179-kimi-code-0-38-0-headless-v2-identity.md)

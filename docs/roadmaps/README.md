@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory after g04.066 Codex Exec
-model verbosity. Contract 029 currentness remains standing. Do not merge, roll
-the generation, or close g04.
+Execute g04.067 OpenCode HTTP Web Search cards 187-189 serially. Stop after
+card 187 when Research 214 admits an empty set or a decision gate fires.
+Contract 029 currentness remains standing. Do not merge, roll the generation,
+or close g04.
 
 ## Standing Lanes
 

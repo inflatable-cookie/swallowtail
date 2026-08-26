@@ -1885,3 +1885,34 @@ Responses exec rows for seven frozen slugs through adapter-local
 `CodexModelVerbosity`. No generic settings map, app-server promotion, provider
 prompt, currentness movement, generation rollover, or g04 closure is
 authorized. Live-catalog acceptance remains withheld.
+
+## Post-g04.066 Reassessment And g04.067 Compilation (2026-08-26)
+
+Disposition: select OpenCode HTTP `websearch` and compile g04.067 as one serial
+evidence-first lane.
+
+The remaining inventory was re-ranked after Codex Exec verbosity landed.
+Codex app-server personality is product-policy/prompt surface; service-tier
+Fast is account/billing surface; multi-agent is topology; app-server v2 at the
+exact qualified ceiling does not expose a first-class thread/turn verbosity
+control. Other model/effort candidates still lack selected-value or effective
+confirmation and remain weaker than a route-local tool already present in an
+exact qualified transport.
+
+OpenCode `v1.18.20` registers a native `websearch` tool, asks a dedicated
+`websearch` permission against the query, and accepts ordered permission rules
+on session creation. Swallowtail already owns the exact session-create body,
+deny-first rules, one-shot permission callbacks, structured and interactive
+prompt paths, and shared external-search/network policy vocabulary.
+
+That is a credible evidence path, not a delivery decision. Exact source also
+makes tool availability depend on provider/backend and environment facts, and
+the hosted search call may use OpenCode, Exa, or Parallel arrangements. Card
+187 and Research 214 must prove an exact host-bindable availability,
+permission, policy, and profile row without live provider work or ambient
+configuration inference. Otherwise the milestone stops honestly with an empty
+set and cards 188-189 remain blocked.
+
+Web fetch, generic tool/permission selection, task subagents, attached-server
+configuration, provider/model expansion, currentness movement, generation
+rollover, and g04 closure stay outside this lane.

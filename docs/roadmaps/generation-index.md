@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-25
+Updated: 2026-08-26
 
 ## Generations
 
@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 66 roadmaps: 56 completed milestones, nine honest evidence stops
+g04 now has 67 roadmaps: 57 completed milestones, nine honest evidence stops
 at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready milestone
-at 066.
+at 067.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -52,6 +52,9 @@ g04.066 is complete and merged through PR 65 at `46070dfd`: Research 213 admits
 exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` openai Responses exec
 verbosity for seven frozen slugs; cards 184-186 bind adapter-local
 `CodexModelVerbosity`. Live-catalog acceptance remains withheld.
+g04.067 is ready as one serial OpenCode HTTP web-search evidence-first lane:
+Research 214 and card 187 must settle exact tool/backend availability,
+permission, shared policy, and profile truth before conditional cards 188-189.
 
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See

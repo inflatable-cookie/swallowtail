@@ -35,9 +35,9 @@ permission broadening, or an isolation claim.
 - [x] freeze current official documentation and exact `1.0.80` package/source
       evidence for parser syntax, delimiter rules, built-in tool identifiers,
       registry composition, precedence, defaults, and failures
-- [x] identify a useful closed built-in allowlist whose membership and effect
-      do not depend on model, account, extension, MCP, ambient configuration,
-      or live-provider inference
+- [x] determine whether a useful closed built-in allowlist exists whose
+      membership and effect do not depend on model, account, extension, MCP,
+      ambient configuration, or live-provider inference
 - [x] distinguish requested restriction, startup dispatch, parser acceptance,
       registry filtering, permission request, tool invocation, and effect
 - [x] promote Research 218 with an exact deliver-now table or honest empty set

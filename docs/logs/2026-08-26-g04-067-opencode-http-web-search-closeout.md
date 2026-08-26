@@ -8,7 +8,7 @@ Branch: `t3code/review-opencode-web-search-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-cfab66d3`
 Base: `9f003d9aa17b09ad188080fa2b37203aee00dda5` (`origin/main` at dispatch)
 Planning base ancestor: `6409af0c472595a2dcd02a25fff2ddb933da562c`
-PR: pending
+PR: [#67](https://github.com/inflatable-cookie/swallowtail/pull/67)
 
 ## Result
 

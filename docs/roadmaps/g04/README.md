@@ -90,11 +90,11 @@ and selection policy.
 - [g04.073 Cline Headless Plan Mode](073-cline-headless-plan-mode.md) — complete, cards 201-203; Research 220 deliver-now `HarnessMode::Plan` on exact `3.0.55`
 - [g04.074 Cline Headless Model Selection](074-cline-headless-model-selection.md) — stopped after card 204; Research 221 empty deliver-now set; cards 205-206 blocked
 - [g04.075 Qwen Headless Plan Mode](075-qwen-headless-plan-mode.md) — complete, cards 207-209; Research 222 deliver-now `HarnessMode::Plan` on exact `0.21.15`, `0.22.0`, and `0.22.1`
-- [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — ready, cards 210-212; Research 223 reserved
+- [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 
-g04 has 76 numbered roadmaps: 62 completed milestones, thirteen honest
+g04 has 76 numbered roadmaps: 62 completed milestones and fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-and 074, plus one ready milestone at 076. The operator keeps the generation
+074, and 076. The operator keeps the generation
 active.
 Do not close g04 without explicit operator direction.
 
@@ -265,10 +265,9 @@ Do not close g04 without explicit operator direction.
 - g04.075 is complete: cards 207-209 delivered exact `qwen.headless`
   `0.21.15`/`0.22.0`/`0.22.1` `HarnessMode::Plan` as canonical
   `--approval-mode plan`; Research 222 promoted; omission retained
-- g04.076 is ready: Research 223 and cards 210-212 form one serial
-  evidence-first Cursor headless provider-sandbox lane; binding is conditional
-  on an exact preflight-bound native boundary with no ambient widening or
-  silent outside-sandbox execution
+- g04.076 stopped after card 210: Research 223 empty deliver-now set; exact
+  `--sandbox enabled` parses, but the helper is shell-exec only and the native
+  boundary is not preflight-bindable; cards 211-212 blocked
 - g04 remains active at 76 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`

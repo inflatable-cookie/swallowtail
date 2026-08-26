@@ -2242,3 +2242,21 @@ isolation, force/yolo/auto-review, approval exchange, sibling routes, live
 provider work, currentness, release, generation rollover, and g04 closure stay
 out. If no exact preflight-bound row proves the full Contract 023 boundary,
 Research 223 must promote an empty set and the lane stops after card 210.
+
+## Post-g04.076 Closeout (2026-08-26)
+
+Disposition: `cursor-agent.headless` provider sandboxing stops after card 210.
+Research 223 is an empty deliver-now set. Reassess the remaining inventory
+before compiling another serial family.
+
+All four qualified Cursor builds parse `--sandbox enabled|disabled` and the
+CLI override beats persisted `sandbox.mode`. Exact source still binds the
+flag to a `cursorsandbox` shell-exec helper, not to the harness process.
+Darwin "supported" is `/usr/bin/sandbox-exec` plus helper-binary presence.
+Ambient `sandbox.json`, config, team controls, and the feature gate can widen
+or disable the boundary. Print mode without `--force` denies approval rather
+than containing the process. File/MCP/fetch tools are outside the helper.
+Cards 211-212 stay blocked. Omission remains `AmbientHost` with no sandbox
+argument.
+
+Keep g04 open. Contract 029 currentness remains standing.

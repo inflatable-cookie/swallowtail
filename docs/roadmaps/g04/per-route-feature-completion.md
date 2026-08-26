@@ -241,18 +241,18 @@ families do not interrupt this programme by default.
   isolation. `auto-edit|auto|yolo`, `/plan`, `set_permission_mode`, writable
   authority, and live provider work stay out.
 - [g04.076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md)
-  is ready. Research 223 and cards 210-212 form one serial evidence-first lane
-  for exact `cursor-agent.headless` `--sandbox enabled` as a candidate
-  `HarnessIsolation::ProviderEnforced` profile. Exact build/platform,
-  filesystem/network/subprocess, ambient configuration, approval, escape,
-  fallback, and observation truth gate any binding. Omission stays
-  `AmbientHost` with no flag.
+  stopped after card 210. Research 223 is an empty deliver-now set: exact
+  `--sandbox enabled` parses on all four qualified builds, but the helper is
+  shell-exec only, Darwin "supported" is binary presence, ambient
+  `sandbox.json`/config/team/feature-gate state can widen or disable the
+  boundary, and print-mode denial is approval rather than process containment.
+  Cards 211-212 are blocked. Omission stays `AmbientHost` with no flag.
 
 ## Current Execution Boundary
 
-Execute g04.076 cards 210-212 serially. Stop after card 210 when Research 223
-is empty or any decision gate fires. Keep g04 open. Contract 029 currentness
-remains standing.
+Reassess the remaining per-route feature inventory for the next serial lane
+unless the operator supplies a different direction. Keep g04 open. Contract
+029 currentness remains standing.
 
 ## Exclusions
 

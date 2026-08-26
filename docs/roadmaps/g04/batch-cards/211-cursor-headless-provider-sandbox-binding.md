@@ -1,8 +1,9 @@
 # 211 Cursor Headless Provider-Sandbox Binding
 
-Status: planned; conditional on Research 223
+Status: blocked; Research 223 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.076 Cursor Headless Provider Sandbox](../076-cursor-headless-provider-sandbox.md)
 Depends on: card 210; promoted Research 223 with a non-empty deliver-now set
 

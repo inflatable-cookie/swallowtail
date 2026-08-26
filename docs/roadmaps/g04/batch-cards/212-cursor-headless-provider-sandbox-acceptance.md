@@ -1,8 +1,9 @@
 # 212 Cursor Headless Provider-Sandbox Acceptance
 
-Status: planned; conditional on card 211
+Status: blocked; card 211 blocked
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.076 Cursor Headless Provider Sandbox](../076-cursor-headless-provider-sandbox.md)
 Depends on: card 211
 

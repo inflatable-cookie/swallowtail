@@ -4,14 +4,14 @@
 
 Cards 070-071 remain unused gaps, not tasks.
 
-- [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — planned; conditional on Research 223
-- [212-cursor-headless-provider-sandbox-acceptance.md](./212-cursor-headless-provider-sandbox-acceptance.md) — planned; conditional on card 211
-
 ## Ready
 
-- [210-cursor-headless-provider-sandbox-evidence.md](./210-cursor-headless-provider-sandbox-evidence.md) — ready
+None.
 
 ## Blocked
+
+- [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — blocked; Research 223 empty deliver-now set
+- [212-cursor-headless-provider-sandbox-acceptance.md](./212-cursor-headless-provider-sandbox-acceptance.md) — blocked; card 211 blocked
 
 - [205-cline-headless-model-selection-binding.md](./205-cline-headless-model-selection-binding.md) — blocked; Research 221 empty deliver-now set
 - [206-cline-headless-model-selection-acceptance.md](./206-cline-headless-model-selection-acceptance.md) — blocked; card 205 blocked
@@ -32,6 +32,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [210-cursor-headless-provider-sandbox-evidence.md](./210-cursor-headless-provider-sandbox-evidence.md) — evidence stop; Research 223 empty deliver-now set
 - [209-qwen-headless-plan-mode-acceptance.md](./209-qwen-headless-plan-mode-acceptance.md)
 - [208-qwen-headless-plan-mode-binding.md](./208-qwen-headless-plan-mode-binding.md)
 - [207-qwen-headless-plan-mode-evidence.md](./207-qwen-headless-plan-mode-evidence.md)

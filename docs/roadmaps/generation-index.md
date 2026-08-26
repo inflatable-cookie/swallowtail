@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 76 roadmaps: 62 completed milestones, thirteen honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, and 074.
-g04.076 is the sole ready milestone. It has realized route
+g04 now has 76 roadmaps: 62 completed milestones and fourteen honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
+076. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -83,11 +83,12 @@ g04.075 is complete: Research 222 admits exact `0.21.15`, `0.22.0`, and
 `0.22.1` portable `HarnessMode::Plan` as `--approval-mode plan`. Cards 207-209
 bound that row. Omission retains `default`. Applied `session_start.permission_mode`
 is observed. `auto-edit|auto|yolo` stay out.
-g04.076 is ready: Research 223 and cards 210-212 form one serial evidence-first
-lane for exact Cursor headless provider sandboxing. Any
-`HarnessIsolation::ProviderEnforced` binding requires exact platform/backend,
-filesystem/network/subprocess, configuration, approval, escape, fallback, and
-observation truth. Omission remains `AmbientHost` with no sandbox argument.
+g04.076 stopped after card 210: Research 223 empty deliver-now set. Exact
+`--sandbox enabled` parses on the four qualified builds, but sandboxing is a
+shell-exec helper whose Darwin support check is binary presence and whose
+filesystem/network policy still reads ambient `sandbox.json`, config, team,
+and feature-gate state. Cards 211-212 are blocked. Omission remains
+`AmbientHost` with no sandbox argument.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

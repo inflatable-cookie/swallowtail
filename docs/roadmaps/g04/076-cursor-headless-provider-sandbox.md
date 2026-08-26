@@ -1,6 +1,6 @@
 # g04.076 Cursor Headless Provider Sandbox
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
@@ -36,18 +36,18 @@ and fail-closed preflight.
 
 ## Goals
 
-- [ ] freeze exact parser, precedence, platform, backend, filesystem, network,
+- [x] freeze exact parser, precedence, platform, backend, filesystem, network,
       subprocess, escape, approval, configuration, output, and failure truth
       for the four qualified Cursor builds
-- [ ] distinguish requested, planned, argv-dispatched, parser-accepted,
+- [x] distinguish requested, planned, argv-dispatched, parser-accepted,
       backend-active, enforced, effective, and observed sandbox state
-- [ ] classify `Read` and `ReadWrite` profiles independently and separate
+- [x] classify `Read` and `ReadWrite` profiles independently and separate
       native isolation from Plan mode, permissions, tools, and workspace trust
-- [ ] promote Research 223 with an exact deliver-now table or honest empty set
+- [x] promote Research 223 with an exact deliver-now table or honest empty set
 - [ ] conditionally bind only admitted rows through prepared input, immutable
       plan/evidence, driver validation, and canonical argv
-- [ ] prove omission retains exact no-flag `AmbientHost` behavior
-- [ ] preserve exact model/parameter binding, activity, usage, cancellation,
+- [x] prove omission retains exact no-flag `AmbientHost` behavior
+- [x] preserve exact model/parameter binding, activity, usage, cancellation,
       deadline, retention, terminal, and joined cleanup
 
 ## Non-Goals
@@ -103,9 +103,9 @@ not substitutes for omission.
 
 ### Batch 76.1 — Exact Cursor Sandbox Evidence
 
-- [ ] Execute card 210.
-- [ ] freeze exact build/platform/configuration and native-boundary truth
-- [ ] promote Research 223 with a non-empty exact table or honest empty set
+- [x] Execute card 210.
+- [x] freeze exact build/platform/configuration and native-boundary truth
+- [x] promote Research 223 with a non-empty exact table or honest empty set
 
 ### Batch 76.2 — Conditional Provider-Enforced Binding
 
@@ -121,17 +121,17 @@ not substitutes for omission.
 
 ## Acceptance Criteria
 
-- [ ] only Research 223 deliver-now rows prepare
+- [x] only Research 223 deliver-now rows prepare
 - [ ] request, immutable plan, prepared evidence, driver, platform facts, and
       argv agree on the isolation posture
-- [ ] exact evidence proves the native boundary and every escape or approval
+- [x] exact evidence proves the native boundary and every escape or approval
       path required by Contract 023
-- [ ] omission preserves exact no-flag `AmbientHost` behavior
+- [x] omission preserves exact no-flag `AmbientHost` behavior
 - [ ] unsupported, mismatched, configurable, unavailable, fallback, or
       behaviorally weaker rows reject before process work when knowable
-- [ ] resource access, Plan mode, workspace trust, permissions, tools, model
+- [x] resource access, Plan mode, workspace trust, permissions, tools, model
       parameters, activity, terminal, retention, and cleanup remain separate
-- [ ] default QA performs no install, login, account inspection, provider
+- [x] default QA performs no install, login, account inspection, provider
       prompt, tool execution, paid work, ambient config mutation, or live run
 
 ## Lane Runway

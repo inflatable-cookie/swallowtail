@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.076 Cursor Headless Provider Sandbox cards 210-212 serially. Stop
-after card 210 when Research 223 is empty or any decision gate fires. Keep raw
-sandbox configuration, live provider work, currentness, release, and g04
-closure out. Contract 029 currentness remains standing.
+Reassess the remaining per-route feature inventory for the next serial lane
+unless the operator supplies a different direction. Keep g04 open. Contract
+029 currentness remains standing.
 
 ## Standing Lanes
 

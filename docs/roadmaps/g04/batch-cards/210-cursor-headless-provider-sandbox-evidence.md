@@ -1,8 +1,9 @@
 # 210 Cursor Headless Provider-Sandbox Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.076 Cursor Headless Provider Sandbox](../076-cursor-headless-provider-sandbox.md)
 Depends on: Research 077, 087, 135, and 183; Contracts 023, 029, 033, and 037
 
@@ -17,61 +18,61 @@ preflight.
 
 ## Work
 
-1. Reuse and verify the exact artifact identities for
+1. [x] Reuse and verify the exact artifact identities for
    `2026.07.01-41b2de7`, `2026.07.23-e383d2b`,
    `2026.08.04-aaa8809`, and `2026.08.11-e8db854`. Digest every decisive CLI,
    sandbox, command, configuration, platform, and process source. Current docs
    and newer host help may corroborate only.
-2. Freeze `--sandbox` parsing: `enabled|disabled`, missing/empty/invalid/
+2. [x] Freeze `--sandbox` parsing: `enabled|disabled`, missing/empty/invalid/
    repeated values, aliases, precedence, option placement, omission, and local
    parse failures. Prove whether CLI selection overrides persisted mode for the
    whole run.
-3. Freeze exact platform/backend selection. Record supported Darwin/Linux/
+3. [x] Freeze exact platform/backend selection. Record supported Darwin/Linux/
    Windows mechanisms, prerequisites, environment markers, backend failure,
    fallback, disabled, degraded, and unsupported-platform behavior.
-4. Trace filesystem rules: working directory, reads, writes, protected paths,
+4. [x] Trace filesystem rules: working directory, reads, writes, protected paths,
    symlinks, mounts, temporary directories, git metadata, configuration files,
    child processes, inherited descriptors, and any path outside the selected
    working resource.
-5. Trace network rules: default egress, built-in domains, user/project/team
+5. [x] Trace network rules: default egress, built-in domains, user/project/team
    allowlists, proxies, sockets, DNS, loopback, MCP/fetch/browser surfaces, and
    any `Allow All` or escape path.
-6. Trace command classification and approvals. Determine which terminal calls
+6. [x] Trace command classification and approvals. Determine which terminal calls
    run sandboxed, which cannot, whether print mode can request or receive an
    approval, and whether any unsupported command executes outside the sandbox
    without a new consumer operation.
-7. Separate native isolation from `--mode plan`, `--trust`, `Read|ReadWrite`,
+7. [x] Separate native isolation from `--mode plan`, `--trust`, `Read|ReadWrite`,
    permissions, tools, `.cursorignore`, and ambient configuration. Classify
    both access profiles independently.
-8. Freeze observation truth. Record whether stream events, environment facts,
+8. [x] Freeze observation truth. Record whether stream events, environment facts,
    or terminal status prove backend activation and enforcement. Do not infer
    enforcement from argv, parser acceptance, a successful command, or tool
    absence.
-9. Audit prepared input, capability profile, plan/evidence, request policy,
+9. [x] Audit prepared input, capability profile, plan/evidence, request policy,
    driver, command builder, platform facts, fixtures, guide, matrices,
    examples, and API baseline. Name the smallest exact binding or the missing
    preflight fact.
-10. Prove omission retains exact no-flag argv, `AmbientHost`, and current
+10. [x] Prove omission retains exact no-flag argv, `AmbientHost`, and current
     configuration/retention behavior.
-11. Classify every exact build/platform/access/value row as deliver now,
+11. [x] Classify every exact build/platform/access/value row as deliver now,
     evidence-gated, intentionally withheld, or not applicable. Keep calendar
     gaps and `UnverifiedNewer` points separate.
-12. Promote Research 223 with the exact table or explicit empty set. Update
+12. [x] Promote Research 223 with the exact table or explicit empty set. Update
     milestone/card state and closeout honestly.
 
 ## Acceptance Criteria
 
-- [ ] exact identities, decisive source digests, and platform facts are frozen
-- [ ] parser, precedence, omission, invalid/repeated, and failure truth is
+- [x] exact identities, decisive source digests, and platform facts are frozen
+- [x] parser, precedence, omission, invalid/repeated, and failure truth is
       settled
-- [ ] filesystem, network, subprocess, configuration, approval, escape,
+- [x] filesystem, network, subprocess, configuration, approval, escape,
       fallback, and observation truth have exact dispositions
-- [ ] `ProviderEnforced` is separated from access, Plan, permissions, tools,
+- [x] `ProviderEnforced` is separated from access, Plan, permissions, tools,
       workspace trust, and host isolation
-- [ ] production preparation, plan/evidence, driver, argv, platform, fixtures,
+- [x] production preparation, plan/evidence, driver, argv, platform, fixtures,
       docs, and API seams are audited
-- [ ] Research 223 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 223 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
 
 ## Validation

@@ -8,7 +8,7 @@ Branch: `t3code/add-grok-acp-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-18b006bc`
 Base: `d8481fdc444c9c0e5069a265cea64839492f3a9c` (`origin/main` at dispatch)
 Planning base ancestor: `4d8c6db6ac29ce470bf77e0307051ffd572154f9`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/71
 
 ## Result
 

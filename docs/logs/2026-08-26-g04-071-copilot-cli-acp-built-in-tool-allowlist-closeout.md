@@ -8,7 +8,7 @@ Branch: `t3code/copilot-acp-tool-allowlist`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-156ca066`
 Base: `a971f30ed025459dbec463a136fdfcdc6f672569` (`origin/main` at dispatch)
 Planning base ancestor: `08d24df25dc242b50be75d0c7ebd97bf63fbb182`
-PR: pending
+PR: [#70](https://github.com/inflatable-cookie/swallowtail/pull/70)
 
 ## Result
 

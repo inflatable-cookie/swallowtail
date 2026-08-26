@@ -26,7 +26,7 @@ then conformance closeout.
 - [2026-08-26 Pi RPC 0.84.3 Claim](./2026-08-26-pi-rpc-0-84-3-claim.md)
 - [2026-08-26 Pi RPC 0.84.3 Identity](./2026-08-26-pi-rpc-0-84-3-identity.md)
 - [2026-08-26 g04.067 OpenCode HTTP Web Search Compiled](./2026-08-26-g04-067-opencode-http-web-search-compiled.md)
-- [2026-08-26 g04.067 OpenCode HTTP Web Search Closeout](./2026-08-26-g04-067-opencode-http-web-search-closeout.md) — reserved
+- [2026-08-26 g04.067 OpenCode HTTP Web Search Closeout](./2026-08-26-g04-067-opencode-http-web-search-closeout.md) — stopped after card 187; Research 214 empty deliver-now set; cards 188-189 blocked
 - [2026-08-25 g04.066 Codex Exec Model Verbosity Compiled](./2026-08-25-g04-066-codex-exec-model-verbosity-compiled.md)
 - [2026-08-25 g04.066 Codex Exec Model Verbosity Closeout](./2026-08-25-g04-066-codex-exec-model-verbosity-closeout.md) — complete and merged through PR 65 at `46070dfd`
 - [2026-08-25 g04.065 Claude Code Headless Ultracode Compiled](./2026-08-25-g04-065-claude-code-headless-ultracode-compiled.md)

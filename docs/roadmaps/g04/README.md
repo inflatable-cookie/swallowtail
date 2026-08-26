@@ -81,12 +81,12 @@ and selection policy.
 - [g04.064 Kimi Code 0.38.0 Headless V2 Useful Newer](064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180; Research 211 promoted
 - [g04.065 Claude Code Headless Ultracode](065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
 - [g04.066 Codex Exec Model Verbosity](066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186; Research 213 deliver-now on exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1`; seven slugs × `low|medium|high`
-- [g04.067 OpenCode HTTP Web Search](067-opencode-http-web-search.md) — ready, cards 187-189; Research 214 evidence-first
+- [g04.067 OpenCode HTTP Web Search](067-opencode-http-web-search.md) — stopped after card 187; Research 214 empty deliver-now set; cards 188-189 blocked
 - [g04.068 Pi RPC 0.84.3 Useful Newer](068-pi-rpc-0-84-3-useful-newer.md) — standing currentness, completed
 
-g04 has 68 numbered roadmaps: 58 completed milestones, nine honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready
-milestone at 067. The operator keeps the generation active. Do not close g04
+g04 has 68 numbered roadmaps: 58 completed milestones, ten honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and no ready
+milestone. The operator keeps the generation active. Do not close g04
 without explicit operator direction.
 
 ## Current Checkpoint
@@ -227,16 +227,16 @@ without explicit operator direction.
   admits exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` openai Responses
   exec verbosity for seven frozen slugs; cards 185-186 bind adapter-local
   `CodexModelVerbosity` without raising the Contract 029 ceiling
-- g04.067 is ready: Research 214 and card 187 gate exact OpenCode HTTP
-  `websearch` tool/backend availability, session permission, shared policy, and
-  profile truth before conditional cards 188-189
+- g04.067 stopped after card 187: Research 214 empty deliver-now set; exact
+  `v1.18.20` `websearch` visibility and Exa/Parallel MCP backends depend on
+  attached-server provider/env facts; cards 188-189 blocked
 - g04.068 standing currentness is complete: Research 215 and cards 190-191
   qualify Pi RPC through official `0.84.3` without moving the generation
   pointer
 - Contract 029 currentness remains standing and does not move the generation
   pointer
-- g04 remains active at 68 roadmaps; execute cards 187-189 serially;
-  generation closure awaits explicit operator direction
+- g04 remains active at 68 roadmaps; reassess the remaining per-route
+  inventory; generation closure awaits explicit operator direction
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -308,9 +308,8 @@ without explicit operator direction.
 29. g04.066 is complete and merged through PR 65 at `46070dfd`. Research 213
     admits exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` verbosity rows;
     cards 185-186 bind adapter-local `CodexModelVerbosity`.
-30. g04.067 is ready as one serial evidence-first lane. Card 187 must settle
-    exact OpenCode `websearch` availability, permissions, policy, and profile
-    rows before conditional cards 188-189.
+30. g04.067 stopped after card 187: Research 214 empty deliver-now set; cards
+    188-189 blocked.
 31. g04.068 standing currentness is complete. Research 215 and cards 190-191
     qualify Pi RPC through official `0.84.3` without moving the generation
     pointer.
@@ -353,7 +352,7 @@ New route-family research does not pre-empt this sequence.
 - [064 Kimi Code 0.38.0 Headless V2 Useful Newer](./064-kimi-code-0-38-0-headless-v2-useful-newer.md) — complete, cards 179-180
 - [065 Claude Code Headless Ultracode](./065-claude-code-headless-ultracode.md) — stopped after card 181; Research 212 empty deliver-now set; cards 182-183 blocked
 - [066 Codex Exec Model Verbosity](./066-codex-exec-model-verbosity.md) — complete and merged through PR 65 at `46070dfd`, cards 184-186
-- [067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md) — ready, cards 187-189
+- [067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md) — stopped after card 187; Research 214 empty deliver-now set; cards 188-189 blocked
 - [068 Pi RPC 0.84.3 Useful Newer](./068-pi-rpc-0-84-3-useful-newer.md) — completed (standing currentness), cards 190-191
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)

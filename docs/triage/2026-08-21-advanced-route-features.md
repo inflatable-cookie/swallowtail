@@ -1916,3 +1916,21 @@ set and cards 188-189 remain blocked.
 Web fetch, generic tool/permission selection, task subagents, attached-server
 configuration, provider/model expansion, currentness movement, generation
 rollover, and g04 closure stay outside this lane.
+
+## Post-g04.067 Evidence Stop (2026-08-26)
+
+Disposition: stop OpenCode HTTP `websearch` after card 187. Research 214 is an
+empty deliver-now set. Cards 188-189 remain blocked.
+
+Exact `v1.18.20` source registers native `websearch` and a dedicated last-match
+permission. Tool visibility still depends on provider `opencode`/`opencode-go`
+or attached-server Exa/Parallel flags. Execute always POSTs to Exa or Parallel
+MCP, and unflagged backend choice is a checksum of the session id assigned at
+create. Existing prepared evidence cannot bind those facts without ambient
+config, credential inspection, or live search. Permission syntax and the
+shared HostApproved+Enabled pair are not enough.
+
+The current deny-first session JSON, Disabled search claims, guide, and
+feature-matrix `search No` row stay unchanged. Do not compile the next
+per-route family from this note. Keep g04 open at operator direction.
+Contract 029 currentness remains standing.

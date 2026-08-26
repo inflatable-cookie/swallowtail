@@ -1,6 +1,6 @@
 # 189 OpenCode HTTP Web Search Acceptance
 
-Status: ready; conditional
+Status: blocked; card 188 blocked
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.067 OpenCode HTTP Web Search](../067-opencode-http-web-search.md)

@@ -1,8 +1,9 @@
 # g04.067 OpenCode HTTP Web Search
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Depends on: g04.029; per-route feature completion programme
 Vision tags: explicit authority, provider truth, attached-route containment
 Contract refs: 008, 009, 010, 011, 013, 029, 033, 037, 041, 044, 052
@@ -30,13 +31,13 @@ approval, network authority, or successful search from one another.
 
 ## Goals
 
-- [ ] freeze exact `1.18.20` web-search tool, registry, permission, session,
+- [x] freeze exact `1.18.20` web-search tool, registry, permission, session,
       provider-selection, environment, request, event, and failure evidence
-- [ ] identify exact structured-run and interactive-session rows whose tool
+- [x] identify exact structured-run and interactive-session rows whose tool
       availability and authority can be bound without ambient inference
-- [ ] distinguish search requested, permission admitted, provider request
+- [x] distinguish search requested, permission admitted, provider request
       dispatched, provider accepted, result observed, and result effective
-- [ ] promote Research 214 with a deliver-now table or honest empty set
+- [x] promote Research 214 with a deliver-now table or honest empty set
 - [ ] conditionally admit only `ExternalNetworkPolicy::HostApproved` plus
       `ExternalSearchPolicy::Enabled` on Research 214 rows
 - [ ] preserve disabled-search request bytes and deny-first session posture
@@ -87,10 +88,10 @@ An empty Research 214 deliver-now set is an honest stop.
 
 ### Batch 67.1 — Exact Web-Search Evidence
 
-- [ ] Execute card 187.
-- [ ] freeze exact tool, provider/backend, permission, session, event, policy,
+- [x] Execute card 187.
+- [x] freeze exact tool, provider/backend, permission, session, event, policy,
       and failure truth
-- [ ] promote Research 214 with a non-empty table or honest empty set
+- [x] promote Research 214 with a non-empty table or honest empty set
 
 ### Batch 67.2 — Conditional Route-Local Binding
 
@@ -102,6 +103,17 @@ An empty Research 214 deliver-now set is an honest stop.
 - [ ] Execute card 189 only after card 188.
 - [ ] prove dispatch, omission, rejection, callback composition, lifecycle,
       docs, and API truth
+
+## Evidence Stop
+
+Research 214 admits no deliver-now row. Exact `v1.18.20` registers `websearch`
+and evaluates a dedicated last-match permission, but model visibility depends
+on provider `opencode`/`opencode-go` or attached-server Exa/Parallel flags, and
+execute always POSTs to Exa or Parallel MCP. Backend choice without env
+override is a session-id checksum assigned after `POST /session`. Existing
+preparation cannot bind those facts without ambient config, credential
+inspection, or live search. Current deny-first session JSON and Disabled
+search claims stay unchanged. Cards 188 and 189 are blocked.
 
 ## Acceptance Criteria
 

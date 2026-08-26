@@ -6,12 +6,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [187-opencode-http-web-search-evidence.md](./187-opencode-http-web-search-evidence.md)
-- [188-opencode-http-web-search-binding.md](./188-opencode-http-web-search-binding.md) — conditional on Research 214
-- [189-opencode-http-web-search-acceptance.md](./189-opencode-http-web-search-acceptance.md) — conditional on card 188
+None.
 
 ## Blocked
 
+- [188-opencode-http-web-search-binding.md](./188-opencode-http-web-search-binding.md) — blocked; Research 214 empty deliver-now set
+- [189-opencode-http-web-search-acceptance.md](./189-opencode-http-web-search-acceptance.md) — blocked; card 188 blocked
 - [182-claude-code-headless-ultracode-binding.md](./182-claude-code-headless-ultracode-binding.md) — blocked; Research 212 empty deliver-now set
 - [183-claude-code-headless-ultracode-acceptance.md](./183-claude-code-headless-ultracode-acceptance.md) — blocked; card 182 blocked
 - [177-kimi-code-headless-reasoning-effort-binding.md](./177-kimi-code-headless-reasoning-effort-binding.md) — blocked; Research 210 empty deliver-now set
@@ -25,6 +25,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 - [191-pi-rpc-0-84-3-claim.md](./191-pi-rpc-0-84-3-claim.md)
 - [190-pi-rpc-0-84-3-identity.md](./190-pi-rpc-0-84-3-identity.md)
+- [187-opencode-http-web-search-evidence.md](./187-opencode-http-web-search-evidence.md) — evidence stop; Research 214 empty deliver-now set
 - [186-codex-exec-model-verbosity-acceptance.md](./186-codex-exec-model-verbosity-acceptance.md)
 - [185-codex-exec-model-verbosity-binding.md](./185-codex-exec-model-verbosity-binding.md)
 - [184-codex-exec-model-verbosity-evidence.md](./184-codex-exec-model-verbosity-evidence.md)

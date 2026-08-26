@@ -203,17 +203,18 @@ families do not interrupt this programme by default.
   for seven frozen slugs × `low|medium|high`. Cards 185-186 bind adapter-local
   `CodexModelVerbosity`. Live-catalog acceptance and effective length stay
   withheld.
-- [g04.067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md) is
-  ready. Research 214 and card 187 must settle exact `v1.18.20` tool/backend
-  availability, ordered `websearch` permission semantics, shared search/network
-  authority, and structured/interactive profile truth before conditional cards
-  188-189. An empty deliver-now set is an honest stop.
+- [g04.067 OpenCode HTTP Web Search](./067-opencode-http-web-search.md)
+  stopped after card 187. Research 214 admits no deliver-now row: exact
+  `v1.18.20` registers `websearch`, but visibility and Exa/Parallel MCP
+  backends depend on attached-server provider/env facts and a post-create
+  session checksum. Cards 188-189 are blocked.
 
 ## Current Execution Boundary
 
-Execute g04.067 cards 187-189 serially. Stop after card 187 when Research 214
-admits an empty set or a decision gate fires. Keep g04 open until explicit
-operator direction. Contract 029 currentness remains standing.
+Keep g04 open. Reassess the remaining per-route feature inventory for the next
+serial lane unless the operator supplies a different direction. Do not compile
+the next family from this evidence stop. Contract 029 currentness remains
+standing.
 
 ## Exclusions
 

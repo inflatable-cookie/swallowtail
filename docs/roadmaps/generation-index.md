@@ -30,9 +30,9 @@ expansion, and the currentness sweep are complete or rehomed. Aider headless,
 Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini requalification, Pi continuity, and binding persistence stay deferred.
 
-g04 now has 68 roadmaps: 58 completed milestones, nine honest evidence stops
-at 040, 042, 043, 045, 057, 058, 059, 063, and 065, and one ready milestone
-at 067.
+g04 now has 68 roadmaps: 58 completed milestones, ten honest evidence stops
+at 040, 042, 043, 045, 057, 058, 059, 063, 065, and 067, and no ready
+milestone.
 It has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
@@ -52,9 +52,9 @@ g04.066 is complete and merged through PR 65 at `46070dfd`: Research 213 admits
 exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` openai Responses exec
 verbosity for seven frozen slugs; cards 184-186 bind adapter-local
 `CodexModelVerbosity`. Live-catalog acceptance remains withheld.
-g04.067 is ready as one serial OpenCode HTTP web-search evidence-first lane:
-Research 214 and card 187 must settle exact tool/backend availability,
-permission, shared policy, and profile truth before conditional cards 188-189.
+g04.067 stopped after card 187 and Research 214: exact `v1.18.20` registers
+`websearch`, but tool/backend availability depends on attached-server
+provider/env facts and a post-create session checksum; cards 188-189 blocked.
 g04.068 standing currentness is complete: Research 215 and cards 190-191
 qualify Pi RPC through official `0.84.3` without moving the generation
 pointer.

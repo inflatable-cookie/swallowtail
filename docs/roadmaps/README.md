@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.067 OpenCode HTTP Web Search cards 187-189 serially. Stop after
-card 187 when Research 214 admits an empty set or a decision gate fires.
-Contract 029 currentness remains standing. Do not merge, roll the generation,
-or close g04.
+Reassess the remaining per-route feature inventory for the next serial lane.
+g04.067 stopped after card 187; Research 214 is an empty deliver-now set;
+cards 188-189 are blocked. Keep g04 open. Contract 029 currentness remains
+standing. Do not merge, roll the generation, or close g04.
 
 ## Standing Lanes
 

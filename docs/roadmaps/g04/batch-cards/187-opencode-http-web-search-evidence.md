@@ -1,8 +1,9 @@
 # 187 OpenCode HTTP Web Search Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-26
+Updated: 2026-08-26
 Milestone: [g04.067 OpenCode HTTP Web Search](../067-opencode-http-web-search.md)
 Depends on: Research 176; Contracts 008, 010, 013, 029, 033, 041
 
@@ -50,18 +51,18 @@ required fact remains unproved.
 
 ## Acceptance Criteria
 
-- [ ] exact official sources, tag, dates, revisions, and hashes are recorded
-- [ ] version, provider/backend, tool-availability, permission, policy, and
+- [x] exact official sources, tag, dates, revisions, and hashes are recorded
+- [x] version, provider/backend, tool-availability, permission, policy, and
       profile rows are explicit
-- [ ] rule ordering, allow/ask/deny, callback, omission, unknown, fallback,
+- [x] rule ordering, allow/ask/deny, callback, omission, unknown, fallback,
       and failure truth is settled
-- [ ] requested/admitted/dispatched/accepted/observed/effective claims are split
-- [ ] existing session JSON, plan/evidence, prompt, callback, event, and
+- [x] requested/admitted/dispatched/accepted/observed/effective claims are split
+- [x] existing session JSON, plan/evidence, prompt, callback, event, and
       lifecycle seams are audited
-- [ ] Research 214 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 214 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
-- [ ] `effigy validate:focused swallowtail-adapter-opencode`, `effigy
+- [x] `effigy validate:focused swallowtail-adapter-opencode`, `effigy
       qa:northstar`, relevant indexes, and `git diff --check` pass
 
 ## Stop Conditions

@@ -1,6 +1,6 @@
 # 188 OpenCode HTTP Web Search Binding
 
-Status: ready; conditional
+Status: blocked; Research 214 empty deliver-now set
 Owner: Tom
 Created: 2026-08-26
 Milestone: [g04.067 OpenCode HTTP Web Search](../067-opencode-http-web-search.md)

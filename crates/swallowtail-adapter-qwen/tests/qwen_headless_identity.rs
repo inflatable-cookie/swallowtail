@@ -13,6 +13,8 @@ const IDENTITY_0_21_14: &str = include_str!("fixtures/qwen-code-0.21.14/identity
 const PROTOCOL_0_21_14: &str = include_str!("fixtures/qwen-code-0.21.14/protocol.json");
 const IDENTITY_0_21_15: &str = include_str!("fixtures/qwen-code-0.21.15/identity.json");
 const PROTOCOL_0_21_15: &str = include_str!("fixtures/qwen-code-0.21.15/protocol.json");
+const IDENTITY_0_22_1: &str = include_str!("fixtures/qwen-code-0.22.1/identity.json");
+const PROTOCOL_0_22_1: &str = include_str!("fixtures/qwen-code-0.22.1/protocol.json");
 
 #[test]
 fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
@@ -86,7 +88,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(QWEN_CODE_BASELINE_VERSION, "0.19.11");
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.1");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.21.2"
@@ -120,10 +122,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
                     == "qwen-code.headless.v0.21.15-reasoning-control"
     ));
     assert!(!claim.permits(&version("0.20.2")));
-    assert!(matches!(
-        claim.assess(&version("0.21.16")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!claim.permits(&version("0.21.16")));
     assert_eq!(
         qwen_code_binding("0.21.13")
             .expect("version binds")
@@ -190,7 +189,7 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.1");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.13")),
@@ -211,10 +210,7 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
                 && matched.behavior_revision().as_str()
                     == "qwen-code.headless.v0.21.15-reasoning-control"
     ));
-    assert!(matches!(
-        claim.assess(&version("0.21.16")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!claim.permits(&version("0.21.16")));
     assert_eq!(
         qwen_code_binding("0.21.14")
             .expect("version binds")
@@ -300,7 +296,7 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.21.15");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.1");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.14")),
@@ -316,12 +312,119 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
                 && matched.behavior_revision().as_str()
                     == "qwen-code.headless.v0.21.15-reasoning-control"
     ));
+    assert!(!claim.permits(&version("0.21.16")));
+    assert_eq!(
+        qwen_code_binding("0.21.15")
+            .expect("version binds")
+            .axis()
+            .as_str(),
+        QWEN_CODE_AXIS
+    );
+}
+
+#[test]
+fn identity_and_claim_qualify_0_22_1_as_compatible_extension() {
+    let identity: Value =
+        serde_json::from_str(IDENTITY_0_22_1).expect("Qwen 0.22.1 identity corpus is valid JSON");
+    let protocol: Value =
+        serde_json::from_str(PROTOCOL_0_22_1).expect("Qwen 0.22.1 protocol corpus is valid JSON");
+
+    assert_eq!(identity["axis"], QWEN_CODE_AXIS);
+    assert_eq!(identity["npm_package"], "@qwen-code/qwen-code");
+    assert_eq!(identity["npm_latest"], true);
+    assert_eq!(identity["host"]["not_installed"], true);
+    assert_eq!(identity["official"]["version"], "0.22.1");
+    assert_eq!(
+        identity["official"]["npm_integrity"],
+        "sha512-sDki8GaxUA7eEbo1SQNd15TXiP22CMmOpUmfKeDvl+vmyw5sMwX5XJunQ8R4zReRV8z+HIaqqK5u28UX807lhw=="
+    );
+    assert_eq!(
+        identity["official"]["github_commit"],
+        "2755dbe1399f94e53e24377d2e21fa86ce923529"
+    );
+    assert_eq!(
+        identity["published_intermediate_0_22_0"]["version"],
+        "0.22.0"
+    );
+    assert_eq!(identity["unpublished_stable_0_20_2"], true);
+    assert_eq!(identity["unpublished_0_21_16"], true);
+    assert_eq!(identity["unpublished_0_22_2"], true);
+    assert_eq!(identity["ignored_preview"], "0.22.2-preview.1");
+    assert_eq!(identity["selected_mapped_subset_unchanged"], true);
+    assert_eq!(identity["cli_entry_identical_0_21_15_through_0_22_1"], true);
+    assert_eq!(
+        identity["reasoning_effort_identical_0_21_15_through_0_22_1"],
+        true
+    );
+
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(
+        decision["reuse_behavior_revision"],
+        "qwen-code.headless.v0.21.15-reasoning-control"
+    );
+    assert_eq!(decision["raise_latest_qualified_to"], "0.22.1");
+    assert_eq!(decision["keep_baseline"], "0.19.11");
+    assert_eq!(decision["add_same_revision_segment"], "0.22.0..=0.22.1");
+    assert_eq!(decision["new_milestone"], false);
+    assert_eq!(decision["keep_0_21_16_incompatible"], true);
+    assert_eq!(decision["later_unverified_after_qualification"], "0.22.2");
+    assert_eq!(decision["extend_reasoning_beyond_0_21_15"], false);
+    assert_eq!(decision["extend_budgets_beyond_0_21_15"], false);
+    assert_eq!(decision["map_dashscope_max_clamp"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["host_install_changed"], false);
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "0.21.15"
+    );
+
+    assert_eq!(protocol["selected_mapped_subset_unchanged"], true);
+    assert_eq!(
+        protocol["0_22_0_types_and_controller_byte_identical_to_0_21_15"],
+        true
+    );
+    assert_eq!(protocol["decoder_corpus"], "qwen-code-v0.19.11");
+    let unused = protocol["unused_deltas"]
+        .as_array()
+        .expect("unused deltas are an array");
+    for extra in [
+        "--restore-ask-user-question",
+        "MCP versionNegotiation",
+        "dashscope clamp max to xhigh",
+        "list_directory settings opt-in default-off",
+    ] {
+        assert!(
+            unused.iter().any(|value| value == extra),
+            "missing unused delta {extra}"
+        );
+    }
+
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.1");
+    let claim = qwen_headless_claim();
     assert!(matches!(
-        claim.assess(&version("0.21.16")),
+        claim.assess(&version("0.21.15")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "qwen-code.headless.v0.21.15-reasoning-control"
+    ));
+    for candidate in ["0.22.0", "0.22.1"] {
+        assert!(matches!(
+            claim.assess(&version(candidate)),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+                    && matched.behavior_revision().as_str()
+                        == "qwen-code.headless.v0.21.15-reasoning-control"
+        ));
+    }
+    assert!(!claim.permits(&version("0.21.16")));
+    assert!(matches!(
+        claim.assess(&version("0.22.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
-        qwen_code_binding("0.21.15")
+        qwen_code_binding("0.22.1")
             .expect("version binds")
             .axis()
             .as_str(),

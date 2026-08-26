@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-26 Qwen Headless 0.22.1 Claim](./2026-08-26-qwen-headless-0-22-1-claim.md)
+- [2026-08-26 Qwen Headless 0.22.1 Identity](./2026-08-26-qwen-headless-0-22-1-identity.md)
 - [2026-08-26 Pi RPC 0.84.3 Claim](./2026-08-26-pi-rpc-0-84-3-claim.md)
 - [2026-08-26 Pi RPC 0.84.3 Identity](./2026-08-26-pi-rpc-0-84-3-identity.md)
 - [2026-08-26 g04.067 OpenCode HTTP Web Search Compiled](./2026-08-26-g04-067-opencode-http-web-search-compiled.md)

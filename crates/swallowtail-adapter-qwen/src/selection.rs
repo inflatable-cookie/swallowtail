@@ -12,7 +12,7 @@ pub const QWEN_CODE_AXIS: &str = "qwen-code.package";
 /// Oldest qualified Qwen Code package version.
 pub const QWEN_CODE_BASELINE_VERSION: &str = "0.19.11";
 /// Most recent qualified Qwen Code package version.
-pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.21.15";
+pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.22.1";
 
 const BASELINE_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
 const CATALOGUE_FILTER_BEHAVIOR: &str = "qwen-code.headless.v0.21.0-catalogue-filter";
@@ -77,6 +77,13 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Maintained,
             ),
             InterfaceVersionSegment::exact(
+                version("0.21.15").expect("static Qwen version is valid"),
+                InterfaceBehaviorRevision::new(REASONING_CONTROL_BEHAVIOR)
+                    .expect("static Qwen behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("0.22.0").expect("static Qwen version is valid"),
                 version(QWEN_CODE_LATEST_QUALIFIED_VERSION).expect("static Qwen version is valid"),
                 InterfaceBehaviorRevision::new(REASONING_CONTROL_BEHAVIOR)
                     .expect("static Qwen behavior revision is valid"),
@@ -150,7 +157,7 @@ mod tests {
         let claim = qwen_headless_claim();
         for candidate in [
             "0.19.11", "0.19.12", "0.20.0", "0.20.1", "0.21.0", "0.21.1", "0.21.2", "0.21.3",
-            "0.21.13", "0.21.14", "0.21.15",
+            "0.21.13", "0.21.14", "0.21.15", "0.22.0", "0.22.1",
         ] {
             assert!(claim.supports(&version(candidate)));
         }
@@ -178,9 +185,18 @@ mod tests {
                 .as_str(),
             REASONING_CONTROL_BEHAVIOR
         );
+        assert_eq!(
+            claim
+                .assess(&version("0.22.1"))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            REASONING_CONTROL_BEHAVIOR
+        );
         assert!(!claim.permits(&version("0.20.2")));
+        assert!(!claim.permits(&version("0.21.16")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.21.16"))
+            claim.assess(&version("0.22.2"))
         else {
             panic!("later stable Qwen remains unverified");
         };
@@ -190,6 +206,7 @@ mod tests {
         );
         assert!(!claim.permits(&version("0.21.14-rc.1")));
         assert!(!claim.permits(&version("0.21.14-preview.0")));
+        assert!(!claim.permits(&version("0.22.2-preview.1")));
     }
 
     #[test]
@@ -199,6 +216,8 @@ mod tests {
         assert!(qwen_code_binding("0.21.13").is_some());
         assert!(qwen_code_binding("0.21.14").is_some());
         assert!(qwen_code_binding("0.21.15").is_some());
+        assert!(qwen_code_binding("0.22.0").is_some());
+        assert!(qwen_code_binding("0.22.1").is_some());
         for value in ["", " 0.19.11", "qwen 0.19.11", "latest"] {
             assert!(qwen_code_binding(value).is_none());
         }

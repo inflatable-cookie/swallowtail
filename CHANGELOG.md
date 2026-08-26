@@ -7,6 +7,11 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Qwen headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.22.1`: keep exact `0.21.15` reasoning-control,
+  add same-revision `0.22.0..=0.22.1`, keep unpublished `0.21.16`
+  incompatible, and leave reasoning/budgets exact `0.21.15`. Research 215,
+  g04.068.
 - raise the Pi RPC qualified ceiling through official npm
   `@earendil-works/pi-coding-agent` `0.84.3`: exact published points
   `0.80.10` through `0.84.3`, unpublished `0.83.1` stays incompatible, and

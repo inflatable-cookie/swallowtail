@@ -320,10 +320,11 @@ or management. See
   JSON Schema structured output, and either offline execution or host-approved
   external search.
 - `CodexExecProfileInput::with_model_verbosity()` selects closed adapter-local
-  `low|medium|high` on published `0.147.0..=0.149.1` for exact Research 213
-  slugs. Omission leaves the current argv. Dispatch does not prove provider
-  acceptance, live-catalog support, or effective response length. Other
-  versions, models, prefixes, and `codex-auto-review` fail before spawn.
+  `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
+  `0.149.1` for exact Research 213 slugs. Omission leaves the current argv.
+  Dispatch does not prove provider acceptance, live-catalog support, or
+  effective response length. Other versions, models, prefixes, and
+  `codex-auto-review` fail before spawn.
 - Bounded workspace is version-gated. It never replaces the read-only default.
 - Qualified, deprecated, and unverified-newer executable observations remain
   visible. An unverified-newer version is permitted with mileage-may-vary

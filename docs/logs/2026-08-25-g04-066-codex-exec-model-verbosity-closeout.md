@@ -11,10 +11,10 @@ PR: [#65](https://github.com/inflatable-cookie/swallowtail/pull/65)
 
 ## Result
 
-Research 213 admits a non-empty deliver-now set. Exact published
-`0.147.0..=0.149.1` maintained `codex.exec` can dispatch closed adapter-local
-`low|medium|high` for seven frozen slugs without ambient config, a generic
-settings map, or a Contract 029 ceiling change.
+Research 213 admits a non-empty deliver-now set. Exact published `0.147.0`,
+`0.148.0`, `0.149.0`, and `0.149.1` maintained `codex.exec` can dispatch closed
+adapter-local `low|medium|high` for seven frozen slugs without ambient config,
+a generic settings map, or a Contract 029 ceiling change.
 
 - Card 184 froze exact `rust-v0.149.1` schema, models, parser, precedence,
   Responses request construction, and unsupported warn-and-ignore behavior.
@@ -40,7 +40,7 @@ billing, and entitlement stay withheld.
 ## Validation
 
 Passed: `cargo fmt -p swallowtail-adapter-codex`, `effigy validate:focused
-swallowtail-adapter-codex` (197 tests), `effigy package:verify-affected
+swallowtail-adapter-codex` (200 tests), `effigy package:verify-affected
 swallowtail-adapter-codex`, `effigy check:examples`, `effigy qa:routes`,
 `effigy qa:northstar`, `effigy package:api`, research/log/roadmap/g04/
 batch-card and sole-next-action index gates, and `git diff --check`.

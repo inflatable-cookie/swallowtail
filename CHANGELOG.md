@@ -25,7 +25,8 @@ annotated Git tags from the canonical repository.
 ### Added
 
 - add typed exact-Codex-Exec model verbosity: `CodexModelVerbosity` admits
-  `low|medium|high` on published `0.147.0..=0.149.1` for seven frozen slugs
+  `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
+  `0.149.1` for seven frozen slugs
   through prepared evidence and `--config model_verbosity="<value>"`; omission
   preserves the prior argv; live-catalog acceptance and effective length stay
   unclaimed; Research 213, g04.066

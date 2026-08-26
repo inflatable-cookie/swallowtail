@@ -172,10 +172,10 @@ copy, not a request-construction gate.
 
 `0.149.0` models.json is byte-identical. `0.147.0` and `0.148.0` have the same
 seven user slugs with the same `support_verbosity` / `default_verbosity`.
-Those four published stables are the exact retrieved points in
-`0.147.0..=0.149.1`. Claim gaps `0.82.0..=0.83.0`, `0.108.0`, and `0.109.0`
-do not sit in that span. `0.147.1` and `0.148.1` were unpublished at Research
-201 observation.
+The exact retrieved release set is `0.147.0`, `0.148.0`, `0.149.0`, and
+`0.149.1`. Claim gaps `0.82.0..=0.83.0`, `0.108.0`, and `0.109.0` do not sit
+between those points. `0.147.1` and `0.148.1` were unpublished at Research 201
+observation.
 
 `0.122.0` still has models with `support_verbosity=false` (`gpt-5-codex` and
 siblings). `0.131.0`/`0.140.0` share a different six-row catalog. Those
@@ -265,8 +265,9 @@ behavior, not a default serialization.
 | live remote catalog as admission authority | withheld |
 | provider-accepted / effective / observed verbosity | withheld |
 
-Deliver-now rows: **21** explicit value rows (7 models × 3 values) on
-published `0.147.0..=0.149.1` maintained exec, plus omission.
+Deliver-now rows: **21** explicit value rows (7 models × 3 values) on exact
+published `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` maintained exec, plus
+omission.
 
 ## Adapter Binding Requirements
 
@@ -275,7 +276,7 @@ Cards 185-186 may run. Required binding:
 - closed adapter-local `CodexModelVerbosity` with `low|medium|high` only
 - optional field on `CodexExecProfileInput` only
 - admit only `CodexExecBehavior::EphemeralSuppressed` and observed CLI version
-  in `0.147.0..=0.149.1`
+  exactly `0.147.0`, `0.148.0`, `0.149.0`, or `0.149.1`
 - admit only exact slugs in the deliver-now table
 - emit `--config` / `model_verbosity="<value>"` using existing `config_string`
 - omit the pair when unset

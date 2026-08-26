@@ -1880,8 +1880,8 @@ without inferring from a model-name prefix.
 Research 213 and card 184 froze exact `rust-v0.149.1` source, config
 parser/precedence, Responses-provider request mapping, release-tag model rows,
 defaults, silent-ignore/fallback behavior, omission, and claim strength. Cards
-185-186 bound exact `0.147.0..=0.149.1` openai Responses exec rows for seven
-frozen slugs through adapter-local `CodexModelVerbosity`. No generic settings
-map, app-server promotion, provider prompt, currentness movement, generation
-rollover, or g04 closure is authorized. Live-catalog acceptance remains
-withheld.
+185-186 bound exact `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` openai
+Responses exec rows for seven frozen slugs through adapter-local
+`CodexModelVerbosity`. No generic settings map, app-server promotion, provider
+prompt, currentness movement, generation rollover, or g04 closure is
+authorized. Live-catalog acceptance remains withheld.

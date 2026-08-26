@@ -13,7 +13,7 @@ fn structured_exec_derives_expanded_capabilities_policy_and_request() {
     let recording = RecordingHostServices::default();
     let prepared = prepared(
         CodexPreparedDriver::StructuredExec,
-        "0.145.0",
+        "0.149.1",
         &recording,
         true,
     );
@@ -41,11 +41,14 @@ fn structured_exec_derives_expanded_capabilities_policy_and_request() {
                 ExternalSearchPolicy::Enabled,
             )
             .with_reasoning_mode(ReasoningMode::new("low").unwrap())
+            .with_model_verbosity(CodexModelVerbosity::High)
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(200)))
             .with_attachments([attachment])
             .with_structured_output(output),
         )
         .expect("structured exec prepares");
+
+    assert_eq!(profile.model_verbosity(), Some(CodexModelVerbosity::High));
 
     for capability in [
         Capability::StructuredRun,

@@ -6,8 +6,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, RuntimeFailure};
 
-const ADMITTED_VERSION_FLOOR: &str = "0.147.0";
-const ADMITTED_VERSION_CEILING: &str = "0.149.1";
+const ADMITTED_VERSIONS: &[&str] = &["0.147.0", "0.148.0", "0.149.0", "0.149.1"];
 
 const ADMITTED_MODELS: &[&str] = &[
     "gpt-5.6-sol",
@@ -109,14 +108,7 @@ pub(crate) fn reject_preparation() -> PreparationFailure {
 }
 
 fn version_admitted(version: &str) -> bool {
-    let Ok(version) = semver::Version::parse(version) else {
-        return false;
-    };
-    let floor = semver::Version::parse(ADMITTED_VERSION_FLOOR)
-        .expect("static verbosity floor version is valid");
-    let ceiling = semver::Version::parse(ADMITTED_VERSION_CEILING)
-        .expect("static verbosity ceiling version is valid");
-    version >= floor && version <= ceiling
+    ADMITTED_VERSIONS.contains(&version)
 }
 
 #[cfg(test)]
@@ -133,40 +125,64 @@ mod tests {
     }
 
     #[test]
-    fn admits_exact_ceiling_slug() {
-        assert!(admits(
-            CodexExecBehavior::EphemeralSuppressed,
-            &version("0.149.1"),
-            &model("gpt-5.4-mini"),
-        ));
-        assert!(admits(
-            CodexExecBehavior::EphemeralSuppressed,
-            &version("0.147.0"),
-            &model("gpt-5.2"),
-        ));
+    fn admits_every_exact_research_version_and_model() {
+        for version_value in ADMITTED_VERSIONS {
+            for model_value in ADMITTED_MODELS {
+                assert!(
+                    admits(
+                        CodexExecBehavior::EphemeralSuppressed,
+                        &version(version_value),
+                        &model(model_value),
+                    ),
+                    "expected {version_value}/{model_value} to be admitted",
+                );
+            }
+        }
     }
 
     #[test]
-    fn rejects_prefix_unknown_version_and_ambient() {
-        assert!(!admits(
-            CodexExecBehavior::EphemeralSuppressed,
-            &version("0.149.1"),
-            &model("gpt-5.4-mini-preview"),
-        ));
-        assert!(!admits(
-            CodexExecBehavior::EphemeralSuppressed,
-            &version("0.122.0"),
-            &model("gpt-5.4-mini"),
-        ));
+    fn rejects_unretrieved_release_identities() {
+        for version_value in [
+            "0.146.99",
+            "0.147.0-alpha.1",
+            "0.147.0+build.1",
+            "0.147.1",
+            "0.148.1",
+            "0.149.1-alpha.1",
+            "0.149.1+build.1",
+            "0.149.2",
+        ] {
+            assert!(
+                !admits(
+                    CodexExecBehavior::EphemeralSuppressed,
+                    &version(version_value),
+                    &model("gpt-5.4-mini"),
+                ),
+                "expected {version_value} to be rejected",
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_prefix_foreign_and_ambient_rows() {
+        for model_value in ["gpt-5.4-mini-preview", "codex-auto-review"] {
+            assert!(!admits(
+                CodexExecBehavior::EphemeralSuppressed,
+                &version("0.149.1"),
+                &model(model_value),
+            ));
+        }
         assert!(!admits(
             CodexExecBehavior::EphemeralAmbient,
             &version("0.149.1"),
             &model("gpt-5.4-mini"),
         ));
-        assert!(!admits(
-            CodexExecBehavior::EphemeralSuppressed,
-            &version("0.149.1"),
-            &model("codex-auto-review"),
-        ));
+    }
+
+    #[test]
+    fn verbosity_tokens_are_closed_and_exact() {
+        assert_eq!(CodexModelVerbosity::Low.as_str(), "low");
+        assert_eq!(CodexModelVerbosity::Medium.as_str(), "medium");
+        assert_eq!(CodexModelVerbosity::High.as_str(), "high");
     }
 }

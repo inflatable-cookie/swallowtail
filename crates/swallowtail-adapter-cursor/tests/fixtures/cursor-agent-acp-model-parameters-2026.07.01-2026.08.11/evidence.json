@@ -1,0 +1,48 @@
+{
+  "evidence_checked": "2026-08-27",
+  "card": "246",
+  "research": "243",
+  "route": "cursor-agent.acp",
+  "decision": "honest_empty_set",
+  "deliver_now_rows": [],
+  "gates_blocking_non_empty_rows": [
+    "exact_model_parameter_membership_requires_authenticated_session_new_and_account_model_manager",
+    "returned_selected_value_confirmation_requires_live_configOptions_or_models_state",
+    "effective_application_requires_provider_turn_and_is_out_of_boundary",
+    "swallowtail_acp_initialize_omits_parameterizedModelPicker_so_default_is_variants_mode",
+    "variants_mode_rejects_non_model_config_ids_so_fast_effort_context_are_not_independent_config_options",
+    "official_cursor_acp_docs_do_not_name_fast_effort_context_or_set_config_option",
+    "headless_bracket_grammar_must_not_cross_route_boundary"
+  ],
+  "truth_layers": {
+    "requested": "caller cannot request Fast/effort/context on current CursorAcpSessionProfileInput",
+    "negotiated": "initialize advertises no model or config-option capability; picker mode gated by absent client _meta",
+    "dispatched": "no ACP model-parameter argv or session/set_config_option on prepared route",
+    "accepted": "unproved without authenticated session/new membership",
+    "effective": "unproved; out of boundary without provider prompt",
+    "returned": "no prepared confirmation field",
+    "observed": "source proves account-dependent seams only",
+    "omission": "retains ambient read-write ACP frames; no model/parameter option added"
+  },
+  "lifecycle": {
+    "new_session": "auth-gated; returns ambient models/configOptions from account state",
+    "turn": "no pre-prompt parameter selection on current route",
+    "process_loss_replacement": "no parameter binding to reassert",
+    "omission": "current prepare_session / initialize / session authority unchanged"
+  },
+  "permission_working_resource_isolation": {
+    "widened": false,
+    "session_access": "ambient_read_write",
+    "isolation": "AmbientHost",
+    "permissions": "observational_only"
+  },
+  "live_work_forbidden_and_not_run": [
+    "login",
+    "authenticate",
+    "session/new",
+    "session/set_config_option",
+    "provider_prompt",
+    "account_or_catalogue_inspection",
+    "host_install_or_update"
+  ]
+}

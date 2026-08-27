@@ -1,0 +1,122 @@
+{
+  "evidence_checked": "2026-08-27",
+  "route": "cursor-agent.acp",
+  "qualified_builds": [
+    "2026.07.01-41b2de7",
+    "2026.07.23-e383d2b",
+    "2026.08.04-aaa8809",
+    "2026.08.11-e8db854"
+  ],
+  "artifacts": [
+    {
+      "version": "2026.07.01-41b2de7",
+      "source": "installed_host",
+      "path": "~/.local/share/cursor-agent/versions/2026.07.01-41b2de7",
+      "version_stdout": "2026.07.01-41b2de7",
+      "acp_agent_chunk": {
+        "file": "5721.index.js",
+        "sha256": "0332efbd33814b900e00b52753eb2b9d4ab0fa022dc264c162d2b4f535bda48f",
+        "modules": ["./src/acp/cursor-acp-agent.ts", "./src/acp/agent-session.ts"]
+      },
+      "acp_sdk_chunk": {
+        "file": "8096.index.js",
+        "sha256": "139cb9c33b3464c2763044ab82b79a599ab197a27c5691dd6fce86d00f6557d5",
+        "wire_method": "session/set_config_option"
+      }
+    },
+    {
+      "version": "2026.07.23-e383d2b",
+      "source": "official_darwin_arm64_archive_extract",
+      "archive_url": "https://downloads.cursor.com/lab/2026.07.23-e383d2b/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "f2eb25851f2079dcdf0558a816e06c402d187abfca93255d35167020439ebbf2",
+      "runtime_index_sha256": "39a3fbb76b3382d2ffa82f6a158f292ae4fe0ba06162795dcbbacde325ca9853",
+      "version_stdout": "2026.07.23-e383d2b",
+      "host_install": false,
+      "acp_agent_chunk": {
+        "file": "6447.index.js",
+        "sha256": "7cebbaa556244f35fc1f45c281c6b8959c05ba5c163e20b7de96cf9e22fb79e9"
+      },
+      "acp_sdk_chunk": {
+        "file": "8096.index.js",
+        "sha256": "3f9356a9ba85d6943af1d0188de2736be3f6202a6a4eb7560c24e2d9c557db22",
+        "wire_method": "session/set_config_option"
+      }
+    },
+    {
+      "version": "2026.08.04-aaa8809",
+      "source": "installed_host",
+      "path": "~/.local/share/cursor-agent/versions/2026.08.04-aaa8809",
+      "version_stdout": "2026.08.04-aaa8809",
+      "acp_agent_chunk": {
+        "file": "8869.index.js",
+        "sha256": "5c702c38a79ca379d19b6aaf7cf13545fc5b8d887842e90f02e3e942fb5da178",
+        "modules": ["./src/acp/cursor-acp-agent.ts"]
+      },
+      "acp_sdk_chunk": {
+        "file": "8096.index.js",
+        "sha256": "05be7f7005e3e0025f3de79de667b9fffc561ce0614d425055e47c0e0bcbd07c",
+        "wire_method": "session/set_config_option"
+      }
+    },
+    {
+      "version": "2026.08.11-e8db854",
+      "source": "official_darwin_arm64_archive_extract",
+      "archive_url": "https://downloads.cursor.com/lab/2026.08.11-e8db854/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "46044d6d7bcbd7b49a0cf1cd01aa4ca79aaa2ea5f2c7a32965fc0ebe29841790",
+      "runtime_index_sha256": "6aceb24b7c7ecddb1993946ebb18a7dd4d025842e6efda955eb0c13255b1e5f0",
+      "version_stdout": "2026.08.11-e8db854",
+      "host_install": false,
+      "acp_agent_chunk": {
+        "file": "2996.index.js",
+        "sha256": "db023030987a1c0a54b2c7102e27faea657a4ad1320b2da153ed590ddd21eb39"
+      },
+      "acp_sdk_chunk": {
+        "file": "8096.index.js",
+        "sha256": "236a94fa25f1a936c00b7a9dde5555aa72e9b4336250b0ae127403231a82b2f3",
+        "wire_method": "session/set_config_option"
+      }
+    }
+  ],
+  "common_source_seams": {
+    "new_session_requires_authentication": true,
+    "session_new_returns_models_and_config_options": true,
+    "wire_method_session_set_config_option": true,
+    "parameterized_picker_requires_client_meta": "clientCapabilities._meta.parameterizedModelPicker === true",
+    "default_picker_mode_without_meta": "variants",
+    "model_config_id": "model",
+    "mode_config_id": "mode",
+    "literal_fast_or_context_string_in_acp_agent_chunk": false,
+    "effort_appears_only_as_thought_level_heuristic_id": true,
+    "parameter_membership_source": "account_dependent getAcpAvailableModels / parameterDefinitions",
+    "provider_prompt_sent": false,
+    "authenticate_called": false,
+    "session_created": false,
+    "account_catalogue_inspected": false
+  },
+  "swallowtail_initialize_client_capabilities": {
+    "source": "crates/swallowtail-adapter-cursor/src/connection.rs",
+    "fields": { "fs": { "readTextFile": true, "writeTextFile": false } },
+    "meta_parameterized_model_picker": false
+  },
+  "frozen_initialize_fixture": {
+    "path": "crates/swallowtail-protocol-acp/tests/fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/initialize.ndjson",
+    "sha256": "e2347b643242e300b09fc24bb67704708b80f44a889c542911c36e9dd1e98435",
+    "agent_capabilities_include_model_or_config_options": false,
+    "auth_methods": ["cursor_login"]
+  },
+  "official_acp_docs": {
+    "url": "https://cursor.com/docs/cli/acp",
+    "retrieved": "2026-08-27",
+    "sha256": "847b6884b6bc037cee0d606066435895e8fa80db42c84e0bd313a59a4475af16",
+    "documents_fast_effort_context": false,
+    "documents_session_set_config_option": false,
+    "documents_model_bracket_grammar": false,
+    "documents_modes_agent_plan_ask": true
+  },
+  "headless_contrast_not_promoted": {
+    "research": "183",
+    "help_excerpt_fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-headless-model-parameters-2026.07.01-2026.08.11/help-excerpt.txt",
+    "help_excerpt_sha256": "df64efb90545441ed6786304babb02c7dd5acfb9a698c3b9ae9e5e6699f021c6",
+    "example": "claude-opus-4-8[context=1m,effort=high,fast=false]"
+  }
+}

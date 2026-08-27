@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.081 Pi SDK Sidecar Reasoning Selection Closeout](./2026-08-27-g04-081-pi-sdk-sidecar-reasoning-selection-closeout.md) — card 225 complete; Research 228 empty deliver-now set; cards 226-227 blocked
 - [2026-08-27 g04.081 Pi SDK Sidecar Reasoning Selection Compiled](./2026-08-27-g04-081-pi-sdk-sidecar-reasoning-selection-compiled.md) — evidence-first cards 225-227; Research 228 reserved; binding conditional on exact static membership and effective-state agreement
 - [2026-08-27 g04.080 xAI Responses WebSocket Web Search Closeout](./2026-08-27-g04-080-xai-responses-websocket-web-search-closeout.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [2026-08-27 g04.080 xAI Responses WebSocket Web Search Compiled](./2026-08-27-g04-080-xai-responses-websocket-web-search-compiled.md) — evidence-first cards 222-224; Research 227 reserved; delivery conditional on exact WebSocket composition and bounded response truth

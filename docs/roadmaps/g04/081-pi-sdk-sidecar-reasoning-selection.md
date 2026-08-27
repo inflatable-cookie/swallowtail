@@ -1,6 +1,6 @@
 # g04.081 Pi SDK Sidecar Reasoning Selection
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-27
 Depends on: g04.033; g04.080 closeout; per-route feature completion programme
@@ -32,16 +32,16 @@ credential gates, attachments, cancellation, and joined cleanup.
 
 ## Goals
 
-- [ ] freeze exact `0.84.2` thinking-level vocabulary, model membership,
+- [x] freeze exact `0.84.2` thinking-level vocabulary, model membership,
       clamping, persistence, replacement, and state-confirmation truth
-- [ ] classify new, load, resume, and fresh restoration independently
-- [ ] promote Research 228 with a non-empty exact deliver-now table or honest
+- [x] classify new, load, resume, and fresh restoration independently
+- [x] promote Research 228 with a non-empty exact deliver-now table or honest
       empty set
 - [ ] conditionally bind only exact model/value/lifecycle rows whose selected
       value is confirmed by `session.thinkingLevel` before readiness
 - [ ] preserve selection in immutable request, plan, prepared evidence,
       bootstrap, attachment, and restoration agreement
-- [ ] keep omission byte-equivalent and make no claim about default depth
+- [x] keep omission byte-equivalent and make no claim about default depth
 
 ## Non-Goals
 
@@ -80,9 +80,9 @@ portable selection.
 
 ### Batch 81.1 — Exact SDK Evidence
 
-- [ ] Execute card 225.
-- [ ] freeze exact model/value/lifecycle and clamp/substitution truth
-- [ ] promote Research 228 with an exact table or honest empty set
+- [x] Execute card 225.
+- [x] freeze exact model/value/lifecycle and clamp/substitution truth
+- [x] promote Research 228 with an exact table or honest empty set
 
 ### Batch 81.2 — Conditional Selection Binding
 
@@ -103,26 +103,26 @@ portable selection.
       agree before readiness
 - [ ] unsupported values, model drift, clamp, substitution, stored-state
       conflict, and malformed state reject before provider work or readiness
-- [ ] omission retains exact prior behavior and claims no selected/default
+- [x] omission retains exact prior behavior and claims no selected/default
       mode
 - [ ] load, resume, and fresh restoration preserve Contract 012/017 meaning
-- [ ] replay, attachments, cancellation, resource/credential cleanup, and
+- [x] replay, attachments, cancellation, resource/credential cleanup, and
       durable provider-state posture do not widen
-- [ ] default QA uses no provider request, credential, account, package
+- [x] default QA uses no provider request, credential, account, package
       install, or ambient configuration mutation
 
 ## Lane Runway
 
 - predecessor: g04.080 xAI WebSocket web-search evidence stop
 - this milestone: exact Pi SDK-sidecar reasoning-selection evidence and
-  conditional delivery
+  conditional delivery — stopped after card 225 with Research 228 empty set
 - execution topology: one serial worker lane, cards 225-227
 - generation boundary: g04 remains open; no closure or rollover is authorized
 
 ## Decision Gates
 
 - Stop after card 225 if exact model/value membership cannot be made static
-  enough for preparation-time rejection.
+  enough for preparation-time rejection. **Fired.**
 - Stop if Pi can clamp or substitute a requested value without a distinct
   effective state that the sidecar can compare before readiness.
 - Stop if load/resume cannot reapply and confirm the caller-declared mode

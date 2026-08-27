@@ -1,6 +1,6 @@
 # 226 Pi SDK Sidecar Reasoning Selection Binding
 
-Status: blocked pending Research 228
+Status: blocked; Research 228 empty deliver-now set
 Owner: Tom
 Created: 2026-08-27
 Milestone: [g04.081 Pi SDK Sidecar Reasoning Selection](../081-pi-sdk-sidecar-reasoning-selection.md)

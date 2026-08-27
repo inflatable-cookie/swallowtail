@@ -2548,3 +2548,20 @@ Cards 226-227 run only for a non-empty exact Research 228 set. Dynamic level
 changes, cycling, model switching, raw settings, `pi.rpc`, newer SDK
 currentness, live provider work, release, generation rollover, and g04 closure
 stay out.
+
+## Post-g04.081 Evidence Stop (2026-08-27)
+
+Disposition: stop after card 225; Research 228 empty deliver-now set; cards
+226-227 blocked; feature matrix `reasoning_selection` stays `No`.
+
+Card 225 froze exact Pi `0.84.2` thinking-level vocabulary, silent
+`clampThinkingLevel` behavior, explicit bootstrap precedence over stored
+session state, runtime factory reapplication on load/resume, and current
+sidecar/Rust seams. The sidecar already accepts optional bootstrap
+`thinkingLevel` and reports `session.thinkingLevel`, but Rust omits and ignores
+it. Sidecar catalogue returns provider/id only. The bundled pi-ai `0.84.2`
+corpus contains 1267 models; selectable models additionally depend on
+configured auth. Contract 040 forbids portable clamping, so deliver-now
+requires a closed static provider/model/value gate before process work. No
+such table survives. Omission retains exact prior bootstrap bytes and Pi
+default/stored behavior.

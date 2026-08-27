@@ -111,9 +111,10 @@ g04.080 stopped after card 222: Research 227 empty deliver-now set. Official
 HTTP `web_search` and WebSocket body-equivalence are frozen; composed socket
 events, mixed completed output, and citation/terminal mapping are not. Cards
 223-224 are blocked. Omission remains exact `tools: []`.
-g04.081 is ready through cards 225-227. Research 228 must freeze exact Pi SDK
-`0.84.2` model/value/lifecycle reasoning truth before any binding; unsupported
-clamp or substitution remains fail-closed.
+g04.081 stopped after card 225: Research 228 empty deliver-now set. Exact Pi
+`0.84.2` clamp behavior, auth-filtered selectable models, and bundled corpus
+size block closed preparation-time admission. Cards 226-227 blocked. Omission
+unchanged.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

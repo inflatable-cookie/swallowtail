@@ -263,14 +263,23 @@ matter:
 
 Preparation fails with
 `swallowtail.claude_code.headless.preparation.maximum_turns_unqualified` on any
-version outside the probed set. The low-level driver re-checks the plan's
-version whenever a bound is present and fails with
-`swallowtail.claude_code.headless.maximum_turns_unqualified` before any process
-work, so swapping in a different plan after preparation cannot smuggle a bound
-onto an unprobed version. There is no public seam that attaches a bound to a
-hand-built `ClaudeCodeHeadlessDriver`; prepared construction is the only path.
+version outside the probed set. Omission still runs on every version the route
+otherwise permits.
 
-Omission still runs on every version the route otherwise permits.
+`ClaudeCodePreparedRun::start_run` is the only surface that dispatches a bound.
+`ClaudeCodePreparedRun::low_level_driver` deliberately returns an **unbound**
+driver even when `maximum_turns()` is `Some`, and there is no public way to
+attach a bound to a `ClaudeCodeHeadlessDriver` you built yourself.
+
+That is deliberate rather than an omission. A bound is execution state that
+only means anything alongside the exact plan and request it was prepared with,
+and neither `PreflightPlan` nor `StructuredRunRequest` records one. If an
+extracted driver carried a bound, a caller could hand it another prepared run's
+plan and silently dispatch the wrong value — or dispatch a bound onto a run
+that deliberately omitted one. Keeping the bound and its `(plan, request)` pair
+together in a single path means they cannot disagree, so no comparison is
+needed. Everything else about the extracted driver is unchanged; it is still
+the low-level seam for callers who drive the route themselves.
 
 Selection separates seven states that must not be conflated: requested,
 prepared, dispatched, parser-accepted, natively enforced, reached, and

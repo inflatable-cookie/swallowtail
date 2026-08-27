@@ -143,6 +143,17 @@ fn maximum_turns_evidence_fixture_is_secret_free_and_covers_every_published_vers
     // The binding stays closed, adapter-local, and version-gated.
     assert_eq!(evidence["binding"]["domain"], "positive 32-bit integer");
     assert_eq!(evidence["binding"]["public_low_level_setter"], false);
+    assert_eq!(evidence["binding"]["bound_dispatch_is_prepared_only"], true);
+    assert_eq!(
+        evidence["binding"]["extracted_low_level_driver_carries_a_bound"],
+        false
+    );
+    // No immutable execution input records the bound, which is why agreement
+    // comes from construction rather than comparison.
+    assert_eq!(
+        evidence["binding"]["plan_or_request_records_the_bound"],
+        false
+    );
     assert_eq!(
         evidence["binding"]["low_level_dispatch_revalidates_plan_version"],
         true

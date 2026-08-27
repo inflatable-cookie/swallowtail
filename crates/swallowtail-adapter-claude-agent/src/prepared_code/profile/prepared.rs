@@ -71,7 +71,16 @@ impl ClaudeCodePreparedEvidence {
     }
 
     fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
-        let driver = crate::ClaudeCodeHeadlessDriver::new(self.environment.clone());
+        crate::ClaudeCodeHeadlessDriver::new(self.environment.clone())
+    }
+
+    /// Creates the driver that actually dispatches this prepared run.
+    ///
+    /// Deliberately private. A maximum-turn bound and the `(plan, request)`
+    /// pair it was prepared against are only ever brought together here, which
+    /// is why no comparison between them is needed: they cannot disagree.
+    fn bound_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
+        let driver = self.low_level_driver();
         match self.maximum_turns {
             Some(maximum_turns) => driver.with_maximum_turns(maximum_turns),
             None => driver,
@@ -111,20 +120,32 @@ impl ClaudeCodePreparedRun {
         self.evidence.maximum_turns()
     }
 
-    /// Creates the low-level native headless driver bound to this run.
+    /// Creates the low-level native headless driver for this run.
     ///
-    /// The returned driver already carries any prepared maximum-turn bound.
+    /// The returned driver never carries a maximum-turn bound, even when
+    /// [`Self::maximum_turns`] is `Some`. A bound is execution state that only
+    /// means anything alongside the exact `(plan, request)` pair it was
+    /// prepared with, and nothing in that pair records it, so an extracted
+    /// driver could be handed another run's plan and silently dispatch the
+    /// wrong bound. [`Self::start_run`] is therefore the only path that
+    /// dispatches one.
+    ///
+    /// Everything else about the returned driver is unchanged, so this remains
+    /// the low-level seam for callers who drive the route themselves.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
         self.evidence.low_level_driver()
     }
 
     /// Starts the prepared run with caller-supplied host services.
+    ///
+    /// This is the only surface that dispatches a prepared maximum-turn bound,
+    /// and it always pairs that bound with this run's own plan and request.
     pub fn start_run(
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
-        let driver = self.low_level_driver();
+        let driver = self.evidence.bound_driver();
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.start_run(plan, request, services).await })

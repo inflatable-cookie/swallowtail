@@ -171,7 +171,9 @@ fn maximum_turns_preserves_reasoning_model_authority_and_low_level_driver_agreem
         ]
     );
 
-    // The extracted low-level driver carries the same prepared bound.
+    // The extracted low-level driver is deliberately unbound, even paired with
+    // this run's own plan and request. Prepared `start_run` is the only path
+    // that dispatches a bound.
     let (process, state) = FakeProcessService::with_exit(
         &fixture("headless-complete.jsonl"),
         ProcessExit::new(true, Some(0)),
@@ -194,5 +196,16 @@ fn maximum_turns_preserves_reasoning_model_authority_and_low_level_driver_agreem
     );
     assert_eq!(block_on(low_level.close()), CleanupOutcome::Clean);
     assert!(task.joined());
-    assert_eq!(state.request().arguments, run.request.arguments);
+    assert!(
+        !state
+            .request()
+            .arguments
+            .iter()
+            .any(|argument| argument == "--max-turns")
+    );
+    // Everything else about the extracted driver's command is unchanged.
+    assert_eq!(
+        state.request().arguments,
+        run.request.arguments[..run.request.arguments.len() - 2]
+    );
 }

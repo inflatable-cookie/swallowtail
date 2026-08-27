@@ -1,0 +1,67 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.app-server",
+  "observed_at": "2026-08-27",
+  "versions": ["0.147.0", "0.148.0", "0.149.0", "0.149.1"],
+  "tag_commits": {
+    "0.147.0": "be6e8eac029b183056b7e4402879f15d2c85f61b",
+    "0.148.0": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "0.149.0": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+    "0.149.1": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "tarball_sha256": {
+    "rust-v0.149.1": "85139f405ce455bf14ff452615cdb2572d752e31a1e0da6891ac8325915d10ce"
+  },
+  "closed_value_vocabulary": ["none", "friendly", "pragmatic"],
+  "protocol_seam": {
+    "typed_thread_start_personality": true,
+    "typed_thread_resume_personality": true,
+    "typed_turn_start_personality": true,
+    "typed_thread_settings_update_personality": true,
+    "thread_settings_returns_personality": true,
+    "thread_settings_updated_notification_personality": true,
+    "thread_start_response_personality": false,
+    "thread_resume_response_personality": false,
+    "turn_start_response_personality": false,
+    "config_read_typed_personality": false,
+    "model_list_supports_personality": true,
+    "thread_metadata_persisted_personality": false
+  },
+  "bundled_supports_personality_at_0.149.1": {
+    "true": ["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "codex-auto-review"],
+    "false": ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.2"]
+  },
+  "unsupported_model_server_rejection": false,
+  "feature_personality_default_enabled": true,
+  "source_digests_at_0.149.1": {
+    "codex-rs/core/config.schema.json": "affe54cce9b9945ffd32d322415ff4cc844c62068c1190be6355580be4ca9350",
+    "codex-rs/models-manager/models.json": "c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549",
+    "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": "27b068150d650ec6da10cd811cd176a72dd7844d701ff351989f4423032a0e07",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "3d76c3154f5d092eb2460fa77f1e8befdf4255447afb741724658afbf30a7704",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "3991f4a8f595767ac0de5d39a4edd7c2eea68ecaedfb007a4554e5fb1497d4e8",
+    "codex-rs/protocol/src/config_types.rs": "80c1f9a5026019fe813c064ee0ec05a33772f5e6cdd2863d19dda7e4414221ba",
+    "codex-rs/protocol/src/openai_models.rs": "39939bf67ac473b5921d4edd0864df2c1d491edd7de5577957fc877eb3e012c3",
+    "codex-rs/models-manager/src/model_info.rs": "ac0f35917888f3041737589a8df88924e9728a4967350531515d0d4f5c0a0744",
+    "codex-rs/app-server/src/request_processors/thread_summary.rs": "8d209a9d9a6f99a4551e771cc06e12eb496bbc03af9b962fa9a4845e14a3c9f1",
+    "codex-rs/state/src/model/thread_metadata.rs": "dda4cff3a12a7631502ecc59da8cc46a3bf15f3bbbd937dc8a1f22812cec61f1",
+    "codex-rs/features/src/lib.rs": "791121524b5269c72254911823b77253cc98121d1dd29608663dd9d73fa7d61a",
+    "codex-rs/app-server/README.md": "664c71bc798035d7c6a91e6f45a1b6f4a5cd33745c8df0b1376717dbeed62ed5"
+  },
+  "cross_version_stability": {
+    "Personality_enum": "none|friendly|pragmatic across 0.147.0..=0.149.1",
+    "turn.rs": "byte-identical across 0.147.0..=0.149.1",
+    "model.rs": "byte-identical at 0.148.0, 0.149.0, and 0.149.1",
+    "thread.rs": "byte-identical at 0.149.0 and 0.149.1",
+    "models.json": "byte-identical at 0.149.0 and 0.149.1; bundled supports_personality membership stable across exact set",
+    "v2.schemas.json": "byte-identical at 0.149.0 and 0.149.1"
+  },
+  "swallowtail_production_bytes": {
+    "thread_start_serializes": ["model", "developerInstructions", "dynamicTools", "workspace attachment fields"],
+    "thread_start_omits": ["personality"],
+    "turn_start_serializes": ["threadId", "input", "effort", "collaborationMode", "sandboxPolicy"],
+    "turn_start_omits": ["personality"]
+  },
+  "decision": "empty_deliver_now",
+  "deliver_now_row_count": 0
+}

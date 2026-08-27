@@ -45,4 +45,4 @@ git diff --check                                    # passed
 
 ## PR
 
-Pending push.
+https://github.com/inflatable-cookie/swallowtail/pull/87

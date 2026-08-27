@@ -1,0 +1,230 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-27",
+  "route": "gemini-cli.acp",
+  "official_version": "0.56.0",
+  "github_tag": "v0.56.0",
+  "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+  "qualified_range": "0.51.0..=0.56.0",
+  "decision": "empty_deliver_now",
+  "headless_contrast_research": 239,
+  "published_points": [
+    {
+      "version": "0.51.0",
+      "tag": "v0.51.0",
+      "commit": "8d951de3855750d5f8219d65ae22524b606133b6",
+      "published": true
+    },
+    {
+      "version": "0.52.0",
+      "tag": "v0.52.0",
+      "commit": "d14583b926769bd98f807cdc6b1ca50e91ae26ec",
+      "published": true
+    },
+    {
+      "version": "0.53.0",
+      "tag": "v0.53.0",
+      "commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96",
+      "published": true
+    },
+    {
+      "version": "0.53.1",
+      "tag": "v0.53.1",
+      "commit": "19a68016bdc9cd4177a155846dd51f282c3c1c59",
+      "published": true
+    },
+    {
+      "version": "0.54.0",
+      "tag": "v0.54.0",
+      "commit": "a74b483d14a93159fa36e7ee9e32cf44bda594df",
+      "published": true
+    },
+    {
+      "version": "0.54.1",
+      "published": false
+    },
+    {
+      "version": "0.54.2",
+      "published": false
+    },
+    {
+      "version": "0.54.3",
+      "published": false
+    },
+    {
+      "version": "0.54.4",
+      "tag": "v0.54.4",
+      "commit": "983bbb89d36718e3c97618978fb938ed9b5856c9",
+      "published": true
+    },
+    {
+      "version": "0.55.0",
+      "published": false
+    },
+    {
+      "version": "0.55.1",
+      "tag": "v0.55.1",
+      "commit": "41327e407da58aa01c409ef6685b7b5d379f295e",
+      "published": true
+    },
+    {
+      "version": "0.56.0",
+      "tag": "v0.56.0",
+      "commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+      "published": true
+    },
+    {
+      "version": "0.56.1",
+      "published": false
+    }
+  ],
+  "cross_version_seams": {
+    "retrieved_at": "2026-08-27",
+    "identical_across_all_published_points": {
+      "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+      "packages/cli/src/config/sandboxConfig.ts": "08c340670d3b85b827047784f89d697903db58b994efee430f0218286a1b029f",
+      "packages/cli/src/config/sandboxConfig.test.ts": "efe1b21f210f9e410304a00828969ff2ae837479617edde4f43b4ad4f38f9a64",
+      "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+      "packages/cli/src/acp/acpStdioTransport.ts": "08f79d2b2048d0c3d817fe8d8c85f92338c879711eb8a075b41db210b58cd4a5",
+      "packages/cli/src/acp/acpRpcDispatcher.ts": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660"
+    },
+    "sandbox_ts_digests": {
+      "0.51.0..=0.54.4": "dac331000eb2eb28407dffb56ac31429a7324b087adfb94d3330ae206eb84e03",
+      "0.55.1..=0.56.0": "df009ae28efa17347101731334486a3bb15f3aabe48d61813dc3dd76f3cb7c3f",
+      "material_to_empty_set_gates": false,
+      "note": "0.55.1 adds embedded Seatbelt profile temp-file fallback and cleanup handlers; still exports start_sandbox, inherits stdio, and may drain non-TTY stdin before re-exec"
+    },
+    "empty_set_holds_for_all_published_points": true
+  },
+  "selected_argv": [
+    "--acp",
+    "--approval-mode",
+    "plan"
+  ],
+  "selected_argv_bounded_write": [
+    "--acp",
+    "--approval-mode",
+    "auto_edit"
+  ],
+  "sandbox_argv_present": false,
+  "sandbox_env_injected_by_adapter": false,
+  "sandbox_argv_option": {
+    "flag": "--sandbox",
+    "alias": "-s",
+    "yargs_type": "boolean",
+    "backend_value_on_argv": false
+  },
+  "sandbox_env_keys": [
+    "GEMINI_SANDBOX",
+    "GEMINI_SANDBOX_IMAGE",
+    "GEMINI_SANDBOX_IMAGE_DEFAULT",
+    "SANDBOX",
+    "SEATBELT_PROFILE",
+    "SANDBOX_FLAGS",
+    "SANDBOX_MOUNTS",
+    "SANDBOX_ENV",
+    "SANDBOX_SET_UID_GID",
+    "BUILD_SANDBOX",
+    "GEMINI_SANDBOX_PROXY_COMMAND"
+  ],
+  "valid_sandbox_commands": [
+    "docker",
+    "podman",
+    "sandbox-exec",
+    "runsc",
+    "lxc",
+    "windows-native"
+  ],
+  "docs_claimed_precedence": [
+    "command_flag",
+    "GEMINI_SANDBOX",
+    "settings.tools.sandbox"
+  ],
+  "source_actual_precedence": [
+    "GEMINI_SANDBOX_nonempty_overrides_argv_and_settings",
+    "argv_boolean_false_beats_settings_when_env_unset",
+    "argv_or_settings_when_env_unset"
+  ],
+  "boolean_true_autodetect_order": [
+    "darwin+sandbox-exec",
+    "docker",
+    "podman"
+  ],
+  "never_autodetected": [
+    "runsc",
+    "lxc"
+  ],
+  "platform_gates": {
+    "runsc": "linux",
+    "windows-native": "win32"
+  },
+  "settings_key": "tools.sandbox",
+  "lifecycle": {
+    "loader": "loadSandboxConfig",
+    "starter": "start_sandbox",
+    "reexec_before_runAcpClient": true,
+    "parent_drains_non_tty_stdin_into_prompt_before_reexec": true,
+    "child_stdio": "inherit",
+    "marks_inside_with_env": "SANDBOX",
+    "acp_entry": "runAcpClient",
+    "acp_transport": "ndjson_stdio"
+  },
+  "initialize_agent_capabilities": {
+    "loadSession": true,
+    "promptCapabilities": {
+      "image": true,
+      "audio": true,
+      "embeddedContext": true
+    },
+    "mcpCapabilities": {
+      "http": true,
+      "sse": true
+    }
+  },
+  "initialize_sandbox_fields": [],
+  "session_new_response_fields": [
+    "sessionId",
+    "modes.availableModes",
+    "modes.currentModeId",
+    "models.availableModels",
+    "models.currentModelId"
+  ],
+  "session_new_sandbox_fields": [],
+  "acp_docs_name_sandbox_control": false,
+  "truth_layers": {
+    "requested": false,
+    "argv_or_env_encoded_on_qualified_route": false,
+    "parent_parsed": "loadSandboxConfig_before_acp",
+    "backend_started": "requires_start_sandbox_and_host_backend",
+    "acp_child_connected": "only_after_sandbox_hop_skipped_or_child_reexec",
+    "accepted": false,
+    "effective": "not_prompt_free_and_not_initialize_confirmed",
+    "contained": "not_inferred_from_selection",
+    "observed_success_field": false
+  },
+  "swallowtail_posture": {
+    "harness_configuration": "ambient",
+    "harness_isolation": "ambient_host",
+    "forces_sandbox": false,
+    "omission_claims_no_sandbox": false,
+    "access": "enterprise_developer_api_key"
+  },
+  "source_digests_v0.56.0": {
+    "docs/cli/sandbox.md": "2d2c13347d2d6e26dfdc3a33d7b43f12d242fa679eb1220c85153b824e8c0df4",
+    "docs/cli/acp-mode.md": "812af1001c110f474a624c3026c31e66519ca95c251d1f79679d8ebd56edd779",
+    "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+    "packages/cli/src/config/sandboxConfig.ts": "08c340670d3b85b827047784f89d697903db58b994efee430f0218286a1b029f",
+    "packages/cli/src/config/sandboxConfig.test.ts": "efe1b21f210f9e410304a00828969ff2ae837479617edde4f43b4ad4f38f9a64",
+    "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+    "packages/cli/src/utils/sandbox.ts": "df009ae28efa17347101731334486a3bb15f3aabe48d61813dc3dd76f3cb7c3f",
+    "packages/cli/src/acp/acpStdioTransport.ts": "08f79d2b2048d0c3d817fe8d8c85f92338c879711eb8a075b41db210b58cd4a5",
+    "packages/cli/src/acp/acpRpcDispatcher.ts": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660",
+    "packages/cli/src/acp/acpSessionManager.ts": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+    "packages/cli/src/acp/acpSession.ts": "f21c78e7edc1b17972b3d3a94ea507788fcc67fdd1bb0fe857cb97218be63e3b"
+  },
+  "documentation_digests": {
+    "https://geminicli.com/docs/cli/sandbox/": "71cbb84469746c9e4a43d396f29d79b54b4d3e4a4523d50cc08f25521b5d1dd4",
+    "https://geminicli.com/docs/cli/acp-mode/": "f3bfab06bc79fb1e4e41d961d90f45d314c0263185a1bcd70da26b0b3464b5a3",
+    "https://geminicli.com/docs/cli/acp-mode.md": "ef2e4d990c6d6793f2696f5ce410530316da252c0825b612c99606c1308c3f8a"
+  }
+}

@@ -1,6 +1,6 @@
 # 247 Gemini CLI ACP Sandbox Evidence
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -16,38 +16,48 @@ Research 244 with a closed deliver-now table or an honest empty set.
 
 ## Work
 
-1. [ ] Keep route `gemini-cli.acp`, exact qualified `0.51.0..=0.56.0`,
+1. [x] Keep route `gemini-cli.acp`, exact qualified `0.51.0..=0.56.0`,
        enterprise Developer API-key access, ACP v1 stdio, current read/read-
        write profiles, Plan selection, and lifecycle unchanged.
-2. [ ] Reuse Research 239 only as sibling headless sandbox evidence. Prove the
+2. [x] Reuse Research 239 only as sibling headless sandbox evidence. Prove the
        ACP spawn and child lifecycle independently; do not copy its conclusion.
-3. [ ] Freeze official sandbox/ACP documentation plus exact tagged parser,
+3. [x] Freeze official sandbox/ACP documentation plus exact tagged parser,
        config precedence, backend selection, platform gates, ACP entry/spawn,
        re-exec behavior, initialization/session frames, tests, and defaults.
-4. [ ] Build a closed version/platform/backend/value table. Determine whether
+4. [x] Build a closed version/platform/backend/value table. Determine whether
        ACP can select sandboxing process-privately and confirm backend activation
        before session readiness without installing or starting a backend.
-5. [ ] Separate requested, argv/environment/settings encoded, parent parsed,
+5. [x] Separate requested, argv/environment/settings encoded, parent parsed,
        backend started, ACP child connected, accepted, effective, contained,
        and observed truth.
-6. [ ] Prove unsupported version/platform/backend/value rows reject before
+6. [x] Prove unsupported version/platform/backend/value rows reject before
        credentials, resource authority, provider work, or partial ownership.
-7. [ ] Prove omission retains current ACP argv/environment and makes no sandbox,
+7. [x] Prove omission retains current ACP argv/environment and makes no sandbox,
        backend, isolation, filesystem, network, or process-containment claim.
-8. [ ] Audit prepared inputs/evidence, plan/request agreement, ACP fixtures,
+8. [x] Audit prepared inputs/evidence, plan/request agreement, ACP fixtures,
        guide, matrices, and API baseline without changing production surfaces.
-9. [ ] Promote Research 244 and complete the reserved lane log. Do not edit
+9. [x] Promote Research 244 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact ACP version/platform/backend table or honest empty set is recorded
-- [ ] a non-empty row proves process-private precedence and ACP-child activation
+- [x] exact ACP version/platform/backend table or honest empty set is recorded
+- [x] a non-empty row proves process-private precedence and ACP-child activation
       before readiness without flattening selection into containment
-- [ ] headless evidence is used only as route-local contrast
-- [ ] omission and enterprise API-key access stay exact
-- [ ] no production code, public API, shared authority, currentness, release,
+      (vacuous: empty set; gates recorded)
+- [x] headless evidence is used only as route-local contrast
+- [x] omission and enterprise API-key access stay exact
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
+
+## Outcome
+
+Honest empty deliver-now set. Research 244 promoted. Frozen evidence under
+`crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-acp-0.56.0-sandbox/`.
+
+Ambient `GEMINI_SANDBOX` still overrides argv/settings. Sandbox re-exec and
+optional non-TTY stdin drain happen in the parent before `runAcpClient`.
+Initialize/`session/new` expose no sandbox field. Selection is not containment.
 
 ## Validation
 
@@ -70,4 +80,3 @@ git diff --check
 Gemini headless or Live, thinking, output limits, consumer-account login,
 portable containment guarantees, production binding, live provider work,
 currentness, release, shared closeout, rollover, or g04 closure.
-

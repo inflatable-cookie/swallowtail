@@ -6,7 +6,7 @@ Created: 2026-08-27
 Updated: 2026-08-27
 Milestone: [g04.082 Parallel Per-Route Feature Qualification](../082-parallel-per-route-feature-qualification.md)
 Depends on: Bedrock Runtime prepared facade; g04.081 closeout
-Research: [231 Bedrock Runtime Service-Tier Evidence](../../research/231-bedrock-runtime-service-tier-evidence.md)
+Research: [231 Bedrock Runtime Service-Tier Evidence](../../../research/231-bedrock-runtime-service-tier-evidence.md)
 
 ## Goal
 

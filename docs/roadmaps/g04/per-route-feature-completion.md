@@ -294,13 +294,19 @@ families do not interrupt this programme by default.
   events, mixed completed output, and citation/terminal mapping are not.
   Cards 223-224 are blocked. Omission remains exact `tools: []`. Host
   networking stays denied.
+- [g04.081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md)
+  is ready. Cards 225-227 and Research 228 form one serial evidence-first lane.
+  The source-tagged sidecar already carries optional `thinkingLevel` and
+  reports `session.thinkingLevel`, but exact Pi 0.84.2 clamps unsupported
+  values. Binding is conditional on a closed static provider/model/value table,
+  pre-effect rejection, and effective-state agreement for each claimed
+  lifecycle.
 
 ## Current Execution Boundary
 
-Keep g04 open. Reassess the remaining per-route feature inventory for the next
-serial lane unless the operator supplies a different direction. Contract 029
-currentness remains standing. Do not compile the next family from this
-closeout.
+Execute g04.081 cards 225-227 serially. Stop after card 225 if Research 228 is
+empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Exclusions
 

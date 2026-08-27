@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 80 roadmaps: 65 completed milestones and fifteen honest evidence
+g04 now has 81 roadmaps: 65 completed milestones, fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 080. The generation has realized route
+and 080, plus one ready milestone at 081. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -111,6 +111,9 @@ g04.080 stopped after card 222: Research 227 empty deliver-now set. Official
 HTTP `web_search` and WebSocket body-equivalence are frozen; composed socket
 events, mixed completed output, and citation/terminal mapping are not. Cards
 223-224 are blocked. Omission remains exact `tools: []`.
+g04.081 is ready through cards 225-227. Research 228 must freeze exact Pi SDK
+`0.84.2` model/value/lifecycle reasoning truth before any binding; unsupported
+clamp or substitution remains fail-closed.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

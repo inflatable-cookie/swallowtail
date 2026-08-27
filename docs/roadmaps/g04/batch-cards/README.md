@@ -6,11 +6,12 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-The lane has no ready card. g04.080 stopped after evidence. Do not compile the
-next family from this closeout.
+- [225-pi-sdk-sidecar-reasoning-selection-evidence.md](./225-pi-sdk-sidecar-reasoning-selection-evidence.md) — ready; freeze exact Pi SDK 0.84.2 model/value/lifecycle and clamp truth, then promote Research 228
 
 ## Blocked
 
+- [226-pi-sdk-sidecar-reasoning-selection-binding.md](./226-pi-sdk-sidecar-reasoning-selection-binding.md) — blocked pending a non-empty exact Research 228 set
+- [227-pi-sdk-sidecar-reasoning-selection-acceptance.md](./227-pi-sdk-sidecar-reasoning-selection-acceptance.md) — blocked pending card 226
 - [223-xai-responses-websocket-web-search-binding.md](./223-xai-responses-websocket-web-search-binding.md) — blocked; Research 227 empty deliver-now set
 - [224-xai-responses-websocket-web-search-acceptance.md](./224-xai-responses-websocket-web-search-acceptance.md) — blocked; card 223 blocked
 - [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — blocked; Research 223 empty deliver-now set

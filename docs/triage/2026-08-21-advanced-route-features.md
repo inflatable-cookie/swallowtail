@@ -2518,3 +2518,33 @@ turn bound. Composed WebSocket search events, mixed `web_search_call` plus
 message completed output, and citation/terminal mapping are not frozen
 without provider work. The current fail-closed decoder requires a single
 assistant message. Cards 223-224 are blocked. Omission remains `tools: []`.
+
+## Post-g04.080 Reassessment And g04.081 Compilation (2026-08-27)
+
+Disposition: select reasoning selection on `pi.sdk-sidecar` and compile
+g04.081 as one serial evidence-first lane.
+
+The historical inventory predates the SDK-sidecar route and much of the
+delivered programme. The current production matrix still reports
+`pi.sdk-sidecar` `reasoning_selection` as `No`. This is now the strongest
+remaining route-local seam: the source-tagged sidecar accepts optional
+bootstrap `thinkingLevel`, passes it into exact Pi SDK construction, and
+reports `session.thinkingLevel` in bootstrap and state snapshots. Rust
+preparation and startup deliberately omit and ignore it.
+
+That existing seam does not itself qualify a control. Exact Pi 0.84.2 source
+clamps a requested thinking level to the selected model's capabilities. Card
+225 and Research 228 must therefore freeze the exact vocabulary, a closed
+provider/model/value table, clamping and fallback behavior, stored/default
+precedence, runtime replacement, and state confirmation. Static membership
+must allow unsupported rows to reject before process or credential work.
+
+New, load, resume, replacement, and fresh restoration remain separate. Any
+claimed attachment must reapply the caller-declared mode and confirm the same
+effective value before readiness. Omission preserves existing Pi
+default/stored behavior and claims no portable selection.
+
+Cards 226-227 run only for a non-empty exact Research 228 set. Dynamic level
+changes, cycling, model switching, raw settings, `pi.rpc`, newer SDK
+currentness, live provider work, release, generation rollover, and g04 closure
+stay out.

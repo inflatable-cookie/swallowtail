@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Keep g04 open. Reassess the remaining per-route feature inventory for the next
-serial lane unless the operator supplies a different direction. Contract 029
-currentness remains standing. Do not compile the next family from this
-closeout.
+Execute g04.081 cards 225-227 serially. Stop after card 225 if Research 228 is
+empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+remains standing.
 
 ## Standing Lanes
 

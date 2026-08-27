@@ -1,0 +1,9 @@
+{
+  "event_id": "response-config-reasoning-1",
+  "type": "response.create",
+  "response": {
+    "reasoning": {
+      "effort": "high"
+    }
+  }
+}

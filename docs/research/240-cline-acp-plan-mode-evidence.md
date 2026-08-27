@@ -4,7 +4,7 @@ Status: promoted
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
-Card: g04.085 / 241
+Card: g04.085 / 241; delivered g04.086 / 242-243
 
 ## Question
 
@@ -184,10 +184,9 @@ behavior (plan preset + command guard; no registered Act switch on this path),
 carried on an ACP session option instead of a process argument. It remains
 behavioral Plan, not read-only access, sandboxing, permission, or containment.
 
-Production `ClineSessionProfileInput` currently has no harness-mode field, and
-`driver/validation.rs` rejects `request.options().harness_mode()`. The guide
-still says plan/act is not a Swallowtail harness mode. Those are current
-omission facts. Binding is a later card. No behavior revision is required:
+Production binds optional `ClineSessionProfileInput::with_harness_mode(Plan)`
+on exact `3.0.55` and requires set-config confirmation before readiness.
+Omission still sends no mode request. No behavior revision is required:
 `cline.acp` ACP v1 stdio identity stays unchanged.
 
 ## Deliver-Now Table
@@ -213,11 +212,26 @@ lane; this record qualifies no newer point.
 
 ## Promotion
 
-Research 240 promotes one deliver-now row. Card 241 is complete. A later
-binding card may advertise `HarnessModeSelection(Plan)` on exact `3.0.55`
-ACP, negotiate after `session/new`, require set-config confirmation, apply
-before first prompt, and keep omission on the current wire. Shared indexes,
-matrices, and production code stay untouched by this evidence card.
+Research 240 promotes one deliver-now row. Card 241 is complete. Cards 242-243
+bind `HarnessModeSelection(Plan)` on exact `3.0.55` ACP, negotiate after
+`session/new`, require set-config confirmation, apply before first prompt, and
+keep omission on the current wire. Shared inventory, programme, indexes, and
+Next Task remain orchestrator-owned after merge.
+
+## Delivery Evidence
+
+Worker delivery under g04.086 cards 242-243:
+
+- prepared `ClineSessionProfileInput::with_harness_mode(Plan)` binds capability,
+  plan, evidence, and `SessionOptions` agreement
+- driver requires unique `session/new` modes/`configOptions` plan membership,
+  one correlated `session/set_config_option`, and `mode.currentValue = plan`
+  before returning a usable handle
+- deterministic fixtures cover positive dispatch, omission, missing/ambiguous/
+  malformed/rejected/mismatched confirmation, permission non-widening, and
+  fresh context-losing replacement renegotiation
+- guide, route/feature matrices, example, package API baseline, and changelog
+  claim only the exact requested/dispatched/confirmed Plan row
 
 ## Evidence
 

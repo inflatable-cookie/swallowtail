@@ -1,10 +1,11 @@
 //! Cline ACP and headless harness drivers.
 //!
 //! `cline.acp` binds host-approved `cline --acp` for initialize plus one bounded
-//! `session/prompt`. `cline.headless` binds `cline --json --auto-approve false`
-//! for one bounded print run, with optional portable `HarnessMode::Plan` as
-//! canonical `--plan`. Hub/TUI, `--id`, and `--auto-approve true` stay out of
-//! both routes.
+//! `session/prompt`, with optional portable `HarnessMode::Plan` negotiated
+//! through `session/set_config_option` before the first prompt.
+//! `cline.headless` binds `cline --json --auto-approve false` for one bounded
+//! print run, with optional portable `HarnessMode::Plan` as canonical `--plan`.
+//! Hub/TUI, `--id`, and `--auto-approve true` stay out of both routes.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]

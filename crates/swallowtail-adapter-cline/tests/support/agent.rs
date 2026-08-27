@@ -1,4 +1,5 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(dead_code)]
 pub enum Scenario {
     Success,
     UnexpectedWrite,
@@ -9,9 +10,63 @@ pub enum Scenario {
     Malformed,
     ProtocolMismatch,
     Oversized,
+    PlanMissing,
+    PlanAmbiguous,
+    PlanMalformed,
+    PlanRejected,
+    PlanConfirmationMissing,
+    PlanDrift,
+}
+
+impl Scenario {
+    fn plan_snapshot(self) -> PlanSnapshot {
+        match self {
+            Self::PlanMissing => PlanSnapshot::Missing,
+            Self::PlanAmbiguous => PlanSnapshot::Ambiguous,
+            Self::PlanMalformed => PlanSnapshot::Malformed,
+            _ => PlanSnapshot::Present,
+        }
+    }
+
+    fn plan_set_response(self) -> Option<PlanSetResponse> {
+        match self {
+            Self::PlanRejected => Some(PlanSetResponse::Rejected),
+            Self::PlanConfirmationMissing => Some(PlanSetResponse::ConfirmationMissing),
+            Self::PlanDrift => Some(PlanSetResponse::Drift),
+            Self::Success
+            | Self::UnexpectedWrite
+            | Self::Permission
+            | Self::Cancellation
+            | Self::Disconnect
+            | Self::Oversized => Some(PlanSetResponse::Confirm),
+            Self::AuthRequired
+            | Self::Malformed
+            | Self::ProtocolMismatch
+            | Self::PlanMissing
+            | Self::PlanAmbiguous
+            | Self::PlanMalformed => None,
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+enum PlanSnapshot {
+    Present,
+    Missing,
+    Ambiguous,
+    Malformed,
+}
+
+#[derive(Clone, Copy)]
+enum PlanSetResponse {
+    Confirm,
+    Rejected,
+    ConfirmationMissing,
+    Drift,
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub struct ObservedProcess {
     pub arguments: Vec<String>,
     pub environment_count: usize,
@@ -110,19 +165,64 @@ impl SharedAgent {
                         json!({
                             "jsonrpc": "2.0",
                             "id": id,
-                            "result": {
-                                "sessionId": "opaque-fixture-session",
-                                "modes": {
-                                    "availableModes": [
-                                        {"id": "plan", "name": "Plan"},
-                                        {"id": "act", "name": "Act"}
-                                    ],
-                                    "currentModeId": "act"
-                                }
-                            }
+                            "result": session_new_result(self.scenario.plan_snapshot())
                         }),
                     );
                     enqueue_session_metadata(&mut state);
+                }
+            },
+            Some("session/set_config_option") => {
+                let Some(response) = self.scenario.plan_set_response() else {
+                    return Err(fixture_failure());
+                };
+                let config_id = message
+                    .pointer("/params/configId")
+                    .and_then(Value::as_str);
+                let value = message.pointer("/params/value").and_then(Value::as_str);
+                if config_id != Some("mode") || value != Some("plan") {
+                    return Err(fixture_failure());
+                }
+                match response {
+                    PlanSetResponse::Rejected => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "error": {"code": -32602, "message": "fixture provider rejection"}
+                        }),
+                    ),
+                    PlanSetResponse::ConfirmationMissing => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {
+                                "configOptions": [{
+                                    "id": "model",
+                                    "type": "select",
+                                    "category": "model",
+                                    "currentValue": "fixture-model",
+                                    "options": [{"value": "fixture-model", "name": "Fixture"}]
+                                }]
+                            }
+                        }),
+                    ),
+                    PlanSetResponse::Drift => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"configOptions": [mode_option("act")]}
+                        }),
+                    ),
+                    PlanSetResponse::Confirm => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"configOptions": [mode_option("plan")]}
+                        }),
+                    ),
                 }
             },
             Some("session/prompt") => {
@@ -210,7 +310,13 @@ impl SharedAgent {
                     Scenario::Disconnect => state.stopped = true,
                     Scenario::AuthRequired
                     | Scenario::Malformed
-                    | Scenario::ProtocolMismatch => {}
+                    | Scenario::ProtocolMismatch
+                    | Scenario::PlanMissing
+                    | Scenario::PlanAmbiguous
+                    | Scenario::PlanMalformed
+                    | Scenario::PlanRejected
+                    | Scenario::PlanConfirmationMissing
+                    | Scenario::PlanDrift => {}
                 }
             }
             Some("session/cancel") => {
@@ -249,6 +355,59 @@ fn enqueue_session_metadata(state: &mut AgentState) {
             }),
         );
     }
+}
+
+fn session_new_result(snapshot: PlanSnapshot) -> Value {
+    let mut result = json!({
+        "sessionId": "opaque-fixture-session",
+        "modes": {
+            "availableModes": [
+                {"id": "plan", "name": "Plan"},
+                {"id": "act", "name": "Act"}
+            ],
+            "currentModeId": "act"
+        },
+        "configOptions": [mode_option("act")]
+    });
+    match snapshot {
+        PlanSnapshot::Present => result,
+        PlanSnapshot::Missing => {
+            let object = result
+                .as_object_mut()
+                .expect("session/new result is an object");
+            object.remove("configOptions");
+            object.remove("modes");
+            result
+        }
+        PlanSnapshot::Ambiguous => {
+            result["configOptions"] = json!([mode_option("act"), mode_option("act")]);
+            result
+        }
+        PlanSnapshot::Malformed => {
+            let mut option = mode_option("act");
+            option["category"] = Value::String("unmapped_provider_category".to_owned());
+            result["configOptions"] = json!([option]);
+            result["modes"]["availableModes"] = json!([
+                {"id": "plan", "name": "Plan"},
+                {"id": "yolo", "name": "Yolo"}
+            ]);
+            result
+        }
+    }
+}
+
+fn mode_option(current: &str) -> Value {
+    json!({
+        "id": "mode",
+        "name": "Mode",
+        "category": "mode",
+        "type": "select",
+        "currentValue": current,
+        "options": [
+            {"value": "plan", "name": "Plan"},
+            {"value": "act", "name": "Act"}
+        ]
+    })
 }
 
 struct FixtureProcessHandle(Arc<SharedAgent>);

@@ -1,8 +1,9 @@
 # 242 Cline ACP Plan-Mode Binding
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.086 Cline ACP Plan Mode](../086-cline-acp-plan-mode.md)
 Depends on: card 241; promoted Research 240 with one exact deliver-now row
 
@@ -41,15 +42,15 @@ value confirmation before readiness.
 
 ## Acceptance Criteria
 
-- [ ] only the Research 240 exact Plan row prepares
-- [ ] input, capability, plan, evidence, request, driver, snapshot, request,
+- [x] only the Research 240 exact Plan row prepares
+- [x] input, capability, plan, evidence, request, driver, snapshot, request,
       and confirmation agree exactly
-- [ ] no ready handle or first prompt precedes exact confirmation
-- [ ] malformed, missing, duplicate, rejected, or mismatched option truth
+- [x] no ready handle or first prompt precedes exact confirmation
+- [x] malformed, missing, duplicate, rejected, or mismatched option truth
       fails closed and joins owned work
-- [ ] omission retains existing frames and no Plan/default claim
-- [ ] fresh replacement reuses the immutable selected request
-- [ ] permission, access, resource, configuration, isolation, model, account,
+- [x] omission retains existing frames and no Plan/default claim
+- [x] fresh replacement reuses the immutable selected request
+- [x] permission, access, resource, configuration, isolation, model, account,
       lifecycle, and cleanup claims do not widen
 
 ## Validation
@@ -79,3 +80,10 @@ omission, rejection, replacement, and cleanup proof passes.
 
 Shared closeout and Next Task, Cline headless, another Cline feature, live
 provider work, currentness, release, merge, rollover, or g04 closure.
+
+## Closeout
+
+Binding shipped on the worker branch. Prepared input, capability/plan/evidence/
+request agreement, snapshot membership, set-config confirmation, omission,
+rejection cleanup, and fresh replacement are covered by focused package tests
+before card 243 docs/API closeout.

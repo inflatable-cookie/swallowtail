@@ -15,10 +15,10 @@ use swallowtail_adapter_cline::{
     cline_local_account_access_profile, prepare_cline_acp,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
-    SupportAuthority,
+    AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
+    ConfiguredInstanceId, CredentialMechanism, CredentialState, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, HarnessMode,
+    InstanceRevision, InterfaceVersionAxis, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -269,6 +269,43 @@ fn preparation_input(host_id: ExecutionHostId) -> ClinePreparationInput {
         ),
         evidence(),
     )
+}
+
+#[test]
+fn prepared_session_binds_optional_plan_mode_exactly() {
+    let host_id = ExecutionHostId::new("fixture.prepared.plan").expect("host");
+    let prepared = prepare(host_id);
+    let omit = prepared
+        .prepare_session(session_input("omit"))
+        .expect("omission prepares");
+    assert_eq!(omit.harness_mode(), None);
+    assert_eq!(omit.request().options().harness_mode(), None);
+    assert!(
+        omit.plan()
+            .requirements()
+            .capabilities()
+            .all(|required| required.capability() != Capability::HarnessModeSelection),
+        "omission must not require HarnessModeSelection"
+    );
+
+    let input = session_input("plan").with_harness_mode(HarnessMode::Plan);
+    assert_eq!(input.harness_mode(), Some(HarnessMode::Plan));
+    let plan = prepared.prepare_session(input).expect("plan prepares");
+    assert_eq!(plan.harness_mode(), Some(HarnessMode::Plan));
+    assert_eq!(
+        plan.request().options().harness_mode(),
+        Some(HarnessMode::Plan)
+    );
+    assert!(
+        plan.plan().requirements().capabilities().any(|required| {
+            required.capability() == Capability::HarnessModeSelection
+                && required.constraints().any(|constraint| {
+                    *constraint == CapabilityConstraint::HarnessMode(HarnessMode::Plan)
+                })
+        }),
+        "prepared Plan requires HarnessModeSelection(Plan)"
+    );
+    assert_prepared_operation_evidence_matches_plan(plan.evidence(), plan.plan());
 }
 
 fn session_input(id: &str) -> ClineSessionProfileInput {

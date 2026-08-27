@@ -71,13 +71,16 @@ pub fn swallowtail_adapter_cline::ClinePreparedIntegration::prepare_session(&sel
 pub struct swallowtail_adapter_cline::ClinePreparedSession
 impl swallowtail_adapter_cline::ClinePreparedSession
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_cline::ClinePreparedSession::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_cline::ClinePreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 pub struct swallowtail_adapter_cline::ClineSessionProfileInput
 impl swallowtail_adapter_cline::ClineSessionProfileInput
+pub const fn swallowtail_adapter_cline::ClineSessionProfileInput::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub const fn swallowtail_adapter_cline::ClineSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const fn swallowtail_adapter_cline::ClineSessionProfileInput::with_harness_mode(self, swallowtail_core::harness_mode::HarnessMode) -> Self
 pub const swallowtail_adapter_cline::CLINE_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_cline::CLINE_LOCAL_ACCOUNT_AUDIENCE: &str
 pub const swallowtail_adapter_cline::CLINE_PACKAGE_AXIS: &str

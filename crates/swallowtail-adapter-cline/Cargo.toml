@@ -51,6 +51,10 @@ name = "acp_suite"
 path = "tests/acp_suite.rs"
 
 [[test]]
+name = "plan_mode"
+path = "tests/plan_mode.rs"
+
+[[test]]
 name = "headless_suite"
 path = "tests/headless_suite.rs"
 

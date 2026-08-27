@@ -7,6 +7,15 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional
+  `ClineSessionProfileInput::with_harness_mode(Plan)` advertises
+  `HarnessModeSelection(Plan)`, requires unique `session/new` plan membership,
+  sends one `session/set_config_option` `{configId: mode, value: plan}`, and
+  requires response `mode.currentValue = plan` before readiness. Omission keeps
+  current initialize/`session/new`/prompt frames with no mode request or Plan
+  claim. Fresh context-losing replacement renegotiates the immutable selection.
+  Plan widens no permission, auto-approve, resource, isolation, or account
+  authority. Research 240, g04.086.
 - bind OpenAI Realtime session-scoped reasoning effort on facade
   `openai-realtime-reasoning-2026-08-27`: admit exact
   `minimal|low|medium|high|xhigh` through

@@ -7,14 +7,27 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
     selection_with_access(host, ResourceAccess::Read)
 }
 
+#[allow(dead_code)]
+pub fn plan_selection(host: ExecutionHostId) -> FixtureSelection {
+    selection_with_mode(host, ResourceAccess::Read, true)
+}
+
 pub fn selection_with_access(
     host: ExecutionHostId,
     resource_access: ResourceAccess,
 ) -> FixtureSelection {
+    selection_with_mode(host, resource_access, false)
+}
+
+fn selection_with_mode(
+    host: ExecutionHostId,
+    resource_access: ResourceAccess,
+    plan_mode: bool,
+) -> FixtureSelection {
     let descriptor = cline_acp_descriptor();
     let access_id = AccessProfileId::new("cline.fixture.local-account").expect("valid access id");
     let instance_id = ConfiguredInstanceId::new("cline.fixture.instance").expect("valid instance");
-    let capabilities = CapabilityProfile::new([
+    let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
@@ -30,7 +43,16 @@ pub fn selection_with_access(
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ]);
+    ];
+    if plan_mode {
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
+            )],
+        ));
+    }
+    let capabilities = CapabilityProfile::new(capability_requirements);
     let version_binding = cline_package_binding("3.0.55").expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),

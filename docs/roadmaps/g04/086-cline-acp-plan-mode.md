@@ -1,8 +1,9 @@
 # g04.086 Cline ACP Plan Mode
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Depends on: g04.085 closeout; promoted Research 240
 Vision tags: harness mode, negotiated session options, route-local controls
 Contract refs: 011, 012, 017, 023, 029, 033, 034, 037, 047, 052
@@ -15,8 +16,8 @@ session advertises `plan`, accepts it through `session/set_config_option`, and
 returns `mode.currentValue = plan` before the first prompt. The first runtime
 manager then builds from that stored mode.
 
-Production still rejects every `harness_mode` on Cline ACP. It opens
-`session/new`, ignores the returned mode/config snapshot, and returns a ready
+Production previously rejected every `harness_mode` on Cline ACP. It opened
+`session/new`, ignored the returned mode/config snapshot, and returned a ready
 session without selecting or confirming Plan.
 
 ## Goal
@@ -44,17 +45,17 @@ load/resume mutation, generic config, and Plan-to-Act switching remain out.
 
 ## Goals
 
-- [ ] expose one optional typed Plan selection on `ClineSessionProfileInput`
-- [ ] bind exact capability, constraint, plan, evidence, request, driver, and
+- [x] expose one optional typed Plan selection on `ClineSessionProfileInput`
+- [x] bind exact capability, constraint, plan, evidence, request, driver, and
       provider-session agreement
-- [ ] require `session/new` to advertise one unambiguous selectable `plan`
-- [ ] send one set-config request and require response
+- [x] require `session/new` to advertise one unambiguous selectable `plan`
+- [x] send one set-config request and require response
       `mode.currentValue = plan` before readiness
-- [ ] preserve omission as current frames with no mode request or Plan claim
-- [ ] retain the immutable selected mode through later turns and fresh
+- [x] preserve omission as current frames with no mode request or Plan claim
+- [x] retain the immutable selected mode through later turns and fresh
       context-losing replacement
-- [ ] reject load/resume redeclaration and post-readiness mutation
-- [ ] preserve permission, access, isolation, activity, terminal, failure,
+- [x] reject load/resume redeclaration and post-readiness mutation
+- [x] preserve permission, access, isolation, activity, terminal, failure,
       cancellation, and joined cleanup truth
 
 ## Non-Goals
@@ -74,34 +75,34 @@ load/resume mutation, generic config, and Plan-to-Act switching remain out.
 
 ### Batch 86.1 — Prepared Binding
 
-- [ ] execute card 242
-- [ ] add only the exact typed Plan input and capability/plan/request binding
-- [ ] negotiate and confirm Plan after `session/new` and before readiness
-- [ ] preserve omission and the existing ACP behavior revision
+- [x] execute card 242
+- [x] add only the exact typed Plan input and capability/plan/request binding
+- [x] negotiate and confirm Plan after `session/new` and before readiness
+- [x] preserve omission and the existing ACP behavior revision
 
 ### Batch 86.2 — Route-Local Acceptance
 
-- [ ] execute card 243 after card 242
-- [ ] prove positive, omission, drift, failure, turn, replacement, permission,
+- [x] execute card 243 after card 242
+- [x] prove positive, omission, drift, failure, turn, replacement, permission,
       lifecycle, docs, matrix, example, and API truth
-- [ ] leave shared inventory, programme, indexes, and Next Task for the
+- [x] leave shared inventory, programme, indexes, and Next Task for the
       orchestrator after merge
 
 ## Acceptance Criteria
 
-- [ ] only exact `cline.acp` `3.0.55` `HarnessMode::Plan` prepares
-- [ ] request, capability constraint, plan, evidence, provider snapshot,
+- [x] only exact `cline.acp` `3.0.55` `HarnessMode::Plan` prepares
+- [x] request, capability constraint, plan, evidence, provider snapshot,
       set-config request, and confirmation agree exactly
-- [ ] missing, malformed, duplicate, foreign, rejected, or mismatched option
+- [x] missing, malformed, duplicate, foreign, rejected, or mismatched option
       truth fails before a ready session or prompt
-- [ ] omission sends no mode request and retains current default-Act frames
+- [x] omission sends no mode request and retains current default-Act frames
       without claiming a provider default as a selected value
-- [ ] same-session turns retain the selected runtime posture; fresh
+- [x] same-session turns retain the selected runtime posture; fresh
       context-losing replacement renegotiates the immutable selection
-- [ ] load/resume and post-start mutation remain unsupported
-- [ ] Plan does not widen permission, auto-approve, resource, configuration,
+- [x] load/resume and post-start mutation remain unsupported
+- [x] Plan does not widen permission, auto-approve, resource, configuration,
       isolation, tool, access, model, or account authority
-- [ ] deterministic package validation uses no credential, account, provider
+- [x] deterministic package validation uses no credential, account, provider
       prompt, install, update, or paid work
 
 ## Decision Gates

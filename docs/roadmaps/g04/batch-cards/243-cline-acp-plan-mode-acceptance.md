@@ -1,8 +1,9 @@
 # 243 Cline ACP Plan-Mode Acceptance
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.086 Cline ACP Plan Mode](../086-cline-acp-plan-mode.md)
 Depends on: card 242
 
@@ -42,15 +43,15 @@ truth, then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted and rejected row has deterministic proof
-- [ ] selection cannot become ready or prompt before exact confirmation
-- [ ] omission, same-session turns, and fresh replacement remain exact
-- [ ] unsupported or drifted state never falls back to Act or another mode
-- [ ] load/resume and runtime mode mutation remain absent
-- [ ] provider behavior, permission, access, resources, configuration, and
+- [x] every admitted and rejected row has deterministic proof
+- [x] selection cannot become ready or prompt before exact confirmation
+- [x] omission, same-session turns, and fresh replacement remain exact
+- [x] unsupported or drifted state never falls back to Act or another mode
+- [x] load/resume and runtime mode mutation remain absent
+- [x] provider behavior, permission, access, resources, configuration, and
       isolation stay separate
-- [ ] public docs claim only exact requested/dispatched/confirmed Plan truth
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] public docs claim only exact requested/dispatched/confirmed Plan truth
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 
@@ -88,3 +89,9 @@ MSRV, release, and consumer checks are not authorized by this card.
 
 Another feature or route, live provider acceptance, currentness, release,
 merge, generation rollover, or g04 closure.
+
+## Closeout
+
+Route-local acceptance and docs shipped with the worker PR. Shared inventory,
+programme, triage, indexes, and Next Task remain for the orchestrator after
+merge.

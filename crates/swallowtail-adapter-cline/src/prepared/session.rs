@@ -2,7 +2,7 @@ use super::ClinePreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
-    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
+    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
     HostServiceKind, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
     ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionProviderStatePolicy,
     SupportAuthority, preflight,
@@ -11,7 +11,7 @@ use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     OpenSessionRequest, PreparationFailure, PreparationStage, PreparedOperationEvidence,
     PreparedWorkingStateRestoration, RequestId, RuntimeFailure, RuntimeTurnId, SessionAccessPolicy,
-    WorkingResourceRef,
+    SessionOptions, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -19,6 +19,7 @@ use swallowtail_runtime::{
 pub struct ClineSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
+    harness_mode: Option<HarnessMode>,
 }
 
 impl ClineSessionProfileInput {
@@ -28,7 +29,24 @@ impl ClineSessionProfileInput {
         Self {
             request_id,
             working_resource,
+            harness_mode: None,
         }
+    }
+
+    /// Selects portable Plan for the ACP session.
+    ///
+    /// Omission keeps the current initialize/`session/new` path and sends no
+    /// mode request. Only `HarnessMode::Plan` is admitted.
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
+        self
+    }
+
+    /// Returns the caller-selected portable mode, if any.
+    #[must_use]
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.harness_mode
     }
 }
 
@@ -47,8 +65,26 @@ impl ClinePreparedIntegration {
         input: ClineSessionProfileInput,
     ) -> Result<ClinePreparedSession, PreparationFailure> {
         let activity = super::activity::profile(self.observation())?;
-        let capabilities = super::activity::with_activity(advertised_capabilities(), &activity);
-        let instance = instance_with_capabilities(self.instance(), capabilities.clone());
+        let instance_capabilities =
+            super::activity::with_activity(advertised_capabilities(), &activity);
+        let instance = instance_with_capabilities(self.instance(), instance_capabilities.clone());
+        let (operation_capabilities, options) = match input.harness_mode {
+            None => (
+                without_harness_mode_selection(&instance_capabilities),
+                SessionOptions::default(),
+            ),
+            Some(HarnessMode::Plan) => (
+                instance_capabilities.clone(),
+                SessionOptions::default().with_harness_mode(HarnessMode::Plan),
+            ),
+            Some(_) => {
+                return Err(super::failure(
+                    PreparationStage::Preflight,
+                    "swallowtail.cline.acp.preparation.harness_mode_unsupported",
+                    "Cline ACP admits only portable Plan",
+                ));
+            }
+        };
         let requirements = OperationRequirements::new(
             ExecutionLayer::HarnessInteraction,
             OperationShape::InteractiveSession,
@@ -62,9 +98,13 @@ impl ClinePreparedIntegration {
             HostServiceKind::Process,
             HostServiceKind::WorkingResource,
         ])
-        .with_capabilities(capabilities.iter().map(|(capability, constraints)| {
-            CapabilityRequirement::new(capability, constraints.iter().cloned())
-        }))
+        .with_capabilities(
+            operation_capabilities
+                .iter()
+                .map(|(capability, constraints)| {
+                    CapabilityRequirement::new(capability, constraints.iter().cloned())
+                }),
+        )
         .with_interface_versions([self.observation().version().clone()])
         .with_harness_isolation(HarnessIsolation::AmbientHost)
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
@@ -85,7 +125,8 @@ impl ClinePreparedIntegration {
             )
         })?;
         let request =
-            OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?;
+            OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?
+                .with_options(options);
         Ok(ClinePreparedSession {
             evidence: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
@@ -117,7 +158,14 @@ impl ClinePreparedSession {
         &self.request
     }
 
-    /// Opens the prepared ACP session: initialize plus `session/new`.
+    #[must_use]
+    /// Returns the caller-selected portable mode copied onto session options.
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.request.options().harness_mode()
+    }
+
+    /// Opens the prepared ACP session: initialize, `session/new`, and optional
+    /// Plan confirmation before the first prompt.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -148,6 +196,10 @@ pub(super) fn advertised_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(HarnessMode::Plan)],
+        ),
+        CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
                 CancellationScope::ActiveTurn,
@@ -161,6 +213,17 @@ pub(super) fn advertised_capabilities() -> CapabilityProfile {
             ],
         ),
     ])
+}
+
+fn without_harness_mode_selection(capabilities: &CapabilityProfile) -> CapabilityProfile {
+    CapabilityProfile::new(
+        capabilities
+            .iter()
+            .filter(|(capability, _)| *capability != Capability::HarnessModeSelection)
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
+    )
 }
 
 fn access_requirement(integration: &ClinePreparedIntegration) -> AccessRequirement {

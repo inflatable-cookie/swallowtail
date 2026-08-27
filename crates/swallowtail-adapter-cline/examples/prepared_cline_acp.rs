@@ -4,6 +4,7 @@ use swallowtail_adapter_cline::{
     ClinePreparationInput, ClinePreparationProbe, ClinePreparedIntegration, ClinePreparedSession,
     ClineSessionProfileInput, prepare_cline_acp,
 };
+use swallowtail_core::HarnessMode;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, InteractiveSessionHandle, OperationContent, PreparationFailure,
     PreparedWorkingStateRestoration, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnRequest,
@@ -22,6 +23,13 @@ fn prepare_session(
     input: ClineSessionProfileInput,
 ) -> Result<ClinePreparedSession, PreparationFailure> {
     integration.prepare_session(input)
+}
+
+fn prepare_plan_session(
+    integration: &ClinePreparedIntegration,
+    input: ClineSessionProfileInput,
+) -> Result<ClinePreparedSession, PreparationFailure> {
+    integration.prepare_session(input.with_harness_mode(HarnessMode::Plan))
 }
 
 async fn open_and_prompt(

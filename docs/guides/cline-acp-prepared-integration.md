@@ -30,8 +30,9 @@ The claim is qualified-only. Later packages do not inherit this route.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
 read `CLINE_API_KEY`, or default auto-approve. Host-owned account state and
-persisted settings stay outside the prepared plan. Cline `plan`/`act` is not a
-Swallowtail harness mode.
+persisted settings stay outside the prepared plan. Root `--plan` is discarded
+by the ACP early-return and is not this row; portable Plan uses negotiated
+`session/set_config_option` only.
 
 Call `prepare_cline_acp` with `ClinePreparationInput` and
 `ClinePreparationProbe`. The probe classifies the approved target only. It
@@ -48,27 +49,37 @@ reference, or an unqualified package fails before ACP work.
 ## ACP Interactive Session
 
 Create `ClineSessionProfileInput::new` with request identity and a read-only
-working resource. There is no open deadline, model route, or harness-mode
-option. Call `prepare_session`, inspect `evidence()`, `plan()`, and `request()`,
-then `open_session`.
+working resource. Optional `with_harness_mode(HarnessMode::Plan)` selects Plan
+on exact `3.0.55`. Omission sends no mode request and claims neither selected
+Plan nor provider-default Act. There is no open deadline or model route. Call
+`prepare_session`, inspect `evidence()`, `plan()`, and `request()`, then
+`open_session`.
 
 The driver owns one joined stdio child and performs this sequence:
 
 1. spawn `cline --acp` with no extra argv
 2. `initialize` with host `fs` and `terminal` advertised false
 3. `session/new` with `{cwd, mcpServers: []}`
-4. one bounded `session/prompt` of text blocks
-5. observe permission requests and cancel; never select `allow_always`
-6. join connection, process, and task cleanup
+4. when Plan is selected: require unique `plan` advertisement, send one
+   `session/set_config_option` `{configId: mode, value: plan}`, and require
+   response `mode.currentValue = plan` before readiness
+5. one bounded `session/prompt` of text blocks
+6. observe permission requests and cancel; never select `allow_always`
+7. join connection, process, and task cleanup
 
 Host `fs/readTextFile` and `fs/writeTextFile` callbacks are rejected. Session
-deadline and `session/load` are unsupported. Mode updates stay metadata; they
-do not widen authority.
+deadline and `session/load` are unsupported. Plan is provider behavior only: it
+does not widen permission, auto-approve, resource, isolation, tool, filesystem,
+network, shell, process, model, or account authority. Mode updates stay
+metadata.
 
 Take each turn's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation issues `session/cancel` and joins the active turn.
 Close the turn and session separately from terminal truth. Ambient-host
 isolation is not filesystem or descendant-process containment.
+Fresh working-state replacement opens a new provider session and renegotiates
+the same immutable Plan selection; it remains context-losing `SessionReplaced`,
+not load or resume.
 
 See the compile-tested
 [`prepared_cline_acp` example](../../crates/swallowtail-adapter-cline/examples/prepared_cline_acp.rs).

@@ -41,10 +41,10 @@ fn validate_open(
     if request.options().developer_instructions().is_some()
         || request.options().reasoning_mode().is_some()
         || request.options().tools().len() != 0
-        || request.options().harness_mode().is_some()
     {
         return Err(unsupported("session options other than the first prompt"));
     }
+    validate_harness_mode_plan(plan, request.options())?;
     Ok(())
 }
 
@@ -64,7 +64,7 @@ fn validate_initialize(
     Ok(())
 }
 
-fn parse_new_session(response: Value) -> Result<String, RuntimeFailure> {
+fn parse_new_session(response: &Value) -> Result<String, RuntimeFailure> {
     response
         .get("sessionId")
         .and_then(Value::as_str)

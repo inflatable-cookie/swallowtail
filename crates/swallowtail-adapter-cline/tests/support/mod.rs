@@ -61,6 +61,7 @@ impl FixtureHost {
             .with_working_resource(Arc::new(self.clone()))
     }
 
+    #[allow(dead_code)]
     pub fn observed_process(&self) -> ObservedProcess {
         self.process
             .lock()
@@ -101,6 +102,16 @@ impl ProcessService for FixtureHost {
             environment_count: request.environment().len(),
             working_resource: request.working_resource().cloned(),
         });
+        {
+            let mut state = self
+                .agent
+                .state
+                .lock()
+                .expect("fixture agent lock poisoned");
+            state.output.clear();
+            state.prompt_id = None;
+            state.stopped = false;
+        }
         let handle =
             Box::new(FixtureProcessHandle(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;
         Box::pin(async move { Ok(handle) })

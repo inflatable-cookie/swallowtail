@@ -22,9 +22,19 @@
       "currentModelId": "provider-default-private"
     },
     "configOptions": [
+      {
+        "id": "mode",
+        "name": "Mode",
+        "category": "mode",
+        "type": "select",
+        "currentValue": "act",
+        "options": [
+          { "value": "plan", "name": "Plan" },
+          { "value": "act", "name": "Act" }
+        ]
+      },
       "provider",
       "model",
-      "mode",
       "auto_approve",
       "optional-organization"
     ]

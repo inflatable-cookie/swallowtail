@@ -10,10 +10,11 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    DriverDescriptor, DriverRole, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
-    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, Capability,
+    CapabilityConstraint, CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessMode, HostServiceKind,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation,
+    SessionAccessPolicy, SessionRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
@@ -224,31 +225,35 @@ impl ClineAcpDriver {
         let opened = async {
             let initialize = connection.initialize().await?;
             validate_initialize(&initialize, selected.version())?;
-            connection
+            let response = connection
                 .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
-                .await
-                .and_then(parse_new_session)
+                .await?;
+            let provider_id = parse_new_session(&response)?;
+            connection.set_session_id(provider_id.clone())?;
+            if requested_plan_mode(request.options()) {
+                prepare_plan_mode(&response)?;
+                let confirmation = connection
+                    .request(
+                        "session/set_config_option",
+                        json!({
+                            "sessionId": provider_id,
+                            "configId": "mode",
+                            "value": "plan",
+                        }),
+                    )
+                    .await?;
+                confirm_plan_mode(&confirmation)?;
+            }
+            let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
+            Ok((provider_id, provider_ref))
         }
         .await;
-        let provider_id = match opened {
-            Ok(provider_id) => provider_id,
+        let (provider_id, provider_ref) = match opened {
+            Ok(opened) => opened,
             Err(error) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
                 return Err(Box::new((error, resource)));
-            }
-        };
-        if let Err(error) = connection.set_session_id(provider_id.clone()) {
-            connection.begin_close().await;
-            let _ = pump_task.join().await;
-            return Err(Box::new((error, resource)));
-        }
-        let provider_ref = match SessionRef::new(&provider_id) {
-            Ok(provider_ref) => provider_ref,
-            Err(_) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((malformed(), resource)));
             }
         };
         let runtime_id =
@@ -271,6 +276,7 @@ impl ClineAcpDriver {
     }
 }
 
+include!("driver/mode.rs");
 include!("driver/validation.rs");
 include!("driver/cancellation.rs");
 include!("driver/turn_handle.rs");

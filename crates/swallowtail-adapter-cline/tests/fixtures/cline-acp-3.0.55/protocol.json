@@ -3,16 +3,22 @@
   "transport": "stdio-ndjson-jsonrpc",
   "protocol_version": 1,
   "first_op": ["initialize", "session/new", "session/prompt"],
+  "first_op_with_plan": [
+    "initialize",
+    "session/new",
+    "session/set_config_option",
+    "session/prompt"
+  ],
   "selected_methods": [
     "initialize",
     "session/new",
+    "session/set_config_option",
     "session/prompt",
     "session/cancel"
   ],
   "advertised_unmapped": [
     "session/load",
     "session/set_mode",
-    "session/set_config_option",
     "unstable/set_session_model",
     "authenticate"
   ],

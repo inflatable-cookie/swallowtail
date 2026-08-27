@@ -17,4 +17,9 @@ g04.079 `--max-turns` evidence across every published version in
 qualified ceiling. `headless-autocompaction.json` records the g04.085
 `--autocompact` evidence stop across every published version in
 `2.1.220..=2.1.241`, probed on darwin-arm64 native executables, with an honest
-empty deliver-now set. No provider prompt was sent.
+empty deliver-now set. `headless-spend-cap.json` records the g04.087a
+`--max-budget-usd` evidence stop across every published version in
+`2.1.220..=2.1.241`, probed on darwin-arm64 native executables, with an honest
+empty deliver-now set because the local catalog-priced USD ledger does not
+close against the selected local-subscription billing profile. No provider
+prompt was sent.

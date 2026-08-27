@@ -23,11 +23,14 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.086 Cline ACP Plan Mode Compiled](./2026-08-27-g04-086-cline-acp-plan-mode-compiled.md) — cards 242-243 ready; exact new-session Plan selection and confirmation
+- [2026-08-27 g04.086 Cline ACP Plan Mode](./2026-08-27-g04-086-cline-acp-plan-mode.md) — ready; cards 242-243; one exact new-session Plan row
+- [2026-08-27 g04.085 Parallel Feature Qualification Closeout](./2026-08-27-g04-085-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one Cline ACP Plan delivery set; PRs 94, 93, 91, and 92
 - [2026-08-27 g04.085 Parallel Feature Qualification Compiled](./2026-08-27-g04-085-parallel-feature-qualification-compiled.md) — cards 238-241 and Research 237-240 reserved as four evidence-only worker lanes; parallel execution, serial promotion and merge
-- [2026-08-27 g04.085a Claude Code Headless Autocompaction Evidence](./2026-08-27-g04-085a-claude-code-headless-autocompaction-evidence.md) — ready; card 238; Research 237 reserved
-- [2026-08-27 g04.085b Codex App-Server Personality Evidence](./2026-08-27-g04-085b-codex-app-server-personality-evidence.md) — ready; card 239; Research 238 reserved
-- [2026-08-27 g04.085c Gemini CLI Headless Sandbox Evidence](./2026-08-27-g04-085c-gemini-cli-headless-sandbox-evidence.md) — ready; card 240; Research 239 reserved
-- [2026-08-27 g04.085d Cline ACP Plan-Mode Evidence](./2026-08-27-g04-085d-cline-acp-plan-mode-evidence.md) — ready; card 241; Research 240 reserved
+- [2026-08-27 g04.085a Claude Code Headless Autocompaction Evidence](./2026-08-27-g04-085a-claude-code-headless-autocompaction-evidence.md) — complete; card 238; Research 237 honest empty deliver-now set
+- [2026-08-27 g04.085b Codex App-Server Personality Evidence](./2026-08-27-g04-085b-codex-app-server-personality-evidence.md) — complete; card 239; Research 238 honest empty deliver-now set
+- [2026-08-27 g04.085c Gemini CLI Headless Sandbox Evidence](./2026-08-27-g04-085c-gemini-cli-headless-sandbox-evidence.md) — complete; card 240; Research 239 honest empty deliver-now set
+- [2026-08-27 g04.085d Cline ACP Plan-Mode Evidence](./2026-08-27-g04-085d-cline-acp-plan-mode-evidence.md) — complete; card 241; Research 240 admits one exact new-session Plan row
 - [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort](./2026-08-27-g04-084-openai-realtime-reasoning-effort.md) — complete; cards 236-237; five exact session-scoped values; PR 90 at `266ec857`
 - [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort Compiled](./2026-08-27-g04-084-openai-realtime-reasoning-effort-compiled.md) — cards 236-237 ready; five exact session-scoped values at a new opaque facade point
 - [2026-08-27 g04.083 Parallel Feature Qualification Closeout](./2026-08-27-g04-083-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one qualified OpenAI Realtime delivery set; PRs 86, 88, 87, and 85

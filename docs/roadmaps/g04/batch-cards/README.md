@@ -6,10 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [238-claude-code-headless-autocompaction-evidence.md](./238-claude-code-headless-autocompaction-evidence.md) — g04.085 lane A; evidence only
-- [239-codex-app-server-personality-evidence.md](./239-codex-app-server-personality-evidence.md) — g04.085 lane B; evidence only
-- [240-gemini-cli-headless-sandbox-evidence.md](./240-gemini-cli-headless-sandbox-evidence.md) — g04.085 lane C; evidence only
-- [241-cline-acp-plan-mode-evidence.md](./241-cline-acp-plan-mode-evidence.md) — g04.085 lane D; evidence only
+- [242-cline-acp-plan-mode-binding.md](./242-cline-acp-plan-mode-binding.md) — ready; exact Research 240 Plan binding
+- [243-cline-acp-plan-mode-acceptance.md](./243-cline-acp-plan-mode-acceptance.md) — ready after card 242; route-local acceptance
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -38,6 +36,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [241-cline-acp-plan-mode-evidence.md](./241-cline-acp-plan-mode-evidence.md) — complete; Research 240 admits one exact new-session Plan row
+- [240-gemini-cli-headless-sandbox-evidence.md](./240-gemini-cli-headless-sandbox-evidence.md) — complete; Research 239 honest empty deliver-now set
+- [239-codex-app-server-personality-evidence.md](./239-codex-app-server-personality-evidence.md) — complete; Research 238 honest empty deliver-now set
+- [238-claude-code-headless-autocompaction-evidence.md](./238-claude-code-headless-autocompaction-evidence.md) — complete; Research 237 honest empty deliver-now set
 - [237-openai-realtime-reasoning-effort-acceptance.md](./237-openai-realtime-reasoning-effort-acceptance.md) — complete; g04.084 route-local acceptance
 - [236-openai-realtime-reasoning-effort-binding.md](./236-openai-realtime-reasoning-effort-binding.md) — complete; g04.084 prepared binding
 - [235-openai-realtime-reasoning-effort-evidence.md](./235-openai-realtime-reasoning-effort-evidence.md) — complete; lane D; Research 236 admits five future session-scoped rows

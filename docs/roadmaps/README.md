@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Validate g04.085 cards 238-241 as four package-distinct evidence-only worker lanes.
-Keep worker ownership disjoint and integration serial. Do not start production
-binding from a worker branch. Keep g04 open. Contract 029 currentness remains
+Execute g04.086 cards 242-243 in order as one serial Cline ACP Plan-mode worker
+lane. Require exact pre-prompt selected-value confirmation and preserve
+omission, authority, replacement, and cleanup truth. Keep shared closeout with
+the orchestrator after merge. Keep g04 open. Contract 029 currentness remains
 standing.
 
 ## Standing Lanes

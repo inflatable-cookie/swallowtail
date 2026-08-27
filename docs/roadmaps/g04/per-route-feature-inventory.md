@@ -10,20 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.084.
+sequence after g04.085.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 49 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.084. |
-| Active qualification backlog | 26 | A bounded route-local evidence question remains. |
-| Active delivery | 0 | No promoted binding/acceptance lane remains. |
+| Closed by a numbered lane | 52 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.085. |
+| Active qualification backlog | 22 | A bounded route-local evidence question remains. |
+| Active delivery | 1 | Original item 41 is promoted to g04.086 binding and acceptance. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-2, 5, 7, 15-16, 19, 23-27, 30, 32-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
+`1-2, 4-5, 7, 15-16, 19-20, 23-27, 30-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
 62-63, 65-68, 72-74, 76-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
@@ -35,14 +35,13 @@ queue.
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 4, 6, 8-9 | `claude-code.headless` | compaction, spend, advisor, permission modes | qualify separately; never widen permissions by default |
+| 6, 8-9 | `claude-code.headless` | spend, advisor, permission modes | qualify separately; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 18, 20-21 | `codex.app-server` | Fast, personality, Plan effort | three distinct controls; no promotion from exec |
+| 18, 21 | `codex.app-server` | Fast, Plan effort | distinct controls; no promotion from exec |
 | 28 | `cursor-agent.acp` | model parameters | exact ACP option and selected-value confirmation required |
 | 29 | `gemini-cli.acp` | sandbox | qualify independently on exact enterprise API-key route |
-| 31 | `gemini-cli.headless` | sandbox | qualify independently on exact enterprise API-key route |
 | 34 | `grok-build.acp` | web-search disable | exact ACP spawn and applied-state evidence |
-| 41-42 | `cline.acp` | Plan, model | no promotion from headless evidence |
+| 42 | `cline.acp` | model | no promotion from headless evidence |
 | 46-47 | `goose.acp` | builtins, mode | host extension authority and session configuration stay distinct |
 | 48-49 | `kiro.acp` | effort, agent | ACP only; deferred Kiro headless work does not own these rows |
 | 54 | `mistral-vibe.headless` | agent beyond Plan | qualify only non-bypass profiles |
@@ -53,7 +52,9 @@ queue.
 
 ## Active Delivery
 
-No promoted delivery lane remains after g04.084.
+| Original id | Route | Control family | Delivery lane |
+| ---: | --- | --- | --- |
+| 41 | `cline.acp` | Plan mode | g04.086 cards 242-243 |
 
 ## No Active Lane
 
@@ -107,9 +108,9 @@ evidence stops. Item 76 closed through g04.084 and PR 90 at `266ec857`.
 completed lanes and Research 233-236. PRs 86, 88, 87, and 85 landed serially
 through `c918d301`.
 
-## Selected Parallel Qualification Wave III
+## Completed Parallel Qualification Wave III
 
-g04.085 selects four route- and package-distinct evidence lanes from the 26
+g04.085 completed four route- and package-distinct evidence lanes from the 26
 active qualification candidates:
 
 1. item 4 — `claude-code.headless` autocompaction — card 238
@@ -117,13 +118,15 @@ active qualification candidates:
 3. item 31 — `gemini-cli.headless` sandbox — card 240
 4. item 41 — `cline.acp` Plan mode — card 241
 
-Research 237-240 are reserved. Workers own only their assigned card, Research,
-log, and optional route-local frozen evidence. Shared disposition changes and
-any non-empty delivery promotion remain serial after all four evidence PRs
-land.
+Research 237-239 admit honest empty deliver-now sets. Research 240 admits one
+exact `cline.acp` `3.0.55` `HarnessMode::Plan` row through pre-prompt
+`session/set_config_option` confirmation. Items 4, 20, and 31 close as evidence
+stops. Item 41 moves to active delivery under g04.086. PRs 94, 93, 91, and 92
+landed serially through `abdaefd2`.
 
-[g04.085](085-third-parallel-per-route-feature-qualification.md) owns this
-selected wave.
+[g04.085](085-third-parallel-per-route-feature-qualification.md) owns the
+completed wave. [g04.086](086-cline-acp-plan-mode.md) owns the promoted delivery
+row.
 
 ## Update Rule
 

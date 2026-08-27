@@ -2679,3 +2679,28 @@ and log. Shared inventory, programme, triage, matrices, indexes, Next Task, and
 any production binding remain serial. Provider prompts, credentials, paid work,
 account inspection, install/update, ambient mutation, release, rollover, and
 g04 closure stay out.
+
+## Post-g04.085 Completion And g04.086 Compilation (2026-08-27)
+
+Disposition: three evidence stops; one bounded delivery lane.
+
+Research 237 closes Claude Code headless autocompaction because ambient
+environment gates defeat operation-private precedence and prompt-free effective
+confirmation is absent. Research 238 closes Codex app-server personality
+because model membership, pre-effect rejection, returned selection, and cold
+restoration do not close. Research 239 closes Gemini headless sandboxing because
+ambient precedence, backend activation, and containment truth remain open.
+
+Research 240 admits one exact `cline.acp` `3.0.55` `HarnessMode::Plan` row.
+`session/new` advertises `plan`; one pre-prompt `session/set_config_option`
+request selects it; the response confirms `mode.currentValue = plan`; the first
+runtime manager builds from that stored mode. Root `--plan`, provider Act,
+post-start mutation, load restoration, permissions, and containment stay out.
+
+Original items 4, 20, and 31 move to the closed disposition set. Item 41 moves
+to active delivery. The live inventory now owns 52 closed items, 22 active
+qualification candidates, one active delivery item, and ten with no active
+lane. PRs 94, 93, 91, and 92 landed serially through `abdaefd2`.
+
+g04.086 cards 242-243 own Cline ACP Plan binding and route-local acceptance.
+Shared closeout remains serial after merge. Keep g04 open.

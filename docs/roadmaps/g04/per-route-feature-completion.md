@@ -320,16 +320,21 @@ families do not interrupt this programme by default.
   `minimal|low|medium|high|xhigh` rows at a new opaque facade point while
   preserving historical and omission behavior.
 - [g04.085 Parallel Per-Route Feature Qualification III](./085-third-parallel-per-route-feature-qualification.md)
-  is ready. Cards 238-241 qualify Claude Code headless autocompaction, Codex
-  app-server personality, Gemini CLI headless sandboxing, and Cline ACP Plan
-  mode as four package-distinct evidence-only lanes.
+  is complete. Cards 238-240 and Research 237-239 close Claude Code headless
+  autocompaction, Codex app-server personality, and Gemini CLI headless
+  sandboxing with honest empty sets. Card 241 and Research 240 qualify one exact
+  Cline ACP Plan row. PRs 94, 93, 91, and 92 landed serially through
+  `abdaefd2`.
+- [g04.086 Cline ACP Plan Mode](./086-cline-acp-plan-mode.md) is ready. Cards
+  242-243 bind and prove Research 240's exact new-session
+  `HarnessMode::Plan` row through selected-value confirmation before readiness.
 
 ## Current Execution Boundary
 
-The normalized inventory has 49 closed original items, 26 active qualification
-candidates, no active delivery item, and ten items with no active lane. Execute
-g04.085 cards 238-241 in parallel with disjoint worker ownership and serial
-integration. Keep g04 open. Contract 029 currentness remains standing.
+The normalized inventory has 52 closed original items, 22 active qualification
+candidates, one active delivery item, and ten items with no active lane. Execute
+g04.086 cards 242-243 as one serial Cline ACP worker lane. Keep g04 open.
+Contract 029 currentness remains standing.
 
 ## Exclusions
 

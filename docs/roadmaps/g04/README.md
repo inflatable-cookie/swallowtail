@@ -99,14 +99,15 @@ and selection policy.
 - [g04.082 Parallel Per-Route Feature Qualification](082-parallel-per-route-feature-qualification.md) — complete, cards 228-231; Research 229-232 honest empty deliver-now sets; PRs 81-84 through `5d9fa3f5`
 - [g04.083 Parallel Per-Route Feature Qualification II](083-second-parallel-per-route-feature-qualification.md) — complete, cards 232-235; three honest empty sets and five future OpenAI Realtime rows; PRs 86, 88, 87, and 85 through `c918d301`
 - [g04.084 OpenAI Realtime Reasoning Effort](084-openai-realtime-reasoning-effort.md) — complete, cards 236-237; Research 236 delivered through PR 90 at `266ec857`
-- [g04.085 Parallel Per-Route Feature Qualification III](085-third-parallel-per-route-feature-qualification.md) — ready, cards 238-241; Research 237-240 reserved as package-distinct evidence lanes
+- [g04.085 Parallel Per-Route Feature Qualification III](085-third-parallel-per-route-feature-qualification.md) — complete, cards 238-241; three honest empty sets and one Cline ACP Plan delivery row; PRs 94, 93, 91, and 92 through `abdaefd2`
+- [g04.086 Cline ACP Plan Mode](086-cline-acp-plan-mode.md) — ready, cards 242-243; Research 240 exact new-session Plan row
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
-  items normalized after g04.084: 49 closed, 26 active qualification
-  candidates, no active delivery, and ten with no active lane
+  items normalized after g04.085: 52 closed, 22 active qualification
+  candidates, one active delivery, and ten with no active lane
 
-g04 has 85 numbered roadmaps: 69 completed milestones, fifteen honest
+g04 has 86 numbered roadmaps: 70 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, and one ready milestone at 085. g04.084 is complete. The
+074, 076, and 080, and one ready milestone at 086. g04.085 is complete. The
 operator keeps the generation active.
 Do not close g04 without explicit operator direction.
 
@@ -312,10 +313,12 @@ Do not close g04 without explicit operator direction.
 - g04.084 is complete and merged through PR 90 at `266ec857`. Cards 236-237
   bind and prove those five Realtime values at a new opaque facade point while
   preserving historical and omission behavior
-- g04.085 is ready. Cards 238-241 reserve Claude Code headless autocompaction,
-  Codex app-server personality, Gemini CLI headless sandboxing, and Cline ACP
-  Plan mode as four package-distinct evidence-only lanes
-- g04 remains active at 85 roadmaps; generation closure awaits explicit
+- g04.085 is complete. Research 237-239 close three candidates with honest
+  empty sets; Research 240 qualifies one exact Cline ACP Plan row. PRs 94, 93,
+  91, and 92 landed serially through `abdaefd2`
+- g04.086 is ready. Cards 242-243 bind and prove the exact new-session Cline
+  ACP Plan row through selected-value confirmation before readiness
+- g04 remains active at 86 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -457,11 +460,12 @@ Do not close g04 without explicit operator direction.
     deliver Research 236's five exact rows at facade
     `openai-realtime-reasoning-2026-08-27` with matching `session.updated`
     acknowledgement and omission unchanged.
-48. g04.085 is ready. Cards 238-241 reserve Claude Code headless
-    autocompaction, Codex app-server personality, Gemini CLI headless sandbox,
-    and Cline ACP Plan mode as disjoint evidence-only lanes. Research 237-240
-    are reserved.
-49. g04 remains active at operator direction. Contract 029 remains standing.
+48. g04.085 is complete. Research 237-239 admit honest empty sets. Research
+    240 qualifies one exact Cline ACP Plan row. PRs 94, 93, 91, and 92 landed
+    serially through `abdaefd2`.
+49. g04.086 is ready. Cards 242-243 own exact Cline ACP Plan binding and
+    route-local acceptance.
+50. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -520,7 +524,8 @@ New route-family research does not pre-empt this sequence.
 - [082 Parallel Per-Route Feature Qualification](./082-parallel-per-route-feature-qualification.md) — complete, cards 228-231; Research 229-232 honest empty deliver-now sets; PRs 81-84 through `5d9fa3f5`
 - [083 Parallel Per-Route Feature Qualification II](./083-second-parallel-per-route-feature-qualification.md) — complete, cards 232-235; three honest empty sets and one qualified OpenAI Realtime delivery set
 - [084 OpenAI Realtime Reasoning Effort](./084-openai-realtime-reasoning-effort.md) — complete and merged through PR 90 at `266ec857`, cards 236-237; Research 236 delivered
-- [085 Parallel Per-Route Feature Qualification III](./085-third-parallel-per-route-feature-qualification.md) — ready, cards 238-241; Research 237-240 reserved as package-distinct evidence lanes
+- [085 Parallel Per-Route Feature Qualification III](./085-third-parallel-per-route-feature-qualification.md) — complete, cards 238-241; three honest empty sets and one Cline ACP Plan delivery row; PRs 94, 93, 91, and 92 through `abdaefd2`
+- [086 Cline ACP Plan Mode](./086-cline-acp-plan-mode.md) — ready, cards 242-243; Research 240 exact new-session Plan row
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

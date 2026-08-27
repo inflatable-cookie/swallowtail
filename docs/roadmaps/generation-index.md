@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 85 roadmaps: 69 completed milestones, fifteen honest evidence
+g04 now has 86 roadmaps: 70 completed milestones, fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 080, and one ready milestone at 085. g04.084 is complete. The generation
+and 080, and one ready milestone at 086. g04.085 is complete. The generation
 has realized route readiness and connection admission, widened proved addable
 coverage, added the Pi SDK
 sidecar, requalified Gemini CLI enterprise API-key access, and established the
@@ -124,10 +124,13 @@ OpenAI Realtime effort rows. PRs 86, 88, 87, and 85 landed serially through
 `c918d301`.
 g04.084 is complete and merged through PR 90 at `266ec857`; cards 236-237
 deliver Research 236's five exact session-scoped OpenAI Realtime effort rows.
-The original 85-item feature inventory is normalized after g04.084: 49 items
-have numbered-lane dispositions, 26 remain active qualification candidates,
-none is active delivery, and ten have no active lane. g04.085 cards 238-241 are
-ready as four package-distinct evidence-only lanes.
+g04.085 is complete. Research 237-239 close three candidates with honest empty
+sets. Research 240 qualifies one exact Cline ACP Plan row. PRs 94, 93, 91, and
+92 landed serially through `abdaefd2`.
+The original 85-item feature inventory is normalized after g04.085: 52 items
+have numbered-lane dispositions, 22 remain active qualification candidates,
+one is active delivery, and ten have no active lane. g04.086 cards 242-243 are
+ready as one serial Cline ACP Plan delivery lane.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

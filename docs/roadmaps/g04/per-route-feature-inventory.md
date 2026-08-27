@@ -73,10 +73,10 @@ queue.
 
 Four route-distinct evidence lanes can run together:
 
-1. item 19 — `codex.app-server` model verbosity
-2. item 32 — `gemini-cli.headless` thinking configuration
-3. item 81 — `bedrock.runtime` latency / service tier
-4. item 83 — `ollama.attached` think `max`
+1. item 19 — `codex.app-server` model verbosity — g04.082 card 228
+2. item 32 — `gemini-cli.headless` thinking configuration — card 229
+3. item 81 — `bedrock.runtime` latency / service tier — card 230
+4. item 83 — `ollama.attached` think `max` — card 231
 
 They touch different route packages and have no evidence dependency. Codex can
 reuse Research 213 only as a lead; app-server still needs its own transport,
@@ -89,6 +89,9 @@ lane before dispatch. Workers own only their card and Research file. They do
 not edit programme, triage, roadmap, generation, feature-matrix, docs-index, or
 Next Task state. The orchestrator promotes results serially, then compiles
 route-local binding and acceptance only for non-empty deliver-now sets.
+
+[g04.082](082-parallel-per-route-feature-qualification.md) owns the four
+compiled evidence lanes and Research 229-232.
 
 This shape avoids shared mutable planning files. Full delivery branches are
 not parallel-safe until their evidence is promoted because every closeout

@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Compile and dispatch the four evidence-only lanes in the
-[normalized per-route feature inventory](g04/per-route-feature-inventory.md#parallel-qualification-wave).
-Promote their results serially. Keep g04 open. Contract 029 currentness remains
-standing.
+Execute g04.082 cards 228-231 as four parallel evidence-only worker lanes.
+Promote their results serially after review and fast-forward-only merge. Keep
+g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

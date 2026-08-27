@@ -300,12 +300,17 @@ families do not interrupt this programme by default.
   `anthropic/claude-opus-4-5` portable reasoning row on exact Pi `0.84.2`.
   Omission retains exact bootstrap bytes and no portable selection claim when
   options are empty.
+- [g04.082 Parallel Per-Route Feature Qualification](./082-parallel-per-route-feature-qualification.md)
+  is ready. Cards 228-231 reserve four route-distinct evidence-only lanes for
+  Codex app-server verbosity, Gemini headless thinking, Bedrock service tier,
+  and Ollama think `max`. Research 229-232 are reserved. Shared promotion and
+  any later delivery compilation remain serial.
 
 ## Current Execution Boundary
 
 The normalized inventory has 41 closed original items, 34 active qualification
-candidates, and ten items with no active lane. Compile its four route-distinct
-evidence-only lanes for parallel dispatch. Workers must not edit shared
+candidates, and ten items with no active lane. Execute g04.082 cards 228-231 as
+four route-distinct evidence-only lanes. Workers must not edit shared
 programme, triage, matrix, index, or Next Task state. Promote results serially,
 then compile delivery only for non-empty exact sets. Keep g04 open. Contract 029
 currentness remains standing.

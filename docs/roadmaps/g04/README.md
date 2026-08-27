@@ -96,15 +96,16 @@ and selection policy.
 - [g04.079 Claude Code Headless Maximum Turns](079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission
 - [g04.080 xAI Responses WebSocket Web Search](080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 admits one bounded `anthropic/claude-opus-4-5` reasoning row
+- [g04.082 Parallel Per-Route Feature Qualification](082-parallel-per-route-feature-qualification.md) — ready, cards 228-231; Research 229-232 reserved as four evidence-only lanes
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
   items normalized after g04.081: 41 closed, 34 active qualification
   candidates, ten with no active lane; four evidence-only lanes selected for
   parallel compilation
 
-g04 has 81 numbered roadmaps: 66 completed milestones, fifteen honest
+g04 has 82 numbered roadmaps: 66 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080. g04.081 is complete. The operator keeps the
-generation active.
+074, 076, and 080, and one ready milestone at 082. g04.081 is complete. The
+operator keeps the generation active.
 Do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
@@ -486,6 +487,7 @@ New route-family research does not pre-empt this sequence.
 - [079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 promoted
 - [080 xAI Responses WebSocket Web Search](./080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 bounded row
+- [082 Parallel Per-Route Feature Qualification](./082-parallel-per-route-feature-qualification.md) — ready, cards 228-231; Research 229-232 reserved
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

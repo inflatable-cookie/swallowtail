@@ -6,6 +6,11 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
+- [231-ollama-attached-think-max-evidence.md](./231-ollama-attached-think-max-evidence.md) — parallel evidence-only lane D; Research 232
+- [230-bedrock-runtime-service-tier-evidence.md](./230-bedrock-runtime-service-tier-evidence.md) — parallel evidence-only lane C; Research 231
+- [229-gemini-cli-headless-thinking-evidence.md](./229-gemini-cli-headless-thinking-evidence.md) — parallel evidence-only lane B; Research 230
+- [228-codex-app-server-model-verbosity-evidence.md](./228-codex-app-server-model-verbosity-evidence.md) — parallel evidence-only lane A; Research 229
+
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Blocked

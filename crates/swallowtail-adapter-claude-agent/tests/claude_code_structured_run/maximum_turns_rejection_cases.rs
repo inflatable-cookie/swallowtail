@@ -53,30 +53,41 @@ fn zero_overflow_and_unqualified_versions_reject_before_process_work() {
 }
 
 #[test]
-fn low_level_driver_cannot_dispatch_a_bound_on_an_unprobed_plan() {
+fn an_extracted_driver_never_carries_another_runs_bound() {
     let topology = ExecutionTopologyFixture::local();
-    let selection = ClaudeCodeMaximumTurns::from_u64(3).expect("value is admitted");
+    let prepared = prepared(topology.execution_host_id().clone());
 
-    // A bound only reaches the driver through prepared construction; there is
-    // no public setter. Take a legitimately prepared driver, then swap in a
-    // plan for a version no artifact was probed for.
-    let probed = prepared(topology.execution_host_id().clone());
-    let bound = probed
+    let run_a = prepared
         .prepare_run(
-            run_profile_input(topology.working_resource().clone(), "turns-low-level")
-                .with_maximum_turns(selection),
+            run_profile_input(topology.working_resource().clone(), "turns-a")
+                .with_maximum_turns(ClaudeCodeMaximumTurns::from_u64(1).expect("value is admitted")),
         )
-        .expect("Claude Code run prepares");
+        .expect("run A prepares with maximum 1");
+    let run_b = prepared
+        .prepare_run(
+            run_profile_input(topology.working_resource().clone(), "turns-b")
+                .with_maximum_turns(
+                    ClaudeCodeMaximumTurns::from_u64(30).expect("value is admitted"),
+                ),
+        )
+        .expect("run B prepares with maximum 30");
+    let run_c = prepared
+        .prepare_run(run_profile_input(
+            topology.working_resource().clone(),
+            "turns-c",
+        ))
+        .expect("run C prepares with no selection");
 
-    for unprobed in ["2.1.242", "2.1.230"] {
-        let integration = prepared_at(topology.execution_host_id().clone(), unprobed);
-        let swapped = integration
-            .prepare_run(run_profile_input(
-                topology.working_resource().clone(),
-                "turns-low-level-swapped",
-            ))
-            .expect("omission prepares on the unprobed version");
-
+    // Neither `PreflightPlan` nor `StructuredRunRequest` records a bound, so a
+    // driver that escaped its own prepared run could be handed another run's
+    // plan and silently dispatch the wrong value. Extraction is unbound instead,
+    // so the cross-pairings below cannot contradict the plan they run.
+    for (donor, host_run, label) in [
+        (&run_a, &run_b, "A(1) driver with B(30) plan"),
+        (&run_b, &run_a, "B(30) driver with A(1) plan"),
+        (&run_a, &run_c, "A(1) driver with C(omitted) plan"),
+        (&run_c, &run_a, "C(omitted) driver with A(1) plan"),
+    ] {
         let (process, state) = FakeProcessService::with_exit(
             &fixture("headless-complete.jsonl"),
             ProcessExit::new(true, Some(0)),
@@ -86,48 +97,50 @@ fn low_level_driver_cannot_dispatch_a_bound_on_an_unprobed_plan() {
             process,
             Arc::new(PendingTimeService),
         );
-        let error = match block_on(bound.low_level_driver().start_run(
-            swapped.plan().clone(),
-            swapped.request().clone(),
+        let mut run = block_on(donor.low_level_driver().start_run(
+            host_run.plan().clone(),
+            host_run.request().clone(),
             services,
-        )) {
-            Ok(_) => panic!("an unprobed plan must reject the bound"),
-            Err(error) => error,
-        };
-        assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.claude_code.headless.maximum_turns_unqualified"
+        ))
+        .expect("low-level run starts");
+        let _ = block_on(
+            run.take_terminal_outcome()
+                .expect("terminal outcome is available"),
         );
-
-        // Rejection happens before any process work: no child was started,
-        // nothing was waited on, and no task was spawned to join.
-        assert!(!state.started());
-        assert!(!state.waited());
-        assert!(!task.joined());
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+        assert!(task.joined());
+        assert!(
+            !state
+                .request()
+                .arguments
+                .iter()
+                .any(|argument| argument == "--max-turns"),
+            "{label} dispatched a maximum-turn bound"
+        );
     }
 
-    // The same unprobed plan still runs through an unbound driver: this
-    // rejects the bound, not the version.
-    let integration = prepared_at(topology.execution_host_id().clone(), "2.1.242");
-    let omitted = integration
-        .prepare_run(run_profile_input(
-            topology.working_resource().clone(),
-            "turns-low-level-omitted",
-        ))
-        .expect("omission prepares on the unprobed version");
-    let run = execute(
-        &omitted,
-        topology.execution_host_id().clone(),
-        &fixture("headless-complete.jsonl"),
-        ProcessExit::new(true, Some(0)),
-    );
-    assert_eq!(run.outcome.status(), &TerminalStatus::Completed);
-    assert!(
-        !run.request
-            .arguments
-            .iter()
-            .any(|argument| argument == "--max-turns")
-    );
+    // Prepared `start_run` still dispatches each run's own bound exactly.
+    for (run, expected) in [(&run_a, Some("1")), (&run_b, Some("30")), (&run_c, None)] {
+        let dispatched = execute(
+            run,
+            topology.execution_host_id().clone(),
+            &fixture("headless-complete.jsonl"),
+            ProcessExit::new(true, Some(0)),
+        );
+        match expected {
+            Some(value) => assert_eq!(
+                dispatched.request.arguments[dispatched.request.arguments.len() - 2..],
+                ["--max-turns", value]
+            ),
+            None => assert!(
+                !dispatched
+                    .request
+                    .arguments
+                    .iter()
+                    .any(|argument| argument == "--max-turns")
+            ),
+        }
+    }
 }
 
 #[test]

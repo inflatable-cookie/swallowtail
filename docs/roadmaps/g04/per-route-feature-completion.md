@@ -282,7 +282,9 @@ families do not interrupt this programme by default.
   `UnverifiedNewer` points and the never-published in-range `2.1.230` reject
   before process work. Explicit argv overrides `CLAUDE_CODE_MAX_TURNS`
   unconditionally, with no environment inspection or mutation, and omission
-  keeps the exact prior argv while leaving any ambient value authoritative. A counted turn is one tool-use round trip.
+  keeps the exact prior argv while leaving any ambient value authoritative.
+  Prepared `start_run` is the only surface that dispatches a bound, so prepared
+  and dispatched state agree by construction rather than comparison. A counted turn is one tool-use round trip.
   Reaching the native bound stays `error_max_turns`, exit `1`, and a provider
   failure with no output. A distinct terminal diagnostic and any portable
   budget vocabulary stay out.

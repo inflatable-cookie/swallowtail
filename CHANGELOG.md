@@ -45,9 +45,11 @@ annotated Git tags from the canonical repository.
   truthiness test under which a resolved `0` disables enforcement outright.
   The version gate is the exact probed set, not the qualified window: both
   `UnverifiedNewer` points and the never-published in-range `2.1.230` reject
-  before process work. Prepared construction is the only path to a bound — no
-  public seam attaches one to a hand-built `ClaudeCodeHeadlessDriver` — and the
-  driver re-checks the plan's version before starting a process. Omission
+  before process work. `ClaudeCodePreparedRun::start_run` is the only surface
+  that dispatches a bound: `low_level_driver` returns an unbound driver and no
+  public seam attaches one to a hand-built `ClaudeCodeHeadlessDriver`, so a
+  bound can never be paired with another run's plan or with a run that omitted
+  the selection. Omission
   preserves the exact prior argv and the approved environment, and is not a
   claim of unlimited execution because an ambient `CLAUDE_CODE_MAX_TURNS` stays
   authoritative when the flag is absent; explicit argv overrides it

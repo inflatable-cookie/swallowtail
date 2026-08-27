@@ -402,7 +402,10 @@
     "omission_preserves_exact_prior_argv": true,
     "omission_claims_unlimited_execution": false,
     "public_low_level_setter": false,
-    "low_level_dispatch_revalidates_plan_version": true
+    "low_level_dispatch_revalidates_plan_version": true,
+    "bound_dispatch_is_prepared_only": true,
+    "extracted_low_level_driver_carries_a_bound": false,
+    "plan_or_request_records_the_bound": false
   },
   "disposition": {
     "deliver_now_rows": [

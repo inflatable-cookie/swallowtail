@@ -102,13 +102,19 @@ assessment for `2.1.230` describes the range, not an observed binary, so it
 does not admit the feature. Both cases reject at preparation with
 `swallowtail.claude_code.headless.preparation.maximum_turns_unqualified`.
 
-Prepared construction is the only path to a bound: `with_maximum_turns` on the
-low-level driver is crate-private, so no public seam attaches one to a
-hand-built `ClaudeCodeHeadlessDriver`. The driver additionally re-checks the
-plan's version whenever a bound is present and fails with
-`swallowtail.claude_code.headless.maximum_turns_unqualified` before starting a
-process, so pairing a prepared bound with a swapped-in unprobed plan cannot
-dispatch. Omission still runs on every version the route otherwise permits.
+`ClaudeCodePreparedRun::start_run` is the only surface that dispatches a bound.
+`with_maximum_turns` on the low-level driver is crate-private, and
+`low_level_driver` deliberately returns an unbound driver even when a bound was
+prepared. The driver additionally re-checks the plan's version whenever a bound
+is present, as a fail-closed guard on the internal seam.
+
+Prepared and dispatched state therefore agree by construction rather than by
+comparison, which is the only option available: neither `PreflightPlan` nor
+`StructuredRunRequest` records a maximum-turn bound, so there is no immutable
+execution input to compare against without a shared-contract change this lane
+does not authorize. Keeping the bound and its `(plan, request)` pair together in
+one path means they cannot disagree. Omission still runs on every version the
+route otherwise permits.
 
 ## Shared Closeout
 
@@ -153,6 +159,26 @@ identity test, the dispatch and rejection cases separated, and
 `prepared_code/profile/prepared.rs` alongside the existing `profile/plan.rs`.
 The baseline is exact again. The open g04.056 papercut still records the
 inherited structural debt.
+
+### Review Round Two
+
+`betterthanclay` requested changes again at `fb5a9221`. The version gate and
+roadmap fixes held; one agreement gap remained and it was real.
+
+`ClaudeCodePreparedRun::low_level_driver` was public and returned a driver
+carrying that run's bound, while `start` could only check the supplied plan's
+*version*. Preparing run A with maximum `1` and run B with maximum `30` on the
+same admitted version, then calling
+`run_a.low_level_driver().start_run(run_b.plan(), run_b.request(), …)`, passed
+validation and dispatched `1` — silently contradicting run B. The same held when
+run B omitted the selection entirely.
+
+Comparison could not fix this, because no immutable execution input records the
+bound. `low_level_driver` now returns an unbound driver and prepared `start_run`
+builds the bound one internally, so the mismatch is unconstructible.
+`an_extracted_driver_never_carries_another_runs_bound` proves all four
+cross-pairings dispatch no `--max-turns`, and that prepared `start_run` still
+dispatches `1`, `30`, and omission exactly.
 
 ### Review Round One
 

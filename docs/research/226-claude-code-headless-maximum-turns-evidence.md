@@ -458,10 +458,13 @@ no artifact can be obtained. A `Qualified` assessment for `2.1.230` is a
 statement about the range, not about any observed binary, so it must not admit
 this feature.
 
-Prepared construction must be the only way a bound reaches the driver, and the
-driver must re-check the plan's version before process work. Otherwise a caller
-could pair a legitimately prepared bound with an unprobed plan and dispatch
-`--max-turns` on a version this record says nothing about.
+Prepared execution must be the only way a bound reaches a process. Neither
+`PreflightPlan` nor `StructuredRunRequest` records a maximum-turn bound, so an
+extracted driver that carried one could be handed another prepared run's plan
+and silently dispatch a value that plan never selected — including onto a run
+that deliberately omitted the selection. There is no immutable execution input
+to compare against, so agreement has to come from construction: the bound and
+its `(plan, request)` pair may only ever be brought together in one place.
 
 ## Sources
 

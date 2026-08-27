@@ -37,15 +37,19 @@ impl ClaudeCodeHeadlessDriver {
 
     /// Configures one admitted `--max-turns` value for low-level dispatch.
     ///
-    /// Deliberately crate-private. A maximum-turn bound may only reach this
-    /// driver through prepared construction, which gates it on the exact
-    /// Research 226 version set. There is no public seam that attaches a bound
-    /// to a hand-built driver, so no caller can dispatch `--max-turns` on a
-    /// version no artifact was probed for.
+    /// Deliberately crate-private, and reached only from
+    /// [`crate::ClaudeCodePreparedRun::start_run`], which pairs the bound with
+    /// its own plan and request. No public seam attaches a bound to a driver:
+    /// a hand-built driver cannot be given one, and
+    /// [`crate::ClaudeCodePreparedRun::low_level_driver`] deliberately returns
+    /// an unbound driver.
     ///
-    /// [`Self::start_run`] re-checks the plan's version against that same set
-    /// whenever a bound is present, so swapping in a different plan after
-    /// preparation still fails before any process work.
+    /// That is what keeps prepared and dispatched state in agreement. Neither
+    /// `PreflightPlan` nor `StructuredRunRequest` records a maximum-turn bound,
+    /// so a bound driver reachable from outside its own prepared run could be
+    /// handed another run's plan and silently dispatch the wrong value. The
+    /// bound and its `(plan, request)` pair are only ever brought together in
+    /// one place, so they cannot disagree.
     #[must_use]
     pub(crate) const fn with_maximum_turns(
         mut self,
@@ -111,6 +115,11 @@ impl ClaudeCodeHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         crate::claude_code_validation::validate(&plan, &request, &services)?;
+        // A bound only reaches this driver through prepared `start_run`, which
+        // always supplies its own plan, so this cannot fire through any public
+        // path today. It is kept as a fail-closed guard on the internal seam:
+        // no future construction may dispatch a bound onto a version Research
+        // 226 never probed.
         if self.maximum_turns.is_some()
             && !crate::claude_code_selection::plan_admits_maximum_turns(&plan)
         {

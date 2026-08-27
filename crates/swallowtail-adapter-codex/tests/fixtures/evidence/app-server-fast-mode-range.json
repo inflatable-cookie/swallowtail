@@ -1,0 +1,109 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.app-server",
+  "observed_at": "2026-08-27",
+  "versions": ["0.147.0", "0.148.0", "0.149.0", "0.149.1"],
+  "tag_commits": {
+    "0.147.0": "be6e8eac029b183056b7e4402879f15d2c85f61b",
+    "0.148.0": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "0.149.0": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+    "0.149.1": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "tarball_sha256": {
+    "rust-v0.129.0": "7c3f31ea6438af4e97c1bcfee3a899a9de955572256dddfdbd98191d4bff84a2",
+    "rust-v0.131.0": "6e8cf81870596dac31ac164ac51f06bc94007f2c89d31e07fbe9e899751aea2d",
+    "rust-v0.147.0": "355bde4b40d5ba6deea2e469d36f91708315729f3e84c9c69cce6b041a5ba593",
+    "rust-v0.149.1": "85139f405ce455bf14ff452615cdb2572d752e31a1e0da6891ac8325915d10ce"
+  },
+  "introduction_points": {
+    "typed_thread_start_service_tier_param": "rust-v0.129.0",
+    "bundled_catalog_fast_tier_models": "rust-v0.131.0",
+    "gpt_5_6_fast_tier_models": "rust-v0.147.0",
+    "fast_mode_feature_gate": "rust-v0.118.0",
+    "get_service_tier_request_wiring": "rust-v0.125.0"
+  },
+  "feature_gate_and_tier_relationship": {
+    "fast_mode_key": "features.fast_mode",
+    "fast_mode_default_enabled_at_0_149_1": true,
+    "service_tier_rpc_json_key": "serviceTier",
+    "service_tier_config_key": "service_tier",
+    "service_tier_default_request_sentinel": "default",
+    "fast_wire_request_value": "priority",
+    "legacy_aliases_accepted": ["fast", "priority"],
+    "catalog_tier_id_for_fast": "priority",
+    "catalog_tier_display_name": "Fast",
+    "slash_command": "/fast",
+    "slash_command_surface": "tui_cli_interactive_only",
+    "app_server_has_no_fast_rpc_method": true,
+    "gate_blocks_all_tiers_when_disabled_at_session_init": true,
+    "omitted_service_tier_sends_no_request_tier": true,
+    "catalog_default_service_tier_not_auto_applied": true
+  },
+  "protocol_seam": {
+    "typed_thread_start_service_tier": true,
+    "typed_thread_resume_service_tier": true,
+    "typed_thread_fork_service_tier": true,
+    "typed_turn_start_service_tier": true,
+    "typed_thread_settings_update_service_tier": true,
+    "thread_start_response_service_tier": true,
+    "thread_resume_response_service_tier": true,
+    "turn_start_response_service_tier": false,
+    "thread_settings_returns_service_tier": true,
+    "thread_settings_updated_notification_service_tier": true,
+    "model_list_service_tiers": true,
+    "model_list_default_service_tier": true,
+    "config_read_typed_service_tier": true,
+    "thread_metadata_persisted_service_tier": false,
+    "double_option_null_clears_to_default_sentinel": true
+  },
+  "bundled_fast_tier_models_at_0_149_1": [
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "gpt-5.5",
+    "gpt-5.4"
+  ],
+  "unsupported_tier_server_hard_rejection": false,
+  "mid_session_update_revalidates_membership_before_store": false,
+  "source_digests_at_0_149_1": {
+    "codex-rs/core/config.schema.json": "affe54cce9b9945ffd32d322415ff4cc844c62068c1190be6355580be4ca9350",
+    "codex-rs/models-manager/models.json": "c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549",
+    "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": "27b068150d650ec6da10cd811cd176a72dd7844d701ff351989f4423032a0e07",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "3d76c3154f5d092eb2460fa77f1e8befdf4255447afb741724658afbf30a7704",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "3991f4a8f595767ac0de5d39a4edd7c2eea68ecaedfb007a4554e5fb1497d4e8",
+    "codex-rs/app-server-protocol/src/protocol/v2/config.rs": "e67c812b34a9fddce9ec157870e338dcedebf9ff3003527e7e5b24bd51818d7e",
+    "codex-rs/protocol/src/config_types.rs": "80c1f9a5026019fe813c064ee0ec05a33772f5e6cdd2863d19dda7e4414221ba",
+    "codex-rs/protocol/src/openai_models.rs": "39939bf67ac473b5921d4edd0864df2c1d491edd7de5577957fc877eb3e012c3",
+    "codex-rs/core/src/session/mod.rs": "e6218071821f7e1b3858d31c2a0aef5fa5b63dea0ab16dfbced716d825ddbcc9",
+    "codex-rs/core/src/session/session.rs": "24ed2ac18d58621c404e8dd3c79a9fa844ade5bfc48225fd2467624e068dda89",
+    "codex-rs/core/src/client.rs": "7af5d4c0c15673564b455725c98d34379c4bdf579f52c4d89aecb4ceb4b190fe",
+    "codex-rs/features/src/lib.rs": "791121524b5269c72254911823b77253cc98121d1dd29608663dd9d73fa7d61a",
+    "codex-rs/state/src/model/thread_metadata.rs": "dda4cff3a12a7631502ecc59da8cc46a3bf15f3bbbd937dc8a1f22812cec61f1",
+    "codex-rs/app-server/src/request_processors/thread_summary.rs": "8d209a9d9a6f99a4551e771cc06e12eb496bbc03af9b962fa9a4845e14a3c9f1",
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": "49269190a4962d74e51678774c07b2e06bb19e54806f7fecf0cc1ef2250fa8d4",
+    "codex-rs/app-server/src/request_processors/turn_processor.rs": "5d6fc08a66946ca4c01f0e624d1886a8575215e0422f71ad127eefa6f032c5d6",
+    "codex-rs/app-server/README.md": "664c71bc798035d7c6a91e6f45a1b6f4a5cd33745c8df0b1376717dbeed62ed5"
+  },
+  "official_docs_digests": {
+    "learn.chatgpt.com/docs/agent-configuration/speed.md": "e9de54571572cbc386e7326579e8c93c3e5a25f856359fb33112c59805fc6bbc"
+  },
+  "swallowtail_production_bytes": {
+    "thread_start_serializes": ["model", "developerInstructions", "dynamicTools", "workspace attachment fields"],
+    "thread_start_omits": ["serviceTier", "config"],
+    "thread_resume_omits": ["serviceTier"],
+    "turn_start_serializes": ["threadId", "input", "effort", "collaborationMode", "sandboxPolicy"],
+    "turn_start_omits": ["serviceTier"],
+    "harness_configuration_posture": "Ambient"
+  },
+  "empty_set_rationale": [
+    "unsupported_tier_silently_dropped_at_session_init_without_hard_reject",
+    "mid_session_settings_or_turn_can_store_tier_without_membership_revalidation",
+    "service_tier_for_request_can_omit_provider_field_after_settings_confirmation",
+    "live_chatgpt_catalog_can_replace_bundled_membership_after_start_echo",
+    "thread_metadata_does_not_persist_service_tier_for_cold_resume",
+    "ambient_features_fast_mode_gate_can_nullify_selected_tier_at_session_init"
+  ],
+  "decision": "empty_deliver_now",
+  "deliver_now_row_count": 0
+}

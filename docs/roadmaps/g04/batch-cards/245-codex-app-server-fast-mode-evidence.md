@@ -1,6 +1,6 @@
 # 245 Codex App-Server Fast-Mode Evidence
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -16,35 +16,35 @@ Research 242 with a closed deliver-now table or an honest empty set.
 
 ## Work
 
-1. [ ] Keep route `codex.app-server`, exact maintained app-server versions,
+1. [x] Keep route `codex.app-server`, exact maintained app-server versions,
        explicit selected model, ChatGPT/API-key/enterprise access distinctions,
        interactive lifecycle, and current session authority unchanged.
-2. [ ] Reuse Research 234 only as Codex-core and exec contrast. Do not promote
+2. [x] Reuse Research 234 only as Codex-core and exec contrast. Do not promote
        exec argv or its empty-set conclusion onto app-server.
-3. [ ] Freeze exact tagged app-server schemas and source for `/fast`,
+3. [x] Freeze exact tagged app-server schemas and source for `/fast`,
        `service_tier`, `features.fast_mode`, model tier membership, thread/turn
        config, request serialization, returned state, and persistence.
-4. [ ] Build a closed version/model/access/value/lifecycle table. Prove the
+4. [x] Build a closed version/model/access/value/lifecycle table. Prove the
        exact tier id, model membership, gate, pre-effect rejection, and whether
        app-server reports the selected/effective tier before or after work.
-5. [ ] Separate config, thread, turn, request, accepted, returned, effective,
+5. [x] Separate config, thread, turn, request, accepted, returned, effective,
        persisted, restored, and provider-billed truth. ChatGPT credit multipliers
        and API Priority billing remain distinct.
-6. [ ] Prove new/load/resume/fresh-replacement and omission behavior without
+6. [x] Prove new/load/resume/fresh-replacement and omission behavior without
        live catalogue substitution or ambient config authority.
-7. [ ] Audit prepared sessions, plan/evidence/request agreement, protocol
+7. [x] Audit prepared sessions, plan/evidence/request agreement, protocol
        fixtures, guide, matrices, and API baseline without production changes.
-8. [ ] Promote Research 242 and complete the reserved lane log. Do not edit
+8. [x] Promote Research 242 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact app-server version/model/access table or honest empty set exists
-- [ ] a non-empty row has closed membership, selection, confirmation, billing,
+- [x] exact app-server version/model/access table or honest empty set exists
+- [x] a non-empty row has closed membership, selection, confirmation, billing,
       persistence, restoration, and omission truth
-- [ ] no exec-only flag or conclusion is promoted onto app-server
-- [ ] unsupported and drifted rows reject before provider effects
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] no exec-only flag or conclusion is promoted onto app-server
+- [x] unsupported and drifted rows reject before provider effects
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
 
 ## Validation
@@ -69,3 +69,10 @@ Codex exec, personality, verbosity, Plan effort, multi-agent, search,
 production binding, live provider work, currentness, release, shared closeout,
 rollover, or g04 closure.
 
+## Result
+
+Research 242 promoted with an honest empty deliver-now set (0 rows). Typed
+app-server `serviceTier` seams, bundled Fast membership, and billing split are
+frozen. Soft unsupported drop, mid-session preference≠wire omit, live catalogue
+substitution, missing `ThreadMetadata` persistence, and ambient `fast_mode`
+gate block binding. Production code unchanged.

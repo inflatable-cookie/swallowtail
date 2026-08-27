@@ -42,5 +42,7 @@ Frozen corpus:
 
 ## Next
 
-Orchestrator review and PR merge into serial g04.082 promotion. Production
-binding and shared inventory disposition wait for that promotion batch.
+PR: https://github.com/inflatable-cookie/swallowtail/pull/83
+
+Orchestrator review and serial g04.082 promotion. Production binding and shared
+inventory disposition wait for that promotion batch.

@@ -1,0 +1,91 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-27",
+  "route": "gemini-cli.headless",
+  "official_version": "0.56.0",
+  "github_tag": "v0.56.0",
+  "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+  "qualified_range": "0.51.0..=0.56.0",
+  "decision": "empty_deliver_now",
+  "selected_argv": [
+    "--output-format",
+    "stream-json",
+    "--model",
+    "<explicit-model>",
+    "--approval-mode",
+    "plan",
+    "--extensions",
+    "none",
+    "--allowed-mcp-server-names",
+    "",
+    "--skip-trust",
+    "--session-id",
+    "<session-id>"
+  ],
+  "thinking_argv_present": false,
+  "thinking_env_present": false,
+  "thinking_config_surface": "settings.modelConfigs.generateContentConfig.thinkingConfig",
+  "thinking_config_fields": [
+    "includeThoughts",
+    "thinkingBudget",
+    "thinkingLevel"
+  ],
+  "builtin_alias_defaults": {
+    "chat-base": {
+      "includeThoughts": true
+    },
+    "chat-base-2.5": {
+      "thinkingBudget": 8192
+    },
+    "chat-base-3": {
+      "thinkingLevel": "HIGH"
+    }
+  },
+  "stream_json_init_fields": [
+    "type",
+    "timestamp",
+    "session_id",
+    "model"
+  ],
+  "stream_json_thinking_fields": [],
+  "settings_precedence": [
+    "schema_defaults",
+    "system_defaults",
+    "user",
+    "workspace",
+    "system"
+  ],
+  "child_env_settings_overrides": [
+    "GEMINI_CLI_SYSTEM_SETTINGS_PATH",
+    "GEMINI_CLI_SYSTEM_DEFAULTS_PATH"
+  ],
+  "settings_still_read_ambient": [
+    "user_settings",
+    "workspace_settings"
+  ],
+  "swallowtail_posture": {
+    "harness_configuration": "ambient",
+    "harness_isolation": "ambient_host",
+    "reasoning_mode_rejected": true
+  },
+  "source_digests_v0.56.0": {
+    "packages/core/src/config/defaultModelConfigs.ts": "84d9f2230d9bec00ade567ef760df9b1645dfcf74917d3cac1f1e78c2f5f173b",
+    "packages/core/src/services/modelConfigService.ts": "e3dfc0e1133bd4153d1c4557e6c39b1f577a08504e689b0e26b67cc228ac019b",
+    "packages/core/src/config/models.ts": "b7ec5ce10bc4164ca2efb2aecb2fdcd7d1afeb29c17082ab45537c51a61ca0dd",
+    "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+    "packages/cli/src/config/settings.ts": "31b771bc8b7960f0cb6f9aa347378af6973a1054665caa0fabf7b3836940bba3",
+    "packages/cli/src/config/settingsSchema.ts": "df5e1939dd6313ffbe0e1e182af83efbf9e55bca99482e0223faf9b5bbe93e6d",
+    "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+    "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+    "packages/core/src/core/geminiChat.ts": "509d03416ad093b15fdf1fa891ccc719591a4d0a02976f9086b5546033e64873"
+  },
+  "sdk_dependency": {
+    "package": "@google/genai",
+    "version": "1.30.0",
+    "thinking_level_enum": [
+      "THINKING_LEVEL_UNSPECIFIED",
+      "LOW",
+      "HIGH"
+    ]
+  }
+}

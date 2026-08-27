@@ -1,10 +1,12 @@
 # 228 Codex App-Server Model Verbosity Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.082 Parallel Per-Route Feature Qualification](../082-parallel-per-route-feature-qualification.md)
 Depends on: g04.066; g04.081 closeout
+Research: [229 Codex App-Server Model Verbosity Evidence](../../../research/229-codex-app-server-model-verbosity-evidence.md)
 
 ## Goal
 
@@ -14,37 +16,50 @@ precedence, lifecycle, dispatch, and confirmation truth, then promote Research
 
 ## Work
 
-1. [ ] Reuse Research 213 only as a source lead. Prove app-server separately;
+1. [x] Reuse Research 213 only as a source lead. Prove app-server separately;
        do not copy exec argv or its adapter-local binding.
-2. [ ] Freeze exact tagged source and generated app-server protocol/config
+2. [x] Freeze exact tagged source and generated app-server protocol/config
        schemas at `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` for
        `model_verbosity`, model metadata, defaults, unsupported behavior, and
        request construction.
-3. [ ] Trace the selected route's new, import, load, resume, follow-up, and
+3. [x] Trace the selected route's new, import, load, resume, follow-up, and
        fresh restoration paths. Identify the exact per-session or per-turn
        configuration seam, precedence over ambient config, and whether the
        selected value is confirmed before readiness or turn effects.
-4. [ ] Build a closed version/model/value/profile table. Distinguish parser
+4. [x] Build a closed version/model/value/profile table. Distinguish parser
        acceptance, dispatched Responses `text.verbosity`, provider acceptance,
        effective verbosity, and observed output length.
-5. [ ] Prove unsupported models, values, versions, providers, and profiles can
+5. [x] Prove unsupported models, values, versions, providers, and profiles can
        reject before process, credential, resource, or app-server work.
-6. [ ] Prove omission retains current app-server request/config bytes and
+6. [x] Prove omission retains current app-server request/config bytes and
        ambient/default behavior without claiming caller selection.
-7. [ ] Audit prepared session inputs/evidence, plan/request agreement, RPC
+7. [x] Audit prepared session inputs/evidence, plan/request agreement, RPC
        encoder/decoder, load/resume/import, fixtures, guide, matrices, and API
        baseline without changing production surfaces.
-8. [ ] Promote Research 229 and complete the reserved lane log. Do not edit
+8. [x] Promote Research 229 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact app-server configuration and lifecycle seam is frozen
-- [ ] exact version/model/value/profile table or honest empty set is recorded
-- [ ] omission and every unsupported row have pre-effect dispositions
-- [ ] requested, dispatched, accepted, effective, and observed truth stay separate
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] exact app-server configuration and lifecycle seam is frozen
+- [x] exact version/model/value/profile table or honest empty set is recorded
+- [x] omission and every unsupported row have pre-effect dispositions
+- [x] requested, dispatched, accepted, effective, and observed truth stay separate
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
+
+## Outcome
+
+Research 229 promotes an honest empty deliver-now set. Exact
+`0.147.0..=0.149.1` app-server exposes `model_verbosity` only through ambient
+config read and an untyped `thread/*/config` map. Stable RPC surfaces used by
+Swallowtail lack typed verbosity on session open, turn start, thread settings,
+and `model/list`, and responses do not confirm an effective value. Unsupported
+models still warn and omit Responses `text.verbosity` after session bind. No
+app-server verbosity binding is authorized.
+
+Frozen corpus:
+`crates/swallowtail-adapter-codex/tests/fixtures/evidence/app-server-model-verbosity-range.json`
 
 ## Validation
 

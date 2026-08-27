@@ -1,0 +1,70 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.app-server",
+  "observed_at": "2026-08-27",
+  "versions": ["0.147.0", "0.148.0", "0.149.0", "0.149.1"],
+  "tag_commits": {
+    "0.147.0": "be6e8eac029b183056b7e4402879f15d2c85f61b",
+    "0.148.0": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "0.149.0": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+    "0.149.1": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "tarball_sha256": {
+    "rust-v0.149.1": "85139f405ce455bf14ff452615cdb2572d752e31a1e0da6891ac8325915d10ce"
+  },
+  "protocol_seam": {
+    "typed_thread_start_fields": [
+      "model",
+      "modelProvider",
+      "serviceTier",
+      "developerInstructions",
+      "personality",
+      "config"
+    ],
+    "typed_turn_start_fields_with_effort_analog": [
+      "model",
+      "effort",
+      "summary",
+      "personality",
+      "collaborationMode"
+    ],
+    "typed_thread_settings_fields": [
+      "model",
+      "effort",
+      "summary",
+      "personality",
+      "collaborationMode"
+    ],
+    "model_list_verbosity_fields": [],
+    "config_read_model_verbosity": true,
+    "config_map_model_verbosity_key": "model_verbosity",
+    "thread_start_response_verbosity": false,
+    "thread_settings_verbosity": false,
+    "thread_metadata_persisted_verbosity": false
+  },
+  "source_digests_at_0.149.1": {
+    "codex-rs/core/config.schema.json": "affe54cce9b9945ffd32d322415ff4cc844c62068c1190be6355580be4ca9350",
+    "codex-rs/models-manager/models.json": "c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549",
+    "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": "27b068150d650ec6da10cd811cd176a72dd7844d701ff351989f4423032a0e07",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "3d76c3154f5d092eb2460fa77f1e8befdf4255447afb741724658afbf30a7704",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "3991f4a8f595767ac0de5d39a4edd7c2eea68ecaedfb007a4554e5fb1497d4e8",
+    "codex-rs/protocol/src/config_types.rs": "80c1f9a5026019fe813c064ee0ec05a33772f5e6cdd2863d19dda7e4414221ba",
+    "codex-rs/core/src/client.rs": "7af5d4c0c15673564b455725c98d34379c4bdf579f52c4d89aecb4ceb4b190fe",
+    "codex-rs/tui/src/app_server_session.rs": "a2b32e794ab9c02e88235b7d5d61be93e991cce88ff5c5363ff150561ce8f24f"
+  },
+  "cross_version_stability": {
+    "turn.rs": "byte-identical across 0.147.0..=0.149.1",
+    "model.rs": "byte-identical at 0.148.0, 0.149.0, and 0.149.1; 0.147.0 differs without adding verbosity fields",
+    "thread.rs": "byte-identical at 0.149.0 and 0.149.1; earlier tags differ without adding typed verbosity fields",
+    "v2.schemas.json": "byte-identical at 0.149.0 and 0.149.1; per-version hashes recorded in app-server-releases.json"
+  },
+  "swallowtail_production_bytes": {
+    "thread_start_serializes": ["model", "developerInstructions", "dynamicTools", "workspace attachment fields"],
+    "thread_start_omits": ["config", "model_verbosity"],
+    "turn_start_serializes": ["threadId", "input", "effort", "collaborationMode", "sandboxPolicy"],
+    "turn_start_omits": ["verbosity", "config.model_verbosity"]
+  },
+  "decision": "empty_deliver_now",
+  "deliver_now_row_count": 0
+}

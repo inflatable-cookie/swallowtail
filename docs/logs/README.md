@@ -23,7 +23,7 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort](./2026-08-27-g04-084-openai-realtime-reasoning-effort.md) — ready; cards 236-237; Research 236 promoted
+- [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort](./2026-08-27-g04-084-openai-realtime-reasoning-effort.md) — complete; cards 236-237; five exact session-scoped values; PR 90 at `266ec857`
 - [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort Compiled](./2026-08-27-g04-084-openai-realtime-reasoning-effort-compiled.md) — cards 236-237 ready; five exact session-scoped values at a new opaque facade point
 - [2026-08-27 g04.083 Parallel Feature Qualification Closeout](./2026-08-27-g04-083-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one qualified OpenAI Realtime delivery set; PRs 86, 88, 87, and 85
 - [2026-08-27 g04.083 Parallel Feature Qualification Compiled](./2026-08-27-g04-083-parallel-feature-qualification-compiled.md) — cards 232-235 and Research 233-236 reserved as four evidence-only worker lanes; parallel execution, serial promotion and merge

@@ -315,16 +315,17 @@ families do not interrupt this programme by default.
   session-scoped OpenAI Realtime effort rows. PRs 86, 88, 87, and 85 landed
   serially through `c918d301`.
 - [g04.084 OpenAI Realtime Reasoning Effort](./084-openai-realtime-reasoning-effort.md)
-  is ready. Cards 236-237 bind and prove Research 236's exact
+  is complete and merged through PR 90 at `266ec857`. Cards 236-237 bind and
+  prove Research 236's exact
   `minimal|low|medium|high|xhigh` rows at a new opaque facade point while
   preserving historical and omission behavior.
 
 ## Current Execution Boundary
 
-The normalized inventory has 48 closed original items, 26 active qualification
-candidates, one active delivery item, and ten items with no active lane. Execute
-g04.084 cards 236-237 as one OpenAI-owned delivery lane. Keep g04 open. Contract
-029 currentness remains standing.
+The normalized inventory has 49 closed original items, 26 active qualification
+candidates, no active delivery item, and ten items with no active lane. Reassess
+the remaining candidates and define the next meaningful bounded qualification
+batch. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

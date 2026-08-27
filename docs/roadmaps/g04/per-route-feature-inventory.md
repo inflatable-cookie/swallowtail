@@ -10,21 +10,21 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.083.
+sequence after g04.084.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 48 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.083. |
+| Closed by a numbered lane | 49 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.084. |
 | Active qualification backlog | 26 | A bounded route-local evidence question remains. |
-| Active delivery | 1 | Exact evidence is promoted and binding/acceptance cards are ready. |
+| Active delivery | 0 | No promoted binding/acceptance lane remains. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
 `1-2, 5, 7, 15-16, 19, 23-27, 30, 32-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
-62-63, 65-68, 72-74, 77-78, 81-85`.
+62-63, 65-68, 72-74, 76-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
 each closed lane. `Closed` does not mean every feature shipped. Honest empty
@@ -53,9 +53,7 @@ queue.
 
 ## Active Delivery
 
-| Original id | Route | Control family | Delivery lane |
-| ---: | --- | --- | --- |
-| 76 | `openai.realtime` | session-scoped reasoning effort | Research 236; g04.084 cards 236-237 |
+No promoted delivery lane remains after g04.084.
 
 ## No Active Lane
 
@@ -100,10 +98,10 @@ g04.083 completed four route-distinct evidence lanes from the 30 active items:
 3. item 30 — `gemini-cli.acp` thinking configuration — card 234
 4. item 76 — `openai.realtime` reasoning effort — card 235
 
-Research 233-235 admit honest empty deliver-now sets. Research 236 admits five
+Research 233-235 admit honest empty deliver-now sets. Research 236 admitted five
 future session-scoped `minimal|low|medium|high|xhigh` rows on exact
-`gpt-realtime-2.1`, while current production remains empty. Items 2, 15, and 30
-close as evidence stops. Item 76 moves to active delivery under g04.084.
+`gpt-realtime-2.1`, while production was empty. Items 2, 15, and 30 closed as
+evidence stops. Item 76 closed through g04.084 and PR 90 at `266ec857`.
 
 [g04.083](083-second-parallel-per-route-feature-qualification.md) owns the
 completed lanes and Research 233-236. PRs 86, 88, 87, and 85 landed serially

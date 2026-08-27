@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Run g04.084 cards 236-237 as one OpenAI Realtime reasoning-effort worker lane.
-Bind only Research 236's five exact session-scoped rows at the new opaque
-facade point. Keep g04 open. Contract 029 currentness remains standing.
+Reassess the 26 active per-route qualification candidates and define the next
+meaningful bounded batch. Keep g04 open. Contract 029 currentness remains
+standing.
 
 ## Standing Lanes
 

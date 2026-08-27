@@ -4,6 +4,8 @@ Status: done
 Generation: g04
 Cards: 236-237
 Research: 236
+PR: 90
+Merged head: `266ec857cd4df1c8f3c84464c668f9a06ff4e268`
 Worker branch: `t3code/openai-realtime-reasoning-effort`
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-def5c1e9`
 
@@ -57,5 +59,5 @@ Addressed orchestrator changes-requested on PR 90:
 
 ## Next Move
 
-Open one reviewable PR against current pushed `main`. Do not merge. Orchestrator
-owns shared inventory/programme/index/Next Task closeout after merge.
+Return to the shared per-route programme. No promoted delivery lane remains;
+keep g04 open and select the next bounded qualification batch.

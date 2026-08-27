@@ -14,11 +14,11 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory in the advanced-feature
-triage tail and compile the next numbered route-local milestone. g04.078 is
-complete through cards 216-218: Research 225 admitted one exact
-`--reasoning off` row and it is bound and proved. Keep g04 open. Contract 029
-currentness remains standing.
+Execute g04.079 cards 219-221 serially for Claude Code headless maximum
+agentic turns. Card 219 must promote Research 226 with a non-empty exact
+deliver-now set whose native enforcement and explicit-argv precedence are
+proved before cards 220-221 run; otherwise stop after evidence. Keep g04 open.
+Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

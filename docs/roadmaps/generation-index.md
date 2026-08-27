@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-26
+Updated: 2026-08-27
 
 ## Generations
 
@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 78 roadmaps: 64 completed milestones and fourteen honest evidence
+g04 now has 79 roadmaps: 64 completed milestones and fourteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
-076. No milestone is ready. The generation has realized route
+076, plus one ready milestone. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -103,6 +103,13 @@ unchanged. `off` is the only value needing no model or chat-template fact,
 because exact source short-circuits `enable_thinking` to `false` before the
 template is probed. `--reasoning on`, `auto`, and every `--reasoning-budget`
 value are withheld. Effective and observed reasoning stay withheld.
+g04.079 is ready. Cards 219-221 and Research 226 gate
+`claude-code.headless` maximum agentic turns. Current official documentation
+names `--max-turns` and lower-precedence `CLAUDE_CODE_MAX_TURNS`, but exact
+qualified `2.1.220..=2.1.241` artifact support, numeric bounds, counted-turn
+meaning, native enforcement, and limit-reached terminal truth remain to be
+frozen. Binding and acceptance are conditional on a non-empty exact
+deliver-now set.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

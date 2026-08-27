@@ -2389,3 +2389,45 @@ exactly eight keys and none reports thinking support, `task_params::to_json`
 emits no `reasoning_budget_tokens` in either branch, and the one
 `thinking = %d` startup line is `LOG_TRC`, above the default verbosity of `3`.
 The triage row for `llama-cpp.owned` reasoning is closed.
+
+## Post-g04.078 Reassessment And g04.079 Compilation (2026-08-27)
+
+Disposition: select maximum agentic turns on `claude-code.headless` and compile
+g04.079 as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after llama.cpp owned reasoning
+delivery. Claude Code autocompact remains weaker because current official
+material says `CLAUDE_CODE_AUTO_COMPACT_WINDOW` can override the CLI while the
+route cannot inspect its opaque approved environment. Fast and spend caps carry
+account/billing authority. Agent, advisor, and team controls change model or
+process topology. Writable modes and fallback remain deliberate withholds.
+
+Maximum turns has a narrower route-owned seam. `claude-code.headless` already
+owns one exact child, a read-only Plan profile, fixed `Read,Glob,Grep`, selected
+model and reasoning, strict empty MCP, no session persistence, bounded stream
+decoding, a host deadline, terminal mapping, and joined cleanup. Current
+official docs describe positive print-mode `--max-turns` over agentic tool-use
+turns, `error_max_turns` at the bound, and
+`CLAUDE_CODE_MAX_TURNS` as an equivalent lower-precedence environment value.
+
+That is a credible candidate, not delivery evidence. The exact qualified
+window remains `2.1.220..=2.1.241`; its frozen ceiling help does not advertise
+the flag, and current docs explicitly say help is incomplete. Card 219 and
+Research 226 must freeze exact support membership, numeric parser domain,
+repetition and environment precedence, counted-turn meaning, native loop
+enforcement, stream/result/usage/exit truth, and current decoder behavior.
+Mutable docs cannot backport any of those facts.
+
+Cards 220-221 run only for a non-empty exact Research 226 set. Any binding is a
+closed Claude Code-local positive maximum, never `OutputTokenLimit`, tool-call
+budget, cost, wall time, or portable generation control. Omission keeps the
+exact no-flag argv and approved environment; it makes no unlimited-execution
+claim because ambient `CLAUDE_CODE_MAX_TURNS` may remain present. Explicit
+selection is eligible only if exact argv overrides that ambient value and the
+native loop enforces the selected bound.
+
+`--max-budget-usd`, autocompact, Fast, Ultracode, schema, advisor, agents,
+teams, fallback, permission changes, response-only, ACP, live provider work,
+currentness, release, generation rollover, and g04 closure stay out. If exact
+enforcement or terminal truth needs provider prompting, Research 226 must
+promote an empty set and the lane stops after card 219.

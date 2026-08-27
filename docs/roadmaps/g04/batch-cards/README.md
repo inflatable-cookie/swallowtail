@@ -6,7 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-No batch card is ready.
+- [219-claude-code-headless-maximum-turns-evidence.md](./219-claude-code-headless-maximum-turns-evidence.md) — ready; promote Research 226 or stop honestly
+- [220-claude-code-headless-maximum-turns-binding.md](./220-claude-code-headless-maximum-turns-binding.md) — conditional on a non-empty Research 226 deliver-now set
+- [221-claude-code-headless-maximum-turns-acceptance.md](./221-claude-code-headless-maximum-turns-acceptance.md) — conditional on card 220
 
 ## Blocked
 

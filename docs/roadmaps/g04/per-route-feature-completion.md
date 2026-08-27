@@ -270,11 +270,19 @@ families do not interrupt this programme by default.
   withheld entirely because exact source discards it without a template
   thinking end tag, and no prompt-free channel reports that tag. Effective and
   observed reasoning behavior stay withheld.
+- [g04.079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md)
+  is ready. Research 226 and cards 219-221 gate one closed route-local positive
+  maximum over native agentic tool-use turns on exact qualified
+  `claude-code.headless` points. Current official docs name `--max-turns`,
+  `error_max_turns`, and lower-precedence `CLAUDE_CODE_MAX_TURNS`; exact
+  artifact support, numeric domain, loop enforcement, stream/exit truth, and
+  ambient precedence remain evidence work. Binding and acceptance are
+  conditional on a non-empty exact deliver-now set.
 
 ## Current Execution Boundary
 
-g04.078 cards 216-218 are complete. Select the next per-route feature candidate
-from the advanced-feature triage tail. Keep g04 open. Contract 029 currentness
+Execute g04.079 cards 219-221 serially. Stop after card 219 when Research 226
+is empty or any decision gate fires. Keep g04 open. Contract 029 currentness
 remains standing.
 
 ## Exclusions

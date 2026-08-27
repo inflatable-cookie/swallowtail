@@ -91,7 +91,6 @@ generation_control_classifications = {
     ("reasoning_selection", "pi.rpc"): "contract_or_corpus_required",
     ("structured_output", "pi.rpc"): "upstream_unsupported",
     ("output_token_limit", "pi.sdk-sidecar"): "upstream_unsupported",
-    ("reasoning_selection", "pi.sdk-sidecar"): "contract_or_corpus_required",
     ("structured_output", "pi.sdk-sidecar"): "upstream_unsupported",
     ("structured_output", "deepseek.continuation"): "upstream_unsupported",
     ("output_token_limit", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",

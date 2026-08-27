@@ -39,8 +39,7 @@ exact prior bootstrap bytes and claims no selected mode.
 - `effigy package:api` — pass (baseline updated for `prepare_pi_sdk_sidecar_session`)
 - `effigy qa:northstar` — pass
 - `effigy qa:docs:index:*` and `effigy qa:docs:next-action:roadmaps` — pass
-- `effigy doctor` — inherited baseline only: 333 warnings / 47 errors (no new
-  `prepared.rs` god-file after build extraction)
+- `effigy doctor` — inherited baseline only: 334 warnings / 46 errors (`scan.god-files` 380 findings; no new `prepared.rs` god-file after build extraction)
 - `cargo fmt -p swallowtail-adapter-pi` — pass
 - `git diff --check` — pass
 

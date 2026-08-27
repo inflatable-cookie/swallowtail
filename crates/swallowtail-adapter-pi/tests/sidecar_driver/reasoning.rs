@@ -12,8 +12,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, EnvironmentRef, InteractiveSessionDriver, LoadSessionRequest,
-    PreparationFailure, RequestId, ResumeSessionRequest, SessionPlanAgreement,
-    SessionReplayKind, SessionResumeBinding, WorkingResourceRef,
+    PreparationFailure, RequestId, ResumeSessionRequest, SessionPlanAgreement, SessionReplayKind,
+    SessionResumeBinding, WorkingResourceRef,
 };
 
 const ADMITTED_MODES: [&str; 5] = ["off", "minimal", "low", "medium", "high"];
@@ -104,7 +104,10 @@ fn admitted_modes_prepare_bootstrap_and_confirm_effective_state() {
             .iter()
             .filter_map(|value| value["command"].as_str())
             .collect();
-        assert!(commands.contains(&"state"), "{mode} should confirm effective state");
+        assert!(
+            commands.contains(&"state"),
+            "{mode} should confirm effective state"
+        );
     }
 }
 
@@ -253,32 +256,37 @@ fn post_switch_state_thinking_drift_fails_before_readiness() {
             let binding = reasoning_binding(&selected.plan);
             let services = fixture.services(host_id);
             let error = if attach == "load" {
-                block_on(driver(selected.credential.clone()).load_session(
-                    selected.plan,
-                    LoadSessionRequest::new(
-                        RequestId::new("sidecar-reasoning-state-load").expect("valid request"),
-                        binding,
-                        selected.resource.clone(),
-                        None,
-                        agreement(),
-                    )
-                    .with_options(reasoning_options("medium")),
-                    services,
-                ))
+                block_on(
+                    driver(selected.credential.clone()).load_session(
+                        selected.plan,
+                        LoadSessionRequest::new(
+                            RequestId::new("sidecar-reasoning-state-load").expect("valid request"),
+                            binding,
+                            selected.resource.clone(),
+                            None,
+                            agreement(),
+                        )
+                        .with_options(reasoning_options("medium")),
+                        services,
+                    ),
+                )
                 .err()
             } else {
-                block_on(driver(selected.credential.clone()).resume_session(
-                    selected.plan,
-                    ResumeSessionRequest::new(
-                        RequestId::new("sidecar-reasoning-state-resume").expect("valid request"),
-                        binding,
-                        selected.resource.clone(),
-                        None,
-                        agreement(),
-                    )
-                    .with_options(reasoning_options("medium")),
-                    services,
-                ))
+                block_on(
+                    driver(selected.credential.clone()).resume_session(
+                        selected.plan,
+                        ResumeSessionRequest::new(
+                            RequestId::new("sidecar-reasoning-state-resume")
+                                .expect("valid request"),
+                            binding,
+                            selected.resource.clone(),
+                            None,
+                            agreement(),
+                        )
+                        .with_options(reasoning_options("medium")),
+                        services,
+                    ),
+                )
                 .err()
             }
             .expect("state drift fails closed");

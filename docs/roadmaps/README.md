@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Execute g04.079 cards 219-221 serially for Claude Code headless maximum
-agentic turns. Card 219 must promote Research 226 with a non-empty exact
-deliver-now set whose native enforcement and explicit-argv precedence are
-proved before cards 220-221 run; otherwise stop after evidence. Keep g04 open.
+Reassess the remaining per-route feature inventory and compile the next
+numbered route-local milestone. g04.079 is complete through cards 219-221 and
+Research 226. Keep g04 open.
 Contract 029 currentness remains standing.
 
 ## Standing Lanes

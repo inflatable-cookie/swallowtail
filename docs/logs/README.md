@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.079 Claude Code Headless Maximum Turns Closeout](./2026-08-27-g04-079-claude-code-headless-maximum-turns-closeout.md) — complete; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission; cards 219-221
 - [2026-08-27 g04.079 Claude Code Headless Maximum Turns Compiled](./2026-08-27-g04-079-claude-code-headless-maximum-turns-compiled.md) — evidence-first cards 219-221; Research 226 reserved
 - [2026-08-26 g04.078 llama.cpp Owned Reasoning Controls Closeout](./2026-08-26-g04-078-llama-cpp-owned-reasoning-controls-closeout.md) — complete; Research 225 admits one exact `--reasoning off` row; cards 216-218
 - [2026-08-26 g04.078 llama.cpp Owned Reasoning Controls Compiled](./2026-08-26-g04-078-llama-cpp-owned-reasoning-controls-compiled.md) — evidence-first cards 216-218; Research 225 reserved

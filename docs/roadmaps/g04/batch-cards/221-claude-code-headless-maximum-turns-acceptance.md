@@ -1,6 +1,6 @@
 # 221 Claude Code Headless Maximum Turns Acceptance
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -42,16 +42,16 @@ then produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted exact row dispatches one canonical `--max-turns N`
-- [ ] omission and every existing model/reasoning row retain exact prior
+- [x] every admitted exact row dispatches one canonical `--max-turns N`
+- [x] omission and every existing model/reasoning row retain exact prior
       behavior
-- [ ] unsupported version/value and prepared/driver mismatches fail before
+- [x] unsupported version/value and prepared/driver mismatches fail before
       process work
-- [ ] native limit reached maps exactly and still joins all owned work before
+- [x] native limit reached maps exactly and still joins all owned work before
       resource release
-- [ ] no output-token, tool, cost, wall-time, provider-state, configuration,
+- [x] no output-token, tool, cost, wall-time, provider-state, configuration,
       retention, isolation, or lifecycle claim widens
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

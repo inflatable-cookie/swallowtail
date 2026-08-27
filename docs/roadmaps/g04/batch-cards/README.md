@@ -6,9 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [219-claude-code-headless-maximum-turns-evidence.md](./219-claude-code-headless-maximum-turns-evidence.md) — ready; promote Research 226 or stop honestly
-- [220-claude-code-headless-maximum-turns-binding.md](./220-claude-code-headless-maximum-turns-binding.md) — conditional on a non-empty Research 226 deliver-now set
-- [221-claude-code-headless-maximum-turns-acceptance.md](./221-claude-code-headless-maximum-turns-acceptance.md) — conditional on card 220
+None.
 
 ## Blocked
 
@@ -34,6 +32,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [221-claude-code-headless-maximum-turns-acceptance.md](./221-claude-code-headless-maximum-turns-acceptance.md)
+- [220-claude-code-headless-maximum-turns-binding.md](./220-claude-code-headless-maximum-turns-binding.md)
+- [219-claude-code-headless-maximum-turns-evidence.md](./219-claude-code-headless-maximum-turns-evidence.md) — complete; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission
 - [218-llama-cpp-owned-reasoning-controls-acceptance.md](./218-llama-cpp-owned-reasoning-controls-acceptance.md)
 - [217-llama-cpp-owned-reasoning-controls-binding.md](./217-llama-cpp-owned-reasoning-controls-binding.md)
 - [216-llama-cpp-owned-reasoning-controls-evidence.md](./216-llama-cpp-owned-reasoning-controls-evidence.md) — complete; Research 225 admits one exact `--reasoning off` row

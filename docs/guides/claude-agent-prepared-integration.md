@@ -211,6 +211,7 @@ claude -p
   --setting-sources user,project,local
   --mcp-config {"mcpServers":{}}
   --strict-mcp-config
+  [--max-turns <caller-selected-positive-integer>]
 ```
 
 The selected process environment must preserve the local Claude login. For a
@@ -227,6 +228,62 @@ assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
 capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.241`; later stable
 versions remain visible `UnverifiedNewer`.
+
+### Maximum Agentic Turns
+
+`ClaudeCodeRunProfileInput::with_maximum_turns` selects one
+`ClaudeCodeMaximumTurns` bound on agentic turns. This is adapter-local Claude
+Code configuration. It is not a portable agent budget, an output-token limit,
+a tool-call budget, a cost cap, a wall-time deadline, a context bound, or a
+retry count, and it does not change `claude-code.response-only` or
+`claude-agent.acp`.
+
+One counted turn is one tool-use round trip. A final text-only response is not
+counted. Research 226 proved this from the exact agent loop across every
+published version in `2.1.220..=2.1.241`.
+
+`ClaudeCodeMaximumTurns::from_u64` admits positive 32-bit integers and rejects
+zero and overflow before preparation. That is deliberate: the native parser
+coerces the argument with `Number` and rejects only `NaN`, so zero, negatives,
+fractions, `Infinity`, exponent and hexadecimal forms, grouped digits, and the
+empty string all pass Claude Code's own parsing. The native loop then guards
+with a truthiness test, under which a resolved `0` disables enforcement
+entirely and a negative value stops after the first tool-use turn. Only a
+positive integer produces the documented bound, so only a positive integer is
+selectable here.
+
+A selection requires a `Qualified` Claude Code version. Preparation fails with
+`swallowtail.claude_code.headless.preparation.maximum_turns_unqualified` on a
+provisionally permitted `UnverifiedNewer` point, because no artifact for one
+has been probed. Omission still runs on those versions.
+
+Selection separates seven states that must not be conflated: requested,
+prepared, dispatched, parser-accepted, natively enforced, reached, and
+observed. Swallowtail proves dispatch and rejects unqualified rows; it does not
+claim how many turns a given prompt will actually use.
+
+Distinguish two things about omission:
+
+- Omitting the selection emits no `--max-turns` argument and preserves the
+  exact command and approved-environment handoff above.
+- Omission is **not** a claim of unlimited execution. With the flag absent,
+  `CLAUDE_CODE_MAX_TURNS` from the approved environment is authoritative on the
+  host: a valid positive integer silently caps the run, and an invalid value
+  aborts Claude Code at startup with exit `1` before any stream appears.
+  Swallowtail does not inspect, clear, or rewrite that environment. Selecting a
+  value removes the ambiguity, because explicit argv unconditionally overrides
+  the environment equivalent.
+
+When the native bound is reached, Claude Code emits one `error_max_turns`
+result carrying `is_error`, `num_turns`, `stop_reason`, `usage`, and a
+`Reached maximum number of turns (N)` message, with no `result` field, and the
+process exits `1`. Swallowtail reports that as
+`TerminalStatus::ProviderFailed` with
+`swallowtail.claude_code.headless.provider_failed`, `FailureOrigin::Provider`,
+no output, the usage observation still emitted, and unchanged joined cleanup.
+Reaching the bound is never mapped to completion. The terminal diagnostic does
+not distinguish it from other provider failure subtypes; read the exact subtype
+from the stream when that distinction matters.
 
 See the compile-tested
 [`prepared_claude_code_headless` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_headless.rs).

@@ -1,6 +1,6 @@
 # g04.079 Claude Code Headless Maximum Turns
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -35,19 +35,19 @@ generation control.
 
 ## Goals
 
-- [ ] freeze exact parser, support range, numeric domain, aliases, repetition,
+- [x] freeze exact parser, support range, numeric domain, aliases, repetition,
       precedence, diagnostics, and exit behavior for `--max-turns`
-- [ ] freeze `CLAUDE_CODE_MAX_TURNS` interaction and prove explicit argv wins
+- [x] freeze `CLAUDE_CODE_MAX_TURNS` interaction and prove explicit argv wins
       without inspecting or rewriting the approved environment
-- [ ] freeze the exact definition of one counted turn and the limit-reached
+- [x] freeze the exact definition of one counted turn and the limit-reached
       stream/result/usage/exit shape
-- [ ] promote Research 226 with an exact deliver-now table or honest empty set
-- [ ] conditionally bind only positive, exactly enforced values through a
+- [x] promote Research 226 with an exact deliver-now table or honest empty set
+- [x] conditionally bind only positive, exactly enforced values through a
       closed adapter-local type and immutable prepared/driver evidence
-- [ ] preserve the current no-flag command, selected model and reasoning,
+- [x] preserve the current no-flag command, selected model and reasoning,
       Plan/read-only posture, tool set, provider configuration, deadline,
       activity, terminal, retention, and joined cleanup
-- [ ] keep response-only, ACP, output-token, cost, tool-call, and wall-time
+- [x] keep response-only, ACP, output-token, cost, tool-call, and wall-time
       limits unchanged
 
 ## Non-Goals
@@ -94,54 +94,63 @@ overrides that ambient value and the native loop enforces the selected bound.
 
 ### Batch 79.1 — Exact Maximum-Turn Evidence
 
-- [ ] Execute card 219.
-- [ ] freeze exact parser, precedence, counted-turn, enforcement, and terminal
+- [x] Execute card 219.
+- [x] freeze exact parser, precedence, counted-turn, enforcement, and terminal
       truth
-- [ ] promote Research 226 with a non-empty exact table or honest empty set
+- [x] promote Research 226 with a non-empty exact table: one closed positive
+      selection across the whole published window, plus unchanged omission
 
 ### Batch 79.2 — Conditional Adapter-Local Binding
 
-- [ ] Execute card 220 only when Research 226 admits a non-empty exact set.
-- [ ] bind only admitted values through typed preparation and canonical argv
+- [x] Execute card 220. Research 226 admitted a non-empty exact set.
+- [x] bind only admitted values through typed preparation and canonical argv
 
 ### Batch 79.3 — Route-Local Acceptance
 
-- [ ] Execute card 221 only after card 220.
-- [ ] prove dispatch, omission, rejection, native terminal truth, and unchanged
+- [x] Execute card 221 after card 220.
+- [x] prove dispatch, omission, rejection, native terminal truth, and unchanged
       structured-run lifecycle
 
 ## Acceptance Criteria
 
-- [ ] only Research 226 deliver-now rows prepare a maximum-turn selection
-- [ ] every admitted value is positive, closed, Claude Code-local, immutable,
+- [x] only Research 226 deliver-now rows prepare a maximum-turn selection
+- [x] every admitted value is positive, closed, Claude Code-local, immutable,
       and exactly dispatched
-- [ ] omission retains the exact current argv with no `--max-turns` and does
+- [x] omission retains the exact current argv with no `--max-turns` and does
       not mutate or overclaim ambient environment behavior
-- [ ] docs separate requested, dispatched, parser-accepted, enforced, reached,
+- [x] docs separate requested, dispatched, parser-accepted, enforced, reached,
       and observed turn-limit state
-- [ ] model/reasoning selection, Plan/read-only authority, fixed tools,
+- [x] model/reasoning selection, Plan/read-only authority, fixed tools,
       configuration, provider state, activity, deadline, terminal mapping,
       retention, and cleanup do not widen
-- [ ] default QA performs no provider prompt, login/account work, paid work,
+- [x] default QA performs no provider prompt, login/account work, paid work,
       ambient configuration mutation, installation, or update
 
 ## Lane Runway
 
 - predecessor: g04.078 llama.cpp owned reasoning delivery
-- this milestone: ready; evidence first, binding and acceptance conditional
+- this milestone: complete; evidence admitted a non-empty set, so binding and
+  acceptance both ran
 - execution topology: one serial worker lane, cards 219-221
 - generation boundary: g04 remains open; no closure or rollover is authorized
 
 ## Decision Gates
 
-- Stop if exact qualified artifacts cannot prove flag support and loop
-  enforcement without live provider work.
-- Stop if the numeric domain, counted-turn definition, environment precedence,
-  limit-reached result, or exit behavior remains ambiguous.
-- Stop if a selected value can be ignored, clamped, replaced, or shadowed after
-  preparation.
-- Stop if delivery needs environment inspection/mutation, portable budget
-  vocabulary, sibling-route changes, currentness movement, or a breaking API.
+No gate fired.
+
+- Exact qualified artifacts proved flag support and loop enforcement with no
+  live provider work: every published `2.1.220..=2.1.241` version carries the
+  hidden option declaration, the argv-precedence resolver, the loop guard, the
+  `error_max_turns` result, and the nonzero-exit expression.
+- The numeric domain, counted-turn definition, environment precedence,
+  limit-reached result, and exit behavior are all exact. The parser's domain is
+  wider than the documented one, so the adapter closes it to positive integers
+  rather than trusting the native check.
+- A positive selected value cannot be ignored, clamped, replaced, or shadowed.
+  Only a resolved `0` is inert, and the closed type makes it unselectable.
+- Delivery needed no environment inspection or mutation, no portable budget
+  vocabulary, no sibling-route change, no currentness movement, and no breaking
+  API: the surface is additive and adapter-local.
 
 ## Batch Cards
 

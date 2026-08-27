@@ -1,18 +1,23 @@
 #[path = "profile/plan.rs"]
 mod plan;
+#[path = "profile/prepared.rs"]
+mod prepared;
+
+pub use prepared::{ClaudeCodePreparedEvidence, ClaudeCodePreparedRun};
 
 use super::ClaudeCodePreparedIntegration;
 use super::instance::{REASONING_MODES, run_capabilities};
+use crate::ClaudeCodeMaximumTurns;
 use crate::claude_code_activity::profile::{activity_profile, with_activity};
-use plan::{build_plan, instance_with_capabilities, requirements};
+use plan::{build_plan, instance_with_capabilities, operation_capabilities, requirements};
+use prepared::new_prepared_run;
 use swallowtail_core::{
-    CapabilityRequirement, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, PreflightPlan, ReasoningMode,
+    HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, ReasoningMode,
 };
 use swallowtail_runtime::{
-    BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
-    PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeFailure,
-    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
+    Deadline, OperationContent, OperationPolicy, PreparationFailure, ProviderRetentionPolicy,
+    RequestId, StructuredRunRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -52,6 +57,7 @@ pub struct ClaudeCodeRunProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Deadline,
     reasoning_mode: Option<ReasoningMode>,
+    maximum_turns: Option<ClaudeCodeMaximumTurns>,
 }
 
 impl ClaudeCodeRunProfileInput {
@@ -71,6 +77,7 @@ impl ClaudeCodeRunProfileInput {
             working_resource,
             deadline,
             reasoning_mode: None,
+            maximum_turns: None,
         }
     }
 
@@ -79,6 +86,32 @@ impl ClaudeCodeRunProfileInput {
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
         self
+    }
+
+    /// Selects one admitted Claude Code maximum agentic-turn bound.
+    ///
+    /// Omission preserves the exact current command with no `--max-turns`
+    /// argument and passes the approved environment through unchanged. That is
+    /// not a claim of unlimited execution: with the flag absent, an ambient
+    /// `CLAUDE_CODE_MAX_TURNS` remains authoritative on the host, and an
+    /// invalid ambient value still aborts Claude Code at startup.
+    ///
+    /// A selected value is dispatched as exactly one canonical
+    /// `--max-turns <n>` and unconditionally overrides that ambient value.
+    /// Swallowtail neither reads nor rewrites the approved environment to
+    /// achieve it. The selection is rejected before process work unless the
+    /// prepared Claude Code version is qualified rather than
+    /// provisionally permitted.
+    #[must_use]
+    pub const fn with_maximum_turns(mut self, maximum_turns: ClaudeCodeMaximumTurns) -> Self {
+        self.maximum_turns = Some(maximum_turns);
+        self
+    }
+
+    /// Returns the selected maximum-turn bound when one was supplied.
+    #[must_use]
+    pub const fn maximum_turns(&self) -> Option<ClaudeCodeMaximumTurns> {
+        self.maximum_turns
     }
 
     fn into_parts(
@@ -90,6 +123,7 @@ impl ClaudeCodeRunProfileInput {
         WorkingResourceRef,
         Deadline,
         Option<ReasoningMode>,
+        Option<ClaudeCodeMaximumTurns>,
     ) {
         (
             self.request_id,
@@ -98,124 +132,8 @@ impl ClaudeCodeRunProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.maximum_turns,
         )
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-/// Portable evidence for a prepared native Claude Code run.
-pub struct ClaudeCodePreparedEvidence {
-    observation: swallowtail_core::InstalledExecutableObservation,
-    environment: swallowtail_runtime::EnvironmentRef,
-    operation: PreparedOperationEvidence,
-}
-
-impl ClaudeCodePreparedEvidence {
-    fn from_prepared(
-        prepared: &ClaudeCodePreparedIntegration,
-        plan: PreflightPlan,
-        activity_profile: swallowtail_core::ObservableActivityProfile,
-    ) -> Result<Self, PreparationFailure> {
-        Ok(Self {
-            observation: prepared.observation().clone(),
-            environment: prepared.environment().clone(),
-            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
-                plan,
-                prepared.access_evidence().clone(),
-                activity_profile,
-            )?,
-        })
-    }
-
-    /// Returns the qualified installed-executable observation.
-    #[must_use]
-    pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
-        &self.observation
-    }
-
-    /// Returns the prepared access evidence.
-    #[must_use]
-    pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
-        self.operation.access()
-    }
-
-    /// Returns the complete prepared-operation evidence.
-    #[must_use]
-    pub const fn operation(&self) -> &PreparedOperationEvidence {
-        &self.operation
-    }
-
-    /// Returns the admitted observable-activity profile.
-    #[must_use]
-    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
-        self.operation.observable_activity()
-    }
-
-    /// Returns the validated preflight plan.
-    #[must_use]
-    pub const fn plan(&self) -> &PreflightPlan {
-        self.operation.plan()
-    }
-
-    fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
-        crate::ClaudeCodeHeadlessDriver::new(self.environment.clone())
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-/// Prepared one-shot native Claude Code structured run.
-pub struct ClaudeCodePreparedRun {
-    evidence: ClaudeCodePreparedEvidence,
-    request: StructuredRunRequest,
-}
-
-impl ClaudeCodePreparedRun {
-    /// Returns portable evidence for the prepared run.
-    #[must_use]
-    pub const fn evidence(&self) -> &ClaudeCodePreparedEvidence {
-        &self.evidence
-    }
-
-    /// Returns the validated preflight plan.
-    #[must_use]
-    pub const fn plan(&self) -> &PreflightPlan {
-        self.evidence.plan()
-    }
-
-    /// Returns the bound structured-run request.
-    #[must_use]
-    pub const fn request(&self) -> &StructuredRunRequest {
-        &self.request
-    }
-
-    /// Creates the low-level native headless driver bound to this run.
-    #[must_use]
-    pub fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
-        self.evidence.low_level_driver()
-    }
-
-    /// Starts the prepared run with caller-supplied host services.
-    pub fn start_run(
-        &self,
-        services: HostServices,
-    ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
-        let driver = self.low_level_driver();
-        let plan = self.plan().clone();
-        let request = self.request.clone();
-        Box::pin(async move { driver.start_run(plan, request, services).await })
-    }
-
-    /// Splits the prepared run into evidence, plan, and request.
-    #[must_use]
-    pub fn into_parts(
-        self,
-    ) -> (
-        ClaudeCodePreparedEvidence,
-        PreflightPlan,
-        StructuredRunRequest,
-    ) {
-        let plan = self.evidence.plan().clone();
-        (self.evidence, plan, self.request)
     }
 }
 
@@ -225,7 +143,7 @@ impl ClaudeCodePreparedIntegration {
         &self,
         input: ClaudeCodeRunProfileInput,
     ) -> Result<ClaudeCodePreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline, reasoning) =
+        let (request_id, model, content, working_resource, deadline, reasoning, maximum_turns) =
             input.into_parts();
         if reasoning
             .as_ref()
@@ -234,6 +152,12 @@ impl ClaudeCodePreparedIntegration {
             return Err(plan::failure(
                 "swallowtail.claude_code.headless.preparation.reasoning_mode_unsupported",
                 "Claude Code prepared run reasoning mode is unsupported",
+            ));
+        }
+        if maximum_turns.is_some() && !plan::qualifies_maximum_turns(self) {
+            return Err(plan::failure(
+                "swallowtail.claude_code.headless.preparation.maximum_turns_unqualified",
+                "Claude Code prepared run maximum turns requires a qualified Claude Code version",
             ));
         }
         let activity = activity_profile(self)?;
@@ -261,31 +185,6 @@ impl ClaudeCodePreparedIntegration {
         let request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource)
             .with_deadline(deadline);
-        Ok(ClaudeCodePreparedRun {
-            evidence: ClaudeCodePreparedEvidence::from_prepared(self, plan, activity)?,
-            request,
-        })
+        new_prepared_run(self, plan, activity, maximum_turns, request)
     }
-}
-
-fn operation_capabilities(
-    available: &swallowtail_core::CapabilityProfile,
-    reasoning: Option<&ReasoningMode>,
-) -> Vec<CapabilityRequirement> {
-    let mut capabilities = available
-        .iter()
-        .filter(|(capability, _)| *capability != swallowtail_core::Capability::ReasoningSelection)
-        .map(|(capability, constraints)| {
-            CapabilityRequirement::new(capability, constraints.iter().cloned())
-        })
-        .collect::<Vec<_>>();
-    if let Some(mode) = reasoning {
-        capabilities.push(CapabilityRequirement::new(
-            swallowtail_core::Capability::ReasoningSelection,
-            [swallowtail_core::CapabilityConstraint::ReasoningMode(
-                mode.clone(),
-            )],
-        ));
-    }
-    capabilities
 }

@@ -15,6 +15,7 @@ mod claude_code_command;
 mod claude_code_discovery;
 mod claude_code_events;
 mod claude_code_handle;
+mod claude_code_maximum_turns;
 mod claude_code_pump;
 mod claude_code_response;
 mod claude_code_response_activity;
@@ -47,6 +48,7 @@ pub use addable::{
     CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID, claude_agent_acp_addable_route_descriptor,
 };
 pub use claude_code::{ClaudeCodeHeadlessDriver, claude_code_headless_descriptor};
+pub use claude_code_maximum_turns::ClaudeCodeMaximumTurns;
 pub use claude_code_response::{
     ClaudeCodeResponseOnlyDriver, claude_code_response_only_descriptor,
 };

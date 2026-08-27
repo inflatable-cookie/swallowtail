@@ -271,18 +271,24 @@ families do not interrupt this programme by default.
   thinking end tag, and no prompt-free channel reports that tag. Effective and
   observed reasoning behavior stay withheld.
 - [g04.079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md)
-  is ready. Research 226 and cards 219-221 gate one closed route-local positive
-  maximum over native agentic tool-use turns on exact qualified
-  `claude-code.headless` points. Current official docs name `--max-turns`,
-  `error_max_turns`, and lower-precedence `CLAUDE_CODE_MAX_TURNS`; exact
-  artifact support, numeric domain, loop enforcement, stream/exit truth, and
-  ambient precedence remain evidence work. Binding and acceptance are
-  conditional on a non-empty exact deliver-now set.
+  is complete. Research 226 and cards 219-221 realize closed adapter-local
+  `ClaudeCodeMaximumTurns`, one canonical `--max-turns <n>` appended to the
+  existing command on every published `2.1.220..=2.1.241` version. The flag is
+  hidden rather than absent: it is registered with `hideHelp()` at every probed
+  point. The native parser is far wider than the documented positive domain, so
+  the adapter closes it to positive 32-bit integers; the loop guard is a
+  truthiness test under which a resolved `0` would be inert. Explicit argv
+  overrides `CLAUDE_CODE_MAX_TURNS` unconditionally, with no environment
+  inspection or mutation, and omission keeps the exact prior argv while leaving
+  any ambient value authoritative. A counted turn is one tool-use round trip.
+  Reaching the native bound stays `error_max_turns`, exit `1`, and a provider
+  failure with no output. A distinct terminal diagnostic and any portable
+  budget vocabulary stay out.
 
 ## Current Execution Boundary
 
-Execute g04.079 cards 219-221 serially. Stop after card 219 when Research 226
-is empty or any decision gate fires. Keep g04 open. Contract 029 currentness
+Reassess the remaining per-route feature inventory and compile the next
+numbered route-local milestone. Keep g04 open. Contract 029 currentness
 remains standing.
 
 ## Exclusions

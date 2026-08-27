@@ -1,6 +1,6 @@
 # 219 Claude Code Headless Maximum Turns Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -57,16 +57,16 @@ Research 226 with a non-empty exact deliver-now table or an honest empty set.
 
 ## Acceptance Criteria
 
-- [ ] exact identity, source/artifact digests, support boundary, parser,
+- [x] exact identity, source/artifact digests, support boundary, parser,
       precedence, and defaults are frozen
-- [ ] counted-turn, enforcement, limit-reached, stream, exit, and observation
+- [x] counted-turn, enforcement, limit-reached, stream, exit, and observation
       truth have exact dispositions
-- [ ] requested, prepared, dispatched, parser-accepted, enforced, reached, and
+- [x] requested, prepared, dispatched, parser-accepted, enforced, reached, and
       observed state remain distinct
-- [ ] production preparation, driver, decoder, fixtures, docs, and API seams
+- [x] production preparation, driver, decoder, fixtures, docs, and API seams
       are audited
-- [ ] Research 226 contains a non-empty exact table or honest empty set
-- [ ] no production code, public API, shared contract/runtime, currentness,
+- [x] Research 226 contains a non-empty exact table or honest empty set
+- [x] no production code, public API, shared contract/runtime, currentness,
       release, merge, rollover, or g04 closure changes
 
 ## Validation

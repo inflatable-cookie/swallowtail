@@ -22,13 +22,34 @@ pub(crate) const ENDPOINT_AUDIENCE: &str = "anthropic-claude-code";
 /// Low-level driver for native one-shot `claude -p` stream-JSON runs.
 pub struct ClaudeCodeHeadlessDriver {
     environment: EnvironmentRef,
+    maximum_turns: Option<crate::ClaudeCodeMaximumTurns>,
 }
 
 impl ClaudeCodeHeadlessDriver {
     /// Creates a headless driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            maximum_turns: None,
+        }
+    }
+
+    /// Configures one admitted `--max-turns` value for low-level dispatch.
+    ///
+    /// The caller owns agreement between this value, any extracted prepared
+    /// evidence, and the `(plan, request)` pair passed to
+    /// [`StructuredRunDriver::start_run`]. Prepared
+    /// [`crate::ClaudeCodePreparedRun::start_run`] remains the fail-closed
+    /// path: it is the only surface that gates the value on a qualified
+    /// Claude Code version.
+    #[must_use]
+    pub const fn with_maximum_turns(
+        mut self,
+        maximum_turns: crate::ClaudeCodeMaximumTurns,
+    ) -> Self {
+        self.maximum_turns = Some(maximum_turns);
+        self
     }
 }
 
@@ -131,7 +152,11 @@ impl ClaudeCodeHeadlessDriver {
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
-            .with_arguments(arguments(&model, request.policy().reasoning_mode()))
+            .with_arguments(arguments(
+                &model,
+                request.policy().reasoning_mode(),
+                self.maximum_turns,
+            ))
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);
         let process: Arc<dyn ProcessHandle> = Arc::from(

@@ -35,6 +35,24 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add closed adapter-local `ClaudeCodeMaximumTurns` on `claude-code.headless`:
+  `ClaudeCodeRunProfileInput::with_maximum_turns` and
+  `ClaudeCodeHeadlessDriver::with_maximum_turns` dispatch one canonical
+  `--max-turns <n>` appended to the existing command on every published
+  `2.1.220..=2.1.241` version. The type admits positive 32-bit integers only:
+  exact artifacts show the native parser coerces with `Number` and rejects only
+  `NaN`, so zero, negatives, fractions, `Infinity`, exponent, hexadecimal,
+  grouped-digit, and empty inputs all parse, while the loop guard is a
+  truthiness test under which a resolved `0` disables enforcement outright.
+  A selection requires a `Qualified` version; `UnverifiedNewer` points reject
+  before process work. Omission preserves the exact prior argv and the approved
+  environment, and is not a claim of unlimited execution because an ambient
+  `CLAUDE_CODE_MAX_TURNS` stays authoritative when the flag is absent; explicit
+  argv overrides it unconditionally with no environment inspection or mutation.
+  A counted turn is one tool-use round trip only, never output tokens, tool
+  calls, provider requests, retries, cost, or wall time. Reaching the native
+  bound stays a provider failure with no output and unchanged joined cleanup.
+  Research 226, g04.079
 - add closed adapter-local `LlamaCppReasoningSelection` on `llama-cpp.owned`:
   `Disabled` dispatches canonical `--reasoning off` on exact
   `b10069-178a6c449` through `LlamaCppOwnedServingSelection::with_reasoning`

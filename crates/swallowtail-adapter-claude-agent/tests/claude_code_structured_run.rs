@@ -8,8 +8,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::sync::Arc;
 use swallowtail_adapter_claude_agent::{
-    ClaudeCodeModelSelection, ClaudeCodePreparedIntegration, ClaudeCodePreparedRun,
-    ClaudeCodeRunProfileInput, prepare_claude_code_headless,
+    ClaudeCodeMaximumTurns, ClaudeCodeModelSelection, ClaudeCodePreparedIntegration,
+    ClaudeCodePreparedRun, ClaudeCodeRunProfileInput, prepare_claude_code_headless,
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
@@ -29,5 +29,7 @@ use swallowtail_testkit::{
 include!("claude_code_structured_run/execution_cases.rs");
 include!("claude_code_structured_run/failure_cases.rs");
 include!("claude_code_structured_run/control_cases.rs");
+include!("claude_code_structured_run/maximum_turns_cases.rs");
+include!("claude_code_structured_run/maximum_turns_rejection_cases.rs");
 include!("claude_code_structured_run/profile_case.rs");
 include!("claude_code_structured_run/support.rs");

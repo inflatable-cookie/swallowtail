@@ -335,7 +335,7 @@ Swallowtail already: `--effort` minus `ultracode`, fixed
 | Fast mode | `fastMode` / `--settings` | omitted | yes | only-if | see seed |
 | Agent teams | env + `--teammate-mode` | omitted | yes | no | see seed |
 | Autocompact | `--autocompact` | omitted | yes | yes | not context-size |
-| Max turns | `--max-turns` | omitted | yes | yes | print-mode only |
+| Max turns | `--max-turns` | closed adapter-local `ClaudeCodeMaximumTurns` on qualified `2.1.220..=2.1.241` | closed | delivered | print-mode only; positive integers only |
 | Spend cap | `--max-budget-usd` | omitted | yes | only-if: API-key billing; subscription spend is different | — |
 | JSON Schema | `--json-schema` | omitted | yes | only-if: qualify on this stream-json route | response-only explicitly rejects schema |
 | Fallback model | `--fallback-model` | omitted | yes | no | Swallowtail forbids implicit fallback |
@@ -2431,3 +2431,38 @@ teams, fallback, permission changes, response-only, ACP, live provider work,
 currentness, release, generation rollover, and g04 closure stay out. If exact
 enforcement or terminal truth needs provider prompting, Research 226 must
 promote an empty set and the lane stops after card 219.
+
+## 2026-08-27 Maximum-Turn Outcome
+
+Research 226 and g04.079 cards 219-221 closed this row. The evidence-first
+gate passed, so binding and acceptance both ran.
+
+Three facts changed the shape of the delivery from what the disposition above
+expected.
+
+- Help omission was the wrong signal. `--max-turns` is registered at every
+  published version in `2.1.220..=2.1.241` and then explicitly hidden with
+  `hideHelp()`. Absence from the frozen ceiling help meant nothing.
+- The native parser is far wider than the documented positive domain. It
+  coerces with `Number` and rejects only `NaN`, so zero, negatives, fractions,
+  `Infinity`, exponent and hexadecimal forms, grouped digits, and the empty
+  string all parse. The loop guard is a truthiness test, so a resolved `0`
+  would be inert. The adapter therefore closes the domain itself rather than
+  trusting Claude Code's own check.
+- Explicit argv precedence is unconditional and provable without touching the
+  approved environment. The resolver returns the argv value before it ever
+  reads `CLAUDE_CODE_MAX_TURNS`, including for argv values the environment
+  itself would reject.
+
+Omission is unchanged and still makes no unlimited-execution claim: with the
+flag absent an ambient `CLAUDE_CODE_MAX_TURNS` stays authoritative, and an
+invalid ambient value aborts Claude Code at startup with exit `1`. That is
+existing route truth, now written down rather than assumed.
+
+Reaching the bound emits `error_max_turns` with no `result` field and exits
+`1`. The existing decoder already reports that as a provider failure with no
+output and unchanged joined cleanup, so terminal mapping did not widen and no
+new diagnostic was admitted.
+
+Everything the disposition excluded stayed excluded. The remaining Claude Code
+rows in the table above are unchanged.

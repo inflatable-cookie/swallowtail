@@ -1,6 +1,6 @@
 # 220 Claude Code Headless Maximum Turns Binding
 
-Status: conditional
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
@@ -39,15 +39,15 @@ argv.
 
 ## Acceptance Criteria
 
-- [ ] only Research 226 deliver-now versions and values prepare the selection
-- [ ] public seams are closed and Claude Code-local; no portable or raw API
+- [x] only Research 226 deliver-now versions and values prepare the selection
+- [x] public seams are closed and Claude Code-local; no portable or raw API
       appears
-- [ ] prepared state, plan/evidence, driver state, version, and argv agree
-- [ ] omission retains exact prior argv and approved-environment behavior
-- [ ] unsupported, stale, mismatched, or wider rows reject before process work
-- [ ] docs claim no stronger enforcement or observation than exact evidence
+- [x] prepared state, plan/evidence, driver state, version, and argv agree
+- [x] omission retains exact prior argv and approved-environment behavior
+- [x] unsupported, stale, mismatched, or wider rows reject before process work
+- [x] docs claim no stronger enforcement or observation than exact evidence
       supports
-- [ ] route authority, configuration, activity, terminal, retention, and
+- [x] route authority, configuration, activity, terminal, retention, and
       lifecycle do not widen
 
 ## Validation

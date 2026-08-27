@@ -546,7 +546,11 @@ Crate status:
   deletion, and joined resource plus optional credential cleanup; the same
   crate also realizes independent Claude Code headless and response-only
   stream-JSON routes, with exact version axes, prepared facades, bounded
-  process ownership, and no implicit selection between them
+  process ownership, and no implicit selection between them. Headless adds one
+  closed adapter-local positive maximum agentic-turn selection dispatched as
+  `--max-turns` on qualified versions only; omission preserves the exact
+  no-flag command and leaves any ambient `CLAUDE_CODE_MAX_TURNS` authoritative,
+  and reaching the native bound stays a provider failure with no output
 - `swallowtail-adapter-deepseek` — realized for one exact opaque facade
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,

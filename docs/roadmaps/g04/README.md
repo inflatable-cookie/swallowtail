@@ -93,11 +93,11 @@ and selection policy.
 - [g04.076 Cursor Headless Provider Sandbox](076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 - [g04.077 Cursor Headless Ask Mode](077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 admits four exact `Read` Ask rows at qualified dispatch and application
 - [g04.078 llama.cpp Owned Reasoning Controls](078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 admits one exact `--reasoning off` row
-- [g04.079 Claude Code Headless Maximum Turns](079-claude-code-headless-maximum-turns.md) — ready, cards 219-221; Research 226 reserved
+- [g04.079 Claude Code Headless Maximum Turns](079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission
 
-g04 has 79 numbered roadmaps: 64 completed milestones and fourteen honest
+g04 has 79 numbered roadmaps: 65 completed milestones and fourteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, and 076, plus one ready milestone. The operator keeps the generation
+074, and 076, and no ready milestone. The operator keeps the generation
 active.
 Do not close g04 without explicit operator direction.
 
@@ -279,9 +279,12 @@ Do not close g04 without explicit operator direction.
   `LlamaCppReasoningSelection::Disabled` dispatches `--reasoning off` on exact
   `b10069-178a6c449`; `--reasoning on`, `auto`, and every `--reasoning-budget`
   value stay withheld; effective and observed reasoning stay withheld
-- g04.079 is ready through cards 219-221: Research 226 must freeze exact
-  Claude Code `--max-turns` support, numeric domain, environment precedence,
-  native enforcement, and limit-reached terminal truth before binding
+- g04.079 is complete through cards 219-221: closed adapter-local
+  `ClaudeCodeMaximumTurns` dispatches one canonical `--max-turns <n>` on every
+  published `2.1.220..=2.1.241` version; zero, negatives, fractions, and every
+  other parser-accepted-but-degenerate value stay unselectable; omission keeps
+  the exact prior argv and the ambient environment authoritative; reaching the
+  native bound stays a provider failure
 - g04 remains active at 79 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -399,10 +402,12 @@ Do not close g04 without explicit operator direction.
     parser, precedence, application, and observation truth and promoted one
     deliver-now row; cards 217-218 bound and proved `--reasoning off` as
     dispatch-only owned-serving configuration.
-42. g04.079 is ready. Cards 219-221 and Research 226 gate an exact
-    `claude-code.headless` maximum-turn selection. Binding and acceptance are
-    conditional on qualified-artifact support, native loop enforcement, and
-    explicit-argv precedence over `CLAUDE_CODE_MAX_TURNS`.
+42. g04.079 is complete. Research 226 probed every published version in
+    `2.1.220..=2.1.241` and proved hidden-option support, the wider-than-
+    documented parser domain, unconditional explicit-argv precedence over
+    `CLAUDE_CODE_MAX_TURNS`, tool-use-round-trip counting, native loop
+    enforcement, and `error_max_turns` plus exit `1`; cards 220-221 bound and
+    proved one closed positive selection with omission unchanged.
 43. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.

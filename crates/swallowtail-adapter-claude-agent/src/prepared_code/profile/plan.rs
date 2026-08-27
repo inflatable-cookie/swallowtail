@@ -2,9 +2,9 @@ use super::super::super::ClaudeCodePreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, EndpointAuthorization, EntitlementState, ExecutionLayer,
-    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, RuntimeReadiness,
-    SafeDiagnostic, preflight,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    InterfaceCompatibilityAssessment, ModelRoute, OperationRequirements, OperationShape,
+    PreflightContext, PreflightPlan, ReasoningMode, RuntimeReadiness, SafeDiagnostic, preflight,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
@@ -87,4 +87,43 @@ pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationF
         PreparationStage::Preflight,
         Diagnostic::new(SafeDiagnostic::new(code, message)),
     )
+}
+
+/// Reports whether the prepared Claude Code version is exactly qualified.
+///
+/// Research 226 probed every published version in the maintained window.
+/// `AllowUnverified` also permits later stable points on the same axis, but
+/// no artifact for one has been probed, so a maximum-turn selection must
+/// reject them before process work rather than assume the parser, the loop
+/// guard, and the terminal shape all survived.
+pub(super) fn qualifies_maximum_turns(prepared: &ClaudeCodePreparedIntegration) -> bool {
+    let claim = crate::claude_code_headless_claim();
+    let binding = prepared.observation().version();
+    binding.axis() == claim.axis()
+        && matches!(
+            claim.assess(binding.version()),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        )
+}
+
+pub(super) fn operation_capabilities(
+    available: &swallowtail_core::CapabilityProfile,
+    reasoning: Option<&ReasoningMode>,
+) -> Vec<CapabilityRequirement> {
+    let mut capabilities = available
+        .iter()
+        .filter(|(capability, _)| *capability != swallowtail_core::Capability::ReasoningSelection)
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    if let Some(mode) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            swallowtail_core::Capability::ReasoningSelection,
+            [swallowtail_core::CapabilityConstraint::ReasoningMode(
+                mode.clone(),
+            )],
+        ));
+    }
+    capabilities
 }

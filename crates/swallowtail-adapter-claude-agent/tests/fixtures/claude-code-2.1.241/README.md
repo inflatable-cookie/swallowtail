@@ -14,4 +14,7 @@ stop at the qualified ceiling. `headless-maximum-turns.json` records the
 g04.079 `--max-turns` evidence across every published version in
 `2.1.220..=2.1.241`, probed on darwin-arm64 native executables.
 `headless-fast-mode.json` records the g04.083 Fast-mode evidence stop at the
-qualified ceiling. No provider prompt was sent.
+qualified ceiling. `headless-autocompaction.json` records the g04.085
+`--autocompact` evidence stop across every published version in
+`2.1.220..=2.1.241`, probed on darwin-arm64 native executables, with an honest
+empty deliver-now set. No provider prompt was sent.

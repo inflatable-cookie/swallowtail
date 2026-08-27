@@ -1,8 +1,9 @@
 # 238 Claude Code Headless Autocompaction Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.085 Parallel Per-Route Feature Qualification III](../085-third-parallel-per-route-feature-qualification.md)
 Depends on: g04.055; g04.079; g04.084 closeout
 Research: [237 Claude Code Headless Autocompaction Evidence](../../../research/237-claude-code-headless-autocompaction-evidence.md)
@@ -15,38 +16,39 @@ a closed deliver-now table or an honest empty set.
 
 ## Work
 
-1. [ ] Keep route `claude-code.headless`, exact published qualified points in
+1. [x] Keep route `claude-code.headless`, exact published qualified points in
        `2.1.220..=2.1.241`, stream-JSON behavior v1, local subscription access,
        read-only Plan mode, fixed tools, and no session persistence unchanged.
-2. [ ] Freeze official autocompaction documentation plus exact published
+2. [x] Freeze official autocompaction documentation plus exact published
        package source, parser, schema, tests, defaults, and version boundaries
        for `--autocompact`. Mutable current docs are leads, not backports.
-3. [ ] Determine the exact native value shape and whether selection controls
+3. [x] Determine the exact native value shape and whether selection controls
        enablement, threshold, disablement, or another behavior. Do not infer a
        portable context size or token limit.
-4. [ ] Trace one caller-bound, operation-private selection seam. Prove explicit
+4. [x] Trace one caller-bound, operation-private selection seam. Prove explicit
        precedence over ambient user, project, managed, and environment settings
        without reading or mutating them.
-5. [ ] Build a closed version/value/operation table for the selected one-prompt
+5. [x] Build a closed version/value/operation table for the selected one-prompt
        run. Separate requested, argv/settings-encoded, accepted, effective,
        compaction-observed, and usage-observed truth.
-6. [ ] Prove unsupported versions and values reject before process, credential,
+6. [x] Prove unsupported versions and values reject before process, credential,
        resource, or provider work. A provider prompt is not permitted as proof.
-7. [ ] Prove omission retains exact current argv/environment and makes no
+7. [x] Prove omission retains exact current argv/environment and makes no
        compaction, threshold, context, token, or default claim.
-8. [ ] Audit prepared input/evidence, plan/request agreement, child command,
+8. [x] Audit prepared input/evidence, plan/request agreement, child command,
        decoder, fixtures, guide, matrices, and API baseline without changing
        production surfaces.
-9. [ ] Promote Research 237 and complete the reserved lane log. Do not edit
+9. [x] Promote Research 237 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact version/value/operation table or honest empty set is recorded
-- [ ] a non-empty row has operation-private precedence and pre-effect rejection
-- [ ] selected autocompaction is not presented as context size or output limit
-- [ ] omission and existing reasoning/maximum-turn controls stay exact
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] exact version/value/operation table or honest empty set is recorded
+- [x] a non-empty row has operation-private precedence and pre-effect rejection
+      (no non-empty row; ambient env overrides the flag)
+- [x] selected autocompaction is not presented as context size or output limit
+- [x] omission and existing reasoning/maximum-turn controls stay exact
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
 
 ## Validation
@@ -64,6 +66,15 @@ git diff --check
 - application or effective state cannot be confirmed without a provider prompt
 - proof needs login, credential, paid work, install/update, host settings
   mutation, or a shared-contract change
+
+## Outcome
+
+Research 237 promotes an honest empty deliver-now set. `--autocompact` exists
+from published `2.1.221` through `2.1.241` as an auto-compact window selector
+with a closed parser domain, but `CLAUDE_CODE_AUTO_COMPACT_WINDOW` and disable
+env gates defeat operation-private precedence under the opaque approved
+environment, and effective compaction is not confirmable without a provider
+prompt. No production binding follows.
 
 ## Out Of Scope
 

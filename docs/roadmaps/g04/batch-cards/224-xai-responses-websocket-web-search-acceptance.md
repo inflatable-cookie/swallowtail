@@ -1,6 +1,6 @@
 # 224 xAI Responses WebSocket Web Search Acceptance
 
-Status: conditional
+Status: blocked; Research 227 empty deliver-now set
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27

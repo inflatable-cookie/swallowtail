@@ -2506,3 +2506,15 @@ exchange, raw tool arrays, caller filters, host fetch, live provider work,
 currentness, release, generation rollover, and g04 closure stay out. If exact
 support or bounded event truth needs provider prompting, Research 227 must
 promote an empty set and the lane stops after card 222.
+
+## Post-g04.080 Evidence Stop (2026-08-27)
+
+Disposition: stop. Research 227 admits no deliver-now row.
+
+Official HTTP Responses `tools: [{"type":"web_search"}]` and WebSocket
+`response.create` body-equivalence are frozen. `grok-4.6` is a candidate;
+`grok-4.5` is withheld. `max_turns: 1` is the smallest documented positive
+turn bound. Composed WebSocket search events, mixed `web_search_call` plus
+message completed output, and citation/terminal mapping are not frozen
+without provider work. The current fail-closed decoder requires a single
+assistant message. Cards 223-224 are blocked. Omission remains `tools: []`.

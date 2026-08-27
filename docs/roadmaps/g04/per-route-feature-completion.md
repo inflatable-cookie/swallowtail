@@ -289,18 +289,18 @@ families do not interrupt this programme by default.
   failure with no output. A distinct terminal diagnostic and any portable
   budget vocabulary stay out.
 - [g04.080 xAI Responses WebSocket Web Search](./080-xai-responses-websocket-web-search.md)
-  is ready. Card 222 must freeze exact `web_search` WebSocket composition,
-  model/profile membership, provider-side bounds, response items, citations,
-  usage, billing, terminal ordering, and lifecycle truth in Research 227.
-  Cards 223-224 remain conditional on a non-empty exact deliver-now set.
-  Enabled search must use explicit `ExternalSearchPolicy::Enabled`, retain
-  denied host networking, and preserve exact `tools: []` omission.
+  stopped after card 222. Research 227 admits no deliver-now row. Official HTTP
+  `web_search` and WebSocket body-equivalence are frozen; composed socket
+  events, mixed completed output, and citation/terminal mapping are not.
+  Cards 223-224 are blocked. Omission remains exact `tools: []`. Host
+  networking stays denied.
 
 ## Current Execution Boundary
 
-Execute g04.080 cards 222-224 serially. Stop after card 222 if Research 227 is
-empty or any decision gate fires. Keep g04 open. Contract 029 currentness
-remains standing.
+Keep g04 open. Reassess the remaining per-route feature inventory for the next
+serial lane unless the operator supplies a different direction. Contract 029
+currentness remains standing. Do not compile the next family from this
+closeout.
 
 ## Exclusions
 

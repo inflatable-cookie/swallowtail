@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 80 roadmaps: 65 completed milestones and fourteen honest evidence
-stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, and
-076, plus one ready milestone. The generation has realized route
+g04 now has 80 roadmaps: 65 completed milestones and fifteen honest evidence
+stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
+and 080. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the
 Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
 established the active per-route feature completion programme. g04.061 is
@@ -107,11 +107,10 @@ g04.079 is complete. Research 226 and cards 219-221 delivered one closed
 positive `ClaudeCodeMaximumTurns` selection across every published
 `2.1.220..=2.1.241` version, with exact argv precedence, native enforcement,
 provider-failure terminal mapping, and omission unchanged.
-g04.080 is ready. Cards 222-224 and Research 227 gate provider-owned
-`web_search` on exact `xai.responses-websocket` model and operation profiles.
-Binding and acceptance are conditional on a non-empty exact set with closed
-WebSocket composition, a positive provider-side bound, and bounded response,
-citation, usage, billing, and lifecycle truth.
+g04.080 stopped after card 222: Research 227 empty deliver-now set. Official
+HTTP `web_search` and WebSocket body-equivalence are frozen; composed socket
+events, mixed completed output, and citation/terminal mapping are not. Cards
+223-224 are blocked. Omission remains exact `tools: []`.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

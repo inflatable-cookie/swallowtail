@@ -1,13 +1,13 @@
 # g04.080 xAI Responses WebSocket Web Search
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
 Depends on: g04.039; g04.079 closeout; per-route feature completion programme
 Vision tags: explicit behavior, provider-owned search, route-local controls
 Contract refs: 011, 029, 037, 039, 040, 041, 044, 052
-Research: 004, 067, 169, 187; 227 to be produced by card 222
+Research: 004, 067, 169, 187, 227
 
 ## Problem
 
@@ -34,18 +34,18 @@ tool arrays, or a provider-neutral search-options map.
 
 ## Goals
 
-- [ ] freeze exact WebSocket and Responses-body support for `web_search`
-- [ ] freeze exact model/profile membership, tool syntax, bounds, filters,
+- [x] freeze exact WebSocket and Responses-body support for `web_search`
+- [x] freeze exact model/profile membership, tool syntax, bounds, filters,
       citations, usage, billing, failure, and response-event truth
-- [ ] classify structured runs and serial sessions independently
-- [ ] promote Research 227 with a non-empty exact deliver-now table or honest
+- [x] classify structured runs and serial sessions independently
+- [x] promote Research 227 with a non-empty exact deliver-now table or honest
       empty set
 - [ ] conditionally bind only `ExternalSearchPolicy::Enabled` rows with one
       exact provider tool and positive provider-side use bound
-- [ ] preserve `ExternalNetworkPolicy::Denied`, endpoint/access authority,
+- [x] preserve `ExternalNetworkPolicy::Denied`, endpoint/access authority,
       `store=false`, model/reasoning/output controls, continuation,
       restoration, terminal mapping, billed cost, and joined cleanup
-- [ ] keep omission byte-equivalent with `tools: []`
+- [x] keep omission byte-equivalent with `tools: []`
 
 ## Non-Goals
 
@@ -93,9 +93,9 @@ not the host, executes the search.
 
 ### Batch 80.1 — Exact Web-Search Evidence
 
-- [ ] Execute card 222.
-- [ ] freeze exact model/profile/tool/bound/response/citation/billing truth
-- [ ] promote Research 227 with an exact table or honest empty set
+- [x] Execute card 222.
+- [x] freeze exact model/profile/tool/bound/response/citation/billing truth
+- [x] promote Research 227 with an exact table or honest empty set
 
 ### Batch 80.2 — Conditional Search Binding
 
@@ -111,16 +111,16 @@ not the host, executes the search.
 
 ## Acceptance Criteria
 
-- [ ] only Research 227 deliver-now model/profile rows prepare enabled search
+- [x] only Research 227 deliver-now model/profile rows prepare enabled search
 - [ ] enabled search dispatches one exact `web_search` tool with a positive
       provider-side use bound and no raw caller options
-- [ ] omission retains exact current request bytes with `tools: []`
-- [ ] host networking stays denied and no consumer callback is invented
-- [ ] search activity, citations, usage, billed cost, provider failure, and
+- [x] omission retains exact current request bytes with `tools: []`
+- [x] host networking stays denied and no consumer callback is invented
+- [x] search activity, citations, usage, billed cost, provider failure, and
       terminal state remain distinct and bounded
-- [ ] reasoning, output bounds, `store=false`, continuation, restoration,
+- [x] reasoning, output bounds, `store=false`, continuation, restoration,
       cancellation, deadline, connection invalidation, and cleanup do not widen
-- [ ] default QA performs no provider request, credential use, paid search, or
+- [x] default QA performs no provider request, credential use, paid search, or
       ambient configuration mutation
 
 ## Lane Runway

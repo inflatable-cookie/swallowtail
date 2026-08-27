@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.080 cards 222-224 serially. Card 222 must promote Research 227
-with a non-empty exact deliver-now set before conditional cards 223-224 run.
-Keep g04 open. Contract 029 currentness remains standing.
+Keep g04 open. Reassess the remaining per-route feature inventory for the next
+serial lane unless the operator supplies a different direction. Contract 029
+currentness remains standing. Do not compile the next family from this
+closeout.
 
 ## Standing Lanes
 

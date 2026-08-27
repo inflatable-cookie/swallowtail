@@ -6,12 +6,13 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [222-xai-responses-websocket-web-search-evidence.md](./222-xai-responses-websocket-web-search-evidence.md) — ready; Research 227 must promote a non-empty exact deliver-now set or stop honestly
-- [223-xai-responses-websocket-web-search-binding.md](./223-xai-responses-websocket-web-search-binding.md) — conditional on card 222 and non-empty Research 227
-- [224-xai-responses-websocket-web-search-acceptance.md](./224-xai-responses-websocket-web-search-acceptance.md) — conditional on card 223
+The lane has no ready card. g04.080 stopped after evidence. Do not compile the
+next family from this closeout.
 
 ## Blocked
 
+- [223-xai-responses-websocket-web-search-binding.md](./223-xai-responses-websocket-web-search-binding.md) — blocked; Research 227 empty deliver-now set
+- [224-xai-responses-websocket-web-search-acceptance.md](./224-xai-responses-websocket-web-search-acceptance.md) — blocked; card 223 blocked
 - [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — blocked; Research 223 empty deliver-now set
 - [212-cursor-headless-provider-sandbox-acceptance.md](./212-cursor-headless-provider-sandbox-acceptance.md) — blocked; card 211 blocked
 
@@ -34,6 +35,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [222-xai-responses-websocket-web-search-evidence.md](./222-xai-responses-websocket-web-search-evidence.md) — evidence stop; Research 227 empty deliver-now set
 - [221-claude-code-headless-maximum-turns-acceptance.md](./221-claude-code-headless-maximum-turns-acceptance.md)
 - [220-claude-code-headless-maximum-turns-binding.md](./220-claude-code-headless-maximum-turns-binding.md)
 - [219-claude-code-headless-maximum-turns-evidence.md](./219-claude-code-headless-maximum-turns-evidence.md) — complete; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission

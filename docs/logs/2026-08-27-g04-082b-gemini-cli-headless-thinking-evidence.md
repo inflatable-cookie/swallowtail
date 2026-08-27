@@ -22,10 +22,10 @@ There is no qualified argv or env seam. User settings path follows
 `GEMINI_CLI_HOME` when set (`paths.homedir()` →
 `Storage.getGlobalSettingsPath()`); workspace settings still load from the
 working resource. System settings merge last and win conflicting keys, but
-surviving ambient `customOverrides` can still participate in override
-resolution. Swallowtail's prepared route keeps ambient posture, passes no
-thinking env injection, and rejects portable `reasoning_mode` before process
-work.
+`customOverrides` arrays are replaced when that last layer supplies them.
+Swallowtail's prepared route keeps ambient posture, passes no thinking env or
+temporary settings injection, and rejects portable `reasoning_mode` before
+process work.
 
 Stream-json `init` exposes only resolved `model` and `session_id`. Assistant
 messages exclude thought content. Reasoning output is not selected-value
@@ -50,4 +50,4 @@ Validation:
 
 Production reasoning binding on headless stays blocked until Gemini CLI exposes
 a headless-local confirmation transport or Swallowtail gains a fail-closed child
-settings contract without ambient shadowing.
+settings contract with exact model/value admission.

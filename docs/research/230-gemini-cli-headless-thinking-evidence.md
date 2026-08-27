@@ -17,7 +17,7 @@ pre-effect rejection and exact dispatch or effective confirmation?
 No. Research 230 admits an empty deliver-now set. No typed thinking binding is
 admitted on `gemini-cli.headless`.
 
-Exact `@google/gemini-cli@0.56.0` exposes thinking only through ambient
+Exact `@google/gemini-cli@0.56.0` exposes thinking through settings-backed
 `settings.modelConfigs` resolution into `generateContentConfig.thinkingConfig`.
 Official generation-settings documentation names `thinkingBudget` and
 `includeThoughts` as SDK fields. Tagged source shows Gemini 2.5 chat aliases
@@ -140,14 +140,16 @@ These are distinct seams:
 | --- | --- |
 | Host user settings are always read | false when `GEMINI_CLI_HOME` points at an isolated directory with no settings file |
 | System settings can override user/workspace thinking keys | true for conflicting deep-merged keys because system merges last |
-| Ambient thinking configuration can still win | true when earlier layers contribute `modelConfigs.customOverrides` or workspace `modelConfigs` entries that survive merge and participate in override resolution |
+| Ambient thinking configuration can still win | only when the last system layer omits the relevant key; a supplied system `customOverrides` array replaces earlier arrays |
 | Workspace settings are isolatable by `GEMINI_CLI_HOME` alone | false; they follow the working resource |
 
-`ModelConfigService` concatenates built-in `overrides`, merged
-`customOverrides`, and runtime overrides before specificity sorting. Settings
-merge and override resolution are therefore separate questions: system settings
-winning a conflicting key does not automatically erase every ambient override
-row that still appears in the merged `modelConfigs` object.
+`settingsSchema.ts` assigns no concatenate or union strategy to
+`modelConfigs.customOverrides`, so `customDeepMerge()` replaces that array when
+a later layer supplies it. A caller-owned system settings file can therefore
+replace earlier user/workspace override rows with `[]` or a complete
+caller-owned list. `ModelConfigService` then concatenates built-in `overrides`,
+the already-merged `customOverrides`, and runtime overrides before specificity
+sorting. Settings merge and override resolution are separate questions.
 
 Swallowtail's prepared headless route uses `HarnessConfigurationPosture::Ambient`
 and passes one host-owned `EnvironmentRef`. It does not inject
@@ -156,10 +158,12 @@ The Gemini CLI seams above are source-level candidates only; they are not bound
 on the qualified route today.
 
 Even a hypothetical adapter that supplied isolated `GEMINI_CLI_HOME` plus
-`GEMINI_CLI_SYSTEM_SETTINGS_PATH` would still load workspace settings from the
-bound working resource, still merge ambient override rows that survive the
-settings pipeline, and still lack stream-json confirmation. Those remaining
-gates keep the deliver-now set empty.
+`GEMINI_CLI_SYSTEM_SETTINGS_PATH` would still read workspace settings from the
+bound working resource, but a complete system layer can prevent those settings
+from winning the thinking selection. That source-level seam is not bound by the
+qualified adapter today. Exact model/value admission before spawn and
+stream-json confirmation also remain absent, so the deliver-now set stays
+empty without treating ambient shadowing as unavoidable.
 
 ## Prepared Route Audit
 
@@ -207,9 +211,9 @@ values are not preflight-bound to model capability without a provider round trip
 
 | Gate | Finding |
 | --- | --- |
-| Process-private seam | no thinking argv/env on qualified route; `GEMINI_CLI_HOME` can isolate user settings but workspace settings and surviving override rows still load |
+| Process-private seam | generic child settings seams exist in source, but the qualified route binds no thinking argv, env, or temporary settings file |
 | No-substitution | built-in alias defaults apply even when Swallowtail omits portable reasoning |
-| Ambient shadowing | route posture is ambient; adapter injects no isolated settings env; workspace and surviving `customOverrides` can still shadow caller intent |
+| Ambient shadowing | not unavoidable with a complete last system layer; current route remains ambient because it injects no isolated settings env |
 | Selected-model agreement | effective config depends on alias family and runtime resolution context |
 | Pre-effect rejection | no argv/env thinking surface; unsupported values are not rejected before process work |
 | Confirmation | stream-json exposes no thinking field; reasoning output is not selected-value proof |
@@ -228,7 +232,7 @@ prompt-free dispatch or effective confirmation on `gemini-cli.headless`.
 | --- | --- |
 | `settings.modelConfigs.customAliases` / `customOverrides` | ambient or enterprise-managed configuration; not adapter-bound on current route |
 | `GEMINI_CLI_HOME` | child env redirect for user settings path; does not isolate workspace settings |
-| `GEMINI_CLI_SYSTEM_SETTINGS_PATH` | child env redirect for system layer; wins conflicting keys last, but surviving ambient override rows may still apply |
+| `GEMINI_CLI_SYSTEM_SETTINGS_PATH` | child env redirect for the last system layer; can win conflicting keys and replace the `customOverrides` array, but is not adapter-bound |
 | `ui.inlineThinkingMode` | display-only UI setting |
 | `--model` alias selection | selects alias chain, not an independent portable thinking value |
 | Gemini ACP negotiated model options | sibling route; no promotion |
@@ -241,7 +245,7 @@ Card 229 closes with an honest empty set. Production reasoning binding on
 `gemini-cli.headless` stays blocked until Gemini CLI exposes a headless-local,
 prompt-free confirmation transport or Swallowtail gains a bounded,
 fail-closed child settings contract that proves thinking agreement before spawn
-without ambient host shadowing.
+without depending on host configuration.
 
 ## Evidence
 

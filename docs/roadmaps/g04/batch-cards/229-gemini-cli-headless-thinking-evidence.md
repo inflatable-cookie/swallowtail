@@ -74,8 +74,7 @@ rollover, or g04 closure.
 
 Research 230 promoted with an empty deliver-now set. Exact `0.56.0` thinking
 configuration is settings-backed through `modelConfigs.generateContentConfig.thinkingConfig`;
-the qualified headless argv exposes no thinking seam; user settings can be
-redirected by `GEMINI_CLI_HOME` but workspace settings and surviving ambient
-override rows still load; stream-json exposes no thinking confirmation. Frozen
-evidence:
+the qualified route binds no thinking seam; `GEMINI_CLI_HOME` can redirect user
+settings and a last system layer can replace earlier override arrays, but the
+adapter injects neither; stream-json exposes no thinking confirmation. Frozen evidence:
 `crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-headless-0.56.0-thinking/thinking-evidence.json`.

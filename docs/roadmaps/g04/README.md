@@ -282,9 +282,10 @@ Do not close g04 without explicit operator direction.
 - g04.079 is complete through cards 219-221: closed adapter-local
   `ClaudeCodeMaximumTurns` dispatches one canonical `--max-turns <n>` on every
   published `2.1.220..=2.1.241` version; zero, negatives, fractions, and every
-  other parser-accepted-but-degenerate value stay unselectable; omission keeps
-  the exact prior argv and the ambient environment authoritative; reaching the
-  native bound stays a provider failure
+  other parser-accepted-but-degenerate value stay unselectable; the gate is the
+  exact probed set, so `UnverifiedNewer` and the never-published `2.1.230`
+  reject; omission keeps the exact prior argv and the ambient environment
+  authoritative; reaching the native bound stays a provider failure
 - g04 remains active at 79 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -459,7 +460,7 @@ New route-family research does not pre-empt this sequence.
 - [076 Cursor Headless Provider Sandbox](./076-cursor-headless-provider-sandbox.md) — stopped after card 210; Research 223 empty deliver-now set; cards 211-212 blocked
 - [077 Cursor Headless Ask Mode](./077-cursor-headless-ask-mode.md) — complete, cards 213-215; Research 224 promoted
 - [078 llama.cpp Owned Reasoning Controls](./078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 promoted
-- [079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md) — ready, cards 219-221; Research 226 reserved
+- [079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 promoted
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

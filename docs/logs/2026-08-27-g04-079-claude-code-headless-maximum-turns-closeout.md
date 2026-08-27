@@ -18,9 +18,9 @@ version in the qualified `2.1.220..=2.1.241` window.
   and extracted implementation source. No install, login, account inspection,
   provider request, paid operation, or ambient configuration write was used.
 - Card 220 added `ClaudeCodeMaximumTurns`, `with_maximum_turns` on the run
-  profile input and the low-level driver, immutable prepared evidence, a
-  fail-closed qualified-version gate, and one canonical `--max-turns <n>`
-  appended to the existing command.
+  profile input, immutable prepared evidence, a fail-closed gate on the exact
+  probed version set, and one canonical `--max-turns <n>` appended to the
+  existing command.
 - Card 221 proved dispatch, omission byte-equality, value and version
   rejection, low-level driver agreement, and the native limit-reached terminal
   shape.
@@ -94,10 +94,21 @@ and observed state stay separate in the guide, the fixture, and the tests.
 Swallowtail proves dispatch and rejects unqualified rows; it does not claim how
 many turns a given prompt will use.
 
-`UnverifiedNewer` points reject a selection before process work with
-`swallowtail.claude_code.headless.preparation.maximum_turns_unqualified`. No
-artifact for one was probed, so the parser, the loop guard, and the terminal
-shape are unproved there. Omission still runs on those versions, unchanged.
+The version gate is the exact Research 226 probed set, not the route's
+qualified window. The window is weaker in two ways: its claim permits later
+stable points as `UnverifiedNewer`, and its segment is a semantic range
+containing `2.1.230`, which was never published to npm. A `Qualified`
+assessment for `2.1.230` describes the range, not an observed binary, so it
+does not admit the feature. Both cases reject at preparation with
+`swallowtail.claude_code.headless.preparation.maximum_turns_unqualified`.
+
+Prepared construction is the only path to a bound: `with_maximum_turns` on the
+low-level driver is crate-private, so no public seam attaches one to a
+hand-built `ClaudeCodeHeadlessDriver`. The driver additionally re-checks the
+plan's version whenever a bound is present and fails with
+`swallowtail.claude_code.headless.maximum_turns_unqualified` before starting a
+process, so pairing a prepared bound with a swapped-in unprobed plan cannot
+dispatch. Omission still runs on every version the route otherwise permits.
 
 ## Shared Closeout
 
@@ -111,7 +122,7 @@ shape are unproved there. Omission still runs on those versions, unchanged.
 - programme, triage, and the research/log/roadmap/g04/batch-card indexes
   reconcile Research 226, cards 219-221, and g04.079
 - `CHANGELOG.md` and the unreleased public-API baseline record
-  `ClaudeCodeMaximumTurns` and its three new seams
+  `ClaudeCodeMaximumTurns` and its prepared seams
 - the sole Next Task returns to remaining per-route inventory reassessment
 - g04 remains active and unrolled until explicit operator direction
 
@@ -129,7 +140,7 @@ assuming them.
 Named card 221 gates passed: `cargo fmt`, focused adapter validation,
 verify-affected, examples, public API, northstar, and the
 research/logs/roadmap/g04/batch-card/next-action indexes, plus
-`git diff --check`. Adapter tests are 113, up from 108. Doctor matches the
+`git diff --check`. Adapter tests are 116, up from 108. Doctor matches the
 inherited baseline exactly: 380 god-file findings (334 warnings, 46 errors)
 plus one generated-in-src warning.
 
@@ -142,6 +153,28 @@ identity test, the dispatch and rejection cases separated, and
 `prepared_code/profile/prepared.rs` alongside the existing `profile/plan.rs`.
 The baseline is exact again. The open g04.056 papercut still records the
 inherited structural debt.
+
+### Review Round One
+
+`betterthanclay` requested changes at `87692364`. All three findings were real
+and are fixed.
+
+1. **The prepared gate admitted an unprobed version.** The first gate accepted
+   any `Qualified` point, and a test asserted `2.1.230` prepared a selection.
+   That version is inside the semantic segment but was never published, so no
+   artifact was probed. The gate now requires membership in the exact Research
+   226 probed set, and the negative boundary is asserted.
+2. **The public low-level setter bypassed the gate.**
+   `ClaudeCodeHeadlessDriver::with_maximum_turns` is now crate-private, so
+   prepared construction is the only path to a bound, and
+   `start_run` re-checks the plan's version whenever a bound is present. Direct
+   negative low-level tests prove a swapped-in unprobed plan rejects before any
+   process work.
+3. **Roadmap drift.** A duplicate g04.079 entry still read `ready` /
+   `reserved`. Reconciled.
+
+The public surface shrank by one item relative to the reviewed head; nothing
+released was touched.
 
 - PR: https://github.com/inflatable-cookie/swallowtail/pull/78
 - branch: `t3code/claude-code-headless-max-turns`

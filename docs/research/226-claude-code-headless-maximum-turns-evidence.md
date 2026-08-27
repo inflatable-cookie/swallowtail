@@ -426,7 +426,8 @@ preserves current behavior exactly, including that ambiguity.
 | `CLAUDE_CODE_MAX_TURNS` write, scrub, or inspection | argv precedence is unconditional; no need | rejected; out of scope |
 | portable maximum-turn, agent-budget, tool-call, cost, or wall-time control | turns are tool-use round trips only | rejected; not a portable generation control |
 | `--max-budget-usd`, `--task-budget`, `--autocompact`, `--max-thinking-tokens` | advertised or hidden siblings, not this lane | not applicable |
-| `2.1.242` and later `UnverifiedNewer` points | no artifact probed | evidence-gated; selection must reject non-`Qualified` versions |
+| `2.1.242` and later `UnverifiedNewer` points | no artifact probed | evidence-gated; selection must reject them |
+| `2.1.230` | inside the semantic window but never published to npm; no artifact exists | evidence-gated; a `Qualified` assessment is not evidence, so the selection must reject it too |
 | new terminal diagnostic for `error_max_turns` | mapping already fail-closed as provider failure | intentionally withheld; do not widen terminal mapping |
 | `claude-code.response-only`, `claude-agent.acp` | separate routes and axes | not applicable |
 
@@ -444,11 +445,23 @@ probe without any provider work.
 
 Cards 220 and 221 may run. The admitted binding is adapter-local and closed:
 one positive-integer Claude Code selection carried immutably from prepared
-input through prepared evidence into the low-level driver, gated on a
-`Qualified` interface assessment so `UnverifiedNewer` points reject before
-process work, dispatched as exactly one canonical `--max-turns <N>`. Omission
-keeps the existing command and environment handoff exactly. Terminal mapping,
-route authority, tools, configuration, retention, and cleanup do not widen.
+input through prepared evidence into the low-level driver, and dispatched as
+exactly one canonical `--max-turns <N>`. Omission keeps the existing command
+and environment handoff exactly. Terminal mapping, route authority, tools,
+configuration, retention, and cleanup do not widen.
+
+The version gate must be the exact set of points probed above, not the route's
+qualified window. The window is weaker evidence in two distinct ways: its claim
+permits later stable points as `UnverifiedNewer`, and its segment is a semantic
+range that contains `2.1.230`, a version that was never published and for which
+no artifact can be obtained. A `Qualified` assessment for `2.1.230` is a
+statement about the range, not about any observed binary, so it must not admit
+this feature.
+
+Prepared construction must be the only way a bound reaches the driver, and the
+driver must re-check the plan's version before process work. Otherwise a caller
+could pair a legitimately prepared bound with an unprobed plan and dispatch
+`--max-turns` on a version this record says nothing about.
 
 ## Sources
 

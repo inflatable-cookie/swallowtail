@@ -252,10 +252,25 @@ entirely and a negative value stops after the first tool-use turn. Only a
 positive integer produces the documented bound, so only a positive integer is
 selectable here.
 
-A selection requires a `Qualified` Claude Code version. Preparation fails with
-`swallowtail.claude_code.headless.preparation.maximum_turns_unqualified` on a
-provisionally permitted `UnverifiedNewer` point, because no artifact for one
-has been probed. Omission still runs on those versions.
+A selection requires one of the exact Claude Code versions Research 226 probed.
+That set is narrower than the route's qualified window in two ways, and both
+matter:
+
+- the compatibility claim permits later stable points as `UnverifiedNewer`, and
+  no artifact for one has been probed
+- the claim's segment is a semantic range that contains `2.1.230`, which was
+  never published to npm, so no artifact for it exists either
+
+Preparation fails with
+`swallowtail.claude_code.headless.preparation.maximum_turns_unqualified` on any
+version outside the probed set. The low-level driver re-checks the plan's
+version whenever a bound is present and fails with
+`swallowtail.claude_code.headless.maximum_turns_unqualified` before any process
+work, so swapping in a different plan after preparation cannot smuggle a bound
+onto an unprobed version. There is no public seam that attaches a bound to a
+hand-built `ClaudeCodeHeadlessDriver`; prepared construction is the only path.
+
+Omission still runs on every version the route otherwise permits.
 
 Selection separates seven states that must not be conflated: requested,
 prepared, dispatched, parser-accepted, natively enforced, reached, and

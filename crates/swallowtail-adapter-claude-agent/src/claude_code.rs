@@ -37,14 +37,17 @@ impl ClaudeCodeHeadlessDriver {
 
     /// Configures one admitted `--max-turns` value for low-level dispatch.
     ///
-    /// The caller owns agreement between this value, any extracted prepared
-    /// evidence, and the `(plan, request)` pair passed to
-    /// [`StructuredRunDriver::start_run`]. Prepared
-    /// [`crate::ClaudeCodePreparedRun::start_run`] remains the fail-closed
-    /// path: it is the only surface that gates the value on a qualified
-    /// Claude Code version.
+    /// Deliberately crate-private. A maximum-turn bound may only reach this
+    /// driver through prepared construction, which gates it on the exact
+    /// Research 226 version set. There is no public seam that attaches a bound
+    /// to a hand-built driver, so no caller can dispatch `--max-turns` on a
+    /// version no artifact was probed for.
+    ///
+    /// [`Self::start_run`] re-checks the plan's version against that same set
+    /// whenever a bound is present, so swapping in a different plan after
+    /// preparation still fails before any process work.
     #[must_use]
-    pub const fn with_maximum_turns(
+    pub(crate) const fn with_maximum_turns(
         mut self,
         maximum_turns: crate::ClaudeCodeMaximumTurns,
     ) -> Self {
@@ -108,6 +111,14 @@ impl ClaudeCodeHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         crate::claude_code_validation::validate(&plan, &request, &services)?;
+        if self.maximum_turns.is_some()
+            && !crate::claude_code_selection::plan_admits_maximum_turns(&plan)
+        {
+            return Err(failure(
+                "swallowtail.claude_code.headless.maximum_turns_unqualified",
+                "Claude Code headless maximum turns requires an exactly probed Claude Code version",
+            ));
+        }
         let task_service = services
             .task()
             .cloned()

@@ -2453,6 +2453,10 @@ expected.
   approved environment. The resolver returns the argv value before it ever
   reads `CLAUDE_CODE_MAX_TURNS`, including for argv values the environment
   itself would reject.
+- The route's qualified window is not the feature's evidence set. It permits
+  later stable points as `UnverifiedNewer`, and its semantic segment contains
+  `2.1.230`, which was never published. The selection therefore gates on the
+  exact probed set and rejects both cases before process work.
 
 Omission is unchanged and still makes no unlimited-execution claim: with the
 flag absent an ambient `CLAUDE_CODE_MAX_TURNS` stays authoritative, and an

@@ -9,41 +9,125 @@ fn zero_overflow_and_unqualified_versions_reject_before_process_work() {
     }
 
     let topology = ExecutionTopologyFixture::local();
-    let unverified = prepared_at(topology.execution_host_id().clone(), "2.1.242");
     let selection = ClaudeCodeMaximumTurns::from_u64(3).expect("value is admitted");
-    let error = unverified
-        .prepare_run(
-            run_profile_input(topology.working_resource().clone(), "turns-unqualified")
-                .with_maximum_turns(selection),
-        )
-        .expect_err("unqualified version rejects the selection");
-    assert_eq!(
-        error.diagnostic().safe().code(),
-        "swallowtail.claude_code.headless.preparation.maximum_turns_unqualified"
-    );
 
-    // The same unqualified version still runs without a maximum-turn selection.
-    let omitted = unverified
-        .prepare_run(run_profile_input(
-            topology.working_resource().clone(),
-            "turns-unqualified-omitted",
-        ))
-        .expect("omission still prepares on a permitted newer version");
-    assert_eq!(omitted.maximum_turns(), None);
+    // `2.1.242` is permitted `UnverifiedNewer`; `2.1.230` sits inside the
+    // semantic window but was never published, so Research 226 probed no
+    // artifact for it. Neither may admit the feature.
+    for unprobed in ["2.1.242", "2.1.230"] {
+        let integration = prepared_at(topology.execution_host_id().clone(), unprobed);
+        let error = integration
+            .prepare_run(
+                run_profile_input(topology.working_resource().clone(), "turns-unqualified")
+                    .with_maximum_turns(selection),
+            )
+            .expect_err("unprobed version rejects the selection");
+        assert_eq!(
+            error.diagnostic().safe().code(),
+            "swallowtail.claude_code.headless.preparation.maximum_turns_unqualified"
+        );
 
-    for qualified in ["2.1.220", "2.1.230", "2.1.241"] {
-        let integration = prepared_at(topology.execution_host_id().clone(), qualified);
+        // The same version still runs without a maximum-turn selection.
+        let omitted = integration
+            .prepare_run(run_profile_input(
+                topology.working_resource().clone(),
+                "turns-unqualified-omitted",
+            ))
+            .expect("omission still prepares on a permitted version");
+        assert_eq!(omitted.maximum_turns(), None);
+    }
+
+    for probed in ["2.1.220", "2.1.229", "2.1.231", "2.1.241"] {
+        let integration = prepared_at(topology.execution_host_id().clone(), probed);
         assert_eq!(
             integration
                 .prepare_run(
                     run_profile_input(topology.working_resource().clone(), "turns-qualified")
                         .with_maximum_turns(selection),
                 )
-                .expect("qualified version admits the selection")
+                .expect("probed version admits the selection")
                 .maximum_turns(),
             Some(selection)
         );
     }
+}
+
+#[test]
+fn low_level_driver_cannot_dispatch_a_bound_on_an_unprobed_plan() {
+    let topology = ExecutionTopologyFixture::local();
+    let selection = ClaudeCodeMaximumTurns::from_u64(3).expect("value is admitted");
+
+    // A bound only reaches the driver through prepared construction; there is
+    // no public setter. Take a legitimately prepared driver, then swap in a
+    // plan for a version no artifact was probed for.
+    let probed = prepared(topology.execution_host_id().clone());
+    let bound = probed
+        .prepare_run(
+            run_profile_input(topology.working_resource().clone(), "turns-low-level")
+                .with_maximum_turns(selection),
+        )
+        .expect("Claude Code run prepares");
+
+    for unprobed in ["2.1.242", "2.1.230"] {
+        let integration = prepared_at(topology.execution_host_id().clone(), unprobed);
+        let swapped = integration
+            .prepare_run(run_profile_input(
+                topology.working_resource().clone(),
+                "turns-low-level-swapped",
+            ))
+            .expect("omission prepares on the unprobed version");
+
+        let (process, state) = FakeProcessService::with_exit(
+            &fixture("headless-complete.jsonl"),
+            ProcessExit::new(true, Some(0)),
+        );
+        let (services, task) = host_services(
+            topology.execution_host_id().clone(),
+            process,
+            Arc::new(PendingTimeService),
+        );
+        let error = match block_on(bound.low_level_driver().start_run(
+            swapped.plan().clone(),
+            swapped.request().clone(),
+            services,
+        )) {
+            Ok(_) => panic!("an unprobed plan must reject the bound"),
+            Err(error) => error,
+        };
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.claude_code.headless.maximum_turns_unqualified"
+        );
+
+        // Rejection happens before any process work: no child was started,
+        // nothing was waited on, and no task was spawned to join.
+        assert!(!state.started());
+        assert!(!state.waited());
+        assert!(!task.joined());
+    }
+
+    // The same unprobed plan still runs through an unbound driver: this
+    // rejects the bound, not the version.
+    let integration = prepared_at(topology.execution_host_id().clone(), "2.1.242");
+    let omitted = integration
+        .prepare_run(run_profile_input(
+            topology.working_resource().clone(),
+            "turns-low-level-omitted",
+        ))
+        .expect("omission prepares on the unprobed version");
+    let run = execute(
+        &omitted,
+        topology.execution_host_id().clone(),
+        &fixture("headless-complete.jsonl"),
+        ProcessExit::new(true, Some(0)),
+    );
+    assert_eq!(run.outcome.status(), &TerminalStatus::Completed);
+    assert!(
+        !run.request
+            .arguments
+            .iter()
+            .any(|argument| argument == "--max-turns")
+    );
 }
 
 #[test]

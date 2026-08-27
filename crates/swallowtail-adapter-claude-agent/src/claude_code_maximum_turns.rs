@@ -2,6 +2,40 @@ use crate::failure::failure;
 use std::num::NonZeroU32;
 use swallowtail_runtime::RuntimeFailure;
 
+/// Exact Claude Code versions Research 226 probed for `--max-turns`.
+///
+/// This is the deliver-now version set, not the route's qualified window. The
+/// window is a semantic range and its compatibility claim also permits later
+/// stable points as `UnverifiedNewer`. Neither is evidence for this feature.
+///
+/// `2.1.230` is inside the semantic range and is deliberately absent: it was
+/// never published to npm, so no artifact exists and nothing about its parser,
+/// loop guard, or terminal shape was proved. A host reporting it is rejected
+/// for a maximum-turn selection like any other unprobed point.
+pub(crate) const ADMITTED_VERSIONS: [&str; 21] = [
+    "2.1.220", "2.1.221", "2.1.222", "2.1.223", "2.1.224", "2.1.225", "2.1.226", "2.1.227",
+    "2.1.228", "2.1.229", "2.1.231", "2.1.232", "2.1.233", "2.1.234", "2.1.235", "2.1.236",
+    "2.1.237", "2.1.238", "2.1.239", "2.1.240", "2.1.241",
+];
+
+/// Reports whether one observed interface version admits a maximum-turn bound.
+///
+/// The version must sit on the headless axis, assess as `Qualified` rather
+/// than provisionally permitted `UnverifiedNewer`, and be one of the exact
+/// points Research 226 probed. The last condition is the operative one: the
+/// route's compatibility claim covers a semantic range that contains at least
+/// one version no artifact exists for, and it permits later stable points the
+/// research never saw.
+pub(crate) fn admits(binding: &swallowtail_core::InterfaceVersionBinding) -> bool {
+    let claim = crate::claude_code_headless_claim();
+    binding.axis() == claim.axis()
+        && matches!(
+            claim.assess(binding.version()),
+            swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
+        )
+        && ADMITTED_VERSIONS.contains(&binding.version().as_str())
+}
+
 /// Exact admitted `--max-turns` selection for native Claude Code headless runs.
 ///
 /// This is adapter-local Claude Code configuration. It is not a portable agent
@@ -55,7 +89,48 @@ impl ClaudeCodeMaximumTurns {
 
 #[cfg(test)]
 mod tests {
-    use super::ClaudeCodeMaximumTurns;
+    use super::{ADMITTED_VERSIONS, ClaudeCodeMaximumTurns};
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+
+    #[test]
+    fn admitted_versions_are_qualified_and_exclude_the_unpublished_point() {
+        let claim = crate::claude_code_headless_claim();
+        for admitted in ADMITTED_VERSIONS {
+            let version = InterfaceVersion::new(admitted).expect("version is valid");
+            assert!(matches!(
+                claim.assess(&version),
+                InterfaceCompatibilityAssessment::Qualified(_)
+            ));
+        }
+        // 2.1.230 sits inside the semantic window but was never published, so
+        // no artifact was probed and it must not admit the feature.
+        assert!(!ADMITTED_VERSIONS.contains(&"2.1.230"));
+        assert!(matches!(
+            claim.assess(&InterfaceVersion::new("2.1.230").expect("version is valid")),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
+
+        // The set is exactly the window's published points: 220..=241 less 230.
+        let expected = (220..=241)
+            .filter(|patch| *patch != 230)
+            .map(|patch| format!("2.1.{patch}"))
+            .collect::<Vec<_>>();
+        assert_eq!(ADMITTED_VERSIONS.to_vec(), expected);
+    }
+
+    #[test]
+    fn unprobed_and_provisional_versions_do_not_admit_the_feature() {
+        for admitted in ADMITTED_VERSIONS {
+            assert!(super::admits(&binding(admitted)));
+        }
+        for rejected in ["2.1.230", "2.1.242", "2.1.219", "3.0.0"] {
+            assert!(!super::admits(&binding(rejected)));
+        }
+    }
+
+    fn binding(value: &str) -> swallowtail_core::InterfaceVersionBinding {
+        crate::claude_code_headless_binding(value).expect("fixture version binds")
+    }
 
     #[test]
     fn admitted_domain_accepts_positive_integers() {

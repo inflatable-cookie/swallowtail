@@ -2578,3 +2578,19 @@ configured auth. Contract 040 forbids portable clamping, so deliver-now
 requires a closed static provider/model/value gate before process work. No
 such table survives. Omission retains exact prior bootstrap bytes and Pi
 default/stored behavior.
+
+## Post-g04.081 Inventory Normalization (2026-08-27)
+
+Disposition: promoted to the
+[live per-route feature inventory](../roadmaps/g04/per-route-feature-inventory.md).
+
+The original 85 numbered pairs now have one maintained disposition: 41 are
+closed by numbered delivery, evidence-stop, correction, or withhold lanes; 34
+remain active qualification candidates; ten have no active lane under current
+policy, evidence, or contracts. This append-only assessment no longer owns the
+live count or sequence.
+
+The next acceleration unit is four independent evidence-only lanes: Codex
+app-server verbosity, Gemini CLI headless thinking, Bedrock latency/service
+tier, and Ollama think `max`. Shared programme, triage, matrix, index, and Next
+Task promotion remains serial.

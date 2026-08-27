@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 Per-Route Feature Inventory Normalization](./2026-08-27-per-route-feature-inventory-normalization.md) — 85 original items normalized to 41 closed, 34 active qualification candidates, and ten with no active lane; four evidence-only lanes selected for parallel compilation
 - [2026-08-27 g04.081 Pi SDK Sidecar Reasoning Selection Closeout](./2026-08-27-g04-081-pi-sdk-sidecar-reasoning-selection-closeout.md) — complete; Research 228 admits one bounded deliver-now row family; cards 225-227; PR 80
 - [2026-08-27 g04.081 Pi SDK Sidecar Reasoning Selection Compiled](./2026-08-27-g04-081-pi-sdk-sidecar-reasoning-selection-compiled.md) — evidence-first cards 225-227; Research 228 reserved; binding conditional on exact static membership and effective-state agreement
 - [2026-08-27 g04.080 xAI Responses WebSocket Web Search Closeout](./2026-08-27-g04-080-xai-responses-websocket-web-search-closeout.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked

@@ -114,6 +114,10 @@ events, mixed completed output, and citation/terminal mapping are not. Cards
 g04.081 is complete. Research 228 and cards 225-227 deliver one bounded
 `anthropic/claude-opus-4-5` portable reasoning row on exact Pi `0.84.2`.
 Omission unchanged.
+The original 85-item feature inventory is normalized after g04.081: 41 items
+have numbered-lane dispositions, 34 remain active qualification candidates,
+and ten have no active lane. Four route-distinct evidence-only lanes are ready
+for compilation; shared-state promotion remains serial.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

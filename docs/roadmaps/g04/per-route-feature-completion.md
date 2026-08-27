@@ -4,6 +4,7 @@ Status: active programme
 Owner: Tom
 Created: 2026-08-21
 Evidence: `../triage/2026-08-21-advanced-route-features.md`
+Live inventory: [Per-Route Feature Inventory](./per-route-feature-inventory.md)
 Governing refs: Contracts 011, 020, 024, 037, 040, 041, 047, 052
 
 ## Purpose
@@ -302,8 +303,12 @@ families do not interrupt this programme by default.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory for the next serial lane.
-Keep g04 open. Contract 029 currentness remains standing.
+The normalized inventory has 41 closed original items, 34 active qualification
+candidates, and ten items with no active lane. Compile its four route-distinct
+evidence-only lanes for parallel dispatch. Workers must not edit shared
+programme, triage, matrix, index, or Next Task state. Promote results serially,
+then compile delivery only for non-empty exact sets. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Exclusions
 

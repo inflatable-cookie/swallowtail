@@ -14,8 +14,10 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory for the next serial lane.
-Keep g04 open. Contract 029 currentness remains standing.
+Compile and dispatch the four evidence-only lanes in the
+[normalized per-route feature inventory](g04/per-route-feature-inventory.md#parallel-qualification-wave).
+Promote their results serially. Keep g04 open. Contract 029 currentness remains
+standing.
 
 ## Standing Lanes
 
@@ -29,6 +31,8 @@ first standing lane. It does not keep a generation open.
 - [long-term-plan.md](./long-term-plan.md) — staged multi-consumer adoption
 - [per-route-feature-completion.md](g04/per-route-feature-completion.md) —
   route-local feature delivery programme
+- [per-route-feature-inventory.md](g04/per-route-feature-inventory.md) — live
+  disposition counts and parallel qualification queue
 - [standing-lanes.md](standing-lanes.md) — generation-independent lanes
 - [backlog/README.md](backlog/README.md) — deferred work and promotion gates
 - [g01/README.md](g01/README.md) — completed foundation generation

@@ -96,6 +96,10 @@ and selection policy.
 - [g04.079 Claude Code Headless Maximum Turns](079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission
 - [g04.080 xAI Responses WebSocket Web Search](080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 admits one bounded `anthropic/claude-opus-4-5` reasoning row
+- [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
+  items normalized after g04.081: 41 closed, 34 active qualification
+  candidates, ten with no active lane; four evidence-only lanes selected for
+  parallel compilation
 
 g04 has 81 numbered roadmaps: 66 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
@@ -434,6 +438,8 @@ New route-family research does not pre-empt this sequence.
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
+- [Per-Route Feature Inventory](./per-route-feature-inventory.md) — live
+  dispositions, counts, and parallel qualification boundary
 - [036 Ollama Attached Context Window](./036-ollama-attached-context-window.md) — complete, cards 098-100
 - [037 Anthropic Messages Effort](./037-anthropic-messages-effort.md) — complete, cards 101-103
 - [038 DeepSeek Continuation Reasoning Controls](./038-deepseek-continuation-reasoning-controls.md) — complete, cards 104-106

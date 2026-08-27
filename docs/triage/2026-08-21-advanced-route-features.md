@@ -2470,3 +2470,39 @@ new diagnostic was admitted.
 
 Everything the disposition excluded stayed excluded. The remaining Claude Code
 rows in the table above are unchanged.
+
+## Post-g04.079 Reassessment And g04.080 Compilation (2026-08-27)
+
+Disposition: select provider-owned web search on `xai.responses-websocket` and
+compile g04.080 as one serial evidence-first lane.
+
+The remaining inventory was re-ranked after Claude Code maximum-turn delivery.
+Codex app-server v2 exposes no first-class thread or turn verbosity control.
+Claude Code autocompact remains shadowed by opaque approved-environment
+authority. Ollama `think=max` maps to `high` on the exact relevant model family.
+Account/billing controls, writable modes, ambient registries, and process
+topology still carry wider or less observable authority.
+
+The xAI seam is direct. The route already owns one exact Responses WebSocket,
+selected Grok 4.5/4.6 models, structured runs, serial private continuation,
+reasoning, output bounds, `store=false`, usage, billed cost, restoration, and
+joined cleanup. Every current request emits `tools: []`.
+
+Current primary xAI documentation says WebSocket `response.create` uses the
+Responses create body and separately documents `web_search` on `grok-4.6`,
+server-side search-call items, citations, and tool-turn bounds. That is a lead,
+not delivery evidence. Card 222 and Research 227 must freeze exact WebSocket
+composition, model/profile membership, canonical tool syntax, a positive
+provider-side bound, response grammar, citations, usage, billing, failures,
+terminal ordering, continuation, restoration, and cleanup.
+
+Cards 223-224 run only for a non-empty exact Research 227 set. The public intent
+is existing `ExternalSearchPolicy::Enabled`; exact xAI tool shape and bound stay
+adapter-owned. Host external networking stays denied because the provider owns
+the search. Omission must remain byte-equivalent with `tools: []`.
+
+X and image search, code execution, files, MCP, functions, consumer tool
+exchange, raw tool arrays, caller filters, host fetch, live provider work,
+currentness, release, generation rollover, and g04 closure stay out. If exact
+support or bounded event truth needs provider prompting, Research 227 must
+promote an empty set and the lane stops after card 222.

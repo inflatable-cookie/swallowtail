@@ -6,7 +6,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None.
+- [222-xai-responses-websocket-web-search-evidence.md](./222-xai-responses-websocket-web-search-evidence.md) — ready; Research 227 must promote a non-empty exact deliver-now set or stop honestly
+- [223-xai-responses-websocket-web-search-binding.md](./223-xai-responses-websocket-web-search-binding.md) — conditional on card 222 and non-empty Research 227
+- [224-xai-responses-websocket-web-search-acceptance.md](./224-xai-responses-websocket-web-search-acceptance.md) — conditional on card 223
 
 ## Blocked
 

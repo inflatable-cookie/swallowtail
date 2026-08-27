@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess the remaining per-route feature inventory and compile the next
-numbered route-local milestone. g04.079 is complete through cards 219-221 and
-Research 226. Keep g04 open.
-Contract 029 currentness remains standing.
+Execute g04.080 cards 222-224 serially. Card 222 must promote Research 227
+with a non-empty exact deliver-now set before conditional cards 223-224 run.
+Keep g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

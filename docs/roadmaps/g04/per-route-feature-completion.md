@@ -288,11 +288,18 @@ families do not interrupt this programme by default.
   Reaching the native bound stays `error_max_turns`, exit `1`, and a provider
   failure with no output. A distinct terminal diagnostic and any portable
   budget vocabulary stay out.
+- [g04.080 xAI Responses WebSocket Web Search](./080-xai-responses-websocket-web-search.md)
+  is ready. Card 222 must freeze exact `web_search` WebSocket composition,
+  model/profile membership, provider-side bounds, response items, citations,
+  usage, billing, terminal ordering, and lifecycle truth in Research 227.
+  Cards 223-224 remain conditional on a non-empty exact deliver-now set.
+  Enabled search must use explicit `ExternalSearchPolicy::Enabled`, retain
+  denied host networking, and preserve exact `tools: []` omission.
 
 ## Current Execution Boundary
 
-Reassess the remaining per-route feature inventory and compile the next
-numbered route-local milestone. Keep g04 open. Contract 029 currentness
+Execute g04.080 cards 222-224 serially. Stop after card 222 if Research 227 is
+empty or any decision gate fires. Keep g04 open. Contract 029 currentness
 remains standing.
 
 ## Exclusions

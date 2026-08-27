@@ -53,4 +53,5 @@ Inherited doctor baseline unchanged: `scan.god-files` 380 findings;
 
 ## Next
 
-Open one reviewable worker PR against current pushed `main`. Do not merge.
+PR: https://github.com/inflatable-cookie/swallowtail/pull/95
+Await orchestrator review. Do not merge without operator authorisation.

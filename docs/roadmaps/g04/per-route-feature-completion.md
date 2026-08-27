@@ -309,19 +309,22 @@ families do not interrupt this programme by default.
   exact selected-model `max` membership. PRs 81-84 landed serially through
   `5d9fa3f5`. No binding or acceptance lane follows.
 - [g04.083 Parallel Per-Route Feature Qualification II](./083-second-parallel-per-route-feature-qualification.md)
-  is ready. Cards 232-235 reserve four package-distinct evidence lanes for
-  Claude Code headless Fast, Codex exec Fast/service tier, Gemini CLI ACP
-  thinking, and OpenAI Realtime reasoning effort. Research 233-236 are
-  reserved. Shared promotion and any later delivery compilation remain serial.
+  is complete. Cards 232-234 and Research 233-235 close Claude Code headless
+  Fast, Codex exec Fast/service tier, and Gemini CLI ACP thinking with honest
+  empty deliver-now sets. Card 235 and Research 236 qualify five future
+  session-scoped OpenAI Realtime effort rows. PRs 86, 88, 87, and 85 landed
+  serially through `c918d301`.
+- [g04.084 OpenAI Realtime Reasoning Effort](./084-openai-realtime-reasoning-effort.md)
+  is ready. Cards 236-237 bind and prove Research 236's exact
+  `minimal|low|medium|high|xhigh` rows at a new opaque facade point while
+  preserving historical and omission behavior.
 
 ## Current Execution Boundary
 
-The normalized inventory has 45 closed original items, 30 active qualification
-candidates, and ten items with no active lane. Execute g04.083 cards 232-235 as
-four route-distinct evidence-only lanes. Workers must not edit shared programme,
-triage, matrices, indexes, or Next Task. Promote results serially and compile
-delivery only for non-empty exact sets. Keep g04 open. Contract 029 currentness
-remains standing.
+The normalized inventory has 48 closed original items, 26 active qualification
+candidates, one active delivery item, and ten items with no active lane. Execute
+g04.084 cards 236-237 as one OpenAI-owned delivery lane. Keep g04 open. Contract
+029 currentness remains standing.
 
 ## Exclusions
 

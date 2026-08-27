@@ -2635,3 +2635,26 @@ and log. Shared inventory, programme, triage, matrices, indexes, Next Task, and
 any production binding remain serial. Provider prompts, credentials, paid work,
 account inspection, install/update, ambient mutation, release, rollover, and
 g04 closure stay out.
+
+## Post-g04.083 Completion And g04.084 Compilation (2026-08-27)
+
+Disposition: three evidence stops; one bounded delivery lane.
+
+Research 233 closes Claude Code headless Fast because effective activation,
+model/access membership, credit entitlement, billing, and latency cannot be
+proved without account or provider work. Research 234 closes Codex exec Fast
+because live-catalog substitution and silent tier downgrade prevent static
+pre-prompt confirmation. Research 235 closes Gemini CLI ACP thinking because
+ACP exposes no selected thinking option or confirmation seam.
+
+Research 236 admits five future session-scoped OpenAI Realtime rows on exact
+`gpt-realtime-2.1`: `minimal`, `low`, `medium`, `high`, and `xhigh`. The current
+dated facade remains an honest empty set. g04.084 cards 236-237 bind those rows
+at a new opaque facade point, require matching `session.updated`
+acknowledgement, preserve omission, and keep per-response override and effective
+reasoning out.
+
+Original items 2, 15, and 30 move to the closed disposition set. Item 76 moves
+to active delivery. The live inventory now owns 48 closed items, 26 active
+qualification candidates, one active delivery item, and ten with no active
+lane. PRs 86, 88, 87, and 85 landed serially through `c918d301`.

@@ -97,14 +97,15 @@ and selection policy.
 - [g04.080 xAI Responses WebSocket Web Search](080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 admits one bounded `anthropic/claude-opus-4-5` reasoning row
 - [g04.082 Parallel Per-Route Feature Qualification](082-parallel-per-route-feature-qualification.md) — complete, cards 228-231; Research 229-232 honest empty deliver-now sets; PRs 81-84 through `5d9fa3f5`
-- [g04.083 Parallel Per-Route Feature Qualification II](083-second-parallel-per-route-feature-qualification.md) — ready, cards 232-235; Research 233-236 reserved as package-distinct evidence lanes
+- [g04.083 Parallel Per-Route Feature Qualification II](083-second-parallel-per-route-feature-qualification.md) — complete, cards 232-235; three honest empty sets and five future OpenAI Realtime rows; PRs 86, 88, 87, and 85 through `c918d301`
+- [g04.084 OpenAI Realtime Reasoning Effort](084-openai-realtime-reasoning-effort.md) — ready, cards 236-237; Research 236 session-scoped delivery
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
-  items normalized after g04.082: 45 closed, 30 active qualification
-  candidates, ten with no active lane
+  items normalized after g04.083: 48 closed, 26 active qualification
+  candidates, one active delivery, and ten with no active lane
 
-g04 has 83 numbered roadmaps: 67 completed milestones, fifteen honest
+g04 has 84 numbered roadmaps: 68 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, and one ready milestone at 083. g04.082 is complete. The
+074, 076, and 080, and one ready milestone at 084. g04.083 is complete. The
 operator keeps the generation active.
 Do not close g04 without explicit operator direction.
 
@@ -304,9 +305,12 @@ Do not close g04 without explicit operator direction.
   app-server verbosity, Gemini headless thinking, Bedrock service tier, and
   Ollama think `max` with four honest empty deliver-now sets; PRs 81-84 landed
   serially through `5d9fa3f5`; no production binding follows
-- g04.083 is ready. Cards 232-235 and Research 233-236 reserve four
-  package-distinct evidence lanes; shared promotion remains serial
-- g04 remains active at 83 roadmaps; generation closure awaits explicit
+- g04.083 is complete. Research 233-235 close three candidates with honest
+  empty sets; Research 236 qualifies five future session-scoped OpenAI
+  Realtime values; PRs 86, 88, 87, and 85 landed serially through `c918d301`
+- g04.084 is ready. Cards 236-237 bind and prove those five Realtime values at
+  a new opaque facade point while preserving historical and omission behavior
+- g04 remains active at 84 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -441,10 +445,13 @@ Do not close g04 without explicit operator direction.
     sets; cards 228-231 close original inventory items 19, 32, 81, and 83.
     PRs 81-84 landed serially through `5d9fa3f5`. No production binding or
     acceptance roadmap follows.
-46. g04.083 is ready. Cards 232-235 reserve Claude Code headless Fast, Codex
-    exec Fast/service tier, Gemini CLI ACP thinking, and OpenAI Realtime
-    reasoning as disjoint evidence-only lanes. Research 233-236 are reserved.
-47. g04 remains active at operator direction. Contract 029 remains standing.
+46. g04.083 is complete. Research 233-235 admit three honest empty deliver-now
+    sets. Research 236 qualifies five future OpenAI Realtime session-scoped
+    effort rows. PRs 86, 88, 87, and 85 landed serially through `c918d301`.
+47. g04.084 is ready. Cards 236-237 deliver Research 236's five exact rows at
+    facade `openai-realtime-reasoning-2026-08-27` with matching
+    `session.updated` acknowledgement and omission unchanged.
+48. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -501,7 +508,8 @@ New route-family research does not pre-empt this sequence.
 - [080 xAI Responses WebSocket Web Search](./080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 bounded row
 - [082 Parallel Per-Route Feature Qualification](./082-parallel-per-route-feature-qualification.md) — complete, cards 228-231; Research 229-232 honest empty deliver-now sets; PRs 81-84 through `5d9fa3f5`
-- [083 Parallel Per-Route Feature Qualification II](./083-second-parallel-per-route-feature-qualification.md) — ready, cards 232-235; Research 233-236 reserved as package-distinct evidence lanes
+- [083 Parallel Per-Route Feature Qualification II](./083-second-parallel-per-route-feature-qualification.md) — complete, cards 232-235; three honest empty sets and one qualified OpenAI Realtime delivery set
+- [084 OpenAI Realtime Reasoning Effort](./084-openai-realtime-reasoning-effort.md) — ready, cards 236-237; Research 236 promoted
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

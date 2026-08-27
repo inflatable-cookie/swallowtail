@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Run g04.083 cards 232-235 as four route-distinct evidence-only worker lanes.
-Keep worker ownership disjoint and integration serial. Do not start production
-binding from a worker branch or from any g04.082 empty set. Keep g04 open.
-Contract 029 currentness remains standing.
+Run g04.084 cards 236-237 as one OpenAI Realtime reasoning-effort worker lane.
+Bind only Research 236's five exact session-scoped rows at the new opaque
+facade point. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

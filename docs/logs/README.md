@@ -23,11 +23,14 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort](./2026-08-27-g04-084-openai-realtime-reasoning-effort.md) — ready; cards 236-237; Research 236 promoted
+- [2026-08-27 g04.084 OpenAI Realtime Reasoning Effort Compiled](./2026-08-27-g04-084-openai-realtime-reasoning-effort-compiled.md) — cards 236-237 ready; five exact session-scoped values at a new opaque facade point
+- [2026-08-27 g04.083 Parallel Feature Qualification Closeout](./2026-08-27-g04-083-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one qualified OpenAI Realtime delivery set; PRs 86, 88, 87, and 85
 - [2026-08-27 g04.083 Parallel Feature Qualification Compiled](./2026-08-27-g04-083-parallel-feature-qualification-compiled.md) — cards 232-235 and Research 233-236 reserved as four evidence-only worker lanes; parallel execution, serial promotion and merge
-- [2026-08-27 g04.083a Claude Code Headless Fast-Mode Evidence](./2026-08-27-g04-083a-claude-code-headless-fast-mode-evidence.md) — ready; card 232; Research 233 reserved
-- [2026-08-27 g04.083b Codex Exec Fast Service-Tier Evidence](./2026-08-27-g04-083b-codex-exec-fast-service-tier-evidence.md) — ready; card 233; Research 234 reserved
-- [2026-08-27 g04.083c Gemini CLI ACP Thinking Evidence](./2026-08-27-g04-083c-gemini-cli-acp-thinking-evidence.md) — ready; card 234; Research 235 reserved
-- [2026-08-27 g04.083d OpenAI Realtime Reasoning-Effort Evidence](./2026-08-27-g04-083d-openai-realtime-reasoning-effort-evidence.md) — ready; card 235; Research 236 reserved
+- [2026-08-27 g04.083a Claude Code Headless Fast-Mode Evidence](./2026-08-27-g04-083a-claude-code-headless-fast-mode-evidence.md) — complete; card 232; Research 233 honest empty deliver-now set
+- [2026-08-27 g04.083b Codex Exec Fast Service-Tier Evidence](./2026-08-27-g04-083b-codex-exec-fast-service-tier-evidence.md) — complete; card 233; Research 234 honest empty deliver-now set
+- [2026-08-27 g04.083c Gemini CLI ACP Thinking Evidence](./2026-08-27-g04-083c-gemini-cli-acp-thinking-evidence.md) — complete; card 234; Research 235 honest empty deliver-now set
+- [2026-08-27 g04.083d OpenAI Realtime Reasoning-Effort Evidence](./2026-08-27-g04-083d-openai-realtime-reasoning-effort-evidence.md) — complete; card 235; Research 236 qualifies five future session-scoped rows
 - [2026-08-27 g04.082 Parallel Feature Qualification Closeout](./2026-08-27-g04-082-parallel-feature-qualification-closeout.md) — complete; four honest empty deliver-now sets; cards 228-231; PRs 81-84
 - [2026-08-27 g04.082 Parallel Feature Qualification Compiled](./2026-08-27-g04-082-parallel-feature-qualification-compiled.md) — cards 228-231 and Research 229-232 reserved as four evidence-only worker lanes; parallel execution, serial promotion and merge
 - [2026-08-27 g04.082a Codex App-Server Model Verbosity Evidence](./2026-08-27-g04-082a-codex-app-server-model-verbosity-evidence.md) — complete; card 228; Research 229 honest empty deliver-now set

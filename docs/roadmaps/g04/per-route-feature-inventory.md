@@ -10,19 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.082.
+sequence after g04.083.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 45 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.082. |
-| Active qualification backlog | 30 | A bounded route-local evidence question remains. |
+| Closed by a numbered lane | 48 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.083. |
+| Active qualification backlog | 26 | A bounded route-local evidence question remains. |
+| Active delivery | 1 | Exact evidence is promoted and binding/acceptance cards are ready. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1, 5, 7, 16, 19, 23-27, 32-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
+`1-2, 5, 7, 15-16, 19, 23-27, 30, 32-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
 62-63, 65-68, 72-74, 77-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
@@ -34,12 +35,11 @@ queue.
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 2, 4, 6, 8-9 | `claude-code.headless` | Fast, compaction, spend, advisor, permission modes | qualify separately; never widen permissions by default |
+| 4, 6, 8-9 | `claude-code.headless` | compaction, spend, advisor, permission modes | qualify separately; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 15 | `codex.exec` | Fast / service tier | exact config, model, and returned-state evidence |
 | 18, 20-21 | `codex.app-server` | Fast, personality, Plan effort | three distinct controls; no promotion from exec |
 | 28 | `cursor-agent.acp` | model parameters | exact ACP option and selected-value confirmation required |
-| 29-30 | `gemini-cli.acp` | sandbox, thinking | qualify independently on exact enterprise API-key route |
+| 29 | `gemini-cli.acp` | sandbox | qualify independently on exact enterprise API-key route |
 | 31 | `gemini-cli.headless` | sandbox | qualify independently on exact enterprise API-key route |
 | 34 | `grok-build.acp` | web-search disable | exact ACP spawn and applied-state evidence |
 | 41-42 | `cline.acp` | Plan, model | no promotion from headless evidence |
@@ -49,8 +49,13 @@ queue.
 | 61 | `opencode.http` | task/subagent permission | attached-server configuration and permission truth required |
 | 64 | `kimi-platform.chat` | thinking disabled outside K3 | exact model-family and request semantics required |
 | 69-71 | `anthropic.managed-agent` | effort, Fast, tools/MCP | three independent control families |
-| 76 | `openai.realtime` | reasoning effort | exact realtime model and lifecycle evidence |
 | 79 | `bedrock.runtime` | model-specific thinking | per-model schema only; never a generic effort string |
+
+## Active Delivery
+
+| Original id | Route | Control family | Delivery lane |
+| ---: | --- | --- | --- |
+| 76 | `openai.realtime` | session-scoped reasoning effort | Research 236; g04.084 cards 236-237 |
 
 ## No Active Lane
 
@@ -86,24 +91,23 @@ Ollama thinking capability. No production binding or acceptance lane follows.
 [g04.082](082-parallel-per-route-feature-qualification.md) owns the completed
 wave.
 
-## Active Parallel Qualification Wave
+## Completed Parallel Qualification Wave II
 
-g04.083 reserves four route-distinct evidence lanes from the 30 active items:
+g04.083 completed four route-distinct evidence lanes from the 30 active items:
 
 1. item 2 — `claude-code.headless` Fast mode — card 232
 2. item 15 — `codex.exec` Fast / service tier — card 233
 3. item 30 — `gemini-cli.acp` thinking configuration — card 234
 4. item 76 — `openai.realtime` reasoning effort — card 235
 
-These lanes share no package or evidence output. They must not turn Fast,
-service tier, thinking, or reasoning into shared vocabulary. Workers own only
-their card, Research file, lane log, and optional route-local frozen evidence.
-Shared promotion, matrices, inventory counts, indexes, and Next Task remain
-serial.
+Research 233-235 admit honest empty deliver-now sets. Research 236 admits five
+future session-scoped `minimal|low|medium|high|xhigh` rows on exact
+`gpt-realtime-2.1`, while current production remains empty. Items 2, 15, and 30
+close as evidence stops. Item 76 moves to active delivery under g04.084.
 
 [g04.083](083-second-parallel-per-route-feature-qualification.md) owns the
-compiled lanes and Research 233-236. The four items remain active until their
-evidence PRs land and the orchestrator records durable dispositions.
+completed lanes and Research 233-236. PRs 86, 88, 87, and 85 landed serially
+through `c918d301`.
 
 ## Update Rule
 

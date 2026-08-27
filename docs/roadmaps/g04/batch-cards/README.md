@@ -6,10 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [232-claude-code-headless-fast-mode-evidence.md](./232-claude-code-headless-fast-mode-evidence.md) — g04.083 lane A; evidence only
-- [233-codex-exec-fast-service-tier-evidence.md](./233-codex-exec-fast-service-tier-evidence.md) — g04.083 lane B; evidence only
-- [234-gemini-cli-acp-thinking-evidence.md](./234-gemini-cli-acp-thinking-evidence.md) — g04.083 lane C; evidence only
-- [235-openai-realtime-reasoning-effort-evidence.md](./235-openai-realtime-reasoning-effort-evidence.md) — g04.083 lane D; evidence only
+- [236-openai-realtime-reasoning-effort-binding.md](./236-openai-realtime-reasoning-effort-binding.md) — g04.084 prepared binding
+- [237-openai-realtime-reasoning-effort-acceptance.md](./237-openai-realtime-reasoning-effort-acceptance.md) — g04.084 route-local acceptance
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -38,6 +36,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [235-openai-realtime-reasoning-effort-evidence.md](./235-openai-realtime-reasoning-effort-evidence.md) — complete; lane D; Research 236 admits five future session-scoped rows
+- [234-gemini-cli-acp-thinking-evidence.md](./234-gemini-cli-acp-thinking-evidence.md) — complete; lane C; Research 235 honest empty deliver-now set
+- [233-codex-exec-fast-service-tier-evidence.md](./233-codex-exec-fast-service-tier-evidence.md) — complete; lane B; Research 234 honest empty deliver-now set
+- [232-claude-code-headless-fast-mode-evidence.md](./232-claude-code-headless-fast-mode-evidence.md) — complete; lane A; Research 233 honest empty deliver-now set
 - [231-ollama-attached-think-max-evidence.md](./231-ollama-attached-think-max-evidence.md) — complete; lane D; Research 232 honest empty deliver-now set
 - [230-bedrock-runtime-service-tier-evidence.md](./230-bedrock-runtime-service-tier-evidence.md) — complete; lane C; Research 231 honest empty deliver-now set
 - [229-gemini-cli-headless-thinking-evidence.md](./229-gemini-cli-headless-thinking-evidence.md) — complete; lane B; Research 230 honest empty deliver-now set

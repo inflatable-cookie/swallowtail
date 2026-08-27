@@ -1,6 +1,6 @@
 # g04.083 Parallel Per-Route Feature Qualification II
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Depends on: g04.082 closeout; live per-route feature inventory
@@ -38,13 +38,13 @@ generation state, or the roadmaps front door.
 
 ## Goals
 
-- [ ] card 232 promotes exact Claude Code headless Fast evidence or an empty set
-- [ ] card 233 promotes exact Codex exec Fast/service-tier evidence or an empty set
-- [ ] card 234 promotes exact Gemini CLI ACP thinking evidence or an empty set
-- [ ] card 235 promotes exact OpenAI Realtime reasoning evidence or an empty set
-- [ ] every lane preserves omission and separates requested, dispatched,
+- [x] card 232 promotes exact Claude Code headless Fast evidence or an empty set
+- [x] card 233 promotes exact Codex exec Fast/service-tier evidence or an empty set
+- [x] card 234 promotes exact Gemini CLI ACP thinking evidence or an empty set
+- [x] card 235 promotes exact OpenAI Realtime reasoning evidence or an empty set
+- [x] every lane preserves omission and separates requested, dispatched,
       accepted, effective, returned, and observed truth where applicable
-- [ ] no lane changes production code, public API, contracts, currentness,
+- [x] no lane changes production code, public API, contracts, currentness,
       release state, generation ownership, or g04 closure
 
 ## Non-Goals
@@ -71,16 +71,30 @@ for non-empty exact sets; do not implement from an evidence worker branch.
 
 ## Acceptance Criteria
 
-- [ ] Research 233-236 each contain frozen sources, exact route boundaries,
+- [x] Research 233-236 each contain frozen sources, exact route boundaries,
       closed tables, omission truth, lifecycle disposition, and a non-empty set
       or honest empty set
-- [ ] evidence files and lane logs are self-contained and do not depend on a
+- [x] evidence files and lane logs are self-contained and do not depend on a
       worker transcript
-- [ ] lane PRs touch no shared mutable planning or matrix file
-- [ ] deterministic validation uses only the assigned package plus named docs
+- [x] lane PRs touch no shared mutable planning or matrix file
+- [x] deterministic validation uses only the assigned package plus named docs
       checks; no provider operation or credential is used
-- [ ] the orchestrator can promote all four results without a hidden authority
+- [x] the orchestrator can promote all four results without a hidden authority
       or ordering dependency
+
+## Outcome
+
+- card 232 / Research 233: honest empty Claude Code headless Fast set
+- card 233 / Research 234: honest empty Codex exec Fast/service-tier set
+- card 234 / Research 235: honest empty Gemini CLI ACP thinking set
+- card 235 / Research 236: five future session-scoped OpenAI Realtime effort
+  rows on exact `gpt-realtime-2.1`; current production remains empty
+- PRs 86, 88, 87, and 85 landed fast-forward-only in that order through
+  `c918d301`; every restacked exact head passed all five CI jobs
+
+Original items 2, 15, and 30 close as evidence stops. Item 76 moves to active
+delivery under g04.084. No production binding follows from the three empty
+sets.
 
 ## Decision Gates
 

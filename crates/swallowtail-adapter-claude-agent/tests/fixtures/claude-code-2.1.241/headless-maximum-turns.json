@@ -398,9 +398,11 @@
     "raw_escape_hatch": false,
     "portable_capability": false,
     "canonical_argv": "--max-turns <n> appended once after the existing command",
-    "version_gate": "Qualified assessment only; UnverifiedNewer rejects before process work",
+    "version_gate": "exact Research 226 probed set only; UnverifiedNewer and unpublished in-range points reject before process work",
     "omission_preserves_exact_prior_argv": true,
-    "omission_claims_unlimited_execution": false
+    "omission_claims_unlimited_execution": false,
+    "public_low_level_setter": false,
+    "low_level_dispatch_revalidates_plan_version": true
   },
   "disposition": {
     "deliver_now_rows": [
@@ -428,5 +430,9 @@
     ],
     "cards_220_221": "unblocked",
     "existing_route": "unchanged"
-  }
+  },
+  "probed_versions_are_the_admitted_version_set": true,
+  "unpublished_in_range_versions": [
+    "2.1.230"
+  ]
 }

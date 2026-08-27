@@ -2,9 +2,9 @@ use super::super::super::ClaudeCodePreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, EndpointAuthorization, EntitlementState, ExecutionLayer,
-    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
-    InterfaceCompatibilityAssessment, ModelRoute, OperationRequirements, OperationShape,
-    PreflightContext, PreflightPlan, ReasoningMode, RuntimeReadiness, SafeDiagnostic, preflight,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
+    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ReasoningMode,
+    RuntimeReadiness, SafeDiagnostic, preflight,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
@@ -97,13 +97,7 @@ pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationF
 /// reject them before process work rather than assume the parser, the loop
 /// guard, and the terminal shape all survived.
 pub(super) fn qualifies_maximum_turns(prepared: &ClaudeCodePreparedIntegration) -> bool {
-    let claim = crate::claude_code_headless_claim();
-    let binding = prepared.observation().version();
-    binding.axis() == claim.axis()
-        && matches!(
-            claim.assess(binding.version()),
-            InterfaceCompatibilityAssessment::Qualified(_)
-        )
+    crate::claude_code_maximum_turns::admits(prepared.observation().version())
 }
 
 pub(super) fn operation_capabilities(

@@ -277,10 +277,12 @@ families do not interrupt this programme by default.
   hidden rather than absent: it is registered with `hideHelp()` at every probed
   point. The native parser is far wider than the documented positive domain, so
   the adapter closes it to positive 32-bit integers; the loop guard is a
-  truthiness test under which a resolved `0` would be inert. Explicit argv
-  overrides `CLAUDE_CODE_MAX_TURNS` unconditionally, with no environment
-  inspection or mutation, and omission keeps the exact prior argv while leaving
-  any ambient value authoritative. A counted turn is one tool-use round trip.
+  truthiness test under which a resolved `0` would be inert. The version gate
+  is the exact probed set rather than the qualified window, so both
+  `UnverifiedNewer` points and the never-published in-range `2.1.230` reject
+  before process work. Explicit argv overrides `CLAUDE_CODE_MAX_TURNS`
+  unconditionally, with no environment inspection or mutation, and omission
+  keeps the exact prior argv while leaving any ambient value authoritative. A counted turn is one tool-use round trip.
   Reaching the native bound stays `error_max_turns`, exit `1`, and a provider
   failure with no output. A distinct terminal diagnostic and any portable
   budget vocabulary stay out.

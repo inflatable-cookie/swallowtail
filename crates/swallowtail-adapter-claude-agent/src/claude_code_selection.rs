@@ -93,6 +93,24 @@ pub(crate) fn select_claude_code_headless_plan(plan: &PreflightPlan) -> Result<(
     Ok(())
 }
 
+/// Reports whether a validated headless plan admits a maximum-turn bound.
+///
+/// Call this only after [`select_claude_code_headless_plan`] has accepted the
+/// plan; it re-reads the same single axis binding and asks whether that exact
+/// version is one Research 226 probed. The route's own claim is deliberately
+/// weaker: it permits later stable points as `UnverifiedNewer` and spans a
+/// semantic range containing an unpublished point.
+pub(crate) fn plan_admits_maximum_turns(plan: &PreflightPlan) -> bool {
+    let axis = axis();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == &axis);
+    match (bindings.next(), bindings.next()) {
+        (Some(binding), None) => crate::claude_code_maximum_turns::admits(binding),
+        _ => false,
+    }
+}
+
 fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(CLAUDE_CODE_HEADLESS_AXIS).expect("static Claude Code axis is valid")
 }

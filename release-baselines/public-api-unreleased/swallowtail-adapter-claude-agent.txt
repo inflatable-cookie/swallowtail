@@ -100,7 +100,6 @@ pub const fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::w
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 impl swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
-pub const fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::with_maximum_turns(self, swallowtail_adapter_claude_agent::ClaudeCodeMaximumTurns) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>

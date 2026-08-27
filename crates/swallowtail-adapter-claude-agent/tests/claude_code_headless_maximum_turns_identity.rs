@@ -92,6 +92,14 @@ fn maximum_turns_evidence_fixture_is_secret_free_and_covers_every_published_vers
         false
     );
 
+    // The fixture's probed set is the deliver-now version set. The route's own
+    // qualified window is deliberately wider: it spans a semantic range that
+    // contains the never-published `2.1.230` and permits later stable points.
+    assert_eq!(
+        evidence["binding"]["version_gate"],
+        "exact Research 226 probed set only; UnverifiedNewer and unpublished in-range points reject before process work"
+    );
+
     // Every published point in the qualified window was probed and agreed.
     let probed = evidence["probed_versions"]
         .as_object()
@@ -134,6 +142,19 @@ fn maximum_turns_evidence_fixture_is_secret_free_and_covers_every_published_vers
 
     // The binding stays closed, adapter-local, and version-gated.
     assert_eq!(evidence["binding"]["domain"], "positive 32-bit integer");
+    assert_eq!(evidence["binding"]["public_low_level_setter"], false);
+    assert_eq!(
+        evidence["binding"]["low_level_dispatch_revalidates_plan_version"],
+        true
+    );
+    assert_eq!(
+        evidence["probed_versions_are_the_admitted_version_set"],
+        true
+    );
+    assert_eq!(
+        evidence["unpublished_in_range_versions"],
+        serde_json::json!(["2.1.230"])
+    );
     assert_eq!(evidence["binding"]["raw_escape_hatch"], false);
     assert_eq!(evidence["binding"]["portable_capability"], false);
     assert_eq!(

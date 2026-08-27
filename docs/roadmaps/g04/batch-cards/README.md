@@ -6,8 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [242-cline-acp-plan-mode-binding.md](./242-cline-acp-plan-mode-binding.md) — ready; exact Research 240 Plan binding
-- [243-cline-acp-plan-mode-acceptance.md](./243-cline-acp-plan-mode-acceptance.md) — ready after card 242; route-local acceptance
+No card is ready. The sole Next Task is a planning checkpoint for the next
+bounded qualification wave.
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -36,6 +36,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [243-cline-acp-plan-mode-acceptance.md](./243-cline-acp-plan-mode-acceptance.md) — complete; route-local Plan acceptance through PR 95 at `3f56aeb4`
+- [242-cline-acp-plan-mode-binding.md](./242-cline-acp-plan-mode-binding.md) — complete; exact Research 240 Plan binding
 - [241-cline-acp-plan-mode-evidence.md](./241-cline-acp-plan-mode-evidence.md) — complete; Research 240 admits one exact new-session Plan row
 - [240-gemini-cli-headless-sandbox-evidence.md](./240-gemini-cli-headless-sandbox-evidence.md) — complete; Research 239 honest empty deliver-now set
 - [239-codex-app-server-personality-evidence.md](./239-codex-app-server-personality-evidence.md) — complete; Research 238 honest empty deliver-now set

@@ -47,9 +47,11 @@ Inherited doctor baseline unchanged: `scan.god-files` 380 findings;
 
 ## Shared Closeout Deltas (orchestrator after merge)
 
-- inventory item 41 → delivered; active-delivery count
-- programme, triage, roadmap/card/log indexes, sole Next Task
-- keep g04 open; Contract 029 currentness remains standing
+- inventory item 41 moved to delivered; the ledger now has 53 closed items,
+  22 active qualification candidates, no active delivery, and ten without an
+  active lane
+- programme, triage, roadmap/card/log indexes, and sole Next Task reconciled
+- g04 remains open; Contract 029 currentness remains standing
 
 ## Review Repair
 
@@ -67,7 +69,14 @@ Addressed PR review on `7aa34afa`:
 4. split fixture/tests under god-file thresholds; `effigy doctor` restored to
    inherited `380 / 334 / 46`
 
+## Merge
+
+PR 95 was reviewed, all five required hosted checks passed on exact head
+`3f56aeb419296c1f539b09daa939f39fd70e10b3`, and the operator authorised the
+merge. `main` fast-forwarded from `a88a612b` to that exact head. No merge commit
+or rewritten head was created.
+
 ## Next
 
-PR: https://github.com/inflatable-cookie/swallowtail/pull/95
-Await orchestrator re-review. Do not merge without operator authorisation.
+Compile the next bounded parallel qualification wave from the 22 active
+inventory candidates. Keep g04 open.

@@ -23,8 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.086 Cline ACP Plan Mode](./2026-08-27-g04-086-cline-acp-plan-mode.md) — complete; cards 242-243; PR 95 fast-forwarded at `3f56aeb4`
 - [2026-08-27 g04.086 Cline ACP Plan Mode Compiled](./2026-08-27-g04-086-cline-acp-plan-mode-compiled.md) — cards 242-243 ready; exact new-session Plan selection and confirmation
-- [2026-08-27 g04.086 Cline ACP Plan Mode](./2026-08-27-g04-086-cline-acp-plan-mode.md) — ready; cards 242-243; one exact new-session Plan row
 - [2026-08-27 g04.085 Parallel Feature Qualification Closeout](./2026-08-27-g04-085-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one Cline ACP Plan delivery set; PRs 94, 93, 91, and 92
 - [2026-08-27 g04.085 Parallel Feature Qualification Compiled](./2026-08-27-g04-085-parallel-feature-qualification-compiled.md) — cards 238-241 and Research 237-240 reserved as four evidence-only worker lanes; parallel execution, serial promotion and merge
 - [2026-08-27 g04.085a Claude Code Headless Autocompaction Evidence](./2026-08-27-g04-085a-claude-code-headless-autocompaction-evidence.md) — complete; card 238; Research 237 honest empty deliver-now set

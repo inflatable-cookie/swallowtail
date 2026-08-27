@@ -14,11 +14,11 @@ shape.
 
 ## Next Task
 
-Execute g04.086 cards 242-243 in order as one serial Cline ACP Plan-mode worker
-lane. Require exact pre-prompt selected-value confirmation and preserve
-omission, authority, replacement, and cleanup truth. Keep shared closeout with
-the orchestrator after merge. Keep g04 open. Contract 029 currentness remains
-standing.
+Compile the next bounded parallel per-route feature qualification wave from the
+22 active inventory candidates. Keep each evidence lane route- and
+package-distinct, reserve delivery cards only after promoted exact-route
+evidence, and keep shared closeout serial. Keep g04 open. Contract 029
+currentness remains standing.
 
 ## Standing Lanes
 

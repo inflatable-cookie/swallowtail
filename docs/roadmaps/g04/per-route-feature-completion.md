@@ -325,16 +325,17 @@ families do not interrupt this programme by default.
   sandboxing with honest empty sets. Card 241 and Research 240 qualify one exact
   Cline ACP Plan row. PRs 94, 93, 91, and 92 landed serially through
   `abdaefd2`.
-- [g04.086 Cline ACP Plan Mode](./086-cline-acp-plan-mode.md) is ready. Cards
-  242-243 bind and prove Research 240's exact new-session
-  `HarnessMode::Plan` row through selected-value confirmation before readiness.
+- [g04.086 Cline ACP Plan Mode](./086-cline-acp-plan-mode.md) is complete and
+  merged through PR 95 at `3f56aeb4`. Cards 242-243 bind and prove Research
+  240's exact new-session `HarnessMode::Plan` row through selected-value
+  confirmation before readiness.
 
 ## Current Execution Boundary
 
-The normalized inventory has 52 closed original items, 22 active qualification
-candidates, one active delivery item, and ten items with no active lane. Execute
-g04.086 cards 242-243 as one serial Cline ACP worker lane. Keep g04 open.
-Contract 029 currentness remains standing.
+The normalized inventory has 53 closed original items, 22 active qualification
+candidates, no active delivery item, and ten items with no active lane. The
+next planning checkpoint compiles a bounded parallel qualification wave from
+the active backlog. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

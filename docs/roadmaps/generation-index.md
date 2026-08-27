@@ -127,10 +127,11 @@ deliver Research 236's five exact session-scoped OpenAI Realtime effort rows.
 g04.085 is complete. Research 237-239 close three candidates with honest empty
 sets. Research 240 qualifies one exact Cline ACP Plan row. PRs 94, 93, 91, and
 92 landed serially through `abdaefd2`.
-The original 85-item feature inventory is normalized after g04.085: 52 items
-have numbered-lane dispositions, 22 remain active qualification candidates,
-one is active delivery, and ten have no active lane. g04.086 cards 242-243 are
-ready as one serial Cline ACP Plan delivery lane.
+g04.086 is complete and merged through PR 95 at `3f56aeb4`; cards 242-243
+deliver the exact Cline ACP Plan row. The original 85-item feature inventory
+now has 53 numbered-lane dispositions, 22 active qualification candidates, no
+active delivery item, and ten items with no active lane. The next checkpoint
+compiles a bounded parallel qualification wave from that backlog.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

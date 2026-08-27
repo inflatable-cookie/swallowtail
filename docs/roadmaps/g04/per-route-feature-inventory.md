@@ -10,20 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.085.
+sequence after g04.086.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 52 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.085. |
+| Closed by a numbered lane | 53 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.086. |
 | Active qualification backlog | 22 | A bounded route-local evidence question remains. |
-| Active delivery | 1 | Original item 41 is promoted to g04.086 binding and acceptance. |
+| Active delivery | 0 | No qualified delivery row is waiting for binding or acceptance. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-2, 4-5, 7, 15-16, 19-20, 23-27, 30-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
+`1-2, 4-5, 7, 15-16, 19-20, 23-27, 30-33, 35-38, 40-41, 43-45, 50, 52-53, 55-60,
 62-63, 65-68, 72-74, 76-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
@@ -52,9 +52,7 @@ queue.
 
 ## Active Delivery
 
-| Original id | Route | Control family | Delivery lane |
-| ---: | --- | --- | --- |
-| 41 | `cline.acp` | Plan mode | g04.086 cards 242-243 |
+No original item currently has an active delivery lane.
 
 ## No Active Lane
 
@@ -127,6 +125,14 @@ landed serially through `abdaefd2`.
 [g04.085](085-third-parallel-per-route-feature-qualification.md) owns the
 completed wave. [g04.086](086-cline-acp-plan-mode.md) owns the promoted delivery
 row.
+
+## Completed Cline ACP Plan Delivery
+
+g04.086 delivered original item 41 on exact `cline.acp` `3.0.55`. Cards
+242-243 bind portable `HarnessMode::Plan` through one pre-prompt
+`session/set_config_option` request and exact selected-value confirmation.
+Omission, permission, resource, isolation, lifecycle, and cleanup truth remain
+unchanged. PR 95 landed by fast-forward at `3f56aeb4`.
 
 ## Update Rule
 

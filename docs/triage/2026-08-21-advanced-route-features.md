@@ -505,13 +505,14 @@ Official
 `cline --acp`; `--thinking none|low|medium|high|xhigh`; `-p --plan`;
 `-m --model`; `--auto-approve` (ACP default false).
 
-Swallowtail: `cline --acp` only. Observe/cancel permissions. Never
-`allow_always`. No `--auto-approve true`.
+Swallowtail: `cline --acp` with optional exact-package new-session
+`HarnessMode::Plan` selected through ACP configuration. Observe/cancel
+permissions. Never `allow_always`. No `--auto-approve true`.
 
 | Feature | Official | Swallowtail | Gap | Composer-surfaceable | Incompatible reason |
 | --- | --- | --- | --- | --- | --- |
 | Thinking | `--thinking` | not passed | yes | yes | ACP spawn flag, like Copilot effort |
-| Plan | `-p, --plan` | not passed | yes | yes | Cline plan/act ≠ Swallowtail HarnessMode unless mapped |
+| Plan | `-p, --plan`; ACP `mode=plan` | portable `HarnessMode::Plan` on exact `3.0.55` new sessions | no for the qualified ACP row | delivered | do not copy root `--plan` onto ACP spawn or infer containment |
 | Model | `-m, --model` | caller-supplied / harness default | yes | yes | — |
 | Auto-approve | `--auto-approve true` | withheld | official unused | no | guide withhold |
 
@@ -2704,3 +2705,19 @@ lane. PRs 94, 93, 91, and 92 landed serially through `abdaefd2`.
 
 g04.086 cards 242-243 own Cline ACP Plan binding and route-local acceptance.
 Shared closeout remains serial after merge. Keep g04 open.
+
+## Post-g04.086 Cline ACP Plan Delivery (2026-08-27)
+
+Disposition: original item 41 delivered and closed.
+
+Cards 242-243 bind Research 240's exact `cline.acp` `3.0.55`
+`HarnessMode::Plan` row. New sessions require unambiguous `plan` membership,
+one pre-prompt `session/set_config_option` request, and exact returned
+`mode.currentValue = plan` agreement before readiness. Omission emits no mode
+request. Root `--plan`, Act selection, post-start mutation, load/resume
+mutation, permission widening, and containment claims remain out.
+
+PR 95 landed by fast-forward at `3f56aeb4`. The live ledger now owns 53 closed
+items, 22 active qualification candidates, no active delivery item, and ten
+items with no active lane. The next checkpoint compiles another bounded
+parallel qualification wave. Keep g04 open.

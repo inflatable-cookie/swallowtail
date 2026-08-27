@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Compile the next bounded parallel per-route feature qualification wave from the
-22 active inventory candidates. Keep each evidence lane route- and
-package-distinct, reserve delivery cards only after promoted exact-route
-evidence, and keep shared closeout serial. Keep g04 open. Contract 029
+Execute g04.087 cards 244-247 as four parallel manual evidence workers: Claude
+headless spend cap, Codex app-server Fast, Cursor ACP model parameters, and
+Gemini ACP sandbox. Integrate A-B-C-D serially after exact-head review. Do not
+start production binding from a worker lane. Keep g04 open. Contract 029
 currentness remains standing.
 
 ## Standing Lanes

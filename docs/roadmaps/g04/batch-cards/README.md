@@ -6,8 +6,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-No card is ready. The sole Next Task is a planning checkpoint for the next
-bounded qualification wave.
+- [244-claude-code-headless-spend-cap-evidence.md](./244-claude-code-headless-spend-cap-evidence.md) — ready; lane A; Research 241 reserved
+- [245-codex-app-server-fast-mode-evidence.md](./245-codex-app-server-fast-mode-evidence.md) — ready; lane B; Research 242 reserved
+- [246-cursor-acp-model-parameter-evidence.md](./246-cursor-acp-model-parameter-evidence.md) — ready; lane C; Research 243 reserved
+- [247-gemini-cli-acp-sandbox-evidence.md](./247-gemini-cli-acp-sandbox-evidence.md) — ready; lane D; Research 244 reserved
 
 Cards 070-071 remain unused gaps, not tasks.
 

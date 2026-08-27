@@ -329,13 +329,18 @@ families do not interrupt this programme by default.
   merged through PR 95 at `3f56aeb4`. Cards 242-243 bind and prove Research
   240's exact new-session `HarnessMode::Plan` row through selected-value
   confirmation before readiness.
+- [g04.087 Fourth Parallel Per-Route Feature Qualification](./087-fourth-parallel-per-route-feature-qualification.md)
+  is ready. Cards 244-247 reserve package-distinct evidence for Claude
+  headless spend cap, Codex app-server Fast, Cursor ACP model parameters, and
+  Gemini ACP sandbox.
 
 ## Current Execution Boundary
 
 The normalized inventory has 53 closed original items, 22 active qualification
-candidates, no active delivery item, and ten items with no active lane. The
-next planning checkpoint compiles a bounded parallel qualification wave from
-the active backlog. Keep g04 open. Contract 029 currentness remains standing.
+candidates, no active delivery item, and ten items with no active lane. Execute
+g04.087 cards 244-247 as four parallel evidence-only worker lanes and integrate
+their PRs serially A-B-C-D. Keep g04 open. Contract 029 currentness remains
+standing.
 
 ## Exclusions
 

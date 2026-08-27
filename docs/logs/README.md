@@ -23,6 +23,11 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-27 g04.087 Parallel Feature Qualification Compiled](./2026-08-27-g04-087-parallel-feature-qualification-compiled.md) — cards 244-247 and Research 241-244 reserved as four evidence-only worker lanes
+- [2026-08-27 g04.087a Claude Code Headless Spend-Cap Evidence](./2026-08-27-g04-087a-claude-code-headless-spend-cap-evidence.md) — reserved; card 244; Research 241
+- [2026-08-27 g04.087b Codex App-Server Fast-Mode Evidence](./2026-08-27-g04-087b-codex-app-server-fast-mode-evidence.md) — reserved; card 245; Research 242
+- [2026-08-27 g04.087c Cursor ACP Model-Parameter Evidence](./2026-08-27-g04-087c-cursor-acp-model-parameter-evidence.md) — reserved; card 246; Research 243
+- [2026-08-27 g04.087d Gemini CLI ACP Sandbox Evidence](./2026-08-27-g04-087d-gemini-cli-acp-sandbox-evidence.md) — reserved; card 247; Research 244
 - [2026-08-27 g04.086 Cline ACP Plan Mode](./2026-08-27-g04-086-cline-acp-plan-mode.md) — complete; cards 242-243; PR 95 fast-forwarded at `3f56aeb4`
 - [2026-08-27 g04.086 Cline ACP Plan Mode Compiled](./2026-08-27-g04-086-cline-acp-plan-mode-compiled.md) — cards 242-243 ready; exact new-session Plan selection and confirmation
 - [2026-08-27 g04.085 Parallel Feature Qualification Closeout](./2026-08-27-g04-085-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one Cline ACP Plan delivery set; PRs 94, 93, 91, and 92

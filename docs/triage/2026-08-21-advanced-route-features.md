@@ -2721,3 +2721,29 @@ PR 95 landed by fast-forward at `3f56aeb4`. The live ledger now owns 53 closed
 items, 22 active qualification candidates, no active delivery item, and ten
 items with no active lane. The next checkpoint compiles another bounded
 parallel qualification wave. Keep g04 open.
+
+## g04.087 Fourth Parallel Qualification Compilation (2026-08-27)
+
+Disposition: select the lowest four package-distinct active candidates as
+evidence-only lanes.
+
+1. item 6 — Claude Code headless `--max-budget-usd`
+2. item 18 — Codex app-server Fast / service tier
+3. item 28 — Cursor ACP Fast, effort, and context model parameters
+4. item 29 — Gemini CLI ACP native sandbox
+
+Items 8-9 and 11-12 stay behind the Claude lane because they share
+`swallowtail-adapter-claude-agent`. Item 21 stays behind the Codex lane. The
+four selected workers otherwise own distinct packages, cards 244-247, Research
+241-244, logs, and optional adapter-local frozen evidence.
+
+Selection is not qualification. Claude subscription access must not become
+API-key USD billing. Codex ChatGPT-credit Fast and API Priority remain
+distinct. Cursor headless model strings do not authorize ACP parameters.
+Gemini headless sandbox evidence does not settle ACP spawn/activation, and
+sandbox selection never proves containment.
+
+Run workers in parallel through manual harness handoffs. Integrate A-B-C-D
+serially after exact-head review. Shared inventory, programme, triage, matrices,
+indexes, and Next Task remain orchestrator-owned. Do not begin production
+binding from an evidence worker. Keep g04 open.

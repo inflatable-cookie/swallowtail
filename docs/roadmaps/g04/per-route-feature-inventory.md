@@ -35,11 +35,13 @@ queue.
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 6, 8-9 | `claude-code.headless` | spend, advisor, permission modes | qualify separately; never widen permissions by default |
+| 6 | `claude-code.headless` | spend cap | g04.087 card 244 |
+| 8-9 | `claude-code.headless` | advisor, permission modes | qualify separately; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 18, 21 | `codex.app-server` | Fast, Plan effort | distinct controls; no promotion from exec |
-| 28 | `cursor-agent.acp` | model parameters | exact ACP option and selected-value confirmation required |
-| 29 | `gemini-cli.acp` | sandbox | qualify independently on exact enterprise API-key route |
+| 18 | `codex.app-server` | Fast | g04.087 card 245; no promotion from exec |
+| 21 | `codex.app-server` | Plan effort | distinct from turn reasoning and Fast |
+| 28 | `cursor-agent.acp` | model parameters | g04.087 card 246; exact ACP option and selected-value confirmation required |
+| 29 | `gemini-cli.acp` | sandbox | g04.087 card 247; exact enterprise API-key route |
 | 34 | `grok-build.acp` | web-search disable | exact ACP spawn and applied-state evidence |
 | 42 | `cline.acp` | model | no promotion from headless evidence |
 | 46-47 | `goose.acp` | builtins, mode | host extension authority and session configuration stay distinct |
@@ -53,6 +55,19 @@ queue.
 ## Active Delivery
 
 No original item currently has an active delivery lane.
+
+## Active Qualification Wave IV
+
+g04.087 owns four package-distinct evidence-only lanes:
+
+1. item 6 — `claude-code.headless` spend cap — card 244 / Research 241
+2. item 18 — `codex.app-server` Fast mode — card 245 / Research 242
+3. item 28 — `cursor-agent.acp` model parameters — card 246 / Research 243
+4. item 29 — `gemini-cli.acp` sandbox — card 247 / Research 244
+
+The 22-item active count does not change at compilation. Each item moves only
+after its evidence PR lands and the shared closeout records a promoted exact
+row or honest evidence stop.
 
 ## No Active Lane
 

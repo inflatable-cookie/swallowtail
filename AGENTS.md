@@ -46,6 +46,11 @@ relevant contracts are clear enough to test.
 - make dependency direction visible and acyclic
 - expose provider differences through capabilities, not silent flattening
 - keep product prompts, tools, policy, workflows, and durable state downstream
+- format with `cargo fmt -p <crate>`; the workspace uses edition 2024, so do not
+  pass `rustfmt --edition 2021` on individual files
+- wrap isolated provider probes in `scripts/run-with-isolated-home.sh
+  --home-var GROK_HOME -- …`, or restore host `HOME` and unset provider-home
+  variables before running `effigy`/`cargo`
 
 ## Continuation Rule
 

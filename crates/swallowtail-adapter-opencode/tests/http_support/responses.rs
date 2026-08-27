@@ -53,29 +53,32 @@ fn read_request(stream: &mut TcpStream) -> Option<(String, String)> {
 
 fn respond_json(stream: &mut TcpStream, status: u16, body: &str) {
     let reason = if status == 200 { "OK" } else { "Not Found" };
-    write!(
+    write_fixture_fmt(
         stream,
-        "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-        body.len()
-    )
-    .expect("fixture response writes");
+        &format!(
+            "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+            body.len()
+        ),
+    );
 }
 
 fn respond_json_with_cursor(stream: &mut TcpStream, body: &str, cursor: &str) {
-    write!(
+    write_fixture_fmt(
         stream,
-        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nX-Next-Cursor: {cursor}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-        body.len()
-    )
-    .expect("fixture response writes");
+        &format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nX-Next-Cursor: {cursor}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+            body.len()
+        ),
+    );
 }
 
 fn respond_empty(stream: &mut TcpStream, status: u16) {
-    write!(
+    write_fixture_fmt(
         stream,
-        "HTTP/1.1 {status} No Content\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
-    )
-    .expect("fixture response writes");
+        &format!(
+            "HTTP/1.1 {status} No Content\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        ),
+    );
 }
 
 fn respond_sse(
@@ -85,11 +88,10 @@ fn respond_sse(
     callback_replies: &AtomicUsize,
     stop: &AtomicBool,
 ) {
-    write!(
+    write_fixture(
         stream,
-        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n"
-    )
-    .expect("SSE headers write");
+        b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n",
+    );
     match fixture {
         StreamFixture::Success
         | StreamFixture::ReconciliationActive
@@ -101,23 +103,13 @@ fn respond_sse(
         | StreamFixture::DeleteDelayed
         | StreamFixture::DeleteHealthDrift
         | StreamFixture::ImportTitleDrift
-        | StreamFixture::ImportDelayed => {
-            stream.write_all(SUCCESS.as_bytes()).expect("SSE writes")
-        }
-        StreamFixture::ProviderError => stream
-            .write_all(PROVIDER_ERROR.as_bytes())
-            .expect("SSE writes"),
-        StreamFixture::Unknown => stream.write_all(UNKNOWN.as_bytes()).expect("SSE writes"),
-        StreamFixture::Disconnect => stream.write_all(DISCONNECT.as_bytes()).expect("SSE writes"),
-        StreamFixture::DuplicateUsage => stream
-            .write_all(DUPLICATE_USAGE.as_bytes())
-            .expect("SSE writes"),
-        StreamFixture::MissingUsage => stream
-            .write_all(MISSING_USAGE.as_bytes())
-            .expect("SSE writes"),
-        StreamFixture::Compaction => stream
-            .write_all(COMPACTION.as_bytes())
-            .expect("SSE writes"),
+        | StreamFixture::ImportDelayed => write_fixture(stream, SUCCESS.as_bytes()),
+        StreamFixture::ProviderError => write_fixture(stream, PROVIDER_ERROR.as_bytes()),
+        StreamFixture::Unknown => write_fixture(stream, UNKNOWN.as_bytes()),
+        StreamFixture::Disconnect => write_fixture(stream, DISCONNECT.as_bytes()),
+        StreamFixture::DuplicateUsage => write_fixture(stream, DUPLICATE_USAGE.as_bytes()),
+        StreamFixture::MissingUsage => write_fixture(stream, MISSING_USAGE.as_bytes()),
+        StreamFixture::Compaction => write_fixture(stream, COMPACTION.as_bytes()),
         StreamFixture::InputCallbacks => {
             for (event, expected_replies) in [
                 (
@@ -132,8 +124,8 @@ fn respond_sse(
                 if aborted.load(Ordering::SeqCst) || stop.load(Ordering::SeqCst) {
                     break;
                 }
-                writeln!(stream, "data: {event}\n").expect("callback SSE writes");
-                stream.flush().expect("callback SSE flushes");
+                write_fixture_fmt(stream, &format!("data: {event}\n\n"));
+                flush_fixture(stream);
                 while callback_replies.load(Ordering::SeqCst) < expected_replies
                     && !aborted.load(Ordering::SeqCst)
                     && !stop.load(Ordering::SeqCst)
@@ -142,23 +134,20 @@ fn respond_sse(
                 }
             }
             if !aborted.load(Ordering::SeqCst) && !stop.load(Ordering::SeqCst) {
-                stream.write_all(SUCCESS.as_bytes()).expect("SSE writes");
+                write_fixture(stream, SUCCESS.as_bytes());
             }
         }
         StreamFixture::WaitForAbort => {
-            stream
-                .write_all(
-                    b"data: {\"id\":\"evt_1\",\"type\":\"server.connected\",\"properties\":{}}\n\n",
-                )
-                .expect("connected event writes");
-            stream.flush().expect("connected event flushes");
+            write_fixture(
+                stream,
+                b"data: {\"id\":\"evt_1\",\"type\":\"server.connected\",\"properties\":{}}\n\n",
+            );
+            flush_fixture(stream);
             while !aborted.load(Ordering::SeqCst) && !stop.load(Ordering::SeqCst) {
                 thread::sleep(Duration::from_millis(1));
             }
             if aborted.load(Ordering::SeqCst) {
-                stream
-                    .write_all(ABORTED.as_bytes())
-                    .expect("abort SSE writes");
+                write_fixture(stream, ABORTED.as_bytes());
             }
         }
     }

@@ -27,7 +27,10 @@ Normal validation scripts:
 - `verify-affected-packages.sh` — independently assemble and inspect one to
   four explicit package archives, then compile them through one shared
   extracted target
+- `run-with-isolated-home.sh` — run one command under an isolated `HOME` and
+  named provider-home variables, restoring the host environment on exit
 - `validation/package-scope.sh` — shared exact package argument validation
+- `validation/path.sh` — canonical path resolution for macOS `/var` aliases
 - `validation/archive.sh` — shared archive member, manifest, and content audit
 - `tests/validation-selectors.sh` — deterministic plan and argument failure
   coverage for the focused selectors

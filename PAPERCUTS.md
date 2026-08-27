@@ -38,28 +38,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   its owned directory, or retain the directory until Git deregistration finishes.
 - Surface: T3 launcher-owned Swallowtail review worktrees; Git worktree metadata.
 
-### [ ] A `/var` review worktree breaks affected-package path patches — 2026-08-26
-- Friction: macOS canonicalizes a `mktemp` worktree from `/var/...` to
-  `/private/var/...`, while the affected-package verifier writes Cargo patch
-  paths with the non-canonical spelling.
-- Impact: `package:verify-affected` reports unused patches and a locked
-  `Cargo.lock` update even when the reviewed package and lockfile are sound.
-- Fix: canonicalize generated patch paths before writing them, or reject
-  symlink-aliased worktree roots with a clear diagnostic.
-- Surface: `scripts/verify-affected-packages.sh`; disposable review worktrees
-  on macOS.
-
-### [ ] Isolated HOME for provider probes steals rustup — 2026-08-26
-- Friction: Grok parser probes set `HOME`/`GROK_HOME` to an empty isolated tree
-  and left those exports in the agent shell. Later `effigy validate:focused`
-  ran cargo through rustup with `rustup home` under the isolated tree and no
-  toolchain.
-- Impact: docs-only closeout validation fails with `rustup could not choose a
-  version of cargo` even though host rustup is healthy.
-- Fix: restore `HOME` after isolated provider probes, or run later cargo/effigy
-  with an explicit host `HOME` and `env -u GROK_HOME`.
-- Surface: g04.072 / Research 219 isolated extracted-binary help and initialize.
-
 ### [ ] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
 - Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB
   Next.js shells. Markdown exports exist by appending `.md` and are 11–348 KiB.
@@ -175,27 +153,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   assignments to zsh special parameters.
 - Surface: agent-authored zsh orchestration commands.
 
-### [ ] OpenCode cancellation fixture panics on expected broken pipe — 2026-08-22
-- Friction: PR 35 MSRV failed in
-  `post_dispatch_cancellation_is_joined_and_unconfirmed` because the fixture
-  response writer treated the cancelled client's `BrokenPipe` as fatal and the
-  fixture server then panicked while joining.
-- Impact: unrelated exact heads can fail MSRV after the product cancellation
-  path has already produced the expected disconnect.
-- Fix: let the cancellation fixture accept `BrokenPipe`/connection reset while
-  writing the abandoned response, while preserving failures for other write
-  errors.
-- Surface: OpenCode prepared-facade HTTP fixture response writer; MSRV CI.
-- Recurrence 2026-08-26 (PR 77): the same writer aborted the Stable job, not
-  just MSRV, this time as `ConnectionReset` in
-  `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`.
-  The drop-time panic is non-unwinding, so the run dies with SIGABRT and
-  cancels 887 unrelated tests. A plain rerun went green, and the branch touched
-  no OpenCode file. Still open and now blocking unrelated lanes.
-- Recurrence 2026-08-27 (PR 82): the same cancellation fixture aborted Stable
-  with `BrokenPipe` and a destructor-time double panic. The branch changed only
-  Gemini evidence/docs; a later unchanged-head retry passed.
-
 ### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
   raising the doctor god-file baseline from 41 to 42 errors.
@@ -240,15 +197,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `deadline_elapsed` instead of `timed_out` on a Gemini evidence-only head. A
   retry moved past it without a code change.
 
-### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
-- Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
-  modules (`preflight/validation.rs`, `provider_session_history/page.rs`)
-  even when those files are not the format target.
-- Impact: file-scoped rustfmt with the wrong edition aborts instead of
-  formatting the requested sources.
-- Fix: use `cargo fmt -p <crate>` or `rustfmt --edition 2024`.
-- Surface: local rustfmt invocation vs workspace edition 2024.
-
 ### [ ] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
 - Friction: `swallowtail-adapter-deepseek::driver::active_stream_cancellation_joins_before_session_credential_release`
   expected `Cancelled` and observed `ProviderFailed` with
@@ -277,6 +225,63 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: Effigy Northstar roadmap and batch-card index QA.
 
 ## Closed
+
+### [x] A `/var` review worktree breaks affected-package path patches — 2026-08-26
+- Friction: macOS canonicalizes a `mktemp` worktree from `/var/...` to
+  `/private/var/...`, while the affected-package verifier writes Cargo patch
+  paths with the non-canonical spelling.
+- Impact: `package:verify-affected` reports unused patches and a locked
+  `Cargo.lock` update even when the reviewed package and lockfile are sound.
+- Fix: `scripts/verify-affected-packages.sh` now resolves the repo root with
+  `pwd -P` via `scripts/validation/path.sh` before writing patch paths.
+- Surface: `scripts/verify-affected-packages.sh`; disposable review worktrees
+  on macOS.
+- Closed: 2026-08-27 papercuts wave 2 CI/path.
+
+### [x] Isolated HOME for provider probes steals rustup — 2026-08-26
+- Friction: Grok parser probes set `HOME`/`GROK_HOME` to an empty isolated tree
+  and left those exports in the agent shell. Later `effigy validate:focused`
+  ran cargo through rustup with `rustup home` under the isolated tree and no
+  toolchain.
+- Impact: docs-only closeout validation fails with `rustup could not choose a
+  version of cargo` even though host rustup is healthy.
+- Fix: `scripts/run-with-isolated-home.sh` wraps the probe and restores host
+  `HOME` / unsets provider-home vars on exit; `AGENTS.md` points agents there.
+- Surface: g04.072 / Research 219 isolated extracted-binary help and initialize.
+- Closed: 2026-08-27 papercuts wave 2 CI/path.
+
+### [x] OpenCode cancellation fixture panics on expected broken pipe — 2026-08-22
+- Friction: PR 35 MSRV failed in
+  `post_dispatch_cancellation_is_joined_and_unconfirmed` because the fixture
+  response writer treated the cancelled client's `BrokenPipe` as fatal and the
+  fixture server then panicked while joining.
+- Impact: unrelated exact heads can fail MSRV after the product cancellation
+  path has already produced the expected disconnect.
+- Fix: let the cancellation fixture accept `BrokenPipe`/connection reset while
+  writing the abandoned response, while preserving failures for other write
+  errors. Drop no longer panics on join after an expected disconnect abort.
+- Surface: OpenCode prepared-facade HTTP fixture response writer; MSRV CI.
+- Recurrence 2026-08-26 (PR 77): the same writer aborted the Stable job, not
+  just MSRV, this time as `ConnectionReset` in
+  `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`.
+  The drop-time panic is non-unwinding, so the run dies with SIGABRT and
+  cancels 887 unrelated tests. A plain rerun went green, and the branch touched
+  no OpenCode file. Still open and now blocking unrelated lanes.
+- Recurrence 2026-08-27 (PR 82): the same cancellation fixture aborted Stable
+  with `BrokenPipe` and a destructor-time double panic. The branch changed only
+  Gemini evidence/docs; a later unchanged-head retry passed.
+- Closed: 2026-08-27 papercuts wave 2 CI/path.
+
+### [x] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
+- Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
+  modules (`preflight/validation.rs`, `provider_session_history/page.rs`)
+  even when those files are not the format target.
+- Impact: file-scoped rustfmt with the wrong edition aborts instead of
+  formatting the requested sources.
+- Fix: `AGENTS.md` now requires `cargo fmt -p <crate>` / edition 2024 and
+  forbids `rustfmt --edition 2021` on this workspace.
+- Surface: local rustfmt invocation vs workspace edition 2024.
+- Closed: 2026-08-27 papercuts wave 2 CI/path.
 
 ### [x] Qwen budget proof raises the god-file error baseline — 2026-08-23
 - Friction: PR 50 added a 441-line `prepared_facade/budgets.rs`, raising doctor

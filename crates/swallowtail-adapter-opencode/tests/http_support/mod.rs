@@ -164,8 +164,35 @@ impl Drop for FixtureServer {
         self.stop.store(true, Ordering::SeqCst);
         let _ = TcpStream::connect(self.endpoint.trim_start_matches("http://"));
         if let Some(thread) = self.thread.take() {
-            thread.join().expect("fixture server joins");
+            let _ = thread.join();
         }
+    }
+}
+
+fn is_client_disconnect(error: &std::io::Error) -> bool {
+    matches!(
+        error.kind(),
+        std::io::ErrorKind::BrokenPipe | std::io::ErrorKind::ConnectionReset
+    )
+}
+
+fn write_fixture(stream: &mut TcpStream, data: &[u8]) {
+    if let Err(error) = stream.write_all(data)
+        && !is_client_disconnect(&error)
+    {
+        panic!("fixture response writes: {error}");
+    }
+}
+
+fn write_fixture_fmt(stream: &mut TcpStream, formatted: &str) {
+    write_fixture(stream, formatted.as_bytes());
+}
+
+fn flush_fixture(stream: &mut TcpStream) {
+    if let Err(error) = stream.flush()
+        && !is_client_disconnect(&error)
+    {
+        panic!("fixture response flush: {error}");
     }
 }
 

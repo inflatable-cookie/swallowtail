@@ -5,6 +5,7 @@ validation_repo_root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$validation_repo_root"
 
 source "$validation_repo_root/scripts/validation/archive.sh"
+source "$validation_repo_root/scripts/validation/path.sh"
 
 validation_expect_failure() {
   local validation_expected=$1
@@ -70,6 +71,36 @@ if printf '%s\n' "package-0.1.0/.env" |
   validation_archive_member_list_is_safe
 then
   printf 'unsafe archive member was accepted\n' >&2
+  exit 1
+fi
+
+validation_real_root=$(mktemp -d)
+validation_alias_root="${validation_real_root}-alias"
+ln -s "$validation_real_root" "$validation_alias_root"
+validation_canonical_real=$(validation_canonical_path "$validation_real_root")
+validation_canonical_alias=$(validation_canonical_path "$validation_alias_root")
+if [[ "$validation_canonical_real" != "$validation_canonical_alias" ]]; then
+  printf 'path alias canonicalization failed: %s != %s\n' \
+    "$validation_canonical_real" "$validation_canonical_alias" >&2
+  exit 1
+fi
+rm -f "$validation_alias_root"
+rm -rf "$validation_real_root"
+
+validation_host_home=$HOME
+if ! bash scripts/run-with-isolated-home.sh --home-var GROK_HOME -- \
+  env | rg -q '^GROK_HOME='
+then
+  printf 'isolated-home wrapper did not export GROK_HOME during probe\n' >&2
+  exit 1
+fi
+if [[ "$HOME" != "$validation_host_home" ]]; then
+  printf 'isolated-home wrapper left HOME=%s instead of %s\n' \
+    "$HOME" "$validation_host_home" >&2
+  exit 1
+fi
+if env | rg -q '^GROK_HOME='; then
+  printf 'isolated-home wrapper left GROK_HOME exported after probe\n' >&2
   exit 1
 fi
 

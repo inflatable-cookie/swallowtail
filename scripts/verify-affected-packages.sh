@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-validation_repo_root=$(cd "$(dirname "$0")/.." && pwd)
+source "$(dirname "$0")/validation/path.sh"
+validation_repo_root=$(validation_canonical_path "$(dirname "$0")/..")
 cd "$validation_repo_root"
 
 source "$validation_repo_root/scripts/release-package-set.sh"

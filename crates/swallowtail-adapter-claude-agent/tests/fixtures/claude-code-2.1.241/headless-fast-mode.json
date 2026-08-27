@@ -1,0 +1,160 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "route": "claude-code.headless",
+  "driver": "swallowtail.claude-code.headless",
+  "behavior": "claude-code.headless.stream-json.v1",
+  "qualified_window": "2.1.220..=2.1.241",
+  "observed_at": "2026-08-27",
+  "provider_prompt_sent": false,
+  "credentials_used": false,
+  "host_install_changed": false,
+  "ambient_configuration_mutated": false,
+  "platform": "darwin-arm64",
+  "official_docs": {
+    "fast_mode_sha256": "ce14865e78f2c054948927ad8626b86a116d245f0404c5498010f8c8735b32bc",
+    "cli_reference_sha256": "5e9c7e929f5189593ecccbd7a9dd62a903ac7e21b9e2add5c574445bd9740a9d",
+    "env_vars_sha256": "a542edc27c2b0e91bb770d5999f4863a70ee77743e4a46e5339bbf095c34db2f",
+    "documented_activation": "print mode requires --settings '{\"fastMode\": true}' at launch; /fast is interactive-only",
+    "documented_models": "Opus 5 and Opus 4.8 only; not Sonnet, Haiku, or other models",
+    "documented_access": "Anthropic API or Claude subscription with usage credits; not Bedrock, Vertex, Foundry, or AWS Claude Platform",
+    "documented_billing": "usage credits on subscription plans; per-token on Console; research preview pricing",
+    "documented_status": "research preview; feature, pricing, and availability may change"
+  },
+  "help": {
+    "fast_mode_advertised_in_help": false,
+    "settings_advertised_in_help": true,
+    "official_help_sha256_2_1_220": "fcd5b45507c7c602d54d85a300eab288a8a3c6770c6def696ca19a3100725de4",
+    "official_help_sha256_2_1_241": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6"
+  },
+  "settings_option": {
+    "flag": "--settings <file-or-json>",
+    "description": "Path to a settings JSON file or a JSON string to load additional settings from",
+    "advertised_in_help": true,
+    "invalid_json_exit_code": 1,
+    "invalid_json_message": "Error: Invalid JSON provided to --settings"
+  },
+  "fast_mode_schema": {
+    "key": "fastMode",
+    "type": "boolean",
+    "companion_keys_observed": ["fastModePerSessionOptIn"],
+    "accepted": [true, false],
+    "rejected": [
+      {
+        "value": "true",
+        "diagnostic": "Expected boolean, but received string"
+      },
+      {
+        "value": 1,
+        "diagnostic": "Expected boolean, but received number"
+      },
+      {
+        "value": null,
+        "diagnostic": "Expected boolean, but received null"
+      }
+    ],
+    "invalid_settings_blocks_startup": false,
+    "invalid_settings_reported_at_doctor": true
+  },
+  "environment": {
+    "disable_variable": "CLAUDE_CODE_DISABLE_FAST_MODE",
+    "disable_value": "1",
+    "disabled_reason_when_set": "disabled_by_env",
+    "network_skip_variables_documented": [
+      "CLAUDE_CODE_SKIP_FAST_MODE_NETWORK_ERRORS",
+      "CLAUDE_CODE_SKIP_FAST_MODE_ORG_CHECK"
+    ]
+  },
+  "print_mode_activation": {
+    "requires_explicit_settings_fast_mode_true": true,
+    "ambient_user_fast_mode_alone_insufficient": true,
+    "without_settings_disabled_reason": "sdk_opt_in_required",
+    "with_settings_fast_mode_true_disabled_reason_before_auth": "preference",
+    "with_settings_fast_mode_false_disabled_reason": "sdk_opt_in_required",
+    "interactive_slash_fast_not_available_in_print_mode": true
+  },
+  "stream_observability": {
+    "init_fields": ["fast_mode_state", "fast_mode_disabled_reason"],
+    "result_fields": ["fast_mode_state", "fast_mode_disabled_reason"],
+    "usage_speed_field": "speed",
+    "observed_speed_when_off": "standard",
+    "observed_service_tier_when_off": "standard",
+    "confirmation_messages_interactive_only": ["Fast mode ON", "Fast mode OFF"]
+  },
+  "disabled_reason_literals_observed": [
+    "sdk_opt_in_required",
+    "preference",
+    "disabled_by_env",
+    "disabled_by_config",
+    "disabled_by_default",
+    "disabled_by_org",
+    "disabled_by_setting",
+    "disabled_by_flag"
+  ],
+  "probed_versions": {
+    "2.1.220": {
+      "npm_wrapper_sha256": "df33087481fcf5fe9b848b3f7ae7ee6bb1b893c327b0793f052987f9c5b4eee3",
+      "darwin_arm64_tarball_sha256": "ad3af8adee321a2ab1dbb3b1ff2e8bf8f66c54b5b4dfd6f3792ce6f0c46ab9b6",
+      "darwin_arm64_binary_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "fast_mode_string_occurrences": 144,
+      "settings_fast_mode_true_reaches_print_action": true
+    },
+    "2.1.241": {
+      "npm_wrapper_sha256": "752252ff9a65431c356ce1ae54b7ded74a138aaa7b93148573d97ff541a2e7e6",
+      "darwin_arm64_tarball_sha256": "180656c2cb4aeff35955c8fb6201841c6701cef210246a9edf75af582dfdea98",
+      "darwin_arm64_binary_sha256": "1495eb7c42d3b4451f5f1cd38b6d498d22a4a38c802bc2be5c1cf1795e64820d",
+      "fast_mode_string_occurrences": 144,
+      "settings_fast_mode_true_reaches_print_action": true
+    }
+  },
+  "model_probes_without_auth": {
+    "claude-opus-5_with_fast_mode_true": {
+      "init_fast_mode_state": "off",
+      "init_fast_mode_disabled_reason": "preference"
+    },
+    "claude-opus-4-8_with_fast_mode_true": {
+      "init_fast_mode_state": "off",
+      "init_fast_mode_disabled_reason": "preference"
+    },
+    "claude-opus-4-7_with_fast_mode_true": {
+      "init_fast_mode_state": "off",
+      "init_fast_mode_disabled_reason": "preference"
+    },
+    "claude-sonnet-4_with_fast_mode_true": {
+      "init_fast_mode_state": "off",
+      "init_fast_mode_disabled_reason": "preference"
+    },
+    "claude-haiku-4_with_fast_mode_true": {
+      "init_fast_mode_state": "off",
+      "init_fast_mode_disabled_reason": "preference"
+    }
+  },
+  "setting_sources": {
+    "current_headless_argv": "user,project,local",
+    "empty_sources_still_accepts_argv_fast_mode_true": true,
+    "ambient_user_fast_mode_true_without_argv_still_sdk_opt_in_required": true,
+    "process_private_for_all_settings_not_proved": true
+  },
+  "current_route_command": {
+    "passes_fast_mode_settings": false,
+    "passes_effort": "optional caller-selected",
+    "passes_max_turns": "optional caller-selected when admitted",
+    "omission_makes_no_fast_latency_credit_or_default_claim": true
+  },
+  "topology_gaps": [
+    "effective fast_mode_state on cannot be confirmed without login, usage credits, and org enablement",
+    "model ineligibility does not reject before init without authenticated account checks",
+    "billing, credit exhaustion, rate-limit cooldown, and returned speed truth require provider work",
+    "current --setting-sources user,project,local leaves ambient and managed settings authoritative for non-print activation paths",
+    "latency improvement cannot be observed or claimed without authenticated successful requests"
+  ],
+  "portable_speed_disposition": {
+    "maps_to_reasoning_effort": "rejected",
+    "maps_to_codex_service_tier": "rejected",
+    "maps_to_anthropic_messages_effort": "rejected",
+    "adapter_local_opt_in": "withheld"
+  },
+  "disposition": {
+    "deliver_now_rows": [],
+    "existing_route": "unchanged"
+  }
+}

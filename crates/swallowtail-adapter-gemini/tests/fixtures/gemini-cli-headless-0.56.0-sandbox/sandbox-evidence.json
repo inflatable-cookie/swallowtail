@@ -7,6 +7,103 @@
   "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
   "qualified_range": "0.51.0..=0.56.0",
   "decision": "empty_deliver_now",
+  "published_points": [
+    {
+      "version": "0.51.0",
+      "tag": "v0.51.0",
+      "commit": "8d951de3855750d5f8219d65ae22524b606133b6",
+      "published": true
+    },
+    {
+      "version": "0.52.0",
+      "tag": "v0.52.0",
+      "commit": "d14583b926769bd98f807cdc6b1ca50e91ae26ec",
+      "published": true
+    },
+    {
+      "version": "0.53.0",
+      "tag": "v0.53.0",
+      "commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96",
+      "published": true
+    },
+    {
+      "version": "0.53.1",
+      "tag": "v0.53.1",
+      "commit": "19a68016bdc9cd4177a155846dd51f282c3c1c59",
+      "published": true
+    },
+    {
+      "version": "0.54.0",
+      "tag": "v0.54.0",
+      "commit": "a74b483d14a93159fa36e7ee9e32cf44bda594df",
+      "published": true
+    },
+    {
+      "version": "0.54.1",
+      "published": false
+    },
+    {
+      "version": "0.54.2",
+      "published": false
+    },
+    {
+      "version": "0.54.3",
+      "published": false
+    },
+    {
+      "version": "0.54.4",
+      "tag": "v0.54.4",
+      "commit": "983bbb89d36718e3c97618978fb938ed9b5856c9",
+      "published": true
+    },
+    {
+      "version": "0.55.0",
+      "published": false
+    },
+    {
+      "version": "0.55.1",
+      "tag": "v0.55.1",
+      "commit": "41327e407da58aa01c409ef6685b7b5d379f295e",
+      "published": true
+    },
+    {
+      "version": "0.56.0",
+      "tag": "v0.56.0",
+      "commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+      "published": true
+    },
+    {
+      "version": "0.56.1",
+      "published": false
+    }
+  ],
+  "cross_version_seams": {
+    "retrieved_at": "2026-08-27",
+    "identical_across_all_published_points": {
+      "packages/cli/src/config/sandboxConfig.ts": "08c340670d3b85b827047784f89d697903db58b994efee430f0218286a1b029f",
+      "packages/cli/src/config/sandboxConfig.test.ts": "efe1b21f210f9e410304a00828969ff2ae837479617edde4f43b4ad4f38f9a64",
+      "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+      "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+      "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341"
+    },
+    "sandbox_ts_digests": {
+      "0.51.0..=0.54.4": "dac331000eb2eb28407dffb56ac31429a7324b087adfb94d3330ae206eb84e03",
+      "0.55.1..=0.56.0": "df009ae28efa17347101731334486a3bb15f3aabe48d61813dc3dd76f3cb7c3f",
+      "material_to_empty_set_gates": false,
+      "note": "0.55.1 adds embedded Seatbelt profile temp-file fallback and cleanup handlers; still exports start_sandbox and spawns backends"
+    },
+    "sandbox_md_digests": {
+      "0.51.0..=0.52.0": "1dbc39a3fa336ce0ce8aa9475b6f16f3c207abb3c7667ac1d3c61db67f90019a",
+      "0.53.0..=0.56.0": "2d2c13347d2d6e26dfdc3a33d7b43f12d242fa679eb1220c85153b824e8c0df4",
+      "note": "Seatbelt default profile wording tightened; docs still claim flag-before-env while source stays env-first"
+    },
+    "nonInteractiveCli_ts_digests": {
+      "0.51.0..=0.53.0": "e220c84af948e79f61a08bb961d2bca940f5bacb066a9c167039b873644f94d2",
+      "0.53.1..=0.56.0": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "note": "0.53.1 InvalidStreamError delta; no sandbox confirmation field"
+    },
+    "empty_set_holds_for_all_published_points": true
+  },
   "selected_argv": [
     "--output-format",
     "stream-json",

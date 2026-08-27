@@ -15,12 +15,13 @@ API-key route and confirm activation before prompt effects?
 ## Decision
 
 No. Research 239 admits an empty deliver-now set. No sandbox binding is admitted
-on `gemini-cli.headless`.
+on `gemini-cli.headless` for any published point in qualified
+`0.51.0..=0.56.0`.
 
-Exact `@google/gemini-cli@0.56.0` exposes a native full-process sandbox surface
-through boolean `--sandbox` / `-s`, `GEMINI_SANDBOX`, and `settings.tools.sandbox`.
-Tagged source selects backends from
-`docker|podman|sandbox-exec|runsc|lxc|windows-native`, starts them through
+Across every published stable tag in that window, Gemini CLI exposes a native
+full-process sandbox surface through boolean `--sandbox` / `-s`,
+`GEMINI_SANDBOX`, and `settings.tools.sandbox`. Tagged source selects backends
+from `docker|podman|sandbox-exec|runsc|lxc|windows-native`, starts them through
 `start_sandbox()`, and may re-exec the CLI inside that backend before the
 ordinary headless path continues. Official docs list flag-before-env precedence;
 tagged source and its unit tests give `GEMINI_SANDBOX` precedence over argv and
@@ -32,16 +33,65 @@ is not filesystem, process, credential, or network containment.
 ## Method And Boundary
 
 Official sandbox and headless documentation plus exact public GitHub source for
-tag `v0.56.0` were inspected on 2026-08-27. Decisive config, sandbox loader,
-sandbox starter, settings schema, stream-json types, and unit-test blobs were
-fetched from commit `b6e23a7dc29eb15fede4bbe646d91869e948b45a`. Prepared-route
-argv, harness posture, guide text, and exit-code mapping were audited in-repo.
-No Gemini install, executable launch, sandbox backend start, image pull,
-OAuth, credential capture, provider prompt, paid inference, or host mutation was
-used.
+every published stable tag in `0.51.0..=0.56.0` were inspected on 2026-08-27.
+Decisive loader, argv option, lifecycle entry, starter, stream-json types, and
+precedence-test blobs were fetched and digested per tag. Narrative detail uses
+ceiling tag `v0.56.0` commit `b6e23a7dc29eb15fede4bbe646d91869e948b45a` where
+those decisive files are byte-identical to the earlier published points.
+Prepared-route argv, harness posture, guide text, and exit-code mapping were
+audited in-repo. No Gemini install, executable launch, sandbox backend start,
+image pull, OAuth, credential capture, provider prompt, paid inference, or host
+mutation was used.
 
 Sibling Research 230 freezes headless settings/process shape for thinking and
-does not qualify sandboxing. Gemini ACP and Live stay out of scope.
+does not qualify sandboxing. Research 182 supplies the published-point census
+for the qualified window. Gemini ACP and Live stay out of scope.
+
+## Published Points
+
+| Version | Git tag | Commit | Published |
+| --- | --- | --- | --- |
+| `0.51.0` | `v0.51.0` | `8d951de3855750d5f8219d65ae22524b606133b6` | yes |
+| `0.52.0` | `v0.52.0` | `d14583b926769bd98f807cdc6b1ca50e91ae26ec` | yes |
+| `0.53.0` | `v0.53.0` | `decc0b46c6e11f8cad90710dcfb38fc3cdb24a96` | yes |
+| `0.53.1` | `v0.53.1` | `19a68016bdc9cd4177a155846dd51f282c3c1c59` | yes |
+| `0.54.0` | `v0.54.0` | `a74b483d14a93159fa36e7ee9e32cf44bda594df` | yes |
+| `0.54.1` | — | — | unpublished |
+| `0.54.2` | — | — | unpublished |
+| `0.54.3` | — | — | unpublished |
+| `0.54.4` | `v0.54.4` | `983bbb89d36718e3c97618978fb938ed9b5856c9` | yes |
+| `0.55.0` | — | — | unpublished |
+| `0.55.1` | `v0.55.1` | `41327e407da58aa01c409ef6685b7b5d379f295e` | yes |
+| `0.56.0` | `v0.56.0` | `b6e23a7dc29eb15fede4bbe646d91869e948b45a` | yes |
+| `0.56.1` | — | — | unpublished |
+
+Decisive cross-version seam digests (SHA-256 of tagged file bytes):
+
+| Seam | Digest stability across published points |
+| --- | --- |
+| `packages/cli/src/config/sandboxConfig.ts` | identical at all eight: `08c340670d3b85b827047784f89d697903db58b994efee430f0218286a1b029f` |
+| `packages/cli/src/config/sandboxConfig.test.ts` | identical at all eight: `efe1b21f210f9e410304a00828969ff2ae837479617edde4f43b4ad4f38f9a64` |
+| `packages/cli/src/config/config.ts` | identical at all eight: `5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c` |
+| `packages/cli/src/gemini.tsx` | identical at all eight: `1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828` |
+| `packages/core/src/output/types.ts` | identical at all eight: `23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341` |
+| `packages/cli/src/utils/sandbox.ts` | `dac331000eb2eb28407dffb56ac31429a7324b087adfb94d3330ae206eb84e03` for `0.51.0..=0.54.4`; `df009ae28efa17347101731334486a3bb15f3aabe48d61813dc3dd76f3cb7c3f` for `0.55.1` and `0.56.0` |
+| `docs/cli/sandbox.md` | `1dbc39a3fa336ce0ce8aa9475b6f16f3c207abb3c7667ac1d3c61db67f90019a` for `0.51.0`/`0.52.0`; `2d2c13347d2d6e26dfdc3a33d7b43f12d242fa679eb1220c85153b824e8c0df4` from `0.53.0` through `0.56.0` |
+| `packages/cli/src/nonInteractiveCli.ts` | `e220c84af948e79f61a08bb961d2bca940f5bacb066a9c167039b873644f94d2` through `0.53.0`; `fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298` from `0.53.1` through `0.56.0` |
+
+Cross-version seam verdict:
+
+| Gate family | Stability |
+| --- | --- |
+| Backend membership / platform gates / env>argv precedence | identical `sandboxConfig.ts` and tests at every published point |
+| Boolean `--sandbox` argv | identical `config.ts` option at every published point |
+| Lifecycle re-exec into `start_sandbox` | identical `gemini.tsx` call sites at every published point |
+| Stream-json activation field | identical `InitEvent` (`type`, `session_id`, `model`; no sandbox) at every published point |
+| Backend starter implementation | still exports `start_sandbox` and spawns backends; `0.55.1` adds embedded Seatbelt profile temp-file fallback and cleanup handlers only |
+| Docs Seatbelt default wording | tightened at `0.53.0`; docs precedence claim remains flag-before-env while source stays env-first |
+| Headless emitter | `0.53.1` InvalidStreamError delta only; no sandbox confirmation field added |
+
+Empty-set gates therefore hold for every published executable version in the
+qualified window, not only the `0.56.0` ceiling.
 
 ## Frozen Sources
 
@@ -67,12 +117,13 @@ does not qualify sandboxing. Gemini ACP and Live stay out of scope.
 | Adapter audit `headless_command.rs` / `headless_validation.rs` / `terminal.rs` | omission and ambient harness posture | 2026-08-27 | workspace |
 
 HTML digests identify retrieved documentation bodies. They are not a
-compatibility guarantee. Findings below are source-level for the exact tagged
-package point.
+compatibility guarantee. Narrative findings below use the `0.56.0` ceiling;
+decisive loader, argv, lifecycle, precedence-test, and `InitEvent` bytes are
+identical at every published point in the qualified window.
 
 ## Configuration Surface
 
-| Seam | Exact `0.56.0` shape |
+| Seam | Exact shape through published `0.51.0..=0.56.0` |
 | --- | --- |
 | argv | `--sandbox` / `-s` is yargs `boolean` only; no typed backend value on argv |
 | env | `GEMINI_SANDBOX=true\|false\|1\|0\|docker\|podman\|sandbox-exec\|runsc\|lxc\|windows-native` |
@@ -174,20 +225,20 @@ Consumer login stays out.
 
 | Gate | Finding |
 | --- | --- |
-| Closed version membership | package point `0.56.0` and range `0.51.0..=0.56.0` are known, but boolean true resolves by host command inventory |
-| Closed platform/backend/value | backend table exists in source, yet effective membership depends on installed commands, running daemons/containers, and images |
-| Process-private precedence | `GEMINI_SANDBOX` overrides argv/settings; ambient settings apply when env and argv omit; qualified route injects neither |
+| Closed version membership | eight published points in `0.51.0..=0.56.0` enumerated with tag/commit; unpublished patch holes recorded; decisive loader/argv/lifecycle/init seams identical |
+| Closed platform/backend/value | backend table exists in identical `sandboxConfig.ts`, yet effective membership depends on installed commands, running daemons/containers, and images |
+| Process-private precedence | `GEMINI_SANDBOX` overrides argv/settings at every published point; ambient settings apply when env and argv omit; qualified route injects neither |
 | Pre-effect rejection | invalid/missing backends throw in the loader, but that is not a Swallowtail plan preflight and backend start itself is out of bounds |
-| Prompt-free activation | stream-json has no sandbox field; confirming the backend requires starting it or inspecting inside it |
+| Prompt-free activation | stream-json has no sandbox field at every published point; confirming the backend requires starting it or inspecting inside it |
 | No backend install/start | docker/podman/runsc/lxc need installed backends; `start_sandbox` may pull images; Windows native mutates ACL state per docs |
 | Selection ≠ containment | official security notes and Contract 037 posture forbid treating a flag as portable isolation |
 
 ## Deliver-Now Set
 
-Empty. No executable-version / platform / backend / value row meets all gates:
-process-private selection on the qualified ambient route, closed host-independent
-membership, pre-effect rejection without backend work, and prompt-free
-activation confirmation.
+Empty. For every published executable version in `0.51.0..=0.56.0`, no
+platform / backend / value row meets all gates: process-private selection on
+the qualified ambient route, closed host-independent membership, pre-effect
+rejection without backend work, and prompt-free activation confirmation.
 
 ## Withheld Surfaces (Not Empty-Set Reasons Alone)
 

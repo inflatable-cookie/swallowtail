@@ -13,15 +13,15 @@ Shared planning and production code stayed unchanged.
 
 ## Outcome
 
-Honest empty deliver-now set.
+Honest empty deliver-now set across published `0.51.0..=0.56.0`.
 
-Exact `@google/gemini-cli@0.56.0` has a native sandbox surface (`--sandbox`,
-`GEMINI_SANDBOX`, `settings.tools.sandbox`) and a closed backend vocabulary, but
-the qualified ambient headless route cannot bind it process-privately or confirm
-activation prompt-free. Docs claim flag-before-env precedence; tagged source
-gives `GEMINI_SANDBOX` precedence over argv and settings. `start_sandbox()` is
-backend start. Stream-json `init` has no sandbox field. Exit `44` is failure
-only. Selection is not containment.
+Every published stable tag in the window keeps identical decisive
+`sandboxConfig.ts`, precedence tests, boolean `--sandbox` argv, `gemini.tsx`
+re-exec lifecycle, and sandbox-free `InitEvent` bytes. `start_sandbox`
+implementation changes at `0.55.1` without adding confirmation. Unpublished
+`0.54.1`/`0.54.2`/`0.54.3`/`0.55.0`/`0.56.1` are recorded. Ambient
+`GEMINI_SANDBOX` still overrides argv/settings; stream-json has no sandbox
+field; selection is not containment.
 
 ## Validation
 
@@ -31,7 +31,7 @@ effigy qa:northstar                                 # pass
 git diff --check                                    # pass
 ```
 
-Inherited doctor baseline not re-run; record drift only if later checks diverge.
+Re-validated after the published-point follow-up.
 
 ## Next
 

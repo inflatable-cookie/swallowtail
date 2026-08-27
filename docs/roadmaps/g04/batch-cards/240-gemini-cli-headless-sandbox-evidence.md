@@ -53,10 +53,13 @@ precedence, confirmation, authority, and lifecycle truth, then promote Research
 
 ## Result
 
-Honest empty deliver-now set. Research 239 freezes the native sandbox inventory
-and precedence, then rejects every deliver-now row: ambient `GEMINI_SANDBOX`
-overrides argv/settings, backend start is required for activation, stream-json
-exposes no sandbox field, and selection is not containment.
+Honest empty deliver-now set across every published point in
+`0.51.0..=0.56.0`. Research 239 freezes the published-point census, decisive
+cross-version seam digests, native sandbox inventory, and precedence, then
+rejects every deliver-now row: ambient `GEMINI_SANDBOX` overrides argv/settings,
+backend start is required for activation, stream-json exposes no sandbox field,
+and selection is not containment. Unpublished patch points `0.54.1`/`0.54.2`/
+`0.54.3`/`0.55.0`/`0.56.1` are recorded explicitly.
 
 ## Validation
 

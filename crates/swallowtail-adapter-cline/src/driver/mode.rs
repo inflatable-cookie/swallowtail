@@ -1,11 +1,25 @@
 const OPTION_ID: &str = "mode";
 const OPTION_CATEGORY: &str = "mode";
 const PLAN_VALUE: &str = "plan";
+const ACT_VALUE: &str = "act";
 const PROVIDER_VALUES: &[&str] = &["plan", "act"];
 
 fn prepare_plan_mode(snapshot: &Value) -> Result<(), RuntimeFailure> {
-    parse_modes(snapshot)?;
-    parse_mode_option(snapshot, OptionPhase::Snapshot).map(|_| ())
+    let modes_current = parse_modes(snapshot)?;
+    let option = parse_mode_option(snapshot, OptionPhase::Snapshot)?;
+    if modes_current != option.current {
+        return Err(failure(
+            "swallowtail.cline.acp.harness_mode_option_ambiguous",
+            "Cline ACP advertised contradictory current harness-mode truth",
+        ));
+    }
+    if modes_current != ACT_VALUE {
+        return Err(failure(
+            "swallowtail.cline.acp.harness_mode_option_malformed",
+            "Cline ACP new-session snapshot is not the frozen default Act row",
+        ));
+    }
+    Ok(())
 }
 
 fn confirm_plan_mode(response: &Value) -> Result<(), RuntimeFailure> {
@@ -63,7 +77,7 @@ enum OptionPhase {
     Confirmation,
 }
 
-fn parse_modes(root: &Value) -> Result<(), RuntimeFailure> {
+fn parse_modes(root: &Value) -> Result<&str, RuntimeFailure> {
     let modes = root
         .get("modes")
         .ok_or_else(|| missing_mode_option(OptionPhase::Snapshot))?;
@@ -98,7 +112,7 @@ fn parse_modes(root: &Value) -> Result<(), RuntimeFailure> {
     if !values.contains(&current) {
         return Err(malformed_mode_option());
     }
-    Ok(())
+    Ok(current)
 }
 
 fn parse_mode_option(root: &Value, phase: OptionPhase) -> Result<ModeOption<'_>, RuntimeFailure> {

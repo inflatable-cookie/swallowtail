@@ -51,7 +51,23 @@ Inherited doctor baseline unchanged: `scan.god-files` 380 findings;
 - programme, triage, roadmap/card/log indexes, sole Next Task
 - keep g04 open; Contract 029 currentness remains standing
 
+## Review Repair
+
+Addressed PR review on `7aa34afa`:
+
+1. snapshot gate now requires `modes.currentModeId` and
+   `configOptions[mode].currentValue` to agree, and both to be the frozen Act
+   row before selection
+2. `SessionRef` is validated before `set_session_id` / set-config; blank session
+   ID emits zero set-config requests and joins cleanup
+3. independent deterministic cases for missing/ambiguous/malformed modes vs
+   config, current-truth contradiction, confirmation missing/ambiguous/
+   malformed, drift, reject, disconnect-during-negotiation, and same-session
+   second turn with no reselection
+4. split fixture/tests under god-file thresholds; `effigy doctor` restored to
+   inherited `380 / 334 / 46`
+
 ## Next
 
 PR: https://github.com/inflatable-cookie/swallowtail/pull/95
-Await orchestrator review. Do not merge without operator authorisation.
+Await orchestrator re-review. Do not merge without operator authorisation.

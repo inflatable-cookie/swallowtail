@@ -1,9 +1,8 @@
 use futures_executor::block_on;
-use serde_json::{Value, json};
+use serde_json::Value;
 use std::{
-    collections::VecDeque,
     sync::{
-        Arc, Condvar, Mutex,
+        Arc, Mutex,
         atomic::{AtomicUsize, Ordering},
     },
     thread::JoinHandle,
@@ -21,13 +20,16 @@ use swallowtail_core::{
     RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, HostServices, JoinedTask, ProcessExit, ProcessHandle,
-    ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
-    ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, WorkingResourceRef,
+    BoxFuture, CleanupOutcome, HostServices, JoinedTask, ProcessHandle, ProcessRequest,
+    ProcessService, ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, WorkingResourceRef,
     WorkingResourceService,
 };
 
-include!("agent.rs");
+mod agent;
+use agent::SharedAgent;
+pub use agent::{FixtureProcessHandle, ObservedProcess, Scenario};
+
+include!("selection.rs");
 
 #[derive(Clone)]
 pub struct FixtureHost {
@@ -43,12 +45,7 @@ impl FixtureHost {
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {
         Self {
-            agent: Arc::new(SharedAgent {
-                state: Mutex::new(AgentState::default()),
-                changed: Condvar::new(),
-                scenario,
-                version: version.to_owned(),
-            }),
+            agent: Arc::new(SharedAgent::new(scenario, version.to_owned())),
             process: Arc::new(Mutex::new(None)),
             releases: Arc::new(AtomicUsize::new(0)),
         }
@@ -113,7 +110,7 @@ impl ProcessService for FixtureHost {
             state.stopped = false;
         }
         let handle =
-            Box::new(FixtureProcessHandle(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;
+            Box::new(FixtureProcessHandle::new(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;
         Box::pin(async move { Ok(handle) })
     }
 }
@@ -172,9 +169,7 @@ impl JoinedTask for ThreadTask {
     }
 }
 
-include!("selection.rs");
-
-fn fixture_failure() -> RuntimeFailure {
+pub(crate) fn fixture_failure() -> RuntimeFailure {
     RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
         "fixture.cline_acp.failed",
         "Cline ACP fixture failed",

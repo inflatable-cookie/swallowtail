@@ -52,7 +52,7 @@ path = "tests/acp_suite.rs"
 
 [[test]]
 name = "plan_mode"
-path = "tests/plan_mode.rs"
+path = "tests/plan_mode/mod.rs"
 
 [[test]]
 name = "headless_suite"

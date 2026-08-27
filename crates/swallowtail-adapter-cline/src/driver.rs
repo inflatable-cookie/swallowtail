@@ -229,6 +229,7 @@ impl ClineAcpDriver {
                 .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
                 .await?;
             let provider_id = parse_new_session(&response)?;
+            let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             connection.set_session_id(provider_id.clone())?;
             if requested_plan_mode(request.options()) {
                 prepare_plan_mode(&response)?;
@@ -244,7 +245,6 @@ impl ClineAcpDriver {
                     .await?;
                 confirm_plan_mode(&confirmation)?;
             }
-            let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             Ok((provider_id, provider_ref))
         }
         .await;

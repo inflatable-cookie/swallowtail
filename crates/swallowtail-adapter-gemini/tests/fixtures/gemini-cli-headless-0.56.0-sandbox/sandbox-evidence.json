@@ -1,0 +1,130 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-27",
+  "route": "gemini-cli.headless",
+  "official_version": "0.56.0",
+  "github_tag": "v0.56.0",
+  "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+  "qualified_range": "0.51.0..=0.56.0",
+  "decision": "empty_deliver_now",
+  "selected_argv": [
+    "--output-format",
+    "stream-json",
+    "--model",
+    "<explicit-model>",
+    "--approval-mode",
+    "plan",
+    "--extensions",
+    "none",
+    "--allowed-mcp-server-names",
+    "",
+    "--skip-trust",
+    "--session-id",
+    "<session-id>"
+  ],
+  "sandbox_argv_present": false,
+  "sandbox_env_injected_by_adapter": false,
+  "sandbox_argv_option": {
+    "flag": "--sandbox",
+    "alias": "-s",
+    "yargs_type": "boolean",
+    "backend_value_on_argv": false
+  },
+  "sandbox_env_keys": [
+    "GEMINI_SANDBOX",
+    "GEMINI_SANDBOX_IMAGE",
+    "GEMINI_SANDBOX_IMAGE_DEFAULT",
+    "SANDBOX",
+    "SEATBELT_PROFILE",
+    "SANDBOX_FLAGS",
+    "SANDBOX_MOUNTS",
+    "SANDBOX_ENV",
+    "SANDBOX_SET_UID_GID",
+    "BUILD_SANDBOX",
+    "GEMINI_SANDBOX_PROXY_COMMAND"
+  ],
+  "valid_sandbox_commands": [
+    "docker",
+    "podman",
+    "sandbox-exec",
+    "runsc",
+    "lxc",
+    "windows-native"
+  ],
+  "docs_claimed_precedence": [
+    "command_flag",
+    "GEMINI_SANDBOX",
+    "settings.tools.sandbox"
+  ],
+  "source_actual_precedence": [
+    "GEMINI_SANDBOX_nonempty_overrides_argv_and_settings",
+    "argv_boolean_false_beats_settings_when_env_unset",
+    "argv_or_settings_when_env_unset"
+  ],
+  "boolean_true_autodetect_order": [
+    "darwin+sandbox-exec",
+    "docker",
+    "podman"
+  ],
+  "never_autodetected": [
+    "runsc",
+    "lxc"
+  ],
+  "platform_gates": {
+    "runsc": "linux",
+    "windows-native": "win32"
+  },
+  "settings_key": "tools.sandbox",
+  "settings_forms": [
+    "boolean",
+    "command_string",
+    "profile_path_string",
+    "object_enabled_command_image_allowedPaths_networkAccess"
+  ],
+  "lifecycle": {
+    "loader": "loadSandboxConfig",
+    "starter": "start_sandbox",
+    "reexec_before_ordinary_headless_path": true,
+    "marks_inside_with_env": "SANDBOX"
+  },
+  "stream_json_init_fields": [
+    "type",
+    "timestamp",
+    "session_id",
+    "model"
+  ],
+  "stream_json_sandbox_fields": [],
+  "sandbox_failure_exit_code": 44,
+  "sandbox_failure_diagnostic": "swallowtail.gemini.headless.native_sandbox",
+  "truth_layers": {
+    "requested": false,
+    "argv_or_env_encoded_on_qualified_route": false,
+    "backend_started": "requires_start_sandbox_and_host_backend",
+    "accepted": false,
+    "effective": "not_prompt_free",
+    "contained": "not_inferred_from_selection",
+    "observed_success_field": false
+  },
+  "swallowtail_posture": {
+    "harness_configuration": "ambient",
+    "harness_isolation": "ambient_host",
+    "forces_sandbox": false,
+    "omission_claims_no_sandbox": false
+  },
+  "source_digests_v0.56.0": {
+    "docs/cli/sandbox.md": "2d2c13347d2d6e26dfdc3a33d7b43f12d242fa679eb1220c85153b824e8c0df4",
+    "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+    "packages/cli/src/config/sandboxConfig.ts": "08c340670d3b85b827047784f89d697903db58b994efee430f0218286a1b029f",
+    "packages/cli/src/config/sandboxConfig.test.ts": "efe1b21f210f9e410304a00828969ff2ae837479617edde4f43b4ad4f38f9a64",
+    "packages/cli/src/config/settingsSchema.ts": "df5e1939dd6313ffbe0e1e182af83efbf9e55bca99482e0223faf9b5bbe93e6d",
+    "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+    "packages/cli/src/utils/sandbox.ts": "df009ae28efa17347101731334486a3bb15f3aabe48d61813dc3dd76f3cb7c3f",
+    "packages/cli/src/utils/sandboxUtils.ts": "f3662d82e0e83405471cf767e4deb29aa1f1ff060b0a14cafb3f1a26d34aa932",
+    "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+    "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298"
+  },
+  "documentation_digests": {
+    "https://geminicli.com/docs/cli/sandbox/": "71cbb84469746c9e4a43d396f29d79b54b4d3e4a4523d50cc08f25521b5d1dd4",
+    "https://geminicli.com/docs/cli/headless/": "7badcdfa83d7b8c60f510ab9f40c847d80a96a87050fd3ddd02ce3fef3e1746c"
+  }
+}

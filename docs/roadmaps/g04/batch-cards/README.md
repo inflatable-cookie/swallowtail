@@ -6,8 +6,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [236-openai-realtime-reasoning-effort-binding.md](./236-openai-realtime-reasoning-effort-binding.md) — g04.084 prepared binding
-- [237-openai-realtime-reasoning-effort-acceptance.md](./237-openai-realtime-reasoning-effort-acceptance.md) — g04.084 route-local acceptance
+- [238-claude-code-headless-autocompaction-evidence.md](./238-claude-code-headless-autocompaction-evidence.md) — g04.085 lane A; evidence only
+- [239-codex-app-server-personality-evidence.md](./239-codex-app-server-personality-evidence.md) — g04.085 lane B; evidence only
+- [240-gemini-cli-headless-sandbox-evidence.md](./240-gemini-cli-headless-sandbox-evidence.md) — g04.085 lane C; evidence only
+- [241-cline-acp-plan-mode-evidence.md](./241-cline-acp-plan-mode-evidence.md) — g04.085 lane D; evidence only
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -36,6 +38,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [237-openai-realtime-reasoning-effort-acceptance.md](./237-openai-realtime-reasoning-effort-acceptance.md) — complete; g04.084 route-local acceptance
+- [236-openai-realtime-reasoning-effort-binding.md](./236-openai-realtime-reasoning-effort-binding.md) — complete; g04.084 prepared binding
 - [235-openai-realtime-reasoning-effort-evidence.md](./235-openai-realtime-reasoning-effort-evidence.md) — complete; lane D; Research 236 admits five future session-scoped rows
 - [234-gemini-cli-acp-thinking-evidence.md](./234-gemini-cli-acp-thinking-evidence.md) — complete; lane C; Research 235 honest empty deliver-now set
 - [233-codex-exec-fast-service-tier-evidence.md](./233-codex-exec-fast-service-tier-evidence.md) — complete; lane B; Research 234 honest empty deliver-now set

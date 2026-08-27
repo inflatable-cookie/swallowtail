@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess the 26 active per-route qualification candidates and define the next
-meaningful bounded batch. Keep g04 open. Contract 029 currentness remains
+Validate g04.085 cards 238-241 as four package-distinct evidence-only worker lanes.
+Keep worker ownership disjoint and integration serial. Do not start production
+binding from a worker branch. Keep g04 open. Contract 029 currentness remains
 standing.
 
 ## Standing Lanes

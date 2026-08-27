@@ -107,6 +107,24 @@ evidence stops. Item 76 closed through g04.084 and PR 90 at `266ec857`.
 completed lanes and Research 233-236. PRs 86, 88, 87, and 85 landed serially
 through `c918d301`.
 
+## Selected Parallel Qualification Wave III
+
+g04.085 selects four route- and package-distinct evidence lanes from the 26
+active qualification candidates:
+
+1. item 4 — `claude-code.headless` autocompaction — card 238
+2. item 20 — `codex.app-server` personality — card 239
+3. item 31 — `gemini-cli.headless` sandbox — card 240
+4. item 41 — `cline.acp` Plan mode — card 241
+
+Research 237-240 are reserved. Workers own only their assigned card, Research,
+log, and optional route-local frozen evidence. Shared disposition changes and
+any non-empty delivery promotion remain serial after all four evidence PRs
+land.
+
+[g04.085](085-third-parallel-per-route-feature-qualification.md) owns this
+selected wave.
+
 ## Update Rule
 
 After a numbered lane lands, move its original id from the active backlog to

@@ -145,6 +145,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [234 Codex Exec Fast Service-Tier Evidence](./234-codex-exec-fast-service-tier-evidence.md) — promoted; honest empty deliver-now set; g04.083 card 233
 - [235 Gemini CLI ACP Thinking Evidence](./235-gemini-cli-acp-thinking-evidence.md) — promoted; honest empty deliver-now set; g04.083 card 234
 - [236 OpenAI Realtime Reasoning-Effort Evidence](./236-openai-realtime-reasoning-effort-evidence.md) — promoted through g04.083 card 235 and delivered through g04.084 cards 236-237; five exact session-scoped rows on `gpt-realtime-2.1`; PR 90 at `266ec857`
+- [237 Claude Code Headless Autocompaction Evidence](./237-claude-code-headless-autocompaction-evidence.md) — reserved for g04.085 card 238
+- [238 Codex App-Server Personality Evidence](./238-codex-app-server-personality-evidence.md) — reserved for g04.085 card 239
+- [239 Gemini CLI Headless Sandbox Evidence](./239-gemini-cli-headless-sandbox-evidence.md) — reserved for g04.085 card 240
+- [240 Cline ACP Plan-Mode Evidence](./240-cline-acp-plan-mode-evidence.md) — reserved for g04.085 card 241
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210

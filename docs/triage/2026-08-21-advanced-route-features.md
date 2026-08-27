@@ -2658,3 +2658,24 @@ Original items 2, 15, and 30 move to the closed disposition set. Item 76 moves
 to active delivery. The live inventory now owns 48 closed items, 26 active
 qualification candidates, one active delivery item, and ten with no active
 lane. PRs 86, 88, 87, and 85 landed serially through `c918d301`.
+
+## Post-g04.084 Reassessment And g04.085 Compilation (2026-08-27)
+
+Disposition: compile four package-distinct evidence-only lanes.
+
+The next wave selects original items 4, 20, 31, and 41: Claude Code headless
+autocompaction, Codex app-server personality, Gemini CLI headless sandboxing,
+and Cline ACP Plan mode. They touch four packages and have no evidence
+dependency. Cards 238-241 and Research 237-240 own the questions.
+
+This selection favors exact official surfaces with bounded prompt-free
+qualification paths. Autocompaction must not become context size; Codex
+personality remains thread/turn/config-specific; Gemini sandbox selection does
+not imply portable containment; and Cline headless Plan evidence does not
+promote onto ACP.
+
+Workers may freeze only route-local evidence and their assigned card, Research,
+and log. Shared inventory, programme, triage, matrices, indexes, Next Task, and
+any production binding remain serial. Provider prompts, credentials, paid work,
+account inspection, install/update, ambient mutation, release, rollover, and
+g04 closure stay out.

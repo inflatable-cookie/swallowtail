@@ -1,0 +1,117 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-27",
+  "route": "gemini-cli.acp",
+  "official_version": "0.56.0",
+  "github_tag": "v0.56.0",
+  "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+  "qualified_range": "0.51.0..=0.56.0",
+  "decision": "empty_deliver_now",
+  "acp_sdk": "0.16.1",
+  "acp_wire_version": 1,
+  "selected_argv": [
+    "--acp",
+    "--approval-mode",
+    "plan"
+  ],
+  "thinking_argv_present": false,
+  "thinking_env_present": false,
+  "initialize_agent_capabilities": {
+    "loadSession": true,
+    "promptCapabilities": {
+      "image": true,
+      "audio": true,
+      "embeddedContext": true
+    },
+    "mcpCapabilities": {
+      "http": true,
+      "sse": true
+    }
+  },
+  "initialize_thinking_fields": [],
+  "session_new_response_fields": [
+    "sessionId",
+    "modes.availableModes",
+    "modes.currentModeId",
+    "models.availableModels",
+    "models.currentModelId"
+  ],
+  "session_new_config_options_present": false,
+  "session_set_config_option_implemented": false,
+  "negotiated_model_surface": "unstable_setSessionModel",
+  "negotiated_model_confirms_thinking": false,
+  "set_session_mode_surface": "setSessionMode",
+  "set_session_mode_confirms_thinking": false,
+  "session_update_thinking_confirmation_fields": [],
+  "session_update_emitted_by_qualified_source": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "available_commands_update",
+    "tool_call",
+    "tool_call_update",
+    "user_message_chunk"
+  ],
+  "session_update_not_emitted_by_qualified_source": [
+    "config_option_update",
+    "current_mode_update",
+    "plan",
+    "session_info_update",
+    "usage_update"
+  ],
+  "thought_chunk_is_observation_not_selection_proof": true,
+  "thinking_config_surface": "settings.modelConfigs.generateContentConfig.thinkingConfig",
+  "thinking_config_fields": [
+    "includeThoughts",
+    "thinkingBudget",
+    "thinkingLevel"
+  ],
+  "acp_dispatch_path": "GeminiClient.sendMessageStream -> processTurn with isChatModel: true",
+  "settings_merge_precedence": [
+    "schema_defaults",
+    "system_defaults",
+    "user",
+    "workspace",
+    "system"
+  ],
+  "user_settings_path": "${GEMINI_CLI_HOME:-os.homedir()}/.gemini/settings.json",
+  "workspace_settings_path": "${workspace}/.gemini/settings.json",
+  "child_env_settings_overrides": [
+    "GEMINI_CLI_HOME",
+    "GEMINI_CLI_SYSTEM_SETTINGS_PATH",
+    "GEMINI_CLI_SYSTEM_DEFAULTS_PATH"
+  ],
+  "settings_isolation_notes": {
+    "gemini_cli_home_isolates_user_settings": true,
+    "gemini_cli_home_isolates_workspace_settings": false,
+    "system_settings_win_conflicting_keys": true,
+    "system_custom_overrides_replace_earlier_arrays_when_supplied": true,
+    "ambient_custom_overrides_survive_only_when_system_omits_the_key": true
+  },
+  "swallowtail_posture": {
+    "harness_configuration": "ambient",
+    "harness_isolation": "ambient_host",
+    "reasoning_mode_rejected_at_preparation": true,
+    "reasoning_mode_rejected_at_open": true
+  },
+  "lifecycle_disposition": {
+    "new": "no_acp_thinking_selection_or_pre_prompt_confirmation",
+    "follow_up": "no_acp_thinking_selection_or_pre_prompt_confirmation",
+    "load": "history_replay_may_emit_agent_thought_chunk_without_selection_proof",
+    "resume": "load_session_replay_only_no_thinking_binding",
+    "fresh_replacement": "session_new_only_no_thinking_binding"
+  },
+  "source_digests_v0.56.0": {
+    "packages/cli/src/acp/acpRpcDispatcher.ts": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660",
+    "packages/cli/src/acp/acpSessionManager.ts": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+    "packages/cli/src/acp/acpSession.ts": "f21c78e7edc1b17972b3d3a94ea507788fcc67fdd1bb0fe857cb97218be63e3b",
+    "packages/cli/src/acp/acpUtils.ts": "3683efd817485ca2772429864d211fbfe4ff0ac48342d445bd616743c1c693bd",
+    "packages/core/src/core/client.ts": "6a6935054eedede5561272c9e53026ac50e604721ec9fbed95fe14d615a6676c",
+    "packages/core/src/core/geminiChat.ts": "509d03416ad093b15fdf1fa891ccc719591a4d0a02976f9086b5546033e64873",
+    "packages/core/src/services/modelConfigService.ts": "e3dfc0e1133bd4153d1c4557e6c39b1f577a08504e689b0e26b67cc228ac019b",
+    "packages/core/src/config/defaultModelConfigs.ts": "84d9f2230d9bec00ade567ef760df9b1645dfcf74917d3cac1f1e78c2f5f173b",
+    "packages/cli/src/config/settings.ts": "31b771bc8b7960f0cb6f9aa347378af6973a1054665caa0fabf7b3836940bba3",
+    "packages/cli/src/config/settingsSchema.ts": "df5e1939dd6313ffbe0e1e182af83efbf9e55bca99482e0223faf9b5bbe93e6d"
+  },
+  "decoder_corpus": "gemini-cli-acp-v0.51.0",
+  "protocol_fixture_config_options": "not_advertised"
+}

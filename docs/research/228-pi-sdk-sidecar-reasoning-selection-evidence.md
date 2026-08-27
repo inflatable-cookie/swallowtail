@@ -55,7 +55,7 @@ host-leased working resource, and durable provider-session preservation.
 | [models.ts](https://github.com/earendil-works/pi/blob/v0.84.2/packages/ai/src/models.ts) | `getSupportedThinkingLevels`, `clampThinkingLevel` | 2026-08-27 | `b53c99c5fa787af57790fa1d971987faab7e7b917ab5cb985374db407a4d88dd` |
 | npm `@earendil-works/pi-ai@0.84.2` tarball | bundled provider model JSON corpus | 2026-08-27 | `0262785a76b0eb2eec596cd8a7ab2ee23eef89d2ef1bb1211c4f0a1944dacf41` |
 | `dist/providers/data/anthropic.json` inside pi-ai `0.84.2` | qualified row metadata (`reasoning`, supported levels) | 2026-08-27 | `e22c277e3a1ffddc3d2701b72787c9e0bd67b835de6b4cb806677b6b6a89a2f7` |
-| `crates/swallowtail-adapter-pi/evidence/npm-shrinkwrap.json` | frozen npm integrity pin for `@earendil-works/pi-ai@0.84.2` | 2026-08-27 | `ec75b47c8032c9d22f9f8810840c6684cc44fa85f392cc83a3818e13e9e5208f` |
+| `crates/swallowtail-adapter-pi/evidence/npm-shrinkwrap.json` | frozen npm integrity pin for `@earendil-works/pi-coding-agent@0.84.2` (published tarball shrinkwrap) | 2026-08-27 | `e09ee75249d2381fbb66d2199c9e699910ce3fa7608d55e93f6fe37c3ded5973` |
 | Research 181 | SDK-sidecar route boundary | 2026-08-21 | frozen qualification |
 | Contract 012, 017, 040, 044 | options, attachment, no-clamp, lifecycle events | repo | active contracts |
 | `crates/swallowtail-adapter-pi/sidecar/pi-sdk-sidecar.mjs` | bootstrap factory, snapshots, event map | repo | source tag `0.3.3` |

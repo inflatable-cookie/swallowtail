@@ -47,7 +47,7 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 330,
+        "Yes": 331,
         "No": 549,
         "Not applicable": 421,
         "Partial": 2,

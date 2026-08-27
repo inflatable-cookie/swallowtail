@@ -97,7 +97,7 @@ and selection policy.
 - [g04.080 xAI Responses WebSocket Web Search](080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
 - [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 admits one bounded `anthropic/claude-opus-4-5` reasoning row
 
-g04 has 81 numbered roadmaps: 65 completed milestones, fifteen honest
+g04 has 81 numbered roadmaps: 66 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
 074, 076, and 080. g04.081 is complete. The operator keeps the
 generation active.

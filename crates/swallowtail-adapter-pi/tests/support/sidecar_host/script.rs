@@ -1,6 +1,26 @@
 use super::{FIXTURE_SESSION_REF, ProcessState, SidecarScenario, fixture_failure};
 
 mod continuity;
+
+enum ThinkingPhase {
+    Bootstrap,
+    State,
+}
+
+fn thinking_level_field(
+    scenario: SidecarScenario,
+    phase: ThinkingPhase,
+    expected: &str,
+) -> Option<String> {
+    match (scenario, phase) {
+        (SidecarScenario::ThinkingBootstrapMismatch, ThinkingPhase::Bootstrap) => {
+            Some("low".to_owned())
+        }
+        (SidecarScenario::ThinkingStateMismatch, ThinkingPhase::State) => Some("low".to_owned()),
+        (SidecarScenario::ThinkingStateMissing, ThinkingPhase::State) => None,
+        _ => Some(expected.to_owned()),
+    }
+}
 use serde_json::{Value, json};
 use swallowtail_runtime::{ProcessOutputChunk, ProcessOutputStream, RuntimeFailure};
 
@@ -78,12 +98,10 @@ pub(super) fn respond(
                 "sessionRef": FIXTURE_SESSION_REF,
                 "tools": ["read", "grep", "find", "ls"]
             });
-            if let Some(thinking_level) = state.thinking_level.as_ref() {
-                let reported = if matches!(scenario, SidecarScenario::ThinkingMismatch) {
-                    "low"
-                } else {
-                    thinking_level.as_str()
-                };
+            if let Some(thinking_level) = state.thinking_level.as_ref()
+                && let Some(reported) =
+                    thinking_level_field(scenario, ThinkingPhase::Bootstrap, thinking_level)
+            {
                 data["thinkingLevel"] = json!(reported);
             }
             output(
@@ -116,12 +134,10 @@ pub(super) fn respond(
                 "sessionRef": session_ref,
                 "tools": ["read", "grep", "find", "ls"]
             });
-            if let Some(thinking_level) = state.thinking_level.as_ref() {
-                let reported = if matches!(scenario, SidecarScenario::ThinkingMismatch) {
-                    "low"
-                } else {
-                    thinking_level.as_str()
-                };
+            if let Some(thinking_level) = state.thinking_level.as_ref()
+                && let Some(reported) =
+                    thinking_level_field(scenario, ThinkingPhase::State, thinking_level)
+            {
                 data["thinkingLevel"] = json!(reported);
             }
             output(
@@ -213,7 +229,9 @@ pub(super) fn respond(
                 | SidecarScenario::ReplayAfterResponse
                 | SidecarScenario::ReplayDuringResume
                 | SidecarScenario::HoldReplay
-                | SidecarScenario::ThinkingMismatch => {}
+                | SidecarScenario::ThinkingBootstrapMismatch
+                | SidecarScenario::ThinkingStateMismatch
+                | SidecarScenario::ThinkingStateMissing => {}
             }
         }
         "steer" => {

@@ -41,7 +41,9 @@ pub enum SidecarScenario {
     ReplayAfterResponse,
     ReplayDuringResume,
     HoldReplay,
-    ThinkingMismatch,
+    ThinkingBootstrapMismatch,
+    ThinkingStateMismatch,
+    ThinkingStateMissing,
 }
 
 /// Provider-session reference the fixture "persists" across sidecar processes.

@@ -21,21 +21,26 @@ exact prior bootstrap bytes and claims no selected mode.
 
 - `crates/swallowtail-adapter-pi/src/sidecar/reasoning.rs`: closed admission
   table and option validation
-- `prepared.rs`, driver startup/validation/continuity: reasoning propagation,
-  bootstrap dispatch, and fail-closed mismatch handling
-- sidecar driver tests plus fixture host `ThinkingMismatch` scenario
-- `evidence/npm-shrinkwrap.json`: frozen npm integrity pin for pi-ai `0.84.2`
+- `prepared/build.rs` extraction from `prepared.rs` to clear god-file threshold
+- driver startup/validation/continuity: reasoning propagation, bootstrap
+  dispatch, and fail-closed mismatch handling
+- sidecar driver reasoning lifecycle tests with split fixture scenarios
+  (`ThinkingBootstrapMismatch`, `ThinkingStateMismatch`, `ThinkingStateMissing`)
+- `evidence/npm-shrinkwrap.json`: published `@earendil-works/pi-coding-agent@0.84.2`
+  tarball shrinkwrap (not synthetic)
 - Research 228, cards 225-227, g04.081, programme/triage/indexes, guide, matrix,
-  this closeout
+  route-matrix inventory count, this closeout
 
 ## Validation
 
-- `effigy validate:focused swallowtail-adapter-pi` — pass (96 tests)
+- `effigy validate:focused swallowtail-adapter-pi` — pass (101 tests)
 - `effigy package:verify-affected swallowtail-adapter-pi` — pass
 - `effigy check:examples` — pass
 - `effigy package:api` — pass (baseline updated for `prepare_pi_sdk_sidecar_session`)
 - `effigy qa:northstar` — pass
 - `effigy qa:docs:index:*` and `effigy qa:docs:next-action:roadmaps` — pass
+- `effigy doctor` — inherited baseline only: 333 warnings / 47 errors (no new
+  `prepared.rs` god-file after build extraction)
 - `cargo fmt -p swallowtail-adapter-pi` — pass
 - `git diff --check` — pass
 

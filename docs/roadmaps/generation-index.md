@@ -31,7 +31,7 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 81 roadmaps: 65 completed milestones, fifteen honest evidence
+g04 now has 81 roadmaps: 66 completed milestones, fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
 and 080. g04.081 is complete. The generation has realized route
 readiness and connection admission, widened proved addable coverage, added the

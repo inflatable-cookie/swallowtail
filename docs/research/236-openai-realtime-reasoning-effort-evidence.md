@@ -148,7 +148,9 @@ implementation; it is not provider-enforced.
 
 ## Frozen Route Evidence
 
-Exact current repository truth at planning base `0808a6cff4f48895e700f82b89f0d267d3f47c25`:
+Exact current repository truth at worker/dispatch base
+`0808a6cff4f48895e700f82b89f0d267d3f47c25`. Handoff planning base:
+`59c8238623dfdda61a87c7147b5240d87d611ebb`.
 
 | Item | Exact current value | Source |
 | --- | --- | --- |

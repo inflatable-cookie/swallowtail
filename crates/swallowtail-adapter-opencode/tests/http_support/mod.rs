@@ -43,6 +43,7 @@ pub enum StreamFixture {
     ImportTitleDrift,
     ImportDelayed,
     ReconciliationActive,
+    PanicOnEvent,
 }
 
 pub struct FixtureServer {
@@ -131,7 +132,7 @@ impl FixtureServer {
                 }
             }
             for handler in handlers {
-                let _ = handler.join();
+                join_fixture_thread(handler);
             }
         });
         Self {
@@ -164,9 +165,22 @@ impl Drop for FixtureServer {
         self.stop.store(true, Ordering::SeqCst);
         let _ = TcpStream::connect(self.endpoint.trim_start_matches("http://"));
         if let Some(thread) = self.thread.take() {
-            let _ = thread.join();
+            join_fixture_thread(thread);
         }
     }
+}
+
+fn join_fixture_thread(handle: JoinHandle<()>) {
+    if let Err(payload) = handle.join()
+        && !thread::panicking()
+    {
+        std::panic::resume_unwind(payload);
+    }
+}
+
+#[cfg(test)]
+pub(crate) fn join_fixture_thread_for_test(handle: JoinHandle<()>) {
+    join_fixture_thread(handle);
 }
 
 fn is_client_disconnect(error: &std::io::Error) -> bool {

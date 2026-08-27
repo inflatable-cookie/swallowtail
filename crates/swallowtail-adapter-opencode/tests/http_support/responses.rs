@@ -150,5 +150,8 @@ fn respond_sse(
                 write_fixture(stream, ABORTED.as_bytes());
             }
         }
+        StreamFixture::PanicOnEvent => {
+            panic!("unexpected fixture failure");
+        }
     }
 }

@@ -11,7 +11,6 @@ set -euo pipefail
 #   run-with-isolated-home.sh --home-var GROK_HOME -- ./grok --version
 
 validation_host_home=${HOME:?HOST HOME must be set}
-validation_isolated_home=$(mktemp -d)
 validation_home_vars=()
 
 while [[ $# -gt 0 ]]; do
@@ -40,6 +39,8 @@ if [[ $# -lt 1 ]]; then
   printf '%s: missing command after --\n' "$0" >&2
   exit 2
 fi
+
+validation_isolated_home=$(mktemp -d)
 
 validation_restore_host_home() {
   export HOME="$validation_host_home"

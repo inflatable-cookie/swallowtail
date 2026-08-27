@@ -104,4 +104,17 @@ if env | rg -q '^GROK_HOME='; then
   exit 1
 fi
 
+validation_temp_root=$(mktemp -d)
+validation_temp_before=$(find "$validation_temp_root" -mindepth 1 | wc -l | tr -d ' ')
+if TMPDIR="$validation_temp_root" bash scripts/run-with-isolated-home.sh --home-var 2>/dev/null; then
+  printf 'isolated-home wrapper accepted a malformed --home-var invocation\n' >&2
+  exit 1
+fi
+validation_temp_after=$(find "$validation_temp_root" -mindepth 1 | wc -l | tr -d ' ')
+if [[ "$validation_temp_after" != "$validation_temp_before" ]]; then
+  printf 'isolated-home wrapper leaked temp entries under %s\n' "$validation_temp_root" >&2
+  exit 1
+fi
+rm -rf "$validation_temp_root"
+
 printf 'validation selector argument and archive-scope tests passed\n'

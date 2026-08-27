@@ -8,7 +8,7 @@ Branch: `t3code/xai-websocket-web-search`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-8f962dec`
 Base: `3599b5b4c657e1dc2fb2c48d363af6bd637baabe` (`origin/main` at dispatch)
 Planning base ancestor: `27dcc8fc5e520576b5dbceda90f32a84dddba254`
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/79
 
 ## Result
 

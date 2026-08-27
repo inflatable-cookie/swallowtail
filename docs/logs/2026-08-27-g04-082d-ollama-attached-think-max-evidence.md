@@ -22,8 +22,9 @@ Promoted Research 232 with an honest empty deliver-now set for native
 
 Key findings:
 
-- `"max"` entered the tagged `ThinkValue` JSON parser at `v0.22.0`; `0.14.0`,
-  `0.18.0`, and `0.20.0` reject it at unmarshaling.
+- `"max"` entered the tagged `ThinkValue` JSON parser at `v0.22.0`; the
+  immediate stable predecessor `v0.21.2` remains byte-identical to `v0.20.0`
+  for `api/types.go` and rejects it at unmarshaling.
 - From `0.22.0` through `0.32.15`, the wire parser accepts `"max"`, but
   `/api/show` exposes only generic `capabilities: ["thinking"]`.
 - The prepared route binds that generic capability only; it does not bind

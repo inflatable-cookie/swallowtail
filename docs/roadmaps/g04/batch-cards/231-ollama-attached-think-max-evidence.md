@@ -6,7 +6,7 @@ Created: 2026-08-27
 Updated: 2026-08-27
 Milestone: [g04.082 Parallel Per-Route Feature Qualification](../082-parallel-per-route-feature-qualification.md)
 Depends on: g04.036; g04.081 closeout
-Research: [232 Ollama Attached Think Max Evidence](../../research/232-ollama-attached-think-max-evidence.md)
+Research: [232 Ollama Attached Think Max Evidence](../../../research/232-ollama-attached-think-max-evidence.md)
 
 ## Goal
 
@@ -52,7 +52,8 @@ with a non-empty deliver-now table or an honest empty set.
 ## Outcome
 
 Research 232 promotes an **honest empty deliver-now set**. Tagged wire-parser
-acceptance of `"max"` begins at `v0.22.0`, but the already-bound
+acceptance of `"max"` begins at `v0.22.0`; the immediate stable predecessor
+`v0.21.2` still rejects it. The already-bound
 selected-model detail exposes only generic `thinking` capability. Production
 correctly rejects `max` at preparation. Frozen corpus:
 `crates/swallowtail-adapter-ollama/tests/fixtures/ollama-think-max-v0.14.0-v0.32.15/`.

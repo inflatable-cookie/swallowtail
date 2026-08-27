@@ -10,5 +10,9 @@ as the native request surface. The corpus distinguishes wire-parser acceptance
 from selected-model exact membership. Generic `capabilities: ["thinking"]` on
 `/api/show` is not level membership.
 
+Official documentation excerpts are snapshots of the mutable `.md` pages
+retrieved on 2026-08-27. Their filenames use the retrieval date and do not
+claim tag-bound provenance.
+
 No fixture contains credentials, model files, endpoint values, prompts, or live
 inference responses.

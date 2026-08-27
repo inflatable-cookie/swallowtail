@@ -34,6 +34,15 @@
       "think_string_levels": ["high", "medium", "low"]
     },
     {
+      "version": "0.21.2",
+      "tag": "v0.21.2",
+      "commit": "590109c8352e8d5a6206e8909b518a54a2b0a7b8",
+      "types_go_sha256": "b408e7601f5434ab14d0d50c570e76ab43dff45c57bbf293e67288cdec02e4eb",
+      "think_max_parser": "rejected",
+      "think_string_levels": ["high", "medium", "low"],
+      "types_excerpt": "types-thinkvalue-v0.21.2.go.excerpt"
+    },
+    {
       "version": "0.22.0",
       "tag": "v0.22.0",
       "commit": "955112e502e34812a904e6392736d8cc40bbb9d9",
@@ -101,10 +110,13 @@
   },
   "deliver_now_table": [],
   "official_documentation": {
-    "thinking_capability_url": "https://docs.ollama.com/capabilities/thinking",
-    "chat_api_url": "https://docs.ollama.com/api/chat",
-    "thinking_excerpt": "docs-thinking-v0.32.15.mdx.excerpt",
-    "api_chat_excerpt": "docs-api-chat-think-v0.32.15.md.excerpt",
-    "checked_at": "2026-08-27"
+    "provenance": "mutable retrieval-date snapshots; not tag-bound",
+    "thinking_capability_markdown_url": "https://docs.ollama.com/capabilities/thinking.md",
+    "thinking_sha256": "bc432ace302a74e67126f8a6eee6ff135b35ba4a66718eac3fb5ec80e6461b08",
+    "chat_api_markdown_url": "https://docs.ollama.com/api/chat.md",
+    "chat_api_sha256": "dc0f10c93b1ecf86dfa010f580a1585cff2ff39374fb976853c5b491fae2e35e",
+    "thinking_excerpt": "docs-thinking-2026-08-27.md.excerpt",
+    "api_chat_excerpt": "docs-api-chat-think-2026-08-27.md.excerpt",
+    "retrieved_at": "2026-08-27"
   }
 }

@@ -133,8 +133,18 @@ research/logs/roadmap/g04/batch-card/next-action indexes, plus
 inherited baseline exactly: 380 god-file findings (334 warnings, 46 errors)
 plus one generated-in-src warning.
 
-- PR: pending
-- branch: `t3code/e222dbf8`
+Three files initially crossed the god-file warning threshold: the new
+maximum-turn test cases, `claude_code_headless_identity.rs`, and
+`prepared_code/profile.rs`. Rather than log that as new debt, each was split
+along a natural seam — the Research 226 corpus assertions moved to their own
+identity test, the dispatch and rejection cases separated, and
+`ClaudeCodePreparedEvidence` plus `ClaudeCodePreparedRun` moved to
+`prepared_code/profile/prepared.rs` alongside the existing `profile/plan.rs`.
+The baseline is exact again. The open g04.056 papercut still records the
+inherited structural debt.
+
+- PR: https://github.com/inflatable-cookie/swallowtail/pull/78
+- branch: `t3code/claude-code-headless-max-turns`
 - worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-e222dbf8`
 
 ## Next

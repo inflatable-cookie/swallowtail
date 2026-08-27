@@ -1,0 +1,68 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.exec",
+  "observed_at": "2026-08-27",
+  "versions": ["0.147.0", "0.148.0", "0.149.0", "0.149.1"],
+  "tag_commits": {
+    "0.147.0": "be6e8eac029b183056b7e4402879f15d2c85f61b",
+    "0.148.0": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "0.149.0": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+    "0.149.1": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "tarball_sha256": {
+    "rust-v0.118.0": "7be18a18f604ad877b47c08d9db00018bd1dbbbd774dc6e1e7ea52dc492d7138",
+    "rust-v0.125.0": "1e20b221eaedc20135a76b897ff536bc8fa0021d5b9ff13e6bf7543060a91766",
+    "rust-v0.131.0": "6e8cf81870596dac31ac164ac51f06bc94007f2c89d31e07fbe9e899751aea2d",
+    "rust-v0.149.1": "85139f405ce455bf14ff452615cdb2572d752e31a1e0da6891ac8325915d10ce"
+  },
+  "introduction_points": {
+    "service_tier_config_schema": "rust-v0.115.0",
+    "fast_mode_feature_gate": "rust-v0.118.0",
+    "get_service_tier_request_wiring": "rust-v0.125.0",
+    "bundled_catalog_fast_tier_models": "rust-v0.131.0",
+    "gpt_5_6_fast_tier_models": "rust-v0.147.0"
+  },
+  "feature_gate_and_tier_relationship": {
+    "fast_mode_key": "features.fast_mode",
+    "fast_mode_default_enabled_at_0_149_1": true,
+    "service_tier_config_key": "service_tier",
+    "service_tier_default_request_sentinel": "default",
+    "fast_wire_request_value": "priority",
+    "legacy_config_aliases_accepted": ["fast", "priority"],
+    "catalog_tier_id_for_fast": "priority",
+    "slash_command": "/fast",
+    "slash_command_surface": "tui_interactive_only",
+    "exec_has_no_fast_flag": true,
+    "gate_blocks_all_tiers_when_disabled": true,
+    "omitted_service_tier_sends_no_request_tier": true,
+    "catalog_default_service_tier_not_auto_applied": true
+  },
+  "source_digests_at_0_149_1": {
+    "codex-rs/core/config.schema.json": "affe54cce9b9945ffd32d322415ff4cc844c62068c1190be6355580be4ca9350",
+    "codex-rs/models-manager/models.json": "c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549",
+    "codex-rs/protocol/src/config_types.rs": "80c1f9a5026019fe813c064ee0ec05a33772f5e6cdd2863d19dda7e4414221ba",
+    "codex-rs/protocol/src/openai_models.rs": "39939bf67ac473b5921d4edd0864df2c1d491edd7de5577957fc877eb3e012c3",
+    "codex-rs/core/src/client.rs": "7af5d4c0c15673564b455725c98d34379c4bdf579f52c4d89aecb4ceb4b190fe",
+    "codex-rs/core/src/session/mod.rs": "e6218071821f7e1b3858d31c2a0aef5fa5b63dea0ab16dfbced716d825ddbcc9",
+    "codex-rs/exec/src/lib.rs": "9eec8d1f721ea843b351f817efefaf332908c16ef8247ea4ad47bf6ceaa0f950",
+    "codex-rs/features/src/lib.rs": "791121524b5269c72254911823b77253cc98121d1dd29608663dd9d73fa7d61a"
+  },
+  "official_docs_digests": {
+    "learn.chatgpt.com/docs/agent-configuration/speed.md": "e9de54571572cbc386e7326579e8c93c3e5a25f856359fb33112c59805fc6bbc"
+  },
+  "bundled_fast_tier_models_at_0_149_1": [
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "gpt-5.5",
+    "gpt-5.4"
+  ],
+  "swallowtail_production_bytes": {
+    "exec_argv_omits": ["service_tier", "features.fast_mode"],
+    "exec_harness_override_service_tier": null,
+    "thread_start_rpc_omits_service_tier_param": true,
+    "config_from_cli_overrides_applies": true
+  },
+  "decision": "non_empty_deliver_now",
+  "deliver_now_row_count": 20
+}

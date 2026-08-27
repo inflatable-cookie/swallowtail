@@ -10,20 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.081.
+sequence after g04.082.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 41 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.081. |
-| Active qualification backlog | 34 | A bounded route-local evidence question remains. |
+| Closed by a numbered lane | 45 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.082. |
+| Active qualification backlog | 30 | A bounded route-local evidence question remains. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1, 5, 7, 16, 23-27, 33, 35-38, 40, 43-45, 50, 52-53, 55-60, 62-63,
-65-68, 72-74, 77-78, 82, 84-85`.
+`1, 5, 7, 16, 19, 23-27, 32-33, 35-38, 40, 43-45, 50, 52-53, 55-60,
+62-63, 65-68, 72-74, 77-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
 each closed lane. `Closed` does not mean every feature shipped. Honest empty
@@ -37,10 +37,10 @@ queue.
 | 2, 4, 6, 8-9 | `claude-code.headless` | Fast, compaction, spend, advisor, permission modes | qualify separately; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
 | 15 | `codex.exec` | Fast / service tier | exact config, model, and returned-state evidence |
-| 18-21 | `codex.app-server` | Fast, verbosity, personality, Plan effort | four distinct controls; no promotion from exec |
+| 18, 20-21 | `codex.app-server` | Fast, personality, Plan effort | three distinct controls; no promotion from exec |
 | 28 | `cursor-agent.acp` | model parameters | exact ACP option and selected-value confirmation required |
 | 29-30 | `gemini-cli.acp` | sandbox, thinking | qualify independently on exact enterprise API-key route |
-| 31-32 | `gemini-cli.headless` | sandbox, thinking | qualify independently on exact enterprise API-key route |
+| 31 | `gemini-cli.headless` | sandbox | qualify independently on exact enterprise API-key route |
 | 34 | `grok-build.acp` | web-search disable | exact ACP spawn and applied-state evidence |
 | 41-42 | `cline.acp` | Plan, model | no promotion from headless evidence |
 | 46-47 | `goose.acp` | builtins, mode | host extension authority and session configuration stay distinct |
@@ -51,8 +51,6 @@ queue.
 | 69-71 | `anthropic.managed-agent` | effort, Fast, tools/MCP | three independent control families |
 | 76 | `openai.realtime` | reasoning effort | exact realtime model and lifecycle evidence |
 | 79 | `bedrock.runtime` | model-specific thinking | per-model schema only; never a generic effort string |
-| 81 | `bedrock.runtime` | latency / service tier | exact request, returned-state, model, region, and account boundaries |
-| 83 | `ollama.attached` | think `max` | exact advertised model/value membership and native request encoding |
 
 ## No Active Lane
 
@@ -69,33 +67,25 @@ queue.
 | 75 | xAI WebSocket multi-agent model | catalogue/model choice, not a generic run toggle | exact production model route is separately qualified |
 | 80 | Bedrock tools / guardrails | current runtime guide excludes both | contract and guide explicitly admit a bounded surface |
 
-## Parallel Qualification Wave
+## Completed Parallel Qualification Wave
 
-Four route-distinct evidence lanes can run together:
+g04.082 completed four route-distinct evidence lanes:
 
 1. item 19 — `codex.app-server` model verbosity — g04.082 card 228
 2. item 32 — `gemini-cli.headless` thinking configuration — card 229
 3. item 81 — `bedrock.runtime` latency / service tier — card 230
 4. item 83 — `ollama.attached` think `max` — card 231
 
-They touch different route packages and have no evidence dependency. Codex can
-reuse Research 213 only as a lead; app-server still needs its own transport,
-configuration, model, and lifecycle proof. Gemini remains exact `0.56.0`
-enterprise API-key access and must not require a consumer-account login or live
-provider run.
+Research 229-232 each admit an honest empty deliver-now set. Item 19 has no
+typed confirmable app-server verbosity seam. Item 32 lacks an adapter-bound
+isolated settings seam and effective-value confirmation. Item 81 cannot close
+Bedrock model, region, inference-profile, account, or returned-state truth at
+preparation. Item 83 cannot prove selected-model `max` membership from generic
+Ollama thinking capability. No production binding or acceptance lane follows.
 
-Run qualification only in parallel. Reserve one card and one Research file per
-lane before dispatch. Workers own only their card and Research file. They do
-not edit programme, triage, roadmap, generation, feature-matrix, docs-index, or
-Next Task state. The orchestrator promotes results serially, then compiles
-route-local binding and acceptance only for non-empty deliver-now sets.
-
-[g04.082](082-parallel-per-route-feature-qualification.md) owns the four
-compiled evidence lanes and Research 229-232.
-
-This shape avoids shared mutable planning files. Full delivery branches are
-not parallel-safe until their evidence is promoted because every closeout
-converges on the same matrices and roadmap indexes.
+[g04.082](082-parallel-per-route-feature-qualification.md) owns the completed
+wave. The next wave must be compiled from the remaining 30 active candidates
+with the same disjoint worker ownership and serial shared-state promotion.
 
 ## Update Rule
 

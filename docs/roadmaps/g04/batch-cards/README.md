@@ -6,10 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [231-ollama-attached-think-max-evidence.md](./231-ollama-attached-think-max-evidence.md) — parallel evidence-only lane D; Research 232
-- [230-bedrock-runtime-service-tier-evidence.md](./230-bedrock-runtime-service-tier-evidence.md) — parallel evidence-only lane C; Research 231
-- [229-gemini-cli-headless-thinking-evidence.md](./229-gemini-cli-headless-thinking-evidence.md) — parallel evidence-only lane B; Research 230
-- [228-codex-app-server-model-verbosity-evidence.md](./228-codex-app-server-model-verbosity-evidence.md) — parallel evidence-only lane A; Research 229
+None. Compile the next bounded qualification wave from the live inventory.
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -38,6 +35,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [231-ollama-attached-think-max-evidence.md](./231-ollama-attached-think-max-evidence.md) — complete; lane D; Research 232 honest empty deliver-now set
+- [230-bedrock-runtime-service-tier-evidence.md](./230-bedrock-runtime-service-tier-evidence.md) — complete; lane C; Research 231 honest empty deliver-now set
+- [229-gemini-cli-headless-thinking-evidence.md](./229-gemini-cli-headless-thinking-evidence.md) — complete; lane B; Research 230 honest empty deliver-now set
+- [228-codex-app-server-model-verbosity-evidence.md](./228-codex-app-server-model-verbosity-evidence.md) — complete; lane A; Research 229 honest empty deliver-now set
 - [227-pi-sdk-sidecar-reasoning-selection-acceptance.md](./227-pi-sdk-sidecar-reasoning-selection-acceptance.md)
 - [226-pi-sdk-sidecar-reasoning-selection-binding.md](./226-pi-sdk-sidecar-reasoning-selection-binding.md)
 - [225-pi-sdk-sidecar-reasoning-selection-evidence.md](./225-pi-sdk-sidecar-reasoning-selection-evidence.md) — complete; Research 228 admits one bounded `anthropic/claude-opus-4-5` row

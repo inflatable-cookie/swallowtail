@@ -31,12 +31,12 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 82 roadmaps: 66 completed milestones, fifteen honest evidence
+g04 now has 82 roadmaps: 67 completed milestones and fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 080, and one ready milestone at 082. g04.081 is complete. The generation has realized route
-readiness and connection admission, widened proved addable coverage, added the
-Pi SDK sidecar, requalified Gemini CLI enterprise API-key access, and
-established the active per-route feature completion programme. g04.061 is
+and 080. g04.082 is complete. The generation has realized route readiness and
+connection admission, widened proved addable coverage, added the Pi SDK
+sidecar, requalified Gemini CLI enterprise API-key access, and established the
+active per-route feature completion programme. g04.061 is
 merged through PR 60 at `f21220cd`; Research 208 delivered
 `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`.
 g04.062 is merged through PR 61 at `4ef5c5e9`; Research 209 delivered exact
@@ -114,11 +114,13 @@ events, mixed completed output, and citation/terminal mapping are not. Cards
 g04.081 is complete. Research 228 and cards 225-227 deliver one bounded
 `anthropic/claude-opus-4-5` portable reasoning row on exact Pi `0.84.2`.
 Omission unchanged.
-The original 85-item feature inventory is normalized after g04.081: 41 items
-have numbered-lane dispositions, 34 remain active qualification candidates,
-and ten have no active lane. Four route-distinct evidence-only lanes are ready
-as g04.082 cards 228-231 with Research 229-232 reserved; shared-state promotion
-remains serial.
+g04.082 is complete. Research 229-232 and cards 228-231 close four
+route-distinct candidates with honest empty deliver-now sets. PRs 81-84 landed
+serially through `5d9fa3f5`; no production binding follows.
+The original 85-item feature inventory is normalized after g04.082: 45 items
+have numbered-lane dispositions, 30 remain active qualification candidates,
+and ten have no active lane. The next bounded wave still requires compilation;
+shared-state promotion remains serial.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

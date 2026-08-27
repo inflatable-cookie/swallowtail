@@ -1,6 +1,6 @@
 # g04.082 Parallel Per-Route Feature Qualification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Depends on: g04.081 closeout; normalized per-route feature inventory
@@ -38,13 +38,13 @@ state, or the roadmaps front door.
 
 ## Goals
 
-- [ ] card 228 promotes exact Codex app-server verbosity evidence or an empty set
-- [ ] card 229 promotes exact Gemini headless thinking evidence or an empty set
-- [ ] card 230 promotes exact Bedrock service-tier evidence or an empty set
-- [ ] card 231 promotes exact Ollama think-`max` evidence or an empty set
-- [ ] every lane preserves omission and distinguishes requested, dispatched,
+- [x] card 228 promotes exact Codex app-server verbosity evidence or an empty set
+- [x] card 229 promotes exact Gemini headless thinking evidence or an empty set
+- [x] card 230 promotes exact Bedrock service-tier evidence or an empty set
+- [x] card 231 promotes exact Ollama think-`max` evidence or an empty set
+- [x] every lane preserves omission and distinguishes requested, dispatched,
       accepted, effective, and observed truth
-- [ ] no lane changes production code, public API, contracts, currentness,
+- [x] no lane changes production code, public API, contracts, currentness,
       release state, generation ownership, or g04 closure
 
 ## Non-Goals
@@ -72,16 +72,34 @@ this wave.
 
 ## Acceptance Criteria
 
-- [ ] Research 229-232 each contain frozen sources, route boundaries, exact
+- [x] Research 229-232 each contain frozen sources, route boundaries, exact
       tables, omission truth, lifecycle disposition, and a non-empty set or
       honest empty set
-- [ ] evidence files and lane logs are self-contained and do not depend on a
+- [x] evidence files and lane logs are self-contained and do not depend on a
       worker transcript
-- [ ] lane PRs touch no shared mutable planning or matrix file
-- [ ] deterministic validation uses only the assigned package plus named docs
+- [x] lane PRs touch no shared mutable planning or matrix file
+- [x] deterministic validation uses only the assigned package plus named docs
       checks; no provider operation or credential is used
-- [ ] the orchestrator can promote all four results without resolving a hidden
+- [x] the orchestrator can promote all four results without resolving a hidden
       authority or ordering dependency
+
+## Outcome
+
+All four lanes closed with honest empty deliver-now sets. PRs 81-84 landed
+serially by fast-forward at `df8ba194`, `3ec2ac3a`, `33d3ade2`, and
+`5d9fa3f5` after exact-head CI passed.
+
+- Codex app-server exposes no typed, confirmable, catalogue-backed verbosity
+  seam. Exec evidence does not transfer.
+- Gemini headless thinking is settings-backed, but the qualified adapter binds
+  no isolated settings seam and stream-json confirms no effective value.
+- Bedrock request fields exist, but the route-open facade cannot close model,
+  region, inference-profile, account, billing, or returned-state truth.
+- Ollama's wire parser accepts `max` from `0.22.0`, but selected-model detail
+  advertises only generic thinking and some server paths rewrite `max`.
+
+Original inventory items 19, 32, 81, and 83 are evidence-stopped. No binding
+or acceptance roadmap follows from this wave. g04 stays open.
 
 ## Decision Gates
 

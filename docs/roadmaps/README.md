@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.082 cards 228-231 as four parallel evidence-only worker lanes.
-Promote their results serially after review and fast-forward-only merge. Keep
-g04 open. Contract 029 currentness remains standing.
+Compile the next bounded qualification wave from the 30 active per-route
+feature candidates. Keep worker ownership disjoint and shared promotion
+serial. Do not compile production binding from any g04.082 empty set. Keep g04
+open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

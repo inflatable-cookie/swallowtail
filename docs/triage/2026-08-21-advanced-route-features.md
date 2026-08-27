@@ -2594,3 +2594,22 @@ The next acceleration unit is four independent evidence-only lanes: Codex
 app-server verbosity, Gemini CLI headless thinking, Bedrock latency/service
 tier, and Ollama think `max`. Shared programme, triage, matrix, index, and Next
 Task promotion remains serial.
+
+## Post-g04.082 Parallel Qualification Completion (2026-08-27)
+
+Disposition: complete through cards 228-231 and Research 229-232.
+
+All four evidence-only lanes close with honest empty deliver-now sets. Codex
+app-server exposes no typed confirmable model-verbosity seam. Gemini headless
+thinking is settings-backed, but the qualified adapter binds no isolated
+settings seam and stream-json confirms no effective value. Bedrock Runtime
+request fields cannot become a route-open control without closed model,
+region, inference-profile, account, billing, and returned-state truth. Ollama
+accepts `max` at the wire parser from `0.22.0`, but generic thinking capability
+does not prove selected-model membership and some native paths rewrite it.
+
+Original items 19, 32, 81, and 83 move to the closed disposition set. The live
+inventory now owns 45 closed items, 30 active qualification candidates, and ten
+with no active lane. No binding or acceptance roadmap follows from g04.082.
+Compile the next bounded route-distinct evidence wave from the remaining active
+backlog. Keep shared promotion serial and g04 open.

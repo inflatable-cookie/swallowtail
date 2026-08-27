@@ -192,6 +192,9 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   The drop-time panic is non-unwinding, so the run dies with SIGABRT and
   cancels 887 unrelated tests. A plain rerun went green, and the branch touched
   no OpenCode file. Still open and now blocking unrelated lanes.
+- Recurrence 2026-08-27 (PR 82): the same cancellation fixture aborted Stable
+  with `BrokenPipe` and a destructor-time double panic. The branch changed only
+  Gemini evidence/docs; a later unchanged-head retry passed.
 
 ### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
@@ -232,6 +235,10 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   or give the asserted transition an explicit synchronization boundary.
 - Surface: Ollama attached-driver deadline test; Codex app-server callback
   deadline test; Stable and MSRV CI jobs.
+- Recurrence 2026-08-27 (PR 82): Alibaba Model Studio
+  `retained_load_deadline_joins_transport_before_releasing_access` observed
+  `deadline_elapsed` instead of `timed_out` on a Gemini evidence-only head. A
+  retry moved past it without a code change.
 
 ### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
 - Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
@@ -254,6 +261,9 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `TransportInterrupted` as a documented cancellation race at the stream
   boundary.
 - Surface: DeepSeek driver cancellation test; tag CI Stable job.
+- Recurrence 2026-08-27 (PR 82): Stable again observed
+  `swallowtail.deepseek.stream_incomplete` instead of `Cancelled` on a Gemini
+  evidence-only head. The next unchanged-head retry moved past it.
 
 ### [ ] Docs index QA misses roadmap-status drift — 2026-08-26
 - Friction: PR 73 passed every named docs-index selector while

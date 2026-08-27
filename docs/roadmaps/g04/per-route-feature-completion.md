@@ -301,19 +301,21 @@ families do not interrupt this programme by default.
   Omission retains exact bootstrap bytes and no portable selection claim when
   options are empty.
 - [g04.082 Parallel Per-Route Feature Qualification](./082-parallel-per-route-feature-qualification.md)
-  is ready. Cards 228-231 reserve four route-distinct evidence-only lanes for
-  Codex app-server verbosity, Gemini headless thinking, Bedrock service tier,
-  and Ollama think `max`. Research 229-232 are reserved. Shared promotion and
-  any later delivery compilation remain serial.
+  is complete. Cards 228-231 and Research 229-232 close four route-distinct
+  candidates with honest empty deliver-now sets: Codex app-server exposes no
+  typed confirmable verbosity seam; Gemini headless binds no isolated settings
+  seam or effective-value confirmation; Bedrock cannot close model, region,
+  inference-profile, account, or returned-state truth; and Ollama exposes no
+  exact selected-model `max` membership. PRs 81-84 landed serially through
+  `5d9fa3f5`. No binding or acceptance lane follows.
 
 ## Current Execution Boundary
 
-The normalized inventory has 41 closed original items, 34 active qualification
-candidates, and ten items with no active lane. Execute g04.082 cards 228-231 as
-four route-distinct evidence-only lanes. Workers must not edit shared
-programme, triage, matrix, index, or Next Task state. Promote results serially,
-then compile delivery only for non-empty exact sets. Keep g04 open. Contract 029
-currentness remains standing.
+The normalized inventory has 45 closed original items, 30 active qualification
+candidates, and ten items with no active lane. Compile the next bounded
+route-distinct evidence wave with disjoint worker ownership and serial shared
+promotion. Do not compile production binding from any g04.082 empty set. Keep
+g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

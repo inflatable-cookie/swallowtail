@@ -1,0 +1,19 @@
+// server/routes.go at v0.32.15 — commit b7871fc0d1d82fe109536efa3e0e8e411c766c75
+// SHA-256 c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa
+
+func shouldUseHarmony(model *Model) bool {
+	if slices.Contains([]string{"gptoss", "gpt-oss"}, model.Config.ModelFamily) {
+		if model.Template.Contains("<|start|>") && model.Template.Contains("<|end|>") {
+			return true
+		}
+	}
+	return false
+}
+
+// generate and chat handlers — harmony parser path
+// harmony's Reasoning field only understands low/medium/high; map "max" to "high"
+if req.Think != nil {
+	if s, ok := req.Think.Value.(string); ok && s == "max" {
+		req.Think.Value = "high"
+	}
+}

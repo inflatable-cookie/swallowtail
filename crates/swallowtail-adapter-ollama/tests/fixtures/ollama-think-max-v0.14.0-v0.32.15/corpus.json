@@ -1,0 +1,110 @@
+{
+  "axis": "ollama.runtime",
+  "behavior": "ollama.native-text-v1",
+  "qualified_window": "0.14.0..=0.32.15",
+  "excluded_versions": ["0.32.2", "0.32.10"],
+  "native_field": "ChatRequest.think",
+  "think_value_type": "ThinkValue (bool or string level)",
+  "max_introduction_tag": "v0.22.0",
+  "max_introduction_commit": "955112e502e34812a904e6392736d8cc40bbb9d9",
+  "qualification_points": [
+    {
+      "version": "0.14.0",
+      "tag": "v0.14.0",
+      "commit": "02a24015968d612b418448b73cffaa1b0652d161",
+      "types_go_sha256": "641793496655f5d55905022f89d5ad0ee0df36b5efb0c8901c91eaec9bb7cff6",
+      "think_max_parser": "rejected",
+      "think_string_levels": ["high", "medium", "low"]
+    },
+    {
+      "version": "0.18.0",
+      "tag": "v0.18.0",
+      "commit": "3980c0217d27e05a441808a446e7ee5ea7e04256",
+      "types_go_sha256": "9189af46efbaa269252477851d879b9e8b5b789e3c831389ed4cb2fc6be49c94",
+      "think_max_parser": "rejected",
+      "think_string_levels": ["high", "medium", "low"],
+      "types_excerpt": "types-thinkvalue-v0.18.0.go.excerpt"
+    },
+    {
+      "version": "0.20.0",
+      "tag": "v0.20.0",
+      "commit": "de9673ac3fb1c57fbf6e5e194f1f3dc5a8b48668",
+      "types_go_sha256": "b408e7601f5434ab14d0d50c570e76ab43dff45c57bbf293e67288cdec02e4eb",
+      "think_max_parser": "rejected",
+      "think_string_levels": ["high", "medium", "low"]
+    },
+    {
+      "version": "0.22.0",
+      "tag": "v0.22.0",
+      "commit": "955112e502e34812a904e6392736d8cc40bbb9d9",
+      "types_go_sha256": "f71977722972a9eb6742aece9c95fd6e828352e17ee0fe10f7be7eb7ccdff9a4",
+      "think_max_parser": "accepted",
+      "think_string_levels": ["high", "medium", "low", "max"],
+      "types_excerpt": "types-thinkvalue-v0.22.0.go.excerpt",
+      "routes_harmony_max_map": true
+    },
+    {
+      "version": "0.30.0",
+      "tag": "v0.30.0",
+      "commit": "2c71d8d7ca6edbc9bdc1a312f71ce3b079c0fe56",
+      "types_go_sha256": "a4f8c934d7592611238d318fb1486fc0ca6db4f779f7d9312cdf378d41ceb3aa",
+      "think_max_parser": "accepted",
+      "think_string_levels": ["high", "medium", "low", "max"],
+      "routes_harmony_max_map": true
+    },
+    {
+      "version": "0.32.1",
+      "tag": "v0.32.1",
+      "commit": "30c390384e20333b67cadab60da5bcb669407f01",
+      "types_go_sha256": "a54975f59ef7240841744bead00efe4158eb0369860a65e46bf1853f2a67b592",
+      "think_max_parser": "accepted",
+      "think_string_levels": ["high", "medium", "low", "max"],
+      "routes_harmony_max_map": true
+    },
+    {
+      "version": "0.32.14",
+      "tag": "v0.32.14",
+      "commit": "d67ad83426633195089509347ffd4fe795120198",
+      "types_go_sha256": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1",
+      "think_max_parser": "accepted",
+      "think_string_levels": ["high", "medium", "low", "max"],
+      "routes_harmony_max_map": true
+    },
+    {
+      "version": "0.32.15",
+      "tag": "v0.32.15",
+      "commit": "b7871fc0d1d82fe109536efa3e0e8e411c766c75",
+      "types_go_sha256": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1",
+      "routes_go_sha256": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+      "think_max_parser": "accepted",
+      "think_string_levels": ["high", "medium", "low", "max"],
+      "types_excerpt": "types-thinkvalue-v0.32.15.go.excerpt",
+      "routes_excerpt": "routes-harmony-max-map-v0.32.15.go.excerpt",
+      "routes_harmony_max_map": true
+    }
+  ],
+  "show_detail_membership": {
+    "bound_fields": ["capabilities", "details.format", "details.family"],
+    "thinking_capability": "generic string \"thinking\" only",
+    "exact_level_membership": "not exposed",
+    "show_excerpt": "show-capabilities-thinking.json"
+  },
+  "swallowtail_preparation": {
+    "admitted_modes": ["off", "low", "medium", "high"],
+    "max_disposition": "rejected at preparation with swallowtail.ollama.preparation.reasoning_unsupported",
+    "encoder_off": "boolean false",
+    "encoder_levels": "string values"
+  },
+  "silent_substitution": {
+    "harmony_gpt_oss": "server maps requested max to high before builtin parser init",
+    "excerpt": "routes-harmony-max-map-v0.32.15.go.excerpt"
+  },
+  "deliver_now_table": [],
+  "official_documentation": {
+    "thinking_capability_url": "https://docs.ollama.com/capabilities/thinking",
+    "chat_api_url": "https://docs.ollama.com/api/chat",
+    "thinking_excerpt": "docs-thinking-v0.32.15.mdx.excerpt",
+    "api_chat_excerpt": "docs-api-chat-think-v0.32.15.md.excerpt",
+    "checked_at": "2026-08-27"
+  }
+}

@@ -1,0 +1,19 @@
+// api/types.go at v0.32.15 — commit b7871fc0d1d82fe109536efa3e0e8e411c766c75
+// SHA-256 032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1
+// Byte-identical to v0.32.14.
+
+// ThinkValue represents a value that can be a boolean or a string ("high", "medium", "low", "max")
+type ThinkValue struct {
+	Value interface{}
+}
+
+func (t *ThinkValue) IsValid() bool {
+	case string:
+		return v == "high" || v == "medium" || v == "low" || v == "max"
+}
+
+func (t *ThinkValue) UnmarshalJSON(data []byte) error {
+	if s != "high" && s != "medium" && s != "low" && s != "max" {
+		return fmt.Errorf("invalid think value: %q (must be \"high\", \"medium\", \"low\", \"max\", true, or false)", s)
+	}
+}

@@ -1,8 +1,9 @@
 # g04.084 OpenAI Realtime Reasoning Effort
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Depends on: g04.083 closeout; promoted Research 236
 Vision tags: explicit selection, provider truth, realtime continuity
 Contract refs: 011, 024, 026, 029, 037, 040, 047, 052
@@ -52,18 +53,18 @@ numeric budgets reject before endpoint, credential, socket, or media work.
 
 ## Goals
 
-- [ ] bind one optional `ReasoningMode` on the prepared Realtime session input
-- [ ] carry exact capability, constraint, plan, evidence, request, driver, and
+- [x] bind one optional `ReasoningMode` on the prepared Realtime session input
+- [x] carry exact capability, constraint, plan, evidence, request, driver, and
       `session.update` agreement
-- [ ] require matching explicit `session.updated.session.reasoning.effort`
+- [x] require matching explicit `session.updated.session.reasoning.effort`
       before returning a selected session
-- [ ] preserve exact omission bytes and current omission acknowledgement
+- [x] preserve exact omission bytes and current omission acknowledgement
       behavior without inferring a provider default
-- [ ] preserve the selected value through fresh working-state restoration
-- [ ] compose every admitted value with the existing output-token maximum
-- [ ] preserve media, cancellation, deadline, failure, disconnect, and joined
+- [x] preserve the selected value through fresh working-state restoration
+- [x] compose every admitted value with the existing output-token maximum
+- [x] preserve media, cancellation, deadline, failure, disconnect, and joined
       cleanup truth
-- [ ] publish dispatch and acknowledgement truth only
+- [x] publish dispatch and acknowledgement truth only
 
 ## Non-Goals
 
@@ -80,32 +81,32 @@ numeric budgets reject before endpoint, credential, socket, or media work.
 
 ### Batch 84.1 — Prepared Binding
 
-- [ ] execute card 236
-- [ ] mint the new exact facade and private behavior point
-- [ ] bind Research 236's five values through preparation and session setup
-- [ ] preserve the historical point and exact omission behavior
+- [x] execute card 236
+- [x] mint the new exact facade and private behavior point
+- [x] bind Research 236's five values through preparation and session setup
+- [x] preserve the historical point and exact omission behavior
 
 ### Batch 84.2 — Route-Local Acceptance
 
-- [ ] execute card 237 after card 236
-- [ ] prove positive, omission, mismatch, restoration, composition, and
+- [x] execute card 237 after card 236
+- [x] prove positive, omission, mismatch, restoration, composition, and
       unchanged lifecycle behavior with deterministic fixtures
-- [ ] update route guidance, matrices, API baseline, and route-local closeout
+- [x] update route guidance, matrices, API baseline, and route-local closeout
 
 ## Acceptance Criteria
 
-- [ ] only Research 236's five exact values prepare
-- [ ] selected value agrees across input, capability constraint, plan, evidence,
+- [x] only Research 236's five exact values prepare
+- [x] selected value agrees across input, capability constraint, plan, evidence,
       request, setup bytes, and matching acknowledgement
-- [ ] mismatch or missing acknowledgement for explicit selection fails the open
+- [x] mismatch or missing acknowledgement for explicit selection fails the open
       before returning a usable session
-- [ ] omission retains the existing no-`reasoning` setup bytes and claims no
+- [x] omission retains the existing no-`reasoning` setup bytes and claims no
       selected or default effort
-- [ ] fresh restoration reuses the exact immutable selected request
-- [ ] output maximum and reasoning compose without changing either bound
-- [ ] no provider acceptance beyond the matching configuration event,
+- [x] fresh restoration reuses the exact immutable selected request
+- [x] output maximum and reasoning compose without changing either bound
+- [x] no provider acceptance beyond the matching configuration event,
       effectiveness, reasoning-token, or observed-reasoning claim appears
-- [ ] credential-free focused validation passes
+- [x] credential-free focused validation passes
 
 ## Decision Gates
 
@@ -121,6 +122,14 @@ numeric budgets reject before endpoint, credential, socket, or media work.
 
 - [236 OpenAI Realtime Reasoning-Effort Binding](batch-cards/236-openai-realtime-reasoning-effort-binding.md)
 - [237 OpenAI Realtime Reasoning-Effort Acceptance](batch-cards/237-openai-realtime-reasoning-effort-acceptance.md)
+
+## Shared Closeout Deltas (orchestrator only)
+
+After merge, update:
+
+- per-route feature inventory / programme rows for `openai.realtime` reasoning
+- research/log/card indexes and sole Next Task pointer
+- do not edit those shared surfaces on the worker branch
 
 ## References
 

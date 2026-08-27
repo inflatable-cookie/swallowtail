@@ -1,8 +1,9 @@
 # 237 OpenAI Realtime Reasoning-Effort Acceptance
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.084 OpenAI Realtime Reasoning Effort](../084-openai-realtime-reasoning-effort.md)
 Depends on: card 236
 
@@ -38,17 +39,17 @@ produce one review-ready route-local closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted and rejected value has deterministic coverage
-- [ ] explicit selection is not usable without exact acknowledgement
-- [ ] omission, output maximum, restoration, and lifecycle proofs stay exact
-- [ ] default QA uses no credential, account, socket, provider request, media
+- [x] every admitted and rejected value has deterministic coverage
+- [x] explicit selection is not usable without exact acknowledgement
+- [x] omission, output maximum, restoration, and lifecycle proofs stay exact
+- [x] default QA uses no credential, account, socket, provider request, media
       operation, or paid work
-- [ ] docs distinguish requested, planned, dispatched, and acknowledged from
+- [x] docs distinguish requested, planned, dispatched, and acknowledged from
       effective or observed reasoning
-- [ ] per-response override and reasoning-token inference stay withheld
-- [ ] worker changes stay within OpenAI code, route-local docs/evidence,
+- [x] per-response override and reasoning-token inference stay withheld
+- [x] worker changes stay within OpenAI code, route-local docs/evidence,
       matrices, changelog, and package API baseline
-- [ ] named gates pass
+- [x] named gates pass
 
 ## Validation
 
@@ -78,3 +79,9 @@ Auto-continuation: No.
 Live provider verification, effective reasoning, per-response override,
 reasoning-token claims, publication, merge, shared front-door closeout, or later
 feature selection.
+
+## Evidence
+
+Route-local docs, matrices, changelog, API baseline, Research 236, milestone,
+and log updated on the worker branch. Shared inventory/programme/index/Next Task
+deltas are recorded for orchestrator closeout only.

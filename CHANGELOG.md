@@ -5,6 +5,16 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+
+- bind OpenAI Realtime session-scoped reasoning effort on facade
+  `openai-realtime-reasoning-2026-08-27`: admit exact
+  `minimal|low|medium|high|xhigh` through
+  `OpenAiRealtimeSessionProfileInput::with_reasoning_mode`, encode
+  `session.update.session.reasoning.effort`, require matching
+  `session.updated` acknowledgement, preserve omission bytes, and retain
+  superseded `openai-realtime-2026-07-22` proof. Research 236, g04.084.
+
 ### Changed
 
 - raise the Qwen headless qualified ceiling through official npm

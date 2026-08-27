@@ -1,8 +1,9 @@
 # 236 OpenAI Realtime Reasoning-Effort Binding
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-27
+Updated: 2026-08-27
 Milestone: [g04.084 OpenAI Realtime Reasoning Effort](../084-openai-realtime-reasoning-effort.md)
 Depends on: card 235; promoted Research 236 with five exact future rows
 
@@ -43,15 +44,15 @@ typed prepared input, immutable plan/evidence/request state, the OpenAI driver,
 
 ## Acceptance Criteria
 
-- [ ] only the five Research 236 values prepare
-- [ ] input, constraint, plan, evidence, request, setup bytes, and acknowledged
+- [x] only the five Research 236 values prepare
+- [x] input, constraint, plan, evidence, request, setup bytes, and acknowledged
       value agree exactly
-- [ ] mismatch and missing explicit acknowledgement fail before session return
-- [ ] omission retains current bytes and no selected/default reasoning claim
-- [ ] every admitted value composes with the existing output maximum
-- [ ] fresh restoration keeps the immutable selected value
-- [ ] historical facade proof stays named and the current driver rejects it
-- [ ] no alias, clamp, substitution, fallback, retry, or provider-effectiveness
+- [x] mismatch and missing explicit acknowledgement fail before session return
+- [x] omission retains current bytes and no selected/default reasoning claim
+- [x] every admitted value composes with the existing output maximum
+- [x] fresh restoration keeps the immutable selected value
+- [x] historical facade proof stays named and the current driver rejects it
+- [x] no alias, clamp, substitution, fallback, retry, or provider-effectiveness
       claim enters the API
 
 ## Validation
@@ -82,3 +83,10 @@ omission, composition, restoration, and failure tests pass.
 Shared planning closeout and Next Task, live provider work, effective reasoning,
 reasoning-token usage, sibling routes, currentness, release, merge, rollover, or
 g04 closure.
+
+## Evidence
+
+Bound on worker branch `t3code/openai-realtime-reasoning-effort`. Focused
+realtime suite `realtime_prepared_facade` passed 22/22 including preparation,
+dispatch, acknowledgement failure cleanup, omission bytes, composition,
+restoration, and superseded-facade rejection.

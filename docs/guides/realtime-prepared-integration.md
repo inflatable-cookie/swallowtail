@@ -92,7 +92,9 @@ See the compile-tested
 
 `prepare_openai_realtime` binds the public Realtime WebSocket audience,
 standard public API-key access, exact `gpt-realtime-2.1` route, and the dated
-GA facade.
+opaque facade `openai-realtime-reasoning-2026-08-27`. The earlier point
+`openai-realtime-2026-07-22` remains named as superseded proof and is rejected
+by the current driver.
 
 `OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns` fixes:
 
@@ -102,9 +104,31 @@ GA facade.
 - disabled planned rollover
 - optional operation deadline
 
+`OpenAiRealtimeSessionProfileInput::with_reasoning_mode` adds one optional
+session-scoped Realtime effort. The route admits exactly `minimal`, `low`,
+`medium`, `high`, and `xhigh`, and encodes them as
+`session.update.session.reasoning.effort`. Every other value, including
+Responses-only `none` and `max`, aliases, casing variants, and numeric budgets,
+is rejected before endpoint, credential, or socket work. Nothing is clamped,
+aliased, substituted, or treated as a default.
+
+Explicit selection is not usable until `session.updated` returns the exact
+matching `session.reasoning.effort`. Missing, malformed, foreign, or mismatched
+acknowledgements fail the open and join connection work before credential
+release. Omission keeps the historical no-`reasoning` session-update bytes and
+the existing acknowledgement behavior; it claims no selected or provider-default
+effort.
+
 Call `with_maximum_output_tokens` for an exact positive maximum no greater
 than 4,096. Omission leaves the provider profile's existing behavior; the
-adapter never invents a default for the consumer.
+adapter never invents a default for the consumer. Reasoning and output-maximum
+selections compose independently and remain fixed through fresh working-state
+restoration.
+
+Swallowtail claims dispatch and acknowledgement truth only. Effective reasoning
+depth, reasoning-token usage, thought summaries, billing, and per-response
+`response.create` overrides remain unclaimed. The encoder still emits bare
+`response.create` with no override params.
 
 The prepared session delegates append, commit, output audio, transcript,
 usage, rate, request correlation, native response cancellation, connection
@@ -119,7 +143,8 @@ socket, task, and credential work; terminal and cleanup truth stay separate.
 `OpenAiPreparedRealtimeSession::prepare_working_state_restoration` returns
 `RealtimeSessionReplaced` with one new media handle. It carries no audio,
 transcript, response, buffer, cancellation, or terminal state from the lost
-connection.
+connection. The immutable prepared request, including any selected reasoning
+effort, is re-encoded on the replacement session.
 
 See the compile-tested
 [`prepared_realtime_session` example](../../crates/swallowtail-adapter-openai/examples/prepared_realtime_session.rs).
@@ -251,9 +276,10 @@ The routes also expose no attachments, structured output, consumer callbacks,
 working resources, public load/resume, reconciliation, provider-session
 management, background execution, or cross-process stream reattachment. xAI
 reports billed cost and exposes the qualified text reasoning/output controls;
-OpenAI exposes the qualified Realtime output-token maximum and rejects a
-realtime reasoning selection before any endpoint or credential work; Gemini
-permits the planned rollover and the qualified thinking-level selection.
+OpenAI exposes the qualified Realtime output-token maximum and the five exact
+session-scoped Realtime reasoning efforts with matching `session.updated`
+acknowledgement; Gemini permits the planned rollover and the qualified
+thinking-level selection.
 
 ## Failures, Promotion, And Validation
 

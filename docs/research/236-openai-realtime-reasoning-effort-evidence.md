@@ -4,7 +4,8 @@ Status: promoted
 Owner: Tom
 Created: 2026-08-27
 Updated: 2026-08-27
-Card: g04.083 / 235
+Card: g04.084 / 236-237
+Binding: delivered on facade `openai-realtime-reasoning-2026-08-27`
 
 ## Question
 
@@ -13,12 +14,13 @@ operation, and lifecycle rows can bind caller selection on the existing dated
 Realtime facade without borrowing Responses semantics or requiring live media?
 
 Yes, for session-scoped dispatch on the fixed model. All five Realtime effort
-values are admitted deliver-now at a future exact opaque facade point with a
-new adapter-private behavior revision, while the current dated point and its
-proof are retained verbatim. Current production remains an honest empty set:
-every caller selection is rejected before access or connection work. Provider
-acceptance beyond schema acknowledgement, effective reasoning depth, and
-observed reasoning remain unclaimed.
+values are admitted and now bound at exact opaque facade
+`openai-realtime-reasoning-2026-08-27` with private behavior
+`openai.realtime-manual-pcm-reasoning-v2`. Historical
+`openai-realtime-2026-07-22` / `openai.realtime-manual-pcm-v1` remains
+superseded proof. Provider acceptance beyond matching `session.updated`
+acknowledgement, effective reasoning depth, and observed reasoning remain
+unclaimed.
 
 ## Method And Evidence Boundary
 
@@ -157,14 +159,14 @@ Exact current repository truth at worker/dispatch base
 | Route | `openai.realtime` | `src/realtime.rs` |
 | Driver | `swallowtail.openai.realtime` | `src/realtime.rs` |
 | Model | `gpt-realtime-2.1` | `src/realtime_selection.rs` |
-| Facade point | `openai-realtime-2026-07-22` | `src/realtime_selection.rs` |
+| Facade point | `openai-realtime-reasoning-2026-08-27` (current); `openai-realtime-2026-07-22` superseded | `src/realtime_selection.rs` |
 | Access | public API-key, `api.openai.com` | `src/realtime_selection.rs` |
 | Prepared profile | manual mono PCM16 24 kHz, two turns, no rollover | `docs/guides/realtime-prepared-integration.md` |
-| Session encoder | `ClientEvent::SessionUpdate` with optional `max_output_tokens` only | `src/realtime_protocol/client.rs` |
+| Session encoder | `ClientEvent::SessionUpdate` with optional `reasoning.effort` and optional `max_output_tokens` | `src/realtime_protocol/client.rs` |
 | Response encoder | bare `response.create` with no override params | `src/realtime_protocol/client.rs` |
-| Preflight | rejects any `reasoning_mode` or `ReasoningSelection` requirement | `src/realtime.rs` |
-| Deterministic rejection test | `realtime_reasoning_selection_rejects_before_access_or_connection` | `tests/realtime_driver.rs` |
-| Dated fixture README | Realtime reasoning remains unsupported on selected route | `tests/fixtures/openai-realtime-2026-07-22/README.md` |
+| Preflight | admits Research 236's five exact values; rejects every other | `src/prepared_realtime_profile/session.rs`, `src/realtime.rs` |
+| Deterministic acknowledgement | matching `session.updated.session.reasoning.effort` required for explicit selection | `src/realtime/session.rs` |
+| Dated fixture README | historical no-reasoning corpus retained; reasoning fixtures under `openai-realtime-reasoning-effort-2026-08-27` | fixture READMEs |
 
 Research 049 classified `openai.realtime` reasoning as `U` against the realized
 adapter. That disposition remains true for current production. This research
@@ -176,7 +178,9 @@ promotes a future deliver-now subset without changing production code.
 
 | Item | Disposition |
 | --- | --- |
-| any caller reasoning selection on `openai-realtime-2026-07-22` | Honest empty set; reject before access, credential, connection, or media work |
+| caller reasoning selection on `openai-realtime-reasoning-2026-08-27` for the five Research 236 values | Deliver now; matching `session.updated` acknowledgement required |
+| any other portable reasoning value on the current facade | Reject before access, credential, connection, or media work |
+| any caller reasoning selection on superseded `openai-realtime-2026-07-22` | Reject; historical point is no longer executable |
 | omission | Deliver now; current session bytes and lifecycle unchanged |
 | Responses reasoning vocabulary imported as Realtime proof | Reject; wrong transport |
 

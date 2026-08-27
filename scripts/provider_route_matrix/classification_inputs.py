@@ -105,7 +105,6 @@ generation_control_classifications = {
     ("structured_output", "kimi-code.local-server"): "upstream_unsupported",
     ("structured_output", "kimi-platform.chat"): "upstream_unsupported",
     ("output_token_limit", "codex.app-server; codex.exec"): "upstream_unsupported",
-    ("reasoning_selection", "openai.realtime"): "upstream_unsupported",
     ("structured_output", "openai.realtime"): "upstream_unsupported",
     ("output_token_limit", "opencode.http"): "upstream_unsupported",
     ("structured_output", "xai.responses-websocket"): "ready_operator_hold",

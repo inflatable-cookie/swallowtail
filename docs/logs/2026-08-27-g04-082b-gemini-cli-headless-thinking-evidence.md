@@ -14,14 +14,18 @@ Gemini-local frozen evidence. Shared planning and production code stay unchanged
 Research 230 promoted with an empty deliver-now set on `gemini-cli.headless`
 through exact `0.56.0`.
 
-Thinking configuration is ambient and settings-backed:
+Thinking configuration is settings-backed:
 `settings.modelConfigs` resolves into `generateContentConfig.thinkingConfig`
 with built-in alias defaults (`includeThoughts`, `thinkingBudget: 8192` on
 Gemini 2.5 chat aliases; `thinkingLevel: HIGH` on Gemini 3 chat aliases).
-There is no qualified argv or env seam. `loadSettings()` always reads user and
-workspace files even when `GEMINI_CLI_SYSTEM_SETTINGS_PATH` redirects the
-system layer. Swallowtail's prepared route keeps ambient posture, passes no
-thinking setting, and rejects portable `reasoning_mode` before process work.
+There is no qualified argv or env seam. User settings path follows
+`GEMINI_CLI_HOME` when set (`paths.homedir()` →
+`Storage.getGlobalSettingsPath()`); workspace settings still load from the
+working resource. System settings merge last and win conflicting keys, but
+surviving ambient `customOverrides` can still participate in override
+resolution. Swallowtail's prepared route keeps ambient posture, passes no
+thinking env injection, and rejects portable `reasoning_mode` before process
+work.
 
 Stream-json `init` exposes only resolved `model` and `session_id`. Assistant
 messages exclude thought content. Reasoning output is not selected-value

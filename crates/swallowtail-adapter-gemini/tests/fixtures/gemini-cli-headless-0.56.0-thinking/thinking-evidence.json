@@ -48,21 +48,26 @@
     "model"
   ],
   "stream_json_thinking_fields": [],
-  "settings_precedence": [
+  "settings_merge_precedence": [
     "schema_defaults",
     "system_defaults",
     "user",
     "workspace",
     "system"
   ],
+  "user_settings_path": "${GEMINI_CLI_HOME:-os.homedir()}/.gemini/settings.json",
+  "workspace_settings_path": "${workspace}/.gemini/settings.json",
   "child_env_settings_overrides": [
+    "GEMINI_CLI_HOME",
     "GEMINI_CLI_SYSTEM_SETTINGS_PATH",
     "GEMINI_CLI_SYSTEM_DEFAULTS_PATH"
   ],
-  "settings_still_read_ambient": [
-    "user_settings",
-    "workspace_settings"
-  ],
+  "settings_isolation_notes": {
+    "gemini_cli_home_isolates_user_settings": true,
+    "gemini_cli_home_isolates_workspace_settings": false,
+    "system_settings_win_conflicting_keys": true,
+    "ambient_custom_overrides_may_survive_merge": true
+  },
   "swallowtail_posture": {
     "harness_configuration": "ambient",
     "harness_isolation": "ambient_host",
@@ -74,6 +79,8 @@
     "packages/core/src/config/models.ts": "b7ec5ce10bc4164ca2efb2aecb2fdcd7d1afeb29c17082ab45537c51a61ca0dd",
     "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
     "packages/cli/src/config/settings.ts": "31b771bc8b7960f0cb6f9aa347378af6973a1054665caa0fabf7b3836940bba3",
+    "packages/core/src/utils/paths.ts": "795010eba6796b1758779f8c1c6cf0a526e669febde53bdf714583eaef83eec5",
+    "packages/core/src/config/storage.ts": "8c11ace1206a2e379b80b591db3d4d66d654dc677d46adfb66fbf8d2e895dc05",
     "packages/cli/src/config/settingsSchema.ts": "df5e1939dd6313ffbe0e1e182af83efbf9e55bca99482e0223faf9b5bbe93e6d",
     "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
     "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",

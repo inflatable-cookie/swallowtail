@@ -50,6 +50,8 @@ options do not promote to this route.
 | npm `@google/gemini-cli@0.56.0` identity | qualified package point | 2026-08-22 | Research 182 |
 | `packages/cli/src/config/config.ts` @ `v0.56.0` | argv surface; no thinking flag; passes `settings.modelConfigs` | 2026-08-27 | `5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c` |
 | `packages/cli/src/config/settings.ts` @ `v0.56.0` | settings precedence; `GEMINI_CLI_SYSTEM_*` paths | 2026-08-27 | `31b771bc8b7960f0cb6f9aa347378af6973a1054665caa0fabf7b3836940bba3` |
+| `packages/core/src/utils/paths.ts` @ `v0.56.0` | `GEMINI_CLI_HOME` overrides `homedir()` | 2026-08-27 | `795010eba6796b1758779f8c1c6cf0a526e669febde53bdf714583eaef83eec5` |
+| `packages/core/src/config/storage.ts` @ `v0.56.0` | user settings path under `$HOME/.gemini/settings.json` | 2026-08-27 | `8c11ace1206a2e379b80b591db3d4d66d654dc677d46adfb66fbf8d2e895dc05` |
 | `packages/cli/src/config/settingsSchema.ts` @ `v0.56.0` | `modelConfigs` schema; legacy `thinkingBudget` migration | 2026-08-27 | `df5e1939dd6313ffbe0e1e182af83efbf9e55bca99482e0223faf9b5bbe93e6d` |
 | `packages/core/src/config/defaultModelConfigs.ts` @ `v0.56.0` | built-in alias defaults for thinking | 2026-08-27 | `84d9f2230d9bec00ade567ef760df9b1645dfcf74917d3cac1f1e78c2f5f173b` |
 | `packages/core/src/services/modelConfigService.ts` @ `v0.56.0` | alias/override resolution pipeline | 2026-08-27 | `e3dfc0e1133bd4153d1c4557e6c39b1f577a08504e689b0e26b67cc228ac019b` |
@@ -109,24 +111,55 @@ does not promote here.
 
 ## Settings Precedence And Child Isolation
 
-`loadSettings()` always reads user and workspace settings from disk, then merges
-with optional system defaults and system overrides. Precedence for single values
-is: schema defaults, system defaults, user, workspace, system (last wins).
+`loadSettings()` reads four on-disk settings layers plus schema defaults, then
+merges them through `mergeSettings()`. Precedence for conflicting scalar or
+deep-merged object keys is: schema defaults, system defaults, user, workspace,
+system (last wins).
 
-Child-only env vars can redirect the system layer without mutating host files:
+User settings path is not fixed to the OS home directory. `paths.homedir()`
+returns `process.env.GEMINI_CLI_HOME` when set, otherwise `os.homedir()`.
+`Storage.getGlobalSettingsPath()` resolves to
+`join(homedir(), '.gemini', 'settings.json')`. A child process can therefore
+redirect the user-settings file to a caller-owned directory without mutating
+the host's real home tree.
+
+Workspace settings load separately from the working directory:
+`Storage.getWorkspaceSettingsPath()` resolves to
+`join(<workspace>/.gemini/settings.json)`. That layer is independent of
+`GEMINI_CLI_HOME`.
+
+Child-only env vars can also redirect the system layer without mutating host
+files:
 
 - `GEMINI_CLI_SYSTEM_SETTINGS_PATH`
 - `GEMINI_CLI_SYSTEM_DEFAULTS_PATH`
 
-That redirect does not skip ambient reads. User and workspace files still load,
-and `modelConfigs.customOverrides` from ambient settings append to the override
-list before alias resolution. Swallowtail's prepared headless route uses
-`HarnessConfigurationPosture::Ambient` and passes one host-owned
-`EnvironmentRef`; it does not inject temporary settings files or raw env keys
-for thinking.
+These are distinct seams:
 
-Therefore no caller-bound, process-private seam overrides ambient settings
-without reading host configuration.
+| Claim | Exact `0.56.0` truth |
+| --- | --- |
+| Host user settings are always read | false when `GEMINI_CLI_HOME` points at an isolated directory with no settings file |
+| System settings can override user/workspace thinking keys | true for conflicting deep-merged keys because system merges last |
+| Ambient thinking configuration can still win | true when earlier layers contribute `modelConfigs.customOverrides` or workspace `modelConfigs` entries that survive merge and participate in override resolution |
+| Workspace settings are isolatable by `GEMINI_CLI_HOME` alone | false; they follow the working resource |
+
+`ModelConfigService` concatenates built-in `overrides`, merged
+`customOverrides`, and runtime overrides before specificity sorting. Settings
+merge and override resolution are therefore separate questions: system settings
+winning a conflicting key does not automatically erase every ambient override
+row that still appears in the merged `modelConfigs` object.
+
+Swallowtail's prepared headless route uses `HarnessConfigurationPosture::Ambient`
+and passes one host-owned `EnvironmentRef`. It does not inject
+`GEMINI_CLI_HOME`, temporary system settings, or any other thinking env key.
+The Gemini CLI seams above are source-level candidates only; they are not bound
+on the qualified route today.
+
+Even a hypothetical adapter that supplied isolated `GEMINI_CLI_HOME` plus
+`GEMINI_CLI_SYSTEM_SETTINGS_PATH` would still load workspace settings from the
+bound working resource, still merge ambient override rows that survive the
+settings pipeline, and still lack stream-json confirmation. Those remaining
+gates keep the deliver-now set empty.
 
 ## Prepared Route Audit
 
@@ -174,9 +207,9 @@ values are not preflight-bound to model capability without a provider round trip
 
 | Gate | Finding |
 | --- | --- |
-| Process-private seam | thinking is settings-backed; ambient user/workspace files always load |
+| Process-private seam | no thinking argv/env on qualified route; `GEMINI_CLI_HOME` can isolate user settings but workspace settings and surviving override rows still load |
 | No-substitution | built-in alias defaults apply even when Swallowtail omits portable reasoning |
-| Ambient shadowing | route posture is ambient; adapter cannot fail closed against host `modelConfigs` |
+| Ambient shadowing | route posture is ambient; adapter injects no isolated settings env; workspace and surviving `customOverrides` can still shadow caller intent |
 | Selected-model agreement | effective config depends on alias family and runtime resolution context |
 | Pre-effect rejection | no argv/env thinking surface; unsupported values are not rejected before process work |
 | Confirmation | stream-json exposes no thinking field; reasoning output is not selected-value proof |
@@ -194,7 +227,8 @@ prompt-free dispatch or effective confirmation on `gemini-cli.headless`.
 | Surface | Disposition |
 | --- | --- |
 | `settings.modelConfigs.customAliases` / `customOverrides` | ambient or enterprise-managed configuration; not adapter-bound on current route |
-| `GEMINI_CLI_SYSTEM_SETTINGS_PATH` | child env redirect; still reads ambient user/workspace settings |
+| `GEMINI_CLI_HOME` | child env redirect for user settings path; does not isolate workspace settings |
+| `GEMINI_CLI_SYSTEM_SETTINGS_PATH` | child env redirect for system layer; wins conflicting keys last, but surviving ambient override rows may still apply |
 | `ui.inlineThinkingMode` | display-only UI setting |
 | `--model` alias selection | selects alias chain, not an independent portable thinking value |
 | Gemini ACP negotiated model options | sibling route; no promotion |
@@ -211,4 +245,4 @@ without ambient host shadowing.
 
 ## Evidence
 
-- [thinking-evidence.json](../../../crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-headless-0.56.0-thinking/thinking-evidence.json)
+- [thinking-evidence.json](../../crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-headless-0.56.0-thinking/thinking-evidence.json)

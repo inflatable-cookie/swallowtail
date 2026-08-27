@@ -22,11 +22,16 @@ pub(super) fn run(
         RealtimeScenario::ReasoningAckMissing => session_updated_without_reasoning(),
         RealtimeScenario::ReasoningAckMismatch => session_updated_with_effort("high"),
         RealtimeScenario::ReasoningAckMalformed => session_updated_malformed_reasoning(),
+        RealtimeScenario::ReasoningAckDuplicateCreated => session_created_with_effort("low"),
+        RealtimeScenario::OmissionAckWithEffort => session_updated_with_effort("low"),
+        RealtimeScenario::OmissionAckMalformed => session_updated_malformed_reasoning(),
         _ => session_updated_echoing(&update, session.next().expect("session.updated exists")),
     };
     send(socket, &updated);
     match scenario {
-        RealtimeScenario::TwoTurns => {
+        RealtimeScenario::TwoTurns
+        | RealtimeScenario::OmissionAckWithEffort
+        | RealtimeScenario::OmissionAckMalformed => {
             for turn in 1..=2 {
                 read_turn_frames(socket, frames);
                 send_success(socket, turn);
@@ -73,7 +78,8 @@ pub(super) fn run(
         RealtimeScenario::FormatDrift
         | RealtimeScenario::ReasoningAckMissing
         | RealtimeScenario::ReasoningAckMismatch
-        | RealtimeScenario::ReasoningAckMalformed => {}
+        | RealtimeScenario::ReasoningAckMalformed
+        | RealtimeScenario::ReasoningAckDuplicateCreated => {}
     }
 }
 
@@ -137,6 +143,23 @@ fn session_updated_malformed_reasoning() -> String {
             "id": "sess_fixture",
             "model": "gpt-realtime-2.1",
             "reasoning": {"effort": 1},
+            "audio": {
+                "input": {"format": {"type": "audio/pcm", "rate": 24000}},
+                "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": "marin"}
+            }
+        }
+    })
+    .to_string()
+}
+
+fn session_created_with_effort(effort: &str) -> String {
+    json!({
+        "event_id": "server-session-duplicate",
+        "type": "session.created",
+        "session": {
+            "id": "sess_fixture",
+            "model": "gpt-realtime-2.1",
+            "reasoning": {"effort": effort},
             "audio": {
                 "input": {"format": {"type": "audio/pcm", "rate": 24000}},
                 "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": "marin"}

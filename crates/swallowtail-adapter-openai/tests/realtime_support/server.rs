@@ -28,6 +28,9 @@ pub enum RealtimeScenario {
     ReasoningAckMissing,
     ReasoningAckMismatch,
     ReasoningAckMalformed,
+    ReasoningAckDuplicateCreated,
+    OmissionAckWithEffort,
+    OmissionAckMalformed,
 }
 
 type Handshake = Arc<Mutex<Option<(String, Option<String>)>>>;

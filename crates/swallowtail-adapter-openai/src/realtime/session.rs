@@ -118,7 +118,7 @@ async fn configure(
     maximum_output_tokens: Option<std::num::NonZeroU64>,
     reasoning_effort: Option<&str>,
 ) -> Result<(), RuntimeFailure> {
-    expect_session(update(updates).await?, None)?;
+    expect_created(update(updates).await?)?;
     worker
         .send(
             ClientEvent::SessionUpdate {
@@ -128,19 +128,33 @@ async fn configure(
             .to_json(),
         )
         .await?;
-    expect_session(update(updates).await?, reasoning_effort)
+    expect_updated(update(updates).await?, reasoning_effort)
 }
 
-fn expect_session(
+fn expect_created(update: WorkerUpdate) -> Result<(), RuntimeFailure> {
+    match update {
+        WorkerUpdate::Event(RealtimeServerEvent::SessionCreated) => Ok(()),
+        WorkerUpdate::Event(_) => Err(failure(
+            "swallowtail.openai.realtime_session_order_invalid",
+            "OpenAI Realtime session handshake ordering was invalid",
+        )),
+        WorkerUpdate::Failed(error) => Err(error),
+        WorkerUpdate::Disconnected => Err(disconnected()),
+    }
+}
+
+fn expect_updated(
     update: WorkerUpdate,
     expected_effort: Option<&str>,
 ) -> Result<(), RuntimeFailure> {
     match update {
-        WorkerUpdate::Event(RealtimeServerEvent::SessionConfigured { reasoning_effort }) => {
+        WorkerUpdate::Event(RealtimeServerEvent::SessionUpdated { reasoning }) => {
             match expected_effort {
                 None => Ok(()),
-                Some(wanted) => match reasoning_effort.as_deref() {
-                    Some(got) if got == wanted => Ok(()),
+                Some(wanted) => match reasoning {
+                    crate::realtime_protocol::SessionReasoningAck::Effort(got) if got == wanted => {
+                        Ok(())
+                    }
                     _ => Err(failure(
                         "swallowtail.openai.realtime_reasoning_acknowledgement_invalid",
                         "OpenAI Realtime session reasoning acknowledgement did not match the selected effort",

@@ -34,8 +34,9 @@ impl Drop for ProviderAudio {
 }
 
 pub(crate) enum RealtimeServerEvent {
-    SessionConfigured {
-        reasoning_effort: Option<String>,
+    SessionCreated,
+    SessionUpdated {
+        reasoning: SessionReasoningAck,
     },
     InputCommitted,
     Structural,
@@ -64,10 +65,18 @@ pub(crate) enum RealtimeServerEvent {
     ProviderFailed,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum SessionReasoningAck {
+    Absent,
+    Effort(String),
+    Invalid,
+}
+
 impl std::fmt::Debug for RealtimeServerEvent {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str(match self {
-            Self::SessionConfigured { .. } => "RealtimeServerEvent::SessionConfigured",
+            Self::SessionCreated => "RealtimeServerEvent::SessionCreated",
+            Self::SessionUpdated { .. } => "RealtimeServerEvent::SessionUpdated",
             Self::InputCommitted => "RealtimeServerEvent::InputCommitted",
             Self::Structural => "RealtimeServerEvent::Structural",
             Self::ResponseStarted(_) => "RealtimeServerEvent::ResponseStarted(<redacted>)",
@@ -88,7 +97,8 @@ pub(crate) fn parse_server_event(bytes: &[u8]) -> Result<RealtimeServerEvent, Ru
     let value: Value = serde_json::from_slice(bytes).map_err(|_| malformed())?;
     let kind = text(&value, "type")?;
     match kind {
-        "session.created" | "session.updated" => parse_session(&value),
+        "session.created" => parse_session_created(&value),
+        "session.updated" => parse_session_updated(&value),
         "input_audio_buffer.committed" => Ok(RealtimeServerEvent::InputCommitted),
         "conversation.item.created"
         | "response.output_item.added"
@@ -127,7 +137,19 @@ pub(crate) fn parse_server_event(bytes: &[u8]) -> Result<RealtimeServerEvent, Ru
     }
 }
 
-fn parse_session(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {
+fn parse_session_created(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {
+    validate_session_media(value)?;
+    Ok(RealtimeServerEvent::SessionCreated)
+}
+
+fn parse_session_updated(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {
+    validate_session_media(value)?;
+    Ok(RealtimeServerEvent::SessionUpdated {
+        reasoning: parse_reasoning_ack(value),
+    })
+}
+
+fn validate_session_media(value: &Value) -> Result<(), RuntimeFailure> {
     if nested_text(value, &["session", "model"])? != "gpt-realtime-2.1"
         || nested_text(value, &["session", "audio", "input", "format", "type"])? != "audio/pcm"
         || nested_u64(value, &["session", "audio", "input", "format", "rate"])? != 24_000
@@ -139,20 +161,20 @@ fn parse_session(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {
             "OpenAI Realtime session format does not match preflight",
         ));
     }
-    let reasoning_effort = match value
+    Ok(())
+}
+
+fn parse_reasoning_ack(value: &Value) -> SessionReasoningAck {
+    match value
         .get("session")
         .and_then(|session| session.get("reasoning"))
     {
-        None => None,
-        Some(reasoning) => {
-            let effort = reasoning
-                .get("effort")
-                .and_then(Value::as_str)
-                .ok_or_else(malformed)?;
-            Some(effort.to_owned())
-        }
-    };
-    Ok(RealtimeServerEvent::SessionConfigured { reasoning_effort })
+        None => SessionReasoningAck::Absent,
+        Some(reasoning) => match reasoning.get("effort").and_then(Value::as_str) {
+            Some(effort) => SessionReasoningAck::Effort(effort.to_owned()),
+            None => SessionReasoningAck::Invalid,
+        },
+    }
 }
 
 fn parse_done(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {

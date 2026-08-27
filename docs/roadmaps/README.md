@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Compile the next bounded qualification wave from the 30 active per-route
-feature candidates. Keep worker ownership disjoint and shared promotion
-serial. Do not compile production binding from any g04.082 empty set. Keep g04
-open. Contract 029 currentness remains standing.
+Run g04.083 cards 232-235 as four route-distinct evidence-only worker lanes.
+Keep worker ownership disjoint and integration serial. Do not start production
+binding from a worker branch or from any g04.082 empty set. Keep g04 open.
+Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

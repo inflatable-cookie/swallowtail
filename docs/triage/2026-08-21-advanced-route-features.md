@@ -2613,3 +2613,25 @@ inventory now owns 45 closed items, 30 active qualification candidates, and ten
 with no active lane. No binding or acceptance roadmap follows from g04.082.
 Compile the next bounded route-distinct evidence wave from the remaining active
 backlog. Keep shared promotion serial and g04 open.
+
+## Post-g04.082 Reassessment And g04.083 Compilation (2026-08-27)
+
+Disposition: compile four package-distinct evidence-only lanes.
+
+The next wave selects original items 2, 15, 30, and 76: Claude Code headless
+Fast mode, Codex exec Fast/service tier, Gemini CLI ACP thinking, and OpenAI
+Realtime reasoning effort. They touch four packages and have no evidence
+dependency. Cards 232-235 and Research 233-236 own the questions.
+
+The shared words do not create shared controls. Claude Fast remains a
+subscription/model/credit setting. Codex Fast remains an exec configuration,
+feature-gate, model-catalogue, and billing question. Gemini thinking must be
+proved on ACP rather than promoted from the stopped headless lane. Realtime
+reasoning must be tied to its exact model and session lifecycle rather than
+borrowed from Responses.
+
+Workers may freeze only route-local evidence and their assigned card, Research,
+and log. Shared inventory, programme, triage, matrices, indexes, Next Task, and
+any production binding remain serial. Provider prompts, credentials, paid work,
+account inspection, install/update, ambient mutation, release, rollover, and
+g04 closure stay out.

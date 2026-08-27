@@ -6,7 +6,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-None. Compile the next bounded qualification wave from the live inventory.
+- [232-claude-code-headless-fast-mode-evidence.md](./232-claude-code-headless-fast-mode-evidence.md) — g04.083 lane A; evidence only
+- [233-codex-exec-fast-service-tier-evidence.md](./233-codex-exec-fast-service-tier-evidence.md) — g04.083 lane B; evidence only
+- [234-gemini-cli-acp-thinking-evidence.md](./234-gemini-cli-acp-thinking-evidence.md) — g04.083 lane C; evidence only
+- [235-openai-realtime-reasoning-effort-evidence.md](./235-openai-realtime-reasoning-effort-evidence.md) — g04.083 lane D; evidence only
 
 Cards 070-071 remain unused gaps, not tasks.
 

@@ -84,8 +84,26 @@ preparation. Item 83 cannot prove selected-model `max` membership from generic
 Ollama thinking capability. No production binding or acceptance lane follows.
 
 [g04.082](082-parallel-per-route-feature-qualification.md) owns the completed
-wave. The next wave must be compiled from the remaining 30 active candidates
-with the same disjoint worker ownership and serial shared-state promotion.
+wave.
+
+## Active Parallel Qualification Wave
+
+g04.083 reserves four route-distinct evidence lanes from the 30 active items:
+
+1. item 2 — `claude-code.headless` Fast mode — card 232
+2. item 15 — `codex.exec` Fast / service tier — card 233
+3. item 30 — `gemini-cli.acp` thinking configuration — card 234
+4. item 76 — `openai.realtime` reasoning effort — card 235
+
+These lanes share no package or evidence output. They must not turn Fast,
+service tier, thinking, or reasoning into shared vocabulary. Workers own only
+their card, Research file, lane log, and optional route-local frozen evidence.
+Shared promotion, matrices, inventory counts, indexes, and Next Task remain
+serial.
+
+[g04.083](083-second-parallel-per-route-feature-qualification.md) owns the
+compiled lanes and Research 233-236. The four items remain active until their
+evidence PRs land and the orchestrator records durable dispositions.
 
 ## Update Rule
 

@@ -141,6 +141,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [230 Gemini CLI Headless Thinking Evidence](./230-gemini-cli-headless-thinking-evidence.md) — promoted; honest empty deliver-now set; g04.082 card 229
 - [231 Bedrock Runtime Service-Tier Evidence](./231-bedrock-runtime-service-tier-evidence.md) — promoted; honest empty deliver-now set; g04.082 card 230
 - [232 Ollama Attached Think-Max Evidence](./232-ollama-attached-think-max-evidence.md) — promoted; honest empty deliver-now set; g04.082 card 231
+- [233 Claude Code Headless Fast-Mode Evidence](./233-claude-code-headless-fast-mode-evidence.md) — reserved for g04.083 card 232
+- [234 Codex Exec Fast Service-Tier Evidence](./234-codex-exec-fast-service-tier-evidence.md) — reserved for g04.083 card 233
+- [235 Gemini CLI ACP Thinking Evidence](./235-gemini-cli-acp-thinking-evidence.md) — reserved for g04.083 card 234
+- [236 OpenAI Realtime Reasoning-Effort Evidence](./236-openai-realtime-reasoning-effort-evidence.md) — reserved for g04.083 card 235
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210

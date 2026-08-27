@@ -104,17 +104,32 @@ if env | rg -q '^GROK_HOME='; then
   exit 1
 fi
 
-validation_temp_root=$(mktemp -d)
-validation_temp_before=$(find "$validation_temp_root" -mindepth 1 | wc -l | tr -d ' ')
-if TMPDIR="$validation_temp_root" bash scripts/run-with-isolated-home.sh --home-var 2>/dev/null; then
+validation_shim_root=$(mktemp -d)
+validation_mktemp_log="$validation_shim_root/mktemp.log"
+cat >"$validation_shim_root/mktemp" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >>"${VALIDATION_MKTEMP_LOG:?}"
+exec /usr/bin/mktemp "$@"
+EOF
+chmod +x "$validation_shim_root/mktemp"
+validation_shim_path="$validation_shim_root:$PATH"
+if VALIDATION_MKTEMP_LOG="$validation_mktemp_log" PATH="$validation_shim_path" \
+  bash scripts/run-with-isolated-home.sh --home-var 2>/dev/null
+then
   printf 'isolated-home wrapper accepted a malformed --home-var invocation\n' >&2
   exit 1
 fi
-validation_temp_after=$(find "$validation_temp_root" -mindepth 1 | wc -l | tr -d ' ')
-if [[ "$validation_temp_after" != "$validation_temp_before" ]]; then
-  printf 'isolated-home wrapper leaked temp entries under %s\n' "$validation_temp_root" >&2
+if VALIDATION_MKTEMP_LOG="$validation_mktemp_log" PATH="$validation_shim_path" \
+  bash scripts/run-with-isolated-home.sh 2>/dev/null
+then
+  printf 'isolated-home wrapper accepted a missing-command invocation\n' >&2
   exit 1
 fi
-rm -rf "$validation_temp_root"
+if [[ -s "$validation_mktemp_log" ]]; then
+  printf 'isolated-home wrapper called mktemp before argument validation:\n' >&2
+  cat "$validation_mktemp_log" >&2
+  exit 1
+fi
+rm -rf "$validation_shim_root"
 
 printf 'validation selector argument and archive-scope tests passed\n'

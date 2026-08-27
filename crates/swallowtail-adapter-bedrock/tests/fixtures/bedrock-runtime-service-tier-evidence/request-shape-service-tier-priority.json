@@ -1,0 +1,19 @@
+{
+  "modelId": "<model-with-documented-priority-support>",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "<user-input>"
+        }
+      ]
+    }
+  ],
+  "inferenceConfig": {
+    "maxTokens": 64
+  },
+  "serviceTier": {
+    "type": "priority"
+  }
+}

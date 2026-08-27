@@ -1,0 +1,16 @@
+// aws-sdk-bedrockruntime 1.136.0 == 1.139.0 for this enum (byte-identical file)
+pub enum PerformanceConfigLatency {
+    Optimized,
+    Standard,
+    Unknown(UnknownVariantValue),
+}
+
+impl From<&str> for PerformanceConfigLatency {
+    fn from(s: &str) -> Self {
+        match s {
+            "optimized" => PerformanceConfigLatency::Optimized,
+            "standard" => PerformanceConfigLatency::Standard,
+            other => PerformanceConfigLatency::Unknown(/* ... */),
+        }
+    }
+}

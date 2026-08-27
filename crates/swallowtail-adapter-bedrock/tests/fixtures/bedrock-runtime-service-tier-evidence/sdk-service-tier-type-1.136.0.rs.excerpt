@@ -1,0 +1,20 @@
+// aws-sdk-bedrockruntime 1.136.0 == 1.139.0 for this enum (byte-identical file)
+pub enum ServiceTierType {
+    Default,
+    Flex,
+    Priority,
+    Reserved,
+    Unknown(UnknownVariantValue),
+}
+
+impl From<&str> for ServiceTierType {
+    fn from(s: &str) -> Self {
+        match s {
+            "default" => ServiceTierType::Default,
+            "flex" => ServiceTierType::Flex,
+            "priority" => ServiceTierType::Priority,
+            "reserved" => ServiceTierType::Reserved,
+            other => ServiceTierType::Unknown(/* ... */),
+        }
+    }
+}

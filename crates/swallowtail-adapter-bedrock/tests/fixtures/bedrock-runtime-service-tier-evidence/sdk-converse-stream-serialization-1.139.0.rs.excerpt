@@ -1,0 +1,11 @@
+// aws-sdk-bedrockruntime 1.139.0 shape_converse_stream_input.rs (1.136.0 identical)
+if let Some(var_15) = &input.performance_config {
+    let mut object_16 = object.key("performanceConfig").start_object();
+    ser_performance_configuration(&mut object_16, var_15)?;
+    object_16.finish();
+}
+if let Some(var_26) = &input.service_tier {
+    let mut object_27 = object.key("serviceTier").start_object();
+    ser_service_tier(&mut object_27, var_26)?;
+    object_27.finish();
+}

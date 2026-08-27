@@ -1,0 +1,7 @@
+// swallowtail-adapter-bedrock/src/sdk.rs — current ConverseStream builder call
+let send = client
+    .converse_stream()
+    .model_id(invocation.model)
+    .messages(message)
+    .inference_config(inference)
+    .send();

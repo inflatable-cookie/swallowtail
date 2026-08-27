@@ -1,0 +1,69 @@
+{
+  "axis": "bedrock.runtime",
+  "operation": "ConverseStream",
+  "driver": "swallowtail.amazon-bedrock.direct",
+  "public_sdk_constant": "1.136.0",
+  "cargo_locked_sdk": "1.139.0",
+  "sdk_shape_delta_for_tier_fields": "none between 1.136.0 and 1.139.0",
+  "evidence_retrieved": "2026-08-27",
+  "request_fields": {
+    "performanceConfig.latency": {
+      "wire_key": "performanceConfig",
+      "nested_key": "latency",
+      "sdk_enum": ["standard", "optimized"],
+      "required": false
+    },
+    "serviceTier.type": {
+      "wire_key": "serviceTier",
+      "nested_key": "type",
+      "sdk_enum": ["default", "flex", "priority", "reserved"],
+      "required_when_present": true
+    }
+  },
+  "response_fields": {
+    "metadata.performanceConfig.latency": "returned served latency mode",
+    "metadata.serviceTier.type": "returned served tier",
+    "metadata.metrics.latencyMs": "observed latency metric only; not a request control"
+  },
+  "official_sources": {
+    "converse_stream_api": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html",
+      "sha256": "73af6d8dc1d4008b6b63dcda8139f7bffbaa810aac9e03b6ea2a266dcb8ef193"
+    },
+    "performance_configuration_api": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_PerformanceConfiguration.html",
+      "sha256": "ead55e16ec0409aea15ea6ed8d1d5ad806cb52bc579a974f80c8c67adef38911"
+    },
+    "service_tier_api": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ServiceTier.html",
+      "sha256": "20c74518430f1e71ca6469cc2b83ef5550d781cb6f6707b46dddceb73fa95aa4"
+    },
+    "latency_optimized_userguide": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/latency-optimized-inference.html",
+      "sha256": "74c540b2fcae5321c9d1ed500e28a8277bdce963f12ba663d6dea7a689baf05c"
+    },
+    "service_tiers_userguide": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/service-tiers-inference.html",
+      "sha256": "ef7b8b4246519bb312a8814fd8dbba62a611c63ddeee9797492c82b59f23e0a2"
+    },
+    "conversation_inference_userguide": {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html",
+      "sha256": "7777d2764f6022fa5e121666c958e8c2aa1565b28f54668e06744ec74b4c054b"
+    }
+  },
+  "sdk_excerpts": {
+    "performance_config_latency": "sdk-performance-config-latency-1.136.0.rs.excerpt",
+    "service_tier_type": "sdk-service-tier-type-1.136.0.rs.excerpt",
+    "converse_stream_serialization": "sdk-converse-stream-serialization-1.139.0.rs.excerpt"
+  },
+  "repository_excerpts": {
+    "sdk_invocation": "repository-sdk-invocation.rs.excerpt",
+    "stream_decoder_metadata": "repository-stream-decoder-metadata.rs.excerpt"
+  },
+  "request_specimens": {
+    "omission": "request-shape-omission.json",
+    "latency_optimized": "request-shape-latency-optimized.json",
+    "service_tier_priority": "request-shape-service-tier-priority.json"
+  },
+  "deliver_now_rows": 0
+}

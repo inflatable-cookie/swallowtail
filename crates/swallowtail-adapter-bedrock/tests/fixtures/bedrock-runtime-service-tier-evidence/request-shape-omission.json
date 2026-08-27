@@ -1,0 +1,16 @@
+{
+  "modelId": "<preflight-bound-model>",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "<user-input>"
+        }
+      ]
+    }
+  ],
+  "inferenceConfig": {
+    "maxTokens": 64
+  }
+}

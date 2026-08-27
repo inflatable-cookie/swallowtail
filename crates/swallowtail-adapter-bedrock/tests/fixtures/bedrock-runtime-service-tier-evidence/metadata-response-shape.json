@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "metrics": {
+      "latencyMs": 0
+    },
+    "performanceConfig": {
+      "latency": "standard"
+    },
+    "serviceTier": {
+      "type": "default"
+    },
+    "usage": {
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "totalTokens": 0
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "modelId": "<model-from-official-latency-table>",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "<user-input>"
+        }
+      ]
+    }
+  ],
+  "inferenceConfig": {
+    "maxTokens": 64
+  },
+  "performanceConfig": {
+    "latency": "optimized"
+  }
+}

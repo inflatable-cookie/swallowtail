@@ -1,0 +1,6 @@
+// swallowtail-adapter-bedrock/src/stream.rs — metadata branch reads usage only
+ConverseStreamOutput::Metadata(event) if self.message_stopped => {
+    let usage = event.usage().ok_or(DecodeFailure::MissingRequiredField)?;
+    // performance_config() and service_tier() are not observed
+    Ok(StreamUpdate::Usage(/* ... */))
+}

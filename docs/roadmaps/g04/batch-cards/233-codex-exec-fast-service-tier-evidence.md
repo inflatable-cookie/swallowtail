@@ -76,12 +76,12 @@ merge, shared closeout, rollover, or g04 closure.
 
 ## Closeout
 
-Research 234 promotes twenty deliver-now Fast dispatch rows on exact published
-`0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1` maintained suppressed exec for
-`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5`, and `gpt-5.4` with
-wire tier `priority`. `features.fast_mode` gates dispatch; `/fast` is TUI-only;
-legacy config `fast` normalizes to `priority`. ChatGPT-subscription and API-key
-profiles are separate dispatch authorizations with documented billing split.
-Frozen evidence:
+Research 234 promotes an honest empty deliver-now set. Gate, config,
+catalog membership, billing split, and omission research are frozen:
+`features.fast_mode` gates tier dispatch; `/fast` is TUI-only; legacy config
+`fast` normalizes to wire `priority`; five bundled-catalog slugs advertise tier
+id `priority` at `0.149.1`. Live-catalog substitution, silent unsupported-tier
+downgrade inside Codex, and absent pre-prompt `service_tier` observation block
+caller-selected Fast binding without unconfirmed substitution. Frozen evidence:
 `crates/swallowtail-adapter-codex/tests/fixtures/evidence/exec-fast-service-tier-range.json`.
 Production binding not authorized.

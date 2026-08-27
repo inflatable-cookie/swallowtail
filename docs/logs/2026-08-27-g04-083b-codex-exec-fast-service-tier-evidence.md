@@ -11,20 +11,19 @@ Codex-local frozen evidence. Shared planning and production code stayed unchange
 
 ## Outcome
 
-Research 234 promotes a non-empty deliver-now table: twenty explicit Fast
-dispatch rows on exact published `0.147.0`, `0.148.0`, `0.149.0`, and `0.149.1`
-maintained suppressed exec for `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`,
-`gpt-5.5`, and `gpt-5.4`. Wire tier is `priority`; catalog tier id is
-`priority`; legacy config `fast` normalizes to `priority`. `features.fast_mode`
-gates dispatch and defaults enabled; `/fast` is TUI-only. ChatGPT-subscription
-and API-key profiles are separate dispatch authorizations with documented
-billing split. Provider acceptance, returned effective tier, billing
-realization, and observed latency stay withheld.
+Research 234 promotes an honest empty deliver-now set after orchestrator review.
+Gate, config, catalog membership, billing split, and omission research remain
+frozen. `features.fast_mode` gates tier dispatch; `/fast` is TUI-only; legacy
+config `fast` normalizes to wire `priority`; five bundled-catalog slugs at
+`0.149.1` advertise tier id `priority` as evidence-gated membership only.
 
-Introduction points frozen from tags: `service_tier` config at `0.115.0`,
-`fast_mode` gate at `0.118.0`, request wiring at `0.125.0`, bundled Fast
-catalog rows at `0.131.0`, `gpt-5.6-*` Fast rows at `0.147.0`. Omission
-preserves current exec argv, including the delivered verbosity surface.
+Empty-set rationale: live ChatGPT catalog can replace the bundled catalog before
+request construction; `get_service_tier` silently drops unsupported tiers to
+`None`; current exec decoding does not observe returned `service_tier` before
+provider work. Static slug checks plus `--config service_tier="priority"` cannot
+prove `priority` survives catalog resolution on the exec path.
+
+Omission preserves current exec argv, including the delivered verbosity surface.
 
 Frozen evidence:
 `crates/swallowtail-adapter-codex/tests/fixtures/evidence/exec-fast-service-tier-range.json`.
@@ -37,5 +36,6 @@ Frozen evidence:
 
 ## Unresolved
 
-Production binding not authorized. Live catalog replacement and provider
-returned tier remain withheld admission authorities.
+Production binding not authorized. A future lane needs pre-prompt confirmation
+that effective tier matches caller selection, or exact tagged proof that
+`priority` survives live-catalog resolution before provider work.

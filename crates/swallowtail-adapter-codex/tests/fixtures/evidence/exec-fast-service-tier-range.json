@@ -63,6 +63,11 @@
     "thread_start_rpc_omits_service_tier_param": true,
     "config_from_cli_overrides_applies": true
   },
-  "decision": "non_empty_deliver_now",
-  "deliver_now_row_count": 20
+  "empty_set_rationale": [
+    "live_chatgpt_catalog_can_replace_bundled_catalog_before_request",
+    "get_service_tier_silently_drops_unsupported_tier_to_none",
+    "exec_decoder_does_not_observe_returned_service_tier_before_provider_work"
+  ],
+  "decision": "empty_deliver_now",
+  "deliver_now_row_count": 0
 }

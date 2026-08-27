@@ -267,74 +267,102 @@ from reasoning, verbosity, personality, and output-token bounds.
 | gate disabled ignores configured tier | proved from `get_service_tier` tests |
 | omitted tier sends no request field; catalog default not auto-applied | proved |
 | bundled catalog Fast membership for five exact slugs | proved from tag `models.json` |
-| wire request uses `priority` for Fast tier | proved from `ServiceTier::Fast` and `client.rs` |
+| wire `priority` when catalog still supports tier at request time | proved from source/tests at exact tag |
 | exec `--config` highest precedence with ignored user config | proved; same as Research 213 |
-| unsupported tier warns and omits request field | proved; Swallowtail must reject before spawn |
+| unsupported tier warns and omits provider field | proved; silent downgrade inside Codex |
 | `/fast` is TUI-only; exec has no `/fast` argv | proved |
 | ChatGPT credit vs API billing differ | documented; not runtime-proved |
+| `priority` survives live-catalog resolution on exec path | unproved; blocks deliver-now |
+| pre-prompt exec observation of effective tier | absent; current decoder ignores returned tier |
 | provider acceptance / returned effective tier / latency | unproved; withheld |
 | live ChatGPT catalog replacement | proved possible; not admission authority |
 
+## Empty Set Rationale
+
+Card 233’s silent-substitution stop condition blocks a non-empty deliver-now
+table on the evidence collected here.
+
+Three coupled gaps remain after freezing gate, config, catalog, billing, and
+omission truth:
+
+1. **Live catalog substitution.** ChatGPT auth can replace the bundled catalog
+   after spawn and remove or alter Fast membership before request construction.
+   Frozen `models.json` membership is catalogue evidence only. It is not proof
+   that `priority` still serializes on the exec path for the selected exact
+   model at request time.
+
+2. **Silent unsupported downgrade.** When the effective catalog no longer
+   advertises the configured tier, `get_service_tier` drops the tier to `None`
+   and request construction omits the provider field. That is a warn-and-omit
+   downgrade inside Codex, not a pre-effect hard error. Static Swallowtail slug
+   checks plus `--config service_tier="priority"` cannot prove the provider
+   field survived catalog resolution.
+
+3. **No pre-prompt confirmation seam.** Current `codex.exec` decoding does not
+   observe returned or effective `service_tier` before provider work starts. A
+   post-prompt provider response would not satisfy the pre-effect gate.
+
+Until exact tagged proof shows `priority` surviving catalog resolution on the
+bounded exec path—or a future binding adds fail-closed pre-prompt
+confirmation—caller-selected Fast cannot bind without unconfirmed substitution.
+
+## Evidence-Gated Catalog Membership
+
+Frozen bundled catalog at `0.149.1` advertises Fast tier id `priority` on
+these exact slugs. This is membership evidence, not a deliver-now dispatch
+authorization:
+
+| Version | Model | Catalog tier id | Disposition |
+| --- | --- | --- | --- |
+| `0.147.0`, `0.148.0`, `0.149.0`, `0.149.1` | `gpt-5.6-sol` | `priority` | evidence-gated membership only |
+| same | `gpt-5.6-terra` | `priority` | evidence-gated membership only |
+| same | `gpt-5.6-luna` | `priority` | evidence-gated membership only |
+| same | `gpt-5.5` | `priority` | evidence-gated membership only |
+| same | `gpt-5.4` | `priority` | evidence-gated membership only |
+
+Omitted `service_tier` and `features.fast_mode` on current exec argv is
+current behavior, not default Fast serialization.
+
 ## Deliver-Now Table
 
-Wire Fast tier value is `priority`. Config may also use legacy `fast`.
-`features.fast_mode` must be enabled; default enabled satisfies that gate.
-Exec profile is maintained ephemeral suppressed exec.
-
-| Version | Model | Request tier | ChatGPT subscription dispatch | API-key dispatch | Disposition |
-| --- | --- | --- | --- | --- | --- |
-| `0.147.0`, `0.148.0`, `0.149.0`, `0.149.1` | `gpt-5.6-sol` | `priority` | authorized | authorized | deliver-now |
-| same | `gpt-5.6-terra` | `priority` | authorized | authorized | deliver-now |
-| same | `gpt-5.6-luna` | `priority` | authorized | authorized | deliver-now |
-| same | `gpt-5.5` | `priority` | authorized | authorized | deliver-now |
-| same | `gpt-5.4` | `priority` | authorized | authorized | deliver-now |
-
-Omitted `service_tier` and `features.fast_mode` on those same version/model
-rows is current behavior, not default Fast serialization.
+No row is deliver-now.
 
 | Row | Disposition |
 | --- | --- |
+| any version / model / profile Fast dispatch on `codex.exec` | not deliver-now; live-catalog substitution and silent downgrade block binding |
+| frozen bundled-catalog Fast membership rows above | evidence-gated only; not dispatch authorization |
+| `--config service_tier="priority"` without pre-prompt confirmation | planned argv only; not proved provider serialization |
 | explicit `service_tier = "default"` | separate standard-tier control; not Fast |
 | `features.fast_mode = false` | blocks all tier dispatch |
-| `gpt-5.4-mini`, `gpt-5.2`, `codex-auto-review` | reject before spawn; no bundled Fast tier |
-| any other slug, prefix, alias, or namespaced form | reject before spawn |
+| `gpt-5.4-mini`, `gpt-5.2`, `codex-auto-review` | no bundled Fast tier at exact tag |
+| any other slug, prefix, alias, or namespaced form | not deliver-now |
 | maintained `0.122.0..=0.146.x` | evidence-gated; catalogs differ or lack full five-model Fast set |
 | retained/ambient exec segments | withheld |
 | `codex.app-server` `/fast` or typed RPC tier | not applicable to this lane |
-| unknown `service_tier` strings on unsupported models | warn-and-omit at Codex; reject before spawn in Swallowtail |
-| live remote catalog as admission authority | withheld |
+| live remote catalog as admission or confirmation authority | withheld |
 | provider-accepted / returned / billed / observed latency truth | withheld |
+| Research 213 verbosity table | not applicable to Fast tier |
 
-Deliver-now rows: **20** explicit Fast dispatch rows (5 models × 4 exact
-published versions), plus omission.
+Deliver-now rows: **0**.
 
 ## Adapter Binding Requirements
 
-Future binding cards may run only for this table. Required binding:
+No Fast/service-tier exec binding is authorized. If a future lane closes the
+pre-prompt confirmation gap, required binding would need at minimum:
 
-- closed adapter-local Fast selection encoding `priority` on the wire
+- closed adapter-local Fast selection encoding wire `priority`
 - optional field on `CodexExecProfileInput` only
-- admit only `CodexExecBehavior::EphemeralSuppressed` and observed CLI version
-  exactly `0.147.0`, `0.148.0`, `0.149.0`, or `0.149.1`
-- admit only exact slugs in the deliver-now table
+- exact slug and version gates before spawn
 - emit `--config service_tier="priority"` using existing `config_string`
-- omit both tier and gate pairs when unset
-- reject `features.fast_mode=false` combinations, unsupported models, unknown
-  tiers, other versions, other behaviors, and plan/evidence drift before
-  process, credential, or provider effects
-- keep ChatGPT-subscription and API-key billing profiles separate in evidence
-  and docs; do not claim credit multipliers from API dispatch
-- do not infer from a `gpt-5` prefix or copy Codex longest-prefix lookup
-- do not pin `model_catalog_json` or mutate user config
+- fail closed when pre-prompt effective tier mismatches or is absent
+- keep ChatGPT-subscription and API-key billing profiles separate
+- do not use live catalog or post-prompt provider bytes as sole confirmation
 - keep `codex.exec.jsonl-v1` and `codex.exec.cli-window-2`
-- no shared `Capability`, generic settings, app-server field, or ceiling bump
 
-Docs may claim qualified dispatch against frozen tag metadata. They must not
-claim provider acceptance, effective returned tier, billing realization, or
-live-catalog support.
+Until that evidence exists, do not add Fast fields to prepared exec profiles.
 
 ## Decision
 
-Card 233 is complete with a non-empty exact table. Fast/service-tier exec
-production binding remains blocked until a future binding card authorizes these
-rows only.
+Card 233 is complete with an honest empty deliver-now set. Gate, config,
+catalog membership, billing split, and omission research are frozen. Fast
+service-tier exec production binding remains blocked.

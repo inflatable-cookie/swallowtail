@@ -187,7 +187,8 @@ may refresh from `/models` plus cache when the endpoint has Codex-backend or
 command auth. ChatGPT auth with at least one list-visible remote model can
 replace the bundled catalog. That live replacement can remove or alter Fast
 membership after spawn. Admission uses the frozen tag table; claims stop at
-selected, planned, and dispatched.
+selected, planned, and config-encoded truth. Provider-field serialization after
+catalog resolution is not proved on the exec path.
 
 Lookup inside Codex uses longest prefix and namespaced suffixes. Swallowtail
 must not copy that. Admission is exact slug equality only.
@@ -216,10 +217,10 @@ window below.
 Official speed documentation separates ChatGPT-credit Fast mode from API-key
 billing. Do not infer one from the other.
 
-| Profile | Dispatch source proof | Billing documentation | Swallowtail disposition |
+| Profile | Config-seam evidence | Billing documentation | Swallowtail disposition |
 | --- | --- | --- | --- |
-| ChatGPT subscription / cached login | gate + catalog membership + `--config` seam | 1.5× speed; GPT-5.6/5.5 credits at 2.5× Standard; GPT-5.4 at 2× | deliver-now dispatch only |
-| API key / enterprise explicit profile | same source seam; no auth gate on `get_service_tier` | API token pricing; ChatGPT credit multipliers do not apply; API Priority at 2× Standard API rate for GPT-5.6 | deliver-now dispatch only |
+| ChatGPT subscription / cached login | gate + frozen catalog membership + `--config` can encode tier | 1.5× speed; GPT-5.6/5.5 credits at 2.5× Standard; GPT-5.4 at 2× | evidence-gated config seam; billing documentation only |
+| API key / enterprise explicit profile | same config seam; no auth gate on `get_service_tier` | API token pricing; ChatGPT credit multipliers do not apply; API Priority at 2× Standard API rate for GPT-5.6 | evidence-gated config seam; billing documentation only |
 
 Provider acceptance, effective returned tier, observed latency, and live
 entitlement are not proved and stay withheld for both profiles.
@@ -235,8 +236,9 @@ Research 213 argv remains byte-equivalent on omission:
 - fixed approval, shell, reasoning, search, and verbosity pairs as already bound
 - no `service_tier` or `features.fast_mode` pair
 
-The smallest adapter-local delta is an optional closed Fast selection on
-`CodexExecProfileInput`, exact slug/version/behavior gates before spawn, and:
+The hypothetical adapter-local delta for a future qualified lane would add an
+optional closed Fast selection on `CodexExecProfileInput`, exact
+slug/version/behavior gates before spawn, and:
 
 ```text
 --config

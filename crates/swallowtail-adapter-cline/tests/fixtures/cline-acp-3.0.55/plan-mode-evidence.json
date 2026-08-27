@@ -1,0 +1,78 @@
+{
+  "route": "cline.acp",
+  "package_axis": "cline.package",
+  "qualified_version": "3.0.55",
+  "github_tag": "cli-v3.0.55",
+  "github_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+  "retrieved": "2026-08-27",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false,
+  "root_argv_plan": {
+    "flag": "--plan",
+    "acp_disposition": "discarded_by_early_return",
+    "sibling_research": 220
+  },
+  "snapshot": {
+    "method": "session/new",
+    "available_modes": ["plan", "act"],
+    "default_current_mode_id": "act",
+    "mode_config_option": {
+      "type": "select",
+      "id": "mode",
+      "category": "mode",
+      "options": ["plan", "act"]
+    }
+  },
+  "deliver_now": {
+    "portable_value": "HarnessMode::Plan",
+    "request": {
+      "method": "session/set_config_option",
+      "params": { "configId": "mode", "value": "plan" }
+    },
+    "confirmation": "response.configOptions[id=mode].currentValue == plan",
+    "application": "ensureSessionManager buildConfig copies session.currentMode before first session/prompt",
+    "lifecycle": "new-session-only-before-first-prompt"
+  },
+  "compatibility_path_withheld_as_swallowtail_request": {
+    "method": "session/set_mode",
+    "params": { "modeId": "plan" },
+    "reason": "empty_rpc_body_current_mode_update_only"
+  },
+  "withheld": [
+    "post-start mode change without sessionManager rebuild",
+    "session/load Plan restoration on fresh connection",
+    "provider act as public value",
+    "root --plan on ACP argv",
+    "ambient planActMode",
+    "Plan as read-only access, sandbox, or containment"
+  ],
+  "omission": {
+    "retains": [
+      "cline --acp",
+      "initialize",
+      "session/new default act",
+      "one bounded session/prompt",
+      "observational permissions",
+      "joined cleanup"
+    ],
+    "plan_claim": false
+  },
+  "permissions": {
+    "options": ["allow_once", "allow_always", "reject_once"],
+    "plan_widens_auto_approve": false,
+    "allow_always_unselected": true
+  },
+  "plan_behavior": {
+    "tool_preset": "plan",
+    "command_guard": true,
+    "switch_to_act_tool_registered_on_acp_path": false,
+    "interactive_start": true
+  },
+  "sources": {
+    "acpAgent.ts": "248092d41e330ef1898f98b99d35c6713574a7b9305d95601177c07e64db9e71",
+    "index.ts": "8cbcf4c04bb9b01ccc877c661210346380732a32b796ac8335663b5d141adbb7",
+    "main.ts": "1b7a0a5b680aa6f3f736826c449f64e9a62dbe7b57e0b55cbc74379d45f37274",
+    "session-updates.ts": "e7f8beca5101fcdfc8079025980b479918c4959fcc34728452ed94f4e1e18fe0"
+  }
+}

@@ -6,6 +6,7 @@ use swallowtail_runtime::MediaChunk;
 pub(crate) enum ClientEvent<'a> {
     SessionUpdate {
         maximum_output_tokens: Option<NonZeroU64>,
+        reasoning_effort: Option<&'a str>,
     },
     InputAudioAppend {
         event_id: &'a str,
@@ -28,6 +29,7 @@ impl ClientEvent<'_> {
         match self {
             Self::SessionUpdate {
                 maximum_output_tokens,
+                reasoning_effort,
             } => {
                 let mut event = json!({
                     "event_id": "session-config-1",
@@ -49,6 +51,9 @@ impl ClientEvent<'_> {
                         "tools": []
                     }
                 });
+                if let Some(effort) = reasoning_effort {
+                    event["session"]["reasoning"] = json!({"effort": effort});
+                }
                 if let Some(maximum) = maximum_output_tokens {
                     event["session"]["max_output_tokens"] = json!(maximum.get());
                 }

@@ -105,7 +105,7 @@ pub(super) async fn pump_response(
             );
         }
         match event {
-            RealtimeServerEvent::SessionConfigured
+            RealtimeServerEvent::SessionConfigured { .. }
             | RealtimeServerEvent::InputCommitted
             | RealtimeServerEvent::Structural
             | RealtimeServerEvent::AudioCompleted { .. } => {}

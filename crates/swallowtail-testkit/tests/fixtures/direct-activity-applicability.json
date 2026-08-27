@@ -253,7 +253,7 @@
       "id": "openai.realtime",
       "driver": "swallowtail.openai.realtime",
       "transport": "realtime-websocket",
-      "qualified": "openai-realtime-2026-07-22",
+      "qualified": "openai-realtime-reasoning-2026-08-27",
       "ordinary_profiles": [],
       "non_activity_operations": [
         {

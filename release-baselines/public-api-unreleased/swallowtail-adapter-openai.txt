@@ -128,6 +128,7 @@ impl swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput
 pub fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
 pub const fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
 pub const fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
+pub fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_ACCESS_PROFILE_ID: &str
 pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_CONFIGURED_INSTANCE_ID: &str
 pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_ENDPOINT: &str
@@ -147,6 +148,7 @@ pub const swallowtail_adapter_openai::OPENAI_REALTIME_ENDPOINT_AUDIENCE: &str
 pub const swallowtail_adapter_openai::OPENAI_REALTIME_FACADE_REVISION: &str
 pub const swallowtail_adapter_openai::OPENAI_REALTIME_MODEL_ID: &str
 pub const swallowtail_adapter_openai::OPENAI_REALTIME_MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_SUPERSEDED_FACADE_REVISION: &str
 pub fn swallowtail_adapter_openai::openai_background_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
 pub fn swallowtail_adapter_openai::openai_background_descriptor() -> swallowtail_core::registration::DriverDescriptor
 pub fn swallowtail_adapter_openai::openai_background_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding

@@ -23,7 +23,12 @@ pub const OPENAI_REALTIME_ACCESS_PROFILE_ID: &str = "openai.realtime.public-api.
 /// Canonical configured-instance identity for OpenAI Realtime.
 pub const OPENAI_REALTIME_CONFIGURED_INSTANCE_ID: &str = "openai.public.realtime";
 /// Exact qualified revision of the Realtime facade.
-pub const OPENAI_REALTIME_FACADE_REVISION: &str = "openai-realtime-2026-07-22";
+pub const OPENAI_REALTIME_FACADE_REVISION: &str = "openai-realtime-reasoning-2026-08-27";
+/// Historical facade point qualified before session-scoped reasoning selection.
+///
+/// It names the frozen `openai.realtime-manual-pcm-v1` proof. It is not a
+/// supported route claim, and the driver rejects plans that carry it.
+pub const OPENAI_REALTIME_SUPERSEDED_FACADE_REVISION: &str = "openai-realtime-2026-07-22";
 /// Exact model identity qualified for the Realtime route.
 pub const OPENAI_REALTIME_MODEL_ID: &str = "gpt-realtime-2.1";
 /// Canonical model-route identity for OpenAI Realtime.
@@ -59,7 +64,7 @@ pub fn openai_realtime_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
             InterfaceCompatibilityClaimId::new,
-            "openai.realtime-window-1",
+            "openai.realtime-window-2",
         ),
         id(InterfaceVersionAxis::new, FACADE_AXIS),
         InterfaceVersionScheme::Opaque,
@@ -68,7 +73,7 @@ pub fn openai_realtime_facade_claim() -> InterfaceCompatibilityClaim {
             id(InterfaceVersion::new, OPENAI_REALTIME_FACADE_REVISION),
             id(
                 InterfaceBehaviorRevision::new,
-                "openai.realtime-manual-pcm-v1",
+                "openai.realtime-manual-pcm-reasoning-v2",
             ),
             InterfaceSupportStatus::Maintained,
         )],

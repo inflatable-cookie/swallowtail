@@ -34,7 +34,9 @@ impl Drop for ProviderAudio {
 }
 
 pub(crate) enum RealtimeServerEvent {
-    SessionConfigured,
+    SessionConfigured {
+        reasoning_effort: Option<String>,
+    },
     InputCommitted,
     Structural,
     ResponseStarted(String),
@@ -65,7 +67,7 @@ pub(crate) enum RealtimeServerEvent {
 impl std::fmt::Debug for RealtimeServerEvent {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str(match self {
-            Self::SessionConfigured => "RealtimeServerEvent::SessionConfigured",
+            Self::SessionConfigured { .. } => "RealtimeServerEvent::SessionConfigured",
             Self::InputCommitted => "RealtimeServerEvent::InputCommitted",
             Self::Structural => "RealtimeServerEvent::Structural",
             Self::ResponseStarted(_) => "RealtimeServerEvent::ResponseStarted(<redacted>)",
@@ -137,7 +139,20 @@ fn parse_session(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {
             "OpenAI Realtime session format does not match preflight",
         ));
     }
-    Ok(RealtimeServerEvent::SessionConfigured)
+    let reasoning_effort = match value
+        .get("session")
+        .and_then(|session| session.get("reasoning"))
+    {
+        None => None,
+        Some(reasoning) => {
+            let effort = reasoning
+                .get("effort")
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            Some(effort.to_owned())
+        }
+    };
+    Ok(RealtimeServerEvent::SessionConfigured { reasoning_effort })
 }
 
 fn parse_done(value: &Value) -> Result<RealtimeServerEvent, RuntimeFailure> {

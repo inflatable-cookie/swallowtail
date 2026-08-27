@@ -7,5 +7,7 @@ mod realtime_driver;
 mod realtime_failures;
 #[path = "realtime_prepared_facade.rs"]
 mod realtime_prepared_facade;
+#[path = "realtime_reasoning.rs"]
+mod realtime_reasoning;
 #[path = "realtime_success.rs"]
 mod realtime_success;

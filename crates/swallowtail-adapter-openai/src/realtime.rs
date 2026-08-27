@@ -17,6 +17,7 @@ pub(crate) const DRIVER_ID: &str = "swallowtail.openai.realtime";
 pub(crate) const ROUTE: &str = "openai.realtime";
 pub(crate) const MODEL_ID: &str = "gpt-realtime-2.1";
 pub(crate) const REALTIME_PATH: &str = "/v1/realtime";
+pub(crate) const PROTOCOL_FACADE: &str = crate::OPENAI_REALTIME_FACADE_REVISION;
 
 #[derive(Clone, Default)]
 /// Low-level driver for one OpenAI Realtime media connection.
@@ -34,7 +35,9 @@ impl OpenAiRealtimeDriver {
         request: &OpenRealtimeMediaSessionRequest,
         services: &HostServices,
     ) -> Result<(), RuntimeFailure> {
-        if plan.driver_identity().id().as_str() != DRIVER_ID {
+        if plan.driver_identity().id().as_str() != DRIVER_ID
+            || plan.protocol_facade_id().as_str() != PROTOCOL_FACADE
+        {
             return Err(rejected("plan belongs to a different driver"));
         }
         if plan.credential_mechanism() != &CredentialMechanism::ApiKey
@@ -92,14 +95,7 @@ impl OpenAiRealtimeDriver {
             (None, None) => {}
             _ => return Err(rejected("output maximum differs from preflight")),
         }
-        if request.reasoning_mode().is_some()
-            || plan
-                .requirements()
-                .capabilities()
-                .any(|requirement| requirement.capability() == Capability::ReasoningSelection)
-        {
-            return Err(rejected("reasoning selection is not supported"));
-        }
+        validate_reasoning(plan, request)?;
         if request.config() != &realtime_config()
             || plan
                 .requirements()
@@ -168,7 +164,7 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
         "swallowtail.openai.realtime_preflight_rejected",
         match reason {
             "plan belongs to a different driver" => {
-                "OpenAI Realtime plan belongs to a different driver"
+                "OpenAI Realtime requires the exact realtime driver and facade"
             }
             "public API-key access is not exact" => {
                 "OpenAI Realtime requires the exact public API-key access boundary"
@@ -185,8 +181,8 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             "media format or bounds differ from preflight" => {
                 "OpenAI Realtime media format or bounds differ from preflight"
             }
-            "reasoning selection is not supported" => {
-                "OpenAI Realtime does not support realtime reasoning selection"
+            "reasoning selection differs from preflight" => {
+                "OpenAI Realtime reasoning selection differs from preflight"
             }
             "output maximum differs from preflight" => {
                 "OpenAI Realtime output maximum differs from preflight"
@@ -194,4 +190,26 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             _ => "OpenAI Realtime required host services are unavailable",
         },
     )
+}
+
+fn validate_reasoning(
+    plan: &PreflightPlan,
+    request: &OpenRealtimeMediaSessionRequest,
+) -> Result<(), RuntimeFailure> {
+    let planned = plan
+        .requirements()
+        .capabilities()
+        .find(|requirement| requirement.capability() == Capability::ReasoningSelection);
+    match (request.reasoning_mode(), planned) {
+        (None, None) => Ok(()),
+        (Some(mode), Some(requirement))
+            if crate::realtime_reasoning::session_effort(mode).is_some()
+                && requirement
+                    .constraints()
+                    .eq([&CapabilityConstraint::ReasoningMode(mode.clone())]) =>
+        {
+            Ok(())
+        }
+        _ => Err(rejected("reasoning selection differs from preflight")),
+    }
 }

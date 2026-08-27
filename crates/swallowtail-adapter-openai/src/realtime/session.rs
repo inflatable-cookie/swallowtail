@@ -60,8 +60,15 @@ impl RealtimeMediaSessionDriver for OpenAiRealtimeDriver {
                 }
             };
             let mut updates = worker.take_updates().expect("new worker owns updates");
-            let configured =
-                configure(&worker, &mut updates, request.maximum_output_tokens()).await;
+            let configured = configure(
+                &worker,
+                &mut updates,
+                request.maximum_output_tokens(),
+                request
+                    .reasoning_mode()
+                    .and_then(crate::realtime_reasoning::session_effort),
+            )
+            .await;
             if let Err(error) = configured {
                 let _ = worker.close().await;
                 let _ = worker_work.await;
@@ -109,22 +116,38 @@ async fn configure(
     worker: &WorkerHandle,
     updates: &mut mpsc::Receiver<WorkerUpdate>,
     maximum_output_tokens: Option<std::num::NonZeroU64>,
+    reasoning_effort: Option<&str>,
 ) -> Result<(), RuntimeFailure> {
-    expect_session(update(updates).await?)?;
+    expect_session(update(updates).await?, None)?;
     worker
         .send(
             ClientEvent::SessionUpdate {
                 maximum_output_tokens,
+                reasoning_effort,
             }
             .to_json(),
         )
         .await?;
-    expect_session(update(updates).await?)
+    expect_session(update(updates).await?, reasoning_effort)
 }
 
-fn expect_session(update: WorkerUpdate) -> Result<(), RuntimeFailure> {
+fn expect_session(
+    update: WorkerUpdate,
+    expected_effort: Option<&str>,
+) -> Result<(), RuntimeFailure> {
     match update {
-        WorkerUpdate::Event(RealtimeServerEvent::SessionConfigured) => Ok(()),
+        WorkerUpdate::Event(RealtimeServerEvent::SessionConfigured { reasoning_effort }) => {
+            match expected_effort {
+                None => Ok(()),
+                Some(wanted) => match reasoning_effort.as_deref() {
+                    Some(got) if got == wanted => Ok(()),
+                    _ => Err(failure(
+                        "swallowtail.openai.realtime_reasoning_acknowledgement_invalid",
+                        "OpenAI Realtime session reasoning acknowledgement did not match the selected effort",
+                    )),
+                },
+            }
+        }
         WorkerUpdate::Event(_) => Err(failure(
             "swallowtail.openai.realtime_session_order_invalid",
             "OpenAI Realtime session handshake ordering was invalid",

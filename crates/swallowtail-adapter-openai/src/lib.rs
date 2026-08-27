@@ -20,6 +20,7 @@ mod prepared_reconciliation;
 mod protocol;
 mod realtime;
 mod realtime_protocol;
+mod realtime_reasoning;
 mod realtime_selection;
 mod selection;
 mod service_tier;
@@ -52,7 +53,8 @@ pub use realtime::{OpenAiRealtimeDriver, openai_realtime_descriptor};
 pub use realtime_selection::{
     OPENAI_REALTIME_ACCESS_PROFILE_ID, OPENAI_REALTIME_CONFIGURED_INSTANCE_ID,
     OPENAI_REALTIME_ENDPOINT, OPENAI_REALTIME_ENDPOINT_AUDIENCE, OPENAI_REALTIME_FACADE_REVISION,
-    OPENAI_REALTIME_MODEL_ID, OPENAI_REALTIME_MODEL_ROUTE_ID, openai_realtime_access_profile,
+    OPENAI_REALTIME_MODEL_ID, OPENAI_REALTIME_MODEL_ROUTE_ID,
+    OPENAI_REALTIME_SUPERSEDED_FACADE_REVISION, openai_realtime_access_profile,
     openai_realtime_facade_binding, openai_realtime_facade_claim, openai_realtime_instance,
     openai_realtime_media_config, openai_realtime_model_route, openai_realtime_requirements,
 };

@@ -3,7 +3,8 @@ use super::services::{CallLog, ThreadServices, TimeMode, TrackingCredential, Tra
 use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use std::sync::Arc;
 use swallowtail_adapter_openai::{
-    OpenAiRealtimePreparationInput, openai_realtime_access_profile, openai_realtime_descriptor,
+    OPENAI_REALTIME_FACADE_REVISION, OpenAiRealtimePreparationInput,
+    openai_realtime_access_profile, openai_realtime_descriptor,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AudioEncoding, Capability,
@@ -117,9 +118,25 @@ impl RealtimeFixture {
     }
 
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade_and_reasoning(OPENAI_REALTIME_FACADE_REVISION, None)
+    }
+
+    pub fn plan_with_reasoning(&self, reasoning: &str) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade_and_reasoning(OPENAI_REALTIME_FACADE_REVISION, Some(reasoning))
+    }
+
+    pub fn plan_with_facade(&self, facade: &str) -> swallowtail_core::PreflightPlan {
+        self.plan_with_facade_and_reasoning(facade, None)
+    }
+
+    fn plan_with_facade_and_reasoning(
+        &self,
+        facade: &str,
+        reasoning: Option<&str>,
+    ) -> swallowtail_core::PreflightPlan {
         let descriptor = openai_realtime_descriptor();
         let access_id = AccessProfileId::new("access.openai.realtime").expect("access id is valid");
-        let requirements = capabilities();
+        let requirements = capabilities(reasoning);
         let profile = CapabilityProfile::new(requirements.clone());
         let instance = ConfiguredInstance::new(
             ConfiguredInstanceId::new("openai.public.realtime").expect("instance id is valid"),
@@ -130,7 +147,7 @@ impl RealtimeFixture {
             InstanceOwnership::ExternalAttached,
             access_id.clone(),
             SupportAuthority::ProviderSupported,
-            ProtocolFacadeId::new("openai-realtime-2026-07-22").expect("facade is valid"),
+            ProtocolFacadeId::new(facade).expect("facade is valid"),
             InstancePolicyId::new("public-api-key-audio-only").expect("policy is valid"),
             profile.clone(),
         );
@@ -205,8 +222,8 @@ pub fn config() -> RealtimeMediaConfig {
     )
 }
 
-fn capabilities() -> Vec<CapabilityRequirement> {
-    vec![
+fn capabilities(reasoning: Option<&str>) -> Vec<CapabilityRequirement> {
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
@@ -216,5 +233,14 @@ fn capabilities() -> Vec<CapabilityRequirement> {
             )],
         ),
         config().capability_requirement(),
-    ]
+    ];
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(
+                swallowtail_core::ReasoningMode::new(reasoning).expect("reasoning is valid"),
+            )],
+        ));
+    }
+    capabilities
 }

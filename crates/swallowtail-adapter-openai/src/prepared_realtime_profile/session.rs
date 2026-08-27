@@ -6,7 +6,7 @@ use crate::prepared_realtime::failure;
 use crate::{OpenAiRealtimeDriver, OpenAiRealtimePreparedIntegration};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
-    PlannedConnectionRolloverPolicy, PreflightPlan,
+    PlannedConnectionRolloverPolicy, PreflightPlan, ReasoningMode,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OpenRealtimeMediaSessionRequest, PreparationFailure, PreparationStage,
@@ -95,7 +95,8 @@ impl OpenAiRealtimePreparedIntegration {
         &self,
         input: OpenAiRealtimeSessionProfileInput,
     ) -> Result<OpenAiPreparedRealtimeSession, PreparationFailure> {
-        let (request_id, config, deadline, rollover, maximum_output_tokens) = input.into_parts();
+        let (request_id, config, deadline, rollover, reasoning_mode, maximum_output_tokens) =
+            input.into_parts();
         if config != crate::openai_realtime_media_config() {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -110,6 +111,16 @@ impl OpenAiRealtimePreparedIntegration {
                 "OpenAI Realtime preparation does not permit planned connection rollover",
             ));
         }
+        if reasoning_mode
+            .as_ref()
+            .is_some_and(|mode| crate::realtime_reasoning::session_effort(mode).is_none())
+        {
+            return Err(failure(
+                PreparationStage::Preflight,
+                "swallowtail.openai.realtime_preparation.reasoning_value_unsupported",
+                "OpenAI Realtime preparation admits only minimal, low, medium, high, or xhigh reasoning effort",
+            ));
+        }
         if maximum_output_tokens.is_some_and(|maximum| maximum.get() > 4096) {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -117,13 +128,16 @@ impl OpenAiRealtimePreparedIntegration {
                 "OpenAI Realtime output-token maximum must be between 1 and 4096",
             ));
         }
-        let capability_requirements = capabilities(maximum_output_tokens);
+        let capability_requirements = capabilities(reasoning_mode.as_ref(), maximum_output_tokens);
         let capability_profile = CapabilityProfile::new(capability_requirements.clone());
         let instance = instance_with_capabilities(self, capability_profile.clone());
         let route = model_route(self, capability_profile);
         let plan = build_plan(self, &instance, &route, capability_requirements)?;
         let mut request = OpenRealtimeMediaSessionRequest::new(request_id, config, deadline)
             .with_planned_connection_rollover(rollover);
+        if let Some(mode) = reasoning_mode {
+            request = request.with_reasoning_mode(mode);
+        }
         if let Some(maximum) = maximum_output_tokens {
             request = request.with_maximum_output_tokens(maximum);
         }
@@ -134,7 +148,10 @@ impl OpenAiRealtimePreparedIntegration {
     }
 }
 
-fn capabilities(maximum: Option<std::num::NonZeroU64>) -> Vec<CapabilityRequirement> {
+fn capabilities(
+    mode: Option<&ReasoningMode>,
+    maximum: Option<std::num::NonZeroU64>,
+) -> Vec<CapabilityRequirement> {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
@@ -146,6 +163,12 @@ fn capabilities(maximum: Option<std::num::NonZeroU64>) -> Vec<CapabilityRequirem
         ),
         crate::openai_realtime_media_config().capability_requirement(),
     ];
+    if let Some(mode) = mode {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+    }
     if let Some(maximum) = maximum {
         capabilities.push(CapabilityRequirement::new(
             Capability::OutputTokenLimit,

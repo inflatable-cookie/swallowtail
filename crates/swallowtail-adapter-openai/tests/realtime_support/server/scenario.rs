@@ -13,12 +13,18 @@ pub(super) fn run(
 ) {
     let mut session = SESSION_EVENTS.lines();
     send(socket, session.next().expect("session.created exists"));
-    record(socket, frames);
+    let update = record(socket, frames);
     if matches!(scenario, RealtimeScenario::FormatDrift) {
         send(socket, FORMAT_DRIFT);
         return;
     }
-    send(socket, session.next().expect("session.updated exists"));
+    let updated = match scenario {
+        RealtimeScenario::ReasoningAckMissing => session_updated_without_reasoning(),
+        RealtimeScenario::ReasoningAckMismatch => session_updated_with_effort("high"),
+        RealtimeScenario::ReasoningAckMalformed => session_updated_malformed_reasoning(),
+        _ => session_updated_echoing(&update, session.next().expect("session.updated exists")),
+    };
+    send(socket, &updated);
     match scenario {
         RealtimeScenario::TwoTurns => {
             for turn in 1..=2 {
@@ -64,8 +70,80 @@ pub(super) fn run(
                 r#"{"type":"future.semantic.event","private":"hidden"}"#,
             );
         }
-        RealtimeScenario::FormatDrift => unreachable!("format drift exits during handshake"),
+        RealtimeScenario::FormatDrift
+        | RealtimeScenario::ReasoningAckMissing
+        | RealtimeScenario::ReasoningAckMismatch
+        | RealtimeScenario::ReasoningAckMalformed => {}
     }
+}
+
+fn session_updated_echoing(update_frame: &str, baseline: &str) -> String {
+    let update: Value = serde_json::from_str(update_frame).expect("session update is JSON");
+    let mut updated: Value = serde_json::from_str(baseline).expect("session updated is JSON");
+    match update
+        .pointer("/session/reasoning/effort")
+        .and_then(Value::as_str)
+    {
+        Some(effort) => {
+            updated["session"]["reasoning"] = json!({"effort": effort});
+        }
+        None => {
+            if let Some(session) = updated.get_mut("session").and_then(Value::as_object_mut) {
+                session.remove("reasoning");
+            }
+        }
+    }
+    updated.to_string()
+}
+
+fn session_updated_without_reasoning() -> String {
+    json!({
+        "event_id": "server-session-2",
+        "type": "session.updated",
+        "session": {
+            "id": "sess_fixture",
+            "model": "gpt-realtime-2.1",
+            "audio": {
+                "input": {"format": {"type": "audio/pcm", "rate": 24000}},
+                "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": "marin"}
+            }
+        }
+    })
+    .to_string()
+}
+
+fn session_updated_with_effort(effort: &str) -> String {
+    json!({
+        "event_id": "server-session-2",
+        "type": "session.updated",
+        "session": {
+            "id": "sess_fixture",
+            "model": "gpt-realtime-2.1",
+            "reasoning": {"effort": effort},
+            "audio": {
+                "input": {"format": {"type": "audio/pcm", "rate": 24000}},
+                "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": "marin"}
+            }
+        }
+    })
+    .to_string()
+}
+
+fn session_updated_malformed_reasoning() -> String {
+    json!({
+        "event_id": "server-session-2",
+        "type": "session.updated",
+        "session": {
+            "id": "sess_fixture",
+            "model": "gpt-realtime-2.1",
+            "reasoning": {"effort": 1},
+            "audio": {
+                "input": {"format": {"type": "audio/pcm", "rate": 24000}},
+                "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": "marin"}
+            }
+        }
+    })
+    .to_string()
 }
 
 fn send_response_started(socket: &mut tungstenite::WebSocket<TcpStream>) {

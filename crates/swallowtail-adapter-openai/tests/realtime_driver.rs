@@ -174,28 +174,44 @@ fn invalid_media_request_rejects_before_access_or_connection() {
 }
 
 #[test]
-fn realtime_reasoning_selection_rejects_before_access_or_connection() {
+fn realtime_reasoning_plan_request_drift_rejects_before_access_or_connection() {
     let fixture = RealtimeFixture::new(RealtimeScenario::TwoTurns, TimeMode::Pending);
-    let error = block_on(
-        OpenAiRealtimeDriver::new().open_realtime_media_session(
-            fixture.plan(),
-            OpenRealtimeMediaSessionRequest::new(
-                RequestId::new("reasoning").expect("request id is valid"),
-                config(),
-                None,
-            )
-            .with_reasoning_mode(
-                swallowtail_core::ReasoningMode::new("low").expect("mode is valid"),
-            ),
-            fixture.services(),
-        ),
-    )
-    .err()
-    .expect("unsupported realtime reasoning is rejected");
-    assert_eq!(
-        error.diagnostic().code(),
-        "swallowtail.openai.realtime_preflight_rejected"
+    let base = OpenRealtimeMediaSessionRequest::new(
+        RequestId::new("reasoning-drift").expect("request id is valid"),
+        config(),
+        None,
     );
+    let selected = swallowtail_core::ReasoningMode::new("low").expect("mode is valid");
+    let drifted = [
+        (
+            fixture.plan(),
+            base.clone().with_reasoning_mode(selected.clone()),
+        ),
+        (fixture.plan_with_reasoning("low"), base.clone()),
+        (
+            fixture.plan_with_reasoning("high"),
+            base.clone().with_reasoning_mode(selected.clone()),
+        ),
+        (
+            fixture.plan_with_reasoning("none"),
+            base.with_reasoning_mode(
+                swallowtail_core::ReasoningMode::new("none").expect("mode is valid"),
+            ),
+        ),
+    ];
+    for (plan, request) in drifted {
+        let error = block_on(OpenAiRealtimeDriver::new().open_realtime_media_session(
+            plan,
+            request,
+            fixture.services(),
+        ))
+        .err()
+        .expect("drifted realtime reasoning is rejected");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.openai.realtime_preflight_rejected"
+        );
+    }
     assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
     assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
     assert!(fixture.server.frames().is_empty());

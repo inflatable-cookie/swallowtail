@@ -9,18 +9,20 @@ device, paid request, raw provider capture, or live account state is present.
 Fixture identifiers and event bodies are synthetic.
 
 `reasoning-effort-session-update.json` freezes one positive session-scoped
-effort selection beside the dated route's manual PCM session shape.
+effort selection beside the dated route's manual PCM session shape. Production
+encoding uses event id `session-config-1` with the same session body members.
 
 `reasoning-effort-session-updated.json` freezes the matching provider
 acknowledgement shape documented for `session.updated`.
 
 `reasoning-effort-response-create-override.json` freezes the documented
-per-response override surface. It is lead evidence for alternate operation
-timing, not a claim of the current dated facade encoder.
+per-response override surface. It remains withheld lead evidence; the current
+encoder still emits bare `response.create`.
 
-These files are contract evidence for g04.083 card 235, not realized adapter
-claims. Current production rejects every reasoning selection before access or
-connection work.
+These files are contract evidence for Research 236 and g04.084 cards 236-237.
+Facade `openai-realtime-reasoning-2026-08-27` binds the five exact session
+values with matching acknowledgement. Effective reasoning depth and
+reasoning-token usage remain unclaimed.
 
 Authority:
 

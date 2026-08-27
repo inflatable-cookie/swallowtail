@@ -150,18 +150,25 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                     services,
                 )
                 .await?;
-            let session_ref =
-                match startup::bootstrap(&pending.connection, &plan, &pending.leased_cwd).await {
-                    Ok(session_ref) => session_ref,
-                    Err(error) => {
-                        pending.abort().await;
-                        return Err(error);
-                    }
-                };
+            let session_ref = match startup::bootstrap(
+                &pending.connection,
+                &plan,
+                &pending.leased_cwd,
+                request.options(),
+            )
+            .await
+            {
+                Ok(session_ref) => session_ref,
+                Err(error) => {
+                    pending.abort().await;
+                    return Err(error);
+                }
+            };
             if let Err(error) = startup::check_state(
                 &pending.connection,
                 &plan,
                 &pending.leased_cwd,
+                request.options(),
                 Some(&session_ref),
             )
             .await
@@ -199,7 +206,7 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                 working_resource,
                 deadline: request.deadline(),
                 plan_agreement: request.plan_agreement().clone(),
-                options_empty: request.options().is_empty(),
+                options: request.options().clone(),
             };
             let attached = self.attach(plan, attachment, services, true).await?;
             Ok(LoadedSession::new(attached.replay, attached.handle))
@@ -219,7 +226,7 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                 working_resource: request.working_resource().clone(),
                 deadline: request.deadline(),
                 plan_agreement: request.plan_agreement().clone(),
-                options_empty: request.options().is_empty(),
+                options: request.options().clone(),
             };
             let attached = self.attach(plan, attachment, services, false).await?;
             Ok(attached.handle)

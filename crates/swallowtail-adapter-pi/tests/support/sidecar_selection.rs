@@ -13,11 +13,11 @@ use swallowtail_core::{
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, InterfaceVersion,
     InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
     ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
-    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
-    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
+    ProtocolFacadeId, ProviderId, ReasoningMode, ResourceAccess, ResourceRepresentation,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    OpenSessionRequest, RequestId, SessionPlanAgreement, WorkingResourceRef,
+    OpenSessionRequest, RequestId, SessionOptions, SessionPlanAgreement, WorkingResourceRef,
 };
 
 /// Builds a session-open request carrying the durable provider-state posture.
@@ -289,4 +289,104 @@ fn capabilities(role: DriverRole, image_attachments: bool) -> Vec<CapabilityRequ
         ));
     }
     capabilities
+}
+
+/// Builds an interactive-session plan for the Research 228 qualified row.
+pub fn sidecar_reasoning_selection(host: ExecutionHostId, mode: &str) -> SidecarFixtureSelection {
+    let mode = ReasoningMode::new(mode).expect("valid reasoning mode");
+    let mut capability_requirements = capabilities(DriverRole::InteractiveSession, false);
+    capability_requirements.push(CapabilityRequirement::new(
+        Capability::ReasoningSelection,
+        [CapabilityConstraint::ReasoningMode(mode.clone())],
+    ));
+    let capabilities = CapabilityProfile::new(capability_requirements.clone());
+    let descriptor = pi_sdk_sidecar_descriptor();
+    let instance_id =
+        ConfiguredInstanceId::new("pi.fixture.sdk-sidecar-instance").expect("valid instance");
+    let credential = CredentialRef::new("pi.fixture.delegated-auth").expect("valid credential");
+    let access_id = AccessProfileId::new("pi.fixture.harness-auth").expect("valid access id");
+    let resource = WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource");
+    let rpc_policy = rpc_policy();
+    let instance = ConfiguredInstance::new(
+        instance_id.clone(),
+        InstanceRevision::new("fixture-revision").expect("valid revision"),
+        descriptor.identity().id().clone(),
+        host.clone(),
+        InstanceTargetRef::new("pi.fixture.pinned-launch-recipe").expect("valid target"),
+        InstanceOwnership::HostOwnedEphemeral,
+        access_id.clone(),
+        SupportAuthority::IntegrationMaintainerSupported,
+        ProtocolFacadeId::new("pi-sdk-sidecar-jsonl-v1").expect("valid facade"),
+        InstancePolicyId::new("pi-sdk-sidecar-ambient-read").expect("valid policy"),
+        capabilities.clone(),
+    )
+    .with_interface_versions(sidecar_versions().to_vec())
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_harness_rpc_policy(rpc_policy.clone());
+    let access = AccessProfile::new(
+        access_id.clone(),
+        CredentialMechanism::ProviderSpecific(
+            ExtensionNamespace::new("pi/delegated-harness-auth").expect("valid namespace"),
+        ),
+        EntitlementMetering::Unknown,
+        EndpointAudience::new("pi-harness").expect("valid audience"),
+        SupportAuthority::IntegrationMaintainerSupported,
+    )
+    .with_credential_reference(credential.clone());
+    let status = AccessStatus::new(
+        access_id,
+        CredentialState::Ready,
+        EntitlementState::Unknown,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::IntegrationMaintainerSupported,
+    );
+    let services = service_kinds(DriverRole::InteractiveSession, false);
+    let route = ModelRoute::new(
+        ModelRouteId::new("pi.fixture.route").expect("valid route"),
+        ModelRouteRevision::new("fixture-route-revision").expect("valid route revision"),
+        instance_id,
+        ModelId::new("claude-opus-4-5").expect("valid model"),
+        capabilities,
+    )
+    .with_provider_id(ProviderId::new("anthropic").expect("valid provider"));
+    let requirements = OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::InteractiveSession,
+        DriverRole::InteractiveSession,
+        host,
+        AccessRequirement::new(
+            AccessProfileId::new("pi.fixture.harness-auth").expect("valid access"),
+        )
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Unknown])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::IntegrationMaintainerSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::HostOwnedEphemeral])
+    .with_host_services(services.clone())
+    .with_capabilities(capability_requirements)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_interface_versions(sidecar_versions().to_vec())
+    .with_harness_rpc_policy(rpc_policy)
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    .require_model_route();
+    let plan = preflight(
+        &PreflightContext::new(&descriptor, &instance, &access, &status, services)
+            .with_model_route(&route),
+        &requirements,
+    )
+    .expect("reasoning sidecar fixture preflight succeeds");
+    SidecarFixtureSelection {
+        plan,
+        credential,
+        resource,
+    }
+}
+
+pub fn reasoning_options(mode: &str) -> SessionOptions {
+    SessionOptions::default().with_reasoning_mode(ReasoningMode::new(mode).expect("valid mode"))
 }

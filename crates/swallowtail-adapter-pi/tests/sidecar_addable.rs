@@ -23,7 +23,8 @@ use swallowtail_host_local::{
 };
 use swallowtail_runtime::{
     AddableRouteCatalog, ConnectionLifecycleStore, CredentialService, HostServices,
-    InstanceAdmissionRequest, ProcessService, RequestId, WorkingResourceRef, admit_instance,
+    InstanceAdmissionRequest, ProcessService, RequestId, SessionOptions, WorkingResourceRef,
+    admit_instance,
 };
 
 const INSTANCE: &str = "pi.fixture.sdk-sidecar.admitted";
@@ -161,8 +162,11 @@ fn admission_prepares_and_opens_through_the_fixture_sidecar() {
             .is_some()
     );
 
-    let prepared = prepare_pi_sdk_sidecar_session(preparation_from(&admitted, "sidecar-admit"))
-        .expect("admitted instance prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation_from(&admitted, "sidecar-admit"),
+        SessionOptions::default(),
+    )
+    .expect("admitted instance prepares");
     assert_eq!(prepared.plan().instance_id().as_str(), INSTANCE);
     assert_eq!(
         prepared.plan().instance_target_ref().as_host_value(),

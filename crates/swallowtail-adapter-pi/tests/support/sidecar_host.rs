@@ -41,6 +41,7 @@ pub enum SidecarScenario {
     ReplayAfterResponse,
     ReplayDuringResume,
     HoldReplay,
+    ThinkingMismatch,
 }
 
 /// Provider-session reference the fixture "persists" across sidecar processes.
@@ -79,6 +80,7 @@ struct ProcessState {
     stopped: bool,
     bootstrap: Option<(String, String, String)>,
     session_ref: Option<String>,
+    thinking_level: Option<String>,
 }
 
 impl SidecarFixtureHost {

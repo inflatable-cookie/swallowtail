@@ -47,6 +47,10 @@ pub(super) fn respond(
                 .to_owned();
             state.bootstrap = Some((cwd.clone(), provider.clone(), model.clone()));
             state.session_ref = Some(FIXTURE_SESSION_REF.to_owned());
+            state.thinking_level = params
+                .get("thinkingLevel")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
             let (sdk_version, node_version) =
                 if matches!(scenario, SidecarScenario::BootstrapVersionMismatch) {
                     ("0.84.1", "22.23.1")
@@ -58,6 +62,30 @@ pub(super) fn respond(
             } else {
                 cwd.as_str()
             };
+            let mut data = json!({
+                "wire": "swallowtail-pi-sdk-jsonl-v1",
+                "behavior": "pi.sdk-sidecar-v1",
+                "sdkPackage": "@earendil-works/pi-coding-agent",
+                "sdkVersion": sdk_version,
+                "nodeVersion": node_version,
+                "provider": provider,
+                "model": model,
+                "cwd": effective_cwd,
+                "idle": true,
+                "streaming": false,
+                "messages": 0,
+                "sessionId": "00000000-0000-0000-0000-000000000000",
+                "sessionRef": FIXTURE_SESSION_REF,
+                "tools": ["read", "grep", "find", "ls"]
+            });
+            if let Some(thinking_level) = state.thinking_level.as_ref() {
+                let reported = if matches!(scenario, SidecarScenario::ThinkingMismatch) {
+                    "low"
+                } else {
+                    thinking_level.as_str()
+                };
+                data["thinkingLevel"] = json!(reported);
+            }
             output(
                 state,
                 json!({
@@ -65,22 +93,7 @@ pub(super) fn respond(
                     "id": id,
                     "command": "bootstrap",
                     "success": true,
-                    "data": {
-                        "wire": "swallowtail-pi-sdk-jsonl-v1",
-                        "behavior": "pi.sdk-sidecar-v1",
-                        "sdkPackage": "@earendil-works/pi-coding-agent",
-                        "sdkVersion": sdk_version,
-                        "nodeVersion": node_version,
-                        "provider": provider,
-                        "model": model,
-                        "cwd": effective_cwd,
-                        "idle": true,
-                        "streaming": false,
-                        "messages": 0,
-                        "sessionId": "00000000-0000-0000-0000-000000000000",
-                        "sessionRef": FIXTURE_SESSION_REF,
-                        "tools": ["read", "grep", "find", "ls"]
-                    }
+                    "data": data
                 }),
             );
         }
@@ -92,6 +105,25 @@ pub(super) fn respond(
             } else {
                 provider.as_str()
             };
+            let mut data = json!({
+                "cwd": cwd,
+                "provider": provider,
+                "model": model,
+                "idle": true,
+                "streaming": false,
+                "messages": 0,
+                "sessionId": "00000000-0000-0000-0000-000000000000",
+                "sessionRef": session_ref,
+                "tools": ["read", "grep", "find", "ls"]
+            });
+            if let Some(thinking_level) = state.thinking_level.as_ref() {
+                let reported = if matches!(scenario, SidecarScenario::ThinkingMismatch) {
+                    "low"
+                } else {
+                    thinking_level.as_str()
+                };
+                data["thinkingLevel"] = json!(reported);
+            }
             output(
                 state,
                 json!({
@@ -99,17 +131,7 @@ pub(super) fn respond(
                     "id": id,
                     "command": "state",
                     "success": true,
-                    "data": {
-                        "cwd": cwd,
-                        "provider": provider,
-                        "model": model,
-                        "idle": true,
-                        "streaming": false,
-                        "messages": 0,
-                        "sessionId": "00000000-0000-0000-0000-000000000000",
-                        "sessionRef": session_ref,
-                        "tools": ["read", "grep", "find", "ls"]
-                    }
+                    "data": data
                 }),
             );
         }
@@ -190,7 +212,8 @@ pub(super) fn respond(
                 | SidecarScenario::ReplayOverflow
                 | SidecarScenario::ReplayAfterResponse
                 | SidecarScenario::ReplayDuringResume
-                | SidecarScenario::HoldReplay => {}
+                | SidecarScenario::HoldReplay
+                | SidecarScenario::ThinkingMismatch => {}
             }
         }
         "steer" => {

@@ -9,9 +9,6 @@ Cards 070-071 remain unused gaps, not tasks.
 Cards 070-071 remain unused gaps, not tasks.
 
 ## Blocked
-
-- [226-pi-sdk-sidecar-reasoning-selection-binding.md](./226-pi-sdk-sidecar-reasoning-selection-binding.md) — blocked; Research 228 empty deliver-now set
-- [227-pi-sdk-sidecar-reasoning-selection-acceptance.md](./227-pi-sdk-sidecar-reasoning-selection-acceptance.md) — blocked; Research 228 empty deliver-now set
 - [223-xai-responses-websocket-web-search-binding.md](./223-xai-responses-websocket-web-search-binding.md) — blocked; Research 227 empty deliver-now set
 - [224-xai-responses-websocket-web-search-acceptance.md](./224-xai-responses-websocket-web-search-acceptance.md) — blocked; card 223 blocked
 - [211-cursor-headless-provider-sandbox-binding.md](./211-cursor-headless-provider-sandbox-binding.md) — blocked; Research 223 empty deliver-now set
@@ -36,7 +33,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
-- [225-pi-sdk-sidecar-reasoning-selection-evidence.md](./225-pi-sdk-sidecar-reasoning-selection-evidence.md) — evidence stop; Research 228 empty deliver-now set
+- [227-pi-sdk-sidecar-reasoning-selection-acceptance.md](./227-pi-sdk-sidecar-reasoning-selection-acceptance.md)
+- [226-pi-sdk-sidecar-reasoning-selection-binding.md](./226-pi-sdk-sidecar-reasoning-selection-binding.md)
+- [225-pi-sdk-sidecar-reasoning-selection-evidence.md](./225-pi-sdk-sidecar-reasoning-selection-evidence.md) — complete; Research 228 admits one bounded `anthropic/claude-opus-4-5` row
 - [222-xai-responses-websocket-web-search-evidence.md](./222-xai-responses-websocket-web-search-evidence.md) — evidence stop; Research 227 empty deliver-now set
 - [221-claude-code-headless-maximum-turns-acceptance.md](./221-claude-code-headless-maximum-turns-acceptance.md)
 - [220-claude-code-headless-maximum-turns-binding.md](./220-claude-code-headless-maximum-turns-binding.md)

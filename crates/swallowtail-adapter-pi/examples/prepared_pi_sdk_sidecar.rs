@@ -14,13 +14,14 @@ use swallowtail_adapter_pi::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, LoadedSession, OperationContent, PreparationFailure, RequestId,
-    RuntimeFailure, RuntimeTurnId, SessionResumeBinding, TerminalOutcome, TurnRequest,
+    RuntimeFailure, RuntimeTurnId, SessionOptions, SessionResumeBinding, TerminalOutcome,
+    TurnRequest,
 };
 
 fn prepare_session(
     input: PiSdkSidecarSessionPreparation,
 ) -> Result<PiSdkSidecarPreparedSession, PreparationFailure> {
-    prepare_pi_sdk_sidecar_session(input)
+    prepare_pi_sdk_sidecar_session(input, SessionOptions::default())
 }
 
 async fn open_and_prompt(

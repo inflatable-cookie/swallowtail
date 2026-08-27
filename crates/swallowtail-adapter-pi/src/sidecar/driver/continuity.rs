@@ -26,7 +26,7 @@ pub(super) struct AttachmentRequest {
     pub(super) working_resource: swallowtail_runtime::WorkingResourceRef,
     pub(super) deadline: Option<Deadline>,
     pub(super) plan_agreement: swallowtail_runtime::SessionPlanAgreement,
-    pub(super) options_empty: bool,
+    pub(super) options: swallowtail_runtime::SessionOptions,
 }
 
 pub(super) struct AttachedSession {
@@ -51,7 +51,7 @@ impl PiSdkSidecarDriver {
                 access_policy: request.plan_agreement.access_policy(),
                 provider_state_policy: request.plan_agreement.provider_state_policy(),
                 working_resource: &request.working_resource,
-                options_empty: request.options_empty,
+                options: &request.options,
                 binding: &request.binding,
                 replay,
             },
@@ -118,7 +118,7 @@ impl PiSdkSidecarDriver {
     > {
         // Bootstrap builds only in-memory state at the leased cwd; the fresh
         // session it creates is discarded by the switch below.
-        startup::bootstrap(connection, plan, leased_cwd).await?;
+        startup::bootstrap(connection, plan, leased_cwd, &request.options).await?;
         let bound_ref = request.binding.provider_session_ref().as_provider_value();
         let switch = connection.command(
             "switch-1".to_owned(),
@@ -197,7 +197,14 @@ impl PiSdkSidecarDriver {
         } else {
             Vec::new()
         };
-        startup::check_state(connection, plan, leased_cwd, Some(bound_ref)).await?;
+        startup::check_state(
+            connection,
+            plan,
+            leased_cwd,
+            &request.options,
+            Some(bound_ref),
+        )
+        .await?;
         let binding = session_binding(
             plan,
             bound_ref,

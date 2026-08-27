@@ -32,7 +32,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     LoadSessionRequest, LoadedSession, OpenSessionRequest, PreparationFailure, PreparationStage,
-    RequestId, ResumeSessionRequest, RuntimeFailure, SessionResumeBinding, WorkingResourceRef,
+    RequestId, ResumeSessionRequest, RuntimeFailure, SessionOptions, SessionResumeBinding,
+    WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one persistent sidecar session.
@@ -216,7 +217,7 @@ impl PiSdkSidecarPreparedSession {
         request_id: RequestId,
         binding: SessionResumeBinding,
     ) -> Result<LoadSessionRequest, PreparationFailure> {
-        LoadSessionRequest::from_plan(
+        Ok(LoadSessionRequest::from_plan(
             &self.plan,
             request_id,
             binding,
@@ -225,7 +226,8 @@ impl PiSdkSidecarPreparedSession {
                 .expect("prepared sidecar session binds a working resource")
                 .clone(),
             self.request.deadline(),
-        )
+        )?
+        .with_options(self.request.options().clone()))
     }
 
     /// Builds an exact provider-session resume request without replay.
@@ -234,7 +236,7 @@ impl PiSdkSidecarPreparedSession {
         request_id: RequestId,
         binding: SessionResumeBinding,
     ) -> Result<ResumeSessionRequest, PreparationFailure> {
-        ResumeSessionRequest::from_plan(
+        Ok(ResumeSessionRequest::from_plan(
             &self.plan,
             request_id,
             binding,
@@ -243,7 +245,8 @@ impl PiSdkSidecarPreparedSession {
                 .expect("prepared sidecar session binds a working resource")
                 .clone(),
             self.request.deadline(),
-        )
+        )?
+        .with_options(self.request.options().clone()))
     }
 
     /// Loads a bound provider session, returning typed replay plus the
@@ -278,17 +281,27 @@ impl PiSdkSidecarPreparedSession {
     }
 }
 
-fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
+pub(super) fn preparation_failure(
+    stage: PreparationStage,
+    code: &'static str,
+    message: &'static str,
+) -> PreparationFailure {
     PreparationFailure::new(
-        PreparationStage::TargetSelection,
+        stage,
         swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(code, message)),
     )
+}
+
+fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
+    preparation_failure(PreparationStage::TargetSelection, code, message)
 }
 
 /// Prepares one persistent Pi SDK sidecar session from explicit inputs.
 pub fn prepare_pi_sdk_sidecar_session(
     input: PiSdkSidecarSessionPreparation,
+    options: SessionOptions,
 ) -> Result<PiSdkSidecarPreparedSession, PreparationFailure> {
+    super::reasoning::validate_options(&options)?;
     let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
@@ -328,6 +341,13 @@ pub fn prepare_pi_sdk_sidecar_session(
                 CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
                 CapabilityConstraint::AttachmentMaximumCount(1),
             ],
+        ));
+    }
+    if let Some(reasoning) = options.reasoning_mode() {
+        super::reasoning::validate_preparation(&input.provider, &input.model, reasoning)?;
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(reasoning.clone())],
         ));
     }
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
@@ -430,7 +450,8 @@ pub fn prepare_pi_sdk_sidecar_session(
         services,
     )?;
     let request =
-        OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?;
+        OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?
+            .with_options(options);
     Ok(PiSdkSidecarPreparedSession {
         plan,
         request,

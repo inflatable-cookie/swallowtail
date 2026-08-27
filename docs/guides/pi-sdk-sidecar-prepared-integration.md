@@ -15,8 +15,11 @@ or an interactive session with durable provider-session continuation:
 persistent new, load with bounded typed replay, and replay-free resume under
 the exact host-leased working directory. Reject it when the application
 cannot provision the Node runtime, sidecar asset, and SDK package, or needs
-structured runs, typed UI questions, reasoning selection, writes, permission
-exchange, or provider-session lifecycle management.
+structured runs, typed UI questions, writes, permission
+exchange, or provider-session lifecycle management. Optional portable
+`ReasoningSelection` is available only for the closed Research 228 row:
+`anthropic` / `claude-opus-4-5` with `off`, `minimal`, `low`, `medium`, or
+`high` on exact Pi `0.84.2`.
 
 Both Pi routes remain production. `pi.rpc` needs only one installed upstream
 executable and speaks an upstream-owned wire, but stays fresh-only: Research
@@ -92,8 +95,13 @@ add permission prompts or infer filesystem or process isolation.
 
 Before any provider work the driver verifies the bootstrap response: wire,
 behavior revision, SDK package and version, Node version, the exact leased
-working directory, provider, model, the read-only tool set, and a state
+working directory, provider, model, the read-only tool set, optional
+`thinkingLevel` when the prepared plan binds `ReasoningSelection`, and a state
 re-check. Every mismatch fails startup before a prompt exists.
+
+`prepare_pi_sdk_sidecar_session` accepts optional `SessionOptions` carrying
+one exact `ReasoningMode` for the qualified row only. Omission uses empty
+options and emits no bootstrap `thinkingLevel`.
 
 `PiSdkSidecarPreparedSession::open_session` returns the interactive session
 handle with the opaque provider-session reference and the exact Contract 017
@@ -136,9 +144,11 @@ records, stderr, SDK state, or provider prose to infer authentication,
 retry, terminal, or cleanup truth.
 
 Unsupported capabilities include structured runs, typed question and
-permission exchange, reasoning control, structured output, consumer tools,
+permission exchange, structured output, consumer tools,
 writes, external search, provider-session catalogue/import, archive,
-restore, delete, recovery attachment, and billed cost. Promotion requires
+restore, delete, recovery attachment, and billed cost. Reasoning selection
+outside the closed `anthropic` / `claude-opus-4-5` row remains unsupported.
+Promotion requires
 exact SDK, Node, sidecar, and wire evidence, immutable prepared-plan
 binding, bounded fixtures, and route-matrix coverage.
 

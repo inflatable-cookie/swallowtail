@@ -1,6 +1,6 @@
 # 227 Pi SDK Sidecar Reasoning Selection Acceptance
 
-Status: blocked; Research 228 empty deliver-now set
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Milestone: [g04.081 Pi SDK Sidecar Reasoning Selection](../081-pi-sdk-sidecar-reasoning-selection.md)
@@ -43,13 +43,13 @@ cleanup, then produce one review-ready closeout.
 
 ## Acceptance Criteria
 
-- [ ] every admitted row dispatches and confirms its exact effective value
-- [ ] omission and every existing lifecycle retain prior behavior
-- [ ] unsupported or mismatched rows fail before effects or readiness
-- [ ] reasoning output remains separate from selection evidence
-- [ ] durable sessions, replay, attachments, cancellation, and cleanup remain
+- [x] every admitted row dispatches and confirms its exact effective value
+- [x] omission and every existing lifecycle retain prior behavior
+- [x] unsupported or mismatched rows fail before effects or readiness
+- [x] reasoning output remains separate from selection evidence
+- [x] durable sessions, replay, attachments, cancellation, and cleanup remain
       correct
-- [ ] one review-ready worker PR contains the complete lane or honest stop
+- [x] one review-ready worker PR contains the complete lane or honest stop
 
 ## Validation
 

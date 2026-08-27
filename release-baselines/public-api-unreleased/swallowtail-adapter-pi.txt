@@ -96,7 +96,7 @@ pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_sidecar_binding(&str) -> 
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_sidecar_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
-pub fn swallowtail_adapter_pi::sidecar::prepare_pi_sdk_sidecar_session(swallowtail_adapter_pi::PiSdkSidecarSessionPreparation) -> core::result::Result<swallowtail_adapter_pi::PiSdkSidecarPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_pi::sidecar::prepare_pi_sdk_sidecar_session(swallowtail_adapter_pi::PiSdkSidecarSessionPreparation, swallowtail_runtime::session_options::SessionOptions) -> core::result::Result<swallowtail_adapter_pi::PiSdkSidecarPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_pi::PiCatalogueProfileInput
 impl swallowtail_adapter_pi::PiCatalogueProfileInput
 pub const fn swallowtail_adapter_pi::PiCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
@@ -229,4 +229,4 @@ pub fn swallowtail_adapter_pi::pi_sdk_sidecar_sidecar_claim() -> swallowtail_cor
 pub fn swallowtail_adapter_pi::pi_sdk_sidecar_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::pi_sdk_sidecar_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub async fn swallowtail_adapter_pi::prepare_pi_rpc(swallowtail_adapter_pi::PiPreparationInput, swallowtail_adapter_pi::PiPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_pi::PiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
-pub fn swallowtail_adapter_pi::prepare_pi_sdk_sidecar_session(swallowtail_adapter_pi::PiSdkSidecarSessionPreparation) -> core::result::Result<swallowtail_adapter_pi::PiSdkSidecarPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_pi::prepare_pi_sdk_sidecar_session(swallowtail_adapter_pi::PiSdkSidecarSessionPreparation, swallowtail_runtime::session_options::SessionOptions) -> core::result::Result<swallowtail_adapter_pi::PiSdkSidecarPreparedSession, swallowtail_runtime::preparation::PreparationFailure>

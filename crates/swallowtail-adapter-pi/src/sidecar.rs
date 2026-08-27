@@ -15,6 +15,7 @@ mod failure;
 mod prepared;
 /// Bounded public decoder for qualified sidecar wire record shapes.
 pub mod protocol;
+mod reasoning;
 mod replay;
 mod selection;
 mod turn;

@@ -1,0 +1,17 @@
+{
+  "name": "swallowtail-pi-sdk-sidecar-evidence",
+  "version": "0.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "swallowtail-pi-sdk-sidecar-evidence",
+      "version": "0.0.0"
+    },
+    "node_modules/@earendil-works/pi-ai": {
+      "version": "0.84.2",
+      "resolved": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.84.2.tgz",
+      "integrity": "sha512-6MzsrYIYNVlE7SfpbL2yYb67Qo58p/7Q+xWG1RZvoX1P80aRCHSod2/13aFpxkow1lPO2LEh3c495J0Gwmyjig=="
+    }
+  }
+}

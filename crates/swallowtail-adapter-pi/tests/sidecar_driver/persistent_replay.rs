@@ -11,8 +11,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, EnvironmentRef, InteractiveSessionDriver, LoadSessionRequest,
-    MonotonicInstant, RequestId, ResumeSessionRequest, SessionPlanAgreement, SessionResumeBinding,
-    WorkingResourceRef,
+    MonotonicInstant, RequestId, ResumeSessionRequest, SessionOptions, SessionPlanAgreement,
+    SessionResumeBinding, WorkingResourceRef,
 };
 
 fn preparation(host: ExecutionHostId, request_id: &str) -> PiSdkSidecarSessionPreparation {
@@ -50,8 +50,11 @@ fn agreement() -> SessionPlanAgreement {
 fn load_transports_bounded_ordered_replay_before_readiness() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.load");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let prepared = prepare_pi_sdk_sidecar_session(preparation(host_id.clone(), "sidecar-load"))
-        .expect("sidecar session prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-load"),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session prepares");
     let binding = SessionResumeBinding::new(
         SessionRef::new(FIXTURE_SESSION_REF).expect("valid session ref"),
         prepared.plan().instance_id().clone(),
@@ -149,8 +152,11 @@ fn load_transports_bounded_ordered_replay_before_readiness() {
 fn resume_attaches_without_any_replay_phase() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.resume");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let prepared = prepare_pi_sdk_sidecar_session(preparation(host_id.clone(), "sidecar-resume"))
-        .expect("sidecar session prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-resume"),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session prepares");
     let binding = fixture_binding(prepared.plan());
     let session = block_on(
         prepared

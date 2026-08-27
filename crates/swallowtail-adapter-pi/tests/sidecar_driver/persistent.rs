@@ -7,7 +7,8 @@ use swallowtail_core::{
     ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ResourceAccess, SessionAccessPolicy,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, EnvironmentRef, RequestId, SessionResumeBinding, WorkingResourceRef,
+    CleanupOutcome, EnvironmentRef, RequestId, SessionOptions, SessionResumeBinding,
+    WorkingResourceRef,
 };
 
 fn preparation(host: ExecutionHostId, request_id: &str) -> PiSdkSidecarSessionPreparation {
@@ -37,8 +38,11 @@ fn ambient_read() -> SessionAccessPolicy {
 fn new_session_returns_the_opaque_identity_and_exact_restart_binding() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.new-binding");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let prepared = prepare_pi_sdk_sidecar_session(preparation(host_id.clone(), "sidecar-new"))
-        .expect("sidecar session prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-new"),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session prepares");
     let session =
         block_on(prepared.open_session(fixture.services(host_id))).expect("sidecar session opens");
 
@@ -69,8 +73,11 @@ fn new_session_returns_the_opaque_identity_and_exact_restart_binding() {
 fn persisted_bindings_round_trip_only_under_exact_dimensions() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.persist");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let prepared = prepare_pi_sdk_sidecar_session(preparation(host_id.clone(), "sidecar-persist"))
-        .expect("sidecar session prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-persist"),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session prepares");
     let session =
         block_on(prepared.open_session(fixture.services(host_id))).expect("sidecar session opens");
     let binding = session.resume_binding().expect("binding exists").clone();
@@ -152,8 +159,11 @@ fn persisted_bindings_round_trip_only_under_exact_dimensions() {
 #[test]
 fn close_preserves_durable_provider_state_for_later_attachment() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.preserve");
-    let prepared = prepare_pi_sdk_sidecar_session(preparation(host_id.clone(), "sidecar-preserve"))
-        .expect("sidecar session prepares");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-preserve"),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session prepares");
     let first = SidecarFixtureHost::new(SidecarScenario::Complete);
     let session = block_on(prepared.open_session(first.services(host_id.clone())))
         .expect("first session opens");

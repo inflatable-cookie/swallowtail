@@ -1,6 +1,6 @@
 # 226 Pi SDK Sidecar Reasoning Selection Binding
 
-Status: blocked; Research 228 empty deliver-now set
+Status: complete
 Owner: Tom
 Created: 2026-08-27
 Milestone: [g04.081 Pi SDK Sidecar Reasoning Selection](../081-pi-sdk-sidecar-reasoning-selection.md)
@@ -39,12 +39,12 @@ bootstrap, and effective-state agreement before readiness.
 
 ## Acceptance Criteria
 
-- [ ] only exact Research 228 rows prepare and dispatch
-- [ ] request, plan, evidence, command, and effective state agree
-- [ ] clamp, substitution, mismatch, and unsupported lifecycle fail closed
-- [ ] omission retains exact prior bytes and capability posture
-- [ ] load/resume/restoration follow Contracts 012 and 017
-- [ ] no unrelated Pi route, sidecar control, or shared contract widens
+- [x] only exact Research 228 rows prepare and dispatch
+- [x] request, plan, evidence, command, and effective state agree
+- [x] clamp, substitution, mismatch, and unsupported lifecycle fail closed
+- [x] omission retains exact prior bytes and capability posture
+- [x] load/resume/restoration follow Contracts 012 and 017
+- [x] no unrelated Pi route, sidecar control, or shared contract widens
 
 ## Validation
 

@@ -2549,10 +2549,23 @@ changes, cycling, model switching, raw settings, `pi.rpc`, newer SDK
 currentness, live provider work, release, generation rollover, and g04 closure
 stay out.
 
+## Post-g04.081 Completion (2026-08-27)
+
+Disposition: complete through cards 225-227.
+
+Research 228 admits one bounded deliver-now family on exact Pi `0.84.2`:
+`anthropic` / `claude-opus-4-5` with `off`, `minimal`, `low`, `medium`, and
+`high`. Static pi-ai metadata gates preparation; auth filters runtime
+availability only. Cards 226-227 bind portable `ReasoningSelection`, dispatch
+canonical bootstrap `thinkingLevel`, compare bootstrap/state before readiness,
+and preserve omission. Feature matrix `reasoning_selection` is `Yes` for the
+closed row.
+
 ## Post-g04.081 Evidence Stop (2026-08-27)
 
-Disposition: stop after card 225; Research 228 empty deliver-now set; cards
-226-227 blocked; feature matrix `reasoning_selection` stays `No`.
+Disposition: superseded by completion above. The initial empty-set promotion
+was reversed after review established static `getModel` membership for the
+qualified row.
 
 Card 225 froze exact Pi `0.84.2` thinking-level vocabulary, silent
 `clampThinkingLevel` behavior, explicit bootstrap precedence over stored

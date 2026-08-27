@@ -95,11 +95,11 @@ and selection policy.
 - [g04.078 llama.cpp Owned Reasoning Controls](078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 admits one exact `--reasoning off` row
 - [g04.079 Claude Code Headless Maximum Turns](079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 admits one closed positive `--max-turns` selection across every published `2.1.220..=2.1.241` version plus unchanged omission
 - [g04.080 xAI Responses WebSocket Web Search](080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
-- [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — stopped after card 225; Research 228 empty deliver-now set; cards 226-227 blocked
+- [g04.081 Pi SDK Sidecar Reasoning Selection](081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 admits one bounded `anthropic/claude-opus-4-5` reasoning row
 
 g04 has 81 numbered roadmaps: 65 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, plus one ready milestone at 081. The operator keeps the
+074, 076, and 080. g04.081 is complete. The operator keeps the
 generation active.
 Do not close g04 without explicit operator direction.
 
@@ -292,10 +292,9 @@ Do not close g04 without explicit operator direction.
   `web_search` and WebSocket body-equivalence are frozen, but composed socket
   events, mixed completed output, and citation/terminal mapping are not;
   cards 223-224 blocked; omission remains exact `tools: []`
-- g04.081 stopped after card 225: Research 228 empty deliver-now set; exact Pi
-  `0.84.2` clamp behavior, auth-filtered selectable models, and bundled corpus
-  size block closed preparation-time admission; cards 226-227 blocked; omission
-  unchanged
+- g04.081 is complete. Research 228 and cards 225-227 deliver one bounded
+  `anthropic/claude-opus-4-5` portable reasoning row on exact Pi `0.84.2`;
+  omission unchanged
 - g04 remains active at 81 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -424,11 +423,9 @@ Do not close g04 without explicit operator direction.
     deliver-now set because composed socket events, mixed completed output,
     and citation/terminal mapping are not frozen without provider work.
     Cards 223-224 blocked.
-44. g04.081 stopped after card 225. Research 228 froze exact Pi `0.84.2`
-    thinking-level vocabulary, clamp behavior, runtime replacement, and current
-    sidecar/Rust seams, then admitted an empty deliver-now set because
-    selectable models depend on configured auth and the bundled corpus is not a
-    small closed admission table. Cards 226-227 blocked.
+44. g04.081 is complete. Research 228 admits one bounded
+    `anthropic/claude-opus-4-5` row; cards 226-227 bind portable reasoning
+    selection with bootstrap/state confirmation and unchanged omission.
 45. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -482,7 +479,7 @@ New route-family research does not pre-empt this sequence.
 - [078 llama.cpp Owned Reasoning Controls](./078-llama-cpp-owned-reasoning-controls.md) — complete, cards 216-218; Research 225 promoted
 - [079 Claude Code Headless Maximum Turns](./079-claude-code-headless-maximum-turns.md) — complete, cards 219-221; Research 226 promoted
 - [080 xAI Responses WebSocket Web Search](./080-xai-responses-websocket-web-search.md) — stopped after card 222; Research 227 empty deliver-now set; cards 223-224 blocked
-- [081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md) — stopped after card 225; Research 228 empty deliver-now set
+- [081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md) — complete, cards 225-227; Research 228 bounded row
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

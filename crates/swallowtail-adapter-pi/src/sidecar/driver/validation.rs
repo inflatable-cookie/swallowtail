@@ -1,5 +1,6 @@
 use super::SIDECAR_DRIVER_ID;
 use crate::sidecar::failure::{failure, unsupported};
+use crate::sidecar::reasoning;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism, DriverRole,
     HarnessBackgroundAction, HarnessConfigurationPosture, HarnessConfigurationSource,
@@ -7,7 +8,8 @@ use swallowtail_core::{
     ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_plan_agreement,
+    HostServices, OpenSessionRequest, RuntimeFailure, SessionOptions, TurnRequest,
+    validate_session_plan_agreement,
 };
 
 pub(super) const ACCESS_NAMESPACE: &str = "pi/delegated-harness-auth";
@@ -65,7 +67,8 @@ pub(super) fn validate_open(
     if request.working_resource().is_none() {
         return Err(unsupported("resource-free session"));
     }
-    if !request.options().is_empty() {
+    reasoning::validate_open_options(plan, request.options())?;
+    if reasoning::has_unsupported_options(request.options()) {
         return Err(unsupported("session options"));
     }
     require_capability(plan, Capability::InteractiveSession)?;
@@ -94,7 +97,7 @@ pub(super) struct AttachmentSurface<'a> {
     pub access_policy: &'a SessionAccessPolicy,
     pub provider_state_policy: Option<SessionProviderStatePolicy>,
     pub working_resource: &'a swallowtail_runtime::WorkingResourceRef,
-    pub options_empty: bool,
+    pub options: &'a SessionOptions,
     pub binding: &'a swallowtail_runtime::SessionResumeBinding,
     pub replay: bool,
 }
@@ -132,7 +135,8 @@ pub(super) fn validate_attachment(
     {
         return Err(plan_mismatch("provider-state policy"));
     }
-    if !surface.options_empty {
+    reasoning::validate_open_options(plan, surface.options)?;
+    if reasoning::has_unsupported_options(surface.options) {
         return Err(unsupported("session options"));
     }
     if !surface

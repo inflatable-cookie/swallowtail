@@ -295,11 +295,10 @@ families do not interrupt this programme by default.
   Cards 223-224 are blocked. Omission remains exact `tools: []`. Host
   networking stays denied.
 - [g04.081 Pi SDK Sidecar Reasoning Selection](./081-pi-sdk-sidecar-reasoning-selection.md)
-  stopped after card 225. Research 228 admits no deliver-now row. Exact Pi
-  `0.84.2` clamp behavior, auth-filtered selectable models, and the 1267-model
-  bundled corpus block a closed preparation-time admission table. Cards 226-227
-  are blocked. Omission retains exact bootstrap bytes and no portable selection
-  claim.
+  is complete. Research 228 and cards 225-227 deliver one bounded
+  `anthropic/claude-opus-4-5` portable reasoning row on exact Pi `0.84.2`.
+  Omission retains exact bootstrap bytes and no portable selection claim when
+  options are empty.
 
 ## Current Execution Boundary
 

@@ -10,6 +10,8 @@ mod lifecycle;
 mod persistent;
 #[path = "sidecar_driver/persistent_replay.rs"]
 mod persistent_replay;
+#[path = "sidecar_driver/reasoning.rs"]
+mod reasoning;
 #[path = "sidecar_driver/versions.rs"]
 mod versions;
 

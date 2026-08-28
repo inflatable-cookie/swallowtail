@@ -43,9 +43,9 @@ Promote Research 254 with a closed deliver-now table or an honest empty set.
 - [x] exact profile/authority/lifecycle table or honest empty set exists
 - [x] any non-empty row closes membership and applied-profile confirmation
       (vacuous: zero rows)
-- [x] unknown, missing, malformed, or drifted profiles fail before prompt effects
-      (not closed on ACP; official missing-agent docs describe silent fallback;
-      therefore no deliver-now row)
+- [x] pre-prompt fail-closed invalid/missing/malformed/drifted profiles:
+      **failed gate** — not closed on ACP; official troubleshooting records
+      silent fallback to the default agent; therefore no deliver-now row
 - [x] omission retains exact current `kiro-cli acp` argv and host-owned default
 - [x] no trust-all, cloud, login, profile mutation, or ambient persistence is added
 - [x] no production code, public API, shared authority, currentness, release,

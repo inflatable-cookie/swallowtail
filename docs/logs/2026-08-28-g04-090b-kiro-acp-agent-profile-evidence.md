@@ -58,6 +58,12 @@ Passed:
 Inherited doctor baseline: `scan.god-files` 380 findings (334 warnings, 46
 errors); generated-in-src warning; graph index stale.
 
+## Review Fix
+
+Card 257 acceptance no longer checks the positive fail-closed claim. It
+records the pre-prompt reject gate as failed (official silent default
+fallback), matching Research 254's empty-set disposition.
+
 ## Unresolved
 
 Reopen only with recoverable qualified-version package/source parser, closed

@@ -7,7 +7,7 @@ Depends on: completed g04
 Vision tags: harness skills, process observability, consumer integration
 Contract refs: 013, 017, 023, 029, 034, 041, 044, 047, 052
 Research: 255 promoted
-Planning state: cards 001-002 completed; card 003 planned pending operator decisions
+Planning state: cards 001-002 completed; card 003 ready
 
 ## Problem
 
@@ -43,7 +43,7 @@ promotion.
 
 ### Batch 1.3 — Promotion And Runway Selection
 
-- [ ] execute card 003 after operator decisions
+- [ ] execute ready card 003 after recorded operator decisions
 - [ ] select architecture, contract, research, or stop dispositions
 - [ ] compile proof routes only from promoted testable boundaries
 

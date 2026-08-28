@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-Reassess the g05.001 card 002 operator decision packet. Record the four
-operator decisions for skill scope, watcher stop authority, consumer output,
-and active-watcher turn completion. Do not ready card 003 or promote
-architecture, contracts, public types, or proof routes until those answers are
-recorded. Contract 029 currentness remains standing.
+Execute g05.001 card 003. Promote the recorded skill-visibility and watcher
+boundaries into architecture and contracts, keep the two tracks separate, and
+select at most one proof-route disposition for each. Compile implementation
+cards only from promoted testable boundaries. Contract 029 currentness remains
+standing.
 
 ## Standing Lanes
 

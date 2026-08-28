@@ -1,6 +1,6 @@
 # 2026-08-27 Harness Skill Discovery And Process Watchers
 
-Status: promoted; Research 255 complete; operator decisions open
+Status: promoted; Research 255 complete; operator decisions recorded
 Owner: Tom
 Source: operator direction during g04.082 execution
 Updated: 2026-08-28
@@ -260,81 +260,51 @@ activity cannot satisfy watcher control.
 | 041 Input And Tool Admission | Exact separation and admission of consumer tools, provider-owned tools, and MCP or harness tools. | Process authority created by a skill or prompt. Any model-facing watcher tool needs its own admitted mechanism. |
 | 044 Observable Activity | Operation-local activity identity, command/task lifecycle and disclosure, bounded content, and consumer-owned presentation. | Start, wait, stop, or completion authority. Provider-observed command activity is not a controllable watcher. |
 
-### Open Operator Decisions
+### Recorded Operator Decisions
 
-The following are recommendations, not decisions. Card 003 remains planned
-until the operator records all four choices.
+The operator recorded all four choices on 2026-08-28. These decisions settle
+scope and authority for promotion work; they do not select architecture,
+public types, or proof routes by themselves.
 
 #### 1. Skill Discovery Scope
 
-Options:
+Decision: discover the effective skill set that the selected harness session
+can see. Provenance does not limit scope. Distribution-bundled,
+operator-installed global, and project-local skills are all included when the
+harness admits them to that session. Skills deliberately installed through a
+workflow such as `npx skills` are first-class evidence targets, not a deferred
+class.
 
-- distribution-bundled skills only
-- distribution-bundled plus explicitly configured or project-local skills
-  when the exact selected session confirms visibility
-- ambient discovery of every installed or discoverable skill
-
-Recommendation: start with distribution-bundled skills only, and describe a
-skill as visible only when the exact selected session supplies positive
-evidence. Defer configured and project-local skills until a separate resource
-and privacy boundary authorizes their names and descriptions. Reject ambient
-discovery.
-
-Reason: the census proves no safe positive roster today. A narrow scope avoids
-turning skill discovery into host inventory or project-content disclosure.
+The exact harness surface must still prove membership and selected-session
+visibility. Swallowtail must not substitute a recursive home or project scan,
+infer loading from file presence, or enumerate unrelated ambient state. When
+the harness exposes no dependable prompt-free roster, the route reports that
+truth as unavailable or unverified rather than returning an incomplete list.
+Each observation preserves provenance so consumers can distinguish bundled,
+global, project-local, plugin, and unknown sources.
 
 #### 2. Watcher Stop Authority
 
-Options:
-
-- model only
-- consumer only
-- model and consumer through separate typed operations
-
-Recommendation: allow both model and consumer stop requests through separate
-typed operations against the same host-owned registry. Accept only watcher ids
-owned by the current turn. Make completion-versus-stop races and repeated stop
-requests deterministic. Never accept a PID as authority.
-
-Reason: the model needs to clean up work it started; a consumer needs an
-independent safety control. Separate operations preserve who requested the
-stop without creating two ownership systems.
+Decision: both model and operator receive controls through separate typed
+operations against the same host-owned registry. Operator control is exposed
+through the consumer-facing boundary. Accept only watcher ids owned by the
+current turn. Completion-versus-stop races and repeated stop requests must be
+deterministic. A PID is never authority.
 
 #### 3. Consumer Output Exposure
 
-Options:
-
-- lifecycle and status only
-- lifecycle, status, and bounded redacted output summaries
-- a separately authorized bounded log stream
-
-Recommendation: expose lifecycle, status, and bounded redacted output
-summaries first. Keep raw or continuous logs out. A later log stream would need
-separate authorization, bounds, backpressure, retention, and redaction rules.
-
-Reason: status alone is weak for useful progress and failure display. Raw logs
-can disclose commands, paths, arguments, environment, secrets, and unbounded
-task data.
+Decision: expose lifecycle, status, and bounded redacted output summaries.
+Keep raw or continuous logs out. A later log stream would need separate
+authorization, bounds, backpressure, retention, and redaction rules.
 
 #### 4. Active-Watcher Turn Completion
 
-Options:
+Decision: the watcher wait operation pauses the agent turn until the selected
+watcher is terminal and returns its bounded result. If the model still attempts
+successful completion with active watchers, reject completion and return
+structured active-watcher state so it must wait or stop. Cancellation and
+deadline stop and join all owned watchers before the turn fails.
 
-- explicit wait plus a fail-closed final-completion gate
-- automatic host wait when the model attempts to finish
-- stop all active watchers and fail the turn
-
-Recommendation: the watcher wait operation pauses the agent turn until the
-selected watcher is terminal and returns its bounded result. If the model
-still attempts successful completion with active watchers, reject that
-completion and return structured active-watcher state so it must wait or stop.
-Cancellation and deadline instead stop and join all owned watchers before the
-turn fails.
-
-Reason: automatic waiting can hide output or failure from the model. Immediate
-stop-and-fail discards valid work. Explicit wait gives the model the result;
-the final gate enforces the invariant when instructions are ignored.
-
-The operator has already selected the core invariant: an ordinary turn cannot
+The settled core invariant is that an ordinary turn cannot
 complete successfully until every watcher-owned process is terminal through
 completion or explicit joined stop.

@@ -1,0 +1,78 @@
+{
+  "lane": "g04.089c",
+  "card": 254,
+  "research": 251,
+  "route": "kiro.acp",
+  "axis": "kiro-cli.release",
+  "qualified_version": "2.18.1",
+  "retrieved_at": "2026-08-28",
+  "live_acp_initialize": false,
+  "platform_archive_extracted": false,
+  "host_install_changed": false,
+  "sources": [
+    {
+      "id": "acp-docs",
+      "url": "https://kiro.dev/docs/cli/acp/",
+      "page_updated": "2026-08-04",
+      "retrieved": "2026-08-28",
+      "sha256": "f9f2b1a99592e132eb9cb83dac460346e76c5f45dfee3ffa876f102144fd474b",
+      "use": "production entrypoint; optional --agent; method list; no --effort"
+    },
+    {
+      "id": "effort-docs",
+      "url": "https://kiro.dev/docs/models/effort/",
+      "page_updated": "2026-08-04",
+      "retrieved": "2026-08-28",
+      "sha256": "f07ff2b477a91dd6d59c24f48e73b483d2b926d8a300090e6b2d1b112b30c109",
+      "use": "official levels; model-dependent membership; precedence; persistence"
+    },
+    {
+      "id": "cli-commands-docs",
+      "url": "https://kiro.dev/docs/reference/cli-commands/",
+      "page_updated": "2026-08-04",
+      "retrieved": "2026-08-28",
+      "sha256": "12050b3e31addf40e478b276457aebb7a36062b0e24dfb48c53717071a6b11ff",
+      "use": "--effort under kiro-cli chat only"
+    },
+    {
+      "id": "slash-commands-docs",
+      "url": "https://kiro.dev/docs/reference/slash-commands/",
+      "page_updated": "2026-08-28",
+      "retrieved": "2026-08-28",
+      "sha256": "5a102970c51ecfad3cdefce1fcbc069770e47d0547bdd450f6680effc9604f19",
+      "use": "/effort; levels depend on active model"
+    },
+    {
+      "id": "install-script",
+      "url": "https://cli.kiro.dev/install",
+      "retrieved": "2026-08-28",
+      "sha256": "91a21bfa05cd7b58601cb83e0f1f187a9d0084726e5b824d4a4cf60306250908",
+      "use": "channel URL construction; matches Research 156 digest"
+    },
+    {
+      "id": "stable-manifest-current",
+      "url": "https://prod.download.cli.kiro.dev/stable/latest/manifest.json",
+      "retrieved": "2026-08-28",
+      "sha256": "f96d0134f48cb623543b5c9d129f0f5e17a2ce2da25a7129f7ebc6bc5e51a996",
+      "observed_version": "2.20.1",
+      "use": "channel tip contrast only; not qualified route version"
+    }
+  ],
+  "package_retrieval": {
+    "qualified_artifact_urls_attempted": [
+      "https://prod.download.cli.kiro.dev/stable/latest/2.18.1/kirocli-aarch64-linux.tar.xz",
+      "https://prod.download.cli.kiro.dev/stable/latest/2.18.1/Kiro%20CLI.dmg"
+    ],
+    "current_tip_artifact_urls_attempted": [
+      "https://prod.download.cli.kiro.dev/stable/latest/2.20.1/kirocli-aarch64-linux.tar.xz"
+    ],
+    "method": "HTTP ranged GET bytes 0-63",
+    "http_status": 403,
+    "extracted": false,
+    "executed": false
+  },
+  "research_156_recorded_digests_unextracted": {
+    "2.18.1/Kiro CLI.dmg": "07893e9477c8d296ebc653192648772fd305718da4bf3a97583718e122c47061",
+    "2.18.1/kirocli-aarch64-linux.tar.xz": "c1f860b63f6656501dbcf8995e2687c3e31142b95755c76ce99f8d18000017df"
+  }
+}

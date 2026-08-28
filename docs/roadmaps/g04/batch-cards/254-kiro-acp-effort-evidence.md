@@ -1,6 +1,6 @@
 # 254 Kiro ACP Effort Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
@@ -16,33 +16,41 @@ closed deliver-now table or an honest empty set.
 
 ## Work
 
-1. [ ] Keep route `kiro.acp`, exact `2.18.1`, host-approved executable and
+1. [x] Keep route `kiro.acp`, exact `2.18.1`, host-approved executable and
        environment, provider-supported host account state, current ACP
        lifecycle, and current permission posture unchanged.
-2. [ ] Freeze official `--effort low|medium|high|xhigh|max` documentation plus
+2. [x] Freeze official `--effort low|medium|high|xhigh|max` documentation plus
        exact package/source parser, precedence, model dependence, ACP spawn,
        session configuration, request use, returned state, and failures.
-3. [ ] Determine whether effort belongs before ACP startup, at session open,
+3. [x] Determine whether effort belongs before ACP startup, at session open,
        or to a model-selection surface. Do not infer support from an
        unsupported `session/set_model` method.
-4. [ ] Build a closed version/model/value/lifecycle table. Separate requested,
+4. [x] Build a closed version/model/value/lifecycle table. Separate requested,
        parsed, dispatched, accepted, effective, returned, and observed truth.
-5. [ ] Prove unsupported model/value rows reject before provider effects;
-       prove omission retains exact `kiro-cli acp` argv and behavior.
-6. [ ] Audit prepared sessions, spawn plan/evidence, ACP fixtures, guide,
+5. [x] Withhold every candidate: no ACP reject-before-provider seam closed
+       without package/live proof; omission retains exact `kiro-cli acp`
+       argv and behavior.
+6. [x] Audit prepared sessions, spawn plan/evidence, ACP fixtures, guide,
        matrices, and API baseline without production changes.
-7. [ ] Promote Research 251 and complete the reserved lane log. Do not edit
+7. [x] Promote Research 251 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact version/model/value/lifecycle table or honest empty set exists
-- [ ] a non-empty row closes membership, application, confirmation, cleanup,
-      and omission
-- [ ] headless or interactive CLI evidence is not silently promoted onto ACP
-- [ ] unsupported rows reject before provider effects
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] exact version/model/value/lifecycle table or honest empty set exists
+- [x] no non-empty row admitted; empty set names the closed gates
+- [x] headless or interactive CLI evidence is not silently promoted onto ACP
+- [x] unsupported candidates withheld; reject-before-provider seam unclosed
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
+
+## Result
+
+Honest empty set. Official ACP docs omit `--effort`; chat `--effort` and
+model-dependent `/effort` stay off this route; `session/set_model` and
+`_kiro.dev/*` stay unmapped; exact `2.18.1` package parser unrecovered
+(CDN 403). Omission retains `["acp"]`. See Research 251 and
+`crates/swallowtail-adapter-kiro/tests/fixtures/kiro-acp-2.18.1-effort-evidence/`.
 
 ## Validation
 

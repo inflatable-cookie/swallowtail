@@ -1,0 +1,42 @@
+{
+  "decision": "empty-deliver-now",
+  "route": "kiro.acp",
+  "qualified_version": "2.18.1",
+  "production_argv": ["kiro-cli", "acp"],
+  "effort_candidates": ["low", "medium", "high", "xhigh", "max"],
+  "deliver_now_rows": [],
+  "gates": [
+    "official_acp_docs_omit_effort_flag",
+    "official_effort_flag_is_kiro_cli_chat",
+    "effort_membership_depends_on_active_model",
+    "session_new_has_no_effort_field",
+    "session_set_model_unsupported_must_not_infer_effort",
+    "kiro_dev_extensions_unmapped",
+    "exact_2_18_1_package_parser_unrecovered_cdn_403",
+    "omit_effort_retains_exact_acp_argv"
+  ],
+  "do_not_promote": [
+    "kiro-cli chat --effort",
+    "interactive /effort",
+    "session/set_model as effort surface",
+    "_kiro.dev/commands/execute /effort",
+    "third-party live probe claims",
+    "current stable 2.20.1 without Contract 029 qualification"
+  ],
+  "truth_layers": {
+    "requested": "absent",
+    "parsed": "chat docs only; acp docs absent; 2.18.1 binary unrecovered",
+    "configured": "host settings out of swallowtail authority",
+    "dispatched": "kiro-cli acp only",
+    "accepted": "unclosed",
+    "effective": "unclosed",
+    "returned": "unclosed",
+    "observed": "not_run",
+    "persisted": "provider-owned settings; not swallowtail"
+  },
+  "omission": {
+    "retain": true,
+    "argv": ["acp"],
+    "matches_guide_and_command_rs": true
+  }
+}

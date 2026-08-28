@@ -147,12 +147,12 @@ goal and does not keep g04 or any later generation open. See
 g05 has four roadmaps: 2 completed milestones, no honest evidence stops, and
 ready milestones at 002, 003. g05.001 is completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
-g05.002 is ready for Qoder `1.1.25` skill-visibility evidence. g05.003 is ready
-for Claude Code watcher-mechanism evidence and the independent portable core.
-g05.004 standing currentness is complete: Research 258 and cards 012-013
-qualify Qwen headless through official `0.22.3` without moving the generation
-pointer. Cards 004, 007, and 008 are the ready lanes; later route binding
-remains gated. No provider prompt, new route, or parked Bedrock work is
+g05.002 is ready behind Research 256's honest empty Qoder roster; cards 005-006
+remain gated. g05.003 closed cards 007-008 and has ready card 009 for the
+host-local watcher registry; cards 010-011 remain gated. g05.004 standing
+currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
+through official `0.22.3` without moving the generation pointer. Card 009 is
+the ready lane. No provider prompt, new route, or parked Bedrock work is
 authorized.
 
 ## Rollover Rule

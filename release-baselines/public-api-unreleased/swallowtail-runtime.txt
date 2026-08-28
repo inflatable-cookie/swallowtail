@@ -2623,24 +2623,25 @@ pub fn swallowtail_runtime::WatcherFailure::fmt(&self, &mut core::fmt::Formatter
 pub struct swallowtail_runtime::WatcherRegistry
 impl swallowtail_runtime::WatcherRegistry
 pub fn swallowtail_runtime::WatcherRegistry::accept_start(&mut self, swallowtail_core::watcher::requester::WatcherRequester, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
-pub fn swallowtail_runtime::WatcherRegistry::all_joined(&self) -> bool
 pub fn swallowtail_runtime::WatcherRegistry::complete(&mut self, &swallowtail_core::watcher::identity::WatcherId, swallowtail_core::watcher::lifecycle::WatcherTerminalCause, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
 pub fn swallowtail_runtime::WatcherRegistry::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
-pub fn swallowtail_runtime::WatcherRegistry::is_empty(&self) -> bool
 pub fn swallowtail_runtime::WatcherRegistry::join(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
-pub fn swallowtail_runtime::WatcherRegistry::len(&self) -> usize
 pub fn swallowtail_runtime::WatcherRegistry::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
 pub fn swallowtail_runtime::WatcherRegistry::mark_running(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
-pub const fn swallowtail_runtime::WatcherRegistry::maximum_watchers(&self) -> usize
-pub fn swallowtail_runtime::WatcherRegistry::new(swallowtail_runtime::RuntimeTurnId, usize) -> core::result::Result<Self, swallowtail_runtime::WatcherFailure>
-pub const fn swallowtail_runtime::WatcherRegistry::owning_turn(&self) -> &swallowtail_core::watcher::identity::WatcherOwningTurn
 pub fn swallowtail_runtime::WatcherRegistry::represent_wait_cancelled(&self) -> swallowtail_runtime::WatcherWaitRepresentation
 pub fn swallowtail_runtime::WatcherRegistry::represent_wait_deadline_exceeded(&self) -> swallowtail_runtime::WatcherWaitRepresentation
 pub fn swallowtail_runtime::WatcherRegistry::request_stop(&mut self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
 pub fn swallowtail_runtime::WatcherRegistry::require_wait_satisfied(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_core::watcher::lifecycle::WatcherTerminalCause, swallowtail_runtime::WatcherFailure>
-pub const fn swallowtail_runtime::WatcherRegistry::runtime_turn(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub fn swallowtail_runtime::WatcherRegistry::stop_and_join_all(&mut self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
 pub fn swallowtail_runtime::WatcherRegistry::wait_representation(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
+impl swallowtail_runtime::WatcherRegistry
+pub fn swallowtail_runtime::WatcherRegistry::all_joined(&self) -> bool
+pub fn swallowtail_runtime::WatcherRegistry::is_empty(&self) -> bool
+pub fn swallowtail_runtime::WatcherRegistry::len(&self) -> usize
+pub const fn swallowtail_runtime::WatcherRegistry::maximum_watchers(&self) -> usize
+pub fn swallowtail_runtime::WatcherRegistry::new(swallowtail_runtime::RuntimeTurnId, usize) -> core::result::Result<Self, swallowtail_runtime::WatcherFailure>
+pub const fn swallowtail_runtime::WatcherRegistry::owning_turn(&self) -> &swallowtail_core::watcher::identity::WatcherOwningTurn
+pub const fn swallowtail_runtime::WatcherRegistry::runtime_turn(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub fn swallowtail_runtime::WatcherRegistry::with_default_capacity(swallowtail_runtime::RuntimeTurnId) -> core::result::Result<Self, swallowtail_runtime::WatcherFailure>
 pub struct swallowtail_runtime::WatcherSnapshot
 impl swallowtail_runtime::WatcherSnapshot

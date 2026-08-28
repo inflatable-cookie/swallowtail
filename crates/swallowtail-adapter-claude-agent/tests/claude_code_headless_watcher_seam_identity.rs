@@ -1,7 +1,6 @@
 use serde_json::Value;
 
-const WATCHER_SEAM: &str =
-    include_str!("fixtures/claude-code-2.1.241/headless-watcher-seam.json");
+const WATCHER_SEAM: &str = include_str!("fixtures/claude-code-2.1.241/headless-watcher-seam.json");
 
 #[test]
 fn watcher_seam_evidence_fixture_is_secret_free_and_admits_complete_mechanism() {
@@ -26,7 +25,9 @@ fn watcher_seam_evidence_fixture_is_secret_free_and_admits_complete_mechanism() 
     for row in table {
         let status = row["status"].as_str().expect("status");
         assert!(
-            status == "admitted" || status == "admitted_docs" || status == "admitted_docs_and_package",
+            status == "admitted"
+                || status == "admitted_docs"
+                || status == "admitted_docs_and_package",
             "unexpected status {status}"
         );
     }
@@ -35,7 +36,10 @@ fn watcher_seam_evidence_fixture_is_secret_free_and_admits_complete_mechanism() 
         evidence["current_production_argv"]["mcp_config"],
         "{\"mcpServers\":{}}"
     );
-    assert_eq!(evidence["current_production_argv"]["strict_mcp_config"], true);
+    assert_eq!(
+        evidence["current_production_argv"]["strict_mcp_config"],
+        true
+    );
     assert_eq!(evidence["current_production_argv"]["bare"], false);
     assert_eq!(evidence["candidate_composition"]["bare"], true);
 

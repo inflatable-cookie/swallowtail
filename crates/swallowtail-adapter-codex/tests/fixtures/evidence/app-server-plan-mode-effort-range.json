@@ -1,0 +1,94 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.app-server",
+  "control": "plan_mode_reasoning_effort",
+  "observed_at": "2026-08-28",
+  "versions": ["0.147.0", "0.148.0", "0.149.0", "0.149.1"],
+  "tag_commits": {
+    "0.147.0": "be6e8eac029b183056b7e4402879f15d2c85f61b",
+    "0.148.0": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "0.149.0": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+    "0.149.1": "ff29a44391deccde0aba0f8390337d7f3c319ea4"
+  },
+  "tarball_sha256": {
+    "rust-v0.147.0": "355bde4b40d5ba6deea2e469d36f91708315729f3e84c9c69cce6b041a5ba593",
+    "rust-v0.148.0": "a45e90403eb36b7d6093b167fe1c7dba9b36063bef6d39359eed52c47a21f94a",
+    "rust-v0.149.0": "3c20d9bb8eb707939472ff9058868f2ac09e885674ebd72261a9db4c8705c2e4",
+    "rust-v0.149.1": "85139f405ce455bf14ff452615cdb2572d752e31a1e0da6891ac8325915d10ce"
+  },
+  "official_docs": {
+    "learn.chatgpt.com/docs/config-file/config-reference.md": {
+      "retrieved": "2026-08-28",
+      "sha256": "b60fbf91a216b9a1136fb42c7dbbbf42d3943b212101aae09a1d5b946805e6dd",
+      "documents_plan_mode_reasoning_effort": true,
+      "documented_values": ["none", "minimal", "low", "medium", "high", "xhigh"]
+    }
+  },
+  "ambient_config": {
+    "config_toml_key": "plan_mode_reasoning_effort",
+    "schema_ref": "ReasoningEffort",
+    "schema_shape_at_0_149_1": "open non-empty string (not a closed enum)",
+    "rust_wire_values_known": ["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra", "Custom(String)"],
+    "present_in_config_schema_across_exact_set": true,
+    "config_batch_write_session_static_key": true,
+    "config_batch_write_reloads_existing_threads": false
+  },
+  "protocol_seam": {
+    "typed_thread_start_plan_mode_reasoning_effort": false,
+    "typed_thread_resume_plan_mode_reasoning_effort": false,
+    "typed_thread_fork_plan_mode_reasoning_effort": false,
+    "typed_turn_start_plan_mode_reasoning_effort": false,
+    "typed_thread_settings_update_plan_mode_reasoning_effort": false,
+    "thread_settings_returns_plan_mode_reasoning_effort": false,
+    "thread_start_response_plan_mode_reasoning_effort": false,
+    "turn_start_response_plan_mode_reasoning_effort": false,
+    "config_read_typed_plan_mode_reasoning_effort": false,
+    "v2_schema_bundle_mentions_plan_mode_reasoning_effort": false,
+    "thread_metadata_persisted_plan_mode_reasoning_effort": false,
+    "typed_collaboration_mode_settings_reasoning_effort": true,
+    "collaboration_mode_list_plan_preset_default_effort": "medium",
+    "resume_restores_model_reasoning_effort_not_plan_mode_key": true
+  },
+  "app_server_application": {
+    "reads_config_plan_mode_reasoning_effort_into_plan_mask": false,
+    "tui_client_side_applies_plan_mode_key_to_active_plan_mask": true,
+    "plan_wire_effort_surface": "collaboration_mode.settings.reasoning_effort",
+    "ordinary_turn_effort_surface": "turn/start.effort / thread settings effort / model_reasoning_effort"
+  },
+  "source_digests_at_0_149_1": {
+    "codex-rs/core/config.schema.json": "affe54cce9b9945ffd32d322415ff4cc844c62068c1190be6355580be4ca9350",
+    "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": "27b068150d650ec6da10cd811cd176a72dd7844d701ff351989f4423032a0e07",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "3d76c3154f5d092eb2460fa77f1e8befdf4255447afb741724658afbf30a7704",
+    "codex-rs/app-server-protocol/src/protocol/v2/config.rs": "e67c812b34a9fddce9ec157870e338dcedebf9ff3003527e7e5b24bd51818d7e",
+    "codex-rs/app-server-protocol/src/protocol/v2/collaboration_mode.rs": "1edf8056787546dacb4764fe6c5d6fbffe5668f04d8222a2fb7e91b2ca5be7ef",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "3991f4a8f595767ac0de5d39a4edd7c2eea68ecaedfb007a4554e5fb1497d4e8",
+    "codex-rs/protocol/src/config_types.rs": "80c1f9a5026019fe813c064ee0ec05a33772f5e6cdd2863d19dda7e4414221ba",
+    "codex-rs/protocol/src/openai_models.rs": "39939bf67ac473b5921d4edd0864df2c1d491edd7de5577957fc877eb3e012c3",
+    "codex-rs/models-manager/src/collaboration_mode_presets.rs": "cc438ddcc2f2e7a8311a23c977ad1d9aeee5ab79d7d2382fb7c488202db98fa8",
+    "codex-rs/state/src/model/thread_metadata.rs": "dda4cff3a12a7631502ecc59da8cc46a3bf15f3bbbd937dc8a1f22812cec61f1",
+    "codex-rs/app-server/src/request_processors/config_processor.rs": "c09f147c0a685f8daf0f7c527ee7d721b58f414808a7be015e0f60066ec84bd0",
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": "49269190a4962d74e51678774c07b2e06bb19e54806f7fecf0cc1ef2250fa8d4",
+    "codex-rs/app-server/src/request_processors/turn_processor.rs": "5d6fc08a66946ca4c01f0e624d1886a8575215e0422f71ad127eefa6f032c5d6",
+    "codex-rs/app-server/src/request_processors/thread_summary.rs": "8d209a9d9a6f99a4551e771cc06e12eb496bbc03af9b962fa9a4845e14a3c9f1",
+    "codex-rs/app-server/README.md": "664c71bc798035d7c6a91e6f45a1b6f4a5cd33745c8df0b1376717dbeed62ed5"
+  },
+  "cross_version_stability": {
+    "v2.schemas.json": "byte-identical at 0.149.0 and 0.149.1; plan_mode_reasoning_effort absent across exact set",
+    "turn.rs": "byte-identical across 0.147.0..=0.149.1",
+    "collaboration_mode.rs": "byte-identical across 0.147.0..=0.149.1",
+    "collaboration_mode_presets.rs": "byte-identical across 0.147.0..=0.149.1; Plan preset Medium",
+    "thread.rs": "byte-identical at 0.149.0 and 0.149.1; no plan_mode_reasoning_effort field",
+    "config.rs typed Config": "byte-identical at 0.149.0 and 0.149.1; no typed plan_mode_reasoning_effort",
+    "config_processor session-static key": "present across 0.147.0..=0.149.1"
+  },
+  "swallowtail_production_bytes": {
+    "plan_selected_via": "turn/start collaborationMode.mode=plan",
+    "plan_collaboration_settings_reasoning_effort_source": "SessionOptions.reasoning_mode ordinary ReasoningSelection",
+    "serializes_plan_mode_reasoning_effort_config_key": false,
+    "turn_start_serializes": ["threadId", "input", "effort?", "collaborationMode?", "sandboxPolicy?"],
+    "thread_start_omits": ["plan_mode_reasoning_effort", "collaborationMode"]
+  },
+  "decision": "empty_deliver_now",
+  "deliver_now_row_count": 0
+}

@@ -7,7 +7,7 @@ Depends on: completed g04
 Vision tags: harness skills, process observability, consumer integration
 Contract refs: 013, 017, 023, 029, 034, 041, 044, 047, 052
 Research: 255 promoted
-Planning state: card 001 completed; card 002 ready; card 003 planned
+Planning state: cards 001-002 completed; card 003 planned pending operator decisions
 
 ## Problem
 
@@ -36,10 +36,10 @@ promotion.
 
 ### Batch 1.2 — Boundary And Decision Packet
 
-- [ ] execute card 002 after Research 255 promotion
-- [ ] classify portable, provider-local, host-owned, consumer-owned, unsafe,
+- [x] execute card 002 after Research 255 promotion
+- [x] classify portable, provider-local, host-owned, consumer-owned, unsafe,
       and unknown seams
-- [ ] return unresolved policy choices to the operator
+- [x] return unresolved policy choices to the operator
 
 ### Batch 1.3 — Promotion And Runway Selection
 
@@ -53,8 +53,8 @@ promotion.
 - [x] skill distribution membership stays separate from model visibility
 - [x] native watchers stay separate from a Swallowtail-owned mechanism
 - [x] process ownership, stop, join, output, and turn completion remain explicit
-- [ ] no public type or implementation is selected before operator decisions
-- [ ] one clear continuation checkpoint remains
+- [x] no public type or implementation is selected before operator decisions
+- [x] one clear continuation checkpoint remains
 
 ## Stop Conditions
 

@@ -227,21 +227,114 @@ boundary classification and the existing operator decision packet, and card
 003 owns any later architecture, contract, or proof-route selection. No
 watcher implementation or skill injection is ready.
 
-## Open Operator Decisions
+## Card 002 Decision Packet
 
 Research 255 completed the prompt-free census across 35 harness routes. It
 found zero deliver-now skill-roster rows and zero complete native-watcher rows.
-Card 002 now owns the evidence-shaped decision packet; this note stays open
-until the operator answers the choices below.
+The evidence supports boundary choices, not architecture, public types, or a
+proof-route selection.
 
-- Skill discovery scope: distribution-bundled only, or also explicitly
-  configured/project-local skills that the exact session confirms visible?
-- Watcher stop authority: model only, consumer only, or both through separate
-  typed operations?
-- Consumer presentation: status only, bounded output summaries, or a separately
-  authorized bounded log stream?
-- Failure posture when the model attempts to finish with active watchers:
-  refuse completion and return control, automatically wait, or stop and fail?
+### Evidence Classification
 
-The operator has already selected the core semantic invariant: successful turn
-completion waits for watcher-owned process completion or explicit joined stop.
+| Class | Evidence-shaped boundary |
+| --- | --- |
+| Portable candidate | A bounded skill observation vocabulary may preserve provenance, visibility scope, evidence strength, and freshness. No current route can populate a positive selected-session roster. A separate operation-local watcher vocabulary may preserve lifecycle and bounded activity once a host-owned mechanism exists. |
+| Provider-local | Native skill registries, provider task or subagent ids, session ids, native activity, abort, and wait surfaces keep exact adapter semantics. None becomes portable control merely because several providers use similar names. |
+| Host-owned | Watcher creation, stable operation-local watcher identity, process-tree ownership, status, wait, bounded output capture, stop, deadline, cancellation, join, and the successful-turn completion gate require one host-owned registry or an equally strong qualified native mechanism. |
+| Consumer-owned | Presentation, disclosure preferences, durable projection, retention, operator authorization, and product policy for exposing a direct stop action remain downstream. |
+| Unsafe | Ambient home or project scans, arbitrary PID attachment or kill, harness configuration mutation, raw or unbounded log exposure, prompt-only enforcement, foreign-process control, and ordinary watcher survival beyond the owning turn. |
+| Unavailable | Prompt-free positive proof of the skills visible to the selected model/session, and a complete consumer-controllable native watcher, across the current production routes. |
+
+Skill visibility and watcher enforcement therefore need separate specs,
+contracts, and proof routes. They share provenance and session-visibility
+questions only. Skill evidence cannot grant process authority. Provider
+activity cannot satisfy watcher control.
+
+### Existing Contract Coverage
+
+| Contract | Already governs | Does not yet govern |
+| --- | --- | --- |
+| 013 Interactive Session Access | Preflight-bound session access, callback posture, host-monotonic deadlines, terminal cleanup, and joined provider work. | A generic watcher registry, watcher ids, or watcher operations. |
+| 017 Provider-Owned Session Load | Provider-session binding, load/resume/recovery separation, containment qualification, and consumer-owned persistence. | Watcher durability or recovery. Session recovery must not imply watcher recovery. |
+| 023 Harness Isolation | Exact isolation posture; separation of native budgets from host deadline, cancellation, stop, force-stop, bounded output transport, and joined cleanup. | Watcher ownership, per-watcher control, or a turn-completion gate. |
+| 041 Input And Tool Admission | Exact separation and admission of consumer tools, provider-owned tools, and MCP or harness tools. | Process authority created by a skill or prompt. Any model-facing watcher tool needs its own admitted mechanism. |
+| 044 Observable Activity | Operation-local activity identity, command/task lifecycle and disclosure, bounded content, and consumer-owned presentation. | Start, wait, stop, or completion authority. Provider-observed command activity is not a controllable watcher. |
+
+### Open Operator Decisions
+
+The following are recommendations, not decisions. Card 003 remains planned
+until the operator records all four choices.
+
+#### 1. Skill Discovery Scope
+
+Options:
+
+- distribution-bundled skills only
+- distribution-bundled plus explicitly configured or project-local skills
+  when the exact selected session confirms visibility
+- ambient discovery of every installed or discoverable skill
+
+Recommendation: start with distribution-bundled skills only, and describe a
+skill as visible only when the exact selected session supplies positive
+evidence. Defer configured and project-local skills until a separate resource
+and privacy boundary authorizes their names and descriptions. Reject ambient
+discovery.
+
+Reason: the census proves no safe positive roster today. A narrow scope avoids
+turning skill discovery into host inventory or project-content disclosure.
+
+#### 2. Watcher Stop Authority
+
+Options:
+
+- model only
+- consumer only
+- model and consumer through separate typed operations
+
+Recommendation: allow both model and consumer stop requests through separate
+typed operations against the same host-owned registry. Accept only watcher ids
+owned by the current turn. Make completion-versus-stop races and repeated stop
+requests deterministic. Never accept a PID as authority.
+
+Reason: the model needs to clean up work it started; a consumer needs an
+independent safety control. Separate operations preserve who requested the
+stop without creating two ownership systems.
+
+#### 3. Consumer Output Exposure
+
+Options:
+
+- lifecycle and status only
+- lifecycle, status, and bounded redacted output summaries
+- a separately authorized bounded log stream
+
+Recommendation: expose lifecycle, status, and bounded redacted output
+summaries first. Keep raw or continuous logs out. A later log stream would need
+separate authorization, bounds, backpressure, retention, and redaction rules.
+
+Reason: status alone is weak for useful progress and failure display. Raw logs
+can disclose commands, paths, arguments, environment, secrets, and unbounded
+task data.
+
+#### 4. Active-Watcher Turn Completion
+
+Options:
+
+- explicit wait plus a fail-closed final-completion gate
+- automatic host wait when the model attempts to finish
+- stop all active watchers and fail the turn
+
+Recommendation: the watcher wait operation pauses the agent turn until the
+selected watcher is terminal and returns its bounded result. If the model
+still attempts successful completion with active watchers, reject that
+completion and return structured active-watcher state so it must wait or stop.
+Cancellation and deadline instead stop and join all owned watchers before the
+turn fails.
+
+Reason: automatic waiting can hide output or failure from the model. Immediate
+stop-and-fail discards valid work. Explicit wait gives the model the result;
+the final gate enforces the invariant when instructions are ignored.
+
+The operator has already selected the core invariant: an ordinary turn cannot
+complete successfully until every watcher-owned process is terminal through
+completion or explicit joined stop.

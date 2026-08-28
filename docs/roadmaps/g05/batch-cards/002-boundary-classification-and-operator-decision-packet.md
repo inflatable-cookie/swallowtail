@@ -1,6 +1,6 @@
 # 002 Boundary Classification And Operator Decision Packet
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-28
 Milestone: `../001-harness-skill-and-watcher-surface-inventory.md`
@@ -27,12 +27,22 @@ Update the promoted triage note with one bounded decision packet. Keep evidence,
 recommendations, and operator choices separate. Do not create an active spec,
 edit architecture or contracts, or ready card 003 before the operator answers.
 
+## Outcome
+
+Research 255 is classified in the promoted triage note. The packet separates
+portable candidates, provider-local evidence, host-owned enforcement,
+consumer-owned projection, unsafe behavior, and unavailable claims. It records
+the exact coverage and remaining gaps in Contracts 013, 017, 023, 041, and
+044, recommends separate skill-discovery and watcher-enforcement tracks, and
+returns four bounded choices to the operator. No product choice, architecture,
+contract, public type, or proof route was selected.
+
 ## Acceptance Criteria
 
-- [ ] evidence and recommendation remain separate
-- [ ] privacy and authority boundaries are explicit
-- [ ] no architecture or public type is promoted before operator decisions
-- [ ] card 003 remains planned until those decisions are recorded
+- [x] evidence and recommendation remain separate
+- [x] privacy and authority boundaries are explicit
+- [x] no architecture or public type is promoted before operator decisions
+- [x] card 003 remains planned until those decisions are recorded
 
 ## Validation
 

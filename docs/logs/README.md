@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g05.001 Card 002 Decision Packet](./2026-08-28-g05-001-card-002-decision-packet.md) — boundary classification complete; four operator decisions pending; card 003 planned
 - [2026-08-28 g05.001 Card 001 Orchestrator Closeout](./2026-08-28-g05-001-card-001-orchestrator-closeout.md) — PR 112 fast-forwarded at `ea247a63`; Research 255 promoted; card 002 ready
 - [2026-08-28 g05.001 Harness Skill And Watcher Surface Census](./2026-08-28-g05-001-harness-skill-watcher-surface-census.md) — complete; card 001; Research 255; PR 112 at `ea247a63`
 - [2026-08-28 g04 Generation Closeout And g05 Open](./2026-08-28-g04-generation-closeout-and-g05-open.md) — g04 closed at 91 roadmaps; g05.001 and cards 001-003 compiled; Research 255 reserved

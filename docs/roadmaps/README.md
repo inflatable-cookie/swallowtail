@@ -15,12 +15,11 @@ shape.
 
 ## Next Task
 
-Reassess Research 255 through g05.001 card 002. Classify portable,
-provider-local, host-owned, consumer-owned, unsafe, and unavailable seams, then
-return the four operator choices for skill scope, watcher stop authority,
-consumer output, and active-watcher turn completion. Do not promote
-architecture, contracts, public types, or proof routes. Card 003 remains
-planned. Contract 029 currentness remains standing.
+Reassess the g05.001 card 002 operator decision packet. Record the four
+operator decisions for skill scope, watcher stop authority, consumer output,
+and active-watcher turn completion. Do not ready card 003 or promote
+architecture, contracts, public types, or proof routes until those answers are
+recorded. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

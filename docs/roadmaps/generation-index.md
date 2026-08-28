@@ -146,10 +146,10 @@ goal and does not keep g04 or any later generation open. See
 
 g05 has one roadmap: 0 completed milestones, no honest evidence stops, and one
 ready milestone at 001. Card 001 completed the prompt-free production-harness
-surface inventory through PR 112 at `ea247a63`; card 002 is ready to prepare
-the operator decision packet, and card 003 remains planned. No watcher
-implementation, skill injection, provider prompt, new route, or parked Bedrock
-work is authorized.
+surface inventory through PR 112 at `ea247a63`; card 002 closed the boundary
+classification and returned four operator choices. Card 003 remains planned
+pending those decisions. No watcher implementation, skill injection, provider
+prompt, new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

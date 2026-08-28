@@ -26,9 +26,14 @@ Research 250 with a closed deliver-now table or an honest empty set.
        tool permissions, host capabilities, and prompt text.
 4. [x] Build a closed builtin/host-config/lifecycle table. A non-empty row must
        prove the host already authorizes every dependency and the session
-       advertises or otherwise confirms the selected builtin.
-5. [x] Prove unknown and unavailable builtins reject before prompt effects;
-       prove omission retains exact `goose acp` argv and behavior.
+       advertises or otherwise confirms the selected builtin. Empty set: no
+       non-empty row admitted; gates recorded in Research 250.
+5. [x] Prove omission retains exact `goose acp` argv and behavior.
+       Unknown/unavailable pre-prompt rejection: **failed gate** — clap and
+       `session/new` accept the name; load soft-fails into custom
+       `_meta.extensionResults` after provider/model resolution and the
+       session continues (Research 250). Not fail-closed before prompt
+       effects; empty-set disposition.
 6. [x] Audit prepared sessions, spawn plan/evidence, ACP fixtures, guide,
        matrices, and API baseline without production changes.
 7. [x] Promote Research 250 and complete the reserved lane log. Do not edit
@@ -39,9 +44,10 @@ Research 250 with a closed deliver-now table or an honest empty set.
 - [x] exact builtin/authority/lifecycle table or honest empty set exists
 - [x] membership, dependency authority, application, confirmation, cleanup,
       and omission truth is closed for a non-empty row (empty set: no
-      non-empty row admitted)
-- [x] unknown or unavailable builtins reject before prompt effects (empty
-      set: soft-fail `_meta.extensionResults`; not fail-closed at spawn)
+      non-empty row admitted; gates recorded)
+- [x] unknown/unavailable pre-prompt rejection recorded as a **failed gate**
+      (soft-fail `_meta.extensionResults`; session continues; not proved
+      fail-closed at spawn); empty-set disposition
 - [x] no provider setup, extension install, permission widening, or ambient mutation
 - [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
@@ -72,4 +78,5 @@ rollover, or g04 closure.
 Honest empty deliver-now set. Research 250 freezes clap syntax, platform and
 MCP builtin registries, ambient host merge under `mcpServers: []`, soft-fail
 `_meta.extensionResults`, and omission of `--with-builtin` on exact `1.46.0`.
-Unknown names are not fail-closed before prompt. No production binding.
+Unknown/unavailable pre-prompt rejection is a failed gate, not a proved
+fail-closed claim. No production binding.

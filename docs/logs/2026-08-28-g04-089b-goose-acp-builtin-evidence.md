@@ -20,10 +20,11 @@ any `--with-builtin` name on `goose acp` with no default. Stdio ACP does not
 inherit `goose serve`'s omitted-`developer` default. Platform and
 `goose_mcp::BUILTIN_EXTENSIONS` tables are source-closed, but docs cite
 `github` outside those registries. With Swallowtail's `mcpServers: []`, host
-enabled extensions still merge. Unknown names soft-fail into custom
-`_meta.extensionResults` after provider/model `session/new`; they do not
-reject at spawn. Platform deps can silently decline. Omission keeps argv
-exactly `goose acp`. No install, configure, or live ACP probe.
+enabled extensions still merge. Unknown/unavailable pre-prompt rejection is a
+**failed gate**: soft-fail `_meta.extensionResults` after provider/model
+`session/new`; session continues; not fail-closed at spawn. Platform deps can
+silently decline. Omission keeps argv exactly `goose acp`. No install,
+configure, or live ACP probe. Card 253 records that failed gate explicitly.
 
 ## Validation
 

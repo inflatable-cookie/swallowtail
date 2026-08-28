@@ -56,7 +56,7 @@ fn prepared_catalogue_uses_qwen_control_protocol_and_joins_the_ephemeral_process
 #[test]
 fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
     let host_id = ExecutionHostId::new("fixture.qwen.prepared.latest").expect("valid host");
-    let (process, _) = FakeProcessService::completed("0.22.1\n");
+    let (process, _) = FakeProcessService::completed("0.22.3\n");
     let (services, _) = host_services_for(host_id.clone(), process, Arc::new(PendingTimeService));
     let prepared = block_on(prepare_qwen_headless(
         preparation_input(host_id.clone()),
@@ -90,7 +90,7 @@ fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
         .expect("latest run profile prepares");
     let output = include_str!("../fixtures/qwen-code-v0.19.11/success.jsonl").replace(
         "\"qwen_code_version\":\"0.19.11\"",
-        "\"qwen_code_version\":\"0.22.1\"",
+        "\"qwen_code_version\":\"0.22.3\"",
     );
     let (process, _) = FakeProcessService::completed(&output);
     let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));
@@ -103,7 +103,7 @@ fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
 #[test]
 fn later_stable_qwen_is_visible_and_executable_as_unverified_newer() {
     let host_id = ExecutionHostId::new("fixture.qwen.prepared.newer").expect("valid host");
-    let (process, _) = FakeProcessService::completed("0.22.2\n");
+    let (process, _) = FakeProcessService::completed("0.22.4\n");
     let (services, _) = host_services_for(host_id.clone(), process, Arc::new(PendingTimeService));
     let prepared = block_on(prepare_qwen_headless(
         preparation_input(host_id),

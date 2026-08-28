@@ -27,6 +27,11 @@ annotated Git tags from the canonical repository.
 ### Changed
 
 - raise the Qwen headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.22.3`: keep exact `0.21.15` reasoning-control,
+  extend same-revision `0.22.0..=0.22.3` via published `0.22.2`, keep
+  unpublished `0.21.16` incompatible, and leave reasoning/budgets exact
+  `0.21.15`. Research 258, g05.004.
+- raise the Qwen headless qualified ceiling through official npm
   `@qwen-code/qwen-code` `0.22.1`: keep exact `0.21.15` reasoning-control,
   add same-revision `0.22.0..=0.22.1`, keep unpublished `0.21.16`
   incompatible, and leave reasoning/budgets exact `0.21.15`. Research 216,

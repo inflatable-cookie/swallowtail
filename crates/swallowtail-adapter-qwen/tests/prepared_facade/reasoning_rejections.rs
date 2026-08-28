@@ -4,6 +4,8 @@ fn qwen_reasoning_rejects_unqualified_version_model_and_alias_before_operation_w
         ("0.19.11", "alibaba-modelstudio", "qwen3.8-max", "high"),
         ("0.22.0", "alibaba-modelstudio", "qwen3.8-max", "high"),
         ("0.22.1", "alibaba-modelstudio", "qwen3.8-max", "high"),
+        ("0.22.2", "alibaba-modelstudio", "qwen3.8-max", "high"),
+        ("0.22.3", "alibaba-modelstudio", "qwen3.8-max", "high"),
         ("0.21.15", "alibaba-modelstudio", "qwen3-coder-plus", "high"),
         ("0.21.15", "alibaba-modelstudio", "qwen3.8-max", "med"),
         ("0.21.15", "other-provider", "qwen3.8-max", "high"),

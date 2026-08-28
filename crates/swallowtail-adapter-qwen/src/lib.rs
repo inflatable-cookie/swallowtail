@@ -2,7 +2,7 @@
 //!
 //! Installed discovery, model catalogue, one-shot structured runs, and
 //! turn-scoped interactive sessions share one explicit headless CLI route.
-//! Exact `0.21.15`, `0.22.0`, and `0.22.1` admit optional portable
+//! Exact `0.21.15`, `0.22.0`, `0.22.1`, `0.22.2`, and `0.22.3` admit optional portable
 //! `HarnessMode::Plan` as `--approval-mode plan`.
 
 #![forbid(unsafe_code)]

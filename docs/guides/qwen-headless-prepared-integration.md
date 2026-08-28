@@ -26,7 +26,7 @@ The delegated credential is an opaque scoped lease. Ambient harness
 configuration and `--safe-mode` do not prove host containment.
 
 Qualified versions are `0.19.11..=0.20.1`, `0.21.0..=0.21.15`, and
-`0.22.0..=0.22.1`; the 0.21+ segments have the image-only catalogue
+`0.22.0..=0.22.3`; the 0.21+ segments have the image-only catalogue
 filter. Later stable releases may remain visible `UnverifiedNewer` under
 the latest qualified behavior. The unpublished `0.20.2` and `0.21.16`
 gaps, older versions, and prereleases do not prepare.
@@ -63,7 +63,8 @@ cleanup remain separate.
 
 ### Exact Plan Selection
 
-Plan is qualified only at packages `0.21.15`, `0.22.0`, and `0.22.1`.
+Plan is qualified only at packages `0.21.15`, `0.22.0`, `0.22.1`, `0.22.2`,
+and `0.22.3`.
 `with_harness_mode(HarnessMode::Plan)` selects portable Plan. Omission keeps
 `--approval-mode default` and is not implicit Plan. Other Qwen approval values
 stay unselected.

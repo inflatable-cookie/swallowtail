@@ -6,7 +6,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, RuntimeFailure};
 
-pub(crate) const QUALIFIED_VERSIONS: [&str; 3] = ["0.21.15", "0.22.0", "0.22.1"];
+pub(crate) const QUALIFIED_VERSIONS: [&str; 5] =
+    ["0.21.15", "0.22.0", "0.22.1", "0.22.2", "0.22.3"];
 
 pub(crate) fn supports(version: &InterfaceVersion) -> bool {
     QUALIFIED_VERSIONS.contains(&version.as_str())
@@ -23,7 +24,7 @@ pub(crate) fn validate_preparation(
             PreparationStage::Preflight,
             Diagnostic::new(SafeDiagnostic::new(
                 "swallowtail.qwen.preparation.harness_mode_unsupported",
-                "Qwen Plan requires exact maintained 0.21.15, 0.22.0, or 0.22.1",
+                "Qwen Plan requires exact maintained 0.21.15, 0.22.0, 0.22.1, 0.22.2, or 0.22.3",
             )),
         ))
     }

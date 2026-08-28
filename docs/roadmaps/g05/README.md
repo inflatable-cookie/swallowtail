@@ -26,11 +26,12 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
 - [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; Claude evidence card 007 and portable core card 008 ready in parallel
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — ready; Qoder evidence card 004 ready
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has three numbered roadmaps: one completed milestone, no evidence stop, and
+g05 has four numbered roadmaps: two completed milestones, no evidence stop, and
 two ready proof milestones.
 
 ## Current Boundary
@@ -51,6 +52,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
+- [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; cards 007-008 ready
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — ready; card 004 ready
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

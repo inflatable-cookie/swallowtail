@@ -14,7 +14,7 @@ fn plan_continued_turn_jsonl(version: &str) -> String {
 
 #[test]
 fn qwen_plan_dispatches_canonical_approval_mode_on_every_admitted_package() {
-    for version in ["0.21.15", "0.22.0", "0.22.1"] {
+    for version in ["0.21.15", "0.22.0", "0.22.1", "0.22.2", "0.22.3"] {
         let host_id =
             ExecutionHostId::new(format!("fixture.qwen.plan.{version}")).expect("valid host");
         let (discovery_process, _) = FakeProcessService::completed(&format!("{version}\n"));

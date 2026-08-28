@@ -20,6 +20,8 @@
 
 ## Completed
 
+- [013-qwen-headless-0-22-3-claim.md](./013-qwen-headless-0-22-3-claim.md) — completed; standing currentness
+- [012-qwen-headless-0-22-3-identity.md](./012-qwen-headless-0-22-3-identity.md) — completed; standing currentness
 - [003-promotion-and-proof-route-selection.md](./003-promotion-and-proof-route-selection.md) — completed; Contracts 058-059 promoted; proof runway compiled
 - [002-boundary-classification-and-operator-decision-packet.md](./002-boundary-classification-and-operator-decision-packet.md) — completed; decision packet returned; operator answers recorded
 - [001-production-harness-skill-and-watcher-surface-census.md](./001-production-harness-skill-and-watcher-surface-census.md) — completed; Research 255 promoted

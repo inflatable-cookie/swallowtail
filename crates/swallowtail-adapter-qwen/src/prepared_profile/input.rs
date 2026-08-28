@@ -101,7 +101,7 @@ impl QwenSessionProfileInput {
     /// Selects portable Plan for every child of this session.
     ///
     /// Omission keeps `--approval-mode default`. Only `HarnessMode::Plan` is
-    /// admitted, and only on exact `0.21.15`, `0.22.0`, and `0.22.1`.
+    /// admitted, and only on exact `0.21.15`, `0.22.0`, `0.22.1`, `0.22.2`, and `0.22.3`.
     #[must_use]
     pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
         self.harness_mode = Some(harness_mode);
@@ -177,7 +177,7 @@ impl QwenRunProfileInput {
     /// Selects portable Plan for the structured-run child.
     ///
     /// Omission keeps `--approval-mode default`. Only `HarnessMode::Plan` is
-    /// admitted, and only on exact `0.21.15`, `0.22.0`, and `0.22.1`.
+    /// admitted, and only on exact `0.21.15`, `0.22.0`, `0.22.1`, `0.22.2`, and `0.22.3`.
     #[must_use]
     pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
         self.harness_mode = Some(harness_mode);

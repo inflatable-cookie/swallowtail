@@ -1,0 +1,78 @@
+{
+  "help_source": "config.ts-v0.22.2",
+  "help_selected_flags_present": [
+    "--safe-mode",
+    "--approval-mode",
+    "--core-tools",
+    "--exclude-tools",
+    "--max-wall-time",
+    "--max-tool-calls",
+    "--max-session-turns",
+    "--include-partial-messages",
+    "--input-format",
+    "--output-format",
+    "--resume"
+  ],
+  "selected_read_tools": [
+    "read_file",
+    "grep_search",
+    "glob",
+    "list_directory",
+    "lsp"
+  ],
+  "selected_controls": [
+    "can_get_available_models",
+    "get_available_models",
+    "can_set_effort",
+    "set_effort"
+  ],
+  "approval_mode_values_unchanged": [
+    "plan",
+    "default",
+    "auto-edit",
+    "auto",
+    "yolo"
+  ],
+  "swallowtail_dispatches_approval_mode": "default",
+  "catalogue_image_only_filter": true,
+  "stream_types_add_goal_state_from": "0.21.4",
+  "goal_state_is_nested_stream_event": true,
+  "mapped_top_level_types": [
+    "system",
+    "stream_event",
+    "assistant",
+    "result"
+  ],
+  "decoder_corpus": "qwen-code-v0.19.11",
+  "selected_mapped_subset_unchanged": true,
+  "0_22_2_types_controller_session_reasoning_dashscope_byte_identical_to_0_22_1": true,
+  "0_22_2_plan_mode_blobs_byte_identical_to_0_22_1": true,
+  "0_22_2_config_delta": "unmapped hostPolicy.provisionalWorkspace",
+  "unused_deltas": [
+    "goal_state",
+    "initialize.effort_status",
+    "--continue",
+    "--restore-ask-user-question",
+    "lsToolEnabled",
+    "list_directory settings opt-in default-off",
+    "MCP versionNegotiation",
+    "dashscope clamp max to xhigh",
+    "approval-mode parser uses shared APPROVAL_MODES",
+    "hostPolicy.provisionalWorkspace",
+    "node-repl standalone MCP server",
+    "computer-use settings",
+    "workflowsEnabled",
+    "Web Shell transcript bounds",
+    "review / autofix extras",
+    "daemon last-selected model restore",
+    "dual-role image generation models",
+    "MCP Apps host",
+    "Kimi built-in third-party provider",
+    "create_sub_session under qwen serve",
+    "scheduled tasks optional sessionId"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_headless_session": false,
+  "host_install_changed": false
+}

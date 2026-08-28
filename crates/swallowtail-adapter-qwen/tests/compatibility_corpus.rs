@@ -105,18 +105,18 @@ fn every_selected_safety_protocol_and_resume_surface_exists_across_the_interval(
 
 #[test]
 fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.1");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
     let claim = qwen_headless_claim();
     for candidate in [
         "0.19.11", "0.19.12", "0.20.0", "0.20.1", "0.21.0", "0.21.1", "0.21.2", "0.21.13",
-        "0.21.14", "0.21.15", "0.22.0", "0.22.1",
+        "0.21.14", "0.21.15", "0.22.0", "0.22.1", "0.22.2", "0.22.3",
     ] {
         assert!(claim.supports(&version(candidate)));
     }
     assert!(!claim.permits(&version("0.20.2")));
     assert!(!claim.permits(&version("0.21.16")));
     assert!(matches!(
-        claim.assess(&version("0.22.2")),
+        claim.assess(&version("0.22.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version("0.21.14-rc.1")));

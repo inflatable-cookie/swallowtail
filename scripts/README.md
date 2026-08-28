@@ -21,6 +21,9 @@ Normal validation scripts:
 - `check-consumer-front-door.py` — source-install TOML, canonical Git identity,
   release package and route inventories, and support-policy presence behind
   `effigy qa:consumer-docs`
+- `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
+  and generation-index ready/completed/stop counts against Status frontmatter
+  behind `effigy qa:docs:roadmaps:status`
 - `validate-focused-packages.sh` — one nextest invocation and one
   warnings-denied all-target clippy invocation for one to four explicit
   workspace packages

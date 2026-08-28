@@ -46,6 +46,12 @@ impl Fixture {
         Self::with_server_and_host(server, "host.ollama")
     }
 
+    pub fn with_parked_time(server: FixtureServer) -> Self {
+        let mut fixture = Self::with_server(server);
+        fixture.thread = ThreadServices::parked(0);
+        fixture
+    }
+
     fn with_server_and_host(server: FixtureServer, host_id: &str) -> Self {
         let host_id = ExecutionHostId::new(host_id).expect("host id is valid");
         let target = InstanceTargetRef::new("ollama-fixture-endpoint").expect("target is valid");

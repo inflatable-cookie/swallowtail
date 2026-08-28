@@ -180,7 +180,7 @@ fn independent_runs_are_not_serialized_by_the_driver() {
 
 #[test]
 fn deadline_remains_distinct_from_cancellation() {
-    let fixture = Fixture::with_server(FixtureServer::start_with(
+    let fixture = Fixture::with_parked_time(FixtureServer::start_with(
         VersionFixture::Expected,
         StreamFixture::WaitForCancel,
     ));
@@ -193,10 +193,21 @@ fn deadline_remains_distinct_from_cancellation() {
     ))
     .expect("run starts");
     let _events = run.take_events().expect("events are available");
-    let outcome = block_on(
-        run.take_terminal_outcome()
-            .expect("terminal outcome is available"),
-    );
+    let terminal = run
+        .take_terminal_outcome()
+        .expect("terminal outcome is available");
+    let terminal_thread = std::thread::spawn(move || block_on(terminal));
+    for _ in 0..100 {
+        if fixture.server.inference_attempts() == 1 {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert_eq!(fixture.server.inference_attempts(), 1);
+    fixture.thread.advance_time(100);
+    let outcome = terminal_thread
+        .join()
+        .expect("deadline terminal thread joins");
 
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
     assert!(matches!(

@@ -1,8 +1,9 @@
 #[test]
 fn callback_wait_ends_when_the_host_deadline_is_observed() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::HoldDynamicToolCall);
-    let recording = RecordingHostServices::default();
-    let services = host_services_with(process, &recording, [HostServiceKind::Time]);
+    let clock = ControllableTime::new(0);
+    let services = host_services(process)
+        .with_time(Arc::new(clock.clone()) as Arc<dyn TimeService>);
     let mut session = block_on(
         driver().open_session(
             app_server_plan_with(
@@ -33,6 +34,14 @@ fn callback_wait_ends_when_the_host_deadline_is_observed() {
     .expect("turn starts");
     let mut callbacks = turn.take_callbacks().expect("callback exchange exists");
     let mut requests = callbacks.take_requests().expect("request stream exists");
+    let callback = block_on(requests.next())
+        .expect("tool callback arrives before the deadline fires")
+        .expect("tool callback is valid");
+    assert!(matches!(
+        callback.kind(),
+        CallbackRequestKind::ToolCall { .. }
+    ));
+    clock.advance_to(50);
     let terminal = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),

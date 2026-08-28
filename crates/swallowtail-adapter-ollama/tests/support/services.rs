@@ -1,5 +1,7 @@
 use futures_channel::oneshot;
 use futures_executor::block_on;
+use std::sync::{Arc, Mutex};
+use std::task::Waker;
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 use swallowtail_core::CatalogTimestamp;
@@ -9,15 +11,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone)]
+enum ClockKind {
+    Wall(Instant),
+    Parked(Arc<Mutex<ParkedClock>>),
+}
+
+struct ParkedClock {
+    now: u64,
+    fire_through: Option<u64>,
+    waiters: Vec<Waker>,
+}
+
+#[derive(Clone)]
 pub struct ThreadServices {
-    origin: Instant,
+    clock: ClockKind,
     fail_join: bool,
 }
 
 impl ThreadServices {
     pub fn new() -> Self {
         Self {
-            origin: Instant::now(),
+            clock: ClockKind::Wall(Instant::now()),
+            fail_join: false,
+        }
+    }
+
+    pub fn parked(now: u64) -> Self {
+        Self {
+            clock: ClockKind::Parked(Arc::new(Mutex::new(ParkedClock {
+                now,
+                fire_through: None,
+                waiters: Vec::new(),
+            }))),
             fail_join: false,
         }
     }
@@ -31,6 +56,21 @@ impl ThreadServices {
         Deadline::at(MonotonicInstant::from_ticks(
             self.now().ticks() + duration.as_millis() as u64,
         ))
+    }
+
+    pub fn advance_time(&self, ticks: u64) {
+        let ClockKind::Parked(clock) = &self.clock else {
+            panic!("advance_time requires parked fixture time");
+        };
+        let waiters = {
+            let mut state = clock.lock().expect("parked clock lock");
+            state.now = ticks;
+            state.fire_through = Some(ticks);
+            std::mem::take(&mut state.waiters)
+        };
+        for waiter in waiters {
+            waiter.wake();
+        }
     }
 }
 
@@ -96,26 +136,55 @@ impl BlockingWorkService for ThreadServices {
 
 impl TimeService for ThreadServices {
     fn now(&self) -> MonotonicInstant {
-        MonotonicInstant::from_ticks(self.origin.elapsed().as_millis() as u64)
+        match &self.clock {
+            ClockKind::Wall(origin) => {
+                MonotonicInstant::from_ticks(origin.elapsed().as_millis() as u64)
+            }
+            ClockKind::Parked(clock) => {
+                MonotonicInstant::from_ticks(clock.lock().expect("parked clock lock").now)
+            }
+        }
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        let wait = deadline
-            .instant()
-            .ticks()
-            .saturating_sub(self.now().ticks());
-        let (sender, receiver) = oneshot::channel();
-        thread::spawn(move || {
-            if wait != 0 {
-                thread::sleep(Duration::from_millis(wait));
+        match &self.clock {
+            ClockKind::Wall(_) => {
+                let wait = deadline
+                    .instant()
+                    .ticks()
+                    .saturating_sub(self.now().ticks());
+                let (sender, receiver) = oneshot::channel();
+                thread::spawn(move || {
+                    if wait != 0 {
+                        thread::sleep(Duration::from_millis(wait));
+                    }
+                    let _ = sender.send(DeadlineObservation::new(deadline, deadline.instant()));
+                });
+                Box::pin(async move {
+                    receiver
+                        .await
+                        .expect("fixture deadline thread returns an observation")
+                })
             }
-            let _ = sender.send(DeadlineObservation::new(deadline, deadline.instant()));
-        });
-        Box::pin(async move {
-            receiver
-                .await
-                .expect("fixture deadline thread returns an observation")
-        })
+            ClockKind::Parked(clock) => {
+                let clock = Arc::clone(clock);
+                Box::pin(std::future::poll_fn(move |context| {
+                    let mut state = clock.lock().expect("parked clock lock");
+                    if state
+                        .fire_through
+                        .is_some_and(|maximum| deadline.instant().ticks() <= maximum)
+                    {
+                        std::task::Poll::Ready(DeadlineObservation::new(
+                            deadline,
+                            MonotonicInstant::from_ticks(state.now),
+                        ))
+                    } else {
+                        state.waiters.push(context.waker().clone());
+                        std::task::Poll::Pending
+                    }
+                }))
+            }
+        }
     }
 
     fn catalog_now(&self) -> Result<CatalogTimestamp, RuntimeFailure> {

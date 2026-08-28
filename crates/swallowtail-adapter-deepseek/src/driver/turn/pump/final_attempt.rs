@@ -70,6 +70,12 @@ async fn run_final_attempt(
             }
             StreamSignal::Closed => {
                 let cleanup = cleanup_result(subscription.close().await);
+                if flow.cancellation.is_requested() {
+                    return Err(TurnFailure::Stopped(
+                        stop_from_cancellation(flow.cancellation),
+                        cleanup,
+                    ));
+                }
                 let final_attempt = match parser.finish() {
                     Ok(final_attempt) => final_attempt,
                     Err(error) => {

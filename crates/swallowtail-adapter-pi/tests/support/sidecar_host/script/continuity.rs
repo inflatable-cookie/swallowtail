@@ -31,6 +31,10 @@ pub(super) fn session_switch(
         return Ok(());
     }
     if matches!(scenario, SidecarScenario::ReplayDuringResume) {
+        // Emit unexpected replay before the switch response so resume fails
+        // closed on the pending command instead of racing a completed switch
+        // against a later force-stop wait.
+        replay_item(state, 0);
         output(
             state,
             json!({
@@ -41,7 +45,6 @@ pub(super) fn session_switch(
                 "data": {"effectiveCwd": expected_cwd, "sessionRef": session_ref, "sessionId": "00000000-0000-0000-0000-000000000000", "messages": 3}
             }),
         );
-        replay_item(state, 0);
         return Ok(());
     }
     let (effective_cwd, reported_ref) = match scenario {

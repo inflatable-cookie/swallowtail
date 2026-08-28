@@ -116,17 +116,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `prepared_facades.rs` remains a warning at 381 code lines and still wants the
   same treatment; the stale g04.056 closeout baseline is still uncorrected.
 
-### [ ] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
-- Friction: PR 54's first pinned-MSRV run stalled for six hours in
-  `resume_fails_closed_on_replay_evidence`; one local exact-head run also
-  stalled, while immediate reruns passed on Rust 1.95.0 and Stable.
-- Impact: an unrelated Qoder documentation head can remain non-green until the
-  hosted timeout or a successful rerun.
-- Fix: make the replay-event/`session_switch` response ordering deterministic
-  in the Pi sidecar fixture and bound the failure proof so it cannot wait
-  indefinitely.
-- Surface: Pi SDK sidecar `ReplayDuringResume` fixture; pinned-MSRV CI.
-
 ### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,
   `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above
@@ -181,23 +170,40 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: version-currentness worker handoffs; g04 roadmap and batch-card
   indexes.
 
-### [ ] Timing-sensitive deadline fixtures make unrelated PR heads red — 2026-08-21
+## Closed
+
+### [x] Docs index QA misses roadmap-status drift — 2026-08-26
+- Friction: PR 73 passed every named docs-index selector while
+  `generation-index.md` still called g04.074 ready and the batch-card index
+  still listed completed card 204 as Ready and blocked cards 205-206 as
+  Planned.
+- Impact: a review-ready closeout can leave the canonical planning indexes in
+  mutually contradictory states despite green validation.
+- Fix: `scripts/check-roadmap-status-drift.py` reconciles batch-card section
+  membership, milestone annotations, and generation-index ready/completed/stop
+  census against Status frontmatter; wired as `qa:docs:roadmaps:status`.
+- Surface: Effigy Northstar roadmap and batch-card index QA.
+- Closed: 2026-08-28 papercuts wave 4 QA flakes.
+
+### [x] Timing-sensitive deadline fixtures make unrelated PR heads red — 2026-08-21
 - Friction: restacked PR 23 failed Stable in Ollama
   `deadline_remains_distinct_from_cancellation`, while PR 21 failed MSRV in
   Codex `callback_wait_ends_when_the_host_deadline_is_observed`; neither PR
   changes the failing adapter surface.
 - Impact: otherwise mergeable stacked heads need unrelated CI reruns before
   the orchestrator can satisfy the exact-head green gate.
-- Fix: make the fake-time/fixture-message handoff deterministic in both tests,
-  or give the asserted transition an explicit synchronization boundary.
+- Fix: Ollama and Codex deadline proofs now use parked controllable clocks and
+  sync after the fixture hold is observed; Alibaba retained-load deadline uses
+  a 500ms bound instead of 5ms so setup cannot trip `deadline_elapsed`.
 - Surface: Ollama attached-driver deadline test; Codex app-server callback
-  deadline test; Stable and MSRV CI jobs.
+  deadline test; Alibaba retained-load deadline test; Stable and MSRV CI jobs.
 - Recurrence 2026-08-27 (PR 82): Alibaba Model Studio
   `retained_load_deadline_joins_transport_before_releasing_access` observed
   `deadline_elapsed` instead of `timed_out` on a Gemini evidence-only head. A
   retry moved past it without a code change.
+- Closed: 2026-08-28 papercuts wave 4 QA flakes.
 
-### [ ] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
+### [x] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
 - Friction: `swallowtail-adapter-deepseek::driver::active_stream_cancellation_joins_before_session_credential_release`
   expected `Cancelled` and observed `ProviderFailed` with
   `swallowtail.deepseek.stream_incomplete` / `TransportInterrupted` on tag CI
@@ -205,26 +211,25 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   dispatched CI; the in-place rerun passed.
 - Impact: tag-triggered CI can fail a green SHA without a product change,
   tempting a retag.
-- Fix: make the cancellation join deterministic, or accept
-  `TransportInterrupted` as a documented cancellation race at the stream
-  boundary.
+- Fix: treat stream `Closed` with an already-requested cancellation as
+  `Cancelled`, matching the existing `Item(Err)` cancellation path.
 - Surface: DeepSeek driver cancellation test; tag CI Stable job.
 - Recurrence 2026-08-27 (PR 82): Stable again observed
   `swallowtail.deepseek.stream_incomplete` instead of `Cancelled` on a Gemini
   evidence-only head. The next unchanged-head retry moved past it.
+- Closed: 2026-08-28 papercuts wave 4 QA flakes.
 
-### [ ] Docs index QA misses roadmap-status drift — 2026-08-26
-- Friction: PR 73 passed every named docs-index selector while
-  `generation-index.md` still called g04.074 ready and the batch-card index
-  still listed completed card 204 as Ready and blocked cards 205-206 as
-  Planned.
-- Impact: a review-ready closeout can leave the canonical planning indexes in
-  mutually contradictory states despite green validation.
-- Fix: add semantic checks that reconcile milestone/card status and generation
-  counts across roadmap front doors and batch-card indexes.
-- Surface: Effigy Northstar roadmap and batch-card index QA.
-
-## Closed
+### [x] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
+- Friction: PR 54's first pinned-MSRV run stalled for six hours in
+  `resume_fails_closed_on_replay_evidence`; one local exact-head run also
+  stalled, while immediate reruns passed on Rust 1.95.0 and Stable.
+- Impact: an unrelated Qoder documentation head can remain non-green until the
+  hosted timeout or a successful rerun.
+- Fix: emit the unexpected `replay_item` before the `session_switch` success
+  response so resume fails closed on the pending command instead of racing a
+  completed switch against force-stop wait.
+- Surface: Pi SDK sidecar `ReplayDuringResume` fixture; pinned-MSRV CI.
+- Closed: 2026-08-28 papercuts wave 4 QA flakes.
 
 ### [x] A `/var` review worktree breaks affected-package path patches — 2026-08-26
 - Friction: macOS canonicalizes a `mktemp` worktree from `/var/...` to

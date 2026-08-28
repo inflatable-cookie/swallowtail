@@ -197,7 +197,7 @@ fn retained_load_deadline_joins_transport_before_releasing_access() {
         &plan,
         RequestId::new("timed-load").expect("request id"),
         binding(&plan),
-        Some(fixture.deadline_after(5)),
+        Some(fixture.deadline_after(500)),
     )
     .expect("load request");
     let error =

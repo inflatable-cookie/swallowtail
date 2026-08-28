@@ -28,12 +28,14 @@ application, terminal, lifecycle, cleanup, and omission truth.
 ## Evidence Verdict
 
 Hidden `--advisor <model>` is declared and parse-accepted across the whole
-qualified window. Doctor acceptance is not entitlement or pairing. Ambient
-`advisorModel` via `--setting-sources user,project,local`,
+qualified window. Doctor acceptance is not entitlement or pairing; `haiku` and
+arbitrary `not-a-model` tokens parse without pre-effect rejection (stop).
+Ambient `advisorModel` via `--setting-sources user,project,local`,
 `CLAUDE_CODE_DISABLE_ADVISOR_TOOL`, and feature-flag fetching defeat
 operation-private argv-only enablement. Extra consultation spend and effective
 attachment need live provider/account work this card forbids. Deliver-now rows:
-none. Omission unchanged; not an advisor-off claim.
+none. Omission unchanged; not an advisor-off claim. Card acceptance lines for
+non-empty-row closure and pre-effect unsupported rejection are annotated N/A.
 
 ## Validation
 

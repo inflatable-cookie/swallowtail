@@ -42,8 +42,12 @@ spend, application, result, lifecycle, and omission truth. Promote Research
 - [x] exact version/access/model/lifecycle table or honest empty set exists
 - [x] a non-empty row closes membership, entitlement, selection, application,
       extra-request/spend, terminal, cleanup, and omission truth
+      (N/A: empty set; no row claimed)
 - [x] advisor is not flattened into main-model, subagent, or portable vocabulary
 - [x] unsupported rows reject before prompt effects
+      (N/A for deliver-now; doctor/print accept `haiku` and arbitrary
+      `not-a-model` tokens at parse; pairing/entitlement/application deferred
+      with possible silent non-attachment — stop recorded)
 - [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
 
@@ -52,7 +56,8 @@ spend, application, result, lifecycle, and omission truth. Promote Research
 Honest empty deliver-now set. Hidden `--advisor <model>` exists at every
 published `2.1.220..=2.1.241` point and parses in print mode, but entitlement,
 operation-private precedence, effective attachment, and extra spend stay
-live-only or ambiently gated. Omission unchanged; no advisor-off claim.
+live-only or ambiently gated. Parse acceptance of unsupported advisor tokens
+is a stop, not pre-effect rejection. Omission unchanged; no advisor-off claim.
 Fixture: `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.241/headless-advisor.json`.
 
 ## Validation

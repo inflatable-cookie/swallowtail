@@ -19,9 +19,11 @@ closed deliver-now table or an honest empty set.
 1. [x] Keep route `kiro.acp`, exact `2.18.1`, host-approved executable and
        environment, provider-supported host account state, current ACP
        lifecycle, and current permission posture unchanged.
-2. [x] Freeze official `--effort low|medium|high|xhigh|max` documentation plus
-       exact package/source parser, precedence, model dependence, ACP spawn,
-       session configuration, request use, returned state, and failures.
+2. [x] Freeze official `--effort low|medium|high|xhigh|max` documentation,
+       precedence, model dependence, ACP spawn docs, session configuration,
+       request-use leads, and failure/omission disposition from public pages.
+       [ ] Exact `2.18.1` package/source parser: **stopped** — CDN ranged GET
+       returned HTTP 403; binary parser bytes unrecovered (Research 251).
 3. [x] Determine whether effort belongs before ACP startup, at session open,
        or to a model-selection surface. Do not infer support from an
        unsupported `session/set_model` method.

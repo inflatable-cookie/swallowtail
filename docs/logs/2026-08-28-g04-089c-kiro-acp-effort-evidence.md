@@ -53,6 +53,12 @@ Passed:
 Inherited doctor baseline: `scan.god-files` 380 findings (334 warnings, 46
 errors); generated-in-src warning; graph index stale.
 
+## Review Fix
+
+Card 254 Work item 2 no longer checks exact package/source parser proof.
+Official documentation stays frozen; the exact `2.18.1` parser sub-gate is
+explicitly stopped (CDN 403), matching Research 251.
+
 ## Unresolved
 
 Reopen only with recoverable qualified-version package/source parser, closed

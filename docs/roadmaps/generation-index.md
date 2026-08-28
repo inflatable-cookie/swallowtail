@@ -144,13 +144,13 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has one roadmap: 0 completed milestones, no honest evidence stops, and one
-ready milestone at 001. Card 001 completed the prompt-free production-harness
-surface inventory through PR 112 at `ea247a63`; card 002 closed the boundary
-classification and returned four operator choices. The operator recorded all
-four decisions; card 003 is ready for promotion and proof-route disposition.
-No watcher implementation, skill injection, provider prompt, new route, or
-parked Bedrock work is authorized.
+g05 has three roadmaps: 1 completed milestones, no honest evidence stops, and
+ready milestones at 002, 003. g05.001 is completed: it closed Research 255, the
+operator decision packet, Contracts 058-059, and first-route dispositions.
+g05.002 is ready for Qoder `1.1.25` skill-visibility evidence. g05.003 is ready
+for Claude Code watcher-mechanism evidence and the independent portable core.
+Cards 004, 007, and 008 are the ready lanes; later route binding remains gated.
+No provider prompt, new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

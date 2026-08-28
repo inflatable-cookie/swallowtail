@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-17
+Updated: 2026-08-28
 
 ## Non-Negotiables
 
@@ -20,6 +20,12 @@ Updated: 2026-08-17
   proliferation.
 - Testable boundaries: failure, interruption, and lifecycle behavior must have
   fixture coverage.
+- Effective skill truth: report what the exact selected harness context sees,
+  including deliberate global and project installation; never substitute
+  package membership or an ambient filesystem scan.
+- Host-owned watchers: provider activity is not process authority; background
+  work remains turn-scoped, controllable by model and operator, bounded in
+  disclosure, and joined before successful completion.
 
 ## Anti-Patterns
 
@@ -37,3 +43,6 @@ Updated: 2026-08-17
 - routing by model name without preserving adapter instance and transport
 - one catch-all crate containing vocabulary, processes, adapters, and fixtures
 - wholesale extraction of Nucleus modules before their product logic is split
+- treating installed skill files as proof that a selected model can see them
+- treating provider command, task, or subagent activity as a controllable
+  process watcher

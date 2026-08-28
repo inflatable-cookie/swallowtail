@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-28
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -63,3 +63,5 @@ Updated: 2026-08-19
 | [055 Pluggable Learned Idioms](055-pluggable-learned-idioms.md) | active | Provider-neutral learned-preference mechanism: portable idiom records, confidence decay and merge, bounded selection, fail-soft signal sink, and host-owned prompt and transport boundaries |
 | [056 Route-Path Idioms Opt-In](056-route-path-idioms-opt-in.md) | active | Opt-in route feature: host-registered source and recorder ports, bound session option, fixed fold rule into developer instructions, capability-gated preflight, and a host-gated exception to the 055 prompt boundary |
 | [057 Route Readiness And Connection Admission](057-route-readiness-and-connection-admission.md) | active | Pre-session addable-route catalog, admission, sign-in through host ports, store port, readiness refresh, subject observation, and bound model overlay in front of 047 |
+| [058 Effective Harness Skill Visibility](058-effective-harness-skill-visibility.md) | active | Exact selected-context effective skill rosters with provenance, completeness, freshness, and no ambient scan or mutation authority |
+| [059 Operation-Scoped Process Watchers](059-operation-scoped-process-watchers.md) | active | Host-owned turn-scoped watcher lifecycle, model and operator control, bounded activity, explicit wait, and fail-closed same-turn completion |

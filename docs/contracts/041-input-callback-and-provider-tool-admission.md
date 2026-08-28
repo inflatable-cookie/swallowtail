@@ -94,6 +94,11 @@ A provider-owned search result cannot be submitted through the consumer tool
 result port. A client tool call cannot be treated as provider-executed merely
 because both appear in one response.
 
+Contract 059 reserves one separately capability-gated watcher tool family.
+Those calls are serviced only by the registered host watcher port and remain
+distinct from native consumer tools, provider-owned tools, and arbitrary MCP
+tools. Naming an ordinary tool like a watcher does not grant watcher authority.
+
 ## Approval And Question Requests
 
 Approval and permission requests are namespaced provider extensions under

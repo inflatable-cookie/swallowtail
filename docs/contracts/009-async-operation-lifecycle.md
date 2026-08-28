@@ -119,6 +119,10 @@ Every spawned or blocking task belongs to a discovery probe, run, session,
 turn, or owned serving-instance scope. Close joins the scope after child
 resource cleanup. No task detaches beyond its owner.
 
+Contract 059 watcher work belongs to one active turn. It may run concurrently
+inside that turn, but it does not create a detached task class. Turn terminal,
+close, cancellation, and deadline paths stop and join every owned watcher.
+
 Dropping a handle is not successful cleanup. Drop may request best-effort
 cancellation but cannot block; the parent host task scope remains responsible
 for joining leaked child work and reporting cleanup failure.
@@ -196,6 +200,10 @@ scope whose call completes only after its owned process joins.
 Tools, permissions, filesystem callbacks, terminal callbacks, and steering are
 separate parameterized capabilities. Callback ids remain distinct from request,
 run, session, turn, and provider ids.
+
+Contract 059's reserved watcher controls remain separate again: they use a
+watcher id and registered host watcher service, not a consumer callback id or
+generic tool executor.
 
 The consumer owns declarations and execution authority. Swallowtail transports
 correlated calls and responses. Waiting callbacks remain cancellable and

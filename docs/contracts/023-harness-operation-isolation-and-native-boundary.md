@@ -71,6 +71,10 @@ A driver may use both layers. It must keep terminal causes distinct and must
 not report one provider-native bound as proof that another bound or host
 deadline fired.
 
+Contract 059 watcher work uses the same independent host deadline, stop, and
+join authority. A provider background-task setting, native task id, or command
+activity does not satisfy watcher ownership or the same-turn completion gate.
+
 Provider-managed retry is disabled unless separately accepted. A harness flag
 that retries indefinitely is not enabled by a generic deadline or CI context.
 

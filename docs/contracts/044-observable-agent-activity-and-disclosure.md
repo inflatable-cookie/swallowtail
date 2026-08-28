@@ -122,6 +122,7 @@ The portable vocabulary covers:
 - task
 - hook
 - warning or error activity
+- host-owned process watcher
 - bounded namespaced unknown activity
 
 Provider-specific categories remain visible through exact typed detail or a
@@ -130,6 +131,11 @@ bounded namespace. They are not forced into an unrelated common kind.
 Catalogue, discovery, serving lifecycle, access, rate, quota, usage, billed
 cost, and general provider observations remain their existing typed evidence.
 They do not become agent activity merely to fill a timeline.
+
+Contract 059 adds host-owned watcher activity on the same ordered turn stream.
+Its activity identity is presentation and correlation only. Start, wait, stop,
+and join authority remain on the watcher control surface and require the
+owning turn plus watcher id.
 
 ## Lifecycle Fidelity
 

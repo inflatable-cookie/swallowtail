@@ -152,6 +152,11 @@ Swallowtail owns only bounded declaration transport, correlation, lifecycle,
 redaction, and explicit failure. No generic tool executor belongs in core,
 runtime, testkit, host, or adapter crates.
 
+Contract 059 adds one closed exception: reserved watcher operations may be
+serviced through a registered host watcher port when the exact prepared route
+opts in. They are not generic consumer tools, cannot execute any other tool,
+and grant no authority when the watcher option or host service is absent.
+
 ## Acceptance
 
 - exact session options, including harness mode, are checked against preflight

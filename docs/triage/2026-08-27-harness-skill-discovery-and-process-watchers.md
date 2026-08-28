@@ -1,6 +1,6 @@
 # 2026-08-27 Harness Skill Discovery And Process Watchers
 
-Status: promoted; Research 255 complete; operator decisions recorded
+Status: promoted; Contracts 058-059; proof lanes ready
 Owner: Tom
 Source: operator direction during g04.082 execution
 Updated: 2026-08-28
@@ -308,3 +308,16 @@ deadline stop and join all owned watchers before the turn fails.
 The settled core invariant is that an ordinary turn cannot
 complete successfully until every watcher-owned process is terminal through
 completion or explicit joined stop.
+
+## Promotion Outcome
+
+Card 003 promoted the independent durable boundaries as Contracts 058 and 059.
+Qoder headless `1.1.25` is the first effective-roster evidence candidate; its
+current empty prompt-bearing init fixture is not a capability claim. Claude
+Code headless is the first watcher-mechanism evidence candidate; its current
+empty strict MCP configuration and hook events are not a watcher claim.
+
+g05.002 card 004 and g05.003 card 007 own those evidence questions. g05.003
+card 008 independently owns the provider-neutral watcher lifecycle core. No
+skill roster or watcher support is advertised before the conditional binding
+and acceptance cards close.

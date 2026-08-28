@@ -24,6 +24,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g05.001 Card 003 Contract Promotion](./2026-08-28-g05-001-card-003-contract-promotion.md) — Contracts 058-059 promoted; Qoder and Claude evidence candidates selected; cards 004, 007, and 008 ready
+- [2026-08-28 g05.003 Portable Watcher Core](./2026-08-28-g05-003-portable-watcher-core.md) — reserved; card 008; provider-neutral lifecycle core
+- [2026-08-28 g05.003 Claude Code Watcher Seam](./2026-08-28-g05-003-claude-code-watcher-seam.md) — reserved; card 007; Research 257
+- [2026-08-28 g05.002 Qoder Effective Skill Visibility](./2026-08-28-g05-002-qoder-effective-skill-visibility.md) — reserved; card 004; Research 256
 - [2026-08-28 g05.001 Operator Decisions](./2026-08-28-g05-001-operator-decisions.md) — effective selected-session skill roster; model and operator controls; bounded summaries; explicit wait and fail-closed completion; card 003 ready
 - [2026-08-28 g05.001 Card 002 Decision Packet](./2026-08-28-g05-001-card-002-decision-packet.md) — boundary classification complete; four operator decisions pending; card 003 planned
 - [2026-08-28 g05.001 Card 001 Orchestrator Closeout](./2026-08-28-g05-001-card-001-orchestrator-closeout.md) — PR 112 fast-forwarded at `ea247a63`; Research 255 promoted; card 002 ready

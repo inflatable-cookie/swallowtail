@@ -120,7 +120,7 @@ contract file owns the exact rules.
   from provider identity, scopes connection and affinity state, excludes
   authentication and implicit recovery, and requires explicit joined close.
 
-## Release, Prepared Integration, And Consumer Surfaces (036-057)
+## Release, Prepared Integration, And Consumer Surfaces (036-059)
 
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
   in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
@@ -253,6 +253,16 @@ contract file owns the exact rules.
   readiness refresh distinct from enablement, redacted-by-default subject
   observation, config-field descriptors, and a bound model-presentation
   overlay. 047 stays a selection snapshot.
+- **058** defines effective harness skill visibility as one bounded exact
+  selected-context observation. Distribution, operator-installed global,
+  project-local, plugin, and provider-managed provenance stay visible without
+  limiting membership; manifests, file presence, ambient scans, prompts, and
+  model prose cannot manufacture a roster.
+- **059** defines host-owned operation-scoped process watchers: one turn-local
+  registry, separate model and operator controls, bounded redacted activity,
+  explicit wait, deterministic stop and join, and a same-turn completion gate.
+  Provider task activity, arbitrary PIDs, raw logs, detached work, and
+  prompt-only enforcement remain out.
 
 ## Amendments
 

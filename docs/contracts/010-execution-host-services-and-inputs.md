@@ -279,6 +279,12 @@ observation vocabulary, bounds, redaction, and non-interference rules.
 Host-service and input extensions use stable namespaces and cannot weaken
 authority, ownership, access audience, redaction, cancellation, or cleanup.
 
+Contract 059 adds one optional stable watcher service kind. It owns only
+turn-scoped watcher requests accepted under host policy, bounded status and
+summary output, model and operator stop, deadline propagation, and joined
+cleanup. Registration alone starts nothing and grants no arbitrary process or
+PID authority.
+
 No host service performs route fallback. Consumers explicitly authorize any
 change of execution layer, credential mechanism, entitlement, endpoint,
 billing, support authority, privacy posture, ownership, or topology.

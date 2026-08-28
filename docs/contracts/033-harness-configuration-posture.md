@@ -29,6 +29,10 @@ configuration source exists. `ProviderSuppressed` does not claim suppression
 of credentials or provider runtime state. `HostScoped` does not authorize an
 adapter to create a temporary home or copy ambient files.
 
+Contract 058 may observe global or project skills resolved by the harness
+under the selected posture. That exact harness result does not grant the
+adapter direct configuration or filesystem enumeration authority.
+
 ## Exact Binding
 
 A migrated harness route binds one posture in its configured instance and

@@ -389,6 +389,7 @@ planned.
 
 ## Promotion record
 
-Research 255 is promoted by g05.001. The assigned card and lane log record
-completion. The batch index moves only card 001 to Completed; cards 002 and
-003 remain Planned.
+Research 255 is promoted by g05.001. Card 001 and PR 112 closed the census;
+cards 002-003 recorded operator decisions and promoted Contracts 058-059.
+Qoder and Claude Code remain conditional evidence candidates under Research
+256 and 257. No zero-row census result was converted into a production claim.

@@ -1,13 +1,13 @@
 # g05.001 Harness Skill And Watcher Surface Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-28
 Depends on: completed g04
 Vision tags: harness skills, process observability, consumer integration
-Contract refs: 013, 017, 023, 029, 034, 041, 044, 047, 052
+Contract refs: 013, 017, 023, 029, 034, 041, 044, 047, 052, 058, 059
 Research: 255 promoted
-Planning state: cards 001-002 completed; card 003 ready
+Planning state: cards 001-003 completed
 
 ## Problem
 
@@ -43,9 +43,9 @@ promotion.
 
 ### Batch 1.3 — Promotion And Runway Selection
 
-- [ ] execute ready card 003 after recorded operator decisions
-- [ ] select architecture, contract, research, or stop dispositions
-- [ ] compile proof routes only from promoted testable boundaries
+- [x] execute card 003 after recorded operator decisions
+- [x] select architecture, contract, research, or stop dispositions
+- [x] compile proof routes only from promoted testable boundaries
 
 ## Acceptance Criteria
 

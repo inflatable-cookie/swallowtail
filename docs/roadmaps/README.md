@@ -15,11 +15,12 @@ shape.
 
 ## Next Task
 
-Execute g05.001 card 003. Promote the recorded skill-visibility and watcher
-boundaries into architecture and contracts, keep the two tracks separate, and
-select at most one proof-route disposition for each. Compile implementation
-cards only from promoted testable boundaries. Contract 029 currentness remains
-standing.
+Dispatch g05 cards 004, 007, and 008 as three parallel worker PRs from current
+pushed `main`. Card 004 owns Qoder effective-skill-roster evidence. Card 007
+owns Claude Code watcher MCP, skill, hook, and same-turn completion evidence.
+Card 008 owns the provider-neutral watcher lifecycle core only. Do not ready or
+execute cards 005-006 or 009-011 until their named gates close. Merge and
+restack serially after review. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

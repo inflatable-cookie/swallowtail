@@ -30,7 +30,8 @@ Research 253 with a closed deliver-now table or an honest empty set.
        `HarnessMode::Plan` without exact semantic equivalence.
 5. [x] Build a closed value/lifecycle table. Require membership, pre-prompt
        selection, application, selected-value confirmation, fail-closed unknown
-       handling, and unchanged omission.
+       handling, and unchanged omission. Drift/malformed fail-closed: **failed
+       gate** (reloads as `auto`).
 6. [x] Audit prepared input/evidence, session options, driver request order,
        decoder, fixtures, guide, matrices, and API baseline without production
        changes.
@@ -41,7 +42,10 @@ Research 253 with a closed deliver-now table or an honest empty set.
 
 - [x] exact mode/resource/tool/permission/lifecycle table or honest empty set exists
 - [x] any non-empty row closes application and confirmation before first prompt
-- [x] unknown, missing, duplicate, malformed, or drifted modes fail closed
+      (empty set: no non-empty row admitted; gates recorded)
+- [x] unknown set-mode / set-config values fail closed; malformed or drifted
+      persisted `goose_mode` recorded as a **failed gate** (reload → `auto`,
+      fail open); empty-set disposition
 - [x] omission retains exact current host-owned mode posture and `goose acp` argv
 - [x] no mode widens approval or persistence authority by default
 - [x] no production code, public API, shared authority, currentness, release,

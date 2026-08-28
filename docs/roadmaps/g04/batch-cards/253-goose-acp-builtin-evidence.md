@@ -1,6 +1,6 @@
 # 253 Goose ACP Builtin Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
@@ -16,32 +16,34 @@ Research 250 with a closed deliver-now table or an honest empty set.
 
 ## Work
 
-1. [ ] Keep route `goose.acp`, exact `1.46.0`, host-approved executable and
+1. [x] Keep route `goose.acp`, exact `1.46.0`, host-approved executable and
        environment, provider-owned local config, current ACP lifecycle, and
        current permission posture unchanged.
-2. [ ] Freeze official `--with-builtin` syntax plus exact tagged parser/source,
+2. [x] Freeze official `--with-builtin` syntax plus exact tagged parser/source,
        builtin registry, name membership, repeat/composition rules,
        initialization, session exposure, and failures.
-3. [ ] Separate builtins from MCP/extensions, provider/model configuration,
+3. [x] Separate builtins from MCP/extensions, provider/model configuration,
        tool permissions, host capabilities, and prompt text.
-4. [ ] Build a closed builtin/host-config/lifecycle table. A non-empty row must
+4. [x] Build a closed builtin/host-config/lifecycle table. A non-empty row must
        prove the host already authorizes every dependency and the session
        advertises or otherwise confirms the selected builtin.
-5. [ ] Prove unknown and unavailable builtins reject before prompt effects;
+5. [x] Prove unknown and unavailable builtins reject before prompt effects;
        prove omission retains exact `goose acp` argv and behavior.
-6. [ ] Audit prepared sessions, spawn plan/evidence, ACP fixtures, guide,
+6. [x] Audit prepared sessions, spawn plan/evidence, ACP fixtures, guide,
        matrices, and API baseline without production changes.
-7. [ ] Promote Research 250 and complete the reserved lane log. Do not edit
+7. [x] Promote Research 250 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact builtin/authority/lifecycle table or honest empty set exists
-- [ ] a non-empty row closes membership, dependency authority, application,
-      confirmation, cleanup, and omission
-- [ ] unknown or unavailable builtins reject before prompt effects
-- [ ] no provider setup, extension install, permission widening, or ambient mutation
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] exact builtin/authority/lifecycle table or honest empty set exists
+- [x] membership, dependency authority, application, confirmation, cleanup,
+      and omission truth is closed for a non-empty row (empty set: no
+      non-empty row admitted)
+- [x] unknown or unavailable builtins reject before prompt effects (empty
+      set: soft-fail `_meta.extensionResults`; not fail-closed at spawn)
+- [x] no provider setup, extension install, permission widening, or ambient mutation
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
 
 ## Validation
@@ -64,3 +66,10 @@ git diff --check
 Goose mode, provider/model setup, MCP management, new extension installation,
 production binding, live provider work, currentness, release, shared closeout,
 rollover, or g04 closure.
+
+## Outcome
+
+Honest empty deliver-now set. Research 250 freezes clap syntax, platform and
+MCP builtin registries, ambient host merge under `mcpServers: []`, soft-fail
+`_meta.extensionResults`, and omission of `--with-builtin` on exact `1.46.0`.
+Unknown names are not fail-closed before prompt. No production binding.

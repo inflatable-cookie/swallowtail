@@ -1,0 +1,123 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-28",
+  "route": "goose.acp",
+  "driver": "swallowtail.goose.acp",
+  "axis": "goose.release",
+  "qualified_version": "1.46.0",
+  "github_tag": "v1.46.0",
+  "github_commit": "98c11ce2ee7b9b302978aa64b1eab7d0895607c7",
+  "current_selected_command": ["goose", "acp"],
+  "candidate_flag": "--with-builtin",
+  "isolation": "AmbientHost",
+  "decision": "empty_deliver_now",
+  "research": 250,
+  "card": 253,
+  "live_acp": false,
+  "host_goose_present": false,
+  "host_config_mutated": false,
+  "sources": {
+    "crates/goose-cli/src/cli.rs": {
+      "sha256": "b7f45c9204319fecd593a05584952e1c008b5e11879c6509c29785d7baede1f4",
+      "bytes": 90390
+    },
+    "crates/goose-mcp/src/lib.rs": {
+      "sha256": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a",
+      "bytes": 2050
+    },
+    "crates/goose/src/builtin_extension.rs": {
+      "sha256": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e",
+      "bytes": 1033
+    },
+    "crates/goose/src/agents/platform_extensions/mod.rs": {
+      "sha256": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b",
+      "bytes": 11334
+    },
+    "crates/goose/src/acp/server.rs": {
+      "sha256": "3eb611c4ae0f37a1d4affde82a4c29a5d56e9d70cb796d8cc7cc6082bc13b47f",
+      "bytes": 103385
+    },
+    "crates/goose/src/acp/server/new_session.rs": {
+      "sha256": "10146d0e24a148f5d89bbdb3447f4720cff74b2fdb62d80b8febf2cc3e2a6dad",
+      "bytes": 13004
+    },
+    "crates/goose/src/acp/response_builder.rs": {
+      "sha256": "b1a18f5ec51f49a2bc5bf45cbc86a1c2fcb2fdbfd1d5524cc4b243b5bbece571",
+      "bytes": 26953
+    },
+    "crates/goose/src/agents/extension_manager.rs": {
+      "sha256": "04ebc8b18026f9f9cfac9417407da232bc3f42ed878da246e6b5127dfab30f79",
+      "bytes": 125459
+    },
+    "crates/goose/src/agents/agent.rs": {
+      "sha256": "2227f114aae644241feaeb3a4f1a9feed1545cf6e9a792b39783deac89c19be6",
+      "bytes": 217307
+    },
+    "crates/goose/src/config/extensions.rs": {
+      "sha256": "8e8668b532c0e0702dd8678c36d9a76ac212dbf342e4c471b93a93b2e3204486",
+      "bytes": 24920
+    },
+    "crates/goose-cli/src/commands/configure.rs": {
+      "sha256": "d1ed85b4809f9c4bb55e62cfe72f1081b13ec55f2c5fa905970b0692428e7e91",
+      "bytes": 79180
+    },
+    "documentation/docs/guides/goose-cli-commands.md": {
+      "sha256": "5016c46d266409d804c57320c59b5d3ee497068dcc68b6813f9f1a3cb8ebc85f",
+      "bytes": 34960
+    },
+    "documentation/docs/guides/acp-clients.md": {
+      "sha256": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "bytes": 10014
+    }
+  },
+  "clap": {
+    "command": "acp",
+    "flag": "--with-builtin",
+    "value_name": "NAME",
+    "value_delimiter": ",",
+    "default": null,
+    "serve_omitted_defaults_to_developer": true,
+    "stdio_omitted_defaults_empty": true
+  },
+  "registries": {
+    "platform_extension_keys": [
+      "analyze",
+      "todo",
+      "apps",
+      "chatrecall",
+      "extensionmanager",
+      "scheduler",
+      "summon",
+      "summarize",
+      "developer",
+      "orchestrator",
+      "tom",
+      "skills",
+      "code_execution"
+    ],
+    "code_execution_feature_gated": "code-mode",
+    "mcp_builtin_keys": [
+      "autovisualiser",
+      "computercontroller",
+      "memory",
+      "tutorial"
+    ],
+    "docs_cite_github_as_builtin_example": true,
+    "github_in_builtin_registries": false
+  },
+  "application": {
+    "initialize_advertises_builtins": false,
+    "session_new_meta_extension_results": true,
+    "empty_mcp_servers_merges_host_enabled_extensions": true,
+    "unknown_name_fails_session_new": false,
+    "unknown_name_extension_load_result_success_false": true,
+    "platform_client_factory_none_is_silent_ok": true,
+    "explicit_overrides_host_disabled": true,
+    "defaults_respect_host_disabled": true
+  },
+  "omission": {
+    "current_argv": ["acp"],
+    "pass_with_builtin": false
+  },
+  "stop_reason": "soft_fail_unknown_plus_ambient_host_extension_merge_plus_unconfirmed_application_without_provider"
+}

@@ -1,6 +1,6 @@
 # 2026-08-27 Harness Skill Discovery And Process Watchers
 
-Status: open
+Status: promoted; operator decisions open
 Owner: Tom
 Source: operator direction during g04.082 execution
 
@@ -216,6 +216,15 @@ activity, and turn gating remain separate contracts.
 5. add per-route qualification only after the shared boundary is testable
 
 Do not compile implementation cards from this note yet.
+
+## Promotion (2026-08-28)
+
+The operator authorized the g04-to-g05 rollover after the per-route inventory
+closed. g05.001 promotes this note as an evidence-first programme: card 001
+owns the prompt-free production-harness surface inventory, card 002 owns
+boundary classification and the existing operator decision packet, and card
+003 owns any later architecture, contract, or proof-route selection. No
+watcher implementation or skill injection is ready.
 
 ## Open Operator Decisions
 

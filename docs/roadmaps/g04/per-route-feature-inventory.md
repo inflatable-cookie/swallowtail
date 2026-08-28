@@ -1,6 +1,6 @@
 # Per-Route Feature Inventory
 
-Status: active ledger
+Status: closed ledger
 Owner: Tom
 Created: 2026-08-27
 Source: [Advanced Route Features](../../triage/2026-08-21-advanced-route-features.md)

@@ -10,11 +10,30 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-BATCH_DIR = ROOT / "docs/roadmaps/g04/batch-cards"
-BATCH_INDEX = BATCH_DIR / "README.md"
-MILESTONE_DIR = ROOT / "docs/roadmaps/g04"
-MILESTONE_INDEX = MILESTONE_DIR / "README.md"
 GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
+
+
+def active_generation_id() -> str:
+    document = GENERATION_INDEX.read_text(encoding="utf-8")
+    matches = re.findall(
+        r"^\| `(?P<generation>g\d{2})` \| active \|",
+        document,
+        re.MULTILINE,
+    )
+    if len(matches) != 1:
+        print(
+            "roadmap status drift check failed: generation index must name exactly one active generation",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    return matches[0]
+
+
+ACTIVE_GENERATION = active_generation_id()
+BATCH_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}/batch-cards"
+BATCH_INDEX = BATCH_DIR / "README.md"
+MILESTONE_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}"
+MILESTONE_INDEX = MILESTONE_DIR / "README.md"
 
 STATUS_RE = re.compile(r"^Status:\s*(?P<raw>.+)$", re.MULTILINE)
 LINK_RE = re.compile(
@@ -23,7 +42,7 @@ LINK_RE = re.compile(
 )
 SECTION_RE = re.compile(r"^## (?P<title>Planned|Ready|Blocked|Completed)\s*$", re.MULTILINE)
 CARD_READY_PROSE_RE = re.compile(
-    r"cards?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+are\s+ready",
+    r"cards?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+(?:is|are)\s+ready",
     re.IGNORECASE,
 )
 STOPPED_LIST_RE = re.compile(
@@ -201,12 +220,12 @@ def check_milestones() -> None:
 
 def active_generation_census(document: str) -> str:
     match = re.search(
-        r"^g04 now has .+?(?=^g04\.|^## |\Z)",
+        rf"^{re.escape(ACTIVE_GENERATION)} (?:now )?has .+?(?=^{re.escape(ACTIVE_GENERATION)}\.|^## |\Z)",
         document,
         re.MULTILINE | re.DOTALL,
     )
     if match is None:
-        fail("generation-index is missing the active g04 census paragraph")
+        fail(f"generation-index is missing the active {ACTIVE_GENERATION} census paragraph")
     return match.group(0)
 
 
@@ -242,7 +261,7 @@ def check_generation_index() -> None:
 
     completed_match = COMPLETED_COUNT_RE.search(census)
     if completed_match is None:
-        fail("generation-index g04 census omits completed milestone count")
+        fail(f"generation-index {ACTIVE_GENERATION} census omits completed milestone count")
     claimed = int(completed_match.group("count"))
     actual = len(buckets["complete"])
     if claimed != actual:
@@ -252,8 +271,13 @@ def check_generation_index() -> None:
 
     stopped_match = STOPPED_LIST_RE.search(census)
     if stopped_match is None:
-        fail("generation-index g04 census omits honest evidence stop list")
-    claimed_ids = parse_id_list(stopped_match.group("ids"))
+        if not re.search(r"\bno honest evidence stops\b", census, re.IGNORECASE):
+            fail(
+                f"generation-index {ACTIVE_GENERATION} census omits honest evidence stop disposition"
+            )
+        claimed_ids: set[str] = set()
+    else:
+        claimed_ids = parse_id_list(stopped_match.group("ids"))
     actual_stopped = buckets["stopped"]
     if claimed_ids != actual_stopped:
         fail(

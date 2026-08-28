@@ -5,7 +5,8 @@ shape.
 
 ## Current Generation
 
-- [g04 Route Readiness And Connection Admission](g04/README.md) — active
+- [g05 Harness Skill Visibility And Process Observability](g05/README.md) — active
+- [g04 Route Readiness And Connection Admission](g04/README.md) — completed
 - [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — completed
 - [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
 - [g01 Swallowtail Foundation](g01/README.md) — completed
@@ -14,10 +15,10 @@ shape.
 
 ## Next Task
 
-Operator checkpoint. g04.090 is complete; the 85-item per-route feature
-inventory has 83 closed dispositions, no active qualification or delivery
-item, and two parked Bedrock items. Keep g04 open. Select the next bounded g04
-work explicitly. Contract 029 currentness remains standing.
+Execute g05.001 card 001: inventory exact prompt-free skill-discovery and
+background-process surfaces across production harness routes. Produce Research
+255 only. Do not start watcher implementation, inject a skill, run provider
+prompts, or promote parked routes. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 
@@ -40,8 +41,10 @@ first standing lane. It does not keep a generation open.
   facade, activity, compatibility, and lifecycle generation
 - [g03/README.md](g03/README.md) — completed compatibility-maintenance and
   consumer-proven hardening generation
-- [g04/README.md](g04/README.md) — active route-readiness and
+- [g04/README.md](g04/README.md) — completed route-readiness and
   connection-admission generation
+- [g05/README.md](g05/README.md) — active harness skill visibility and process
+  observability generation
 
 ## Generation Shape
 

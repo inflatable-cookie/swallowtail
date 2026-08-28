@@ -11,7 +11,8 @@ Updated: 2026-08-28
 | `g01` | completed | Standalone authority, runtime kernel, integration landscape, representative drivers, consumer adoption, compatibility foundations, and broad provider coverage. |
 | `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
 | `g03` | completed | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
-| `g04` | active | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
+| `g04` | completed | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
+| `g05` | active | Harness skill visibility and dependable process observability without ambient host scanning, arbitrary process authority, or prompt-only enforcement. |
 
 ## Generation Size
 
@@ -31,13 +32,13 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 90 roadmaps: 75 completed milestones, fifteen honest evidence
+g04 closed at 91 roadmaps: 76 completed milestones, fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 080, and no ready milestone. g04.090 is complete. The generation
+and 080. g04.090 is complete. The generation
 has realized route readiness and connection admission, widened proved addable
 coverage, added the Pi SDK
 sidecar, requalified Gemini CLI enterprise API-key access, and established the
-active per-route feature completion programme. g04.061 is
+completed per-route feature programme. g04.061 is
 merged through PR 60 at `f21220cd`; Research 208 delivered
 `HarnessMode::Plan` on exact `0.28.1` plus `0.29.0..=0.38.0`.
 g04.062 is merged through PR 61 at `4ef5c5e9`; Research 209 delivered exact
@@ -143,11 +144,18 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
+g05 has one roadmap: 0 completed milestones, no honest evidence stops, and one
+ready milestone at 001. Card 001 is ready for a prompt-free production-harness
+surface inventory. Cards 002-003 remain planned behind that evidence and the
+operator decisions already named in the promoted triage note. No watcher
+implementation, skill injection, provider prompt, new route, or parked Bedrock
+work is authorized.
+
 ## Rollover Rule
 
-g04 has passed the normal 30-50 roadmap range but remains active at operator
-direction. Execute the sole Next Task pointer; generation closure or rollover
-requires explicit operator authority.
+g04 passed the normal 30-50 roadmap range and closed after explicit operator
+authority. g05 is the sole active generation. Execute the sole Next Task
+pointer; later rollover still requires explicit operator authority.
 
 
 ## Next Task

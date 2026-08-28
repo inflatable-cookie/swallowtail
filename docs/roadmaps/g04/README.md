@@ -1,6 +1,6 @@
 # g04 Route Readiness And Connection Admission
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 
@@ -33,7 +33,7 @@ and selection policy.
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | completed | Contracts 020, 037, 047, 057 | `g04.020` |
 | Realize a full Pi SDK sidecar route with exact session attachment. | completed | Contracts 017, 019, 023, 029, 037, 057 | `g04.033` |
-| Work through official per-route feature gaps one route and one control family at a time. | active | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
+| Work through official per-route feature gaps one route and one control family at a time. | completed | Contracts 011, 020, 024, 037, 040, 041, 047, 052; per-route feature programme | `g04.037` |
 
 ## Planned Next Roadmaps
 
@@ -105,15 +105,15 @@ and selection policy.
 - [g04.088 Fifth Parallel Per-Route Feature Qualification](088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
 - [g04.089 Sixth Parallel Per-Route Feature Qualification](089-sixth-parallel-per-route-feature-qualification.md) — complete, cards 252-255; Research 249-252 honest empty deliver-now sets; PRs 109, 107, 106, and 108 through `e28979a0`
 - [g04.090 Residual Per-Route Feature Qualification](090-residual-per-route-feature-qualification.md) — complete, cards 256-257; Research 253-254 honest empty deliver-now sets; PR 111 at `9e317e20`, then restacked PR 110 at `96b937d1`
+- [g04.091 Generation Closeout And g05 Cutover](091-generation-closeout-and-g05-cutover.md) — completed, cards 258-260; g04 closed and g05 evidence runway compiled
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
   items audited through g04.090: 83 closed, no active qualification or
   delivery item, and two parked
 
-g04 has 90 numbered roadmaps: 75 completed milestones, fifteen honest
+g04 closed at 91 numbered roadmaps: 76 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, and no ready milestone. The operator keeps the generation
-active.
-Do not close g04 without explicit operator direction.
+074, 076, and 080, and no ready milestone. The operator authorized rollover
+on 2026-08-28.
 
 ## Current Checkpoint
 
@@ -335,8 +335,8 @@ Do not close g04 without explicit operator direction.
   restacked PR 110 landed at `96b937d1`. No production binding follows
 - the 85-item inventory now has 83 closed dispositions, no active
   qualification or delivery item, and two parked Bedrock rows
-- g04 remains active at 90 roadmaps; generation closure awaits explicit
-  operator direction
+- g04.091 closes g04 at 91 roadmaps and opens g05 around evidence-first
+  harness skill visibility and process observability
 - `v0.3.3` remains `51d18620`
 
 ## Current Planning Checkpoint
@@ -493,7 +493,8 @@ Do not close g04 without explicit operator direction.
 54. g04.090 is complete. Research 253-254 admit honest empty deliver-now sets.
     PR 111 landed Goose at `9e317e20`; restacked PR 110 landed Kiro at
     `96b937d1`. No production binding follows.
-55. g04 remains active at operator direction. Contract 029 remains standing.
+55. g04.091 closes g04 at operator direction and opens g05. Contract 029
+    remains standing and generation-independent.
 
 New route-family research does not pre-empt this sequence.
 
@@ -558,6 +559,7 @@ New route-family research does not pre-empt this sequence.
 - [088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
 - [089 Sixth Parallel Per-Route Feature Qualification](./089-sixth-parallel-per-route-feature-qualification.md) — complete, cards 252-255; Research 249-252 honest empty deliver-now sets; PRs 109, 107, 106, and 108 through `e28979a0`
 - [090 Residual Per-Route Feature Qualification](./090-residual-per-route-feature-qualification.md) — complete, cards 256-257; Research 253-254 honest empty deliver-now sets; PR 111 at `9e317e20`, then PR 110 at `96b937d1`
+- [091 Generation Closeout And g05 Cutover](./091-generation-closeout-and-g05-cutover.md) — completed, cards 258-260; g04 closed and g05.001 compiled
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

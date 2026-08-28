@@ -12,8 +12,9 @@ cluster by delivery generation:
 - **g01** — foundation: contract kernel, runtime records, Codex proof drivers
 - **g02** — stabilization: provider-wide prepared facades, activity,
   compatibility, lifecycle, and release discipline
-- **g04** — active: route readiness, connection admission, and consumer-driven
-  model selection
+- **g05** — active: harness skill visibility and process observability
+- **g04** — completed: route readiness, connection admission, and
+  consumer-driven model selection
 - **g03** — completed: compatibility maintenance and consumer-proven hardening
 
 Titles name the topic. To trace one subject, grep the index for a route id,
@@ -23,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g04 Generation Closeout And g05 Open](./2026-08-28-g04-generation-closeout-and-g05-open.md) — g04 closed at 91 roadmaps; g05.001 and cards 001-003 compiled; Research 255 reserved
 - [2026-08-28 g04.090 Residual Feature Qualification Closeout](./2026-08-28-g04-090-residual-feature-qualification-closeout.md) — complete; two honest empty deliver-now sets; PR 111 at `9e317e20`, then restacked PR 110 at `96b937d1`
 - [2026-08-28 g04.090 Residual Feature Qualification Compiled](./2026-08-28-g04-090-residual-feature-qualification-compiled.md) — remainder audited to 81 closed, two active qualification, and two parked; cards 256-257 and Research 253-254 reserved
 - [2026-08-28 g04.090a Goose ACP Mode Evidence](./2026-08-28-g04-090a-goose-acp-mode-evidence.md) — complete; card 256; Research 253 honest empty deliver-now set

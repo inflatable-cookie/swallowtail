@@ -1,6 +1,6 @@
 # Per-Route Feature Completion
 
-Status: active programme
+Status: completed programme
 Owner: Tom
 Created: 2026-08-21
 Evidence: `../triage/2026-08-21-advanced-route-features.md`
@@ -353,8 +353,9 @@ families do not interrupt this programme by default.
 ## Current Execution Boundary
 
 The normalized inventory has 83 closed original items, no active qualification
-or delivery item, and two parked Bedrock items. Keep g04 open pending operator
-direction. Contract 029 currentness remains standing.
+or delivery item, and two parked Bedrock items. The programme closed with g04;
+future reassessment needs a new operator-selected lane. Contract 029
+currentness remains standing.
 
 ## Exclusions
 

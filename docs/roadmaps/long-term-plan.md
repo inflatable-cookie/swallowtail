@@ -264,6 +264,22 @@ not become a connection server, credential store, UI, or router. Recurring
 currentness is a standing Contract 029 lane, not a g04 goal. See
 [standing-lanes.md](standing-lanes.md).
 
+## g04 Disposition And g05 Programme
+
+g04 closed at 91 roadmaps after realizing route readiness, connection
+admission, broad addable-route coverage, Pi SDK sidecar continuity, Gemini
+enterprise API-key requalification, and the full 85-item per-route feature
+inventory. That inventory ends with 83 closed dispositions and two parked
+Bedrock items. Contract 029 currentness remains standing.
+
+g05 starts with harness skill visibility and dependable process observability.
+The first milestone inventories exact prompt-free production-harness surfaces.
+Later work must separate distribution membership, host configuration, model
+visibility, watcher lifecycle, process authority, activity projection, and
+turn-completion enforcement before contracts or implementation. New routes,
+ambient home scanning, arbitrary PID control, and prompt-only watcher claims
+stay outside the programme.
+
 ## Next Task
 
 Implement the active task named by the [roadmaps front door](README.md#next-task).

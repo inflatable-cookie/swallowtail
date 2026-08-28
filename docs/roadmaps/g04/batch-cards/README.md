@@ -35,6 +35,9 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [260-g05-harness-visibility-runway-compilation.md](./260-g05-harness-visibility-runway-compilation.md) — completed; g05.001 and cards 001-003 compiled
+- [259-g04-closure-and-g05-generation-open.md](./259-g04-closure-and-g05-generation-open.md) — completed; g04 closed and g05 opened
+- [258-g04-closeout-inventory-and-deferred-disposition.md](./258-g04-closeout-inventory-and-deferred-disposition.md) — completed; per-route inventory exhausted and parked work retained
 - [257-kiro-acp-agent-profile-evidence.md](./257-kiro-acp-agent-profile-evidence.md) — complete; Research 254 honest empty deliver-now set
 - [256-goose-acp-mode-evidence.md](./256-goose-acp-mode-evidence.md) — complete; Research 253 honest empty deliver-now set
 - [255-mistral-vibe-headless-agent-profile-evidence.md](./255-mistral-vibe-headless-agent-profile-evidence.md) — complete; Research 252 honest empty deliver-now set

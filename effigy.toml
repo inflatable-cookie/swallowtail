@@ -24,7 +24,7 @@ section = "Research Records"
 file = "docs/roadmaps/README.md"
 dir = "docs/roadmaps"
 section = "Index"
-exclude = ["g01/**", "g02/**", "g03/**", "g04/**", "backlog/**"]
+exclude = ["g01/**", "g02/**", "g03/**", "g04/**", "g05/**", "backlog/**"]
 
 [docs_policy.indexes.roadmaps_g01]
 file = "docs/roadmaps/g01/README.md"
@@ -50,13 +50,19 @@ dir = "docs/roadmaps/g04"
 section = "Milestones"
 exclude = ["batch-cards/**"]
 
+[docs_policy.indexes.roadmaps_g05]
+file = "docs/roadmaps/g05/README.md"
+dir = "docs/roadmaps/g05"
+section = "Milestones"
+exclude = ["batch-cards/**"]
+
 [docs_policy.indexes.roadmaps_backlog]
 file = "docs/roadmaps/backlog/README.md"
 dir = "docs/roadmaps/backlog"
 
 [docs_policy.indexes.roadmaps_batch_cards]
-file = "docs/roadmaps/g04/batch-cards/README.md"
-dir = "docs/roadmaps/g04/batch-cards"
+file = "docs/roadmaps/g05/batch-cards/README.md"
+dir = "docs/roadmaps/g05/batch-cards"
 
 [docs_policy.next_actions.roadmaps]
 index = "roadmaps"
@@ -73,6 +79,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "qa:docs:index:roadmaps:g02" = "effigy docs check index --policy-index roadmaps_g02"
 "qa:docs:index:roadmaps:g03" = "effigy docs check index --policy-index roadmaps_g03"
 "qa:docs:index:roadmaps:g04" = "effigy docs check index --policy-index roadmaps_g04"
+"qa:docs:index:roadmaps:g05" = "effigy docs check index --policy-index roadmaps_g05"
 "qa:docs:index:roadmaps:backlog" = "effigy docs check index --policy-index roadmaps_backlog"
 "qa:docs:index:roadmaps:batch-cards" = "effigy docs check index --policy-index roadmaps_batch_cards"
 "qa:docs:roadmaps:status" = "python3 scripts/check-roadmap-status-drift.py"
@@ -92,6 +99,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
   { task = "qa:docs:index:roadmaps:g02" },
   { task = "qa:docs:index:roadmaps:g03" },
   { task = "qa:docs:index:roadmaps:g04" },
+  { task = "qa:docs:index:roadmaps:g05" },
   { task = "qa:docs:index:roadmaps:backlog" },
   { task = "qa:docs:index:roadmaps:batch-cards" },
   { task = "qa:docs:roadmaps:status" },

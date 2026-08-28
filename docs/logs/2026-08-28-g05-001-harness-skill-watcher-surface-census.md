@@ -5,7 +5,7 @@ Generation: g05
 Card: 001
 Research: 255
 Branch: t3code/harness-skill-watcher-census
-Pull request: pending
+Pull request: https://github.com/inflatable-cookie/swallowtail/pull/112
 
 ## Scope completed
 

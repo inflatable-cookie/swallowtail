@@ -6,7 +6,7 @@ Card: 257
 Research: 254
 Branch: `t3code/review-agent-profile-evidence`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-cc2d9c73`
-PR: pending
+PR: [#110](https://github.com/inflatable-cookie/swallowtail/pull/110)
 
 ## Scope
 

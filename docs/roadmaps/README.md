@@ -15,10 +15,12 @@ shape.
 
 ## Next Task
 
-Execute g05.001 card 001: inventory exact prompt-free skill-discovery and
-background-process surfaces across production harness routes. Produce Research
-255 only. Do not start watcher implementation, inject a skill, run provider
-prompts, or promote parked routes. Contract 029 currentness remains standing.
+Reassess Research 255 through g05.001 card 002. Classify portable,
+provider-local, host-owned, consumer-owned, unsafe, and unavailable seams, then
+return the four operator choices for skill scope, watcher stop authority,
+consumer output, and active-watcher turn completion. Do not promote
+architecture, contracts, public types, or proof routes. Card 003 remains
+planned. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

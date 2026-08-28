@@ -3,15 +3,14 @@
 ## Planned
 
 - [003-promotion-and-proof-route-selection.md](./003-promotion-and-proof-route-selection.md) — planned; depends on card 002 and operator decisions
-- [002-boundary-classification-and-operator-decision-packet.md](./002-boundary-classification-and-operator-decision-packet.md) — planned; depends on card 001 and Research 255
 
 ## Ready
 
-- None.
+- [002-boundary-classification-and-operator-decision-packet.md](./002-boundary-classification-and-operator-decision-packet.md) — ready; classify Research 255 and return operator choices
 
 ## Blocked
 
-None.
+- None.
 
 ## Completed
 

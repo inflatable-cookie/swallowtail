@@ -6,8 +6,8 @@ Created: 2026-08-28
 Depends on: completed g04
 Vision tags: harness skills, process observability, consumer integration
 Contract refs: 013, 017, 023, 029, 034, 041, 044, 047, 052
-Research: 255 reserved
-Planning state: card 001 ready; cards 002-003 planned
+Research: 255 promoted
+Planning state: card 001 completed; card 002 ready; card 003 planned
 
 ## Problem
 
@@ -29,10 +29,10 @@ promotion.
 
 ### Batch 1.1 — Surface Inventory
 
-- [ ] execute card 001
-- [ ] inventory exact route/version official listing, manifest, protocol, and
+- [x] execute card 001
+- [x] inventory exact route/version official listing, manifest, protocol, and
       process-control surfaces
-- [ ] promote Research 255 with a closed evidence matrix
+- [x] promote Research 255 with a closed evidence matrix
 
 ### Batch 1.2 — Boundary And Decision Packet
 
@@ -49,10 +49,10 @@ promotion.
 
 ## Acceptance Criteria
 
-- [ ] every production harness route has an exact evidence disposition
-- [ ] skill distribution membership stays separate from model visibility
-- [ ] native watchers stay separate from a Swallowtail-owned mechanism
-- [ ] process ownership, stop, join, output, and turn completion remain explicit
+- [x] every production harness route has an exact evidence disposition
+- [x] skill distribution membership stays separate from model visibility
+- [x] native watchers stay separate from a Swallowtail-owned mechanism
+- [x] process ownership, stop, join, output, and turn completion remain explicit
 - [ ] no public type or implementation is selected before operator decisions
 - [ ] one clear continuation checkpoint remains
 
@@ -81,6 +81,7 @@ promotion.
 
 ## References
 
+- [Research 255 Production Harness Skill And Watcher Surface Census](../../research/255-production-harness-skill-and-watcher-surface-census.md)
 - [Harness Skill Discovery And Process Watchers](../../triage/2026-08-27-harness-skill-discovery-and-process-watchers.md)
 - [Contract 013 Interactive Session Access Policy](../../contracts/013-interactive-session-access-policy.md)
 - [Contract 017 Provider-Owned Session Load](../../contracts/017-provider-owned-session-load-replay-and-host-containment.md)

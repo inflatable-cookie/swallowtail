@@ -1,8 +1,9 @@
 # 2026-08-27 Harness Skill Discovery And Process Watchers
 
-Status: promoted; operator decisions open
+Status: promoted; Research 255 complete; operator decisions open
 Owner: Tom
 Source: operator direction during g04.082 execution
+Updated: 2026-08-28
 
 ## Why This Note Exists
 
@@ -227,6 +228,11 @@ boundary classification and the existing operator decision packet, and card
 watcher implementation or skill injection is ready.
 
 ## Open Operator Decisions
+
+Research 255 completed the prompt-free census across 35 harness routes. It
+found zero deliver-now skill-roster rows and zero complete native-watcher rows.
+Card 002 now owns the evidence-shaped decision packet; this note stays open
+until the operator answers the choices below.
 
 - Skill discovery scope: distribution-bundled only, or also explicitly
   configured/project-local skills that the exact session confirms visible?

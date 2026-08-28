@@ -145,9 +145,9 @@ goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
 g05 has one roadmap: 0 completed milestones, no honest evidence stops, and one
-ready milestone at 001. Card 001 is ready for a prompt-free production-harness
-surface inventory. Cards 002-003 remain planned behind that evidence and the
-operator decisions already named in the promoted triage note. No watcher
+ready milestone at 001. Card 001 completed the prompt-free production-harness
+surface inventory through PR 112 at `ea247a63`; card 002 is ready to prepare
+the operator decision packet, and card 003 remains planned. No watcher
 implementation, skill injection, provider prompt, new route, or parked Bedrock
 work is authorized.
 

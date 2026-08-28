@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Docs link QA omits research and lane-log bodies — 2026-08-28
+- Friction: PR 112 passed `effigy qa:docs`, but Research 255 contained six
+  links to nonexistent contract filenames. The link selector checks a bounded
+  front-door set and did not inspect the changed research file.
+- Impact: promoted evidence can claim canonical authority while its durable
+  links are broken, and green CI does not catch the defect.
+- Fix: add changed Markdown documents or the indexed research/log corpus to a
+  bounded repository link-check selector without restoring broad child-index
+  churn.
+- Surface: `qa:docs:links`; research and lane-log review.
+
 ### [ ] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
 - Friction: `docs.x.ai/developers/...` HTML bodies are 0.4–1.1 MiB Next.js
   shells with `x-nextjs-cache`. Markdown exports exist by appending `.md` and

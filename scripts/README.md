@@ -24,6 +24,8 @@ Normal validation scripts:
 - `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
   and generation-index ready/completed/stop counts against Status frontmatter
   behind `effigy qa:docs:roadmaps:status`
+- `check-docs-links.py` — front-door Markdown links plus `docs/research` and
+  `docs/logs` bodies behind `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one
   warnings-denied all-target clippy invocation for one to four explicit
   workspace packages

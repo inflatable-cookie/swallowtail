@@ -40,7 +40,7 @@ git diff --check                                    # passed
 
 ## Evidence
 
-- [Research 235](../../research/235-gemini-cli-acp-thinking-evidence.md)
+- [Research 235](../research/235-gemini-cli-acp-thinking-evidence.md)
 - [thinking-evidence.json](../../crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-acp-0.56.0-thinking/thinking-evidence.json)
 
 ## PR

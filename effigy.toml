@@ -70,7 +70,7 @@ heading = "## Next Task"
 allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 
 [tasks]
-"qa:docs:links" = "effigy docs check links README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/releases/README.md docs/releases/0.1.0.md docs/releases/0.1.1.md docs/releases/0.2.0.md docs/releases/0.3.0.md docs/releases/0.3.1.md docs/releases/0.3.2.md docs/releases/0.3.3.md"
+"qa:docs:links" = "python3 scripts/check-docs-links.py"
 "qa:docs:index:vision" = "effigy docs check index --policy-index vision"
 "qa:docs:index:logs" = "effigy docs check index --policy-index logs"
 "qa:docs:index:research" = "effigy docs check index --policy-index research"

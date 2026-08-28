@@ -66,3 +66,9 @@ stale graph-index warnings remain; the doctor baseline is unchanged.
 No provider prompt, adapter wiring, credentials, ambient configuration mutation,
 release work, or merge was performed. Card 010 is ready as the sole next lane;
 card 011 remains planned.
+
+## Review Handoff
+
+Pull request [#117](https://github.com/inflatable-cookie/swallowtail/pull/117)
+was opened against `main` from implementation head `d146afc7`. The closeout-log
+update is pushed on the same worker branch. No merge was performed.

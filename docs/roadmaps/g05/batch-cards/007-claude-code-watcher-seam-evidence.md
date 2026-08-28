@@ -1,8 +1,9 @@
 # 007 Claude Code Watcher Seam Evidence
 
-Status: ready
+Status: done
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-28
 Milestone: `../003-operation-scoped-watcher-proof.md`
 Depends on: Contract 059; Research 255
 Research: 257
@@ -33,11 +34,17 @@ watcher support.
 
 ## Acceptance Criteria
 
-- [ ] exact operation-private MCP and instruction transport is proved
-- [ ] same-turn completion interception is proved before terminal
-- [ ] omission preserves current empty strict MCP behavior
-- [ ] hook, model, host, and consumer authority remain separate
-- [ ] an empty set blocks cards 010-011
+- [x] exact operation-private MCP and instruction transport is proved
+- [x] same-turn completion interception is proved before terminal
+- [x] omission preserves current empty strict MCP behavior
+- [x] hook, model, host, and consumer authority remain separate
+- [x] an empty set blocks cards 010-011
+
+## Result
+
+Research 257 admits a complete candidate mechanism table. Cards 010-011 are
+not blocked by an empty set. Production argv is unchanged. Live same-turn
+re-entry remains a card 010 gate.
 
 ## Validation
 

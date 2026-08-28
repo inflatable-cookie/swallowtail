@@ -33,4 +33,8 @@ darwin-arm64 native executables, with an honest empty deliver-now set because
 `acceptEdits`/`auto` widen authority relative to Plan and
 `default`/`dontAsk` do not close Plan-equivalent application or
 operation-private effective authority under selected setting-sources.
-`bypassPermissions` stays excluded. No provider prompt was sent.
+`bypassPermissions` stays excluded. `headless-watcher-seam.json` records the
+g05.003 card 007 watcher MCP/skill/Stop same-turn mechanism table for the
+qualified window: complete candidate composition under `--bare` plus session
+`--mcp-config`/`--settings`/`--add-dir`, with production binding withheld and
+empty strict MCP omission preserved. No provider prompt was sent.

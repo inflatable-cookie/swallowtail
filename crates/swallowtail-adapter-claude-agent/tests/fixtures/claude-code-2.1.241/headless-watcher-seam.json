@@ -1,0 +1,187 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "route": "claude-code.headless",
+  "driver": "swallowtail.claude-code.headless",
+  "behavior": "claude-code.headless.stream-json.v1",
+  "qualified_window": "2.1.220..=2.1.241",
+  "observed_at": "2026-08-28",
+  "provider_prompt_sent": false,
+  "credentials_used": false,
+  "host_install_changed": false,
+  "ambient_configuration_mutated": false,
+  "ambient_note": "probes used disposable HOME only; host ~/.claude and project settings were not written",
+  "platform": "darwin-arm64",
+  "research": 257,
+  "card": "g05.003/007",
+  "decision": "complete_candidate_mechanism",
+  "empty_deliver_now_for_production_binding": true,
+  "reason_no_production_binding": "current Swallowtail headless argv keeps empty strict MCP and does not pass --bare, Stop hooks, --settings, --add-dir skill root, or --include-hook-events; this record freezes the route mechanism only",
+  "official_docs": {
+    "hooks_md_sha256": "b888a5e6ef09dcca31216c749ef471d2c3c270b28e3f9ac1d714562b0cc61809",
+    "headless_md_sha256": "02f132525d009deae88590647bcac872eb2e5d6cca39c4ba3008a0f810db8314",
+    "mcp_md_sha256": "12e0db40002a402e5a1770a94237841fdd1714524681616f5f4867b54fdc0c0e",
+    "skills_md_sha256": "8f2e206b4e74fbd8323028456041bcdd4b8fb5cbf91d4c05f08e5f558c3c6bd5",
+    "settings_md_sha256": "a6f10afd9d41fffa2b14e1f113ef641ea6fbe9b319c114bb986efc3e186de009",
+    "cli_reference_md_sha256": "8d4526b2fca256e91d92bff4bdb305012c84c9289ec2d59c771cee73152f00e8"
+  },
+  "wrapper_sha256": {
+    "2.1.220": "df33087481fcf5fe9b848b3f7ae7ee6bb1b893c327b0793f052987f9c5b4eee3",
+    "2.1.241": "752252ff9a65431c356ce1ae54b7ded74a138aaa7b93148573d97ff541a2e7e6"
+  },
+  "darwin_arm64_binary_sha256": {
+    "2.1.220": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "2.1.234": "08d8700313697cbe730a25420c908a299ce52d56f0eb2cf4fac94cab5109bc57",
+    "2.1.238": "1c196c456373b57818ae87df84aecee96cb659448c0d6a6bbb401ac5758431b2",
+    "2.1.241": "1495eb7c42d3b4451f5f1cd38b6d498d22a4a38c802bc2be5c1cf1795e64820d"
+  },
+  "help_sha256": {
+    "2.1.220": "fcd5b45507c7c602d54d85a300eab288a8a3c6770c6def696ca19a3100725de4",
+    "2.1.241": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6"
+  },
+  "current_production_argv": {
+    "mcp_config": "{\"mcpServers\":{}}",
+    "strict_mcp_config": true,
+    "setting_sources": "user,project,local",
+    "bare": false,
+    "include_hook_events": false,
+    "settings_flag": false,
+    "add_dir": false
+  },
+  "candidate_composition": {
+    "bare": true,
+    "mcp_config": "inline JSON string or file with exactly one private stdio/http server, or empty object for omission",
+    "strict_mcp_config": true,
+    "settings": "inline JSON with hooks.Stop command/http/mcp_tool handler returning decision block or additionalContext",
+    "add_dir": "operation-private directory containing .claude/skills/<name>/SKILL.md; not ~/.claude/skills or project .claude/skills",
+    "include_hook_events": true,
+    "permission_mode": "plan",
+    "tools": "Read,Glob,Grep",
+    "note": "bare skips ambient hooks/skills/MCP; --add-dir skills still load; --settings injects Stop without writing user/project settings files"
+  },
+  "mechanism_table": [
+    {
+      "id": "private-mcp",
+      "question": "operation-private MCP without persistent config",
+      "status": "admitted",
+      "transport": "--mcp-config JSON string or file plus --strict-mcp-config",
+      "omission": "current empty {\"mcpServers\":{}} plus --strict-mcp-config remains the no-watcher path",
+      "package_evidence": "help advertises both flags at 2.1.220 and 2.1.241; empty-print accepts inline and file configs; invalid token treated as missing file path",
+      "milestones": {
+        "mcp_server_errors_in_system_init": "2.1.219+",
+        "pending_server_wait_before_first_turn": "2.1.221+",
+        "strict_skip_project_approval_wait": "2.1.246+ (above qualified ceiling; bare avoids loading project .mcp.json)"
+      }
+    },
+    {
+      "id": "instruction-asset",
+      "question": "watcher instruction without user or project skill folders",
+      "status": "admitted",
+      "transport": "operation-private --add-dir root with .claude/skills/<name>/SKILL.md under --bare; optional --append-system-prompt",
+      "package_evidence": "help advertises --add-dir, --bare, --append-system-prompt; docs state bare still loads add-dir skills and skips ambient skills",
+      "live_effective_attachment": false
+    },
+    {
+      "id": "stop-interception",
+      "question": "pre-terminal Stop hook on claude -p",
+      "status": "admitted",
+      "event": "Stop",
+      "fires_when": "main agent finished responding; not on user interrupt; API errors use StopFailure instead",
+      "transport": "--settings inline/file hooks.Stop; observe with --include-hook-events under stream-json",
+      "package_evidence": "stop_hook_active, tengu_stop_hook_block_count, CLAUDE_CODE_STOP_HOOK_BLOCK_CAP present in 2.1.220, 2.1.234, 2.1.238, 2.1.241 binaries"
+    },
+    {
+      "id": "same-turn-reentry",
+      "question": "block completion and return control to same -p model turn",
+      "status": "admitted_docs_and_package",
+      "response": {
+        "decision_block": "{\"decision\":\"block\",\"reason\":\"...\"}",
+        "additional_context": "hookSpecificOutput.additionalContext continues without hook-error labeling",
+        "exit_code_2": "stderr becomes the continue reason"
+      },
+      "anti_loop": {
+        "stop_hook_active": true,
+        "consecutive_block_cap": 8,
+        "cap_override_env": "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP"
+      },
+      "live_observed": false,
+      "boundary": "no provider prompt authorized in this card"
+    },
+    {
+      "id": "failure-and-cleanup",
+      "question": "hook/MCP/cancel/deadline/output/join ordering",
+      "status": "admitted_docs",
+      "findings": [
+        "StopFailure replaces Stop on API error and ignores hook decision output",
+        "mcp_tool hook missing server or isError is non-blocking fail-open",
+        "command/http/mcp_tool timeout is non-blocking",
+        "SIGTERM: kill Bash tree, run SessionEnd only, exit 143, no new tools/model/hooks, no result recorded",
+        "background Bash after final result: ~5s grace then terminate; subagents/workflows wait up to CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS",
+        "host watcher join remains Swallowtail host authority; Claude-native background_tasks are not host watchers"
+      ]
+    },
+    {
+      "id": "native-background-distinct",
+      "question": "Claude-native background tasks vs private host watcher",
+      "status": "admitted",
+      "native_surface": "Stop input background_tasks and session_crons; Bash background grace; subagent/workflow wait ceiling",
+      "host_watcher": "operation-private MCP tool family plus host registry under Contract 059; ids must not equal provider task ids"
+    }
+  ],
+  "empty_print_probes": {
+    "terminal": "claude -p --output-format stream-json ... with stdin closed",
+    "accepted_ec": 1,
+    "accepted_diagnostic": "Error: Input must be provided either through stdin or as a prompt argument when using --print",
+    "cases": [
+      "empty-baseline",
+      "mcp-strict-empty",
+      "mcp-strict-one-inline",
+      "mcp-strict-one-file",
+      "settings-hooks",
+      "bare-composed",
+      "selected-route-shape",
+      "watcher-candidate-shape",
+      "bare-plus-project-sources",
+      "bare-plus-empty-sources"
+    ],
+    "versions_probed": ["2.1.220", "2.1.241"],
+    "invalid_mcp_config_diagnostic_prefix": "Error: Invalid MCP configuration:\nMCP config file not found:"
+  },
+  "binary_string_counts": {
+    "2.1.220": {
+      "stop_hook_active": 7,
+      "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": 5,
+      "strict-mcp-config": 24,
+      "include-hook-events": 4,
+      "background_tasks": 39
+    },
+    "2.1.234": {
+      "stop_hook_active": 7,
+      "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": 5,
+      "strict-mcp-config": 24,
+      "include-hook-events": 4,
+      "background_tasks": 43
+    },
+    "2.1.238": {
+      "stop_hook_active": 7,
+      "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": 5,
+      "strict-mcp-config": 24,
+      "include-hook-events": 4,
+      "background_tasks": 44
+    },
+    "2.1.241": {
+      "stop_hook_active": 7,
+      "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": 5,
+      "strict-mcp-config": 24,
+      "include-hook-events": 4,
+      "background_tasks": 42
+    }
+  },
+  "blocks_cards_010_011": false,
+  "card_010_gates": [
+    "implement candidate composition without ambient user/project skill or settings mutation",
+    "host MCP server + reserved watcher tools",
+    "Stop hook returns bounded active-watcher state before irreversible result",
+    "live same-turn re-entry acceptance under authorized provider work",
+    "preserve empty strict MCP omission path"
+  ]
+}

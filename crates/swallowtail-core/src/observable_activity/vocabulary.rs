@@ -36,6 +36,8 @@ pub enum ActivityKindClass {
     Hook,
     /// Provider warning or non-terminal error activity.
     WarningOrError,
+    /// Host-owned operation-scoped process watcher.
+    HostWatcher,
     /// Provider-namespaced activity outside common vocabulary.
     Unknown,
 }

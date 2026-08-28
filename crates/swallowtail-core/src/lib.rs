@@ -40,6 +40,7 @@ mod requirement;
 mod runtime_identity;
 mod session_access;
 mod session_provider_state;
+mod watcher;
 
 pub use access::{
     AccessProfile, AccessStatus, CredentialMechanism, CredentialState, EndpointAuthorization,
@@ -162,3 +163,8 @@ pub use session_access::{
     ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
 };
 pub use session_provider_state::SessionProviderStatePolicy;
+pub use watcher::{
+    DEFAULT_MAX_WATCHERS_PER_TURN, InvalidWatcherRecord, MAX_WATCHER_ID_BYTES,
+    MAX_WATCHER_OWNING_TURN_BYTES, MAX_WATCHER_SUMMARY_BYTES, WatcherId, WatcherLifecyclePhase,
+    WatcherOwningTurn, WatcherRequester, WatcherRevision, WatcherSummary, WatcherTerminalCause,
+};

@@ -1,6 +1,6 @@
 # 008 Portable Watcher Lifecycle Core
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Milestone: `../003-operation-scoped-watcher-proof.md`
@@ -31,11 +31,11 @@ and activity vocabulary without starting a process or selecting a route.
 
 ## Acceptance Criteria
 
-- [ ] identities are turn-scoped, opaque, bounded, and redacted
-- [ ] model and operator roles stay distinct over one registry state
-- [ ] lifecycle and race transitions are deterministic
-- [ ] wait, stop, cancellation, deadline, and join truth are representable
-- [ ] no host or provider effect is possible in this card
+- [x] identities are turn-scoped, opaque, bounded, and redacted
+- [x] model and operator roles stay distinct over one registry state
+- [x] lifecycle and race transitions are deterministic
+- [x] wait, stop, cancellation, deadline, and join truth are representable
+- [x] no host or provider effect is possible in this card
 
 ## Validation
 

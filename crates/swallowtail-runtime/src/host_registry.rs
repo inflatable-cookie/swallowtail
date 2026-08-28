@@ -5,7 +5,8 @@ use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DeviceCodeDisplayService,
     DiagnosticObserver, LoopbackCallbackService, ModelArtifactService, NetworkPolicyService,
     ProcessService, RuntimeFailure, SchemaService, ScopedTaskService, ServingEndpointService,
-    TimeService, UrlOpenService, WorkingResourceIoService, WorkingResourceService,
+    TimeService, UrlOpenService, WatcherHostService, WorkingResourceIoService,
+    WorkingResourceService,
 };
 use std::collections::BTreeSet;
 use std::panic::{AssertUnwindSafe, catch_unwind};
@@ -39,6 +40,7 @@ pub struct HostServices {
     url_open: Option<Arc<dyn UrlOpenService>>,
     loopback_callback: Option<Arc<dyn LoopbackCallbackService>>,
     device_code_display: Option<Arc<dyn DeviceCodeDisplayService>>,
+    watcher: Option<Arc<dyn WatcherHostService>>,
 }
 
 impl HostServices {
@@ -65,6 +67,7 @@ impl HostServices {
             url_open: None,
             loopback_callback: None,
             device_code_display: None,
+            watcher: None,
         }
     }
 
@@ -212,6 +215,13 @@ impl HostServices {
         self
     }
 
+    /// Registers the optional watcher host port. Registration does not start work.
+    #[must_use]
+    pub fn with_watcher(mut self, service: Arc<dyn WatcherHostService>) -> Self {
+        self.watcher = Some(service);
+        self
+    }
+
     /// Returns the scoped task service when registered.
     #[must_use]
     pub fn task(&self) -> Option<&Arc<dyn ScopedTaskService>> {
@@ -320,6 +330,12 @@ impl HostServices {
         self.device_code_display.as_ref()
     }
 
+    /// Returns the watcher host port when registered.
+    #[must_use]
+    pub fn watcher(&self) -> Option<&Arc<dyn WatcherHostService>> {
+        self.watcher.as_ref()
+    }
+
     /// Records one idiom signal to the registered recorder, or no-ops when
     /// absent or when the recorder panics.
     pub fn record_idiom_signal(&self, signal: IdiomSignal) {
@@ -418,6 +434,9 @@ impl HostServices {
         }
         if self.device_code_display.is_some() {
             kinds.insert(HostServiceKind::DeviceCodeDisplay);
+        }
+        if self.watcher.is_some() {
+            kinds.insert(HostServiceKind::Watcher);
         }
         kinds
     }
@@ -575,6 +594,26 @@ mod tests {
         );
     }
 
+    #[test]
+    fn watcher_port_is_optional_and_registration_does_not_start_work() {
+        use swallowtail_core::HostServiceKind;
+
+        let empty =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"));
+        assert!(!empty.available_kinds().contains(&HostServiceKind::Watcher));
+        assert!(empty.watcher().is_none());
+
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_watcher(Arc::new(IdleWatcherPort));
+        assert!(
+            services
+                .available_kinds()
+                .contains(&HostServiceKind::Watcher)
+        );
+        assert!(services.watcher().is_some());
+    }
+
     struct IdleSignInPorts;
 
     impl crate::UrlOpenService for IdleSignInPorts {
@@ -647,6 +686,72 @@ mod tests {
             _audience: &swallowtail_core::EndpointAudience,
         ) -> Result<crate::CredentialRef, crate::RuntimeFailure> {
             panic!("registering a device-code port must not start sign-in");
+        }
+    }
+
+    struct IdleWatcherPort;
+
+    impl crate::WatcherHostService for IdleWatcherPort {
+        fn accept_start(
+            &self,
+            _turn: crate::RuntimeTurnId,
+            _summary: Option<swallowtail_core::WatcherSummary>,
+        ) -> crate::BoxFuture<'static, Result<crate::WatcherSnapshot, crate::RuntimeFailure>>
+        {
+            panic!("registering a watcher port must not start work");
+        }
+
+        fn inspect(
+            &self,
+            _owning_turn: swallowtail_core::WatcherOwningTurn,
+            _watcher_id: swallowtail_core::WatcherId,
+        ) -> crate::BoxFuture<'static, Result<crate::WatcherSnapshot, crate::RuntimeFailure>>
+        {
+            panic!("registering a watcher port must not start work");
+        }
+
+        fn list(
+            &self,
+            _owning_turn: swallowtail_core::WatcherOwningTurn,
+        ) -> crate::BoxFuture<'static, Result<Vec<crate::WatcherSnapshot>, crate::RuntimeFailure>>
+        {
+            panic!("registering a watcher port must not start work");
+        }
+
+        fn wait(
+            &self,
+            _owning_turn: swallowtail_core::WatcherOwningTurn,
+            _watcher_id: swallowtail_core::WatcherId,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<crate::WatcherWaitRepresentation, crate::RuntimeFailure>,
+        > {
+            panic!("registering a watcher port must not start work");
+        }
+
+        fn request_stop(
+            &self,
+            _owning_turn: swallowtail_core::WatcherOwningTurn,
+            _watcher_id: swallowtail_core::WatcherId,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<
+                (crate::WatcherStopAcknowledgement, crate::WatcherSnapshot),
+                crate::RuntimeFailure,
+            >,
+        > {
+            panic!("registering a watcher port must not start work");
+        }
+
+        fn stop_and_join_all(
+            &self,
+            _turn: crate::RuntimeTurnId,
+            _cause: swallowtail_core::WatcherTerminalCause,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<(Vec<crate::WatcherSnapshot>, CleanupOutcome), crate::RuntimeFailure>,
+        > {
+            panic!("registering a watcher port must not start work");
         }
     }
 

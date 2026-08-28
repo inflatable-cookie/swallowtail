@@ -235,6 +235,11 @@ pub enum HostServiceKind {
     LoopbackCallback,
     /// Display a device code for one sign-in operation.
     DeviceCodeDisplay,
+    /// Optional turn-scoped host-owned process watcher service.
+    ///
+    /// Registration alone starts nothing and grants no arbitrary process or
+    /// PID authority. Contract 059 owns the exact control surface.
+    Watcher,
 }
 
 #[cfg(test)]

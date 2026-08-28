@@ -86,6 +86,8 @@ pub enum ActivityKind {
     Hook,
     /// Warning or error activity carrying a safe diagnostic.
     WarningOrError,
+    /// Host-owned operation-scoped process watcher.
+    HostWatcher,
     /// Safely identified provider activity outside the portable vocabulary.
     Unknown(ActivityNamespace),
 }
@@ -110,6 +112,7 @@ impl ActivityKind {
             Self::Task => ActivityKindClass::Task,
             Self::Hook => ActivityKindClass::Hook,
             Self::WarningOrError => ActivityKindClass::WarningOrError,
+            Self::HostWatcher => ActivityKindClass::HostWatcher,
             Self::Unknown(_) => ActivityKindClass::Unknown,
         }
     }

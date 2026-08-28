@@ -74,6 +74,7 @@ mod settled_session_restoration;
 mod sign_in_ports;
 mod subagent_directory;
 mod time;
+mod watcher;
 mod working_resource_io;
 mod working_state_restoration;
 
@@ -345,6 +346,12 @@ pub use swallowtail_core::{
     ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
+pub use watcher::{
+    ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,
+    SharedWatcherRegistry, WatcherControlSurface, WatcherFailure, WatcherFailureKind,
+    WatcherHostService, WatcherRegistry, WatcherSnapshot, WatcherStopAcknowledgement,
+    WatcherWaitRepresentation, project_watcher_activity,
+};
 pub use working_resource_io::{
     WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
     WorkingResourceText, WorkingResourceWriteRequest,

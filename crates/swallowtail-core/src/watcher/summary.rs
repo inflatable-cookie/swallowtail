@@ -50,7 +50,7 @@ impl fmt::Display for WatcherSummary {
 
 #[cfg(test)]
 mod tests {
-    use super::WatcherSummary;
+    use super::{MAX_WATCHER_SUMMARY_BYTES, WatcherSummary};
 
     #[test]
     fn watcher_summary_is_redacted_by_default() {
@@ -58,5 +58,10 @@ mod tests {
         assert!(!format!("{summary:?}").contains("progress"));
         assert!(!format!("{summary}").contains("progress"));
         assert_eq!(summary.as_str(), "progress 12%");
+    }
+
+    #[test]
+    fn watcher_summary_rejects_overlength_input() {
+        assert!(WatcherSummary::new("s".repeat(MAX_WATCHER_SUMMARY_BYTES + 1)).is_err());
     }
 }

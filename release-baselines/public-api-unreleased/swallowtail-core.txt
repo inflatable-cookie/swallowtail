@@ -25,6 +25,7 @@ pub swallowtail_core::ActivityKindClass::ContextCompaction
 pub swallowtail_core::ActivityKindClass::ExternalSearch
 pub swallowtail_core::ActivityKindClass::FileChange
 pub swallowtail_core::ActivityKindClass::Hook
+pub swallowtail_core::ActivityKindClass::HostWatcher
 pub swallowtail_core::ActivityKindClass::ImageView
 pub swallowtail_core::ActivityKindClass::Plan
 pub swallowtail_core::ActivityKindClass::ProviderOwnedTool
@@ -347,6 +348,7 @@ pub swallowtail_core::HostServiceKind::ServingEndpoint
 pub swallowtail_core::HostServiceKind::Task
 pub swallowtail_core::HostServiceKind::Time
 pub swallowtail_core::HostServiceKind::UrlOpen
+pub swallowtail_core::HostServiceKind::Watcher
 pub swallowtail_core::HostServiceKind::WorkingResource
 pub swallowtail_core::HostServiceKind::WorkingResourceIo
 pub enum swallowtail_core::InstalledExecutableCompatibility
@@ -608,6 +610,39 @@ pub swallowtail_core::SupportAuthority::ExperimentalObserved
 pub swallowtail_core::SupportAuthority::IntegrationMaintainerSupported
 pub swallowtail_core::SupportAuthority::Prohibited
 pub swallowtail_core::SupportAuthority::ProviderSupported
+pub enum swallowtail_core::WatcherCleanupCause
+pub swallowtail_core::WatcherCleanupCause::Cancelled
+pub swallowtail_core::WatcherCleanupCause::Failed
+pub swallowtail_core::WatcherCleanupCause::Stopped
+pub swallowtail_core::WatcherCleanupCause::TimedOut
+impl swallowtail_core::WatcherCleanupCause
+pub const fn swallowtail_core::WatcherCleanupCause::as_str(self) -> &'static str
+pub const fn swallowtail_core::WatcherCleanupCause::terminal_cause(self) -> swallowtail_core::WatcherTerminalCause
+impl core::fmt::Display for swallowtail_core::WatcherCleanupCause
+pub fn swallowtail_core::WatcherCleanupCause::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_core::WatcherLifecyclePhase
+pub swallowtail_core::WatcherLifecyclePhase::Accepted
+pub swallowtail_core::WatcherLifecyclePhase::Joined
+pub swallowtail_core::WatcherLifecyclePhase::Running
+pub swallowtail_core::WatcherLifecyclePhase::Terminal
+impl swallowtail_core::WatcherLifecyclePhase
+pub const fn swallowtail_core::WatcherLifecyclePhase::is_joined(self) -> bool
+pub const fn swallowtail_core::WatcherLifecyclePhase::is_terminal(self) -> bool
+pub enum swallowtail_core::WatcherRequester
+pub swallowtail_core::WatcherRequester::Model
+pub swallowtail_core::WatcherRequester::Operator
+impl swallowtail_core::WatcherRequester
+pub const fn swallowtail_core::WatcherRequester::as_str(self) -> &'static str
+pub enum swallowtail_core::WatcherTerminalCause
+pub swallowtail_core::WatcherTerminalCause::Cancelled
+pub swallowtail_core::WatcherTerminalCause::Completed
+pub swallowtail_core::WatcherTerminalCause::Failed
+pub swallowtail_core::WatcherTerminalCause::Stopped
+pub swallowtail_core::WatcherTerminalCause::TimedOut
+impl swallowtail_core::WatcherTerminalCause
+pub const fn swallowtail_core::WatcherTerminalCause::as_str(self) -> &'static str
+impl core::fmt::Display for swallowtail_core::WatcherTerminalCause
+pub fn swallowtail_core::WatcherTerminalCause::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_core::AccessProfile
 impl swallowtail_core::AccessProfile
 pub const fn swallowtail_core::AccessProfile::credential_mechanism(&self) -> &swallowtail_core::CredentialMechanism
@@ -1125,6 +1160,12 @@ pub const fn swallowtail_core::InvalidRemoteAcpRequirements::diagnostic(&self) -
 impl core::error::Error for swallowtail_core::InvalidRemoteAcpRequirements
 impl core::fmt::Display for swallowtail_core::InvalidRemoteAcpRequirements
 pub fn swallowtail_core::InvalidRemoteAcpRequirements::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidWatcherRecord
+impl swallowtail_core::InvalidWatcherRecord
+pub const fn swallowtail_core::InvalidWatcherRecord::message(self) -> &'static str
+impl core::error::Error for swallowtail_core::InvalidWatcherRecord
+impl core::fmt::Display for swallowtail_core::InvalidWatcherRecord
+pub fn swallowtail_core::InvalidWatcherRecord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_core::MediaFormat
 impl swallowtail_core::MediaFormat
 pub const fn swallowtail_core::MediaFormat::audio(swallowtail_core::AudioEncoding, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU16) -> Self
@@ -1609,5 +1650,43 @@ pub const fn swallowtail_core::ValueRequired::field(&self) -> &'static str
 impl core::error::Error for swallowtail_core::ValueRequired
 impl core::fmt::Display for swallowtail_core::ValueRequired
 pub fn swallowtail_core::ValueRequired::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherId(_)
+impl swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherOwningTurn(_)
+impl swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherOwningTurn::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherRevision(_)
+impl swallowtail_core::WatcherRevision
+pub const fn swallowtail_core::WatcherRevision::get(self) -> u64
+pub const fn swallowtail_core::WatcherRevision::initial() -> Self
+pub const fn swallowtail_core::WatcherRevision::new(u64) -> core::option::Option<Self>
+pub const fn swallowtail_core::WatcherRevision::next(self) -> Self
+impl core::fmt::Debug for swallowtail_core::WatcherRevision
+pub fn swallowtail_core::WatcherRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherRevision
+pub fn swallowtail_core::WatcherRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherSummary(_)
+impl swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherSummary::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub const swallowtail_core::DEFAULT_MAX_WATCHERS_PER_TURN: usize
+pub const swallowtail_core::MAX_WATCHER_ID_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_OWNING_TURN_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_SUMMARY_BYTES: usize
 pub const swallowtail_core::REMOTE_ACP_WIRE_VERSION: u32
 pub fn swallowtail_core::preflight(&swallowtail_core::PreflightContext<'_>, &swallowtail_core::OperationRequirements) -> core::result::Result<swallowtail_core::PreflightPlan, swallowtail_core::PreflightFailure>

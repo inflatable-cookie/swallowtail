@@ -150,7 +150,8 @@ pub use session_access_fixture::{SessionAccessFixtureCase, SessionAccessPrefligh
 pub use topology_fixture::ExecutionTopologyFixture;
 pub use watcher_assertions::{
     assert_portable_watcher_lifecycle_contract, assert_watcher_activity_projection,
-    assert_watcher_capacity_bound, assert_watcher_completion_stop_race,
+    assert_watcher_byte_bounds, assert_watcher_capacity_bound,
+    assert_watcher_cleanup_rejects_completed, assert_watcher_completion_stop_race,
     assert_watcher_identity_redaction, assert_watcher_lifecycle_transitions,
     assert_watcher_model_operator_roles, assert_watcher_ownership_rejection,
     assert_watcher_wait_representation,

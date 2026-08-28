@@ -115,3 +115,44 @@ impl fmt::Display for WatcherTerminalCause {
         formatter.write_str(self.as_str())
     }
 }
+
+/// Exact causes bulk cleanup may assign when stopping and joining owned watchers.
+///
+/// Cleanup never records [`WatcherTerminalCause::Completed`]. Successful completion
+/// is reserved for host-owned work that finished on its own.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum WatcherCleanupCause {
+    /// The owning turn or an explicit cancel path cancelled the watcher.
+    Cancelled,
+    /// A host or turn deadline expired.
+    TimedOut,
+    /// Model or operator stop reached terminal state first.
+    Stopped,
+    /// Provider, transport, hook, or watcher-channel failure forced cleanup.
+    Failed,
+}
+
+impl WatcherCleanupCause {
+    #[must_use]
+    /// Returns the exact terminal cause recorded by cleanup.
+    pub const fn terminal_cause(self) -> WatcherTerminalCause {
+        match self {
+            Self::Cancelled => WatcherTerminalCause::Cancelled,
+            Self::TimedOut => WatcherTerminalCause::TimedOut,
+            Self::Stopped => WatcherTerminalCause::Stopped,
+            Self::Failed => WatcherTerminalCause::Failed,
+        }
+    }
+
+    #[must_use]
+    /// Returns a stable public label without host or provider payload detail.
+    pub const fn as_str(self) -> &'static str {
+        self.terminal_cause().as_str()
+    }
+}
+
+impl fmt::Display for WatcherCleanupCause {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(self.as_str())
+    }
+}

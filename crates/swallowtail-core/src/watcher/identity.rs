@@ -126,7 +126,9 @@ fn bounded_identity(
 
 #[cfg(test)]
 mod tests {
-    use super::{WatcherId, WatcherOwningTurn};
+    use super::{
+        MAX_WATCHER_ID_BYTES, MAX_WATCHER_OWNING_TURN_BYTES, WatcherId, WatcherOwningTurn,
+    };
 
     #[test]
     fn watcher_identity_is_redacted_by_default() {
@@ -140,9 +142,11 @@ mod tests {
     }
 
     #[test]
-    fn watcher_identity_rejects_blank_and_control_input() {
+    fn watcher_identity_rejects_blank_control_and_overlength_input() {
         assert!(WatcherId::new(" ").is_err());
         assert!(WatcherId::new("a\nb").is_err());
         assert!(WatcherOwningTurn::new("").is_err());
+        assert!(WatcherId::new("a".repeat(MAX_WATCHER_ID_BYTES + 1)).is_err());
+        assert!(WatcherOwningTurn::new("t".repeat(MAX_WATCHER_OWNING_TURN_BYTES + 1)).is_err());
     }
 }

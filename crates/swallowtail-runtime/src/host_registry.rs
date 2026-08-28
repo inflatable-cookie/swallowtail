@@ -746,7 +746,7 @@ mod tests {
         fn stop_and_join_all(
             &self,
             _turn: crate::RuntimeTurnId,
-            _cause: swallowtail_core::WatcherTerminalCause,
+            _cause: swallowtail_core::WatcherCleanupCause,
         ) -> crate::BoxFuture<
             'static,
             Result<(Vec<crate::WatcherSnapshot>, CleanupOutcome), crate::RuntimeFailure>,

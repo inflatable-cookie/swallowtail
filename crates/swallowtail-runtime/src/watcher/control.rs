@@ -4,7 +4,7 @@ use super::{
 };
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    WatcherId, WatcherOwningTurn, WatcherRequester, WatcherSummary, WatcherTerminalCause,
+    WatcherCleanupCause, WatcherId, WatcherOwningTurn, WatcherRequester, WatcherSummary,
 };
 
 /// Shared pure registry state used by distinct model and operator control roles.
@@ -80,7 +80,7 @@ pub trait OperatorWatcherControl: Send + Sync {
     /// Stops and joins every owned watcher for turn cancellation or deadline.
     fn stop_and_join_all(
         &self,
-        cause: WatcherTerminalCause,
+        cause: WatcherCleanupCause,
     ) -> Result<Vec<WatcherSnapshot>, WatcherFailure>;
 }
 
@@ -235,7 +235,7 @@ impl OperatorWatcherControl for OperatorWatcherRole {
 
     fn stop_and_join_all(
         &self,
-        cause: WatcherTerminalCause,
+        cause: WatcherCleanupCause,
     ) -> Result<Vec<WatcherSnapshot>, WatcherFailure> {
         self.with_registry(|registry| registry.stop_and_join_all(cause))
     }

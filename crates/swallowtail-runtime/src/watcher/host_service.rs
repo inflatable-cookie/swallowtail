@@ -4,7 +4,7 @@
 //! authority. Card 009 owns host-local execution binding.
 
 use crate::{BoxFuture, CleanupOutcome, RuntimeFailure, RuntimeTurnId};
-use swallowtail_core::{WatcherId, WatcherOwningTurn, WatcherSummary, WatcherTerminalCause};
+use swallowtail_core::{WatcherCleanupCause, WatcherId, WatcherOwningTurn, WatcherSummary};
 
 use super::{WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitRepresentation};
 
@@ -55,6 +55,6 @@ pub trait WatcherHostService: Send + Sync {
     fn stop_and_join_all(
         &self,
         turn: RuntimeTurnId,
-        cause: WatcherTerminalCause,
+        cause: WatcherCleanupCause,
     ) -> BoxFuture<'_, Result<(Vec<WatcherSnapshot>, CleanupOutcome), RuntimeFailure>>;
 }

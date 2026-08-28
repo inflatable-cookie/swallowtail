@@ -348,9 +348,10 @@ pub use swallowtail_core::{
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use watcher::{
     ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,
-    SharedWatcherRegistry, WatcherControlSurface, WatcherFailure, WatcherFailureKind,
-    WatcherHostService, WatcherRegistry, WatcherSnapshot, WatcherStopAcknowledgement,
-    WatcherWaitRepresentation, project_watcher_activity,
+    SharedWatcherRegistry, WatcherActivityProjection, WatcherActivityProjectionFailure,
+    WatcherControlSurface, WatcherFailure, WatcherFailureKind, WatcherHostService, WatcherRegistry,
+    WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitRepresentation,
+    project_watcher_activity,
 };
 pub use working_resource_io::{
     WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,

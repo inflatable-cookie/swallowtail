@@ -9,7 +9,9 @@ mod control;
 mod host_service;
 mod registry;
 
-pub use activity::project_watcher_activity;
+pub use activity::{
+    WatcherActivityProjection, WatcherActivityProjectionFailure, project_watcher_activity,
+};
 pub use control::{
     ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,
     SharedWatcherRegistry, WatcherControlSurface,

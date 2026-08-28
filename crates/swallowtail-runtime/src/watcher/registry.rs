@@ -3,8 +3,8 @@ use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use swallowtail_core::{
-    DEFAULT_MAX_WATCHERS_PER_TURN, WatcherId, WatcherLifecyclePhase, WatcherOwningTurn,
-    WatcherRequester, WatcherRevision, WatcherSummary, WatcherTerminalCause,
+    DEFAULT_MAX_WATCHERS_PER_TURN, WatcherCleanupCause, WatcherId, WatcherLifecyclePhase,
+    WatcherOwningTurn, WatcherRequester, WatcherRevision, WatcherSummary, WatcherTerminalCause,
 };
 
 /// Stable reason a pure watcher registry transition failed.
@@ -354,17 +354,21 @@ impl WatcherRegistry {
     }
 
     /// Stops and joins every non-joined watcher owned by this turn.
+    ///
+    /// Cleanup causes are restricted to cancel, timeout, stop, and failure.
+    /// Successful completion cannot be assigned by bulk cleanup.
     pub fn stop_and_join_all(
         &mut self,
-        cause: WatcherTerminalCause,
+        cause: WatcherCleanupCause,
     ) -> Result<Vec<WatcherSnapshot>, WatcherFailure> {
+        let terminal_cause = cause.terminal_cause();
         let ids = self.order.clone();
         let mut snapshots = Vec::with_capacity(ids.len());
         for id in ids {
             let phase = self.record(&id)?.phase;
             match phase {
                 WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {
-                    self.complete(&id, cause, None)?;
+                    self.complete(&id, terminal_cause, None)?;
                     snapshots.push(self.join(&id)?);
                 }
                 WatcherLifecyclePhase::Terminal => {

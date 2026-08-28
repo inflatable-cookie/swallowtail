@@ -12,7 +12,9 @@ pub use identity::{
     InvalidWatcherRecord, MAX_WATCHER_ID_BYTES, MAX_WATCHER_OWNING_TURN_BYTES, WatcherId,
     WatcherOwningTurn,
 };
-pub use lifecycle::{WatcherLifecyclePhase, WatcherRevision, WatcherTerminalCause};
+pub use lifecycle::{
+    WatcherCleanupCause, WatcherLifecyclePhase, WatcherRevision, WatcherTerminalCause,
+};
 pub use requester::WatcherRequester;
 pub use summary::{MAX_WATCHER_SUMMARY_BYTES, WatcherSummary};
 

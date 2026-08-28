@@ -25,4 +25,11 @@ landed without process launch or route selection.
 
 - `effigy validate:focused swallowtail-core swallowtail-runtime swallowtail-testkit`
 - `effigy package:verify-affected swallowtail-core swallowtail-runtime swallowtail-testkit`
+- `effigy package:api`
 - `git diff --check`
+
+## Review Fix
+
+Addressed PR review: owner-checked non-duplicating activity projection,
+`WatcherCleanupCause` for bulk stop/join, UTF-8 byte-bound conformance, and
+unreleased public-api baselines for core/runtime/testkit.

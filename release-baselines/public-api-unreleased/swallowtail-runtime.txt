@@ -83,6 +83,7 @@ pub swallowtail_runtime::ActivityKind::ContextCompaction
 pub swallowtail_runtime::ActivityKind::ExternalSearch
 pub swallowtail_runtime::ActivityKind::FileChange
 pub swallowtail_runtime::ActivityKind::Hook
+pub swallowtail_runtime::ActivityKind::HostWatcher
 pub swallowtail_runtime::ActivityKind::ImageView
 pub swallowtail_runtime::ActivityKind::Plan
 pub swallowtail_runtime::ActivityKind::ProviderOwnedTool
@@ -560,6 +561,37 @@ pub swallowtail_runtime::TerminalStatus::RuntimeFailed(swallowtail_core::diagnos
 pub swallowtail_runtime::TerminalStatus::TimedOut
 impl swallowtail_runtime::TerminalStatus
 pub const fn swallowtail_runtime::TerminalStatus::failure(&self) -> core::option::Option<swallowtail_runtime::TerminalFailure<'_>>
+pub enum swallowtail_runtime::WatcherActivityProjection
+pub swallowtail_runtime::WatcherActivityProjection::Activity(alloc::boxed::Box<swallowtail_runtime::ActivityObservation>)
+pub swallowtail_runtime::WatcherActivityProjection::Joined
+pub swallowtail_runtime::WatcherActivityProjection::Joined::activity_id: swallowtail_runtime::ActivityId
+pub swallowtail_runtime::WatcherActivityProjection::Joined::revision: swallowtail_core::watcher::lifecycle::WatcherRevision
+pub swallowtail_runtime::WatcherActivityProjection::Joined::terminal_cause: swallowtail_core::watcher::lifecycle::WatcherTerminalCause
+pub enum swallowtail_runtime::WatcherActivityProjectionFailure
+pub swallowtail_runtime::WatcherActivityProjectionFailure::ForeignIdentity
+pub swallowtail_runtime::WatcherActivityProjectionFailure::InvalidActivityRecord(swallowtail_runtime::InvalidActivityRecord)
+impl core::error::Error for swallowtail_runtime::WatcherActivityProjectionFailure
+pub fn swallowtail_runtime::WatcherActivityProjectionFailure::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Display for swallowtail_runtime::WatcherActivityProjectionFailure
+pub fn swallowtail_runtime::WatcherActivityProjectionFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_runtime::WatcherFailureKind
+pub swallowtail_runtime::WatcherFailureKind::AlreadyJoined
+pub swallowtail_runtime::WatcherFailureKind::AlreadyTerminal
+pub swallowtail_runtime::WatcherFailureKind::CapacityExceeded
+pub swallowtail_runtime::WatcherFailureKind::ForeignIdentity
+pub swallowtail_runtime::WatcherFailureKind::InvalidCapacity
+pub swallowtail_runtime::WatcherFailureKind::InvalidTransition
+pub swallowtail_runtime::WatcherFailureKind::UnknownWatcher
+pub swallowtail_runtime::WatcherFailureKind::WaitNotSatisfied
+pub enum swallowtail_runtime::WatcherStopAcknowledgement
+pub swallowtail_runtime::WatcherStopAcknowledgement::AlreadyTerminal(swallowtail_core::watcher::lifecycle::WatcherTerminalCause)
+pub swallowtail_runtime::WatcherStopAcknowledgement::Stopped
+pub enum swallowtail_runtime::WatcherWaitRepresentation
+pub swallowtail_runtime::WatcherWaitRepresentation::Cancelled
+pub swallowtail_runtime::WatcherWaitRepresentation::DeadlineExceeded
+pub swallowtail_runtime::WatcherWaitRepresentation::Pending
+pub swallowtail_runtime::WatcherWaitRepresentation::Satisfied(swallowtail_core::watcher::lifecycle::WatcherTerminalCause)
+pub swallowtail_runtime::WatcherWaitRepresentation::TerminalUnjoined(swallowtail_core::watcher::lifecycle::WatcherTerminalCause)
 pub enum swallowtail_runtime::WorkingStateRestorationMethod
 pub swallowtail_runtime::WorkingStateRestorationMethod::FreshRealtimeSessionReplacement
 pub swallowtail_runtime::WorkingStateRestorationMethod::FreshSessionReplacement
@@ -1203,6 +1235,7 @@ pub fn swallowtail_runtime::HostServices::serving_endpoint(&self) -> core::optio
 pub fn swallowtail_runtime::HostServices::task(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::ScopedTaskService>>
 pub fn swallowtail_runtime::HostServices::time(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::TimeService>>
 pub fn swallowtail_runtime::HostServices::url_open(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>>
+pub fn swallowtail_runtime::HostServices::watcher(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WatcherHostService>>
 pub fn swallowtail_runtime::HostServices::with_attachment(self, alloc::sync::Arc<dyn swallowtail_runtime::AttachmentService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_blocking_work(self, alloc::sync::Arc<dyn swallowtail_runtime::BlockingWorkService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_credential(self, alloc::sync::Arc<dyn swallowtail_runtime::CredentialService>) -> Self
@@ -1219,6 +1252,7 @@ pub fn swallowtail_runtime::HostServices::with_serving_endpoint(self, alloc::syn
 pub fn swallowtail_runtime::HostServices::with_task(self, alloc::sync::Arc<dyn swallowtail_runtime::ScopedTaskService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_time(self, alloc::sync::Arc<dyn swallowtail_runtime::TimeService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_url_open(self, alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>) -> Self
+pub fn swallowtail_runtime::HostServices::with_watcher(self, alloc::sync::Arc<dyn swallowtail_runtime::WatcherHostService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource_io(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceIoService>) -> Self
 pub fn swallowtail_runtime::HostServices::working_resource(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>>
@@ -1447,6 +1481,13 @@ pub const fn swallowtail_runtime::ModelPresentationOverlayFailure::kind(&self) -
 impl core::error::Error for swallowtail_runtime::ModelPresentationOverlayFailure
 impl core::fmt::Display for swallowtail_runtime::ModelPresentationOverlayFailure
 pub fn swallowtail_runtime::ModelPresentationOverlayFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::ModelWatcherRole
+impl swallowtail_runtime::ModelWatcherControl for swallowtail_runtime::ModelWatcherRole
+pub fn swallowtail_runtime::ModelWatcherRole::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
 pub struct swallowtail_runtime::MonotonicInstant(_)
 impl swallowtail_runtime::MonotonicInstant
 pub const fn swallowtail_runtime::MonotonicInstant::from_ticks(u64) -> Self
@@ -1546,6 +1587,14 @@ pub const fn swallowtail_runtime::OperationPolicy::with_provider_recovery(self, 
 pub const fn swallowtail_runtime::OperationPolicy::with_provider_retention(self, swallowtail_runtime::ProviderRetentionPolicy) -> Self
 pub fn swallowtail_runtime::OperationPolicy::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
 pub const fn swallowtail_runtime::OperationPolicy::with_stream_reattachment(self, swallowtail_runtime::StreamReattachmentPolicy) -> Self
+pub struct swallowtail_runtime::OperatorWatcherRole
+impl swallowtail_runtime::OperatorWatcherControl for swallowtail_runtime::OperatorWatcherRole
+pub fn swallowtail_runtime::OperatorWatcherRole::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::stop_and_join_all(&self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
 pub struct swallowtail_runtime::OrderedEventBuffer
 impl swallowtail_runtime::OrderedEventBuffer
 pub fn swallowtail_runtime::OrderedEventBuffer::is_empty(&self) -> bool
@@ -2559,6 +2608,50 @@ pub const fn swallowtail_runtime::TurnRequest::turn_id(&self) -> &swallowtail_ru
 pub fn swallowtail_runtime::TurnRequest::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::AttachmentDescriptor>) -> Self
 pub const fn swallowtail_runtime::TurnRequest::with_deadline(self, swallowtail_runtime::Deadline) -> Self
 pub fn swallowtail_runtime::TurnRequest::with_structured_output(self, swallowtail_runtime::StructuredOutputDescriptor) -> Self
+pub struct swallowtail_runtime::WatcherControlSurface
+impl swallowtail_runtime::WatcherControlSurface
+pub fn swallowtail_runtime::WatcherControlSurface::model(&self) -> swallowtail_runtime::ModelWatcherRole
+pub fn swallowtail_runtime::WatcherControlSurface::new(swallowtail_runtime::SharedWatcherRegistry) -> Self
+pub fn swallowtail_runtime::WatcherControlSurface::operator(&self) -> swallowtail_runtime::OperatorWatcherRole
+pub fn swallowtail_runtime::WatcherControlSurface::registry(&self) -> &swallowtail_runtime::SharedWatcherRegistry
+pub struct swallowtail_runtime::WatcherFailure
+impl swallowtail_runtime::WatcherFailure
+pub const fn swallowtail_runtime::WatcherFailure::kind(self) -> swallowtail_runtime::WatcherFailureKind
+impl core::error::Error for swallowtail_runtime::WatcherFailure
+impl core::fmt::Display for swallowtail_runtime::WatcherFailure
+pub fn swallowtail_runtime::WatcherFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::WatcherRegistry
+impl swallowtail_runtime::WatcherRegistry
+pub fn swallowtail_runtime::WatcherRegistry::accept_start(&mut self, swallowtail_core::watcher::requester::WatcherRequester, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::all_joined(&self) -> bool
+pub fn swallowtail_runtime::WatcherRegistry::complete(&mut self, &swallowtail_core::watcher::identity::WatcherId, swallowtail_core::watcher::lifecycle::WatcherTerminalCause, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::is_empty(&self) -> bool
+pub fn swallowtail_runtime::WatcherRegistry::join(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::len(&self) -> usize
+pub fn swallowtail_runtime::WatcherRegistry::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::mark_running(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub const fn swallowtail_runtime::WatcherRegistry::maximum_watchers(&self) -> usize
+pub fn swallowtail_runtime::WatcherRegistry::new(swallowtail_runtime::RuntimeTurnId, usize) -> core::result::Result<Self, swallowtail_runtime::WatcherFailure>
+pub const fn swallowtail_runtime::WatcherRegistry::owning_turn(&self) -> &swallowtail_core::watcher::identity::WatcherOwningTurn
+pub fn swallowtail_runtime::WatcherRegistry::represent_wait_cancelled(&self) -> swallowtail_runtime::WatcherWaitRepresentation
+pub fn swallowtail_runtime::WatcherRegistry::represent_wait_deadline_exceeded(&self) -> swallowtail_runtime::WatcherWaitRepresentation
+pub fn swallowtail_runtime::WatcherRegistry::request_stop(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::require_wait_satisfied(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_core::watcher::lifecycle::WatcherTerminalCause, swallowtail_runtime::WatcherFailure>
+pub const fn swallowtail_runtime::WatcherRegistry::runtime_turn(&self) -> &swallowtail_runtime::RuntimeTurnId
+pub fn swallowtail_runtime::WatcherRegistry::stop_and_join_all(&mut self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::wait_representation(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::with_default_capacity(swallowtail_runtime::RuntimeTurnId) -> core::result::Result<Self, swallowtail_runtime::WatcherFailure>
+pub struct swallowtail_runtime::WatcherSnapshot
+impl swallowtail_runtime::WatcherSnapshot
+pub const fn swallowtail_runtime::WatcherSnapshot::accepted_by(&self) -> swallowtail_core::watcher::requester::WatcherRequester
+pub const fn swallowtail_runtime::WatcherSnapshot::activity_id(&self) -> &swallowtail_runtime::ActivityId
+pub const fn swallowtail_runtime::WatcherSnapshot::owning_turn(&self) -> &swallowtail_core::watcher::identity::WatcherOwningTurn
+pub const fn swallowtail_runtime::WatcherSnapshot::phase(&self) -> swallowtail_core::watcher::lifecycle::WatcherLifecyclePhase
+pub const fn swallowtail_runtime::WatcherSnapshot::revision(&self) -> swallowtail_core::watcher::lifecycle::WatcherRevision
+pub const fn swallowtail_runtime::WatcherSnapshot::summary(&self) -> core::option::Option<&swallowtail_core::watcher::summary::WatcherSummary>
+pub const fn swallowtail_runtime::WatcherSnapshot::terminal_cause(&self) -> core::option::Option<swallowtail_core::watcher::lifecycle::WatcherTerminalCause>
+pub const fn swallowtail_runtime::WatcherSnapshot::watcher_id(&self) -> &swallowtail_core::watcher::identity::WatcherId
 pub struct swallowtail_runtime::WorkingResourceLocator(_)
 impl swallowtail_runtime::WorkingResourceLocator
 pub fn swallowtail_runtime::WorkingResourceLocator::as_host_value(&self) -> &str
@@ -2672,11 +2765,37 @@ pub fn swallowtail_runtime::ModelArtifactService::acquire(&self, swallowtail_run
 pub fn swallowtail_runtime::ModelArtifactService::release(&self, swallowtail_runtime::ModelArtifactLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub trait swallowtail_runtime::ModelCatalogDriver: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ModelCatalogDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::ModelCatalogRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::ModelWatcherControl: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::ModelWatcherControl::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherControl::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherControl::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherControl::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherControl::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
+impl swallowtail_runtime::ModelWatcherControl for swallowtail_runtime::ModelWatcherRole
+pub fn swallowtail_runtime::ModelWatcherRole::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::ModelWatcherRole::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
 pub trait swallowtail_runtime::NetworkPolicyService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::NetworkPolicyService::authorize(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::EndpointRef, swallowtail_core::runtime_identity::EndpointAudience) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::NetworkGrant, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::OperationDetachmentControl: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::OperationDetachmentControl::request(&self) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::OperationDetachmentAcknowledgement, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::OperationDetachmentControl::scope(&self) -> swallowtail_core::requirement::OperationDetachmentScope
+pub trait swallowtail_runtime::OperatorWatcherControl: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::OperatorWatcherControl::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherControl::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherControl::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherControl::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherControl::stop_and_join_all(&self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherControl::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
+impl swallowtail_runtime::OperatorWatcherControl for swallowtail_runtime::OperatorWatcherRole
+pub fn swallowtail_runtime::OperatorWatcherRole::accept_start(&self, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::inspect(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::list(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::stop(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::stop_and_join_all(&self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::OperatorWatcherRole::wait(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::WatcherFailure>
 pub trait swallowtail_runtime::OwnedServingHandle: core::marker::Send
 pub fn swallowtail_runtime::OwnedServingHandle::endpoint_binding(&self) -> &swallowtail_runtime::ServingEndpointBinding
 pub fn swallowtail_runtime::OwnedServingHandle::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
@@ -2769,6 +2888,13 @@ pub fn swallowtail_runtime::TurnHandle::take_terminal_outcome(&mut self) -> core
 pub fn swallowtail_runtime::TurnHandle::turn_id(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub trait swallowtail_runtime::UrlOpenService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::UrlOpenService::open(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::ApprovedUrlRef) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::WatcherHostService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::WatcherHostService::accept_start(&self, swallowtail_runtime::RuntimeTurnId, core::option::Option<swallowtail_core::watcher::summary::WatcherSummary>) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::inspect(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::list(&self, swallowtail_core::watcher::identity::WatcherOwningTurn) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::request_stop(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::stop_and_join_all(&self, swallowtail_runtime::RuntimeTurnId, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::CleanupOutcome), swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::wait(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::WorkingResourceIoService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WorkingResourceIoService::read_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceReadRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingResourceText, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WorkingResourceIoService::write_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceWriteRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
@@ -2806,6 +2932,7 @@ pub fn swallowtail_runtime::prepare_negotiated_reasoning_setup(&swallowtail_core
 pub async fn swallowtail_runtime::probe_installed_executable_version(swallowtail_runtime::InstalledExecutableDiscoveryRequest, swallowtail_runtime::HostServices, swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, impl core::ops::function::Fn(&[u8]) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding> + core::marker::Send + 'static, swallowtail_runtime::InstalledProbeCodes, &'static str) -> core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::probe_outcome_failure(&swallowtail_core::registration::discovery::DiscoveryOutcome, &'static str, &'static str) -> swallowtail_runtime::PreparationFailure
 pub fn swallowtail_runtime::probe_runtime_failure(&swallowtail_runtime::RuntimeFailure, &'static str) -> swallowtail_runtime::PreparationFailure
+pub fn swallowtail_runtime::project_watcher_activity(&swallowtail_runtime::RuntimeTurnId, &swallowtail_runtime::WatcherSnapshot) -> core::result::Result<swallowtail_runtime::WatcherActivityProjection, swallowtail_runtime::WatcherActivityProjectionFailure>
 pub fn swallowtail_runtime::provider_status(swallowtail_runtime::RuntimeFailure) -> swallowtail_runtime::TerminalStatus
 pub fn swallowtail_runtime::refresh_readiness(&dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::ReadinessRefreshRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::ReadinessRefreshFailure>
 pub fn swallowtail_runtime::resolve_idiom_instructions(&swallowtail_runtime::HostServices, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::OperationContent>, swallowtail_runtime::IdiomSourceUnavailable>
@@ -2844,3 +2971,4 @@ pub type swallowtail_runtime::BoxDirectToolCallStream = core::pin::Pin<alloc::bo
 pub type swallowtail_runtime::BoxEventStream = core::pin::Pin<alloc::boxed::Box<(dyn futures_core::stream::Stream<Item = core::result::Result<swallowtail_runtime::RuntimeEvent, swallowtail_runtime::RuntimeFailure>> + core::marker::Send + 'static)>>
 pub type swallowtail_runtime::BoxFuture<'a, T> = core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = T> + core::marker::Send + 'a)>>
 pub type swallowtail_runtime::BoxRealtimeMediaEventStream = core::pin::Pin<alloc::boxed::Box<(dyn futures_core::stream::Stream<Item = core::result::Result<swallowtail_runtime::RealtimeMediaEvent, swallowtail_runtime::RuntimeFailure>> + core::marker::Send + 'static)>>
+pub type swallowtail_runtime::SharedWatcherRegistry = alloc::sync::Arc<std::sync::poison::mutex::Mutex<swallowtail_runtime::WatcherRegistry>>

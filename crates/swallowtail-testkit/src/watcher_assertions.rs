@@ -1,13 +1,14 @@
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    WatcherId, WatcherLifecyclePhase, WatcherOwningTurn, WatcherRequester, WatcherSummary,
-    WatcherTerminalCause,
+    MAX_WATCHER_ID_BYTES, MAX_WATCHER_OWNING_TURN_BYTES, MAX_WATCHER_SUMMARY_BYTES,
+    WatcherCleanupCause, WatcherId, WatcherLifecyclePhase, WatcherOwningTurn, WatcherRequester,
+    WatcherSummary, WatcherTerminalCause,
 };
 use swallowtail_runtime::{
     ActivityKind, ActivityLifecyclePhase, ActivityStatus, ModelWatcherControl,
-    OperatorWatcherControl, RuntimeTurnId, WatcherControlSurface, WatcherFailureKind,
-    WatcherRegistry, WatcherStopAcknowledgement, WatcherWaitRepresentation,
-    project_watcher_activity,
+    OperatorWatcherControl, RuntimeTurnId, WatcherActivityProjection,
+    WatcherActivityProjectionFailure, WatcherControlSurface, WatcherFailureKind, WatcherRegistry,
+    WatcherStopAcknowledgement, WatcherWaitRepresentation, project_watcher_activity,
 };
 
 const WATCHER_RULE: &str = "Contract 059 portable watcher lifecycle";
@@ -31,6 +32,43 @@ pub fn assert_watcher_identity_redaction(watcher_id: &WatcherId, summary: &Watch
     assert!(
         !format!("{summary}").contains(summary_value),
         "{WATCHER_RULE}: WatcherSummary display exposed its value"
+    );
+}
+
+/// Proves exact and overflow UTF-8 byte bounds for watcher public identities.
+pub fn assert_watcher_byte_bounds() {
+    let exact_id = "a".repeat(MAX_WATCHER_ID_BYTES);
+    WatcherId::new(exact_id.clone()).expect("{WATCHER_RULE}: exact id bound must accept");
+    assert!(
+        WatcherId::new(format!("{exact_id}a")).is_err(),
+        "{WATCHER_RULE}: id overflow must reject"
+    );
+
+    let exact_turn = "t".repeat(MAX_WATCHER_OWNING_TURN_BYTES);
+    WatcherOwningTurn::new(exact_turn.clone())
+        .expect("{WATCHER_RULE}: exact owning-turn bound must accept");
+    assert!(
+        WatcherOwningTurn::new(format!("{exact_turn}x")).is_err(),
+        "{WATCHER_RULE}: owning-turn overflow must reject"
+    );
+
+    let exact_summary = "s".repeat(MAX_WATCHER_SUMMARY_BYTES);
+    WatcherSummary::new(exact_summary.clone())
+        .expect("{WATCHER_RULE}: exact summary bound must accept");
+    assert!(
+        WatcherSummary::new(format!("{exact_summary}!")).is_err(),
+        "{WATCHER_RULE}: summary overflow must reject"
+    );
+
+    // Multi-byte UTF-8: two bytes each, so length-by-chars can fit while bytes overflow.
+    let utf8_pair = "é"; // 2 bytes
+    assert_eq!(utf8_pair.len(), 2);
+    let utf8_id = utf8_pair.repeat(MAX_WATCHER_ID_BYTES / 2);
+    assert_eq!(utf8_id.len(), MAX_WATCHER_ID_BYTES);
+    WatcherId::new(utf8_id.clone()).expect("{WATCHER_RULE}: exact UTF-8 byte bound must accept");
+    assert!(
+        WatcherId::new(format!("{utf8_id}é")).is_err(),
+        "{WATCHER_RULE}: UTF-8 byte overflow must reject"
     );
 }
 
@@ -218,18 +256,102 @@ pub fn assert_watcher_model_operator_roles() {
     assert_eq!(stop, WatcherStopAcknowledgement::Stopped);
 }
 
-/// Proves host-watcher activity projection stays on the turn stream vocabulary.
+/// Proves cleanup cannot assign successful completion and uses cleanup causes only.
+pub fn assert_watcher_cleanup_rejects_completed() {
+    for cause in [
+        WatcherCleanupCause::Cancelled,
+        WatcherCleanupCause::TimedOut,
+        WatcherCleanupCause::Stopped,
+        WatcherCleanupCause::Failed,
+    ] {
+        assert_ne!(
+            cause.terminal_cause(),
+            WatcherTerminalCause::Completed,
+            "{WATCHER_RULE}: cleanup cause must not map to Completed"
+        );
+    }
+
+    let turn = RuntimeTurnId::new("turn-cleanup").expect("turn is valid");
+    let mut registry = WatcherRegistry::new(turn, 2).expect("registry is valid");
+    let accepted = registry
+        .accept_start(WatcherRequester::Model, None)
+        .expect("accept");
+    registry
+        .mark_running(accepted.watcher_id())
+        .expect("running");
+    let joined = registry
+        .stop_and_join_all(WatcherCleanupCause::Cancelled)
+        .expect("cleanup");
+    assert_eq!(joined.len(), 1);
+    assert_eq!(joined[0].phase(), WatcherLifecyclePhase::Joined);
+    assert_eq!(
+        joined[0].terminal_cause(),
+        Some(WatcherTerminalCause::Cancelled)
+    );
+    assert_ne!(
+        joined[0].terminal_cause(),
+        Some(WatcherTerminalCause::Completed)
+    );
+}
+
+/// Proves host-watcher activity projection across the full lifecycle without duplicate completion.
 pub fn assert_watcher_activity_projection() {
     let turn = RuntimeTurnId::new("turn-activity").expect("turn is valid");
+    let foreign = RuntimeTurnId::new("turn-foreign").expect("foreign turn is valid");
     let mut registry = WatcherRegistry::new(turn.clone(), 1).expect("registry is valid");
     let accepted = registry
         .accept_start(WatcherRequester::Model, None)
         .expect("accept");
-    let observation = project_watcher_activity(&turn, &accepted).expect("projection succeeds");
-    assert_eq!(*observation.kind(), ActivityKind::HostWatcher);
-    assert_eq!(observation.phase(), ActivityLifecyclePhase::Started);
-    assert_eq!(observation.status(), ActivityStatus::Pending);
-    assert_eq!(observation.activity_id(), accepted.activity_id());
+
+    assert_eq!(
+        project_watcher_activity(&foreign, &accepted),
+        Err(WatcherActivityProjectionFailure::ForeignIdentity)
+    );
+
+    let WatcherActivityProjection::Activity(started) =
+        project_watcher_activity(&turn, &accepted).expect("accepted projection")
+    else {
+        panic!("{WATCHER_RULE}: accepted must project as activity");
+    };
+    assert_eq!(*started.kind(), ActivityKind::HostWatcher);
+    assert_eq!(started.phase(), ActivityLifecyclePhase::Started);
+    assert_eq!(started.status(), ActivityStatus::Pending);
+    assert_eq!(started.activity_id(), accepted.activity_id());
+
+    let running = registry
+        .mark_running(accepted.watcher_id())
+        .expect("running");
+    let WatcherActivityProjection::Activity(updated) =
+        project_watcher_activity(&turn, &running).expect("running projection")
+    else {
+        panic!("{WATCHER_RULE}: running must project as activity");
+    };
+    assert_eq!(updated.phase(), ActivityLifecyclePhase::Updated);
+    assert_eq!(updated.status(), ActivityStatus::InProgress);
+
+    let terminal = registry
+        .complete(accepted.watcher_id(), WatcherTerminalCause::Completed, None)
+        .expect("terminal");
+    let WatcherActivityProjection::Activity(completed) =
+        project_watcher_activity(&turn, &terminal).expect("terminal projection")
+    else {
+        panic!("{WATCHER_RULE}: terminal must project as activity");
+    };
+    assert_eq!(completed.phase(), ActivityLifecyclePhase::Completed);
+    assert_eq!(completed.status(), ActivityStatus::Completed);
+
+    let joined = registry.join(accepted.watcher_id()).expect("join");
+    let WatcherActivityProjection::Joined {
+        activity_id,
+        terminal_cause,
+        revision,
+    } = project_watcher_activity(&turn, &joined).expect("joined projection")
+    else {
+        panic!("{WATCHER_RULE}: joined must not emit a second completed activity");
+    };
+    assert_eq!(&activity_id, joined.activity_id());
+    assert_eq!(terminal_cause, WatcherTerminalCause::Completed);
+    assert_eq!(revision, joined.revision());
 }
 
 /// Runs the Contract 059 portable watcher assertion pack.
@@ -238,6 +360,7 @@ pub fn assert_portable_watcher_lifecycle_contract() {
         &WatcherId::new("watcher-opaque").expect("id"),
         &WatcherSummary::new("bounded progress").expect("summary"),
     );
+    assert_watcher_byte_bounds();
 
     let turn = RuntimeTurnId::new("turn-pack").expect("turn is valid");
     let registry = WatcherRegistry::new(turn.clone(), 2).expect("registry");
@@ -247,6 +370,7 @@ pub fn assert_portable_watcher_lifecycle_contract() {
     assert_watcher_completion_stop_race();
     assert_watcher_wait_representation();
     assert_watcher_model_operator_roles();
+    assert_watcher_cleanup_rejects_completed();
     assert_watcher_activity_projection();
 }
 

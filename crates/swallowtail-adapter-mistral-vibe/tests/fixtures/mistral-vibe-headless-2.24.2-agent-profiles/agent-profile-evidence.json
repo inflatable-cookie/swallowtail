@@ -1,0 +1,169 @@
+{
+  "route": "mistral-vibe.headless",
+  "package_axis": "mistral-vibe.release",
+  "qualified_version": "2.24.2",
+  "github_tag": "v2.24.2",
+  "github_commit": "5e6aa0f6beb3454454f4c1de74a7652ba577ab05",
+  "pypi_sdist_sha256": "be62b3148a9640ab2d72ab9849a40499d1680aa59589b01deb62c5eb08df269d",
+  "retrieved": "2026-08-28",
+  "provider_prompt_sent": false,
+  "live_prompt_run": false,
+  "host_install_changed": false,
+  "login_or_credentials": false,
+  "ambient_host_mutated": false,
+  "host_vibe_present": false,
+  "current_fixed_argv_agent": "plan",
+  "parser": {
+    "flag": "--agent",
+    "metavar": "NAME",
+    "argparse_choices": null,
+    "argparse_default": null,
+    "help_builtins": ["ask", "plan", "accept-edits", "auto-approve"],
+    "help_also_names": ["custom ~/.vibe/agents/NAME.toml"],
+    "omit_inherits": "config.default_agent",
+    "schema_default_agent": "accept-edits",
+    "auto_approve_flags": ["--auto-approve", "--yolo"],
+    "auto_approve_admission": "excluded"
+  },
+  "builtin_primary_profiles": {
+    "ask": {
+      "safety": "neutral",
+      "description": "Requires approval for tool executions",
+      "overrides": {
+        "disabled_tools": ["exit_plan_mode"]
+      },
+      "write_file_permission": "tool-default-ask",
+      "edit_permission": "tool-default-ask",
+      "read_file_restriction": "none",
+      "vs_fixed_plan": "widens_read_and_replaces_write_never_with_ask",
+      "deliver_now": false
+    },
+    "plan": {
+      "safety": "safe",
+      "description": "Read-only agent for exploration and planning",
+      "overrides": {
+        "tools": {
+          "write_file": {
+            "permission": "never",
+            "allowlist": ["$VIBE_HOME/plans/*"]
+          },
+          "edit": {
+            "permission": "never",
+            "allowlist": ["$VIBE_HOME/plans/*"]
+          },
+          "read_file": {
+            "allowlist": ["$VIBE_HOME/plans/*"]
+          }
+        }
+      },
+      "current_swallowtail_binding": true,
+      "deliver_now_as_new_row": false,
+      "note": "already fixed in production argv; not a beyond-plan candidate"
+    },
+    "accept-edits": {
+      "safety": "destructive",
+      "description": "Auto-approves file edits only",
+      "overrides": {
+        "disabled_tools": ["exit_plan_mode"],
+        "tools": {
+          "write_file": { "permission": "always" },
+          "edit": { "permission": "always" }
+        }
+      },
+      "vs_fixed_plan": "wider_write_auto_approve",
+      "deliver_now": false
+    },
+    "auto-approve": {
+      "safety": "yolo",
+      "overrides": {
+        "bypass_tool_permissions": true,
+        "disabled_tools": ["exit_plan_mode"]
+      },
+      "admission": "excluded",
+      "deliver_now": false
+    }
+  },
+  "non_primary_or_gated": {
+    "explore": {
+      "agent_type": "subagent",
+      "primary_agent_selectable": false
+    },
+    "lean": {
+      "install_required": true,
+      "available_only_when": "listed_in_installed_agents"
+    },
+    "custom_toml": {
+      "search_paths": ["~/.vibe/agents/", "project .vibe/agents/", "config.agent_paths"],
+      "authority": "ambient_custom_overrides",
+      "deliver_now": false
+    }
+  },
+  "application": {
+    "requested": "--agent NAME or omit",
+    "configured": "SessionOptions.agent or VibeConfigSchema.default_agent",
+    "dispatched": "AgentManager(initial_agent=...) applies AgentProfile.overrides through AgentProfileLayer",
+    "accepted": "AgentManager raises ValueError when name missing, excluded, or subagent-as-primary",
+    "effective_tool_authority": "merged config tool permissions after profile overrides; AgentSafety is UI label only",
+    "programmatic_headless": {
+      "headless": true,
+      "always_disabled_tools": ["ask_user_question", "exit_plan_mode"],
+      "callbacks": "observe-and-deny (session.deny_callback)",
+      "auto_approve_sets": "force_bypass_tool_permissions"
+    },
+    "streaming_ndjson_agent_confirmation": "not_in_frozen_decoder_corpus",
+    "host_isolation_from_agent_label": false
+  },
+  "terminal_and_lifecycle": {
+    "success_exit": 0,
+    "limit_exit": 1,
+    "runtime_error_exit": 1,
+    "cleanup": "session.close in finally; Swallowtail join-or-kill owned child",
+    "unchanged_by_profile_switch_candidate": true
+  },
+  "omission": {
+    "retains_exact_current_argv_agent": "plan",
+    "must_not_omit_agent_flag": true,
+    "omit_would_inherit": "config.default_agent (schema default accept-edits)"
+  },
+  "truth_layers": {
+    "requested": "--agent ask|plan|accept-edits|auto-approve|custom",
+    "parsed": "string NAME; no argparse enum",
+    "configured": "session agent or default_agent",
+    "dispatched": "profile overrides installed before act(prompt)",
+    "accepted": "AgentManager membership/availability",
+    "effective": "tool permission merge + optional force bypass; not host containment",
+    "returned": "no agent id on frozen streaming public-history lines",
+    "observed": "source-level only in this lane",
+    "persisted": "default_agent may live in ambient config; --trust is this-invocation-only"
+  },
+  "deliver_now": {
+    "rows": [],
+    "disposition": "honest_empty_set"
+  },
+  "stops": [
+    "ask widens read_file beyond plan plans-directory allowlist and replaces write/edit NEVER with ASK",
+    "accept-edits auto-approves write_file/edit (wider write); card forbids default widening",
+    "auto-approve, --auto-approve, and --yolo remain excluded",
+    "parser accepts any NAME including ambient custom agents; enabled_agents/disabled_agents gate availability",
+    "headless ASK→deny_callback is not closed plan-equivalent NEVER authority",
+    "AgentSafety does not prove host containment or portable resource access",
+    "frozen streaming corpus has no applied-agent confirmation before provider effects"
+  ],
+  "sources": {
+    "tag_zip_sha256": "145d2280605451c921d24733bab51fda9c41096e11fc91c169bc01d94d67a8d1",
+    "README.md": "6016ef2167e602c955577706452b37b04241244ea37fad3ffae8a7c44a1ad421",
+    "vibe/core/agents/models.py": "d80dd5cfc04d51a826fd7c23b866f3004b3ee9266c3448ef32a3c06fbce5b227",
+    "vibe/cli/entrypoint.py": "b1d17309da8f2b24c2232a18549ca4e19522be66e689f08f2271a760422136df",
+    "vibe/cli/cli.py": "295ce3994f8bb73ae53af8a129fdcc66b889ebfd0b7a1c68d3a9192093fff1dc",
+    "vibe/cli/programmatic.py": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+    "vibe/core/config/vibe_schema.py": "8e7b3042430fdac5497604ac268d423302e64f4880894ada46e97cae881a0e97",
+    "vibe/agents.py": "cae01a841335af39378a0cf63e397b951b305e0c008396c217531bdd7e72588b",
+    "vibe/core/agents/manager.py": "7ea04b7acebd73a2521e01a91458f76310823c6dfaa31239edaa8ea52d245467",
+    "vibe/core/agents/registry.py": "4f2f36cb8c6a17a6889119ff809846f30ba85d30342197fb0ae72e9f700275dc",
+    "vibe/core/config/layers/agent_profile.py": "a252e3773cce8fac025dcd458ccdeef62e37ebc95a4829fea0176a381265272f",
+    "vibe/app_server/_runtime.py": "905e8491a4ba8d3e9a451750f6d4646cc836df3b1716d4b66062f2b2adabc209",
+    "sibling_identity_corpus": "mistral-vibe-headless-2.24.2",
+    "research_150": true,
+    "research_199": true
+  }
+}

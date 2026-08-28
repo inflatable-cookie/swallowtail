@@ -1,0 +1,72 @@
+{
+  "axis": "qoder.package",
+  "route": "qoder.headless",
+  "research": 256,
+  "observed_at": "2026-08-28",
+  "boundary": {
+    "qoder_installed": false,
+    "qodercli_executed": false,
+    "npx_skills_executed": false,
+    "login_or_pat_used": false,
+    "live_print_run": false,
+    "host_home_or_project_scanned": false,
+    "production_code_changed": false
+  },
+  "package": {
+    "npm": "@qoder-ai/qodercli@1.1.25",
+    "tarball_sha256": "627749221c609bfb5514f4486fb42f464597cf49472ed52c087c36a1d2fbb4ab",
+    "integrity": "sha512-Z1U7W+RBtnHVxiqt8eCySMwxkGXaGzkFQNFbI5QPpkGSAY4Mz2WTLrI+1l2x5tnK4ftru/PkS1jEDnogJV8Tpw==",
+    "bundle_qodercli_js_sha256": "77f7387974d5df79c7127bb41c9c7be8aad82aa567512ca2d9f780b2e3f73d52",
+    "package_json_sha256": "459d820e451a6bdfd34c9799a841f2bcb66eaae155316e497cb1b12d44b53310"
+  },
+  "init_builder": {
+    "function": "Bgt",
+    "skills": "getSkillManager().getSkills().map(skill => skill.name)",
+    "plugins": "getEnabledPlugins().map(plugin => ({ name: plugin.name, path: plugin.path }))",
+    "getSkills": "getMergedSkills().filter(skill => !skill.disabled)",
+    "schema": {
+      "skills": "string[]",
+      "plugins": "{ name: string, path: string, source?: string }[]"
+    },
+    "bare_forces_empty_collections": true
+  },
+  "discovery_sources_in_order": [
+    "built-in bundle/builtin/**/SKILL.md",
+    "vendor/security built-in when enabled",
+    "enabled plugin skill directories (names prefixed pluginName:skill)",
+    "project .qoder/skills and related project paths; optional .agents/skills; --add-dir trees",
+    "user ~/.qoder/skills and related user paths; optional ~/.agents/skills"
+  ],
+  "distribution_builtin_skill_dirs": [
+    "bundle/builtin/agent-creator/SKILL.md",
+    "bundle/builtin/hook-config/SKILL.md",
+    "bundle/builtin/sdk/SKILL.md",
+    "bundle/builtin/skill-creator/SKILL.md"
+  ],
+  "npx_skills_trace": {
+    "ran": false,
+    "official_extensions_docs": "npx skills add <source> -a qoder",
+    "vercel_labs_skills_readme_sha256": "0009a0d2fe1ebe225aafede3e719a0acf8b4bd2249bc4c94f95fc935b0c0d5b0",
+    "agent_qoder_project_path": ".qoder/skills/",
+    "agent_qoder_global_path": "~/.qoder/skills/",
+    "reaches_selected_run_only_via_discoverSkills_path_classes": true,
+    "install_membership_is_not_selected_run_visibility": true
+  },
+  "selected_route_timing": {
+    "prompt_operand_required": true,
+    "headless_auth": "blocking",
+    "emitInitMessage_on_inbound_prompt_path": true,
+    "contract_058_prompt_bearing_not_prompt_free": true
+  },
+  "sibling_surfaces_unselected": {
+    "qoder_skills_list": "initializes skills-list-session and prints discovered skills without model prompt; not stream-json init",
+    "tui_slash_skills": "dialog skillBrowser; TUI-only per official commands docs"
+  },
+  "existing_fixtures": {
+    "success_jsonl_skills": [],
+    "success_jsonl_plugins": [],
+    "prompt_bearing": true
+  },
+  "deliver_now": [],
+  "disposition": "empty-deliver-now"
+}

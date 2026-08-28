@@ -20,3 +20,7 @@ No live `--print`. No provider prompt. No install. No host `qoder` or
 
 No fixture contains a credential, host path, account identity, provider
 payload, or real session id.
+
+`skill-roster-evidence.json` freezes Research 256 source review of init
+`skills`/`plugins`. It is evidence-only; empty deliver-now; no live
+`--print`, login, or `npx skills` run.

@@ -1,8 +1,9 @@
 # 004 Qoder Effective Skill Roster Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-28
 Milestone: `../002-effective-harness-skill-visibility-proof.md`
 Depends on: Contract 058; Research 255
 Research: 256
@@ -32,11 +33,11 @@ public API, route claims, shared contracts, or front-door planning.
 
 ## Acceptance Criteria
 
-- [ ] exact field source and lifetime are frozen
-- [ ] global and project membership is tested as first-class evidence
-- [ ] prompt-free and no-model-inference timing is proved or rejected
-- [ ] complete, empty, unavailable, and partial states are separated
-- [ ] binding cards stay planned after an empty set
+- [x] exact field source and lifetime are frozen
+- [x] global and project membership is tested as first-class evidence
+- [x] prompt-free and no-model-inference timing is proved or rejected
+- [x] complete, empty, unavailable, and partial states are separated
+- [x] binding cards stay planned after an empty set
 
 ## Validation
 
@@ -51,6 +52,12 @@ public API, route claims, shared contracts, or front-door planning.
 - only worker or adapter file scanning, file presence, or package contents can
   establish membership instead of the exact Qoder roster
 - exact source leaves completeness or selected-run visibility ambiguous
+
+## Result
+
+Honest empty deliver-now set in Research 256. Selected stream-json init
+`skills`/`plugins` are real fields, but the selected wire is prompt-bearing
+with blocking auth. No Contract 058 binding. Cards 005–006 stay planned.
 
 ## Auto-Continuation
 

@@ -27,8 +27,10 @@ empty set.
        Exclude `auto-approve`, `--auto-approve`, and `--yolo` from admission.
 4. [x] Build a closed version/profile/resource/tool/lifecycle table. Separate
        provider profile behavior from host isolation and resource authority.
-5. [x] Prove unsupported and authority-incompatible rows reject before prompt
-       effects; prove omission retains exact current `--agent plan` argv.
+5. [x] Classify and withhold `ask` and `accept-edits` from deliver-now; prove
+       invalid or non-primary names reject at `AgentManager` before
+       `act(prompt)`; prove omission retains exact current `--agent plan`
+       argv.
 6. [x] Audit prepared input/evidence, command builder, decoder, fixtures,
        guide, matrices, and API baseline without production changes.
 7. [x] Promote Research 252 and complete the reserved lane log. Do not edit
@@ -37,10 +39,11 @@ empty set.
 ## Acceptance Criteria
 
 - [x] exact profile/resource/tool/lifecycle table or honest empty set exists
-- [x] a non-empty row closes membership, authority, application, terminal,
-      cleanup, and omission
+- [x] N/A — honest empty set; no non-empty row to close
 - [x] no row enables auto-approval, bypass, or wider write authority by default
-- [x] unsupported rows reject before prompt effects
+- [x] invalid or non-primary names reject before prompt effects; valid
+      beyond-Plan profiles are classified and withheld, not treated as
+      parser rejects
 - [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
 
@@ -67,8 +70,10 @@ rollover, or g04 closure.
 
 ## Closeout
 
-Promoted Research 252 with an honest empty deliver-now set. `ask` widens read
-and softens write relative to fixed Plan; `accept-edits` auto-approves writes;
-bypass stays excluded. Frozen evidence under
+Promoted Research 252 with an honest empty deliver-now set. `ask` softens
+write/edit from Plan `NEVER` to tool-default `ASK`; Plan's `read_file`
+allowlist is a plans-directory auto-allow, not a read scope Ask widens.
+`accept-edits` auto-approves writes; bypass stays excluded. Frozen evidence
+under
 `crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-2.24.2-agent-profiles/`.
 No production binding.

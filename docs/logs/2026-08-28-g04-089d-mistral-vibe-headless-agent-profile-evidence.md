@@ -23,8 +23,10 @@ Exact `mistral-vibe.headless` `2.24.2` freezes builtin `--agent` membership
 and profile overrides from tagged `models.py`. Fixed Plan stays the only
 Swallowtail argv agent. Stops that closed the set:
 
-1. `ask` drops Plan's plans-directory `read_file` allowlist and replaces
-   write/edit `never` with tool-default `ask`.
+1. `ask` replaces write/edit `never` with tool-default `ask`. Plan's
+   `read_file` allowlist auto-allows plans-directory reads outside workdir;
+   Ask removes that special allowance — not a read-scope widen (tagged
+   `test_agent_override_resolve_permission.py`).
 2. `accept-edits` sets `write_file`/`edit` to `always` — wider write.
 3. `auto-approve`, `--auto-approve`, and `--yolo` stay excluded.
 4. Parser accepts any `NAME`, including ambient custom agents;
@@ -33,8 +35,10 @@ Swallowtail argv agent. Stops that closed the set:
 6. `AgentSafety` is UI-only; frozen streaming corpus has no applied-agent
    confirmation before provider effects.
 
-Omission retains exact `--agent plan`. Invalid/excluded/subagent-as-primary
-names raise at `AgentManager` before `act(prompt)`.
+`ask` and `accept-edits` are valid accepted profiles; they are classified and
+withheld from deliver-now, not treated as parser rejects. Omission retains
+exact `--agent plan`. Invalid/excluded/subagent-as-primary names raise at
+`AgentManager` before `act(prompt)`.
 
 ## Evidence
 
@@ -54,6 +58,6 @@ git diff --check
 ## Unresolved / Later
 
 Reopen only if an exact package point proves a non-widening profile with
-closed tool/resource authority, pre-effect rejection, applied-agent
-confirmation without provider work, and unchanged terminal lifecycle. No
-production binding from this lane.
+closed tool/resource authority, pre-effect rejection of unsupported ids,
+applied-agent confirmation without provider work, and unchanged terminal
+lifecycle. No production binding from this lane.

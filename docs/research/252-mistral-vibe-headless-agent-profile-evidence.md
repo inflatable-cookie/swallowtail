@@ -52,6 +52,7 @@ executable/environment, and lifecycle stay unchanged. `auto-approve`,
 | `vibe/core/agents/registry.py` | `apply_profile_overrides` | 2026-08-28 | `4f2f36cb8c6a17a6889119ff809846f30ba85d30342197fb0ae72e9f700275dc` |
 | `vibe/core/config/layers/agent_profile.py` | agent-profile config layer | 2026-08-28 | `a252e3773cce8fac025dcd458ccdeef62e37ebc95a4829fea0176a381265272f` |
 | `vibe/app_server/_runtime.py` | agent resolution; `force_bypass_tool_permissions` | 2026-08-28 | `905e8491a4ba8d3e9a451750f6d4646cc836df3b1716d4b66062f2b2adabc209` |
+| `tests/agent_loop/test_agent_override_resolve_permission.py` | Plan allowlist auto-allows plans reads; Ask restores write ASK | 2026-08-28 | `b5c073fbcda443d5d914b4ffa9e6f6f5d76d37ec07e57f6d1e011096d0ee370e` |
 | fixture `mistral-vibe-headless-2.24.2/` | identity, command, protocol baseline | 2026-08-19 | Research 150 |
 | fixture `mistral-vibe-headless-2.24.2-agent-profiles/` | closed dispositions + frozen `models.py` | 2026-08-28 | workspace |
 | Research 150 / 199 | identity and max-turns | promoted | siblings |
@@ -73,7 +74,7 @@ Builtin primary profiles from tagged `models.py`:
 | Profile | Safety | Decisive overrides |
 | --- | --- | --- |
 | `ask` | `neutral` | disables `exit_plan_mode` only |
-| `plan` | `safe` | `write_file`/`edit` `never` with `$VIBE_HOME/plans/*` allowlist; `read_file` allowlist to that plans pattern |
+| `plan` | `safe` | `write_file`/`edit` `never` with `$VIBE_HOME/plans/*` allowlist; `read_file` allowlist auto-allows that plans path even outside workdir |
 | `accept-edits` | `destructive` | `write_file`/`edit` `permission: always`; disables `exit_plan_mode` |
 | `auto-approve` | `yolo` | `bypass_tool_permissions: true`; disables `exit_plan_mode` |
 
@@ -84,7 +85,7 @@ Builtin primary profiles from tagged `models.py`:
 
 | Candidate | Vs current `--agent plan` | Deliver-now |
 | --- | --- | --- |
-| `ask` | drops plans-only `read_file` allowlist; replaces write/edit `never` with tool-default `ask` | no — widens read and softens write gates |
+| `ask` | removes Plan's plans-directory read allowlist (a special auto-allow, not a read-scope widen); replaces write/edit `never` with tool-default `ask` | no — write/edit softens to ASK; headless deny and stream confirm stay open |
 | `accept-edits` | auto-approves `write_file`/`edit` | no — wider write by default |
 | `auto-approve` | full tool-permission bypass | excluded |
 | `explore` / `lean` / custom | not a closed primary beyond-Plan row | no |
@@ -128,7 +129,7 @@ exact current `--agent plan` argv; Swallowtail must not omit the flag.
 
 | Version | Profile | Resource/tool authority closed | Application closed | Terminal/lifecycle closed | Non-widening vs Plan | Deliver-now |
 | --- | --- | --- | --- | --- | --- | --- |
-| `2.24.2` | `ask` | no — headless deny ≠ Plan NEVER; read widened | parser/application known; stream confirm absent | lifecycle unchanged | no | no |
+| `2.24.2` | `ask` | no — write/edit ASK vs Plan NEVER; headless deny ≠ NEVER | parser/application known; stream confirm absent | lifecycle unchanged | no | no |
 | `2.24.2` | `accept-edits` | write always | known | unchanged | no | no |
 | `2.24.2` | `auto-approve` | bypass | excluded | n/a | no | no |
 | `2.24.2` | custom / `lean` / `explore` | ambient or non-primary | open or rejected | n/a | no | no |
@@ -136,7 +137,9 @@ exact current `--agent plan` argv; Swallowtail must not omit the flag.
 
 No deliver-now row. The empty set rests on authorized evidence:
 
-1. `ask` widens read and softens write relative to fixed Plan
+1. `ask` changes write/edit from Plan `NEVER` to tool-default `ASK` (tagged
+   `test_agent_override_resolve_permission.py`); Plan's `read_file` allowlist
+   is a plans-directory auto-allow, not a scope Ask widens by dropping it
 2. `accept-edits` auto-approves file writes
 3. bypass/`yolo` stay excluded
 4. membership is not a closed portable domain once custom/ambient gates count

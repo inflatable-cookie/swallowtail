@@ -35,7 +35,8 @@
       "write_file_permission": "tool-default-ask",
       "edit_permission": "tool-default-ask",
       "read_file_restriction": "none",
-      "vs_fixed_plan": "widens_read_and_replaces_write_never_with_ask",
+      "plan_read_file_allowlist_effect": "plan_auto_allows_plans_dir_reads_ask_removes_that_special_allowance_not_a_read_widen",
+      "vs_fixed_plan": "replaces_write_edit_never_with_ask",
       "deliver_now": false
     },
     "plan": {
@@ -141,7 +142,7 @@
     "disposition": "honest_empty_set"
   },
   "stops": [
-    "ask widens read_file beyond plan plans-directory allowlist and replaces write/edit NEVER with ASK",
+    "ask replaces write/edit NEVER with tool-default ASK; Plan read_file allowlist is a plans-dir auto-allow Ask removes, not a read-scope widen",
     "accept-edits auto-approves write_file/edit (wider write); card forbids default widening",
     "auto-approve, --auto-approve, and --yolo remain excluded",
     "parser accepts any NAME including ambient custom agents; enabled_agents/disabled_agents gate availability",
@@ -162,6 +163,7 @@
     "vibe/core/agents/registry.py": "4f2f36cb8c6a17a6889119ff809846f30ba85d30342197fb0ae72e9f700275dc",
     "vibe/core/config/layers/agent_profile.py": "a252e3773cce8fac025dcd458ccdeef62e37ebc95a4829fea0176a381265272f",
     "vibe/app_server/_runtime.py": "905e8491a4ba8d3e9a451750f6d4646cc836df3b1716d4b66062f2b2adabc209",
+    "tests/agent_loop/test_agent_override_resolve_permission.py": "b5c073fbcda443d5d914b4ffa9e6f6f5d76d37ec07e57f6d1e011096d0ee370e",
     "sibling_identity_corpus": "mistral-vibe-headless-2.24.2",
     "research_150": true,
     "research_199": true

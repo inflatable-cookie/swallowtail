@@ -1,0 +1,105 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-28",
+  "route": "goose.acp",
+  "driver": "swallowtail.goose.acp",
+  "axis": "goose.release",
+  "qualified_version": "1.46.0",
+  "github_tag": "v1.46.0",
+  "github_commit": "98c11ce2ee7b9b302978aa64b1eab7d0895607c7",
+  "current_selected_command": ["goose", "acp"],
+  "candidate_methods": ["session/set_mode", "session/set_config_option"],
+  "config_option_id": "mode",
+  "membership": ["auto", "approve", "smart_approve", "chat"],
+  "default_mode": "auto",
+  "isolation": "AmbientHost",
+  "decision": "empty_deliver_now",
+  "research": 253,
+  "card": 256,
+  "live_acp": false,
+  "host_goose_present": false,
+  "host_config_mutated": false,
+  "sources": {
+    "crates/goose-provider-types/src/goose_mode.rs": {
+      "sha256": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7",
+      "bytes": 707
+    },
+    "crates/goose/src/acp/server/new_session.rs": {
+      "sha256": "10146d0e24a148f5d89bbdb3447f4720cff74b2fdb62d80b8febf2cc3e2a6dad",
+      "bytes": 13004
+    },
+    "crates/goose/src/acp/response_builder.rs": {
+      "sha256": "b1a18f5ec51f49a2bc5bf45cbc86a1c2fcb2fdbfd1d5524cc4b243b5bbece571",
+      "bytes": 26953
+    },
+    "crates/goose/src/acp/server/dispatch.rs": {
+      "sha256": "f7ae4a0e3a52b852df4cbb7f44ac8113f795d55df020de5ea96d36f3d5101f21",
+      "bytes": 25217
+    },
+    "crates/goose/src/acp/server.rs": {
+      "sha256": "3eb611c4ae0f37a1d4affde82a4c29a5d56e9d70cb796d8cc7cc6082bc13b47f",
+      "bytes": 103385
+    },
+    "crates/goose/src/agents/agent.rs": {
+      "sha256": "2227f114aae644241feaeb3a4f1a9feed1545cf6e9a792b39783deac89c19be6",
+      "bytes": 217307
+    },
+    "crates/goose/src/permission/permission_inspector.rs": {
+      "sha256": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390",
+      "bytes": 15971
+    },
+    "crates/goose/src/session/session_manager.rs": {
+      "sha256": "d1d402bad5c55e3b50b3d81ad6fd9c29b4f6c69e59ec1198fded81760ebf14c8",
+      "bytes": 160040
+    },
+    "crates/goose/src/config/base.rs": {
+      "sha256": "07828d8ca7fdd5f5a80769879ad4bf0f1ca61c788506390db74da1dda1d8378d",
+      "bytes": 92115
+    },
+    "documentation/docs/guides/config-files.md": {
+      "sha256": "73ab969317594a8b0558d66a9683fd2962d8d74ccb054363fb4294235e934be9",
+      "bytes": 12504
+    },
+    "documentation/docs/guides/managing-tools/goose-permissions.md": {
+      "sha256": "0674af239d66af1f2c448ef691ee3a1c68915d84635a5d817ed1e5d504b18e1d",
+      "bytes": 6403
+    },
+    "documentation/docs/guides/acp-clients.md": {
+      "sha256": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "bytes": 10014
+    }
+  },
+  "selection": {
+    "session_new_seed": "Config::global().get_goose_mode().unwrap_or_default()",
+    "set_mode_rpc_body": "empty SetSessionModeResponse",
+    "set_mode_notification": "current_mode_update echoes requested modeId before respond",
+    "set_config_mode": "configId mode; response configOptions include mode current value from agent.goose_mode()",
+    "persists_session_row": true,
+    "writes_host_goose_mode": false
+  },
+  "authority": {
+    "auto": "allow_all_tools",
+    "smart_approve": "auto_allow_readonly_annotation_and_llm_judge",
+    "approve": "require_approval_default_honors_host_user_always_allow",
+    "chat": "skip_tools_with_CHAT_MODE_TOOL_SKIPPED_RESPONSE_not_harness_plan"
+  },
+  "failure": {
+    "unknown_set_mode": "invalid_params Invalid mode",
+    "malformed_persisted_reload": "GooseMode::default auto fail_open"
+  },
+  "omission": {
+    "argv": ["goose", "acp"],
+    "harness_mode_rejected": true,
+    "auto_mode_unselected": true,
+    "current_mode_host_owned": true
+  },
+  "gates_blocking_deliver_now": [
+    "default_and_drift_are_auto",
+    "auto_and_smart_approve_widen_approval",
+    "approve_keeps_ambient_host_always_allow",
+    "chat_not_harness_mode_plan",
+    "confirmation_needs_provider_backed_session",
+    "set_mode_confirmation_is_request_echo"
+  ],
+  "deliver_now_rows": []
+}

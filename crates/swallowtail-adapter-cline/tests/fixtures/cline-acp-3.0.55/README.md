@@ -13,5 +13,8 @@ No live ACP initialize. No provider prompt. No install. No host `cline`.
 `plan-mode-evidence.json` freezes the ACP Plan selection/confirm seam for
 Research 240. It is source identity only; it does not bind production.
 
+`model-selection-evidence.json` freezes the ACP provider/model seam for
+Research 248 as an honest empty deliver-now set. It does not bind production.
+
 No fixture contains a credential, host path, account identity, provider
 payload, or real session id.

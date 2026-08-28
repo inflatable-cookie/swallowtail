@@ -1,0 +1,114 @@
+{
+  "route": "cline.acp",
+  "package_axis": "cline.package",
+  "qualified_version": "3.0.55",
+  "github_tag": "cli-v3.0.55",
+  "github_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+  "retrieved": "2026-08-28",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false,
+  "login_or_catalogue_inspected": false,
+  "ambient_settings_mutated": false,
+  "root_argv_model": {
+    "flags": ["-m", "--model", "-P", "--provider"],
+    "acp_disposition": "discarded_by_early_return",
+    "sibling_research": 221
+  },
+  "protocol_pattern": {
+    "sibling_plan_research": 240,
+    "inherits_plan_membership": false,
+    "note": "Plan proves set_config_option confirmation; model does not close membership"
+  },
+  "snapshot": {
+    "method": "session/new",
+    "models": {
+      "availableModels": "provider-catalog-private",
+      "currentModelId": "provider-default-private"
+    },
+    "provider_config_option": {
+      "type": "select",
+      "id": "provider",
+      "category": "model",
+      "options": ["cline", "cline-pass", "openai-codex"]
+    },
+    "model_config_option": {
+      "type": "select",
+      "id": "model",
+      "category": "model",
+      "options": "Llms.getModelsForProvider(currentProviderId)"
+    },
+    "default_provider_resolution": "CLINE_PROVIDER ?? authResult.providerId ?? cline",
+    "default_model_resolution": "CLINE_MODEL if in catalogue else providerDefault else firstCatalogueId else empty"
+  },
+  "selection_seams": {
+    "set_config_option_model": {
+      "method": "session/set_config_option",
+      "params": { "configId": "model", "value": "<string>" },
+      "membership_validated": false,
+      "confirmation": "response.configOptions[id=model].currentValue echo",
+      "durable_shared_settings_write": false
+    },
+    "set_config_option_provider": {
+      "method": "session/set_config_option",
+      "params": { "configId": "provider", "value": "cline|cline-pass|openai-codex" },
+      "membership_validated": true,
+      "caller_provider_selection": true,
+      "out_of_scope": true,
+      "confirmation": "response.configOptions[id=provider].currentValue",
+      "durable_shared_settings_write": false,
+      "side_effect": "teardownSessionManager; re-resolve model against new provider catalogue"
+    },
+    "unstable_set_session_model": {
+      "method": "unstable/set_session_model",
+      "confirmation": "empty_rpc_body",
+      "withheld_as_swallowtail_request": true
+    }
+  },
+  "deliver_now": {
+    "rows": [],
+    "disposition": "honest_empty_set"
+  },
+  "stops": [
+    "provider identity remains ambient (env/auth/default) and is not fixed by cline_local_account_access_profile",
+    "model membership is catalogue-derived and open; set_config model accepts foreign ids",
+    "Contract 020 forbids promoting generated catalogue ids as a ModelRoute",
+    "live membership observation needs auth/catalogue work forbidden in this lane",
+    "echo currentValue without pre-effect rejection is not closed selected-value confirmation"
+  ],
+  "not_stops_on_this_seam": [
+    "headless saveProviderSettings durable write (ACP early-return skips it; model/provider set_config stay session-private)"
+  ],
+  "lifecycle": {
+    "new_session_before_first_prompt": "protocol_present_membership_open",
+    "follow_up_on_manager": "retains_requested_id_not_a_closed_row",
+    "post_start_model_change": "updateSessionModel_mutates_live_config_membership_still_open",
+    "session_load_fresh_connection": "no_provider_model_restore",
+    "fresh_replacement": "new_session_defaults",
+    "omission": "retain_current_initialize_session_new_plan_optional_prompt_frames"
+  },
+  "omission": {
+    "retains": [
+      "cline --acp",
+      "initialize",
+      "session/new ambient provider/model defaults",
+      "optional Plan set_config_option",
+      "one bounded session/prompt",
+      "observational permissions",
+      "joined cleanup"
+    ],
+    "model_route_claim": false
+  },
+  "sources": {
+    "acpAgent.ts": "248092d41e330ef1898f98b99d35c6713574a7b9305d95601177c07e64db9e71",
+    "auth.ts": "ad46c0b5cd79e561de5bbbb0ef8e513339f73618b2ce733c3d88448c0023024d",
+    "index.ts": "8cbcf4c04bb9b01ccc877c661210346380732a32b796ac8335663b5d141adbb7",
+    "main.ts": "1b7a0a5b680aa6f3f736826c449f64e9a62dbe7b57e0b55cbc74379d45f37274",
+    "session-updates.ts": "e7f8beca5101fcdfc8079025980b479918c4959fcc34728452ed94f4e1e18fe0",
+    "session-load.ts": "90bf351aaab8a1dd37b89df609b195af914b6a8e0a70a5cfa167a3a1e37dea38",
+    "model-registry.ts": "186005c71e1a6a891c1503a4901858dcb5007e5c7491e81ee15ec93ea2c8f6d3",
+    "builtins.ts": "94f9324f9d0f51efaef589370d4a802ddb282d878b4191babc9f49ebb301b98e",
+    "model-facts.ts": "a3af38a5d3761e0555777c2efd663b0b503e34eb5abec047baac67c4666645d1",
+    "local-runtime-host.ts": "61fce1f2f9b9061b86721f48a7a1786fa869fc96b566c4cd18fc3379c0ed0743"
+  }
+}

@@ -23,11 +23,17 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g04.089 Parallel Feature Qualification Compiled](./2026-08-28-g04-089-parallel-feature-qualification-compiled.md) — cards 252-255 and Research 249-252 reserved as four evidence-only manual worker lanes
+- [2026-08-28 g04.089a Claude Code Headless Permission-Mode Evidence](./2026-08-28-g04-089a-claude-code-headless-permission-mode-evidence.md) — reserved; card 252; Research 249
+- [2026-08-28 g04.089b Goose ACP Builtin Evidence](./2026-08-28-g04-089b-goose-acp-builtin-evidence.md) — reserved; card 253; Research 250
+- [2026-08-28 g04.089c Kiro ACP Effort Evidence](./2026-08-28-g04-089c-kiro-acp-effort-evidence.md) — reserved; card 254; Research 251
+- [2026-08-28 g04.089d Mistral Vibe Headless Agent-Profile Evidence](./2026-08-28-g04-089d-mistral-vibe-headless-agent-profile-evidence.md) — reserved; card 255; Research 252
+- [2026-08-28 g04.088 Parallel Feature Qualification Closeout](./2026-08-28-g04-088-parallel-feature-qualification-closeout.md) — complete; four honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
 - [2026-08-28 g04.088 Parallel Feature Qualification Compiled](./2026-08-28-g04-088-parallel-feature-qualification-compiled.md) — cards 248-251 and Research 245-248 reserved as four evidence-only manual worker lanes
-- [2026-08-28 g04.088a Claude Code Headless Advisor Evidence](./2026-08-28-g04-088a-claude-code-headless-advisor-evidence.md) — reserved; card 248; Research 245
-- [2026-08-28 g04.088b Codex App-Server Plan-Mode Effort Evidence](./2026-08-28-g04-088b-codex-app-server-plan-mode-effort-evidence.md) — reserved; card 249; Research 246
-- [2026-08-28 g04.088c Grok Build ACP Web-Search Disable Evidence](./2026-08-28-g04-088c-grok-build-acp-web-search-disable-evidence.md) — reserved; card 250; Research 247
-- [2026-08-28 g04.088d Cline ACP Model-Selection Evidence](./2026-08-28-g04-088d-cline-acp-model-selection-evidence.md) — reserved; card 251; Research 248
+- [2026-08-28 g04.088a Claude Code Headless Advisor Evidence](./2026-08-28-g04-088a-claude-code-headless-advisor-evidence.md) — complete; card 248; Research 245 honest empty deliver-now set
+- [2026-08-28 g04.088b Codex App-Server Plan-Mode Effort Evidence](./2026-08-28-g04-088b-codex-app-server-plan-mode-effort-evidence.md) — complete; card 249; Research 246 honest empty deliver-now set
+- [2026-08-28 g04.088c Grok Build ACP Web-Search Disable Evidence](./2026-08-28-g04-088c-grok-build-acp-web-search-disable-evidence.md) — complete; card 250; Research 247 honest empty deliver-now set
+- [2026-08-28 g04.088d Cline ACP Model-Selection Evidence](./2026-08-28-g04-088d-cline-acp-model-selection-evidence.md) — complete; card 251; Research 248 honest empty deliver-now set
 - [2026-08-28 g04.087 Parallel Feature Qualification Closeout](./2026-08-28-g04-087-parallel-feature-qualification-closeout.md) — complete; four honest empty deliver-now sets; PRs 99, 97, 98, and 96 through `e40a5407`
 - [2026-08-27 g04.087 Parallel Feature Qualification Compiled](./2026-08-27-g04-087-parallel-feature-qualification-compiled.md) — cards 244-247 and Research 241-244 reserved as four evidence-only worker lanes
 - [2026-08-27 g04.087a Claude Code Headless Spend-Cap Evidence](./2026-08-27-g04-087a-claude-code-headless-spend-cap-evidence.md) — complete; card 244; Research 241 honest empty deliver-now set

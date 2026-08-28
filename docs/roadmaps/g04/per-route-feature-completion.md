@@ -335,15 +335,20 @@ families do not interrupt this programme by default.
   sandbox with honest empty deliver-now sets. PRs 99, 97, 98, and 96 landed
   serially through `e40a5407`. No production binding follows.
 - [g04.088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md)
-  is ready. Cards 248-251 reserve package-distinct evidence for Claude
-  headless advisor, Codex app-server Plan-mode effort, Grok ACP web-search
-  disable, and Cline ACP model selection.
+  is complete. Cards 248-251 and Research 245-248 close Claude headless
+  advisor, Codex app-server Plan-mode effort, Grok ACP web-search disable, and
+  Cline ACP model selection with honest empty deliver-now sets. PRs 104, 101,
+  103, and 102 landed serially through `23278abe`. No binding follows.
+- [g04.089 Sixth Parallel Per-Route Feature Qualification](./089-sixth-parallel-per-route-feature-qualification.md)
+  is ready. Cards 252-255 reserve package-distinct evidence for Claude
+  headless permission modes, Goose ACP builtins, Kiro ACP effort, and Mistral
+  Vibe headless agent profiles beyond Plan.
 
 ## Current Execution Boundary
 
-The normalized inventory has 57 closed original items, 18 active qualification
+The normalized inventory has 61 closed original items, 14 active qualification
 candidates, no active delivery item, and ten items with no active lane. Execute
-g04.088 cards 248-251 as four parallel manual evidence workers and integrate
+g04.089 cards 252-255 as four parallel manual evidence workers and integrate
 their PRs serially A-B-C-D. Keep g04 open. Contract 029 currentness remains
 standing.
 

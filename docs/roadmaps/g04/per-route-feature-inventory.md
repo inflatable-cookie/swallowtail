@@ -10,21 +10,21 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.087.
+sequence after g04.088.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 57 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.087. |
-| Active qualification backlog | 18 | A bounded route-local evidence question remains. |
+| Closed by a numbered lane | 61 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.088. |
+| Active qualification backlog | 14 | A bounded route-local evidence question remains. |
 | Active delivery | 0 | No qualified delivery row is waiting for binding or acceptance. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-2, 4-7, 15-16, 18-20, 23-33, 35-38, 40-41, 43-45, 50, 52-53, 55-60,
-62-63, 65-68, 72-74, 76-78, 81-85`.
+`1-2, 4-8, 15-16, 18-21, 23-38, 40-45, 50, 52-53, 55-60, 62-63, 65-68,
+72-74, 76-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
 each closed lane. `Closed` does not mean every feature shipped. Honest empty
@@ -35,14 +35,11 @@ queue.
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 8-9 | `claude-code.headless` | advisor, permission modes | item 8 is g04.088 card 248; never widen permissions by default |
+| 9 | `claude-code.headless` | permission modes | g04.089 card 252; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 21 | `codex.app-server` | Plan effort | g04.088 card 249; distinct from turn reasoning and Fast |
-| 34 | `grok-build.acp` | web-search disable | g04.088 card 250; exact ACP spawn and applied-state evidence |
-| 42 | `cline.acp` | model | g04.088 card 251; no promotion from headless evidence |
-| 46-47 | `goose.acp` | builtins, mode | host extension authority and session configuration stay distinct |
-| 48-49 | `kiro.acp` | effort, agent | ACP only; deferred Kiro headless work does not own these rows |
-| 54 | `mistral-vibe.headless` | agent beyond Plan | qualify only non-bypass profiles |
+| 46-47 | `goose.acp` | builtins, mode | item 46 is g04.089 card 253; host extension authority and session configuration stay distinct |
+| 48-49 | `kiro.acp` | effort, agent | item 48 is g04.089 card 254; ACP only; deferred Kiro headless work does not own these rows |
+| 54 | `mistral-vibe.headless` | agent beyond Plan | g04.089 card 255; qualify only non-bypass profiles |
 | 61 | `opencode.http` | task/subagent permission | attached-server configuration and permission truth required |
 | 64 | `kimi-platform.chat` | thinking disabled outside K3 | exact model-family and request semantics required |
 | 69-71 | `anthropic.managed-agent` | effort, Fast, tools/MCP | three independent control families |
@@ -52,16 +49,16 @@ queue.
 
 No original item currently has an active delivery lane.
 
-## Active Qualification Wave V
+## Active Qualification Wave VI
 
-g04.088 owns four package-distinct evidence-only lanes:
+g04.089 owns four package-distinct evidence-only lanes:
 
-1. item 8 — `claude-code.headless` advisor — card 248 / Research 245
-2. item 21 — `codex.app-server` Plan-mode effort — card 249 / Research 246
-3. item 34 — `grok-build.acp` web-search disable — card 250 / Research 247
-4. item 42 — `cline.acp` model selection — card 251 / Research 248
+1. item 9 — `claude-code.headless` permission modes — card 252 / Research 249
+2. item 46 — `goose.acp` builtins — card 253 / Research 250
+3. item 48 — `kiro.acp` effort — card 254 / Research 251
+4. item 54 — `mistral-vibe.headless` agent profiles — card 255 / Research 252
 
-The 18-item active count does not change at compilation. Each item moves only
+The 14-item active count does not change at compilation. Each item moves only
 after its evidence PR lands and the shared closeout records a promoted exact
 row or honest evidence stop.
 
@@ -161,6 +158,25 @@ sandbox/re-exec/confirmation truth. PRs 99, 97, 98, and 96 landed serially
 through `e40a5407`. No production binding follows.
 
 [g04.087](087-fourth-parallel-per-route-feature-qualification.md) owns the
+completed wave.
+
+## Completed Parallel Qualification Wave V
+
+g04.088 completed four package-distinct evidence lanes:
+
+1. item 8 — `claude-code.headless` advisor — card 248 / Research 245
+2. item 21 — `codex.app-server` Plan-mode effort — card 249 / Research 246
+3. item 34 — `grok-build.acp` web-search disable — card 250 / Research 247
+4. item 42 — `cline.acp` model selection — card 251 / Research 248
+
+All four Research records admit honest empty deliver-now sets. The blockers
+are route-specific: advisor entitlement, ambient authority, attachment, and
+spend; no typed app-server Plan-effort seam; unconfirmed Grok ACP search
+suppression; and unclosed Cline provider/model membership and pre-effect
+rejection. PRs 104, 101, 103, and 102 landed serially through `23278abe`. No
+production binding follows.
+
+[g04.088](088-fifth-parallel-per-route-feature-qualification.md) owns the
 completed wave.
 
 ## Update Rule

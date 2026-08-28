@@ -153,10 +153,14 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [242 Codex App-Server Fast-Mode Evidence](./242-codex-app-server-fast-mode-evidence.md) — promoted evidence stop through g04.087 card 245; membership, wire, persistence, catalogue, and ambient-gate truth remain open; honest empty deliver-now set
 - [243 Cursor ACP Model-Parameter Evidence](./243-cursor-acp-model-parameter-evidence.md) — promoted evidence stop through g04.087 card 246; account-gated membership and missing independent ACP selection/confirmation; honest empty deliver-now set
 - [244 Gemini CLI ACP Sandbox Evidence](./244-gemini-cli-acp-sandbox-evidence.md) — promoted evidence stop through g04.087 card 247; ambient precedence, pre-ACP re-exec, backend readiness, and confirmation remain open; honest empty deliver-now set
-- [245 Claude Code Headless Advisor Evidence](./245-claude-code-headless-advisor-evidence.md) — reserved for g04.088 card 248
-- [246 Codex App-Server Plan-Mode Effort Evidence](./246-codex-app-server-plan-mode-effort-evidence.md) — reserved for g04.088 card 249
-- [247 Grok Build ACP Web-Search Disable Evidence](./247-grok-build-acp-web-search-disable-evidence.md) — reserved for g04.088 card 250
-- [248 Cline ACP Model-Selection Evidence](./248-cline-acp-model-selection-evidence.md) — reserved for g04.088 card 251
+- [245 Claude Code Headless Advisor Evidence](./245-claude-code-headless-advisor-evidence.md) — promoted evidence stop through g04.088 card 248; entitlement, ambient authority, effective attachment, unsupported-token rejection, and spend remain open; honest empty deliver-now set
+- [246 Codex App-Server Plan-Mode Effort Evidence](./246-codex-app-server-plan-mode-effort-evidence.md) — promoted evidence stop through g04.088 card 249; ambient/session-static key with no typed Plan-specific app-server seam; honest empty deliver-now set
+- [247 Grok Build ACP Web-Search Disable Evidence](./247-grok-build-acp-web-search-disable-evidence.md) — promoted evidence stop through g04.088 card 250; exact ACP application and backend search suppression remain unconfirmed; honest empty deliver-now set
+- [248 Cline ACP Model-Selection Evidence](./248-cline-acp-model-selection-evidence.md) — promoted evidence stop through g04.088 card 251; provider/model membership, route agreement, and pre-effect rejection remain open; honest empty deliver-now set
+- [249 Claude Code Headless Permission-Mode Evidence](./249-claude-code-headless-permission-mode-evidence.md) — reserved for g04.089 card 252
+- [250 Goose ACP Builtin Evidence](./250-goose-acp-builtin-evidence.md) — reserved for g04.089 card 253
+- [251 Kiro ACP Effort Evidence](./251-kiro-acp-effort-evidence.md) — reserved for g04.089 card 254
+- [252 Mistral Vibe Headless Agent-Profile Evidence](./252-mistral-vibe-headless-agent-profile-evidence.md) — reserved for g04.089 card 255
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210

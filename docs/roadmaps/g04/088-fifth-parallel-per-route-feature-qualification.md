@@ -1,13 +1,13 @@
 # g04.088 Fifth Parallel Per-Route Feature Qualification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
 Depends on: g04.087 closeout
 Vision tags: per-route features, exact evidence, parallel qualification
 Contract refs: 006, 013-016, 020, 023, 029, 033-034, 037, 040, 047, 052
-Research: 245-248 reserved
+Research: 245-248 promoted
 
 ## Problem
 
@@ -50,16 +50,33 @@ operator authorisation.
 
 ## Acceptance Criteria
 
-- [ ] card 248 promotes exact Claude headless advisor evidence or an empty set
-- [ ] card 249 promotes exact Codex app-server Plan-effort evidence or an empty set
-- [ ] card 250 promotes exact Grok ACP web-search-disable evidence or an empty set
-- [ ] card 251 promotes exact Cline ACP model-selection evidence or an empty set
-- [ ] each result separates requested, configured, dispatched, accepted,
+- [x] card 248 promotes exact Claude headless advisor evidence or an empty set
+- [x] card 249 promotes exact Codex app-server Plan-effort evidence or an empty set
+- [x] card 250 promotes exact Grok ACP web-search-disable evidence or an empty set
+- [x] card 251 promotes exact Cline ACP model-selection evidence or an empty set
+- [x] each result separates requested, configured, dispatched, accepted,
       effective, returned, and observed truth as applicable
-- [ ] no worker uses credentials, provider prompts, paid work, install/update,
+- [x] no worker uses credentials, provider prompts, paid work, install/update,
       account inspection, or ambient host mutation
-- [ ] no production binding starts from a worker lane
-- [ ] shared closeout reconciles all four original items only after their PRs land
+- [x] no production binding starts from a worker lane
+- [x] shared closeout reconciles all four original items only after their PRs land
+
+## Result
+
+All four lanes promoted honest empty deliver-now sets. PRs 104, 101, 103, and
+102 landed fast-forward-only in A-B-C-D order through `23278abe`.
+
+- Claude advisor remains blocked by entitlement, ambient authority, effective
+  attachment, unsupported-token acceptance, and extra-spend truth.
+- Codex Plan-mode effort remains an ambient config/TUI concern without a typed
+  app-server seam, confirmation, or restoration contract.
+- Grok web-search disable parses on the root command, but exact ACP application
+  and search-backend suppression remain unconfirmed.
+- Cline ACP exposes provider/model config options, but exact membership, route
+  agreement, and pre-effect rejection do not close.
+
+Original items 8, 21, 34, and 42 close as evidence stops. No production
+binding follows.
 
 ## Stop Conditions
 

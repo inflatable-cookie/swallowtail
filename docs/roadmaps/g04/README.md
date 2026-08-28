@@ -102,14 +102,15 @@ and selection policy.
 - [g04.085 Parallel Per-Route Feature Qualification III](085-third-parallel-per-route-feature-qualification.md) — complete, cards 238-241; three honest empty sets and one Cline ACP Plan delivery row; PRs 94, 93, 91, and 92 through `abdaefd2`
 - [g04.086 Cline ACP Plan Mode](086-cline-acp-plan-mode.md) — complete, cards 242-243; Research 240 delivered through PR 95 at `3f56aeb4`
 - [g04.087 Fourth Parallel Per-Route Feature Qualification](087-fourth-parallel-per-route-feature-qualification.md) — complete, cards 244-247; four honest empty deliver-now sets; PRs 99, 97, 98, and 96 through `e40a5407`
-- [g04.088 Fifth Parallel Per-Route Feature Qualification](088-fifth-parallel-per-route-feature-qualification.md) — ready, cards 248-251; Research 245-248 reserved as four evidence-only lanes
+- [g04.088 Fifth Parallel Per-Route Feature Qualification](088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
+- [g04.089 Sixth Parallel Per-Route Feature Qualification](089-sixth-parallel-per-route-feature-qualification.md) — ready, cards 252-255; Research 249-252 reserved as four evidence-only lanes
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
-  items normalized after g04.087: 57 closed, 18 active qualification
+  items normalized after g04.088: 61 closed, 14 active qualification
   candidates, no active delivery, and ten with no active lane
 
-g04 has 88 numbered roadmaps: 72 completed milestones, fifteen honest
+g04 has 89 numbered roadmaps: 73 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, and one ready milestone at 088. The operator keeps the
+074, 076, and 080, and one ready milestone at 089. The operator keeps the
 generation active.
 Do not close g04 without explicit operator direction.
 
@@ -324,10 +325,12 @@ Do not close g04 without explicit operator direction.
 - g04.087 is complete. Research 241-244 close four candidates with honest
   empty deliver-now sets. PRs 99, 97, 98, and 96 landed serially through
   `e40a5407`; no production binding follows
-- g04.088 is ready. Cards 248-251 own four package-distinct evidence-only
-  lanes for Claude advisor, Codex Plan effort, Grok web-search disable, and
-  Cline ACP model selection
-- g04 remains active at 88 roadmaps; generation closure awaits explicit
+- g04.088 is complete. Research 245-248 admit four honest empty deliver-now
+  sets. PRs 104, 101, 103, and 102 landed serially through `23278abe`
+- g04.089 is ready. Cards 252-255 own four package-distinct evidence-only
+  lanes for Claude permission modes, Goose builtins, Kiro effort, and Mistral
+  Vibe agent profiles
+- g04 remains active at 89 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
 
@@ -476,9 +479,11 @@ Do not close g04 without explicit operator direction.
     deliver exact Cline ACP Plan binding and route-local acceptance.
 50. g04.087 is complete. Research 241-244 admit four honest empty deliver-now
     sets. PRs 99, 97, 98, and 96 landed serially through `e40a5407`.
-51. g04.088 is ready. Cards 248-251 run four package-distinct evidence-only
+51. g04.088 is complete. Research 245-248 admit four honest empty deliver-now
+    sets. PRs 104, 101, 103, and 102 landed serially through `23278abe`.
+52. g04.089 is ready. Cards 252-255 run four package-distinct evidence-only
     lanes in parallel; integration remains serial A-B-C-D.
-52. g04 remains active at operator direction. Contract 029 remains standing.
+53. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
 
@@ -540,7 +545,8 @@ New route-family research does not pre-empt this sequence.
 - [085 Parallel Per-Route Feature Qualification III](./085-third-parallel-per-route-feature-qualification.md) — complete, cards 238-241; three honest empty sets and one Cline ACP Plan delivery row; PRs 94, 93, 91, and 92 through `abdaefd2`
 - [086 Cline ACP Plan Mode](./086-cline-acp-plan-mode.md) — complete and merged through PR 95 at `3f56aeb4`, cards 242-243; Research 240 delivered
 - [087 Fourth Parallel Per-Route Feature Qualification](./087-fourth-parallel-per-route-feature-qualification.md) — complete, cards 244-247; four honest empty sets; PRs 99, 97, 98, and 96 through `e40a5407`
-- [088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md) — ready, cards 248-251; Research 245-248 reserved
+- [088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
+- [089 Sixth Parallel Per-Route Feature Qualification](./089-sixth-parallel-per-route-feature-qualification.md) — ready, cards 252-255; Research 249-252 reserved
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

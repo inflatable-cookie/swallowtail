@@ -2780,3 +2780,36 @@ Plan-specific effort, provider web-search suppression, and ACP model selection
 remain separate route-local claims. Run manual workers in parallel; integrate
 A-B-C-D serially. Shared closeout and any non-empty delivery compilation stay
 with the orchestrator. Keep g04 open.
+
+## Post-g04.088 Completion And g04.089 Compilation (2026-08-28)
+
+Disposition: four evidence stops; compile the next four package-distinct
+qualification lanes.
+
+Research 245 closes Claude headless advisor because entitlement, operation-
+private precedence, effective attachment, unsupported-token rejection, and
+extra-spend truth stay open. Research 246 closes Codex app-server Plan effort
+because the key is ambient/session-static and the typed protocol has no
+Plan-specific seam, confirmation, or restoration. Research 247 closes Grok
+ACP web-search disable because exact application and backend suppression are
+not observable from the qualified prompt-free surface. Research 248 closes
+Cline ACP model selection because provider/model membership, route agreement,
+and pre-effect rejection do not close.
+
+Original items 8, 21, 34, and 42 move to closed. The live ledger now owns 61
+closed items, 14 active qualification candidates, no active delivery item,
+and ten with no active lane. PRs 104, 101, 103, and 102 landed serially through
+`23278abe`. No production binding follows.
+
+g04.089 selects the lowest remaining package-distinct items:
+
+1. item 9 — Claude Code headless permission modes beyond Plan
+2. item 46 — Goose ACP `--with-builtin`
+3. item 48 — Kiro ACP `--effort`
+4. item 54 — Mistral Vibe headless `--agent` beyond Plan
+
+Cards 252-255 and Research 249-252 own evidence only. Dangerous permission
+bypass, auto-approval, host extension setup, sibling-route inference, and
+unconfirmed model/value membership remain out. Run manual workers in parallel;
+integrate A-B-C-D serially. Shared closeout and any non-empty delivery
+compilation stay with the orchestrator. Keep g04 open.

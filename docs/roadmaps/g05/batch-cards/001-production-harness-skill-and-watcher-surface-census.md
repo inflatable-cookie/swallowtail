@@ -1,10 +1,10 @@
 # 001 Production Harness Skill And Watcher Surface Census
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-28
-Milestone: `../001-harness-skill-and-watcher-surface-inventory.md`
-Research: `../../../research/255-production-harness-skill-and-watcher-surface-census.md`
+Milestone: ../001-harness-skill-and-watcher-surface-inventory.md
+Research: ../../../research/255-production-harness-skill-and-watcher-surface-census.md
 
 ## Goal
 
@@ -35,22 +35,40 @@ background-process control across every production harness route.
 - skill injection, process start/stop, watcher implementation, or public API
 - route currentness changes, new routes, consumer edits, or parked Bedrock work
 
+## Outcome
+
+Completed the row-level census:
+
+- 48 route rows exist in the route-matrix sections, despite the guide prose
+  saying 47;
+- 35 harness rows are in scope: 32 installed, 2 attached, and 1
+  provider-hosted;
+- 13 direct API, realtime, embedded SDK, and local-runtime rows are excluded;
+- 0 rows have prompt-free selected skill-roster plus model/session visibility;
+- 0 rows have consumer-controllable native watcher identity, start, status,
+  wait, output, stop, and terminal truth.
+
+Research 255 records the exact version claims, route-specific fixture and
+source evidence, provenance layers, host lifecycle boundaries, and unsafe
+gates. Claude/T3 Code remains a non-portable activity lead. No production
+code, architecture, or shared contract changed.
+
 ## Acceptance Criteria
 
-- [ ] every production harness route has one exact disposition
-- [ ] bundled, host-configured, project-local, plugin, and unknown provenance
+- [x] every production harness route has one exact disposition
+- [x] bundled, host-configured, project-local, plugin, and unknown provenance
       stay separate
-- [ ] distribution membership never proves model visibility by implication
-- [ ] native background state never proves host-controllable watcher authority
-- [ ] Claude/T3 Code remains a research lead, not a portable claim
-- [ ] Research 255 names every unavailable or unsafe evidence gate
-- [ ] no production or shared-contract change
+- [x] distribution membership never proves model visibility by implication
+- [x] native background state never proves host-controllable watcher authority
+- [x] Claude/T3 Code remains a research lead, not a portable claim
+- [x] Research 255 names every unavailable or unsafe evidence gate
+- [x] no production or shared-contract change
 
 ## Validation
 
-- `effigy qa:docs`
-- `effigy qa:northstar`
-- `git diff --check`
+- effigy qa:docs
+- effigy qa:northstar
+- git diff --check
 
 ## Stop Conditions
 

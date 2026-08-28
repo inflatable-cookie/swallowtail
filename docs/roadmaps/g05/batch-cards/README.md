@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [001-production-harness-skill-and-watcher-surface-census.md](./001-production-harness-skill-and-watcher-surface-census.md) — ready; Research 255 reserved
+- None.
 
 ## Blocked
 
@@ -15,4 +15,4 @@ None.
 
 ## Completed
 
-None.
+- [001-production-harness-skill-and-watcher-surface-census.md](./001-production-harness-skill-and-watcher-surface-census.md) — completed; Research 255 promoted

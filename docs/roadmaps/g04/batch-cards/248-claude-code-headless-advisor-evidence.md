@@ -1,6 +1,6 @@
 # 248 Claude Code Headless Advisor Evidence
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
@@ -16,36 +16,44 @@ spend, application, result, lifecycle, and omission truth. Promote Research
 
 ## Work
 
-1. [ ] Keep route `claude-code.headless`, every published qualified
+1. [x] Keep route `claude-code.headless`, every published qualified
        `2.1.220..=2.1.241` point, local-subscription access, fixed read-only Plan
        tools, no session persistence, and current lifecycle unchanged.
-2. [ ] Freeze official `--advisor` documentation plus exact package
+2. [x] Freeze official `--advisor` documentation plus exact package
        declarations, parser, aliases, precedence, model resolution, access
        gates, request path, accounting, result shape, and failures.
-3. [ ] Build a closed version/access/advisor-model/lifecycle table. Separate
+3. [x] Build a closed version/access/advisor-model/lifecycle table. Separate
        caller-selected advisor, ambient/default advisor, main model, subagent,
        model catalogue membership, entitlement, and billing.
-4. [ ] Determine whether advisor selection is operation-private, immutable,
+4. [x] Determine whether advisor selection is operation-private, immutable,
        pre-effect validated, and compatible with the selected subscription
        route without hidden account or model substitution.
-5. [ ] Prove one-run and repeated-turn behavior, any extra provider requests or
+5. [x] Prove one-run and repeated-turn behavior, any extra provider requests or
        spend, terminal/error mapping, cleanup, and exact omission bytes.
-6. [ ] Separate requested, parsed, resolved, dispatched, accepted, effective,
+6. [x] Separate requested, parsed, resolved, dispatched, accepted, effective,
        returned, observed, and billed truth.
-7. [ ] Audit prepared input/evidence, command builder, decoder, fixtures,
+7. [x] Audit prepared input/evidence, command builder, decoder, fixtures,
        guide, matrices, and API baseline without production changes.
-8. [ ] Promote Research 245 and complete the reserved lane log. Do not edit
+8. [x] Promote Research 245 and complete the reserved lane log. Do not edit
        shared milestone, inventory, programme, triage, matrices, or indexes.
 
 ## Acceptance Criteria
 
-- [ ] exact version/access/model/lifecycle table or honest empty set exists
-- [ ] a non-empty row closes membership, entitlement, selection, application,
+- [x] exact version/access/model/lifecycle table or honest empty set exists
+- [x] a non-empty row closes membership, entitlement, selection, application,
       extra-request/spend, terminal, cleanup, and omission truth
-- [ ] advisor is not flattened into main-model, subagent, or portable vocabulary
-- [ ] unsupported rows reject before prompt effects
-- [ ] no production code, public API, shared authority, currentness, release,
+- [x] advisor is not flattened into main-model, subagent, or portable vocabulary
+- [x] unsupported rows reject before prompt effects
+- [x] no production code, public API, shared authority, currentness, release,
       merge, rollover, or g04 closure changes
+
+## Result
+
+Honest empty deliver-now set. Hidden `--advisor <model>` exists at every
+published `2.1.220..=2.1.241` point and parses in print mode, but entitlement,
+operation-private precedence, effective attachment, and extra spend stay
+live-only or ambiently gated. Omission unchanged; no advisor-off claim.
+Fixture: `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.241/headless-advisor.json`.
 
 ## Validation
 

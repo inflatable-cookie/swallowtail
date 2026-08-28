@@ -21,5 +21,10 @@ empty deliver-now set. `headless-spend-cap.json` records the g04.087a
 `--max-budget-usd` evidence stop across every published version in
 `2.1.220..=2.1.241`, probed on darwin-arm64 native executables, with an honest
 empty deliver-now set because the local catalog-priced USD ledger does not
-close against the selected local-subscription billing profile. No provider
-prompt was sent.
+close against the selected local-subscription billing profile.
+`headless-advisor.json` records the g04.088a `--advisor` evidence stop across
+every published version in `2.1.220..=2.1.241`, probed on darwin-arm64 native
+executables, with an honest empty deliver-now set because entitlement,
+operation-private precedence, effective attachment, and extra consultation
+spend do not close without live account or provider work. No provider prompt
+was sent.

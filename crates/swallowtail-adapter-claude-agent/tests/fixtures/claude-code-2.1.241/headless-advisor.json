@@ -1,0 +1,432 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "route": "claude-code.headless",
+  "driver": "swallowtail.claude-code.headless",
+  "behavior": "claude-code.headless.stream-json.v1",
+  "qualified_window": "2.1.220..=2.1.241",
+  "observed_at": "2026-08-28",
+  "provider_prompt_sent": false,
+  "credentials_used": false,
+  "host_install_changed": false,
+  "ambient_configuration_mutated": false,
+  "platform": "darwin-arm64",
+  "official_docs": {
+    "cli_reference_sha256": "cce20fe024733eaa9e4f49f6406d332c90d7958dd9866809f477494a5c10d1f1",
+    "advisor_sha256": "b56b50c009df03ee6933ad0e5f857d8b32e607dbbf07966f5d5f92668f9e7cba",
+    "env_vars_sha256": "73889e9363feb7b258e819168cacd4c549ef50a23e609385bd7f7e6e02f761ff",
+    "model_config_sha256": "c30b6a0ae01dc590609d7f2dae93b49f9d72613defc18b297ac2135f13aed29a",
+    "documented_flag": "--advisor <model>",
+    "documented_semantics": "Enable the server-side advisor tool for this session with a model alias (fable, opus, sonnet) or a full model ID; takes precedence over the advisorModel setting for the session; not listed in claude --help",
+    "documented_extra_spend": "advisor usage counts toward subscription plan usage limits; Fable advisor may bill usage credits after consent; API billing pays advisor model rates",
+    "documented_disable_env": "CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1 accepts --advisor but has no effect",
+    "documented_feature_flag_gate": "advisor requires feature-flag fetching; DISABLE_TELEMETRY and similar keep advisor off",
+    "documented_ambient_setting": "advisorModel in settings enables advisor without --advisor",
+    "documented_silent_non_attachment": "less-capable or unrecognized pairings may leave advisor unattached without failing the session"
+  },
+  "help": {
+    "advisor_advertised_in_help": false,
+    "option_declared_in_package": true,
+    "description": "Enable the server-side advisor tool with the specified model (alias or full ID).",
+    "official_help_sha256_2_1_220": "fcd5b45507c7c602d54d85a300eab288a8a3c6770c6def696ca19a3100725de4",
+    "official_help_sha256_2_1_241": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+    "hidden_from_help_matches_docs": true
+  },
+  "option_declaration": {
+    "flag": "--advisor <model>",
+    "description": "Enable the server-side advisor tool with the specified model (alias or full ID).",
+    "hidden": true,
+    "first_published_in_window": "2.1.220",
+    "present_at_every_published_window_point": true,
+    "alias": null,
+    "short_form": null,
+    "arg_parser": "required string model token; missing value rejects with \"error: option '--advisor <model>' argument missing\"; commander does not validate alias/ID/pairing at parse time",
+    "environment_variable_enable": null,
+    "environment_variable_disable": "CLAUDE_CODE_DISABLE_ADVISOR_TOOL",
+    "settings_key": "advisorModel",
+    "experimental_enable_env": "CLAUDE_CODE_ENABLE_EXPERIMENTAL_ADVISOR_TOOL"
+  },
+  "parser_domain": {
+    "accepted_at_doctor": [
+      "opus",
+      "sonnet",
+      "fable",
+      "haiku",
+      "claude-opus-5",
+      "not-a-model"
+    ],
+    "rejected_at_doctor": [],
+    "missing_value_exit_code": 1,
+    "missing_value_diagnostic": "error: option '--advisor <model>' argument missing",
+    "accepted_exit_code_at_doctor": 0,
+    "pairing_and_entitlement_not_validated_at_doctor": true,
+    "note": "doctor acceptance proves option parse only; model membership, pairing, feature flags, allowlists, and Fable consent are later gates"
+  },
+  "precedence": {
+    "argv_flag_documented_over_advisorModel_setting": true,
+    "advisorModel_setting_can_enable_without_flag": true,
+    "slash_advisor_persists_to_advisorModel": true,
+    "disable_env_accepts_flag_with_no_effect": true,
+    "selected_route_passes_setting_sources_user_project_local": true,
+    "operation_private_when_only_argv_considered": false,
+    "reason_not_operation_private": "selected headless argv includes --setting-sources user,project,local so ambient advisorModel can enable advisor without --advisor; CLAUDE_CODE_DISABLE_ADVISOR_TOOL can nullify an argv selection; feature-flag fetching can keep advisor off"
+  },
+  "model_resolution": {
+    "aliases_documented": [
+      "fable",
+      "opus",
+      "sonnet"
+    ],
+    "aliases_resolve_to_built_in_defaults_that_advance_with_releases": true,
+    "full_model_id_accepted_by_docs": true,
+    "haiku_cannot_act_as_advisor_per_docs": true,
+    "pairing_requires_advisor_at_least_as_capable_as_main": true,
+    "closed_frozen_alias_membership_for_window": false,
+    "reason": "alias defaults advance with Claude Code releases; pairing matrix is main-model dependent and not closed from prompt-free probes"
+  },
+  "application": {
+    "kind": "server-side advisor tool beta advisor-tool-2026-03-01 / advisor_20260301",
+    "not_main_model_selection": true,
+    "not_subagent": true,
+    "model_decides_when_to_consult": true,
+    "extra_provider_request_on_consultation": true,
+    "prompt_free_effective_attachment_observed": false,
+    "effective_attachment_requires_provider_turn": true
+  },
+  "access_entitlement": {
+    "selected_route_access": "local Claude subscription; no API-key field",
+    "docs_say_available_to_subscription_and_api_billed": true,
+    "feature_flag_fetching_required": true,
+    "availableModels_allowlist_can_exclude": true,
+    "fable_may_require_usage_credits_consent": true,
+    "closes_selected_subscription_entitlement_without_live_account": false,
+    "reason": "feature flags, allowlists, Fable consent, and plan usage limits need live account/provider state forbidden by this card"
+  },
+  "extra_request_spend": {
+    "docs_extra_tokens_on_consultation": true,
+    "subscription_counts_toward_plan_usage_limits": true,
+    "api_billing_pays_advisor_model_rates": true,
+    "fable_may_bill_usage_credits": true,
+    "local_estimate_ledger_is_not_this_flag": true,
+    "live_extra_spend_observed": false,
+    "closes_billed_or_allowance_truth_without_provider_turns": false
+  },
+  "terminal_and_cleanup": {
+    "docs_launch_error_on_unsupported_main_invalid_advisor_allowlist_or_fable_consent": true,
+    "docs_background_session_may_start_without_advisor_instead_of_exiting": true,
+    "package_strings_include_silent_non_attachment_on_capability_mismatch": true,
+    "live_terminal_mapping_under_subscription_observed": false,
+    "distinct_swallowtail_advisor_diagnostic": false,
+    "session_persistence": "selected route uses --no-session-persistence; no advisor cleanup claim beyond process exit"
+  },
+  "current_driver_mapping": {
+    "argv_includes_advisor": false,
+    "omission_preserves_exact_prior_argv": true,
+    "omission_does_not_claim_advisor_off": true,
+    "reason": "ambient advisorModel via setting-sources can still enable advisor; omission only means --advisor is absent from argv"
+  },
+  "disposition": {
+    "deliver_now_rows": [],
+    "rejected_rows": [
+      "bind --advisor on local-subscription claude-code.headless as deliver-now caller selection",
+      "flatten advisor into main-model selection",
+      "flatten advisor into subagent vocabulary",
+      "portable advisor capability",
+      "treat doctor-accepted model token as closed membership/entitlement",
+      "treat omission as advisor-off",
+      "equate advisor consultation spend with local catalog USD estimate"
+    ],
+    "evidence_gated_rows": [
+      "subscription-route binding after live entitlement, pairing, feature-flag, and extra-spend closure",
+      "API-key route with exact advisor billing closure",
+      "2.1.242 and later UnverifiedNewer points"
+    ],
+    "withheld_rows": [
+      "live advisor consultation, terminal, and spend proof that require provider turns or account inspection"
+    ],
+    "omission": "unchanged",
+    "existing_route": "unchanged"
+  },
+  "probed_versions": {
+    "2.1.220": {
+      "darwin_arm64_tarball_sha256": "ad3af8adee321a2ab1dbb3b1ff2e8bf8f66c54b5b4dfd6f3792ce6f0c46ab9b6",
+      "darwin_arm64_binary_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "help_sha256": "fcd5b45507c7c602d54d85a300eab288a8a3c6770c6def696ca19a3100725de4",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.221": {
+      "darwin_arm64_tarball_sha256": "00731ef87b3e27e7f1202f9432c0444d28aa2b82faf7c1bd93661b8c96ce9cd3",
+      "darwin_arm64_binary_sha256": "7a181f36ed0fc4fbac6cee4ecf2b615eff93d8b434221fff5d7c878dc5ebf380",
+      "help_sha256": "16e543cbb88b6592d3cfb9ba8b2508326f14fd39a787814d79c35c5f8894fd75",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.222": {
+      "darwin_arm64_tarball_sha256": "5c00056ae55c9a98ae63f66034be573c3f417bab4fc817612b34a1bb29a2dd09",
+      "darwin_arm64_binary_sha256": "c66a6cc6fa2e8145bb1a6e77831f2caf4b83690ff04650500dfa6e2c05ca997c",
+      "help_sha256": "59ff6173f822ec7f9c98d700edec11ec383bc1d52faa83811651ebcbac52895d",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.223": {
+      "darwin_arm64_tarball_sha256": "39d0728ac1f3c8db07e70874c86c091ae07726a848e9bdbc18d528dd9177d56d",
+      "darwin_arm64_binary_sha256": "fcbe0b8d47570c501302dd1ad31cc26ac2810f022c45fa253936a6961dee32bf",
+      "help_sha256": "59ff6173f822ec7f9c98d700edec11ec383bc1d52faa83811651ebcbac52895d",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.224": {
+      "darwin_arm64_tarball_sha256": "d4f3483f5f3f6e4c161b74406bcb846ffc5c49bcdc79f0d1b187050cfd247a31",
+      "darwin_arm64_binary_sha256": "391df9d2ab04e4cf32199335720ac7715a582e91eaecfd4d2198a16f57ea59b3",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.225": {
+      "darwin_arm64_tarball_sha256": "629fac43076fb39556fa5823112b5b1a188dbc9bdc6ff63f03df9273db3411bd",
+      "darwin_arm64_binary_sha256": "08d6e85dd2b80883bb8da93cbeae3dc79b4704d6b84a05d614bf1ff4a5155b69",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.226": {
+      "darwin_arm64_tarball_sha256": "f3caa07c133d8bb540eb59b56985552f18623814805036817afe1f80982abf9d",
+      "darwin_arm64_binary_sha256": "013a1cf17df5ff1dcc189d5d6fd3fdd5f097ddc3cd41aa9992e99805574febbe",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.227": {
+      "darwin_arm64_tarball_sha256": "6d2f150739b9291ef454c4b90d84bdfed45a2529b0201695cc2b8d7bc157014b",
+      "darwin_arm64_binary_sha256": "7432511ba3be818e01f23f6eef8630d214a8b618451e188c3c7d61a987eef6c7",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.228": {
+      "darwin_arm64_tarball_sha256": "7dce9d03bf3f61ee983fb7e35c38e26314699a44b9054cb8fea8da9c7e1ffafc",
+      "darwin_arm64_binary_sha256": "43484b1352cef03a08346f36ef0437755b1aad646ab9313ce187857b794b7247",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.229": {
+      "darwin_arm64_tarball_sha256": "d8bf3203231f18e585d2fc88d36c8a8a22fa980a458e16304ea9944cc586fb59",
+      "darwin_arm64_binary_sha256": "d732f0ba0a539c58c2ffcaef06ed03b4e523726f0cb6cc27b3a5b7e7ae0a7a21",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.231": {
+      "darwin_arm64_tarball_sha256": "89b9b43372ceae6d6d02ab635268f9e1c3d3264cb09bad0fb8268fca77c587c2",
+      "darwin_arm64_binary_sha256": "ba790279cab6ef77b713864d4bf5f764fcea87d3a3eb7591a41f741e45212b5c",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.232": {
+      "darwin_arm64_tarball_sha256": "5a49e8ac898b8f74788298f1c8ff5c5cacf72be915613b417711b81f8adda28f",
+      "darwin_arm64_binary_sha256": "7b39c1588df919d001dea3ffd5651adb682f2451b5a0e18d42d4233296b53cc7",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.233": {
+      "darwin_arm64_tarball_sha256": "a56373192dfec21b03697ecfd3cfd14c9eaa8336d752179be78c675f3e234edd",
+      "darwin_arm64_binary_sha256": "bc466b6cde63edafc773f471a1fb98787fabb31f52240c8616ce7e1f587b212d",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.234": {
+      "darwin_arm64_tarball_sha256": "be45abffb33fc95918e5c64143ed554e79bb615f82ad4a766734af8f2a0b1963",
+      "darwin_arm64_binary_sha256": "08d8700313697cbe730a25420c908a299ce52d56f0eb2cf4fac94cab5109bc57",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.235": {
+      "darwin_arm64_tarball_sha256": "fc84dc9855565bae4a80d893ad8efcb767c9a0084b187073a3dd88464a3a8e9e",
+      "darwin_arm64_binary_sha256": "83b8f806f6f2eea316cfe246628e6c23374711d868f1fd0409db551b877b7748",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.236": {
+      "darwin_arm64_tarball_sha256": "13d82d9e123d875e2923a50f0cf12eb0ef906f70b4303ce5dc5c53e04ed1efe4",
+      "darwin_arm64_binary_sha256": "6bc4ba992d2786cbf0237c4453ca53c1fdf0c3b3d83ffa0025c0d8190ed27848",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.237": {
+      "darwin_arm64_tarball_sha256": "c5978b8e6549bdf39130e53404a88dc259724bed8ac49c82ee87f8cd231ed5a8",
+      "darwin_arm64_binary_sha256": "338901351d4ff17495738c67fc3e12a32c1b506738ac5e012eb782d3d8b5be43",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.238": {
+      "darwin_arm64_tarball_sha256": "0769cc2f4173a652c8c61c292010270c2036b0fd7400b5aa0487661c927c7c8e",
+      "darwin_arm64_binary_sha256": "1c196c456373b57818ae87df84aecee96cb659448c0d6a6bbb401ac5758431b2",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.239": {
+      "darwin_arm64_tarball_sha256": "bd79fcb60c33caa45fb5ba32e1b25ec002fe3ea1bcff6a0948cd4be0f14a94ad",
+      "darwin_arm64_binary_sha256": "2b4f7aafdaa65bcc2335f56a4b276317837203f2c5587b1f2a17ca78ad14e36f",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.240": {
+      "darwin_arm64_tarball_sha256": "583b571a299658655b758301713b60bae3523a8c760df037d434e7240878a693",
+      "darwin_arm64_binary_sha256": "8917e01c99ea0ce6ed887a1729a4cda693c758fe542747be71756987b145c772",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    },
+    "2.1.241": {
+      "darwin_arm64_tarball_sha256": "180656c2cb4aeff35955c8fb6201841c6701cef210246a9edf75af582dfdea98",
+      "darwin_arm64_binary_sha256": "1495eb7c42d3b4451f5f1cd38b6d498d22a4a38c802bc2be5c1cf1795e64820d",
+      "help_sha256": "71ad650f59e08ae40ede14c534db4f49d8590ee5a4f92f6da2882d3a5560fea6",
+      "option_present": true,
+      "help_advertises_advisor": false,
+      "doctor_accepts_advisor_opus": true,
+      "empty_print_accepts_advisor_then_rejects_empty_prompt": true,
+      "strings_include_advisor_model_setting": true,
+      "strings_include_disable_advisor_env": true,
+      "strings_include_pairing_capability_gate": true,
+      "strings_include_server_side_tool": true
+    }
+  },
+  "probed_versions_are_the_admitted_version_set": true,
+  "unpublished_in_range_versions": [
+    "2.1.230"
+  ],
+  "wrapper_tarball_sha256": {
+    "2.1.220": "df33087481fcf5fe9b848b3f7ae7ee6bb1b893c327b0793f052987f9c5b4eee3",
+    "2.1.241": "752252ff9a65431c356ce1ae54b7ded74a138aaa7b93148573d97ff541a2e7e6"
+  }
+}

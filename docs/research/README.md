@@ -149,10 +149,14 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [238 Codex App-Server Personality Evidence](./238-codex-app-server-personality-evidence.md) — promoted evidence stop through g04.085 card 239; model membership, pre-effect rejection, returned selection, and cold restoration remain open; honest empty deliver-now set
 - [239 Gemini CLI Headless Sandbox Evidence](./239-gemini-cli-headless-sandbox-evidence.md) — promoted evidence stop through g04.085 card 240; ambient precedence, backend activation, and containment remain open; honest empty deliver-now set
 - [240 Cline ACP Plan-Mode Evidence](./240-cline-acp-plan-mode-evidence.md) — promoted through g04.085 card 241; one exact `cline.acp` `3.0.55` new-session `HarnessMode::Plan` row; delivery compiled as g04.086 cards 242-243
-- [241 Claude Code Headless Spend-Cap Evidence](./241-claude-code-headless-spend-cap-evidence.md) — reserved for g04.087 card 244
-- [242 Codex App-Server Fast-Mode Evidence](./242-codex-app-server-fast-mode-evidence.md) — reserved for g04.087 card 245
-- [243 Cursor ACP Model-Parameter Evidence](./243-cursor-acp-model-parameter-evidence.md) — reserved for g04.087 card 246
-- [244 Gemini CLI ACP Sandbox Evidence](./244-gemini-cli-acp-sandbox-evidence.md) — reserved for g04.087 card 247
+- [241 Claude Code Headless Spend-Cap Evidence](./241-claude-code-headless-spend-cap-evidence.md) — promoted evidence stop through g04.087 card 244; subscription billing does not close against the local catalog-priced USD ledger; honest empty deliver-now set
+- [242 Codex App-Server Fast-Mode Evidence](./242-codex-app-server-fast-mode-evidence.md) — promoted evidence stop through g04.087 card 245; membership, wire, persistence, catalogue, and ambient-gate truth remain open; honest empty deliver-now set
+- [243 Cursor ACP Model-Parameter Evidence](./243-cursor-acp-model-parameter-evidence.md) — promoted evidence stop through g04.087 card 246; account-gated membership and missing independent ACP selection/confirmation; honest empty deliver-now set
+- [244 Gemini CLI ACP Sandbox Evidence](./244-gemini-cli-acp-sandbox-evidence.md) — promoted evidence stop through g04.087 card 247; ambient precedence, pre-ACP re-exec, backend readiness, and confirmation remain open; honest empty deliver-now set
+- [245 Claude Code Headless Advisor Evidence](./245-claude-code-headless-advisor-evidence.md) — reserved for g04.088 card 248
+- [246 Codex App-Server Plan-Mode Effort Evidence](./246-codex-app-server-plan-mode-effort-evidence.md) — reserved for g04.088 card 249
+- [247 Grok Build ACP Web-Search Disable Evidence](./247-grok-build-acp-web-search-disable-evidence.md) — reserved for g04.088 card 250
+- [248 Cline ACP Model-Selection Evidence](./248-cline-acp-model-selection-evidence.md) — reserved for g04.088 card 251
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210

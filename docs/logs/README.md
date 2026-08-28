@@ -23,11 +23,17 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g04.088 Parallel Feature Qualification Compiled](./2026-08-28-g04-088-parallel-feature-qualification-compiled.md) — cards 248-251 and Research 245-248 reserved as four evidence-only manual worker lanes
+- [2026-08-28 g04.088a Claude Code Headless Advisor Evidence](./2026-08-28-g04-088a-claude-code-headless-advisor-evidence.md) — reserved; card 248; Research 245
+- [2026-08-28 g04.088b Codex App-Server Plan-Mode Effort Evidence](./2026-08-28-g04-088b-codex-app-server-plan-mode-effort-evidence.md) — reserved; card 249; Research 246
+- [2026-08-28 g04.088c Grok Build ACP Web-Search Disable Evidence](./2026-08-28-g04-088c-grok-build-acp-web-search-disable-evidence.md) — reserved; card 250; Research 247
+- [2026-08-28 g04.088d Cline ACP Model-Selection Evidence](./2026-08-28-g04-088d-cline-acp-model-selection-evidence.md) — reserved; card 251; Research 248
+- [2026-08-28 g04.087 Parallel Feature Qualification Closeout](./2026-08-28-g04-087-parallel-feature-qualification-closeout.md) — complete; four honest empty deliver-now sets; PRs 99, 97, 98, and 96 through `e40a5407`
 - [2026-08-27 g04.087 Parallel Feature Qualification Compiled](./2026-08-27-g04-087-parallel-feature-qualification-compiled.md) — cards 244-247 and Research 241-244 reserved as four evidence-only worker lanes
-- [2026-08-27 g04.087a Claude Code Headless Spend-Cap Evidence](./2026-08-27-g04-087a-claude-code-headless-spend-cap-evidence.md) — reserved; card 244; Research 241
-- [2026-08-27 g04.087b Codex App-Server Fast-Mode Evidence](./2026-08-27-g04-087b-codex-app-server-fast-mode-evidence.md) — reserved; card 245; Research 242
-- [2026-08-27 g04.087c Cursor ACP Model-Parameter Evidence](./2026-08-27-g04-087c-cursor-acp-model-parameter-evidence.md) — reserved; card 246; Research 243
-- [2026-08-27 g04.087d Gemini CLI ACP Sandbox Evidence](./2026-08-27-g04-087d-gemini-cli-acp-sandbox-evidence.md) — reserved; card 247; Research 244
+- [2026-08-27 g04.087a Claude Code Headless Spend-Cap Evidence](./2026-08-27-g04-087a-claude-code-headless-spend-cap-evidence.md) — complete; card 244; Research 241 honest empty deliver-now set
+- [2026-08-27 g04.087b Codex App-Server Fast-Mode Evidence](./2026-08-27-g04-087b-codex-app-server-fast-mode-evidence.md) — complete; card 245; Research 242 honest empty deliver-now set
+- [2026-08-27 g04.087c Cursor ACP Model-Parameter Evidence](./2026-08-27-g04-087c-cursor-acp-model-parameter-evidence.md) — complete; card 246; Research 243 honest empty deliver-now set
+- [2026-08-27 g04.087d Gemini CLI ACP Sandbox Evidence](./2026-08-27-g04-087d-gemini-cli-acp-sandbox-evidence.md) — complete; card 247; Research 244 honest empty deliver-now set
 - [2026-08-27 g04.086 Cline ACP Plan Mode](./2026-08-27-g04-086-cline-acp-plan-mode.md) — complete; cards 242-243; PR 95 fast-forwarded at `3f56aeb4`
 - [2026-08-27 g04.086 Cline ACP Plan Mode Compiled](./2026-08-27-g04-086-cline-acp-plan-mode-compiled.md) — cards 242-243 ready; exact new-session Plan selection and confirmation
 - [2026-08-27 g04.085 Parallel Feature Qualification Closeout](./2026-08-27-g04-085-parallel-feature-qualification-closeout.md) — complete; three honest empty sets and one Cline ACP Plan delivery set; PRs 94, 93, 91, and 92

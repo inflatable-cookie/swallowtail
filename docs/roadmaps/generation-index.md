@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-27
+Updated: 2026-08-28
 
 ## Generations
 
@@ -31,9 +31,9 @@ Kiro headless, and OpenHands production wiring join the shared backlog.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 
-g04 now has 87 roadmaps: 71 completed milestones, fifteen honest evidence
+g04 now has 88 roadmaps: 72 completed milestones, fifteen honest evidence
 stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072, 074, 076,
-and 080, and one ready milestone at 087. g04.086 is complete. The generation
+and 080, and one ready milestone at 088. g04.087 is complete. The generation
 has realized route readiness and connection admission, widened proved addable
 coverage, added the Pi SDK
 sidecar, requalified Gemini CLI enterprise API-key access, and established the
@@ -128,12 +128,14 @@ g04.085 is complete. Research 237-239 close three candidates with honest empty
 sets. Research 240 qualifies one exact Cline ACP Plan row. PRs 94, 93, 91, and
 92 landed serially through `abdaefd2`.
 g04.086 is complete and merged through PR 95 at `3f56aeb4`; cards 242-243
-deliver the exact Cline ACP Plan row. The original 85-item feature inventory
-now has 53 numbered-lane dispositions, 22 active qualification candidates, no
-active delivery item, and ten items with no active lane. g04.087 cards 244-247
-are ready as four package-distinct evidence-only lanes: Claude headless spend
-cap, Codex app-server Fast, Cursor ACP model parameters, and Gemini ACP
-sandbox. Workers run in parallel; evidence integration remains serial.
+deliver the exact Cline ACP Plan row. g04.087 is complete: Research 241-244
+admit four honest empty deliver-now sets, and PRs 99, 97, 98, and 96 landed
+serially through `e40a5407`. The original 85-item feature inventory now has 57
+numbered-lane dispositions, 18 active qualification candidates, no active
+delivery item, and ten items with no active lane. g04.088 cards 248-251 are
+ready as four package-distinct evidence-only lanes: Claude headless advisor,
+Codex app-server Plan-mode effort, Grok ACP web-search disable, and Cline ACP
+model selection. Workers run in parallel; evidence integration remains serial.
 Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).

@@ -14,11 +14,11 @@ shape.
 
 ## Next Task
 
-Execute g04.087 cards 244-247 as four parallel manual evidence workers: Claude
-headless spend cap, Codex app-server Fast, Cursor ACP model parameters, and
-Gemini ACP sandbox. Integrate A-B-C-D serially after exact-head review. Do not
-start production binding from a worker lane. Keep g04 open. Contract 029
-currentness remains standing.
+Execute g04.088 cards 248-251 as four parallel manual evidence workers: Claude
+headless advisor, Codex app-server Plan-mode effort, Grok ACP web-search
+disable, and Cline ACP model selection. Integrate A-B-C-D serially after
+exact-head review. Do not start production binding from a worker lane. Keep
+g04 open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

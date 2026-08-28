@@ -330,15 +330,20 @@ families do not interrupt this programme by default.
   240's exact new-session `HarnessMode::Plan` row through selected-value
   confirmation before readiness.
 - [g04.087 Fourth Parallel Per-Route Feature Qualification](./087-fourth-parallel-per-route-feature-qualification.md)
-  is ready. Cards 244-247 reserve package-distinct evidence for Claude
-  headless spend cap, Codex app-server Fast, Cursor ACP model parameters, and
-  Gemini ACP sandbox.
+  is complete. Cards 244-247 and Research 241-244 close Claude headless spend
+  cap, Codex app-server Fast, Cursor ACP model parameters, and Gemini ACP
+  sandbox with honest empty deliver-now sets. PRs 99, 97, 98, and 96 landed
+  serially through `e40a5407`. No production binding follows.
+- [g04.088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md)
+  is ready. Cards 248-251 reserve package-distinct evidence for Claude
+  headless advisor, Codex app-server Plan-mode effort, Grok ACP web-search
+  disable, and Cline ACP model selection.
 
 ## Current Execution Boundary
 
-The normalized inventory has 53 closed original items, 22 active qualification
+The normalized inventory has 57 closed original items, 18 active qualification
 candidates, no active delivery item, and ten items with no active lane. Execute
-g04.087 cards 244-247 as four parallel evidence-only worker lanes and integrate
+g04.088 cards 248-251 as four parallel manual evidence workers and integrate
 their PRs serially A-B-C-D. Keep g04 open. Contract 029 currentness remains
 standing.
 

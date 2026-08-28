@@ -10,20 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.086.
+sequence after g04.087.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 53 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.086. |
-| Active qualification backlog | 22 | A bounded route-local evidence question remains. |
+| Closed by a numbered lane | 57 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.087. |
+| Active qualification backlog | 18 | A bounded route-local evidence question remains. |
 | Active delivery | 0 | No qualified delivery row is waiting for binding or acceptance. |
 | No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-2, 4-5, 7, 15-16, 19-20, 23-27, 30-33, 35-38, 40-41, 43-45, 50, 52-53, 55-60,
+`1-2, 4-7, 15-16, 18-20, 23-33, 35-38, 40-41, 43-45, 50, 52-53, 55-60,
 62-63, 65-68, 72-74, 76-78, 81-85`.
 
 The programme progress section owns the detailed outcome and evidence link for
@@ -35,15 +35,11 @@ queue.
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 6 | `claude-code.headless` | spend cap | g04.087 card 244 |
-| 8-9 | `claude-code.headless` | advisor, permission modes | qualify separately; never widen permissions by default |
+| 8-9 | `claude-code.headless` | advisor, permission modes | item 8 is g04.088 card 248; never widen permissions by default |
 | 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 18 | `codex.app-server` | Fast | g04.087 card 245; no promotion from exec |
-| 21 | `codex.app-server` | Plan effort | distinct from turn reasoning and Fast |
-| 28 | `cursor-agent.acp` | model parameters | g04.087 card 246; exact ACP option and selected-value confirmation required |
-| 29 | `gemini-cli.acp` | sandbox | g04.087 card 247; exact enterprise API-key route |
-| 34 | `grok-build.acp` | web-search disable | exact ACP spawn and applied-state evidence |
-| 42 | `cline.acp` | model | no promotion from headless evidence |
+| 21 | `codex.app-server` | Plan effort | g04.088 card 249; distinct from turn reasoning and Fast |
+| 34 | `grok-build.acp` | web-search disable | g04.088 card 250; exact ACP spawn and applied-state evidence |
+| 42 | `cline.acp` | model | g04.088 card 251; no promotion from headless evidence |
 | 46-47 | `goose.acp` | builtins, mode | host extension authority and session configuration stay distinct |
 | 48-49 | `kiro.acp` | effort, agent | ACP only; deferred Kiro headless work does not own these rows |
 | 54 | `mistral-vibe.headless` | agent beyond Plan | qualify only non-bypass profiles |
@@ -56,16 +52,16 @@ queue.
 
 No original item currently has an active delivery lane.
 
-## Active Qualification Wave IV
+## Active Qualification Wave V
 
-g04.087 owns four package-distinct evidence-only lanes:
+g04.088 owns four package-distinct evidence-only lanes:
 
-1. item 6 — `claude-code.headless` spend cap — card 244 / Research 241
-2. item 18 — `codex.app-server` Fast mode — card 245 / Research 242
-3. item 28 — `cursor-agent.acp` model parameters — card 246 / Research 243
-4. item 29 — `gemini-cli.acp` sandbox — card 247 / Research 244
+1. item 8 — `claude-code.headless` advisor — card 248 / Research 245
+2. item 21 — `codex.app-server` Plan-mode effort — card 249 / Research 246
+3. item 34 — `grok-build.acp` web-search disable — card 250 / Research 247
+4. item 42 — `cline.acp` model selection — card 251 / Research 248
 
-The 22-item active count does not change at compilation. Each item moves only
+The 18-item active count does not change at compilation. Each item moves only
 after its evidence PR lands and the shared closeout records a promoted exact
 row or honest evidence stop.
 
@@ -148,6 +144,24 @@ g04.086 delivered original item 41 on exact `cline.acp` `3.0.55`. Cards
 `session/set_config_option` request and exact selected-value confirmation.
 Omission, permission, resource, isolation, lifecycle, and cleanup truth remain
 unchanged. PR 95 landed by fast-forward at `3f56aeb4`.
+
+## Completed Parallel Qualification Wave IV
+
+g04.087 completed four package-distinct evidence lanes:
+
+1. item 6 — `claude-code.headless` spend cap — card 244 / Research 241
+2. item 18 — `codex.app-server` Fast mode — card 245 / Research 242
+3. item 28 — `cursor-agent.acp` model parameters — card 246 / Research 243
+4. item 29 — `gemini-cli.acp` sandbox — card 247 / Research 244
+
+All four Research records admit honest empty deliver-now sets. The blockers
+are route-specific: billing-unit mismatch, unclosed Fast membership/wire/
+persistence truth, account-gated ACP parameter membership, and ambient
+sandbox/re-exec/confirmation truth. PRs 99, 97, 98, and 96 landed serially
+through `e40a5407`. No production binding follows.
+
+[g04.087](087-fourth-parallel-per-route-feature-qualification.md) owns the
+completed wave.
 
 ## Update Rule
 

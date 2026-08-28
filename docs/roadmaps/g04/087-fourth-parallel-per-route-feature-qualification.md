@@ -1,13 +1,13 @@
 # g04.087 Fourth Parallel Per-Route Feature Qualification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-27
-Updated: 2026-08-27
+Updated: 2026-08-28
 Depends on: g04.086 closeout
 Vision tags: per-route features, exact evidence, parallel qualification
 Contract refs: 006, 013-016, 020, 023, 029, 033-034, 037, 040, 047, 052
-Research: 241-244 reserved
+Research: 241-244
 
 ## Problem
 
@@ -49,18 +49,36 @@ fast-forward after exact-head review, green CI, and operator authorisation.
 
 ## Acceptance Criteria
 
-- [ ] card 244 promotes exact Claude headless spend-cap evidence or an empty set
-- [ ] card 245 promotes exact Codex app-server Fast evidence or an empty set
-- [ ] card 246 promotes exact Cursor ACP model-parameter evidence or an empty set
-- [ ] card 247 promotes exact Gemini ACP sandbox evidence or an empty set
-- [ ] each result separates requested, configured, dispatched, accepted,
+- [x] card 244 promotes exact Claude headless spend-cap evidence or an empty set
+- [x] card 245 promotes exact Codex app-server Fast evidence or an empty set
+- [x] card 246 promotes exact Cursor ACP model-parameter evidence or an empty set
+- [x] card 247 promotes exact Gemini ACP sandbox evidence or an empty set
+- [x] each result separates requested, configured, dispatched, accepted,
       effective, returned, observed, and billed/contained truth as applicable
-- [ ] no worker uses credentials, provider prompts, paid work, install/update,
+- [x] no worker uses credentials, provider prompts, paid work, install/update,
       account inspection, or ambient host mutation
-- [ ] no production binding starts before the orchestrator promotes and
+- [x] no production binding starts before the orchestrator promotes and
       sequences a non-empty exact result
-- [ ] shared closeout reconciles all four original items only after their PRs
+- [x] shared closeout reconciles all four original items only after their PRs
       land
+
+## Outcome
+
+- card 244 / Research 241: honest empty Claude headless spend-cap set; the
+  local catalog-priced USD ledger does not close against subscription billing
+- card 245 / Research 242: honest empty Codex app-server Fast set; soft
+  unsupported drop, request-wire divergence, catalogue substitution, missing
+  cold persistence, and an ambient feature gate prevent binding
+- card 246 / Research 243: honest empty Cursor ACP model-parameter set;
+  membership is account-gated and the selected ACP path lacks independent
+  parameter selection and confirmation
+- card 247 / Research 244: honest empty Gemini ACP sandbox set; ambient
+  precedence, pre-ACP re-exec/stdin behavior, backend readiness, and missing
+  ACP confirmation prevent binding
+
+PRs 99, 97, 98, and 96 landed fast-forward-only in lane order through
+`e40a5407`. Each final head passed hosted CI. No production binding follows.
+Original items 6, 18, 28, and 29 close as evidence stops.
 
 ## Stop Conditions
 
@@ -90,4 +108,3 @@ fast-forward after exact-head review, green CI, and operator authorisation.
 - [Contract 034 Negotiated Harness Session Options](../../contracts/034-negotiated-harness-session-options.md)
 - [Contract 037 Prepared Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 040 Generation-Control Application](../../contracts/040-generation-control-application-and-enforcement.md)
-

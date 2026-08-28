@@ -6,10 +6,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [244-claude-code-headless-spend-cap-evidence.md](./244-claude-code-headless-spend-cap-evidence.md) — ready; lane A; Research 241 reserved
-- [245-codex-app-server-fast-mode-evidence.md](./245-codex-app-server-fast-mode-evidence.md) — ready; lane B; Research 242 reserved
-- [246-cursor-acp-model-parameter-evidence.md](./246-cursor-acp-model-parameter-evidence.md) — ready; lane C; Research 243 reserved
-- [247-gemini-cli-acp-sandbox-evidence.md](./247-gemini-cli-acp-sandbox-evidence.md) — ready; lane D; Research 244 reserved
+- [248-claude-code-headless-advisor-evidence.md](./248-claude-code-headless-advisor-evidence.md) — ready; lane A; Research 245 reserved
+- [249-codex-app-server-plan-mode-effort-evidence.md](./249-codex-app-server-plan-mode-effort-evidence.md) — ready; lane B; Research 246 reserved
+- [250-grok-build-acp-web-search-disable-evidence.md](./250-grok-build-acp-web-search-disable-evidence.md) — ready; lane C; Research 247 reserved
+- [251-cline-acp-model-selection-evidence.md](./251-cline-acp-model-selection-evidence.md) — ready; lane D; Research 248 reserved
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -38,6 +38,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [247-gemini-cli-acp-sandbox-evidence.md](./247-gemini-cli-acp-sandbox-evidence.md) — complete; Research 244 honest empty deliver-now set
+- [246-cursor-acp-model-parameter-evidence.md](./246-cursor-acp-model-parameter-evidence.md) — complete; Research 243 honest empty deliver-now set
+- [245-codex-app-server-fast-mode-evidence.md](./245-codex-app-server-fast-mode-evidence.md) — complete; Research 242 honest empty deliver-now set
+- [244-claude-code-headless-spend-cap-evidence.md](./244-claude-code-headless-spend-cap-evidence.md) — complete; Research 241 honest empty deliver-now set
 - [243-cline-acp-plan-mode-acceptance.md](./243-cline-acp-plan-mode-acceptance.md) — complete; route-local Plan acceptance through PR 95 at `3f56aeb4`
 - [242-cline-acp-plan-mode-binding.md](./242-cline-acp-plan-mode-binding.md) — complete; exact Research 240 Plan binding
 - [241-cline-acp-plan-mode-evidence.md](./241-cline-acp-plan-mode-evidence.md) — complete; Research 240 admits one exact new-session Plan row

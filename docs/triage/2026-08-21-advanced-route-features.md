@@ -2747,3 +2747,36 @@ Run workers in parallel through manual harness handoffs. Integrate A-B-C-D
 serially after exact-head review. Shared inventory, programme, triage, matrices,
 indexes, and Next Task remain orchestrator-owned. Do not begin production
 binding from an evidence worker. Keep g04 open.
+
+## Post-g04.087 Completion And g04.088 Compilation (2026-08-28)
+
+Disposition: four evidence stops; compile the next four package-distinct
+qualification lanes.
+
+Research 241 closes Claude headless spend capping because its local
+catalog-priced USD ledger is not the selected subscription billing unit.
+Research 242 closes Codex app-server Fast because membership can be softly
+dropped or substituted, preference can diverge from request bytes, cold
+persistence is absent, and the feature gate remains ambient. Research 243
+closes Cursor ACP model parameters because membership is account-gated and the
+selected ACP path lacks independent parameter selection and confirmation.
+Research 244 closes Gemini ACP sandbox because ambient precedence, pre-ACP
+re-exec/stdin handling, backend readiness, and confirmation do not close.
+
+Original items 6, 18, 28, and 29 move to closed. The live ledger now owns 57
+closed items, 18 active qualification candidates, no active delivery item,
+and ten with no active lane. PRs 99, 97, 98, and 96 landed serially through
+`e40a5407`. No production binding follows.
+
+g04.088 selects the lowest remaining package-distinct items:
+
+1. item 8 — Claude Code headless `--advisor`
+2. item 21 — Codex app-server `plan_mode_reasoning_effort`
+3. item 34 — Grok Build ACP `--disable-web-search`
+4. item 42 — Cline ACP model selection
+
+Cards 248-251 and Research 245-248 own evidence only. Advisor model/spend,
+Plan-specific effort, provider web-search suppression, and ACP model selection
+remain separate route-local claims. Run manual workers in parallel; integrate
+A-B-C-D serially. Shared closeout and any non-empty delivery compilation stay
+with the orchestrator. Keep g04 open.

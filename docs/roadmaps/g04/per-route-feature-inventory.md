@@ -10,20 +10,20 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.089.
+sequence after g04.090.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed disposition | 81 | Delivered, evidence-stopped, corrected, explicitly withheld, inapplicable, or moved to its owning programme. |
-| Active qualification backlog | 2 | A bounded route-local evidence question remains. |
+| Closed disposition | 83 | Delivered, evidence-stopped, corrected, explicitly withheld, inapplicable, or moved to its owning programme. |
+| Active qualification backlog | 0 | No bounded route-local evidence question remains. |
 | Active delivery | 0 | No qualified delivery row is waiting for binding or acceptance. |
 | Parked | 2 | A named model/schema or contract/guide trigger is required before qualification. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-46, 48, 50-78, 81-85`.
+`1-78, 81-85`.
 
 The programme progress section and remainder audit own the detailed outcome for
 closed rows. `Closed` does not mean every feature shipped. Honest empty sets,
@@ -32,10 +32,7 @@ count as dispositions and do not remain in the live queue.
 
 ## Active Qualification Backlog
 
-| Original ids | Route | Control family | Current posture |
-| --- | --- | --- | --- |
-| 47 | `goose.acp` | mode | g04.090 card 256; ACP membership and confirmation; never auto-approve by default |
-| 49 | `kiro.acp` | agent profile | g04.090 card 257; exact ACP membership, failure, and confirmation required |
+No original item currently has an active qualification lane.
 
 ## Active Delivery
 
@@ -79,15 +76,17 @@ change may justify a new assessment; they do not remain recurring queue items.
 | 79 | `bedrock.runtime` model-specific thinking | no selected model/schema row to qualify | exact admitted Bedrock model, region/profile, and official request schema are named |
 | 80 | `bedrock.runtime` tools / guardrails | current contract and runtime guide exclude both | contract and guide explicitly admit a bounded surface |
 
-## Active Qualification Wave VII
+## Completed Qualification Wave VII
 
-g04.090 owns two package-distinct evidence-only lanes:
+g04.090 completed two package-distinct evidence-only lanes:
 
 1. item 47 — `goose.acp` mode — card 256 / Research 253
 2. item 49 — `kiro.acp` agent profile — card 257 / Research 254
 
-Run both through manual harness handoffs in parallel. Shared closeout remains
-serial after Goose then Kiro integration.
+Research 253-254 admit honest empty deliver-now sets. PR 111 landed Goose at
+`9e317e20`; PR 110 was restacked and landed Kiro at `96b937d1`. Both were
+fast-forward-only after exact-head green CI. Original items 47 and 49 close as
+evidence stops. No production binding follows.
 
 ## Completed Parallel Qualification Wave
 

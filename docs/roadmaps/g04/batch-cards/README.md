@@ -6,8 +6,7 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [256-goose-acp-mode-evidence.md](./256-goose-acp-mode-evidence.md) — ready; lane A; Research 253 reserved
-- [257-kiro-acp-agent-profile-evidence.md](./257-kiro-acp-agent-profile-evidence.md) — ready; lane B; Research 254 reserved
+No g04 batch card is ready.
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -36,6 +35,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [257-kiro-acp-agent-profile-evidence.md](./257-kiro-acp-agent-profile-evidence.md) — complete; Research 254 honest empty deliver-now set
+- [256-goose-acp-mode-evidence.md](./256-goose-acp-mode-evidence.md) — complete; Research 253 honest empty deliver-now set
 - [255-mistral-vibe-headless-agent-profile-evidence.md](./255-mistral-vibe-headless-agent-profile-evidence.md) — complete; Research 252 honest empty deliver-now set
 - [254-kiro-acp-effort-evidence.md](./254-kiro-acp-effort-evidence.md) — complete; Research 251 honest empty deliver-now set
 - [253-goose-acp-builtin-evidence.md](./253-goose-acp-builtin-evidence.md) — complete; Research 250 honest empty deliver-now set

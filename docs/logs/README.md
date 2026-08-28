@@ -23,9 +23,10 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g04.090 Residual Feature Qualification Closeout](./2026-08-28-g04-090-residual-feature-qualification-closeout.md) — complete; two honest empty deliver-now sets; PR 111 at `9e317e20`, then restacked PR 110 at `96b937d1`
 - [2026-08-28 g04.090 Residual Feature Qualification Compiled](./2026-08-28-g04-090-residual-feature-qualification-compiled.md) — remainder audited to 81 closed, two active qualification, and two parked; cards 256-257 and Research 253-254 reserved
-- [2026-08-28 g04.090a Goose ACP Mode Evidence](./2026-08-28-g04-090a-goose-acp-mode-evidence.md) — reserved; card 256; Research 253
-- [2026-08-28 g04.090b Kiro ACP Agent-Profile Evidence](./2026-08-28-g04-090b-kiro-acp-agent-profile-evidence.md) — reserved; card 257; Research 254
+- [2026-08-28 g04.090a Goose ACP Mode Evidence](./2026-08-28-g04-090a-goose-acp-mode-evidence.md) — complete; card 256; Research 253 honest empty deliver-now set
+- [2026-08-28 g04.090b Kiro ACP Agent-Profile Evidence](./2026-08-28-g04-090b-kiro-acp-agent-profile-evidence.md) — complete; card 257; Research 254 honest empty deliver-now set
 - [2026-08-28 g04.089 Parallel Feature Qualification Closeout](./2026-08-28-g04-089-parallel-feature-qualification-closeout.md) — complete; four honest empty deliver-now sets; PRs 109, 107, 106, and 108 through `e28979a0`
 - [2026-08-28 g04.089 Parallel Feature Qualification Compiled](./2026-08-28-g04-089-parallel-feature-qualification-compiled.md) — cards 252-255 and Research 249-252 reserved as four evidence-only manual worker lanes
 - [2026-08-28 g04.089a Claude Code Headless Permission-Mode Evidence](./2026-08-28-g04-089a-claude-code-headless-permission-mode-evidence.md) — reserved; card 252; Research 249

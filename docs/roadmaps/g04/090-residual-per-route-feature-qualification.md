@@ -1,13 +1,13 @@
 # g04.090 Residual Per-Route Feature Qualification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
 Depends on: g04.089 closeout and remainder audit
 Vision tags: per-route features, exact evidence, residual qualification
 Contract refs: 006, 013-016, 020, 023, 029, 034, 037, 040, 047, 052
-Research: 253-254 reserved
+Research: 253-254 promoted
 
 ## Problem
 
@@ -43,17 +43,17 @@ by fast-forward after exact-head review, green CI, and operator authorisation.
 
 ## Acceptance Criteria
 
-- [ ] card 256 promotes exact Goose ACP mode evidence or an empty set
-- [ ] card 257 promotes exact Kiro ACP agent-profile evidence or an empty set
-- [ ] each result separates requested, configured, dispatched, accepted,
+- [x] card 256 promotes exact Goose ACP mode evidence or an empty set
+- [x] card 257 promotes exact Kiro ACP agent-profile evidence or an empty set
+- [x] each result separates requested, configured, dispatched, accepted,
       effective, returned, observed, and persisted truth as applicable
-- [ ] auto-approval, trust-all, permission widening, and ambient profile
+- [x] auto-approval, trust-all, permission widening, and ambient profile
       mutation stay withheld
-- [ ] provider labels do not become portable `HarnessMode` values by implication
-- [ ] no worker uses credentials, provider prompts, paid work, install/update,
+- [x] provider labels do not become portable `HarnessMode` values by implication
+- [x] no worker uses credentials, provider prompts, paid work, install/update,
       account inspection, or ambient host mutation
-- [ ] no production binding starts from a worker lane
-- [ ] shared closeout reconciles both original items only after their PRs land
+- [x] no production binding starts from a worker lane
+- [x] shared closeout reconciles both original items only after their PRs land
 
 ## Stop Conditions
 
@@ -69,6 +69,14 @@ by fast-forward after exact-head review, green CI, and operator authorisation.
 
 - [256 Goose ACP Mode Evidence](batch-cards/256-goose-acp-mode-evidence.md)
 - [257 Kiro ACP Agent-Profile Evidence](batch-cards/257-kiro-acp-agent-profile-evidence.md)
+
+## Result
+
+Both lanes closed with honest empty deliver-now sets. PR 111 landed Goose by
+fast-forward at `9e317e20`. PR 110 was then restacked and landed Kiro by
+fast-forward at `96b937d1`. Each exact head passed hosted CI before merge.
+Original items 47 and 49 close as evidence stops. No production binding
+follows. g04 remains open at operator direction.
 
 ## References
 

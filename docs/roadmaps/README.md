@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.090 cards 256-257 as two parallel manual evidence workers: Goose
-ACP mode and Kiro ACP agent-profile selection. Integrate Goose then Kiro after
-exact-head review. Do not start production binding from a worker lane. Keep g04
-open. Contract 029 currentness remains standing.
+Operator checkpoint. g04.090 is complete; the 85-item per-route feature
+inventory has 83 closed dispositions, no active qualification or delivery
+item, and two parked Bedrock items. Keep g04 open. Select the next bounded g04
+work explicitly. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

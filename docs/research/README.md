@@ -161,8 +161,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [250 Goose ACP Builtin Evidence](./250-goose-acp-builtin-evidence.md) — reserved for g04.089 card 253
 - [251 Kiro ACP Effort Evidence](./251-kiro-acp-effort-evidence.md) — reserved for g04.089 card 254
 - [252 Mistral Vibe Headless Agent-Profile Evidence](./252-mistral-vibe-headless-agent-profile-evidence.md) — reserved for g04.089 card 255
-- [253 Goose ACP Mode Evidence](./253-goose-acp-mode-evidence.md) — reserved for g04.090 card 256
-- [254 Kiro ACP Agent-Profile Evidence](./254-kiro-acp-agent-profile-evidence.md) — reserved for g04.090 card 257
+- [253 Goose ACP Mode Evidence](./253-goose-acp-mode-evidence.md) — promoted evidence stop through g04.090 card 256; closed mode membership cannot overcome fail-open persisted drift, authority widening, or live confirmation requirements
+- [254 Kiro ACP Agent-Profile Evidence](./254-kiro-acp-agent-profile-evidence.md) — promoted evidence stop through g04.090 card 257; ambient membership, silent missing-name fallback, and absent applied-profile confirmation leave an honest empty set
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)
 - [179 Kimi Code 0.38.0 Identity](./179-kimi-code-0-38-0-identity.md) — errata: headless `0.38.0` qualification retracted per Research 210

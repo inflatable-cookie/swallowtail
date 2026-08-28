@@ -2838,3 +2838,20 @@ reopen only after contracts and the route guide admit a bounded surface.
 g04.090 retains only item 47, Goose ACP mode, and item 49, Kiro ACP `--agent`.
 Cards 256-257 and Research 253-254 own evidence only. Run both manual workers
 in parallel; integrate Goose then Kiro. Keep g04 open.
+
+## Post-g04.090 Residual Qualification Closeout (2026-08-28)
+
+Disposition: two evidence stops; no active per-route feature lane remains.
+
+Research 253 closes Goose ACP mode with an honest empty deliver-now set.
+Membership is closed, but persisted malformed mode falls back to auto,
+available non-chat modes widen permission authority, and confirmation needs a
+live provider-backed session. Research 254 closes Kiro ACP agent profiles with
+an honest empty set because membership is ambient, missing names silently fall
+back, and ACP exposes no applied-profile confirmation.
+
+PR 111 landed Goose at `9e317e20`; restacked PR 110 landed Kiro at
+`96b937d1`. Original items 47 and 49 move to closed. The live ledger now has 83
+closed dispositions, no active qualification or delivery item, and two parked
+Bedrock items. No production binding follows. g04 remains open at operator
+direction.

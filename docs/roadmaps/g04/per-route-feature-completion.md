@@ -345,16 +345,16 @@ families do not interrupt this programme by default.
   headless agent profiles with honest empty deliver-now sets. PRs 109, 107,
   106, and 108 landed serially through `e28979a0`. No binding follows.
 - [g04.090 Residual Per-Route Feature Qualification](./090-residual-per-route-feature-qualification.md)
-  is ready. The remainder audit closes sixteen stale rows, parks Bedrock items
-  79-80, and leaves only cards 256-257 for Goose ACP mode and Kiro ACP agent
-  selection.
+  is complete. Cards 256-257 and Research 253-254 close Goose ACP mode and
+  Kiro ACP agent selection with honest empty deliver-now sets. PR 111 landed
+  Goose at `9e317e20`; restacked PR 110 landed Kiro at `96b937d1`. No
+  production binding follows.
 
 ## Current Execution Boundary
 
-The normalized inventory has 81 closed original items, two active qualification
-candidates, no active delivery item, and two parked Bedrock items. Execute
-g04.090 cards 256-257 as two parallel manual evidence workers and integrate
-Goose then Kiro. Keep g04 open. Contract 029 currentness remains standing.
+The normalized inventory has 83 closed original items, no active qualification
+or delivery item, and two parked Bedrock items. Keep g04 open pending operator
+direction. Contract 029 currentness remains standing.
 
 ## Exclusions
 

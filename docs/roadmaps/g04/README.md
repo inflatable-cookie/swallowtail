@@ -104,15 +104,15 @@ and selection policy.
 - [g04.087 Fourth Parallel Per-Route Feature Qualification](087-fourth-parallel-per-route-feature-qualification.md) — complete, cards 244-247; four honest empty deliver-now sets; PRs 99, 97, 98, and 96 through `e40a5407`
 - [g04.088 Fifth Parallel Per-Route Feature Qualification](088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
 - [g04.089 Sixth Parallel Per-Route Feature Qualification](089-sixth-parallel-per-route-feature-qualification.md) — complete, cards 252-255; Research 249-252 honest empty deliver-now sets; PRs 109, 107, 106, and 108 through `e28979a0`
-- [g04.090 Residual Per-Route Feature Qualification](090-residual-per-route-feature-qualification.md) — ready, cards 256-257; Research 253-254 reserved as two evidence-only lanes
+- [g04.090 Residual Per-Route Feature Qualification](090-residual-per-route-feature-qualification.md) — complete, cards 256-257; Research 253-254 honest empty deliver-now sets; PR 111 at `9e317e20`, then restacked PR 110 at `96b937d1`
 - [Per-Route Feature Inventory](per-route-feature-inventory.md) — 85 original
-  items audited after g04.089: 81 closed, two active qualification candidates,
-  no active delivery, and two parked
+  items audited through g04.090: 83 closed, no active qualification or
+  delivery item, and two parked
 
-g04 has 90 numbered roadmaps: 74 completed milestones, fifteen honest
+g04 has 90 numbered roadmaps: 75 completed milestones, fifteen honest
 evidence stops at 040, 042, 043, 045, 057, 058, 059, 063, 065, 067, 071, 072,
-074, 076, and 080, and one ready milestone at 090. The operator keeps the
-generation active.
+074, 076, and 080, and no ready milestone. The operator keeps the generation
+active.
 Do not close g04 without explicit operator direction.
 
 ## Current Checkpoint
@@ -330,8 +330,11 @@ Do not close g04 without explicit operator direction.
   sets. PRs 104, 101, 103, and 102 landed serially through `23278abe`
 - g04.089 is complete. Research 249-252 admit four honest empty deliver-now
   sets. PRs 109, 107, 106, and 108 landed serially through `e28979a0`
-- the remainder audit closes sixteen stale rows and parks two Bedrock rows;
-  g04.090 cards 256-257 retain only Goose mode and Kiro agent selection
+- g04.090 is complete. Research 253-254 close Goose mode and Kiro agent
+  selection with honest empty deliver-now sets. PR 111 landed at `9e317e20`;
+  restacked PR 110 landed at `96b937d1`. No production binding follows
+- the 85-item inventory now has 83 closed dispositions, no active
+  qualification or delivery item, and two parked Bedrock rows
 - g04 remains active at 90 roadmaps; generation closure awaits explicit
   operator direction
 - `v0.3.3` remains `51d18620`
@@ -485,11 +488,11 @@ Do not close g04 without explicit operator direction.
     sets. PRs 104, 101, 103, and 102 landed serially through `23278abe`.
 52. g04.089 is complete. Research 249-252 admit four honest empty deliver-now
     sets. PRs 109, 107, 106, and 108 landed serially through `e28979a0`.
-53. The remainder audit records 81 closed items, two active qualification rows,
-    no active delivery, and two parked Bedrock rows.
-54. g04.090 is ready. Cards 256-257 run Goose ACP mode and Kiro ACP agent
-    selection as package-distinct evidence-only lanes in parallel; integration
-    remains serial Goose then Kiro.
+53. The remainder audit and g04.090 closeout record 83 closed items, no active
+    qualification or delivery row, and two parked Bedrock rows.
+54. g04.090 is complete. Research 253-254 admit honest empty deliver-now sets.
+    PR 111 landed Goose at `9e317e20`; restacked PR 110 landed Kiro at
+    `96b937d1`. No production binding follows.
 55. g04 remains active at operator direction. Contract 029 remains standing.
 
 New route-family research does not pre-empt this sequence.
@@ -554,7 +557,7 @@ New route-family research does not pre-empt this sequence.
 - [087 Fourth Parallel Per-Route Feature Qualification](./087-fourth-parallel-per-route-feature-qualification.md) — complete, cards 244-247; four honest empty sets; PRs 99, 97, 98, and 96 through `e40a5407`
 - [088 Fifth Parallel Per-Route Feature Qualification](./088-fifth-parallel-per-route-feature-qualification.md) — complete, cards 248-251; Research 245-248 honest empty deliver-now sets; PRs 104, 101, 103, and 102 through `23278abe`
 - [089 Sixth Parallel Per-Route Feature Qualification](./089-sixth-parallel-per-route-feature-qualification.md) — complete, cards 252-255; Research 249-252 honest empty deliver-now sets; PRs 109, 107, 106, and 108 through `e28979a0`
-- [090 Residual Per-Route Feature Qualification](./090-residual-per-route-feature-qualification.md) — ready, cards 256-257; Research 253-254 reserved
+- [090 Residual Per-Route Feature Qualification](./090-residual-per-route-feature-qualification.md) — complete, cards 256-257; Research 253-254 honest empty deliver-now sets; PR 111 at `9e317e20`, then PR 110 at `96b937d1`
 - [035 Cursor Headless Model Parameters](./035-cursor-headless-model-parameters.md) — complete, cards 095-097
 - [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — completed (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092

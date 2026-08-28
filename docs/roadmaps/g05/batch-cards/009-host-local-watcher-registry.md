@@ -1,10 +1,11 @@
 # 009 Host-Local Watcher Registry
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-28
 Milestone: `../003-operation-scoped-watcher-proof.md`
-Depends on: card 008
+Depends on: completed card 008
 
 ## Goal
 
@@ -34,4 +35,5 @@ authority; do not expose command or PID data publicly.
 
 ## Auto-Continuation
 
-No. Remains planned until card 008 lands.
+No. Return one reviewable PR. Cards 010-011 remain planned until card 009
+lands and Research 257 stays admitted.

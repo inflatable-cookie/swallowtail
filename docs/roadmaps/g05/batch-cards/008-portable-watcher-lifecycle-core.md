@@ -3,6 +3,7 @@
 Status: complete
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-28
 Milestone: `../003-operation-scoped-watcher-proof.md`
 Depends on: Contract 059
 

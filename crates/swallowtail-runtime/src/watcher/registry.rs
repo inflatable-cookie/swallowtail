@@ -198,6 +198,11 @@ impl WatcherRegistry {
         }
         let owning_turn = WatcherOwningTurn::new(runtime_turn.as_str().to_owned())
             .map_err(|_| WatcherFailure::new(WatcherFailureKind::ForeignIdentity))?;
+        // Prove at least one turn-bound id fits the public byte bound.
+        let _ = WatcherId::new(format!("{}/watcher-1", owning_turn.as_str()))
+            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
+        let _ = ActivityId::new(format!("{}/watcher-activity-1", owning_turn.as_str()))
+            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
         Ok(Self {
             owning_turn,
             runtime_turn,
@@ -247,6 +252,9 @@ impl WatcherRegistry {
     ///
     /// Acceptance does not start host work. The caller supplies the optional
     /// summary; the registry allocates the watcher and activity identities.
+    ///
+    /// Allocated ids embed the owning-turn key so a stale id from another turn
+    /// cannot alias a later registry's sequence-local names.
     pub fn accept_start(
         &mut self,
         requester: WatcherRequester,
@@ -257,10 +265,18 @@ impl WatcherRegistry {
         }
         let sequence = self.next_sequence;
         self.next_sequence = self.next_sequence.saturating_add(1);
-        let watcher_id = WatcherId::new(format!("watcher-{sequence}"))
-            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
-        let activity_id = ActivityId::new(format!("watcher-activity-{sequence}"))
-            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
+        let watcher_id = WatcherId::new(format!(
+            "{}/watcher-{}",
+            self.owning_turn.as_str(),
+            sequence
+        ))
+        .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
+        let activity_id = ActivityId::new(format!(
+            "{}/watcher-activity-{}",
+            self.owning_turn.as_str(),
+            sequence
+        ))
+        .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
         let record = WatcherRecord {
             activity_id,
             phase: WatcherLifecyclePhase::Accepted,
@@ -312,10 +328,16 @@ impl WatcherRegistry {
     }
 
     /// Requests stop. Repeated stop is idempotent; races keep the first cause.
+    /// Requests stop. Repeated stop is idempotent; races keep the first cause.
+    ///
+    /// The owning turn and watcher id are validated together before mutation so
+    /// a stale id from another turn cannot stop current work.
     pub fn request_stop(
         &mut self,
+        owning_turn: &WatcherOwningTurn,
         watcher_id: &WatcherId,
     ) -> Result<(WatcherStopAcknowledgement, WatcherSnapshot), WatcherFailure> {
+        self.inspect(owning_turn, watcher_id)?;
         let record = self.record_mut(watcher_id)?;
         match record.phase {
             WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {

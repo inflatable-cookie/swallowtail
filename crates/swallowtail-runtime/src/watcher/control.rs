@@ -165,10 +165,7 @@ impl ModelWatcherControl for ModelWatcherRole {
         owning_turn: &WatcherOwningTurn,
         watcher_id: &WatcherId,
     ) -> Result<(WatcherStopAcknowledgement, WatcherSnapshot), WatcherFailure> {
-        self.with_registry(|registry| {
-            registry.inspect(owning_turn, watcher_id)?;
-            registry.request_stop(watcher_id)
-        })
+        self.with_registry(|registry| registry.request_stop(owning_turn, watcher_id))
     }
 }
 
@@ -227,10 +224,7 @@ impl OperatorWatcherControl for OperatorWatcherRole {
         owning_turn: &WatcherOwningTurn,
         watcher_id: &WatcherId,
     ) -> Result<(WatcherStopAcknowledgement, WatcherSnapshot), WatcherFailure> {
-        self.with_registry(|registry| {
-            registry.inspect(owning_turn, watcher_id)?;
-            registry.request_stop(watcher_id)
-        })
+        self.with_registry(|registry| registry.request_stop(owning_turn, watcher_id))
     }
 
     fn stop_and_join_all(

@@ -6,8 +6,8 @@ Created: 2026-08-28
 Depends on: completed g05.001; Contract 058
 Vision tags: harness skills, selected-session truth, consumer integration
 Contract refs: 020, 029, 032, 033, 037, 041, 047, 058
-Research: 256 reserved
-Planning state: card 004 ready; cards 005-006 planned
+Research: 256 promoted
+Planning state: card 004 complete; cards 005-006 planned behind empty disposition
 
 ## Problem
 
@@ -27,10 +27,10 @@ Bind it only if exact evidence closes every Contract 058 gate.
 
 ### Batch 2.1 — Exact Evidence
 
-- [ ] execute ready card 004
-- [ ] freeze init timing, roster source, completeness, provenance, freshness,
+- [x] execute ready card 004
+- [x] freeze init timing, roster source, completeness, provenance, freshness,
       and prompt/auth/mutation behavior
-- [ ] return a closed positive row or honest empty set in Research 256
+- [x] return a closed positive row or honest empty set in Research 256
 
 ### Batch 2.2 — Conditional Binding
 

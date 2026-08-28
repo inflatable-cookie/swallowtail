@@ -154,5 +154,5 @@ pub use watcher_assertions::{
     assert_watcher_cleanup_rejects_completed, assert_watcher_completion_stop_race,
     assert_watcher_identity_redaction, assert_watcher_lifecycle_transitions,
     assert_watcher_model_operator_roles, assert_watcher_ownership_rejection,
-    assert_watcher_wait_representation,
+    assert_watcher_stale_id_fails_closed, assert_watcher_wait_representation,
 };

@@ -388,6 +388,7 @@ pub fn swallowtail_testkit::assert_watcher_identity_redaction(&swallowtail_core:
 pub fn swallowtail_testkit::assert_watcher_lifecycle_transitions()
 pub fn swallowtail_testkit::assert_watcher_model_operator_roles()
 pub fn swallowtail_testkit::assert_watcher_ownership_rejection(&swallowtail_runtime::watcher::registry::WatcherRegistry)
+pub fn swallowtail_testkit::assert_watcher_stale_id_fails_closed()
 pub fn swallowtail_testkit::assert_watcher_wait_representation()
 pub fn swallowtail_testkit::fixture_hosted_available_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_testkit::fixture_hosted_missing_host_service_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor

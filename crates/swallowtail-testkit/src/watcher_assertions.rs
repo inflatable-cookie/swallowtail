@@ -134,8 +134,9 @@ pub fn assert_watcher_lifecycle_transitions() {
         Some(WatcherTerminalCause::Completed)
     );
 
+    let owning = registry.owning_turn().clone();
     let (stop, _) = registry
-        .request_stop(accepted.watcher_id())
+        .request_stop(&owning, accepted.watcher_id())
         .expect("repeated stop is idempotent");
     assert_eq!(
         stop,
@@ -157,8 +158,9 @@ pub fn assert_watcher_completion_stop_race() {
     registry
         .mark_running(first.watcher_id())
         .expect("running succeeds");
+    let owning = registry.owning_turn().clone();
     let (stop, stopped) = registry
-        .request_stop(first.watcher_id())
+        .request_stop(&owning, first.watcher_id())
         .expect("stop wins");
     assert_eq!(stop, WatcherStopAcknowledgement::Stopped);
     assert_eq!(
@@ -254,6 +256,54 @@ pub fn assert_watcher_model_operator_roles() {
         .stop(&owning, model_start.watcher_id())
         .expect("operator can stop model-started watcher");
     assert_eq!(stop, WatcherStopAcknowledgement::Stopped);
+}
+
+/// Proves a stale watcher id from turn A cannot stop turn B work.
+pub fn assert_watcher_stale_id_fails_closed() {
+    let turn_a = RuntimeTurnId::new("turn-a").expect("turn a is valid");
+    let turn_b = RuntimeTurnId::new("turn-b").expect("turn b is valid");
+    let mut registry_a = WatcherRegistry::new(turn_a, 2).expect("registry a");
+    let stale = registry_a
+        .accept_start(WatcherRequester::Model, None)
+        .expect("turn a accept");
+    let stale_id = stale.watcher_id().clone();
+
+    let registry_b = Arc::new(Mutex::new(
+        WatcherRegistry::new(turn_b, 2).expect("registry b"),
+    ));
+    let surface = WatcherControlSurface::new(Arc::clone(&registry_b));
+    let model = surface.model();
+    let operator = surface.operator();
+    let current = model.accept_start(None).expect("turn b accept");
+    let owning_b = registry_b.lock().expect("lock").owning_turn().clone();
+
+    assert_ne!(
+        stale_id.as_str(),
+        current.watcher_id().as_str(),
+        "{WATCHER_RULE}: turn-bound ids must not reuse sequence-local names"
+    );
+
+    let model_failure = model
+        .stop(&owning_b, &stale_id)
+        .expect_err("{WATCHER_RULE}: stale model stop must fail closed");
+    assert_eq!(model_failure.kind(), WatcherFailureKind::UnknownWatcher);
+
+    let operator_failure = operator
+        .stop(&owning_b, &stale_id)
+        .expect_err("{WATCHER_RULE}: stale operator stop must fail closed");
+    assert_eq!(operator_failure.kind(), WatcherFailureKind::UnknownWatcher);
+
+    let current_phase = registry_b
+        .lock()
+        .expect("lock")
+        .inspect(&owning_b, current.watcher_id())
+        .expect("current watcher remains")
+        .phase();
+    assert_eq!(
+        current_phase,
+        WatcherLifecyclePhase::Accepted,
+        "{WATCHER_RULE}: stale stop must not mutate foreign turn work"
+    );
 }
 
 /// Proves cleanup cannot assign successful completion and uses cleanup causes only.
@@ -370,6 +420,7 @@ pub fn assert_portable_watcher_lifecycle_contract() {
     assert_watcher_completion_stop_race();
     assert_watcher_wait_representation();
     assert_watcher_model_operator_roles();
+    assert_watcher_stale_id_fails_closed();
     assert_watcher_cleanup_rejects_completed();
     assert_watcher_activity_projection();
 }

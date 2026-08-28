@@ -2636,7 +2636,7 @@ pub fn swallowtail_runtime::WatcherRegistry::new(swallowtail_runtime::RuntimeTur
 pub const fn swallowtail_runtime::WatcherRegistry::owning_turn(&self) -> &swallowtail_core::watcher::identity::WatcherOwningTurn
 pub fn swallowtail_runtime::WatcherRegistry::represent_wait_cancelled(&self) -> swallowtail_runtime::WatcherWaitRepresentation
 pub fn swallowtail_runtime::WatcherRegistry::represent_wait_deadline_exceeded(&self) -> swallowtail_runtime::WatcherWaitRepresentation
-pub fn swallowtail_runtime::WatcherRegistry::request_stop(&mut self, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
+pub fn swallowtail_runtime::WatcherRegistry::request_stop(&mut self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::WatcherFailure>
 pub fn swallowtail_runtime::WatcherRegistry::require_wait_satisfied(&self, &swallowtail_core::watcher::identity::WatcherOwningTurn, &swallowtail_core::watcher::identity::WatcherId) -> core::result::Result<swallowtail_core::watcher::lifecycle::WatcherTerminalCause, swallowtail_runtime::WatcherFailure>
 pub const fn swallowtail_runtime::WatcherRegistry::runtime_turn(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub fn swallowtail_runtime::WatcherRegistry::stop_and_join_all(&mut self, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::WatcherFailure>

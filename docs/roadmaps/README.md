@@ -15,12 +15,11 @@ shape.
 
 ## Next Task
 
-Dispatch g05 cards 004, 007, and 008 as three parallel worker PRs from current
-pushed `main`. Card 004 owns Qoder effective-skill-roster evidence. Card 007
-owns Claude Code watcher MCP, skill, hook, and same-turn completion evidence.
-Card 008 owns the provider-neutral watcher lifecycle core only. Do not ready or
-execute cards 005-006 or 009-011 until their named gates close. Merge and
-restack serially after review. Contract 029 currentness remains standing.
+Execute ready g05 card 009 for the host-local watcher registry from current
+pushed `main`. Cards 004, 007, and 008 are complete. Keep cards 005-006 planned
+behind Research 256's honest empty disposition. Keep cards 010-011 planned
+until card 009 lands with Research 257 still admitted. Contract 029
+currentness remains standing.
 
 ## Standing Lanes
 

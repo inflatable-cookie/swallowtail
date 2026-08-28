@@ -33,3 +33,7 @@ landed without process launch or route selection.
 Addressed PR review: owner-checked non-duplicating activity projection,
 `WatcherCleanupCause` for bulk stop/join, UTF-8 byte-bound conformance, and
 unreleased public-api baselines for core/runtime/testkit.
+
+Second review: turn-bound watcher ids so stale cross-turn ids fail closed;
+restacked onto current `main`; cards 004/007/008 complete; card 009 ready;
+shared roadmap Next Task updated.

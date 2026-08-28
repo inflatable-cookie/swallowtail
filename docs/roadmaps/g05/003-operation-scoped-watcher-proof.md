@@ -6,8 +6,8 @@ Created: 2026-08-28
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257 reserved
-Planning state: cards 007-008 ready; cards 009-011 planned
+Research: 257 promoted
+Planning state: cards 007-008 complete; card 009 ready; cards 010-011 planned
 
 ## Problem
 
@@ -26,14 +26,14 @@ after their independent gates close.
 
 ### Batch 3.1 — Parallel Core And Route Evidence
 
-- [ ] execute ready card 007 for exact Claude MCP, hook, skill, and completion
+- [x] execute ready card 007 for exact Claude MCP, hook, skill, and completion
       evidence
-- [ ] execute ready card 008 for provider-neutral records, ownership, state
+- [x] execute ready card 008 for provider-neutral records, ownership, state
       transitions, control roles, and activity projection
 
 ### Batch 3.2 — Host Registry
 
-- [ ] execute card 009 after the core lands
+- [ ] execute ready card 009 after the core lands
 - [ ] bind host-authorized start, bounded status and summaries, wait, model and
       operator stop, cancellation, deadline, and joined cleanup
 

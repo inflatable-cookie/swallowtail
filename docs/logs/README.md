@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-28 g05.001 Harness Skill And Watcher Surface Census](./2026-08-28-g05-001-harness-skill-watcher-surface-census.md) — reserved; card 001; Research 255
 - [2026-08-28 g04 Generation Closeout And g05 Open](./2026-08-28-g04-generation-closeout-and-g05-open.md) — g04 closed at 91 roadmaps; g05.001 and cards 001-003 compiled; Research 255 reserved
 - [2026-08-28 g04.090 Residual Feature Qualification Closeout](./2026-08-28-g04-090-residual-feature-qualification-closeout.md) — complete; two honest empty deliver-now sets; PR 111 at `9e317e20`, then restacked PR 110 at `96b937d1`
 - [2026-08-28 g04.090 Residual Feature Qualification Compiled](./2026-08-28-g04-090-residual-feature-qualification-compiled.md) — remainder audited to 81 closed, two active qualification, and two parked; cards 256-257 and Research 253-254 reserved

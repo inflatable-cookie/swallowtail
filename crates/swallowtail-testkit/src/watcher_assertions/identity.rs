@@ -1,7 +1,8 @@
 use super::WATCHER_RULE;
 use swallowtail_core::{
-    MAX_WATCHER_ID_BYTES, MAX_WATCHER_OWNING_TURN_BYTES, MAX_WATCHER_SUMMARY_BYTES, WatcherId,
-    WatcherOwningTurn, WatcherRequester, WatcherSummary,
+    MAX_WATCHER_ID_BYTES, MAX_WATCHER_OPERATION_DATA_BYTES, MAX_WATCHER_OWNING_TURN_BYTES,
+    MAX_WATCHER_SUMMARY_BYTES, WatcherId, WatcherOperationData, WatcherOwningTurn,
+    WatcherRequester, WatcherSummary,
 };
 use swallowtail_runtime::{WatcherFailureKind, WatcherRegistry};
 
@@ -52,6 +53,14 @@ pub fn assert_watcher_byte_bounds() {
         "{WATCHER_RULE}: summary overflow must reject"
     );
 
+    let exact_operation = "o".repeat(MAX_WATCHER_OPERATION_DATA_BYTES);
+    WatcherOperationData::new(exact_operation.clone())
+        .expect("{WATCHER_RULE}: exact operation-data bound must accept");
+    assert!(
+        WatcherOperationData::new(format!("{exact_operation}!")).is_err(),
+        "{WATCHER_RULE}: operation-data overflow must reject"
+    );
+
     // Multi-byte UTF-8: two bytes each, so length-by-chars can fit while bytes overflow.
     let utf8_pair = "é"; // 2 bytes
     assert_eq!(utf8_pair.len(), 2);
@@ -61,6 +70,27 @@ pub fn assert_watcher_byte_bounds() {
     assert!(
         WatcherId::new(format!("{utf8_id}é")).is_err(),
         "{WATCHER_RULE}: UTF-8 byte overflow must reject"
+    );
+
+    let utf8_operation = utf8_pair.repeat(MAX_WATCHER_OPERATION_DATA_BYTES / 2);
+    WatcherOperationData::new(utf8_operation.clone())
+        .expect("{WATCHER_RULE}: exact UTF-8 operation-data bound must accept");
+    assert!(
+        WatcherOperationData::new(format!("{utf8_operation}é")).is_err(),
+        "{WATCHER_RULE}: UTF-8 operation-data overflow must reject"
+    );
+}
+
+/// Proves operation data stays redacted and cannot be mistaken for a summary.
+pub fn assert_watcher_operation_data_redaction() {
+    let data = WatcherOperationData::new("private-operation-data").expect("operation data");
+    assert!(
+        !format!("{data:?}").contains(data.as_str()),
+        "{WATCHER_RULE}: operation data debug exposed its value"
+    );
+    assert!(
+        !format!("{data}").contains(data.as_str()),
+        "{WATCHER_RULE}: operation data display exposed its value"
     );
 }
 
@@ -85,11 +115,17 @@ pub fn assert_watcher_capacity_bound(mut registry: WatcherRegistry) {
     let capacity = registry.maximum_watchers();
     for _ in 0..capacity {
         registry
-            .accept_start(WatcherRequester::Model, None)
+            .accept_start(
+                WatcherRequester::Model,
+                WatcherOperationData::new("capacity-operation").expect("operation data"),
+            )
             .expect("{WATCHER_RULE}: accepted start within bound");
     }
     let failure = registry
-        .accept_start(WatcherRequester::Operator, None)
+        .accept_start(
+            WatcherRequester::Operator,
+            WatcherOperationData::new("overflow-operation").expect("operation data"),
+        )
         .expect_err("{WATCHER_RULE}: over-capacity start must fail");
     assert_eq!(failure.kind(), WatcherFailureKind::CapacityExceeded);
 }

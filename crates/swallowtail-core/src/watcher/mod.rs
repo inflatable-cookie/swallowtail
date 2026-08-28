@@ -5,6 +5,7 @@
 
 mod identity;
 mod lifecycle;
+mod operation_data;
 mod requester;
 mod summary;
 
@@ -15,6 +16,7 @@ pub use identity::{
 pub use lifecycle::{
     WatcherCleanupCause, WatcherLifecyclePhase, WatcherRevision, WatcherTerminalCause,
 };
+pub use operation_data::{MAX_WATCHER_OPERATION_DATA_BYTES, WatcherOperationData};
 pub use requester::WatcherRequester;
 pub use summary::{MAX_WATCHER_SUMMARY_BYTES, WatcherSummary};
 

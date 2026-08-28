@@ -21,6 +21,7 @@ struct SharedChild {
     output: Arc<OutputState>,
     exit: Arc<ExitState>,
     commands: Sender<ChildCommand>,
+    stop_requested: AtomicBool,
     force_requested: AtomicBool,
 }
 
@@ -113,6 +114,7 @@ impl LocalProcessHandle {
                 output,
                 exit,
                 commands,
+                stop_requested: AtomicBool::new(false),
                 force_requested: AtomicBool::new(false),
             }),
         })
@@ -168,17 +170,41 @@ impl LocalProcessHandle {
 
     fn force(&self) -> Result<(), RuntimeFailure> {
         self.close_input();
+        if self.shared.exit.is_complete() {
+            return Ok(());
+        }
         if self.shared.force_requested.swap(true, Ordering::SeqCst) {
             return Ok(());
         }
         self.shared
             .commands
             .send(ChildCommand::ForceStop)
-            .map_err(|_| {
-                failure(
-                    "swallowtail.local_process.control_closed",
-                    "Local process control is no longer available",
-                )
+            .map_err(|_| control_closed_failure())
+            .or_else(|error| {
+                if self.shared.exit.is_complete() {
+                    Ok(())
+                } else {
+                    Err(error)
+                }
+            })
+    }
+
+    fn request(&self) -> Result<(), RuntimeFailure> {
+        self.close_input();
+        if self.shared.exit.is_complete() || self.shared.stop_requested.swap(true, Ordering::SeqCst)
+        {
+            return Ok(());
+        }
+        self.shared
+            .commands
+            .send(ChildCommand::RequestStop)
+            .map_err(|_| control_closed_failure())
+            .or_else(|error| {
+                if self.shared.exit.is_complete() {
+                    Ok(())
+                } else {
+                    Err(error)
+                }
             })
     }
 }
@@ -199,8 +225,8 @@ impl ProcessHandle for LocalProcessHandle {
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.close_input();
-        Box::pin(async { Ok(()) })
+        let result = self.request();
+        Box::pin(async move { result })
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
@@ -212,6 +238,13 @@ impl ProcessHandle for LocalProcessHandle {
         let shared = Arc::clone(&self.shared);
         Box::pin(async move { shared.exit.future().await })
     }
+}
+
+fn control_closed_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_process.control_closed",
+        "Local process control is no longer available",
+    )
 }
 
 impl Drop for LocalProcessHandle {

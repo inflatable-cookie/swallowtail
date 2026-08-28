@@ -28,6 +28,7 @@ mod services;
 mod serving_endpoint;
 mod sign_in;
 mod task;
+mod watcher;
 mod working_resource;
 mod working_resource_io;
 

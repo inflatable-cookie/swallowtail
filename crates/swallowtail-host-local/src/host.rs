@@ -17,12 +17,17 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::Arc;
 use std::time::Instant;
-use swallowtail_core::{ExecutionHostId, ModelArtifactRef};
+use swallowtail_core::{
+    DEFAULT_MAX_WATCHERS_PER_TURN, ExecutionHostId, ModelArtifactRef, WatcherOperationData,
+};
 use swallowtail_runtime::{
     AttachmentRef, BoxFuture, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef,
     ProcessHandle, ProcessRequest, ProcessService, RuntimeFailure, SchemaRef, ScopeId,
     WorkingResourceRef,
 };
+
+#[cfg(unix)]
+use std::os::unix::process::CommandExt;
 
 type EnvironmentValues = Vec<(OsString, OsString)>;
 
@@ -36,6 +41,7 @@ pub(crate) struct LocalApprovals {
     pub(crate) endpoints: HashMap<EndpointRef, LocalEndpointApproval>,
     pub(crate) credentials: HashMap<CredentialRef, LocalCredentialApproval>,
     pub(crate) model_artifacts: HashMap<ModelArtifactRef, LocalModelArtifactApproval>,
+    pub(crate) watcher_operations: HashMap<WatcherOperationData, ProcessRequest>,
 }
 
 /// Builder for an allowlisted local process and materialization host.
@@ -45,6 +51,7 @@ pub struct LocalProcessHostBuilder {
     pub(crate) temporary_root: PathBuf,
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) approvals: LocalApprovals,
+    pub(crate) watcher_capacity: usize,
 }
 
 impl LocalProcessHostBuilder {
@@ -117,6 +124,30 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves one exact watcher operation-data value and its host-owned
+    /// process recipe.
+    ///
+    /// Callers can submit only the operation-data value to the watcher
+    /// service. The process request remains private to this host policy.
+    #[must_use]
+    pub fn approve_watcher_operation(
+        mut self,
+        operation_data: WatcherOperationData,
+        request: ProcessRequest,
+    ) -> Self {
+        self.approvals
+            .watcher_operations
+            .insert(operation_data, request);
+        self
+    }
+
+    /// Replaces the positive per-turn watcher capacity.
+    #[must_use]
+    pub fn with_watcher_capacity(mut self, capacity: usize) -> Self {
+        self.watcher_capacity = capacity;
+        self
+    }
+
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -136,6 +167,7 @@ impl LocalProcessHostBuilder {
             model_artifact_leases: Arc::new(LocalModelArtifactLeaseState::default()),
             serving_endpoints: Arc::new(LocalServingEndpointState::default()),
             execution_host_id: self.execution_host_id,
+            watcher_capacity: self.watcher_capacity,
             monotonic_origin: Instant::now(),
         }
     }
@@ -152,6 +184,7 @@ pub struct LocalProcessHost {
     pub(crate) model_artifact_leases: Arc<LocalModelArtifactLeaseState>,
     pub(crate) serving_endpoints: Arc<LocalServingEndpointState>,
     pub(crate) execution_host_id: Option<ExecutionHostId>,
+    pub(crate) watcher_capacity: usize,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -165,6 +198,7 @@ impl LocalProcessHost {
             temporary_root: std::env::temp_dir(),
             execution_host_id: None,
             approvals: LocalApprovals::default(),
+            watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
         }
     }
 
@@ -194,6 +228,8 @@ impl LocalProcessHost {
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped());
+        #[cfg(unix)]
+        command.process_group(0);
         command.envs(launch.bootstrap_environment().iter().cloned());
         self.apply_environment(&mut command, &request)?;
         self.apply_working_resource(&mut command, scope, &request)?;

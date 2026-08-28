@@ -1,3 +1,4 @@
+use crate::watcher::LocalWatcherHostService;
 use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
 use std::sync::Arc;
 use std::time::Duration;
@@ -30,7 +31,12 @@ impl LocalHostServices {
             .with_attachment(process_host.clone())
             .with_model_artifact(process_host.clone())
             .with_serving_endpoint(process_host.clone())
-            .with_schema(process_host.clone());
+            .with_schema(process_host.clone())
+            .with_watcher(Arc::new(LocalWatcherHostService::new(
+                process_host.clone(),
+                task_service.clone(),
+                process_host.watcher_capacity,
+            )));
         Self {
             process_host,
             task_service,

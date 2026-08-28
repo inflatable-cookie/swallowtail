@@ -4,7 +4,7 @@ use super::{
 };
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    WatcherCleanupCause, WatcherId, WatcherOwningTurn, WatcherRequester, WatcherSummary,
+    WatcherCleanupCause, WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester,
 };
 
 /// Shared pure registry state used by distinct model and operator control roles.
@@ -15,7 +15,7 @@ pub trait ModelWatcherControl: Send + Sync {
     /// Accepts a model-requested start without launching work.
     fn accept_start(
         &self,
-        summary: Option<WatcherSummary>,
+        operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, WatcherFailure>;
 
     /// Inspects one watcher owned by the active turn.
@@ -49,7 +49,7 @@ pub trait OperatorWatcherControl: Send + Sync {
     /// Accepts an operator-requested start without launching work.
     fn accept_start(
         &self,
-        summary: Option<WatcherSummary>,
+        operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, WatcherFailure>;
 
     /// Inspects one watcher owned by the active turn.
@@ -132,9 +132,11 @@ pub struct ModelWatcherRole {
 impl ModelWatcherControl for ModelWatcherRole {
     fn accept_start(
         &self,
-        summary: Option<WatcherSummary>,
+        operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, WatcherFailure> {
-        self.with_registry(|registry| registry.accept_start(WatcherRequester::Model, summary))
+        self.with_registry(|registry| {
+            registry.accept_start(WatcherRequester::Model, operation_data)
+        })
     }
 
     fn inspect(
@@ -191,9 +193,11 @@ pub struct OperatorWatcherRole {
 impl OperatorWatcherControl for OperatorWatcherRole {
     fn accept_start(
         &self,
-        summary: Option<WatcherSummary>,
+        operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, WatcherFailure> {
-        self.with_registry(|registry| registry.accept_start(WatcherRequester::Operator, summary))
+        self.with_registry(|registry| {
+            registry.accept_start(WatcherRequester::Operator, operation_data)
+        })
     }
 
     fn inspect(

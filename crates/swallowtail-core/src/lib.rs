@@ -165,7 +165,7 @@ pub use session_access::{
 pub use session_provider_state::SessionProviderStatePolicy;
 pub use watcher::{
     DEFAULT_MAX_WATCHERS_PER_TURN, InvalidWatcherRecord, MAX_WATCHER_ID_BYTES,
-    MAX_WATCHER_OWNING_TURN_BYTES, MAX_WATCHER_SUMMARY_BYTES, WatcherCleanupCause, WatcherId,
-    WatcherLifecyclePhase, WatcherOwningTurn, WatcherRequester, WatcherRevision, WatcherSummary,
-    WatcherTerminalCause,
+    MAX_WATCHER_OPERATION_DATA_BYTES, MAX_WATCHER_OWNING_TURN_BYTES, MAX_WATCHER_SUMMARY_BYTES,
+    WatcherCleanupCause, WatcherId, WatcherLifecyclePhase, WatcherOperationData, WatcherOwningTurn,
+    WatcherRequester, WatcherRevision, WatcherSummary, WatcherTerminalCause,
 };

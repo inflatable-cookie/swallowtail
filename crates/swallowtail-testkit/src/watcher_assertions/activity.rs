@@ -1,5 +1,5 @@
 use super::WATCHER_RULE;
-use swallowtail_core::{WatcherRequester, WatcherTerminalCause};
+use swallowtail_core::{WatcherOperationData, WatcherRequester, WatcherTerminalCause};
 use swallowtail_runtime::{
     ActivityKind, ActivityLifecyclePhase, ActivityStatus, RuntimeTurnId, WatcherActivityProjection,
     WatcherActivityProjectionFailure, WatcherRegistry, project_watcher_activity,
@@ -11,7 +11,10 @@ pub fn assert_watcher_activity_projection() {
     let foreign = RuntimeTurnId::new("turn-foreign").expect("foreign turn is valid");
     let mut registry = WatcherRegistry::new(turn.clone(), 1).expect("registry is valid");
     let accepted = registry
-        .accept_start(WatcherRequester::Model, None)
+        .accept_start(
+            WatcherRequester::Model,
+            WatcherOperationData::new("activity-operation").expect("operation data"),
+        )
         .expect("accept");
 
     assert_eq!(

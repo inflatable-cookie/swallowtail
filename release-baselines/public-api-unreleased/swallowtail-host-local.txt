@@ -81,9 +81,11 @@ pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_environment(self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable(self, swallowtail_runtime::host_reference::ExecutableRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable_launch(self, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_host_local::LocalExecutableLaunch) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_schema(self, swallowtail_runtime::host_reference::SchemaRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_watcher_operation(self, swallowtail_core::watcher::operation_data::WatcherOperationData, swallowtail_runtime::process_input::ProcessRequest) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_watcher_capacity(self, usize) -> Self
 impl swallowtail_host_local::LocalProcessHostBuilder
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_delegated_credential(self, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_endpoint(self, swallowtail_runtime::host_reference::EndpointRef, swallowtail_core::runtime_identity::EndpointAudience, impl core::convert::Into<alloc::string::String>) -> Self

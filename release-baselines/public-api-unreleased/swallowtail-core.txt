@@ -1658,6 +1658,14 @@ impl core::fmt::Debug for swallowtail_core::WatcherId
 pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for swallowtail_core::WatcherId
 pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherOperationData(_)
+impl swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherOperationData::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_core::WatcherOwningTurn(_)
 impl swallowtail_core::WatcherOwningTurn
 pub fn swallowtail_core::WatcherOwningTurn::as_str(&self) -> &str
@@ -1686,6 +1694,7 @@ impl core::fmt::Display for swallowtail_core::WatcherSummary
 pub fn swallowtail_core::WatcherSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub const swallowtail_core::DEFAULT_MAX_WATCHERS_PER_TURN: usize
 pub const swallowtail_core::MAX_WATCHER_ID_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_OPERATION_DATA_BYTES: usize
 pub const swallowtail_core::MAX_WATCHER_OWNING_TURN_BYTES: usize
 pub const swallowtail_core::MAX_WATCHER_SUMMARY_BYTES: usize
 pub const swallowtail_core::REMOTE_ACP_WIRE_VERSION: u32

@@ -7,8 +7,8 @@ use super::records::{
 };
 use crate::ActivityId;
 use swallowtail_core::{
-    WatcherCleanupCause, WatcherId, WatcherLifecyclePhase, WatcherOwningTurn, WatcherRequester,
-    WatcherRevision, WatcherSummary, WatcherTerminalCause,
+    WatcherCleanupCause, WatcherId, WatcherLifecyclePhase, WatcherOperationData, WatcherOwningTurn,
+    WatcherRequester, WatcherRevision, WatcherSummary, WatcherTerminalCause,
 };
 
 impl WatcherRegistry {
@@ -19,7 +19,7 @@ impl WatcherRegistry {
     pub fn accept_start(
         &mut self,
         requester: WatcherRequester,
-        summary: Option<WatcherSummary>,
+        _operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, WatcherFailure> {
         if self.records.len() >= self.maximum_watchers {
             return Err(WatcherFailure::new(WatcherFailureKind::CapacityExceeded));
@@ -43,12 +43,25 @@ impl WatcherRegistry {
             phase: WatcherLifecyclePhase::Accepted,
             terminal_cause: None,
             revision: WatcherRevision::initial(),
-            summary,
+            summary: None,
             accepted_by: requester,
         };
         self.order.push(watcher_id.clone());
         self.records.insert(watcher_id.clone(), record);
         self.snapshot(&watcher_id)
+    }
+
+    /// Rejects an accepted start before host work is bound to it.
+    ///
+    /// This rollback is for a host that cannot start the already-admitted
+    /// operation. It never removes a running or terminal watcher.
+    pub fn reject_start(&mut self, watcher_id: &WatcherId) -> Result<(), WatcherFailure> {
+        if self.record(watcher_id)?.phase != WatcherLifecyclePhase::Accepted {
+            return Err(WatcherFailure::new(WatcherFailureKind::InvalidTransition));
+        }
+        self.records.remove(watcher_id);
+        self.order.retain(|current| current != watcher_id);
+        Ok(())
     }
 
     /// Transitions an accepted watcher to running.

@@ -1,7 +1,7 @@
 use super::WATCHER_RULE;
 use swallowtail_core::{
-    WatcherCleanupCause, WatcherLifecyclePhase, WatcherRequester, WatcherSummary,
-    WatcherTerminalCause,
+    WatcherCleanupCause, WatcherLifecyclePhase, WatcherOperationData, WatcherRequester,
+    WatcherSummary, WatcherTerminalCause,
 };
 use swallowtail_runtime::{
     RuntimeTurnId, WatcherFailureKind, WatcherRegistry, WatcherStopAcknowledgement,
@@ -15,7 +15,7 @@ pub fn assert_watcher_lifecycle_transitions() {
     let accepted = registry
         .accept_start(
             WatcherRequester::Model,
-            Some(WatcherSummary::new("accepted").expect("summary is valid")),
+            WatcherOperationData::new("accepted-operation").expect("operation data is valid"),
         )
         .expect("accept succeeds");
     assert_eq!(accepted.phase(), WatcherLifecyclePhase::Accepted);
@@ -59,7 +59,10 @@ pub fn assert_watcher_completion_stop_race() {
     let turn = RuntimeTurnId::new("turn-race").expect("turn is valid");
     let mut registry = WatcherRegistry::new(turn, 2).expect("registry is valid");
     let first = registry
-        .accept_start(WatcherRequester::Model, None)
+        .accept_start(
+            WatcherRequester::Model,
+            WatcherOperationData::new("race-operation").expect("operation data is valid"),
+        )
         .expect("accept succeeds");
     registry
         .mark_running(first.watcher_id())
@@ -85,7 +88,10 @@ pub fn assert_watcher_wait_representation() {
     let mut registry = WatcherRegistry::new(turn, 2).expect("registry is valid");
     let owning = registry.owning_turn().clone();
     let accepted = registry
-        .accept_start(WatcherRequester::Operator, None)
+        .accept_start(
+            WatcherRequester::Operator,
+            WatcherOperationData::new("wait-operation").expect("operation data is valid"),
+        )
         .expect("accept succeeds");
     assert_eq!(
         registry
@@ -143,7 +149,10 @@ pub fn assert_watcher_cleanup_rejects_completed() {
     let turn = RuntimeTurnId::new("turn-cleanup").expect("turn is valid");
     let mut registry = WatcherRegistry::new(turn, 2).expect("registry is valid");
     let accepted = registry
-        .accept_start(WatcherRequester::Model, None)
+        .accept_start(
+            WatcherRequester::Model,
+            WatcherOperationData::new("cleanup-operation").expect("operation data is valid"),
+        )
         .expect("accept");
     registry
         .mark_running(accepted.watcher_id())

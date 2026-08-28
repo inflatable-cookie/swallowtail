@@ -695,7 +695,8 @@ mod tests {
         fn accept_start(
             &self,
             _turn: crate::RuntimeTurnId,
-            _summary: Option<swallowtail_core::WatcherSummary>,
+            _requester: swallowtail_core::WatcherRequester,
+            _operation_data: swallowtail_core::WatcherOperationData,
         ) -> crate::BoxFuture<'static, Result<crate::WatcherSnapshot, crate::RuntimeFailure>>
         {
             panic!("registering a watcher port must not start work");

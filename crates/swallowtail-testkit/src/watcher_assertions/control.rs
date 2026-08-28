@@ -1,6 +1,6 @@
 use super::WATCHER_RULE;
 use std::sync::{Arc, Mutex};
-use swallowtail_core::{WatcherLifecyclePhase, WatcherRequester, WatcherSummary};
+use swallowtail_core::{WatcherLifecyclePhase, WatcherOperationData, WatcherRequester};
 use swallowtail_runtime::{
     ModelWatcherControl, OperatorWatcherControl, RuntimeTurnId, WatcherControlSurface,
     WatcherFailureKind, WatcherRegistry, WatcherStopAcknowledgement,
@@ -17,11 +17,11 @@ pub fn assert_watcher_model_operator_roles() {
     let operator = surface.operator();
 
     let model_start = model
-        .accept_start(Some(WatcherSummary::new("model").expect("summary")))
+        .accept_start(WatcherOperationData::new("model-operation").expect("operation data"))
         .expect("model accept");
     assert_eq!(model_start.accepted_by(), WatcherRequester::Model);
     let operator_start = operator
-        .accept_start(Some(WatcherSummary::new("operator").expect("summary")))
+        .accept_start(WatcherOperationData::new("operator-operation").expect("operation data"))
         .expect("operator accept");
     assert_eq!(operator_start.accepted_by(), WatcherRequester::Operator);
 
@@ -51,7 +51,10 @@ pub fn assert_watcher_stale_id_fails_closed() {
     let turn_b = RuntimeTurnId::new("turn-b").expect("turn b is valid");
     let mut registry_a = WatcherRegistry::new(turn_a, 2).expect("registry a");
     let stale = registry_a
-        .accept_start(WatcherRequester::Model, None)
+        .accept_start(
+            WatcherRequester::Model,
+            WatcherOperationData::new("stale-operation").expect("operation data"),
+        )
         .expect("turn a accept");
     let stale_id = stale.watcher_id().clone();
 
@@ -61,7 +64,9 @@ pub fn assert_watcher_stale_id_fails_closed() {
     let surface = WatcherControlSurface::new(Arc::clone(&registry_b));
     let model = surface.model();
     let operator = surface.operator();
-    let current = model.accept_start(None).expect("turn b accept");
+    let current = model
+        .accept_start(WatcherOperationData::new("current-operation").expect("operation data"))
+        .expect("turn b accept");
     let owning_b = registry_b.lock().expect("lock").owning_turn().clone();
 
     assert_ne!(

@@ -46,7 +46,7 @@ unrelated heads. DeepSeek cancellation flakes as ProviderFailed.
      switch response)
 - **Out of scope:** unchanged.
 - **Required validation:** focused adapter tests + `qa:docs:roadmaps:status`.
-- **PR URL:** pending push
+- **PR URL:** https://github.com/inflatable-cookie/swallowtail/pull/100
 - **Merge authorisation:** absent; do not merge
 
 ## Boundaries

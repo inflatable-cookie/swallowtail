@@ -42,11 +42,14 @@ plugin/extension, provider-managed, and unknown provenance distinct.
 
 - effigy qa:northstar passed.
 - git diff --check passed.
-- effigy qa:docs passed link, index, status drift, next-action, forbidden,
-  consumer-front-door, integration-guide, and version-parse checks.
+- effigy qa:docs passed link, index, path, contains, heading, next-action,
+  forbidden, consumer-front-door, integration-guide, and version-parse checks,
+  but its roadmap status-drift check fails because the orchestrator-owned
+  generation index still says card 001 is ready while the assigned card is
+  complete. The requested worker-scope fix removes that shared edit; the
+  orchestrator will reconcile the front door after merge.
 
 ## Next
 
-Inspect the final diff, push the branch, and open a reviewable pull request
-against the current planning base. Do not merge. Cards 002 and 003 remain
-planned.
+Hand the completed evidence back to the orchestrator for review of PR 112.
+Cards 002 and 003 remain planned. No merge is authorized.

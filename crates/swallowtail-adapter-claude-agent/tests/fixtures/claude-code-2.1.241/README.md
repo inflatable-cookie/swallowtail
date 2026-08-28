@@ -26,5 +26,11 @@ close against the selected local-subscription billing profile.
 every published version in `2.1.220..=2.1.241`, probed on darwin-arm64 native
 executables, with an honest empty deliver-now set because entitlement,
 operation-private precedence, effective attachment, and extra consultation
-spend do not close without live account or provider work. No provider prompt
-was sent.
+spend do not close without live account or provider work.
+`headless-permission-mode.json` records the g04.089a `--permission-mode`
+evidence stop across every published version in `2.1.220..=2.1.241`, probed on
+darwin-arm64 native executables, with an honest empty deliver-now set because
+`acceptEdits`/`auto` widen authority relative to Plan and
+`default`/`dontAsk` do not close Plan-equivalent application or
+operation-private effective authority under selected setting-sources.
+`bypassPermissions` stays excluded. No provider prompt was sent.

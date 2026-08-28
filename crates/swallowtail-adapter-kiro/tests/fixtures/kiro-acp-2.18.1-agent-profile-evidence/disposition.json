@@ -1,0 +1,47 @@
+{
+  "decision": "empty-deliver-now",
+  "route": "kiro.acp",
+  "qualified_version": "2.18.1",
+  "production_argv": ["kiro-cli", "acp"],
+  "advertised_acp_flag": ["--agent", "<name>"],
+  "docs_placeholder": "my-agent",
+  "slash_builtin_ids_named": ["kiro_default", "kiro_help", "kiro_planner"],
+  "custom_namespaces": [".kiro/agents/", "~/.kiro/agents/"],
+  "deliver_now_rows": [],
+  "gates": [
+    "acp_docs_agent_flag_is_arbitrary_placeholder",
+    "no_closed_portable_profile_membership_on_acp",
+    "custom_profiles_are_unbounded_host_ambient_state",
+    "official_missing_agent_falls_back_without_warning",
+    "agentInfo_is_product_identity_not_applied_profile",
+    "session_set_mode_unmapped_must_not_infer_profile",
+    "kiro_dev_commands_unmapped",
+    "exact_2_18_1_package_parser_unrecovered_cdn_403",
+    "omit_agent_retains_exact_acp_argv"
+  ],
+  "do_not_promote": [
+    "kiro-cli acp --agent my-agent as closed membership",
+    "slash /agent or kiro-cli chat --agent onto ACP",
+    "session/set_mode as applied-profile confirmation",
+    "generic initialize agentInfo as selected profile",
+    "host ~/.kiro/agents or .kiro/agents ambient listing",
+    "creating or mutating a host profile to make a row pass",
+    "current stable 2.20.1 without Contract 029 qualification"
+  ],
+  "truth_layers": {
+    "requested": "absent on kiro.acp",
+    "parsed": "ACP docs name optional --agent <string>; exact 2.18.1 binary unrecovered",
+    "configured": "host/workspace agent files and set-default out of swallowtail authority",
+    "dispatched": "kiro-cli acp only",
+    "accepted": "unclosed; missing-agent docs describe silent default fallback",
+    "effective": "unclosed without applied-profile confirmation",
+    "returned": "agentInfo name kiro-cli is not selected profile",
+    "observed": "not_run",
+    "persisted": "provider-owned agent configs and sessions; not swallowtail"
+  },
+  "omission": {
+    "retain": true,
+    "argv": ["acp"],
+    "matches_guide_and_command_rs": true
+  }
+}

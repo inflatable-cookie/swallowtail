@@ -1,0 +1,118 @@
+{
+  "lane": "g04.090b",
+  "card": 257,
+  "research": 254,
+  "route": "kiro.acp",
+  "axis": "kiro-cli.release",
+  "qualified_version": "2.18.1",
+  "retrieved_at": "2026-08-28",
+  "live_acp_initialize": false,
+  "platform_archive_extracted": false,
+  "host_install_changed": false,
+  "host_profile_mutated": false,
+  "kiro_cli_on_path": false,
+  "sources": [
+    {
+      "id": "acp-docs-md",
+      "url": "https://kiro.dev/docs/cli/acp.md",
+      "retrieved": "2026-08-28",
+      "sha256": "50e8f6285b5fbc46feb5afa34a7bc8b8fa3fff95ae926ab959f6ce0253745ab0",
+      "use": "production entrypoint; optional --agent my-agent placeholder; session/set_mode; agentInfo name kiro-cli"
+    },
+    {
+      "id": "acp-docs-html",
+      "url": "https://kiro.dev/docs/cli/acp/",
+      "page_updated": "2026-08-04",
+      "retrieved": "2026-08-28",
+      "sha256": "f04096a28b437375f8a80792fd5a23312d44a78e35e9a95ce8e571fd74cb7a27",
+      "use": "same ACP page rendered; digest differs from Research 251 HTML snapshot"
+    },
+    {
+      "id": "cli-commands-md",
+      "url": "https://kiro.dev/docs/reference/cli-commands.md",
+      "retrieved": "2026-08-28",
+      "sha256": "c944abed46990077457ba2a809a8542028f5c0613daa3b0541cf901367c941a2",
+      "use": "global and chat --agent; kiro-cli agent list/create/set-default; no kiro-cli acp section"
+    },
+    {
+      "id": "slash-commands-md",
+      "url": "https://kiro.dev/docs/reference/slash-commands.md",
+      "retrieved": "2026-08-28",
+      "sha256": "c3a604b7ea3e10b61aa082cde5219cc33d79fd1a0d3f4cf607a6582cd643402a",
+      "use": "/agent list/create/swap/set-default; built-in ids kiro_default/kiro_help/kiro_planner; chat --agent"
+    },
+    {
+      "id": "custom-agents-overview-md",
+      "url": "https://kiro.dev/docs/custom-agents.md",
+      "retrieved": "2026-08-28",
+      "sha256": "88caf34d827cc86c91ae609bdb4e583e1f52133755bc360df5f80fc943b37f27",
+      "use": "workspace .kiro/agents and global ~/.kiro/agents namespaces"
+    },
+    {
+      "id": "custom-agents-creating-md",
+      "url": "https://kiro.dev/docs/custom-agents/creating.md",
+      "retrieved": "2026-08-28",
+      "sha256": "74d4fa17750b380be3d4526508576946576bb792b76b903d5276a3f76b17c5cd",
+      "use": "local-then-global precedence; default agent named kiro_default"
+    },
+    {
+      "id": "custom-agents-troubleshooting-md",
+      "url": "https://kiro.dev/docs/custom-agents/troubleshooting.md",
+      "retrieved": "2026-08-28",
+      "sha256": "502ed22561f5c93ab2f4f329e99459e3bb746917743271739aab2f1874b2e8d7",
+      "use": "agent not found falls back to default without warning"
+    },
+    {
+      "id": "custom-agents-built-in-md",
+      "url": "https://kiro.dev/docs/custom-agents/built-in.md",
+      "retrieved": "2026-08-28",
+      "sha256": "626f170bc1de5d4e6872811e8cb8f59a45f783198a3adbbc10e04621fb8859ae",
+      "use": "built-in display roster; spawn example is kiro-cli --agent, not closed ACP argv ids"
+    },
+    {
+      "id": "custom-agents-config-md",
+      "url": "https://kiro.dev/docs/custom-agents/configuration-reference.md",
+      "retrieved": "2026-08-28",
+      "sha256": "80484017b11180fe9e27f9ee5f71c0e8812afa53591793d162bfb7027b99a4c3",
+      "use": "tools/allowedTools/permissions; profile authority composition risk"
+    },
+    {
+      "id": "install-script",
+      "url": "https://cli.kiro.dev/install",
+      "retrieved": "2026-08-28",
+      "sha256": "91a21bfa05cd7b58601cb83e0f1f187a9d0084726e5b824d4a4cf60306250908",
+      "use": "channel URL construction; matches Research 156 digest"
+    },
+    {
+      "id": "stable-manifest-current",
+      "url": "https://prod.download.cli.kiro.dev/stable/latest/manifest.json",
+      "retrieved": "2026-08-28",
+      "sha256": "f96d0134f48cb623543b5c9d129f0f5e17a2ce2da25a7129f7ebc6bc5e51a996",
+      "observed_version": "2.20.1",
+      "use": "channel tip contrast only; not qualified route version"
+    }
+  ],
+  "package_retrieval": {
+    "qualified_artifact_urls_attempted": [
+      "https://prod.download.cli.kiro.dev/stable/latest/2.18.1/kirocli-aarch64-linux.tar.xz",
+      "https://prod.download.cli.kiro.dev/stable/latest/2.18.1/Kiro%20CLI.dmg"
+    ],
+    "current_tip_artifact_urls_attempted": [
+      "https://prod.download.cli.kiro.dev/stable/latest/2.20.1/kirocli-aarch64-linux.tar.xz"
+    ],
+    "method": "HTTP ranged GET bytes 0-63",
+    "http_status": 403,
+    "extracted": false,
+    "executed": false
+  },
+  "research_156_recorded_digests_unextracted": {
+    "2.18.1/Kiro CLI.dmg": "07893e9477c8d296ebc653192648772fd305718da4bf3a97583718e122c47061",
+    "2.18.1/kirocli-aarch64-linux.tar.xz": "c1f860b63f6656501dbcf8995e2687c3e31142b95755c76ce99f8d18000017df"
+  },
+  "fixture_corpus_reconciled": {
+    "identity_pass_agent_flag": false,
+    "protocol_swallowtail_passes_agent_flag": false,
+    "negative_case_agent_flag_unmapped": "kiro-cli acp --agent my-agent",
+    "production_argv": ["acp"]
+  }
+}

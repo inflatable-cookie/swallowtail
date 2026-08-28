@@ -14,11 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.089 cards 252-255 as four parallel manual evidence workers: Claude
-headless permission modes, Goose ACP builtins, Kiro ACP effort, and Mistral
-Vibe headless agent profiles beyond Plan. Integrate A-B-C-D serially after
-exact-head review. Do not start production binding from a worker lane. Keep
-g04 open. Contract 029 currentness remains standing.
+Execute g04.090 cards 256-257 as two parallel manual evidence workers: Goose
+ACP mode and Kiro ACP agent-profile selection. Integrate Goose then Kiro after
+exact-head review. Do not start production binding from a worker lane. Keep g04
+open. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

@@ -2813,3 +2813,28 @@ bypass, auto-approval, host extension setup, sibling-route inference, and
 unconfirmed model/value membership remain out. Run manual workers in parallel;
 integrate A-B-C-D serially. Shared closeout and any non-empty delivery
 compilation stay with the orchestrator. Keep g04 open.
+
+## Post-g04.089 Completion And Remainder Audit (2026-08-28)
+
+Disposition: four evidence stops, sixteen audited closures, two parked Bedrock
+rows, and two residual qualification lanes.
+
+Research 249-252 admit honest empty deliver-now sets for Claude headless
+permission modes, Goose ACP builtins, Kiro ACP effort, and Mistral Vibe
+agent profiles beyond Plan. PRs 109, 107, 106, and 108 landed serially through
+`e28979a0`. Original items 9, 46, 48, and 54 close.
+
+The full remainder audit closes original items `3, 10-14, 17, 22, 39, 51, 61,
+64, 69-71, 75`. They are process topology, dominated evidence questions,
+already-relayed permission vocabulary, another model or route, operator-owned
+agent-definition state, or host-path authority owned by another programme.
+Deep Agents skills/memory moves to the harness skill-discovery and
+resource-lifetime triage note.
+
+Bedrock items 79-80 stay parked. Model-specific thinking reopens only for an
+exact admitted model, region/profile, and official schema. Tools/guardrails
+reopen only after contracts and the route guide admit a bounded surface.
+
+g04.090 retains only item 47, Goose ACP mode, and item 49, Kiro ACP `--agent`.
+Cards 256-257 and Research 253-254 own evidence only. Run both manual workers
+in parallel; integrate Goose then Kiro. Keep g04 open.

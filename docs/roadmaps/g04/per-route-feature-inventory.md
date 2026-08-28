@@ -10,72 +10,84 @@ Programme: [Per-Route Feature Completion](./per-route-feature-completion.md)
 
 Keep one live disposition for the original 85-item advanced-feature inventory.
 The triage note remains the source assessment. This ledger owns counts and
-sequence after g04.088.
+sequence after g04.089.
 
 ## Count
 
 | Disposition | Items | Meaning |
 | --- | ---: | --- |
-| Closed by a numbered lane | 61 | Delivered, evidence-stopped, corrected, or explicitly withheld by g04.035-g04.088. |
-| Active qualification backlog | 14 | A bounded route-local evidence question remains. |
+| Closed disposition | 81 | Delivered, evidence-stopped, corrected, explicitly withheld, inapplicable, or moved to its owning programme. |
+| Active qualification backlog | 2 | A bounded route-local evidence question remains. |
 | Active delivery | 0 | No qualified delivery row is waiting for binding or acceptance. |
-| No active lane | 10 | Current policy, exact-route evidence, or a contract boundary prevents useful qualification now. |
+| Parked | 2 | A named model/schema or contract/guide trigger is required before qualification. |
 | **Total** | **85** | Original inventory, exactly once. |
 
 Closed original item ids:
-`1-2, 4-8, 15-16, 18-21, 23-38, 40-45, 50, 52-53, 55-60, 62-63, 65-68,
-72-74, 76-78, 81-85`.
+`1-46, 48, 50-78, 81-85`.
 
-The programme progress section owns the detailed outcome and evidence link for
-each closed lane. `Closed` does not mean every feature shipped. Honest empty
-sets and durable withholds count as dispositions and do not remain in the live
-queue.
+The programme progress section and remainder audit own the detailed outcome for
+closed rows. `Closed` does not mean every feature shipped. Honest empty sets,
+durable withholds, inapplicable rows, and transfers to another owning programme
+count as dispositions and do not remain in the live queue.
 
 ## Active Qualification Backlog
 
 | Original ids | Route | Control family | Current posture |
 | --- | --- | --- | --- |
-| 9 | `claude-code.headless` | permission modes | g04.089 card 252; never widen permissions by default |
-| 11-12 | `claude-code.response-only` | Fast, compaction | route-local proof must preserve tool-free response-only behavior |
-| 46-47 | `goose.acp` | builtins, mode | item 46 is g04.089 card 253; host extension authority and session configuration stay distinct |
-| 48-49 | `kiro.acp` | effort, agent | item 48 is g04.089 card 254; ACP only; deferred Kiro headless work does not own these rows |
-| 54 | `mistral-vibe.headless` | agent beyond Plan | g04.089 card 255; qualify only non-bypass profiles |
-| 61 | `opencode.http` | task/subagent permission | attached-server configuration and permission truth required |
-| 64 | `kimi-platform.chat` | thinking disabled outside K3 | exact model-family and request semantics required |
-| 69-71 | `anthropic.managed-agent` | effort, Fast, tools/MCP | three independent control families |
-| 79 | `bedrock.runtime` | model-specific thinking | per-model schema only; never a generic effort string |
+| 47 | `goose.acp` | mode | g04.090 card 256; ACP membership and confirmation; never auto-approve by default |
+| 49 | `kiro.acp` | agent profile | g04.090 card 257; exact ACP membership, failure, and confirmation required |
 
 ## Active Delivery
 
 No original item currently has an active delivery lane.
 
-## Active Qualification Wave VI
+## Completed Qualification Wave VI
 
-g04.089 owns four package-distinct evidence-only lanes:
+g04.089 completed four package-distinct evidence-only lanes:
 
 1. item 9 — `claude-code.headless` permission modes — card 252 / Research 249
 2. item 46 — `goose.acp` builtins — card 253 / Research 250
 3. item 48 — `kiro.acp` effort — card 254 / Research 251
 4. item 54 — `mistral-vibe.headless` agent profiles — card 255 / Research 252
 
-The 14-item active count does not change at compilation. Each item moves only
-after its evidence PR lands and the shared closeout records a promoted exact
-row or honest evidence stop.
+Research 249-252 each admit an honest empty deliver-now set. PRs 109, 107, 106,
+and 108 landed fast-forward-only in lane order through `e28979a0`. Original
+items 9, 46, 48, and 54 close as evidence stops. No production binding follows.
 
-## No Active Lane
+## Remainder Audit
+
+The 2026-08-28 audit removed sixteen rows from the live per-route queue:
+
+| Original ids | Disposition |
+| --- | --- |
+| 3, 14, 17, 22 | process topology, not a bounded composer run control |
+| 10-13 | dominated by exact Claude UltraCode, Fast, compaction, response-only, and ACP evidence; no new route-local seam |
+| 39 | exact selected Kimi headless prompt command rejects Plan composition |
+| 51 | host-path skill/memory authority moved to harness skill-discovery and resource-lifetime triage |
+| 61 | existing OpenCode permission exchange already relays provider `task` requests; attached-server subagent enablement is not run control |
+| 64 | disabled thinking belongs to another Kimi model family; selected K3 requires reasoning |
+| 69-71 | effort, speed, builtins, and MCP belong to the operator-owned Managed Agent definition, not per-run input |
+| 75 | xAI multi-agent is a distinct model route, not a generic toggle |
+
+These are closed programme dispositions. An upstream or product-boundary
+change may justify a new assessment; they do not remain recurring queue items.
+
+## Parked
 
 | Original id | Route / feature | Disposition | Reopen trigger |
 | ---: | --- | --- | --- |
-| 3 | Claude Code headless Agent teams | excluded process topology | operator requests a bounded topology feature |
-| 10 | Claude response-only UltraCode | evidence-blocked on the exact binary and response-only posture | official visible support composes with tool-free response-only execution |
-| 13 | Claude Agent ACP UltraCode | unconfirmed ACP control | exact ACP selection and confirmation surface appears |
-| 14 | Claude Agent ACP Agent teams | excluded process topology | operator requests a bounded topology feature |
-| 17 | Codex exec multi-agent | excluded process topology | operator requests a bounded topology feature |
-| 22 | Codex app-server multi-agent | excluded process topology | operator requests a bounded topology feature |
-| 39 | Kimi headless Plan | exact selected prompt command rejects composition | selected route/version changes with exact composable evidence |
-| 51 | Deep Agents skills / memory | host-path authority, not a bounded generation control | a consumer-owned path and lifetime contract exists |
-| 75 | xAI WebSocket multi-agent model | catalogue/model choice, not a generic run toggle | exact production model route is separately qualified |
-| 80 | Bedrock tools / guardrails | current runtime guide excludes both | contract and guide explicitly admit a bounded surface |
+| 79 | `bedrock.runtime` model-specific thinking | no selected model/schema row to qualify | exact admitted Bedrock model, region/profile, and official request schema are named |
+| 80 | `bedrock.runtime` tools / guardrails | current contract and runtime guide exclude both | contract and guide explicitly admit a bounded surface |
+
+## Active Qualification Wave VII
+
+g04.090 owns two package-distinct evidence-only lanes:
+
+1. item 47 — `goose.acp` mode — card 256 / Research 253
+2. item 49 — `kiro.acp` agent profile — card 257 / Research 254
+
+Run both through manual harness handoffs in parallel. Shared closeout remains
+serial after Goose then Kiro integration.
 
 ## Completed Parallel Qualification Wave
 

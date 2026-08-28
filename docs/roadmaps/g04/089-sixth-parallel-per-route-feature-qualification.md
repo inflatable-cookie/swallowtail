@@ -1,6 +1,6 @@
 # g04.089 Sixth Parallel Per-Route Feature Qualification
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
@@ -50,17 +50,17 @@ operator authorisation.
 
 ## Acceptance Criteria
 
-- [ ] card 252 promotes exact Claude permission-mode evidence or an empty set
-- [ ] card 253 promotes exact Goose ACP builtin evidence or an empty set
-- [ ] card 254 promotes exact Kiro ACP effort evidence or an empty set
-- [ ] card 255 promotes exact Mistral Vibe agent-profile evidence or an empty set
-- [ ] each result separates requested, configured, dispatched, accepted,
+- [x] card 252 promotes exact Claude permission-mode evidence or an empty set
+- [x] card 253 promotes exact Goose ACP builtin evidence or an empty set
+- [x] card 254 promotes exact Kiro ACP effort evidence or an empty set
+- [x] card 255 promotes exact Mistral Vibe agent-profile evidence or an empty set
+- [x] each result separates requested, configured, dispatched, accepted,
       effective, returned, observed, and persisted truth as applicable
-- [ ] dangerous permission bypass and auto-approval stay withheld
-- [ ] no worker uses credentials, provider prompts, paid work, install/update,
+- [x] dangerous permission bypass and auto-approval stay withheld
+- [x] no worker uses credentials, provider prompts, paid work, install/update,
       account inspection, or ambient host mutation
-- [ ] no production binding starts from a worker lane
-- [ ] shared closeout reconciles all four original items only after their PRs land
+- [x] no production binding starts from a worker lane
+- [x] shared closeout reconciles all four original items only after their PRs land
 
 ## Stop Conditions
 
@@ -78,6 +78,13 @@ operator authorisation.
 - [253 Goose ACP Builtin Evidence](batch-cards/253-goose-acp-builtin-evidence.md)
 - [254 Kiro ACP Effort Evidence](batch-cards/254-kiro-acp-effort-evidence.md)
 - [255 Mistral Vibe Headless Agent-Profile Evidence](batch-cards/255-mistral-vibe-headless-agent-profile-evidence.md)
+
+## Result
+
+All four lanes closed with honest empty deliver-now sets. PRs 109, 107, 106,
+and 108 landed fast-forward-only in lane order through `e28979a0`; each exact
+head passed hosted CI before merge. Original items 9, 46, 48, and 54 close as
+evidence stops. No production binding follows.
 
 ## References
 

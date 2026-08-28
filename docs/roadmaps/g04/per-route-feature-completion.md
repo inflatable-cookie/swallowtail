@@ -340,17 +340,21 @@ families do not interrupt this programme by default.
   Cline ACP model selection with honest empty deliver-now sets. PRs 104, 101,
   103, and 102 landed serially through `23278abe`. No binding follows.
 - [g04.089 Sixth Parallel Per-Route Feature Qualification](./089-sixth-parallel-per-route-feature-qualification.md)
-  is ready. Cards 252-255 reserve package-distinct evidence for Claude
-  headless permission modes, Goose ACP builtins, Kiro ACP effort, and Mistral
-  Vibe headless agent profiles beyond Plan.
+  is complete. Cards 252-255 and Research 249-252 close Claude headless
+  permission modes, Goose ACP builtins, Kiro ACP effort, and Mistral Vibe
+  headless agent profiles with honest empty deliver-now sets. PRs 109, 107,
+  106, and 108 landed serially through `e28979a0`. No binding follows.
+- [g04.090 Residual Per-Route Feature Qualification](./090-residual-per-route-feature-qualification.md)
+  is ready. The remainder audit closes sixteen stale rows, parks Bedrock items
+  79-80, and leaves only cards 256-257 for Goose ACP mode and Kiro ACP agent
+  selection.
 
 ## Current Execution Boundary
 
-The normalized inventory has 61 closed original items, 14 active qualification
-candidates, no active delivery item, and ten items with no active lane. Execute
-g04.089 cards 252-255 as four parallel manual evidence workers and integrate
-their PRs serially A-B-C-D. Keep g04 open. Contract 029 currentness remains
-standing.
+The normalized inventory has 81 closed original items, two active qualification
+candidates, no active delivery item, and two parked Bedrock items. Execute
+g04.090 cards 256-257 as two parallel manual evidence workers and integrate
+Goose then Kiro. Keep g04 open. Contract 029 currentness remains standing.
 
 ## Exclusions
 

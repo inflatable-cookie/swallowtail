@@ -6,10 +6,8 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Ready
 
-- [252-claude-code-headless-permission-mode-evidence.md](./252-claude-code-headless-permission-mode-evidence.md) — ready; lane A; Research 249 reserved
-- [253-goose-acp-builtin-evidence.md](./253-goose-acp-builtin-evidence.md) — ready; lane B; Research 250 reserved
-- [254-kiro-acp-effort-evidence.md](./254-kiro-acp-effort-evidence.md) — ready; lane C; Research 251 reserved
-- [255-mistral-vibe-headless-agent-profile-evidence.md](./255-mistral-vibe-headless-agent-profile-evidence.md) — ready; lane D; Research 252 reserved
+- [256-goose-acp-mode-evidence.md](./256-goose-acp-mode-evidence.md) — ready; lane A; Research 253 reserved
+- [257-kiro-acp-agent-profile-evidence.md](./257-kiro-acp-agent-profile-evidence.md) — ready; lane B; Research 254 reserved
 
 Cards 070-071 remain unused gaps, not tasks.
 
@@ -38,6 +36,10 @@ Cards 070-071 remain unused gaps, not tasks.
 
 ## Completed
 
+- [255-mistral-vibe-headless-agent-profile-evidence.md](./255-mistral-vibe-headless-agent-profile-evidence.md) — complete; Research 252 honest empty deliver-now set
+- [254-kiro-acp-effort-evidence.md](./254-kiro-acp-effort-evidence.md) — complete; Research 251 honest empty deliver-now set
+- [253-goose-acp-builtin-evidence.md](./253-goose-acp-builtin-evidence.md) — complete; Research 250 honest empty deliver-now set
+- [252-claude-code-headless-permission-mode-evidence.md](./252-claude-code-headless-permission-mode-evidence.md) — complete; Research 249 honest empty deliver-now set
 - [251-cline-acp-model-selection-evidence.md](./251-cline-acp-model-selection-evidence.md) — complete; Research 248 honest empty deliver-now set
 - [250-grok-build-acp-web-search-disable-evidence.md](./250-grok-build-acp-web-search-disable-evidence.md) — complete; Research 247 honest empty deliver-now set
 - [249-codex-app-server-plan-mode-effort-evidence.md](./249-codex-app-server-plan-mode-effort-evidence.md) — complete; Research 246 honest empty deliver-now set

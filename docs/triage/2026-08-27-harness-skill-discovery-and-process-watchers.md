@@ -18,6 +18,11 @@ current per-route evidence wave:
 This is triage, not execution authority. It does not interrupt g04.082 or alter
 the per-route feature inventory count.
 
+The 2026-08-28 per-route remainder audit transfers original item 51, Deep
+Agents `--skills` / `--memory`, into this note. Host path, lifetime, provenance,
+and model-visibility authority belong here; item 51 no longer remains in the
+per-route generation-control queue.
+
 ## A. Harness Skill Discovery
 
 ### Operator Intent

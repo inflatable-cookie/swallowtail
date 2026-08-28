@@ -5,7 +5,7 @@ Card: 254
 Research: 251
 Branch: `t3code/review-effort-evidence-handoff`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-a893e130`
-PR: pending
+PR: [#106](https://github.com/inflatable-cookie/swallowtail/pull/106)
 
 ## Boundary
 

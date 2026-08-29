@@ -350,7 +350,7 @@ pub use watcher::{
     ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,
     SharedWatcherRegistry, WatcherActivityProjection, WatcherActivityProjectionFailure,
     WatcherControlSurface, WatcherFailure, WatcherFailureKind, WatcherHostService, WatcherRegistry,
-    WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitRepresentation,
+    WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitOptions, WatcherWaitRepresentation,
     project_watcher_activity,
 };
 pub use working_resource_io::{

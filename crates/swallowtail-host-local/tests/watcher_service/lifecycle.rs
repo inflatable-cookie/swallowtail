@@ -6,7 +6,7 @@ use std::time::Duration;
 use swallowtail_core::{
     WatcherCleanupCause, WatcherLifecyclePhase, WatcherRequester, WatcherTerminalCause,
 };
-use swallowtail_runtime::{CleanupOutcome, WatcherWaitRepresentation};
+use swallowtail_runtime::{CleanupOutcome, WatcherWaitOptions, WatcherWaitRepresentation};
 
 #[test]
 fn watcher_stop_is_idempotent_and_wait_reports_the_joined_stop() {
@@ -49,7 +49,8 @@ fn watcher_stop_is_idempotent_and_wait_reports_the_joined_stop() {
     );
     assert_eq!(repeated_snapshot.phase(), WatcherLifecyclePhase::Terminal);
     assert_eq!(
-        block_on(watcher.wait(owning_turn, watcher_id)).expect("stop joins before wait resolves"),
+        block_on(watcher.wait(owning_turn, watcher_id, WatcherWaitOptions::default(),))
+            .expect("stop joins before wait resolves"),
         WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Stopped)
     );
 }
@@ -154,8 +155,12 @@ fn watcher_stop_and_join_cleans_process_tree() {
         failure.diagnostic().code(),
         "swallowtail.local_watcher.turn_retired"
     );
-    let failure = block_on(watcher.wait(owning_turn.clone(), watcher_id.clone()))
-        .expect_err("retired turn rejects stale wait controls");
+    let failure = block_on(watcher.wait(
+        owning_turn.clone(),
+        watcher_id.clone(),
+        WatcherWaitOptions::default(),
+    ))
+    .expect_err("retired turn rejects stale wait controls");
     assert_eq!(
         failure.diagnostic().code(),
         "swallowtail.local_watcher.turn_retired"
@@ -187,7 +192,7 @@ fn watcher_wait_is_pending_before_poll_and_drop_allows_deadline_cleanup() {
     .clone();
 
     let started = std::time::Instant::now();
-    let mut wait = Box::pin(watcher.wait(owning_turn, watcher_id));
+    let mut wait = Box::pin(watcher.wait(owning_turn, watcher_id, WatcherWaitOptions::default()));
     let waker = Waker::noop();
     let mut context = Context::from_waker(waker);
     assert!(matches!(wait.as_mut().poll(&mut context), Poll::Pending));

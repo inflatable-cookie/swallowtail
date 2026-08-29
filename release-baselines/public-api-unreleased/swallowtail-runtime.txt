@@ -2655,6 +2655,17 @@ pub const fn swallowtail_runtime::WatcherSnapshot::revision(&self) -> swallowtai
 pub const fn swallowtail_runtime::WatcherSnapshot::summary(&self) -> core::option::Option<&swallowtail_core::watcher::summary::WatcherSummary>
 pub const fn swallowtail_runtime::WatcherSnapshot::terminal_cause(&self) -> core::option::Option<swallowtail_core::watcher::lifecycle::WatcherTerminalCause>
 pub const fn swallowtail_runtime::WatcherSnapshot::watcher_id(&self) -> &swallowtail_core::watcher::identity::WatcherId
+pub struct swallowtail_runtime::WatcherWaitOptions<'a>
+impl swallowtail_runtime::WatcherWaitOptions<'_>
+pub fn swallowtail_runtime::WatcherWaitOptions<'_>::poll(&mut self, &mut core::task::wake::Context<'_>) -> core::option::Option<swallowtail_runtime::WatcherWaitRepresentation>
+impl<'a> swallowtail_runtime::WatcherWaitOptions<'a>
+pub const fn swallowtail_runtime::WatcherWaitOptions<'a>::new() -> Self
+pub fn swallowtail_runtime::WatcherWaitOptions<'a>::with_cancellation(self, swallowtail_runtime::BoxFuture<'a, ()>) -> Self
+pub fn swallowtail_runtime::WatcherWaitOptions<'a>::with_deadline(self, swallowtail_runtime::BoxFuture<'a, swallowtail_runtime::DeadlineObservation>) -> Self
+impl core::default::Default for swallowtail_runtime::WatcherWaitOptions<'_>
+pub fn swallowtail_runtime::WatcherWaitOptions<'_>::default() -> Self
+impl core::fmt::Debug for swallowtail_runtime::WatcherWaitOptions<'_>
+pub fn swallowtail_runtime::WatcherWaitOptions<'_>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::WorkingResourceLocator(_)
 impl swallowtail_runtime::WorkingResourceLocator
 pub fn swallowtail_runtime::WorkingResourceLocator::as_host_value(&self) -> &str
@@ -2900,7 +2911,7 @@ pub fn swallowtail_runtime::WatcherHostService::inspect(&self, swallowtail_core:
 pub fn swallowtail_runtime::WatcherHostService::list(&self, swallowtail_core::watcher::identity::WatcherOwningTurn) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::request_stop(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::stop_and_join_all(&self, swallowtail_runtime::RuntimeTurnId, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::CleanupOutcome), swallowtail_runtime::RuntimeFailure>>
-pub fn swallowtail_runtime::WatcherHostService::wait(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::wait<'a>(&'a self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId, swallowtail_runtime::WatcherWaitOptions<'a>) -> swallowtail_runtime::BoxFuture<'a, core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::WorkingResourceIoService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WorkingResourceIoService::read_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceReadRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingResourceText, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WorkingResourceIoService::write_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceWriteRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>

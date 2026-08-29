@@ -1,3 +1,5 @@
+mod wakeups;
+
 use super::{LocalWatcherHostService, LocalWatcherState, MAX_RETIRED_TURNS};
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
@@ -82,8 +84,12 @@ fn monitor_spawn_failure_rolls_back_without_a_phantom_watcher() {
     .expect("the next start can reuse the rolled-back turn");
     assert!(accepted.watcher_id().as_str().contains("watcher-2-1"));
     assert_eq!(
-        futures_executor::block_on(watcher.wait(owning_turn, accepted.watcher_id().clone()))
-            .expect("subsequent watcher joins"),
+        futures_executor::block_on(watcher.wait(
+            owning_turn,
+            accepted.watcher_id().clone(),
+            swallowtail_runtime::WatcherWaitOptions::default(),
+        ))
+        .expect("subsequent watcher joins"),
         swallowtail_runtime::WatcherWaitRepresentation::Satisfied(
             swallowtail_core::WatcherTerminalCause::Completed,
         )

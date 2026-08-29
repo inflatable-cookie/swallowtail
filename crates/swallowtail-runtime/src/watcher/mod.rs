@@ -16,7 +16,7 @@ pub use control::{
     ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,
     SharedWatcherRegistry, WatcherControlSurface,
 };
-pub use host_service::WatcherHostService;
+pub use host_service::{WatcherHostService, WatcherWaitOptions};
 pub use registry::{
     WatcherFailure, WatcherFailureKind, WatcherRegistry, WatcherSnapshot,
     WatcherStopAcknowledgement, WatcherWaitRepresentation,

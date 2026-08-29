@@ -5,25 +5,29 @@ use std::pin::Pin;
 use std::sync::{Arc, Mutex, TryLockError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{WatcherId, WatcherLifecyclePhase, WatcherOwningTurn, WatcherTerminalCause};
-use swallowtail_runtime::{RuntimeFailure, RuntimeTurnId, WatcherWaitRepresentation};
+use swallowtail_runtime::{
+    RuntimeFailure, RuntimeTurnId, WatcherWaitOptions, WatcherWaitRepresentation,
+};
 
 /// Deferred local wait. Construction only validates identity and captures the
 /// host-owned entry; all joins happen after a poll observes task completion.
-pub(super) struct LocalWatcherWait {
+pub(super) struct LocalWatcherWait<'a> {
     state: Arc<Mutex<LocalWatcherState>>,
     turn: RuntimeTurnId,
     owning_turn: WatcherOwningTurn,
     watcher_id: WatcherId,
     entry: Arc<LocalWatcherEntry>,
+    options: WatcherWaitOptions<'a>,
 }
 
-impl LocalWatcherWait {
+impl<'a> LocalWatcherWait<'a> {
     pub(super) fn new(
         state: Arc<Mutex<LocalWatcherState>>,
         turn: RuntimeTurnId,
         owning_turn: WatcherOwningTurn,
         watcher_id: WatcherId,
         entry: Arc<LocalWatcherEntry>,
+        options: WatcherWaitOptions<'a>,
     ) -> Self {
         Self {
             state,
@@ -31,15 +35,19 @@ impl LocalWatcherWait {
             owning_turn,
             watcher_id,
             entry,
+            options,
         }
     }
 }
 
-impl Future for LocalWatcherWait {
+impl Future for LocalWatcherWait<'_> {
     type Output = Result<WatcherWaitRepresentation, RuntimeFailure>;
 
     fn poll(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
         let this = self.get_mut();
+        if let Some(outcome) = this.options.poll(context) {
+            return Poll::Ready(Ok(outcome));
+        }
         let join_guard = match this.entry.join_lock.try_lock() {
             Ok(guard) => guard,
             Err(TryLockError::WouldBlock) => {
@@ -157,7 +165,7 @@ impl Future for LocalWatcherWait {
     }
 }
 
-impl LocalWatcherWait {
+impl LocalWatcherWait<'_> {
     fn mark_joined(&self) -> Result<WatcherWaitRepresentation, RuntimeFailure> {
         let mut state = self
             .state

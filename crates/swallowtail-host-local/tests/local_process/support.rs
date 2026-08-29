@@ -79,6 +79,13 @@ fn process_fixture() {
                 .write_all(b"escaped-descendant-spawned\n")
                 .expect("fixture writes marker");
         }
+        "spawn-escaped-descendant-closed-pipes" => {
+            spawn_escaped_descendant_closed_pipes();
+            thread::sleep(Duration::from_millis(200));
+            std::io::stdout()
+                .write_all(b"escaped-descendant-closed-pipes-spawned\n")
+                .expect("fixture writes marker");
+        }
         "version" => {
             std::io::stdout()
                 .write_all(b"fixture-harness 1.2.0\n")
@@ -113,6 +120,20 @@ fn spawn_escaped_descendant() {
         .stderr(std::process::Stdio::inherit())
         .spawn()
         .expect("fixture spawns an escaped descendant");
+}
+
+/// Spawns an escaped descendant that closes the supervised output pipes. The
+/// PID file lets the parent test prove liveness independently of pipe drain.
+#[allow(clippy::zombie_processes)]
+fn spawn_escaped_descendant_closed_pipes() {
+    let child = std::process::Command::new("/usr/bin/perl")
+        .args(["-e", "use POSIX qw(setsid); setsid() or die; sleep 5;"])
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .expect("fixture spawns a pipe-closing escaped descendant");
+    std::fs::write("escaped-descendant.pid", child.id().to_string())
+        .expect("fixture records escaped descendant pid");
 }
 
 pub(crate) fn fixture_host(

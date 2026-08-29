@@ -2,7 +2,7 @@ use super::support::block_on;
 use super::{operation_data, runtime_turn, watcher_host, watcher_owning_turn};
 use swallowtail_core::{WatcherLifecyclePhase, WatcherRequester, WatcherTerminalCause};
 use swallowtail_host_local::LocalProcessLimits;
-use swallowtail_runtime::WatcherWaitRepresentation;
+use swallowtail_runtime::{WatcherWaitOptions, WatcherWaitRepresentation};
 
 #[test]
 fn watcher_registration_and_unapproved_start_do_no_work() {
@@ -54,8 +54,12 @@ fn watcher_start_is_host_bound_and_wait_requires_joined_truth() {
         "swallowtail.local_watcher.turn_not_joined"
     );
 
-    let wait = block_on(watcher.wait(owning_turn.clone(), accepted.watcher_id().clone()))
-        .expect("watcher waits until terminal and joined");
+    let wait = block_on(watcher.wait(
+        owning_turn.clone(),
+        accepted.watcher_id().clone(),
+        WatcherWaitOptions::default(),
+    ))
+    .expect("watcher waits until terminal and joined");
     assert_eq!(
         wait,
         WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Completed)
@@ -104,8 +108,12 @@ fn watcher_output_overflow_is_bounded_and_becomes_host_failure() {
     .clone();
 
     assert_eq!(
-        block_on(watcher.wait(owning_turn.clone(), watcher_id.clone()))
-            .expect("bounded output watcher joins"),
+        block_on(watcher.wait(
+            owning_turn.clone(),
+            watcher_id.clone(),
+            WatcherWaitOptions::default(),
+        ))
+        .expect("bounded output watcher joins"),
         WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Failed)
     );
     let failed = block_on(watcher.inspect(owning_turn, watcher_id))

@@ -81,7 +81,7 @@ fn escaped_descendant_cannot_be_reported_as_clean_joined_truth() {
     let failure = block_on(process.wait()).expect_err("escaped cleanup is not clean");
     assert_eq!(
         failure.diagnostic().code(),
-        "swallowtail.local_process.reader_join_failed"
+        "swallowtail.local_process.descendant_escape_detected"
     );
     assert!(
         stdout
@@ -90,6 +90,77 @@ fn escaped_descendant_cannot_be_reported_as_clean_joined_truth() {
     );
     assert!(stderr.is_empty());
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+#[test]
+fn escaped_descendant_with_closed_pipes_is_detected_independently_of_output_drain() {
+    use nix::sys::signal::{Signal, kill};
+    use nix::unistd::Pid;
+
+    let resource_directory = temporary_resource();
+    let (host, executable, environment, resource) = fixture_host(
+        "spawn-escaped-descendant-closed-pipes",
+        LocalProcessLimits::default(),
+        &resource_directory,
+    );
+    let process = start(&host, request(&executable, &environment, &resource))
+        .expect("pipe-closing escaped descendant fixture starts");
+    let (stdout, stderr) = collect_output(&*process).expect("closed pipes drain to terminal");
+    assert!(
+        stdout
+            .windows(b"escaped-descendant-closed-pipes-spawned".len())
+            .any(|window| window == b"escaped-descendant-closed-pipes-spawned")
+    );
+    assert!(stderr.is_empty());
+
+    let pid = std::fs::read_to_string(resource_directory.join("escaped-descendant.pid"))
+        .expect("fixture records the escaped descendant pid")
+        .trim()
+        .parse::<u32>()
+        .expect("fixture pid is numeric");
+    let _cleanup = EscapedProcessCleanup(Some(pid));
+    let failure = block_on(process.wait()).expect_err("escaped cleanup must fail closed");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_process.descendant_escape_detected"
+    );
+    assert!(
+        process_is_alive(pid),
+        "escaped descendant remains independently live"
+    );
+
+    let _ = kill(
+        Pid::from_raw(i32::try_from(pid).expect("fixture pid fits the host pid type")),
+        Signal::SIGKILL,
+    );
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+struct EscapedProcessCleanup(Option<u32>);
+
+#[cfg(unix)]
+impl Drop for EscapedProcessCleanup {
+    fn drop(&mut self) {
+        if let Some(pid) = self.0.take()
+            && let Ok(pid) = i32::try_from(pid)
+        {
+            let _ = nix::sys::signal::kill(
+                nix::unistd::Pid::from_raw(pid),
+                nix::sys::signal::Signal::SIGKILL,
+            );
+        }
+    }
+}
+
+#[cfg(unix)]
+fn process_is_alive(pid: u32) -> bool {
+    std::process::Command::new("/bin/ps")
+        .args(["-p", &pid.to_string(), "-o", "pid="])
+        .output()
+        .map(|output| output.status.success() && !output.stdout.iter().all(u8::is_ascii_whitespace))
+        .unwrap_or(false)
 }
 
 #[test]

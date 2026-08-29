@@ -20,7 +20,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, JoinedTask, ProcessHandle, RuntimeFailure, RuntimeTurnId,
     ScopedTaskService, WatcherHostService, WatcherSnapshot, WatcherStopAcknowledgement,
-    WatcherWaitRepresentation,
+    WatcherWaitOptions, WatcherWaitRepresentation,
 };
 
 pub(super) const MAX_RETIRED_TURNS: usize = 64;
@@ -111,18 +111,19 @@ impl LocalWatcherEntry {
 #[derive(Default)]
 pub(super) struct JoinSignal {
     finished: AtomicBool,
-    waker: Mutex<Option<Waker>>,
+    wakers: Mutex<Vec<Waker>>,
 }
 
 impl JoinSignal {
     pub(super) fn notify(&self) {
         self.finished.store(true, Ordering::Release);
-        if let Some(waker) = self
-            .waker
+        let wakers = self
+            .wakers
             .lock()
             .expect("local watcher waker lock poisoned")
-            .take()
-        {
+            .drain(..)
+            .collect::<Vec<_>>();
+        for waker in wakers {
             waker.wake();
         }
     }
@@ -133,19 +134,18 @@ impl JoinSignal {
             return;
         }
         let mut registered = self
-            .waker
+            .wakers
             .lock()
             .expect("local watcher waker lock poisoned");
-        if !registered
-            .as_ref()
-            .is_some_and(|current| current.will_wake(waker))
-        {
-            *registered = Some(waker.clone());
+        if !registered.iter().any(|current| current.will_wake(waker)) {
+            registered.push(waker.clone());
         }
-        if self.finished.load(Ordering::Acquire)
-            && let Some(waker) = registered.take()
-        {
-            waker.wake();
+        if self.finished.load(Ordering::Acquire) {
+            let wakers = registered.drain(..).collect::<Vec<_>>();
+            drop(registered);
+            for waker in wakers {
+                waker.wake();
+            }
         }
     }
 }
@@ -201,12 +201,13 @@ impl WatcherHostService for LocalWatcherHostService {
         Box::pin(async move { result })
     }
 
-    fn wait(
-        &self,
+    fn wait<'a>(
+        &'a self,
         owning_turn: WatcherOwningTurn,
         watcher_id: WatcherId,
-    ) -> BoxFuture<'_, Result<WatcherWaitRepresentation, RuntimeFailure>> {
-        match self.prepare_wait(owning_turn, watcher_id) {
+        options: WatcherWaitOptions<'a>,
+    ) -> BoxFuture<'a, Result<WatcherWaitRepresentation, RuntimeFailure>> {
+        match self.prepare_wait(owning_turn, watcher_id, options) {
             Ok(wait) => Box::pin(wait),
             Err(error) => Box::pin(async move { Err(error) }),
         }

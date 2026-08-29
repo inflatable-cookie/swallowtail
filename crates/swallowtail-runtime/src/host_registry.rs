@@ -723,6 +723,7 @@ mod tests {
             &self,
             _owning_turn: swallowtail_core::WatcherOwningTurn,
             _watcher_id: swallowtail_core::WatcherId,
+            _options: crate::WatcherWaitOptions<'_>,
         ) -> crate::BoxFuture<
             'static,
             Result<crate::WatcherWaitRepresentation, crate::RuntimeFailure>,

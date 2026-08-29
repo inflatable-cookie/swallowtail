@@ -5,6 +5,8 @@ mod policy;
 #[allow(dead_code)]
 #[path = "local_process/support.rs"]
 mod support;
+#[path = "watcher_service/wait.rs"]
+mod wait;
 
 use swallowtail_core::{ExecutionHostId, WatcherOperationData, WatcherOwningTurn};
 use swallowtail_host_local::{LocalHostServices, LocalProcessHost, LocalProcessLimits};

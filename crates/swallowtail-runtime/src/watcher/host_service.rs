@@ -3,12 +3,91 @@
 //! Registration alone starts nothing and grants no arbitrary process or PID
 //! authority. Card 009 owns host-local execution binding.
 
-use crate::{BoxFuture, CleanupOutcome, RuntimeFailure, RuntimeTurnId};
+use crate::{BoxFuture, CleanupOutcome, DeadlineObservation, RuntimeFailure, RuntimeTurnId};
+use std::fmt;
+use std::task::Context;
 use swallowtail_core::{
     WatcherCleanupCause, WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester,
 };
 
 use super::{WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitRepresentation};
+
+/// Optional live controls observed by one watcher wait.
+///
+/// Callers provide futures from their operation-scoped cancellation and time
+/// services. The host polls these futures alongside joined watcher state and
+/// returns [`WatcherWaitRepresentation::Cancelled`] or
+/// [`WatcherWaitRepresentation::DeadlineExceeded`] before satisfaction.
+pub struct WatcherWaitOptions<'a> {
+    cancellation: Option<BoxFuture<'a, ()>>,
+    deadline: Option<BoxFuture<'a, DeadlineObservation>>,
+}
+
+impl<'a> WatcherWaitOptions<'a> {
+    /// Creates a wait with no cancellation or deadline control.
+    #[must_use]
+    pub const fn new() -> Self {
+        Self {
+            cancellation: None,
+            deadline: None,
+        }
+    }
+
+    /// Adds the future that resolves when the owning operation is cancelled.
+    #[must_use]
+    pub fn with_cancellation(mut self, cancellation: BoxFuture<'a, ()>) -> Self {
+        self.cancellation = Some(cancellation);
+        self
+    }
+
+    /// Adds the future that resolves when the owning operation deadline is observed.
+    #[must_use]
+    pub fn with_deadline(mut self, deadline: BoxFuture<'a, DeadlineObservation>) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+}
+
+impl Default for WatcherWaitOptions<'_> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl fmt::Debug for WatcherWaitOptions<'_> {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("WatcherWaitOptions")
+            .field("has_cancellation", &self.cancellation.is_some())
+            .field("has_deadline", &self.deadline.is_some())
+            .finish()
+    }
+}
+
+impl WatcherWaitOptions<'_> {
+    /// Polls the live controls and returns the first terminal wait outcome.
+    ///
+    /// `None` means that every configured control is still pending, or that
+    /// no control was configured. The watcher host remains responsible for
+    /// polling its joined state in that case.
+    pub fn poll(&mut self, context: &mut Context<'_>) -> Option<WatcherWaitRepresentation> {
+        if self
+            .cancellation
+            .as_mut()
+            .is_some_and(|future| future.as_mut().poll(context).is_ready())
+        {
+            return Some(WatcherWaitRepresentation::Cancelled);
+        }
+        if self
+            .deadline
+            .as_mut()
+            .is_some_and(|future| future.as_mut().poll(context).is_ready())
+        {
+            return Some(WatcherWaitRepresentation::DeadlineExceeded);
+        }
+        None
+    }
+}
 
 /// Host boundary for turn-scoped watcher operations.
 ///
@@ -41,11 +120,12 @@ pub trait WatcherHostService: Send + Sync {
     ) -> BoxFuture<'_, Result<Vec<WatcherSnapshot>, RuntimeFailure>>;
 
     /// Returns wait gating truth until terminal and joined, or turn end.
-    fn wait(
-        &self,
+    fn wait<'a>(
+        &'a self,
         owning_turn: WatcherOwningTurn,
         watcher_id: WatcherId,
-    ) -> BoxFuture<'_, Result<WatcherWaitRepresentation, RuntimeFailure>>;
+        options: WatcherWaitOptions<'a>,
+    ) -> BoxFuture<'a, Result<WatcherWaitRepresentation, RuntimeFailure>>;
 
     /// Requests idempotent stop for one owned watcher.
     fn request_stop(

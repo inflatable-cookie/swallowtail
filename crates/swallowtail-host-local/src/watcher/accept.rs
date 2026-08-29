@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester};
 use swallowtail_runtime::{
     ProcessService, RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot,
+    WatcherWaitOptions,
 };
 
 use super::process;
@@ -223,11 +224,12 @@ impl LocalWatcherHostService {
         Ok((turn, entry))
     }
 
-    pub(super) fn prepare_wait(
+    pub(super) fn prepare_wait<'a>(
         &self,
         owning_turn: WatcherOwningTurn,
         watcher_id: WatcherId,
-    ) -> Result<super::wait::LocalWatcherWait, RuntimeFailure> {
+        options: WatcherWaitOptions<'a>,
+    ) -> Result<super::wait::LocalWatcherWait<'a>, RuntimeFailure> {
         let (turn, entry) = self.lookup(&owning_turn, &watcher_id)?;
         Ok(super::wait::LocalWatcherWait::new(
             Arc::clone(&self.state),
@@ -235,6 +237,7 @@ impl LocalWatcherHostService {
             owning_turn,
             watcher_id,
             entry,
+            options,
         ))
     }
 }

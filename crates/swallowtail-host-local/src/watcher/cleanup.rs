@@ -1,10 +1,7 @@
-use super::{LocalWatcherEntry, LocalWatcherHostService};
-use futures_executor::block_on;
-use std::sync::Arc;
+use super::LocalWatcherHostService;
+use crate::output::failure;
 use std::sync::atomic::Ordering;
-use swallowtail_core::{
-    WatcherCleanupCause, WatcherId, WatcherLifecyclePhase, WatcherTerminalCause,
-};
+use swallowtail_core::{WatcherCleanupCause, WatcherId, WatcherLifecyclePhase};
 use swallowtail_runtime::{
     CleanupOutcome, RuntimeFailure, RuntimeTurnId, WatcherStopAcknowledgement,
 };
@@ -26,7 +23,24 @@ impl LocalWatcherHostService {
                 .state
                 .lock()
                 .expect("local watcher state lock poisoned");
-            let turn_state = state.get_mut(&turn).ok_or_else(turn_missing_failure)?;
+            let turn_state = if state.active.contains_key(&turn) {
+                state
+                    .active
+                    .get_mut(&turn)
+                    .expect("active watcher turn was retained")
+            } else {
+                return Err(if state.is_retired(&turn) {
+                    super::support::turn_retired_failure()
+                } else {
+                    turn_missing_failure()
+                });
+            };
+            if turn_state.closed {
+                return Err(failure(
+                    "swallowtail.local_watcher.turn_closed",
+                    "Watcher turn cleanup has already closed this turn",
+                ));
+            }
             let (acknowledgement, snapshot) = turn_state
                 .registry
                 .request_stop(&owning_turn, &watcher_id)
@@ -55,7 +69,18 @@ impl LocalWatcherHostService {
                 .state
                 .lock()
                 .expect("local watcher state lock poisoned");
-            let turn_state = state.get_mut(&turn).ok_or_else(turn_missing_failure)?;
+            let turn_state = if state.active.contains_key(&turn) {
+                state
+                    .active
+                    .get_mut(&turn)
+                    .expect("active watcher turn was retained")
+            } else {
+                return Err(if state.is_retired(&turn) {
+                    super::support::turn_retired_failure()
+                } else {
+                    turn_missing_failure()
+                });
+            };
             turn_state.closed = true;
             let snapshots = turn_state
                 .registry
@@ -110,82 +135,70 @@ impl LocalWatcherHostService {
                 .lock()
                 .expect("local watcher state lock poisoned");
             state
+                .active
                 .get(&turn)
-                .ok_or_else(turn_missing_failure)?
+                .ok_or_else(|| {
+                    if state.is_retired(&turn) {
+                        super::support::turn_retired_failure()
+                    } else {
+                        turn_missing_failure()
+                    }
+                })?
                 .registry
                 .list(&owning_turn)
                 .map_err(registry_failure)?
         };
+        let clean_cleanup = cleanup_error.is_none();
         let outcome = cleanup_error.map_or(CleanupOutcome::Clean, |error| {
             CleanupOutcome::Failed(error.diagnostic().clone())
         });
-        Ok((snapshots, outcome))
-    }
-
-    pub(super) fn join_entry(
-        &self,
-        turn: &RuntimeTurnId,
-        watcher_id: &WatcherId,
-        entry: &Arc<LocalWatcherEntry>,
-    ) -> Result<(), RuntimeFailure> {
-        let _join_guard = entry
-            .join_lock
-            .lock()
-            .expect("local watcher join lock poisoned");
-        let mut task_error = None;
-        if !entry.joined.load(Ordering::Acquire) {
-            let task = entry
-                .task
-                .lock()
-                .expect("local watcher task lock poisoned")
-                .take();
-            if let Some(task) = task
-                && let Err(error) = block_on(task.join())
-            {
-                task_error = Some(error);
-            }
-            let mut process_result = block_on(entry.process.wait());
-            if process_result.is_err() {
-                let _ = block_on(entry.process.force_stop());
-                process_result = block_on(entry.process.wait());
-            }
-            process_result?;
-            entry.joined.store(true, Ordering::Release);
-
-            let owning_turn = owning_turn(turn)?;
+        if clean_cleanup
+            && snapshots
+                .iter()
+                .all(|snapshot| snapshot.phase() == WatcherLifecyclePhase::Joined)
+        {
             let mut state = self
                 .state
                 .lock()
                 .expect("local watcher state lock poisoned");
-            let turn_state = state.get_mut(turn).ok_or_else(turn_missing_failure)?;
-            let snapshot = turn_state
-                .registry
-                .inspect(&owning_turn, watcher_id)
-                .map_err(registry_failure)?;
-            match snapshot.phase() {
-                WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {
-                    turn_state
-                        .registry
-                        .complete(
-                            watcher_id,
-                            WatcherTerminalCause::Failed,
-                            Some(summary("failed")),
-                        )
-                        .map_err(registry_failure)?;
-                    let _ = turn_state.registry.join(watcher_id);
-                }
-                WatcherLifecyclePhase::Terminal => {
-                    turn_state
-                        .registry
-                        .join(watcher_id)
-                        .map_err(registry_failure)?;
-                }
-                WatcherLifecyclePhase::Joined => {}
-            }
+            state.retire(&turn);
         }
-        if let Some(error) = task_error {
-            return Err(error);
+        Ok((snapshots, outcome))
+    }
+
+    pub(super) fn finalize_turn_now(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> Result<CleanupOutcome, RuntimeFailure> {
+        let mut state = self
+            .state
+            .lock()
+            .expect("local watcher state lock poisoned");
+        let Some(turn_state) = state.active.get(&turn) else {
+            return Err(if state.is_retired(&turn) {
+                super::support::turn_retired_failure()
+            } else {
+                turn_missing_failure()
+            });
+        };
+        if turn_state.closed {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_closed",
+                "Watcher turn cleanup has already closed this turn",
+            ));
         }
-        Ok(())
+        if !turn_state.registry.all_joined()
+            || turn_state
+                .entries
+                .values()
+                .any(|entry| !entry.joined.load(Ordering::Acquire))
+        {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_not_joined",
+                "Local watcher turn cannot retire before every watcher is joined",
+            ));
+        }
+        state.retire(&turn);
+        Ok(CleanupOutcome::Clean)
     }
 }

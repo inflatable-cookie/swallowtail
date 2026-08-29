@@ -61,15 +61,22 @@ fn process_fixture() {
         "sleep" => thread::sleep(Duration::from_secs(30)),
         "exit-zero" => {}
         "spawn-descendant" => {
-            spawn_descendant("sleep 1");
+            spawn_descendant("1");
             std::io::stdout()
                 .write_all(b"descendant-spawned\n")
                 .expect("fixture writes marker");
         }
         "spawn-long-descendant" => {
-            spawn_descendant("sleep 5");
+            spawn_descendant("5");
             std::io::stdout()
                 .write_all(b"long-descendant-spawned\n")
+                .expect("fixture writes marker");
+        }
+        "spawn-escaped-descendant" => {
+            spawn_escaped_descendant();
+            thread::sleep(Duration::from_millis(200));
+            std::io::stdout()
+                .write_all(b"escaped-descendant-spawned\n")
                 .expect("fixture writes marker");
         }
         "version" => {
@@ -87,14 +94,25 @@ fn process_fixture() {
 /// ends open after this fixture exits. This reproduces a real installed
 /// harness spawning a background process that inherits the supervised pipes.
 #[allow(clippy::zombie_processes)]
-fn spawn_descendant(command: &str) {
-    std::process::Command::new("sh")
-        .arg("-c")
-        .arg(command)
+fn spawn_descendant(seconds: &str) {
+    std::process::Command::new("/bin/sleep")
+        .arg(seconds)
         .stdout(std::process::Stdio::inherit())
         .stderr(std::process::Stdio::inherit())
         .spawn()
         .expect("fixture spawns a pipe-inheriting descendant");
+}
+
+/// Spawns a descendant that creates a new session before sleeping. It keeps
+/// the supervised output pipes open but escapes the launcher's process group.
+#[allow(clippy::zombie_processes)]
+fn spawn_escaped_descendant() {
+    std::process::Command::new("/usr/bin/perl")
+        .args(["-e", "use POSIX qw(setsid); setsid() or die; sleep 5;"])
+        .stdout(std::process::Stdio::inherit())
+        .stderr(std::process::Stdio::inherit())
+        .spawn()
+        .expect("fixture spawns an escaped descendant");
 }
 
 pub(crate) fn fixture_host(

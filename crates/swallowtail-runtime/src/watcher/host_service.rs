@@ -60,4 +60,14 @@ pub trait WatcherHostService: Send + Sync {
         turn: RuntimeTurnId,
         cause: WatcherCleanupCause,
     ) -> BoxFuture<'_, Result<(Vec<WatcherSnapshot>, CleanupOutcome), RuntimeFailure>>;
+
+    /// Retires a successfully completed turn after every watcher is joined.
+    ///
+    /// This does not stop active work. It is the explicit successful-turn
+    /// finalization seam; callers must use cancellation or deadline cleanup
+    /// when work remains active.
+    fn finalize_turn(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>>;
 }

@@ -1,11 +1,10 @@
-use super::LocalWatcherTurn;
-use std::collections::BTreeMap;
+use super::LocalWatcherState;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherTerminalCause};
 use swallowtail_runtime::{ProcessHandle, RuntimeTurnId};
 
 pub(super) async fn monitor_watcher(
-    state: Arc<Mutex<BTreeMap<RuntimeTurnId, LocalWatcherTurn>>>,
+    state: Arc<Mutex<LocalWatcherState>>,
     turn: RuntimeTurnId,
     watcher_id: WatcherId,
     process: Arc<dyn ProcessHandle>,
@@ -32,7 +31,7 @@ pub(super) async fn monitor_watcher(
         super::support::summary(cause.as_str())
     };
     let mut state = state.lock().expect("local watcher state lock poisoned");
-    if let Some(turn_state) = state.get_mut(&turn) {
+    if let Some(turn_state) = state.active.get_mut(&turn) {
         let _ = turn_state
             .registry
             .complete(&watcher_id, cause, Some(summary));

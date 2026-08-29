@@ -11,7 +11,8 @@ pub use activity::assert_watcher_activity_projection;
 pub use control::{assert_watcher_model_operator_roles, assert_watcher_stale_id_fails_closed};
 pub use identity::{
     assert_watcher_byte_bounds, assert_watcher_capacity_bound, assert_watcher_identity_redaction,
-    assert_watcher_operation_data_redaction, assert_watcher_ownership_rejection,
+    assert_watcher_namespace_isolation, assert_watcher_operation_data_redaction,
+    assert_watcher_ownership_rejection,
 };
 pub use lifecycle::{
     assert_watcher_cleanup_rejects_completed, assert_watcher_completion_stop_race,
@@ -29,6 +30,7 @@ pub fn assert_portable_watcher_lifecycle_contract() {
     );
     assert_watcher_operation_data_redaction();
     assert_watcher_byte_bounds();
+    assert_watcher_namespace_isolation();
 
     let turn = RuntimeTurnId::new("turn-pack").expect("turn is valid");
     let registry = WatcherRegistry::new(turn.clone(), 2).expect("registry");

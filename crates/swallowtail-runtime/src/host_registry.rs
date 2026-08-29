@@ -754,6 +754,14 @@ mod tests {
         > {
             panic!("registering a watcher port must not start work");
         }
+
+        fn finalize_turn(
+            &self,
+            _turn: crate::RuntimeTurnId,
+        ) -> crate::BoxFuture<'static, Result<crate::CleanupOutcome, crate::RuntimeFailure>>
+        {
+            panic!("registering a watcher port must not start work");
+        }
     }
 
     #[test]

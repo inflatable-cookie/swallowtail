@@ -1,3 +1,6 @@
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+use std::task::Waker;
 use std::thread::{self, JoinHandle};
 use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{BoxFuture, JoinedTask, RuntimeFailure, ScopeId, ScopedTaskService};
@@ -35,9 +38,14 @@ impl ScopedTaskService for LocalScopedTaskService {
         scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        let signal = Arc::new(JoinSignal::default());
+        let worker_signal = Arc::clone(&signal);
         let worker = thread::Builder::new()
             .name("swallowtail-local-task".to_owned())
-            .spawn(move || futures_executor::block_on(task))
+            .spawn(move || {
+                futures_executor::block_on(task);
+                worker_signal.notify();
+            })
             .map_err(|_| {
                 task_failure(
                     "swallowtail.local_task.spawn_failed",
@@ -47,6 +55,7 @@ impl ScopedTaskService for LocalScopedTaskService {
         Ok(Box::new(LocalJoinedTask {
             _scope: scope,
             worker: Some(worker),
+            signal,
         }))
     }
 }
@@ -54,12 +63,23 @@ impl ScopedTaskService for LocalScopedTaskService {
 struct LocalJoinedTask {
     _scope: ScopeId,
     worker: Option<JoinHandle<()>>,
+    signal: Arc<JoinSignal>,
 }
 
 impl JoinedTask for LocalJoinedTask {
     fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
         let worker = self.worker.take();
         Box::pin(async move { join_worker(worker) })
+    }
+
+    fn is_finished(&self) -> bool {
+        self.worker
+            .as_ref()
+            .is_none_or(std::thread::JoinHandle::is_finished)
+    }
+
+    fn register_waker(&self, waker: &Waker) {
+        self.signal.register(waker);
     }
 }
 
@@ -93,4 +113,43 @@ fn join_worker(worker: Option<JoinHandle<()>>) -> Result<(), RuntimeFailure> {
 
 fn task_failure(code: &'static str, message: &'static str) -> RuntimeFailure {
     RuntimeFailure::new(SafeDiagnostic::new(code, message))
+}
+
+#[derive(Default)]
+struct JoinSignal {
+    finished: AtomicBool,
+    waker: Mutex<Option<Waker>>,
+}
+
+impl JoinSignal {
+    fn notify(&self) {
+        self.finished.store(true, Ordering::Release);
+        if let Some(waker) = self
+            .waker
+            .lock()
+            .expect("local task waker lock poisoned")
+            .take()
+        {
+            waker.wake();
+        }
+    }
+
+    fn register(&self, waker: &Waker) {
+        if self.finished.load(Ordering::Acquire) {
+            waker.wake_by_ref();
+            return;
+        }
+        let mut registered = self.waker.lock().expect("local task waker lock poisoned");
+        if !registered
+            .as_ref()
+            .is_some_and(|current| current.will_wake(waker))
+        {
+            *registered = Some(waker.clone());
+        }
+        if self.finished.load(Ordering::Acquire)
+            && let Some(waker) = registered.take()
+        {
+            waker.wake();
+        }
+    }
 }

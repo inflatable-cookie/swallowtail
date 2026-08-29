@@ -11,7 +11,7 @@ struct OutputInner {
     chunks: VecDeque<ProcessOutputChunk>,
     failure: Option<RuntimeFailure>,
     closed_readers: u8,
-    abandoned: bool,
+    supervision_complete: bool,
     terminal: bool,
     waiters: Vec<Waker>,
 }
@@ -68,17 +68,29 @@ impl OutputState {
         wake_all(&mut inner.waiters);
     }
 
-    /// Marks output capture abandoned after the bounded reader-join window.
-    ///
-    /// Called by the supervisor when a reader thread is still blocked on a
-    /// pipe held by a descendant. The stream then drains to terminal truth
-    /// even though fewer than both readers have closed.
-    pub(crate) fn close_abandoned(&self) {
+    /// Records a reader-supervision failure and wakes output consumers.
+    pub(crate) fn fail_supervision(&self) {
         let mut inner = self
             .inner
             .lock()
             .expect("local process output lock poisoned");
-        inner.abandoned = true;
+        if inner.failure.is_none() {
+            inner.failure = Some(failure(
+                "swallowtail.local_process.reader_join_failed",
+                "Local process output readers could not be joined",
+            ));
+        }
+        inner.closed_readers = 2;
+        inner.supervision_complete = true;
+        wake_all(&mut inner.waiters);
+    }
+
+    pub(crate) fn complete_supervision(&self) {
+        let mut inner = self
+            .inner
+            .lock()
+            .expect("local process output lock poisoned");
+        inner.supervision_complete = true;
         wake_all(&mut inner.waiters);
     }
 
@@ -108,10 +120,8 @@ impl Future for OutputFuture {
             Poll::Ready(Ok(Some(chunk)))
         } else if let Some(failure) = inner.failure.take() {
             Poll::Ready(Err(failure))
-        } else if inner.closed_readers >= 2 || inner.abandoned {
-            // Terminal is latched: after the stream reports end, a reader
-            // abandoned on a descendant-held pipe can still push chunks or a
-            // failure, and those must not resume the stream.
+        } else if inner.closed_readers >= 2 && inner.supervision_complete {
+            // Terminal is latched after both owned reader tasks have closed.
             inner.terminal = true;
             Poll::Ready(Ok(None))
         } else {

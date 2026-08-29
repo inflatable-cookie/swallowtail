@@ -21,6 +21,7 @@ mod materialization;
 mod model_artifact;
 mod network;
 mod output;
+mod process;
 mod process_exit;
 mod process_reader;
 mod schema;

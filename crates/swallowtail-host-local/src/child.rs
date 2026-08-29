@@ -1,18 +1,23 @@
 use crate::output::{OutputState, failure};
-use crate::process_exit::{
-    ChildCommand, ExitState, READER_JOIN_BOUND, join_with_bound, supervise_child,
-};
-use crate::process_reader::spawn_reader;
+use crate::process_exit::{ChildCommand, ExitState};
 use std::io::Write;
 use std::process::{Child, ChildStderr, ChildStdin, ChildStdout};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc::{self, Sender};
+use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
-use std::thread;
 use swallowtail_runtime::{
-    BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessOutputStream, RuntimeFailure,
+    BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, RuntimeFailure,
 };
+
+mod supervision;
+
+pub(crate) struct LocalProcessParts {
+    pub(crate) child: Child,
+    pub(crate) group_owner: Option<Child>,
+    pub(crate) stdin: ChildStdin,
+    pub(crate) stdout: ChildStdout,
+    pub(crate) stderr: ChildStderr,
+}
 
 struct SharedChild {
     stdin: Mutex<Option<ChildStdin>>,
@@ -30,96 +35,6 @@ pub(crate) struct LocalProcessHandle {
 }
 
 impl LocalProcessHandle {
-    pub(crate) fn supervise(
-        mut child: Child,
-        stdin: ChildStdin,
-        stdout: ChildStdout,
-        stderr: ChildStderr,
-        stdin_limit: usize,
-        stdout_limit: usize,
-        stderr_limit: usize,
-    ) -> Result<Self, RuntimeFailure> {
-        let output = Arc::new(OutputState::default());
-        let stdout_reader = spawn_reader(
-            "swallowtail-stdout",
-            stdout,
-            stdout_limit,
-            ProcessOutputStream::Stdout,
-            Arc::clone(&output),
-        );
-        let stderr_reader = spawn_reader(
-            "swallowtail-stderr",
-            stderr,
-            stderr_limit,
-            ProcessOutputStream::Stderr,
-            Arc::clone(&output),
-        );
-        let (stdout_reader, stderr_reader) = match (stdout_reader, stderr_reader) {
-            (Ok(stdout_reader), Ok(stderr_reader)) => (stdout_reader, stderr_reader),
-            _ => {
-                let _ = child.kill();
-                let _ = child.wait();
-                return Err(failure(
-                    "swallowtail.local_process.reader_start_failed",
-                    "Local process output supervision could not start",
-                ));
-            }
-        };
-
-        let exit = Arc::new(ExitState::default());
-        let (commands, command_receiver) = mpsc::channel();
-        let supervisor_exit = Arc::clone(&exit);
-        let supervisor_output = Arc::clone(&output);
-        let supervision_slot = Arc::new(Mutex::new(Some((child, stdout_reader, stderr_reader))));
-        let supervisor_parts = Arc::clone(&supervision_slot);
-        let supervisor = thread::Builder::new()
-            .name("swallowtail-process".to_owned())
-            .spawn(move || {
-                let (mut child, stdout_reader, stderr_reader) = supervisor_parts
-                    .lock()
-                    .expect("local process supervision lock poisoned")
-                    .take()
-                    .expect("local process supervision parts must be present");
-                supervise_child(
-                    &mut child,
-                    command_receiver,
-                    stdout_reader,
-                    stderr_reader,
-                    &supervisor_output,
-                    &supervisor_exit,
-                );
-            });
-        if supervisor.is_err() {
-            if let Some((mut child, stdout_reader, stderr_reader)) = supervision_slot
-                .lock()
-                .expect("local process supervision lock poisoned")
-                .take()
-            {
-                let _ = child.kill();
-                let _ = child.wait();
-                let _ = join_with_bound(stdout_reader, READER_JOIN_BOUND);
-                let _ = join_with_bound(stderr_reader, READER_JOIN_BOUND);
-            }
-            return Err(failure(
-                "swallowtail.local_process.supervisor_start_failed",
-                "Local process supervision could not start",
-            ));
-        }
-
-        Ok(Self {
-            shared: Arc::new(SharedChild {
-                stdin: Mutex::new(Some(stdin)),
-                stdin_bytes: Mutex::new(0),
-                stdin_limit,
-                output,
-                exit,
-                commands,
-                stop_requested: AtomicBool::new(false),
-                force_requested: AtomicBool::new(false),
-            }),
-        })
-    }
-
     fn write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
         let bytes = chunk.into_bytes();
         let mut written = self

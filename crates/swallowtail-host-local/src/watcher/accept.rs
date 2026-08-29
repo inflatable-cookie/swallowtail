@@ -2,12 +2,10 @@ use super::{LocalWatcherEntry, LocalWatcherHostService, LocalWatcherTurn};
 use crate::output::failure;
 use futures_executor::block_on;
 use std::collections::BTreeMap;
-use std::collections::btree_map::Entry;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester};
 use swallowtail_runtime::{
-    ProcessService, RuntimeFailure, RuntimeTurnId, ScopedTaskService, WatcherRegistry,
-    WatcherSnapshot, WatcherWaitRepresentation,
+    ProcessService, RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot,
 };
 
 use super::process;
@@ -39,26 +37,41 @@ impl LocalWatcherHostService {
             .state
             .lock()
             .expect("local watcher state lock poisoned");
-        let turn_state = match state.entry(turn.clone()) {
-            Entry::Occupied(entry) => {
-                if entry.get().closed {
-                    return Err(failure(
-                        "swallowtail.local_watcher.turn_closed",
-                        "Watcher turn cleanup has already closed this turn",
-                    ));
-                }
-                entry.into_mut()
-            }
-            Entry::Vacant(entry) => {
-                let registry =
-                    WatcherRegistry::new(turn.clone(), self.capacity).map_err(registry_failure)?;
-                entry.insert(LocalWatcherTurn {
+        if state.is_retired(&turn) {
+            return Err(super::support::turn_retired_failure());
+        }
+        if let Some(turn_state) = state.active.get(&turn)
+            && turn_state.closed
+        {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_closed",
+                "Watcher turn cleanup has already closed this turn",
+            ));
+        }
+        if !state.active.contains_key(&turn) {
+            let namespace = state.next_namespace;
+            state.next_namespace = state.next_namespace.checked_add(1).ok_or_else(|| {
+                failure(
+                    "swallowtail.local_watcher.identity_exhausted",
+                    "Local watcher identity namespace is exhausted",
+                )
+            })?;
+            let registry =
+                WatcherRegistry::new_with_namespace(turn.clone(), self.capacity, namespace)
+                    .map_err(registry_failure)?;
+            state.active.insert(
+                turn.clone(),
+                LocalWatcherTurn {
                     registry,
                     entries: BTreeMap::new(),
                     closed: false,
-                })
-            }
-        };
+                },
+            );
+        }
+        let turn_state = state
+            .active
+            .get_mut(&turn)
+            .expect("local watcher turn was inserted before acceptance");
 
         let accepted = turn_state
             .registry
@@ -69,12 +82,14 @@ impl LocalWatcherHostService {
             Ok(process) => Arc::from(process),
             Err(error) => {
                 let _ = turn_state.registry.reject_start(&watcher_id);
+                state.remove_empty_turn(&turn);
                 return Err(error);
             }
         };
         if let Err(error) = turn_state.registry.mark_running(&watcher_id) {
             super::support::cleanup_process(&process);
             let _ = turn_state.registry.reject_start(&watcher_id);
+            state.remove_empty_turn(&turn);
             return Err(registry_failure(error));
         }
 
@@ -94,27 +109,25 @@ impl LocalWatcherHostService {
             Ok(task) => task,
             Err(error) => {
                 super::support::cleanup_process(&process);
-                let _ = turn_state.registry.complete(
-                    &watcher_id,
-                    swallowtail_core::WatcherTerminalCause::Failed,
-                    Some(super::support::summary("failed")),
-                );
-                let _ = turn_state.registry.join(&watcher_id);
+                let _ = turn_state.registry.reject_start(&watcher_id);
+                state.remove_empty_turn(&turn);
                 return Err(error);
             }
         };
         turn_state.entries.insert(
-            watcher_id,
+            watcher_id.clone(),
             Arc::new(LocalWatcherEntry {
                 process,
                 task: Mutex::new(Some(task)),
                 join_lock: Mutex::new(()),
                 joined: std::sync::atomic::AtomicBool::new(false),
+                join_error: Mutex::new(None),
+                join_signal: super::JoinSignal::default(),
             }),
         );
         turn_state
             .registry
-            .inspect(turn_state.registry.owning_turn(), accepted.watcher_id())
+            .inspect(turn_state.registry.owning_turn(), &watcher_id)
             .map_err(registry_failure)
     }
 
@@ -128,9 +141,20 @@ impl LocalWatcherHostService {
             .lock()
             .expect("local watcher state lock poisoned");
         let turn = runtime_turn(&owning_turn)?;
-        state
-            .get(&turn)
-            .ok_or_else(turn_missing_failure)?
+        let turn_state = state.active.get(&turn).ok_or_else(|| {
+            if state.is_retired(&turn) {
+                super::support::turn_retired_failure()
+            } else {
+                turn_missing_failure()
+            }
+        })?;
+        if turn_state.closed {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_closed",
+                "Watcher turn cleanup has already closed this turn",
+            ));
+        }
+        turn_state
             .registry
             .inspect(&owning_turn, &watcher_id)
             .map_err(registry_failure)
@@ -145,9 +169,20 @@ impl LocalWatcherHostService {
             .lock()
             .expect("local watcher state lock poisoned");
         let turn = runtime_turn(&owning_turn)?;
-        state
-            .get(&turn)
-            .ok_or_else(turn_missing_failure)?
+        let turn_state = state.active.get(&turn).ok_or_else(|| {
+            if state.is_retired(&turn) {
+                super::support::turn_retired_failure()
+            } else {
+                turn_missing_failure()
+            }
+        })?;
+        if turn_state.closed {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_closed",
+                "Watcher turn cleanup has already closed this turn",
+            ));
+        }
+        turn_state
             .registry
             .list(&owning_turn)
             .map_err(registry_failure)
@@ -163,7 +198,19 @@ impl LocalWatcherHostService {
             .state
             .lock()
             .expect("local watcher state lock poisoned");
-        let turn_state = state.get(&turn).ok_or_else(turn_missing_failure)?;
+        let turn_state = state.active.get(&turn).ok_or_else(|| {
+            if state.is_retired(&turn) {
+                super::support::turn_retired_failure()
+            } else {
+                turn_missing_failure()
+            }
+        })?;
+        if turn_state.closed {
+            return Err(failure(
+                "swallowtail.local_watcher.turn_closed",
+                "Watcher turn cleanup has already closed this turn",
+            ));
+        }
         turn_state
             .registry
             .inspect(owning_turn, watcher_id)
@@ -176,30 +223,18 @@ impl LocalWatcherHostService {
         Ok((turn, entry))
     }
 
-    pub(super) fn wait_now(
+    pub(super) fn prepare_wait(
         &self,
         owning_turn: WatcherOwningTurn,
         watcher_id: WatcherId,
-    ) -> Result<WatcherWaitRepresentation, RuntimeFailure> {
+    ) -> Result<super::wait::LocalWatcherWait, RuntimeFailure> {
         let (turn, entry) = self.lookup(&owning_turn, &watcher_id)?;
-        self.join_entry(&turn, &watcher_id, &entry)?;
-        let state = self
-            .state
-            .lock()
-            .expect("local watcher state lock poisoned");
-        let representation = state
-            .get(&turn)
-            .ok_or_else(turn_missing_failure)?
-            .registry
-            .wait_representation(&owning_turn, &watcher_id)
-            .map_err(registry_failure)?;
-        if matches!(representation, WatcherWaitRepresentation::Satisfied(_)) {
-            Ok(representation)
-        } else {
-            Err(failure(
-                "swallowtail.local_watcher.wait_not_joined",
-                "Local watcher cleanup did not reach joined truth",
-            ))
-        }
+        Ok(super::wait::LocalWatcherWait::new(
+            Arc::clone(&self.state),
+            turn,
+            owning_turn,
+            watcher_id,
+            entry,
+        ))
     }
 }

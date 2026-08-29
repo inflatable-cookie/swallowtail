@@ -27,15 +27,15 @@ impl WatcherRegistry {
         let sequence = self.next_sequence;
         self.next_sequence = self.next_sequence.saturating_add(1);
         let watcher_id = WatcherId::new(format!(
-            "{}/watcher-{}",
+            "{}/{}",
             self.owning_turn.as_str(),
-            sequence
+            self.watcher_id(sequence)
         ))
         .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
         let activity_id = ActivityId::new(format!(
-            "{}/watcher-activity-{}",
+            "{}/{}",
             self.owning_turn.as_str(),
-            sequence
+            self.activity_id(sequence)
         ))
         .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidTransition))?;
         let record = WatcherRecord {
@@ -51,13 +51,18 @@ impl WatcherRegistry {
         self.snapshot(&watcher_id)
     }
 
-    /// Rejects an accepted start before host work is bound to it.
+    /// Rejects a start before the host returns its watcher identity.
     ///
-    /// This rollback is for a host that cannot start the already-admitted
-    /// operation. It never removes a running or terminal watcher.
+    /// This rollback is for a host that cannot finish binding the already-
+    /// admitted operation. The host may have briefly marked the record
+    /// running, but no caller can observe that record until `accept_start`
+    /// succeeds. It never removes a terminal or joined watcher.
     pub fn reject_start(&mut self, watcher_id: &WatcherId) -> Result<(), WatcherFailure> {
-        if self.record(watcher_id)?.phase != WatcherLifecyclePhase::Accepted {
-            return Err(WatcherFailure::new(WatcherFailureKind::InvalidTransition));
+        match self.record(watcher_id)?.phase {
+            WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {}
+            WatcherLifecyclePhase::Terminal | WatcherLifecyclePhase::Joined => {
+                return Err(WatcherFailure::new(WatcherFailureKind::InvalidTransition));
+            }
         }
         self.records.remove(watcher_id);
         self.order.retain(|current| current != watcher_id);

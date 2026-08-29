@@ -1,75 +1,25 @@
-use crate::output::{OutputState, failure};
+use crate::output::failure;
 use std::future::Future;
 use std::pin::Pin;
-use std::process::{Child, Command, ExitStatus, Stdio};
-use std::sync::mpsc::Receiver;
+use std::process::Child;
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-use std::thread;
-use std::time::{Duration, Instant};
-use swallowtail_runtime::{ProcessExit, RuntimeFailure};
+use swallowtail_runtime::RuntimeFailure;
 
-/// Bound for joining the output reader threads after the child exits.
-///
-/// A descendant of the child can inherit the output pipes and hold them open
-/// past the child's own exit, so EOF (and therefore a clean reader finish)
-/// may arrive arbitrarily late. The supervisor must not wait forever for the
-/// readers; output capture is bounded and abandoned when this bound elapses.
-pub(crate) const READER_JOIN_BOUND: Duration = Duration::from_secs(2);
-/// Poll-interval for bounded reader joins.
-const JOIN_POLL_INTERVAL: Duration = Duration::from_millis(10);
-/// Grace period between a close-stdin request and process-tree termination.
-pub(crate) const GRACEFUL_STOP_BOUND: Duration = Duration::from_secs(1);
+#[cfg(unix)]
+use nix::sys::signal::{Signal, killpg};
+#[cfg(unix)]
+use nix::unistd::Pid;
+#[cfg(windows)]
+use std::process::{Command, Stdio};
 
-/// Consecutive failed kill attempts before a requested force stop is
-/// reported as failed. Each attempt is one supervision tick, so this is a
-/// one-second give-up bound for a child that survives SIGKILL.
-const MAX_FORCE_KILL_ATTEMPTS: u32 = 100;
+mod supervision;
 
-/// Outcome of joining one output reader thread under a bound.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum JoinOutcome {
-    /// The reader thread finished normally.
-    Completed,
-    /// The reader thread was still running when the bound elapsed; its
-    /// handle is dropped and the thread is detached until the pipe closes.
-    TimedOut,
-    /// The reader thread panicked.
-    Panicked,
-}
-
-/// Joins one output reader thread, giving up after `bound` has elapsed.
-///
-/// Returns `Completed` only when the thread actually finished. A `TimedOut`
-/// result drops the handle and detaches the blocked thread; it finishes by
-/// itself if the pipe ever closes.
-pub(crate) fn join_with_bound(handle: thread::JoinHandle<()>, bound: Duration) -> JoinOutcome {
-    let deadline = Instant::now()
-        .checked_add(bound)
-        .expect("reader join deadline is representable");
-    loop {
-        if handle.is_finished() {
-            return match handle.join() {
-                Ok(()) => JoinOutcome::Completed,
-                Err(_) => JoinOutcome::Panicked,
-            };
-        }
-        let now = Instant::now();
-        if now >= deadline {
-            return JoinOutcome::TimedOut;
-        }
-        thread::sleep((deadline - now).min(JOIN_POLL_INTERVAL));
-    }
-}
-
-pub(crate) enum ChildCommand {
-    RequestStop,
-    ForceStop,
-}
+pub(crate) use supervision::{ChildCommand, ReaderSupervision, supervise_child};
 
 #[derive(Default)]
 struct ExitInner {
-    result: Option<Result<ProcessExit, RuntimeFailure>>,
+    result: Option<Result<swallowtail_runtime::ProcessExit, RuntimeFailure>>,
     waiters: Vec<Waker>,
 }
 
@@ -79,7 +29,10 @@ pub(crate) struct ExitState {
 }
 
 impl ExitState {
-    pub(crate) fn complete(&self, result: Result<ProcessExit, RuntimeFailure>) {
+    pub(crate) fn complete(
+        &self,
+        result: Result<swallowtail_runtime::ProcessExit, RuntimeFailure>,
+    ) {
         let mut inner = self.inner.lock().expect("local process exit lock poisoned");
         if inner.result.is_none() {
             inner.result = Some(result);
@@ -109,7 +62,7 @@ pub(crate) struct ExitFuture {
 }
 
 impl Future for ExitFuture {
-    type Output = Result<ProcessExit, RuntimeFailure>;
+    type Output = Result<swallowtail_runtime::ProcessExit, RuntimeFailure>;
 
     fn poll(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
         let mut inner = self
@@ -132,130 +85,50 @@ impl Future for ExitFuture {
     }
 }
 
-pub(crate) fn supervise_child(
-    child: &mut Child,
-    commands: Receiver<ChildCommand>,
-    stdout_reader: thread::JoinHandle<()>,
-    stderr_reader: thread::JoinHandle<()>,
-    output: &OutputState,
-    exit: &ExitState,
-) {
-    let process_group_id = child.id();
-    let mut graceful_requested = false;
-    let mut graceful_signal_sent = false;
-    let mut graceful_deadline = None;
-    let mut force_deadline = None;
-    let mut force_seen = false;
-    let mut failed_kills = 0_u32;
-    let status = loop {
-        match commands.recv_timeout(Duration::from_millis(10)) {
-            Ok(ChildCommand::RequestStop) => {
-                if !graceful_requested {
-                    graceful_requested = true;
-                    graceful_deadline = Instant::now().checked_add(GRACEFUL_STOP_BOUND);
-                }
-            }
-            Ok(ChildCommand::ForceStop) => force_seen = true,
-            Err(_) => {}
-        }
-        match child.try_wait() {
-            Ok(Some(status)) => break Ok(status),
-            Ok(None) => {}
-            Err(_) => {
-                break Err(failure(
-                    "swallowtail.local_process.wait_failed",
-                    "Local process exit could not be observed",
-                ));
-            }
-        }
-        if graceful_requested
-            && !graceful_signal_sent
-            && graceful_deadline.is_some_and(|deadline| Instant::now() >= deadline)
-        {
-            graceful_signal_sent = true;
-            force_deadline = Instant::now().checked_add(GRACEFUL_STOP_BOUND);
-            let _ = terminate_process_tree(process_group_id, false);
-        } else if graceful_signal_sent
-            && !force_seen
-            && force_deadline.is_some_and(|deadline| Instant::now() >= deadline)
-        {
-            force_seen = true;
-        }
-        if force_seen {
-            // The natural exit above wins over a stop that raced it: killing
-            // is attempted only after the child is still listed. SIGKILL
-            // cannot be blocked or ignored, so a failed kill on our own child
-            // means it already exited and the next try_wait reaps it. The
-            // process-group request also covers descendants that inherited
-            // the launcher's process group.
-            if !terminate_process_tree(process_group_id, true) {
-                failed_kills = failed_kills.saturating_add(1);
-                if failed_kills >= MAX_FORCE_KILL_ATTEMPTS {
-                    break Err(failure(
-                        "swallowtail.local_process.force_stop_failed",
-                        "Local process could not be force-stopped",
-                    ));
-                }
-            } else {
-                failed_kills = 0;
-            }
-        }
-    };
-
-    // Reap the root first, then close any inherited pipe holders that escaped
-    // the root's lifetime. The process group id is the launcher's pid and is
-    // retained for this final bounded cleanup request.
-    let _ = terminate_process_tree(process_group_id, true);
-
-    // Join the readers under a bound. A descendant holding the output pipes
-    // can delay EOF past the child's own exit; waiting forever would stall
-    // wait() and read_output() consumers and leak the supervisor thread.
-    let stdout_outcome = join_with_bound(stdout_reader, READER_JOIN_BOUND);
-    let stderr_outcome = join_with_bound(stderr_reader, READER_JOIN_BOUND);
-
-    if matches!(stdout_outcome, JoinOutcome::TimedOut)
-        || matches!(stderr_outcome, JoinOutcome::TimedOut)
-    {
-        // Output capture is abandoned: the blocked reader thread is detached
-        // and finishes if the pipe ever closes, and the stream closes so
-        // read_output() drains to terminal truth instead of stalling.
-        output.close_abandoned();
-    }
-
-    if matches!(stdout_outcome, JoinOutcome::Panicked)
-        || matches!(stderr_outcome, JoinOutcome::Panicked)
-    {
-        exit.complete(Err(failure(
-            "swallowtail.local_process.reader_panicked",
-            "Local process output supervision failed",
-        )));
-        return;
-    }
-    exit.complete(status.map(exit_record));
-}
-
-fn terminate_process_tree(process_group_id: u32, force: bool) -> bool {
+/// Terminates a process tree while its host-owned group owner is still live.
+///
+/// The group owner is the ownership primitive. Its live child handle keeps
+/// the group identity from becoming a reusable numeric target during tree
+/// cleanup. Unix callers never signal a bare process-group number.
+pub(crate) fn terminate_process_tree(
+    group_owner: Option<&Child>,
+    root_process_id: u32,
+    force: bool,
+) -> Result<(), RuntimeFailure> {
     #[cfg(unix)]
     {
-        let signal = if force { "-KILL" } else { "-TERM" };
-        let group = format!("-{process_group_id}");
-        Command::new("/bin/kill")
-            .arg(signal)
-            .arg(group)
-            .env_clear()
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()
-            .map(|status| status.success())
-            .unwrap_or(false)
+        let _ = (root_process_id, force);
+        let owner = group_owner.ok_or_else(|| {
+            failure(
+                "swallowtail.local_process.tree_ownership_unavailable",
+                "Local process tree ownership is unavailable",
+            )
+        })?;
+        let group_id = i32::try_from(owner.id()).map_err(|_| {
+            failure(
+                "swallowtail.local_process.tree_ownership_unavailable",
+                "Local process tree identity is outside the supported range",
+            )
+        })?;
+        let signal = if force {
+            Signal::SIGKILL
+        } else {
+            Signal::SIGTERM
+        };
+        killpg(Pid::from_raw(group_id), signal).map_err(|_| {
+            failure(
+                "swallowtail.local_process.tree_termination_failed",
+                "Local process tree could not be terminated",
+            )
+        })
     }
 
     #[cfg(windows)]
     {
+        let _ = group_owner;
         let mut command = Command::new(r"C:\Windows\System32\taskkill.exe");
         command
-            .args(["/PID", &process_group_id.to_string(), "/T"])
+            .args(["/PID", &root_process_id.to_string(), "/T"])
             .env_clear()
             .stdin(Stdio::null())
             .stdout(Stdio::null())
@@ -263,19 +136,96 @@ fn terminate_process_tree(process_group_id: u32, force: bool) -> bool {
         if force {
             command.arg("/F");
         }
-        command
+        if command
             .status()
             .map(|status| status.success())
             .unwrap_or(false)
+        {
+            Ok(())
+        } else {
+            Err(failure(
+                "swallowtail.local_process.tree_termination_failed",
+                "Local process tree could not be terminated",
+            ))
+        }
     }
 
     #[cfg(not(any(unix, windows)))]
     {
-        let _ = (process_group_id, force);
-        false
+        let _ = (group_owner, root_process_id, force);
+        Err(failure(
+            "swallowtail.local_process.tree_ownership_unavailable",
+            "Local process tree ownership is unavailable",
+        ))
     }
 }
 
-fn exit_record(status: ExitStatus) -> ProcessExit {
-    ProcessExit::new(status.success(), status.code())
+/// Cleans up a process before its supervisor has reaped the root.
+pub(crate) fn cleanup_owned_process(
+    child: &mut Child,
+    group_owner: &mut Option<Child>,
+) -> Result<(), RuntimeFailure> {
+    let mut cleanup_error = None;
+    if group_owner.is_some() {
+        if let Err(error) = terminate_process_tree(group_owner.as_ref(), child.id(), true) {
+            cleanup_error = Some(error);
+            let _ = child.kill();
+        }
+    } else if child.kill().is_err() {
+        cleanup_error = Some(failure(
+            "swallowtail.local_process.force_stop_failed",
+            "Local process could not be force-stopped",
+        ));
+    }
+    if child.wait().is_err() && cleanup_error.is_none() {
+        cleanup_error = Some(failure(
+            "swallowtail.local_process.wait_failed",
+            "Local process exit could not be observed",
+        ));
+    }
+    if let Some(owner) = group_owner.as_mut() {
+        if cleanup_error.is_some() {
+            let _ = owner.kill();
+        }
+        if owner.wait().is_err() && cleanup_error.is_none() {
+            cleanup_error = Some(failure(
+                "swallowtail.local_process.tree_join_failed",
+                "Local process tree owner could not be joined",
+            ));
+        }
+    }
+    cleanup_error.map_or(Ok(()), Err)
+}
+
+#[cfg(test)]
+mod tests {
+    use std::process::Command;
+
+    use super::terminate_process_tree;
+
+    #[test]
+    fn tree_termination_requires_a_live_group_owner() {
+        let failure = terminate_process_tree(None, 1, true).expect_err("owner is required");
+        assert_eq!(
+            failure.diagnostic().code(),
+            "swallowtail.local_process.tree_ownership_unavailable"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn failed_tree_termination_is_reported_without_signalling_a_foreign_group() {
+        let mut child = Command::new("/bin/sleep")
+            .arg("5")
+            .spawn()
+            .expect("fixture process starts");
+        let failure = terminate_process_tree(Some(&child), child.id(), true)
+            .expect_err("a child outside its own process group cannot be tree-terminated");
+        assert_eq!(
+            failure.diagnostic().code(),
+            "swallowtail.local_process.tree_termination_failed"
+        );
+        child.kill().expect("fixture process stops");
+        child.wait().expect("fixture process joins");
+    }
 }

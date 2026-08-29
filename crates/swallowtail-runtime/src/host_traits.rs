@@ -8,12 +8,28 @@ use crate::{
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
 };
+use std::task::Waker;
 use swallowtail_core::{CatalogTimestamp, Diagnostic, EndpointAudience, SafeDiagnostic};
 
 /// Join handle for one task created inside a runtime operation scope.
 pub trait JoinedTask: Send {
     /// Waits for the task to finish and reports runtime-safe failure evidence.
     fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>>;
+
+    /// Reports whether [`Self::join`] can be called without blocking.
+    ///
+    /// Hosts that cannot make this observation return `false`. Runtime code
+    /// uses this optional capability only when it must keep future polling
+    /// non-blocking.
+    fn is_finished(&self) -> bool {
+        false
+    }
+
+    /// Registers a waker for the transition observed by [`Self::is_finished`].
+    ///
+    /// Hosts that cannot provide a notification leave the default no-op in
+    /// place; callers must then use their host-specific polling policy.
+    fn register_waker(&self, _waker: &Waker) {}
 }
 
 /// Host boundary for spawning tasks that must be joined before scope cleanup.

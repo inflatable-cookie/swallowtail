@@ -57,6 +57,13 @@ pub(super) fn turn_missing_failure() -> RuntimeFailure {
     )
 }
 
+pub(super) fn turn_retired_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_watcher.turn_retired",
+        "Local watcher turn state has been retired",
+    )
+}
+
 pub(super) fn entry_missing_failure() -> RuntimeFailure {
     failure(
         "swallowtail.local_watcher.watcher_not_found",

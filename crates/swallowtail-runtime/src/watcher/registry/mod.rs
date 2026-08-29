@@ -20,6 +20,7 @@ pub struct WatcherRegistry {
     owning_turn: WatcherOwningTurn,
     runtime_turn: RuntimeTurnId,
     maximum_watchers: usize,
+    namespace: u64,
     next_sequence: u64,
     order: Vec<WatcherId>,
     records: BTreeMap<WatcherId, WatcherRecord>,
@@ -31,24 +32,53 @@ impl WatcherRegistry {
         runtime_turn: RuntimeTurnId,
         maximum_watchers: usize,
     ) -> Result<Self, WatcherFailure> {
+        Self::new_with_namespace(runtime_turn, maximum_watchers, 0)
+    }
+
+    /// Creates a registry with a host-owned identity namespace.
+    ///
+    /// A non-zero namespace prevents a stale watcher id from aliasing a later
+    /// registry if a consumer reuses a retired runtime-turn key.
+    pub fn new_with_namespace(
+        runtime_turn: RuntimeTurnId,
+        maximum_watchers: usize,
+        namespace: u64,
+    ) -> Result<Self, WatcherFailure> {
         if maximum_watchers == 0 {
             return Err(WatcherFailure::new(WatcherFailureKind::InvalidCapacity));
         }
         let owning_turn = WatcherOwningTurn::new(runtime_turn.as_str().to_owned())
             .map_err(|_| WatcherFailure::new(WatcherFailureKind::ForeignIdentity))?;
         // Prove at least one turn-bound id fits the public byte bound.
-        let _ = WatcherId::new(format!("{}/watcher-1", owning_turn.as_str()))
-            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
-        let _ = ActivityId::new(format!("{}/watcher-activity-1", owning_turn.as_str()))
-            .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
+        let _ = WatcherId::new(format!(
+            "{}/{}",
+            owning_turn.as_str(),
+            watcher_suffix(namespace, 1)
+        ))
+        .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
+        let _ = ActivityId::new(format!(
+            "{}/{}",
+            owning_turn.as_str(),
+            activity_suffix(namespace, 1)
+        ))
+        .map_err(|_| WatcherFailure::new(WatcherFailureKind::InvalidCapacity))?;
         Ok(Self {
             owning_turn,
             runtime_turn,
             maximum_watchers,
+            namespace,
             next_sequence: 1,
             order: Vec::new(),
             records: BTreeMap::new(),
         })
+    }
+
+    pub(super) fn watcher_id(&self, sequence: u64) -> String {
+        watcher_suffix(self.namespace, sequence)
+    }
+
+    pub(super) fn activity_id(&self, sequence: u64) -> String {
+        activity_suffix(self.namespace, sequence)
     }
 
     /// Creates a registry using the default turn capacity.
@@ -121,5 +151,21 @@ impl WatcherRegistry {
             self.owning_turn.clone(),
             record,
         ))
+    }
+}
+
+fn watcher_suffix(namespace: u64, sequence: u64) -> String {
+    if namespace == 0 {
+        format!("watcher-{sequence}")
+    } else {
+        format!("watcher-{namespace}-{sequence}")
+    }
+}
+
+fn activity_suffix(namespace: u64, sequence: u64) -> String {
+    if namespace == 0 {
+        format!("watcher-activity-{sequence}")
+    } else {
+        format!("watcher-activity-{namespace}-{sequence}")
     }
 }

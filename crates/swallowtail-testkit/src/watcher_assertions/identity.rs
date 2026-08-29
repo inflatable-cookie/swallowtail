@@ -110,6 +110,24 @@ pub fn assert_watcher_ownership_rejection(registry: &WatcherRegistry) {
     assert_eq!(failure.kind(), WatcherFailureKind::UnknownWatcher);
 }
 
+/// Proves host namespaces prevent a reused turn key from reusing watcher ids.
+pub fn assert_watcher_namespace_isolation() {
+    let turn = swallowtail_runtime::RuntimeTurnId::new("reused-turn").expect("turn is valid");
+    let operation = WatcherOperationData::new("namespace-operation").expect("operation data");
+    let mut first = WatcherRegistry::new_with_namespace(turn.clone(), 1, 7)
+        .expect("first namespaced registry is valid");
+    let mut second = WatcherRegistry::new_with_namespace(turn, 1, 8)
+        .expect("second namespaced registry is valid");
+    let first = first
+        .accept_start(WatcherRequester::Model, operation.clone())
+        .expect("first namespaced start succeeds");
+    let second = second
+        .accept_start(WatcherRequester::Model, operation)
+        .expect("second namespaced start succeeds");
+    assert_ne!(first.watcher_id(), second.watcher_id());
+    assert_ne!(first.activity_id(), second.activity_id());
+}
+
 /// Proves capacity bounds reject additional accepted starts.
 pub fn assert_watcher_capacity_bound(mut registry: WatcherRegistry) {
     let capacity = registry.maximum_watchers();

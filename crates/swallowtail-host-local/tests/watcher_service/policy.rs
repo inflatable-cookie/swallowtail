@@ -39,12 +39,20 @@ fn watcher_start_is_host_bound_and_wait_requires_joined_truth() {
     let turn = runtime_turn("turn-complete");
     let owning_turn = watcher_owning_turn("turn-complete");
 
-    let accepted = block_on(watcher.accept_start(turn, WatcherRequester::Model, operation.clone()))
-        .expect("host-approved watcher starts");
+    let accepted =
+        block_on(watcher.accept_start(turn.clone(), WatcherRequester::Model, operation.clone()))
+            .expect("host-approved watcher starts");
     assert_eq!(accepted.phase(), WatcherLifecyclePhase::Running);
     assert_eq!(accepted.accepted_by(), WatcherRequester::Model);
     assert!(accepted.summary().is_none());
     assert!(!format!("{accepted:?}").contains(operation.as_str()));
+
+    let failure = block_on(watcher.finalize_turn(turn.clone()))
+        .expect_err("finalization requires joined watcher truth");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_watcher.turn_not_joined"
+    );
 
     let wait = block_on(watcher.wait(owning_turn.clone(), accepted.watcher_id().clone()))
         .expect("watcher waits until terminal and joined");
@@ -61,6 +69,16 @@ fn watcher_start_is_host_bound_and_wait_requires_joined_truth() {
             .expect("host selects terminal summary")
             .as_str(),
         "completed"
+    );
+    assert_eq!(
+        block_on(watcher.finalize_turn(turn)).expect("joined successful turn retires explicitly"),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
+    let failure = block_on(watcher.list(watcher_owning_turn("turn-complete")))
+        .expect_err("retired turn rejects stale list controls");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_watcher.turn_retired"
     );
 }
 

@@ -52,13 +52,16 @@ fn monitor_spawn_failure_rolls_back_without_a_phantom_watcher() {
             .approve_executable(executable, "/bin/sleep")
             .approve_watcher_operation(operation.clone(), request)
             .approve_watcher_operation(exit_operation.clone(), exit_request)
+            .with_local_process_containment_probe()
             .build(),
     );
     let task_service = Arc::new(FailFirstTaskService {
         failed: AtomicBool::new(false),
         delegate: LocalScopedTaskService::new(execution_host),
     });
-    let watcher = LocalWatcherHostService::new_with_task_service(process_host, task_service, 2);
+    let containment = process_host.process_containment().cloned();
+    let watcher =
+        LocalWatcherHostService::new_with_task_service(process_host, task_service, 2, containment);
     let turn = RuntimeTurnId::new("fixture.watcher.rollback.turn").expect("turn is valid");
     let owning_turn = WatcherOwningTurn::new(turn.as_str()).expect("owning turn is valid");
 

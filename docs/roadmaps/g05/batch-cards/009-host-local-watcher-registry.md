@@ -1,6 +1,6 @@
 # 009 Host-Local Watcher Registry
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-29
@@ -34,25 +34,25 @@ claim and any process-table observation presented as containment evidence.
 
 ## Acceptance Criteria
 
-- [ ] registration alone starts nothing
-- [ ] rejected starts perform no work
-- [ ] start operation data is bounded and redacted; it is never executable or
+- [x] registration alone starts nothing
+- [x] rejected starts perform no work
+- [x] start operation data is bounded and redacted; it is never executable or
       process authority
-- [ ] caller input cannot forge host-selected progress or terminal summaries
-- [ ] process-backed start is absent or rejected before work when no exact
+- [x] caller input cannot forge host-selected progress or terminal summaries
+- [x] process-backed start is absent or rejected before work when no exact
       containment backend is supplied
-- [ ] every accepted process-backed watcher binds its containment lease before
+- [x] every accepted process-backed watcher binds its containment lease before
       the watcher id returns
-- [ ] stop, cancellation, deadline, failure, and close prove the containment
+- [x] stop, cancellation, deadline, failure, and close prove the containment
       scope empty and supervision joined before clean turn cleanup
-- [ ] a root handle, process group, observed parent chain, output pipe, or
+- [x] a root handle, process group, observed parent chain, output pipe, or
       `/bin/ps` poll is never treated as containment evidence
-- [ ] task-backed work cannot create unmanaged descendants or binds them to the
+- [x] task-backed work cannot create unmanaged descendants or binds them to the
       same containment lease
-- [ ] wait resolves only after terminal and joined truth
-- [ ] bounds and backpressure fail safely
-- [ ] races never stop foreign work
-- [ ] default `LocalHostServices` composition makes no process-backed watcher
+- [x] wait resolves only after terminal and joined truth
+- [x] bounds and backpressure fail safely
+- [x] races never stop foreign work
+- [x] default `LocalHostServices` composition makes no process-backed watcher
       claim on macOS
 
 ## Validation

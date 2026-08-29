@@ -7,6 +7,7 @@ mod support;
 mod tests;
 mod wait;
 
+use crate::containment::{ProcessContainmentBackend, ProcessContainmentLease};
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
 use futures_executor::block_on;
@@ -28,6 +29,7 @@ pub(super) const MAX_RETIRED_TURNS: usize = 64;
 pub(crate) struct LocalWatcherHostService {
     process_host: Arc<LocalProcessHost>,
     task_service: Arc<dyn ScopedTaskService>,
+    containment: Option<Arc<dyn ProcessContainmentBackend>>,
     state: Arc<Mutex<LocalWatcherState>>,
     capacity: usize,
 }
@@ -46,6 +48,7 @@ pub(super) struct LocalWatcherTurn {
 
 struct LocalWatcherEntry {
     process: Arc<dyn ProcessHandle>,
+    lease: Arc<dyn ProcessContainmentLease>,
     task: Mutex<Option<Box<dyn JoinedTask>>>,
     join_lock: Mutex<()>,
     joined: AtomicBool,
@@ -155,18 +158,21 @@ impl LocalWatcherHostService {
         process_host: Arc<LocalProcessHost>,
         task_service: Arc<LocalScopedTaskService>,
         capacity: usize,
+        containment: Option<Arc<dyn ProcessContainmentBackend>>,
     ) -> Self {
-        Self::new_with_task_service(process_host, task_service, capacity)
+        Self::new_with_task_service(process_host, task_service, capacity, containment)
     }
 
     pub(crate) fn new_with_task_service(
         process_host: Arc<LocalProcessHost>,
         task_service: Arc<dyn ScopedTaskService>,
         capacity: usize,
+        containment: Option<Arc<dyn ProcessContainmentBackend>>,
     ) -> Self {
         Self {
             process_host,
             task_service,
+            containment,
             state: Arc::new(Mutex::new(LocalWatcherState::default())),
             capacity,
         }
@@ -243,7 +249,8 @@ impl WatcherHostService for LocalWatcherHostService {
 impl Drop for LocalWatcherEntry {
     fn drop(&mut self) {
         if !self.joined.load(Ordering::Acquire) {
-            let _ = block_on(self.process.force_stop());
+            let _ = block_on(self.lease.force_stop());
+            let _ = block_on(self.lease.prove_empty_and_join());
         }
     }
 }

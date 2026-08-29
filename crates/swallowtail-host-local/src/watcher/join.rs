@@ -43,10 +43,14 @@ impl LocalWatcherHostService {
             }
             let mut process_result = block_on(entry.process.wait());
             if process_result.is_err() {
-                let _ = block_on(entry.process.force_stop());
+                let _ = block_on(entry.lease.force_stop());
                 process_result = block_on(entry.process.wait());
             }
             if let Err(error) = process_result {
+                entry.record_join_error(error.clone());
+                return Err(error);
+            }
+            if let Err(error) = block_on(entry.lease.prove_empty_and_join()) {
                 entry.record_join_error(error.clone());
                 return Err(error);
             }

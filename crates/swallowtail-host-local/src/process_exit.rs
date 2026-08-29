@@ -13,12 +13,8 @@ use nix::unistd::Pid;
 #[cfg(windows)]
 use std::process::{Command, Stdio};
 
-#[cfg(unix)]
-mod descendants;
 mod supervision;
 
-#[cfg(unix)]
-pub(crate) use descendants::DescendantTracker;
 pub(crate) use supervision::{ChildCommand, ReaderSupervision, supervise_child};
 
 #[derive(Default)]

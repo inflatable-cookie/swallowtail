@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
 Research: 257, 259 promoted
-Planning state: cards 007-008 complete; revised card 009 ready; cards 010-011 gated
+Planning state: cards 007-009 complete; cards 010-011 gated behind proved containment backend
 
 ## Problem
 
@@ -34,10 +34,10 @@ after their independent gates close.
 
 ### Batch 3.2 — Host Registry
 
-- [ ] repair and restack PR 117 through revised card 009
-- [ ] bind host-authorized lifecycle coordination without inferring process
+- [x] repair and restack PR 117 through revised card 009
+- [x] bind host-authorized lifecycle coordination without inferring process
       containment from the default local process service
-- [ ] require an injected containment backend before process-backed start
+- [x] require an injected containment backend before process-backed start
 
 ### Batch 3.3 — Conditional Claude Proof
 

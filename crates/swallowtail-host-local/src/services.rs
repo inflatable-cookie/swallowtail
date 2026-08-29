@@ -6,6 +6,10 @@ use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, TimeService};
 
 /// Inspectable host-owned local service composition for one execution host.
+///
+/// Default composition registers the portable watcher service without a
+/// process-containment backend. Process-backed starts therefore reject before
+/// work until an exact backend is injected.
 #[derive(Clone)]
 pub struct LocalHostServices {
     process_host: Arc<LocalProcessHost>,
@@ -36,6 +40,7 @@ impl LocalHostServices {
                 process_host.clone(),
                 task_service.clone(),
                 process_host.watcher_capacity,
+                process_host.process_containment.clone(),
             )));
         Self {
             process_host,

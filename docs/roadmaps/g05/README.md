@@ -22,13 +22,13 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | `g05.001` card 001 |
 | Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | `g05.001` card 002 |
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-059 promoted | evidence and operator decisions | `g05.001` card 003 |
-| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder empty; Claude admitted; portable core closed; host registry repair ready behind capability-gated containment | Contracts 058-059; Research 256-259 | `g05.002` and `g05.003` |
+| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder empty; Claude admitted; portable core closed; host registry complete behind capability-gated containment; containment backend selection next | Contracts 058-059; Research 256-259 | `g05.002` and `g05.003` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
 
 ## Planned Next Roadmaps
 
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; revised card 009 repairs/restacks PR 117
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 009 complete; containment-backend selection next
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
@@ -42,9 +42,10 @@ independent surfaces. Research 256 returns an honest empty Qoder roster set, so
 cards 005-006 stay planned. Research 257 admits the Claude Code watcher seam.
 Card 008 closed the provider-neutral watcher core. Research 259 proves the
 default macOS process boundary cannot supply hard descendant containment.
-Revised card 009 is ready to repair and restack PR 117 around an injected
-containment capability. Card 010 is gated until that card lands and an exact
-containment-capable host composition is proved; card 011 remains planned.
+Card 009 completed the restacked PR 117 repair: default local composition
+rejects process-backed starts before work, and accepted starts bind an injected
+containment lease. Card 010 stays gated until an exact containment-capable host
+composition is proved; card 011 remains planned.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -54,6 +55,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 ## Milestones
 
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; revised card 009 follows closed cards 007-008
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 009 complete; cards 010-011 gated behind containment proof
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

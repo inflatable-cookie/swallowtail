@@ -7,8 +7,6 @@ use std::thread;
 use std::time::{Duration, Instant};
 use swallowtail_runtime::ProcessExit;
 
-#[cfg(unix)]
-use super::DescendantTracker;
 use super::{ExitState, terminate_process_tree};
 
 /// Bound for joining the output reader threads after the child exits.
@@ -17,8 +15,6 @@ pub(crate) const READER_JOIN_BOUND: Duration = Duration::from_secs(2);
 pub(crate) const GRACEFUL_STOP_BOUND: Duration = Duration::from_secs(1);
 /// Poll-interval for bounded reader joins.
 const JOIN_POLL_INTERVAL: Duration = Duration::from_millis(10);
-#[cfg(unix)]
-const DESCENDANT_SCAN_INTERVAL: Duration = Duration::from_millis(25);
 /// Consecutive failed kill attempts before a requested force stop is
 /// reported as failed.
 const MAX_FORCE_KILL_ATTEMPTS: u32 = 100;
@@ -86,12 +82,6 @@ pub(crate) fn supervise_child(
         control: reader_control,
     } = readers;
     let root_process_id = child.id();
-    #[cfg(unix)]
-    let mut descendant_tracker = group_owner
-        .as_ref()
-        .map(|owner| DescendantTracker::new(root_process_id, owner.id()));
-    #[cfg(unix)]
-    let mut next_descendant_scan = Instant::now();
     let mut graceful_requested = false;
     let mut graceful_signal_sent = false;
     let mut graceful_deadline = None;
@@ -111,17 +101,6 @@ pub(crate) fn supervise_child(
             }
             Ok(ChildCommand::ForceStop) => force_seen = true,
             Err(_) => {}
-        }
-        #[cfg(unix)]
-        if Instant::now() >= next_descendant_scan {
-            if let Some(tracker) = descendant_tracker.as_mut()
-                && let Err(error) = tracker.observe()
-            {
-                tree_error.get_or_insert(error);
-            }
-            next_descendant_scan = Instant::now()
-                .checked_add(DESCENDANT_SCAN_INTERVAL)
-                .expect("descendant scan deadline is representable");
         }
         match child.try_wait() {
             Ok(Some(status)) => break Ok(status),
@@ -204,13 +183,6 @@ pub(crate) fn supervise_child(
                 "Local process tree owner could not be joined",
             ));
         }
-    }
-
-    #[cfg(unix)]
-    if let Some(tracker) = descendant_tracker.as_ref()
-        && let Err(error) = tracker.verify_stopped(READER_JOIN_BOUND)
-    {
-        tree_error.get_or_insert(error);
     }
 
     let stdout_outcome = join_with_bound(stdout_reader, &reader_control, READER_JOIN_BOUND);

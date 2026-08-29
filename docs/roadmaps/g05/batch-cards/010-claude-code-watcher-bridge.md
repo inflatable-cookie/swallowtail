@@ -1,6 +1,6 @@
 # 010 Claude Code Watcher Bridge
 
-Status: ready
+Status: gated
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-29

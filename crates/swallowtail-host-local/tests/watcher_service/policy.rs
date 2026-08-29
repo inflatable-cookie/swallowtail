@@ -1,8 +1,33 @@
 use super::support::block_on;
-use super::{operation_data, runtime_turn, watcher_host, watcher_owning_turn};
+use super::{
+    default_watcher_host, operation_data, runtime_turn, watcher_host, watcher_owning_turn,
+};
 use swallowtail_core::{WatcherLifecyclePhase, WatcherRequester, WatcherTerminalCause};
 use swallowtail_host_local::LocalProcessLimits;
 use swallowtail_runtime::{WatcherWaitOptions, WatcherWaitRepresentation};
+
+#[test]
+fn default_composition_rejects_process_backed_start_without_containment() {
+    let local = default_watcher_host(2);
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("default composition still registers the watcher service");
+    assert!(
+        local.process_host().process_containment().is_none(),
+        "default local composition must make no process-backed containment claim"
+    );
+    let failure = block_on(watcher.accept_start(
+        runtime_turn("turn-no-containment"),
+        WatcherRequester::Model,
+        operation_data("any-operation"),
+    ))
+    .expect_err("process-backed start must reject before work");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_watcher.containment_unavailable"
+    );
+}
 
 #[test]
 fn watcher_registration_and_unapproved_start_do_no_work() {

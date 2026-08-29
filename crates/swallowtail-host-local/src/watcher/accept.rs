@@ -5,13 +5,12 @@ use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester};
 use swallowtail_runtime::{
-    ProcessService, RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot,
-    WatcherWaitOptions,
+    RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot, WatcherWaitOptions,
 };
 
-use super::process;
 use super::support::{
-    entry_missing_failure, registry_failure, runtime_turn, turn_missing_failure, watcher_scope,
+    cleanup_lease, entry_missing_failure, registry_failure, runtime_turn, turn_missing_failure,
+    watcher_scope,
 };
 
 impl LocalWatcherHostService {
@@ -21,6 +20,12 @@ impl LocalWatcherHostService {
         requester: WatcherRequester,
         operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, RuntimeFailure> {
+        let backend = self.containment.as_ref().ok_or_else(|| {
+            failure(
+                "swallowtail.local_watcher.containment_unavailable",
+                "Process-backed watcher start requires an exact host containment backend",
+            )
+        })?;
         let request = self
             .process_host
             .approvals
@@ -79,16 +84,17 @@ impl LocalWatcherHostService {
             .accept_start(requester, operation_data)
             .map_err(registry_failure)?;
         let watcher_id = accepted.watcher_id().clone();
-        let process = match block_on(self.process_host.start(scope.clone(), request)) {
-            Ok(process) => Arc::from(process),
+        let started = match block_on(backend.start_contained(scope.clone(), request)) {
+            Ok(started) => started,
             Err(error) => {
                 let _ = turn_state.registry.reject_start(&watcher_id);
                 state.remove_empty_turn(&turn);
                 return Err(error);
             }
         };
+        let (process, lease) = started.into_parts();
         if let Err(error) = turn_state.registry.mark_running(&watcher_id) {
-            super::support::cleanup_process(&process);
+            cleanup_lease(&lease);
             let _ = turn_state.registry.reject_start(&watcher_id);
             state.remove_empty_turn(&turn);
             return Err(registry_failure(error));
@@ -100,7 +106,7 @@ impl LocalWatcherHostService {
         let monitor_process = Arc::clone(&process);
         let task = match self.task_service.spawn(
             scope,
-            Box::pin(process::monitor_watcher(
+            Box::pin(super::process::monitor_watcher(
                 monitor_state,
                 monitor_turn,
                 monitor_id,
@@ -109,7 +115,7 @@ impl LocalWatcherHostService {
         ) {
             Ok(task) => task,
             Err(error) => {
-                super::support::cleanup_process(&process);
+                cleanup_lease(&lease);
                 let _ = turn_state.registry.reject_start(&watcher_id);
                 state.remove_empty_turn(&turn);
                 return Err(error);
@@ -119,6 +125,7 @@ impl LocalWatcherHostService {
             watcher_id.clone(),
             Arc::new(LocalWatcherEntry {
                 process,
+                lease,
                 task: Mutex::new(Some(task)),
                 join_lock: Mutex::new(()),
                 joined: std::sync::atomic::AtomicBool::new(false),

@@ -29,6 +29,7 @@ fn watcher_host_with_limits(
         .with_environment([environment.clone()]);
     LocalProcessHost::builder(limits)
         .with_watcher_capacity(capacity)
+        .with_local_process_containment_probe()
         .approve_executable(
             executable,
             std::env::current_exe().expect("watcher fixture executable"),
@@ -38,6 +39,14 @@ fn watcher_host_with_limits(
         .build_services(
             ExecutionHostId::new(format!("fixture.host.watcher.{mode}"))
                 .expect("watcher host id is valid"),
+        )
+}
+
+fn default_watcher_host(capacity: usize) -> LocalHostServices {
+    LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_watcher_capacity(capacity)
+        .build_services(
+            ExecutionHostId::new("fixture.host.watcher.default").expect("watcher host id is valid"),
         )
 }
 

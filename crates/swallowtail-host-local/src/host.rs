@@ -1,3 +1,4 @@
+use crate::containment::ProcessContainmentBackend;
 use crate::credential::LocalCredentialLeaseState;
 use crate::executable_launch::LocalExecutableLaunch;
 use crate::hosted::{LocalCredentialApproval, LocalEndpointApproval};
@@ -41,6 +42,8 @@ pub struct LocalProcessHostBuilder {
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) approvals: LocalApprovals,
     pub(crate) watcher_capacity: usize,
+    pub(crate) process_containment: Option<Arc<dyn ProcessContainmentBackend>>,
+    pub(crate) local_containment_probe: bool,
 }
 
 impl LocalProcessHostBuilder {
@@ -137,6 +140,28 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Supplies the exact Contract 059 containment backend for process-backed
+    /// watcher starts.
+    ///
+    /// Default local composition omits this backend. Process groups and the
+    /// ordinary process service do not satisfy the gate.
+    #[must_use]
+    pub fn with_process_containment(mut self, backend: Arc<dyn ProcessContainmentBackend>) -> Self {
+        self.process_containment = Some(backend);
+        self.local_containment_probe = false;
+        self
+    }
+
+    /// Installs the local process-containment probe after the host is built.
+    ///
+    /// The probe proves watcher registry and lifecycle contracts. It is not a
+    /// platform containment implementation.
+    #[must_use]
+    pub fn with_local_process_containment_probe(mut self) -> Self {
+        self.local_containment_probe = true;
+        self
+    }
+
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -147,7 +172,8 @@ impl LocalProcessHostBuilder {
     /// Builds the local host without composing a complete service registry.
     #[must_use]
     pub fn build(self) -> LocalProcessHost {
-        LocalProcessHost {
+        let install_probe = self.local_containment_probe && self.process_containment.is_none();
+        let mut host = LocalProcessHost {
             limits: self.limits,
             materialization_limits: self.materialization_limits,
             approvals: Arc::new(self.approvals),
@@ -157,8 +183,15 @@ impl LocalProcessHostBuilder {
             serving_endpoints: Arc::new(LocalServingEndpointState::default()),
             execution_host_id: self.execution_host_id,
             watcher_capacity: self.watcher_capacity,
+            process_containment: self.process_containment,
             monotonic_origin: Instant::now(),
+        };
+        if install_probe {
+            let shared = Arc::new(host.clone());
+            host.process_containment =
+                Some(Arc::new(crate::LocalProcessContainmentProbe::new(shared)));
         }
+        host
     }
 }
 
@@ -174,6 +207,7 @@ pub struct LocalProcessHost {
     pub(crate) serving_endpoints: Arc<LocalServingEndpointState>,
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) watcher_capacity: usize,
+    pub(crate) process_containment: Option<Arc<dyn ProcessContainmentBackend>>,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -188,6 +222,14 @@ impl LocalProcessHost {
             execution_host_id: None,
             approvals: LocalApprovals::default(),
             watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
+            process_containment: None,
+            local_containment_probe: false,
         }
+    }
+
+    /// Returns the injected process-containment backend when one was supplied.
+    #[must_use]
+    pub fn process_containment(&self) -> Option<&Arc<dyn ProcessContainmentBackend>> {
+        self.process_containment.as_ref()
     }
 }

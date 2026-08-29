@@ -7,7 +7,7 @@ use swallowtail_runtime::{
 };
 
 use super::support::{
-    entry_missing_failure, owning_turn, registry_failure, request_process_stop, summary,
+    entry_missing_failure, owning_turn, registry_failure, request_lease_stop, summary,
     turn_missing_failure,
 };
 
@@ -53,7 +53,7 @@ impl LocalWatcherHostService {
             (entry, acknowledgement, snapshot)
         };
         if matches!(acknowledgement, WatcherStopAcknowledgement::Stopped) {
-            request_process_stop(&entry.process)?;
+            request_lease_stop(&entry.lease)?;
         }
         Ok((acknowledgement, snapshot))
     }
@@ -115,7 +115,7 @@ impl LocalWatcherHostService {
         let mut cleanup_error = None;
         for (_, entry, needs_stop) in &entries {
             if *needs_stop
-                && let Err(error) = request_process_stop(&entry.process)
+                && let Err(error) = request_lease_stop(&entry.lease)
                 && cleanup_error.is_none()
             {
                 cleanup_error = Some(error);

@@ -15,13 +15,13 @@ shape.
 
 ## Next Task
 
-Repair, restack, and re-review PR 117 through revised g05 card 009. Preserve
-the hard Contract 059 no-outliving invariant; process-backed watcher start now
-requires an injected, exact containment backend. The default macOS local
-process service does not qualify. Cards 004, 007, and 008 remain complete.
-Keep cards 005-006 planned behind Research 256 and cards 010-011 gated behind
-card 009 plus a proved containment-capable host composition. Contract 029
-currentness remains standing.
+Select and prove one exact containment-capable host composition for process-
+backed watchers, then decide whether card 010 can leave its gate. Card 009 is
+complete on restacked PR 117: default local composition rejects process-backed
+starts before work, and accepted starts bind an injected containment lease.
+Cards 004, 007, and 008 remain complete. Keep cards 005-006 planned behind
+Research 256 and cards 010-011 gated behind the proved containment backend.
+Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

@@ -25,9 +25,10 @@ Updated: 2026-08-28
   package membership or an ambient filesystem scan.
 - Host-owned watchers: provider activity is not process authority; background
   work remains turn-scoped, controllable by model and operator, bounded in
-  disclosure, and joined before successful completion. Process-backed support
-  requires a separately qualified containment backend; a root handle, process
-  group, or observed descendant set is not containment.
+  disclosure, and joined before successful completion. Process-backed watchers
+  use host-approved ordinary process execution and supervision; they are not a
+  sandbox, daemon manager, or promise to contain a process that deliberately
+  detaches from the host-owned process tree.
 
 ## Anti-Patterns
 

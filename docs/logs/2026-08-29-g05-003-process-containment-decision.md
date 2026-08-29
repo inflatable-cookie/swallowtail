@@ -1,6 +1,6 @@
 # 2026-08-29 g05.003 Process Containment Decision
 
-Status: complete
+Status: superseded by host-process watcher direction
 Owner: Tom
 Milestone: g05.003
 Card: 009 revision
@@ -20,6 +20,11 @@ start before work. Windows Job Objects, Linux cgroup v2, consumer supervisors,
 containers, and VMs remain candidates only; each needs its own authority and
 conformance proof.
 
+This was the decision used to repair PR 117. It was superseded later on
+2026-08-29 when the operator clarified that the watcher feature is lifecycle
+feedback and control for ordinary host-managed processes, not hard security
+containment for deliberately escaped descendants.
+
 ## Evidence
 
 PR 117's review fixture demonstrated a closed-pipe descendant leaving the
@@ -28,7 +33,7 @@ owned process group through `setsid`. Apple XNU no longer supports recursive
 Research 259 freezes those sources and the contrasting Windows/Linux
 containment shapes.
 
-## Planning Result
+## Historical Planning Result
 
 Card 009 completed on fast-forwarded PR 117 at `ad51b0e7`. Its registry is
 available without claiming a default process backend; process-backed starts
@@ -36,11 +41,12 @@ reject before work until an exact containment backend is injected. Card 010
 stays gated until an exact containment-capable host composition is proved and
 implemented.
 
-The operator selected macOS via an opt-in OCI supervisor as the first target.
-Card 014 is ready to test the exact current Docker Engine API composition and
-produce Research 260 without adding production code.
+The later OCI/Docker research detour was withdrawn before launch. No container
+probe or runtime implementation ran.
 
-## Next Move
+## Current Direction
 
-Execute card 014 and return Research 260 for review. Do not add a production
-Docker backend or begin card 010 from the research worker.
+Use Research 259 only for the explicit non-claim: ordinary process groups do
+not contain a deliberately detached child. Revised Contract 059 permits honest
+host-process watcher supervision without containers. Replacement card 014 owns
+the implementation repair before card 010.

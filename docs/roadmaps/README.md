@@ -15,14 +15,13 @@ shape.
 
 ## Next Task
 
-Execute ready g05.003 card 014. Produce Research 260 and determine whether the
-exact current Docker Engine API composition on macOS can satisfy Contract 059
-under closed-pipe `setsid`, concurrent-fork, stop, kill, wait, remove, and
-partial-start probes. This is research and frozen evidence only: do not add a
-production backend or start card 010. Card 009 is complete. Keep cards 005-006
-planned behind Research 256 and cards 010-011 gated behind a positive
-containment proof and later implementation. Contract 029 currentness remains
-standing.
+Execute ready g05.003 card 014. Replace the unneeded hard-containment gate with
+ordinary host-process watcher supervision: use the existing host-approved
+process service, bind its owned handle and process-group cleanup, publish
+truthful lifecycle, and join process/output/supervisor work before turn
+completion. Do not add Docker, OCI, VM, privileged-helper, or arbitrary shell
+authority. Card 009 is complete; card 010 follows this repair. Keep cards
+005-006 planned behind Research 256. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

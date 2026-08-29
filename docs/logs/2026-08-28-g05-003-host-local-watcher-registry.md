@@ -39,6 +39,7 @@ ownership.
 
 ## Next
 
-Return to the orchestrator for exact containment-backend selection and proof.
-Keep card 010 gated until that composition exists. Do not merge without
-operator authorization.
+The hard-containment gate was subsequently superseded. Replacement card 014
+will retain the registry while restoring ordinary host-process watcher
+execution through the existing process handle, process-group cleanup, and
+joined supervision. Card 010 follows that repair.

@@ -3,13 +3,13 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; gated behind positive Research 257, card 009, and an exact containment-capable host composition
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; follows positive Research 257 and cards 009 and 014
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- [014-docker-engine-containment-composition-evidence.md](./014-docker-engine-containment-composition-evidence.md) — ready; Research 260; macOS-via-OCI first-proof target
+- [014-host-process-watcher-supervision.md](./014-host-process-watcher-supervision.md) — ready; ordinary host-process lifecycle repair
 
 ## Blocked
 
@@ -17,7 +17,7 @@
 
 ## Completed
 
-- [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — completed; capability-gated containment; PR 117 restacked
+- [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — completed; host registry and injected execution seam; PR 117 restacked
 - [013-qwen-headless-0-22-3-claim.md](./013-qwen-headless-0-22-3-claim.md) — completed; standing currentness
 - [012-qwen-headless-0-22-3-identity.md](./012-qwen-headless-0-22-3-identity.md) — completed; standing currentness
 - [008-portable-watcher-lifecycle-core.md](./008-portable-watcher-lifecycle-core.md) — completed; provider-neutral Contract 059 core

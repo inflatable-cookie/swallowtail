@@ -1,11 +1,11 @@
 # 010 Claude Code Watcher Bridge
 
-Status: planned; gated behind exact containment composition proof and implementation
+Status: planned; depends on card 014
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-29
 Milestone: `../003-operation-scoped-watcher-proof.md`
-Depends on: positive Research 257; completed card 009; exact containment-capable host composition
+Depends on: positive Research 257; completed cards 009 and 014
 
 ## Goal
 

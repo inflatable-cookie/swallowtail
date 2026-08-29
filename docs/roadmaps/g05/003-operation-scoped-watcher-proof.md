@@ -7,8 +7,8 @@ Updated: 2026-08-29
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257, 259 promoted; 260 assigned
-Planning state: cards 007-009 complete; card 014 ready; cards 010-011 gated behind proved containment backend
+Research: 257, 259 promoted; hard-containment gate superseded
+Planning state: cards 007-009 complete; card 014 ready; cards 010-011 follow serially
 
 ## Problem
 
@@ -39,16 +39,20 @@ after their independent gates close.
       containment from the default local process service
 - [x] require an injected containment backend before process-backed start
 
-### Batch 3.3 — Exact Containment Composition
+The final item records the implementation delivered by card 009. The operator
+subsequently rejected hard containment as outside the watcher feature; card 014
+owns the pre-1.0 repair.
 
-- [ ] execute ready card 014 for Docker Engine API containment evidence on the
-      operator-selected macOS-via-OCI target
-- [ ] accept an exact composition or keep the production watcher route gated
+### Batch 3.3 — Host-Process Supervision Repair
+
+- [ ] execute ready card 014 against the ordinary host-local process service
+- [ ] replace containment-only admission with honest managed-process lifecycle,
+      cleanup, and join semantics
 
 ### Batch 3.4 — Conditional Claude Proof
 
 - [ ] execute card 010 only after Research 257 admits the complete seam, card
-      009 lands, and an exact containment-capable host composition is proved
+      009 lands, and card 014 restores ordinary host-process execution
 - [ ] execute card 011 for fail-closed same-turn acceptance and docs
 
 ## Acceptance Criteria
@@ -67,8 +71,8 @@ after their independent gates close.
 - the route can only fail after irreversible provider completion
 - host start needs arbitrary executable, shell, or PID authority in public data
 - raw output is required for correctness
-- route binding would advertise watcher support without an exact containment
-  backend
+- route binding would advertise watcher support without owned, joined host
+  process supervision
 
 ## Batch Cards
 
@@ -77,7 +81,7 @@ after their independent gates close.
 - [009 Host-Local Watcher Registry](batch-cards/009-host-local-watcher-registry.md)
 - [010 Claude Code Watcher Bridge](batch-cards/010-claude-code-watcher-bridge.md)
 - [011 Watcher Acceptance And Consumer Projection](batch-cards/011-watcher-acceptance-and-consumer-projection.md)
-- [014 Docker Engine Containment Composition Evidence](batch-cards/014-docker-engine-containment-composition-evidence.md)
+- [014 Host-Process Watcher Supervision](batch-cards/014-host-process-watcher-supervision.md)
 
 ## References
 

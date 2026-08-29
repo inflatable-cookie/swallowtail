@@ -64,38 +64,39 @@ before work. Registration does not authorize a start.
 Every accepted start binds process-tree or task ownership before returning the
 watcher id. The host owns output capture, backpressure, cancellation,
 deadlines, graceful stop, force-stop where authorized, descendant cleanup, and
-join. No watcher may outlive its owning turn.
+join. The managed process, its host-owned process-tree cleanup scope, and its
+supervision work must be terminal and joined before its owning turn completes.
 
-## Containment Admission
+## Managed Process Admission
 
-The watcher registry coordinates lifecycle; it does not manufacture process
-containment. A process-backed watcher is admitted only when the selected host
-composition supplies an exact containment backend with an owned lease that:
+The watcher registry coordinates lifecycle; it does not create process or shell
+authority. A process-backed watcher is admitted only through a host-approved
+operation that binds an owned process handle and the host's available
+process-tree cleanup mechanics before public watcher identity. The host:
 
-- contains descendants by construction, including concurrent forks;
-- does not permit ordinary child APIs to leave the containment scope;
-- targets stop and force-stop through the lease rather than a numeric PID;
-- reports terminal only after the contained workload is terminal;
-- proves the containment scope empty before joined cleanup; and
-- joins its own supervision work before releasing turn resources.
+- selects the executable, arguments, environment, working resource, and limits
+  behind opaque approved references;
+- targets graceful and force stop through the owned process handle or process
+  group, never through model- or consumer-supplied numeric identity;
+- reports terminal only after the managed root process is terminal;
+- applies its ordinary child/process-group cleanup to cooperative descendants;
+  and
+- joins output readers and supervision work before releasing turn resources.
 
-A root-process handle, process group, inherited output pipe, process-table
-poll, or observed parent chain is not a containment backend. Detection of an
-escaped descendant is useful failure evidence but does not satisfy ownership
-or cleanup. Default macOS process groups and `launchd` group cleanup therefore
-do not qualify.
+A process group is a useful cleanup mechanism, not a sandbox or security
+boundary. A process that deliberately daemonizes, calls `setsid`, escapes the
+owned group, or otherwise detaches is outside this capability. Swallowtail does
+not promise to discover or kill such escaped work, and hosts must not approve
+launch recipes intended to detach. Contract 059 protects the watcher lifecycle
+for ordinary host-managed work; it does not require containers, virtual
+machines, cgroups, Job Objects, privileged helpers, or platform-specific hard
+containment.
 
-Hosts without a qualified containment backend must omit process-backed watcher
-support or reject the start before work. Registration of the portable watcher
-service does not imply that a process executor is present. A task-backed
-watcher qualifies only when the host proves the task cannot create unmanaged
-child work, or binds all such work to the same containment lease.
-
-Containment is capability-gated, not platform-inferred. Windows Job Objects,
-Linux cgroup v2, a consumer-supplied supervisor, container, or VM remains
-unavailable until its exact authority, breakaway behavior, termination, empty
-scope, join, and failure semantics are implemented and tested. No route may
-advertise watcher support from an operating-system name alone.
+Registration of the portable watcher service does not imply that a process
+executor or approved watcher operation is present. Hosts without an owned,
+joined process supervisor omit process-backed watcher support or reject the
+start before work. A task-backed watcher qualifies when its task handle and
+supervision are owned, stoppable, and joined under the same turn lifecycle.
 
 ## Model And Operator Controls
 
@@ -213,8 +214,10 @@ Provider-neutral fixtures must prove:
   hidden automatic wait or terminal-only failure
 - cancellation, timeout, provider failure, hook failure, and close stop and
   join all owned work
-- absence or pre-work rejection when process containment is unavailable
-- containment-lease empty truth under descendant fork and escape attempts
+- absence or pre-work rejection when process supervision or operation approval
+  is unavailable
+- owned-root, cooperative-child, process-group, output-reader, and supervisor
+  cleanup without claiming deliberately detached descendants
 - no watcher work or provider payload change when the option is absent
 - no raw process content in events, diagnostics, or default formatting
 
@@ -226,8 +229,8 @@ admission, completion interception, version behavior, and unchanged omission.
 - model and operator can start, inspect, wait for, and stop owned watchers
 - consumer applications receive bounded truthful process activity
 - successful turn completion is impossible while owned work remains active
-- every failure path stops and joins operation-scoped work
-- no arbitrary process, detached daemon, native-task inference, or raw-log
-  authority enters the portable surface
+- every failure path stops and joins the managed operation and supervisor
+- no arbitrary process, detached-daemon guarantee, native-task inference, or
+  raw-log authority enters the portable surface
 - no production route advertises support before the same-turn completion gate
   is proved

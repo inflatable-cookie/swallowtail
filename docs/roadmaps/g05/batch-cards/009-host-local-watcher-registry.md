@@ -80,3 +80,11 @@ claim and any process-table observation presented as containment evidence.
 No. Return one reviewable, restacked PR 117. On successful closeout, keep card
 010 gated until an exact containment-capable host composition is selected and
 proved. Keep card 011 planned behind card 010.
+
+## Subsequent Direction
+
+The acceptance above records the exact PR 117 repair under the then-current
+hard-containment decision. The operator later clarified that watcher scope is
+ordinary host-process observability and control, not security containment.
+Card 014 owns the pre-1.0 terminology and default-composition repair; this
+completed card is not reopened.

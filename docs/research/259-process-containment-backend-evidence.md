@@ -1,6 +1,6 @@
 # 259 Process Containment Backend Evidence
 
-Status: promoted
+Status: promoted; hard-containment gate superseded
 Owner: Tom
 Created: 2026-08-29
 Updated: 2026-08-29
@@ -12,21 +12,18 @@ Can the default local process boundary enforce Contract 059's rule that no
 watcher-owned descendant outlives its turn, including a child that leaves the
 launch process group?
 
-## Decision
+## Evidence Result
 
 No portable or default-macOS guarantee is available from ordinary process
 groups, `launchd`, process-table polling, or public `kqueue` process events.
 
-Contract 059 keeps the hard no-outliving invariant. Process-backed watcher
-support is capability-gated behind an exact host containment backend whose
-owned lease contains descendants by construction and proves the containment
-scope empty before joined cleanup. A process group, root-process handle, or
-polling observer is not that capability. Hosts without a qualified backend do
-not advertise process-backed watcher support and reject any such start before
-work.
-
-This is an operator decision recorded on 2026-08-29. It does not select a
-macOS containment implementation or qualify Windows or Linux support.
+That evidence remains valid. The operator subsequently clarified that the
+watcher feature is process lifecycle feedback and control for ordinary
+host-managed work, not security containment for hostile or deliberately
+detached descendants. Contract 059 therefore does not require the unavailable
+hard guarantee. A process group may be used as an honest cleanup mechanism so
+long as it is not described as a sandbox and the detached-process limitation
+remains explicit.
 
 ## Evidence
 
@@ -59,22 +56,21 @@ concurrent forks and migrations. Both still require an exact host backend,
 authority, lifecycle implementation, and conformance proof. Their existence
 does not make containment portable or available on macOS.
 
-## Contract Consequence
+## Revised Contract Consequence
 
-- watcher coordination and process containment are separate capabilities;
+- watcher coordination and security containment are separate capabilities;
 - registration of a watcher registry does not imply a process executor;
-- an accepted process-backed watcher must bind a containment lease before its
-  public watcher identity returns;
-- stop, cancellation, deadline, failure, and close target the lease, never a
-  caller-supplied PID;
-- joined truth requires the containment scope to be empty and its supervisor
-  work joined;
-- task-backed work qualifies only when the host proves it cannot create
-  unmanaged child work or binds any such work to the same containment lease;
-- default `swallowtail-host-local` process groups remain useful cleanup
-  mechanics but do not satisfy Contract 059 containment;
-- Claude bridge and production watcher claims remain gated until an exact
-  containment-capable host composition is supplied and proved.
+- an accepted process-backed watcher binds its host-owned process handle and
+  available process-tree cleanup mechanics before public watcher identity;
+- stop, cancellation, deadline, failure, and close target that owned handle or
+  group, never a caller-supplied PID;
+- joined truth requires the managed process and supervision work to be joined;
+- default `swallowtail-host-local` process groups are suitable cleanup
+  mechanics for ordinary cooperative work but are not a containment claim;
+- deliberately detached or daemonized work is outside Contract 059 and must
+  not be approved as a watcher operation;
+- Claude bridge work may proceed after the host-local registry exposes this
+  honest managed-process capability.
 
 ## Frozen Sources
 
@@ -89,15 +85,18 @@ Retrieved 2026-08-29.
 
 ## Non-Claims
 
-- No default macOS containment backend is identified.
+- No default macOS security-containment backend is identified or required.
 - No Windows Job Object or Linux cgroup implementation is accepted.
 - No container, VM, privileged helper, Endpoint Security entitlement, or
   private Darwin API becomes a Swallowtail prerequisite.
-- Detection of an escaped process is not ownership or cleanup.
-- Contract 059 is not weakened to best-effort orphan reporting.
+- A process group cannot contain a child that deliberately escapes it.
+- Watcher support is not approval for daemonization or detached background
+  services.
 
 ## Promotion
 
-Promoted into Contract 059, Contract 010, the architecture guardrails,
-g05.003, and revised card 009. PR 117 must be repaired and restacked against
-that authority before merge. Card 010 remains gated.
+The evidence originally promoted a hard-containment gate into Contract 059,
+Contract 010, the architecture guardrails, and card 009. The operator corrected
+that product interpretation on 2026-08-29. The same evidence now records the
+explicit detached-process non-claim while g05.003 card 014 restores ordinary
+host-process watcher execution before the Claude bridge.

@@ -10,7 +10,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Harness Skills And Watchers
 
-- [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; hard watcher containment is capability-gated and default macOS process groups do not qualify
+- [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite
 
 ### Foundation And Runtime
 

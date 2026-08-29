@@ -24,13 +24,14 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-08-29 g05.003 Process Containment Decision](./2026-08-29-g05-003-process-containment-decision.md) — card 009 complete on PR 117; macOS-via-OCI target selected; card 014 ready
+- [2026-08-29 g05.003 Host-Process Watcher Direction](./2026-08-29-g05-003-host-process-watcher-direction.md) — hard-containment gate withdrawn; replacement card 014 ready
+- [2026-08-29 g05.003 Process Containment Decision](./2026-08-29-g05-003-process-containment-decision.md) — superseded; records the PR 117 repair boundary and withdrawn container detour
 - [2026-08-28 Qwen Headless 0.22.3 Claim](./2026-08-28-qwen-headless-0-22-3-claim.md) — complete; Research 258; g05.004 cards 012-013; official npm `0.22.3`
 - [2026-08-28 Qwen Headless 0.22.3 Identity](./2026-08-28-qwen-headless-0-22-3-identity.md) — complete; card 012; Research 258
 - [2026-08-28 g05.001 Card 003 Contract Promotion](./2026-08-28-g05-001-card-003-contract-promotion.md) — Contracts 058-059 promoted; Qoder and Claude evidence candidates selected; cards 004, 007, and 008 ready
 - [2026-08-28 g05.003 Portable Watcher Core](./2026-08-28-g05-003-portable-watcher-core.md) — reserved; card 008; provider-neutral lifecycle core
 - [2026-08-28 g05.003 Claude Code Watcher Seam](./2026-08-28-g05-003-claude-code-watcher-seam.md) — reserved; card 007; Research 257
-- [2026-08-28 g05.003 Host-Local Watcher Registry](./2026-08-28-g05-003-host-local-watcher-registry.md) — complete; card 009; capability-gated containment seam; PR 117
+- [2026-08-28 g05.003 Host-Local Watcher Registry](./2026-08-28-g05-003-host-local-watcher-registry.md) — complete; card 009 registry; later host-process repair assigned to card 014
 - [2026-08-28 g05.002 Qoder Effective Skill Visibility](./2026-08-28-g05-002-qoder-effective-skill-visibility.md) — reserved; card 004; Research 256
 - [2026-08-28 g05.001 Operator Decisions](./2026-08-28-g05-001-operator-decisions.md) — effective selected-session skill roster; model and operator controls; bounded summaries; explicit wait and fail-closed completion; card 003 ready
 - [2026-08-28 g05.001 Card 002 Decision Packet](./2026-08-28-g05-001-card-002-decision-packet.md) — boundary classification complete; four operator decisions pending; card 003 planned

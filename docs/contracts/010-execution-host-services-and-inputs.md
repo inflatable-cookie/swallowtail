@@ -283,11 +283,12 @@ Contract 059 adds one optional stable watcher service kind. It owns only
 turn-scoped watcher requests accepted under host policy, bounded status and
 summary output, model and operator stop, deadline propagation, and joined
 cleanup. Registration alone starts nothing and grants no arbitrary process or
-PID authority. Process-backed watcher start additionally requires the exact
-containment capability defined by Contract 059. The ordinary process service,
-one root handle, a process group, or platform identity does not imply that
-capability. A host without it omits process-backed watcher support or rejects
-the start before work.
+PID authority. A process-backed watcher may use the ordinary process service
+when the host binds its root handle and available process-tree cleanup before
+publishing watcher identity, retains stop authority, and joins process and
+supervision work before turn completion. This is lifecycle ownership, not a
+security-containment claim. Deliberately detached or daemonized work is outside
+the watcher contract and must not be approved as a watcher operation.
 
 No host service performs route fallback. Consumers explicitly authorize any
 change of execution layer, credential mechanism, entitlement, endpoint,

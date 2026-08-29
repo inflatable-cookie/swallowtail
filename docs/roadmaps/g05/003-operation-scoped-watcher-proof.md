@@ -7,8 +7,8 @@ Updated: 2026-08-29
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257, 259 promoted; hard-containment gate superseded
-Planning state: cards 007-009 and 014 complete; card 010 planned; card 011 follows serially
+Research: 257, 259 promoted; 260 reserved; hard-containment gate superseded
+Planning state: cards 007-009 and 014 complete; card 015 ready; cards 010-011 gated serially
 
 ## Problem
 
@@ -49,10 +49,16 @@ owns the pre-1.0 repair.
 - [x] replace containment-only admission with honest managed-process lifecycle,
       cleanup, and join semantics
 
-### Batch 3.4 — Conditional Claude Proof
+### Batch 3.4 — Claude Bridge Transport Evidence
 
-- [ ] execute card 010 only after Research 257 admits the complete seam, card
-      009 lands, and card 014 restores ordinary host-process execution
+- [ ] execute ready card 015 to settle the host-owned MCP/IPC bridge,
+      current-version segment, and live same-turn acceptance gate
+
+### Batch 3.5 — Conditional Claude Proof
+
+- [ ] execute card 010 only after Research 257 admits the provider mechanism,
+      cards 009 and 014 close host execution, and Research 260 closes the
+      provider-to-host transport
 - [ ] execute card 011 for fail-closed same-turn acceptance and docs
 
 ## Acceptance Criteria
@@ -82,6 +88,7 @@ owns the pre-1.0 repair.
 - [010 Claude Code Watcher Bridge](batch-cards/010-claude-code-watcher-bridge.md)
 - [011 Watcher Acceptance And Consumer Projection](batch-cards/011-watcher-acceptance-and-consumer-projection.md)
 - [014 Host-Process Watcher Supervision](batch-cards/014-host-process-watcher-supervision.md)
+- [015 Claude Code Watcher Bridge Transport Evidence](batch-cards/015-claude-code-watcher-bridge-transport-evidence.md)
 
 ## References
 

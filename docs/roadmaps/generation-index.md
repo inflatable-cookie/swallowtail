@@ -155,8 +155,9 @@ the operator clarified that watchers supervise ordinary host-managed processes
 and publish lifecycle rather than sandbox hostile descendants. Card 009's
 registry repair is complete. Card 014 landed through PR 118, restoring default
 host-process execution through the owned process handle, process-group cleanup,
-and joined supervisor. Card 010 is next for readiness reassessment; card 011 follows
-serially. g05.004 standing
+and joined supervisor. The card 010 readiness assessment found the
+provider-to-host MCP transport and current Claude version segment unresolved.
+Card 015 is ready for Research 260; cards 010-011 remain planned. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3` without moving the generation pointer. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Reassess g05.003 card 010 readiness now that card 014 host-process watcher
-supervision has landed. Do not start card 010 or 011 until that assessment.
-Keep cards 005-006 planned behind Research 256. Contract 029 currentness
-remains standing.
+Execute ready g05.003 card 015 for Claude watcher bridge transport and
+current-version evidence. Keep cards 010-011 planned until Research 260 closes
+their transport and live-acceptance gates. Keep cards 005-006 planned behind
+Research 256. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

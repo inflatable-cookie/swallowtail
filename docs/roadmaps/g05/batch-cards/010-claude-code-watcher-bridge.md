@@ -1,11 +1,11 @@
 # 010 Claude Code Watcher Bridge
 
-Status: planned; depends on card 014
+Status: planned; depends on card 015
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-29
 Milestone: `../003-operation-scoped-watcher-proof.md`
-Depends on: positive Research 257; completed cards 009 and 014
+Depends on: positive Research 257; completed cards 009 and 014; positive Research 260 and completed card 015
 
 ## Goal
 
@@ -34,4 +34,5 @@ watcher rejection, version gates, unchanged omission, and joined cleanup.
 
 ## Auto-Continuation
 
-No. Remains planned until every dependency closes.
+No. Remains planned until card 015 closes the provider-to-host MCP transport,
+current-version segment, and live same-turn acceptance gate.

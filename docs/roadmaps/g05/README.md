@@ -28,7 +28,7 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 ## Planned Next Roadmaps
 
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 014 landed; cards 010-011 follow serially
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 015 next; cards 010-011 gated
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
@@ -45,8 +45,10 @@ default macOS process boundary cannot supply hard descendant containment, but
 the operator clarified that the watcher feature does not require that security
 boundary. Card 009 completed the registry on restacked PR 117. Card 014 landed
 through PR 118, restoring ordinary host-approved process supervision with an
-explicit detached-process non-claim. Card 010 is next for readiness reassessment; card
-011 remains planned behind it.
+explicit detached-process non-claim. Readiness assessment found no production
+MCP transport from Claude into the in-process watcher port, while installed
+Claude `2.1.251` is above Research 257's evidence window. Card 015 is ready
+for Research 260; cards 010-011 remain planned behind it.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -56,6 +58,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 ## Milestones
 
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 014 landed; cards 010-011 follow serially
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 015 next; cards 010-011 gated
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

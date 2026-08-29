@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-29 g05.003 Claude Watcher Bridge Readiness](./2026-08-29-g05-003-claude-watcher-bridge-readiness.md) — card 010 remains planned; card 015 and Research 260 compiled
 - [2026-08-29 g05.003 Host-Process Watcher Supervision](./2026-08-29-g05-003-host-process-watcher-supervision.md) — complete; card 014; default host-process watcher join
 - [2026-08-29 g05.003 Host-Process Watcher Direction](./2026-08-29-g05-003-host-process-watcher-direction.md) — hard-containment gate withdrawn; replacement card 014 ready
 - [2026-08-29 g05.003 Process Containment Decision](./2026-08-29-g05-003-process-containment-decision.md) — superseded; records the PR 117 repair boundary and withdrawn container detour

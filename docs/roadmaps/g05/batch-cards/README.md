@@ -3,13 +3,13 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; follows positive Research 257 and cards 009 and 014
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on positive Research 260 and card 015
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [015-claude-code-watcher-bridge-transport-evidence.md](./015-claude-code-watcher-bridge-transport-evidence.md) — ready; settles the missing provider-to-host transport and current-version gate
 
 ## Blocked
 

@@ -22,13 +22,13 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | `g05.001` card 001 |
 | Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | `g05.001` card 002 |
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-059 promoted | evidence and operator decisions | `g05.001` card 003 |
-| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder empty; Claude admitted; portable core and host registry complete; host-process supervision pending merge on PR 118 | Contracts 058-059; Research 256-259 | `g05.002` and `g05.003` |
+| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder empty; Claude admitted; portable core, host registry, and host-process supervision complete | Contracts 058-059; Research 256-259 | `g05.002` and `g05.003` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
 
 ## Planned Next Roadmaps
 
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 014 pending merge on PR 118; cards 010-011 follow serially
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 014 landed; cards 010-011 follow serially
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
@@ -43,10 +43,10 @@ cards 005-006 stay planned. Research 257 admits the Claude Code watcher seam.
 Card 008 closed the provider-neutral watcher core. Research 259 proves the
 default macOS process boundary cannot supply hard descendant containment, but
 the operator clarified that the watcher feature does not require that security
-boundary. Card 009 completed the registry on restacked PR 117. PR 118 implements
-the card 014 repair of ordinary host-approved process supervision and an
-explicit detached-process non-claim; it is not merged. Card 010 follows that
-repair after merge; card 011 remains planned.
+boundary. Card 009 completed the registry on restacked PR 117. Card 014 landed
+through PR 118, restoring ordinary host-approved process supervision with an
+explicit detached-process non-claim. Card 010 is next for readiness reassessment; card
+011 remains planned behind it.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -56,6 +56,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 ## Milestones
 
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 014 pending merge on PR 118; cards 010-011 follow serially
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 014 landed; cards 010-011 follow serially
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — ready; card 004 closed empty; 005-006 gated
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

@@ -15,8 +15,8 @@ shape.
 
 ## Next Task
 
-Reassess g05.003 card 010 readiness after the card 014 host-process watcher
-supervision PR merges. Do not start card 010 or 011 until that assessment.
+Reassess g05.003 card 010 readiness now that card 014 host-process watcher
+supervision has landed. Do not start card 010 or 011 until that assessment.
 Keep cards 005-006 planned behind Research 256. Contract 029 currentness
 remains standing.
 

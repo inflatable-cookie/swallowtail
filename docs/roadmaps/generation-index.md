@@ -153,9 +153,10 @@ remain gated. g05.003 is ready after closed cards 007-009. Research 259 keeps ha
 containment evidence but no longer imposes a hard-containment product gate:
 the operator clarified that watchers supervise ordinary host-managed processes
 and publish lifecycle rather than sandbox hostile descendants. Card 009's
-registry repair is complete. PR 118 implements card 014's default host-process
-execution through the owned process handle, process-group cleanup, and joined
-supervisor; it is not merged. Cards 010-011 follow serially after merge. g05.004 standing
+registry repair is complete. Card 014 landed through PR 118, restoring default
+host-process execution through the owned process handle, process-group cleanup,
+and joined supervisor. Card 010 is next for readiness reassessment; card 011 follows
+serially. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3` without moving the generation pointer. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

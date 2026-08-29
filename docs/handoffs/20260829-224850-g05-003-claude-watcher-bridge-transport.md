@@ -47,8 +47,9 @@ Here is the state the worker is inheriting:
 - **Planning checkout:** clean when dispatched.
 - **Worker mode:** implementation worker dispatched by the orchestrator; this
   handoff activates the worker-only worktree preflight.
-- **Planning artifacts included at the base:** g05.003 readiness assessment,
-  ready card 015, and this handoff.
+- **Planning artifacts included at the base:** merged card 014 and the
+  post-PR-118 reassessment pointer. The readiness assessment, ready card 015,
+  and this handoff are committed in the selected `HEAD` after that base.
 - **Worker branch:** `worker/g05-003-claude-watcher-bridge-transport`
 - **Worker worktree:** `/Users/tom/Dev/worktrees/swallowtail-g05-003-claude-watcher-bridge-transport`
 - **Worktree creation command:** `git worktree add -b worker/g05-003-claude-watcher-bridge-transport /Users/tom/Dev/worktrees/swallowtail-g05-003-claude-watcher-bridge-transport origin/main`

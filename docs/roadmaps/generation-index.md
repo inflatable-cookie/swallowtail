@@ -149,13 +149,13 @@ ready milestones at 002, 003. g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
 g05.002 is ready behind Research 256's honest empty Qoder roster; cards 005-006
-remain gated. g05.003 is ready after closed cards 007-009 and 014. Research 259 keeps hard
+remain gated. g05.003 is ready after closed cards 007-009. Research 259 keeps hard
 containment evidence but no longer imposes a hard-containment product gate:
 the operator clarified that watchers supervise ordinary host-managed processes
 and publish lifecycle rather than sandbox hostile descendants. Card 009's
-registry repair is complete. Card 014 restored default host-process execution
-through the owned process handle, process-group cleanup, and joined supervisor.
-Cards 010-011 follow serially after merge. g05.004 standing
+registry repair is complete. PR 118 implements card 014's default host-process
+execution through the owned process handle, process-group cleanup, and joined
+supervisor; it is not merged. Cards 010-011 follow serially after merge. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3` without moving the generation pointer. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

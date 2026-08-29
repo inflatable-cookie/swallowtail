@@ -59,6 +59,7 @@ fn process_fixture() {
                 .expect("fixture writes inside the host-owned resource");
         }
         "sleep" => thread::sleep(Duration::from_secs(30)),
+        "sleep-with-cooperative-child" => spawn_cooperative_child_and_sleep(),
         "exit-zero" => {}
         "exit-one" => std::process::exit(1),
         "spawn-descendant" => {
@@ -94,6 +95,19 @@ fn process_fixture() {
         }
         _ => panic!("unknown fixture mode"),
     }
+}
+
+/// Spawns a same-group child, records its pid, then keeps the parent alive so
+/// watcher cleanup can prove cooperative process-group stop.
+#[allow(clippy::zombie_processes)]
+fn spawn_cooperative_child_and_sleep() {
+    let child = std::process::Command::new("/bin/sleep")
+        .arg("30")
+        .spawn()
+        .expect("fixture spawns a cooperative child");
+    std::fs::write("cooperative-child.pid", child.id().to_string())
+        .expect("fixture records cooperative child pid");
+    thread::sleep(Duration::from_secs(30));
 }
 
 /// Spawns a grandchild that inherits this process's stdout and stderr pipes.

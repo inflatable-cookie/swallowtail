@@ -9,7 +9,7 @@
 
 ## Ready
 
-- [014-host-process-watcher-supervision.md](./014-host-process-watcher-supervision.md) — ready; ordinary host-process lifecycle repair
+- None.
 
 ## Blocked
 
@@ -17,6 +17,7 @@
 
 ## Completed
 
+- [014-host-process-watcher-supervision.md](./014-host-process-watcher-supervision.md) — completed; default host-process watcher supervision
 - [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — completed; host registry and injected execution seam; PR 117 restacked
 - [013-qwen-headless-0-22-3-claim.md](./013-qwen-headless-0-22-3-claim.md) — completed; standing currentness
 - [012-qwen-headless-0-22-3-identity.md](./012-qwen-headless-0-22-3-identity.md) — completed; standing currentness

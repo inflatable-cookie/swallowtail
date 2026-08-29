@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
 Research: 257, 259 promoted; hard-containment gate superseded
-Planning state: cards 007-009 complete; card 014 ready; cards 010-011 follow serially
+Planning state: cards 007-009 and 014 complete; card 010 planned; card 011 follows serially
 
 ## Problem
 
@@ -45,8 +45,8 @@ owns the pre-1.0 repair.
 
 ### Batch 3.3 — Host-Process Supervision Repair
 
-- [ ] execute ready card 014 against the ordinary host-local process service
-- [ ] replace containment-only admission with honest managed-process lifecycle,
+- [x] execute ready card 014 against the ordinary host-local process service
+- [x] replace containment-only admission with honest managed-process lifecycle,
       cleanup, and join semantics
 
 ### Batch 3.4 — Conditional Claude Proof

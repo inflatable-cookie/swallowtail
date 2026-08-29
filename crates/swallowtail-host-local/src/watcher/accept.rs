@@ -5,11 +5,12 @@ use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester};
 use swallowtail_runtime::{
-    RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot, WatcherWaitOptions,
+    ProcessHandle, ProcessService, RuntimeFailure, RuntimeTurnId, WatcherRegistry, WatcherSnapshot,
+    WatcherWaitOptions,
 };
 
 use super::support::{
-    cleanup_lease, entry_missing_failure, registry_failure, runtime_turn, turn_missing_failure,
+    cleanup_process, entry_missing_failure, registry_failure, runtime_turn, turn_missing_failure,
     watcher_scope,
 };
 
@@ -20,12 +21,6 @@ impl LocalWatcherHostService {
         requester: WatcherRequester,
         operation_data: WatcherOperationData,
     ) -> Result<WatcherSnapshot, RuntimeFailure> {
-        let backend = self.containment.as_ref().ok_or_else(|| {
-            failure(
-                "swallowtail.local_watcher.containment_unavailable",
-                "Process-backed watcher start requires an exact host containment backend",
-            )
-        })?;
         let request = self
             .process_host
             .approvals
@@ -85,8 +80,8 @@ impl LocalWatcherHostService {
                 .map_err(registry_failure)?
         };
         let watcher_id = accepted.watcher_id().clone();
-        let started = match block_on(backend.start_contained(scope.clone(), request)) {
-            Ok(started) => started,
+        let process = match block_on(self.process_host.start(scope.clone(), request)) {
+            Ok(process) => Arc::<dyn ProcessHandle>::from(process),
             Err(error) => {
                 if let Some(turn_state) = state.active.get_mut(&turn) {
                     let _ = turn_state.registry.reject_start(&watcher_id);
@@ -95,7 +90,6 @@ impl LocalWatcherHostService {
                 return Err(error);
             }
         };
-        let (process, lease) = started.into_parts();
         if let Err(error) = {
             let turn_state = state
                 .active
@@ -108,19 +102,16 @@ impl LocalWatcherHostService {
                 &turn,
                 &watcher_id,
                 process,
-                lease,
                 registry_failure(error),
             );
         }
 
         let entry = Arc::new(LocalWatcherEntry {
             process,
-            lease,
             task: Mutex::new(None),
             join_lock: Mutex::new(()),
             joined: std::sync::atomic::AtomicBool::new(false),
             join_error: Mutex::new(None),
-            empty_join: Mutex::new(None),
             join_signal: super::JoinSignal::default(),
         });
         let monitor_state = Arc::clone(&self.state);
@@ -139,15 +130,7 @@ impl LocalWatcherHostService {
             Ok(task) => task,
             Err(error) => {
                 let process = Arc::clone(&entry.process);
-                let lease = Arc::clone(&entry.lease);
-                return self.rollback_unbound_start(
-                    &mut state,
-                    &turn,
-                    &watcher_id,
-                    process,
-                    lease,
-                    error,
-                );
+                return self.rollback_unbound_start(&mut state, &turn, &watcher_id, process, error);
             }
         };
         *entry.task.lock().expect("local watcher task lock poisoned") = Some(task);
@@ -167,11 +150,10 @@ impl LocalWatcherHostService {
         state: &mut super::LocalWatcherState,
         turn: &RuntimeTurnId,
         watcher_id: &WatcherId,
-        process: Arc<dyn swallowtail_runtime::ProcessHandle>,
-        lease: Arc<dyn crate::containment::ProcessContainmentLease>,
+        process: Arc<dyn ProcessHandle>,
         original_error: RuntimeFailure,
     ) -> Result<WatcherSnapshot, RuntimeFailure> {
-        match cleanup_lease(&lease) {
+        match cleanup_process(&process) {
             Ok(()) => {
                 if let Some(turn_state) = state.active.get_mut(turn) {
                     let _ = turn_state.registry.reject_start(watcher_id);
@@ -183,15 +165,13 @@ impl LocalWatcherHostService {
                 let turn_state = state
                     .active
                     .get_mut(turn)
-                    .expect("watcher turn remains while containment cleanup failed");
+                    .expect("watcher turn remains while process cleanup failed");
                 let entry = Arc::new(LocalWatcherEntry {
                     process,
-                    lease,
                     task: Mutex::new(None),
                     join_lock: Mutex::new(()),
                     joined: std::sync::atomic::AtomicBool::new(false),
                     join_error: Mutex::new(Some(cleanup_error.clone())),
-                    empty_join: Mutex::new(None),
                     join_signal: super::JoinSignal::default(),
                 });
                 turn_state.entries.insert(watcher_id.clone(), entry);

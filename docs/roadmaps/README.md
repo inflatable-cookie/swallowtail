@@ -15,13 +15,10 @@ shape.
 
 ## Next Task
 
-Execute ready g05.003 card 014. Replace the unneeded hard-containment gate with
-ordinary host-process watcher supervision: use the existing host-approved
-process service, bind its owned handle and process-group cleanup, publish
-truthful lifecycle, and join process/output/supervisor work before turn
-completion. Do not add Docker, OCI, VM, privileged-helper, or arbitrary shell
-authority. Card 009 is complete; card 010 follows this repair. Keep cards
-005-006 planned behind Research 256. Contract 029 currentness remains standing.
+Reassess g05.003 card 010 readiness after the card 014 host-process watcher
+supervision PR merges. Do not start card 010 or 011 until that assessment.
+Keep cards 005-006 planned behind Research 256. Contract 029 currentness
+remains standing.
 
 ## Standing Lanes
 

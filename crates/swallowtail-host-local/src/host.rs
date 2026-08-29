@@ -1,4 +1,3 @@
-use crate::containment::ProcessContainmentBackend;
 use crate::credential::LocalCredentialLeaseState;
 use crate::executable_launch::LocalExecutableLaunch;
 use crate::hosted::{LocalCredentialApproval, LocalEndpointApproval};
@@ -18,9 +17,6 @@ use swallowtail_runtime::{
     AttachmentRef, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef, ProcessRequest,
     SchemaRef, WorkingResourceRef,
 };
-
-type ProcessContainmentFactory =
-    Box<dyn FnOnce(Arc<LocalProcessHost>) -> Arc<dyn ProcessContainmentBackend> + Send>;
 
 type EnvironmentValues = Vec<(OsString, OsString)>;
 
@@ -45,8 +41,6 @@ pub struct LocalProcessHostBuilder {
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) approvals: LocalApprovals,
     pub(crate) watcher_capacity: usize,
-    pub(crate) process_containment: Option<Arc<dyn ProcessContainmentBackend>>,
-    pub(crate) process_containment_factory: Option<ProcessContainmentFactory>,
 }
 
 impl LocalProcessHostBuilder {
@@ -143,34 +137,6 @@ impl LocalProcessHostBuilder {
         self
     }
 
-    /// Supplies the exact Contract 059 containment backend for process-backed
-    /// watcher starts.
-    ///
-    /// Default local composition omits this backend. Process groups and the
-    /// ordinary process service do not satisfy the gate.
-    #[must_use]
-    pub fn with_process_containment(mut self, backend: Arc<dyn ProcessContainmentBackend>) -> Self {
-        self.process_containment = Some(backend);
-        self.process_containment_factory = None;
-        self
-    }
-
-    /// Builds the host first, then installs a containment backend constructed
-    /// from that host.
-    ///
-    /// Use this when the backend needs the completed local process host. The
-    /// factory must supply an exact Contract 059 backend; ordinary process
-    /// handles do not qualify merely by being wrapped.
-    #[must_use]
-    pub fn with_process_containment_factory<F>(mut self, factory: F) -> Self
-    where
-        F: FnOnce(Arc<LocalProcessHost>) -> Arc<dyn ProcessContainmentBackend> + Send + 'static,
-    {
-        self.process_containment = None;
-        self.process_containment_factory = Some(Box::new(factory));
-        self
-    }
-
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -181,8 +147,7 @@ impl LocalProcessHostBuilder {
     /// Builds the local host without composing a complete service registry.
     #[must_use]
     pub fn build(self) -> LocalProcessHost {
-        let factory = self.process_containment_factory;
-        let mut host = LocalProcessHost {
+        LocalProcessHost {
             limits: self.limits,
             materialization_limits: self.materialization_limits,
             approvals: Arc::new(self.approvals),
@@ -192,14 +157,8 @@ impl LocalProcessHostBuilder {
             serving_endpoints: Arc::new(LocalServingEndpointState::default()),
             execution_host_id: self.execution_host_id,
             watcher_capacity: self.watcher_capacity,
-            process_containment: self.process_containment,
             monotonic_origin: Instant::now(),
-        };
-        if let Some(factory) = factory {
-            let shared = Arc::new(host.clone());
-            host.process_containment = Some(factory(shared));
         }
-        host
     }
 }
 
@@ -215,7 +174,6 @@ pub struct LocalProcessHost {
     pub(crate) serving_endpoints: Arc<LocalServingEndpointState>,
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) watcher_capacity: usize,
-    pub(crate) process_containment: Option<Arc<dyn ProcessContainmentBackend>>,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -230,14 +188,6 @@ impl LocalProcessHost {
             execution_host_id: None,
             approvals: LocalApprovals::default(),
             watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
-            process_containment: None,
-            process_containment_factory: None,
         }
-    }
-
-    /// Returns the injected process-containment backend when one was supplied.
-    #[must_use]
-    pub fn process_containment(&self) -> Option<&Arc<dyn ProcessContainmentBackend>> {
-        self.process_containment.as_ref()
     }
 }

@@ -56,6 +56,53 @@ fn watcher_stop_is_idempotent_and_wait_reports_the_joined_stop() {
 }
 
 #[test]
+fn watcher_operator_stop_is_idempotent_against_the_same_registry() {
+    let local = watcher_host("sleep", 2);
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let turn = runtime_turn("turn-operator-stop");
+    let owning_turn = watcher_owning_turn("turn-operator-stop");
+    let watcher_id = block_on(watcher.accept_start(
+        turn,
+        WatcherRequester::Operator,
+        operation_data("sleep-operation"),
+    ))
+    .expect("operator-started watcher starts")
+    .watcher_id()
+    .clone();
+
+    let (acknowledgement, stopped) =
+        block_on(watcher.request_stop(owning_turn.clone(), watcher_id.clone()))
+            .expect("operator stop is accepted");
+    assert_eq!(
+        acknowledgement,
+        swallowtail_runtime::WatcherStopAcknowledgement::Stopped
+    );
+    assert_eq!(stopped.phase(), WatcherLifecyclePhase::Terminal);
+    assert_eq!(
+        stopped.terminal_cause(),
+        Some(WatcherTerminalCause::Stopped)
+    );
+    let (repeat, repeated_snapshot) =
+        block_on(watcher.request_stop(owning_turn.clone(), watcher_id.clone()))
+            .expect("repeated operator stop is idempotent");
+    assert_eq!(
+        repeat,
+        swallowtail_runtime::WatcherStopAcknowledgement::AlreadyTerminal(
+            WatcherTerminalCause::Stopped
+        )
+    );
+    assert_eq!(repeated_snapshot.phase(), WatcherLifecyclePhase::Terminal);
+    assert_eq!(
+        block_on(watcher.wait(owning_turn, watcher_id, WatcherWaitOptions::default(),))
+            .expect("operator stop joins before wait resolves"),
+        WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Stopped)
+    );
+}
+
+#[test]
 fn watcher_capacity_and_foreign_stop_fail_closed() {
     let local = watcher_host("sleep", 1);
     let watcher = local
@@ -124,13 +171,13 @@ fn watcher_stop_and_join_retires_owned_identities() {
         WatcherRequester::Operator,
         operation_data("sleep-operation"),
     ))
-    .expect("contained watcher starts")
+    .expect("managed watcher starts")
     .watcher_id()
     .clone();
 
     let (snapshots, cleanup) =
         block_on(watcher.stop_and_join_all(turn, WatcherCleanupCause::TimedOut))
-            .expect("deadline cleanup stops and joins contained work");
+            .expect("deadline cleanup stops and joins managed work");
     assert_eq!(cleanup, CleanupOutcome::Clean);
     assert_eq!(snapshots[0].watcher_id(), &watcher_id);
     assert_eq!(snapshots[0].phase(), WatcherLifecyclePhase::Joined);
@@ -245,4 +292,90 @@ fn watcher_process_groups_are_foreign_safe() {
             .expect("second group cleans up");
     assert_eq!(second_cleanup, CleanupOutcome::Clean);
     assert_ne!(first.watcher_id(), second.watcher_id());
+}
+
+#[cfg(unix)]
+#[test]
+fn watcher_cleanup_stops_cooperative_child_processes() {
+    use std::time::{Duration, Instant};
+    use swallowtail_core::ExecutionHostId;
+    use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
+    use swallowtail_runtime::{ProcessRequest, WorkingResourceRef};
+
+    let resource_directory = super::support::temporary_resource();
+    let executable = super::support::executable_ref();
+    let environment = super::support::environment_ref();
+    let resource = WorkingResourceRef::new("fixture.watcher.cooperative-child")
+        .expect("working resource is valid");
+    let operation = super::operation_data("sleep-with-cooperative-child-operation");
+    let request = ProcessRequest::new(executable.clone())
+        .with_arguments(super::support::fixture_arguments())
+        .with_environment([environment.clone()])
+        .with_working_resource(resource.clone());
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_watcher_capacity(1)
+        .approve_executable(
+            executable,
+            std::env::current_exe().expect("watcher fixture executable"),
+        )
+        .approve_environment(
+            environment,
+            super::support::fixture_environment("sleep-with-cooperative-child"),
+        )
+        .approve_working_resource(resource, resource_directory.clone())
+        .approve_watcher_operation(operation.clone(), request)
+        .build_services(
+            ExecutionHostId::new("fixture.host.watcher.cooperative-child")
+                .expect("watcher host id is valid"),
+        );
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let turn = runtime_turn("turn-cooperative-child");
+    let _watcher_id =
+        block_on(watcher.accept_start(turn.clone(), WatcherRequester::Operator, operation))
+            .expect("cooperative-child watcher starts")
+            .watcher_id()
+            .clone();
+
+    let pid_path = resource_directory.join("cooperative-child.pid");
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let pid = loop {
+        if let Ok(contents) = std::fs::read_to_string(&pid_path) {
+            break contents
+                .trim()
+                .parse::<u32>()
+                .expect("cooperative child pid is numeric");
+        }
+        assert!(
+            Instant::now() < deadline,
+            "cooperative child pid file was not written"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    };
+    assert!(
+        process_is_alive(pid),
+        "cooperative child is live before watcher cleanup"
+    );
+
+    let (snapshots, cleanup) =
+        block_on(watcher.stop_and_join_all(turn, WatcherCleanupCause::Cancelled))
+            .expect("watcher cleanup joins the managed process group");
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+    assert_eq!(snapshots[0].phase(), WatcherLifecyclePhase::Joined);
+    assert!(
+        !process_is_alive(pid),
+        "cooperative child is stopped with the owned process group"
+    );
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+fn process_is_alive(pid: u32) -> bool {
+    std::process::Command::new("/bin/ps")
+        .args(["-p", &pid.to_string(), "-o", "pid="])
+        .output()
+        .map(|output| output.status.success() && !output.stdout.iter().all(u8::is_ascii_whitespace))
+        .unwrap_or(false)
 }

@@ -1,6 +1,6 @@
 # 014 Host-Process Watcher Supervision
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-29
 Updated: 2026-08-29
@@ -42,25 +42,25 @@ security containment of deliberately detached descendants.
 
 ## Acceptance Criteria
 
-- [ ] default host-local composition can start an approved process-backed
+- [x] default host-local composition can start an approved process-backed
       watcher without an injected containment backend
-- [ ] unapproved operation data rejects before process work
-- [ ] watcher identity exposes no executable, command, path, environment, raw
+- [x] unapproved operation data rejects before process work
+- [x] watcher identity exposes no executable, command, path, environment, raw
       output, PID, or process-group identity
-- [ ] normal completion waits for process, output readers, watcher monitor, and
+- [x] normal completion waits for process, output readers, watcher monitor, and
       supervision join
-- [ ] model and operator stop remain distinct request paths against one owned
+- [x] model and operator stop remain distinct request paths against one owned
       watcher and are idempotent
-- [ ] cancellation, timeout, failure, and close stop and join managed work
-- [ ] cooperative child processes in the owned group are stopped during
+- [x] cancellation, timeout, failure, and close stop and join managed work
+- [x] cooperative child processes in the owned group are stopped during
       watcher cleanup
-- [ ] no container, VM, cgroup, Job Object, privileged helper, process-table
+- [x] no container, VM, cgroup, Job Object, privileged helper, process-table
       poller, or arbitrary shell authority is added
-- [ ] public names, diagnostics, and docs do not imply sandbox-grade descendant
+- [x] public names, diagnostics, and docs do not imply sandbox-grade descendant
       containment
-- [ ] deliberately detached descendants remain an explicit non-claim rather
+- [x] deliberately detached descendants remain an explicit non-claim rather
       than a hidden success condition
-- [ ] existing portable watcher lifecycle and bounded-summary behavior remain
+- [x] existing portable watcher lifecycle and bounded-summary behavior remain
       unchanged
 
 ## Validation

@@ -99,9 +99,10 @@ impl Future for LocalWatcherWait<'_> {
         };
 
         // LocalJoinedTask reports finished only after its worker has returned.
-        // The worker awaits ProcessHandle::wait before returning, so both
-        // joins below must be ready. Poll them directly instead of entering a
-        // nested executor or blocking the caller while the join lock is held.
+        // The worker awaits ProcessHandle::wait before returning, so the
+        // process join below must be ready. Poll it directly instead of
+        // entering a nested executor or blocking the caller while the join
+        // lock is held.
         let noop_waker = Waker::noop();
         let mut join_context = Context::from_waker(noop_waker);
         let mut task_join = task.join();
@@ -133,24 +134,6 @@ impl Future for LocalWatcherWait<'_> {
                 let error = failure(
                     "swallowtail.local_watcher.process_not_ready",
                     "Local watcher task finished before its process wait was ready",
-                );
-                this.entry.record_join_error(error.clone());
-                return Poll::Ready(Err(error));
-            }
-        }
-
-        let entry = Arc::clone(&this.entry);
-        let mut empty_join = Box::pin(async move { entry.prove_empty_and_join().await });
-        match empty_join.as_mut().poll(&mut join_context) {
-            Poll::Ready(Ok(())) => {}
-            Poll::Ready(Err(error)) => {
-                this.entry.record_join_error(error.clone());
-                return Poll::Ready(Err(error));
-            }
-            Poll::Pending => {
-                let error = failure(
-                    "swallowtail.local_watcher.containment_not_ready",
-                    "Local watcher process finished before containment empty-scope join was ready",
                 );
                 this.entry.record_join_error(error.clone());
                 return Poll::Ready(Err(error));

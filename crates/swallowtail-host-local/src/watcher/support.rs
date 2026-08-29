@@ -1,26 +1,20 @@
-use crate::containment::ProcessContainmentLease;
 use crate::output::failure;
 use futures_executor::block_on;
 use std::sync::Arc;
 use swallowtail_core::{WatcherOwningTurn, WatcherSummary};
 use swallowtail_runtime::{
-    RuntimeFailure, RuntimeTurnId, ScopeId, WatcherFailure, WatcherFailureKind,
+    ProcessHandle, RuntimeFailure, RuntimeTurnId, ScopeId, WatcherFailure, WatcherFailureKind,
 };
 
-pub(super) fn cleanup_lease(
-    lease: &Arc<dyn ProcessContainmentLease>,
-) -> Result<(), RuntimeFailure> {
-    block_on(lease.force_stop())?;
-    block_on(lease.prove_empty_and_join())?;
-    Ok(())
+pub(super) fn cleanup_process(process: &Arc<dyn ProcessHandle>) -> Result<(), RuntimeFailure> {
+    block_on(process.force_stop())?;
+    block_on(process.wait()).map(|_| ())
 }
 
-pub(super) fn request_lease_stop(
-    lease: &Arc<dyn ProcessContainmentLease>,
-) -> Result<(), RuntimeFailure> {
-    match block_on(lease.request_stop()) {
+pub(super) fn request_process_stop(process: &Arc<dyn ProcessHandle>) -> Result<(), RuntimeFailure> {
+    match block_on(process.request_stop()) {
         Ok(()) => Ok(()),
-        Err(graceful_error) => match block_on(lease.force_stop()) {
+        Err(graceful_error) => match block_on(process.force_stop()) {
             Ok(()) => Ok(()),
             Err(_) => Err(graceful_error),
         },

@@ -16,30 +16,26 @@ pub(super) async fn monitor_watcher(
             Ok(None) => break,
             Err(_) => {
                 output_failed = true;
-                let _ = entry.lease.force_stop().await;
+                let _ = entry.process.force_stop().await;
                 break;
             }
         }
     }
     let process_result = entry.process.wait().await;
-    // Contract 059: terminal only after the contained workload is terminal and
-    // the containment scope is empty. Reuse the durable entry proof so later
-    // wait/join paths do not require a second independent supervisor join.
-    let contained = entry.prove_empty_and_join().await;
-    let cause = match (&process_result, &contained) {
-        (Ok(exit), Ok(())) if exit.success() && !output_failed => WatcherTerminalCause::Completed,
+    // Contract 059: ProcessHandle::wait already joins the root, cooperative
+    // process-group cleanup, output readers, and process supervisor. The
+    // watcher monitor then records terminal cause before the host join path
+    // marks joined truth.
+    let cause = match &process_result {
+        Ok(exit) if exit.success() && !output_failed => WatcherTerminalCause::Completed,
         _ => WatcherTerminalCause::Failed,
     };
     let summary = if output_failed {
         super::support::summary("output_limit_exceeded")
-    } else if contained.is_err() {
-        super::support::summary("containment_join_failed")
     } else {
         super::support::summary(cause.as_str())
     };
-    if let Err(error) = contained {
-        entry.record_join_error(error);
-    } else if let Err(error) = process_result {
+    if let Err(error) = process_result {
         entry.record_join_error(error);
     }
     let mut state = state.lock().expect("local watcher state lock poisoned");

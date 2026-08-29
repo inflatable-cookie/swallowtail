@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-29 g05.003 Host-Process Watcher Supervision](./2026-08-29-g05-003-host-process-watcher-supervision.md) — complete; card 014; default host-process watcher join
 - [2026-08-29 g05.003 Host-Process Watcher Direction](./2026-08-29-g05-003-host-process-watcher-direction.md) — hard-containment gate withdrawn; replacement card 014 ready
 - [2026-08-29 g05.003 Process Containment Decision](./2026-08-29-g05-003-process-containment-decision.md) — superseded; records the PR 117 repair boundary and withdrawn container detour
 - [2026-08-28 Qwen Headless 0.22.3 Claim](./2026-08-28-qwen-headless-0-22-3-claim.md) — complete; Research 258; g05.004 cards 012-013; official npm `0.22.3`

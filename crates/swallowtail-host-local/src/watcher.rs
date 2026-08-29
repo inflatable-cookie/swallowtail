@@ -7,7 +7,6 @@ mod support;
 mod tests;
 mod wait;
 
-use crate::containment::{ProcessContainmentBackend, ProcessContainmentLease};
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
 use futures_executor::block_on;
@@ -29,7 +28,6 @@ pub(super) const MAX_RETIRED_TURNS: usize = 64;
 pub(crate) struct LocalWatcherHostService {
     process_host: Arc<LocalProcessHost>,
     task_service: Arc<dyn ScopedTaskService>,
-    containment: Option<Arc<dyn ProcessContainmentBackend>>,
     state: Arc<Mutex<LocalWatcherState>>,
     capacity: usize,
 }
@@ -48,12 +46,10 @@ pub(super) struct LocalWatcherTurn {
 
 struct LocalWatcherEntry {
     pub(super) process: Arc<dyn ProcessHandle>,
-    pub(super) lease: Arc<dyn ProcessContainmentLease>,
     task: Mutex<Option<Box<dyn JoinedTask>>>,
     join_lock: Mutex<()>,
     joined: AtomicBool,
     join_error: Mutex<Option<RuntimeFailure>>,
-    empty_join: Mutex<Option<Result<(), RuntimeFailure>>>,
     join_signal: JoinSignal,
 }
 
@@ -110,33 +106,6 @@ impl LocalWatcherEntry {
             .expect("local watcher join error lock poisoned")
             .clone()
     }
-
-    /// Returns the durable empty-scope proof for this entry.
-    ///
-    /// The first call performs `lease.prove_empty_and_join()` and stores the
-    /// result. Later callers reuse that result so a one-shot supervisor join
-    /// cannot fail merely because wait and cleanup both need the proof.
-    pub(super) async fn prove_empty_and_join(&self) -> Result<(), RuntimeFailure> {
-        if let Some(result) = self
-            .empty_join
-            .lock()
-            .expect("local watcher empty-join lock poisoned")
-            .clone()
-        {
-            return result;
-        }
-        let result = self.lease.prove_empty_and_join().await;
-        let mut empty_join = self
-            .empty_join
-            .lock()
-            .expect("local watcher empty-join lock poisoned");
-        if empty_join.is_none() {
-            *empty_join = Some(result.clone());
-        }
-        empty_join
-            .clone()
-            .expect("empty-join proof was stored before return")
-    }
 }
 
 #[derive(Default)]
@@ -186,21 +155,18 @@ impl LocalWatcherHostService {
         process_host: Arc<LocalProcessHost>,
         task_service: Arc<LocalScopedTaskService>,
         capacity: usize,
-        containment: Option<Arc<dyn ProcessContainmentBackend>>,
     ) -> Self {
-        Self::new_with_task_service(process_host, task_service, capacity, containment)
+        Self::new_with_task_service(process_host, task_service, capacity)
     }
 
     pub(crate) fn new_with_task_service(
         process_host: Arc<LocalProcessHost>,
         task_service: Arc<dyn ScopedTaskService>,
         capacity: usize,
-        containment: Option<Arc<dyn ProcessContainmentBackend>>,
     ) -> Self {
         Self {
             process_host,
             task_service,
-            containment,
             state: Arc::new(Mutex::new(LocalWatcherState::default())),
             capacity,
         }
@@ -277,8 +243,8 @@ impl WatcherHostService for LocalWatcherHostService {
 impl Drop for LocalWatcherEntry {
     fn drop(&mut self) {
         if !self.joined.load(Ordering::Acquire) {
-            let _ = block_on(self.lease.force_stop());
-            let _ = block_on(self.prove_empty_and_join());
+            let _ = block_on(self.process.force_stop());
+            let _ = block_on(self.process.wait());
         }
     }
 }

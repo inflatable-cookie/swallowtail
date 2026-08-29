@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Batch cards use `gated` as a status outside the accepted buckets — 2026-08-29
+- Friction: card 010 used `Status: gated`, while roadmap status QA accepts only
+  planned, ready, blocked, stopped, and complete variants. The dependency was
+  truthful, but `effigy qa:docs` could not classify the card.
+- Impact: a valid planning gate fails late, and later agents may repeat the
+  unsupported status because the batch-card template does not name the allowed
+  buckets.
+- Fix: document the accepted status vocabulary in the batch-card template and
+  express gates as `Status: planned; gated behind ...`.
+- Surface: Northstar batch-card template and Swallowtail roadmap status QA.
+
 ### [ ] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
 - Friction: PR 117 added four warning-level files above the configured size
   threshold: `watcher/accept.rs`, `process.rs`, `watcher_service/policy.rs`, and

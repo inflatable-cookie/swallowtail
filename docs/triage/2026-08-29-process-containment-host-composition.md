@@ -1,6 +1,6 @@
 # 2026-08-29 Process Containment Host Composition
 
-Status: open; operator target required
+Status: promoted; g05.003 card 014
 Owner: Tom
 Lane: g05.003
 Source: post-PR 117 containment checkpoint
@@ -65,8 +65,17 @@ first-proof requirement; otherwise prefer Linux cgroup v2 as the narrowest
 kernel-owned composition. Do not start card 010 until the selected composition
 is implemented and proved.
 
+## Operator Decision
+
+On 2026-08-29 the operator selected macOS via an opt-in OCI composition for the
+first proof. The current host already exposes Docker Desktop `4.87.0`, Docker
+Engine `29.7.2`, API `1.55`, containerd `2.2.5`, and runc `1.3.6`; no install or
+update is required. Card 014 narrows the candidate to the exact Docker Engine
+API composition and may return an honest empty result. This observation is not
+a compatibility range or production capability claim.
+
 ## Disposition
 
-Keep this note open until the operator selects the first target. Promote that
-answer into a bounded g05 card and named research surface, then remove or mark
-this note promoted. This note is not execution authority.
+Promoted into g05.003 card 014 and the Research 260 assignment. Keep cards
+010-011 gated until the exact composition is positively proved and a separate
+implementation card lands. This note is not execution authority.

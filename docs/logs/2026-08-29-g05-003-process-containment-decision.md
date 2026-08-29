@@ -30,13 +30,17 @@ containment shapes.
 
 ## Planning Result
 
-Card 009 is revised and ready to repair/restack PR 117. Its registry, wait,
-retirement, rollback, and wake-up work may remain, but default process-backed
-watcher registration and process-table observation as containment evidence
-must not. Card 010 stays gated until an exact containment-capable host
-composition is proved.
+Card 009 completed on fast-forwarded PR 117 at `ad51b0e7`. Its registry is
+available without claiming a default process backend; process-backed starts
+reject before work until an exact containment backend is injected. Card 010
+stays gated until an exact containment-capable host composition is proved and
+implemented.
+
+The operator selected macOS via an opt-in OCI supervisor as the first target.
+Card 014 is ready to test the exact current Docker Engine API composition and
+produce Research 260 without adding production code.
 
 ## Next Move
 
-Run the replacement card 009 worker handoff, update PR 117 from current pushed
-`main`, and return the exact head for review. Do not merge or begin card 010.
+Execute card 014 and return Research 260 for review. Do not add a production
+Docker backend or begin card 010 from the research worker.

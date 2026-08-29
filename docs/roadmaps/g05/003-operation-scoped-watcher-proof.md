@@ -7,8 +7,8 @@ Updated: 2026-08-29
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257, 259 promoted
-Planning state: cards 007-009 complete; cards 010-011 gated behind proved containment backend
+Research: 257, 259 promoted; 260 assigned
+Planning state: cards 007-009 complete; card 014 ready; cards 010-011 gated behind proved containment backend
 
 ## Problem
 
@@ -39,7 +39,13 @@ after their independent gates close.
       containment from the default local process service
 - [x] require an injected containment backend before process-backed start
 
-### Batch 3.3 — Conditional Claude Proof
+### Batch 3.3 — Exact Containment Composition
+
+- [ ] execute ready card 014 for Docker Engine API containment evidence on the
+      operator-selected macOS-via-OCI target
+- [ ] accept an exact composition or keep the production watcher route gated
+
+### Batch 3.4 — Conditional Claude Proof
 
 - [ ] execute card 010 only after Research 257 admits the complete seam, card
       009 lands, and an exact containment-capable host composition is proved
@@ -71,6 +77,7 @@ after their independent gates close.
 - [009 Host-Local Watcher Registry](batch-cards/009-host-local-watcher-registry.md)
 - [010 Claude Code Watcher Bridge](batch-cards/010-claude-code-watcher-bridge.md)
 - [011 Watcher Acceptance And Consumer Projection](batch-cards/011-watcher-acceptance-and-consumer-projection.md)
+- [014 Docker Engine Containment Composition Evidence](batch-cards/014-docker-engine-containment-composition-evidence.md)
 
 ## References
 

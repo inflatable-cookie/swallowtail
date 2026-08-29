@@ -3,13 +3,13 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — gated; depends on positive Research 257, card 009, and an exact containment-capable host composition
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; gated behind positive Research 257, card 009, and an exact containment-capable host composition
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [014-docker-engine-containment-composition-evidence.md](./014-docker-engine-containment-composition-evidence.md) — ready; Research 260; macOS-via-OCI first-proof target
 
 ## Blocked
 

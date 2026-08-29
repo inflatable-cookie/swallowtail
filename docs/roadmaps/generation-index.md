@@ -152,12 +152,14 @@ g05.002 is ready behind Research 256's honest empty Qoder roster; cards 005-006
 remain gated. g05.003 is ready after closed cards 007-009. Research 259 keeps hard
 no-outliving semantics, rejects default macOS process groups as containment,
 and required the card 009 repair/restack of PR 117 around an injected
-containment backend; that repair is complete. Cards 010-011 remain gated until
-an exact containment-capable host composition is selected and proved. g05.004 standing
+containment backend; that repair is complete. The operator selected macOS via
+an opt-in OCI supervisor as the first target. Card 014 is ready to produce
+Research 260 against the exact current Docker Engine API composition. Cards
+010-011 remain gated until containment is proved and implemented. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
-through official `0.22.3` without moving the generation pointer. Containment-
-backend selection is the ready lane. No provider prompt, new route, or parked Bedrock work is
-authorized.
+through official `0.22.3` without moving the generation pointer. Card 014 is
+the ready lane. No provider prompt, production Docker backend, new route, or
+parked Bedrock work is authorized.
 
 ## Rollover Rule
 

@@ -15,13 +15,14 @@ shape.
 
 ## Next Task
 
-Select and prove one exact containment-capable host composition for process-
-backed watchers, then decide whether card 010 can leave its gate. Card 009 is
-complete on restacked PR 117: default local composition rejects process-backed
-starts before work, and accepted starts bind an injected containment lease.
-Cards 004, 007, and 008 remain complete. Keep cards 005-006 planned behind
-Research 256 and cards 010-011 gated behind the proved containment backend.
-Contract 029 currentness remains standing.
+Execute ready g05.003 card 014. Produce Research 260 and determine whether the
+exact current Docker Engine API composition on macOS can satisfy Contract 059
+under closed-pipe `setsid`, concurrent-fork, stop, kill, wait, remove, and
+partial-start probes. This is research and frozen evidence only: do not add a
+production backend or start card 010. Card 009 is complete. Keep cards 005-006
+planned behind Research 256 and cards 010-011 gated behind a positive
+containment proof and later implementation. Contract 029 currentness remains
+standing.
 
 ## Standing Lanes
 

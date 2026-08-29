@@ -1,6 +1,6 @@
 # 010 Claude Code Watcher Bridge
 
-Status: gated
+Status: planned; gated behind exact containment composition proof and implementation
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-29

@@ -257,3 +257,52 @@ fn failed_containment_empty_join_blocks_joined_truth() {
         .expect("failed join keeps the watcher inspectable");
     assert_ne!(snapshot.phase(), WatcherLifecyclePhase::Joined);
 }
+
+#[test]
+fn non_zero_root_exit_remains_failed_after_containment_proof() {
+    let (local, backend) =
+        super::watcher_host_with_backend("exit-one", 2, LocalProcessLimits::default());
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let owning_turn = watcher_owning_turn("turn-exit-one");
+    let watcher_id = block_on(watcher.accept_start(
+        runtime_turn("turn-exit-one"),
+        WatcherRequester::Model,
+        operation_data("exit-one-operation"),
+    ))
+    .expect("non-zero watcher starts")
+    .watcher_id()
+    .clone();
+
+    assert_eq!(
+        block_on(watcher.wait(
+            owning_turn.clone(),
+            watcher_id.clone(),
+            WatcherWaitOptions::default()
+        ))
+        .expect("non-zero root still reaches joined cleanup"),
+        WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Failed)
+    );
+    let failed = block_on(watcher.inspect(owning_turn, watcher_id))
+        .expect("failed watcher remains inspectable");
+    assert_eq!(failed.phase(), WatcherLifecyclePhase::Joined);
+    assert_eq!(
+        failed
+            .summary()
+            .expect("host records failed process result")
+            .as_str(),
+        "failed"
+    );
+    assert!(
+        backend.calls().contains(&"lease.prove_empty_and_join"),
+        "containment empty-scope proof must still run for failed process exits: {:?}",
+        backend.calls()
+    );
+    assert_eq!(
+        backend.prove_empty_count(),
+        1,
+        "empty-scope proof must be durable rather than requiring a second supervisor join"
+    );
+}

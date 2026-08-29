@@ -60,6 +60,7 @@ fn process_fixture() {
         }
         "sleep" => thread::sleep(Duration::from_secs(30)),
         "exit-zero" => {}
+        "exit-one" => std::process::exit(1),
         "spawn-descendant" => {
             spawn_descendant("1");
             std::io::stdout()

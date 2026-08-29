@@ -48,6 +48,11 @@ impl ContainedProcessStart {
 ///
 /// Stop and force-stop target the lease, never a caller-supplied PID. Joined
 /// cleanup requires an empty containment scope and joined supervision work.
+///
+/// `prove_empty_and_join` may be observed more than once for one lease. Host
+/// callers must treat a successful proof as durable for that lease: either the
+/// implementation is idempotent, or the host records and reuses the first
+/// result rather than requiring a second independent supervisor join.
 pub trait ProcessContainmentLease: Send + Sync {
     /// Requests graceful stop through the containment lease.
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>>;
@@ -56,6 +61,9 @@ pub trait ProcessContainmentLease: Send + Sync {
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>>;
 
     /// Proves the containment scope empty and joins supervision before release.
+    ///
+    /// A successful result is durable for the lease. Repeated calls after
+    /// success must remain successful; a failed result remains failed.
     fn prove_empty_and_join(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>>;
 }
 

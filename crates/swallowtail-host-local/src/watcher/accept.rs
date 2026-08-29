@@ -113,23 +113,33 @@ impl LocalWatcherHostService {
             );
         }
 
+        let entry = Arc::new(LocalWatcherEntry {
+            process,
+            lease,
+            task: Mutex::new(None),
+            join_lock: Mutex::new(()),
+            joined: std::sync::atomic::AtomicBool::new(false),
+            join_error: Mutex::new(None),
+            empty_join: Mutex::new(None),
+            join_signal: super::JoinSignal::default(),
+        });
         let monitor_state = Arc::clone(&self.state);
         let monitor_turn = turn.clone();
         let monitor_id = watcher_id.clone();
-        let monitor_process = Arc::clone(&process);
-        let monitor_lease = Arc::clone(&lease);
+        let monitor_entry = Arc::clone(&entry);
         let task = match self.task_service.spawn(
             scope,
             Box::pin(super::process::monitor_watcher(
                 monitor_state,
                 monitor_turn,
                 monitor_id,
-                monitor_process,
-                monitor_lease,
+                monitor_entry,
             )),
         ) {
             Ok(task) => task,
             Err(error) => {
+                let process = Arc::clone(&entry.process);
+                let lease = Arc::clone(&entry.lease);
                 return self.rollback_unbound_start(
                     &mut state,
                     &turn,
@@ -140,22 +150,12 @@ impl LocalWatcherHostService {
                 );
             }
         };
+        *entry.task.lock().expect("local watcher task lock poisoned") = Some(task);
         let turn_state = state
             .active
             .get_mut(&turn)
             .expect("local watcher turn remains after monitor spawn");
-        turn_state.entries.insert(
-            watcher_id.clone(),
-            Arc::new(LocalWatcherEntry {
-                process,
-                lease,
-                task: Mutex::new(Some(task)),
-                join_lock: Mutex::new(()),
-                joined: std::sync::atomic::AtomicBool::new(false),
-                join_error: Mutex::new(None),
-                join_signal: super::JoinSignal::default(),
-            }),
-        );
+        turn_state.entries.insert(watcher_id.clone(), entry);
         turn_state
             .registry
             .inspect(turn_state.registry.owning_turn(), &watcher_id)
@@ -191,6 +191,7 @@ impl LocalWatcherHostService {
                     join_lock: Mutex::new(()),
                     joined: std::sync::atomic::AtomicBool::new(false),
                     join_error: Mutex::new(Some(cleanup_error.clone())),
+                    empty_join: Mutex::new(None),
                     join_signal: super::JoinSignal::default(),
                 });
                 turn_state.entries.insert(watcher_id.clone(), entry);

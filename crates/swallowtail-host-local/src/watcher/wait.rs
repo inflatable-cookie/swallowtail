@@ -139,9 +139,9 @@ impl Future for LocalWatcherWait<'_> {
             }
         }
 
-        let lease = Arc::clone(&this.entry.lease);
-        let mut lease_join = Box::pin(async move { lease.prove_empty_and_join().await });
-        match lease_join.as_mut().poll(&mut join_context) {
+        let entry = Arc::clone(&this.entry);
+        let mut empty_join = Box::pin(async move { entry.prove_empty_and_join().await });
+        match empty_join.as_mut().poll(&mut join_context) {
             Poll::Ready(Ok(())) => {}
             Poll::Ready(Err(error)) => {
                 this.entry.record_join_error(error.clone());

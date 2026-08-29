@@ -22,6 +22,7 @@ struct RecordingState {
     force_stop_fails: AtomicBool,
     prove_empty_fails: AtomicBool,
     prove_empty_count: AtomicUsize,
+    prove_empty_result: Mutex<Option<Result<(), RuntimeFailure>>>,
 }
 
 impl RecordingContainmentBackend {
@@ -33,6 +34,7 @@ impl RecordingContainmentBackend {
                 force_stop_fails: AtomicBool::new(false),
                 prove_empty_fails: AtomicBool::new(false),
                 prove_empty_count: AtomicUsize::new(0),
+                prove_empty_result: Mutex::new(None),
             }),
         }
     }
@@ -121,19 +123,37 @@ impl ProcessContainmentLease for RecordingContainmentLease {
 
     fn prove_empty_and_join(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.record("lease.prove_empty_and_join");
+        if let Some(result) = self
+            .state
+            .prove_empty_result
+            .lock()
+            .expect("recording containment lock poisoned")
+            .clone()
+        {
+            return Box::pin(async move { result });
+        }
         self.state.prove_empty_count.fetch_add(1, Ordering::SeqCst);
         if self.state.prove_empty_fails.load(Ordering::SeqCst) {
-            return Box::pin(async {
-                Err(RuntimeFailure::new(SafeDiagnostic::new(
-                    "fixture.containment.prove_empty_failed",
-                    "Fixture containment empty-scope join failed",
-                )))
-            });
+            let result = Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "fixture.containment.prove_empty_failed",
+                "Fixture containment empty-scope join failed",
+            )));
+            *self
+                .state
+                .prove_empty_result
+                .lock()
+                .expect("recording containment lock poisoned") = Some(result.clone());
+            return Box::pin(async move { result });
         }
         let process = Arc::clone(&self.process);
+        let state = Arc::clone(&self.state);
         Box::pin(async move {
-            process.wait().await?;
-            Ok(())
+            let result = process.wait().await.map(|_| ());
+            *state
+                .prove_empty_result
+                .lock()
+                .expect("recording containment lock poisoned") = Some(result.clone());
+            result
         })
     }
 }

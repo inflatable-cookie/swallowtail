@@ -50,7 +50,7 @@ impl LocalWatcherHostService {
                 entry.record_join_error(error.clone());
                 return Err(error);
             }
-            if let Err(error) = block_on(entry.lease.prove_empty_and_join()) {
+            if let Err(error) = block_on(entry.prove_empty_and_join()) {
                 entry.record_join_error(error.clone());
                 return Err(error);
             }

@@ -1,9 +1,9 @@
 # 015 Claude Code Watcher Bridge Transport Evidence
 
-Status: ready
+Status: complete; evidence stop
 Owner: Tom
 Created: 2026-08-29
-Updated: 2026-08-29
+Updated: 2026-08-30
 Milestone: `../003-operation-scoped-watcher-proof.md`
 Depends on: completed cards 009 and 014; Contracts 010, 041, and 059; Research 257
 Research: 260
@@ -51,8 +51,7 @@ current official MCP, hooks, headless, skills, settings, and CLI surfaces. The
 provider-side composition remains a candidate, but no qualified current
 version segment or live same-turn proof is admitted.
 
-The evidence run is complete. The card remains in the orchestrator-owned ready
-bucket until the post-review closeout reconciles shared roadmap indexes; this
+The evidence run is complete and merged through PR 119 at `c36e11ad`. This
 does not authorize a second dispatch or card 010 implementation.
 
 The current host registers `WatcherHostService` and owns joined ordinary

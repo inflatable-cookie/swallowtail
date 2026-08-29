@@ -2,10 +2,11 @@
 
 Status: complete; evidence stop
 Owner: Tom
-Milestone: g05.003
-Card: 015 evidence run complete; status/index transition reserved for
-orchestrator closeout; card 010 remains planned
+Updated: 2026-08-30
+Milestone: g05.003 stopped after evidence
+Card: 015 complete; card 010 remains planned
 Research: 260
+Merged: PR 119 at `c36e11ad45415a8bf6e63678a948e58e73b5da3d`
 Branch: `t3code/review-claude-watcher-bridge`
 Worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-e9687bae`
 Base: `71ea21113ff01986fd01f0dca66f29e7cfdbf644` (`origin/main` at dispatch)
@@ -69,3 +70,7 @@ warning, and the pre-existing graph repair noted by the readiness assessment.
 Do not start card 010. A future planning lane must first decide whether to
 promote a host-owned operation-scoped bridge contract, then separately
 implement and live-prove it under explicit provider-work authorization.
+
+The orchestrator fast-forwarded `main` to the exact reviewed PR head. The g05
+pointer now names the operator planning checkpoint; no implementation card is
+ready.

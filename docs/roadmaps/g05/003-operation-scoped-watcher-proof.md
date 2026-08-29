@@ -1,14 +1,14 @@
 # g05.003 Operation-Scoped Watcher Proof
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-28
-Updated: 2026-08-29
+Updated: 2026-08-30
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257, 259 promoted; 260 reserved; hard-containment gate superseded
-Planning state: cards 007-009 and 014 complete; card 015 ready; cards 010-011 gated serially
+Research: 257, 259 promoted; 260 complete with evidence stop; hard-containment gate superseded
+Planning state: cards 007-009 and 014-015 complete; cards 010-011 remain planned behind a new bridge decision
 
 ## Problem
 
@@ -51,7 +51,7 @@ owns the pre-1.0 repair.
 
 ### Batch 3.4 — Claude Bridge Transport Evidence
 
-- [ ] execute ready card 015 to settle the host-owned MCP/IPC bridge,
+- [x] execute card 015 to settle the host-owned MCP/IPC bridge,
       current-version segment, and live same-turn acceptance gate
 
 ### Batch 3.5 — Conditional Claude Proof
@@ -60,6 +60,12 @@ owns the pre-1.0 repair.
       cards 009 and 014 close host execution, and Research 260 closes the
       provider-to-host transport
 - [ ] execute card 011 for fail-closed same-turn acceptance and docs
+
+Research 260 closes this milestone as an evidence stop. HTTP is the smallest
+plausible future carrier, but it requires a new operation-scoped host bridge
+contract. No current Claude version segment or live same-turn proof is
+qualified. Do not start cards 010-011 without an operator planning decision,
+contract promotion, current-version evidence, and authorized live acceptance.
 
 ## Acceptance Criteria
 

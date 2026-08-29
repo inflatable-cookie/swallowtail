@@ -15,10 +15,11 @@ shape.
 
 ## Next Task
 
-Execute ready g05.003 card 015 for Claude watcher bridge transport and
-current-version evidence. Keep cards 010-011 planned until Research 260 closes
-their transport and live-acceptance gates. Keep cards 005-006 planned behind
-Research 256. Contract 029 currentness remains standing.
+Run the g05 planning checkpoint. Decide whether to promote the minimal
+operation-scoped HTTP watcher bridge boundary identified by Research 260 or
+leave Claude watcher route binding parked and compile the next g05 runway.
+Do not start cards 010-011 or 005-006. Contract 029 currentness remains
+standing.
 
 ## Standing Lanes
 

@@ -9,7 +9,7 @@
 
 ## Ready
 
-- [015-claude-code-watcher-bridge-transport-evidence.md](./015-claude-code-watcher-bridge-transport-evidence.md) — ready; settles the missing provider-to-host transport and current-version gate
+- None.
 
 ## Blocked
 
@@ -17,6 +17,7 @@
 
 ## Completed
 
+- [015-claude-code-watcher-bridge-transport-evidence.md](./015-claude-code-watcher-bridge-transport-evidence.md) — completed; Research 260 evidence stop; card 010 remains planned
 - [014-host-process-watcher-supervision.md](./014-host-process-watcher-supervision.md) — completed; default host-process watcher supervision
 - [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — completed; host registry and injected execution seam; PR 117 restacked
 - [013-qwen-headless-0-22-3-claim.md](./013-qwen-headless-0-22-3-claim.md) — completed; standing currentness

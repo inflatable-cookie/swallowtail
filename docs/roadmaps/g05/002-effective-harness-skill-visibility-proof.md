@@ -1,13 +1,14 @@
 # g05.002 Effective Harness Skill Visibility Proof
 
-Status: ready
+Status: stopped after evidence
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-30
 Depends on: completed g05.001; Contract 058
 Vision tags: harness skills, selected-session truth, consumer integration
 Contract refs: 020, 029, 032, 033, 037, 041, 047, 058
 Research: 256 promoted
-Planning state: card 004 complete; cards 005-006 planned behind empty disposition
+Planning state: card 004 complete; cards 005-006 remain planned behind Research 256's empty disposition
 
 ## Problem
 

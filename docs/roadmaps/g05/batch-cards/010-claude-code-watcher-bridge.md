@@ -3,8 +3,9 @@
 Status: planned
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-29
 Milestone: `../003-operation-scoped-watcher-proof.md`
-Depends on: positive Research 257; card 009
+Depends on: positive Research 257; completed card 009; exact containment-capable host composition
 
 ## Goal
 
@@ -33,4 +34,4 @@ watcher rejection, version gates, unchanged omission, and joined cleanup.
 
 ## Auto-Continuation
 
-No. Remains planned until both dependencies close.
+No. Remains planned until every dependency closes.

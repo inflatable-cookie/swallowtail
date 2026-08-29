@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-29 g05.003 Process Containment Decision](./2026-08-29-g05-003-process-containment-decision.md) — capability-gated hard containment; revised card 009 repairs/restacks PR 117; card 010 gated
 - [2026-08-28 Qwen Headless 0.22.3 Claim](./2026-08-28-qwen-headless-0-22-3-claim.md) — complete; Research 258; g05.004 cards 012-013; official npm `0.22.3`
 - [2026-08-28 Qwen Headless 0.22.3 Identity](./2026-08-28-qwen-headless-0-22-3-identity.md) — complete; card 012; Research 258
 - [2026-08-28 g05.001 Card 003 Contract Promotion](./2026-08-28-g05-001-card-003-contract-promotion.md) — Contracts 058-059 promoted; Qoder and Claude evidence candidates selected; cards 004, 007, and 008 ready

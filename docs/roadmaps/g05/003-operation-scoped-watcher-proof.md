@@ -3,11 +3,12 @@
 Status: ready
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-29
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257 promoted
-Planning state: cards 007-008 complete; card 009 ready; cards 010-011 planned
+Research: 257, 259 promoted
+Planning state: cards 007-008 complete; revised card 009 ready; cards 010-011 gated
 
 ## Problem
 
@@ -33,14 +34,15 @@ after their independent gates close.
 
 ### Batch 3.2 — Host Registry
 
-- [ ] execute ready card 009 after the core lands
-- [ ] bind host-authorized start, bounded status and summaries, wait, model and
-      operator stop, cancellation, deadline, and joined cleanup
+- [ ] repair and restack PR 117 through revised card 009
+- [ ] bind host-authorized lifecycle coordination without inferring process
+      containment from the default local process service
+- [ ] require an injected containment backend before process-backed start
 
 ### Batch 3.3 — Conditional Claude Proof
 
-- [ ] execute card 010 only after Research 257 admits the complete seam and
-      card 009 lands
+- [ ] execute card 010 only after Research 257 admits the complete seam, card
+      009 lands, and an exact containment-capable host composition is proved
 - [ ] execute card 011 for fail-closed same-turn acceptance and docs
 
 ## Acceptance Criteria
@@ -59,6 +61,8 @@ after their independent gates close.
 - the route can only fail after irreversible provider completion
 - host start needs arbitrary executable, shell, or PID authority in public data
 - raw output is required for correctness
+- route binding would advertise watcher support without an exact containment
+  backend
 
 ## Batch Cards
 

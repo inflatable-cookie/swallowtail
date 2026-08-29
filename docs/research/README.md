@@ -8,6 +8,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
+### Harness Skills And Watchers
+
+- [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; hard watcher containment is capability-gated and default macOS process groups do not qualify
+
 ### Foundation And Runtime
 
 - [001 Two-Consumer Runtime Requirements](./001-two-consumer-runtime-requirements.md)

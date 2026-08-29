@@ -15,10 +15,12 @@ shape.
 
 ## Next Task
 
-Execute ready g05 card 009 for the host-local watcher registry from current
-pushed `main`. Cards 004, 007, and 008 are complete. Keep cards 005-006 planned
-behind Research 256's honest empty disposition. Keep cards 010-011 planned
-until card 009 lands with Research 257 still admitted. Contract 029
+Repair, restack, and re-review PR 117 through revised g05 card 009. Preserve
+the hard Contract 059 no-outliving invariant; process-backed watcher start now
+requires an injected, exact containment backend. The default macOS local
+process service does not qualify. Cards 004, 007, and 008 remain complete.
+Keep cards 005-006 planned behind Research 256 and cards 010-011 gated behind
+card 009 plus a proved containment-capable host composition. Contract 029
 currentness remains standing.
 
 ## Standing Lanes

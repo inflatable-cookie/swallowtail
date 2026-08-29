@@ -321,3 +321,14 @@ g05.002 card 004 and g05.003 card 007 own those evidence questions. g05.003
 card 008 independently owns the provider-neutral watcher lifecycle core. No
 skill roster or watcher support is advertised before the conditional binding
 and acceptance cards close.
+
+## 2026-08-29 Containment Checkpoint
+
+PR 117 proved that a macOS child can call `setsid`, close supervised pipes,
+and outlive process-group cleanup. The operator selected capability-gated hard
+containment rather than weakening the no-outliving invariant or parking the
+whole watcher lane.
+
+Disposition: promoted through Research 259 into Contracts 010 and 059, the
+architecture guardrails, g05.003, and revised card 009. This note remains the
+historical discovery record; it carries no separate open containment decision.

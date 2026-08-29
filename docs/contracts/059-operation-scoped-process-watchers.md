@@ -2,8 +2,8 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-28
-Research: 255
+Updated: 2026-08-29
+Research: 255, 259
 
 ## Purpose
 
@@ -65,6 +65,37 @@ Every accepted start binds process-tree or task ownership before returning the
 watcher id. The host owns output capture, backpressure, cancellation,
 deadlines, graceful stop, force-stop where authorized, descendant cleanup, and
 join. No watcher may outlive its owning turn.
+
+## Containment Admission
+
+The watcher registry coordinates lifecycle; it does not manufacture process
+containment. A process-backed watcher is admitted only when the selected host
+composition supplies an exact containment backend with an owned lease that:
+
+- contains descendants by construction, including concurrent forks;
+- does not permit ordinary child APIs to leave the containment scope;
+- targets stop and force-stop through the lease rather than a numeric PID;
+- reports terminal only after the contained workload is terminal;
+- proves the containment scope empty before joined cleanup; and
+- joins its own supervision work before releasing turn resources.
+
+A root-process handle, process group, inherited output pipe, process-table
+poll, or observed parent chain is not a containment backend. Detection of an
+escaped descendant is useful failure evidence but does not satisfy ownership
+or cleanup. Default macOS process groups and `launchd` group cleanup therefore
+do not qualify.
+
+Hosts without a qualified containment backend must omit process-backed watcher
+support or reject the start before work. Registration of the portable watcher
+service does not imply that a process executor is present. A task-backed
+watcher qualifies only when the host proves the task cannot create unmanaged
+child work, or binds all such work to the same containment lease.
+
+Containment is capability-gated, not platform-inferred. Windows Job Objects,
+Linux cgroup v2, a consumer-supplied supervisor, container, or VM remains
+unavailable until its exact authority, breakaway behavior, termination, empty
+scope, join, and failure semantics are implemented and tested. No route may
+advertise watcher support from an operating-system name alone.
 
 ## Model And Operator Controls
 
@@ -182,6 +213,8 @@ Provider-neutral fixtures must prove:
   hidden automatic wait or terminal-only failure
 - cancellation, timeout, provider failure, hook failure, and close stop and
   join all owned work
+- absence or pre-work rejection when process containment is unavailable
+- containment-lease empty truth under descendant fork and escape attempts
 - no watcher work or provider payload change when the option is absent
 - no raw process content in events, diagnostics, or default formatting
 

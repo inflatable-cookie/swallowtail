@@ -3,13 +3,13 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on positive Research 257 and card 009
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — gated; depends on positive Research 257, card 009, and an exact containment-capable host composition
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — ready; host-local registry after card 008
+- [009-host-local-watcher-registry.md](./009-host-local-watcher-registry.md) — ready; repair/restack PR 117 with capability-gated containment
 
 ## Blocked
 

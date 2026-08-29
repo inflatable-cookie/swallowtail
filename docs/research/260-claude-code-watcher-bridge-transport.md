@@ -25,7 +25,7 @@ private `--mcp-config`, `--strict-mcp-config`, `--settings`, `--add-dir`,
 evidence only here. They do not create a host listener, hand an existing host
 process or file descriptor to Claude, or prove same-turn Stop re-entry.
 
-HTTP is the only plausible future carrier. It still needs a new host-owned,
+HTTP is the smallest plausible future carrier. It still needs a new host-owned,
 operation-scoped listener and bridge contract. Stdio is not admitted because
 Claude launches the local server from its command and arguments; the current
 host has no operation-private IPC lease or provider-to-existing-process handoff.

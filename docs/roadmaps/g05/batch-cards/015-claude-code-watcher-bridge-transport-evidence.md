@@ -44,22 +44,40 @@ Research 260, frozen Claude-local evidence where useful, one lane log, and an
 exact card 010 readiness disposition. No production MCP server, listener,
 helper, skill, hook, or route code.
 
+## Evidence Stop
+
+Research 260 freezes the current native Claude Code `2.1.251` point and the
+current official MCP, hooks, headless, skills, settings, and CLI surfaces. The
+provider-side composition remains a candidate, but no qualified current
+version segment or live same-turn proof is admitted.
+
+The evidence run is complete. The card remains in the orchestrator-owned ready
+bucket until the post-review closeout reconciles shared roadmap indexes; this
+does not authorize a second dispatch or card 010 implementation.
+
+The current host registers `WatcherHostService` and owns joined ordinary
+process supervision. It has no MCP listener, provider-to-existing-process
+handoff, or operation-private IPC service. `ServingEndpointService` publishes
+an endpoint observed from an owned child and does not bind; the loopback
+callback service is sign-in-only.
+
+HTTP is the smallest future carrier but requires a new host-owned listener and
+bridge contract. Stdio requires a provider-launched helper and a host IPC
+handoff, which the current contracts do not provide. Card 010 remains planned.
+
 ## Acceptance Criteria
 
-- [ ] the provider-side MCP and Stop-hook transport is exact for a named
-      qualified version segment
-- [ ] one host-side binding reaches the same turn-owned
-      `WatcherHostService` without ambient discovery or generic tool authority
-- [ ] endpoint, token, path, helper, and provider ids stay private and cannot
-      authorize foreign or stale calls
-- [ ] server/helper tasks and operation-private material have explicit
-      cancellation, failure, release, and joined-cleanup order
-- [ ] omission remains the exact empty strict MCP command with no watcher
+- [x] the current provider-side MCP and Stop-hook surface is frozen, with no
+      qualified current version segment claimed
+- [x] HTTP, stdio, SSE, WebSocket, and reverse-direction `claude mcp serve`
+      ownership are compared against the host boundary
+- [x] the missing host binding, private correlation requirements, and
+      joined-cleanup delta are explicit
+- [x] omission remains the exact empty strict MCP command with no watcher
       service requirement or materialization
-- [ ] live same-turn re-entry is either proved under explicit authorization or
-      remains a named blocker
-- [ ] card 010 is marked ready only if no contract, transport, version, or live
-      acceptance decision remains unresolved
+- [x] live same-turn re-entry remains an explicit, unauthorized blocker
+- [x] card 010 remains planned because transport, current-version, and live
+      acceptance decisions are unresolved
 
 ## Validation
 

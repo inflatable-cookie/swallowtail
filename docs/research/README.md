@@ -11,6 +11,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 ### Harness Skills And Watchers
 
 - [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite
+- [260 Claude Code Watcher Bridge Transport Evidence](./260-claude-code-watcher-bridge-transport.md) — promoted evidence stop through g05.003 card 015; HTTP needs a new host-owned listener/contract, stdio has no admitted host IPC handoff, and card 010 remains planned
 
 ### Foundation And Runtime
 
@@ -169,7 +170,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [254 Kiro ACP Agent-Profile Evidence](./254-kiro-acp-agent-profile-evidence.md) — promoted evidence stop through g04.090 card 257; ambient membership, silent missing-name fallback, and absent applied-profile confirmation leave an honest empty set
 - [255 Production Harness Skill And Watcher Surface Census](./255-production-harness-skill-and-watcher-surface-census.md) — promoted through g05.001 card 001 and PR 112; 35 harness routes included, 13 non-harness rows excluded, zero deliver-now skill or native-watcher rows
 - [256 Qoder Effective Skill Roster Evidence](./256-qoder-effective-skill-roster-evidence.md) — reserved for g05.002 card 004; prompt-free selected-run `skills` and `plugins` truth
-- [257 Claude Code Watcher Seam Evidence](./257-claude-code-watcher-seam-evidence.md) — reserved for g05.003 card 007; private MCP, skill, hook, and same-turn completion truth
+- [257 Claude Code Watcher Seam Evidence](./257-claude-code-watcher-seam-evidence.md) — promoted through g05.003 card 007; private MCP, skill, hook, and same-turn completion candidate truth
 - [258 Qwen Headless 0.22.3 Identity](./258-qwen-headless-0-22-3-identity.md) — promoted through g05.004 cards 012-013; official npm `0.22.3` via published `0.22.2` is a compatible extension of exact `0.21.15` reasoning-control through `0.22.0..=0.22.3`; unpublished `0.21.16` stays a gap
 - [209 Anthropic Messages Adaptive-Thinking Evidence](./209-anthropic-messages-adaptive-thinking-evidence.md) — promoted through g04.062 cards 173-175; exact `claude-opus-4-7` adapter-local adaptive omitted-display thinking with bounded private replay
 - [206 Deep Agents ACP Model-Selection Evidence](./206-deepagents-acp-model-selection-evidence.md) — promoted evidence stop through g04.059; empty deliver-now on authorized evidence (generic access profile, silent CLI default on missing value, post-spawn construction, no ACP model confirmation)

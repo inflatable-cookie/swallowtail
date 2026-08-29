@@ -26,6 +26,25 @@ watcher rejection, version gates, unchanged omission, and joined cleanup.
 - [ ] model and operator control one registry
 - [ ] no ambient settings or project files are mutated
 
+## Readiness Gate Disposition
+
+Research 260 closes as an evidence stop, not a positive transport proof. Card
+010 remains planned.
+
+- The current Claude Code `2.1.251` point accepts the provider-side candidate
+  flags, but no current qualified version segment or live same-turn Stop proof
+  is admitted.
+- The host registry and ordinary process supervision are present, but this
+  checkout has no host-owned MCP listener, provider-to-existing-process
+  handoff, or operation-private IPC bridge into `WatcherHostService`.
+- HTTP would require a new operation-scoped listener/bridge contract with
+  exact host, turn, operation, authentication, and joined-cleanup semantics.
+  Stdio would require a provider-launched helper and a host IPC handoff.
+
+Do not mark this card ready or start implementation until a planning decision
+promotes that bridge boundary, a current provider segment is qualified, and
+the live same-turn acceptance gate is authorized and closed.
+
 ## Validation
 
 - `effigy validate:focused swallowtail-core swallowtail-runtime swallowtail-adapter-claude-agent`
@@ -34,5 +53,6 @@ watcher rejection, version gates, unchanged omission, and joined cleanup.
 
 ## Auto-Continuation
 
-No. Remains planned until card 015 closes the provider-to-host MCP transport,
-current-version segment, and live same-turn acceptance gate.
+No. Research 260 is closed as an evidence stop; this card remains planned until
+the provider-to-host MCP transport, current-version segment, and live
+same-turn acceptance gate are positively closed.

@@ -1,8 +1,10 @@
+mod containment;
 mod wakeups;
 
 use super::{LocalWatcherHostService, LocalWatcherState, MAX_RETIRED_TURNS};
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
+use containment::TestContainmentBackend;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{
@@ -52,7 +54,7 @@ fn monitor_spawn_failure_rolls_back_without_a_phantom_watcher() {
             .approve_executable(executable, "/bin/sleep")
             .approve_watcher_operation(operation.clone(), request)
             .approve_watcher_operation(exit_operation.clone(), exit_request)
-            .with_local_process_containment_probe()
+            .with_process_containment_factory(|host| Arc::new(TestContainmentBackend::new(host)))
             .build(),
     );
     let task_service = Arc::new(FailFirstTaskService {
@@ -113,4 +115,67 @@ fn retired_turn_tombstones_are_bounded() {
         state.retire(&turn);
     }
     assert_eq!(state.retired.len(), MAX_RETIRED_TURNS);
+}
+
+#[test]
+fn monitor_spawn_rollback_preserves_containment_cleanup_failure() {
+    let execution_host =
+        ExecutionHostId::new("fixture.watcher.rollback.cleanup").expect("host id is valid");
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("fixture.sleep").expect("executable is valid");
+    let operation =
+        WatcherOperationData::new("fixture.sleep.operation").expect("operation is valid");
+    let request = ProcessRequest::new(executable.clone()).with_arguments(["30".to_owned()]);
+    let backend_slot = Arc::new(std::sync::Mutex::new(None));
+    let slot = Arc::clone(&backend_slot);
+    let process_host = Arc::new(
+        LocalProcessHost::builder(crate::limits::LocalProcessLimits::default())
+            .approve_executable(executable, "/bin/sleep")
+            .approve_watcher_operation(operation.clone(), request)
+            .with_process_containment_factory(move |host| {
+                let backend = Arc::new(TestContainmentBackend::new(host));
+                backend.fail_force_stop();
+                *slot.lock().expect("backend slot poisoned") = Some(Arc::clone(&backend));
+                backend
+            })
+            .build(),
+    );
+    let task_service = Arc::new(FailFirstTaskService {
+        failed: AtomicBool::new(false),
+        delegate: LocalScopedTaskService::new(execution_host),
+    });
+    let containment = process_host.process_containment().cloned();
+    let watcher =
+        LocalWatcherHostService::new_with_task_service(process_host, task_service, 2, containment);
+    let turn = RuntimeTurnId::new("fixture.watcher.rollback.cleanup.turn").expect("turn is valid");
+    let owning_turn = WatcherOwningTurn::new(turn.as_str()).expect("owning turn is valid");
+
+    let failure = futures_executor::block_on(watcher.accept_start(
+        turn.clone(),
+        WatcherRequester::Model,
+        operation,
+    ))
+    .expect_err("failed containment cleanup must surface");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "fixture.containment.force_stop_failed"
+    );
+    let listed = futures_executor::block_on(watcher.list(owning_turn.clone()))
+        .expect("failed cleanup retains the watcher identity");
+    assert_eq!(listed.len(), 1);
+    let stop = futures_executor::block_on(
+        watcher.stop_and_join_all(turn, swallowtail_core::WatcherCleanupCause::Cancelled),
+    )
+    .expect("retained identity remains reachable for cleanup");
+    assert!(matches!(stop.1, CleanupOutcome::Failed(_)));
+    let backend = backend_slot
+        .lock()
+        .expect("backend slot poisoned")
+        .clone()
+        .expect("factory installed backend");
+    assert!(
+        backend.calls().contains(&"lease.force_stop"),
+        "rollback must attempt lease force-stop: {:?}",
+        backend.calls()
+    );
 }

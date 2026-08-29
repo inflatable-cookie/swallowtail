@@ -18,10 +18,9 @@ backend. Process-backed starts reject before work with
 `swallowtail.local_watcher.containment_unavailable`. An exact injected
 `ProcessContainmentBackend` must bind a containment lease before a watcher id
 returns; stop, cancel, deadline, and join target that lease and prove empty
-scope before clean turn cleanup. Process groups and process-table polling are
-ordinary cleanup mechanics only and do not satisfy the watcher capability gate.
-`LocalProcessContainmentProbe` is the deterministic test double for registry
-and lifecycle proofs; it is not a platform containment implementation.
+scope before clean turn cleanup. Process groups are ordinary cleanup mechanics
+only and do not satisfy the watcher capability gate. Tests inject a recording
+containment backend; no non-conforming backend is shipped in the public API.
 
 Approved operation data, capacity failures, closed turns, foreign ids, stale
 lifecycle operations, wait controls, wake-all, panic notification, rollback,

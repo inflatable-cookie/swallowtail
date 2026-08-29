@@ -139,6 +139,24 @@ impl Future for LocalWatcherWait<'_> {
             }
         }
 
+        let lease = Arc::clone(&this.entry.lease);
+        let mut lease_join = Box::pin(async move { lease.prove_empty_and_join().await });
+        match lease_join.as_mut().poll(&mut join_context) {
+            Poll::Ready(Ok(())) => {}
+            Poll::Ready(Err(error)) => {
+                this.entry.record_join_error(error.clone());
+                return Poll::Ready(Err(error));
+            }
+            Poll::Pending => {
+                let error = failure(
+                    "swallowtail.local_watcher.containment_not_ready",
+                    "Local watcher process finished before containment empty-scope join was ready",
+                );
+                this.entry.record_join_error(error.clone());
+                return Poll::Ready(Err(error));
+            }
+        }
+
         let result = this.mark_joined();
 
         match result {

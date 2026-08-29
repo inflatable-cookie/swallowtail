@@ -47,11 +47,6 @@ pub const fn swallowtail_host_local::LocalMaterializationLimits::new(u64, u64) -
 pub const fn swallowtail_host_local::LocalMaterializationLimits::schema_bytes(self) -> u64
 impl core::default::Default for swallowtail_host_local::LocalMaterializationLimits
 pub fn swallowtail_host_local::LocalMaterializationLimits::default() -> Self
-pub struct swallowtail_host_local::LocalProcessContainmentProbe
-impl swallowtail_host_local::LocalProcessContainmentProbe
-pub fn swallowtail_host_local::LocalProcessContainmentProbe::new(alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>) -> Self
-impl swallowtail_host_local::ProcessContainmentBackend for swallowtail_host_local::LocalProcessContainmentProbe
-pub fn swallowtail_host_local::LocalProcessContainmentProbe::start_contained(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_host_local::ContainedProcessStart, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_host_local::LocalProcessHost
 impl swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::builder(swallowtail_host_local::LocalProcessLimits) -> swallowtail_host_local::LocalProcessHostBuilder
@@ -96,9 +91,9 @@ pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_schema(self, swa
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_watcher_operation(self, swallowtail_core::watcher::operation_data::WatcherOperationData, swallowtail_runtime::process_input::ProcessRequest) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
-pub fn swallowtail_host_local::LocalProcessHostBuilder::with_local_process_containment_probe(self) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_process_containment(self, alloc::sync::Arc<dyn swallowtail_host_local::ProcessContainmentBackend>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_process_containment_factory<F>(self, F) -> Self where F: core::ops::function::FnOnce(alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>) -> alloc::sync::Arc<dyn swallowtail_host_local::ProcessContainmentBackend> + core::marker::Send + 'static
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_watcher_capacity(self, usize) -> Self
 impl swallowtail_host_local::LocalProcessHostBuilder
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_delegated_credential(self, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> Self
@@ -161,8 +156,6 @@ pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_instance(&sel
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub trait swallowtail_host_local::ProcessContainmentBackend: core::marker::Send + core::marker::Sync
 pub fn swallowtail_host_local::ProcessContainmentBackend::start_contained(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_host_local::ContainedProcessStart, swallowtail_runtime::failure::RuntimeFailure>>
-impl swallowtail_host_local::ProcessContainmentBackend for swallowtail_host_local::LocalProcessContainmentProbe
-pub fn swallowtail_host_local::LocalProcessContainmentProbe::start_contained(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_host_local::ContainedProcessStart, swallowtail_runtime::failure::RuntimeFailure>>
 pub trait swallowtail_host_local::ProcessContainmentLease: core::marker::Send + core::marker::Sync
 pub fn swallowtail_host_local::ProcessContainmentLease::force_stop(&self) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_host_local::ProcessContainmentLease::prove_empty_and_join(&self) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>

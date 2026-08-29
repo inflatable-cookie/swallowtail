@@ -152,3 +152,108 @@ fn watcher_output_overflow_is_bounded_and_becomes_host_failure() {
         "output_limit_exceeded"
     );
 }
+
+#[test]
+fn explicit_wait_joins_through_the_containment_lease() {
+    let (local, backend) =
+        super::watcher_host_with_backend("exit-zero", 2, LocalProcessLimits::default());
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let owning_turn = watcher_owning_turn("turn-lease-wait");
+    let watcher_id = block_on(watcher.accept_start(
+        runtime_turn("turn-lease-wait"),
+        WatcherRequester::Model,
+        operation_data("exit-zero-operation"),
+    ))
+    .expect("contained watcher starts")
+    .watcher_id()
+    .clone();
+
+    assert_eq!(
+        block_on(watcher.wait(owning_turn, watcher_id, WatcherWaitOptions::default(),))
+            .expect("wait reaches joined truth"),
+        WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Completed)
+    );
+    let calls = backend.calls();
+    assert!(
+        calls.contains(&"lease.prove_empty_and_join"),
+        "explicit wait must prove containment empty before joined truth: {calls:?}"
+    );
+    assert!(
+        backend.prove_empty_count() >= 1,
+        "containment empty-scope join must run at least once"
+    );
+}
+
+#[test]
+fn monitor_output_failure_force_stops_through_the_lease() {
+    let (local, backend) = super::watcher_host_with_backend(
+        "overflow",
+        2,
+        LocalProcessLimits::new(8, 1024, 64, 16, 1024),
+    );
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let owning_turn = watcher_owning_turn("turn-lease-overflow");
+    let watcher_id = block_on(watcher.accept_start(
+        runtime_turn("turn-lease-overflow"),
+        WatcherRequester::Model,
+        operation_data("overflow-operation"),
+    ))
+    .expect("overflow watcher starts")
+    .watcher_id()
+    .clone();
+
+    assert_eq!(
+        block_on(watcher.wait(owning_turn, watcher_id, WatcherWaitOptions::default(),))
+            .expect("overflow joins through lease"),
+        WatcherWaitRepresentation::Satisfied(WatcherTerminalCause::Failed)
+    );
+    let calls = backend.calls();
+    assert!(
+        calls.contains(&"lease.force_stop"),
+        "output failure must force-stop through the lease: {calls:?}"
+    );
+    assert!(
+        calls.contains(&"lease.prove_empty_and_join"),
+        "output failure must still prove containment empty: {calls:?}"
+    );
+}
+
+#[test]
+fn failed_containment_empty_join_blocks_joined_truth() {
+    let (local, backend) =
+        super::watcher_host_with_backend("exit-zero", 2, LocalProcessLimits::default());
+    backend.fail_prove_empty();
+    let watcher = local
+        .services()
+        .watcher()
+        .expect("local composition includes watcher");
+    let owning_turn = watcher_owning_turn("turn-empty-fail");
+    let watcher_id = block_on(watcher.accept_start(
+        runtime_turn("turn-empty-fail"),
+        WatcherRequester::Model,
+        operation_data("exit-zero-operation"),
+    ))
+    .expect("watcher starts under failing empty-join backend")
+    .watcher_id()
+    .clone();
+
+    let failure = block_on(watcher.wait(
+        owning_turn.clone(),
+        watcher_id.clone(),
+        WatcherWaitOptions::default(),
+    ))
+    .expect_err("joined truth requires containment empty-scope proof");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "fixture.containment.prove_empty_failed"
+    );
+    let snapshot = block_on(watcher.inspect(owning_turn, watcher_id))
+        .expect("failed join keeps the watcher inspectable");
+    assert_ne!(snapshot.phase(), WatcherLifecyclePhase::Joined);
+}

@@ -7,9 +7,12 @@ use swallowtail_runtime::{
     RuntimeFailure, RuntimeTurnId, ScopeId, WatcherFailure, WatcherFailureKind,
 };
 
-pub(super) fn cleanup_lease(lease: &Arc<dyn ProcessContainmentLease>) {
-    let _ = block_on(lease.force_stop());
-    let _ = block_on(lease.prove_empty_and_join());
+pub(super) fn cleanup_lease(
+    lease: &Arc<dyn ProcessContainmentLease>,
+) -> Result<(), RuntimeFailure> {
+    block_on(lease.force_stop())?;
+    block_on(lease.prove_empty_and_join())?;
+    Ok(())
 }
 
 pub(super) fn request_lease_stop(

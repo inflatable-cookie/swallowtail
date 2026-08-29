@@ -1,4 +1,5 @@
 use super::super::{JoinSignal, LocalWatcherHostService};
+use super::containment::TestContainmentBackend;
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
 use std::sync::Arc;
@@ -78,7 +79,7 @@ fn concurrent_waiters_are_all_woken_when_the_monitor_finishes() {
                 operation.clone(),
                 ProcessRequest::new(executable).with_arguments(["30".to_owned()]),
             )
-            .with_local_process_containment_probe()
+            .with_process_containment_factory(|host| Arc::new(TestContainmentBackend::new(host)))
             .build(),
     );
     let containment = process_host.process_containment().cloned();
@@ -175,7 +176,7 @@ fn panicking_monitor_wakes_wait_and_surfaces_join_failure() {
                 ProcessRequest::new(executable)
                     .with_arguments(["-c".to_owned(), "exit 0".to_owned()]),
             )
-            .with_local_process_containment_probe()
+            .with_process_containment_factory(|host| Arc::new(TestContainmentBackend::new(host)))
             .build(),
     );
     let task_service = Arc::new(PanicAfterTaskService {

@@ -19,6 +19,9 @@ use swallowtail_runtime::{
     SchemaRef, WorkingResourceRef,
 };
 
+type ProcessContainmentFactory =
+    Box<dyn FnOnce(Arc<LocalProcessHost>) -> Arc<dyn ProcessContainmentBackend> + Send>;
+
 type EnvironmentValues = Vec<(OsString, OsString)>;
 
 #[derive(Default)]
@@ -43,7 +46,7 @@ pub struct LocalProcessHostBuilder {
     pub(crate) approvals: LocalApprovals,
     pub(crate) watcher_capacity: usize,
     pub(crate) process_containment: Option<Arc<dyn ProcessContainmentBackend>>,
-    pub(crate) local_containment_probe: bool,
+    pub(crate) process_containment_factory: Option<ProcessContainmentFactory>,
 }
 
 impl LocalProcessHostBuilder {
@@ -148,17 +151,23 @@ impl LocalProcessHostBuilder {
     #[must_use]
     pub fn with_process_containment(mut self, backend: Arc<dyn ProcessContainmentBackend>) -> Self {
         self.process_containment = Some(backend);
-        self.local_containment_probe = false;
+        self.process_containment_factory = None;
         self
     }
 
-    /// Installs the local process-containment probe after the host is built.
+    /// Builds the host first, then installs a containment backend constructed
+    /// from that host.
     ///
-    /// The probe proves watcher registry and lifecycle contracts. It is not a
-    /// platform containment implementation.
+    /// Use this when the backend needs the completed local process host. The
+    /// factory must supply an exact Contract 059 backend; ordinary process
+    /// handles do not qualify merely by being wrapped.
     #[must_use]
-    pub fn with_local_process_containment_probe(mut self) -> Self {
-        self.local_containment_probe = true;
+    pub fn with_process_containment_factory<F>(mut self, factory: F) -> Self
+    where
+        F: FnOnce(Arc<LocalProcessHost>) -> Arc<dyn ProcessContainmentBackend> + Send + 'static,
+    {
+        self.process_containment = None;
+        self.process_containment_factory = Some(Box::new(factory));
         self
     }
 
@@ -172,7 +181,7 @@ impl LocalProcessHostBuilder {
     /// Builds the local host without composing a complete service registry.
     #[must_use]
     pub fn build(self) -> LocalProcessHost {
-        let install_probe = self.local_containment_probe && self.process_containment.is_none();
+        let factory = self.process_containment_factory;
         let mut host = LocalProcessHost {
             limits: self.limits,
             materialization_limits: self.materialization_limits,
@@ -186,10 +195,9 @@ impl LocalProcessHostBuilder {
             process_containment: self.process_containment,
             monotonic_origin: Instant::now(),
         };
-        if install_probe {
+        if let Some(factory) = factory {
             let shared = Arc::new(host.clone());
-            host.process_containment =
-                Some(Arc::new(crate::LocalProcessContainmentProbe::new(shared)));
+            host.process_containment = Some(factory(shared));
         }
         host
     }
@@ -223,7 +231,7 @@ impl LocalProcessHost {
             approvals: LocalApprovals::default(),
             watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
             process_containment: None,
-            local_containment_probe: false,
+            process_containment_factory: None,
         }
     }
 

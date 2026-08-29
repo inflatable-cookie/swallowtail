@@ -74,36 +74,50 @@ impl LocalWatcherHostService {
                 },
             );
         }
-        let turn_state = state
-            .active
-            .get_mut(&turn)
-            .expect("local watcher turn was inserted before acceptance");
-
-        let accepted = turn_state
-            .registry
-            .accept_start(requester, operation_data)
-            .map_err(registry_failure)?;
+        let accepted = {
+            let turn_state = state
+                .active
+                .get_mut(&turn)
+                .expect("local watcher turn was inserted before acceptance");
+            turn_state
+                .registry
+                .accept_start(requester, operation_data)
+                .map_err(registry_failure)?
+        };
         let watcher_id = accepted.watcher_id().clone();
         let started = match block_on(backend.start_contained(scope.clone(), request)) {
             Ok(started) => started,
             Err(error) => {
-                let _ = turn_state.registry.reject_start(&watcher_id);
+                if let Some(turn_state) = state.active.get_mut(&turn) {
+                    let _ = turn_state.registry.reject_start(&watcher_id);
+                }
                 state.remove_empty_turn(&turn);
                 return Err(error);
             }
         };
         let (process, lease) = started.into_parts();
-        if let Err(error) = turn_state.registry.mark_running(&watcher_id) {
-            cleanup_lease(&lease);
-            let _ = turn_state.registry.reject_start(&watcher_id);
-            state.remove_empty_turn(&turn);
-            return Err(registry_failure(error));
+        if let Err(error) = {
+            let turn_state = state
+                .active
+                .get_mut(&turn)
+                .expect("local watcher turn remains during start binding");
+            turn_state.registry.mark_running(&watcher_id)
+        } {
+            return self.rollback_unbound_start(
+                &mut state,
+                &turn,
+                &watcher_id,
+                process,
+                lease,
+                registry_failure(error),
+            );
         }
 
         let monitor_state = Arc::clone(&self.state);
         let monitor_turn = turn.clone();
         let monitor_id = watcher_id.clone();
         let monitor_process = Arc::clone(&process);
+        let monitor_lease = Arc::clone(&lease);
         let task = match self.task_service.spawn(
             scope,
             Box::pin(super::process::monitor_watcher(
@@ -111,16 +125,25 @@ impl LocalWatcherHostService {
                 monitor_turn,
                 monitor_id,
                 monitor_process,
+                monitor_lease,
             )),
         ) {
             Ok(task) => task,
             Err(error) => {
-                cleanup_lease(&lease);
-                let _ = turn_state.registry.reject_start(&watcher_id);
-                state.remove_empty_turn(&turn);
-                return Err(error);
+                return self.rollback_unbound_start(
+                    &mut state,
+                    &turn,
+                    &watcher_id,
+                    process,
+                    lease,
+                    error,
+                );
             }
         };
+        let turn_state = state
+            .active
+            .get_mut(&turn)
+            .expect("local watcher turn remains after monitor spawn");
         turn_state.entries.insert(
             watcher_id.clone(),
             Arc::new(LocalWatcherEntry {
@@ -137,6 +160,43 @@ impl LocalWatcherHostService {
             .registry
             .inspect(turn_state.registry.owning_turn(), &watcher_id)
             .map_err(registry_failure)
+    }
+
+    fn rollback_unbound_start(
+        &self,
+        state: &mut super::LocalWatcherState,
+        turn: &RuntimeTurnId,
+        watcher_id: &WatcherId,
+        process: Arc<dyn swallowtail_runtime::ProcessHandle>,
+        lease: Arc<dyn crate::containment::ProcessContainmentLease>,
+        original_error: RuntimeFailure,
+    ) -> Result<WatcherSnapshot, RuntimeFailure> {
+        match cleanup_lease(&lease) {
+            Ok(()) => {
+                if let Some(turn_state) = state.active.get_mut(turn) {
+                    let _ = turn_state.registry.reject_start(watcher_id);
+                }
+                state.remove_empty_turn(turn);
+                Err(original_error)
+            }
+            Err(cleanup_error) => {
+                let turn_state = state
+                    .active
+                    .get_mut(turn)
+                    .expect("watcher turn remains while containment cleanup failed");
+                let entry = Arc::new(LocalWatcherEntry {
+                    process,
+                    lease,
+                    task: Mutex::new(None),
+                    join_lock: Mutex::new(()),
+                    joined: std::sync::atomic::AtomicBool::new(false),
+                    join_error: Mutex::new(Some(cleanup_error.clone())),
+                    join_signal: super::JoinSignal::default(),
+                });
+                turn_state.entries.insert(watcher_id.clone(), entry);
+                Err(cleanup_error)
+            }
+        }
     }
 
     pub(super) fn inspect_now(

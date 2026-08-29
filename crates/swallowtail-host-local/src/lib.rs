@@ -35,10 +35,7 @@ mod working_resource;
 mod working_resource_io;
 
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
-pub use containment::{
-    ContainedProcessStart, LocalProcessContainmentProbe, ProcessContainmentBackend,
-    ProcessContainmentLease,
-};
+pub use containment::{ContainedProcessStart, ProcessContainmentBackend, ProcessContainmentLease};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};
 pub use limits::{LocalMaterializationLimits, LocalProcessLimits};

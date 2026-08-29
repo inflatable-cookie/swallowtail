@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-28
+Updated: 2026-08-30
 
 ## Non-Negotiables
 
@@ -29,6 +29,10 @@ Updated: 2026-08-28
   use host-approved ordinary process execution and supervision; they are not a
   sandbox, daemon manager, or promise to contain a process that deliberately
   detaches from the host-owned process tree.
+- Closed watcher bridges: a provider bridge is operation-private, authenticated,
+  exact-scope, admission-frozen before completion, and joined on every terminal
+  path. It never becomes a generic MCP server, public HTTP service, ambient
+  configuration mutation, consumer-tool transport, or container requirement.
 
 ## Anti-Patterns
 

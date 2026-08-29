@@ -3,6 +3,7 @@
 Status: planned
 Owner: Tom
 Created: 2026-08-28
+Updated: 2026-08-30
 Milestone: `../003-operation-scoped-watcher-proof.md`
 Depends on: card 010
 
@@ -17,6 +18,11 @@ Prove multiple bounded watchers, explicit wait, both stop paths, completion
 races, hook rejection, cancellation, deadline, provider failure, summary
 redaction, joined cleanup, and unchanged omission. Update shared route and
 feature documentation only after the proof passes.
+
+This card includes the exact live Claude same-turn acceptance turn. It remains
+planned until card 010 lands and the operator separately authorizes provider
+access, credentials, and any paid work. Provider-neutral Contract 060 fixtures
+do not substitute for that route proof.
 
 ## Acceptance Criteria
 
@@ -35,4 +41,5 @@ feature documentation only after the proof passes.
 
 ## Auto-Continuation
 
-No. Remains planned until card 010 lands.
+No. Remains planned until card 010 lands and live provider work is explicitly
+authorized.

@@ -1,9 +1,9 @@
 # 260 Claude Code Watcher Bridge Transport Evidence
 
-Status: complete; evidence stop
+Status: complete; boundary promoted
 Owner: Tom
 Created: 2026-08-29
-Updated: 2026-08-29
+Updated: 2026-08-30
 Card: g05.003 / 015
 Depends on: Research 257; completed cards 009 and 014; Contracts 010, 041, and 059
 
@@ -17,7 +17,9 @@ authorization, and joined cleanup?
 ## Decision
 
 No qualifying bridge exists in the current Swallowtail runtime. Research 260
-closes as an evidence stop. Card 010 remains planned and must not start.
+closed its evidence lane as a stop. Card 010 remains planned and must not start
+until the provider-neutral bridge core, current provider evidence, and live
+same-turn gate close.
 
 Claude Code 2.1.251 exposes the provider-side ingredients from Research 257:
 private `--mcp-config`, `--strict-mcp-config`, `--settings`, `--add-dir`,
@@ -31,6 +33,20 @@ Claude launches the local server from its command and arguments; the current
 host has no operation-private IPC lease or provider-to-existing-process handoff.
 SSE and WebSocket do not remove that listener boundary. `claude mcp serve` is
 the reverse direction: it makes Claude Code the MCP server for another client.
+
+## Promotion
+
+On 2026-08-30 the operator selected the minimal HTTP candidate for promotion.
+[Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md) now
+owns the provider-neutral operation bridge: closed reserved watcher MCP,
+operation-private bearer authority, exact host/operation/turn correlation, a
+completion barrier, and joined listener and private-material cleanup.
+
+This promotion resolves the product and contract decision only. It does not
+change the current-runtime evidence above, qualify a Claude version, authorize
+a live provider turn, or advertise watcher support. g05.003 card 016 owns the
+provider-neutral host bridge. Cards 010-011 remain later Claude binding and
+acceptance work.
 
 ## Current provider evidence
 
@@ -128,7 +144,7 @@ same-turn proof and no host transport.
 
 | Candidate | Provider owner | Required Swallowtail owner | Correlation and authorization | Cleanup | Disposition |
 | --- | --- | --- | --- | --- | --- |
-| HTTP MCP, with Stop `mcp_tool` or HTTP hook | Claude opens a configured HTTP connection and sends MCP or hook requests | A host-bound listener plus a bridge task that dispatches only the reserved watcher family into the turn's `WatcherHostService` | An operation-private route/token must bind to the exact execution host, runtime turn, and operation; foreign, stale, reused, post-terminal, and malformed calls must fail closed | Stop new calls, finish or cancel the watcher gate, stop and join watcher work, close/join bridge task, release private material, then finish provider/process cleanup | Future candidate only; current host has no listener or bridge contract |
+| HTTP MCP, with Stop `mcp_tool` or HTTP hook | Claude opens a configured HTTP connection and sends MCP or hook requests | A host-bound listener plus a bridge task that dispatches only the reserved watcher family into the turn's `WatcherHostService` | An operation-private route/token must bind to the exact execution host, runtime turn, and operation; foreign, stale, reused, post-terminal, and malformed calls must fail closed | Stop new calls, finish or cancel the watcher gate, stop and join watcher work, close/join bridge task, release private material, then finish provider/process cleanup | Selected future boundary under Contract 060; current host still has no listener or bridge implementation |
 | Stdio MCP | Claude launches the configured command and owns the stdio connection | A host IPC lease and a host-approved helper handoff would be required; passing a command alone makes the helper provider-launched | Helper identity, operation, host, and turn would need private authenticated IPC; raw command/PID authority is not sufficient | Provider-launched helper ownership and joined cleanup are not represented; a host-created process cannot be handed into Claude's MCP stdio channel | Rejected by the card stop condition |
 | SSE MCP | Claude opens the remote SSE connection | Same host listener/bridge problem as HTTP, with deprecated provider transport | Same exact scope, token, and turn requirements | Same listener and watcher join requirements | Not selected; deprecated and no existing host listener |
 | WebSocket MCP | Claude opens the configured `ws` connection | Same host listener/bridge problem; current CLI does not add `ws` with `--transport` | Header-only auth still needs exact operation/turn validation | Same listener and watcher join requirements | Not selected; no current host binding |
@@ -136,9 +152,9 @@ same-turn proof and no host transport.
 
 ### HTTP candidate delta
 
-HTTP is the smallest future delta, but it is not an implementation decision
-made by this lane. A later planning decision would need to admit a distinct
-operation-scoped host bridge service with at least:
+HTTP is the smallest future delta. The evidence lane made no implementation
+decision; the later 2026-08-30 promotion admitted a distinct operation-scoped
+host bridge service with at least:
 
 1. host-owned loopback bind, close, and joined-task lifecycle; endpoint and
    authentication material that is operation-private and absent from durable
@@ -151,9 +167,9 @@ operation-scoped host bridge service with at least:
    cancellation, deadline, provider failure, hook failure, transport failure,
    and normal completion.
 
-This is a new contract/architecture boundary, not an extension that can be
-inferred from `ServingEndpointService`, `NetworkPolicyService`, or the
-sign-in loopback port. No contract or architecture promotion is made here.
+This is a distinct contract boundary, not an extension inferred from
+`ServingEndpointService`, `NetworkPolicyService`, or the sign-in loopback
+port. Contract 060 now owns it. The current runtime remains unchanged.
 
 ## Host ownership audit
 
@@ -198,7 +214,7 @@ request from Claude Code through either admitted MCP transport.
 | Cancellation, failure, release, and joined cleanup | Existing watcher/process cleanup is host-owned; bridge/helper cleanup is not represented |
 | Exact empty strict-MCP omission | Preserved; current production command remains unchanged and no watcher material is added |
 | Live same-turn re-entry | Not run; no operator authorization for provider work; remains a named blocker |
-| Card 010 ready | No. It remains planned behind a positive transport decision, current-version proof, and live same-turn acceptance |
+| Card 010 ready | No. Contract 060 closes the transport decision, but card 016 implementation, current-version proof, and live same-turn acceptance remain |
 
 ## Omission
 
@@ -225,8 +241,8 @@ and the exact omission fixture in the adapter tests.
   background work, or subagents are Contract 059 watchers.
 - No live provider turn, same-turn Stop re-entry, listener bind, helper, login,
   credential use, or production route change was performed.
-- No contract, architecture, route, feature, compatibility, or release claim
-  is promoted by this record.
+- Contract 060 promotes only the future provider-neutral bridge boundary. No
+  route, feature, compatibility, or release claim is promoted by this record.
 
 ## References
 
@@ -234,6 +250,7 @@ and the exact omission fixture in the adapter tests.
 - [Contract 041 — Input Callback and Provider Tool Admission](../contracts/041-input-callback-and-provider-tool-admission.md)
 - [Contract 044 — Observable Agent Activity and Disclosure](../contracts/044-observable-agent-activity-and-disclosure.md)
 - [Contract 059 — Operation-Scoped Process Watchers](../contracts/059-operation-scoped-process-watchers.md)
+- [Contract 060 — Operation-Scoped Watcher HTTP Bridge](../contracts/060-operation-scoped-watcher-http-bridge.md)
 - [Research 257 — Claude Code Watcher Seam Evidence](257-claude-code-watcher-seam-evidence.md)
 - [g05.003 card 015](../roadmaps/g05/batch-cards/015-claude-code-watcher-bridge-transport-evidence.md)
 - [g05.003 card 010](../roadmaps/g05/batch-cards/010-claude-code-watcher-bridge.md)

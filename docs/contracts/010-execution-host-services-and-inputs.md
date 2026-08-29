@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-30
 
 ## Purpose
 
@@ -289,6 +289,17 @@ publishing watcher identity, retains stop authority, and joins process and
 supervision work before turn completion. This is lifecycle ownership, not a
 security-containment claim. Deliberately detached or daemonized work is outside
 the watcher contract and must not be approved as a watcher operation.
+
+Contract 060 adds a separate optional stable watcher-bridge service kind. It
+opens one operation-scoped, provider-neutral listener lease bound to the exact
+execution host, runtime operation, turn, and registered watcher service.
+Registration binds nothing. Endpoint and authentication material are
+driver-only, non-serializable, and redacted. The bridge carries only the
+bounded reserved watcher protocol and completion query, freezes admission
+before successful completion, and joins listener and dispatch work before
+releasing private material. It cannot reuse the sign-in loopback callback,
+network service, serving-endpoint publication, or watcher registration as
+listener authority.
 
 No host service performs route fallback. Consumers explicitly authorize any
 change of execution layer, credential mechanism, entitlement, endpoint,

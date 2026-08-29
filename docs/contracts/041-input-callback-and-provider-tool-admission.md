@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-07-28
-Updated: 2026-07-31
+Updated: 2026-08-30
 
 ## Purpose
 
@@ -75,9 +75,10 @@ Three mechanisms remain distinct:
 - MCP or harness tools — an agent discovers tools through separately
   configured protocol servers
 
-Only native client tools satisfy `ToolCalls` directly. MCP may qualify through
-a later operation-scoped bridge contract. Ambient or user configuration does
-not become a portable callback path.
+Only native client tools satisfy `ToolCalls` directly. Contract 060 admits one
+closed operation-scoped HTTP/MCP bridge only for Contract 059's reserved
+watcher family and completion query. It does not make arbitrary MCP a portable
+callback path. Ambient or user configuration does not become one either.
 
 Contract 012 governs inline harness callbacks. Contract 030 governs direct
 model continuation: each tool result is an explicit consumer action that
@@ -97,7 +98,9 @@ because both appear in one response.
 Contract 059 reserves one separately capability-gated watcher tool family.
 Those calls are serviced only by the registered host watcher port and remain
 distinct from native consumer tools, provider-owned tools, and arbitrary MCP
-tools. Naming an ordinary tool like a watcher does not grant watcher authority.
+tools. Contract 060 may transport that family only through an authenticated,
+exact-scope bridge into the same port. Naming an ordinary tool like a watcher
+does not grant watcher authority.
 
 ## Approval And Question Requests
 

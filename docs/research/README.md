@@ -11,7 +11,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 ### Harness Skills And Watchers
 
 - [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite
-- [260 Claude Code Watcher Bridge Transport Evidence](./260-claude-code-watcher-bridge-transport.md) — promoted evidence stop through g05.003 card 015; HTTP needs a new host-owned listener/contract, stdio has no admitted host IPC handoff, and card 010 remains planned
+- [260 Claude Code Watcher Bridge Transport Evidence](./260-claude-code-watcher-bridge-transport.md) — evidence stop promoted into Contract 060; card 016 owns the provider-neutral HTTP bridge while Claude cards 010-011 remain planned
 
 ### Foundation And Runtime
 

@@ -2,8 +2,8 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-29
-Research: 255, 259
+Updated: 2026-08-30
+Research: 255, 259, 260
 
 ## Purpose
 
@@ -116,6 +116,12 @@ and 041. Swallowtail transports and services only this closed lifecycle through
 the registered watcher host port. All other tool names and execution remain
 consumer- or provider-owned.
 
+Contract 060 governs a separately registered operation-scoped HTTP bridge when
+an exact harness needs MCP to reach this port. The bridge transports but does
+not own watcher state or broaden watcher operations. Its endpoint,
+authentication, configuration, correlation, terminal barrier, and joined
+listener cleanup remain distinct from this registry.
+
 ## Injected Watcher Skill
 
 An opted-in route delivers one versioned, bounded Swallowtail-owned watcher
@@ -222,7 +228,8 @@ Provider-neutral fixtures must prove:
 - no raw process content in events, diagnostics, or default formatting
 
 Route fixtures additionally prove exact instruction delivery, reserved tool
-admission, completion interception, version behavior, and unchanged omission.
+admission, bridge authentication and correlation when Contract 060 applies,
+completion interception, version behavior, and unchanged omission.
 
 ## Acceptance
 

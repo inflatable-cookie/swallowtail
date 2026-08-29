@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-30 g05.003 Watcher HTTP Bridge Promotion](./2026-08-30-g05-003-watcher-http-bridge-promotion.md) — Contract 060 promoted; provider-neutral card 016 ready; Claude cards remain gated
 - [2026-08-29 g05.003 Claude Watcher Bridge Transport Evidence](./2026-08-29-g05-003-claude-watcher-bridge-transport-evidence.md) — merged through PR 119 at `c36e11ad`; card 015 complete; Research 260 evidence stop; card 010 remains planned
 - [2026-08-29 g05.003 Claude Watcher Bridge Readiness](./2026-08-29-g05-003-claude-watcher-bridge-readiness.md) — card 010 remains planned; card 015 and Research 260 compiled
 - [2026-08-29 g05.003 Host-Process Watcher Supervision](./2026-08-29-g05-003-host-process-watcher-supervision.md) — complete; card 014; default host-process watcher join

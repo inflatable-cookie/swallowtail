@@ -263,6 +263,12 @@ contract file owns the exact rules.
   explicit wait, deterministic stop and join, and a same-turn completion gate.
   Provider task activity, arbitrary PIDs, raw logs, detached work, and
   prompt-only enforcement remain out.
+- **060** defines the closed host-owned HTTP bridge from one qualified
+  harness's reserved watcher calls to the exact turn-owned registry. Endpoint,
+  bearer capability, configuration, and paths remain operation-private;
+  admission freezes before completion and listener, dispatch, watcher, and
+  private-material cleanup all join. Generic MCP, public serving, sign-in,
+  consumer tools, and containers remain out.
 
 ## Amendments
 

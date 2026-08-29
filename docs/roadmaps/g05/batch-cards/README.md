@@ -3,13 +3,13 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on positive Research 260 and card 015
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on card 016 and current Claude/live gates
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [016-operation-scoped-watcher-http-bridge-core.md](./016-operation-scoped-watcher-http-bridge-core.md) — ready; provider-neutral Contract 060 host bridge only
 
 ## Blocked
 

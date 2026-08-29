@@ -1,14 +1,14 @@
 # g05.003 Operation-Scoped Watcher Proof
 
-Status: stopped after evidence
+Status: ready
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
 Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
-Contract refs: 009, 010, 012, 013, 023, 041, 044, 059
-Research: 257, 259 promoted; 260 complete with evidence stop; hard-containment gate superseded
-Planning state: cards 007-009 and 014-015 complete; cards 010-011 remain planned behind a new bridge decision
+Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
+Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
+Planning state: cards 007-009 and 014-015 complete; card 016 ready; cards 010-011 remain planned behind implementation and provider gates
 
 ## Problem
 
@@ -54,18 +54,22 @@ owns the pre-1.0 repair.
 - [x] execute card 015 to settle the host-owned MCP/IPC bridge,
       current-version segment, and live same-turn acceptance gate
 
-### Batch 3.5 — Conditional Claude Proof
+### Batch 3.5 — Provider-Neutral HTTP Bridge Core
 
-- [ ] execute card 010 only after Research 257 admits the provider mechanism,
-      cards 009 and 014 close host execution, and Research 260 closes the
-      provider-to-host transport
-- [ ] execute card 011 for fail-closed same-turn acceptance and docs
+- [ ] execute ready card 016 for the Contract 060 host service, private
+      authority, closed HTTP/MCP surface, terminal barrier, and joined cleanup
+- [ ] return one PR; do not continue into Claude wiring
 
-Research 260 closes this milestone as an evidence stop. HTTP is the smallest
-plausible future carrier, but it requires a new operation-scoped host bridge
-contract. No current Claude version segment or live same-turn proof is
-qualified. Do not start cards 010-011 without an operator planning decision,
-contract promotion, current-version evidence, and authorized live acceptance.
+### Batch 3.6 — Conditional Claude Proof
+
+- [ ] execute card 010 only after card 016 lands and the current Claude segment
+      and separately authorized live same-turn gate close
+- [ ] execute card 011 for full fail-closed route acceptance and docs
+
+The operator promoted HTTP as the smallest bridge on 2026-08-30. Contract 060
+owns the boundary. No implementation, current Claude version segment, or live
+same-turn proof is qualified yet. Card 016 is ready. Do not start cards 010-011
+until the bridge lands and their current-version and live-provider gates close.
 
 ## Acceptance Criteria
 
@@ -95,9 +99,12 @@ contract promotion, current-version evidence, and authorized live acceptance.
 - [011 Watcher Acceptance And Consumer Projection](batch-cards/011-watcher-acceptance-and-consumer-projection.md)
 - [014 Host-Process Watcher Supervision](batch-cards/014-host-process-watcher-supervision.md)
 - [015 Claude Code Watcher Bridge Transport Evidence](batch-cards/015-claude-code-watcher-bridge-transport-evidence.md)
+- [016 Operation-Scoped Watcher HTTP Bridge Core](batch-cards/016-operation-scoped-watcher-http-bridge-core.md)
 
 ## References
 
 - [Contract 059 Operation-Scoped Process Watchers](../../contracts/059-operation-scoped-process-watchers.md)
+- [Contract 060 Operation-Scoped Watcher HTTP Bridge](../../contracts/060-operation-scoped-watcher-http-bridge.md)
 - [Research 255 Production Harness Census](../../research/255-production-harness-skill-and-watcher-surface-census.md)
 - [Research 257 Claude Code Watcher Seam](../../research/257-claude-code-watcher-seam-evidence.md)
+- [Research 260 Claude Code Watcher Bridge Transport](../../research/260-claude-code-watcher-bridge-transport.md)

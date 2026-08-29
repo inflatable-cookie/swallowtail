@@ -5,6 +5,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
+- Friction: PR 117 added four warning-level files above the configured size
+  threshold: `watcher/accept.rs`, `process.rs`, `watcher_service/policy.rs`, and
+  `watcher.rs`. Effigy doctor rose from 381 findings (334 warnings / 47 errors)
+  to 385 (338 warnings / 47 errors).
+- Impact: later g05 lanes inherit noisier structural-health evidence even
+  though the error-level baseline is unchanged.
+- Fix: split watcher acceptance/lookup, local process construction, entry state,
+  and policy proofs into focused modules without reducing lifecycle coverage.
+- Surface: `swallowtail-host-local` process and watcher registry implementation
+  and policy tests; g05.003 card 009 closeout.
+
 ### [ ] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
 - Friction: `docs.x.ai/developers/...` HTML bodies are 0.4–1.1 MiB Next.js
   shells with `x-nextjs-cache`. Markdown exports exist by appending `.md` and

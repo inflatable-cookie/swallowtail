@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-010 and 014-018 complete; card 011 remains behind the separate live gate
+Planning state: cards 007-010 and 014-018 complete; card 011 has an explicit proof oracle and remains behind the separate live gate
 
 ## Problem
 
@@ -79,7 +79,9 @@ base-route currentness prerequisite through official `2.1.251` without mapping
 watcher behavior. The post-merge reassessment admits card 010 only for exact
 `2.1.251` credential-free binding and deterministic provider-free fixtures.
 Card 011 owns separately authorized live acceptance and the first watcher
-claim. Do not infer a watcher range or start provider work from card 010.
+claim. Its post-card-010 reassessment now fixes the one-turn authority envelope,
+smallest same-turn counterexample, and stop proof. Do not infer a watcher range
+or start provider work from card 010 or a bare continuation.
 
 ## Acceptance Criteria
 

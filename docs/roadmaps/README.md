@@ -15,11 +15,12 @@ shape.
 
 ## Next Task
 
-Reassess g05.003 card 011 after card 010's exact `2.1.251` credential-free
-binding. Do not start the live same-turn proof, advertise watcher support, or
-consume provider access, credentials, or paid work until the operator
-explicitly authorizes that turn. Skill cards 005-006 and the consumer
-route-feature projection triage stay out of this lane.
+Reassess g05.003 card 011's external-use gate. Its exact one-turn authority
+envelope and same-turn review oracle are now explicit, but the card stays
+planned until the operator authorizes existing local Claude access and any
+normal paid-provider work. A bare continuation is not that authorization. If
+the live turn remains parked, leave card 011 planned and choose whether to
+promote the consumer route-feature projection census next.
 
 ## Standing Lanes
 

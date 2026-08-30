@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Operator decides whether to authorize one fresh exact Claude Code `2.1.251`
-watcher acceptance turn through the repaired Stop-reentry oracle. Until that
-explicit authorization, keep card 011 and g05.003 stopped. Do not run the live
-selector or publish a watcher claim.
+Dispatch g05.007 card 020 through its committed manual worker handoff. The
+worker may run exactly one Claude Code `2.1.251` turn with exact
+`claude-haiku-4-5` after the named pre-contact gates pass. No fallback, rerun,
+or orchestrator-side live selector is authorized.
 
 ## Standing Lanes
 

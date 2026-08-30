@@ -26,6 +26,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   or add a repository-owned ignored/generated contract for the output.
 - Surface: Effigy startup or validation skill installation; `.agents/skills/`.
 
+### [ ] Route-matrix docs validation leaves Python bytecode — 2026-08-30
+- Friction: `effigy qa:docs` imports the route inventory checker and leaves
+  `scripts/provider_route_matrix/__pycache__/` untracked.
+- Impact: credential-free docs validation dirties a clean planning checkout
+  immediately before its commit and push gate.
+- Fix: disable bytecode for the selector, direct its cache outside the source
+  tree, or ignore the generated directory explicitly.
+- Surface: `qa:consumer-docs`, `qa:routes`, and route-inventory imports.
+
 ### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
 - Friction: the card 011 Claude watcher probe removes its temporary workspace
   only after success assertions. Its expected live evidence failure panicked

@@ -3,9 +3,11 @@
 //! Omission keeps the current empty strict MCP command. Opt-in opens the
 //! existing Contract 060 bridge and materializes operation-private files.
 
+mod activity;
 mod binding;
 mod material;
 
+pub(crate) use activity::WatcherActivityFeed;
 pub(crate) use binding::{WatcherBinding, WatcherCommandFiles, open_binding};
 
 use swallowtail_core::InterfaceVersionBinding;

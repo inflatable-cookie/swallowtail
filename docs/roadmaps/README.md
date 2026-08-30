@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-Implement g05.003 card 011 through its committed worker handoff. The one
-authorized live turn uses exact Claude Code `2.1.251`, exact
-`claude-haiku-4-5`, a 90-second deadline, and the existing local provider state.
-No model fallback, second provider attempt, consumer route-feature projection,
-or next card is authorized.
+Reassess g05.003 after the consumed live Haiku watcher attempt. Card 011
+stopped: the host registry never observed a turn-owned watcher, so the first
+route claim stays withheld. Fresh operator authorization is required before
+another provider turn. Do not promote the consumer route-feature projection
+note.
 
 ## Standing Lanes
 

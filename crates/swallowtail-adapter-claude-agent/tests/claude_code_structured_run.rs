@@ -12,13 +12,15 @@ use swallowtail_adapter_claude_agent::{
     ClaudeCodePreparedRun, ClaudeCodeRunProfileInput, prepare_claude_code_headless,
 };
 use swallowtail_core::{
-    Capability, CapabilityConstraint, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
-    ModelId, ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, ReasoningMode,
+    ActivityKindClass, Capability, CapabilityConstraint, HarnessConfigurationPosture,
+    HarnessIsolation, HarnessMode, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, ReasoningMode, WatcherId, WatcherOwningTurn,
 };
 use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, Deadline, MonotonicInstant, OperationContent,
-    ProcessExit, ProviderObservation, ProviderRetentionPolicy, RequestId, RuntimeEvent,
-    RuntimeEventKind, StructuredRunDriver, TerminalOutcome, TerminalStatus, WorkingResourceRef,
+    ActivityKind, ActivityLifecyclePhase, CancellationAcknowledgement, CleanupOutcome, Deadline,
+    MonotonicInstant, OperationContent, ProcessExit, ProviderObservation, ProviderRetentionPolicy,
+    RequestId, RuntimeEvent, RuntimeEventKind, StructuredRunDriver, TerminalOutcome,
+    TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,

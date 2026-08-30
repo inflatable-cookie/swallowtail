@@ -65,6 +65,10 @@ impl ClaudeCodeEventParser {
         Ok(events)
     }
 
+    pub(crate) fn activity_event(&mut self, observation: ActivityObservation) -> RuntimeEvent {
+        self.event(RuntimeEventKind::Activity(observation))
+    }
+
     pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {

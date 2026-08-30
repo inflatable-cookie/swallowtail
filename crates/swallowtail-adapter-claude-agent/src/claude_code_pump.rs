@@ -1,6 +1,6 @@
 use crate::claude_code_events::ClaudeCodeEventParser;
 use crate::claude_code_handle::ClaudeCodeCancellation;
-use crate::claude_code_watcher::WatcherBinding;
+use crate::claude_code_watcher::{WatcherActivityFeed, WatcherBinding};
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
@@ -8,7 +8,7 @@ use swallowtail_core::{ModelId, SafeDiagnostic, WatcherCleanupCause};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
     HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus,
 };
 
 const ROUTE: &str = "claude-code.headless";
@@ -17,6 +17,7 @@ const ROUTE: &str = "claude-code.headless";
 pub(crate) struct PumpHost {
     pub(crate) services: HostServices,
     pub(crate) watcher_binding: Option<WatcherBinding>,
+    pub(crate) watcher_turn: Option<RuntimeTurnId>,
 }
 
 pub(crate) async fn pump(
@@ -30,6 +31,7 @@ pub(crate) async fn pump(
 ) -> TerminalOutcome {
     let mut parser = ClaudeCodeEventParser::new(model, operation_id);
     let mut deadline = Some(deadline);
+    let mut watcher_feed = host.watcher_turn.take().map(WatcherActivityFeed::new);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
             NextOutput::Deadline => {
@@ -45,7 +47,15 @@ pub(crate) async fn pump(
             {
                 match parser.push(chunk.bytes()) {
                     Ok(parsed) => {
-                        if send_all(&events, parsed).is_err() {
+                        if send_all(&events, parsed).is_err()
+                            || emit_watcher_activity(
+                                &mut watcher_feed,
+                                &mut parser,
+                                &events,
+                                &host.services,
+                            )
+                            .is_err()
+                        {
                             let cleanup = force_cleanup(process.as_ref()).await;
                             return finish_with_watchers(
                                 event_delivery_failed(cleanup),
@@ -85,6 +95,13 @@ pub(crate) async fn pump(
         }
     }
     let exit = process.wait().await;
+    if emit_watcher_activity(&mut watcher_feed, &mut parser, &events, &host.services).is_err() {
+        return finish_with_watchers(
+            event_delivery_failed(cleanup_from_wait(&exit)),
+            host.watcher_binding.take(),
+        )
+        .await;
+    }
     if cancellation.is_requested() {
         return finish_with_watchers(
             TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit)),
@@ -243,6 +260,21 @@ fn send_all(
 ) -> Result<(), RuntimeFailure> {
     for event in events {
         sender.send(event)?;
+    }
+    Ok(())
+}
+
+fn emit_watcher_activity(
+    feed: &mut Option<WatcherActivityFeed>,
+    parser: &mut ClaudeCodeEventParser,
+    events: &RuntimeEventSender,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    let Some(feed) = feed.as_mut() else {
+        return Ok(());
+    };
+    for observation in feed.poll(services)? {
+        events.send(parser.activity_event(observation))?;
     }
     Ok(())
 }

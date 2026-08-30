@@ -40,3 +40,8 @@ workspace = true
 name = "live_response_only_probe"
 path = "tests/live_response_only_probe.rs"
 required-features = ["live-probes"]
+
+[[test]]
+name = "live_watcher_probe"
+path = "tests/live_watcher_probe.rs"
+required-features = ["live-probes"]

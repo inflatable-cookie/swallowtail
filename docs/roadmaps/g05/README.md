@@ -29,13 +29,13 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 010 landed the exact `2.1.251` credential-free binding; card 011 is authorized for one exact Haiku live turn
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — stopped after live evidence; card 011's one Haiku turn did not prove same-turn watcher ordering
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has five numbered roadmaps: three completed milestones including standing
-currentness at 005, honest evidence stops at 002, and the ready watcher
-milestone at 003.
+g05 has five numbered roadmaps: 3 completed milestones including standing
+currentness at 005, honest evidence stops at 002 and 003, and no ready
+milestones.
 
 ## Current Boundary
 
@@ -58,10 +58,9 @@ could not depend on a live proof owned by later card 011. g05.005 cards 017-018
 closed Research 261 and raised both Claude Code axes through official
 `2.1.251`. Card 010 bound exact `2.1.251` with operation-private MCP, settings,
 skill, Stop continuation, and deterministic provider-free fixtures. It does
-not admit a watcher range or support claim. Card 011 now has an exact one-turn
-authority envelope and same-turn review oracle. The operator authorized that
-one live attempt on 2026-08-30 and selected exact `claude-haiku-4-5`; no
-provider turn has run yet. Card 011 alone owns the first route claim.
+not admit a watcher range or support claim. Card 011 consumed its one authorized exact `claude-haiku-4-5` turn on
+2026-08-30. The host registry never observed a turn-owned watcher, so the
+review oracle is unproved and the first route claim stays withheld.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -72,6 +71,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 010 landed the exact `2.1.251` binding; card 011 has one authorized exact Haiku live turn
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; card 011 live Haiku turn did not prove same-turn ordering
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

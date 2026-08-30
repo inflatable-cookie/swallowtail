@@ -187,14 +187,15 @@ impl ClaudeCodeHeadlessDriver {
             )
         })?;
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        let watcher_binding = if self.watchers {
+        let watcher_turn = if self.watchers {
+            Some(watcher_turn(&request)?)
+        } else {
+            None
+        };
+        let watcher_binding = if let Some(turn) = watcher_turn.as_ref() {
             Some(
-                crate::claude_code_watcher::open_binding(
-                    &services,
-                    scope.clone(),
-                    watcher_turn(&request)?,
-                )
-                .await?,
+                crate::claude_code_watcher::open_binding(&services, scope.clone(), turn.clone())
+                    .await?,
             )
         } else {
             None
@@ -256,6 +257,7 @@ impl ClaudeCodeHeadlessDriver {
                         PumpHost {
                             services,
                             watcher_binding,
+                            watcher_turn,
                         },
                     )
                     .await;

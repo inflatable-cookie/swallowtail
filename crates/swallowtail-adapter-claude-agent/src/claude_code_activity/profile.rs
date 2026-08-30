@@ -9,6 +9,7 @@ use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
 pub(crate) fn activity_profile(
     prepared: &ClaudeCodePreparedIntegration,
+    watchers: bool,
 ) -> Result<ObservableActivityProfile, PreparationFailure> {
     let behavior_revision = match prepared.observation().compatibility() {
         InstalledExecutableCompatibility::Qualified(assessment) => {
@@ -24,31 +25,40 @@ pub(crate) fn activity_profile(
             ));
         }
     };
+    let mut kinds = vec![
+        kind(
+            ActivityKindClass::AssistantMessage,
+            ActivityLifecycleFidelity::CompletionOnly,
+            [ActivityContentStream::FinalAnswerText],
+            ActivityDisclosure::ProviderDisplayContent,
+        )?,
+        kind(
+            ActivityKindClass::ProviderOwnedTool,
+            ActivityLifecycleFidelity::CompletionOnly,
+            [],
+            ActivityDisclosure::ProviderDisplayContent,
+        )?,
+        kind(
+            ActivityKindClass::Unknown,
+            ActivityLifecycleFidelity::CompletionOnly,
+            [],
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        )?,
+    ];
+    if watchers {
+        kinds.push(kind(
+            ActivityKindClass::HostWatcher,
+            ActivityLifecycleFidelity::CompletionOnly,
+            [],
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        )?);
+    }
     ObservableActivityProfile::available(
         [ActivityInterfaceBasis::new(
             prepared.observation().version().axis().clone(),
             behavior_revision,
         )],
-        [
-            kind(
-                ActivityKindClass::AssistantMessage,
-                ActivityLifecycleFidelity::CompletionOnly,
-                [ActivityContentStream::FinalAnswerText],
-                ActivityDisclosure::ProviderDisplayContent,
-            )?,
-            kind(
-                ActivityKindClass::ProviderOwnedTool,
-                ActivityLifecycleFidelity::CompletionOnly,
-                [],
-                ActivityDisclosure::ProviderDisplayContent,
-            )?,
-            kind(
-                ActivityKindClass::Unknown,
-                ActivityLifecycleFidelity::CompletionOnly,
-                [],
-                ActivityDisclosure::IdentityAndLifecycleOnly,
-            )?,
-        ],
+        kinds,
         ActivityUnknownEventPosture::PreserveNamespaced,
     )
     .map_err(|_| {

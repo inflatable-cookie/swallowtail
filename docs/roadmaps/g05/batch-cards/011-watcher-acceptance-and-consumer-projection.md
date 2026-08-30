@@ -1,6 +1,6 @@
 # 011 Watcher Acceptance And Consumer Projection
 
-Status: ready; one authorized live turn
+Status: complete; live evidence stop after one authorized Haiku turn
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
@@ -129,6 +129,6 @@ provider session, and the 90-second deadline are this probe's cost bounds.
 
 ## Auto-Continuation
 
-No. Return one reviewable PR after an authorized live proof, or one sanitized
-stop report after the single live attempt fails. The worker never retries live
-provider work or starts another card automatically.
+No. The authorized live turn ran once. Host registry never observed a
+turn-owned watcher, so the review oracle is unproved. Fresh operator
+authorization is required before another provider session.

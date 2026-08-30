@@ -41,13 +41,20 @@ pub fn host_services(
 
 #[allow(dead_code)]
 pub fn local_watcher_host(host: ExecutionHostId) -> LocalHostServices {
-    let executable = ExecutableRef::new("watcher.sleep").expect("executable is valid");
-    let operation =
+    let sleep = ExecutableRef::new("watcher.sleep").expect("executable is valid");
+    let complete = ExecutableRef::new("watcher.complete").expect("executable is valid");
+    let sleep_operation =
         swallowtail_core::WatcherOperationData::new("sleep-operation").expect("operation is valid");
-    let request = ProcessRequest::new(executable.clone()).with_arguments(["30".to_owned()]);
+    let complete_operation = swallowtail_core::WatcherOperationData::new("exit-zero-operation")
+        .expect("operation is valid");
     LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable, "/bin/sleep")
-        .approve_watcher_operation(operation, request)
+        .approve_executable(sleep.clone(), "/bin/sleep")
+        .approve_executable(complete.clone(), "/usr/bin/true")
+        .approve_watcher_operation(
+            sleep_operation,
+            ProcessRequest::new(sleep).with_arguments(["30".to_owned()]),
+        )
+        .approve_watcher_operation(complete_operation, ProcessRequest::new(complete))
         .build_services(host)
 }
 

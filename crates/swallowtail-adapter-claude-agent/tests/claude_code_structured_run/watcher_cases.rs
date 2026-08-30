@@ -80,6 +80,58 @@ fn secret_free(arguments: &[String]) {
     }
 }
 
+fn secret_free_events(events: &[RuntimeEvent]) {
+    for event in events {
+        let debug = format!("{event:?}");
+        assert!(!debug.contains("Bearer"), "event leaked a bearer");
+        assert!(!debug.contains("127.0.0.1"), "event leaked an endpoint");
+        assert!(!debug.contains("Authorization"), "event leaked authorization");
+        assert!(!debug.contains("/bin/sleep"), "event leaked a command");
+        assert!(!debug.contains("/usr/bin/true"), "event leaked a command");
+    }
+}
+
+fn host_watcher_completed(events: &[RuntimeEvent]) -> usize {
+    events
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(observation)
+                    if observation.kind() == &ActivityKind::HostWatcher
+                        && observation.phase() == ActivityLifecyclePhase::Completed
+            )
+        })
+        .count()
+}
+
+fn owning_turn(id: &str) -> WatcherOwningTurn {
+    WatcherOwningTurn::new(format!("claude-code-headless:claude-code-{id}"))
+        .expect("owning turn is valid")
+}
+
+fn wait_until_started(is_started: impl Fn() -> bool) {
+    let started = std::time::Instant::now();
+    while !is_started() {
+        assert!(
+            started.elapsed() < Duration::from_secs(2),
+            "process starts"
+        );
+        std::thread::yield_now();
+    }
+}
+
+fn collect_events(run: &mut Box<dyn swallowtail_runtime::RunHandle>) -> Vec<RuntimeEvent> {
+    block_on(
+        run.take_events()
+            .expect("events")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("events remain valid")
+}
+
 fn post_json(endpoint: &str, bearer: &str, body: &str) -> (u16, String) {
     let without_scheme = endpoint
         .strip_prefix("http://")
@@ -196,6 +248,13 @@ fn omitted_watchers_keep_empty_strict_mcp_on_exact_2_1_251() {
     )
     .expect("omission prepares");
     assert!(!profile.watchers());
+    assert!(
+        profile
+            .evidence()
+            .observable_activity()
+            .kind(ActivityKindClass::HostWatcher)
+            .is_none()
+    );
     let (process, state) = FakeProcessService::with_exit(
         &fixture("headless-complete.jsonl"),
         ProcessExit::new(true, Some(0)),
@@ -278,6 +337,13 @@ fn watcher_opt_in_composes_private_mcp_settings_skill_and_stop() {
     )
     .expect("opt-in prepares");
     assert!(profile.watchers());
+    assert!(
+        profile
+            .evidence()
+            .observable_activity()
+            .kind(ActivityKindClass::HostWatcher)
+            .is_some()
+    );
     let (process, state, completer) = FakeProcessService::controllable();
     let (services, task) = watcher_host_services(
         topology.execution_host_id().clone(),
@@ -416,8 +482,9 @@ fn fake_provider_stop_continuation_returns_active_watchers_before_terminal() {
     assert!(allowed.get("decision").is_none());
     assert_eq!(allowed["allows_successful_completion"], true);
     completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
-    let events = block_on(run.take_events().expect("events").collect::<Vec<_>>());
-    let _ = events;
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    assert_eq!(host_watcher_completed(&events), 1);
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -525,4 +592,361 @@ fn watcher_provider_failure_releases_private_material() {
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
     assert!(state.waited());
     assert!(task.joined());
+}
+
+#[test]
+fn early_provider_success_with_active_watcher_fails_closed_without_waiting() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-early-final",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    wait_until_started(|| state.started());
+    let arguments = state.request().arguments;
+    secret_free(&arguments);
+    let mcp_path = argument_after(&arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            2,
+            WATCHER_BRIDGE_TOOL_START,
+            serde_json::json!({"operation_data": "sleep-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (_, blocked) = stop_continuation(&endpoint, &bearer, 3);
+    assert_eq!(blocked["allows_successful_completion"], false);
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    match outcome.status() {
+        TerminalStatus::RuntimeFailed(diagnostic) => {
+            assert_eq!(
+                diagnostic.code(),
+                "swallowtail.claude_code.headless.watcher_completion_blocked"
+            );
+        }
+        other => panic!("early provider success must not stay completed: {other:?}"),
+    }
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
+}
+
+#[test]
+fn multiple_watchers_block_until_both_are_joined() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-multiple",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    wait_until_started(|| state.started());
+    let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    handshake(&endpoint, &bearer);
+    let mut watcher_ids = Vec::new();
+    for id in [2_u64, 3] {
+        let (status, body) = post_json(
+            &endpoint,
+            &bearer,
+            &tool_call(
+                id,
+                WATCHER_BRIDGE_TOOL_START,
+                serde_json::json!({"operation_data": "sleep-operation"}),
+            ),
+        );
+        assert_eq!(status, 200, "{body}");
+        watcher_ids.push(
+            tool_payload(&body)["watcher_id"]
+                .as_str()
+                .expect("watcher id")
+                .to_owned(),
+        );
+    }
+    let (_, blocked) = stop_continuation(&endpoint, &bearer, 4);
+    assert_eq!(blocked["allows_successful_completion"], false);
+    assert_eq!(
+        blocked["active_or_unjoined"]
+            .as_array()
+            .expect("set")
+            .len(),
+        2
+    );
+    for (index, watcher_id) in watcher_ids.iter().enumerate() {
+        let id = 5 + (index as u64 * 2);
+        let (status, body) = post_json(
+            &endpoint,
+            &bearer,
+            &tool_call(
+                id,
+                WATCHER_BRIDGE_TOOL_STOP,
+                serde_json::json!({"watcher_id": watcher_id}),
+            ),
+        );
+        assert_eq!(status, 200, "{body}");
+        let (status, body) = post_json(
+            &endpoint,
+            &bearer,
+            &tool_call(
+                id + 1,
+                WATCHER_BRIDGE_TOOL_WAIT,
+                serde_json::json!({"watcher_id": watcher_id}),
+            ),
+        );
+        assert_eq!(status, 200, "{body}");
+    }
+    let (_, allowed) = stop_continuation(&endpoint, &bearer, 9);
+    assert_eq!(allowed["allows_successful_completion"], true);
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    assert_eq!(host_watcher_completed(&events), 2);
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
+}
+
+#[test]
+fn operator_stop_joins_a_model_started_watcher() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-operator-stop",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    wait_until_started(|| state.started());
+    let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            2,
+            WATCHER_BRIDGE_TOOL_START,
+            serde_json::json!({"operation_data": "sleep-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("watcher id")
+        .to_owned();
+    block_on(
+        local
+            .services()
+            .watcher()
+            .expect("watcher")
+            .request_stop(
+                owning_turn("watchers-operator-stop"),
+                WatcherId::new(watcher_id.clone()).expect("watcher id is valid"),
+            ),
+    )
+    .expect("operator stop reaches the same registry");
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            3,
+            WATCHER_BRIDGE_TOOL_WAIT,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (_, allowed) = stop_continuation(&endpoint, &bearer, 4);
+    assert_eq!(allowed["allows_successful_completion"], true);
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    assert_eq!(host_watcher_completed(&events), 1);
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
+}
+
+#[test]
+fn completion_race_admits_after_the_first_joined_terminal() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-race",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    wait_until_started(|| state.started());
+    let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            2,
+            WATCHER_BRIDGE_TOOL_START,
+            serde_json::json!({"operation_data": "exit-zero-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("watcher id")
+        .to_owned();
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            3,
+            WATCHER_BRIDGE_TOOL_STOP,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            4,
+            WATCHER_BRIDGE_TOOL_WAIT,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (_, allowed) = stop_continuation(&endpoint, &bearer, 5);
+    assert_eq!(allowed["allows_successful_completion"], true);
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    assert_eq!(host_watcher_completed(&events), 1);
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
+}
+
+#[test]
+fn unauthenticated_hook_is_rejected_and_cleanup_joins() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-hook-reject",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    wait_until_started(|| state.started());
+    let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    let (status, _) = post_json(&endpoint, "deadbeef", &tool_call(1, WATCHER_BRIDGE_TOOL_START, serde_json::json!({})));
+    assert_eq!(status, 401);
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            2,
+            WATCHER_BRIDGE_TOOL_START,
+            serde_json::json!({"operation_data": "sleep-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("watcher id")
+        .to_owned();
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            3,
+            WATCHER_BRIDGE_TOOL_STOP,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            4,
+            WATCHER_BRIDGE_TOOL_WAIT,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = collect_events(&mut run);
+    secret_free_events(&events);
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
 }

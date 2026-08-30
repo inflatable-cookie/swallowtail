@@ -24,7 +24,8 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-08-30 g05.007 Card 020 Live Authorization](./2026-08-30-g05-007-card-020-live-authorization.md) — one exact Claude Code `2.1.251` Haiku turn authorized; no fallback or rerun; card 020 ready
+- [2026-08-31 g05.007 Card 020 Linux Envelope](./2026-08-31-g05-007-card-020-linux-envelope.md) — Linux/per-platform probe repair; exact `linux-x64` digest; validation prerequisites green; one turn remains unconsumed
+- [2026-08-30 g05.007 Card 020 Live Authorization](./2026-08-30-g05-007-card-020-live-authorization.md) — initial Darwin-only envelope superseded before provider contact; turn unconsumed
 - [2026-08-30 g05.006 Card 019 Watcher Proof Repair](./2026-08-30-g05-006-card-019-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; lossless feed and Stop-reentry oracle; no live claim
 - [2026-08-30 g05.006 Watcher Proof Repair Planning](./2026-08-30-g05-006-watcher-proof-repair-planning.md) — card 019 ready; lossless activity and direct Stop oracle; no provider authorization
 - [2026-08-30 g05.003 Card 011 Live Stop Review](./2026-08-30-g05-003-card-011-live-stop-review.md) — one Haiku turn consumed; no host watcher; claims and prototype withheld

@@ -3,10 +3,10 @@
 Status: ready
 Owner: Tom
 Created: 2026-08-30
-Updated: 2026-08-30
+Updated: 2026-08-31
 Depends on: completed g05.006 card 019; Contracts 044, 059, and 060
 Vision tags: process watchers, live acceptance, consumer activity
-Planning state: one exact Claude Code `2.1.251` Haiku turn authorized; card 020 ready; no claim yet
+Planning state: Linux/per-platform probe repair authorized before one still-unconsumed exact Claude Code `2.1.251` Haiku turn; card 020 ready; no claim yet
 
 ## Problem
 
@@ -18,26 +18,29 @@ exercises the complete sequence.
 
 ## Goal
 
-Use exactly one newly authorized Claude Code `2.1.251` turn with exact model
-`claude-haiku-4-5` to test the repaired watcher oracle. Publish only the exact
-proved route point after the full oracle passes. Otherwise record one sanitized
-evidence stop and keep every watcher claim withheld.
+Repair the probe's platform-specific identity selection, then use the one
+still-unconsumed Claude Code `2.1.251` turn with exact model
+`claude-haiku-4-5` on the selected `linux-x86_64` host to test the repaired
+watcher oracle. Publish only the exact proved route point after the full oracle
+passes. Otherwise record one sanitized evidence stop and keep every watcher
+claim withheld.
 
 ## Execution Plan
 
 ### Batch 7.1 — Exact Live Acceptance
 
-- [ ] execute ready card 020 from current pushed `main` through its committed
-      manual worker handoff
-- [ ] validate the unchanged repaired selector and exact identity before any
-      provider request
+- [ ] execute ready card 020 from current pushed `main` through its single new
+      committed manual worker handoff
+- [ ] repair and credential-free prove the per-platform digest selection,
+      commit it, then validate the clean repair head and exact Linux identity
+      before any provider request
 - [ ] consume no more than one provider turn; never fall back or rerun
 - [ ] return one evidence PR for either the proved claim or the honest stop
 
 ## Acceptance Criteria
 
-- [ ] exact installed version, frozen native digest, exact model, local
-      subscription path, and one-turn budget are verified before contact
+- [ ] exact installed version, frozen `linux-x64` native digest, exact model,
+      local subscription path, and one-turn budget are verified before contact
 - [ ] the live trace proves reserved tool discovery, watcher start, active Stop
       block, same-session continuation, explicit wait or stop, joined zero
       state, clean provider terminal, and joined cleanup in order
@@ -50,16 +53,18 @@ evidence stop and keep every watcher claim withheld.
 
 ## Stop Conditions
 
-- installed Claude is not exact `2.1.251` or its native digest differs from
-  `625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5`
+- installed Claude is not exact `2.1.251`, the host is not `linux-x86_64`, or
+  its native digest differs from
+  `fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7`
 - exact `claude-haiku-4-5` is unavailable, authentication needs setup or
   inspection, `ANTHROPIC_API_KEY` is present, or source state is dirty
-- credential-free validation or the unchanged oracle is not green before
-  provider contact
+- the bounded per-platform repair, credential-free validation, or unchanged
+  lifecycle oracle is not green before provider contact
 - the single provider turn fails, is inconclusive, or misses any required
   ordering fact
-- review would require a second provider request, a changed probe, raw/private
-  evidence, a wider version/model claim, or a new product or contract decision
+- review would require a second provider request, a probe change beyond the
+  authorized platform repair, raw/private evidence, a wider version/model
+  claim, or a new product or contract decision
 
 ## Batch Cards
 

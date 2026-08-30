@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — ready; one exact Claude Code `2.1.251` Haiku turn; no fallback or rerun
+- [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — ready; Linux/per-platform probe repair, then one still-unconsumed exact Claude Code `2.1.251` Haiku turn; no fallback or rerun
 
 ## Blocked
 

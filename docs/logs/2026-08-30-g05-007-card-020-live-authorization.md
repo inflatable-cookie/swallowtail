@@ -1,10 +1,19 @@
 # 2026-08-30 g05.007 Card 020 Live Authorization
 
-Status: ready
+Status: superseded for platform envelope; provider turn unconsumed
 Owner: Tom
 Milestone: g05.007
 Card: 020
 Contracts: 044, 059, 060
+
+## Supersession
+
+The operator selected the Linux envelope on 2026-08-31 after the first worker
+stopped before contact. This log remains the historical initial authorization;
+its `darwin-arm64` digest and unchanged-probe boundary are superseded by
+[the Linux envelope](./2026-08-31-g05-007-card-020-linux-envelope.md). No
+provider request occurred under this envelope, so the one-turn budget remains
+unconsumed.
 
 ## Decision
 
@@ -42,7 +51,7 @@ watcher output, and source artifacts remain private.
 
 ## Dispatch
 
-g05.007 and card 020 are ready for one serial manual worker/PR loop. The worker
-returns one evidence PR for either exact success or an honest stop and does not
-merge. Card 011 and g05.003 remain immutable evidence stops. The open consumer
-route-feature projection note remains outside this lane and unpromoted.
+This initial dispatch stopped before contact and is no longer current. The
+Linux envelope owns the next serial manual worker/PR loop. Card 011 and g05.003
+remain immutable evidence stops. The open consumer route-feature projection
+note remains outside this lane and unpromoted.

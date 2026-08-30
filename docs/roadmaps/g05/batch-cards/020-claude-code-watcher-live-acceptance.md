@@ -1,33 +1,38 @@
 # 020 Claude Code Watcher Live Acceptance
 
-Status: ready; one exact provider turn authorized
+Status: ready; Linux probe repair plus one exact provider turn authorized
 Owner: Tom
 Created: 2026-08-30
-Updated: 2026-08-30
+Updated: 2026-08-31
 Milestone: `../007-claude-watcher-live-acceptance.md`
 Depends on: merged g05.006 card 019; Contracts 044, 059, and 060
 
 ## Goal
 
-Run the repaired Claude watcher acceptance selector exactly once against exact
-Claude Code `2.1.251` and exact model `claude-haiku-4-5`. Close with either one
-exact live-proved watcher claim or one sanitized evidence stop. Never rerun,
-fall back, or weaken the same-turn oracle.
+Repair the live probe's platform-specific native identity check, then run the
+repaired Claude watcher acceptance selector exactly once on the selected
+`linux-x86_64` host against exact Claude Code `2.1.251` and exact model
+`claude-haiku-4-5`. Close with either one exact live-proved watcher claim or one
+sanitized evidence stop. Never rerun, fall back, dispatch Darwin, or weaken the
+same-turn oracle.
 
 ## Authorization Envelope
 
-The operator authorized one fresh provider turn on 2026-08-30 with all of the
-following bounds:
+The operator authorized one fresh provider turn on 2026-08-30, then selected
+the Linux envelope on 2026-08-31 after the first worker stopped before contact.
+The turn remains unconsumed. The complete current bounds are:
 
 - exact installed Claude Code `2.1.251`
-- frozen native SHA-256
-  `625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5`
+- exact `linux-x86_64` host and official `linux-x64` native SHA-256
+  `fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7`
 - exact model `claude-haiku-4-5`, not a moving alias
 - existing local subscription state; no API-key billing, credential inspection,
   login, installation, update, or ambient settings mutation
 - one `90`-second operation deadline
 - one provider turn through `effigy probe:claude-code-watcher-live`
 - no model fallback and no automatic or review-driven rerun
+- no Darwin dispatch; the former `darwin-arm64` digest is not the Linux
+  envelope and cannot satisfy this authorization
 
 Version/digest checks and credential-free validation do not consume the turn.
 Any request that reaches Claude consumes it regardless of the result.
@@ -35,28 +40,36 @@ Any request that reaches Claude consumes it regardless of the result.
 ## Scope
 
 1. Start from the pushed handoff commit in a clean dedicated worker worktree.
-   Do not modify the live probe or production code before contact.
-2. Validate the unchanged card 019 implementation and compile the ignored live
-   probe without running it. Confirm the source tree remains clean.
-3. Re-probe the installed path, exact `2.1.251` version, and frozen digest.
-   Confirm `ANTHROPIC_API_KEY` is absent. Stop before contact on any drift or
-   setup need.
-4. Run only `effigy probe:claude-code-watcher-live`, once. Do not run any other
+   Repair only the live probe's native digest selection before contact: retain
+   the frozen `darwin-arm64` value, add the frozen `linux-x64` value, select by
+   the actual target platform, and fail closed on unsupported targets.
+2. Add credential-free proof that Linux selects only the `linux-x64` digest,
+   Darwin ARM64 selects only the existing digest, and an unsupported target
+   cannot fall through to either value. Do not change production code, the
+   prompt, model, deadline, lifecycle oracle, or claim surfaces in this repair.
+3. Commit the bounded probe repair. Validate that repair and the card 019
+   implementation without running a provider request. The live run must start
+   from that clean committed worker head.
+4. Re-probe the installed path, exact `2.1.251` version, selected
+   `linux-x86_64` host, and exact `linux-x64` digest. Confirm
+   `ANTHROPIC_API_KEY` is absent. Stop before contact on any drift or setup need.
+5. Run only `effigy probe:claude-code-watcher-live`, once. Do not run any other
    Claude prompt, response-only probe, direct `claude -p`, or substitute test.
-5. Retain only bounded sanitized proof facts. Never retain or publish prompt
+6. Retain only bounded sanitized proof facts. Never retain or publish prompt
    text, raw provider/HTTP payload, endpoint, bearer, credential, path, command,
    argument, environment, PID, watcher output, or source artifact.
-6. After the consumed attempt, update this card, g05.007, one outcome log,
+7. After the consumed attempt, update this card, g05.007, one outcome log,
    indexes, and the sole Next Task. Return one PR whether the result proves the
    exact claim or stops honestly.
-7. Only after every live oracle row passes may the worker update the Claude
+8. Only after every live oracle row passes may the worker update the Claude
    integration guide, route/activity/feature matrices, and other existing
    claim surfaces for the exact proved point. A failed or ambiguous turn keeps
    all watcher claims absent.
 
-No implementation repair belongs to this card. If the unchanged probe, runtime,
-or contract surface needs a change, record the stop and return to planning
-without contacting Claude again.
+No production repair belongs to this card. The exact platform-selection repair
+above is the only pre-contact code authority. If the runtime, contract surface,
+prompt, lifecycle oracle, or any other behavior needs a change, stop and return
+to planning without contacting Claude.
 
 ## Review Oracle
 
@@ -77,11 +90,19 @@ without contacting Claude again.
   or unjoined watchers, clean provider success, complete watcher activity, and
   joined provider/bridge/process cleanup. Every fact must belong to the exact
   turn and session.
+- **Platform identity invariant:** the live probe selects one frozen digest from
+  the actual target platform before preparation. On this authorized Linux host,
+  only the official `linux-x64` digest is accepted.
+- **Platform counterexample:** Linux accepts the Darwin digest, either supported
+  platform accepts both values, or an unsupported platform silently falls back
+  to one. Each must fail in credential-free proof before contact.
 
 ## Acceptance Criteria
 
-- [ ] pre-contact validation and exact identity/digest checks pass on a clean
-      unchanged source tree
+- [ ] the bounded per-platform probe repair is committed and credential-free
+      proof rejects cross-platform or unsupported-target fallback
+- [ ] pre-contact validation and exact Linux identity/digest checks pass on a
+      clean committed worker head
 - [ ] exactly one provider turn is run with exact `claude-haiku-4-5`; no other
       live selector, prompt, fallback, or retry runs
 - [ ] the live proof either satisfies the full ordered oracle or records the
@@ -103,6 +124,7 @@ Before provider contact:
 - `effigy validate:focused swallowtail-runtime swallowtail-host-local swallowtail-adapter-claude-agent swallowtail-testkit`
 - `effigy package:verify-affected swallowtail-runtime swallowtail-host-local swallowtail-adapter-claude-agent swallowtail-testkit`
 - `effigy package:api`
+- `cargo test -p swallowtail-adapter-claude-agent --features live-probes --test live_watcher_probe`
 - `cargo test -p swallowtail-adapter-claude-agent --features live-probes --test live_watcher_probe --no-run`
 - `git diff --check`
 
@@ -122,8 +144,11 @@ that supplies a prompt.
 
 ## Stop Conditions
 
-- any authorization-envelope precondition fails before contact
-- source or probe changes are required before a meaningful live attempt
+- any Linux authorization-envelope precondition fails before contact
+- source or probe changes beyond the bounded platform-selection repair are
+  required before a meaningful live attempt
+- the repair head is uncommitted, dirty, or not the exact head validated before
+  contact
 - any provider request has already occurred in this handoff
 - the trace lacks watcher start, active Stop attribution, same-session re-entry,
   explicit wait/stop, joined zero, complete activity, clean terminal, or joined
@@ -134,5 +159,5 @@ that supplies a prompt.
 ## Auto-Continuation
 
 No. One provider turn is the complete budget. Return one reviewable evidence PR
-and stop. No rerun, merge, new card, route-feature promotion, or second provider
-session follows automatically.
+and stop. No rerun, Darwin dispatch, merge, new card, route-feature promotion,
+or second provider session follows automatically.

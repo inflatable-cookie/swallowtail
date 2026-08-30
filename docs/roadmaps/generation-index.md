@@ -173,11 +173,16 @@ activity, a direct active-Stop and same-session proof oracle, and panic-safe
 live workspace cleanup, then landed through PR 126 at `c8691e84`. It did not
 run a provider turn or publish a watcher claim. g05.004 standing currentness
 is complete: Research 258 and cards 012-013 qualify Qwen headless through
-official `0.22.3`. No second provider
-prompt was authorized through card 011. The operator has now authorized
-g05.007 card 020 for one fresh exact Claude Code `2.1.251` turn using exact
-`claude-haiku-4-5`, with no fallback or rerun. No orchestrator-side live
-selector, container backend, new route, or parked Bedrock work is authorized.
+official `0.22.3`. No second provider prompt was authorized through card 011.
+The operator authorized g05.007 card 020 for one fresh exact Claude Code
+`2.1.251` turn using exact `claude-haiku-4-5`, with no fallback or rerun. Its
+first worker stopped before contact because the Linux host could not satisfy a
+Darwin-only digest envelope; PR 127 remains unmerged and the turn is
+unconsumed. The operator selected the `linux-x86_64` host on 2026-08-31 and
+authorized a bounded per-platform probe repair before the same one-shot turn.
+The lock and API-tool validation gaps are cleared. No Darwin dispatch,
+overlapping watcher worker, orchestrator-side live selector, container backend,
+new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

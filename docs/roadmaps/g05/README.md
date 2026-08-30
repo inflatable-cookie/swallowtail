@@ -29,7 +29,7 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 waits on g05.005; card 011 keeps the separate live gate
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 awaits post-merge orchestrator reassessment; card 011 keeps the separate live gate
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
@@ -69,6 +69,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 waits on currentness; card 011 waits on binding and live authorization
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 awaits post-merge orchestrator reassessment; card 011 waits on binding and live authorization
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

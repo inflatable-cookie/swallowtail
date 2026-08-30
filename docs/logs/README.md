@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-30 g05.003 Card 011 Live Authorization](./2026-08-30-g05-003-card-011-live-authorization.md) — one exact Claude Haiku live turn authorized; worker handoff published
 - [2026-08-30 g05.003 Card 011 Readiness Reassessment](./2026-08-30-g05-003-card-011-readiness-reassessment.md) — exact one-turn proof oracle compiled; live provider authorization still required
 - [2026-08-30 g05.003 Claude Code Watcher Binding](./2026-08-30-g05-003-claude-code-watcher-binding.md) — card 010 complete; exact `2.1.251` credential-free binding; no watcher claim
 - [2026-08-30 g05.003 Claude Watcher Post-Currentness Reassessment](./2026-08-30-g05-003-claude-watcher-post-currentness-reassessment.md) — card 010 ready for exact `2.1.251` credential-free binding; card 011 keeps the live gate

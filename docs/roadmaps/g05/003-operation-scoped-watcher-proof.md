@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-010 and 014-018 complete; card 011 has an explicit proof oracle and remains behind the separate live gate
+Planning state: cards 007-010 and 014-018 complete; card 011 ready with one authorized exact Haiku live turn
 
 ## Problem
 
@@ -66,8 +66,8 @@ owns the pre-1.0 repair.
       currentness prerequisite; do not map watcher behavior in that lane
 - [x] execute ready card 010 for exact `2.1.251` credential-free binding and
       deterministic provider-free fixtures
-- [ ] execute card 011 only after card 010 lands and the operator separately
-      authorizes the exact live same-turn turn
+- [ ] execute ready card 011 through its manual worker handoff using the one
+      authorized exact Haiku live turn
 - [ ] publish the first route claim only after card 011's live and deterministic
       acceptance pass
 
@@ -80,8 +80,9 @@ watcher behavior. The post-merge reassessment admits card 010 only for exact
 `2.1.251` credential-free binding and deterministic provider-free fixtures.
 Card 011 owns separately authorized live acceptance and the first watcher
 claim. Its post-card-010 reassessment now fixes the one-turn authority envelope,
-smallest same-turn counterexample, and stop proof. Do not infer a watcher range
-or start provider work from card 010 or a bare continuation.
+smallest same-turn counterexample, and stop proof. On 2026-08-30 the operator
+authorized its single attempt using exact `claude-haiku-4-5`. Do not infer a
+watcher range, fall back to a pricier model, or run a second provider attempt.
 
 ## Acceptance Criteria
 

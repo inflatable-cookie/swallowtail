@@ -15,12 +15,11 @@ shape.
 
 ## Next Task
 
-Reassess g05.003 card 011's external-use gate. Its exact one-turn authority
-envelope and same-turn review oracle are now explicit, but the card stays
-planned until the operator authorizes existing local Claude access and any
-normal paid-provider work. A bare continuation is not that authorization. If
-the live turn remains parked, leave card 011 planned and choose whether to
-promote the consumer route-feature projection census next.
+Implement g05.003 card 011 through its committed worker handoff. The one
+authorized live turn uses exact Claude Code `2.1.251`, exact
+`claude-haiku-4-5`, a 90-second deadline, and the existing local provider state.
+No model fallback, second provider attempt, consumer route-feature projection,
+or next card is authorized.
 
 ## Standing Lanes
 

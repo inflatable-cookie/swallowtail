@@ -1,11 +1,11 @@
 # 011 Watcher Acceptance And Consumer Projection
 
-Status: planned; separately authorized live gate
+Status: ready; one authorized live turn
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
 Milestone: `../003-operation-scoped-watcher-proof.md`
-Depends on: completed card 010; explicit operator authorization for provider access, credentials, and any paid work
+Depends on: completed card 010; operator authorization recorded 2026-08-30 for one existing-access Claude turn using the cheap model
 
 ## Goal
 
@@ -41,17 +41,20 @@ bridge, private material, Stop continuation, terminal barrier, and cleanup
 prerequisites are closed. The remaining gate is external authority, not another
 technical prerequisite.
 
-This card stays planned until the operator explicitly authorizes one bounded
-live Claude Code turn using the existing local provider access and accepts any
-normal paid-provider work. A bare continuation does not supply that authority.
-After authorization, the worker must:
+On 2026-08-30 the operator explicitly authorized one bounded live Claude Code
+turn using existing local provider access and requested a cheap model. This
+card is ready for that single attempt. The worker must:
 
 - re-probe the installed path, exact `2.1.251` identity, and frozen binary
   digest before any prompt; stop on drift
 - require one dedicated live-probe gate and use existing local Claude state
   without reading, copying, logging, or changing credentials
+- select exact `claude-haiku-4-5`; do not use a moving alias and do not fall
+  back to Sonnet, Opus, or another model when the selection is unavailable
 - run at most one provider turn; a second provider attempt after success or
   failure requires fresh operator authorization
+- bind a `90`-second operation deadline; do not advertise that probe bound as
+  a watcher capability
 - use one host-approved, local, bounded watcher operation with no external
   network need and no public command, argument, path, environment, PID, or raw
   output exposure
@@ -59,6 +62,12 @@ After authorization, the worker must:
   project material
 - add one explicit Effigy live-probe selector so ordinary QA remains
   credential-free and cannot contact Claude
+
+Research 241 rejects `--max-budget-usd` for the selected local-subscription
+route because its API-catalog estimate is not subscription allowance. Do not
+reopen or bind that feature here. The separately qualified maximum-turns
+feature also excludes unprobed `2.1.251`. Exact cheap-model selection, one
+provider session, and the 90-second deadline are this probe's cost bounds.
 
 ## Review Oracle
 
@@ -99,6 +108,8 @@ After authorization, the worker must:
   digest no longer matches
 - authentication requires login, credential inspection, provider setup, or
   ambient configuration mutation
+- exact `claude-haiku-4-5` is unavailable or the route would need a pricier
+  fallback
 - the one authorized live turn does not prove the review-oracle ordering
 - same-turn proof requires a second provider attempt without fresh authority
 - the provider can only fail after irreversible successful completion

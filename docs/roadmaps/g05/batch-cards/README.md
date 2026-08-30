@@ -2,13 +2,12 @@
 
 ## Planned
 
-- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; exact proof oracle compiled; separately authorized live acceptance remains
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — ready; one exact Haiku live turn authorized; no fallback or retry
 
 ## Blocked
 

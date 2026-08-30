@@ -239,3 +239,87 @@ fn unknown_and_oversized_requests_fail_closed() {
     assert_eq!(status, 413);
     close_lease(&local, lease);
 }
+
+fn tool_text(body: &str) -> String {
+    serde_json::from_str::<serde_json::Value>(body).expect("json")["result"]["content"][0]["text"]
+        .as_str()
+        .expect("tool text")
+        .to_owned()
+}
+
+#[test]
+fn completion_gate_tool_text_blocks_stop_while_work_remains() {
+    let local = watcher_host("stop-decision", "sleep");
+    let lease = open_lease(&local, "turn-stop-decision");
+    let endpoint = lease.endpoint().expose().to_owned();
+    let bearer = lease.bearer().expose().to_owned();
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(
+            json!(2),
+            WATCHER_BRIDGE_TOOL_START,
+            json!({"operation_data": "sleep-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("id")
+        .to_owned();
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(json!(3), WATCHER_BRIDGE_TOOL_COMPLETION_GATE, json!({})),
+    );
+    assert_eq!(status, 200, "{body}");
+    let text = tool_text(&body);
+    assert!(
+        text.contains("\"decision\":\"block\""),
+        "raw Stop tool text must block: {text}"
+    );
+    let payload = tool_payload(&body);
+    assert_eq!(payload["decision"], "block");
+    assert_eq!(payload["allows_successful_completion"], false);
+    let reason = payload["reason"].as_str().expect("reason");
+    assert!(reason.contains("active or unjoined"));
+    assert!(!reason.contains(&bearer));
+    assert!(!reason.contains(&endpoint));
+    assert!(!text.contains(&bearer));
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(
+            json!(4),
+            WATCHER_BRIDGE_TOOL_STOP,
+            json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(
+            json!(5),
+            WATCHER_BRIDGE_TOOL_WAIT,
+            json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(json!(6), WATCHER_BRIDGE_TOOL_COMPLETION_GATE, json!({})),
+    );
+    assert_eq!(status, 200, "{body}");
+    let idle = tool_text(&body);
+    assert!(
+        !idle.contains("\"decision\""),
+        "idle Stop tool text must omit decision: {idle}"
+    );
+    let payload = tool_payload(&body);
+    assert!(payload.get("decision").is_none());
+    assert_eq!(payload["allows_successful_completion"], true);
+    close_lease(&local, lease);
+}

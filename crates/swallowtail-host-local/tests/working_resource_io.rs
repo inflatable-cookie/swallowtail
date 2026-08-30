@@ -182,6 +182,75 @@ fn writes_create_nested_relative_parents_inside_the_approved_root() {
     fs::remove_dir_all(&fixture).expect("fixture cleanup succeeds");
 }
 
+#[cfg(unix)]
+#[test]
+fn temporary_material_is_private_on_a_shared_configured_root() {
+    use std::os::unix::fs::PermissionsExt;
+    let fixture = fixture_root();
+    fs::create_dir_all(&fixture).expect("shared root is created");
+    fs::set_permissions(&fixture, fs::Permissions::from_mode(0o777))
+        .expect("shared root is world-accessible");
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_temporary_root(&fixture)
+        .build();
+    let scope = ScopeId::new("working-resource-private-temp").expect("valid scope");
+    let lease = block_on(host.create_temporary(
+        scope,
+        ResourceAccess::ReadWrite,
+        ResourceRepresentation::Filesystem,
+    ))
+    .expect("temporary resource is created");
+    let root = std::path::PathBuf::from(
+        lease
+            .filesystem()
+            .expect("filesystem path")
+            .as_driver_value(),
+    );
+    assert_eq!(
+        fs::metadata(&root)
+            .expect("root metadata")
+            .permissions()
+            .mode()
+            & 0o777,
+        0o700
+    );
+    let request = WorkingResourceWriteRequest::new(
+        WorkingResourceLocator::new(".claude/skills/example/SKILL.md").expect("valid locator"),
+        WorkingResourceText::new(
+            "nested skill".to_owned(),
+            NonZeroUsize::new(64).expect("non-zero"),
+        )
+        .expect("bounded content"),
+    );
+    block_on(host.write_text(&lease, request)).expect("nested write succeeds");
+    let skill = root.join(".claude/skills/example/SKILL.md");
+    assert_eq!(
+        fs::metadata(root.join(".claude"))
+            .expect("claude dir")
+            .permissions()
+            .mode()
+            & 0o777,
+        0o700
+    );
+    assert_eq!(
+        fs::metadata(root.join(".claude/skills"))
+            .expect("skills dir")
+            .permissions()
+            .mode()
+            & 0o777,
+        0o700
+    );
+    assert_eq!(
+        fs::metadata(&skill)
+            .expect("skill file")
+            .permissions()
+            .mode()
+            & 0o777,
+        0o600
+    );
+    fs::remove_dir_all(&fixture).expect("fixture cleanup succeeds");
+}
+
 fn fixture_root() -> std::path::PathBuf {
     let sequence = NEXT_FIXTURE.fetch_add(1, Ordering::SeqCst);
     std::env::temp_dir().join(format!(

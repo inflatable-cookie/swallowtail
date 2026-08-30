@@ -99,11 +99,41 @@ pub(crate) fn list_payload(snapshots: &[WatcherSnapshot]) -> Value {
 }
 
 pub(crate) fn completion_payload(state: &WatcherBridgeCompletionState) -> Value {
-    serde_json::json!({
-        "admission": state.admission().as_str(),
-        "active_or_unjoined": state.active_or_unjoined().iter().map(snapshot_payload).collect::<Vec<_>>(),
-        "allows_successful_completion": state.allows_successful_completion(),
-    })
+    let mut payload = serde_json::Map::new();
+    payload.insert(
+        "admission".to_owned(),
+        Value::String(state.admission().as_str().to_owned()),
+    );
+    payload.insert(
+        "active_or_unjoined".to_owned(),
+        Value::Array(
+            state
+                .active_or_unjoined()
+                .iter()
+                .map(snapshot_payload)
+                .collect(),
+        ),
+    );
+    payload.insert(
+        "allows_successful_completion".to_owned(),
+        Value::Bool(state.allows_successful_completion()),
+    );
+    if !state.allows_successful_completion() {
+        payload.insert("decision".to_owned(), Value::String("block".to_owned()));
+        payload.insert("reason".to_owned(), Value::String(stop_reason(state)));
+    }
+    Value::Object(payload)
+}
+
+fn stop_reason(state: &WatcherBridgeCompletionState) -> String {
+    let remaining = state.active_or_unjoined().len();
+    if remaining == 1 {
+        "1 host-owned watcher remains active or unjoined; wait or stop before finishing.".to_owned()
+    } else {
+        format!(
+            "{remaining} host-owned watchers remain active or unjoined; wait or stop before finishing."
+        )
+    }
 }
 
 pub(crate) fn wait_payload(

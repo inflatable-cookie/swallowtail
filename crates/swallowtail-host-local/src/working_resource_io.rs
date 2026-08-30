@@ -3,8 +3,8 @@ use crate::output::failure;
 use std::fs;
 use std::path::{Path, PathBuf};
 use swallowtail_runtime::{
-    BoxFuture, ResourceAccess, ResourceLease, ResourceRepresentation, RuntimeFailure,
-    WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceText,
+    BoxFuture, LeaseCleanupAuthority, ResourceAccess, ResourceLease, ResourceRepresentation,
+    RuntimeFailure, WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceText,
     WorkingResourceWriteRequest,
 };
 
@@ -142,7 +142,8 @@ impl LocalProcessHost {
         let root = self.approved_root(lease)?;
         let locator = Path::new(request.locator().as_host_value());
         reject_parent_components(locator)?;
-        let parent = write_parent_within_root(&root, locator)?;
+        let private = lease.cleanup_authority() == LeaseCleanupAuthority::OperationScope;
+        let parent = write_parent_within_root(&root, locator, private)?;
         let file_name = locator.file_name().ok_or_else(|| {
             failure(
                 "swallowtail.local_resource_io.boundary_rejected",
@@ -166,12 +167,16 @@ impl LocalProcessHost {
                 ));
             }
         }
-        fs::write(target, request.content().as_driver_value()).map_err(|_| {
+        fs::write(&target, request.content().as_driver_value()).map_err(|_| {
             failure(
                 "swallowtail.local_resource_io.write_failed",
                 "Working-resource text replacement failed",
             )
-        })
+        })?;
+        if private {
+            crate::materialization::restrict_file(&target)?;
+        }
+        Ok(())
     }
 
     fn approved_root(&self, lease: &ResourceLease) -> Result<PathBuf, RuntimeFailure> {

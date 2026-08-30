@@ -12,11 +12,17 @@ fn reject_parent_components(path: &Path) -> Result<(), RuntimeFailure> {
     }
 }
 
-fn write_parent_within_root(root: &Path, locator: &Path) -> Result<PathBuf, RuntimeFailure> {
+fn write_parent_within_root(
+    root: &Path,
+    locator: &Path,
+    private: bool,
+) -> Result<PathBuf, RuntimeFailure> {
     if locator.is_absolute() {
         let candidate = locator.to_path_buf();
         let parent = candidate.parent().ok_or_else(write_parent_rejected)?;
-        let parent = parent.canonicalize().map_err(|_| write_parent_unavailable())?;
+        let parent = parent
+            .canonicalize()
+            .map_err(|_| write_parent_unavailable())?;
         if !parent.starts_with(root) || !parent.is_dir() {
             return Err(write_boundary_rejected());
         }
@@ -34,6 +40,9 @@ fn write_parent_within_root(root: &Path, locator: &Path) -> Result<PathBuf, Runt
                     parent.push(name);
                     if !parent.exists() {
                         fs::create_dir(&parent).map_err(|_| write_parent_unavailable())?;
+                        if private {
+                            crate::materialization::restrict_directory(&parent)?;
+                        }
                     }
                     parent = parent
                         .canonicalize()

@@ -167,14 +167,20 @@ fn read_mcp_authority(mcp_path: &str) -> (String, String) {
     (endpoint, bearer)
 }
 
-fn stop_continuation(endpoint: &str, bearer: &str, id: u64) -> serde_json::Value {
+fn stop_continuation(endpoint: &str, bearer: &str, id: u64) -> (String, serde_json::Value) {
     let (status, body) = post_json(
         endpoint,
         bearer,
         &tool_call(id, WATCHER_BRIDGE_TOOL_COMPLETION_GATE, serde_json::json!({})),
     );
     assert_eq!(status, 200, "{body}");
-    tool_payload(&body)
+    let text = serde_json::from_str::<serde_json::Value>(&body).expect("json")["result"]["content"]
+        [0]["text"]
+        .as_str()
+        .expect("tool text")
+        .to_owned();
+    let payload = serde_json::from_str(&text).expect("tool payload");
+    (text, payload)
 }
 
 #[test]
@@ -370,9 +376,18 @@ fn fake_provider_stop_continuation_returns_active_watchers_before_terminal() {
         .as_str()
         .expect("watcher id")
         .to_owned();
-    let blocked = stop_continuation(&endpoint, &bearer, 3);
+    let (blocked_text, blocked) = stop_continuation(&endpoint, &bearer, 3);
+    assert!(
+        blocked_text.contains("\"decision\":\"block\""),
+        "raw Stop tool text must block: {blocked_text}"
+    );
+    assert_eq!(blocked["decision"], "block");
     assert_eq!(blocked["allows_successful_completion"], false);
     assert!(!blocked["active_or_unjoined"].as_array().expect("set").is_empty());
+    let reason = blocked["reason"].as_str().expect("reason");
+    assert!(reason.contains("active or unjoined"));
+    assert!(!reason.contains(&bearer));
+    assert!(!blocked_text.contains(&bearer));
     let (status, body) = post_json(
         &endpoint,
         &bearer,
@@ -393,7 +408,12 @@ fn fake_provider_stop_continuation_returns_active_watchers_before_terminal() {
         ),
     );
     assert_eq!(status, 200, "{body}");
-    let allowed = stop_continuation(&endpoint, &bearer, 6);
+    let (idle_text, allowed) = stop_continuation(&endpoint, &bearer, 6);
+    assert!(
+        !idle_text.contains("\"decision\""),
+        "idle Stop tool text must omit decision: {idle_text}"
+    );
+    assert!(allowed.get("decision").is_none());
     assert_eq!(allowed["allows_successful_completion"], true);
     completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
     let events = block_on(run.take_events().expect("events").collect::<Vec<_>>());

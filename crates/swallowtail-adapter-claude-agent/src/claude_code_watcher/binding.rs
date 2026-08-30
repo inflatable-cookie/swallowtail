@@ -2,11 +2,9 @@ use super::material::{
     MCP_CONFIG_LOCATOR, SETTINGS_LOCATOR, SKILL_LOCATOR, mcp_config, settings, skill_markdown,
 };
 use crate::failure::failure;
-use std::future::Future;
 use std::num::NonZeroUsize;
 use std::path::Path;
 use std::sync::Arc;
-use std::task::{Context, Poll, Waker};
 use swallowtail_core::{ResourceAccess, ResourceRepresentation, WatcherCleanupCause};
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, ResourceLease, RuntimeFailure, RuntimeTurnId, ScopeId,
@@ -65,7 +63,7 @@ impl WatcherBinding {
         let lease = self.lease.take().ok_or_else(closed_binding)?;
         let bridge = Arc::clone(&self.bridge);
         let (result, lease) = host_thread(move || {
-            let result = poll_ready(bridge.completion_gate(&lease));
+            let result = futures_executor::block_on(bridge.completion_gate(&lease));
             (result, lease)
         })?;
         self.lease = Some(lease);
@@ -79,17 +77,37 @@ impl WatcherBinding {
         let resources = Arc::clone(&self.resources);
         host_thread(move || {
             let bridge = match lease {
-                Some(lease) => poll_ready(bridge.close(lease, cause))
+                Some(lease) => futures_executor::block_on(bridge.close(lease, cause))
                     .unwrap_or_else(|error| CleanupOutcome::Failed(error.diagnostic().clone())),
                 None => CleanupOutcome::NotApplicable,
             };
             let resource = match resource {
-                Some(lease) => poll_ready(resources.release(lease)),
+                Some(lease) => futures_executor::block_on(resources.release(lease)),
                 None => CleanupOutcome::NotApplicable,
             };
             merge_cleanup(bridge, resource)
         })
         .unwrap_or_else(|error| CleanupOutcome::Failed(error.diagnostic().clone()))
+    }
+
+    #[cfg(test)]
+    fn for_test(
+        bridge: Arc<dyn WatcherBridgeHostService>,
+        resources: Arc<dyn WorkingResourceService>,
+        lease: WatcherBridgeLease,
+        resource: ResourceLease,
+    ) -> Self {
+        Self {
+            bridge,
+            resources,
+            lease: Some(lease),
+            resource: Some(resource),
+            files: WatcherCommandFiles {
+                mcp_config: "mcp.json".to_owned(),
+                settings: "settings.json".to_owned(),
+                add_dir: "add-dir".to_owned(),
+            },
+        }
     }
 }
 
@@ -101,7 +119,7 @@ impl Drop for WatcherBinding {
         if let Some(resource) = self.resource.take() {
             let resources = Arc::clone(&self.resources);
             let _ = std::thread::spawn(move || {
-                let _ = poll_ready(resources.release(resource));
+                let _ = futures_executor::block_on(resources.release(resource));
             })
             .join();
         }
@@ -235,16 +253,6 @@ fn host_thread<T: Send + 'static>(
     })
 }
 
-fn poll_ready<T>(future: impl Future<Output = T>) -> T {
-    let mut future = std::pin::pin!(future);
-    let waker = Waker::noop();
-    let mut context = Context::from_waker(waker);
-    match future.as_mut().poll(&mut context) {
-        Poll::Ready(value) => value,
-        Poll::Pending => panic!("watcher host call was expected to be ready"),
-    }
-}
-
 fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
     match (left, right) {
         (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
@@ -274,4 +282,190 @@ fn closed_binding() -> RuntimeFailure {
         "swallowtail.claude_code.headless.watcher_binding_closed",
         "Claude Code watcher binding is no longer open",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::WatcherBinding;
+    use std::future::{Future, poll_fn};
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    use std::task::Poll;
+    use swallowtail_core::{
+        ExecutionHostId, ResourceAccess, ResourceRepresentation, WatcherCleanupCause,
+    };
+    use swallowtail_runtime::{
+        BoxFuture, CleanupOutcome, ResourceLease, RuntimeFailure, RuntimeTurnId, ScopeId,
+        WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeCompletionState,
+        WatcherBridgeEndpoint, WatcherBridgeGeneration, WatcherBridgeHostService,
+        WatcherBridgeLease, WatcherBridgeOpenRequest, WorkingResourceRef, WorkingResourceService,
+    };
+
+    fn pending_once<T: Send + 'static>(yield_once: bool, value: T) -> impl Future<Output = T> {
+        let mut pending = yield_once;
+        let mut value = Some(value);
+        poll_fn(move |context| {
+            if pending {
+                pending = false;
+                context.waker().wake_by_ref();
+                return Poll::Pending;
+            }
+            Poll::Ready(value.take().expect("pending-once is ready once"))
+        })
+    }
+
+    struct PendingOnceBridge {
+        pending_gate: AtomicBool,
+        pending_close: AtomicBool,
+        close_calls: AtomicUsize,
+        state: WatcherBridgeCompletionState,
+    }
+
+    impl PendingOnceBridge {
+        fn new(state: WatcherBridgeCompletionState) -> Arc<Self> {
+            Arc::new(Self {
+                pending_gate: AtomicBool::new(true),
+                pending_close: AtomicBool::new(true),
+                close_calls: AtomicUsize::new(0),
+                state,
+            })
+        }
+    }
+
+    impl WatcherBridgeHostService for PendingOnceBridge {
+        fn open(
+            &self,
+            _request: WatcherBridgeOpenRequest,
+        ) -> BoxFuture<'_, Result<WatcherBridgeLease, RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.unused",
+                    "open is unused",
+                )))
+            })
+        }
+
+        fn completion_gate(
+            &self,
+            _lease: &WatcherBridgeLease,
+        ) -> BoxFuture<'_, Result<WatcherBridgeCompletionState, RuntimeFailure>> {
+            let pending = self.pending_gate.swap(false, Ordering::SeqCst);
+            Box::pin(pending_once(pending, Ok(self.state.clone())))
+        }
+
+        fn close(
+            &self,
+            _lease: WatcherBridgeLease,
+            _cause: WatcherCleanupCause,
+        ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
+            self.close_calls.fetch_add(1, Ordering::SeqCst);
+            let pending = self.pending_close.swap(false, Ordering::SeqCst);
+            Box::pin(pending_once(pending, Ok(CleanupOutcome::Clean)))
+        }
+    }
+
+    struct PendingOnceResources {
+        pending_release: AtomicBool,
+        release_calls: AtomicUsize,
+    }
+
+    impl PendingOnceResources {
+        fn new() -> Arc<Self> {
+            Arc::new(Self {
+                pending_release: AtomicBool::new(true),
+                release_calls: AtomicUsize::new(0),
+            })
+        }
+    }
+
+    impl WorkingResourceService for PendingOnceResources {
+        fn resolve(
+            &self,
+            _scope: ScopeId,
+            _reference: WorkingResourceRef,
+            _access: ResourceAccess,
+            _representation: ResourceRepresentation,
+        ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.unused",
+                    "resolve is unused",
+                )))
+            })
+        }
+
+        fn create_temporary(
+            &self,
+            _scope: ScopeId,
+            _access: ResourceAccess,
+            _representation: ResourceRepresentation,
+        ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.unused",
+                    "create_temporary is unused",
+                )))
+            })
+        }
+
+        fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
+            self.release_calls.fetch_add(1, Ordering::SeqCst);
+            let pending = self.pending_release.swap(false, Ordering::SeqCst);
+            Box::pin(pending_once(pending, CleanupOutcome::Clean))
+        }
+    }
+
+    fn fixture_lease() -> WatcherBridgeLease {
+        WatcherBridgeLease::new(
+            ExecutionHostId::new("fixture.host").expect("host"),
+            ScopeId::new("fixture.scope").expect("scope"),
+            RuntimeTurnId::new("fixture.turn").expect("turn"),
+            WatcherBridgeGeneration::initial(),
+            WatcherBridgeEndpoint::new("http://127.0.0.1:1/mcp").expect("endpoint"),
+            WatcherBridgeBearer::new("fixture-bearer").expect("bearer"),
+        )
+    }
+
+    fn fixture_resource() -> ResourceLease {
+        ResourceLease::operation_scoped(
+            ScopeId::new("fixture.scope").expect("scope"),
+            WorkingResourceRef::new("fixture.resource").expect("resource"),
+            ResourceAccess::ReadWrite,
+            ResourceRepresentation::Filesystem,
+        )
+    }
+
+    #[test]
+    fn completion_gate_runs_a_pending_host_future_to_ready() {
+        let state = WatcherBridgeCompletionState::new(WatcherBridgeAdmission::Open, Vec::new());
+        let bridge = PendingOnceBridge::new(state.clone());
+        let resources = PendingOnceResources::new();
+        let mut binding = WatcherBinding::for_test(
+            bridge.clone(),
+            resources,
+            fixture_lease(),
+            fixture_resource(),
+        );
+        let observed = binding.completion_gate().expect("gate completes");
+        assert_eq!(observed, state);
+    }
+
+    #[test]
+    fn close_runs_pending_bridge_and_resource_futures_and_keeps_cleanup_clean() {
+        let bridge = PendingOnceBridge::new(WatcherBridgeCompletionState::new(
+            WatcherBridgeAdmission::Frozen,
+            Vec::new(),
+        ));
+        let resources = PendingOnceResources::new();
+        let binding = WatcherBinding::for_test(
+            bridge.clone(),
+            resources.clone(),
+            fixture_lease(),
+            fixture_resource(),
+        );
+        let outcome = binding.close(WatcherCleanupCause::Cancelled);
+        assert_eq!(outcome, CleanupOutcome::Clean);
+        assert_eq!(bridge.close_calls.load(Ordering::SeqCst), 1);
+        assert_eq!(resources.release_calls.load(Ordering::SeqCst), 1);
+    }
 }

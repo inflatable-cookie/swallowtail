@@ -66,7 +66,13 @@ impl LocalMaterializationState {
                 std::process::id()
             ));
             match fs::create_dir(&directory) {
-                Ok(()) => return Ok(directory),
+                Ok(()) => {
+                    if let Err(error) = restrict_directory(&directory) {
+                        let _ = fs::remove_dir_all(&directory);
+                        return Err(error);
+                    }
+                    return Ok(directory);
+                }
                 Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
                 Err(_) => {
                     return Err(failure(
@@ -190,6 +196,35 @@ impl Drop for LocalMaterializationState {
         for path in cleanup_paths {
             let _ = remove_path(&path);
         }
+    }
+}
+
+pub(crate) fn restrict_directory(path: &Path) -> Result<(), RuntimeFailure> {
+    restrict_mode(path, 0o700, "directory")
+}
+
+pub(crate) fn restrict_file(path: &Path) -> Result<(), RuntimeFailure> {
+    restrict_mode(path, 0o600, "file")
+}
+
+fn restrict_mode(path: &Path, mode: u32, kind: &'static str) -> Result<(), RuntimeFailure> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(path, fs::Permissions::from_mode(mode)).map_err(|_| {
+            failure(
+                "swallowtail.local_materialization.privacy_failed",
+                match kind {
+                    "directory" => "Local temporary directory could not be made private",
+                    _ => "Local temporary file could not be made private",
+                },
+            )
+        })
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = (path, mode, kind);
+        Ok(())
     }
 }
 

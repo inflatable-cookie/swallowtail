@@ -205,6 +205,42 @@ consumer-settable option. Map each item to its current source, scope, value
 domain, evidence strength, and lifecycle. Use the live per-route feature
 inventory as evidence, not runtime authority.
 
+## Parallel Evidence Dispatch (2026-08-30)
+
+The operator authorized this census to run beside the Claude Code `2.1.251`
+currentness worker. Parallel safety requires an evidence-only triage lane. The
+worker may update this note and add
+`2026-08-30-consumer-route-feature-and-option-projection-census.csv` under
+`docs/triage/`. It must not edit code, contracts, research/log/roadmap indexes,
+the active Next Task, or currentness/watcher cards.
+
+The census covers every production route and every public consumer-selectable
+or consumer-observable feature/control reachable through current Swallowtail
+types. Each row records at least:
+
+- configured route and operation shape
+- semantic feature or control identity
+- current public source type and owning package
+- value kind, enumerable values or bounds, and omission semantics
+- route/model/access/resource constraints
+- lifecycle: selection-summary, session-start-only, per-turn,
+  between-turn-negotiable, mid-turn-negotiable, or post-open-observation-only
+- requested, pending, effective, rejected, or descriptor-only state support
+- evidence source and strength
+- present consumer projection surface, if any
+- exact gap, ambiguity, or unsafe inference a cohesive facade must avoid
+
+Use repository code, contracts, guides, route matrices, and frozen research as
+evidence. Do not contact providers, run prompts, authenticate, install tools,
+or treat documentation matrices as runtime authority. Avoid adapter-by-adapter
+prose when several rows share one exact type or lifecycle rule, but do not
+flatten distinct routes or provider-native controls.
+
+The worker returns one evidence PR and stops. The note remains `Status: open`.
+After review and merge, the orchestrator decides whether to promote the census
+into numbered research and a contract/roadmap lane. No research number or
+implementation authority is reserved by this dispatch.
+
 Promote only when the contract can prove:
 
 - a consumer can render route/model feature summaries without adapter-specific

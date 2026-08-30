@@ -176,6 +176,13 @@ impl WatcherHostService for ControllableWatcher {
     {
         self.inner.open_lifecycle_feed(turn)
     }
+
+    fn close_lifecycle_feed(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.inner.close_lifecycle_feed(turn)
+    }
 }
 
 pub(super) fn fixture(label: &str) -> (LocalWatcherBridgeHostService, Arc<ControllableWatcher>) {

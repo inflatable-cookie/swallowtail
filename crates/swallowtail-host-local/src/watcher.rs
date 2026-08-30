@@ -29,8 +29,8 @@ pub(super) const MAX_RETIRED_TURNS: usize = 64;
 pub(crate) struct LocalWatcherHostService {
     process_host: Arc<LocalProcessHost>,
     task_service: Arc<dyn ScopedTaskService>,
-    state: Arc<Mutex<LocalWatcherState>>,
-    capacity: usize,
+    pub(super) state: Arc<Mutex<LocalWatcherState>>,
+    pub(super) capacity: usize,
 }
 
 pub(super) struct LocalWatcherState {
@@ -251,43 +251,13 @@ impl WatcherHostService for LocalWatcherHostService {
         let result = self.open_lifecycle_feed_now(turn);
         Box::pin(async move { result })
     }
-}
 
-impl LocalWatcherHostService {
-    pub(super) fn publish_lifecycle(
-        &self,
-        turn: &RuntimeTurnId,
-        snapshot: WatcherSnapshot,
-    ) -> Result<(), RuntimeFailure> {
-        self.state
-            .lock()
-            .expect("local watcher state lock poisoned")
-            .publish(turn, snapshot)
-    }
-
-    fn open_lifecycle_feed_now(
+    fn close_lifecycle_feed(
         &self,
         turn: RuntimeTurnId,
-    ) -> Result<WatcherLifecycleSubscription, RuntimeFailure> {
-        let mut state = self
-            .state
-            .lock()
-            .expect("local watcher state lock poisoned");
-        if state.is_retired(&turn) {
-            return Err(support::turn_retired_failure());
-        }
-        if state.feeds.contains_key(&turn) {
-            return Err(crate::output::failure(
-                "swallowtail.local_watcher.lifecycle_feed_duplicate",
-                "Watcher lifecycle feed is already open for this turn",
-            ));
-        }
-        let capacity = self.capacity.saturating_mul(4).max(8);
-        let buffer = Arc::new(Mutex::new(feed::LifecycleBuffer::new(capacity)));
-        state.feeds.insert(turn, Arc::clone(&buffer));
-        Ok(WatcherLifecycleSubscription::from_feed(Box::new(
-            feed::LocalLifecycleFeed::new(buffer),
-        )))
+    ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        let result = self.close_lifecycle_feed_now(turn);
+        Box::pin(async move { result })
     }
 }
 

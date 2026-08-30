@@ -4,7 +4,10 @@ use std::collections::{BTreeMap, VecDeque};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::WatcherLifecyclePhase;
-use swallowtail_runtime::{RuntimeFailure, RuntimeTurnId, WatcherLifecycleFeed, WatcherSnapshot};
+use swallowtail_runtime::{
+    RuntimeFailure, RuntimeTurnId, WatcherLifecycleFeed, WatcherLifecycleSubscription,
+    WatcherSnapshot,
+};
 
 pub(crate) struct LifecycleBuffer {
     capacity: usize,
@@ -78,11 +81,38 @@ impl LifecycleBuffer {
 
 pub(super) struct LocalLifecycleFeed {
     buffer: Arc<Mutex<LifecycleBuffer>>,
+    state: Arc<Mutex<super::LocalWatcherState>>,
+    turn: RuntimeTurnId,
 }
 
 impl LocalLifecycleFeed {
-    pub(super) fn new(buffer: Arc<Mutex<LifecycleBuffer>>) -> Self {
-        Self { buffer }
+    pub(super) fn new(
+        buffer: Arc<Mutex<LifecycleBuffer>>,
+        state: Arc<Mutex<super::LocalWatcherState>>,
+        turn: RuntimeTurnId,
+    ) -> Self {
+        Self {
+            buffer,
+            state,
+            turn,
+        }
+    }
+}
+
+impl Drop for LocalLifecycleFeed {
+    fn drop(&mut self) {
+        let mut state = self
+            .state
+            .lock()
+            .expect("local watcher state lock poisoned");
+        let owns_current = state
+            .feeds
+            .get(&self.turn)
+            .is_some_and(|current| Arc::ptr_eq(current, &self.buffer));
+        if owns_current {
+            state.close_feed(&self.turn);
+            state.feeds.remove(&self.turn);
+        }
     }
 }
 
@@ -132,6 +162,48 @@ impl LocalWatcherState {
                 .expect("watcher lifecycle buffer lock poisoned")
                 .close();
         }
+    }
+}
+
+impl super::LocalWatcherHostService {
+    pub(super) fn open_lifecycle_feed_now(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> Result<WatcherLifecycleSubscription, RuntimeFailure> {
+        let mut state = self
+            .state
+            .lock()
+            .expect("local watcher state lock poisoned");
+        if state.is_retired(&turn) {
+            return Err(crate::watcher::support::turn_retired_failure());
+        }
+        if state.feeds.contains_key(&turn) {
+            return Err(crate::output::failure(
+                "swallowtail.local_watcher.lifecycle_feed_duplicate",
+                "Watcher lifecycle feed is already open for this turn",
+            ));
+        }
+        let capacity = self.capacity.saturating_mul(4).max(8);
+        let buffer = std::sync::Arc::new(Mutex::new(LifecycleBuffer::new(capacity)));
+        state
+            .feeds
+            .insert(turn.clone(), std::sync::Arc::clone(&buffer));
+        Ok(WatcherLifecycleSubscription::from_feed(Box::new(
+            LocalLifecycleFeed::new(buffer, std::sync::Arc::clone(&self.state), turn),
+        )))
+    }
+
+    pub(super) fn close_lifecycle_feed_now(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> Result<(), RuntimeFailure> {
+        let mut state = self
+            .state
+            .lock()
+            .expect("local watcher state lock poisoned");
+        state.close_feed(&turn);
+        state.feeds.remove(&turn);
+        Ok(())
     }
 }
 

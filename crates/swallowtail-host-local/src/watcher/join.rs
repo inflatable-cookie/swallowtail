@@ -97,7 +97,7 @@ impl LocalWatcherHostService {
                             .registry
                             .join(watcher_id)
                             .map_err(registry_failure)?;
-                        None
+                        Some(snapshot)
                     }
                     WatcherLifecyclePhase::Joined => None,
                 }

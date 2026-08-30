@@ -151,11 +151,13 @@ impl ClaudeCodeActivityProjection {
 
     pub(crate) fn stop_hook(
         &mut self,
-        provider_ref: Option<&str>,
+        phase: &str,
+        session: Option<&str>,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        let provider_ref = session.map(|session| format!("{session}|{phase}"));
         Ok(vec![self.completed(
             "hook",
-            provider_ref,
+            provider_ref.as_deref(),
             ActivityKind::Hook,
             None,
             ActivityDisclosure::IdentityAndLifecycleOnly,

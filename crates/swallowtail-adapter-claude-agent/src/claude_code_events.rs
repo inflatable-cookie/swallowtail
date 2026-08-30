@@ -72,7 +72,7 @@ impl ClaudeCodeEventParser {
         self.event(RuntimeEventKind::Activity(observation))
     }
 
-    pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
+    pub(crate) fn finish(&mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
@@ -81,8 +81,8 @@ impl ClaudeCodeEventParser {
         Ok((
             events,
             ParsedTerminal {
-                final_output: self.final_output,
-                provider_failure: self.provider_failure,
+                final_output: self.final_output.take(),
+                provider_failure: self.provider_failure.take(),
                 initialized: self.init_seen,
                 terminal_seen: self.terminal_seen,
             },
@@ -150,9 +150,12 @@ impl ClaudeCodeEventParser {
 
     fn parse_stop_hook(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         self.require_session(payload)?;
-        let activity = self
-            .activity
-            .stop_hook(payload.get("uuid").and_then(Value::as_str))?;
+        let phase = match payload.get("subtype").and_then(Value::as_str) {
+            Some("hook_started") => "Stop.started",
+            Some("hook_response") => "Stop.responded",
+            _ => return Err(malformed_stream()),
+        };
+        let activity = self.activity.stop_hook(phase, self.session_id.as_deref())?;
         Ok(self.activity_events(activity))
     }
 

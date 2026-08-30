@@ -160,4 +160,13 @@ pub trait WatcherHostService: Send + Sync {
         &self,
         turn: RuntimeTurnId,
     ) -> BoxFuture<'_, Result<super::WatcherLifecycleSubscription, RuntimeFailure>>;
+
+    /// Closes and releases the turn-scoped lifecycle feed.
+    ///
+    /// Idempotent. Must run on every start-failure path so a later attempt for
+    /// the same turn is not rejected as a duplicate observer.
+    fn close_lifecycle_feed(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> BoxFuture<'_, Result<(), RuntimeFailure>>;
 }

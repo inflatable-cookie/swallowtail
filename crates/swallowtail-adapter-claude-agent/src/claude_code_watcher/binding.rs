@@ -113,16 +113,23 @@ impl WatcherBinding {
 
 impl Drop for WatcherBinding {
     fn drop(&mut self) {
-        if let Some(lease) = self.lease.take() {
-            let _ = std::thread::spawn(move || drop(lease)).join();
+        if self.lease.is_none() && self.resource.is_none() {
+            return;
         }
-        if let Some(resource) = self.resource.take() {
-            let resources = Arc::clone(&self.resources);
-            let _ = std::thread::spawn(move || {
+        let lease = self.lease.take();
+        let resource = self.resource.take();
+        let bridge = Arc::clone(&self.bridge);
+        let resources = Arc::clone(&self.resources);
+        let _ = host_thread(move || {
+            if let Some(lease) = lease {
+                let _ = futures_executor::block_on(
+                    bridge.close(lease, swallowtail_core::WatcherCleanupCause::Failed),
+                );
+            }
+            if let Some(resource) = resource {
                 let _ = futures_executor::block_on(resources.release(resource));
-            })
-            .join();
-        }
+            }
+        });
     }
 }
 

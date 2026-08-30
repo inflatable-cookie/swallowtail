@@ -38,9 +38,9 @@ pub(super) async fn monitor_watcher(
     if let Err(error) = process_result {
         entry.record_join_error(error);
     }
+    let mut locked = state.lock().expect("local watcher state lock poisoned");
     let snapshot = {
-        let mut state = state.lock().expect("local watcher state lock poisoned");
-        let Some(turn_state) = state.active.get_mut(&turn) else {
+        let Some(turn_state) = locked.active.get_mut(&turn) else {
             return;
         };
         let _ = turn_state
@@ -52,9 +52,6 @@ pub(super) async fn monitor_watcher(
             .ok()
     };
     if let Some(snapshot) = snapshot {
-        let _ = state
-            .lock()
-            .expect("local watcher state lock poisoned")
-            .publish(&turn, snapshot);
+        let _ = locked.publish(&turn, snapshot);
     }
 }

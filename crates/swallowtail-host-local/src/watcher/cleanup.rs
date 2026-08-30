@@ -17,7 +17,7 @@ impl LocalWatcherHostService {
         owning_turn: swallowtail_core::WatcherOwningTurn,
         watcher_id: WatcherId,
     ) -> Result<(WatcherStopAcknowledgement, super::WatcherSnapshot), RuntimeFailure> {
-        let (entry, acknowledgement, snapshot, turn) = {
+        let (entry, acknowledgement, snapshot, _turn) = {
             let turn = super::support::runtime_turn(&owning_turn)?;
             let mut state = self
                 .state
@@ -41,18 +41,21 @@ impl LocalWatcherHostService {
                     "Watcher turn cleanup has already closed this turn",
                 ));
             }
-            let (acknowledgement, snapshot) = turn_state
-                .registry
-                .request_stop(&owning_turn, &watcher_id)
-                .map_err(registry_failure)?;
-            let entry = turn_state
-                .entries
-                .get(&watcher_id)
-                .cloned()
-                .ok_or_else(entry_missing_failure)?;
+            let (acknowledgement, snapshot, entry) = {
+                let (acknowledgement, snapshot) = turn_state
+                    .registry
+                    .request_stop(&owning_turn, &watcher_id)
+                    .map_err(registry_failure)?;
+                let entry = turn_state
+                    .entries
+                    .get(&watcher_id)
+                    .cloned()
+                    .ok_or_else(entry_missing_failure)?;
+                (acknowledgement, snapshot, entry)
+            };
+            state.publish(&turn, snapshot.clone())?;
             (entry, acknowledgement, snapshot, turn)
         };
-        self.publish_lifecycle(&turn, snapshot.clone())?;
         if matches!(acknowledgement, WatcherStopAcknowledgement::Stopped) {
             request_process_stop(&entry.process)?;
         }
@@ -82,33 +85,41 @@ impl LocalWatcherHostService {
                     turn_missing_failure()
                 });
             };
-            turn_state.closed = true;
-            let snapshots = turn_state
-                .registry
-                .list(&owning_turn)
-                .map_err(registry_failure)?;
-            let mut entries = Vec::with_capacity(snapshots.len());
-            for snapshot in snapshots {
-                let needs_stop = matches!(
-                    snapshot.phase(),
-                    WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running
-                );
-                if needs_stop {
-                    turn_state
-                        .registry
-                        .complete(
-                            snapshot.watcher_id(),
-                            cause.terminal_cause(),
-                            Some(summary(cause.terminal_cause().as_str())),
-                        )
-                        .map_err(registry_failure)?;
+            let (entries, terminals) = {
+                turn_state.closed = true;
+                let snapshots = turn_state
+                    .registry
+                    .list(&owning_turn)
+                    .map_err(registry_failure)?;
+                let mut entries = Vec::with_capacity(snapshots.len());
+                let mut terminals = Vec::new();
+                for snapshot in snapshots {
+                    let needs_stop = matches!(
+                        snapshot.phase(),
+                        WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running
+                    );
+                    if needs_stop {
+                        let terminal = turn_state
+                            .registry
+                            .complete(
+                                snapshot.watcher_id(),
+                                cause.terminal_cause(),
+                                Some(summary(cause.terminal_cause().as_str())),
+                            )
+                            .map_err(registry_failure)?;
+                        terminals.push(terminal);
+                    }
+                    let entry = turn_state
+                        .entries
+                        .get(snapshot.watcher_id())
+                        .cloned()
+                        .ok_or_else(entry_missing_failure)?;
+                    entries.push((snapshot.watcher_id().clone(), entry, needs_stop));
                 }
-                let entry = turn_state
-                    .entries
-                    .get(snapshot.watcher_id())
-                    .cloned()
-                    .ok_or_else(entry_missing_failure)?;
-                entries.push((snapshot.watcher_id().clone(), entry, needs_stop));
+                (entries, terminals)
+            };
+            for terminal in terminals {
+                state.publish(&turn, terminal)?;
             }
             entries
         };

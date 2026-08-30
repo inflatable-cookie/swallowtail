@@ -12,7 +12,7 @@ use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle,
     ProcessInputChunk, ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
     RuntimeRunId, RuntimeTurnId, ScopeId, StructuredRunDriver, StructuredRunRequest,
-    runtime_event_channel, terminal_outcome_channel,
+    WatcherHostService, runtime_event_channel, terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.headless";
@@ -192,22 +192,43 @@ impl ClaudeCodeHeadlessDriver {
         } else {
             None
         };
-        let watcher_feed = if let Some(turn) = watcher_turn.as_ref() {
-            let watcher = services.watcher().cloned().ok_or_else(|| {
+        let watcher = if self.watchers {
+            Some(services.watcher().cloned().ok_or_else(|| {
                 failure(
                     "swallowtail.claude_code.headless.host_service_missing",
                     "Claude Code headless requires the preflight-bound watcher service",
                 )
-            })?;
-            Some(watcher.open_lifecycle_feed(turn.clone()).await?)
+            })?)
+        } else {
+            None
+        };
+        let watcher_feed = if let Some(turn) = watcher_turn.as_ref() {
+            Some(
+                watcher
+                    .as_ref()
+                    .expect("watcher opt-in retains the host watcher port")
+                    .open_lifecycle_feed(turn.clone())
+                    .await?,
+            )
         } else {
             None
         };
         let watcher_binding = if let Some(turn) = watcher_turn.as_ref() {
-            Some(
-                crate::claude_code_watcher::open_binding(&services, scope.clone(), turn.clone())
-                    .await?,
-            )
+            match crate::claude_code_watcher::open_binding(&services, scope.clone(), turn.clone())
+                .await
+            {
+                Ok(binding) => Some(binding),
+                Err(error) => {
+                    if let Some(watcher) = watcher.as_ref() {
+                        let _ = WatcherHostService::close_lifecycle_feed(
+                            watcher.as_ref(),
+                            turn.clone(),
+                        )
+                        .await;
+                    }
+                    return Err(error);
+                }
+            }
         } else {
             None
         };

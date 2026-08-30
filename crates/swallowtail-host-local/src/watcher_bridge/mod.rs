@@ -252,7 +252,7 @@ fn shutdown_live(
     for connection in connections {
         let _ = connection.join();
     }
-    match drive(live.watcher.stop_and_join_all(turn, cause)) {
+    let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
         Ok((_, outcome)) => Ok(outcome),
         Err(error)
             if matches!(
@@ -264,5 +264,7 @@ fn shutdown_live(
             Ok(CleanupOutcome::NotApplicable)
         }
         Err(error) => Err(error),
-    }
+    };
+    let _ = drive(live.watcher.close_lifecycle_feed(turn));
+    outcome
 }

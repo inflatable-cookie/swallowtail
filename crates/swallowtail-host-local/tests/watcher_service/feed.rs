@@ -2,9 +2,12 @@ use super::{operation_data, runtime_turn, watcher_host};
 use futures_executor::block_on;
 use std::task::{Context, Poll, Waker};
 use std::time::{Duration, Instant};
-use swallowtail_core::{WatcherLifecyclePhase, WatcherRequester};
+use swallowtail_core::{
+    WatcherCleanupCause, WatcherLifecyclePhase, WatcherOwningTurn, WatcherRequester,
+};
 use swallowtail_runtime::{
-    ActivityKind, ActivityLifecyclePhase, WatcherActivityProjection, project_watcher_activity,
+    ActivityKind, ActivityLifecyclePhase, WatcherActivityProjection, WatcherWaitOptions,
+    project_watcher_activity,
 };
 
 #[test]
@@ -54,6 +57,7 @@ fn silent_fast_watcher_emits_accepted_running_and_terminal() {
         projections.last().map(|observation| observation.phase()),
         Some(ActivityLifecyclePhase::Completed)
     );
+    settle(&watcher, turn, [_accepted.watcher_id().clone()]);
 }
 
 #[test]
@@ -98,6 +102,65 @@ fn interleaved_watchers_preserve_host_order_without_regression() {
         }
     }
     assert!(snapshots.len() >= 6);
+    settle(
+        &watcher,
+        turn,
+        [first.watcher_id().clone(), second.watcher_id().clone()],
+    );
+}
+
+#[test]
+fn closed_feed_can_be_reopened_for_the_same_turn() {
+    let local = watcher_host("exit-zero", 2);
+    let watcher = local.services().watcher().expect("watcher").clone();
+    let turn = runtime_turn("turn-reopen");
+    let first = block_on(watcher.open_lifecycle_feed(turn.clone())).expect("feed");
+    drop(first);
+    block_on(watcher.open_lifecycle_feed(turn)).expect("reopen after close");
+}
+
+#[test]
+fn explicit_close_then_retry_does_not_treat_the_old_subscription_as_current() {
+    let local = watcher_host("exit-zero", 2);
+    let watcher = local.services().watcher().expect("watcher").clone();
+    let turn = runtime_turn("turn-retry-feed");
+    let first = block_on(watcher.open_lifecycle_feed(turn.clone())).expect("feed");
+    block_on(watcher.close_lifecycle_feed(turn.clone())).expect("close");
+    let second = block_on(watcher.open_lifecycle_feed(turn.clone())).expect("retry");
+    drop(first);
+    drop(second);
+    block_on(watcher.open_lifecycle_feed(turn)).expect("reopen after stale drop");
+}
+
+#[test]
+fn stop_and_join_publishes_terminal_for_an_active_watcher() {
+    let local = watcher_host("sleep", 2);
+    let watcher = local.services().watcher().expect("watcher").clone();
+    let turn = runtime_turn("turn-cleanup-terminal");
+    let mut feed = block_on(watcher.open_lifecycle_feed(turn.clone())).expect("feed");
+    let started = block_on(watcher.accept_start(
+        turn.clone(),
+        WatcherRequester::Operator,
+        operation_data("sleep-operation"),
+    ))
+    .expect("start");
+    let _ = drain_until_count(&mut feed, 2, Duration::from_secs(2));
+    block_on(watcher.stop_and_join_all(turn.clone(), WatcherCleanupCause::Cancelled))
+        .expect("join all");
+    let snapshots = drain_until_count(&mut feed, 8, Duration::from_millis(200));
+    assert!(
+        snapshots
+            .iter()
+            .any(|snapshot| snapshot.phase() == WatcherLifecyclePhase::Terminal),
+        "cleanup omitted terminal: {:?}",
+        snapshots
+            .iter()
+            .map(|snapshot| snapshot.phase())
+            .collect::<Vec<_>>()
+    );
+    drop(feed);
+    let _ = block_on(watcher.close_lifecycle_feed(turn));
+    let _ = started;
 }
 
 fn drain_until_terminal(
@@ -134,6 +197,18 @@ fn drain_until_count(
         std::thread::sleep(Duration::from_millis(10));
     }
     snapshots
+}
+
+fn settle(
+    watcher: &std::sync::Arc<dyn swallowtail_runtime::WatcherHostService>,
+    turn: swallowtail_runtime::RuntimeTurnId,
+    ids: impl IntoIterator<Item = swallowtail_core::WatcherId>,
+) {
+    let owning = WatcherOwningTurn::new(turn.as_str()).expect("owning");
+    for id in ids {
+        let _ = block_on(watcher.wait(owning.clone(), id, WatcherWaitOptions::new()));
+    }
+    let _ = block_on(watcher.finalize_turn(turn));
 }
 
 fn try_drain(

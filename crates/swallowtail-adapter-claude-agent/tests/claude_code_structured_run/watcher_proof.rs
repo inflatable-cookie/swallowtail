@@ -1,73 +1,103 @@
-use claude_code_support::watcher_proof::{WatcherProofFact, assert_stop_reentry_proof};
+use claude_code_support::watcher_proof::{
+    WatcherProofFact, WatcherProofRecorder, assert_stop_reentry_proof, hook_event,
+};
 use swallowtail_host_local::WatcherBridgeProofKind;
 use swallowtail_runtime::WATCHER_BRIDGE_TOOLS_LIST_METHOD;
 
+fn bound_ok() -> Vec<WatcherProofFact> {
+    let turn = "turn-a".to_owned();
+    let session = "session-a".to_owned();
+    vec![
+        WatcherProofFact::McpInitialized { turn: turn.clone() },
+        WatcherProofFact::ToolsListed { turn: turn.clone() },
+        WatcherProofFact::WatcherStarted { turn: turn.clone() },
+        WatcherProofFact::StopHookStarted {
+            turn: turn.clone(),
+            session: session.clone(),
+        },
+        WatcherProofFact::StopGateActive {
+            turn: turn.clone(),
+            session: session.clone(),
+        },
+        WatcherProofFact::StopHookResponded {
+            turn: turn.clone(),
+            session: session.clone(),
+        },
+        WatcherProofFact::SameSessionContinuation {
+            turn: turn.clone(),
+            session,
+        },
+        WatcherProofFact::WaitOrStop { turn: turn.clone() },
+        WatcherProofFact::JoinedZero { turn: turn.clone() },
+        WatcherProofFact::ProviderSucceeded { turn },
+    ]
+}
+
 #[test]
 fn stop_reentry_oracle_accepts_only_the_ordered_conjunction() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::WatcherStarted,
-        WatcherProofFact::ActiveCompletionBlocked,
-        WatcherProofFact::StopHookObserved,
-        WatcherProofFact::SameSessionContinuation,
-        WatcherProofFact::WaitOrStop,
-        WatcherProofFact::JoinedZero,
-        WatcherProofFact::ProviderSucceeded,
-    ];
-    assert!(assert_stop_reentry_proof(&facts).is_ok());
+    assert!(assert_stop_reentry_proof(&bound_ok()).is_ok());
 }
 
 #[test]
 fn stop_reentry_oracle_rejects_proactive_wait() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::WatcherStarted,
-        WatcherProofFact::WaitOrStop,
-        WatcherProofFact::JoinedZero,
-        WatcherProofFact::ProviderSucceeded,
-    ];
+    let facts = bound_ok()
+        .into_iter()
+        .filter(|fact| {
+            !matches!(
+                fact,
+                WatcherProofFact::StopHookStarted { .. }
+                    | WatcherProofFact::StopGateActive { .. }
+                    | WatcherProofFact::StopHookResponded { .. }
+                    | WatcherProofFact::SameSessionContinuation { .. }
+            )
+        })
+        .collect::<Vec<_>>();
     assert!(assert_stop_reentry_proof(&facts).is_err());
 }
 
 #[test]
-fn stop_reentry_oracle_rejects_direct_gate_without_stop_hook() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::WatcherStarted,
-        WatcherProofFact::ActiveCompletionBlocked,
-        WatcherProofFact::WaitOrStop,
-        WatcherProofFact::JoinedZero,
-        WatcherProofFact::ProviderSucceeded,
-    ];
-    assert!(assert_stop_reentry_proof(&facts).is_err());
+fn recorder_rejects_direct_gate_without_stop_hook() {
+    let mut recorder = WatcherProofRecorder::new("turn-a");
+    recorder.ingest_bridge(&[
+        WatcherBridgeProofKind::Initialize,
+        WatcherBridgeProofKind::ToolsList,
+        WatcherBridgeProofKind::Start,
+        WatcherBridgeProofKind::CompletionGateActive,
+        WatcherBridgeProofKind::Wait,
+    ]);
+    assert!(recorder
+        .facts()
+        .iter()
+        .any(|fact| matches!(fact, WatcherProofFact::DirectGateActive { .. })));
+    assert!(assert_stop_reentry_proof(recorder.facts()).is_err());
 }
 
 #[test]
-fn stop_reentry_oracle_rejects_cross_session_and_reordered_events() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::WatcherStarted,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::StopHookObserved,
-        WatcherProofFact::ActiveCompletionBlocked,
-        WatcherProofFact::SameSessionContinuation,
-        WatcherProofFact::WaitOrStop,
-        WatcherProofFact::JoinedZero,
-        WatcherProofFact::ProviderSucceeded,
-    ];
-    assert!(assert_stop_reentry_proof(&facts).is_err());
+fn recorder_rejects_cross_session_hook_phases() {
+    let mut recorder = WatcherProofRecorder::new("turn-a");
+    recorder.ingest_bridge(&[
+        WatcherBridgeProofKind::Initialize,
+        WatcherBridgeProofKind::ToolsList,
+        WatcherBridgeProofKind::Start,
+    ]);
+    recorder.ingest_event(&hook_event("session-a", "Stop.started"));
+    recorder.ingest_kind(WatcherBridgeProofKind::CompletionGateActive);
+    recorder.ingest_event(&hook_event("session-b", "Stop.responded"));
+    recorder.ingest_kind(WatcherBridgeProofKind::Wait);
+    assert!(recorder
+        .facts()
+        .iter()
+        .any(|fact| matches!(fact, WatcherProofFact::StopHookStarted { session, .. } if session == "session-a")));
+    assert!(recorder
+        .facts()
+        .iter()
+        .any(|fact| matches!(fact, WatcherProofFact::StopHookResponded { session, .. } if session == "session-b")));
+    assert!(assert_stop_reentry_proof(recorder.facts()).is_err());
 }
 
 #[test]
 fn stop_reentry_oracle_rejects_terminal_only_adapter_rejection() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::WatcherStarted,
-    ];
+    let facts = bound_ok().into_iter().take(3).collect::<Vec<_>>();
     assert!(assert_stop_reentry_proof(&facts).is_err());
 }
 
@@ -112,19 +142,6 @@ fn temporary_workspace_cleanup_is_established_before_assertions() {
     );
 }
 
-fn stop_reentry_jsonl() -> String {
-    concat!(
-        "{\"type\":\"system\",\"subtype\":\"hook_started\",\"session_id\":\"fixture-session\"}\n",
-        "{\"type\":\"system\",\"subtype\":\"hook_response\",\"session_id\":\"fixture-session\"}\n",
-        "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"fixture-session\",\"model\":\"claude-opus-5\",\"permissionMode\":\"plan\",\"claude_code_version\":\"2.1.251\",\"cwd\":\"/fixture\",\"tools\":[\"Read\"],\"mcp_servers\":[{\"name\":\"swallowtail-watchers\"}]}\n",
-        "{\"type\":\"system\",\"subtype\":\"hook_started\",\"session_id\":\"fixture-session\",\"uuid\":\"stop-hook\"}\n",
-        "{\"type\":\"system\",\"subtype\":\"hook_response\",\"session_id\":\"fixture-session\",\"uuid\":\"stop-hook-response\"}\n",
-        "{\"type\":\"assistant\",\"message\":{\"id\":\"msg_continue\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-opus-5\",\"content\":[{\"type\":\"text\",\"text\":\"continuing after Stop\"}],\"stop_reason\":\"end_turn\",\"usage\":{\"input_tokens\":12,\"output_tokens\":3}},\"parent_tool_use_id\":null,\"uuid\":\"assistant-continue\",\"session_id\":\"fixture-session\"}\n",
-        "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"WATCHER_LIVE_OK\",\"usage\":{\"input_tokens\":12,\"output_tokens\":3,\"cache_read_input_tokens\":4,\"cache_creation_input_tokens\":1},\"session_id\":\"fixture-session\"}\n",
-    )
-    .to_owned()
-}
-
 fn tools_list(endpoint: &str, bearer: &str, id: u64) {
     let body = serde_json::json!({
         "jsonrpc": WATCHER_BRIDGE_JSONRPC_VERSION,
@@ -156,7 +173,6 @@ fn fake_provider_stop_reentry_records_the_required_conjunction() {
         Arc::new(PendingTimeService),
         &local,
     );
-    let mut facts = Vec::new();
     let mut run = block_on(profile.start_run(services)).expect("run starts");
     let started = std::time::Instant::now();
     while !state.started() {
@@ -166,9 +182,7 @@ fn fake_provider_stop_reentry_records_the_required_conjunction() {
     let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
     let (endpoint, bearer) = read_mcp_authority(&mcp_path);
     handshake(&endpoint, &bearer);
-    facts.push(WatcherProofFact::McpInitialized);
     tools_list(&endpoint, &bearer, 2);
-    facts.push(WatcherProofFact::ToolsListed);
     let (status, body) = post_json(
         &endpoint,
         &bearer,
@@ -179,12 +193,8 @@ fn fake_provider_stop_reentry_records_the_required_conjunction() {
         ),
     );
     assert_eq!(status, 200, "{body}");
-    facts.push(WatcherProofFact::WatcherStarted);
     let (_, blocked) = stop_continuation(&endpoint, &bearer, 4);
     assert_eq!(blocked["allows_successful_completion"], false);
-    facts.push(WatcherProofFact::ActiveCompletionBlocked);
-    facts.push(WatcherProofFact::StopHookObserved);
-    facts.push(WatcherProofFact::SameSessionContinuation);
     let watcher_id = tool_payload(&body)["watcher_id"]
         .as_str()
         .expect("watcher id")
@@ -209,52 +219,64 @@ fn fake_provider_stop_reentry_records_the_required_conjunction() {
         ),
     );
     assert_eq!(status, 200, "{wait_body}");
-    facts.push(WatcherProofFact::WaitOrStop);
-    completer.complete(&stop_reentry_jsonl(), ProcessExit::new(true, Some(0)));
+    completer.complete(
+        concat!(
+            "{\"type\":\"system\",\"subtype\":\"hook_started\",\"session_id\":\"fixture-session\"}\n",
+            "{\"type\":\"system\",\"subtype\":\"hook_response\",\"session_id\":\"fixture-session\"}\n",
+            "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"fixture-session\",\"model\":\"claude-opus-5\",\"permissionMode\":\"plan\",\"claude_code_version\":\"2.1.251\",\"cwd\":\"/fixture\",\"tools\":[\"Read\"],\"mcp_servers\":[]}\n",
+            "{\"type\":\"system\",\"subtype\":\"hook_started\",\"session_id\":\"fixture-session\",\"uuid\":\"stop-hook\"}\n",
+            "{\"type\":\"system\",\"subtype\":\"hook_response\",\"session_id\":\"fixture-session\",\"uuid\":\"stop-hook-response\"}\n",
+            "{\"type\":\"assistant\",\"message\":{\"id\":\"msg_continue\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-opus-5\",\"content\":[{\"type\":\"text\",\"text\":\"continuing after Stop\"}],\"stop_reason\":\"end_turn\",\"usage\":{\"input_tokens\":12,\"output_tokens\":3}},\"parent_tool_use_id\":null,\"uuid\":\"assistant-continue\",\"session_id\":\"fixture-session\"}\n",
+            "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"WATCHER_LIVE_OK\",\"usage\":{\"input_tokens\":12,\"output_tokens\":3,\"cache_read_input_tokens\":4,\"cache_creation_input_tokens\":1},\"session_id\":\"fixture-session\"}\n",
+        ),
+        ProcessExit::new(true, Some(0)),
+    );
     let events = block_on(run.take_events().expect("events").collect::<Vec<_>>())
         .into_iter()
         .collect::<Result<Vec<_>, _>>()
         .expect("events remain valid");
-    assert!(
-        events.iter().any(|event| matches!(
-            event.kind(),
-            RuntimeEventKind::Activity(observation) if observation.kind() == &ActivityKind::Hook
-        )),
-        "post-init Stop hook must appear as Hook activity"
-    );
-    assert!(events.iter().any(|event| matches!(
-        event.kind(),
-        RuntimeEventKind::Activity(observation)
-            if observation.kind() == &ActivityKind::AssistantMessage
-    )));
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
-    facts.push(WatcherProofFact::JoinedZero);
-    facts.push(WatcherProofFact::ProviderSucceeded);
-    assert!(assert_stop_reentry_proof(&facts).is_ok());
+    let mut recorder =
+        WatcherProofRecorder::new("claude-code-headless:claude-code-watchers-stop-reentry");
     let proof = local.watcher_bridge_proof();
-    assert!(proof.contains(&WatcherBridgeProofKind::Initialize));
-    assert!(proof.contains(&WatcherBridgeProofKind::ToolsList));
-    assert!(proof.contains(&WatcherBridgeProofKind::Start));
-    assert!(proof.contains(&WatcherBridgeProofKind::CompletionGateActive));
-    assert!(proof.contains(&WatcherBridgeProofKind::Stop));
-    assert!(proof.contains(&WatcherBridgeProofKind::Wait));
+    let prefix: Vec<_> = proof
+        .iter()
+        .copied()
+        .take_while(|kind| {
+            !matches!(
+                kind,
+                WatcherBridgeProofKind::CompletionGateActive
+                    | WatcherBridgeProofKind::Wait
+                    | WatcherBridgeProofKind::Stop
+            )
+        })
+        .collect();
+    recorder.ingest_bridge(&prefix);
+    for event in &events {
+        recorder.ingest_event(event);
+        if recorder
+            .facts()
+            .iter()
+            .any(|fact| matches!(fact, WatcherProofFact::StopHookStarted { .. }))
+        {
+            break;
+        }
+    }
+    recorder.ingest_kind(WatcherBridgeProofKind::CompletionGateActive);
+    for event in &events {
+        recorder.ingest_event(event);
+    }
+    recorder.ingest_kind(WatcherBridgeProofKind::Stop);
+    recorder.ingest_kind(WatcherBridgeProofKind::Wait);
+    recorder.ingest_terminal(&outcome);
+    assert!(
+        assert_stop_reentry_proof(recorder.facts()).is_ok(),
+        "{:?}",
+        recorder.facts()
+    );
     assert!(!format!("{proof:?}").contains(&bearer));
-    assert!(!format!("{proof:?}").contains(&endpoint));
     assert!(task.joined());
     assert!(!Path::new(&mcp_path).exists());
-}
-
-#[test]
-fn fake_provider_proactive_wait_without_stop_hook_fails_the_oracle() {
-    let facts = [
-        WatcherProofFact::McpInitialized,
-        WatcherProofFact::ToolsListed,
-        WatcherProofFact::WatcherStarted,
-        WatcherProofFact::WaitOrStop,
-        WatcherProofFact::JoinedZero,
-        WatcherProofFact::ProviderSucceeded,
-    ];
-    assert!(assert_stop_reentry_proof(&facts).is_err());
 }

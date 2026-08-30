@@ -59,3 +59,9 @@ milestones at 003, 007.
 
 Card-ready prose elsewhere in the generation index uses
 `card 011 is ready` / `cards 011-012 are ready` and must match frontmatter.
+
+## Next Task
+
+Implement the active task named by the [roadmaps front door](README.md#next-task).
+This file records status grammar; the sole actionable pointer stays in the
+front door.

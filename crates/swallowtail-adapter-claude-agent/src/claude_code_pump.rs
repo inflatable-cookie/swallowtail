@@ -4,13 +4,16 @@ use crate::claude_code_watcher::WatcherBinding;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::{ModelId, SafeDiagnostic, WatcherCleanupCause};
+use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
     HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus, WatcherActivityProjection,
-    WatcherLifecycleSubscription, WatcherSnapshot, project_watcher_activity,
+    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus, WatcherLifecycleSubscription,
+    WatcherSnapshot,
 };
+
+#[path = "claude_code_pump_lifecycle.rs"]
+mod lifecycle;
 
 const ROUTE: &str = "claude-code.headless";
 
@@ -44,35 +47,44 @@ pub(crate) async fn pump(
         {
             NextWork::Deadline => {
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return finish_with_watchers(
+                return lifecycle::finish_with_watchers(
                     TerminalOutcome::new(TerminalStatus::TimedOut, cleanup),
-                    host.watcher_binding.take(),
+                    &mut parser,
+                    &events,
+                    host,
                 )
                 .await;
             }
             NextWork::Lifecycle(snapshot) => {
-                if let Err(error) =
-                    emit_lifecycle(&mut parser, &events, host.watcher_turn.as_ref(), snapshot)
-                {
+                if let Err(error) = lifecycle::emit_lifecycle(
+                    &mut parser,
+                    &events,
+                    host.watcher_turn.as_ref(),
+                    snapshot,
+                ) {
                     let cleanup = force_cleanup(process.as_ref()).await;
-                    return finish_with_watchers(
+                    return lifecycle::finish_with_watchers(
                         TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                             cleanup,
                         ),
-                        host.watcher_binding.take(),
+                        &mut parser,
+                        &events,
+                        host,
                     )
                     .await;
                 }
             }
             NextWork::FeedFailed(error) => {
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return finish_with_watchers(
+                return lifecycle::finish_with_watchers(
                     TerminalOutcome::new(
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                         cleanup,
                     ),
-                    host.watcher_binding.take(),
+                    &mut parser,
+                    &events,
+                    host,
                 )
                 .await;
             }
@@ -81,9 +93,11 @@ pub(crate) async fn pump(
                     Ok(parsed) => {
                         if send_all(&events, parsed).is_err() {
                             let cleanup = force_cleanup(process.as_ref()).await;
-                            return finish_with_watchers(
+                            return lifecycle::finish_with_watchers(
                                 event_delivery_failed(cleanup),
-                                host.watcher_binding.take(),
+                                &mut parser,
+                                &events,
+                                host,
                             )
                             .await;
                         }
@@ -91,12 +105,14 @@ pub(crate) async fn pump(
                     Err(error) => {
                         emit_protocol_debug(&host.services, &error, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
-                        return finish_with_watchers(
+                        return lifecycle::finish_with_watchers(
                             TerminalOutcome::new(
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                 cleanup,
                             ),
-                            host.watcher_binding.take(),
+                            &mut parser,
+                            &events,
+                            host,
                         )
                         .await;
                     }
@@ -107,37 +123,43 @@ pub(crate) async fn pump(
             NextWork::Process(Err(error)) => {
                 emit_host_process_debug(&host.services, &error, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return finish_with_watchers(
+                return lifecycle::finish_with_watchers(
                     TerminalOutcome::new(
                         TerminalStatus::HostFailed(error.diagnostic().clone()),
                         cleanup,
                     ),
-                    host.watcher_binding.take(),
+                    &mut parser,
+                    &events,
+                    host,
                 )
                 .await;
             }
         }
     }
     let exit = process.wait().await;
-    if let Err(error) = drain_lifecycle(
+    if let Err(error) = lifecycle::drain_lifecycle(
         &mut parser,
         &events,
         host.watcher_feed.as_mut(),
         host.watcher_turn.as_ref(),
     ) {
-        return finish_with_watchers(
+        return lifecycle::finish_with_watchers(
             TerminalOutcome::new(
                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                 cleanup_from_wait(&exit),
             ),
-            host.watcher_binding.take(),
+            &mut parser,
+            &events,
+            host,
         )
         .await;
     }
     if cancellation.is_requested() {
-        return finish_with_watchers(
+        return lifecycle::finish_with_watchers(
             TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit)),
-            host.watcher_binding.take(),
+            &mut parser,
+            &events,
+            host,
         )
         .await;
     }
@@ -174,71 +196,7 @@ pub(crate) async fn pump(
             )
         }
     };
-    finish_with_watchers(outcome, host.watcher_binding.take()).await
-}
-
-async fn finish_with_watchers(
-    mut outcome: TerminalOutcome,
-    binding: Option<WatcherBinding>,
-) -> TerminalOutcome {
-    let Some(mut binding) = binding else {
-        return outcome;
-    };
-    if matches!(outcome.status(), TerminalStatus::Completed) {
-        match binding.completion_gate() {
-            Ok(state) if state.allows_successful_completion() => {}
-            Ok(_) => {
-                outcome = TerminalOutcome::new(
-                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                        "swallowtail.claude_code.headless.watcher_completion_blocked",
-                        "Claude Code headless cannot complete while host watchers remain active or unjoined",
-                    )),
-                    outcome.cleanup().clone(),
-                );
-            }
-            Err(error) => {
-                outcome = TerminalOutcome::new(
-                    TerminalStatus::HostFailed(error.diagnostic().clone()),
-                    outcome.cleanup().clone(),
-                );
-            }
-        }
-    }
-    let watcher_cleanup = binding.close(cleanup_cause(outcome.status()));
-    replace_cleanup(outcome, watcher_cleanup)
-}
-
-fn cleanup_cause(status: &TerminalStatus) -> WatcherCleanupCause {
-    match status {
-        TerminalStatus::Cancelled => WatcherCleanupCause::Cancelled,
-        TerminalStatus::TimedOut => WatcherCleanupCause::TimedOut,
-        TerminalStatus::Completed => WatcherCleanupCause::Stopped,
-        _ => WatcherCleanupCause::Failed,
-    }
-}
-
-fn replace_cleanup(outcome: TerminalOutcome, watcher_cleanup: CleanupOutcome) -> TerminalOutcome {
-    let cleanup = merge_cleanup(outcome.cleanup().clone(), watcher_cleanup);
-    let rebuilt = TerminalOutcome::new(outcome.status().clone(), cleanup);
-    match outcome.output().cloned() {
-        Some(output) => rebuilt.with_output(output),
-        None => rebuilt,
-    }
-}
-
-fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
-            CleanupOutcome::Failed(diagnostic)
-        }
-        (CleanupOutcome::Degraded(diagnostic), _) | (_, CleanupOutcome::Degraded(diagnostic)) => {
-            CleanupOutcome::Degraded(diagnostic)
-        }
-        (CleanupOutcome::Clean, _) | (_, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
+    lifecycle::finish_with_watchers(outcome, &mut parser, &events, host).await
 }
 
 fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
@@ -298,49 +256,6 @@ async fn next_work(
         read.as_mut().poll(context).map(NextWork::Process)
     })
     .await
-}
-
-fn emit_lifecycle(
-    parser: &mut ClaudeCodeEventParser,
-    events: &RuntimeEventSender,
-    turn: Option<&RuntimeTurnId>,
-    snapshot: WatcherSnapshot,
-) -> Result<(), RuntimeFailure> {
-    let Some(turn) = turn else {
-        return Ok(());
-    };
-    match project_watcher_activity(turn, &snapshot) {
-        Ok(WatcherActivityProjection::Activity(observation)) => {
-            events.send(parser.activity_event(*observation))
-        }
-        Ok(WatcherActivityProjection::Joined { .. }) => Ok(()),
-        Err(error) => Err(RuntimeFailure::new(SafeDiagnostic::new(
-            "swallowtail.claude_code.headless.watcher_activity_projection_failed",
-            error.to_string(),
-        ))),
-    }
-}
-
-fn drain_lifecycle(
-    parser: &mut ClaudeCodeEventParser,
-    events: &RuntimeEventSender,
-    feed: Option<&mut WatcherLifecycleSubscription>,
-    turn: Option<&RuntimeTurnId>,
-) -> Result<(), RuntimeFailure> {
-    let Some(feed) = feed else {
-        return Ok(());
-    };
-    let waker = std::task::Waker::noop();
-    let mut context = std::task::Context::from_waker(waker);
-    loop {
-        match feed.poll_snapshot(&mut context) {
-            Poll::Ready(Some(Ok(snapshot))) => {
-                emit_lifecycle(parser, events, turn, snapshot)?;
-            }
-            Poll::Ready(Some(Err(error))) => return Err(error),
-            Poll::Ready(None) | Poll::Pending => return Ok(()),
-        }
-    }
 }
 
 fn send_all(

@@ -135,7 +135,7 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
         .expect("authenticated watcher run starts");
     let mut events = handle.take_events().expect("event stream");
     let terminal = handle.take_terminal_outcome().expect("terminal outcome");
-    let mut recorder = WatcherProofRecorder::new();
+    let mut recorder = WatcherProofRecorder::new("claude-code-headless:live-claude-code-watcher");
     let outcome = block_on(async {
         while let Some(event) = events.next().await {
             let event = event.expect("live watcher event remains valid");

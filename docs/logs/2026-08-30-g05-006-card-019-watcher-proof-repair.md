@@ -39,6 +39,11 @@ or version-range claim is published.
 - `swallowtail-host-local`: `WatcherBridgeProofKind` and
   `LocalHostServices::watcher_bridge_proof` (reserved operation names only)
 
+Review of PR 126 required a revision: Stop-hook-sourced gate proof, atomic
+lifecycle publish on cleanup, feed close on start failure with identity-safe
+retry, MSRV join of feed fixtures, recorder-driven direct-gate and
+cross-session counterexamples, and a pump lifecycle split.
+
 ## Evidence
 
 - Silent fast-watcher and interleaved host-local feed fixtures

@@ -35,5 +35,6 @@ include!("claude_code_structured_run/maximum_turns_cases.rs");
 include!("claude_code_structured_run/maximum_turns_rejection_cases.rs");
 include!("claude_code_structured_run/profile_case.rs");
 include!("claude_code_structured_run/watcher_cases.rs");
+include!("claude_code_structured_run/watcher_lifecycle.rs");
 include!("claude_code_structured_run/watcher_proof.rs");
 include!("claude_code_structured_run/support.rs");

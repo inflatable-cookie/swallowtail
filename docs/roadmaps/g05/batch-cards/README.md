@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — ready; one exact Haiku live turn authorized; no fallback or retry
+- None.
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — evidence stop; one Haiku turn consumed; no host watcher; claims and prototype withheld
 - [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — completed; exact `2.1.251` credential-free binding and deterministic fixtures; no watcher claim
 - [018-claude-code-2-1-251-claim.md](./018-claude-code-2-1-251-claim.md) — completed; standing currentness; both axes through official `2.1.251`
 - [017-claude-code-2-1-251-identity.md](./017-claude-code-2-1-251-identity.md) — completed; standing currentness; Research 261 compatible-extension

@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-Implement g05.003 card 011 through its committed worker handoff. The one
-authorized live turn uses exact Claude Code `2.1.251`, exact
-`claude-haiku-4-5`, a 90-second deadline, and the existing local provider state.
-No model fallback, second provider attempt, consumer route-feature projection,
-or next card is authorized.
+Define the next g05 direction after card 011's consumed live evidence stop.
+Before any fresh provider authorization, resolve tool-discovery evidence,
+oracle-capable Stop re-entry observation, and complete in-progress watcher
+activity. Do not merge prototype head `49f2692f`, rerun the live selector, or
+promote the consumer route-feature projection note.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # g05.003 Operation-Scoped Watcher Proof
 
-Status: ready
+Status: stopped after live evidence
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-010 and 014-018 complete; card 011 ready with one authorized exact Haiku live turn
+Planning state: cards 007-011 and 014-018 complete; card 011 is a live evidence stop; first route claim withheld
 
 ## Problem
 
@@ -66,10 +66,15 @@ owns the pre-1.0 repair.
       currentness prerequisite; do not map watcher behavior in that lane
 - [x] execute ready card 010 for exact `2.1.251` credential-free binding and
       deterministic provider-free fixtures
-- [ ] execute ready card 011 through its manual worker handoff using the one
+- [x] execute ready card 011 through its manual worker handoff using the one
       authorized exact Haiku live turn
 - [ ] publish the first route claim only after card 011's live and deterministic
       acceptance pass
+
+Card 011's live turn did not create a turn-owned watcher in the host registry,
+so it did not exercise the review oracle. The first route claim stays
+unpublished. Branch-only deterministic and activity work at `49f2692f` is not
+accepted implementation evidence and remains unmerged.
 
 The operator promoted HTTP as the smallest bridge on 2026-08-30. Contract 060
 owns the boundary. Card 016 landed the provider-neutral host bridge. The
@@ -78,11 +83,12 @@ that card 011 could only run after card 010 existed. g05.005 closed the
 base-route currentness prerequisite through official `2.1.251` without mapping
 watcher behavior. The post-merge reassessment admits card 010 only for exact
 `2.1.251` credential-free binding and deterministic provider-free fixtures.
-Card 011 owns separately authorized live acceptance and the first watcher
-claim. Its post-card-010 reassessment now fixes the one-turn authority envelope,
-smallest same-turn counterexample, and stop proof. On 2026-08-30 the operator
-authorized its single attempt using exact `claude-haiku-4-5`. Do not infer a
-watcher range, fall back to a pricier model, or run a second provider attempt.
+Card 011 owned separately authorized live acceptance and the first watcher
+claim. Its single exact `claude-haiku-4-5` attempt matched the installed
+`2.1.251` identity and digest but never reached host watcher start. The attempt
+is consumed. Do not infer a watcher range, fall back to another model, or run a
+second provider attempt without fresh authorization and a repaired proof
+oracle.
 
 ## Acceptance Criteria
 

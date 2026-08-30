@@ -5,6 +5,27 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Effigy validation materializes an untracked repo skill — 2026-08-30
+- Friction: running the card 011 docs/Northstar validation copied the Effigy
+  skill and references into untracked `.agents/skills/effigy/`.
+- Impact: a read-only validation round dirties the planning checkout and risks
+  accidental inclusion in unrelated commits.
+- Fix: make skill materialization explicit, install it outside the repository,
+  or add a repository-owned ignored/generated contract for the output.
+- Surface: Effigy startup or validation skill installation; `.agents/skills/`.
+
+### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
+- Friction: the card 011 Claude watcher probe removes its temporary workspace
+  only after success assertions. Its expected live evidence failure panicked
+  first and left one empty workspace behind.
+- Impact: failed opt-in probes can retain temporary state and contradict their
+  own cleanup claims even when bridge-private material was released.
+- Fix: own the workspace with a drop guard or equivalent finally-style cleanup
+  established before the provider request; assert cleanup after the guarded
+  run returns.
+- Surface: ignored provider live probes with temporary working resources;
+  prototype head `49f2692f`.
+
 ### [ ] Roadmap status census requires undocumented exact prose — 2026-08-30
 - Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording
   until it used the exact phrases `N completed milestones`, `honest evidence

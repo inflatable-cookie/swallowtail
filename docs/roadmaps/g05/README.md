@@ -22,20 +22,20 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | `g05.001` card 001 |
 | Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | `g05.001` card 002 |
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
-| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder proof stopped; watcher lifecycle, registry, supervision, and HTTP bridge core complete | Contracts 058-060; Research 256-260 | `g05.002` and `g05.003` |
+| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and first Claude live proofs stopped; watcher lifecycle, registry, supervision, and HTTP bridge core complete | Contracts 058-060; Research 256-260; card 011 live stop | `g05.002` and `g05.003` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
 
 ## Planned Next Roadmaps
 
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 010 landed the exact `2.1.251` credential-free binding; card 011 is authorized for one exact Haiku live turn
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; first route claim withheld
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
 g05 has five numbered roadmaps: three completed milestones including standing
-currentness at 005, honest evidence stops at 002, and the ready watcher
-milestone at 003.
+currentness at 005, honest evidence stops at 002 and 003, and no ready
+milestone.
 
 ## Current Boundary
 
@@ -58,10 +58,14 @@ could not depend on a live proof owned by later card 011. g05.005 cards 017-018
 closed Research 261 and raised both Claude Code axes through official
 `2.1.251`. Card 010 bound exact `2.1.251` with operation-private MCP, settings,
 skill, Stop continuation, and deterministic provider-free fixtures. It does
-not admit a watcher range or support claim. Card 011 now has an exact one-turn
-authority envelope and same-turn review oracle. The operator authorized that
-one live attempt on 2026-08-30 and selected exact `claude-haiku-4-5`; no
-provider turn has run yet. Card 011 alone owns the first route claim.
+not admit a watcher range or support claim. Card 011 consumed its one
+authorized exact `claude-haiku-4-5` turn on 2026-08-30. Exact identity and the
+frozen digest matched, but the host registry never observed a watcher. The
+same-turn oracle remains unproved and the first route claim stays withheld.
+Prototype head `49f2692f` remains unmerged: its live selector cannot observe
+Stop re-entry, its adapter-local activity feed emits terminal-only activity
+despite the existing runtime projector, and its failed assertion leaves an
+empty temporary workspace.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -72,6 +76,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 010 landed the exact `2.1.251` binding; card 011 has one authorized exact Haiku live turn
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; prototype unmerged
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

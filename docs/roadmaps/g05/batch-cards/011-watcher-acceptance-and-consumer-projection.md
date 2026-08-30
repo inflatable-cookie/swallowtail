@@ -1,6 +1,6 @@
 # 011 Watcher Acceptance And Consumer Projection
 
-Status: ready; one authorized live turn
+Status: complete; live evidence stop after one authorized Haiku turn
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
@@ -69,6 +69,21 @@ reopen or bind that feature here. The separately qualified maximum-turns
 feature also excludes unprobed `2.1.251`. Exact cheap-model selection, one
 provider session, and the 90-second deadline are this probe's cost bounds.
 
+## Live Evidence Stop
+
+The one authorized turn ran once. Installed Claude Code `2.1.251` and the
+frozen native digest matched before contact. Exact `claude-haiku-4-5` completed
+without creating a watcher visible to the host registry. The required watcher
+start, Stop block, same-conversation re-entry, explicit wait or stop, and
+joined-success sequence was not exercised.
+
+No watcher capability, route matrix, or integration-guide claim follows. The
+attempt is consumed. Prototype head `49f2692f` remains unmerged because its
+selector does not observe the Stop re-entry sequence, its completion-only
+activity cannot show consumers a running watcher, and failure cleanup is not
+panic-safe. These are planning and implementation gaps, not authority for a
+second live attempt.
+
 ## Review Oracle
 
 - **Invariant:** one opted-in Claude turn cannot report successful terminal
@@ -129,6 +144,7 @@ provider session, and the 90-second deadline are this probe's cost bounds.
 
 ## Auto-Continuation
 
-No. Return one reviewable PR after an authorized live proof, or one sanitized
-stop report after the single live attempt fails. The worker never retries live
-provider work or starts another card automatically.
+No. The single live attempt returned a sanitized evidence stop. Fresh operator
+authorization and a repaired proof design are required before another provider
+session. Do not merge prototype head `49f2692f` or start another card
+automatically.

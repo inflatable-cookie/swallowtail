@@ -144,8 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has four roadmaps: 2 completed milestones, honest evidence stops at 002,
-and one ready milestone at 003. g05.001 is
+g05 has five roadmaps: 2 completed milestones, honest evidence stops at 002,
+and ready milestones at 003, 005. Milestone 003 is the watcher proof;
+milestone 005 is standing currentness.
+g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
 g05.002 stopped after Research 256's honest empty Qoder roster; cards 005-006
@@ -158,8 +160,10 @@ host-process execution through the owned process handle, process-group cleanup,
 and joined supervisor. Research 260 and card 015 landed through PR 119 at
 `c36e11ad`. The operator selected the minimal HTTP boundary on 2026-08-30.
 Contract 060 is active and card 016 landed the provider-neutral bridge core.
-Cards 010-011 remain planned behind the current Claude version segment, live
-same-turn proof, and the orchestrator checkpoint. g05.004 standing
+The post-bridge orchestrator checkpoint removed a circular gate between cards
+010 and 011: g05.005 cards 017-018 now own base Claude Code `2.1.251`
+currentness; card 010 will own later credential-free binding; card 011 keeps
+the separately authorized live same-turn proof and first route claim. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3` without moving the generation pointer. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

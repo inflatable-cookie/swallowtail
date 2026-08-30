@@ -15,10 +15,11 @@ shape.
 
 ## Next Task
 
-Reassess Claude cards 010-011 against the landed Contract 060 watcher HTTP
-bridge, current Claude version evidence, and the separately authorized live
-same-turn gate. Do not start Claude wiring, skill cards 005-006, live provider
-work, or route claims. Contract 029 currentness remains standing.
+Reassess Claude watcher card 010 after g05.005 cards 017-018 qualify the base
+Claude Code routes through exact `2.1.251`. The currentness worker is dispatched
+separately and does not move this generation pointer. Do not start Claude
+watcher wiring, card 011, skill cards 005-006, live provider work, or route
+claims. The live same-turn gate remains separately authorized.
 
 ## Standing Lanes
 

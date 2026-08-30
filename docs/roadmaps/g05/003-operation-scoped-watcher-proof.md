@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-009 and 014-016 complete; cards 010-011 remain planned behind the orchestrator checkpoint and provider gates
+Planning state: cards 007-009 and 014-016 complete; g05.005 currentness is ready; cards 010-011 remain serial behind currentness and the separate live gate
 
 ## Problem
 
@@ -62,15 +62,23 @@ owns the pre-1.0 repair.
 
 ### Batch 3.6 — Conditional Claude Proof
 
-- [ ] execute card 010 only after card 016 lands and the current Claude segment
-      and separately authorized live same-turn gate close
-- [ ] execute card 011 for full fail-closed route acceptance and docs
+- [ ] complete g05.005 cards 017-018 for the base Claude Code `2.1.251`
+      currentness prerequisite; do not map watcher behavior in that lane
+- [ ] execute card 010 only after currentness lands and the orchestrator marks
+      the credential-free binding card ready
+- [ ] execute card 011 only after card 010 lands and the operator separately
+      authorizes the exact live same-turn turn
+- [ ] publish the first route claim only after card 011's live and deterministic
+      acceptance pass
 
 The operator promoted HTTP as the smallest bridge on 2026-08-30. Contract 060
-owns the boundary. Card 016 landed the provider-neutral host bridge. No current
-Claude version segment or live same-turn proof is qualified yet. Do not start
-cards 010-011 until the orchestrator checkpoint and their current-version and
-live-provider gates close.
+owns the boundary. Card 016 landed the provider-neutral host bridge. The
+post-bridge checkpoint found a circular gate: card 010 required the live proof
+that card 011 could only run after card 010 existed. g05.005 now closes only
+the base-route currentness prerequisite. Card 010 later owns credential-free
+binding; card 011 owns separately authorized live acceptance and the first
+watcher claim. Do not start Claude wiring or provider work in the currentness
+lane.
 
 ## Acceptance Criteria
 

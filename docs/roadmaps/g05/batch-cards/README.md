@@ -2,14 +2,15 @@
 
 ## Planned
 
-- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on card 016 and current Claude/live gates
+- [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010 and separately authorized live acceptance
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; depends on card 018 currentness; live proof moves to card 011
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [018-claude-code-2-1-251-claim.md](./018-claude-code-2-1-251-claim.md) — ready after card 017 admits the segment shape
+- [017-claude-code-2-1-251-identity.md](./017-claude-code-2-1-251-identity.md) — ready; standing currentness; auto-continues to card 018
 
 ## Blocked
 

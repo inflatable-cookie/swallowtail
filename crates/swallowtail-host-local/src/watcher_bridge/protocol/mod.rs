@@ -3,10 +3,12 @@
 mod decode;
 mod encode;
 
-pub(super) use decode::{DecodedRequest, correlation_id, decode_request};
+pub(super) use decode::{
+    DecodedRequest, correlation_id, decode_request, decoded_request_id, recoverable_request_id,
+};
 pub(super) use encode::{error_http_status, error_message, jsonrpc_error};
 
-use super::failure::{malformed_failure, unauthorized_failure, unknown_failure};
+use super::failure::{closed_failure, malformed_failure, unauthorized_failure, unknown_failure};
 use super::state::{LiveLease, drive, owning_turn};
 use decode::DecodedRequest as Request;
 use encode::{
@@ -15,11 +17,12 @@ use encode::{
 };
 use serde_json::{Map, Value};
 use std::sync::Arc;
+use std::task::Poll;
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherRequester};
 use swallowtail_runtime::{
-    RuntimeFailure, WATCHER_BRIDGE_TOOL_COMPLETION_GATE, WATCHER_BRIDGE_TOOL_INSPECT,
-    WATCHER_BRIDGE_TOOL_LIST, WATCHER_BRIDGE_TOOL_START, WATCHER_BRIDGE_TOOL_STOP,
-    WATCHER_BRIDGE_TOOL_WAIT, WatcherWaitOptions,
+    Deadline, MonotonicInstant, RuntimeFailure, WATCHER_BRIDGE_TOOL_COMPLETION_GATE,
+    WATCHER_BRIDGE_TOOL_INSPECT, WATCHER_BRIDGE_TOOL_LIST, WATCHER_BRIDGE_TOOL_START,
+    WATCHER_BRIDGE_TOOL_STOP, WATCHER_BRIDGE_TOOL_WAIT, WatcherWaitOptions,
 };
 
 pub(super) fn dispatch(
@@ -106,13 +109,13 @@ fn call_start(
         .map_err(|_| malformed_failure())?;
     require_only_keys(&arguments, &["operation_data"])?;
     live.begin_create()?;
-    let result = drive(live.watcher.accept_start(
-        live.turn.clone(),
-        WatcherRequester::Model,
-        operation_data,
-    ));
-    live.end_create();
-    Ok(tool_text(snapshot_payload(&result?)))
+    let _creating = CreatingGuard(live);
+    let snapshot = drive_until_cancel(
+        live,
+        live.watcher
+            .accept_start(live.turn.clone(), WatcherRequester::Model, operation_data),
+    )?;
+    Ok(tool_text(snapshot_payload(&snapshot)))
 }
 
 fn call_inspect(
@@ -133,11 +136,19 @@ fn call_wait(
     let watcher_id = watcher_id(&arguments)?;
     require_only_keys(&arguments, &["watcher_id"])?;
     live.require_not_closed()?;
-    let representation = drive(live.watcher.wait(
-        owning_turn(&live.turn)?,
-        watcher_id.clone(),
-        WatcherWaitOptions::new().with_cancellation(live.cancel.wait_requested()),
-    ))?;
+    let now = live.time.now();
+    let deadline = Deadline::at(MonotonicInstant::from_ticks(
+        now.ticks().saturating_add(nanos(live.wait_bound)),
+    ));
+    let representation = drive(
+        live.watcher.wait(
+            owning_turn(&live.turn)?,
+            watcher_id.clone(),
+            WatcherWaitOptions::new()
+                .with_cancellation(live.cancel.wait_requested())
+                .with_deadline(live.time.wait_until(deadline)),
+        ),
+    )?;
     let snapshot = drive(live.watcher.inspect(owning_turn(&live.turn)?, watcher_id))?;
     Ok(tool_text(wait_payload(representation, &snapshot)))
 }
@@ -186,4 +197,29 @@ fn require_string(arguments: &Map<String, Value>, key: &str) -> Result<String, R
 
 fn watcher_id(arguments: &Map<String, Value>) -> Result<WatcherId, RuntimeFailure> {
     WatcherId::new(require_string(arguments, "watcher_id")?).map_err(|_| malformed_failure())
+}
+
+fn drive_until_cancel<T>(
+    live: &LiveLease,
+    mut work: swallowtail_runtime::BoxFuture<'_, Result<T, RuntimeFailure>>,
+) -> Result<T, RuntimeFailure> {
+    let mut cancel = live.cancel.wait_requested();
+    futures_executor::block_on(std::future::poll_fn(|context| {
+        if cancel.as_mut().poll(context).is_ready() {
+            return Poll::Ready(Err(closed_failure()));
+        }
+        work.as_mut().poll(context)
+    }))
+}
+
+fn nanos(bound: std::time::Duration) -> u64 {
+    u64::try_from(bound.as_nanos()).unwrap_or(u64::MAX)
+}
+
+struct CreatingGuard<'a>(&'a LiveLease);
+
+impl Drop for CreatingGuard<'_> {
+    fn drop(&mut self) {
+        self.0.end_create();
+    }
 }

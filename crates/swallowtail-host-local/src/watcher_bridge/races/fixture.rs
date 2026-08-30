@@ -182,7 +182,7 @@ pub(super) fn fixture(label: &str) -> (LocalWatcherBridgeHostService, Arc<Contro
     builder.execution_host_id = Some(host_id.clone());
     let process = Arc::new(builder.build());
     let inner = Arc::new(LocalWatcherHostService::new(
-        process,
+        process.clone(),
         Arc::new(LocalScopedTaskService::new(host_id.clone())),
         4,
     ));
@@ -196,7 +196,15 @@ pub(super) fn fixture(label: &str) -> (LocalWatcherBridgeHostService, Arc<Contro
         wait_override: Mutex::new(None),
     });
     (
-        LocalWatcherBridgeHostService::new(host_id, watcher.clone()),
+        LocalWatcherBridgeHostService::new(host_id, watcher.clone(), process),
         watcher,
     )
+}
+
+pub(super) fn fixture_with_wait_bound(
+    label: &str,
+    wait_bound: std::time::Duration,
+) -> (LocalWatcherBridgeHostService, Arc<ControllableWatcher>) {
+    let (bridge, watcher) = fixture(label);
+    (bridge.with_wait_bound(wait_bound), watcher)
 }

@@ -79,6 +79,22 @@ pub(crate) fn correlation_id(id: &Value) -> Result<String, RuntimeFailure> {
     }
 }
 
+pub(crate) fn decoded_request_id(request: &DecodedRequest) -> Option<Value> {
+    match request {
+        DecodedRequest::Initialized => None,
+        DecodedRequest::Initialize { id }
+        | DecodedRequest::ToolsList { id }
+        | DecodedRequest::ToolsCall { id, .. } => Some(id.clone()),
+    }
+}
+
+pub(crate) fn recoverable_request_id(body: &[u8]) -> Option<Value> {
+    let value: Value = serde_json::from_slice(body).ok()?;
+    let id = value.get("id")?.clone();
+    correlation_id(&id).ok()?;
+    Some(id)
+}
+
 fn required_request_id(object: &Map<String, Value>) -> Result<Value, RuntimeFailure> {
     let id = object.get("id").cloned().ok_or_else(malformed_failure)?;
     let _ = correlation_id(&id)?;

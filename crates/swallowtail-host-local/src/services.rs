@@ -34,6 +34,7 @@ impl LocalHostServices {
         let watcher_bridge = Arc::new(LocalWatcherBridgeHostService::new(
             execution_host_id.clone(),
             watcher.clone(),
+            process_host.clone(),
         ));
         let services = HostServices::new(execution_host_id)
             .with_task(task_service.clone())

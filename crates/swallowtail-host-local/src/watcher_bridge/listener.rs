@@ -1,8 +1,8 @@
 use super::failure::{malformed_failure, oversized_failure, unknown_failure};
 use super::http::{HttpReject, configure_stream, read_request, write_json};
 use super::protocol::{
-    DecodedRequest, authenticate, correlation_id, decode_request, dispatch, error_http_status,
-    error_message, jsonrpc_error,
+    DecodedRequest, authenticate, correlation_id, decode_request, decoded_request_id, dispatch,
+    error_http_status, error_message, jsonrpc_error, recoverable_request_id,
 };
 use super::state::LiveLease;
 use crate::output::failure;
@@ -97,7 +97,7 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
     let request = match read_request(&mut stream) {
         Ok(request) => request,
         Err(HttpReject::Oversized) => {
-            let _ = write_failure(&mut stream, &oversized_failure());
+            let _ = write_failure(&mut stream, &oversized_failure(), None);
             return;
         }
         Err(HttpReject::Method) => {
@@ -110,32 +110,33 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
             return;
         }
         Err(HttpReject::Malformed) => {
-            let _ = write_failure(&mut stream, &malformed_failure());
+            let _ = write_failure(&mut stream, &malformed_failure(), None);
             return;
         }
     };
     if let Err(error) = authenticate(&live, request.bearer.as_deref().map(String::as_str)) {
-        let _ = write_failure(&mut stream, &error);
+        let _ = write_failure(&mut stream, &error, recoverable_request_id(&request.body));
         return;
     }
     let decoded = match decode_request(&request.body) {
         Ok(decoded) => decoded,
         Err(error) => {
-            let _ = write_failure(&mut stream, &error);
+            let _ = write_failure(&mut stream, &error, recoverable_request_id(&request.body));
             return;
         }
     };
+    let request_id = decoded_request_id(&decoded);
     let admitted = match request_correlation(&decoded) {
         Ok(Some(id)) => match live.admit_request(&id) {
             Ok(()) => true,
             Err(error) => {
-                let _ = write_failure(&mut stream, &error);
+                let _ = write_failure(&mut stream, &error, request_id);
                 return;
             }
         },
         Ok(None) => false,
         Err(error) => {
-            let _ = write_failure(&mut stream, &error);
+            let _ = write_failure(&mut stream, &error, request_id);
             return;
         }
     };
@@ -151,7 +152,7 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
             let _ = write_json(&mut stream, 202, "Accepted", "{}");
         }
         Err(error) => {
-            let _ = write_failure(&mut stream, &error);
+            let _ = write_failure(&mut stream, &error, request_id);
         }
     }
 }
@@ -167,13 +168,17 @@ fn request_correlation(
     }
 }
 
-fn write_failure(stream: &mut TcpStream, error: &RuntimeFailure) -> Result<(), RuntimeFailure> {
+fn write_failure(
+    stream: &mut TcpStream,
+    error: &RuntimeFailure,
+    id: Option<serde_json::Value>,
+) -> Result<(), RuntimeFailure> {
     let (status, reason, code) = error_http_status(error);
     write_json(
         stream,
         status,
         reason,
-        &jsonrpc_error(None, code, error_message(error)),
+        &jsonrpc_error(id, code, error_message(error)),
     )
 }
 

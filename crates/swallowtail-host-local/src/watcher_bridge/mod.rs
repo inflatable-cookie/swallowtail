@@ -16,17 +16,21 @@ use listener::{bind_loopback, endpoint_url, spawn_accept, wake_accept};
 use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase, drive};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
+use std::time::Duration;
 use swallowtail_core::{CancellationScope, ExecutionHostId, WatcherCleanupCause};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, ImmediateCancellation, RuntimeFailure,
-    RuntimeTurnId, WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeCompletionState,
-    WatcherBridgeEndpoint, WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
+    RuntimeTurnId, TimeService, WATCHER_BRIDGE_MAX_WAIT, WatcherBridgeAdmission,
+    WatcherBridgeBearer, WatcherBridgeCompletionState, WatcherBridgeEndpoint,
+    WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
     WatcherBridgeOpenRequest, WatcherBridgeToken, WatcherHostService,
 };
 
 pub(crate) struct LocalWatcherBridgeHostService {
     execution_host_id: ExecutionHostId,
     watcher: Arc<dyn WatcherHostService>,
+    time: Arc<dyn TimeService>,
+    wait_bound: Duration,
     state: Arc<Mutex<BridgeRegistry>>,
 }
 
@@ -34,12 +38,21 @@ impl LocalWatcherBridgeHostService {
     pub(crate) fn new(
         execution_host_id: ExecutionHostId,
         watcher: Arc<dyn WatcherHostService>,
+        time: Arc<dyn TimeService>,
     ) -> Self {
         Self {
             execution_host_id,
             watcher,
+            time,
+            wait_bound: WATCHER_BRIDGE_MAX_WAIT,
             state: Arc::new(Mutex::new(BridgeRegistry::default())),
         }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn with_wait_bound(mut self, wait_bound: Duration) -> Self {
+        self.wait_bound = wait_bound;
+        self
     }
 
     fn open_now(
@@ -80,6 +93,8 @@ impl LocalWatcherBridgeHostService {
             closed: AtomicBool::new(false),
             connection_count: AtomicUsize::new(0),
             cancel: ImmediateCancellation::new(CancellationScope::ActiveTurn),
+            time: Arc::clone(&self.time),
+            wait_bound: self.wait_bound,
             gate: Mutex::new(Gate {
                 admission: WatcherBridgeAdmission::Open,
                 creating: 0,

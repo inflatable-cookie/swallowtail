@@ -1,5 +1,7 @@
 //! Closed Contract 060 HTTP/MCP protocol constants.
 
+use std::time::Duration;
+
 /// JSON-RPC version admitted by the bridge.
 pub const WATCHER_BRIDGE_JSONRPC_VERSION: &str = "2.0";
 /// Exact MCP protocol revision admitted by the bridge.
@@ -40,6 +42,8 @@ pub const WATCHER_BRIDGE_MAX_CONCURRENT_CONNECTIONS: usize = 8;
 pub const WATCHER_BRIDGE_MAX_IN_FLIGHT_REQUESTS: usize = 8;
 /// Maximum retained request-correlation identities for one generation.
 pub const WATCHER_BRIDGE_MAX_CORRELATION_IDS: usize = 256;
+/// Positive wait-duration bound for one reserved wait call.
+pub const WATCHER_BRIDGE_MAX_WAIT: Duration = Duration::from_secs(30);
 
 /// Exact reserved tool family admitted by `tools/call`.
 pub const WATCHER_BRIDGE_RESERVED_TOOLS: [&str; 6] = [

@@ -1,15 +1,13 @@
 mod fixture;
 mod http;
 
-use fixture::fixture;
+use fixture::{fixture, fixture_with_wait_bound};
 use futures_executor::block_on;
 use http::{handshake, open, post, spin_until, start_body, tool_watcher_id, wait_body};
 use std::thread;
 use std::time::Duration;
 use swallowtail_core::{SafeDiagnostic, WatcherCleanupCause};
-use swallowtail_runtime::{
-    CleanupOutcome, RuntimeFailure, WatcherBridgeHostService, WatcherWaitRepresentation,
-};
+use swallowtail_runtime::{CleanupOutcome, RuntimeFailure, WatcherBridgeHostService};
 
 #[test]
 fn lazy_start_holds_the_creating_guard_until_the_future_resolves() {
@@ -63,6 +61,27 @@ fn close_cancels_an_in_flight_wait_and_joins_it() {
 }
 
 #[test]
+fn close_completes_while_lazy_start_is_still_pending() {
+    let (bridge, watcher) = fixture("close-pending-start");
+    let lease = open(&bridge, "turn-pending-start");
+    let endpoint = lease.endpoint().expose().to_owned();
+    let bearer = lease.bearer().expose().to_owned();
+    handshake(&endpoint, &bearer);
+    let start = thread::spawn({
+        let endpoint = endpoint.clone();
+        let bearer = bearer.clone();
+        move || post(&endpoint, &bearer, start_body(2))
+    });
+    spin_until(&watcher.start_entered);
+    let _ = block_on(bridge.close(lease, WatcherCleanupCause::Cancelled)).expect("close");
+    let (status, body) = start.join().expect("start thread");
+    assert!(
+        status == 200 || status == 0,
+        "pending start must not block close: {status} {body}"
+    );
+}
+
+#[test]
 fn close_propagates_stop_and_join_failure() {
     let (bridge, watcher) = fixture("close-fail");
     watcher.start_hold.release();
@@ -78,10 +97,8 @@ fn close_propagates_stop_and_join_failure() {
 
 #[test]
 fn lazy_wait_resolves_deadline_after_the_future_completes() {
-    let (bridge, watcher) = fixture("deadline");
+    let (bridge, watcher) = fixture_with_wait_bound("deadline", Duration::from_millis(80));
     watcher.start_hold.release();
-    *watcher.wait_override.lock().expect("override") =
-        Some(WatcherWaitRepresentation::DeadlineExceeded);
     let lease = open(&bridge, "turn-deadline");
     let endpoint = lease.endpoint().expose().to_owned();
     let bearer = lease.bearer().expose().to_owned();
@@ -96,7 +113,6 @@ fn lazy_wait_resolves_deadline_after_the_future_completes() {
     });
     spin_until(&watcher.wait_entered);
     assert!(!wait.is_finished());
-    watcher.wait_hold.release();
     let (status, body) = wait.join().expect("wait thread");
     assert_eq!(status, 200, "{body}");
     assert!(body.contains("deadline_exceeded"), "{body}");

@@ -6,9 +6,10 @@ use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
+use std::time::Duration;
 use swallowtail_core::{ExecutionHostId, WatcherOwningTurn};
 use swallowtail_runtime::{
-    BoxFuture, ImmediateCancellation, RuntimeFailure, RuntimeTurnId, ScopeId,
+    BoxFuture, ImmediateCancellation, RuntimeFailure, RuntimeTurnId, ScopeId, TimeService,
     WatcherBridgeAdmission, WatcherBridgeGeneration, WatcherBridgeToken, WatcherHostService,
 };
 use zeroize::Zeroizing;
@@ -48,6 +49,8 @@ pub(super) struct LiveLease {
     pub(super) closed: AtomicBool,
     pub(super) connection_count: AtomicUsize,
     pub(super) cancel: ImmediateCancellation,
+    pub(super) time: Arc<dyn TimeService>,
+    pub(super) wait_bound: Duration,
     pub(super) gate: Mutex<Gate>,
     pub(super) creating_changed: Condvar,
     pub(super) requests: Mutex<RequestBounds>,

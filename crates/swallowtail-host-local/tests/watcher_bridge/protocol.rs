@@ -180,6 +180,36 @@ fn tools_before_initialize_fail_closed() {
 }
 
 #[test]
+fn error_responses_echo_valid_numeric_and_string_ids() {
+    let local = default_host("echo-id");
+    let lease = open_lease(&local, "turn-echo");
+    let endpoint = lease.endpoint().expose().to_owned();
+    let bearer = lease.bearer().expose().to_owned();
+    let (status, body) = post_json(&endpoint, Some(&bearer), &tools_list_body(7));
+    assert_eq!(status, 200, "{body}");
+    let response: serde_json::Value = serde_json::from_str(&body).expect("json");
+    assert_eq!(response["id"], json!(7));
+    assert_ne!(response["id"], json!(null));
+
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &json!({
+            "jsonrpc": WATCHER_BRIDGE_JSONRPC_VERSION,
+            "id": "abc",
+            "method": WATCHER_BRIDGE_TOOLS_CALL_METHOD,
+            "params": { "name": "shell", "arguments": {} }
+        })
+        .to_string(),
+    );
+    assert_eq!(status, 200, "{body}");
+    let response: serde_json::Value = serde_json::from_str(&body).expect("json");
+    assert_eq!(response["id"], json!("abc"));
+    close_lease(&local, lease);
+}
+
+#[test]
 fn unknown_and_oversized_requests_fail_closed() {
     let local = default_host("malformed");
     let lease = open_lease(&local, "turn-malformed");

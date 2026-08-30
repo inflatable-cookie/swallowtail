@@ -2797,6 +2797,7 @@ pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_CORRELATION_IDS: usize
 pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_BYTES: usize
 pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_COUNT: usize
 pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_IN_FLIGHT_REQUESTS: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_WAIT: core::time::Duration
 pub const swallowtail_runtime::WATCHER_BRIDGE_MCP_PROTOCOL_VERSION: &str
 pub const swallowtail_runtime::WATCHER_BRIDGE_RESERVED_TOOLS: [&str; 6]
 pub const swallowtail_runtime::WATCHER_BRIDGE_TOOLS_CALL_METHOD: &str

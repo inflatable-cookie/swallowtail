@@ -16,10 +16,13 @@ host/operation/turn/generation correlation, and the same
 identity `Model`. JSON-RPC ids are validated before dispatch; only
 `notifications/initialized` may omit an id. Admission freezes when the
 completion gate sees no creating work and no active or unjoined watchers.
-Close and Drop freeze admission, join listener and connection threads,
-drive watcher futures to completion, and release private material. Drop
-cannot be disarmed; forged and cross-identity handles cannot close a live
-lease.
+Close and Drop freeze admission, cancel in-flight start/wait work, join
+listener and connection threads, drive watcher futures to completion, and
+release private material. Pending `accept_start` is raced against lease
+cancellation so close cannot hang. Wait is bound by
+`WATCHER_BRIDGE_MAX_WAIT` on the host monotonic clock. JSON-RPC errors
+echo the original valid request id. Drop cannot be disarmed; forged and
+cross-identity handles cannot close a live lease.
 
 The closed protocol admits initialize, initialized, tools/list, and the
 reserved start/inspect/list/wait/stop plus completion-gate tools with exact

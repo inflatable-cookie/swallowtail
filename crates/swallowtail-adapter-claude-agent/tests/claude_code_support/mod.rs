@@ -5,8 +5,8 @@ pub mod watcher_proof;
 
 #[allow(unused_imports)]
 pub use process::{FakeProcessService, ObservedProcessRequest, ProcessCompleter};
-pub use task::TaskState;
-pub use time::{ImmediateTimeService, PendingTimeService};
+pub use task::{FailingTaskService, TaskState, ThreadTaskService};
+pub use time::{ControllableTimeService, ImmediateTimeService, PendingTimeService};
 
 use std::sync::Arc;
 use swallowtail_adapter_claude_agent::{

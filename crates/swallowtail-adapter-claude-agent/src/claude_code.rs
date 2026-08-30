@@ -251,6 +251,10 @@ impl ClaudeCodeHeadlessDriver {
                     if let Some(binding) = watcher_binding {
                         let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
                     }
+                    if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
+                        let _ =
+                            WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
+                    }
                     return Err(error);
                 }
             };
@@ -258,6 +262,9 @@ impl ClaudeCodeHeadlessDriver {
             cleanup_failed_start(process.as_ref()).await;
             if let Some(binding) = watcher_binding {
                 let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+            }
+            if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
+                let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
             }
             return Err(error);
         }
@@ -267,10 +274,14 @@ impl ClaudeCodeHeadlessDriver {
             if let Some(binding) = watcher_binding {
                 let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
             }
+            if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
+                let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
+            }
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
         let cancellation = Arc::new(ClaudeCodeCancellation::new(Arc::clone(&process)));
+        let cleanup_turn = watcher_turn.clone();
         let task = task_service.spawn(
             scope,
             Box::pin({
@@ -303,6 +314,9 @@ impl ClaudeCodeHeadlessDriver {
             Ok(task) => task,
             Err(error) => {
                 cleanup_failed_start(process.as_ref()).await;
+                if let (Some(watcher), Some(turn)) = (watcher.as_ref(), cleanup_turn) {
+                    let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
+                }
                 return Err(error);
             }
         };

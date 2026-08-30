@@ -1,9 +1,7 @@
-use swallowtail_core::ProviderActivityRef;
 use swallowtail_host_local::WatcherBridgeProofKind;
 use swallowtail_runtime::{
-    ActivityDisclosure, ActivityId, ActivityKind, ActivityLifecyclePhase, ActivityObservation,
-    ActivityOperationId, ActivityStatus, CleanupOutcome, RuntimeEvent, RuntimeEventKind,
-    RuntimeRunId, TerminalOutcome, TerminalStatus,
+    ActivityKind, ActivityLifecyclePhase, ActivityOperationId, CleanupOutcome, RuntimeEvent,
+    RuntimeEventKind, RuntimeRunId, TerminalOutcome, TerminalStatus,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -111,6 +109,7 @@ fn fact_session(fact: &WatcherProofFact) -> Option<&str> {
 
 pub struct WatcherProofRecorder {
     turn: String,
+    operation: ActivityOperationId,
     facts: Vec<WatcherProofFact>,
     seen_bridge: usize,
     hook_open_session: Option<String>,
@@ -118,8 +117,12 @@ pub struct WatcherProofRecorder {
 
 impl WatcherProofRecorder {
     pub fn new(turn: impl Into<String>) -> Self {
+        let turn = turn.into();
         Self {
-            turn: turn.into(),
+            operation: ActivityOperationId::Run(
+                RuntimeRunId::new(turn.clone()).expect("recorder turn is a valid run id"),
+            ),
+            turn,
             facts: Vec::new(),
             seen_bridge: 0,
             hook_open_session: None,
@@ -147,6 +150,9 @@ impl WatcherProofRecorder {
         let RuntimeEventKind::Activity(observation) = event.kind() else {
             return;
         };
+        if observation.operation_id() != &self.operation {
+            return;
+        }
         match observation.kind() {
             ActivityKind::Hook => {
                 let raw = observation
@@ -247,21 +253,4 @@ impl WatcherProofRecorder {
             self.facts.push(fact);
         }
     }
-}
-
-pub fn hook_event(session: &str, phase: &str) -> RuntimeEvent {
-    let observation = ActivityObservation::new(
-        ActivityId::new(format!("hook-{session}-{phase}")).expect("activity id"),
-        ActivityOperationId::Run(RuntimeRunId::new("watcher-proof").expect("run")),
-        ActivityKind::Hook,
-        ActivityLifecyclePhase::Completed,
-        ActivityStatus::Completed,
-        None,
-        ActivityDisclosure::IdentityAndLifecycleOnly,
-    )
-    .expect("hook observation")
-    .with_provider_activity_ref(
-        ProviderActivityRef::new(format!("{session}|{phase}")).expect("provider ref"),
-    );
-    RuntimeEvent::new(1, RuntimeEventKind::Activity(observation))
 }

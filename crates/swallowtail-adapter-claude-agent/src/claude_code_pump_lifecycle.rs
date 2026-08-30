@@ -17,12 +17,13 @@ pub(super) async fn finish_with_watchers(
     let Some(mut binding) = host.watcher_binding.take() else {
         return outcome;
     };
-    let _ = drain_lifecycle(
+    let drain_error = drain_lifecycle(
         parser,
         events,
         host.watcher_feed.as_mut(),
         host.watcher_turn.as_ref(),
-    );
+    )
+    .err();
     if matches!(outcome.status(), TerminalStatus::Completed) {
         match binding.completion_gate() {
             Ok(state) if state.allows_successful_completion() => {}
@@ -45,12 +46,19 @@ pub(super) async fn finish_with_watchers(
     }
     let watcher_cleanup = binding.close(cleanup_cause(outcome.status()));
     let outcome = replace_cleanup(outcome, watcher_cleanup);
-    if let Err(error) = drain_lifecycle(
+    let later = drain_lifecycle(
         parser,
         events,
         host.watcher_feed.as_mut(),
         host.watcher_turn.as_ref(),
-    ) {
+    );
+    if let Some(error) = drain_error {
+        return TerminalOutcome::new(
+            TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+            outcome.cleanup().clone(),
+        );
+    }
+    if let Err(error) = later {
         return TerminalOutcome::new(
             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
             outcome.cleanup().clone(),

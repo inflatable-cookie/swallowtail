@@ -1,11 +1,12 @@
 mod claude_code_support;
 
 use claude_code_support::{
-    FakeProcessService, ImmediateTimeService, PendingTimeService, fixture, host_services,
-    local_watcher_host, preparation_input, preparation_probe, watcher_host_services,
+    ControllableTimeService, FailingTaskService, FakeProcessService, ImmediateTimeService,
+    PendingTimeService, TaskState, ThreadTaskService, fixture, host_services, local_watcher_host,
+    preparation_input, preparation_probe, watcher_host_services,
 };
 use futures_executor::block_on;
-use futures_util::StreamExt;
+use futures_util::{FutureExt, StreamExt};
 use std::sync::Arc;
 use swallowtail_adapter_claude_agent::{
     ClaudeCodeMaximumTurns, ClaudeCodeModelSelection, ClaudeCodePreparedIntegration,
@@ -18,9 +19,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     ActivityKind, ActivityLifecyclePhase, CancellationAcknowledgement, CleanupOutcome, Deadline,
-    MonotonicInstant, OperationContent, ProcessExit, ProviderObservation, ProviderRetentionPolicy,
-    RequestId, RuntimeEvent, RuntimeEventKind, StructuredRunDriver, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    HostServices, MonotonicInstant, OperationContent, ProcessExit, ProviderObservation,
+    ProviderRetentionPolicy, RequestId, RuntimeEvent, RuntimeEventKind, StructuredRunDriver,
+    TerminalOutcome, TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,
@@ -36,5 +37,8 @@ include!("claude_code_structured_run/maximum_turns_rejection_cases.rs");
 include!("claude_code_structured_run/profile_case.rs");
 include!("claude_code_structured_run/watcher_cases.rs");
 include!("claude_code_structured_run/watcher_lifecycle.rs");
+include!("claude_code_structured_run/watcher_deadline.rs");
 include!("claude_code_structured_run/watcher_proof.rs");
+include!("claude_code_structured_run/watcher_stop_reentry.rs");
+include!("claude_code_structured_run/watcher_start_failure.rs");
 include!("claude_code_structured_run/support.rs");

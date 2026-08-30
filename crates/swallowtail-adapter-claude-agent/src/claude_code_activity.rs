@@ -9,6 +9,7 @@ use swallowtail_runtime::{
 };
 
 pub(crate) mod profile;
+mod system;
 
 const MAXIMUM_ACTIVITY_CONTENT_BYTES: usize = 64 * 1024;
 
@@ -149,39 +150,6 @@ impl ClaudeCodeActivityProjection {
         Ok(observations)
     }
 
-    pub(crate) fn stop_hook(
-        &mut self,
-        phase: &str,
-        session: Option<&str>,
-    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let provider_ref = session.map(|session| format!("{session}|{phase}"));
-        Ok(vec![self.completed(
-            "hook",
-            provider_ref.as_deref(),
-            ActivityKind::Hook,
-            None,
-            ActivityDisclosure::IdentityAndLifecycleOnly,
-            ActivityStatus::Completed,
-            None,
-        )?])
-    }
-
-    pub(crate) fn unknown(
-        &mut self,
-        event_type: &str,
-        provider_ref: Option<&str>,
-    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        Ok(vec![self.completed(
-            "unknown",
-            provider_ref,
-            ActivityKind::Unknown(namespace(&format!("claude-code.headless.{event_type}"))?),
-            None,
-            ActivityDisclosure::IdentityAndLifecycleOnly,
-            ActivityStatus::Completed,
-            None,
-        )?])
-    }
-
     pub(crate) fn ensure_idle(&self) -> Result<(), RuntimeFailure> {
         if self.pending_tools.is_empty() {
             Ok(())
@@ -191,7 +159,7 @@ impl ClaudeCodeActivityProjection {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn completed(
+    pub(super) fn completed(
         &mut self,
         label: &str,
         provider_ref: Option<&str>,

@@ -37,12 +37,15 @@ or version-range claim is published.
 - `swallowtail-runtime`: `WatcherLifecycleFeed`, `WatcherLifecycleSubscription`,
   `WatcherHostService::open_lifecycle_feed`
 - `swallowtail-host-local`: `WatcherBridgeProofKind` and
-  `LocalHostServices::watcher_bridge_proof` (reserved operation names only)
+  `LocalHostServices::watcher_bridge_proof(turn)` (reserved operation names
+  for one turn only)
 
-Review of PR 126 required a revision: Stop-hook-sourced gate proof, atomic
-lifecycle publish on cleanup, feed close on start failure with identity-safe
-retry, MSRV join of feed fixtures, recorder-driven direct-gate and
-cross-session counterexamples, and a pump lifecycle split.
+Review of PR 126 required two revisions. The second scopes bridge proof to
+the owning turn, drives fake Stop-reentry through one in-order recording
+seam, preserves first-drain lifecycle errors, proves exact-once
+started→updated→completed on cancel/deadline/provider-failure, proves
+pre-pump failure cleanup and same-turn retry, and restores the 390
+god-file baseline (341 warnings / 49 errors).
 
 ## Evidence
 

@@ -5,18 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
-### [ ] Watcher proof repair still sits on inherited god-file warnings — 2026-08-30
-- Friction: card 019 split feed open/close into `watcher/feed.rs` and moved
-  Claude lifecycle fixtures out of `watcher_cases.rs`, but `claude_code_activity.rs`,
-  `watcher.rs`, and `watcher_bridge/mod.rs` remain above the doctor warning
-  threshold from prior watcher work.
-- Impact: doctor findings can stay at or near the 393 warning-bearing files
-  even after the MSRV and oracle repair.
-- Fix: keep splitting accept/start, bridge dispatch, and Claude activity
-  projection as those files change; do not treat the warning count as a
-  capability claim.
-- Surface: `swallowtail-host-local` watcher host/bridge; Claude headless
-  activity projection; g05.006 card 019 revision.
+### [x] Watcher proof repair restored the 390 god-file baseline — 2026-08-30
+- Friction: the first PR 126 revision raised doctor from 390 findings
+  (341 warnings / 49 errors) on `main` to 395 (346 / 49). New warnings were
+  `claude_code_activity.rs`, both `watcher_proof.rs` files, `watcher/feed.rs`,
+  and `watcher_bridge/mod.rs`.
+- Impact: the closeout and PAPERCUTS entry understated the increase and called
+  several new warnings inherited.
+- Fix: split pump lifecycle, activity system hooks, feed buffer tests, bridge
+  close, fake process handle, and Claude watcher fixtures. Measured baseline
+  on this head is 390 (341 / 49), matching `main`.
+- Surface: g05.006 card 019 PR 126 review revision.
 
 ### [ ] Effigy validation materializes an untracked repo skill — 2026-08-30
 - Friction: running the card 011 docs/Northstar validation copied the Effigy

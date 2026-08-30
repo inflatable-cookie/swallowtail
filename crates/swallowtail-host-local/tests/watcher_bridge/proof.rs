@@ -4,7 +4,9 @@ use super::support::{
 };
 use serde_json::json;
 use swallowtail_host_local::WatcherBridgeProofKind;
-use swallowtail_runtime::{WATCHER_BRIDGE_TOOL_COMPLETION_GATE, WATCHER_BRIDGE_TOOL_START};
+use swallowtail_runtime::{
+    RuntimeTurnId, WATCHER_BRIDGE_TOOL_COMPLETION_GATE, WATCHER_BRIDGE_TOOL_START,
+};
 
 #[test]
 fn reserved_bridge_operations_record_names_only() {
@@ -31,7 +33,8 @@ fn reserved_bridge_operations_record_names_only() {
         &tool_call(json!(4), WATCHER_BRIDGE_TOOL_COMPLETION_GATE, json!({})),
     );
     assert_eq!(status, 200);
-    let proof = local.watcher_bridge_proof();
+    let turn = RuntimeTurnId::new("turn-proof").expect("turn");
+    let proof = local.watcher_bridge_proof(&turn);
     assert_eq!(
         proof,
         [
@@ -47,8 +50,38 @@ fn reserved_bridge_operations_record_names_only() {
     assert!(!rendered.contains("127.0.0.1"));
     close_lease(&local, lease);
     assert_eq!(
-        local.watcher_bridge_proof(),
+        local.watcher_bridge_proof(&turn),
         proof,
         "proof survives lease close"
     );
+}
+
+#[test]
+fn bridge_proof_is_scoped_to_the_owning_turn() {
+    let local = watcher_host("proof-scope", "sleep");
+    let first = open_lease(&local, "turn-a");
+    let second = open_lease(&local, "turn-b");
+    handshake(first.endpoint().expose(), first.bearer().expose());
+    handshake(second.endpoint().expose(), second.bearer().expose());
+    let (status, _) = post_json(
+        first.endpoint().expose(),
+        Some(first.bearer().expose()),
+        &tools_list_body(2),
+    );
+    assert_eq!(status, 200);
+    let turn_a = RuntimeTurnId::new("turn-a").expect("turn");
+    let turn_b = RuntimeTurnId::new("turn-b").expect("turn");
+    assert_eq!(
+        local.watcher_bridge_proof(&turn_a),
+        [
+            WatcherBridgeProofKind::Initialize,
+            WatcherBridgeProofKind::ToolsList,
+        ]
+    );
+    assert_eq!(
+        local.watcher_bridge_proof(&turn_b),
+        [WatcherBridgeProofKind::Initialize]
+    );
+    close_lease(&local, first);
+    close_lease(&local, second);
 }

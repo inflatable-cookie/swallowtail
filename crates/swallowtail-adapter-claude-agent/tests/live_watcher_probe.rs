@@ -22,7 +22,7 @@ use swallowtail_host_local::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, DiscoveryCancellation, EnvironmentRef, ExecutableRef, OperationContent,
-    PreparedAccessEvidence, ProcessRequest, RequestId, ScopeId, WorkingResourceRef,
+    PreparedAccessEvidence, ProcessRequest, RequestId, RuntimeTurnId, ScopeId, WorkingResourceRef,
 };
 use watcher_proof::{WatcherProofRecorder, assert_stop_reentry_proof};
 
@@ -136,15 +136,17 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
     let mut events = handle.take_events().expect("event stream");
     let terminal = handle.take_terminal_outcome().expect("terminal outcome");
     let mut recorder = WatcherProofRecorder::new("claude-code-headless:live-claude-code-watcher");
+    let turn =
+        RuntimeTurnId::new("claude-code-headless:live-claude-code-watcher").expect("live turn");
     let outcome = block_on(async {
         while let Some(event) = events.next().await {
             let event = event.expect("live watcher event remains valid");
-            recorder.ingest_bridge(&local.watcher_bridge_proof());
+            recorder.ingest_bridge(&local.watcher_bridge_proof(&turn));
             recorder.ingest_event(&event);
         }
         terminal.await
     });
-    recorder.ingest_bridge(&local.watcher_bridge_proof());
+    recorder.ingest_bridge(&local.watcher_bridge_proof(&turn));
     recorder.ingest_terminal(&outcome);
     assert!(
         assert_stop_reentry_proof(recorder.facts()).is_ok(),

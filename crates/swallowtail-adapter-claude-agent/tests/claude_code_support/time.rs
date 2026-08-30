@@ -38,3 +38,62 @@ impl TimeService for ImmediateTimeService {
         Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
     }
 }
+
+pub struct ControllableTimeService {
+    state: std::sync::Arc<DeadlineFire>,
+}
+
+struct DeadlineFire {
+    fired: std::sync::atomic::AtomicBool,
+    waker: std::sync::Mutex<Option<std::task::Waker>>,
+}
+
+impl ControllableTimeService {
+    pub fn new() -> Self {
+        Self {
+            state: std::sync::Arc::new(DeadlineFire {
+                fired: std::sync::atomic::AtomicBool::new(false),
+                waker: std::sync::Mutex::new(None),
+            }),
+        }
+    }
+
+    pub fn fire(&self) {
+        self.state
+            .fired
+            .store(true, std::sync::atomic::Ordering::SeqCst);
+        if let Some(waker) = self
+            .state
+            .waker
+            .lock()
+            .expect("deadline waker lock is available")
+            .take()
+        {
+            waker.wake();
+        }
+    }
+}
+
+impl TimeService for ControllableTimeService {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let state = std::sync::Arc::clone(&self.state);
+        Box::pin(std::future::poll_fn(move |context| {
+            if state.fired.load(std::sync::atomic::Ordering::SeqCst) {
+                return Poll::Ready(DeadlineObservation::new(deadline, deadline.instant()));
+            }
+            *state
+                .waker
+                .lock()
+                .expect("deadline waker lock is available") = Some(context.waker().clone());
+            if state.fired.load(std::sync::atomic::Ordering::SeqCst) {
+                Poll::Ready(DeadlineObservation::new(deadline, deadline.instant()))
+            } else {
+                Poll::Pending
+            }
+        }))
+    }
+}

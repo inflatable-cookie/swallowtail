@@ -30,6 +30,41 @@ fn host_watcher_phases(events: &[RuntimeEvent]) -> Vec<ActivityLifecyclePhase> {
         .collect()
 }
 
+fn assert_exact_host_watcher_lifecycle(events: &[RuntimeEvent]) {
+    let phases = host_watcher_phases(events);
+    let started = phases
+        .iter()
+        .filter(|phase| **phase == ActivityLifecyclePhase::Started)
+        .count();
+    let updated = phases
+        .iter()
+        .filter(|phase| **phase == ActivityLifecyclePhase::Updated)
+        .count();
+    let completed = phases
+        .iter()
+        .filter(|phase| **phase == ActivityLifecyclePhase::Completed)
+        .count();
+    assert_eq!(started, 1, "started once: {phases:?}");
+    assert_eq!(updated, 1, "updated once: {phases:?}");
+    assert_eq!(completed, 1, "completed once: {phases:?}");
+    let start = phases
+        .iter()
+        .position(|phase| *phase == ActivityLifecyclePhase::Started)
+        .expect("started");
+    let update = phases
+        .iter()
+        .position(|phase| *phase == ActivityLifecyclePhase::Updated)
+        .expect("updated");
+    let complete = phases
+        .iter()
+        .position(|phase| *phase == ActivityLifecyclePhase::Completed)
+        .expect("completed");
+    assert!(
+        start < update && update < complete,
+        "started → updated → completed: {phases:?}"
+    );
+}
+
 #[test]
 fn silent_provider_fast_watcher_emits_complete_host_watcher_lifecycle() {
     let topology = ExecutionTopologyFixture::local();
@@ -87,19 +122,7 @@ fn silent_provider_fast_watcher_emits_complete_host_watcher_lifecycle() {
         .into_iter()
         .collect::<Result<Vec<_>, _>>()
         .expect("events remain valid");
-    let host_watcher = host_watcher_phases(&events);
-    assert!(
-        host_watcher.contains(&ActivityLifecyclePhase::Started),
-        "started missing: {host_watcher:?}"
-    );
-    assert!(
-        host_watcher.contains(&ActivityLifecyclePhase::Updated),
-        "running missing: {host_watcher:?}"
-    );
-    assert!(
-        host_watcher.contains(&ActivityLifecyclePhase::Completed),
-        "completed missing: {host_watcher:?}"
-    );
+    assert_exact_host_watcher_lifecycle(&events);
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -143,11 +166,7 @@ fn cancellation_with_an_active_watcher_emits_terminal_host_watcher_activity() {
         .into_iter()
         .collect::<Result<Vec<_>, _>>()
         .expect("events remain valid");
-    let host_watcher = host_watcher_phases(&events);
-    assert!(
-        host_watcher.contains(&ActivityLifecyclePhase::Completed),
-        "terminal missing on cancel: {host_watcher:?}"
-    );
+    assert_exact_host_watcher_lifecycle(&events);
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -191,11 +210,7 @@ fn provider_failure_with_an_active_watcher_emits_terminal_host_watcher_activity(
         .into_iter()
         .collect::<Result<Vec<_>, _>>()
         .expect("events remain valid");
-    let host_watcher = host_watcher_phases(&events);
-    assert!(
-        host_watcher.contains(&ActivityLifecyclePhase::Completed),
-        "terminal missing on provider failure: {host_watcher:?}"
-    );
+    assert_exact_host_watcher_lifecycle(&events);
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert!(matches!(outcome.status(), TerminalStatus::ProviderFailed(_)));
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);

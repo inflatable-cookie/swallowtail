@@ -1,6 +1,7 @@
 //! Local Contract 060 watcher HTTP bridge.
 
 mod bearer;
+mod close;
 mod failure;
 mod http;
 mod listener;
@@ -14,20 +15,21 @@ pub use proof::WatcherBridgeProofKind;
 
 use crate::output::failure;
 use bearer::generate_bearer;
+use close::shutdown_live;
 use failure::{closed_failure, foreign_failure, identity_failure};
-use listener::{bind_loopback, endpoint_url, spawn_accept, wake_accept};
+use listener::{bind_loopback, endpoint_url, spawn_accept};
 use proof::ProofLog;
-use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase, drive};
+use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
 use swallowtail_core::{CancellationScope, ExecutionHostId, WatcherCleanupCause};
 use swallowtail_runtime::{
-    BoxFuture, CancellationControl, CleanupOutcome, ImmediateCancellation, RuntimeFailure,
-    RuntimeTurnId, TimeService, WATCHER_BRIDGE_MAX_WAIT, WatcherBridgeAdmission,
-    WatcherBridgeBearer, WatcherBridgeCompletionState, WatcherBridgeEndpoint,
-    WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
-    WatcherBridgeOpenRequest, WatcherBridgeToken, WatcherHostService,
+    BoxFuture, CleanupOutcome, ImmediateCancellation, RuntimeFailure, RuntimeTurnId, TimeService,
+    WATCHER_BRIDGE_MAX_WAIT, WatcherBridgeAdmission, WatcherBridgeBearer,
+    WatcherBridgeCompletionState, WatcherBridgeEndpoint, WatcherBridgeGeneration,
+    WatcherBridgeHostService, WatcherBridgeLease, WatcherBridgeOpenRequest, WatcherBridgeToken,
+    WatcherHostService,
 };
 
 pub(crate) struct LocalWatcherBridgeHostService {
@@ -36,7 +38,6 @@ pub(crate) struct LocalWatcherBridgeHostService {
     time: Arc<dyn TimeService>,
     wait_bound: Duration,
     state: Arc<Mutex<BridgeRegistry>>,
-    proof: ProofLog,
 }
 
 impl LocalWatcherBridgeHostService {
@@ -51,12 +52,24 @@ impl LocalWatcherBridgeHostService {
             time,
             wait_bound: WATCHER_BRIDGE_MAX_WAIT,
             state: Arc::new(Mutex::new(BridgeRegistry::default())),
-            proof: ProofLog::new(),
         }
     }
 
-    pub(crate) fn proof_facts(&self) -> Vec<WatcherBridgeProofKind> {
-        self.proof.snapshot()
+    pub(crate) fn proof_facts(&self, turn: &RuntimeTurnId) -> Vec<WatcherBridgeProofKind> {
+        let registry = self
+            .state
+            .lock()
+            .expect("watcher bridge registry lock poisoned");
+        if let Some(generation) = registry.by_turn.get(turn)
+            && let Some(live) = registry.live.get(generation)
+        {
+            return live.proof.snapshot();
+        }
+        registry
+            .retired_proof
+            .get(turn)
+            .cloned()
+            .unwrap_or_default()
     }
 
     #[cfg(test)]
@@ -114,7 +127,7 @@ impl LocalWatcherBridgeHostService {
             session: Mutex::new(SessionPhase::New),
             connections: Mutex::new(Vec::new()),
             accept_thread: Mutex::new(None),
-            proof: self.proof.clone(),
+            proof: ProofLog::new(),
         });
         if let Err(error) = spawn_accept(Arc::clone(&live), listener) {
             self.forget_generation(request.turn(), generation);
@@ -212,59 +225,4 @@ impl WatcherBridgeHostService for LocalWatcherBridgeHostService {
         let result = self.close_now(lease, cause);
         Box::pin(async move { result })
     }
-}
-
-fn shutdown_live(
-    state: Arc<Mutex<BridgeRegistry>>,
-    live: Arc<LiveLease>,
-    cause: WatcherCleanupCause,
-) -> Result<CleanupOutcome, RuntimeFailure> {
-    let turn = live.turn.clone();
-    let generation = live.generation;
-    {
-        let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
-        registry.by_turn.remove(&turn);
-        registry.live.remove(&generation);
-    }
-    if live.closed.swap(true, std::sync::atomic::Ordering::SeqCst) {
-        return Ok(CleanupOutcome::NotApplicable);
-    }
-    {
-        let mut gate = live.gate.lock().expect("watcher bridge gate lock poisoned");
-        gate.admission = WatcherBridgeAdmission::Closed;
-    }
-    drop(live.cancel.request());
-    wake_accept(live.bind_addr);
-    let accept = live
-        .accept_thread
-        .lock()
-        .expect("watcher bridge accept thread lock poisoned")
-        .take();
-    if let Some(accept) = accept {
-        let _ = accept.join();
-    }
-    let connections = std::mem::take(
-        &mut *live
-            .connections
-            .lock()
-            .expect("watcher bridge connection lock poisoned"),
-    );
-    for connection in connections {
-        let _ = connection.join();
-    }
-    let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
-        Ok((_, outcome)) => Ok(outcome),
-        Err(error)
-            if matches!(
-                error.diagnostic().code(),
-                "swallowtail.local_watcher.turn_not_found"
-                    | "swallowtail.local_watcher.turn_retired"
-            ) =>
-        {
-            Ok(CleanupOutcome::NotApplicable)
-        }
-        Err(error) => Err(error),
-    };
-    let _ = drive(live.watcher.close_lifecycle_feed(turn));
-    outcome
 }

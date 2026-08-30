@@ -2,6 +2,7 @@ use futures_executor::block_on;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
+use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{BoxFuture, JoinedTask, RuntimeFailure, ScopeId, ScopedTaskService};
 
 #[derive(Default)]
@@ -35,6 +36,21 @@ impl ScopedTaskService for ThreadTaskService {
             handle: Mutex::new(Some(thread::spawn(move || block_on(task)))),
             state: Arc::clone(&self.state),
         }))
+    }
+}
+
+pub struct FailingTaskService;
+
+impl ScopedTaskService for FailingTaskService {
+    fn spawn(
+        &self,
+        _scope: ScopeId,
+        _task: BoxFuture<'static, ()>,
+    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "fixture.task.spawn_failed",
+            "Fixture task spawn failed",
+        )))
     }
 }
 

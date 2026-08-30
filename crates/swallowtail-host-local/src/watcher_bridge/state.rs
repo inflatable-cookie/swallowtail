@@ -19,6 +19,7 @@ pub(super) struct BridgeRegistry {
     pub(super) next_generation: u64,
     pub(super) by_turn: BTreeMap<RuntimeTurnId, WatcherBridgeGeneration>,
     pub(super) live: BTreeMap<WatcherBridgeGeneration, Arc<LiveLease>>,
+    pub(super) retired_proof: BTreeMap<RuntimeTurnId, Vec<WatcherBridgeProofKind>>,
 }
 
 impl Default for BridgeRegistry {
@@ -27,6 +28,7 @@ impl Default for BridgeRegistry {
             next_generation: 1,
             by_turn: BTreeMap::new(),
             live: BTreeMap::new(),
+            retired_proof: BTreeMap::new(),
         }
     }
 }

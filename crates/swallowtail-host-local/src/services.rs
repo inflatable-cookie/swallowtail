@@ -4,7 +4,7 @@ use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
 use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, TimeService};
+use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, RuntimeTurnId, TimeService};
 
 /// Inspectable host-owned local service composition for one execution host.
 ///
@@ -77,13 +77,14 @@ impl LocalHostServices {
         &self.task_service
     }
 
-    /// Returns reserved watcher-bridge operations observed on this host.
+    /// Returns reserved watcher-bridge operations observed for one turn.
     ///
     /// Names and order only. Endpoint, bearer, arguments, and response text
-    /// are not retained.
+    /// are not retained. Facts from another turn or a prior lease generation
+    /// are not included.
     #[must_use]
-    pub fn watcher_bridge_proof(&self) -> Vec<WatcherBridgeProofKind> {
-        self.watcher_bridge.proof_facts()
+    pub fn watcher_bridge_proof(&self, turn: &RuntimeTurnId) -> Vec<WatcherBridgeProofKind> {
+        self.watcher_bridge.proof_facts(turn)
     }
 
     /// Derives one deadline from this composition's monotonic clock and an

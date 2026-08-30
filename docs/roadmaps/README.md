@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-Define the next g05 direction after card 011's consumed live evidence stop.
-Before any fresh provider authorization, resolve tool-discovery evidence,
-oracle-capable Stop re-entry observation, and complete in-progress watcher
-activity. Do not merge prototype head `49f2692f`, rerun the live selector, or
-promote the consumer route-feature projection note.
+Execute g05.006 card 019 through its committed worker handoff. Repair lossless
+in-progress watcher activity and the direct Stop re-entry oracle without
+provider contact. Do not merge prototype head `49f2692f`, run the live
+selector, publish a watcher claim, or promote the consumer route-feature
+projection note.
 
 ## Standing Lanes
 

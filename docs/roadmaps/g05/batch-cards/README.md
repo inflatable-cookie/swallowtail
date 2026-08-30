@@ -7,7 +7,7 @@
 
 ## Ready
 
-- None.
+- [019-watcher-proof-oracle-and-activity-delivery-repair.md](./019-watcher-proof-oracle-and-activity-delivery-repair.md) — ready; credential-free lifecycle feed and future-live Stop oracle repair
 
 ## Blocked
 

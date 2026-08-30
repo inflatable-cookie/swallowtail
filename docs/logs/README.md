@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-30 g05.006 Watcher Proof Repair Planning](./2026-08-30-g05-006-watcher-proof-repair-planning.md) — card 019 ready; lossless activity and direct Stop oracle; no provider authorization
 - [2026-08-30 g05.003 Card 011 Live Stop Review](./2026-08-30-g05-003-card-011-live-stop-review.md) — one Haiku turn consumed; no host watcher; claims and prototype withheld
 - [2026-08-30 g05.003 Card 011 Live Authorization](./2026-08-30-g05-003-card-011-live-authorization.md) — one exact Claude Haiku live turn authorized; worker handoff published
 - [2026-08-30 g05.003 Card 011 Readiness Reassessment](./2026-08-30-g05-003-card-011-readiness-reassessment.md) — exact one-turn proof oracle compiled; live provider authorization still required

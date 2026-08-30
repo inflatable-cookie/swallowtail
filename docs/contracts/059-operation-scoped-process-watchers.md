@@ -178,6 +178,25 @@ summaries on the existing ordered turn event stream. Contract 044 gains one
 host-watcher activity kind. Its activity id is presentation identity; watcher
 control still requires the watcher id and owning turn.
 
+The watcher host supplies one bounded turn-scoped lifecycle feed, cursor, or
+equivalent lossless delivery seam. Observation starts before provider work and
+retains every accepted, running, and terminal transition until the route has
+projected it or failed the operation. Delivery is independent of provider
+stdout cadence: latest-snapshot polling only when provider output arrives is
+insufficient because a watcher may cross several phases during a silent
+provider interval.
+
+The route projects those retained snapshots through the provider-neutral
+watcher activity projector onto its existing event sender. Per-watcher
+revisions and host delivery order prevent duplicates and regressions across
+multiple watchers. Joined remains cleanup truth and does not emit a second
+completed activity. A route advertises complete watcher lifecycle only when it
+can deliver start, in-progress, and terminal activity exactly once; a
+terminal-only feed must report completion-only fidelity and cannot qualify the
+watcher consumer surface. Feed closure, overflow, foreign identity, projection
+failure, or event-delivery failure fails the turn and still performs joined
+watcher and provider cleanup.
+
 Raw stdout, stderr, command text, arguments, environment, paths, secrets, and
 unbounded logs do not enter portable events or diagnostics. A summary may
 carry bounded progress, terminal status, safe failure classification, duration,
@@ -212,6 +231,10 @@ Provider-neutral fixtures must prove:
 
 - turn-scoped identity and rejection of foreign, stale, PID, and reused ids
 - bounded counts, inputs, status, summaries, and event delivery
+- accepted, running, and terminal activity is delivered exactly once even when
+  all transitions occur between two provider output chunks
+- multiple watcher transitions preserve host order, joined emits no duplicate
+  completion, and feed/projection/event-delivery failure cleans up fail-closed
 - model and operator stop through distinct paths against one registry
 - start rejection before work and exact accepted/running/terminal/join order
 - completion-versus-stop races and repeated stop

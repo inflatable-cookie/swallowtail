@@ -27,15 +27,15 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — ready standing currentness; prerequisite to watcher card 010
+- [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
 - [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 waits on g05.005; card 011 keeps the separate live gate
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has five numbered roadmaps: two completed milestones, honest evidence stops
-at 002, the ready watcher milestone at 003, and ready standing currentness at
-005.
+g05 has five numbered roadmaps: three completed milestones including standing
+currentness at 005, honest evidence stops at 002, and the ready watcher
+milestone at 003.
 
 ## Current Boundary
 
@@ -55,9 +55,10 @@ Contract 060 owns the closed provider-neutral operation bridge. Card 016 landed
 the host service, private authority, closed HTTP/MCP surface, terminal barrier,
 and joined cleanup. The post-bridge orchestrator checkpoint found that card 010
 could not depend on a live proof owned by later card 011. g05.005 cards 017-018
-now own the base Claude Code `2.1.251` currentness prerequisite. After that
-lands, card 010 may become a credential-free binding card; card 011 alone keeps
-the separately authorized live same-turn gate and first route claim.
+closed Research 261 and raised both Claude Code axes through official
+`2.1.251`. After merge, card 010 may become a credential-free binding card;
+card 011 alone keeps the separately authorized live same-turn gate and first
+route claim.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -66,7 +67,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — ready (standing currentness), cards 017-018
+- [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 016 landed; card 010 waits on currentness; card 011 waits on binding and live authorization
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned

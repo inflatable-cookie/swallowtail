@@ -123,7 +123,9 @@ mod tests {
         for admitted in ADMITTED_VERSIONS {
             assert!(super::admits(&binding(admitted)));
         }
-        for rejected in ["2.1.230", "2.1.242", "2.1.219", "3.0.0"] {
+        for rejected in [
+            "2.1.230", "2.1.242", "2.1.244", "2.1.249", "2.1.251", "2.1.252", "2.1.219", "3.0.0",
+        ] {
             assert!(!super::admits(&binding(rejected)));
         }
     }

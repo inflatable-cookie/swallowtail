@@ -1,6 +1,6 @@
 # g05.005 Claude Code 2.1.251 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-30
 
@@ -53,8 +53,8 @@ Claim:
 
 ## Batch Cards
 
-- [017 Claude Code 2.1.251 Identity](batch-cards/017-claude-code-2-1-251-identity.md) — ready
-- [018 Claude Code 2.1.251 Claim](batch-cards/018-claude-code-2-1-251-claim.md) — ready after card 017 confirms the segment shape
+- [017 Claude Code 2.1.251 Identity](batch-cards/017-claude-code-2-1-251-identity.md) — completed
+- [018 Claude Code 2.1.251 Claim](batch-cards/018-claude-code-2-1-251-claim.md) — completed
 
 ## References
 

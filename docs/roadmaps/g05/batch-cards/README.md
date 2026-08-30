@@ -9,8 +9,7 @@
 
 ## Ready
 
-- [018-claude-code-2-1-251-claim.md](./018-claude-code-2-1-251-claim.md) — ready after card 017 admits the segment shape
-- [017-claude-code-2-1-251-identity.md](./017-claude-code-2-1-251-identity.md) — ready; standing currentness; auto-continues to card 018
+- None.
 
 ## Blocked
 
@@ -18,6 +17,8 @@
 
 ## Completed
 
+- [018-claude-code-2-1-251-claim.md](./018-claude-code-2-1-251-claim.md) — completed; standing currentness; both axes through official `2.1.251`
+- [017-claude-code-2-1-251-identity.md](./017-claude-code-2-1-251-identity.md) — completed; standing currentness; Research 261 compatible-extension
 - [016-operation-scoped-watcher-http-bridge-core.md](./016-operation-scoped-watcher-http-bridge-core.md) — completed; Contract 060 host bridge core; cards 010-011 remain planned
 - [015-claude-code-watcher-bridge-transport-evidence.md](./015-claude-code-watcher-bridge-transport-evidence.md) — completed; Research 260 evidence stop; card 010 remains planned
 - [014-host-process-watcher-supervision.md](./014-host-process-watcher-supervision.md) — completed; default host-process watcher supervision

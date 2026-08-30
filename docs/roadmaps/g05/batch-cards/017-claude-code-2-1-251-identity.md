@@ -1,6 +1,6 @@
 # 017 Claude Code 2.1.251 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Milestone: [g05.005 Claude Code 2.1.251 Useful Newer](../005-claude-code-2-1-251-useful-newer.md)
 Created: 2026-08-30

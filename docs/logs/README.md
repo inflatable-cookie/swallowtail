@@ -24,6 +24,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-30 Claude Code 2.1.251 Claim](./2026-08-30-claude-code-2-1-251-claim.md) — complete; Research 261; g05.005 cards 017-018; official npm `2.1.251`
+- [2026-08-30 Claude Code 2.1.251 Identity](./2026-08-30-claude-code-2-1-251-identity.md) — complete; card 017; Research 261; compatible-extension
 - [2026-08-30 g05.003 Claude Watcher Post-Bridge Reassessment](./2026-08-30-g05-003-claude-watcher-post-bridge-reassessment.md) — circular live gate removed; g05.005 currentness compiled before card 010
 - [2026-08-30 g05.003 Watcher HTTP Bridge Core](./2026-08-30-g05-003-watcher-http-bridge-core.md) — card 016; Contract 060 host bridge, private authority, closed HTTP/MCP, joined cleanup
 - [2026-08-30 g05.003 Watcher HTTP Bridge Promotion](./2026-08-30-g05-003-watcher-http-bridge-promotion.md) — Contract 060 promoted; provider-neutral card 016 ready; Claude cards remain gated

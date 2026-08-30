@@ -1,0 +1,150 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "version": "2.1.251",
+  "observed_at": "2026-08-30",
+  "npm_package": "@anthropic-ai/claude-code",
+  "npm_latest": true,
+  "published_at": "2026-08-28T15:34:26.421Z",
+  "npm_integrity": "sha512-eG+ZPPpW2Dbmnntf1Fz9/T9ewS8I8SKfc1tcU2PqSwmftfjRPP7BXPaCyLuZ8kvgTdiPnJi/2/JnTvTRieneEQ==",
+  "npm_shasum": "6c9d93e34244186783c5dcfd68605b0d0c6e16f7",
+  "npm_tarball_sha256": "44d28caf1711767c14a0388db56b13f49dbd8d3e1db635dd98aa3115c760cf27",
+  "linux_x64_package": "@anthropic-ai/claude-code-linux-x64",
+  "linux_x64_tarball_sha256": "7e2d6d13baccd64cd2d9a8781643ae23a48db009ad746d1df0cfec38d5ed0a44",
+  "linux_x64_binary_sha256": "fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7",
+  "linux_x64_binary_size": 214326616,
+  "darwin_arm64_package": "@anthropic-ai/claude-code-darwin-arm64",
+  "darwin_arm64_tarball_sha256": "cb3ecffa649ea20b78f3b7fe4a7395d7a225a510ae18521f6b65c669ecf4d9fd",
+  "darwin_arm64_binary_sha256": "625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5",
+  "darwin_arm64_binary_size": 197171680,
+  "official_version_output": "2.1.251 (Claude Code)",
+  "official_help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+  "official_help_byte_identical_to_2_1_241": false,
+  "selected_mapped_subset_unchanged": true,
+  "host": {
+    "not_installed": false,
+    "version_output": "2.1.251 (Claude Code)",
+    "bin_sha256": "625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5",
+    "native_path_redacted": true,
+    "native_sha256": "625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5",
+    "native_size": 197171680,
+    "help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+    "codesign_identifier": "com.anthropic.claude-code",
+    "codesign_team": "Q6L2SF6YDW",
+    "codesign_authority": "Developer ID Application: Anthropic PBC (Q6L2SF6YDW)",
+    "matches_official_darwin_arm64": true,
+    "note": "Host was observed, not installed or updated. Official wrapper, darwin-arm64, and linux-x64 artifacts were extracted under /tmp only. Host native binary and extracted official darwin-arm64 binary are SHA-256 identical. Host --help is byte-identical to extracted official darwin-arm64 --help."
+  },
+  "agent_sdk_package": "@anthropic-ai/claude-agent-sdk",
+  "agent_sdk_latest": "0.3.251",
+  "agent_sdk_latest_integrity": "sha512-DqSi8mH2tQYRlVV0G+lJnQ/WbjJZ/a+8cJ3vPuYoqh8esIIvXHm1ZOXV1UPGsFYRnbBytEoiSGitguEXd+sQ+Q==",
+  "frozen_corpus_version": "2.1.220",
+  "frozen_agent_sdk": "0.3.220",
+  "research_202_ceiling": "2.1.241",
+  "published_stables_from_previous_ceiling": [
+    "2.1.242",
+    "2.1.243",
+    "2.1.245",
+    "2.1.246",
+    "2.1.247",
+    "2.1.248",
+    "2.1.250",
+    "2.1.251"
+  ],
+  "published_intermediate_identity": {
+    "2.1.242": {
+      "published_at": "2026-08-24T19:16:14.767Z",
+      "npm_integrity": "sha512-PFKsmbyzrKF69muG7Y4dHZUe2JlbxREgfwrE2jG5ydj6ZtqidyWizeAtpmrZwYpuPKClggCjLQ5/3aGR0B24Pg==",
+      "npm_shasum": "fd37373ef5a4c5f82676b3e2d9599621e16573d4",
+      "npm_tarball_sha256": "1190d8f7beb20e9d7aa8023d35f209324bd03f493fa18ddd341e1ab046fe5088"
+    },
+    "2.1.243": {
+      "published_at": "2026-08-24T23:10:45.498Z",
+      "npm_integrity": "sha512-akByOU+klFON4/Ob6RMGeXvS2G+NMaPfNAtG4whrmoGjhNtkGcHzLiGB0VFVtVj9mbnHZ7OSM1/LPwANWeJVIg==",
+      "npm_shasum": "113fa085d1f652c2857e728f969050cbc7348655",
+      "npm_tarball_sha256": "83ffa9c8e3244ce8cb5beb9eed004b6d3e5bdf84b19d5f26ccbcec2c7f657feb"
+    },
+    "2.1.245": {
+      "published_at": "2026-08-25T04:45:52.102Z",
+      "npm_integrity": "sha512-+7baJddJXZukgd6AgC7xStHGsMTVHDPlRcAoqTSPx2NQ+QwKGtvCZQLgbnKuhjkwq9v9vKvYwIhLOwGiE77mVQ==",
+      "npm_shasum": "cceab6b3a7a4d899e2a94963852304aaba43d6ac",
+      "npm_tarball_sha256": "679e88a0ffb843dcc77525e4165843151b8bbe5d8591e2c3dc27796614e9cb19"
+    },
+    "2.1.246": {
+      "published_at": "2026-08-25T19:17:34.421Z",
+      "npm_integrity": "sha512-E2PEKkal9D05dWnsc2fcPclJpEbJbnIE3D1vp33aPrsFbmdbqyNzEcc9/SeFIj53hvP/M5BuHygOFbeoBWEAOg==",
+      "npm_shasum": "4222a707657362a9588eb194bb56c339193cbfd2",
+      "npm_tarball_sha256": "8243db25322e7295953455aee463324bfa229f37184fcf2adf90446818803dce"
+    },
+    "2.1.247": {
+      "published_at": "2026-08-26T18:02:01.046Z",
+      "npm_integrity": "sha512-2Z2UQKom3x6GBQDYlFFi00KbRciqsuGL9CpK+IN3fXmmJb7IXVitrRZ6HZyUw0ixnckr814GIp0FUaXwDEbBrw==",
+      "npm_shasum": "c64ecfdfff0e8a7f7c79467b178344ec52e08fbe",
+      "npm_tarball_sha256": "c63ff7ee01fbc82f77b6e6c6c7270b5522e19a6164834499e3930034df596710"
+    },
+    "2.1.248": {
+      "published_at": "2026-08-27T20:35:36.671Z",
+      "npm_integrity": "sha512-X9Xy+cdXNXkD47jj4Ro1mfm573nEwYc7iUuqT0SGHgdufjwFXIEOS6FTGBme6ngG8156dTibrK167sVcKeuntw==",
+      "npm_shasum": "2da38aa9185b2506e07d17fb5d16ecfd846cd785",
+      "npm_tarball_sha256": "a7abd338888085610672547047c3cfe4072f3fcb7f81a9808b2c41e4f0940297"
+    },
+    "2.1.250": {
+      "published_at": "2026-08-27T22:27:48.314Z",
+      "npm_integrity": "sha512-SsqdHBePKgpoquZdMPbwSZZc2PkQy/qBcekroihILhRdPAAtpXXH49POHl7e6bujj55MaKPk4Wa7gpFXuMKwnA==",
+      "npm_shasum": "c1f98486969b39f115762ec3bcd27684144384b4",
+      "npm_tarball_sha256": "2c9c8e3aa7a02adcb3c04037d4b16272c6132193477b569dd6a7cf8a09e3fe6d"
+    }
+  },
+  "unpublished_2_1_244": true,
+  "unpublished_2_1_249": true,
+  "unpublished_2_1_252": true,
+  "changelog_has_no_2_1_242_heading": true,
+  "wrapper_files_byte_identical_to_2_1_241": [
+    "cli-wrapper.cjs",
+    "install.cjs",
+    "bin/claude.exe",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "cli_wrapper_sha256": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+  "install_cjs_sha256": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+  "package_json_delta": "version pin and optionalDependencies platform packages only",
+  "sdk_tools_delta": "unmapped Read artifactRead, Read pages/firstPage, MCP stored extras, artifacts favicon, SendFeedback wording, and subagent model-default comment; not selected stream-JSON",
+  "claim_at_observation": {
+    "headless_baseline": "2.1.220",
+    "headless_latest_qualified": "2.1.241",
+    "response_only_baseline": "2.1.227",
+    "response_only_latest_qualified": "2.1.241",
+    "posture": "allow_unverified",
+    "deny_list": [],
+    "classification_of_2_1_242": "unverified_newer",
+    "classification_of_2_1_251": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "claude-code.headless.stream-json.v1",
+    "raise_latest_qualified_to": "2.1.251",
+    "keep_baseline": "2.1.220",
+    "qualify_intermediates": true,
+    "qualified_intermediates": [
+      "2.1.242",
+      "2.1.243",
+      "2.1.245",
+      "2.1.246",
+      "2.1.247",
+      "2.1.248",
+      "2.1.250"
+    ],
+    "keep_unpublished_2_1_244_incompatible": true,
+    "keep_unpublished_2_1_249_incompatible": true,
+    "new_milestone": false,
+    "mix_response_only_axis": false,
+    "flatten_to_claude_agent_acp": false,
+    "map_restricted": false,
+    "map_watcher_flags": false,
+    "map_background_session_commands": false,
+    "widen_maximum_turns": false,
+    "later_unverified_after_qualification": "2.1.252",
+    "provider_prompt_sent": false,
+    "host_install_changed": false
+  }
+}

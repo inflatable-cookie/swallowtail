@@ -77,12 +77,9 @@ fn autocompaction_evidence_fixture_is_secret_free_and_records_an_empty_deliver_n
         .expect("probed versions are an object");
     assert_eq!(probed.len(), 21);
     assert!(!probed.contains_key("2.1.230"));
-    for boundary in [
-        CLAUDE_CODE_HEADLESS_BASELINE_VERSION,
-        CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-    ] {
-        assert!(probed.contains_key(boundary));
-    }
+    assert!(probed.contains_key(CLAUDE_CODE_HEADLESS_BASELINE_VERSION));
+    assert!(probed.contains_key("2.1.241"));
+    assert!(!probed.contains_key(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION));
 
     let claim = claude_code_headless_claim();
     for (probed_version, row) in probed {

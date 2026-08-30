@@ -8,34 +8,40 @@ use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
 };
 
-const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.241/identity.json");
-const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.241/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.251/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.251/protocol.json");
 const STRUCTURED_OUTPUT: &str =
     include_str!("fixtures/claude-code-2.1.238/headless-structured-output.json");
 const ULTRACODE: &str = include_str!("fixtures/claude-code-2.1.241/headless-ultracode.json");
 
 #[test]
-fn identity_and_claim_qualify_2_1_241_as_compatible_extension() {
+fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
     let identity: Value =
-        serde_json::from_str(IDENTITY).expect("Claude Code 2.1.241 identity corpus is valid JSON");
+        serde_json::from_str(IDENTITY).expect("Claude Code 2.1.251 identity corpus is valid JSON");
     let protocol: Value =
-        serde_json::from_str(PROTOCOL).expect("Claude Code 2.1.241 protocol corpus is valid JSON");
+        serde_json::from_str(PROTOCOL).expect("Claude Code 2.1.251 protocol corpus is valid JSON");
 
     assert_eq!(identity["axis"], CLAUDE_CODE_HEADLESS_AXIS);
-    assert_eq!(identity["version"], "2.1.241");
+    assert_eq!(identity["version"], "2.1.251");
     assert_eq!(identity["npm_package"], "@anthropic-ai/claude-code");
     assert_eq!(identity["npm_latest"], true);
     assert_eq!(
         identity["npm_integrity"],
-        "sha512-S7DWEmJJAsI5taAUjhKm6soXcFJYIVeTH6Lg9kmp3yntFllCP612hGwZ7thOGh8r7YaRUH9+1jCX5A9QGazsxg=="
+        "sha512-eG+ZPPpW2Dbmnntf1Fz9/T9ewS8I8SKfc1tcU2PqSwmftfjRPP7BXPaCyLuZ8kvgTdiPnJi/2/JnTvTRieneEQ=="
     );
-    assert_eq!(identity["host"]["not_installed"], true);
-    assert_eq!(identity["official_help_byte_identical_to_2_1_238"], true);
+    assert_eq!(identity["host"]["not_installed"], false);
+    assert_eq!(identity["host"]["matches_official_darwin_arm64"], true);
+    assert_eq!(identity["official_help_byte_identical_to_2_1_241"], false);
+    assert_eq!(identity["selected_mapped_subset_unchanged"], true);
     assert_eq!(
         identity["published_stables_from_previous_ceiling"],
-        serde_json::json!(["2.1.239", "2.1.240", "2.1.241"])
+        serde_json::json!([
+            "2.1.242", "2.1.243", "2.1.245", "2.1.246", "2.1.247", "2.1.248", "2.1.250", "2.1.251"
+        ])
     );
-    assert_eq!(identity["unpublished_2_1_242"], true);
+    assert_eq!(identity["unpublished_2_1_244"], true);
+    assert_eq!(identity["unpublished_2_1_249"], true);
+    assert_eq!(identity["unpublished_2_1_252"], true);
 
     let decision = &identity["identity_decision"];
     assert_eq!(decision["shape"], "compatible-extension");
@@ -43,14 +49,19 @@ fn identity_and_claim_qualify_2_1_241_as_compatible_extension() {
         decision["reuse_behavior_revision"],
         "claude-code.headless.stream-json.v1"
     );
-    assert_eq!(decision["raise_latest_qualified_to"], "2.1.241");
+    assert_eq!(decision["raise_latest_qualified_to"], "2.1.251");
     assert_eq!(decision["keep_baseline"], "2.1.220");
     assert_eq!(decision["qualify_intermediates"], true);
+    assert_eq!(decision["keep_unpublished_2_1_244_incompatible"], true);
+    assert_eq!(decision["keep_unpublished_2_1_249_incompatible"], true);
     assert_eq!(decision["new_milestone"], false);
     assert_eq!(decision["mix_response_only_axis"], false);
     assert_eq!(decision["flatten_to_claude_agent_acp"], false);
+    assert_eq!(decision["map_restricted"], false);
+    assert_eq!(decision["map_watcher_flags"], false);
+    assert_eq!(decision["widen_maximum_turns"], false);
     assert_eq!(decision["provider_prompt_sent"], false);
-    assert_eq!(decision["later_unverified_after_qualification"], "2.1.242");
+    assert_eq!(decision["later_unverified_after_qualification"], "2.1.252");
 
     let flags = protocol["help_selected_flags_present"]
         .as_array()
@@ -72,33 +83,42 @@ fn identity_and_claim_qualify_2_1_241_as_compatible_extension() {
     assert_eq!(protocol["selected_permission_mode"], "plan");
     assert_eq!(protocol["include_partial_messages_selected"], false);
     assert_eq!(protocol["decoder_corpus"], "claude-code-2.1.220");
-    assert_eq!(protocol["official_help_byte_identical_to_2_1_238"], true);
+    assert_eq!(protocol["official_help_byte_identical_to_2_1_241"], false);
     assert_eq!(protocol["provider_prompt_sent"], false);
+    assert!(
+        protocol["unused_help_deltas"]
+            .as_array()
+            .expect("unused help deltas are an array")
+            .iter()
+            .any(|flag| flag == "--restricted")
+    );
 
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.241");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.251");
     assert_eq!(
         identity["claim_at_observation"]["headless_latest_qualified"],
-        "2.1.238"
+        "2.1.241"
     );
 
     let claim = claude_code_headless_claim();
     assert!(claim.supports(&version("2.1.220")));
     assert!(claim.supports(&version("2.1.221")));
-    assert!(claim.supports(&version("2.1.238")));
-    assert!(claim.supports(&version("2.1.239")));
-    assert!(claim.supports(&version("2.1.240")));
+    assert!(claim.supports(&version("2.1.241")));
+    assert!(claim.supports(&version("2.1.242")));
+    assert!(claim.supports(&version("2.1.250")));
+    assert!(!claim.permits(&version("2.1.244")));
+    assert!(!claim.permits(&version("2.1.249")));
     assert!(matches!(
-        claim.assess(&version("2.1.241")),
+        claim.assess(&version("2.1.251")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        claim.assess(&version("2.1.242")),
+        claim.assess(&version("2.1.252")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
-        claude_code_headless_binding("2.1.241")
+        claude_code_headless_binding("2.1.251")
             .expect("version binds")
             .axis()
             .as_str(),

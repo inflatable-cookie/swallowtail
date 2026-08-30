@@ -14,6 +14,11 @@ The interface should be cohesive. Consumers should not need adapter
 downcasts, route-specific queries, command-line knowledge, or their own merge
 of unrelated capability, catalogue, readiness, and option records.
 
+The projection must also distinguish controls fixed when a session starts from
+controls that the active session can negotiate later. A consumer needs to know
+whether changing a value updates the current session, applies only to a later
+turn, or requires a new session.
+
 This is a publication and projection problem. It does not add route features,
 change provider behavior, or give Swallowtail ownership of consumer layout or
 routing policy.
@@ -54,6 +59,8 @@ instance, route, model, operation shape, and current evidence snapshot:
   operation
 - the valid type, values, bounds, omission behavior, and lifecycle of each
   control
+- which controls are session-start-only, per-turn, or negotiable on an active
+  session, including the exact safe transition point
 - which facts came from route qualification, model catalogue evidence,
   configured-instance readiness, preparation, or live negotiation
 
@@ -66,20 +73,26 @@ qualified, or hiding a temporarily unavailable feature as unsupported.
 
 ## Recommended Shape For Promotion Research
 
-Prefer one public projection facade with two lifecycle-appropriate views over
+Prefer one public projection facade with three lifecycle-appropriate views over
 one unstructured feature bag:
 
 1. **Selection summary** — safe, bounded feature summaries for configured
    instances and model rows. This supports model-picker badges, filtering, and
    explanatory availability states.
-2. **Prepared operation controls** — exact controls applicable to the selected
-   instance, route, model, operation shape, and lifecycle before execution.
-   This supports composer controls without widening the prepared plan.
+2. **Session-start controls** — exact controls applicable while preparing or
+   opening the selected instance, route, model, and operation shape. The view
+   says which values become fixed for that session and whether changing one
+   requires a replacement session.
+3. **Active-session controls** — exact controls the bound session can negotiate
+   after opening, with current and provider-effective state, allowed transition
+   points, and safe unavailable reasons. This view must distinguish between
+   changes allowed between turns and any separately proved mid-turn steering.
 
-Live negotiated observations may refine or supplement the second view after a
-session opens. They must not be presented as pre-session guarantees.
+Live negotiated observations may refine or supplement the third view after a
+session opens. They must not be presented as pre-session guarantees. A
+post-open option list is not proof that the current session accepts mutation.
 
-The two views should be assembled from the same semantic vocabulary and
+The three views should be assembled from the same semantic vocabulary and
 returned through one consumer-facing API family. Consumers should not query
 adapters directly after the relevant route evidence has been admitted and
 prepared.
@@ -109,7 +122,8 @@ A selectable feature also needs a typed control descriptor:
   declaration
 - allowed values or numeric bounds from qualified evidence
 - omission semantics and whether Swallowtail knows a default
-- lifecycle and mutability: before session, before turn, or negotiated only
+- lifecycle and mutability: session-start-only, per-turn, between-turn
+  negotiation, explicitly proved mid-turn negotiation, or observation-only
 - compatibility constraints for model, route, access mode, and operation shape
 - optional bounded fallback label, help text, and grouping hint
 
@@ -117,6 +131,27 @@ The descriptor should not become arbitrary JSON, raw provider flags, or a
 consumer UI component. Provider-native extensions need bounded namespaced
 identity and explicit evidence. The consuming app owns visual layout,
 localization, persistence of preferences, and product policy.
+
+### Session Lifecycle Semantics
+
+Do not represent lifecycle as a generic `mutable` boolean. At minimum, the
+consumer projection must distinguish:
+
+- **session-start-only** — selected before open or resume and fixed once the
+  session is active; a changed value requires a new session
+- **per-turn** — supplied for one later turn without changing session setup
+- **between-turn negotiable** — may update the active session while it has no
+  in-flight turn, through an exact route mechanism
+- **mid-turn negotiable** — may steer an active turn only when separately
+  qualified; never inferred from between-turn support
+- **post-open observation-only** — visible after opening but not consumer
+  mutable
+
+For active-session negotiation, the facade needs a typed companion state for
+requested, pending, provider-confirmed effective, and rejected values. It must
+also publish whether the session must be idle, whether the next turn observes
+the change, and whether failure leaves the prior value effective. Provider
+acknowledgement cannot be inferred from a successful local setter call.
 
 ### State And Authority
 
@@ -126,7 +161,9 @@ request must still pass the existing prepared-plan and capability checks.
 
 Current selected values belong in separate consumer or session state. Keeping
 descriptors separate from values lets several applications render the same
-route truth without Swallowtail owning their composer state.
+route truth without Swallowtail owning their composer state. The cohesive API
+may return descriptor and active-session state together, but must not collapse
+requested and provider-effective values.
 
 Snapshots should retain exact source identity and freshness. Readiness,
 catalogue, currentness, or negotiated-session changes produce replacement
@@ -154,9 +191,11 @@ projections rather than silently mutating prior truth.
    supplied or localized by the consumer?
 4. How should post-open negotiated options appear without making the pre-open
    composer misleading?
-5. Does this amend Contracts 037, 047, and 057, or need one dedicated contract
+5. Which current routes have an exact in-session mutation and acknowledgement
+   mechanism, and which merely advertise values after opening?
+6. Does this amend Contracts 037, 047, and 057, or need one dedicated contract
    that composes them without changing their authority?
-6. What snapshot identity and refresh signal lets a consumer replace stale
+7. What snapshot identity and refresh signal lets a consumer replace stale
    projections safely?
 
 ## Promotion Gate
@@ -174,8 +213,12 @@ Promote only when the contract can prove:
   operation
 - unsupported, unavailable, conditional, unknown, and negotiated-only states
   remain distinct
+- session-start-only, per-turn, between-turn, mid-turn, and observation-only
+  controls remain distinct, with no inferred mutation authority
 - projected control values and omission semantics agree with preflight and
   execution validation
+- active-session negotiation keeps requested, pending, effective, and rejected
+  state truthful
 - provider-native extensions remain bounded and namespaced
 - consumer presentation and routing policy remain downstream
 

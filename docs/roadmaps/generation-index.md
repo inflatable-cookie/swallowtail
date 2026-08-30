@@ -170,9 +170,10 @@ first route claim stays withheld and prototype head `49f2692f` remains
 unmerged. The operator selected credential-free repair before another provider
 authorization. g05.006 card 019 completed lossless watcher lifecycle
 activity, a direct active-Stop and same-session proof oracle, and panic-safe
-live workspace cleanup. It did not run a provider turn or publish a watcher
-claim. g05.004 standing currentness is complete: Research 258 and cards
-012-013 qualify Qwen headless through official `0.22.3`. No second provider
+live workspace cleanup, then landed through PR 126 at `c8691e84`. It did not
+run a provider turn or publish a watcher claim. g05.004 standing currentness
+is complete: Research 258 and cards 012-013 qualify Qwen headless through
+official `0.22.3`. No second provider
 prompt, container backend, new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule

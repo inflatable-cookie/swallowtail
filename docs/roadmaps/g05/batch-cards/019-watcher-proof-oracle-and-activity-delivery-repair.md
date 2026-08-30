@@ -1,6 +1,6 @@
 # 019 Watcher Proof Oracle And Activity Delivery Repair
 
-Status: complete; credential-free repair; no live claim
+Status: complete; merged through PR 126 at `c8691e84`; no live claim
 Owner: Tom
 Created: 2026-08-30
 Updated: 2026-08-30

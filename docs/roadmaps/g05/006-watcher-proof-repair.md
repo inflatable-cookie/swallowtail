@@ -6,7 +6,7 @@ Created: 2026-08-30
 Updated: 2026-08-30
 Depends on: stopped g05.003 card 011; Contracts 044, 059, and 060
 Vision tags: process watchers, consumer activity, review oracle
-Planning state: card 019 complete; no live provider authorization; claims unpublished
+Planning state: merged through PR 126 at `c8691e84`; no live provider authorization; claims unpublished
 
 ## Problem
 

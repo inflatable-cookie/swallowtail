@@ -27,7 +27,7 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — completed; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
+- [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
 - [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; first route claim withheld
@@ -71,9 +71,10 @@ authorization. Contract 059 now requires bounded lossless lifecycle delivery
 independent of provider stdout cadence. g05.006 card 019 completed that
 credential-free repair: a host-owned lifecycle feed, `project_watcher_activity`
 as the only projector, a bounded Stop-reentry recorder, panic-safe workspace
-cleanup, and deterministic counterexamples. The live selector was not run and
-no watcher support claim is published. Card 011 and g05.003 remain evidence
-stops.
+cleanup, and deterministic counterexamples. PR 126 landed by fast-forward at
+`c8691e84` after exact-head review and five green CI jobs. The live selector was
+not run and no watcher support claim is published. Card 011 and g05.003 remain
+evidence stops pending a separate operator decision on one fresh live turn.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -82,7 +83,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed; card 019; no provider authorization; claims unpublished
+- [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; prototype unmerged

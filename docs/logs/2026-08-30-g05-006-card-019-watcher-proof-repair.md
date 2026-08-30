@@ -45,6 +45,10 @@ proof, snapshots only after in-flight connections join, drives the
 direct-gate counterexample through the production recording seam, and
 formats the CI-red fake-process constructor.
 
+PR 126 merged by fast-forward at `c8691e84` after exact-head review. Stable,
+documentation/API, pinned Rust `1.95.0`, dependency policy, and external
+source-consumer CI were green. No provider turn ran during review or merge.
+
 ## Evidence
 
 - Silent fast-watcher and interleaved host-local feed fixtures
@@ -56,6 +60,7 @@ formats the CI-red fake-process constructor.
 
 ## Next
 
-Orchestrator review of this PR. After merge, reassess whether the repaired
-oracle is strong enough to request fresh live authorization. Do not run the
+The repaired oracle is ready for a separately authorized live acceptance
+attempt. The operator decides whether to authorize one fresh exact Claude Code
+`2.1.251` turn. Card 011 and g05.003 remain stopped until then. Do not run the
 live selector from this closeout.

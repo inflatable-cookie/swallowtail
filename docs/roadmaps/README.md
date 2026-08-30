@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Orchestrator reviews the g05.006 card 019 PR against Contracts 044, 059, and
-060. After merge, reassess whether the repaired Stop-reentry oracle is strong
-enough to request fresh live authorization. Do not run the live selector,
-publish a watcher claim, or merge without separate operator authorization.
+Operator decides whether to authorize one fresh exact Claude Code `2.1.251`
+watcher acceptance turn through the repaired Stop-reentry oracle. Until that
+explicit authorization, keep card 011 and g05.003 stopped. Do not run the live
+selector or publish a watcher claim.
 
 ## Standing Lanes
 

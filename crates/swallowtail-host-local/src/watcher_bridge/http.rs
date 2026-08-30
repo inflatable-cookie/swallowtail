@@ -6,12 +6,13 @@ use swallowtail_runtime::{
     RuntimeFailure, WATCHER_BRIDGE_HTTP_PATH, WATCHER_BRIDGE_MAX_BODY_BYTES,
     WATCHER_BRIDGE_MAX_HEADER_BYTES, WATCHER_BRIDGE_MAX_HEADER_COUNT,
 };
+use zeroize::Zeroizing;
 
 const READ_TIMEOUT: Duration = Duration::from_secs(5);
 const HEADER_TERMINATOR: &[u8] = b"\r\n\r\n";
 
 pub(super) struct HttpRequest {
-    pub(super) bearer: Option<String>,
+    pub(super) bearer: Option<Zeroizing<String>>,
     pub(super) body: Vec<u8>,
 }
 
@@ -140,12 +141,12 @@ pub(super) enum HttpReject {
     Method,
 }
 
-fn parse_bearer(value: &str) -> Result<String, HttpReject> {
+fn parse_bearer(value: &str) -> Result<Zeroizing<String>, HttpReject> {
     let secret = value.strip_prefix("Bearer ").ok_or(HttpReject::Malformed)?;
     if secret.is_empty() || secret.bytes().any(|byte| byte.is_ascii_whitespace()) {
         return Err(HttpReject::Malformed);
     }
-    Ok(secret.to_owned())
+    Ok(Zeroizing::new(secret.to_owned()))
 }
 
 fn parse_content_length(value: &str) -> Result<usize, HttpReject> {

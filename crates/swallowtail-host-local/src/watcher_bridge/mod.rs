@@ -1,22 +1,27 @@
 //! Local Contract 060 watcher HTTP bridge.
 
 mod bearer;
+mod failure;
 mod http;
 mod listener;
 mod protocol;
+#[cfg(test)]
+mod races;
 mod state;
 
 use crate::output::failure;
 use bearer::generate_bearer;
+use failure::{closed_failure, foreign_failure, identity_failure};
 use listener::{bind_loopback, endpoint_url, spawn_accept, wake_accept};
-use state::{BridgeRegistry, Gate, LiveLease, closed_failure, foreign_failure};
+use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase, drive};
+use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
 use swallowtail_core::{CancellationScope, ExecutionHostId, WatcherCleanupCause};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, ImmediateCancellation, RuntimeFailure,
     RuntimeTurnId, WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeCompletionState,
     WatcherBridgeEndpoint, WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
-    WatcherBridgeOpenRequest, WatcherHostService,
+    WatcherBridgeOpenRequest, WatcherBridgeToken, WatcherHostService,
 };
 
 pub(crate) struct LocalWatcherBridgeHostService {
@@ -41,11 +46,9 @@ impl LocalWatcherBridgeHostService {
         &self,
         request: WatcherBridgeOpenRequest,
     ) -> Result<WatcherBridgeLease, RuntimeFailure> {
-        if request.scope().as_str().is_empty() {
-            return Err(identity_failure());
-        }
         let (listener, addr) = bind_loopback()?;
         let bearer = generate_bearer()?;
+        let token_secret = generate_bearer()?;
         let endpoint = endpoint_url(addr);
         let generation = {
             let mut registry = self
@@ -71,17 +74,19 @@ impl LocalWatcherBridgeHostService {
             generation,
             bind_addr: addr,
             bearer: bearer.clone(),
+            token: WatcherBridgeToken::new(token_secret.as_str())
+                .map_err(|_| identity_failure())?,
             watcher: Arc::clone(&self.watcher),
-            closed: std::sync::atomic::AtomicBool::new(false),
-            in_flight: std::sync::atomic::AtomicUsize::new(0),
-            connection_count: std::sync::atomic::AtomicUsize::new(0),
+            closed: AtomicBool::new(false),
+            connection_count: AtomicUsize::new(0),
             cancel: ImmediateCancellation::new(CancellationScope::ActiveTurn),
             gate: Mutex::new(Gate {
                 admission: WatcherBridgeAdmission::Open,
                 creating: 0,
             }),
             creating_changed: Condvar::new(),
-            seen_ids: Mutex::new(std::collections::BTreeSet::new()),
+            requests: Mutex::new(RequestBounds::default()),
+            session: Mutex::new(SessionPhase::New),
             connections: Mutex::new(Vec::new()),
             accept_thread: Mutex::new(None),
         });
@@ -95,25 +100,21 @@ impl LocalWatcherBridgeHostService {
             .live
             .insert(generation, Arc::clone(&live));
         let close_state = Arc::clone(&self.state);
-        let close_watcher = Arc::clone(&self.watcher);
-        let close_turn = request.turn().clone();
+        let close_live = Arc::clone(&live);
         Ok(WatcherBridgeLease::new(
             self.execution_host_id.clone(),
             request.scope().clone(),
             request.turn().clone(),
             generation,
             WatcherBridgeEndpoint::new(endpoint).map_err(|_| identity_failure())?,
-            WatcherBridgeBearer::new(bearer).map_err(|_| identity_failure())?,
+            WatcherBridgeBearer::new(bearer.as_str()).map_err(|_| identity_failure())?,
         )
-        .with_defensive_cleanup(move || {
-            shutdown_generation(
-                close_state,
-                close_watcher,
-                close_turn,
-                generation,
-                WatcherCleanupCause::Cancelled,
-            );
-        }))
+        .bind(
+            WatcherBridgeToken::new(token_secret.as_str()).map_err(|_| identity_failure())?,
+            move || {
+                let _ = shutdown_live(close_state, close_live, WatcherCleanupCause::Cancelled);
+            },
+        ))
     }
 
     fn forget_generation(&self, turn: &RuntimeTurnId, generation: WatcherBridgeGeneration) {
@@ -144,7 +145,19 @@ impl LocalWatcherBridgeHostService {
             lease.turn(),
             lease.generation(),
         )?;
+        if !lease.binding_matches(&live.token) {
+            return Err(foreign_failure());
+        }
         Ok(live)
+    }
+
+    fn close_now(
+        &self,
+        lease: WatcherBridgeLease,
+        cause: WatcherCleanupCause,
+    ) -> Result<CleanupOutcome, RuntimeFailure> {
+        let live = self.live_for(&lease)?;
+        shutdown_live(Arc::clone(&self.state), live, cause)
     }
 }
 
@@ -153,49 +166,42 @@ impl WatcherBridgeHostService for LocalWatcherBridgeHostService {
         &self,
         request: WatcherBridgeOpenRequest,
     ) -> BoxFuture<'_, Result<WatcherBridgeLease, RuntimeFailure>> {
-        Box::pin(async move { self.open_now(request) })
+        let result = self.open_now(request);
+        Box::pin(async move { result })
     }
 
     fn completion_gate(
         &self,
         lease: &WatcherBridgeLease,
     ) -> BoxFuture<'_, Result<WatcherBridgeCompletionState, RuntimeFailure>> {
-        let live = self.live_for(lease);
-        Box::pin(async move { live?.completion_gate() })
+        let result = self.live_for(lease).and_then(|live| live.completion_gate());
+        Box::pin(async move { result })
     }
 
     fn close(
         &self,
-        mut lease: WatcherBridgeLease,
+        lease: WatcherBridgeLease,
         cause: WatcherCleanupCause,
     ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
-        let _ = lease.take_defensive_cleanup();
-        let state = Arc::clone(&self.state);
-        let watcher = Arc::clone(&self.watcher);
-        let turn = lease.turn().clone();
-        let generation = lease.generation();
-        shutdown_generation(state, watcher, turn, generation, cause);
-        Box::pin(async move { Ok(CleanupOutcome::Clean) })
+        let result = self.close_now(lease, cause);
+        Box::pin(async move { result })
     }
 }
 
-fn shutdown_generation(
+fn shutdown_live(
     state: Arc<Mutex<BridgeRegistry>>,
-    watcher: Arc<dyn WatcherHostService>,
-    turn: RuntimeTurnId,
-    generation: WatcherBridgeGeneration,
+    live: Arc<LiveLease>,
     cause: WatcherCleanupCause,
-) {
-    let live = {
+) -> Result<CleanupOutcome, RuntimeFailure> {
+    let turn = live.turn.clone();
+    let generation = live.generation;
+    {
         let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
         registry.by_turn.remove(&turn);
-        registry.live.remove(&generation)
-    };
-    let Some(live) = live else {
-        return;
-    };
+        registry.live.remove(&generation);
+    }
     if live.closed.swap(true, std::sync::atomic::Ordering::SeqCst) {
-        return;
+        return Ok(CleanupOutcome::NotApplicable);
     }
     {
         let mut gate = live.gate.lock().expect("watcher bridge gate lock poisoned");
@@ -220,12 +226,17 @@ fn shutdown_generation(
     for connection in connections {
         let _ = connection.join();
     }
-    drop(watcher.stop_and_join_all(turn, cause));
-}
-
-fn identity_failure() -> RuntimeFailure {
-    failure(
-        "swallowtail.watcher_bridge.identity_rejected",
-        "Watcher bridge rejected a required identity",
-    )
+    match drive(live.watcher.stop_and_join_all(turn, cause)) {
+        Ok((_, outcome)) => Ok(outcome),
+        Err(error)
+            if matches!(
+                error.diagnostic().code(),
+                "swallowtail.local_watcher.turn_not_found"
+                    | "swallowtail.local_watcher.turn_retired"
+            ) =>
+        {
+            Ok(CleanupOutcome::NotApplicable)
+        }
+        Err(error) => Err(error),
+    }
 }

@@ -1,9 +1,10 @@
+use super::failure::{malformed_failure, oversized_failure, unknown_failure};
 use super::http::{HttpReject, configure_stream, read_request, write_json};
 use super::protocol::{
     DecodedRequest, authenticate, correlation_id, decode_request, dispatch, error_http_status,
     error_message, jsonrpc_error,
 };
-use super::state::{LiveLease, malformed_failure, oversized_failure, unknown_failure};
+use super::state::LiveLease;
 use crate::output::failure;
 use std::io::ErrorKind;
 use std::net::{TcpListener, TcpStream};
@@ -78,11 +79,7 @@ fn accept_loop(live: Arc<LiveLease>, listener: TcpListener) {
                     .name("swallowtail-watcher-bridge-conn".to_owned())
                     .spawn(move || handle_connection(handler_live, stream))
                 {
-                    Ok(thread) => live
-                        .connections
-                        .lock()
-                        .expect("watcher bridge connection lock poisoned")
-                        .push(thread),
+                    Ok(thread) => live.retain_connection(thread),
                     Err(_) => live.release_connection(),
                 }
             }
@@ -117,7 +114,7 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
             return;
         }
     };
-    if let Err(error) = authenticate(&live, request.bearer.as_deref()) {
+    if let Err(error) = authenticate(&live, request.bearer.as_deref().map(String::as_str)) {
         let _ = write_failure(&mut stream, &error);
         return;
     }
@@ -128,15 +125,19 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
             return;
         }
     };
-    let admitted = match request_id(&decoded) {
-        Some(id) => match live.admit_request(&id) {
+    let admitted = match request_correlation(&decoded) {
+        Ok(Some(id)) => match live.admit_request(&id) {
             Ok(()) => true,
             Err(error) => {
                 let _ = write_failure(&mut stream, &error);
                 return;
             }
         },
-        None => false,
+        Ok(None) => false,
+        Err(error) => {
+            let _ = write_failure(&mut stream, &error);
+            return;
+        }
     };
     let dispatched = dispatch(&live, decoded);
     if admitted {
@@ -155,12 +156,14 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
     }
 }
 
-fn request_id(decoded: &DecodedRequest) -> Option<String> {
+fn request_correlation(
+    decoded: &DecodedRequest,
+) -> Result<Option<String>, swallowtail_runtime::RuntimeFailure> {
     match decoded {
-        DecodedRequest::Initialized => None,
+        DecodedRequest::Initialized => Ok(None),
         DecodedRequest::Initialize { id }
         | DecodedRequest::ToolsList { id }
-        | DecodedRequest::ToolsCall { id, .. } => correlation_id(id).ok(),
+        | DecodedRequest::ToolsCall { id, .. } => correlation_id(id).map(Some),
     }
 }
 

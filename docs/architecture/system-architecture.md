@@ -92,8 +92,11 @@ OpenHands adds a package without a production route.
   bounded summaries, ordinary process-group cleanup, and joined supervision.
   Contract 060 is realized as a separate optional `WatcherBridge` host service
   and `WatcherBridgeHostService` port. Opening a lease binds an ephemeral
-  loopback HTTP/MCP listener, fresh bearer authority, exact host/operation/turn
-  correlation, and the same watcher registry used by operator controls.
+  loopback HTTP/MCP listener, fresh bearer authority, an unforgeable host
+  token, exact host/operation/turn/generation correlation, and the same watcher
+  registry used by operator controls. JSON-RPC ids are validated before
+  watcher work; only `notifications/initialized` may omit an id. Close and Drop
+  join accept, connection, and watcher work; Drop cleanup cannot be disarmed.
   Registration still starts no listener. No production adapter opens a lease
   yet; the closed protocol is not a generic MCP server.
 - provider-session history paging is a separate read-only role under Contract

@@ -20,6 +20,7 @@ serde_json = "1"
 sha2 = "0.10"
 swallowtail-core.workspace = true
 swallowtail-runtime.workspace = true
+zeroize = "1"
 
 [target.'cfg(unix)'.dependencies]
 nix = { version = "0.31.3", default-features = false, features = ["fs", "signal"] }

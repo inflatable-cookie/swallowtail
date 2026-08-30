@@ -267,3 +267,74 @@ Related evidence:
 - [Contract 057](../contracts/057-route-readiness-and-connection-admission.md)
 
 This note is triage, not execution authority.
+
+## Census Synthesis (2026-08-30)
+
+The live source inventory contains 48 production route IDs. The repository
+script scripts/provider_route_matrix/route_inventory.py derives that set
+from the feature matrix and enforces 48; the matrix's main route table and
+the integration guide map also contain 48 rows. Some older route-matrix
+prose still says 47. That count drift is recorded as an evidence gap and was
+not corrected in the matrix during this evidence-only lane.
+
+The companion
+[2026-08-30-consumer-route-feature-and-option-projection-census.csv](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+has 769 rows:
+
+- 555 feature rows, including one activity-observation row for every route,
+  matrix feature posture, negotiated-model observation where exposed, and
+  the four exact post-open acknowledgement paths found in source
+  (claude-agent.acp, kimi-code.acp, cline.acp, and openai.realtime).
+- 205 control rows covering exact model bindings, typed route inputs,
+  session options, access and lifecycle policy, bounded domains, exchange
+  callbacks, and provider-session management.
+- 9 route-audit rows for bedrock.catalogue, antigravity.catalogue,
+  cursor-agent.catalogue, cursor-agent.acp, copilot-cli.acp, goose.acp,
+  kiro.acp, deepagents.acp, and qoder.headless. These routes remain
+  describable through route/catalogue/prepared evidence but have no
+  route-specific composer control identified in current public types.
+
+Lifecycle distribution is 553 selection-summary, 143 session-start-only, 9
+per-turn, 1 between-turn-negotiable, and 63 post-open-observation-only rows.
+No mid-turn-negotiable, unknown, or not-applicable classification was needed.
+The acknowledgement evidence proves requested/pending/effective/rejected
+state only on the named route paths. It does not prove general mid-turn
+steering. Model option lists on Gemini ACP, Grok Build ACP, Kimi ACP, and
+Cline ACP remain observation-only.
+
+The authoritative source classes are the immutable configured-instance and
+prepared-operation records, portable capability profiles and constraints,
+model catalogue observations, public runtime request types, adapter prepared
+inputs and validation, and route-driver/wire acknowledgement parsers.
+Provider and solution matrices are cross-checks. They do not establish
+accepted values, exact model applicability, current availability, or
+provider-effective state.
+
+The remaining unenumerated domains include provider/model-qualified output
+upper bounds, Anthropic search allowlist vocabulary (the type accepts bounded
+text rather than an enumerable domain), Gemini Live compression
+trigger/target values, provider-native profile and disabled-tool names, and
+route-specific subsets of the broader SessionOptions type. The census
+therefore keeps these as bounded or unenumerated rather than inventing
+portable values.
+
+Unsafe inferences ruled out by the census:
+
+- a matrix capability or route-wide capability implies support for every
+  model, operation shape, access mode, or resource
+- a model catalogue or negotiated option list authorizes model mutation
+- a successful local setter or prepared with_* call proves provider
+  acknowledgement
+- omission supplies a Swallowtail default
+- a persistence, retention, recovery, serving, load, resume, archive, or
+  callback feature is a composer control
+- a provider-native value can be flattened into a portable enum without
+  route, model, version, and evidence qualification
+
+The census answers the promotion gate's source, coverage, lifecycle, and
+acknowledgement questions enough to design the next contract discussion. It
+does not choose the facade's snapshot identity, freshness signal,
+availability-reason taxonomy, consumer presentation boundary, or whether
+Contracts 037, 047, and 057 need an amendment versus a composing contract.
+Those remain promotion questions. No runtime authority or implementation
+claim is created here; Status: open remains unchanged.

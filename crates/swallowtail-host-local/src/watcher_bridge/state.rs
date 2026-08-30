@@ -2,7 +2,7 @@ mod live;
 
 use super::failure::identity_failure;
 use super::proof::{ProofLog, WatcherBridgeProofKind};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
@@ -15,11 +15,14 @@ use swallowtail_runtime::{
 };
 use zeroize::Zeroizing;
 
+pub(super) const MAX_RETIRED_PROOFS: usize = 64;
+
 pub(super) struct BridgeRegistry {
     pub(super) next_generation: u64,
     pub(super) by_turn: BTreeMap<RuntimeTurnId, WatcherBridgeGeneration>,
     pub(super) live: BTreeMap<WatcherBridgeGeneration, Arc<LiveLease>>,
     pub(super) retired_proof: BTreeMap<RuntimeTurnId, Vec<WatcherBridgeProofKind>>,
+    pub(super) retired_order: VecDeque<RuntimeTurnId>,
 }
 
 impl Default for BridgeRegistry {
@@ -29,6 +32,20 @@ impl Default for BridgeRegistry {
             by_turn: BTreeMap::new(),
             live: BTreeMap::new(),
             retired_proof: BTreeMap::new(),
+            retired_order: VecDeque::new(),
+        }
+    }
+}
+
+impl BridgeRegistry {
+    pub(super) fn retire_proof(&mut self, turn: RuntimeTurnId, kinds: Vec<WatcherBridgeProofKind>) {
+        if self.retired_proof.insert(turn.clone(), kinds).is_none() {
+            self.retired_order.push_back(turn);
+        }
+        while self.retired_order.len() > MAX_RETIRED_PROOFS {
+            if let Some(oldest) = self.retired_order.pop_front() {
+                self.retired_proof.remove(&oldest);
+            }
         }
     }
 }
@@ -99,5 +116,33 @@ fn reap_finished(connections: &mut Vec<JoinHandle<()>>) {
         } else {
             index += 1;
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{BridgeRegistry, MAX_RETIRED_PROOFS};
+    use crate::watcher_bridge::WatcherBridgeProofKind;
+    use swallowtail_runtime::RuntimeTurnId;
+
+    #[test]
+    fn retired_proof_evicts_the_oldest_turns() {
+        let mut registry = BridgeRegistry::default();
+        for index in 0..(MAX_RETIRED_PROOFS + 8) {
+            let turn = RuntimeTurnId::new(format!("turn-{index}")).expect("turn");
+            registry.retire_proof(turn, vec![WatcherBridgeProofKind::Initialize]);
+        }
+        assert_eq!(registry.retired_proof.len(), MAX_RETIRED_PROOFS);
+        assert_eq!(registry.retired_order.len(), MAX_RETIRED_PROOFS);
+        assert!(
+            !registry
+                .retired_proof
+                .contains_key(&RuntimeTurnId::new("turn-0").expect("turn"))
+        );
+        assert!(
+            registry
+                .retired_proof
+                .contains_key(&RuntimeTurnId::new(format!("turn-{}", 8)).expect("turn"))
+        );
     }
 }

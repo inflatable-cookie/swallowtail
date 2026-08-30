@@ -133,7 +133,8 @@ impl FakeProcessService {
     }
 
     pub fn with_exit(stdout: &str, exit: ProcessExit) -> (Arc<Self>, Arc<ProcessState>) {
-        let (service, state, _) = Self::new(handle::stdout_chunks(stdout), exit, false, false, false);
+        let (service, state, _) =
+            Self::new(handle::stdout_chunks(stdout), exit, false, false, false);
         (service, state)
     }
 

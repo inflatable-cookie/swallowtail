@@ -40,12 +40,10 @@ or version-range claim is published.
   `LocalHostServices::watcher_bridge_proof(turn)` (reserved operation names
   for one turn only)
 
-Review of PR 126 required two revisions. The second scopes bridge proof to
-the owning turn, drives fake Stop-reentry through one in-order recording
-seam, preserves first-drain lifecycle errors, proves exact-once
-started→updated→completed on cancel/deadline/provider-failure, proves
-pre-pump failure cleanup and same-turn retry, and restores the 390
-god-file baseline (341 warnings / 49 errors).
+Review of PR 126 required three revisions. The latest bounds retired bridge
+proof, snapshots only after in-flight connections join, drives the
+direct-gate counterexample through the production recording seam, and
+formats the CI-red fake-process constructor.
 
 ## Evidence
 

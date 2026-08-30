@@ -1,11 +1,12 @@
 use super::http::post_json;
 use super::support::{
-    close_lease, handshake, open_lease, tool_call, tools_list_body, watcher_host,
+    close_lease, handshake, open_lease, tool_call, tool_payload, tools_list_body, watcher_host,
 };
 use serde_json::json;
 use swallowtail_host_local::WatcherBridgeProofKind;
 use swallowtail_runtime::{
     RuntimeTurnId, WATCHER_BRIDGE_TOOL_COMPLETION_GATE, WATCHER_BRIDGE_TOOL_START,
+    WATCHER_BRIDGE_TOOL_WAIT,
 };
 
 #[test]
@@ -84,4 +85,49 @@ fn bridge_proof_is_scoped_to_the_owning_turn() {
     );
     close_lease(&local, first);
     close_lease(&local, second);
+}
+
+#[test]
+fn retired_proof_retains_an_in_flight_wait() {
+    let local = watcher_host("proof-inflight", "sleep");
+    let lease = open_lease(&local, "turn-inflight");
+    let endpoint = lease.endpoint().expose().to_owned();
+    let bearer = lease.bearer().expose().to_owned();
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        Some(&bearer),
+        &tool_call(
+            json!(3),
+            WATCHER_BRIDGE_TOOL_START,
+            json!({"operation_data": "sleep-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("watcher id")
+        .to_owned();
+    let wait_endpoint = endpoint.clone();
+    let wait_bearer = bearer.clone();
+    let wait = std::thread::spawn(move || {
+        post_json(
+            &wait_endpoint,
+            Some(&wait_bearer),
+            &tool_call(
+                json!(4),
+                WATCHER_BRIDGE_TOOL_WAIT,
+                json!({"watcher_id": watcher_id}),
+            ),
+        )
+    });
+    std::thread::sleep(std::time::Duration::from_millis(100));
+    close_lease(&local, lease);
+    let (status, wait_body) = wait.join().expect("wait thread");
+    assert_eq!(status, 200, "{wait_body}");
+    let proof = local.watcher_bridge_proof(&RuntimeTurnId::new("turn-inflight").expect("turn"));
+    assert!(
+        proof.contains(&WatcherBridgeProofKind::Wait),
+        "in-flight wait was dropped: {proof:?}"
+    );
 }

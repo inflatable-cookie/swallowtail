@@ -11,16 +11,6 @@ pub(super) fn shutdown_live(
     live: Arc<LiveLease>,
     cause: WatcherCleanupCause,
 ) -> Result<CleanupOutcome, RuntimeFailure> {
-    let turn = live.turn.clone();
-    let generation = live.generation;
-    {
-        let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
-        registry
-            .retired_proof
-            .insert(turn.clone(), live.proof.snapshot());
-        registry.by_turn.remove(&turn);
-        registry.live.remove(&generation);
-    }
     if live.closed.swap(true, std::sync::atomic::Ordering::SeqCst) {
         return Ok(CleanupOutcome::NotApplicable);
     }
@@ -46,6 +36,15 @@ pub(super) fn shutdown_live(
     );
     for connection in connections {
         let _ = connection.join();
+    }
+    let turn = live.turn.clone();
+    let generation = live.generation;
+    let kinds = live.proof.snapshot();
+    {
+        let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
+        registry.retire_proof(turn.clone(), kinds);
+        registry.by_turn.remove(&turn);
+        registry.live.remove(&generation);
     }
     let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
         Ok((_, outcome)) => Ok(outcome),

@@ -40,5 +40,6 @@ include!("claude_code_structured_run/watcher_lifecycle.rs");
 include!("claude_code_structured_run/watcher_deadline.rs");
 include!("claude_code_structured_run/watcher_proof.rs");
 include!("claude_code_structured_run/watcher_stop_reentry.rs");
+include!("claude_code_structured_run/watcher_direct_gate.rs");
 include!("claude_code_structured_run/watcher_start_failure.rs");
 include!("claude_code_structured_run/support.rs");

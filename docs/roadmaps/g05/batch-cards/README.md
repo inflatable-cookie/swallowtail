@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — ready; one exact Claude Code `2.1.251` Haiku turn; no fallback or rerun
+- None.
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — evidence stop; stopped before contact on a platform digest mismatch and two red validation rows; the authorized turn is unconsumed
 - [019-watcher-proof-oracle-and-activity-delivery-repair.md](./019-watcher-proof-oracle-and-activity-delivery-repair.md) — merged through PR 126 at `c8691e84`; credential-free lifecycle feed and Stop-reentry oracle; no live claim
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — evidence stop; one Haiku turn consumed; no host watcher; claims and prototype withheld
 - [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — completed; exact `2.1.251` credential-free binding and deterministic fixtures; no watcher claim

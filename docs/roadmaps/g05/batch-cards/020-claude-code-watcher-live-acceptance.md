@@ -1,6 +1,6 @@
 # 020 Claude Code Watcher Live Acceptance
 
-Status: ready; one exact provider turn authorized
+Status: complete; pre-contact evidence stop; the authorized turn is unconsumed
 Owner: Tom
 Created: 2026-08-30
 Updated: 2026-08-30
@@ -13,6 +13,28 @@ Run the repaired Claude watcher acceptance selector exactly once against exact
 Claude Code `2.1.251` and exact model `claude-haiku-4-5`. Close with either one
 exact live-proved watcher claim or one sanitized evidence stop. Never rerun,
 fall back, or weaken the same-turn oracle.
+
+## Outcome
+
+Stopped before provider contact on 2026-08-30. Three envelope and validation
+gates failed, so the selector never ran and no request reached Claude. The
+authorized turn remains available. See
+[the pre-contact stop log](../../../logs/2026-08-30-g05-007-card-020-pre-contact-stop.md).
+
+- installed `claude --version` is exact `2.1.251`, `ANTHROPIC_API_KEY` is
+  absent, and the source tree is clean and unchanged
+- the frozen native SHA-256 in this card is Research 261's `darwin-arm64`
+  value; the worker host is `linux-x86_64`, whose official `2.1.251` digest is
+  `fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7`. The
+  probe hard-codes the `darwin-arm64` constant and asserts it before
+  preparation
+- `effigy package:verify-affected` fails on unchanged `main`: `Cargo.lock`
+  pins yanked `chacha20 0.10.1`
+- `effigy package:api` fails because `cargo-public-api 0.52.0` is absent
+
+Widening the digest constant is a probe change and installing the API tool is
+a setup need. Both are out of scope before contact, so all three return to
+planning.
 
 ## Authorization Envelope
 
@@ -81,18 +103,20 @@ without contacting Claude again.
 ## Acceptance Criteria
 
 - [ ] pre-contact validation and exact identity/digest checks pass on a clean
-      unchanged source tree
+      unchanged source tree — failed; digest, `package:verify-affected`, and
+      `package:api` are red
 - [ ] exactly one provider turn is run with exact `claude-haiku-4-5`; no other
-      live selector, prompt, fallback, or retry runs
+      live selector, prompt, fallback, or retry runs — no turn ran
 - [ ] the live proof either satisfies the full ordered oracle or records the
-      exact bounded missing/reordered fact as a sanitized stop
+      exact bounded missing/reordered fact as a sanitized stop — no live trace
+      exists; the stop is pre-contact
 - [ ] successful proof includes complete HostWatcher lifecycle activity and
-      clean joined cleanup; terminal text alone is insufficient
-- [ ] no private or raw material enters logs, diagnostics, fixtures, docs, PR
+      clean joined cleanup; terminal text alone is insufficient — not reached
+- [x] no private or raw material enters logs, diagnostics, fixtures, docs, PR
       text, or consumer events
-- [ ] route claims remain exact to the live-proved version/model point and are
-      published only after the full oracle passes
-- [ ] one outcome PR reconciles card, milestone, logs, indexes, and Next Task
+- [x] route claims remain exact to the live-proved version/model point and are
+      published only after the full oracle passes — no claim published
+- [x] one outcome PR reconciles card, milestone, logs, indexes, and Next Task
       without authorizing merge or another provider turn
 
 ## Validation
@@ -136,3 +160,7 @@ that supplies a prompt.
 No. One provider turn is the complete budget. Return one reviewable evidence PR
 and stop. No rerun, merge, new card, route-feature promotion, or second provider
 session follows automatically.
+
+The stop does not authorize a worker-side repair. The digest platform question
+and the two environment validation failures return to the orchestrator as
+planning findings.

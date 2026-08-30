@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has seven roadmaps: 4 completed milestones, honest evidence stops at 002
-and 003, and one ready milestone at 007. Milestones 004 and 005 are completed
+g05 has seven roadmaps: 4 completed milestones and honest evidence stops at
+002, 003, and 007. Milestones 004 and 005 are completed
 standing currentness. Milestone 006 is completed credential-free repair.
 g05.001 is
 completed: it closed Research 255, the
@@ -174,9 +174,15 @@ live workspace cleanup, then landed through PR 126 at `c8691e84`. It did not
 run a provider turn or publish a watcher claim. g05.004 standing currentness
 is complete: Research 258 and cards 012-013 qualify Qwen headless through
 official `0.22.3`. No second provider
-prompt was authorized through card 011. The operator has now authorized
+prompt was authorized through card 011. The operator then authorized
 g05.007 card 020 for one fresh exact Claude Code `2.1.251` turn using exact
-`claude-haiku-4-5`, with no fallback or rerun. No orchestrator-side live
+`claude-haiku-4-5`, with no fallback or rerun. That card stopped before
+contact: its `linux-x86_64` worker host runs exact official `2.1.251` with
+`ANTHROPIC_API_KEY` absent and a clean tree, but the envelope freezes Research
+261's `darwin-arm64` digest, and `effigy package:verify-affected` and
+`effigy package:api` are red on unchanged `main` for environment reasons. No
+request reached Claude, so the authorized turn remains unconsumed and no
+watcher claim is published. No orchestrator-side live
 selector, container backend, new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule

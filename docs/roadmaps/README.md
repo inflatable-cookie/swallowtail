@@ -15,10 +15,13 @@ shape.
 
 ## Next Task
 
-Dispatch g05.007 card 020 through its committed manual worker handoff. The
-worker may run exactly one Claude Code `2.1.251` turn with exact
-`claude-haiku-4-5` after the named pre-contact gates pass. No fallback, rerun,
-or orchestrator-side live selector is authorized.
+Settle the three g05.007 card 020 pre-contact findings before any further
+dispatch. The authorized Claude Code `2.1.251` turn is unconsumed: decide
+whether to re-authorize against the `linux-x64` native digest with a
+per-platform probe constant or to dispatch on a `darwin-arm64` host matching
+the frozen value, and clear the yanked `chacha20 0.10.1` lock pin plus the
+absent `cargo-public-api 0.52.0`. No fallback, rerun, or orchestrator-side live
+selector is authorized.
 
 ## Standing Lanes
 

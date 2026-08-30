@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Execute ready g05.003 card 016 for the provider-neutral Contract 060
-operation-scoped watcher HTTP bridge core. Return one PR and stop. Do not start
-Claude cards 010-011, skill cards 005-006, live provider work, or route claims.
-Contract 029 currentness remains standing.
+Reassess Claude cards 010-011 against the landed Contract 060 watcher HTTP
+bridge, current Claude version evidence, and the separately authorized live
+same-turn gate. Do not start Claude wiring, skill cards 005-006, live provider
+work, or route claims. Contract 029 currentness remains standing.
 
 ## Standing Lanes
 

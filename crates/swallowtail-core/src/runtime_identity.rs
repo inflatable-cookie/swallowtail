@@ -240,6 +240,11 @@ pub enum HostServiceKind {
     /// Registration alone starts nothing and grants no arbitrary process or
     /// PID authority. Contract 059 owns the exact control surface.
     Watcher,
+    /// Optional operation-scoped watcher HTTP bridge.
+    ///
+    /// Registration binds no listener and starts no work. Contract 060 owns
+    /// the closed lease, private authority, and joined cleanup surface.
+    WatcherBridge,
 }
 
 #[cfg(test)]

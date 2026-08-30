@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
+- Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.
+  `LocalWatcherHostService` also calls `block_on` inside method invocation for
+  process start/stop/join. A bridge listener running on a scoped task panics
+  with `EnterError`.
+- Impact: operation-scoped HTTP listeners cannot reuse the scoped-task executor
+  without changing the watcher host to true async.
+- Fix: make watcher host methods executor-neutral, or keep joined std threads
+  for listeners that must call those methods.
+- Surface: `swallowtail-host-local` watcher host and watcher HTTP bridge.
+
 ### [ ] Batch cards use `gated` as a status outside the accepted buckets — 2026-08-29
 - Friction: card 010 used `Status: gated`, while roadmap status QA accepts only
   planned, ready, blocked, stopped, and complete variants. The dependency was

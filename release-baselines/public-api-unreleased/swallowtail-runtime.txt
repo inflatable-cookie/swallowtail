@@ -574,6 +574,15 @@ impl core::error::Error for swallowtail_runtime::WatcherActivityProjectionFailur
 pub fn swallowtail_runtime::WatcherActivityProjectionFailure::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::fmt::Display for swallowtail_runtime::WatcherActivityProjectionFailure
 pub fn swallowtail_runtime::WatcherActivityProjectionFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_runtime::WatcherBridgeAdmission
+pub swallowtail_runtime::WatcherBridgeAdmission::Closed
+pub swallowtail_runtime::WatcherBridgeAdmission::Frozen
+pub swallowtail_runtime::WatcherBridgeAdmission::Open
+impl swallowtail_runtime::WatcherBridgeAdmission
+pub const fn swallowtail_runtime::WatcherBridgeAdmission::admits_new_work(self) -> bool
+pub const fn swallowtail_runtime::WatcherBridgeAdmission::as_str(self) -> &'static str
+impl core::fmt::Display for swallowtail_runtime::WatcherBridgeAdmission
+pub fn swallowtail_runtime::WatcherBridgeAdmission::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub enum swallowtail_runtime::WatcherFailureKind
 pub swallowtail_runtime::WatcherFailureKind::AlreadyJoined
 pub swallowtail_runtime::WatcherFailureKind::AlreadyTerminal
@@ -1236,6 +1245,7 @@ pub fn swallowtail_runtime::HostServices::task(&self) -> core::option::Option<&a
 pub fn swallowtail_runtime::HostServices::time(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::TimeService>>
 pub fn swallowtail_runtime::HostServices::url_open(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>>
 pub fn swallowtail_runtime::HostServices::watcher(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WatcherHostService>>
+pub fn swallowtail_runtime::HostServices::watcher_bridge(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WatcherBridgeHostService>>
 pub fn swallowtail_runtime::HostServices::with_attachment(self, alloc::sync::Arc<dyn swallowtail_runtime::AttachmentService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_blocking_work(self, alloc::sync::Arc<dyn swallowtail_runtime::BlockingWorkService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_credential(self, alloc::sync::Arc<dyn swallowtail_runtime::CredentialService>) -> Self
@@ -1253,6 +1263,7 @@ pub fn swallowtail_runtime::HostServices::with_task(self, alloc::sync::Arc<dyn s
 pub fn swallowtail_runtime::HostServices::with_time(self, alloc::sync::Arc<dyn swallowtail_runtime::TimeService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_url_open(self, alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_watcher(self, alloc::sync::Arc<dyn swallowtail_runtime::WatcherHostService>) -> Self
+pub fn swallowtail_runtime::HostServices::with_watcher_bridge(self, alloc::sync::Arc<dyn swallowtail_runtime::WatcherBridgeHostService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource_io(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceIoService>) -> Self
 pub fn swallowtail_runtime::HostServices::working_resource(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>>
@@ -2608,6 +2619,61 @@ pub const fn swallowtail_runtime::TurnRequest::turn_id(&self) -> &swallowtail_ru
 pub fn swallowtail_runtime::TurnRequest::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::AttachmentDescriptor>) -> Self
 pub const fn swallowtail_runtime::TurnRequest::with_deadline(self, swallowtail_runtime::Deadline) -> Self
 pub fn swallowtail_runtime::TurnRequest::with_structured_output(self, swallowtail_runtime::StructuredOutputDescriptor) -> Self
+pub struct swallowtail_runtime::WatcherBridgeBearer
+impl swallowtail_runtime::WatcherBridgeBearer
+pub fn swallowtail_runtime::WatcherBridgeBearer::expose(&self) -> &str
+pub fn swallowtail_runtime::WatcherBridgeBearer::matches(&self, &str) -> bool
+pub fn swallowtail_runtime::WatcherBridgeBearer::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeBearer
+pub fn swallowtail_runtime::WatcherBridgeBearer::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_runtime::WatcherBridgeBearer
+pub fn swallowtail_runtime::WatcherBridgeBearer::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::ops::drop::Drop for swallowtail_runtime::WatcherBridgeBearer
+pub fn swallowtail_runtime::WatcherBridgeBearer::drop(&mut self)
+pub struct swallowtail_runtime::WatcherBridgeCompletionState
+impl swallowtail_runtime::WatcherBridgeCompletionState
+pub fn swallowtail_runtime::WatcherBridgeCompletionState::active_or_unjoined(&self) -> &[swallowtail_runtime::WatcherSnapshot]
+pub const fn swallowtail_runtime::WatcherBridgeCompletionState::admission(&self) -> swallowtail_runtime::WatcherBridgeAdmission
+pub fn swallowtail_runtime::WatcherBridgeCompletionState::allows_successful_completion(&self) -> bool
+pub const fn swallowtail_runtime::WatcherBridgeCompletionState::new(swallowtail_runtime::WatcherBridgeAdmission, alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>) -> Self
+pub struct swallowtail_runtime::WatcherBridgeEndpoint
+impl swallowtail_runtime::WatcherBridgeEndpoint
+pub fn swallowtail_runtime::WatcherBridgeEndpoint::expose(&self) -> &str
+pub fn swallowtail_runtime::WatcherBridgeEndpoint::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeEndpoint
+pub fn swallowtail_runtime::WatcherBridgeEndpoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_runtime::WatcherBridgeEndpoint
+pub fn swallowtail_runtime::WatcherBridgeEndpoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::ops::drop::Drop for swallowtail_runtime::WatcherBridgeEndpoint
+pub fn swallowtail_runtime::WatcherBridgeEndpoint::drop(&mut self)
+pub struct swallowtail_runtime::WatcherBridgeGeneration(_)
+impl swallowtail_runtime::WatcherBridgeGeneration
+pub const fn swallowtail_runtime::WatcherBridgeGeneration::get(self) -> u64
+pub const fn swallowtail_runtime::WatcherBridgeGeneration::initial() -> Self
+pub const fn swallowtail_runtime::WatcherBridgeGeneration::new(u64) -> core::option::Option<Self>
+pub const fn swallowtail_runtime::WatcherBridgeGeneration::next(self) -> Self
+impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeGeneration
+pub fn swallowtail_runtime::WatcherBridgeGeneration::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::WatcherBridgeLease
+impl swallowtail_runtime::WatcherBridgeLease
+pub const fn swallowtail_runtime::WatcherBridgeLease::bearer(&self) -> &swallowtail_runtime::WatcherBridgeBearer
+pub const fn swallowtail_runtime::WatcherBridgeLease::endpoint(&self) -> &swallowtail_runtime::WatcherBridgeEndpoint
+pub const fn swallowtail_runtime::WatcherBridgeLease::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
+pub const fn swallowtail_runtime::WatcherBridgeLease::generation(&self) -> swallowtail_runtime::WatcherBridgeGeneration
+pub fn swallowtail_runtime::WatcherBridgeLease::new(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId, swallowtail_runtime::WatcherBridgeGeneration, swallowtail_runtime::WatcherBridgeEndpoint, swallowtail_runtime::WatcherBridgeBearer) -> Self
+pub const fn swallowtail_runtime::WatcherBridgeLease::scope(&self) -> &swallowtail_runtime::ScopeId
+pub fn swallowtail_runtime::WatcherBridgeLease::take_defensive_cleanup(&mut self) -> core::option::Option<alloc::boxed::Box<(dyn core::ops::function::FnOnce() + core::marker::Send + 'static)>>
+pub const fn swallowtail_runtime::WatcherBridgeLease::turn(&self) -> &swallowtail_runtime::RuntimeTurnId
+pub fn swallowtail_runtime::WatcherBridgeLease::with_defensive_cleanup(self, impl core::ops::function::FnOnce() + core::marker::Send + 'static) -> Self
+impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeLease
+pub fn swallowtail_runtime::WatcherBridgeLease::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::ops::drop::Drop for swallowtail_runtime::WatcherBridgeLease
+pub fn swallowtail_runtime::WatcherBridgeLease::drop(&mut self)
+pub struct swallowtail_runtime::WatcherBridgeOpenRequest
+impl swallowtail_runtime::WatcherBridgeOpenRequest
+pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::new(swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId) -> Self
+pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::scope(&self) -> &swallowtail_runtime::ScopeId
+pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::turn(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub struct swallowtail_runtime::WatcherControlSurface
 impl swallowtail_runtime::WatcherControlSurface
 pub fn swallowtail_runtime::WatcherControlSurface::model(&self) -> swallowtail_runtime::ModelWatcherRole
@@ -2710,6 +2776,27 @@ pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_ROUTES_PER_INSTANCE: usiz
 pub const swallowtail_runtime::MAX_DEBUG_DETAIL_CHARS: usize
 pub const swallowtail_runtime::MAX_VERSION_BYTES: usize
 pub const swallowtail_runtime::MAX_VERSION_OUTPUT_BYTES: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_BEARER_BYTE_LEN: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_INITIALIZED_NOTIFICATION: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_INITIALIZE_METHOD: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_JSONRPC_VERSION: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_BODY_BYTES: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_CONCURRENT_CONNECTIONS: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_CORRELATION_IDS: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_BYTES: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_COUNT: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MAX_IN_FLIGHT_REQUESTS: usize
+pub const swallowtail_runtime::WATCHER_BRIDGE_MCP_PROTOCOL_VERSION: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_RESERVED_TOOLS: [&str; 6]
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOLS_CALL_METHOD: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOLS_LIST_METHOD: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_COMPLETION_GATE: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_INSPECT: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_LIST: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_START: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_STOP: &str
+pub const swallowtail_runtime::WATCHER_BRIDGE_TOOL_WAIT: &str
 pub trait swallowtail_runtime::AttachedServingHandle: core::marker::Send
 pub fn swallowtail_runtime::AttachedServingHandle::close(alloc::boxed::Box<Self>) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub fn swallowtail_runtime::AttachedServingHandle::serving_instance_id(&self) -> &swallowtail_runtime::ServingInstanceId
@@ -2904,6 +2991,10 @@ pub fn swallowtail_runtime::TurnHandle::take_terminal_outcome(&mut self) -> core
 pub fn swallowtail_runtime::TurnHandle::turn_id(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub trait swallowtail_runtime::UrlOpenService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::UrlOpenService::open(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::ApprovedUrlRef) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::WatcherBridgeHostService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::WatcherBridgeHostService::close(&self, swallowtail_runtime::WatcherBridgeLease, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::CleanupOutcome, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherBridgeHostService::completion_gate(&self, &swallowtail_runtime::WatcherBridgeLease) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherBridgeCompletionState, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherBridgeHostService::open(&self, swallowtail_runtime::WatcherBridgeOpenRequest) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherBridgeLease, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::WatcherHostService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WatcherHostService::accept_start(&self, swallowtail_runtime::RuntimeTurnId, swallowtail_core::watcher::requester::WatcherRequester, swallowtail_core::watcher::operation_data::WatcherOperationData) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::finalize_turn(&self, swallowtail_runtime::RuntimeTurnId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::CleanupOutcome, swallowtail_runtime::RuntimeFailure>>

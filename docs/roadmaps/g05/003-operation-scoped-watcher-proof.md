@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-009 and 014-015 complete; card 016 ready; cards 010-011 remain planned behind implementation and provider gates
+Planning state: cards 007-009 and 014-016 complete; cards 010-011 remain planned behind the orchestrator checkpoint and provider gates
 
 ## Problem
 
@@ -56,9 +56,9 @@ owns the pre-1.0 repair.
 
 ### Batch 3.5 — Provider-Neutral HTTP Bridge Core
 
-- [ ] execute ready card 016 for the Contract 060 host service, private
+- [x] execute ready card 016 for the Contract 060 host service, private
       authority, closed HTTP/MCP surface, terminal barrier, and joined cleanup
-- [ ] return one PR; do not continue into Claude wiring
+- [x] return one PR; do not continue into Claude wiring
 
 ### Batch 3.6 — Conditional Claude Proof
 
@@ -67,9 +67,10 @@ owns the pre-1.0 repair.
 - [ ] execute card 011 for full fail-closed route acceptance and docs
 
 The operator promoted HTTP as the smallest bridge on 2026-08-30. Contract 060
-owns the boundary. No implementation, current Claude version segment, or live
-same-turn proof is qualified yet. Card 016 is ready. Do not start cards 010-011
-until the bridge lands and their current-version and live-provider gates close.
+owns the boundary. Card 016 landed the provider-neutral host bridge. No current
+Claude version segment or live same-turn proof is qualified yet. Do not start
+cards 010-011 until the orchestrator checkpoint and their current-version and
+live-provider gates close.
 
 ## Acceptance Criteria
 

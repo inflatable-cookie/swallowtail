@@ -5,8 +5,8 @@ use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DeviceCodeDisplayService,
     DiagnosticObserver, LoopbackCallbackService, ModelArtifactService, NetworkPolicyService,
     ProcessService, RuntimeFailure, SchemaService, ScopedTaskService, ServingEndpointService,
-    TimeService, UrlOpenService, WatcherHostService, WorkingResourceIoService,
-    WorkingResourceService,
+    TimeService, UrlOpenService, WatcherBridgeHostService, WatcherHostService,
+    WorkingResourceIoService, WorkingResourceService,
 };
 use std::collections::BTreeSet;
 use std::panic::{AssertUnwindSafe, catch_unwind};
@@ -41,6 +41,7 @@ pub struct HostServices {
     loopback_callback: Option<Arc<dyn LoopbackCallbackService>>,
     device_code_display: Option<Arc<dyn DeviceCodeDisplayService>>,
     watcher: Option<Arc<dyn WatcherHostService>>,
+    watcher_bridge: Option<Arc<dyn WatcherBridgeHostService>>,
 }
 
 impl HostServices {
@@ -68,6 +69,7 @@ impl HostServices {
             loopback_callback: None,
             device_code_display: None,
             watcher: None,
+            watcher_bridge: None,
         }
     }
 
@@ -222,6 +224,13 @@ impl HostServices {
         self
     }
 
+    /// Registers the optional watcher-bridge port. Registration binds no listener.
+    #[must_use]
+    pub fn with_watcher_bridge(mut self, service: Arc<dyn WatcherBridgeHostService>) -> Self {
+        self.watcher_bridge = Some(service);
+        self
+    }
+
     /// Returns the scoped task service when registered.
     #[must_use]
     pub fn task(&self) -> Option<&Arc<dyn ScopedTaskService>> {
@@ -336,6 +345,12 @@ impl HostServices {
         self.watcher.as_ref()
     }
 
+    /// Returns the watcher-bridge port when registered.
+    #[must_use]
+    pub fn watcher_bridge(&self) -> Option<&Arc<dyn WatcherBridgeHostService>> {
+        self.watcher_bridge.as_ref()
+    }
+
     /// Records one idiom signal to the registered recorder, or no-ops when
     /// absent or when the recorder panics.
     pub fn record_idiom_signal(&self, signal: IdiomSignal) {
@@ -437,6 +452,9 @@ impl HostServices {
         }
         if self.watcher.is_some() {
             kinds.insert(HostServiceKind::Watcher);
+        }
+        if self.watcher_bridge.is_some() {
+            kinds.insert(HostServiceKind::WatcherBridge);
         }
         kinds
     }
@@ -614,6 +632,30 @@ mod tests {
         assert!(services.watcher().is_some());
     }
 
+    #[test]
+    fn watcher_bridge_port_is_optional_and_registration_binds_nothing() {
+        use swallowtail_core::HostServiceKind;
+
+        let empty =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"));
+        assert!(
+            !empty
+                .available_kinds()
+                .contains(&HostServiceKind::WatcherBridge)
+        );
+        assert!(empty.watcher_bridge().is_none());
+
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_watcher_bridge(Arc::new(IdleWatcherBridgePort));
+        assert!(
+            services
+                .available_kinds()
+                .contains(&HostServiceKind::WatcherBridge)
+        );
+        assert!(services.watcher_bridge().is_some());
+    }
+
     struct IdleSignInPorts;
 
     impl crate::UrlOpenService for IdleSignInPorts {
@@ -762,6 +804,36 @@ mod tests {
         ) -> crate::BoxFuture<'static, Result<crate::CleanupOutcome, crate::RuntimeFailure>>
         {
             panic!("registering a watcher port must not start work");
+        }
+    }
+
+    struct IdleWatcherBridgePort;
+
+    impl crate::WatcherBridgeHostService for IdleWatcherBridgePort {
+        fn open(
+            &self,
+            _request: crate::WatcherBridgeOpenRequest,
+        ) -> crate::BoxFuture<'static, Result<crate::WatcherBridgeLease, crate::RuntimeFailure>>
+        {
+            panic!("registering a watcher bridge must not bind a listener");
+        }
+
+        fn completion_gate(
+            &self,
+            _lease: &crate::WatcherBridgeLease,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<crate::WatcherBridgeCompletionState, crate::RuntimeFailure>,
+        > {
+            panic!("registering a watcher bridge must not bind a listener");
+        }
+
+        fn close(
+            &self,
+            _lease: crate::WatcherBridgeLease,
+            _cause: swallowtail_core::WatcherCleanupCause,
+        ) -> crate::BoxFuture<'static, Result<CleanupOutcome, crate::RuntimeFailure>> {
+            panic!("registering a watcher bridge must not bind a listener");
         }
     }
 

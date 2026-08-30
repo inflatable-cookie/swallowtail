@@ -349,6 +349,7 @@ pub swallowtail_core::HostServiceKind::Task
 pub swallowtail_core::HostServiceKind::Time
 pub swallowtail_core::HostServiceKind::UrlOpen
 pub swallowtail_core::HostServiceKind::Watcher
+pub swallowtail_core::HostServiceKind::WatcherBridge
 pub swallowtail_core::HostServiceKind::WorkingResource
 pub swallowtail_core::HostServiceKind::WorkingResourceIo
 pub enum swallowtail_core::InstalledExecutableCompatibility

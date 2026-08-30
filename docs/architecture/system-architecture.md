@@ -90,10 +90,12 @@ OpenHands adds a package without a production route.
   the default local composition. The local service binds host-approved process
   recipes, owns stable turn-local watcher identity, model and operator control,
   bounded summaries, ordinary process-group cleanup, and joined supervision.
-  No production adapter reaches that port yet: the workspace has no
-  provider-facing listener or generic MCP server. Contract 060 selects the
-  next operation-scoped HTTP bridge boundary; it remains unrealized until its
-  host service, private authority, terminal barrier, and joined listener land.
+  Contract 060 is realized as a separate optional `WatcherBridge` host service
+  and `WatcherBridgeHostService` port. Opening a lease binds an ephemeral
+  loopback HTTP/MCP listener, fresh bearer authority, exact host/operation/turn
+  correlation, and the same watcher registry used by operator controls.
+  Registration still starts no listener. No production adapter opens a lease
+  yet; the closed protocol is not a generic MCP server.
 - provider-session history paging is a separate read-only role under Contract
   054: newest-first pages reuse `SessionReplayItem` projection, bounds, and
   opaque cursors shared with load replay and reconciliation snapshots, but do
@@ -534,9 +536,10 @@ Crate status:
   credential approvals remain scope- and audience-bound and redacted; per-host
   scoped task handles join explicitly or on drop, `LocalHostServices` composes
   the exact supported ports under one host identity, the local watcher service
-  owns approved process work through terminal and joined state, and installed
-  executable approval returns only an opaque target. No watcher HTTP listener
-  or provider bridge exists yet
+  owns approved process work through terminal and joined state, installed
+  executable approval returns only an opaque target, and the local watcher
+  HTTP bridge binds an ephemeral loopback lease only after open, then freezes
+  admission and joins listener plus watcher work on close
 - `swallowtail-adapter-alibaba-model-studio` — realized under Contract 025 for
   one exact Singapore workspace-dedicated, general-API-key, pay-as-you-go
   `qwen3.7-plus-2026-05-26` session; the production driver creates one provider

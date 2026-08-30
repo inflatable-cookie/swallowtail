@@ -149,18 +149,17 @@ and one ready milestone at 003. g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
 g05.002 stopped after Research 256's honest empty Qoder roster; cards 005-006
-remain planned. g05.003 has closed cards 007-009 and 014-015. Research 259 keeps hard
+remain planned. g05.003 has closed cards 007-009 and 014-016. Research 259 keeps hard
 containment evidence but no longer imposes a hard-containment product gate:
 the operator clarified that watchers supervise ordinary host-managed processes
 and publish lifecycle rather than sandbox hostile descendants. Card 009's
 registry repair is complete. Card 014 landed through PR 118, restoring default
 host-process execution through the owned process handle, process-group cleanup,
 and joined supervisor. Research 260 and card 015 landed through PR 119 at
-`c36e11ad`; they leave the provider-to-host MCP bridge, current Claude version
-segment, and live same-turn proof unresolved. The operator selected the minimal
-HTTP boundary on 2026-08-30. Contract 060 is active and card 016 is ready for
-the provider-neutral bridge core. Cards 010-011 remain planned behind that
-implementation and their provider gates. g05.004 standing
+`c36e11ad`. The operator selected the minimal HTTP boundary on 2026-08-30.
+Contract 060 is active and card 016 landed the provider-neutral bridge core.
+Cards 010-011 remain planned behind the current Claude version segment, live
+same-turn proof, and the orchestrator checkpoint. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3` without moving the generation pointer. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

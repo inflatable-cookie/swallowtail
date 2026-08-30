@@ -22,13 +22,13 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | `g05.001` card 001 |
 | Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | `g05.001` card 002 |
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
-| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder proof stopped; watcher lifecycle, registry, supervision complete; HTTP bridge core ready | Contracts 058-060; Research 256-260 | `g05.002` and `g05.003` |
+| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder proof stopped; watcher lifecycle, registry, supervision, and HTTP bridge core complete | Contracts 058-060; Research 256-260 | `g05.002` and `g05.003` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
 
 ## Planned Next Roadmaps
 
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; Contract 060 promoted; card 016 ready; cards 010-011 remain gated
+- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — ready; card 016 landed; cards 010-011 remain gated
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
@@ -49,9 +49,10 @@ explicit detached-process non-claim. Card 015 and Research 260 landed through
 PR 119 at `c36e11ad`: current Claude `2.1.251` exposes the provider-side seam,
 but Swallowtail has no provider-to-host MCP bridge contract or current live
 same-turn proof. On 2026-08-30 the operator selected the minimal HTTP boundary.
-Contract 060 promotes a closed provider-neutral operation bridge and card 016
-is ready to implement it. Cards 010-011 remain planned behind that
-implementation, current-version qualification, and authorized live acceptance.
+Contract 060 owns the closed provider-neutral operation bridge. Card 016 landed
+the host service, private authority, closed HTTP/MCP surface, terminal barrier,
+and joined cleanup. Cards 010-011 remain planned behind the orchestrator
+checkpoint, current-version qualification, and authorized live acceptance.
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 
@@ -61,6 +62,6 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 ## Milestones
 
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 016; cards 010-011 gated
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — ready; card 016 landed; cards 010-011 gated
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

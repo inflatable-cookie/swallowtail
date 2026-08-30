@@ -167,14 +167,18 @@ impl LocalProcessHost {
                 ));
             }
         }
-        fs::write(&target, request.content().as_driver_value()).map_err(|_| {
-            failure(
-                "swallowtail.local_resource_io.write_failed",
-                "Working-resource text replacement failed",
-            )
-        })?;
         if private {
-            crate::materialization::restrict_file(&target)?;
+            crate::materialization::create_or_replace_private_file(
+                &target,
+                request.content().as_driver_value().as_bytes(),
+            )?;
+        } else {
+            fs::write(&target, request.content().as_driver_value()).map_err(|_| {
+                failure(
+                    "swallowtail.local_resource_io.write_failed",
+                    "Working-resource text replacement failed",
+                )
+            })?;
         }
         Ok(())
     }

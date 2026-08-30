@@ -65,15 +65,12 @@ impl LocalMaterializationState {
                 "swallowtail-{kind}-{}-{sequence}",
                 std::process::id()
             ));
-            match fs::create_dir(&directory) {
-                Ok(()) => {
-                    if let Err(error) = restrict_directory(&directory) {
-                        let _ = fs::remove_dir_all(&directory);
-                        return Err(error);
-                    }
-                    return Ok(directory);
-                }
+            match mkdir_private(&directory) {
+                Ok(()) => return Ok(directory),
                 Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+                Err(error) if error.kind() == std::io::ErrorKind::Unsupported => {
+                    return Err(privacy_unsupported());
+                }
                 Err(_) => {
                     return Err(failure(
                         "swallowtail.local_materialization.create_failed",
@@ -199,33 +196,75 @@ impl Drop for LocalMaterializationState {
     }
 }
 
-pub(crate) fn restrict_directory(path: &Path) -> Result<(), RuntimeFailure> {
-    restrict_mode(path, 0o700, "directory")
+pub(crate) fn create_private_directory(path: &Path) -> Result<(), RuntimeFailure> {
+    match mkdir_private(path) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::Unsupported => Err(privacy_unsupported()),
+        Err(_) => Err(failure(
+            "swallowtail.local_materialization.privacy_failed",
+            "Local temporary directory could not be created privately",
+        )),
+    }
 }
 
-pub(crate) fn restrict_file(path: &Path) -> Result<(), RuntimeFailure> {
-    restrict_mode(path, 0o600, "file")
+pub(crate) fn create_or_replace_private_file(
+    path: &Path,
+    content: &[u8],
+) -> Result<(), RuntimeFailure> {
+    match write_private_file(path, content) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::Unsupported => Err(privacy_unsupported()),
+        Err(_) => Err(failure(
+            "swallowtail.local_materialization.privacy_failed",
+            "Local temporary file could not be created privately",
+        )),
+    }
 }
 
-fn restrict_mode(path: &Path, mode: u32, kind: &'static str) -> Result<(), RuntimeFailure> {
+fn mkdir_private(path: &Path) -> std::io::Result<()> {
     #[cfg(unix)]
     {
-        use std::os::unix::fs::PermissionsExt;
-        fs::set_permissions(path, fs::Permissions::from_mode(mode)).map_err(|_| {
-            failure(
-                "swallowtail.local_materialization.privacy_failed",
-                match kind {
-                    "directory" => "Local temporary directory could not be made private",
-                    _ => "Local temporary file could not be made private",
-                },
-            )
-        })
+        use std::os::unix::fs::DirBuilderExt;
+        fs::DirBuilder::new().mode(0o700).create(path)
     }
     #[cfg(not(unix))]
     {
-        let _ = (path, mode, kind);
-        Ok(())
+        let _ = path;
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "private directories require Unix file-mode control",
+        ))
     }
+}
+
+fn write_private_file(path: &Path, content: &[u8]) -> std::io::Result<()> {
+    #[cfg(unix)]
+    {
+        use std::io::Write;
+        use std::os::unix::fs::OpenOptionsExt;
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .mode(0o600)
+            .open(path)?;
+        file.write_all(content)
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = (path, content);
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "private files require Unix file-mode control",
+        ))
+    }
+}
+
+fn privacy_unsupported() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_materialization.privacy_unsupported",
+        "Local private materialization requires Unix file-mode control",
+    )
 }
 
 fn remove_path(path: &Path) -> Result<(), RuntimeFailure> {
@@ -275,4 +314,43 @@ fn lease_scope_mismatch() -> RuntimeFailure {
         "swallowtail.local_materialization.scope_mismatch",
         "Local materialization lease belongs to a different operation scope",
     )
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::{create_or_replace_private_file, create_private_directory};
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    static SEQUENCE: AtomicU64 = AtomicU64::new(1);
+
+    fn fixture_path(label: &str) -> std::path::PathBuf {
+        let sequence = SEQUENCE.fetch_add(1, Ordering::SeqCst);
+        std::env::temp_dir().join(format!(
+            "swallowtail-private-create-{label}-{}-{sequence}",
+            std::process::id()
+        ))
+    }
+
+    #[test]
+    fn private_helpers_create_directories_and_files_with_exact_modes() {
+        let directory = fixture_path("dir");
+        let file = directory.join("mcp.json");
+        create_private_directory(&directory).expect("private directory is created");
+        create_or_replace_private_file(&file, b"secret-bearer").expect("private file is created");
+        let dir_mode = fs::metadata(&directory)
+            .expect("directory metadata")
+            .permissions()
+            .mode()
+            & 0o777;
+        let file_mode = fs::metadata(&file)
+            .expect("file metadata")
+            .permissions()
+            .mode()
+            & 0o777;
+        let _ = fs::remove_dir_all(&directory);
+        assert_eq!(dir_mode, 0o700);
+        assert_eq!(file_mode, 0o600);
+    }
 }

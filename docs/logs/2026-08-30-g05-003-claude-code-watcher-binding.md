@@ -21,8 +21,9 @@ controls share one `WatcherHostService`. Deterministic fake-provider fixtures
 start a host watcher through the reserved MCP family, observe raw completion-gate
 text with `decision: "block"` while work remains, omit that decision when idle,
 wait/stop, then admit terminal. Cancel, deadline, and provider-failure paths
-freeze, join, and release private files. Temporary MCP/settings/skill material
-is 0700/0600 on Unix even when the configured temp root is shared. No watcher
+freeze, join, and release private files. Temporary MCP/settings/skill material is created with Unix 0700/0600
+in the mkdir and open operations, even when the configured temp root is
+shared. Non-Unix hosts fail that private materialization closed. No watcher
 support claim, capability matrix, or live Claude turn landed.
 
 Card 011 remains planned. Live same-turn proof still needs explicit operator

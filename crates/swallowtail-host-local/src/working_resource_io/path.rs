@@ -39,9 +39,11 @@ fn write_parent_within_root(
                 std::path::Component::Normal(name) => {
                     parent.push(name);
                     if !parent.exists() {
-                        fs::create_dir(&parent).map_err(|_| write_parent_unavailable())?;
                         if private {
-                            crate::materialization::restrict_directory(&parent)?;
+                            crate::materialization::create_private_directory(&parent)
+                                .map_err(|_| write_parent_unavailable())?;
+                        } else {
+                            fs::create_dir(&parent).map_err(|_| write_parent_unavailable())?;
                         }
                     }
                     parent = parent

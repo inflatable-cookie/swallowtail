@@ -242,13 +242,29 @@ fn write_private_file(path: &Path, content: &[u8]) -> std::io::Result<()> {
     {
         use std::io::Write;
         use std::os::unix::fs::OpenOptionsExt;
-        let mut file = fs::OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .mode(0o600)
-            .open(path)?;
-        file.write_all(content)
+        for _ in 0..32 {
+            match fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .mode(0o600)
+                .open(path)
+            {
+                Ok(mut file) => return file.write_all(content),
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                    match fs::remove_file(path) {
+                        Ok(()) => {}
+                        Err(remove_error)
+                            if remove_error.kind() == std::io::ErrorKind::NotFound => {}
+                        Err(remove_error) => return Err(remove_error),
+                    }
+                }
+                Err(error) => return Err(error),
+            }
+        }
+        Err(std::io::Error::new(
+            std::io::ErrorKind::AlreadyExists,
+            "private file could not be created exclusively",
+        ))
     }
     #[cfg(not(unix))]
     {
@@ -352,5 +368,55 @@ mod tests {
         let _ = fs::remove_dir_all(&directory);
         assert_eq!(dir_mode, 0o700);
         assert_eq!(file_mode, 0o600);
+    }
+
+    #[test]
+    fn private_file_create_does_not_write_into_a_preexisting_shared_inode() {
+        use std::io::Read;
+        let parent = fixture_path("shared-parent");
+        fs::create_dir(&parent).expect("shared parent is created");
+        fs::set_permissions(&parent, fs::Permissions::from_mode(0o777))
+            .expect("shared parent is world-accessible");
+        let file = parent.join("mcp.json");
+        fs::write(&file, b"attacker-held").expect("preexisting file is planted");
+        fs::set_permissions(&file, fs::Permissions::from_mode(0o666))
+            .expect("preexisting file is world-readable");
+        let mut held = fs::File::open(&file).expect("attacker keeps an open descriptor");
+        create_or_replace_private_file(&file, b"secret-bearer")
+            .expect("exclusive private create replaces the name");
+        let file_mode = fs::metadata(&file)
+            .expect("replaced file metadata")
+            .permissions()
+            .mode()
+            & 0o777;
+        let new_content = fs::read(&file).expect("replaced file content");
+        let mut held_content = Vec::new();
+        held.read_to_end(&mut held_content)
+            .expect("held descriptor is still readable");
+        let _ = fs::remove_dir_all(&parent);
+        assert_eq!(file_mode, 0o600);
+        assert_eq!(new_content, b"secret-bearer");
+        assert_eq!(held_content, b"attacker-held");
+    }
+
+    #[test]
+    fn private_directory_create_does_not_adopt_a_preexisting_shared_directory() {
+        let directory = fixture_path("shared-dir");
+        fs::create_dir(&directory).expect("shared directory is planted");
+        fs::set_permissions(&directory, fs::Permissions::from_mode(0o777))
+            .expect("shared directory is world-accessible");
+        let error = create_private_directory(&directory)
+            .expect_err("private mkdir must not adopt an existing directory");
+        let dir_mode = fs::metadata(&directory)
+            .expect("planted directory metadata")
+            .permissions()
+            .mode()
+            & 0o777;
+        let _ = fs::remove_dir_all(&directory);
+        assert_eq!(dir_mode, 0o777);
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.local_materialization.privacy_failed"
+        );
     }
 }

@@ -8,7 +8,8 @@ use swallowtail_core::{ModelId, SafeDiagnostic, WatcherCleanupCause};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
     HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus, WatcherActivityProjection,
+    WatcherLifecycleSubscription, WatcherSnapshot, project_watcher_activity,
 };
 
 const ROUTE: &str = "claude-code.headless";
@@ -17,6 +18,8 @@ const ROUTE: &str = "claude-code.headless";
 pub(crate) struct PumpHost {
     pub(crate) services: HostServices,
     pub(crate) watcher_binding: Option<WatcherBinding>,
+    pub(crate) watcher_feed: Option<WatcherLifecycleSubscription>,
+    pub(crate) watcher_turn: Option<RuntimeTurnId>,
 }
 
 pub(crate) async fn pump(
@@ -31,8 +34,15 @@ pub(crate) async fn pump(
     let mut parser = ClaudeCodeEventParser::new(model, operation_id);
     let mut deadline = Some(deadline);
     loop {
-        match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
-            NextOutput::Deadline => {
+        match next_work(
+            process.as_ref(),
+            cancellation.as_ref(),
+            &mut deadline,
+            host.watcher_feed.as_mut(),
+        )
+        .await
+        {
+            NextWork::Deadline => {
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return finish_with_watchers(
                     TerminalOutcome::new(TerminalStatus::TimedOut, cleanup),
@@ -40,9 +50,33 @@ pub(crate) async fn pump(
                 )
                 .await;
             }
-            NextOutput::Process(Ok(Some(chunk)))
-                if chunk.stream() == ProcessOutputStream::Stdout =>
-            {
+            NextWork::Lifecycle(snapshot) => {
+                if let Err(error) =
+                    emit_lifecycle(&mut parser, &events, host.watcher_turn.as_ref(), snapshot)
+                {
+                    let cleanup = force_cleanup(process.as_ref()).await;
+                    return finish_with_watchers(
+                        TerminalOutcome::new(
+                            TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                            cleanup,
+                        ),
+                        host.watcher_binding.take(),
+                    )
+                    .await;
+                }
+            }
+            NextWork::FeedFailed(error) => {
+                let cleanup = force_cleanup(process.as_ref()).await;
+                return finish_with_watchers(
+                    TerminalOutcome::new(
+                        TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                        cleanup,
+                    ),
+                    host.watcher_binding.take(),
+                )
+                .await;
+            }
+            NextWork::Process(Ok(Some(chunk))) if chunk.stream() == ProcessOutputStream::Stdout => {
                 match parser.push(chunk.bytes()) {
                     Ok(parsed) => {
                         if send_all(&events, parsed).is_err() {
@@ -68,9 +102,9 @@ pub(crate) async fn pump(
                     }
                 }
             }
-            NextOutput::Process(Ok(Some(_))) => {}
-            NextOutput::Process(Ok(None)) => break,
-            NextOutput::Process(Err(error)) => {
+            NextWork::Process(Ok(Some(_))) => {}
+            NextWork::Process(Ok(None)) => break,
+            NextWork::Process(Err(error)) => {
                 emit_host_process_debug(&host.services, &error, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return finish_with_watchers(
@@ -85,6 +119,21 @@ pub(crate) async fn pump(
         }
     }
     let exit = process.wait().await;
+    if let Err(error) = drain_lifecycle(
+        &mut parser,
+        &events,
+        host.watcher_feed.as_mut(),
+        host.watcher_turn.as_ref(),
+    ) {
+        return finish_with_watchers(
+            TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            ),
+            host.watcher_binding.take(),
+        )
+        .await;
+    }
     if cancellation.is_requested() {
         return finish_with_watchers(
             TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit)),
@@ -214,27 +263,84 @@ fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stag
     );
 }
 
-enum NextOutput {
+enum NextWork {
     Process(Result<Option<ProcessOutputChunk>, RuntimeFailure>),
+    Lifecycle(WatcherSnapshot),
+    FeedFailed(RuntimeFailure),
     Deadline,
 }
 
-async fn next_output(
+async fn next_work(
     process: &dyn ProcessHandle,
     cancellation: &ClaudeCodeCancellation,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
-) -> NextOutput {
+    mut feed: Option<&mut WatcherLifecycleSubscription>,
+) -> NextWork {
     let mut read = process.read_output();
     poll_fn(|context| {
+        if let Some(feed) = feed.as_mut() {
+            match feed.poll_snapshot(context) {
+                Poll::Ready(Some(Ok(snapshot))) => {
+                    return Poll::Ready(NextWork::Lifecycle(snapshot));
+                }
+                Poll::Ready(Some(Err(error))) => {
+                    return Poll::Ready(NextWork::FeedFailed(error));
+                }
+                Poll::Ready(None) | Poll::Pending => {}
+            }
+        }
         if !cancellation.is_requested()
             && let Some(wait) = deadline.as_mut()
             && wait.as_mut().poll(context).is_ready()
         {
-            return Poll::Ready(NextOutput::Deadline);
+            return Poll::Ready(NextWork::Deadline);
         }
-        read.as_mut().poll(context).map(NextOutput::Process)
+        read.as_mut().poll(context).map(NextWork::Process)
     })
     .await
+}
+
+fn emit_lifecycle(
+    parser: &mut ClaudeCodeEventParser,
+    events: &RuntimeEventSender,
+    turn: Option<&RuntimeTurnId>,
+    snapshot: WatcherSnapshot,
+) -> Result<(), RuntimeFailure> {
+    let Some(turn) = turn else {
+        return Ok(());
+    };
+    match project_watcher_activity(turn, &snapshot) {
+        Ok(WatcherActivityProjection::Activity(observation)) => {
+            events.send(parser.activity_event(*observation))
+        }
+        Ok(WatcherActivityProjection::Joined { .. }) => Ok(()),
+        Err(error) => Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.claude_code.headless.watcher_activity_projection_failed",
+            error.to_string(),
+        ))),
+    }
+}
+
+fn drain_lifecycle(
+    parser: &mut ClaudeCodeEventParser,
+    events: &RuntimeEventSender,
+    feed: Option<&mut WatcherLifecycleSubscription>,
+    turn: Option<&RuntimeTurnId>,
+) -> Result<(), RuntimeFailure> {
+    let Some(feed) = feed else {
+        return Ok(());
+    };
+    let waker = std::task::Waker::noop();
+    let mut context = std::task::Context::from_waker(waker);
+    loop {
+        match feed.poll_snapshot(&mut context) {
+            Poll::Ready(Some(Ok(snapshot))) => {
+                emit_lifecycle(parser, events, turn, snapshot)?;
+            }
+            Poll::Ready(Some(Err(error))) => return Err(error),
+            Poll::Ready(None) | Poll::Pending => return Ok(()),
+        }
+    }
 }
 
 fn send_all(

@@ -38,10 +38,23 @@ pub(super) async fn monitor_watcher(
     if let Err(error) = process_result {
         entry.record_join_error(error);
     }
-    let mut state = state.lock().expect("local watcher state lock poisoned");
-    if let Some(turn_state) = state.active.get_mut(&turn) {
+    let snapshot = {
+        let mut state = state.lock().expect("local watcher state lock poisoned");
+        let Some(turn_state) = state.active.get_mut(&turn) else {
+            return;
+        };
         let _ = turn_state
             .registry
             .complete(&watcher_id, cause, Some(summary));
+        turn_state
+            .registry
+            .inspect(turn_state.registry.owning_turn(), &watcher_id)
+            .ok()
+    };
+    if let Some(snapshot) = snapshot {
+        let _ = state
+            .lock()
+            .expect("local watcher state lock poisoned")
+            .publish(&turn, snapshot);
     }
 }

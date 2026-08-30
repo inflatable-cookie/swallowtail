@@ -1,5 +1,5 @@
 use crate::watcher::LocalWatcherHostService;
-use crate::watcher_bridge::LocalWatcherBridgeHostService;
+use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
 use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
 use std::sync::Arc;
 use std::time::Duration;
@@ -16,6 +16,7 @@ use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, TimeService}
 pub struct LocalHostServices {
     process_host: Arc<LocalProcessHost>,
     task_service: Arc<LocalScopedTaskService>,
+    watcher_bridge: Arc<LocalWatcherBridgeHostService>,
     services: HostServices,
 }
 
@@ -49,10 +50,11 @@ impl LocalHostServices {
             .with_serving_endpoint(process_host.clone())
             .with_schema(process_host.clone())
             .with_watcher(watcher)
-            .with_watcher_bridge(watcher_bridge);
+            .with_watcher_bridge(watcher_bridge.clone());
         Self {
             process_host,
             task_service,
+            watcher_bridge,
             services,
         }
     }
@@ -73,6 +75,15 @@ impl LocalHostServices {
     #[must_use]
     pub const fn task_service(&self) -> &Arc<LocalScopedTaskService> {
         &self.task_service
+    }
+
+    /// Returns reserved watcher-bridge operations observed on this host.
+    ///
+    /// Names and order only. Endpoint, bearer, arguments, and response text
+    /// are not retained.
+    #[must_use]
+    pub fn watcher_bridge_proof(&self) -> Vec<WatcherBridgeProofKind> {
+        self.watcher_bridge.proof_facts()
     }
 
     /// Derives one deadline from this composition's monotonic clock and an

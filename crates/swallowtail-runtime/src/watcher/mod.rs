@@ -8,6 +8,7 @@ mod activity;
 mod bridge;
 mod control;
 mod host_service;
+mod lifecycle_feed;
 mod registry;
 
 pub use activity::{
@@ -32,6 +33,7 @@ pub use control::{
     SharedWatcherRegistry, WatcherControlSurface,
 };
 pub use host_service::{WatcherHostService, WatcherWaitOptions};
+pub use lifecycle_feed::{WatcherLifecycleFeed, WatcherLifecycleSubscription};
 pub use registry::{
     WatcherFailure, WatcherFailureKind, WatcherRegistry, WatcherSnapshot,
     WatcherStopAcknowledgement, WatcherWaitRepresentation,

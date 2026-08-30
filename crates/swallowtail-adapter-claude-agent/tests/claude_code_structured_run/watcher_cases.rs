@@ -196,6 +196,13 @@ fn omitted_watchers_keep_empty_strict_mcp_on_exact_2_1_251() {
     )
     .expect("omission prepares");
     assert!(!profile.watchers());
+    assert!(
+        profile
+            .evidence()
+            .observable_activity()
+            .kind(ActivityKindClass::HostWatcher)
+            .is_none()
+    );
     let (process, state) = FakeProcessService::with_exit(
         &fixture("headless-complete.jsonl"),
         ProcessExit::new(true, Some(0)),
@@ -278,6 +285,14 @@ fn watcher_opt_in_composes_private_mcp_settings_skill_and_stop() {
     )
     .expect("opt-in prepares");
     assert!(profile.watchers());
+    assert_eq!(
+        profile
+            .evidence()
+            .observable_activity()
+            .kind(ActivityKindClass::HostWatcher)
+            .map(|kind| kind.lifecycle()),
+        Some(swallowtail_core::ActivityLifecycleFidelity::CompleteLifecycle)
+    );
     let (process, state, completer) = FakeProcessService::controllable();
     let (services, task) = watcher_host_services(
         topology.execution_host_id().clone(),
@@ -525,4 +540,95 @@ fn watcher_provider_failure_releases_private_material() {
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
     assert!(state.waited());
     assert!(task.joined());
+}
+
+#[test]
+fn silent_provider_fast_watcher_emits_complete_host_watcher_lifecycle() {
+    let topology = ExecutionTopologyFixture::local();
+    let (prepared, local) =
+        prepared_at_with_watchers(topology.execution_host_id().clone(), "2.1.251");
+    let profile = watcher_profile(
+        &prepared,
+        topology.working_resource().clone(),
+        "watchers-silent",
+        true,
+    )
+    .expect("opt-in prepares");
+    let (process, state, completer) = FakeProcessService::controllable();
+    let (services, task) = watcher_host_services(
+        topology.execution_host_id().clone(),
+        process,
+        Arc::new(PendingTimeService),
+        &local,
+    );
+    let mut run = block_on(profile.start_run(services)).expect("run starts");
+    let started = std::time::Instant::now();
+    while !state.started() {
+        assert!(started.elapsed() < Duration::from_secs(2), "process starts");
+        std::thread::yield_now();
+    }
+    let mcp_path = argument_after(&state.request().arguments, "--mcp-config").to_owned();
+    let (endpoint, bearer) = read_mcp_authority(&mcp_path);
+    handshake(&endpoint, &bearer);
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            2,
+            WATCHER_BRIDGE_TOOL_START,
+            serde_json::json!({"operation_data": "exit-zero-operation"}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    let watcher_id = tool_payload(&body)["watcher_id"]
+        .as_str()
+        .expect("watcher id")
+        .to_owned();
+    let (status, body) = post_json(
+        &endpoint,
+        &bearer,
+        &tool_call(
+            3,
+            WATCHER_BRIDGE_TOOL_WAIT,
+            serde_json::json!({"watcher_id": watcher_id}),
+        ),
+    );
+    assert_eq!(status, 200, "{body}");
+    completer.complete(&fixture("headless-complete.jsonl"), ProcessExit::new(true, Some(0)));
+    let events = block_on(
+        run.take_events()
+            .expect("events")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("events remain valid");
+    let host_watcher: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(observation)
+                if observation.kind() == &ActivityKind::HostWatcher =>
+            {
+                Some(observation.phase())
+            }
+            _ => None,
+        })
+        .collect();
+    assert!(
+        host_watcher.contains(&ActivityLifecyclePhase::Started),
+        "started missing: {host_watcher:?}"
+    );
+    assert!(
+        host_watcher.contains(&ActivityLifecyclePhase::Updated),
+        "running missing: {host_watcher:?}"
+    );
+    assert!(
+        host_watcher.contains(&ActivityLifecyclePhase::Completed),
+        "completed missing: {host_watcher:?}"
+    );
+    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert!(task.joined());
+    assert!(!Path::new(&mcp_path).exists());
 }

@@ -15,11 +15,10 @@ shape.
 
 ## Next Task
 
-Execute g05.006 card 019 through its committed worker handoff. Repair lossless
-in-progress watcher activity and the direct Stop re-entry oracle without
-provider contact. Do not merge prototype head `49f2692f`, run the live
-selector, publish a watcher claim, or promote the consumer route-feature
-projection note.
+Orchestrator reviews the g05.006 card 019 PR against Contracts 044, 059, and
+060. After merge, reassess whether the repaired Stop-reentry oracle is strong
+enough to request fresh live authorization. Do not run the live selector,
+publish a watcher claim, or merge without separate operator authorization.
 
 ## Standing Lanes
 

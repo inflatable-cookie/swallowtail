@@ -805,6 +805,16 @@ mod tests {
         {
             panic!("registering a watcher port must not start work");
         }
+
+        fn open_lifecycle_feed(
+            &self,
+            _turn: crate::RuntimeTurnId,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<crate::WatcherLifecycleSubscription, crate::RuntimeFailure>,
+        > {
+            panic!("registering a watcher port must not start work");
+        }
     }
 
     struct IdleWatcherBridgePort;

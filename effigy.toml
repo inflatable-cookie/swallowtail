@@ -156,6 +156,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "bootstrap:claude-agent-acp" = "npm ci --ignore-scripts"
 "probe:claude-agent-acp-managed" = "./node_modules/.bin/claude-agent-acp --version"
 "probe:claude-code-response-only" = "SWALLOWTAIL_LIVE_CLAUDE_CODE_RESPONSE_ONLY=1 cargo test -p swallowtail-adapter-claude-agent --features live-probes --test live_response_only_probe -- --ignored --exact configured_claude_code_returns_one_tool_free_text_response"
+"probe:claude-code-watcher-live" = "SWALLOWTAIL_LIVE_CLAUDE_CODE_WATCHER=1 cargo test -p swallowtail-adapter-claude-agent --features live-probes --test live_watcher_probe -- --ignored --exact configured_claude_code_blocks_early_completion_then_joins_one_watcher"
 
 "package:metadata" = "bash scripts/check-package-metadata.sh"
 "package:api" = "bash scripts/check-public-api.sh"

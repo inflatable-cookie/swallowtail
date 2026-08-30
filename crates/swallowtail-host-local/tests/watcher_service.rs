@@ -1,3 +1,5 @@
+#[path = "watcher_service/feed.rs"]
+mod feed;
 #[path = "watcher_service/lifecycle.rs"]
 mod lifecycle;
 #[path = "watcher_service/policy.rs"]

@@ -361,8 +361,9 @@ pub use watcher::{
     WatcherActivityProjectionFailure, WatcherBridgeAdmission, WatcherBridgeBearer,
     WatcherBridgeCompletionState, WatcherBridgeEndpoint, WatcherBridgeGeneration,
     WatcherBridgeHostService, WatcherBridgeLease, WatcherBridgeOpenRequest, WatcherBridgeToken,
-    WatcherControlSurface, WatcherFailure, WatcherFailureKind, WatcherHostService, WatcherRegistry,
-    WatcherSnapshot, WatcherStopAcknowledgement, WatcherWaitOptions, WatcherWaitRepresentation,
+    WatcherControlSurface, WatcherFailure, WatcherFailureKind, WatcherHostService,
+    WatcherLifecycleFeed, WatcherLifecycleSubscription, WatcherRegistry, WatcherSnapshot,
+    WatcherStopAcknowledgement, WatcherWaitOptions, WatcherWaitRepresentation,
     project_watcher_activity,
 };
 pub use working_resource_io::{

@@ -196,7 +196,7 @@ impl ClaudeCodePreparedIntegration {
                 "Claude Code prepared run watchers require exact Claude Code 2.1.251",
             ));
         }
-        let activity = activity_profile(self)?;
+        let activity = activity_profile(self, watchers)?;
         let capabilities = with_activity(run_capabilities(), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let operation_capabilities = operation_capabilities(&capabilities, reasoning.as_ref());

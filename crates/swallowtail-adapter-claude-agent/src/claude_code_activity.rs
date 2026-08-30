@@ -149,6 +149,21 @@ impl ClaudeCodeActivityProjection {
         Ok(observations)
     }
 
+    pub(crate) fn stop_hook(
+        &mut self,
+        provider_ref: Option<&str>,
+    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        Ok(vec![self.completed(
+            "hook",
+            provider_ref,
+            ActivityKind::Hook,
+            None,
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+            ActivityStatus::Completed,
+            None,
+        )?])
+    }
+
     pub(crate) fn unknown(
         &mut self,
         event_type: &str,

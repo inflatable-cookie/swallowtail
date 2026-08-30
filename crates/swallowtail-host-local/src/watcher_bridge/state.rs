@@ -1,6 +1,7 @@
 mod live;
 
 use super::failure::identity_failure;
+use super::proof::{ProofLog, WatcherBridgeProofKind};
 use std::collections::{BTreeMap, BTreeSet};
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -57,6 +58,7 @@ pub(super) struct LiveLease {
     pub(super) session: Mutex<SessionPhase>,
     pub(super) connections: Mutex<Vec<JoinHandle<()>>>,
     pub(super) accept_thread: Mutex<Option<JoinHandle<()>>>,
+    pub(super) proof: ProofLog,
 }
 
 pub(super) struct Gate {
@@ -78,6 +80,12 @@ pub(super) fn drive<T>(
 
 pub(super) fn owning_turn(turn: &RuntimeTurnId) -> Result<WatcherOwningTurn, RuntimeFailure> {
     WatcherOwningTurn::new(turn.as_str().to_owned()).map_err(|_| identity_failure())
+}
+
+impl LiveLease {
+    pub(super) fn record_proof(&self, kind: WatcherBridgeProofKind) {
+        self.proof.record(kind);
+    }
 }
 
 fn reap_finished(connections: &mut Vec<JoinHandle<()>>) {

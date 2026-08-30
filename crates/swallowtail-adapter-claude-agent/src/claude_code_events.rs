@@ -65,6 +65,13 @@ impl ClaudeCodeEventParser {
         Ok(events)
     }
 
+    pub(crate) fn activity_event(
+        &mut self,
+        observation: swallowtail_runtime::ActivityObservation,
+    ) -> RuntimeEvent {
+        self.event(RuntimeEventKind::Activity(observation))
+    }
+
     pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
@@ -99,13 +106,16 @@ impl ClaudeCodeEventParser {
                 self.parse_init(&payload)
             }
             Some("system")
-                if !self.init_seen
-                    && matches!(
-                        payload.get("subtype").and_then(Value::as_str),
-                        Some("hook_started" | "hook_response")
-                    ) =>
+                if matches!(
+                    payload.get("subtype").and_then(Value::as_str),
+                    Some("hook_started" | "hook_response")
+                ) =>
             {
-                self.parse_pre_init_hook(&payload)
+                if self.init_seen {
+                    self.parse_stop_hook(&payload)
+                } else {
+                    self.parse_pre_init_hook(&payload)
+                }
             }
             Some("assistant") => self.parse_assistant(&payload),
             Some("user") => self.parse_user(&payload),
@@ -136,6 +146,14 @@ impl ClaudeCodeEventParser {
         self.session_id = Some(session_id.to_owned());
         self.init_seen = true;
         Ok(Vec::new())
+    }
+
+    fn parse_stop_hook(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        self.require_session(payload)?;
+        let activity = self
+            .activity
+            .stop_hook(payload.get("uuid").and_then(Value::as_str))?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_pre_init_hook(

@@ -1,5 +1,6 @@
 mod accept;
 mod cleanup;
+mod feed;
 mod join;
 mod process;
 mod support;
@@ -19,8 +20,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, JoinedTask, ProcessHandle, RuntimeFailure, RuntimeTurnId,
-    ScopedTaskService, WatcherHostService, WatcherSnapshot, WatcherStopAcknowledgement,
-    WatcherWaitOptions, WatcherWaitRepresentation,
+    ScopedTaskService, WatcherHostService, WatcherLifecycleSubscription, WatcherSnapshot,
+    WatcherStopAcknowledgement, WatcherWaitOptions, WatcherWaitRepresentation,
 };
 
 pub(super) const MAX_RETIRED_TURNS: usize = 64;
@@ -35,6 +36,7 @@ pub(crate) struct LocalWatcherHostService {
 pub(super) struct LocalWatcherState {
     pub(super) active: BTreeMap<RuntimeTurnId, LocalWatcherTurn>,
     pub(super) retired: VecDeque<RuntimeTurnId>,
+    pub(super) feeds: BTreeMap<RuntimeTurnId, Arc<Mutex<feed::LifecycleBuffer>>>,
     pub(super) next_namespace: u64,
 }
 
@@ -58,6 +60,7 @@ impl Default for LocalWatcherState {
         Self {
             active: BTreeMap::new(),
             retired: VecDeque::new(),
+            feeds: BTreeMap::new(),
             next_namespace: 1,
         }
     }
@@ -69,7 +72,9 @@ impl LocalWatcherState {
     }
 
     pub(super) fn retire(&mut self, turn: &RuntimeTurnId) {
+        self.close_feed(turn);
         self.active.remove(turn);
+        self.feeds.remove(turn);
         if !self.is_retired(turn) {
             self.retired.push_back(turn.clone());
         }
@@ -237,6 +242,52 @@ impl WatcherHostService for LocalWatcherHostService {
     ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
         let result = self.finalize_turn_now(turn);
         Box::pin(async move { result })
+    }
+
+    fn open_lifecycle_feed(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> BoxFuture<'_, Result<WatcherLifecycleSubscription, RuntimeFailure>> {
+        let result = self.open_lifecycle_feed_now(turn);
+        Box::pin(async move { result })
+    }
+}
+
+impl LocalWatcherHostService {
+    pub(super) fn publish_lifecycle(
+        &self,
+        turn: &RuntimeTurnId,
+        snapshot: WatcherSnapshot,
+    ) -> Result<(), RuntimeFailure> {
+        self.state
+            .lock()
+            .expect("local watcher state lock poisoned")
+            .publish(turn, snapshot)
+    }
+
+    fn open_lifecycle_feed_now(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> Result<WatcherLifecycleSubscription, RuntimeFailure> {
+        let mut state = self
+            .state
+            .lock()
+            .expect("local watcher state lock poisoned");
+        if state.is_retired(&turn) {
+            return Err(support::turn_retired_failure());
+        }
+        if state.feeds.contains_key(&turn) {
+            return Err(crate::output::failure(
+                "swallowtail.local_watcher.lifecycle_feed_duplicate",
+                "Watcher lifecycle feed is already open for this turn",
+            ));
+        }
+        let capacity = self.capacity.saturating_mul(4).max(8);
+        let buffer = Arc::new(Mutex::new(feed::LifecycleBuffer::new(capacity)));
+        state.feeds.insert(turn, Arc::clone(&buffer));
+        Ok(WatcherLifecycleSubscription::from_feed(Box::new(
+            feed::LocalLifecycleFeed::new(buffer),
+        )))
     }
 }
 

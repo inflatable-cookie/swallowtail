@@ -4,15 +4,19 @@ mod bearer;
 mod failure;
 mod http;
 mod listener;
+mod proof;
 mod protocol;
 #[cfg(test)]
 mod races;
 mod state;
 
+pub use proof::WatcherBridgeProofKind;
+
 use crate::output::failure;
 use bearer::generate_bearer;
 use failure::{closed_failure, foreign_failure, identity_failure};
 use listener::{bind_loopback, endpoint_url, spawn_accept, wake_accept};
+use proof::ProofLog;
 use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase, drive};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
@@ -32,6 +36,7 @@ pub(crate) struct LocalWatcherBridgeHostService {
     time: Arc<dyn TimeService>,
     wait_bound: Duration,
     state: Arc<Mutex<BridgeRegistry>>,
+    proof: ProofLog,
 }
 
 impl LocalWatcherBridgeHostService {
@@ -46,7 +51,12 @@ impl LocalWatcherBridgeHostService {
             time,
             wait_bound: WATCHER_BRIDGE_MAX_WAIT,
             state: Arc::new(Mutex::new(BridgeRegistry::default())),
+            proof: ProofLog::new(),
         }
+    }
+
+    pub(crate) fn proof_facts(&self) -> Vec<WatcherBridgeProofKind> {
+        self.proof.snapshot()
     }
 
     #[cfg(test)]
@@ -104,6 +114,7 @@ impl LocalWatcherBridgeHostService {
             session: Mutex::new(SessionPhase::New),
             connections: Mutex::new(Vec::new()),
             accept_thread: Mutex::new(None),
+            proof: self.proof.clone(),
         });
         if let Err(error) = spawn_accept(Arc::clone(&live), listener) {
             self.forget_generation(request.turn(), generation);

@@ -8,6 +8,14 @@ pub swallowtail_host_local::LocalSignInCall::LoopbackMaterialize
 pub swallowtail_host_local::LocalSignInCall::LoopbackPoll
 pub swallowtail_host_local::LocalSignInCall::LoopbackRelease
 pub swallowtail_host_local::LocalSignInCall::UrlOpen
+pub enum swallowtail_host_local::WatcherBridgeProofKind
+pub swallowtail_host_local::WatcherBridgeProofKind::CompletionGateActive
+pub swallowtail_host_local::WatcherBridgeProofKind::CompletionGateIdle
+pub swallowtail_host_local::WatcherBridgeProofKind::Initialize
+pub swallowtail_host_local::WatcherBridgeProofKind::Start
+pub swallowtail_host_local::WatcherBridgeProofKind::Stop
+pub swallowtail_host_local::WatcherBridgeProofKind::ToolsList
+pub swallowtail_host_local::WatcherBridgeProofKind::Wait
 pub struct swallowtail_host_local::JsonFileConnectionLifecycleStore
 impl swallowtail_host_local::JsonFileConnectionLifecycleStore
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::open(impl core::convert::Into<std::path::PathBuf>) -> core::result::Result<Self, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
@@ -34,6 +42,7 @@ pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::ti
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
 pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
+pub fn swallowtail_host_local::LocalHostServices::watcher_bridge_proof(&self) -> alloc::vec::Vec<swallowtail_host_local::WatcherBridgeProofKind>
 pub struct swallowtail_host_local::LocalMaterializationLimits
 impl swallowtail_host_local::LocalMaterializationLimits
 pub const fn swallowtail_host_local::LocalMaterializationLimits::attachment_bytes(self) -> u64

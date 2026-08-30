@@ -144,9 +144,9 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has six roadmaps: 3 completed milestones, honest evidence stops at 002
-and 003, and one ready milestone at 006. Milestone 005 is completed standing
-currentness.
+g05 has six roadmaps: 4 completed milestones, honest evidence stops at 002
+and 003, and zero ready milestones. Milestones 004 and 005 are completed
+standing currentness. Milestone 006 is completed credential-free repair.
 g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
@@ -168,9 +168,9 @@ closed card 010 for exact `2.1.251` credential-free binding. Card 011 consumed
 one exact Haiku live turn, but the host registry never observed a watcher. The
 first route claim stays withheld and prototype head `49f2692f` remains
 unmerged. The operator selected credential-free repair before another provider
-authorization. g05.006 card 019 is ready for lossless watcher lifecycle
-activity, direct active-Stop and same-session proof design, and panic-safe live
-workspace cleanup. It does not authorize a provider turn or publish a watcher
+authorization. g05.006 card 019 completed lossless watcher lifecycle
+activity, a direct active-Stop and same-session proof oracle, and panic-safe
+live workspace cleanup. It did not run a provider turn or publish a watcher
 claim. g05.004 standing currentness is complete: Research 258 and cards
 012-013 qualify Qwen headless through official `0.22.3`. No second provider
 prompt, container backend, new route, or parked Bedrock work is authorized.

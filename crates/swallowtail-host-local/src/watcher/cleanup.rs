@@ -17,7 +17,7 @@ impl LocalWatcherHostService {
         owning_turn: swallowtail_core::WatcherOwningTurn,
         watcher_id: WatcherId,
     ) -> Result<(WatcherStopAcknowledgement, super::WatcherSnapshot), RuntimeFailure> {
-        let (entry, acknowledgement, snapshot) = {
+        let (entry, acknowledgement, snapshot, turn) = {
             let turn = super::support::runtime_turn(&owning_turn)?;
             let mut state = self
                 .state
@@ -50,8 +50,9 @@ impl LocalWatcherHostService {
                 .get(&watcher_id)
                 .cloned()
                 .ok_or_else(entry_missing_failure)?;
-            (entry, acknowledgement, snapshot)
+            (entry, acknowledgement, snapshot, turn)
         };
+        self.publish_lifecycle(&turn, snapshot.clone())?;
         if matches!(acknowledgement, WatcherStopAcknowledgement::Stopped) {
             request_process_stop(&entry.process)?;
         }

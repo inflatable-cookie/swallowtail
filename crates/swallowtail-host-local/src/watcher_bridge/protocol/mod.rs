@@ -9,6 +9,7 @@ pub(super) use decode::{
 pub(super) use encode::{error_http_status, error_message, jsonrpc_error};
 
 use super::failure::{closed_failure, malformed_failure, unauthorized_failure, unknown_failure};
+use super::proof::WatcherBridgeProofKind;
 use super::state::{LiveLease, drive, owning_turn};
 use decode::DecodedRequest as Request;
 use encode::{
@@ -36,10 +37,12 @@ pub(super) fn dispatch(
         }
         Request::Initialize { id } => {
             live.admit_initialize()?;
+            live.record_proof(WatcherBridgeProofKind::Initialize);
             Ok(Some(jsonrpc_result(id, initialize_result())))
         }
         Request::ToolsList { id } => {
             live.require_ready()?;
+            live.record_proof(WatcherBridgeProofKind::ToolsList);
             Ok(Some(jsonrpc_result(id, tools_list_result())))
         }
         Request::ToolsCall {
@@ -82,7 +85,11 @@ fn dispatch_tool(
     arguments: Map<String, Value>,
 ) -> Result<Value, RuntimeFailure> {
     match name {
-        WATCHER_BRIDGE_TOOL_START => call_start(live, arguments),
+        WATCHER_BRIDGE_TOOL_START => {
+            let result = call_start(live, arguments)?;
+            live.record_proof(WatcherBridgeProofKind::Start);
+            Ok(result)
+        }
         WATCHER_BRIDGE_TOOL_INSPECT => call_inspect(live, arguments),
         WATCHER_BRIDGE_TOOL_LIST => {
             require_empty_object(&arguments)?;
@@ -90,11 +97,24 @@ fn dispatch_tool(
             let snapshots = drive(live.watcher.list(owning_turn(&live.turn)?))?;
             Ok(tool_text(list_payload(&snapshots)))
         }
-        WATCHER_BRIDGE_TOOL_WAIT => call_wait(live, arguments),
-        WATCHER_BRIDGE_TOOL_STOP => call_stop(live, arguments),
+        WATCHER_BRIDGE_TOOL_WAIT => {
+            let result = call_wait(live, arguments)?;
+            live.record_proof(WatcherBridgeProofKind::Wait);
+            Ok(result)
+        }
+        WATCHER_BRIDGE_TOOL_STOP => {
+            let result = call_stop(live, arguments)?;
+            live.record_proof(WatcherBridgeProofKind::Stop);
+            Ok(result)
+        }
         WATCHER_BRIDGE_TOOL_COMPLETION_GATE => {
             require_empty_object(&arguments)?;
             let state = live.completion_gate()?;
+            live.record_proof(if state.active_or_unjoined().is_empty() {
+                WatcherBridgeProofKind::CompletionGateIdle
+            } else {
+                WatcherBridgeProofKind::CompletionGateActive
+            });
             Ok(tool_text(completion_payload(&state)))
         }
         _ => Err(unknown_failure()),

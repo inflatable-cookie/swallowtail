@@ -2696,6 +2696,15 @@ pub const fn swallowtail_runtime::WatcherFailure::kind(self) -> swallowtail_runt
 impl core::error::Error for swallowtail_runtime::WatcherFailure
 impl core::fmt::Display for swallowtail_runtime::WatcherFailure
 pub fn swallowtail_runtime::WatcherFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::WatcherLifecycleSubscription
+impl swallowtail_runtime::WatcherLifecycleSubscription
+pub fn swallowtail_runtime::WatcherLifecycleSubscription::from_feed(alloc::boxed::Box<dyn swallowtail_runtime::WatcherLifecycleFeed>) -> Self
+pub fn swallowtail_runtime::WatcherLifecycleSubscription::poll_snapshot(&mut self, &mut core::task::wake::Context<'_>) -> core::task::poll::Poll<core::option::Option<core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>>
+impl core::fmt::Debug for swallowtail_runtime::WatcherLifecycleSubscription
+pub fn swallowtail_runtime::WatcherLifecycleSubscription::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl futures_core::stream::Stream for swallowtail_runtime::WatcherLifecycleSubscription
+pub type swallowtail_runtime::WatcherLifecycleSubscription::Item = core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::WatcherLifecycleSubscription::poll_next(core::pin::Pin<&mut Self>, &mut core::task::wake::Context<'_>) -> core::task::poll::Poll<core::option::Option<Self::Item>>
 pub struct swallowtail_runtime::WatcherRegistry
 impl swallowtail_runtime::WatcherRegistry
 pub fn swallowtail_runtime::WatcherRegistry::accept_start(&mut self, swallowtail_core::watcher::requester::WatcherRequester, swallowtail_core::watcher::operation_data::WatcherOperationData) -> core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::WatcherFailure>
@@ -3011,9 +3020,12 @@ pub fn swallowtail_runtime::WatcherHostService::accept_start(&self, swallowtail_
 pub fn swallowtail_runtime::WatcherHostService::finalize_turn(&self, swallowtail_runtime::RuntimeTurnId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::CleanupOutcome, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::inspect(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::list(&self, swallowtail_core::watcher::identity::WatcherOwningTurn) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::WatcherHostService::open_lifecycle_feed(&self, swallowtail_runtime::RuntimeTurnId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::WatcherLifecycleSubscription, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::request_stop(&self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(swallowtail_runtime::WatcherStopAcknowledgement, swallowtail_runtime::WatcherSnapshot), swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::stop_and_join_all(&self, swallowtail_runtime::RuntimeTurnId, swallowtail_core::watcher::lifecycle::WatcherCleanupCause) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(alloc::vec::Vec<swallowtail_runtime::WatcherSnapshot>, swallowtail_runtime::CleanupOutcome), swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WatcherHostService::wait<'a>(&'a self, swallowtail_core::watcher::identity::WatcherOwningTurn, swallowtail_core::watcher::identity::WatcherId, swallowtail_runtime::WatcherWaitOptions<'a>) -> swallowtail_runtime::BoxFuture<'a, core::result::Result<swallowtail_runtime::WatcherWaitRepresentation, swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::WatcherLifecycleFeed: core::marker::Send
+pub fn swallowtail_runtime::WatcherLifecycleFeed::poll_snapshot(&mut self, &mut core::task::wake::Context<'_>) -> core::task::poll::Poll<core::option::Option<core::result::Result<swallowtail_runtime::WatcherSnapshot, swallowtail_runtime::RuntimeFailure>>>
 pub trait swallowtail_runtime::WorkingResourceIoService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WorkingResourceIoService::read_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceReadRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingResourceText, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WorkingResourceIoService::write_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceWriteRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>

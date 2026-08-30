@@ -150,4 +150,14 @@ pub trait WatcherHostService: Send + Sync {
         &self,
         turn: RuntimeTurnId,
     ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>>;
+
+    /// Opens one lossless lifecycle feed for the owning turn.
+    ///
+    /// Observation must start before watcher creation. The feed retains
+    /// accepted, running, and terminal snapshots independently of provider
+    /// stdout. Duplicate observers for the same turn fail closed.
+    fn open_lifecycle_feed(
+        &self,
+        turn: RuntimeTurnId,
+    ) -> BoxFuture<'_, Result<super::WatcherLifecycleSubscription, RuntimeFailure>>;
 }

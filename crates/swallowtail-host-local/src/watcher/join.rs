@@ -56,44 +56,54 @@ impl LocalWatcherHostService {
                 .state
                 .lock()
                 .expect("local watcher state lock poisoned");
-            let turn_state = if state.active.contains_key(turn) {
-                state
-                    .active
-                    .get_mut(turn)
-                    .expect("active watcher turn was retained")
-            } else {
+            if !state.active.contains_key(turn) {
                 return Err(if state.is_retired(turn) {
                     super::support::turn_retired_failure()
                 } else {
                     turn_missing_failure()
                 });
+            }
+            let published = {
+                let turn_state = state
+                    .active
+                    .get_mut(turn)
+                    .expect("active watcher turn was retained");
+                let snapshot = turn_state
+                    .registry
+                    .inspect(&owning_turn, watcher_id)
+                    .map_err(registry_failure)?;
+                match snapshot.phase() {
+                    WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {
+                        turn_state
+                            .registry
+                            .complete(
+                                watcher_id,
+                                WatcherTerminalCause::Failed,
+                                Some(summary("failed")),
+                            )
+                            .map_err(registry_failure)?;
+                        let terminal = turn_state
+                            .registry
+                            .inspect(&owning_turn, watcher_id)
+                            .map_err(registry_failure)?;
+                        turn_state
+                            .registry
+                            .join(watcher_id)
+                            .map_err(registry_failure)?;
+                        Some(terminal)
+                    }
+                    WatcherLifecyclePhase::Terminal => {
+                        turn_state
+                            .registry
+                            .join(watcher_id)
+                            .map_err(registry_failure)?;
+                        None
+                    }
+                    WatcherLifecyclePhase::Joined => None,
+                }
             };
-            let snapshot = turn_state
-                .registry
-                .inspect(&owning_turn, watcher_id)
-                .map_err(registry_failure)?;
-            match snapshot.phase() {
-                WatcherLifecyclePhase::Accepted | WatcherLifecyclePhase::Running => {
-                    turn_state
-                        .registry
-                        .complete(
-                            watcher_id,
-                            WatcherTerminalCause::Failed,
-                            Some(summary("failed")),
-                        )
-                        .map_err(registry_failure)?;
-                    turn_state
-                        .registry
-                        .join(watcher_id)
-                        .map_err(registry_failure)?;
-                }
-                WatcherLifecyclePhase::Terminal => {
-                    turn_state
-                        .registry
-                        .join(watcher_id)
-                        .map_err(registry_failure)?;
-                }
-                WatcherLifecyclePhase::Joined => {}
+            if let Some(snapshot) = published {
+                state.publish(turn, snapshot)?;
             }
             entry.joined.store(true, Ordering::Release);
             entry.join_signal.notify();

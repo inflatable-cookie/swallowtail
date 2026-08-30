@@ -79,6 +79,7 @@ impl LocalWatcherHostService {
                 .accept_start(requester, operation_data)
                 .map_err(registry_failure)?
         };
+        state.publish(&turn, accepted.clone())?;
         let watcher_id = accepted.watcher_id().clone();
         let process = match block_on(self.process_host.start(scope.clone(), request)) {
             Ok(process) => Arc::<dyn ProcessHandle>::from(process),
@@ -134,15 +135,19 @@ impl LocalWatcherHostService {
             }
         };
         *entry.task.lock().expect("local watcher task lock poisoned") = Some(task);
-        let turn_state = state
-            .active
-            .get_mut(&turn)
-            .expect("local watcher turn remains after monitor spawn");
-        turn_state.entries.insert(watcher_id.clone(), entry);
-        turn_state
-            .registry
-            .inspect(turn_state.registry.owning_turn(), &watcher_id)
-            .map_err(registry_failure)
+        let running = {
+            let turn_state = state
+                .active
+                .get_mut(&turn)
+                .expect("local watcher turn remains after monitor spawn");
+            turn_state.entries.insert(watcher_id.clone(), entry);
+            turn_state
+                .registry
+                .inspect(turn_state.registry.owning_turn(), &watcher_id)
+                .map_err(registry_failure)?
+        };
+        state.publish(&turn, running.clone())?;
+        Ok(running)
     }
 
     fn rollback_unbound_start(

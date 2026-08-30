@@ -1,6 +1,6 @@
 # 019 Watcher Proof Oracle And Activity Delivery Repair
 
-Status: ready
+Status: complete; credential-free repair; no live claim
 Owner: Tom
 Created: 2026-08-30
 Updated: 2026-08-30
@@ -92,15 +92,15 @@ process authority, or a consumer route-feature facade.
 
 ## Acceptance Criteria
 
-- [ ] no adapter-local watcher lifecycle projector remains
-- [ ] watcher activity has complete lifecycle fidelity only when opted in
-- [ ] silent-provider and fast-watcher cases still expose running activity
-- [ ] multiple watchers preserve host order without duplicates or regressions
-- [ ] live-probe assertions require direct active Stop and same-session re-entry
-- [ ] the recorder and default formatting retain no private or raw material
-- [ ] live workspace cleanup is panic-safe before contact
-- [ ] ordinary QA remains credential-free and the live selector remains opt-in
-- [ ] no live selector is run and no watcher support claim is published
+- [x] no adapter-local watcher lifecycle projector remains
+- [x] watcher activity has complete lifecycle fidelity only when opted in
+- [x] silent-provider and fast-watcher cases still expose running activity
+- [x] multiple watchers preserve host order without duplicates or regressions
+- [x] live-probe assertions require direct active Stop and same-session re-entry
+- [x] the recorder and default formatting retain no private or raw material
+- [x] live workspace cleanup is panic-safe before contact
+- [x] ordinary QA remains credential-free and the live selector remains opt-in
+- [x] no live selector is run and no watcher support claim is published
 
 ## Validation
 

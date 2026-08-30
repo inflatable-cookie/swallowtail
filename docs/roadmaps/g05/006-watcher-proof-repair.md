@@ -1,12 +1,12 @@
 # g05.006 Watcher Proof Repair
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-30
 Updated: 2026-08-30
 Depends on: stopped g05.003 card 011; Contracts 044, 059, and 060
 Vision tags: process watchers, consumer activity, review oracle
-Planning state: card 019 ready; no live provider authorization
+Planning state: card 019 complete; no live provider authorization; claims unpublished
 
 ## Problem
 
@@ -27,27 +27,27 @@ counterexample. Do not run Claude or publish a watcher capability.
 
 ### Batch 6.1 — Credential-Free Repair
 
-- [ ] execute ready card 019 from current pushed `main`
-- [ ] retain safe deterministic fixtures and binding work from `49f2692f`
+- [x] execute ready card 019 from current pushed `main`
+- [x] retain safe deterministic fixtures and binding work from `49f2692f`
       selectively; do not merge or cherry-pick the whole prototype commit
-- [ ] return one PR with no provider contact, claim, or live authorization
+- [x] return one PR with no provider contact, claim, or live authorization
 
 ## Acceptance Criteria
 
-- [ ] watcher accepted, running, and terminal transitions reach the existing
+- [x] watcher accepted, running, and terminal transitions reach the existing
       ordered turn event stream independently of provider output cadence
-- [ ] the existing provider-neutral watcher activity projector owns lifecycle
+- [x] the existing provider-neutral watcher activity projector owns lifecycle
       mapping; joined cleanup emits no duplicate completion
-- [ ] a future live probe can distinguish exact MCP discovery and invocation,
+- [x] a future live probe can distinguish exact MCP discovery and invocation,
       active Stop blocking, same-session continuation, explicit wait or stop,
       joined watcher cleanup, and provider terminal success
-- [ ] the proof recorder retains only bounded safe facts and no raw HTTP,
+- [x] the proof recorder retains only bounded safe facts and no raw HTTP,
       provider, credential, endpoint, path, command, or output material
-- [ ] every temporary live-probe resource has cleanup established before any
+- [x] every temporary live-probe resource has cleanup established before any
       provider contact or assertion
-- [ ] deterministic fixtures cover the review-oracle counterexamples without
+- [x] deterministic fixtures cover the review-oracle counterexamples without
       contacting Claude
-- [ ] route capability, matrix, guide, and version-range claims stay withheld
+- [x] route capability, matrix, guide, and version-range claims stay withheld
 
 ## Stop Conditions
 

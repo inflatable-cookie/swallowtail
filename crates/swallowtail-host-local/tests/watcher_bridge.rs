@@ -4,6 +4,8 @@ mod authority;
 mod http;
 #[path = "watcher_bridge/lifecycle.rs"]
 mod lifecycle;
+#[path = "watcher_bridge/proof.rs"]
+mod proof;
 #[path = "watcher_bridge/protocol.rs"]
 mod protocol;
 #[path = "watcher_bridge/support.rs"]

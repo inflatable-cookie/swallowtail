@@ -13,6 +13,7 @@ pub struct ClaudeCodePreparedEvidence {
     environment: swallowtail_runtime::EnvironmentRef,
     operation: PreparedOperationEvidence,
     maximum_turns: Option<ClaudeCodeMaximumTurns>,
+    watchers: bool,
 }
 
 impl ClaudeCodePreparedEvidence {
@@ -21,6 +22,7 @@ impl ClaudeCodePreparedEvidence {
         plan: PreflightPlan,
         activity_profile: swallowtail_core::ObservableActivityProfile,
         maximum_turns: Option<ClaudeCodeMaximumTurns>,
+        watchers: bool,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
@@ -31,6 +33,7 @@ impl ClaudeCodePreparedEvidence {
                 activity_profile,
             )?,
             maximum_turns,
+            watchers,
         })
     }
 
@@ -38,6 +41,12 @@ impl ClaudeCodePreparedEvidence {
     #[must_use]
     pub const fn maximum_turns(&self) -> Option<ClaudeCodeMaximumTurns> {
         self.maximum_turns
+    }
+
+    /// Reports whether this prepared run opted into the watcher candidate.
+    #[must_use]
+    pub const fn watchers(&self) -> bool {
+        self.watchers
     }
 
     /// Returns the qualified installed-executable observation.
@@ -81,9 +90,14 @@ impl ClaudeCodePreparedEvidence {
     /// is why no comparison between them is needed: they cannot disagree.
     fn bound_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
         let driver = self.low_level_driver();
-        match self.maximum_turns {
+        let driver = match self.maximum_turns {
             Some(maximum_turns) => driver.with_maximum_turns(maximum_turns),
             None => driver,
+        };
+        if self.watchers {
+            driver.with_watchers()
+        } else {
+            driver
         }
     }
 }
@@ -118,6 +132,12 @@ impl ClaudeCodePreparedRun {
     #[must_use]
     pub const fn maximum_turns(&self) -> Option<ClaudeCodeMaximumTurns> {
         self.evidence.maximum_turns()
+    }
+
+    /// Reports whether this prepared run opted into the watcher candidate.
+    #[must_use]
+    pub const fn watchers(&self) -> bool {
+        self.evidence.watchers()
     }
 
     /// Creates the low-level native headless driver for this run.
@@ -170,6 +190,7 @@ pub(super) fn new_prepared_run(
     plan: PreflightPlan,
     activity: ObservableActivityProfile,
     maximum_turns: Option<ClaudeCodeMaximumTurns>,
+    watchers: bool,
     request: StructuredRunRequest,
 ) -> Result<ClaudeCodePreparedRun, PreparationFailure> {
     Ok(ClaudeCodePreparedRun {
@@ -178,6 +199,7 @@ pub(super) fn new_prepared_run(
             plan,
             activity,
             maximum_turns,
+            watchers,
         )?,
         request,
     })

@@ -1,6 +1,6 @@
 use crate::claude_code_command::arguments;
 use crate::claude_code_handle::{ClaudeCodeCancellation, ClaudeCodeRunHandle};
-use crate::claude_code_pump::{cleanup_failed_start, pump};
+use crate::claude_code_pump::{PumpHost, cleanup_failed_start, pump};
 use crate::failure::failure;
 use std::sync::Arc;
 use swallowtail_core::{
@@ -11,8 +11,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle,
     ProcessInputChunk, ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
-    RuntimeRunId, ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
-    terminal_outcome_channel,
+    RuntimeRunId, RuntimeTurnId, ScopeId, StructuredRunDriver, StructuredRunRequest,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.headless";
@@ -23,6 +23,7 @@ pub(crate) const ENDPOINT_AUDIENCE: &str = "anthropic-claude-code";
 pub struct ClaudeCodeHeadlessDriver {
     environment: EnvironmentRef,
     maximum_turns: Option<crate::ClaudeCodeMaximumTurns>,
+    watchers: bool,
 }
 
 impl ClaudeCodeHeadlessDriver {
@@ -32,6 +33,7 @@ impl ClaudeCodeHeadlessDriver {
         Self {
             environment,
             maximum_turns: None,
+            watchers: false,
         }
     }
 
@@ -56,6 +58,15 @@ impl ClaudeCodeHeadlessDriver {
         maximum_turns: crate::ClaudeCodeMaximumTurns,
     ) -> Self {
         self.maximum_turns = Some(maximum_turns);
+        self
+    }
+
+    /// Opts the driver into exact `2.1.251` watcher composition.
+    ///
+    /// Crate-private and reached only from prepared `start_run`.
+    #[must_use]
+    pub(crate) const fn with_watchers(mut self) -> Self {
+        self.watchers = true;
         self
     }
 }
@@ -128,6 +139,12 @@ impl ClaudeCodeHeadlessDriver {
                 "Claude Code headless maximum turns requires an exactly probed Claude Code version",
             ));
         }
+        if self.watchers && !crate::claude_code_selection::plan_admits_watchers(&plan) {
+            return Err(failure(
+                "swallowtail.claude_code.headless.watchers_unqualified",
+                "Claude Code headless watchers require exact Claude Code 2.1.251",
+            ));
+        }
         let task_service = services
             .task()
             .cloned()
@@ -170,27 +187,53 @@ impl ClaudeCodeHeadlessDriver {
             )
         })?;
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+        let watcher_binding = if self.watchers {
+            Some(
+                crate::claude_code_watcher::open_binding(
+                    &services,
+                    scope.clone(),
+                    watcher_turn(&request)?,
+                )
+                .await?,
+            )
+        } else {
+            None
+        };
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
             .with_arguments(arguments(
                 &model,
                 request.policy().reasoning_mode(),
                 self.maximum_turns,
+                watcher_binding
+                    .as_ref()
+                    .map(crate::claude_code_watcher::WatcherBinding::files),
             ))
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = Arc::from(
-            process_service
-                .start(scope.clone(), process_request)
-                .await?,
-        );
+        let process: Arc<dyn ProcessHandle> =
+            match process_service.start(scope.clone(), process_request).await {
+                Ok(process) => Arc::from(process),
+                Err(error) => {
+                    if let Some(binding) = watcher_binding {
+                        let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+                    }
+                    return Err(error);
+                }
+            };
         if let Err(error) = write_prompt(process.as_ref(), &request).await {
             cleanup_failed_start(process.as_ref()).await;
+            if let Some(binding) = watcher_binding {
+                let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+            }
             return Err(error);
         }
         let deadline = time_service.wait_until(deadline);
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
+            if let Some(binding) = watcher_binding {
+                let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+            }
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
@@ -210,7 +253,10 @@ impl ClaudeCodeHeadlessDriver {
                         deadline,
                         model,
                         operation_id,
-                        services,
+                        PumpHost {
+                            services,
+                            watcher_binding,
+                        },
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);
@@ -234,6 +280,19 @@ impl ClaudeCodeHeadlessDriver {
             task,
         )))
     }
+}
+
+fn watcher_turn(request: &StructuredRunRequest) -> Result<RuntimeTurnId, RuntimeFailure> {
+    RuntimeTurnId::new(format!(
+        "claude-code-headless:{}",
+        request.request_id().as_str()
+    ))
+    .map_err(|_| {
+        failure(
+            "swallowtail.claude_code.headless.turn_invalid",
+            "Claude Code headless watcher turn identity was invalid",
+        )
+    })
 }
 
 async fn write_prompt(

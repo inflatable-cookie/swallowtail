@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-30 g05.003 Claude Code Watcher Binding](./2026-08-30-g05-003-claude-code-watcher-binding.md) — card 010 complete; exact `2.1.251` credential-free binding; no watcher claim
 - [2026-08-30 g05.003 Claude Watcher Post-Currentness Reassessment](./2026-08-30-g05-003-claude-watcher-post-currentness-reassessment.md) — card 010 ready for exact `2.1.251` credential-free binding; card 011 keeps the live gate
 - [2026-08-30 Claude Code 2.1.251 Claim](./2026-08-30-claude-code-2-1-251-claim.md) — complete; Research 261; g05.005 cards 017-018; official npm `2.1.251`
 - [2026-08-30 Claude Code 2.1.251 Identity](./2026-08-30-claude-code-2-1-251-identity.md) — complete; card 017; Research 261; compatible-extension

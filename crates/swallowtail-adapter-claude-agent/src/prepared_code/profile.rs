@@ -58,6 +58,7 @@ pub struct ClaudeCodeRunProfileInput {
     deadline: Deadline,
     reasoning_mode: Option<ReasoningMode>,
     maximum_turns: Option<ClaudeCodeMaximumTurns>,
+    watchers: bool,
 }
 
 impl ClaudeCodeRunProfileInput {
@@ -78,6 +79,7 @@ impl ClaudeCodeRunProfileInput {
             deadline,
             reasoning_mode: None,
             maximum_turns: None,
+            watchers: false,
         }
     }
 
@@ -114,6 +116,24 @@ impl ClaudeCodeRunProfileInput {
         self.maximum_turns
     }
 
+    /// Opts this prepared run into the exact Claude Code `2.1.251` watcher candidate.
+    ///
+    /// Omission preserves the current empty strict MCP command and does not
+    /// open a bridge or lease private files. Opt-in is rejected before those
+    /// effects unless the prepared version is exactly `2.1.251`. This does not
+    /// advertise watcher support.
+    #[must_use]
+    pub const fn with_watchers(mut self) -> Self {
+        self.watchers = true;
+        self
+    }
+
+    /// Reports whether this profile requested the watcher candidate.
+    #[must_use]
+    pub const fn watchers(&self) -> bool {
+        self.watchers
+    }
+
     fn into_parts(
         self,
     ) -> (
@@ -124,6 +144,7 @@ impl ClaudeCodeRunProfileInput {
         Deadline,
         Option<ReasoningMode>,
         Option<ClaudeCodeMaximumTurns>,
+        bool,
     ) {
         (
             self.request_id,
@@ -133,6 +154,7 @@ impl ClaudeCodeRunProfileInput {
             self.deadline,
             self.reasoning_mode,
             self.maximum_turns,
+            self.watchers,
         )
     }
 }
@@ -143,8 +165,16 @@ impl ClaudeCodePreparedIntegration {
         &self,
         input: ClaudeCodeRunProfileInput,
     ) -> Result<ClaudeCodePreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline, reasoning, maximum_turns) =
-            input.into_parts();
+        let (
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline,
+            reasoning,
+            maximum_turns,
+            watchers,
+        ) = input.into_parts();
         if reasoning
             .as_ref()
             .is_some_and(|mode| !REASONING_MODES.contains(&mode.as_str()))
@@ -160,11 +190,17 @@ impl ClaudeCodePreparedIntegration {
                 "Claude Code prepared run maximum turns requires a qualified Claude Code version",
             ));
         }
+        if watchers && !plan::qualifies_watchers(self) {
+            return Err(plan::failure(
+                "swallowtail.claude_code.headless.preparation.watchers_unqualified",
+                "Claude Code prepared run watchers require exact Claude Code 2.1.251",
+            ));
+        }
         let activity = activity_profile(self)?;
         let capabilities = with_activity(run_capabilities(), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let operation_capabilities = operation_capabilities(&capabilities, reasoning.as_ref());
-        let requirements = requirements(self, operation_capabilities);
+        let requirements = requirements(self, operation_capabilities, watchers);
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
@@ -185,6 +221,6 @@ impl ClaudeCodePreparedIntegration {
         let request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource)
             .with_deadline(deadline);
-        new_prepared_run(self, plan, activity, maximum_turns, request)
+        new_prepared_run(self, plan, activity, maximum_turns, watchers, request)
     }
 }

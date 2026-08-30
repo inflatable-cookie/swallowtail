@@ -35,6 +35,30 @@ pub(crate) fn validate(
         HostServiceKind::Time,
         "time",
     )?;
+    require_optional_service(
+        plan,
+        services.working_resource().is_some(),
+        HostServiceKind::WorkingResource,
+        "working resource",
+    )?;
+    require_optional_service(
+        plan,
+        services.working_resource_io().is_some(),
+        HostServiceKind::WorkingResourceIo,
+        "working-resource I/O",
+    )?;
+    require_optional_service(
+        plan,
+        services.watcher().is_some(),
+        HostServiceKind::Watcher,
+        "watcher",
+    )?;
+    require_optional_service(
+        plan,
+        services.watcher_bridge().is_some(),
+        HostServiceKind::WatcherBridge,
+        "watcher bridge",
+    )?;
     if plan.ownership() != InstanceOwnership::HostOwnedEphemeral
         || plan.model_id().is_none()
         || plan.model_route_id().is_none()
@@ -123,13 +147,36 @@ fn require_service(
     {
         Err(plan_mismatch(name))
     } else if !available {
-        Err(failure(
-            "swallowtail.claude_code.headless.host_service_missing",
-            format!("Claude Code headless requires the preflight-bound {name} service"),
-        ))
+        Err(missing_service(name))
     } else {
         Ok(())
     }
+}
+
+fn require_optional_service(
+    plan: &PreflightPlan,
+    available: bool,
+    service: HostServiceKind,
+    name: &str,
+) -> Result<(), RuntimeFailure> {
+    if !plan
+        .requirements()
+        .host_services()
+        .any(|required| required == service)
+    {
+        Ok(())
+    } else if !available {
+        Err(missing_service(name))
+    } else {
+        Ok(())
+    }
+}
+
+fn missing_service(name: &str) -> RuntimeFailure {
+    failure(
+        "swallowtail.claude_code.headless.host_service_missing",
+        format!("Claude Code headless requires the preflight-bound {name} service"),
+    )
 }
 
 fn require_capability(plan: &PreflightPlan, capability: Capability) -> Result<(), RuntimeFailure> {

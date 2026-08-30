@@ -164,7 +164,7 @@ The post-bridge orchestrator checkpoint removed a circular gate between cards
 010 and 011. g05.005 standing currentness is complete: Research 261 and cards
 017-018 qualify Claude Code headless and response-only through official
 `2.1.251` without moving the generation pointer. The post-merge reassessment
-makes card 010 ready for exact `2.1.251` credential-free binding; card 011 keeps
+closed card 010 for exact `2.1.251` credential-free binding; card 011 keeps
 the separately authorized live same-turn proof and first route claim. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
 through official `0.22.3`. No provider

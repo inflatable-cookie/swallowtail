@@ -127,6 +127,7 @@ pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence::obser
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence::watchers(&self) -> bool
 pub struct swallowtail_adapter_claude_agent::ClaudeCodePreparedIntegration
 impl swallowtail_adapter_claude_agent::ClaudeCodePreparedIntegration
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
@@ -149,6 +150,7 @@ pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::maximum_tu
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::watchers(&self) -> bool
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
@@ -201,8 +203,10 @@ pub struct swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::maximum_turns(&self) -> core::option::Option<swallowtail_adapter_claude_agent::ClaudeCodeMaximumTurns>
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_claude_agent::ClaudeCodeModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::watchers(&self) -> bool
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::with_maximum_turns(self, swallowtail_adapter_claude_agent::ClaudeCodeMaximumTurns) -> Self
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::with_watchers(self) -> Self
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BASELINE_VERSION: &str

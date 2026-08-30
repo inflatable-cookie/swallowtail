@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-009 and 014-018 complete; card 010 is ready for exact `2.1.251` credential-free binding; card 011 remains behind the separate live gate
+Planning state: cards 007-010 and 014-018 complete; card 011 remains behind the separate live gate
 
 ## Problem
 
@@ -64,7 +64,7 @@ owns the pre-1.0 repair.
 
 - [x] complete g05.005 cards 017-018 for the base Claude Code `2.1.251`
       currentness prerequisite; do not map watcher behavior in that lane
-- [ ] execute ready card 010 for exact `2.1.251` credential-free binding and
+- [x] execute ready card 010 for exact `2.1.251` credential-free binding and
       deterministic provider-free fixtures
 - [ ] execute card 011 only after card 010 lands and the operator separately
       authorizes the exact live same-turn turn

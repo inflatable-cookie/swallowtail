@@ -15,13 +15,11 @@ shape.
 
 ## Next Task
 
-Implement g05.003 card 010 for the exact Claude Code `2.1.251` watcher
-candidate. Bind only the credential-free operation-private MCP, settings,
-skill, Stop continuation, and Contract 060 bridge path with deterministic
-provider-free fixtures. Do not run a live provider turn, advertise watcher
-support, widen the watcher version gate, start card 011 or skill cards 005-006,
-or promote the open consumer route-feature projection triage. The live
-same-turn gate and first route claim remain separately authorized in card 011.
+Reassess g05.003 card 011 after card 010's exact `2.1.251` credential-free
+binding. Do not start the live same-turn proof, advertise watcher support, or
+consume provider access, credentials, or paid work until the operator
+explicitly authorizes that turn. Skill cards 005-006 and the consumer
+route-feature projection triage stay out of this lane.
 
 ## Standing Lanes
 

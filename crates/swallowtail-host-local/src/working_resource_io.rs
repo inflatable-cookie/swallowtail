@@ -142,30 +142,8 @@ impl LocalProcessHost {
         let root = self.approved_root(lease)?;
         let locator = Path::new(request.locator().as_host_value());
         reject_parent_components(locator)?;
-        let candidate = if locator.is_absolute() {
-            locator.to_path_buf()
-        } else {
-            root.join(locator)
-        };
-        let parent = candidate.parent().ok_or_else(|| {
-            failure(
-                "swallowtail.local_resource_io.boundary_rejected",
-                "Working-resource write has no approved parent directory",
-            )
-        })?;
-        let parent = parent.canonicalize().map_err(|_| {
-            failure(
-                "swallowtail.local_resource_io.file_unavailable",
-                "Working-resource write parent is unavailable",
-            )
-        })?;
-        if !parent.starts_with(&root) || !parent.is_dir() {
-            return Err(failure(
-                "swallowtail.local_resource_io.boundary_rejected",
-                "Working-resource write escaped the approved filesystem boundary",
-            ));
-        }
-        let file_name = candidate.file_name().ok_or_else(|| {
+        let parent = write_parent_within_root(&root, locator)?;
+        let file_name = locator.file_name().ok_or_else(|| {
             failure(
                 "swallowtail.local_resource_io.boundary_rejected",
                 "Working-resource write target is invalid",

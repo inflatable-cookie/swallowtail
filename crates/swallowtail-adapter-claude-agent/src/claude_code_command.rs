@@ -1,10 +1,12 @@
 use crate::ClaudeCodeMaximumTurns;
+use crate::claude_code_watcher::WatcherCommandFiles;
 use swallowtail_core::{ModelId, ReasoningMode};
 
 pub(crate) fn arguments(
     model: &ModelId,
     reasoning: Option<&ReasoningMode>,
     maximum_turns: Option<ClaudeCodeMaximumTurns>,
+    watchers: Option<&WatcherCommandFiles>,
 ) -> Vec<String> {
     let mut arguments = [
         "-p",
@@ -24,20 +26,36 @@ pub(crate) fn arguments(
         arguments.extend(["--effort".to_owned(), reasoning.as_str().to_owned()]);
     }
     arguments.extend(
-        [
-            "--permission-mode",
-            "plan",
-            "--tools",
-            "Read,Glob,Grep",
-            "--setting-sources",
-            "user,project,local",
-            "--mcp-config",
-            r#"{"mcpServers":{}}"#,
-            "--strict-mcp-config",
-        ]
-        .into_iter()
-        .map(str::to_owned),
+        ["--permission-mode", "plan", "--tools", "Read,Glob,Grep"]
+            .into_iter()
+            .map(str::to_owned),
     );
+    match watchers {
+        Some(files) => {
+            arguments.extend([
+                "--bare".to_owned(),
+                "--mcp-config".to_owned(),
+                files.mcp_config.clone(),
+                "--strict-mcp-config".to_owned(),
+                "--settings".to_owned(),
+                files.settings.clone(),
+                "--add-dir".to_owned(),
+                files.add_dir.clone(),
+                "--include-hook-events".to_owned(),
+            ]);
+        }
+        None => arguments.extend(
+            [
+                "--setting-sources",
+                "user,project,local",
+                "--mcp-config",
+                r#"{"mcpServers":{}}"#,
+                "--strict-mcp-config",
+            ]
+            .into_iter()
+            .map(str::to_owned),
+        ),
+    }
     if let Some(maximum_turns) = maximum_turns {
         arguments.extend(["--max-turns".to_owned(), maximum_turns.as_u32().to_string()]);
     }
@@ -57,11 +75,13 @@ mod tests {
             &model,
             Some(&ReasoningMode::new("default").expect("mode is valid")),
             None,
+            None,
         );
         assert!(!default.iter().any(|argument| argument == "--effort"));
         let high = arguments(
             &model,
             Some(&ReasoningMode::new("high").expect("mode is valid")),
+            None,
             None,
         );
         assert!(high.windows(2).any(|pair| pair == ["--effort", "high"]));
@@ -71,7 +91,7 @@ mod tests {
     fn omitted_maximum_turns_preserves_the_exact_prior_command() {
         let model = ModelId::new("claude-opus-5").expect("model is valid");
         assert_eq!(
-            arguments(&model, None, None),
+            arguments(&model, None, None, None),
             [
                 "-p",
                 "--input-format",
@@ -98,11 +118,12 @@ mod tests {
     #[test]
     fn selected_maximum_turns_appends_one_canonical_argument_pair() {
         let model = ModelId::new("claude-opus-5").expect("model is valid");
-        let omitted = arguments(&model, None, None);
+        let omitted = arguments(&model, None, None, None);
         let selected = arguments(
             &model,
             None,
             Some(ClaudeCodeMaximumTurns::from_u64(3).expect("value is admitted")),
+            None,
         );
         assert_eq!(selected[..omitted.len()], omitted[..]);
         assert_eq!(selected[omitted.len()..], ["--max-turns", "3"]);
@@ -122,6 +143,7 @@ mod tests {
             &model,
             Some(&ReasoningMode::new("high").expect("mode is valid")),
             Some(ClaudeCodeMaximumTurns::from_u64(30).expect("value is admitted")),
+            None,
         );
         assert!(selected.windows(2).any(|pair| pair == ["--effort", "high"]));
         assert_eq!(selected[selected.len() - 2..], ["--max-turns", "30"]);

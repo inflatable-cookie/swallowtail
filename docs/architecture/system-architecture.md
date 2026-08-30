@@ -97,8 +97,10 @@ OpenHands adds a package without a production route.
   registry used by operator controls. JSON-RPC ids are validated before
   watcher work; only `notifications/initialized` may omit an id. Close and Drop
   join accept, connection, and watcher work; Drop cleanup cannot be disarmed.
-  Registration still starts no listener. No production adapter opens a lease
-  yet; the closed protocol is not a generic MCP server.
+  Registration still starts no listener. Claude Code headless may open one
+  lease only when a prepared run opts in on exact `2.1.251`; omission keeps
+  the empty strict MCP command and does not bind, lease files, or claim
+  watcher support. The closed protocol is not a generic MCP server.
 - provider-session history paging is a separate read-only role under Contract
   054: newest-first pages reuse `SessionReplayItem` projection, bounds, and
   opaque cursors shared with load replay and reconciliation snapshots, but do

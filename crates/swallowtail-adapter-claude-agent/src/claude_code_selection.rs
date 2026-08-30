@@ -105,13 +105,21 @@ pub(crate) fn select_claude_code_headless_plan(plan: &PreflightPlan) -> Result<(
 /// weaker: it permits later stable points as `UnverifiedNewer` and spans a
 /// semantic range containing an unpublished point.
 pub(crate) fn plan_admits_maximum_turns(plan: &PreflightPlan) -> bool {
+    headless_binding(plan).is_some_and(crate::claude_code_maximum_turns::admits)
+}
+
+pub(crate) fn plan_admits_watchers(plan: &PreflightPlan) -> bool {
+    headless_binding(plan).is_some_and(crate::claude_code_watcher::admits)
+}
+
+fn headless_binding(plan: &PreflightPlan) -> Option<&swallowtail_core::InterfaceVersionBinding> {
     let axis = axis();
     let mut bindings = plan
         .interface_versions()
         .filter(|binding| binding.axis() == &axis);
     match (bindings.next(), bindings.next()) {
-        (Some(binding), None) => crate::claude_code_maximum_turns::admits(binding),
-        _ => false,
+        (Some(binding), None) => Some(binding),
+        _ => None,
     }
 }
 

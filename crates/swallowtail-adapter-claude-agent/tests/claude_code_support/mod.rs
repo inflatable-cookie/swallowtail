@@ -2,7 +2,8 @@ mod process;
 mod task;
 mod time;
 
-pub use process::{FakeProcessService, ObservedProcessRequest};
+#[allow(unused_imports)]
+pub use process::{FakeProcessService, ObservedProcessRequest, ProcessCompleter};
 pub use task::TaskState;
 pub use time::{ImmediateTimeService, PendingTimeService};
 
@@ -18,10 +19,11 @@ use swallowtail_core::{
     EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
     SupportAuthority,
 };
+use swallowtail_host_local::{LocalHostServices, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices,
-    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, ProcessService, RequestId,
-    ScopeId, TimeService,
+    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, ProcessRequest,
+    ProcessService, RequestId, ScopeId, TimeService,
 };
 
 pub fn host_services(
@@ -34,6 +36,55 @@ pub fn host_services(
         .with_task(Arc::new(task::ThreadTaskService::new(Arc::clone(&task))))
         .with_process(process)
         .with_time(time);
+    (services, task)
+}
+
+#[allow(dead_code)]
+pub fn local_watcher_host(host: ExecutionHostId) -> LocalHostServices {
+    let executable = ExecutableRef::new("watcher.sleep").expect("executable is valid");
+    let operation =
+        swallowtail_core::WatcherOperationData::new("sleep-operation").expect("operation is valid");
+    let request = ProcessRequest::new(executable.clone()).with_arguments(["30".to_owned()]);
+    LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable, "/bin/sleep")
+        .approve_watcher_operation(operation, request)
+        .build_services(host)
+}
+
+#[allow(dead_code)]
+pub fn watcher_host_services(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+    local: &LocalHostServices,
+) -> (HostServices, Arc<TaskState>) {
+    let task = Arc::new(TaskState::default());
+    let services = HostServices::new(host)
+        .with_task(Arc::new(task::ThreadTaskService::new(Arc::clone(&task))))
+        .with_process(process)
+        .with_time(time)
+        .with_working_resource(
+            local
+                .services()
+                .working_resource()
+                .expect("working resource")
+                .clone(),
+        )
+        .with_working_resource_io(
+            local
+                .services()
+                .working_resource_io()
+                .expect("working-resource I/O")
+                .clone(),
+        )
+        .with_watcher(local.services().watcher().expect("watcher").clone())
+        .with_watcher_bridge(
+            local
+                .services()
+                .watcher_bridge()
+                .expect("watcher bridge")
+                .clone(),
+        );
     (services, task)
 }
 

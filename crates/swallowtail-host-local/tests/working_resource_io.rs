@@ -149,6 +149,39 @@ fn writes_replace_or_create_regular_files_inside_the_approved_root() {
     fs::remove_dir_all(&fixture).expect("fixture cleanup succeeds");
 }
 
+#[test]
+fn writes_create_nested_relative_parents_inside_the_approved_root() {
+    let fixture = fixture_root();
+    let root = fixture.join("workspace");
+    fs::create_dir_all(&root).expect("fixture directory is created");
+    let reference = WorkingResourceRef::new("workspace.nested-write").expect("valid reference");
+    let scope = ScopeId::new("working-resource-nested-write").expect("valid scope");
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_working_resource(reference.clone(), &root)
+        .build();
+    let lease = block_on(host.resolve(
+        scope,
+        reference,
+        ResourceAccess::ReadWrite,
+        ResourceRepresentation::Filesystem,
+    ))
+    .expect("approved lease resolves");
+    let request = WorkingResourceWriteRequest::new(
+        WorkingResourceLocator::new(".claude/skills/example/SKILL.md").expect("valid locator"),
+        WorkingResourceText::new(
+            "nested skill".to_owned(),
+            NonZeroUsize::new(64).expect("non-zero"),
+        )
+        .expect("bounded content"),
+    );
+    block_on(host.write_text(&lease, request)).expect("nested write succeeds");
+    assert_eq!(
+        fs::read_to_string(root.join(".claude/skills/example/SKILL.md")).expect("file is readable"),
+        "nested skill"
+    );
+    fs::remove_dir_all(&fixture).expect("fixture cleanup succeeds");
+}
+
 fn fixture_root() -> std::path::PathBuf {
     let sequence = NEXT_FIXTURE.fetch_add(1, Ordering::SeqCst);
     std::env::temp_dir().join(format!(

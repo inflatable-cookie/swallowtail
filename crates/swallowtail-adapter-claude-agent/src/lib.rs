@@ -27,6 +27,7 @@ mod claude_code_response_selection;
 mod claude_code_response_validation;
 mod claude_code_selection;
 mod claude_code_validation;
+mod claude_code_watcher;
 mod connection;
 mod discovery;
 mod driver;

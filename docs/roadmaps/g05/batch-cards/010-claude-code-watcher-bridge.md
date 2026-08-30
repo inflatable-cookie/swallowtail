@@ -1,6 +1,6 @@
 # 010 Claude Code Watcher Bridge
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
@@ -33,17 +33,17 @@ authorized exact live same-turn acceptance.
 
 ## Acceptance Criteria
 
-- [ ] no watcher behavior when unrequested
-- [ ] current empty strict MCP route remains unchanged on omission
-- [ ] exact `2.1.251` admits the watcher candidate; every other version rejects
+- [x] no watcher behavior when unrequested
+- [x] current empty strict MCP route remains unchanged on omission
+- [x] exact `2.1.251` admits the watcher candidate; every other version rejects
       the opt-in before effects
-- [ ] opted-in argv and leased material carry only the exact private MCP,
+- [x] opted-in argv and leased material carry only the exact private MCP,
       settings, skill, Stop, and hook-event composition from Research 260
-- [ ] deterministic provider fixtures return active-watcher state through the
+- [x] deterministic provider fixtures return active-watcher state through the
       exact Stop continuation path before terminal admission
-- [ ] model and operator control one registry
-- [ ] no ambient settings or project files are mutated
-- [ ] no watcher support claim or capability advertisement lands before card
+- [x] model and operator control one registry
+- [x] no ambient settings or project files are mutated
+- [x] no watcher support claim or capability advertisement lands before card
       011's live acceptance
 
 ## Readiness Gate Disposition

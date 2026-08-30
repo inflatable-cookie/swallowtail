@@ -8,7 +8,7 @@
 
 ## Ready
 
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — ready; exact `2.1.251` credential-free binding; live proof remains card 011
+- None.
 
 ## Blocked
 
@@ -16,6 +16,7 @@
 
 ## Completed
 
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — completed; exact `2.1.251` credential-free binding and deterministic fixtures; no watcher claim
 - [018-claude-code-2-1-251-claim.md](./018-claude-code-2-1-251-claim.md) — completed; standing currentness; both axes through official `2.1.251`
 - [017-claude-code-2-1-251-identity.md](./017-claude-code-2-1-251-identity.md) — completed; standing currentness; Research 261 compatible-extension
 - [016-operation-scoped-watcher-http-bridge-core.md](./016-operation-scoped-watcher-http-bridge-core.md) — completed; Contract 060 host bridge core; cards 010-011 remain planned

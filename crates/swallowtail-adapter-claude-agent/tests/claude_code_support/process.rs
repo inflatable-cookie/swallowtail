@@ -1,7 +1,6 @@
 use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
-use std::thread;
+use std::sync::{Arc, Condvar, Mutex};
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
     ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
@@ -13,6 +12,11 @@ pub struct ObservedProcessRequest {
     pub arguments: Vec<String>,
     pub environments: Vec<String>,
     pub working_resource: Option<String>,
+}
+
+struct OutputState {
+    chunks: VecDeque<ProcessOutputChunk>,
+    closed: bool,
 }
 
 #[derive(Default)]
@@ -57,48 +61,93 @@ impl ProcessState {
     }
 }
 
+pub struct ProcessCompleter {
+    output: Arc<Mutex<OutputState>>,
+    wake: Arc<Condvar>,
+    exit: Arc<Mutex<ProcessExit>>,
+    hold_open: Arc<AtomicBool>,
+}
+
+impl ProcessCompleter {
+    pub fn complete(&self, stdout: &str, exit: ProcessExit) {
+        *self.exit.lock().expect("exit lock is available") = exit;
+        {
+            let mut output = self.output.lock().expect("output lock is available");
+            if !stdout.is_empty() {
+                output.chunks.push_back(ProcessOutputChunk::new(
+                    ProcessOutputStream::Stdout,
+                    stdout.as_bytes().to_vec(),
+                ));
+            }
+            output.closed = true;
+        }
+        self.hold_open.store(false, Ordering::SeqCst);
+        self.wake.notify_all();
+    }
+}
+
 pub struct FakeProcessService {
     state: Arc<ProcessState>,
-    output: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
-    exit: ProcessExit,
-    hold_open: bool,
+    output: Mutex<Option<Arc<Mutex<OutputState>>>>,
+    wake: Arc<Condvar>,
+    exit: Arc<Mutex<ProcessExit>>,
+    hold_open: Arc<AtomicBool>,
 }
 
 impl FakeProcessService {
     pub fn completed(stdout: &str) -> (Arc<Self>, Arc<ProcessState>) {
-        Self::with_exit(stdout, ProcessExit::new(true, Some(0)))
+        let (service, state, _) = Self::new(
+            stdout_chunks(stdout),
+            ProcessExit::new(true, Some(0)),
+            false,
+        );
+        (service, state)
     }
 
     pub fn with_exit(stdout: &str, exit: ProcessExit) -> (Arc<Self>, Arc<ProcessState>) {
-        let output = if stdout.is_empty() {
-            Vec::new()
-        } else {
-            vec![ProcessOutputChunk::new(
-                ProcessOutputStream::Stdout,
-                stdout.as_bytes().to_vec(),
-            )]
-        };
-        Self::new(output, exit, false)
+        let (service, state, _) = Self::new(stdout_chunks(stdout), exit, false);
+        (service, state)
     }
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
-        Self::new([], ProcessExit::new(false, Some(130)), true)
+        let (service, state, _) =
+            Self::new(VecDeque::new(), ProcessExit::new(false, Some(130)), true);
+        (service, state)
+    }
+
+    pub fn controllable() -> (Arc<Self>, Arc<ProcessState>, ProcessCompleter) {
+        Self::new(VecDeque::new(), ProcessExit::new(false, Some(130)), true)
     }
 
     fn new(
-        output: impl IntoIterator<Item = ProcessOutputChunk>,
+        chunks: VecDeque<ProcessOutputChunk>,
         exit: ProcessExit,
         hold_open: bool,
-    ) -> (Arc<Self>, Arc<ProcessState>) {
+    ) -> (Arc<Self>, Arc<ProcessState>, ProcessCompleter) {
         let state = Arc::new(ProcessState::default());
+        let output = Arc::new(Mutex::new(OutputState {
+            chunks,
+            closed: !hold_open,
+        }));
+        let wake = Arc::new(Condvar::new());
+        let exit = Arc::new(Mutex::new(exit));
+        let hold_open = Arc::new(AtomicBool::new(hold_open));
+        let completer = ProcessCompleter {
+            output: Arc::clone(&output),
+            wake: Arc::clone(&wake),
+            exit: Arc::clone(&exit),
+            hold_open: Arc::clone(&hold_open),
+        };
         (
             Arc::new(Self {
                 state: Arc::clone(&state),
-                output: Mutex::new(Some(output.into_iter().collect())),
+                output: Mutex::new(Some(output)),
+                wake,
                 exit,
                 hold_open,
             }),
             state,
+            completer,
         )
     }
 }
@@ -132,9 +181,10 @@ impl ProcessService for FakeProcessService {
             .expect("fake process starts once");
         let handle = FakeProcessHandle {
             state: Arc::clone(&self.state),
-            output: Mutex::new(output),
-            exit: self.exit,
-            hold_open: self.hold_open,
+            output,
+            wake: Arc::clone(&self.wake),
+            exit: Arc::clone(&self.exit),
+            hold_open: Arc::clone(&self.hold_open),
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -142,9 +192,10 @@ impl ProcessService for FakeProcessService {
 
 struct FakeProcessHandle {
     state: Arc<ProcessState>,
-    output: Mutex<VecDeque<ProcessOutputChunk>>,
-    exit: ProcessExit,
-    hold_open: bool,
+    output: Arc<Mutex<OutputState>>,
+    wake: Arc<Condvar>,
+    exit: Arc<Mutex<ProcessExit>>,
+    hold_open: Arc<AtomicBool>,
 }
 
 impl ProcessHandle for FakeProcessHandle {
@@ -164,19 +215,18 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         Box::pin(async move {
+            let mut output = self.output.lock().expect("output lock is available");
             loop {
-                if let Some(chunk) = self
-                    .output
-                    .lock()
-                    .expect("output lock is available")
-                    .pop_front()
-                {
+                if let Some(chunk) = output.chunks.pop_front() {
                     return Ok(Some(chunk));
                 }
-                if !self.hold_open || self.state.force_stopped.load(Ordering::SeqCst) {
+                if output.closed
+                    || !self.hold_open.load(Ordering::SeqCst)
+                    || self.state.force_stopped.load(Ordering::SeqCst)
+                {
                     return Ok(None);
                 }
-                thread::yield_now();
+                output = self.wake.wait(output).expect("output condvar is available");
             }
         })
     }
@@ -188,12 +238,25 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.state.force_stopped.store(true, Ordering::SeqCst);
+        self.hold_open.store(false, Ordering::SeqCst);
+        self.wake.notify_all();
         Box::pin(async { Ok(()) })
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.state.waited.store(true, Ordering::SeqCst);
-        let exit = self.exit;
+        let exit = *self.exit.lock().expect("exit lock is available");
         Box::pin(async move { Ok(exit) })
+    }
+}
+
+fn stdout_chunks(stdout: &str) -> VecDeque<ProcessOutputChunk> {
+    if stdout.is_empty() {
+        VecDeque::new()
+    } else {
+        VecDeque::from([ProcessOutputChunk::new(
+            ProcessOutputStream::Stdout,
+            stdout.as_bytes().to_vec(),
+        )])
     }
 }

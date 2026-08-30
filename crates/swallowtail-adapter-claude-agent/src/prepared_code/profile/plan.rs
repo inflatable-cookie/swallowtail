@@ -33,7 +33,21 @@ pub(super) fn instance_with_capabilities(
 pub(super) fn requirements(
     prepared: &ClaudeCodePreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    watchers: bool,
 ) -> OperationRequirements {
+    let mut host_services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Time,
+    ];
+    if watchers {
+        host_services.extend([
+            HostServiceKind::WorkingResource,
+            HostServiceKind::WorkingResourceIo,
+            HostServiceKind::Watcher,
+            HostServiceKind::WatcherBridge,
+        ]);
+    }
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
@@ -47,11 +61,7 @@ pub(super) fn requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services([
-        HostServiceKind::Task,
-        HostServiceKind::Process,
-        HostServiceKind::Time,
-    ])
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
@@ -98,6 +108,10 @@ pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationF
 /// guard, and the terminal shape all survived.
 pub(super) fn qualifies_maximum_turns(prepared: &ClaudeCodePreparedIntegration) -> bool {
     crate::claude_code_maximum_turns::admits(prepared.observation().version())
+}
+
+pub(super) fn qualifies_watchers(prepared: &ClaudeCodePreparedIntegration) -> bool {
+    crate::claude_code_watcher::admits(prepared.observation().version())
 }
 
 pub(super) fn operation_capabilities(

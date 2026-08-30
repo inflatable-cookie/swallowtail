@@ -1,9 +1,10 @@
 use crate::claude_code_events::ClaudeCodeEventParser;
 use crate::claude_code_handle::ClaudeCodeCancellation;
+use crate::claude_code_watcher::WatcherBinding;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::{ModelId, SafeDiagnostic};
+use swallowtail_core::{ModelId, SafeDiagnostic, WatcherCleanupCause};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
     HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
@@ -12,6 +13,12 @@ use swallowtail_runtime::{
 
 const ROUTE: &str = "claude-code.headless";
 
+/// Host services and optional watcher binding consumed by one pump.
+pub(crate) struct PumpHost {
+    pub(crate) services: HostServices,
+    pub(crate) watcher_binding: Option<WatcherBinding>,
+}
+
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
@@ -19,7 +26,7 @@ pub(crate) async fn pump(
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
     operation_id: ActivityOperationId,
-    services: HostServices,
+    mut host: PumpHost,
 ) -> TerminalOutcome {
     let mut parser = ClaudeCodeEventParser::new(model, operation_id);
     let mut deadline = Some(deadline);
@@ -27,7 +34,11 @@ pub(crate) async fn pump(
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
             NextOutput::Deadline => {
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return TerminalOutcome::new(TerminalStatus::TimedOut, cleanup);
+                return finish_with_watchers(
+                    TerminalOutcome::new(TerminalStatus::TimedOut, cleanup),
+                    host.watcher_binding.take(),
+                )
+                .await;
             }
             NextOutput::Process(Ok(Some(chunk)))
                 if chunk.stream() == ProcessOutputStream::Stdout =>
@@ -36,36 +47,52 @@ pub(crate) async fn pump(
                     Ok(parsed) => {
                         if send_all(&events, parsed).is_err() {
                             let cleanup = force_cleanup(process.as_ref()).await;
-                            return event_delivery_failed(cleanup);
+                            return finish_with_watchers(
+                                event_delivery_failed(cleanup),
+                                host.watcher_binding.take(),
+                            )
+                            .await;
                         }
                     }
                     Err(error) => {
-                        emit_protocol_debug(&services, &error, "headless.pump.decode");
+                        emit_protocol_debug(&host.services, &error, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
-                        return TerminalOutcome::new(
-                            TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                            cleanup,
-                        );
+                        return finish_with_watchers(
+                            TerminalOutcome::new(
+                                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                                cleanup,
+                            ),
+                            host.watcher_binding.take(),
+                        )
+                        .await;
                     }
                 }
             }
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(error)) => {
-                emit_host_process_debug(&services, &error, "headless.pump.read");
+                emit_host_process_debug(&host.services, &error, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return TerminalOutcome::new(
-                    TerminalStatus::HostFailed(error.diagnostic().clone()),
-                    cleanup,
-                );
+                return finish_with_watchers(
+                    TerminalOutcome::new(
+                        TerminalStatus::HostFailed(error.diagnostic().clone()),
+                        cleanup,
+                    ),
+                    host.watcher_binding.take(),
+                )
+                .await;
             }
         }
     }
     let exit = process.wait().await;
     if cancellation.is_requested() {
-        return TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit));
+        return finish_with_watchers(
+            TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit)),
+            host.watcher_binding.take(),
+        )
+        .await;
     }
-    match (parser.finish(), exit) {
+    let outcome = match (parser.finish(), exit) {
         (Ok((trailing, parsed)), Ok(exit)) => {
             if send_all(&events, trailing).is_err() {
                 event_delivery_failed(CleanupOutcome::Clean)
@@ -74,7 +101,7 @@ pub(crate) async fn pump(
             }
         }
         (Err(error), exit) => {
-            emit_protocol_debug(&services, &error, "headless.pump.finish");
+            emit_protocol_debug(&host.services, &error, "headless.pump.finish");
             TerminalOutcome::new(
                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                 cleanup_from_wait(&exit),
@@ -85,7 +112,7 @@ pub(crate) async fn pump(
                 "swallowtail.claude_code.headless.process_wait_failed",
                 "Claude Code headless process wait failed",
             );
-            services.emit_failure_debug(
+            host.services.emit_failure_debug(
                 DebugObservationKind::HostProcess,
                 ROUTE,
                 "headless.pump.wait",
@@ -96,6 +123,71 @@ pub(crate) async fn pump(
                 TerminalStatus::HostFailed(diagnostic),
                 process_cleanup_failed(),
             )
+        }
+    };
+    finish_with_watchers(outcome, host.watcher_binding.take()).await
+}
+
+async fn finish_with_watchers(
+    mut outcome: TerminalOutcome,
+    binding: Option<WatcherBinding>,
+) -> TerminalOutcome {
+    let Some(mut binding) = binding else {
+        return outcome;
+    };
+    if matches!(outcome.status(), TerminalStatus::Completed) {
+        match binding.completion_gate() {
+            Ok(state) if state.allows_successful_completion() => {}
+            Ok(_) => {
+                outcome = TerminalOutcome::new(
+                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                        "swallowtail.claude_code.headless.watcher_completion_blocked",
+                        "Claude Code headless cannot complete while host watchers remain active or unjoined",
+                    )),
+                    outcome.cleanup().clone(),
+                );
+            }
+            Err(error) => {
+                outcome = TerminalOutcome::new(
+                    TerminalStatus::HostFailed(error.diagnostic().clone()),
+                    outcome.cleanup().clone(),
+                );
+            }
+        }
+    }
+    let watcher_cleanup = binding.close(cleanup_cause(outcome.status()));
+    replace_cleanup(outcome, watcher_cleanup)
+}
+
+fn cleanup_cause(status: &TerminalStatus) -> WatcherCleanupCause {
+    match status {
+        TerminalStatus::Cancelled => WatcherCleanupCause::Cancelled,
+        TerminalStatus::TimedOut => WatcherCleanupCause::TimedOut,
+        TerminalStatus::Completed => WatcherCleanupCause::Stopped,
+        _ => WatcherCleanupCause::Failed,
+    }
+}
+
+fn replace_cleanup(outcome: TerminalOutcome, watcher_cleanup: CleanupOutcome) -> TerminalOutcome {
+    let cleanup = merge_cleanup(outcome.cleanup().clone(), watcher_cleanup);
+    let rebuilt = TerminalOutcome::new(outcome.status().clone(), cleanup);
+    match outcome.output().cloned() {
+        Some(output) => rebuilt.with_output(output),
+        None => rebuilt,
+    }
+}
+
+fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
+    match (left, right) {
+        (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
+            CleanupOutcome::Failed(diagnostic)
+        }
+        (CleanupOutcome::Degraded(diagnostic), _) | (_, CleanupOutcome::Degraded(diagnostic)) => {
+            CleanupOutcome::Degraded(diagnostic)
+        }
+        (CleanupOutcome::Clean, _) | (_, CleanupOutcome::Clean) => CleanupOutcome::Clean,
+        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
+            CleanupOutcome::NotApplicable
         }
     }
 }

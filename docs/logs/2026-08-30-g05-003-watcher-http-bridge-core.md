@@ -10,18 +10,24 @@ Research: 260
 
 `HostServiceKind::WatcherBridge` is a separate optional port. Registration
 binds nothing. Opening a local lease binds an ephemeral `127.0.0.1` HTTP/MCP
-listener, fresh bearer material, exact host/operation/turn correlation, and
-the same `WatcherHostService` used by operator controls. Model calls keep
-requester identity `Model`. Admission freezes when the completion gate sees
-no active or unjoined work. Close and drop freeze admission, join listener
-and connection threads, stop and join turn-owned watchers, and release
-private material.
+listener, fresh bearer material, an unforgeable host token, exact
+host/operation/turn/generation correlation, and the same
+`WatcherHostService` used by operator controls. Model calls keep requester
+identity `Model`. JSON-RPC ids are validated before dispatch; only
+`notifications/initialized` may omit an id. Admission freezes when the
+completion gate sees no creating work and no active or unjoined watchers.
+Close and Drop freeze admission, join listener and connection threads,
+drive watcher futures to completion, and release private material. Drop
+cannot be disarmed; forged and cross-identity handles cannot close a live
+lease.
 
 The closed protocol admits initialize, initialized, tools/list, and the
-reserved start/inspect/list/wait/stop plus completion-gate tools. Unknown,
-malformed, oversized, unauthenticated, duplicate, cross-lease, and
-post-freeze start requests fail before watcher work. Endpoint and bearer
-stay driver-only and redacted.
+reserved start/inspect/list/wait/stop plus completion-gate tools with exact
+per-tool schemas. Wait payloads keep Contract 059 wait truth, terminal
+cause, and the latest snapshot. Unknown, malformed, oversized,
+unauthenticated, duplicate, cross-lease, handshake-skipped, and post-freeze
+start requests fail before watcher work. Endpoint, bearer, and token stay
+driver-only, redacted, and zeroized.
 
 No Claude adapter, MCP config file, Stop hook, container, public listener,
 TLS, or generic MCP framework entered the diff.

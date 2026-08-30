@@ -360,9 +360,10 @@ pub use watcher::{
     WATCHER_BRIDGE_TOOLS_LIST_METHOD, WatcherActivityProjection, WatcherActivityProjectionFailure,
     WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeCompletionState,
     WatcherBridgeEndpoint, WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
-    WatcherBridgeOpenRequest, WatcherControlSurface, WatcherFailure, WatcherFailureKind,
-    WatcherHostService, WatcherRegistry, WatcherSnapshot, WatcherStopAcknowledgement,
-    WatcherWaitOptions, WatcherWaitRepresentation, project_watcher_activity,
+    WatcherBridgeOpenRequest, WatcherBridgeToken, WatcherControlSurface, WatcherFailure,
+    WatcherFailureKind, WatcherHostService, WatcherRegistry, WatcherSnapshot,
+    WatcherStopAcknowledgement, WatcherWaitOptions, WatcherWaitRepresentation,
+    project_watcher_activity,
 };
 pub use working_resource_io::{
     WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,

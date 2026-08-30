@@ -3,14 +3,16 @@
 //! Registration binds no listener and starts no work. Opening a lease binds
 //! one exact host, operation, turn, and watcher service.
 
+mod identity;
 mod lease;
 mod protocol;
 mod service;
 
-pub use lease::{
-    WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeCompletionState,
-    WatcherBridgeEndpoint, WatcherBridgeGeneration, WatcherBridgeLease, WatcherBridgeOpenRequest,
+pub use identity::{
+    WatcherBridgeAdmission, WatcherBridgeBearer, WatcherBridgeEndpoint, WatcherBridgeGeneration,
+    WatcherBridgeToken,
 };
+pub use lease::{WatcherBridgeCompletionState, WatcherBridgeLease, WatcherBridgeOpenRequest};
 pub use protocol::{
     WATCHER_BRIDGE_BEARER_BYTE_LEN, WATCHER_BRIDGE_HTTP_PATH, WATCHER_BRIDGE_INITIALIZE_METHOD,
     WATCHER_BRIDGE_INITIALIZED_NOTIFICATION, WATCHER_BRIDGE_JSONRPC_VERSION,

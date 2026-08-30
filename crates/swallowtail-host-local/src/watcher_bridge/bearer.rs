@@ -1,7 +1,8 @@
 use crate::output::failure;
 use swallowtail_runtime::{RuntimeFailure, WATCHER_BRIDGE_BEARER_BYTE_LEN};
+use zeroize::{Zeroize, Zeroizing};
 
-pub(super) fn generate_bearer() -> Result<String, RuntimeFailure> {
+pub(super) fn generate_bearer() -> Result<Zeroizing<String>, RuntimeFailure> {
     let mut bytes = [0_u8; WATCHER_BRIDGE_BEARER_BYTE_LEN];
     getrandom::getrandom(&mut bytes).map_err(|_| {
         failure(
@@ -9,7 +10,9 @@ pub(super) fn generate_bearer() -> Result<String, RuntimeFailure> {
             "Watcher bridge could not create operation-private authority",
         )
     })?;
-    Ok(hex_encode(&bytes))
+    let encoded = Zeroizing::new(hex_encode(&bytes));
+    bytes.zeroize();
+    Ok(encoded)
 }
 
 fn hex_encode(bytes: &[u8]) -> String {

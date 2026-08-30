@@ -2657,14 +2657,14 @@ pub fn swallowtail_runtime::WatcherBridgeGeneration::fmt(&self, &mut core::fmt::
 pub struct swallowtail_runtime::WatcherBridgeLease
 impl swallowtail_runtime::WatcherBridgeLease
 pub const fn swallowtail_runtime::WatcherBridgeLease::bearer(&self) -> &swallowtail_runtime::WatcherBridgeBearer
+pub fn swallowtail_runtime::WatcherBridgeLease::bind(self, swallowtail_runtime::WatcherBridgeToken, impl core::ops::function::FnOnce() + core::marker::Send + 'static) -> Self
+pub fn swallowtail_runtime::WatcherBridgeLease::binding_matches(&self, &swallowtail_runtime::WatcherBridgeToken) -> bool
 pub const fn swallowtail_runtime::WatcherBridgeLease::endpoint(&self) -> &swallowtail_runtime::WatcherBridgeEndpoint
 pub const fn swallowtail_runtime::WatcherBridgeLease::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
 pub const fn swallowtail_runtime::WatcherBridgeLease::generation(&self) -> swallowtail_runtime::WatcherBridgeGeneration
 pub fn swallowtail_runtime::WatcherBridgeLease::new(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId, swallowtail_runtime::WatcherBridgeGeneration, swallowtail_runtime::WatcherBridgeEndpoint, swallowtail_runtime::WatcherBridgeBearer) -> Self
 pub const fn swallowtail_runtime::WatcherBridgeLease::scope(&self) -> &swallowtail_runtime::ScopeId
-pub fn swallowtail_runtime::WatcherBridgeLease::take_defensive_cleanup(&mut self) -> core::option::Option<alloc::boxed::Box<(dyn core::ops::function::FnOnce() + core::marker::Send + 'static)>>
 pub const fn swallowtail_runtime::WatcherBridgeLease::turn(&self) -> &swallowtail_runtime::RuntimeTurnId
-pub fn swallowtail_runtime::WatcherBridgeLease::with_defensive_cleanup(self, impl core::ops::function::FnOnce() + core::marker::Send + 'static) -> Self
 impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeLease
 pub fn swallowtail_runtime::WatcherBridgeLease::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::ops::drop::Drop for swallowtail_runtime::WatcherBridgeLease
@@ -2674,6 +2674,16 @@ impl swallowtail_runtime::WatcherBridgeOpenRequest
 pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::new(swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId) -> Self
 pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::scope(&self) -> &swallowtail_runtime::ScopeId
 pub const fn swallowtail_runtime::WatcherBridgeOpenRequest::turn(&self) -> &swallowtail_runtime::RuntimeTurnId
+pub struct swallowtail_runtime::WatcherBridgeToken
+impl swallowtail_runtime::WatcherBridgeToken
+pub fn swallowtail_runtime::WatcherBridgeToken::matches(&self, &Self) -> bool
+pub fn swallowtail_runtime::WatcherBridgeToken::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::WatcherBridgeToken
+pub fn swallowtail_runtime::WatcherBridgeToken::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_runtime::WatcherBridgeToken
+pub fn swallowtail_runtime::WatcherBridgeToken::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::ops::drop::Drop for swallowtail_runtime::WatcherBridgeToken
+pub fn swallowtail_runtime::WatcherBridgeToken::drop(&mut self)
 pub struct swallowtail_runtime::WatcherControlSurface
 impl swallowtail_runtime::WatcherControlSurface
 pub fn swallowtail_runtime::WatcherControlSurface::model(&self) -> swallowtail_runtime::ModelWatcherRole

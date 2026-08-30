@@ -25,7 +25,7 @@ pub use bridge::{
     WATCHER_BRIDGE_TOOLS_CALL_METHOD, WATCHER_BRIDGE_TOOLS_LIST_METHOD, WatcherBridgeAdmission,
     WatcherBridgeBearer, WatcherBridgeCompletionState, WatcherBridgeEndpoint,
     WatcherBridgeGeneration, WatcherBridgeHostService, WatcherBridgeLease,
-    WatcherBridgeOpenRequest,
+    WatcherBridgeOpenRequest, WatcherBridgeToken,
 };
 pub use control::{
     ModelWatcherControl, ModelWatcherRole, OperatorWatcherControl, OperatorWatcherRole,

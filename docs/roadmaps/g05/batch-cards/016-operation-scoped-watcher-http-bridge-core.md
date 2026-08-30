@@ -1,6 +1,6 @@
 # 016 Operation-Scoped Watcher HTTP Bridge Core
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-30
 Milestone: `../003-operation-scoped-watcher-proof.md`
@@ -43,21 +43,21 @@ transport abstraction, provider helper, or reusable arbitrary MCP framework.
 
 ## Acceptance Criteria
 
-- [ ] omission creates no listener, task, private material, or new host-service
+- [x] omission creates no listener, task, private material, or new host-service
       requirement
-- [ ] open binds a ready endpoint and fresh authority to one exact host,
+- [x] open binds a ready endpoint and fresh authority to one exact host,
       operation, turn, and watcher service
-- [ ] endpoint, token, paths, headers, bodies, commands, PIDs, and raw watcher
+- [x] endpoint, token, paths, headers, bodies, commands, PIDs, and raw watcher
       output stay out of public records and default formatting
-- [ ] missing, wrong, stale, cross-lease, duplicate, foreign, malformed,
+- [x] missing, wrong, stale, cross-lease, duplicate, foreign, malformed,
       oversized, unknown, and post-terminal requests fail before watcher work
-- [ ] only the reserved watcher operations and completion query reach the same
+- [x] only the reserved watcher operations and completion query reach the same
       registry as operator controls
-- [ ] listener admission freezes before successful completion and no race can
+- [x] listener admission freezes before successful completion and no race can
       create post-barrier work
-- [ ] cancellation, deadline, failure, explicit close, and normal completion
+- [x] cancellation, deadline, failure, explicit close, and normal completion
       join watcher and bridge work and release private material exactly
-- [ ] no container, sandbox, public endpoint, sign-in-port reuse, ambient
+- [x] no container, sandbox, public endpoint, sign-in-port reuse, ambient
       configuration, Claude binding, or route capability claim enters the diff
 
 ## Stop Conditions

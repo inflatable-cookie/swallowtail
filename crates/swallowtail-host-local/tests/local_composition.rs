@@ -31,6 +31,7 @@ fn composition_exposes_one_exact_host_and_owned_service_set() {
             HostServiceKind::ServingEndpoint,
             HostServiceKind::Schema,
             HostServiceKind::Watcher,
+            HostServiceKind::WatcherBridge,
         ])
     );
 }

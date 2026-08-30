@@ -3228,6 +3228,7 @@ name = "swallowtail-host-local"
 version = "0.3.3"
 dependencies = [
  "futures-executor",
+ "getrandom 0.2.17",
  "nix",
  "serde",
  "serde_json",

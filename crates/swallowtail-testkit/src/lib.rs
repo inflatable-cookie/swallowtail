@@ -62,6 +62,7 @@ mod runtime_assertions;
 mod session_access_fixture;
 mod topology_fixture;
 mod watcher_assertions;
+mod watcher_bridge_assertions;
 
 pub use addable_route_fixture::{
     fixture_hosted_available_descriptor, fixture_hosted_missing_host_service_descriptor,
@@ -156,4 +157,8 @@ pub use watcher_assertions::{
     assert_watcher_model_operator_roles, assert_watcher_namespace_isolation,
     assert_watcher_operation_data_redaction, assert_watcher_ownership_rejection,
     assert_watcher_stale_id_fails_closed, assert_watcher_wait_representation,
+};
+pub use watcher_bridge_assertions::{
+    assert_portable_watcher_bridge_contract, assert_watcher_bridge_closed_protocol_surface,
+    assert_watcher_bridge_secret_redaction,
 };

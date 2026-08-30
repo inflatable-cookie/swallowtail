@@ -1,6 +1,6 @@
 # 010 Claude Code Watcher Bridge
 
-Status: planned; depends on card 018 currentness
+Status: planned; awaiting post-merge orchestrator reassessment
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-30
@@ -40,13 +40,12 @@ authorized exact live same-turn acceptance.
 ## Readiness Gate Disposition
 
 Research 260's evidence stop is promoted into Contract 060, and card 016 has
-landed the provider-neutral bridge. Card 010 remains planned behind the base
-Claude route's currentness qualification.
+landed the provider-neutral bridge. g05.005 cards 017-018 qualified both Claude
+Code axes through official `2.1.251`. Card 010 remains planned behind the
+post-merge orchestrator reassessment.
 
-- The installed and npm-latest Claude Code point is `2.1.251`, while the
-  existing headless and response-only qualified ceilings remain `2.1.241`.
-  g05.005 cards 017-018 own that one-family currentness prerequisite without
-  mapping watcher behavior.
+- Headless and response-only qualified ceilings are now `2.1.251`. Unpublished
+  `2.1.244` and `2.1.249` stay incompatible. Watcher behavior remains unmapped.
 - The host registry, ordinary process supervision, and Contract 060 HTTP/MCP
   bridge are present.
 - Claude binding must use operation-scoped temporary configuration rather than
@@ -55,9 +54,9 @@ Claude route's currentness qualification.
 - Live same-turn proof is not a prerequisite that can close before binding
   exists. Card 011 owns that exact provider gate after card 010 lands.
 
-Do not mark this card ready or start implementation until card 018 lands and
-the orchestrator rechecks exact provider evidence. Card 010 itself remains
-credential-free; it must not absorb card 011's live gate or route claim.
+Do not mark this card ready or start implementation until the orchestrator
+reassesses exact provider evidence after the currentness merge. Card 010 itself
+remains credential-free; it must not absorb card 011's live gate or route claim.
 
 ## Validation
 
@@ -67,6 +66,5 @@ credential-free; it must not absorb card 011's live gate or route claim.
 
 ## Auto-Continuation
 
-No. This card remains planned until g05.005 currentness lands and the
-orchestrator marks it ready. It returns one PR and cannot continue into live
-acceptance.
+No. This card remains planned until the post-merge orchestrator reassessment
+marks it ready. It returns one PR and cannot continue into live acceptance.

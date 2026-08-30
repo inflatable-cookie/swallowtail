@@ -1,0 +1,63 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "version": "2.1.251",
+  "observed_at": "2026-08-30",
+  "package_identity": "identity.json",
+  "qualified_decoder_corpus": ["claude-code-2.1.227", "claude-code-2.1.228"],
+  "host_help_reprobed": true,
+  "official_extracted_help_reprobed": true,
+  "official_help_byte_identical_to_2_1_241": false,
+  "selected_mapped_subset_unchanged": true,
+  "help_selected_flags_present": [
+    "-p",
+    "--input-format",
+    "--output-format",
+    "--verbose",
+    "--no-session-persistence",
+    "--model",
+    "--effort",
+    "--tools",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "--mcp-config",
+    "--strict-mcp-config"
+  ],
+  "selected_tools": "",
+  "selected_prompt_suggestions": "false",
+  "prompt_suggestion_help_documents_print_sdk_message": true,
+  "include_partial_messages_selected": false,
+  "provider_prompt_sent": false,
+  "claim_at_observation": {
+    "baseline": "2.1.227",
+    "latest_qualified": "2.1.241",
+    "posture": "allow_unverified",
+    "deny_list": [],
+    "classification_of_2_1_251": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "claude-code.response-only.stream-json.v1",
+    "raise_latest_qualified": true,
+    "raise_latest_qualified_to": "2.1.251",
+    "keep_baseline": "2.1.227",
+    "qualify_intermediates": true,
+    "qualified_intermediates": [
+      "2.1.242",
+      "2.1.243",
+      "2.1.245",
+      "2.1.246",
+      "2.1.247",
+      "2.1.248",
+      "2.1.250"
+    ],
+    "keep_unpublished_2_1_244_incompatible": true,
+    "keep_unpublished_2_1_249_incompatible": true,
+    "deny_2_1_251": false,
+    "mix_headless_axis": false,
+    "flatten_to_claude_agent_acp": false,
+    "later_unverified_after_qualification": "2.1.252",
+    "provider_prompt_sent": false
+  }
+}

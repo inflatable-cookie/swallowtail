@@ -161,11 +161,13 @@ and joined supervisor. Research 260 and card 015 landed through PR 119 at
 `c36e11ad`. The operator selected the minimal HTTP boundary on 2026-08-30.
 Contract 060 is active and card 016 landed the provider-neutral bridge core.
 The post-bridge orchestrator checkpoint removed a circular gate between cards
-010 and 011: g05.005 cards 017-018 now own base Claude Code `2.1.251`
-currentness; card 010 will own later credential-free binding; card 011 keeps
-the separately authorized live same-turn proof and first route claim. g05.004 standing
+010 and 011. g05.005 standing currentness is complete: Research 261 and cards
+017-018 qualify Claude Code headless and response-only through official
+`2.1.251` without moving the generation pointer. Card 010 will own later
+credential-free binding after this claim lands; card 011 keeps the separately
+authorized live same-turn proof and first route claim. g05.004 standing
 currentness is complete: Research 258 and cards 012-013 qualify Qwen headless
-through official `0.22.3` without moving the generation pointer. No provider
+through official `0.22.3`. No provider
 prompt, container backend, new route, or parked Bedrock work is authorized.
 
 ## Rollover Rule

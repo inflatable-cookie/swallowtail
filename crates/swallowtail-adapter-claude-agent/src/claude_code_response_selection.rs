@@ -12,12 +12,12 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_AXIS: &str = "claude-code.response-only-stre
 /// Oldest Claude Code version qualified for response-only runs.
 pub const CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION: &str = "2.1.227";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.241";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.251";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
 /// Stable Claude Code releases explicitly denied for response-only execution.
-pub const CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str] = &[];
+pub const CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str] = &["2.1.244", "2.1.249"];
 
 const RESPONSE_ONLY_BEHAVIOR: &str = "claude-code.response-only.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -136,16 +136,23 @@ mod tests {
         assert!(claim.supports(&InterfaceVersion::new("2.1.239").unwrap()));
         assert!(claim.supports(&InterfaceVersion::new("2.1.240").unwrap()));
         assert!(claim.supports(&InterfaceVersion::new("2.1.241").unwrap()));
+        assert!(claim.supports(&InterfaceVersion::new("2.1.242").unwrap()));
+        assert!(claim.supports(&InterfaceVersion::new("2.1.251").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.226").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.244").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.249").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.242").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.252").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
 
     #[test]
     fn route_deny_list_excludes_an_otherwise_provisional_release() {
-        assert!(CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS.is_empty());
+        assert_eq!(
+            CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
+            &["2.1.244", "2.1.249"]
+        );
         let claim = response_only_claim(&["2.1.229"]);
         assert!(!claim.permits(&InterfaceVersion::new("2.1.229").unwrap()));
         assert_eq!(

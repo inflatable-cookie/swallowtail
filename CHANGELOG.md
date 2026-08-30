@@ -26,6 +26,15 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Claude Code headless and response-only qualified ceilings from
+  `2.1.241` to official npm `@anthropic-ai/claude-code` `2.1.251`. Compatible
+  extension of the existing stream-JSON behaviors: selected mapped flags stay;
+  `--restricted`, background-session commands, and watcher flags stay unmapped.
+  Published intermediates `2.1.242`, `2.1.243`, `2.1.245`, `2.1.246`,
+  `2.1.247`, `2.1.248`, and `2.1.250` are qualified; unpublished `2.1.244` and
+  `2.1.249` stay incompatible; `2.1.252` remains visible `UnverifiedNewer`.
+  Maximum-turn and other feature-specific exact version sets stay on the
+  `2.1.220..=2.1.241` probed points. Research 261, g05.005.
 - raise the Qwen headless qualified ceiling through official npm
   `@qwen-code/qwen-code` `0.22.3`: keep exact `0.21.15` reasoning-control,
   extend same-revision `0.22.0..=0.22.3` via published `0.22.2`, keep

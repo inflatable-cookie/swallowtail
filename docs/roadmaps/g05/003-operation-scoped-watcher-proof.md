@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 059
 Vision tags: process watchers, host authority, consumer activity
 Contract refs: 009, 010, 012, 013, 023, 041, 044, 059, 060
 Research: 257, 259 promoted; 260 boundary promoted; hard-containment gate superseded
-Planning state: cards 007-009 and 014-016 complete; g05.005 currentness is completed; card 010 awaits post-merge orchestrator reassessment; card 011 remains behind the separate live gate
+Planning state: cards 007-009 and 014-018 complete; card 010 is ready for exact `2.1.251` credential-free binding; card 011 remains behind the separate live gate
 
 ## Problem
 
@@ -64,8 +64,8 @@ owns the pre-1.0 repair.
 
 - [x] complete g05.005 cards 017-018 for the base Claude Code `2.1.251`
       currentness prerequisite; do not map watcher behavior in that lane
-- [ ] execute card 010 only after the post-merge orchestrator reassessment
-      marks the credential-free binding card ready
+- [ ] execute ready card 010 for exact `2.1.251` credential-free binding and
+      deterministic provider-free fixtures
 - [ ] execute card 011 only after card 010 lands and the operator separately
       authorizes the exact live same-turn turn
 - [ ] publish the first route claim only after card 011's live and deterministic
@@ -76,10 +76,10 @@ owns the boundary. Card 016 landed the provider-neutral host bridge. The
 post-bridge checkpoint found a circular gate: card 010 required the live proof
 that card 011 could only run after card 010 existed. g05.005 closed the
 base-route currentness prerequisite through official `2.1.251` without mapping
-watcher behavior. Card 010 stays planned until the orchestrator reassesses it
-after that currentness merge; card 011 owns separately authorized live
-acceptance and the first watcher claim. Do not start Claude wiring or provider
-work from this currentness closeout.
+watcher behavior. The post-merge reassessment admits card 010 only for exact
+`2.1.251` credential-free binding and deterministic provider-free fixtures.
+Card 011 owns separately authorized live acceptance and the first watcher
+claim. Do not infer a watcher range or start provider work from card 010.
 
 ## Acceptance Criteria
 

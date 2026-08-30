@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Roadmap status census requires undocumented exact prose — 2026-08-30
+- Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording
+  until it used the exact phrases `N completed milestones`, `honest evidence
+  stops`, and `ready milestones` with numeric counts.
+- Impact: ordinary planning reconciliation fails through trial and error even
+  when milestone frontmatter and the stated census agree.
+- Fix: document the accepted census grammar beside the generation-index
+  template, or replace prose parsing with a structured status block.
+- Surface: `scripts/check-roadmap-status-drift.py`; generation indexes.
+
 ### [ ] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
 - Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.
   `LocalWatcherHostService` also calls `block_on` inside method invocation for

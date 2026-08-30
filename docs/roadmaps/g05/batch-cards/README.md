@@ -3,13 +3,12 @@
 ## Planned
 
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — planned; depends on card 010 and separately authorized live acceptance
-- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — planned; awaiting post-merge orchestrator reassessment; live proof moves to card 011
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [010-claude-code-watcher-bridge.md](./010-claude-code-watcher-bridge.md) — ready; exact `2.1.251` credential-free binding; live proof remains card 011
 
 ## Blocked
 

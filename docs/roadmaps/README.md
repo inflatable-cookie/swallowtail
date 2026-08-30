@@ -15,11 +15,13 @@ shape.
 
 ## Next Task
 
-Reassess Claude watcher card 010 after g05.005 cards 017-018 qualify the base
-Claude Code routes through exact `2.1.251`. The currentness worker is dispatched
-separately and does not move this generation pointer. Do not start Claude
-watcher wiring, card 011, skill cards 005-006, live provider work, or route
-claims. The live same-turn gate remains separately authorized.
+Implement g05.003 card 010 for the exact Claude Code `2.1.251` watcher
+candidate. Bind only the credential-free operation-private MCP, settings,
+skill, Stop continuation, and Contract 060 bridge path with deterministic
+provider-free fixtures. Do not run a live provider turn, advertise watcher
+support, widen the watcher version gate, start card 011 or skill cards 005-006,
+or promote the open consumer route-feature projection triage. The live
+same-turn gate and first route claim remain separately authorized in card 011.
 
 ## Standing Lanes
 

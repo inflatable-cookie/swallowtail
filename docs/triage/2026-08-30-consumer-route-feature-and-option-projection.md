@@ -279,13 +279,13 @@ not corrected in the matrix during this evidence-only lane.
 
 The companion
 [2026-08-30-consumer-route-feature-and-option-projection-census.csv](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
-has 768 rows:
+has 767 rows:
 
 - 555 feature rows, including one activity-observation row for every route,
   matrix feature posture, negotiated-model observation where exposed, and
   the four exact post-open acknowledgement paths found in source
   (claude-agent.acp, kimi-code.acp, cline.acp, and openai.realtime).
-- 204 control rows covering exact model bindings, typed route inputs,
+- 203 control rows covering exact model bindings, typed route inputs,
   session options, access and lifecycle policy, bounded domains, exchange
   callbacks, and provider-session management.
 - 9 route-audit rows for bedrock.catalogue, antigravity.catalogue,
@@ -295,7 +295,7 @@ has 768 rows:
   route-specific composer control identified in current public types.
 
 Lifecycle distribution is 553 selection-summary, 142 session-start-only, 9
-per-turn, 1 between-turn-negotiable, and 63 post-open-observation-only rows.
+per-turn, and 63 post-open-observation-only rows.
 No mid-turn-negotiable or not-applicable lifecycle classification was needed;
 descriptor-only source classifications are retained where current public
 authority does not expose a matching operation input.
@@ -303,10 +303,6 @@ The acknowledgement evidence proves requested/pending/effective/rejected
 state only on the named route paths. It does not prove general mid-turn
 steering. Model option lists on Gemini ACP, Grok Build ACP, Kimi ACP, and
 Cline ACP remain observation-only.
-The two OpenAI Realtime reasoning rows intentionally use separate semantic IDs
-for the session-start and between-turn lifecycle layers; they are distinct
-controls, not duplicate projections.
-
 The authoritative source classes are the immutable configured-instance and
 prepared-operation records, portable capability profiles and constraints,
 model catalogue observations, public runtime request types, adapter prepared

@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Fail when roadmap/batch-card indexes disagree with Status frontmatter."""
+"""Fail when roadmap/batch-card indexes disagree with Status frontmatter.
+
+Accepted Status buckets and generation-index census phrases are documented in
+docs/roadmaps/status-grammar.md. Live census regexes:
+
+- completed: ``N completed milestones``
+- stops: ``honest evidence stops at …`` or ``no honest evidence stops``
+- ready: ``one ready milestone at`` / ``ready milestone(s) at``
+"""
 
 from __future__ import annotations
 

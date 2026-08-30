@@ -26,16 +26,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: ignored provider live probes with temporary working resources;
   prototype head `49f2692f`.
 
-### [ ] Roadmap status census requires undocumented exact prose — 2026-08-30
-- Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording
-  until it used the exact phrases `N completed milestones`, `honest evidence
-  stops`, and `ready milestones` with numeric counts.
-- Impact: ordinary planning reconciliation fails through trial and error even
-  when milestone frontmatter and the stated census agree.
-- Fix: document the accepted census grammar beside the generation-index
-  template, or replace prose parsing with a structured status block.
-- Surface: `scripts/check-roadmap-status-drift.py`; generation indexes.
-
 ### [ ] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
 - Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.
   `LocalWatcherHostService` also calls `block_on` inside method invocation for
@@ -46,17 +36,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: make watcher host methods executor-neutral, or keep joined std threads
   for listeners that must call those methods.
 - Surface: `swallowtail-host-local` watcher host and watcher HTTP bridge.
-
-### [ ] Batch cards use `gated` as a status outside the accepted buckets — 2026-08-29
-- Friction: card 010 used `Status: gated`, while roadmap status QA accepts only
-  planned, ready, blocked, stopped, and complete variants. The dependency was
-  truthful, but `effigy qa:docs` could not classify the card.
-- Impact: a valid planning gate fails late, and later agents may repeat the
-  unsupported status because the batch-card template does not name the allowed
-  buckets.
-- Fix: document the accepted status vocabulary in the batch-card template and
-  express gates as `Status: planned; gated behind ...`.
-- Surface: Northstar batch-card template and Swallowtail roadmap status QA.
 
 ### [ ] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
 - Friction: PR 117 added four warning-level files above the configured size
@@ -236,6 +215,31 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   indexes.
 
 ## Closed
+
+### [x] Roadmap status census requires undocumented exact prose — 2026-08-30
+- Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording
+  until it used the exact phrases `N completed milestones`, `honest evidence
+  stops`, and `ready milestones` with numeric counts.
+- Impact: ordinary planning reconciliation fails through trial and error even
+  when milestone frontmatter and the stated census agree.
+- Fix: documented the live census regexes and Status buckets in
+  `docs/roadmaps/status-grammar.md`, linked from `docs/roadmaps/README.md` and
+  `scripts/README.md`.
+- Surface: `scripts/check-roadmap-status-drift.py`; generation indexes.
+- Closed: 2026-08-30 papercuts wave 19 census grammar.
+
+### [x] Batch cards use `gated` as a status outside the accepted buckets — 2026-08-29
+- Friction: card 010 used `Status: gated`, while roadmap status QA accepts only
+  planned, ready, blocked, stopped, and complete variants. The dependency was
+  truthful, but `effigy qa:docs` could not classify the card.
+- Impact: a valid planning gate fails late, and later agents may repeat the
+  unsupported status because the batch-card template does not name the allowed
+  buckets.
+- Fix: card 010 is `Status: complete`. Swallowtail-local
+  `docs/roadmaps/status-grammar.md` names the accepted buckets and that a gate
+  is `Status: planned; gated behind …` or `ready; …`, not `Status: gated`.
+- Surface: Swallowtail roadmap status QA; card 010.
+- Closed: 2026-08-30 papercuts wave 19 gated status.
 
 ### [x] Docs link QA omits research and lane-log bodies — 2026-08-28
 - Friction: PR 112 passed `effigy qa:docs`, but Research 255 contained six

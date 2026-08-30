@@ -30,6 +30,8 @@ first standing lane. It does not keep a generation open.
 ## Index
 
 - [generation-index.md](./generation-index.md) — generation status
+- [status-grammar.md](./status-grammar.md) — Status buckets and census phrases
+  for `qa:docs:roadmaps:status`
 - [long-term-plan.md](./long-term-plan.md) — staged multi-consumer adoption
 - [per-route-feature-completion.md](g04/per-route-feature-completion.md) —
   route-local feature delivery programme
@@ -46,6 +48,14 @@ first standing lane. It does not keep a generation open.
   connection-admission generation
 - [g05/README.md](g05/README.md) — active harness skill visibility and process
   observability generation
+
+## Status And Census
+
+Batch-card and milestone `Status:` lines, plus the active generation census in
+`generation-index.md`, must match
+[status-grammar.md](./status-grammar.md). That note names the live regexes in
+`scripts/check-roadmap-status-drift.py`. `gated` is detail after an accepted
+bucket, not a status by itself.
 
 ## Generation Shape
 

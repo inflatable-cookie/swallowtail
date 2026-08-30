@@ -23,7 +23,8 @@ Normal validation scripts:
   `effigy qa:consumer-docs`
 - `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
   and generation-index ready/completed/stop counts against Status frontmatter
-  behind `effigy qa:docs:roadmaps:status`
+  behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
+  phrases: `docs/roadmaps/status-grammar.md`
 - `check-docs-links.py` — front-door Markdown links plus `docs/research` and
   `docs/logs` bodies behind `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one

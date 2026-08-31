@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A and H complete; acknowledgement reassessment ready
+Status: active planning evidence; candidates A and H complete; card 030 stopped D, F, and G on current `main`; acknowledgement public-baseline gate needed
 Owner: Tom
 Date: 2026-08-31
 
@@ -182,9 +182,79 @@ mode controls come from exact prepared bindings. Matching-source cross-route
 and cross-access mixtures fail closed. No shared public type, contract,
 provider contact, or live probe was added.
 
-Card 030 is the post-card-024 planning checkpoint. It audits D, F, and G
-against current `main` and may promote at most one complete acknowledgement
-candidate. No implementation candidate is promoted yet.
+Card 030 was the post-card-024 planning checkpoint. It audited D, F, and G
+against current `main` and promoted none of them.
+
+## Post-Card-024 Acknowledgement Reassessment
+
+Card 030 audited candidates D, F, and G against current `main` and promoted
+none. Every total reconciles exactly with no filter or exception list, and each
+candidate owns the complete census remainder of its adapter packages:
+
+| Candidate | Adapter packages | Exact route rows | Total |
+| --- | --- | --- | ---: |
+| D | `swallowtail-adapter-claude-agent` | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 |
+| F | `swallowtail-adapter-kimi`; `swallowtail-adapter-kimi-platform` | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 |
+| G | `swallowtail-adapter-cline`; `swallowtail-adapter-command-code`; `swallowtail-adapter-copilot-cli`; `swallowtail-adapter-goose` | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 |
+
+### Shared Blocker
+
+Rubric item 2 fails identically on all three. Each of the three exact
+active-session acknowledgement routes validates its provider confirmation on
+current `main` and then discards it. No adapter retains an acknowledgement
+value, none can carry an exact rejected value, and none has an
+active-observation facade to name:
+
+| Route | Acknowledgement site | Retained on current `main` |
+| --- | --- | --- |
+| `claude-agent.acp` | `driver/config.rs` `confirm_reasoning` via `confirm_value` | nothing; `Result<(), RuntimeFailure>` dropped in `driver/access.rs`; mismatch is a static failure with no rejected value |
+| `kimi-code.acp` | `driver/reasoning.rs` `KimiReasoningSelection::confirm`; `driver/mode.rs` `confirm_plan_mode` | nothing; `driver.rs` writes `let _ = selection.confirm(...)?`; plan half returns `Result<(), _>` |
+| `cline.acp` | `driver/mode.rs` `confirm_plan_mode` | nothing; `Result<(), _>` dropped in `driver.rs` |
+
+`EffectiveReasoningSetup` cannot help. It encodes only requested == effective;
+a mismatch becomes `swallowtail.negotiated_reasoning.effective_mismatch`, so
+the census `rejected` state is unrepresentable through it without a new runtime
+public type, which the fixed boundary forbids.
+
+`openai.realtime` is the exact contrast, not a precedent that transfers. Card
+022 could prove it only because that card added `RealtimeAcknowledgement` and
+`RealtimeOpenRejection::rejected_effort` plus the additive
+`open_session_with_projection` seam, under the operator decision recorded in
+the Batch 9.1 public-baseline gate on 2026-08-31. That gate closed the
+route-local acknowledgement surface for `openai.realtime` alone. No gate closes
+it for `claude-agent.acp`, `kimi-code.acp`, or `cline.acp`.
+
+### Current-Main Dispositions
+
+| Candidate | Disposition |
+| --- | --- |
+| D | Stop, narrowest. One adapter package, one acknowledgement row, no other non-descriptor post-open row. `ClaudeAgentPreparedSession`, `ClaudeCodePreparedRun`, and `ClaudeCodeResponsePreparedRun` cover the prepared side. Only the missing acknowledgement retention and its route-local public decision block it. Best first candidate once the gate closes. |
+| F | Stop, largest and most coupled. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
+| G | Stop. 48 rows but all four adapter packages, so rubric item 5 has zero headroom. Its two `audit.no-public-route-specific-selectable-control` rows on `copilot-cli.acp` and `goose.acp` are fine — card 024 proved that negative-coverage pattern. `cline.acp` adds one further post-open family, `feature.negotiated-model-options-observation`. |
+
+No candidate can be narrowed around the blocker. The fixed boundary requires
+the complete package remainder and forbids exception lists, and withholding the
+one acknowledgement row that defines the band would weaken a blocker to force a
+selection.
+
+### Next Planning Move
+
+One Batch 9.1-class public-baseline gate, not an implementation card. It must
+close, with an operator decision, the route-local acknowledgement surface for
+`claude-agent.acp`, `kimi-code.acp`, and `cline.acp`:
+
+- adapter-local retention of the exact provider-effective and rejected values
+  on each of the three routes;
+- the per-route adapter-owned additive open-with-projection result, failure,
+  and future types, preserving each existing `open_session` signature;
+- whether `EffectiveReasoningSetup`'s missing rejected state stays an
+  adapter-local concern or becomes a runtime public decision; and
+- whether `feature.negotiated-model-options-observation` and post-open
+  `control.provider-session-catalogue` need their own observation seams before
+  F or G can be promoted.
+
+Candidates B-G and I-L still hold no card number or execution authority. The
+per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 030.
 
 ## Lifecycle-Priority Sequence
 
@@ -193,7 +263,8 @@ tranche, but changes how later candidates are selected. Row count is no longer
 the primary ordering signal. After card 024 review, reassess in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   card 030 is the ready reassessment authority.
+   card 030 audited all three on current `main` and promoted none. The band is
+   blocked behind the acknowledgement public-baseline gate above.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

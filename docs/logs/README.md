@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 g05.009 Card 030 Acknowledgement Reassessment Stop](./2026-08-31-g05-009-card-030-acknowledgement-stop.md) — evidence stop; D, F, and G all discard their acknowledgement on current `main`; no candidate promoted; acknowledgement public-baseline gate next
 - [2026-08-31 g05.009 Card 024 Package Completion](./2026-08-31-g05-009-card-024-package-completion.md) — PR 138 merged at `8b295e6b`; exact candidate H 38-row proof complete; acknowledgement reassessment card 030 ready
 - [2026-08-31 Papercuts wave 23 route-matrix bytecode closeout](./2026-08-31-papercuts-wave23-route-matrix-bytecode-closeout.md) — PR 137 merged at `8cb66d1b`; affected selectors no longer write source-tree Python bytecode; wave 23 serial queue complete
 - [2026-08-31 Papercuts wave 23 OpenAI test-target closeout](./2026-08-31-papercuts-wave23-openai-test-target-closeout.md) — PR 136 merged at `af339fb6`; three OpenAI targets now match their suite roots; route-matrix bytecode cleanup next

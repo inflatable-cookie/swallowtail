@@ -1,14 +1,14 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A and H merged;
-acknowledgement reassessment card 030 ready
+card 030 stopped the acknowledgement band; public-baseline gate needed
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; card 030 ready in the feature-façade track
+Planning state: strict-ready; no ready implementation card; acknowledgement public-baseline gate is the next planning move
 
 ## Problem
 
@@ -35,9 +35,12 @@ merged the exact 35-row `codex.exec` and 24-row `openai.background` proof at
 cross-access, and descriptor-only observation proof during review. Candidate A
 is complete. The post-card-023 reassessment resolved the Codex output-token
 census source and promoted candidate H alone as card 024. PR 138 merged its
-exact 38-row proof through `8b295e6b`. Candidates B-G and I-L still have no
-implementation card numbers or execution authority; card 030 now owns the
-current-main acknowledgement reassessment for D, F, and G.
+exact 38-row proof through `8b295e6b`. Card 030 then audited acknowledgement candidates D,
+F, and G against current `main` and promoted none: all three exact
+active-session acknowledgement routes validate their provider confirmation and
+discard it, so no active-observation facade or rejected value exists to name.
+Candidates B-G and I-L still have no implementation card numbers or execution
+authority.
 
 ## Generation Runway Goal
 
@@ -157,8 +160,12 @@ withholding, descriptor-only activity, validation, and stops fit one exact
 merged through PR 138 at `8b295e6b` after exact-head review repaired its
 mixed-assembly and per-identity posture proofs. Lifecycle value now sets the
 reassessment order: acknowledgement candidates D/F/G, per-turn candidates
-B/K/L, then breadth candidates C/E/I/J. Card 030 owns the D/F/G planning audit;
-no later implementation candidate is promoted yet.
+B/K/L, then breadth candidates C/E/I/J. Card 030 closed the D/F/G planning
+audit as an evidence stop. The acknowledgement band is blocked behind one
+Batch 9.1-class public-baseline gate that must close the route-local
+acknowledgement surface for `claude-agent.acp`, `kimi-code.acp`, and
+`cline.acp` with an operator decision. No implementation candidate is
+promoted.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -209,16 +216,16 @@ no later implementation candidate is promoted yet.
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 are complete through PRs 131, 133, and 138;
-  planning-only card 030 is ready
+  planning-only card 030 closed as an evidence stop with no candidate
 - completed tranches: runtime/testkit kernel plus eight exact route proofs in
   three reviewed implementation cards, covering 148 census rows
-- active tranche: current-main acknowledgement reassessment across candidates
-  D, F, and G; no implementation candidate is promoted
+- active tranche: none. Card 030 stopped D, F, and G on current `main`; the
+  band needs an acknowledgement public-baseline gate before any promotion
 - later runway: 619 rows remain in candidates B-G and I-L;
   promote them at most one at a time after exact readiness audits, then compile
   one all-route audit
-- next strategy checkpoint: card 030 selects at most one acknowledgement
-  candidate or records an honest current-main stop
+- next strategy checkpoint: compile the acknowledgement public-baseline gate,
+  or have the operator redirect promotion to the per-turn or breadth band
 
 ## Batch Cards
 
@@ -232,7 +239,9 @@ no later implementation candidate is promoted yet.
   — complete; exact candidate H 9/9/8/12-row proof merged through PR 138 at
   `8b295e6b`
 - [030 Contract 061 Acknowledgement Candidate Reassessment](batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
-  — ready; planning-only current-main audit of candidates D, F, and G
+  — complete; evidence stop; D, F, and G all fail rubric item 2 on current
+  `main` because each acknowledgement route discards its confirmation; no
+  candidate promoted and no Rust changed
 
 ## References
 

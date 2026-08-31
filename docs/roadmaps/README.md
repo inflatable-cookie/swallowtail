@@ -15,13 +15,20 @@ shape.
 
 ## Next Task
 
-Reassess [g05 card 030](g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md):
-audit Contract 061 candidates D, F, and G against current `main`, including
-their exact active-session acknowledgement sources and lifecycle state.
-Promote at most one complete package candidate only if it passes the existing
-Batch 9.4 rubric; otherwise record an honest stop. This is planning-only. Do
-not change Rust or contracts, contact a provider, implement the selected
-candidate, promote the per-turn or breadth bands, or compile Batch 9.5.
+Compile the Contract 061 acknowledgement public-baseline gate under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md).
+[Card 030](g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
+stopped candidates D, F, and G on current `main`: `claude-agent.acp`,
+`kimi-code.acp`, and `cline.acp` each validate their provider confirmation and
+discard it, so no active-observation facade or exact rejected value exists to
+name. The gate must close, with an operator decision, adapter-local retention
+of the exact effective and rejected values, the per-route adapter-owned
+additive open-with-projection result, whether `EffectiveReasoningSetup`'s
+missing rejected state stays adapter-local, and whether
+`feature.negotiated-model-options-observation` and post-open
+`control.provider-session-catalogue` need their own observation seams. This is
+planning-only. Do not change Rust or contracts, contact a provider, promote any
+Batch 9.4 candidate, or compile Batch 9.5.
 
 ## Standing Lanes
 

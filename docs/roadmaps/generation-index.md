@@ -206,7 +206,12 @@ an additive adapter-owned prepared-open result that preserves exact
 `session.updated` truth while retaining the existing generic open method.
 Batch 9.1 names the exact route-local surface and passes the readiness rubric.
 Card 022 is ready as one four-package 51-row tranche and stops before package
-expansion. g05 remains open. No Darwin dispatch,
+expansion. The PR 131 review repair now binds distinct Realtime prepared and
+active-observation sources, consumer-mediated per-turn authority, exact access
+dimensions, fail-closed cross-access agreement, construction-time withholding
+of two out-of-tranche Codex feature rows, and the measured 391/7/42/342
+god-file baseline. PR 131 is changes-requested for the same sole worker and is
+not merge-authorized. g05 remains open. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container backend,
 new route, second provider turn, additional implementation card, generation
 rollover, or parked Bedrock work is authorized.

@@ -15,15 +15,17 @@ shape.
 
 ## Next Task
 
-Implement
+Revise PR 131 through the same sole `g05-009` worker against
 [card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-as the single first Contract 061 realization tranche: the runtime composer,
-portable testkit conformance, all 36 `codex.app-server` rows, and all 15
-`openai.realtime` rows through the operator-approved additive prepared-open
-result. Preserve the existing Realtime `open_session`, use no provider contact
-or live probe, and stop after one reviewable PR for the required two-route
-checkpoint. Do not expand to the remaining 716 rows, restart another g05
-surface, close the generation, or act on PR 127.
+and the repaired Batch 9.1 gate. Keep separate prepared and active Realtime
+source identities, add consumer-mediated per-turn authority, preserve exact
+access dimensions, fail closed on cross-access disagreement, withhold the two
+out-of-tranche Codex feature rows at construction, and restore the measured
+391/7/42/342 god-file baseline. Preserve the existing Realtime `open_session`,
+use no provider contact or live probe, and stop after the revised PR for the
+required two-route checkpoint. Do not merge PR 131, expand to the remaining
+716 rows, start another worker, restart another g05 surface, close the
+generation, or reopen PR 127.
 
 ## Standing Lanes
 

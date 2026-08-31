@@ -1,13 +1,13 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batch 9.1 complete; card 022 ready
+Status: ready; repaired Batch 9.1 complete; PR 131 revision required
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; exact public baseline closed; card 022 is the two-route first vertical
+Planning state: strict-ready; accepted PR 131 review repair closed; card 022 is the two-route first vertical
 
 ## Problem
 
@@ -20,6 +20,13 @@ composer shape, fixed maxima, failure behavior, replacement, fixtures,
 validation, stops, and exact adapter-local signatures. The accepted additive
 OpenAI Realtime prepared-open result preserves exact `session.updated` truth
 without changing the existing open method or widening the generic handle.
+The PR 131 review then exposed three public-baseline gaps: prepared and active
+Realtime evidence need independent source IDs, per-turn exchange needs its own
+consumer-mediated authority posture, and applicability must retain the exact
+access-state dimensions. The operator accepted all three, plus fail-closed
+cross-access composition, exact-tranche Codex withholding, and restoration of
+the measured god-file baseline. These are repairs inside card 022, not new
+architecture or runway.
 
 ## Generation Runway Goal
 
@@ -72,6 +79,11 @@ or mutation authority.
 - [x] record the operator-approved additive adapter-owned typed
       `openai.realtime` acknowledgement result and close its route-local names
       and signatures
+- [x] repair the projected-open signature with distinct prepared and active
+      source IDs, add consumer-mediated per-turn authority, and retain exact
+      access dimensions in applicability
+- [x] bind cross-access agreement, exact-tranche withholding, and the measured
+      391/7/42/342 god-file baseline into card 022 acceptance
 
 The [Batch 9.1 gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 records the selected maxima, exact route-local surface, and strict-ready
@@ -83,6 +95,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [ ] admit exact current source records through one pure fail-closed composer
 - [ ] preserve the three Contract 061 views, per-turn truth, source dimensions,
       explicit source identity, and bounded safe reasons
+- [ ] fail closed when configured instance policy or any shared access,
+      credential, entitlement, endpoint, runtime, or support dimension differs
 - [ ] add testkit assertions for applicability disagreement, snapshot identity
       disagreement, absent mutation authority, unbounded reason rejection, and
       every fixed collection/text bound
@@ -91,10 +105,14 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
 - [ ] make the `codex.app-server` prepared facades emit normalized
       contributions for its 36 census rows, including per-turn exchange without
-      inferred mutation
+      inferred mutation; withhold the two out-of-tranche feature rows at
+      construction
 - [ ] make the `openai.realtime` prepared facade and exact acknowledgement path
       emit normalized contributions and requested/pending/effective/rejected
-      state for its 15 census rows
+      state for its 15 census rows with separate prepared and active-observation
+      source identities
+- [ ] split PR 131's nine new god-file findings and restore at most the measured
+      391 total / 7 critical / 42 high / 342 warning baseline
 - [ ] prove the 51-row first tranche without claiming coverage for the
       remaining 716 rows
 - [ ] stop for a planning checkpoint before compiling package-expansion cards
@@ -148,6 +166,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
   headroom without using the global census size as the snapshot cap.
 - Stop if Codex app-server or OpenAI Realtime cannot preserve its exact census
   lifecycle and acknowledgement distinctions.
+- Stop if the accepted access, source-identity, per-turn-authority, exact-ledger,
+  or god-file repair cannot fit the existing Contract 061/card 022 boundary.
 - Stop after the two-route vertical for a package-expansion planning
   checkpoint; do not preallocate speculative all-route cards.
 - Stop if Contracts 037, 047, 057, or 061 would need amendment.
@@ -155,7 +175,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: card 022 ready; no worker dispatched by planning
+- immediate state: card 022 remains ready; PR 131 is changes-requested and only
+  the same worker may revise it after the repaired planning base is published
 - first execution tranche: runtime/testkit kernel plus the two named route
   proofs in one card
 - later runway: package-coherent adapter expansion, then one all-route audit
@@ -164,8 +185,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 ## Batch Cards
 
 - [022 Contract 061 Composer And Two-Route Vertical](batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-  — ready; runtime/testkit composer plus the exact 36-row Codex and 15-row
-  OpenAI Realtime proof; stops before package expansion
+  — ready; repaired runtime/testkit composer plus the exact 36-row Codex and
+  15-row OpenAI Realtime proof; PR 131 revision; stops before package expansion
 
 ## References
 

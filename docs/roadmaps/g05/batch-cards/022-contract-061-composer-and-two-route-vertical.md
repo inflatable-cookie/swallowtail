@@ -24,11 +24,17 @@ or mutation authority.
    `compose_consumer_route_projection` as one pure fail-closed composer over
    exact `ConfiguredProviderInstanceRecord`, `PreparedOperationEvidence`,
    typed source identities, and only the contributions supplied by the
-   consumer.
+   consumer. Before row merge, require exact agreement on configured instance
+   policy, access-profile identity, credential mechanism, endpoint audience,
+   and credential, entitlement, endpoint-authorization, runtime-readiness, and
+   support-authority state. Any mismatch rejects the whole snapshot.
 3. Implement the three immutable views, exact-size row iteration, all nine
    failure kinds, source replacement, fixed row/value/extension/source/reason
    maxima, UTF-8 byte counting, and reject-without-truncation behavior exactly
-   as selected by Batch 9.1.
+   as selected by Batch 9.1. Preserve the five exact access-state dimensions
+   in `ConsumerRouteApplicability`; aggregate availability cannot replace or
+   flatten them. Add the exact `ConsumerMediatedPerTurn` mutation-authority
+   posture and reject lifecycle/authority mismatch.
 4. Add `swallowtail-testkit` fixtures and portable assertions for every fixed
    maximum, failure kind, Contract 061 counterexample, lifecycle split,
    identical-row source replacement, unknown/absence behavior, and forbidden
@@ -43,8 +49,11 @@ or mutation authority.
 6. Prove all 36 `codex.app-server` census rows across exact prepared operation
    snapshots. Emit only rows with exact runtime/prepared authority; record an
    explicit withheld disposition for any matrix-only or incompatible-operation
-   row. Keep its per-turn user-input exchange per-turn and do not infer provider
-   mutation or acknowledgement.
+   row. `ProviderSessionHistory` and `ProviderSessionReconciliation` feature
+   rows are outside this tranche and must be withheld at construction, not
+   emitted then filtered or exempted by coverage tests. Keep the user-input
+   exchange per-turn under `ConsumerMediatedPerTurn`; do not label it with
+   session-start authority or infer provider mutation or acknowledgement.
 7. Add the same prepared contribution method to
    `OpenAiPreparedRealtimeSession`. Preserve its existing `open_session` method
    and add the exact `OpenAiRealtimeProjectionOpenFuture`,
@@ -60,14 +69,24 @@ or mutation authority.
    effort. Missing, malformed, out-of-order, transport, setup, timeout,
    disconnect, and unknown failures return `Runtime` with no invented rejected
    state. Omitted reasoning produces no reasoning state.
+   `open_session_with_projection` receives separate prepared and active-session
+   source IDs: prepared rows use the former and post-open observation,
+   effective, rejected, and acknowledgement truth use the latter. Reject equal
+   IDs instead of collapsing the two evidence sources.
 10. Prove all 15 `openai.realtime` census rows, including distinct requested,
     pending, matching-effective, exact rejected, transport-failed, and absent
     reasoning fixtures. A row without exact route-local authority stays an
     explicit withheld disposition.
 11. Add a deterministic coverage ledger or equivalent test data that maps the
-    exact 51 first-tranche census rows to provider-free adapter proofs. Claim no
-    implementation coverage for the remaining 716 rows.
-12. Reconcile card, milestone, batch-card index, g05/generation indexes, and
+    exact 51 first-tranche census rows to provider-free adapter proofs. Build
+    and assert the exact published Codex set directly; do not maintain an
+    out-of-tranche exception list. Claim no implementation coverage for the
+    remaining 716 rows.
+12. Split every file newly counted by `effigy --json scan god-files` on PR 131
+    head `6f30a542ff69ded641158999c21192cad96f13a1` below the configured threshold.
+    The accepted head must not exceed main's measured 391 findings or its
+    7-critical/42-high/342-warning severity counts; do not raise the baseline.
+13. Reconcile card, milestone, batch-card index, g05/generation indexes, and
     the sole Next Task after validation. Stop for orchestrator review and the
     required two-route checkpoint.
 
@@ -120,6 +139,7 @@ impl OpenAiPreparedRealtimeSession {
 
     pub fn open_session_with_projection(
         &self,
+        prepared_source_id: ConsumerRouteProjectionSourceId,
         active_session_source_id: ConsumerRouteProjectionSourceId,
         services: HostServices,
     ) -> OpenAiRealtimeProjectionOpenFuture;
@@ -150,13 +170,22 @@ downcast, provider payload, or composer execution seam.
       composer match the Batch 9.1 baseline exactly
 - [ ] invalid contributions fail before composition and mixed snapshots reject
       as a whole
+- [ ] the composer compares configured policy and every shared access and
+      credential/readiness dimension; cross-access composition fails closed
+- [ ] applicability exposes credential, entitlement, endpoint-authorization,
+      runtime-readiness, and support-authority states without flattening them
+      into aggregate availability
 - [ ] equal rows with a changed source identity produce a replacement snapshot
 - [ ] testkit covers every fixed maximum, failure kind, and Contract 061
       counterexample without adapter production dependencies
 - [ ] the nine named Codex prepared facades and coverage ledger disposition
       exactly the 36 `codex.app-server` rows across their operation shapes;
-      matrix-only or incompatible-operation rows are withheld, not emitted
-- [ ] per-turn exchange remains per-turn and creates no mutation claim
+      matrix-only, incompatible-operation, `ProviderSessionHistory`, and
+      `ProviderSessionReconciliation` feature rows are withheld, not emitted
+      then filtered
+- [ ] per-turn exchange remains per-turn under
+      `ConsumerMediatedPerTurn`, never `PreparedSessionStart`, and creates no
+      provider mutation or acknowledgement claim
 - [ ] existing `OpenAiPreparedRealtimeSession::open_session` remains source and
       behavior compatible
 - [ ] both OpenAI public open methods share one private low-level lifecycle
@@ -164,8 +193,12 @@ downcast, provider payload, or composer execution seam.
       provider-effective reasoning
 - [ ] only an exact well-formed different effort produces a rejected-state
       contribution; every unknown failure carries none
+- [ ] Realtime prepared and active-observation source IDs are distinct and
+      independently retained in their respective rows and authority records
 - [ ] deterministic coverage evidence proves exactly the selected 51 rows and
       does not imply the other 716
+- [ ] every PR-131-added god-file finding is split below threshold and the final
+      scan is at most 391 total, 7 critical, 42 high, and 342 warning
 - [ ] no raw target, command, credential, path, environment value, provider
       payload, unbounded diagnostic, or presentation prose enters projection
 
@@ -182,6 +215,12 @@ Counterexamples and required proof:
   replace for the former; reject the mixed snapshot for the latter
 - a per-turn exchange or post-open option described as session-start mutable —
   reject with `MutationAuthorityAbsent`
+- configured-record and prepared-plan identities match while access profile,
+  instance policy, credential, entitlement, endpoint authorization, runtime
+  readiness, or support authority differs — reject the whole snapshot
+- credential unknown, rejected, unavailable, or runtime degraded projected
+  only as `Conditional` — fail; the exact owning access dimension remains
+  observable
 - an absent source reason replaced with adapter or provider text — reject the
   reason and preserve unknown/absence
 - OpenAI exact matching acknowledgement inferred from successful handle
@@ -189,8 +228,15 @@ Counterexamples and required proof:
 - missing, malformed, out-of-order, transport-failed, or timed-out OpenAI
   acknowledgement reported as rejected — fail; the typed error carries no
   contribution
+- one source ID used for both prepared Realtime evidence and the active
+  `session.updated` observation — reject before returning a contribution
+- `ProviderSessionHistory` or `ProviderSessionReconciliation` emitted and then
+  removed or exempted to make the Codex ledger equal 36 — fail; construction
+  must withhold both rows
 - one route or the common kernel presented as completion of the tranche — fail;
   all exact 51 rows need provider-free proof
+- PR 131's 400-finding god-file result accepted as a new baseline — fail; split
+  the nine new findings and restore at most 391/7/42/342
 
 ## Validation
 
@@ -201,6 +247,7 @@ Counterexamples and required proof:
 - `effigy qa:routes`
 - `effigy qa:docs`
 - `effigy qa:northstar`
+- `effigy --json scan god-files`
 - `git diff --check`
 
 No live probe or provider contact belongs to this card.
@@ -215,12 +262,17 @@ ready.
 
 - Stop if any exact public name, signature, fixed maximum, or failure mapping
   must change.
+- Stop if exact access dimensions cannot remain public applicability or if
+  record/evidence access agreement cannot fail closed without a contract
+  change.
 - Stop if a Codex row lacks exact prepared-operation authority or an OpenAI
   state lacks exact `session.updated` evidence.
 - Stop if the shared composer needs core changes, adapter dependencies, a
   registry, runtime enumeration, callbacks, downcasts, or provider payloads.
 - Stop if the four-package tranche cannot prove all 51 rows without widening
   into another package or route.
+- Stop if splitting the nine newly counted files would require reducing proof
+  coverage or raising the measured 391/7/42/342 baseline.
 - Stop if Contracts 037, 047, 057, or 061 need amendment.
 - Stop before package expansion, provider contact, PR 127, or generation
   closeout.

@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom / local Swallowtail orchestrator
 created: 2026-08-31
 updated: 2026-08-31
@@ -40,10 +40,9 @@ mismatch exists for the catalogue and Realtime suite roots.
 - **Pushed main verification:** local `main` and `origin/main` matched that
   exact commit before this handoff was created.
 - **Planning checkout:** clean before this handoff batch.
-- **Queue state:** reserved only; no worker, workspace, worktree, or branch has
-  been created.
-- **Worker mode:** implementation worker only after the orchestrator launches
-  this committed handoff.
+- **Queue state:** complete; PR 136 merged.
+- **Worker mode:** implementation worker completed; orchestrator review and
+  merge completed.
 - **Planning artifacts included at the base:** merged card 023 closeout and the
   unchanged open papercut entry.
 - **Worker branch:** `worker/papercuts-wave23-openai-test-target-names`
@@ -80,10 +79,12 @@ mismatch exists for the catalogue and Realtime suite roots.
   `effigy package:verify-affected swallowtail-adapter-openai`;
   `effigy qa:docs`; `effigy qa:northstar`; `git diff --check`.
 - **PR base/head:** current pushed `main` / worker branch above.
-- **PR URL:** pending.
-- **Review state:** awaiting dispatch, then exact-head orchestrator review.
-- **Merge authorisation:** the local orchestrator may merge after a clean
-  exact-head review and settled checks under the operator's standing authority.
+- **PR URL:** https://github.com/inflatable-cookie/swallowtail/pull/136
+- **Reviewed head:** `274bd2ac58ed5ca856a44300bb7edaf5b85467e4`.
+- **Merged main commit:** `af339fb65d5a249bddcf0f58abae95953d4d465a`.
+- **Review state:** accepted exact-head verdict recorded on PR 136; all five CI
+  checks passed; merged by the orchestrator.
+- **Merge authorisation:** exercised under the operator's standing authority.
 
 ## Boundaries
 
@@ -116,10 +117,8 @@ mismatch exists for the catalogue and Realtime suite roots.
 
 ## Suggested Next Move
 
-Do not launch from this reservation alone. When the orchestrator advances this
-serial queue, use only this absolute handoff path as the worker prompt. The
-worker then runs the completion preflight, reproduces the mismatch, applies the
-three-name manifest repair, and validates the whole bounded tranche.
+Do not relaunch this handoff. Continue the serial queue through
+`/Users/tom/Dev/projects/swallowtail/docs/handoffs/20260831-195246-papercuts-wave23-route-matrix-bytecode.md`.
 
 ## Completion Protocol
 
@@ -168,14 +167,13 @@ three-name manifest repair, and validates the whole bounded tranche.
 
 ### Review and merge path
 
-The local orchestrator independently reviews the exact head, records the
-verdict on GitHub, waits for settled checks, and may merge under the standing
-operator authority. Requested changes return to the same worker branch.
+The local orchestrator accepted exact head `274bd2ac`, recorded the verdict on
+GitHub, waited for all five checks, and squash-merged PR 136 as `af339fb6`.
 
 - **Closeout refs:** `PAPERCUTS.md`; this handoff; post-merge papercuts log.
 
 ### Handoff closeout
 
-After merge, the orchestrator marks this handoff merged, writes the serial
-closeout log, and leaves the route-matrix bytecode candidate next without
-moving the g05 roadmap pointer.
+This handoff is merged. The orchestrator wrote the serial closeout log and
+prepared the route-matrix bytecode candidate next without moving the g05
+roadmap pointer.

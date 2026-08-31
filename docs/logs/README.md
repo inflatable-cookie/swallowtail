@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 Papercuts wave 23 OpenAI test-target closeout](./2026-08-31-papercuts-wave23-openai-test-target-closeout.md) — PR 136 merged at `af339fb6`; three OpenAI targets now match their suite roots; route-matrix bytecode cleanup next
 - [2026-08-31 g05.011 Card 029 Watcher Isolation Stop](./2026-08-31-g05-011-card-029-watcher-isolation-stop.md) — PR 135 merged at `e1313e5f`; no exact flag shape; production unchanged; mechanism change unplanned; card 024 next
 - [2026-08-31 g05.011 Card 026 Watcher Tool Admission](./2026-08-31-g05-011-card-026-watcher-tool-admission.md) — `--tools` suppression rejected provider-free; `--bare` authentication blocker named; no production change; card 029 next
 - [2026-08-31 g05.010 Bounded Skill Inventory Contract Promotion](./2026-08-31-g05-010-bounded-skill-inventory-contract-promotion.md) — Contract 062 active; Spec 013 archived; card 025 and g05.010 complete; implementation unplanned; card 026 next

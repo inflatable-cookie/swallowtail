@@ -34,8 +34,8 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: disable bytecode for the selector, direct its cache outside the source
   tree, or ignore the generated directory explicitly.
 - Surface: `qa:consumer-docs`, `qa:routes`, and route-inventory imports.
-- Queue 2026-08-31: next serial candidate after the OpenAI test-target lane;
-  not reserved for implementation and not dispatched.
+- Queue 2026-08-31: reserved as the next serial wave 23 lane after PR 136;
+  bounded handoff owned by the local Swallowtail orchestrator.
 
 ### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
 - Friction: the card 011 Claude watcher probe removes its temporary workspace

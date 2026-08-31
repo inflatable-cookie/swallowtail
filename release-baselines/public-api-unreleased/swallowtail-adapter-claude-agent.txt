@@ -2,6 +2,15 @@ pub mod swallowtail_adapter_claude_agent
 pub enum swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::ConsumerMediated
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::RejectAndStop
+pub enum swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure
+pub swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::Rejected
+pub swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::Rejected::contribution: swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::Rejected::failure: swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure
+pub const fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::into_parts(self) -> (swallowtail_runtime::failure::RuntimeFailure, core::option::Option<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>)
+pub const fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure::rejected_contribution(&self) -> core::option::Option<&swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>
 pub enum swallowtail_adapter_claude_agent::ClaudeAgentRunRetention
 pub swallowtail_adapter_claude_agent::ClaudeAgentRunRetention::Durable
 pub swallowtail_adapter_claude_agent::ClaudeAgentRunRetention::TemporaryWithOwnedSessionCleanup
@@ -34,6 +43,8 @@ impl swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedDelete::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
@@ -63,6 +74,8 @@ impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedIntegration
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedIntegration::prepare_session(&self, swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::evidence(&self) -> &swallowtail_adapter_claude_agent::ClaudeAgentPreparedEvidence
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::into_parts(self) -> (swallowtail_adapter_claude_agent::ClaudeAgentPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::low_level_driver(&self) -> swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver
@@ -70,6 +83,8 @@ pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::plan(&sel
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession
+impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::evidence(&self) -> &swallowtail_adapter_claude_agent::ClaudeAgentPreparedEvidence
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::into_parts(self) -> (swallowtail_adapter_claude_agent::ClaudeAgentPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
@@ -82,6 +97,13 @@ pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::prepare_wor
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeAgentPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFuture
+pub struct swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome
+impl swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome
+pub const fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::InteractiveSessionHandle
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentRunProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeAgentRunProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_claude_agent::ClaudeAgentModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
@@ -143,6 +165,8 @@ impl swallowtail_adapter_claude_agent::ClaudeCodePreparedIntegration
 pub fn swallowtail_adapter_claude_agent::ClaudeCodePreparedIntegration::prepare_run(&self, swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeCodePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_claude_agent::ClaudeCodePreparedRun
 impl swallowtail_adapter_claude_agent::ClaudeCodePreparedRun
+pub fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_claude_agent::ClaudeCodePreparedRun
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::evidence(&self) -> &swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence
 pub fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::into_parts(self) -> (swallowtail_adapter_claude_agent::ClaudeCodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_claude_agent::ClaudeCodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
@@ -188,6 +212,8 @@ pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedIntegration::
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedIntegration
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedIntegration::prepare_run(&self, swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun
+impl swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun
+pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun::evidence(&self) -> &swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedEvidence
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedRun::into_parts(self) -> (swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
@@ -239,3 +265,4 @@ pub async fn swallowtail_adapter_claude_agent::prepare_claude_code_headless(swal
 pub async fn swallowtail_adapter_claude_agent::prepare_claude_code_response_only(swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparationInput, swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeCodeResponsePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub type swallowtail_adapter_claude_agent::ClaudeAgentPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub type swallowtail_adapter_claude_agent::ClaudeAgentPreparedSessionLoadFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome, swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure>>

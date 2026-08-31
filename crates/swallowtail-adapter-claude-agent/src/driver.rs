@@ -16,8 +16,8 @@ use swallowtail_runtime::{
     CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
     ProcessHandle, ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, ScopeId, SessionLifecycleOperation, SessionResumeBinding, TerminalOutcome,
-    TurnHandle, TurnRequest, prepare_negotiated_reasoning_setup, validate_session_resource_lease,
+    RuntimeSessionId, ScopeId, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
+    validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.claude-agent.acp";
@@ -59,21 +59,11 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            let selected = validate_plan(&plan, self.credential.as_ref())?;
-            let reasoning = prepare_negotiated_reasoning_setup(
-                &plan,
-                SessionLifecycleOperation::Open,
-                request.options(),
-            )?
-            .map(|setup| setup.requested().clone());
-            if reasoning.is_some() && !selected.behavior().supports_config_options() {
-                return Err(unsupported("reasoning selection for this adapter version"));
-            }
-            validate_open(&plan, &request, &services)?;
-            let session = self
-                .start_session(&plan, &request, &services, selected, reasoning)
-                .await?;
-            Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>)
+            let (session, _) = self
+                .open_session_lifecycle(plan, request, services)
+                .await
+                .map_err(ClaudeAgentOpenRejection::into_failure)?;
+            Ok(session)
         })
     }
 
@@ -258,9 +248,11 @@ mod access;
 mod config;
 mod descriptor;
 mod handle;
+mod open;
 mod run;
 mod session;
 mod session_management;
 mod validation;
 
 pub use descriptor::claude_agent_acp_descriptor;
+pub(crate) use open::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};

@@ -3,6 +3,8 @@ use super::*;
 #[path = "agent/lifecycle.rs"]
 mod lifecycle;
 mod process;
+mod reasoning;
+mod responses;
 
 pub(super) use process::FixtureProcessHandle;
 
@@ -26,6 +28,13 @@ pub enum Scenario {
     ModelDrift,
     AuthDrift,
     LifecycleDrift,
+    ReasoningMismatchAdvertised,
+    ReasoningMismatchUnadvertised,
+    ReasoningMismatchUnqualified,
+    ReasoningConfirmationMissing,
+    ReasoningConfirmationMalformed,
+    ReasoningConfirmationDuplicate,
+    ReasoningConfirmationUnbounded,
     Version,
 }
 

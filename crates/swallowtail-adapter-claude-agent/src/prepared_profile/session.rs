@@ -3,6 +3,7 @@ use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
 use super::{ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture};
+use crate::driver::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
 use crate::prepared::instance::{REASONING_MODES, session_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
@@ -15,9 +16,14 @@ use swallowtail_runtime::{
 };
 
 mod handle;
+mod helpers;
 mod restoration;
 
 use handle::wrap_management_handle;
+pub(super) use helpers::{
+    ClaudeAgentPreparedOpenLifecycleFuture, lifecycle_management_instance, operation_capabilities,
+    reject_attachment_reasoning, validate_options, with_activity,
+};
 use restoration::ClaudeAgentContinuationRecovery;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -55,22 +61,42 @@ impl ClaudeAgentPreparedSession {
 
     /// Opens a new provider-owned session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> ClaudeAgentPreparedSessionFuture {
+        let lifecycle = self.open_lifecycle(services);
+        Box::pin(async move {
+            lifecycle
+                .await
+                .map(|(session, _)| session)
+                .map_err(ClaudeAgentOpenRejection::into_failure)
+        })
+    }
+
+    pub(crate) fn open_lifecycle(
+        &self,
+        services: HostServices,
+    ) -> ClaudeAgentPreparedOpenLifecycleFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
         let request = self.request.clone();
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
-            let handle = driver.open_session(plan, request.clone(), services).await?;
-            wrap_management_handle(
+            let (handle, acknowledgement) = driver
+                .open_session_lifecycle(plan, request.clone(), services.clone())
+                .await?;
+            let handle = wrap_management_handle(
                 handle,
                 management_instance,
                 access,
                 request.working_resource().cloned(),
                 ProviderSessionBindingOrigin::Created,
             )
-            .await
+            .await?;
+            Ok((handle, acknowledgement))
         })
+    }
+
+    pub(crate) const fn management_instance(&self) -> &swallowtail_core::ConfiguredInstance {
+        &self.management_instance
     }
 
     /// Builds an exact provider-session load request with bounded replay.
@@ -242,108 +268,4 @@ impl ClaudeAgentPreparedIntegration {
             management_instance: lifecycle_management_instance(self),
         })
     }
-}
-
-pub(super) fn with_activity(
-    capabilities: CapabilityProfile,
-    activity: &swallowtail_core::ObservableActivityProfile,
-) -> CapabilityProfile {
-    let mut requirements = capabilities
-        .iter()
-        .map(|(capability, constraints)| {
-            CapabilityRequirement::new(capability, constraints.iter().cloned())
-        })
-        .collect::<Vec<_>>();
-    requirements.push(
-        activity
-            .capability_requirement()
-            .expect("prepared Claude Agent activity is available"),
-    );
-    CapabilityProfile::new(requirements)
-}
-
-pub(super) fn lifecycle_management_instance(
-    prepared: &ClaudeAgentPreparedIntegration,
-) -> swallowtail_core::ConfiguredInstance {
-    instance_with_capabilities(
-        prepared,
-        CapabilityProfile::new([
-            CapabilityRequirement::new(Capability::ProviderNativeSessionClose, []),
-            CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
-        ]),
-    )
-}
-
-pub(super) fn validate_options(
-    options: &SessionOptions,
-    supports_config_options: bool,
-) -> Result<(), PreparationFailure> {
-    if options.developer_instructions().is_some() || options.tools().len() != 0 {
-        return Err(failure(
-            "swallowtail.claude_agent.preparation.session_options_unsupported",
-            "Claude Agent ACP prepared sessions support only the portable reasoning option",
-        ));
-    }
-    if options
-        .reasoning_mode()
-        .is_some_and(|mode| !REASONING_MODES.contains(&mode.as_str()))
-    {
-        return Err(failure(
-            "swallowtail.claude_agent.preparation.reasoning_mode_unsupported",
-            "Claude Agent ACP prepared session reasoning mode is unsupported",
-        ));
-    }
-    if options.harness_mode().is_some() && !supports_config_options {
-        return Err(failure(
-            "swallowtail.claude_agent.preparation.harness_mode_unsupported",
-            "Claude Agent ACP prepared session harness mode is unsupported",
-        ));
-    }
-    Ok(())
-}
-
-pub(super) fn reject_attachment_reasoning(
-    options: &SessionOptions,
-) -> Result<(), PreparationFailure> {
-    if options.reasoning_mode().is_some() {
-        Err(failure(
-            "swallowtail.claude_agent.preparation.attachment_reasoning_unsupported",
-            "Claude Agent load and resume cannot redeclare reasoning selection",
-        ))
-    } else {
-        Ok(())
-    }
-}
-
-pub(super) fn operation_capabilities(
-    available: &CapabilityProfile,
-    options: &SessionOptions,
-) -> Vec<CapabilityRequirement> {
-    let mut capabilities = available
-        .iter()
-        .filter(|(capability, _)| {
-            !matches!(
-                capability,
-                Capability::ReasoningSelection | Capability::HarnessModeSelection
-            )
-        })
-        .map(|(capability, constraints)| {
-            CapabilityRequirement::new(capability, constraints.iter().cloned())
-        })
-        .collect::<Vec<_>>();
-    if let Some(mode) = options.reasoning_mode() {
-        capabilities.push(CapabilityRequirement::new(
-            Capability::ReasoningSelection,
-            [swallowtail_core::CapabilityConstraint::ReasoningMode(
-                mode.clone(),
-            )],
-        ));
-    }
-    if let Some(mode) = options.harness_mode() {
-        capabilities.push(CapabilityRequirement::new(
-            Capability::HarnessModeSelection,
-            [swallowtail_core::CapabilityConstraint::HarnessMode(mode)],
-        ));
-    }
-    capabilities
 }

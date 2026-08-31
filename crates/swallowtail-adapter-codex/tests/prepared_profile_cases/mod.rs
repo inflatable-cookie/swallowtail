@@ -1,5 +1,6 @@
 use super::*;
 
+mod consumer_route_exec_projection;
 mod consumer_route_projection;
 mod exec_activity;
 mod exec_verbosity;

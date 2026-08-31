@@ -26,16 +26,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   on this head is 390 (341 / 49), matching `main`.
 - Surface: g05.006 card 019 PR 126 review revision.
 
-### [ ] Route-matrix docs validation leaves Python bytecode — 2026-08-30
+### [x] Route-matrix docs validation leaves Python bytecode — 2026-08-30
 - Friction: `effigy qa:docs` imports the route inventory checker and leaves
   `scripts/provider_route_matrix/__pycache__/` untracked.
 - Impact: credential-free docs validation dirties a clean planning checkout
   immediately before its commit and push gate.
-- Fix: disable bytecode for the selector, direct its cache outside the source
-  tree, or ignore the generated directory explicitly.
-- Surface: `qa:consumer-docs`, `qa:routes`, and route-inventory imports.
-- Queue 2026-08-31: reserved as the next serial wave 23 lane after PR 136;
-  bounded handoff owned by the local Swallowtail orchestrator.
+- Fix: set `sys.dont_write_bytecode = True` in the consumer-docs and guides
+  checkers before the route-inventory import, and export
+  `PYTHONDONTWRITEBYTECODE=1` from the routes shell wrapper so every affected
+  selector prevents source-tree bytecode without relying on host
+  `pycache_prefix` redirection or ignore rules.
+- Surface: `qa:consumer-docs`, `qa:guides`, `qa:routes`, and route-inventory
+  imports.
+- Closed: 2026-08-31 papercuts wave 23 route-matrix bytecode.
 
 ### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
 - Friction: the card 011 Claude watcher probe removes its temporary workspace

@@ -6,17 +6,22 @@
 //! operation, chooses no route or model, invents no default, mutates no
 //! session, and owns no consumer layout, localization, or routing policy.
 
+mod admission;
+mod agreement;
 mod applicability;
 mod compose;
 mod contribution;
 mod failure;
 mod identity;
+mod model_binding;
 mod row;
 mod semantics;
 mod text;
+mod value;
+mod view;
 mod views;
 
-pub use applicability::{ConsumerRouteApplicability, ConsumerRouteModelBinding};
+pub use applicability::ConsumerRouteApplicability;
 pub use compose::{ConsumerRouteProjectionInput, compose_consumer_route_projection};
 pub use contribution::ConsumerRouteProjectionContribution;
 pub use failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind};
@@ -24,17 +29,18 @@ pub use identity::{
     ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity,
     ConsumerRouteProjectionSourceKind,
 };
-pub use row::{
-    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
-    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionRow, ConsumerRouteValueDomain,
-    ConsumerRouteValueKind,
-};
+pub use model_binding::ConsumerRouteModelBinding;
+pub use row::ConsumerRouteProjectionRow;
 pub use semantics::{
     ConsumerRouteActorPosture, ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension,
     ConsumerRouteControlId, ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId,
     ConsumerRouteLifecycle, ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
     ConsumerRouteRowIdentity, ConsumerRouteSafeReason, ConsumerRouteSourceClass,
     ConsumerRouteStateSupport, ConsumerRouteSupportPosture,
+};
+pub use value::{
+    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
+    ConsumerRouteOmissionSemantics, ConsumerRouteValueDomain, ConsumerRouteValueKind,
 };
 pub use views::{
     ConsumerRouteActiveSessionState, ConsumerRouteProjection, ConsumerRouteProjectionIdentity,

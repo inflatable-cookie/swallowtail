@@ -1,55 +1,23 @@
 use swallowtail_core::{
-    AccessProfileId, AdapterIdentity, ConfiguredInstanceId, CredentialMechanism, DriverRole,
-    ExecutionHostId, ExecutionLayer, FilesystemBoundary, InstanceRevision, ModelId, ModelRouteId,
-    ModelRouteRevision, OperationShape, PreflightPlan, ProtocolFacadeId, ProviderId,
-    ResourceAccess, SupportAuthority,
+    AccessProfileId, AdapterIdentity, ConfiguredInstanceId, CredentialMechanism, CredentialState,
+    DriverRole, EndpointAuthorization, EntitlementState, ExecutionHostId, ExecutionLayer,
+    FilesystemBoundary, InstancePolicyId, InstanceRevision, OperationShape, PreflightPlan,
+    ProtocolFacadeId, ResourceAccess, RuntimeReadiness, SupportAuthority,
 };
 
+use super::model_binding::ConsumerRouteModelBinding;
 use crate::PreparedOperationEvidence;
-
-/// Exact model binding one projection row applies to.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ConsumerRouteModelBinding {
-    route_id: ModelRouteId,
-    route_revision: ModelRouteRevision,
-    model_id: ModelId,
-    provider_id: Option<ProviderId>,
-}
-
-impl ConsumerRouteModelBinding {
-    #[must_use]
-    /// Returns the exact model-route identity.
-    pub const fn route_id(&self) -> &ModelRouteId {
-        &self.route_id
-    }
-
-    #[must_use]
-    /// Returns the exact model-route revision.
-    pub const fn route_revision(&self) -> &ModelRouteRevision {
-        &self.route_revision
-    }
-
-    #[must_use]
-    /// Returns the selected model identity.
-    pub const fn model_id(&self) -> &ModelId {
-        &self.model_id
-    }
-
-    #[must_use]
-    /// Returns the provider identity when the model source supplied one.
-    pub const fn provider_id(&self) -> Option<&ProviderId> {
-        self.provider_id.as_ref()
-    }
-}
 
 /// Exact applicability shared by one projection snapshot and each of its rows.
 ///
 /// Applicability is descriptive. It authorizes no operation and creates no
-/// route, model, or default selection.
+/// route, model, or default selection. The five access dimensions stay
+/// independently observable; no aggregate availability may replace them.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConsumerRouteApplicability {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
+    instance_policy_id: InstancePolicyId,
     driver_identity: AdapterIdentity,
     protocol_facade_id: ProtocolFacadeId,
     execution_host_id: ExecutionHostId,
@@ -59,6 +27,10 @@ pub struct ConsumerRouteApplicability {
     model: Option<ConsumerRouteModelBinding>,
     access_profile_id: AccessProfileId,
     credential_mechanism: CredentialMechanism,
+    credential_state: CredentialState,
+    entitlement_state: EntitlementState,
+    endpoint_authorization: EndpointAuthorization,
+    runtime_readiness: RuntimeReadiness,
     support_authority: SupportAuthority,
     resource_access: Option<ResourceAccess>,
     filesystem_boundary: Option<FilesystemBoundary>,
@@ -68,34 +40,26 @@ impl ConsumerRouteApplicability {
     #[must_use]
     /// Derives exact applicability from one immutable preflight plan.
     pub fn from_plan(plan: &PreflightPlan) -> Self {
-        let model = plan
-            .model_route_id()
-            .map(|route_id| ConsumerRouteModelBinding {
-                route_id: route_id.clone(),
-                route_revision: plan
-                    .model_route_revision()
-                    .expect("a model route id always has a route revision")
-                    .clone(),
-                model_id: plan
-                    .model_id()
-                    .expect("a model route id always has a model id")
-                    .clone(),
-                provider_id: plan.provider_id().cloned(),
-            });
         let policy = plan.requirements().session_access_policy();
+        let status = plan.access_status();
         Self {
             instance_id: plan.instance_id().clone(),
             instance_revision: plan.instance_revision().clone(),
+            instance_policy_id: plan.instance_policy_id().clone(),
             driver_identity: plan.driver_identity().clone(),
             protocol_facade_id: plan.protocol_facade_id().clone(),
             execution_host_id: plan.execution_host_id().clone(),
             driver_role: plan.requirements().driver_role(),
             execution_layer: plan.requirements().execution_layer(),
             operation_shape: plan.requirements().operation_shape(),
-            model,
+            model: ConsumerRouteModelBinding::from_plan(plan),
             access_profile_id: plan.access_profile_id().clone(),
             credential_mechanism: plan.credential_mechanism().clone(),
-            support_authority: plan.access_status().support_authority(),
+            credential_state: status.credential(),
+            entitlement_state: status.entitlement(),
+            endpoint_authorization: status.endpoint_authorization(),
+            runtime_readiness: status.runtime_readiness(),
+            support_authority: status.support_authority(),
             resource_access: policy
                 .and_then(swallowtail_core::SessionAccessPolicy::resource_access),
             filesystem_boundary: policy
@@ -119,6 +83,12 @@ impl ConsumerRouteApplicability {
     /// Returns the exact configured-instance revision.
     pub const fn instance_revision(&self) -> &InstanceRevision {
         &self.instance_revision
+    }
+
+    #[must_use]
+    /// Returns the exact configured instance policy.
+    pub const fn instance_policy_id(&self) -> &InstancePolicyId {
+        &self.instance_policy_id
     }
 
     #[must_use]
@@ -173,6 +143,30 @@ impl ConsumerRouteApplicability {
     /// Returns the exact credential mechanism of the access boundary.
     pub const fn credential_mechanism(&self) -> &CredentialMechanism {
         &self.credential_mechanism
+    }
+
+    #[must_use]
+    /// Returns observed credential readiness as its own access dimension.
+    pub const fn credential_state(&self) -> CredentialState {
+        self.credential_state
+    }
+
+    #[must_use]
+    /// Returns observed entitlement state as its own access dimension.
+    pub const fn entitlement_state(&self) -> EntitlementState {
+        self.entitlement_state
+    }
+
+    #[must_use]
+    /// Returns observed endpoint authorization as its own access dimension.
+    pub const fn endpoint_authorization(&self) -> EndpointAuthorization {
+        self.endpoint_authorization
+    }
+
+    #[must_use]
+    /// Returns observed provider or runtime readiness as its own dimension.
+    pub const fn runtime_readiness(&self) -> RuntimeReadiness {
+        self.runtime_readiness
     }
 
     #[must_use]

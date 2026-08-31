@@ -1,13 +1,16 @@
 use std::collections::BTreeSet;
 
-use super::MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS;
+use super::admission::{admit_sources, admit_view};
+use super::agreement::{require_record_agreement, snapshot_disagreement};
 use super::applicability::ConsumerRouteApplicability;
-use super::contribution::{
-    ConsumerRouteProjectionContribution, ConsumerRouteView, admit_sources, admit_view,
-};
+use super::contribution::{ConsumerRouteProjectionContribution, admit_extension_budget};
 use super::failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind, failure};
-use super::identity::{ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind};
+use super::identity::{
+    ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity,
+    ConsumerRouteProjectionSourceKind,
+};
 use super::row::ConsumerRouteProjectionRow;
+use super::view::ConsumerRouteView;
 use super::views::{
     ConsumerRouteActiveSessionState, ConsumerRouteProjection, ConsumerRouteProjectionIdentity,
     ConsumerRouteSelectionSummary, ConsumerRouteSessionStartControls,
@@ -95,11 +98,7 @@ pub fn compose_consumer_route_projection(
     let mut sources = vec![input.record_source.clone(), input.evidence_source.clone()];
     for contribution in &input.contributions {
         if contribution.applicability() != &applicability {
-            return Err(failure(
-                ConsumerRouteProjectionFailureKind::SnapshotIdentityDisagreement,
-                "swallowtail.consumer_route_projection.contribution_binding_rejected",
-                "A contribution does not belong to the exact composed snapshot binding",
-            ));
+            return Err(snapshot_disagreement());
         }
         sources.extend(contribution.sources().cloned());
     }
@@ -125,19 +124,13 @@ pub fn compose_consumer_route_projection(
         &applicability,
         &source_ids,
     )?;
-    let extensions = selection_rows
-        .iter()
-        .chain(&session_start_rows)
-        .chain(&active_session_rows)
-        .filter(|row| row.identity().namespaced_extension().is_some())
-        .count();
-    if extensions > MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS {
-        return Err(failure(
-            ConsumerRouteProjectionFailureKind::LimitExceeded,
-            "swallowtail.consumer_route_projection.namespaced_extension_limit_exceeded",
-            "Projection exceeds the fixed namespaced-extension maximum",
-        ));
-    }
+    admit_extension_budget(
+        selection_rows
+            .iter()
+            .chain(&session_start_rows)
+            .chain(&active_session_rows),
+        "Projection exceeds the fixed namespaced-extension maximum",
+    )?;
     Ok(ConsumerRouteProjection::from_parts(
         ConsumerRouteProjectionIdentity::from_parts(applicability, sources),
         ConsumerRouteSelectionSummary::from_rows(selection_rows),
@@ -151,7 +144,7 @@ fn merge<'a, I>(
     input: &'a ConsumerRouteProjectionInput<'a>,
     rows_of: fn(&'a ConsumerRouteProjectionContribution) -> I,
     applicability: &ConsumerRouteApplicability,
-    sources: &BTreeSet<super::identity::ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
 ) -> Result<Vec<ConsumerRouteProjectionRow>, ConsumerRouteProjectionFailure>
 where
     I: Iterator<Item = &'a ConsumerRouteProjectionRow>,
@@ -179,51 +172,4 @@ fn require_source_kind(
             "A composed source identity does not belong to its evidence class",
         ))
     }
-}
-
-fn require_record_agreement(
-    record: &ConfiguredProviderInstanceRecord,
-    evidence: &PreparedOperationEvidence,
-) -> Result<(), ConsumerRouteProjectionFailure> {
-    let binding = evidence.binding();
-    let plan = evidence.plan();
-    if record.instance_id() != binding.instance_id()
-        || record.instance_revision() != binding.instance_revision()
-        || record.driver_identity() != binding.driver_identity()
-        || record.protocol_facade_id() != binding.protocol_facade_id()
-        || record.execution_host_id() != binding.execution_host_id()
-        || record.transport_family() != binding.transport_family()
-    {
-        return Err(snapshot_disagreement());
-    }
-    let matched = record.routes().any(|route| {
-        route.driver_role() == binding.driver_role()
-            && route.execution_layer() == binding.execution_layer()
-            && route.operation_shape() == binding.operation_shape()
-            && route
-                .model_route()
-                .map(super::super::ConfiguredProviderModelRoute::route_id)
-                == plan.model_route_id()
-            && route
-                .model_route()
-                .map(super::super::ConfiguredProviderModelRoute::route_revision)
-                == plan.model_route_revision()
-            && route
-                .model_route()
-                .map(super::super::ConfiguredProviderModelRoute::model_id)
-                == plan.model_id()
-    });
-    if matched {
-        Ok(())
-    } else {
-        Err(snapshot_disagreement())
-    }
-}
-
-fn snapshot_disagreement() -> ConsumerRouteProjectionFailure {
-    failure(
-        ConsumerRouteProjectionFailureKind::SnapshotIdentityDisagreement,
-        "swallowtail.consumer_route_projection.snapshot_identity_rejected",
-        "Configured record, prepared evidence, and contributions do not describe one snapshot",
-    )
 }

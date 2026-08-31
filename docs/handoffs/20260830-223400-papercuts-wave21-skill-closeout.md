@@ -5,10 +5,10 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom / papercuts orchestrator
 created: 2026-08-30
-updated: 2026-08-30
+updated: 2026-08-31
 handoff_path: /Users/tom/Dev/projects/swallowtail/docs/handoffs/20260830-223400-papercuts-wave21-skill-closeout.md
 base_required: pushed-main
 tags: [coordination, handoff, worker, pr, papercuts]
@@ -33,16 +33,18 @@ checkouts.
 
 - **Repository:** `/Users/tom/Dev/projects/swallowtail`
 - **Planning branch:** `main`
-- **Planning base commit:** `a346baa985f6b71d6bc2831ccff329fe15e9c3ed`
-- **Pushed main verification:** local `HEAD` and `origin/main` both resolved
-  to that SHA before this handoff was created.
+- **Planning base commit at dispatch:** `a346baa985f6b71d6bc2831ccff329fe15e9c3ed`
+- **Merged main commit:** `811db499c2b59e42f1a290923b64ceac1468b237` (PR 132).
+- **Pushed main verification:** local `main` and `origin/main` both resolve to
+  the merged commit.
 - **Planning checkout:** clean before this handoff file was created.
-- **Worker mode:** implementation worker dispatched by the orchestrator.
+- **Worker mode:** implementation worker completed; PR merged by the
+  orchestrator after review.
 - **Worker branch:** `worker/papercuts-wave21-skill-closeout`
 - **Worker worktree:** launcher first.
   `AGENTS_WORKTREE_CONTAINER_DIR=/Users/tom/Dev/worktrees`.
 - **Required sibling worktree links:** `none`
-- **Ready work items, in order:**
+- **Completed work item:**
   1. Effigy validation materializes an untracked repo skill — close if
      `.agents/skills/effigy/` is tracked (PR 125) and a cheap
      `effigy qa:docs` (or the docs/Northstar check that originally
@@ -60,12 +62,15 @@ checkouts.
 - **Required validation:** cheap docs/Northstar validation does not add
   untracked `.agents/skills/effigy/` paths. Do not require green
   `effigy qa` against unrelated doctor noise.
-- **PR URL:** pending
-- **Merge authorisation:** absent; do not merge
+- **PR URL:** https://github.com/inflatable-cookie/swallowtail/pull/132
+- **Review state:** reviewed with no blocking findings; PR 132 merged as
+  `811db499`.
+- **Merge authorisation:** granted by the operator; orchestrator merged.
 
 ## Boundaries
 
-- Close the untracked-skill copy. Do not implement g05.006. Do not merge.
+- Close the untracked-skill copy. Do not implement g05.006. Do not relaunch
+  this handoff.
 
 ## Important Context
 
@@ -74,9 +79,9 @@ checkouts.
 
 ## Suggested Next Move
 
-Read this file from the top. Run the worktree-safety preflight. After
-the committed `HEAD` handoff checks out, skip sibling links (`none`),
-then prove the skill tree stays tracked and clean.
+Do not relaunch this handoff. The lane is complete; continue with the
+existing roadmap `Next Task`. Live-probe cleanup and scoped-task items remain
+open.
 
 ## Completion Protocol
 
@@ -103,16 +108,19 @@ then prove the skill tree stays tracked and clean.
 5. Required sibling list is `none`. Skip link setup.
 6. Read `AGENTS.md` and `PAPERCUTS.md`.
 
-### When the assigned runway is complete
+### Assigned runway complete
 
-1. Update `PAPERCUTS.md`. Push a PR. Do not merge.
+The worker updated `PAPERCUTS.md` and pushed PR 132. The orchestrator review
+found no blocking issue, and the operator authorised the merge. PR 132 is
+merged as `811db499`.
 
 ### Review and merge path
 
-Awaiting orchestrator review. Merge is operator-authorised only.
+Review completed; PR 132 merged with operator authorisation.
 
 - **Closeout refs:** `PAPERCUTS.md`; this handoff; the PR.
 
 ### Handoff closeout
 
-Leave live-probe cleanup and scoped-task items open.
+Leave live-probe cleanup and scoped-task items open. No further worker run is
+needed for this handoff.

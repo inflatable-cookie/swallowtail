@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 Papercuts wave 21 closeout](./2026-08-31-papercuts-wave21-closeout.md) — PR 132 merged; untracked Effigy skill papercut closed
 - [2026-08-31 g05 Post-Contract-061 Planning Reassessment](./2026-08-31-g05-post-contract-061-reassessment.md) — planning-only Contract 061 realization-readiness inventory selected; g05 strict-paused; no ready card
 - [2026-08-31 g05.008 Consumer Projection Contract Promotion](./2026-08-31-g05-008-consumer-projection-contract-promotion.md) — Contract 061 active; Spec 012 archived; card 021 and g05.008 complete; implementation unplanned
 - [2026-08-31 g05.008 Consumer Projection Spec Compilation](./2026-08-31-g05-008-consumer-projection-spec-compilation.md) — Spec 012 active; dedicated Contract 061 card 021 ready; one docs-only handoff

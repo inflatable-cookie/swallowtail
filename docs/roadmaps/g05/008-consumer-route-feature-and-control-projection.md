@@ -1,14 +1,14 @@
 # g05.008 Consumer Route Feature And Control Projection
 
-Status: ready
+Status: complete; Contract 061 active; implementation unplanned
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: reviewed consumer projection census; operator decisions recorded
 Vision tags: consumer integration, explicit selection, route truth
-Contract refs: 037, 047, 057; proposed 061
-Spec: active 012
-Planning state: card 021 ready; implementation unplanned
+Contract refs: 037, 047, 057; 061
+Spec: archived 012
+Planning state: card 021 complete; implementation unplanned
 
 ## Problem
 
@@ -25,10 +25,10 @@ contract authority, or selecting an implementation tranche.
 
 ## Goals
 
-- [ ] write Contract 061 from Spec 012
-- [ ] preserve Contracts 037, 047, and 057 unchanged
-- [ ] archive Spec 012 only after the contract and index surfaces are active
-- [ ] return to planning reassessment before any implementation roadmap
+- [x] write Contract 061 from Spec 012
+- [x] preserve Contracts 037, 047, and 057 unchanged
+- [x] archive Spec 012 only after the contract and index surfaces are active
+- [x] return to planning reassessment before any implementation roadmap
 
 ## Non-Goals
 
@@ -43,26 +43,26 @@ contract authority, or selecting an implementation tranche.
 
 ### Batch 8.1 — Composing Contract Promotion
 
-- [ ] Execute ready card 021.
-- [ ] create Contract 061 with the three projection views, exact source and
+- [x] Execute ready card 021.
+- [x] create Contract 061 with the three projection views, exact source and
       snapshot binding, lifecycle truth, safe-reason posture, and fail-closed
       composition rules
-- [ ] update contract/spec/log/roadmap indexes and archive Spec 012
-- [ ] close with implementation unplanned and one post-contract reassessment
+- [x] update contract/spec/log/roadmap indexes and archive Spec 012
+- [x] close with implementation unplanned and one post-contract reassessment
 
 ## Acceptance Criteria
 
-- [ ] Contract 061 is active and composes 037, 047, and 057 without amending
+- [x] Contract 061 is active and composes 037, 047, and 057 without amending
       them
-- [ ] catalogue, capability, readiness, preparation, and negotiated evidence
+- [x] catalogue, capability, readiness, preparation, and negotiated evidence
       retain separate authority
-- [ ] selection-summary, session-start, per-turn, and active-session truth do
+- [x] selection-summary, session-start, per-turn, and active-session truth do
       not collapse
-- [ ] source dimensions plus bounded safe reasons remain; no exhaustive
+- [x] source dimensions plus bounded safe reasons remain; no exhaustive
       availability-reason enum is claimed
-- [ ] every Spec 012 review-oracle counterexample has an explicit failure or
+- [x] every Spec 012 review-oracle counterexample has an explicit failure or
       withholding point
-- [ ] no production code, architecture realization claim, provider work, or
+- [x] no production code, architecture realization claim, provider work, or
       implementation card follows
 
 ## Decision Gates
@@ -78,9 +78,21 @@ contract authority, or selecting an implementation tranche.
 
 - [021 Consumer Route Feature And Control Projection Contract](batch-cards/021-consumer-route-feature-and-control-projection-contract.md)
 
+## Outcome
+
+Contract 061 is active. It composes Contracts 037, 047, and 057 without
+amending them, keeps the three projection views and per-turn truth distinct,
+binds one immutable snapshot to exact instance revision, route, model,
+operation shape, and source evidence identity, preserves source availability
+dimensions plus bounded safe reasons without an exhaustive taxonomy, and names
+four fail-closed points covering every Spec 012 review-oracle counterexample.
+Spec 012 is archived. No Rust, manifest, public API baseline, architecture
+realization claim, or implementation card follows.
+
 ## References
 
-- [Spec 012](../../specs/012-consumer-route-feature-and-control-projection.md)
+- [Spec 012](../../specs/archive/012-consumer-route-feature-and-control-projection.md)
+- [Contract 061](../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Projection triage and census synthesis](../../triage/2026-08-30-consumer-route-feature-and-option-projection.md)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)

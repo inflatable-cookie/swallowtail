@@ -269,6 +269,16 @@ contract file owns the exact rules.
   admission freezes before completion and listener, dispatch, watcher, and
   private-material cleanup all join. Generic MCP, public serving, sign-in,
   consumer tools, and containers remain out.
+- **061** composes 037, 047, and 057 into one descriptive consumer projection
+  of route, model, and operation features and lifecycle-scoped controls. It
+  keeps selection-summary, session-start, per-turn, post-open observation, and
+  exact negotiated state distinct; binds one immutable snapshot to exact
+  instance revision, route, model, operation shape, and source evidence
+  identity; preserves source availability dimensions plus bounded safe reasons
+  without an exhaustive taxonomy; and names the applicability, snapshot
+  identity, mutation authority, and unbounded reason points where composition
+  fails closed. It grants no execution, mutation, acknowledgement, routing,
+  default, or presentation authority.
 
 ## Amendments
 

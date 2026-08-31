@@ -1,6 +1,6 @@
 # 2026-08-30 Consumer Route Feature And Option Projection
 
-Status: promoted; Spec 012; g05.008
+Status: promoted; Contract 061; archived Spec 012; g05.008 card 021
 Owner: Tom
 Source: operator direction during g05 execution
 
@@ -365,6 +365,8 @@ The operator accepted the reassessment recommendation:
 - defer a closed availability-reason taxonomy; preserve existing source
   dimensions plus bounded safe reasons
 
-This note is now promoted planning evidence. Spec 012 owns the provisional
-shape. Ready card 021 owns docs-only Contract 061 promotion. No runtime or
+This note is now promoted planning evidence. Spec 012 owned the provisional
+shape and is archived. Card 021 completed the docs-only promotion:
+[Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
+is active and Contracts 037, 047, and 057 are unchanged. No runtime or
 implementation authority follows from the census itself.

@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [021-consumer-route-feature-and-control-projection-contract.md](./021-consumer-route-feature-and-control-projection-contract.md) — ready; docs-only Contract 061 promotion from Spec 012
+- None.
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [021-consumer-route-feature-and-control-projection-contract.md](./021-consumer-route-feature-and-control-projection-contract.md) — complete; Contract 061 active; Spec 012 archived; implementation unplanned
 - [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — evidence stop; one Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [019-watcher-proof-oracle-and-activity-delivery-repair.md](./019-watcher-proof-oracle-and-activity-delivery-repair.md) — merged through PR 126 at `c8691e84`; credential-free lifecycle feed and Stop-reentry oracle; no live claim
 - [011-watcher-acceptance-and-consumer-projection.md](./011-watcher-acceptance-and-consumer-projection.md) — evidence stop; one Haiku turn consumed; no host watcher; claims and prototype withheld

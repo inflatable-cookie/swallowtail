@@ -1,11 +1,12 @@
 # 012 Consumer Route Feature And Control Projection
 
-Status: draft
+Status: promoted
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Evidence: consumer route-feature and option census
 Roadmap: g05.008
+Promoted to: Contract 061
 
 ## Purpose
 
@@ -21,7 +22,7 @@ invent a default, or own consumer UI and routing policy.
 ## Evidence Baseline
 
 The reviewed census in
-[`2026-08-30-consumer-route-feature-and-option-projection-census.csv`](../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+[`2026-08-30-consumer-route-feature-and-option-projection-census.csv`](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 contains 767 rows across all 48 current production routes:
 
 - 555 feature rows
@@ -36,7 +37,7 @@ four named route paths. Matrices remain documentation cross-checks, not runtime
 authority.
 
 The source analysis and unsafe-inference register remain in the
-[promoted triage note](../triage/2026-08-30-consumer-route-feature-and-option-projection.md).
+[promoted triage note](../../triage/2026-08-30-consumer-route-feature-and-option-projection.md).
 
 ## Scope
 
@@ -204,18 +205,19 @@ these counterexamples directly testable by later conformance work.
 - [x] operator selected a dedicated composing contract
 - [x] operator deferred a closed availability-reason taxonomy
 - [x] Contracts 037, 047, and 057 retain their current authority
-- [ ] Contract 061 owns the three views, exact source binding, lifecycle truth,
+- [x] Contract 061 owns the three views, exact source binding, lifecycle truth,
       safe-reason posture, and fail-closed composition rules
-- [ ] Contract 061 names testable rejection points for every review-oracle
+- [x] Contract 061 names testable rejection points for every review-oracle
       counterexample
-- [ ] the spec is archived only after Contract 061 and its index surfaces are
+- [x] the spec is archived only after Contract 061 and its index surfaces are
       active
-- [ ] implementation remains unplanned until post-contract reassessment
+- [x] implementation remains unplanned until post-contract reassessment
 
 ## Promotion Targets
 
-- `docs/contracts/061-consumer-route-feature-and-control-projection.md`
-- contract index, summaries, and contracts front door
-- archive this spec after contract promotion
-- g05.008 card 021 and its contract-promotion closeout
+- [Contract 061](../../contracts/061-consumer-route-feature-and-control-projection.md)
+  is active
+- contract index, summaries, and contracts front door updated
+- this spec archived after contract promotion
+- g05.008 card 021 closed through the contract-promotion log
 - architecture only after code lands; architecture records realized structure

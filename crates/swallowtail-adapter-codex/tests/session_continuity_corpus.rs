@@ -13,7 +13,7 @@ fn version(value: &serde_json::Value, field: &str) -> Version {
 fn continuity_segments_freeze_the_exact_maintained_window() {
     let corpus: serde_json::Value = serde_json::from_str(CORPUS).expect("corpus parses");
     assert_eq!(corpus["qualified_range"]["baseline"], "0.80.0");
-    assert_eq!(corpus["qualified_range"]["latest"], "0.149.1");
+    assert_eq!(corpus["qualified_range"]["latest"], "0.151.0");
     assert_eq!(corpus["selected_method"], "thread/resume");
 
     let segments = corpus["segments"].as_array().expect("segments");
@@ -21,7 +21,7 @@ fn continuity_segments_freeze_the_exact_maintained_window() {
     for checkpoint in [
         "0.80.0", "0.81.0", "0.84.0", "0.99.0", "0.100.0", "0.107.0", "0.110.0", "0.128.0",
         "0.129.0", "0.130.0", "0.131.0", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0",
-        "0.149.1",
+        "0.149.1", "0.150.0", "0.150.1", "0.151.0",
     ] {
         let checkpoint = Version::parse(checkpoint).expect("checkpoint");
         assert_eq!(

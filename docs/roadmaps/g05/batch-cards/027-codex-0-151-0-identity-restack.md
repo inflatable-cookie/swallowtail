@@ -1,6 +1,6 @@
 # 027 Codex 0.151.0 Identity Restack
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -50,3 +50,11 @@ identity evidence on current `main` without a production claim edit.
 ## Auto-Continuation
 
 Yes, to card 028 only after an admitted segment is recorded.
+
+## Result
+
+Official stable remained exact `0.151.0`. The newly present host `0.150.1`
+binary was recorded and matches the official signed darwin-arm64 package.
+Research 262 and the frozen corpus were reconstructed in identity-only commit
+`28e47fcb`; production claims remained unchanged. The selected protocol still
+classifies as a compatible extension, so card 028 continued.

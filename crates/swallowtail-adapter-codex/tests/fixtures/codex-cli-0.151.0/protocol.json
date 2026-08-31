@@ -1,0 +1,69 @@
+{
+  "exec_help_source": "official-extracted-0.151.0-linux-x64",
+  "exec_help_sha256": "e504bac5a6364566fbe408132dec7993639def9258ece34e8352f51f8d43687c",
+  "note_exec_help": "Byte-identical to 0.149.1, 0.150.0, and 0.150.1",
+  "exec_selected_flags_present": [
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only"
+  ],
+  "app_server_selected_flags_present": [
+    "app-server",
+    "--listen",
+    "stdio://"
+  ],
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "v2_bundle_sha256": "2442b15801bc019ad55987ad03e0f0ae60c51417825b9b6d708db640e6c2651c",
+    "experimental_bundle_sha256": "424b204943b18e5ffa52667a2aa397c9950730ec1e49ad767e2a016743990541",
+    "model_list_params_sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+    "note_schema_bundles": "v2 and experimental bundles differ from 0.149.1 by unmapped extras; ModelListParams is byte-identical; selected required fields on thread/list, thread/start, thread/archive, thread/delete, turn/interrupt, and model/list are unchanged",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "decoder_corpus": "existing-codex-jsonl-and-app-server-v2",
+  "note_corpus": "Selected mapped protocol unchanged; no decoder update needed",
+  "unused_deltas": [
+    "exec --thread-source",
+    "exec fork",
+    "top-level fork",
+    "thread/fork",
+    "thread/turns/list",
+    "thread/items/list",
+    "thread/resume excludeTurns",
+    "turn/start serviceTierForTurn",
+    "turn/start toolOutput",
+    "turn/start turnTrigger",
+    "app-server --code-mode-host",
+    "codex-code-mode-host binary",
+    "amazon-bedrock-builtin-provider",
+    "tui /export",
+    "plugin catalogs",
+    "optional MCP grace",
+    "Guardian",
+    "remote-compaction-image-budget"
+  ],
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false
+}

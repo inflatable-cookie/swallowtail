@@ -26,6 +26,15 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Codex CLI qualified ceiling from `0.149.1` to official npm
+  `@openai/codex` `0.151.0` on the shared `codex.cli` exec and app-server
+  axes. Compatible extension of the existing JSONL and workspace-roots
+  behaviors: selected mapped flags stay; `fork`, `--thread-source`,
+  `thread/turns/list`, `thread/items/list`, and `--code-mode-host` stay
+  unmapped. Published intermediates `0.150.0` and `0.150.1` are qualified;
+  unpublished `0.149.2` and `0.150.2` stay incompatible; `0.151.1` remains
+  visible `UnverifiedNewer`. Feature-specific exact version sets stay on
+  the `0.147.0..=0.149.1` probed points. Research 262.
 - raise the Claude Code headless and response-only qualified ceilings from
   `2.1.241` to official npm `@anthropic-ai/claude-code` `2.1.251`. Compatible
   extension of the existing stream-JSON behaviors: selected mapped flags stay;

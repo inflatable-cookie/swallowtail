@@ -1,6 +1,6 @@
 use super::*;
 
-pub(super) fn lifecycle_binding(
+pub(crate) fn lifecycle_binding(
     prepared: &swallowtail_adapter_codex::CodexPreparedIntegration,
     version: &str,
 ) -> ProviderSessionManagementBinding {

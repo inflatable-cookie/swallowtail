@@ -229,13 +229,16 @@ keeps card 024 ready but prioritizes later acknowledgement candidates D/F/G,
 per-turn candidates B/K/L, then breadth candidates C/E/I/J. Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
-Spec 013 is archived and realization remains unplanned. g05.011 isolates exact
-Claude watcher MCP tool admission as provider-free card 026 before any new
-live attempt. g05.012 reconstructed PR 130 as two identity-before-claim commits,
+Spec 013 is archived and realization remains unplanned. g05.011 card 026
+rejected Claude watcher MCP suppression by `--tools` and named watcher-only
+`--bare` authentication as the alternative blocker. Card 029 now compares
+credential-preserving isolation before any new live attempt. g05.012
+reconstructed PR 130 as two identity-before-claim commits,
 recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
-promoted Contract 062 without Rust. Card 026 is the front-door Next Task. PR
+promoted Contract 062 without Rust. Card 026 closed without a production
+change. Card 029 is the front-door Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,

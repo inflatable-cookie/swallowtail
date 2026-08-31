@@ -1,0 +1,52 @@
+{
+  "version": "2.1.251",
+  "axis": "claude-code.headless-stream-json",
+  "source": {
+    "command": "claude --help",
+    "host_version": "2.1.251",
+    "host_help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+    "host_help_matches_official_extracted": true,
+    "provider_prompt_sent": false,
+    "credentials_used": false
+  },
+  "help_semantics": {
+    "tools_scope": "built-in-set-only",
+    "tools_selected_value": "Read,Glob,Grep",
+    "mcp_config_separate": true,
+    "strict_mcp_config_separate": true,
+    "bare_explicit_settings_supported": true,
+    "bare_anthropic_auth": [
+      "ANTHROPIC_API_KEY",
+      "apiKeyHelper via --settings"
+    ],
+    "bare_oauth_and_keychain": "never-read"
+  },
+  "command_comparison": {
+    "watcher_omitted": {
+      "tools": "Read,Glob,Grep",
+      "mcp": "empty-strict",
+      "stop_hook": "absent"
+    },
+    "watcher_current": {
+      "tools": "Read,Glob,Grep",
+      "mcp": "operation-private-swallowtail-watchers",
+      "stop_hook": "operation-private-completion-gate"
+    },
+    "minimal_candidate_remove_tools_pair": {
+      "mcp_visibility_delta": "none",
+      "built_in_delta": "widens-to-default-set",
+      "disposition": "rejected"
+    }
+  },
+  "hypothesis": {
+    "claim": "--tools Read,Glob,Grep suppresses the reserved watcher MCP family",
+    "result": "rejected",
+    "production_command_change": "none"
+  },
+  "alternative_blocker": {
+    "name": "bare-authentication-path-unavailable",
+    "reason": "watcher opt-in adds --bare; the consumed live envelope had no ANTHROPIC_API_KEY and the operation-private settings declare no apiKeyHelper, while --bare never reads OAuth or keychain credentials",
+    "live_observation": "no MCP initialize, tools/list, or provider success before JoinedZero",
+    "repair_authorized_by_card_026": false
+  }
+}

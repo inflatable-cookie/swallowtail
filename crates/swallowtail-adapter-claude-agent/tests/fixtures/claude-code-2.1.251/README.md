@@ -19,3 +19,9 @@ replaces the `claude-code-2.1.220` headless decoder specimen, the
 Maximum-turn, autocompact, spend-cap, advisor, permission-mode,
 ultracode, fast-mode, and watcher-seam evidence stay on the
 `2.1.220..=2.1.241` probed sets. No provider prompt was sent.
+
+`watcher-tool-admission.json` reuses the byte-identical official/host help
+corpus to freeze `--tools` as a built-in-set filter, separate from MCP
+configuration. It rejects watcher-MCP suppression as the card 026 hypothesis
+and records `--bare` authentication as the alternative pre-initialization
+blocker. No provider prompt or credential was used.

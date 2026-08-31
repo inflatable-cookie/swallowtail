@@ -5,6 +5,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Effigy graph explore can rebuild silently without a useful timeout — 2026-08-31
+- Friction: `effigy graph explore ... --json` produced no envelope or progress
+  while rebuilding for more than 60 seconds and required an interrupt.
+- Impact: a bounded code-navigation query can stall an agent turn without a
+  result or a clear fallback point.
+- Fix: emit rebuild progress and enforce a bounded query/index timeout with a
+  structured fallback diagnostic.
+- Surface: Effigy graph indexing and `graph explore --json` in Swallowtail.
+
 ### [x] Watcher proof repair restored the 390 god-file baseline — 2026-08-30
 - Friction: the first PR 126 revision raised doctor from 390 findings
   (341 warnings / 49 errors) on `main` to 395 (346 / 49). New warnings were

@@ -1,6 +1,6 @@
 # 026 Claude Watcher Tool Admission Evidence And Repair
 
-Status: ready
+Status: complete; hypothesis rejected; no production command change
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -40,11 +40,11 @@ does.
 
 ## Acceptance Criteria
 
-- exact current and repaired command admissions are observable provider-free
-- the reserved watcher family is either proved admitted or the hypothesis is
+- [x] exact current and minimal-candidate command admissions are observable provider-free
+- [x] the reserved watcher family is either proved admitted or the hypothesis is
   rejected with a named alternative blocker
-- any repair is opt-in, operation-private, exact-scope, and regression-tested
-- no new provider turn is authorized or consumed
+- [x] no production repair follows when the candidate only widens built-in tools
+- [x] no new provider turn is authorized or consumed
 
 ## Validation
 
@@ -59,3 +59,17 @@ does.
 ## Auto-Continuation
 
 No. Stop for exact-head review and live-readiness reassessment.
+
+## Result
+
+Exact `2.1.251` help defines `--tools` as a built-in-set filter, separate from
+MCP configuration. The operation-private fixture proves the current watcher
+command initializes the bridge, lists exactly the six reserved tools, admits
+the Stop hook, rejects an unreserved tool, joins, and releases its files.
+Removing `--tools Read,Glob,Grep` changes no watcher-MCP visibility and widens
+the built-in set, so no command repair landed.
+
+The alternative blocker is `--bare`: it never reads OAuth or keychain
+credentials, while the consumed live envelope had no `ANTHROPIC_API_KEY` and
+the private settings had no `apiKeyHelper`. Card 029 owns a provider-free
+credential-preserving isolation comparison before any new live authorization.

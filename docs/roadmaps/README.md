@@ -15,15 +15,15 @@ shape.
 
 ## Next Task
 
-Implement [g05 card 026](g05/batch-cards/026-claude-watcher-tool-admission-evidence-and-repair.md):
-prove provider-free whether Claude Code `2.1.251` command admission with
-`--tools Read,Glob,Grep` suppresses the reserved
-`mcp__swallowtail-watchers__*` family. Freeze exact tool-admission evidence,
-compare watcher-disabled, current watcher-enabled, and minimally repaired
-commands, and repair only the watcher command boundary if the hypothesis is
-confirmed. Do not send a provider prompt, publish a watcher claim, redesign
-the provider-neutral watcher core, or combine skill-inventory,
-feature-façade, currentness, papercut, or release work into this card.
+Implement [g05 card 029](g05/batch-cards/029-claude-watcher-credential-preserving-isolation.md):
+compare exact Claude Code `2.1.251` watcher-only isolation shapes and replace
+`--bare` only if configured authentication survives while user, project, and
+local hooks, skills, MCP servers, and settings remain excluded. Preserve the
+private MCP tools, Stop hook, injected skill, Plan mode, working-resource
+confinement, omission, and the normal non-watcher command. Do not send a
+provider prompt, read a credential, publish a watcher claim, or combine
+skill-inventory, feature-façade, currentness, papercut, or release work into
+this card.
 
 ## Standing Lanes
 

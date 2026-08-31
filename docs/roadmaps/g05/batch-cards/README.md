@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [026-claude-watcher-tool-admission-evidence-and-repair.md](./026-claude-watcher-tool-admission-evidence-and-repair.md) — ready; provider-free watcher MCP admission recovery
+- [029-claude-watcher-credential-preserving-isolation.md](./029-claude-watcher-credential-preserving-isolation.md) — ready; replace watcher-only `--bare` only after exact private-authority proof
 - [024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md](./024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md) — ready; exact 38-row candidate H package tranche
 
 ## Blocked
@@ -16,6 +16,7 @@
 
 ## Completed
 
+- [026-claude-watcher-tool-admission-evidence-and-repair.md](./026-claude-watcher-tool-admission-evidence-and-repair.md) — complete; `--tools` suppression rejected; `--bare` authentication blocker named; no production change
 - [025-bounded-skill-inventory-contract-promotion.md](./025-bounded-skill-inventory-contract-promotion.md) — complete; Contract 062 active; Spec 013 archived; implementation unplanned
 - [028-codex-0-151-0-claim-restack.md](./028-codex-0-151-0-claim-restack.md) — complete; PR 130 merged at `3360d497`; Codex exec and app-server qualified through official `0.151.0`
 - [027-codex-0-151-0-identity-restack.md](./027-codex-0-151-0-identity-restack.md) — complete; Research 262 and current host/official identity reconstructed before claim

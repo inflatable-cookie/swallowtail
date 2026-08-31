@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 g05.011 Card 026 Watcher Tool Admission](./2026-08-31-g05-011-card-026-watcher-tool-admission.md) — `--tools` suppression rejected provider-free; `--bare` authentication blocker named; no production change; card 029 next
 - [2026-08-31 g05.010 Bounded Skill Inventory Contract Promotion](./2026-08-31-g05-010-bounded-skill-inventory-contract-promotion.md) — Contract 062 active; Spec 013 archived; card 025 and g05.010 complete; implementation unplanned; card 026 next
 - [2026-08-31 Codex 0.151.0 Claim](./2026-08-31-codex-0-151-0-claim.md) — PR 130 merged at `3360d497`; exec and app-server qualified through official `0.151.0`; exact feature sets retained through `0.149.1`
 - [2026-08-31 Codex 0.151.0 Identity](./2026-08-31-codex-0-151-0-identity.md) — Research 262; compatible extension; host `0.150.1` and official stable `0.151.0` corroborated; claims unchanged

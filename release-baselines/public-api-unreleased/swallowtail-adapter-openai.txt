@@ -88,6 +88,8 @@ pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::metho
 pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
 impl swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
 pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::evidence(&self) -> &swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence
 pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::into_parts(self) -> (swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiBackgroundDriver

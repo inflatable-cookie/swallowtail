@@ -99,6 +99,8 @@ pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::operation(&self) 
 pub const fn swallowtail_adapter_codex::CodexPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub struct swallowtail_adapter_codex::CodexPreparedExec
 impl swallowtail_adapter_codex::CodexPreparedExec
+pub fn swallowtail_adapter_codex::CodexPreparedExec::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_codex::CodexPreparedExec
 pub const fn swallowtail_adapter_codex::CodexPreparedExec::evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedExec::into_parts(self) -> (swallowtail_adapter_codex::CodexPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_codex::CodexPreparedExec::low_level_driver(&self) -> swallowtail_adapter_codex::CodexExecDriver

@@ -3,6 +3,8 @@ use super::*;
 #[path = "agent/lifecycle.rs"]
 mod lifecycle;
 mod process;
+mod reasoning;
+mod responses;
 
 pub(super) use process::FixtureProcessHandle;
 

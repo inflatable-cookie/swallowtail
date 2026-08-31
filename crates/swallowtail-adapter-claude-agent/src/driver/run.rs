@@ -70,9 +70,7 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             }
             let mut session = self
                 .start_session(&plan, &open_request, &services, selected, reasoning)
-                .await
-                .map_err(super::ClaudeAgentOpenRejection::into_failure)?
-                .0;
+                .await?;
             let run_id = RuntimeRunId::new(format!(
                 "claude-agent-acp:{}",
                 request.request_id().as_str()

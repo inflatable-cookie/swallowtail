@@ -46,6 +46,25 @@ and settings.
 - omission and the normal non-watcher command remain byte-for-byte unchanged
 - no provider turn or credential is consumed
 
+## Review Oracle
+
+- **Invariant:** watcher opt-in admits only the operation-private MCP, Stop
+  hook, injected skill, working resource, fixed built-ins, and one configured
+  authentication path. It never admits ambient user, project, or local
+  settings, hooks, skills, or MCP servers.
+- **Smallest counterexamples:** a candidate preserves authentication by
+  reopening any ambient setting source; a candidate preserves private watcher
+  composition but still removes every configured authentication path; watcher
+  omission or the normal non-watcher argv changes.
+- **Expected stop:** reject the candidate before production editing when exact
+  help/parser evidence cannot prove both authentication preservation and
+  ambient exclusion without reading a credential or contacting the provider.
+- **Required proof:** freeze exact candidate argv and setting-source deltas;
+  exercise each counterexample in deterministic fixtures; prove the six
+  reserved tools, Stop hook, skill, Plan mode, resource confinement,
+  unreserved-tool rejection, terminal join, private-file cleanup, omission,
+  and normal-command identity.
+
 ## Validation
 
 - `cargo fmt -p swallowtail-adapter-claude-agent -- --check`

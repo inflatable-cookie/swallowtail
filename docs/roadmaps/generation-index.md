@@ -145,7 +145,7 @@ goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
 g05 has twelve roadmaps: 7 completed milestones, honest evidence stops at 002,
-003, and 007, and ready milestones at 009, 011. Milestones
+003, 007, and 011, and one ready milestone at 009. Milestones
 004 and 005 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
@@ -230,15 +230,17 @@ per-turn candidates B/K/L, then breadth candidates C/E/I/J. Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
 Spec 013 is archived and realization remains unplanned. g05.011 card 026
-rejected Claude watcher MCP suppression by `--tools` and named watcher-only
-`--bare` authentication as the alternative blocker. Card 029 now compares
-credential-preserving isolation before any new live attempt. g05.012
+rejected Claude watcher MCP suppression by `--tools`; card 029 then rejected
+every exact `2.1.251` credential-preserving isolation shape. PR 135 merged the
+provider-free evidence stop without a production behavior change. Separating
+watcher instruction delivery from ambient skill discovery now needs a new
+planning lane before any live attempt. g05.012
 reconstructed PR 130 as two identity-before-claim commits,
 recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
-promoted Contract 062 without Rust. Card 026 closed without a production
-change. Card 029 is the front-door Next Task. PR
+promoted Contract 062 without Rust. Cards 026 and 029 closed without a
+production behavior change. Card 024 is the front-door Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,

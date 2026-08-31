@@ -1,6 +1,6 @@
 # 029 Claude Watcher Credential-Preserving Isolation
 
-Status: ready
+Status: complete; evidence stop; no candidate; no production behavior change
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -40,11 +40,11 @@ and settings.
 
 ## Acceptance Criteria
 
-- the current auth failure and every candidate authority delta are explicit
-- one candidate is selected only with exact ambient-isolation and private
+- [x] the current auth failure and every candidate authority delta are explicit
+- [x] one candidate is selected only with exact ambient-isolation and private
   watcher composition evidence, or the lane stops honestly
-- omission and the normal non-watcher command remain byte-for-byte unchanged
-- no provider turn or credential is consumed
+- [x] omission and the normal non-watcher command remain byte-for-byte unchanged
+- [x] no provider turn or credential is consumed
 
 ## Review Oracle
 
@@ -78,3 +78,25 @@ and settings.
 ## Auto-Continuation
 
 No. Stop for exact-head review and live-readiness reassessment.
+
+## Result
+
+PR 135 merged the provider-free evidence stop at `e1313e5f`. Exact `2.1.251`
+help and fail-closed fixtures reject every compared shape:
+
+- `--bare` removes OAuth/keychain auth, admits ambient skills, and leaves the
+  private Stop hook unstated
+- `--restricted` preserves auth and private composition but admits ambient
+  skills, CLAUDE.md, and plugins
+- empty setting sources retain the same ambient skill/instruction gap and
+  leave the Stop hook unstated
+- `--safe-mode` excludes the ambient axes by disabling the private MCP, Stop
+  hook, and injected skill mechanisms
+- `--disable-slash-commands` disables the injected watcher skill together with
+  ambient skills
+
+No candidate was selected, production watcher argv stayed unchanged, the
+391-finding god-file baseline was restored, and no provider prompt, credential,
+or live turn was consumed. The route remains not live-ready. A later planning
+lane must separate watcher instructions from ambient skill discovery before a
+new command or live attempt can be considered.

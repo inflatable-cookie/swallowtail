@@ -15,15 +15,14 @@ shape.
 
 ## Next Task
 
-Implement [g05 card 029](g05/batch-cards/029-claude-watcher-credential-preserving-isolation.md):
-compare exact Claude Code `2.1.251` watcher-only isolation shapes and replace
-`--bare` only if configured authentication survives while user, project, and
-local hooks, skills, MCP servers, and settings remain excluded. Preserve the
-private MCP tools, Stop hook, injected skill, Plan mode, working-resource
-confinement, omission, and the normal non-watcher command. Do not send a
-provider prompt, read a credential, publish a watcher claim, or combine
-skill-inventory, feature-façade, currentness, papercut, or release work into
-this card.
+Implement [g05 card 024](g05/batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md):
+complete candidate H's exact 9-row `deepagents.acp`, 9-row `kiro.acp`, 8-row
+`qoder.headless`, and 12-row `zcode.app-server` Contract 061 package tranche.
+Use only exact prepared-operation truth, keep the three no-control audits as
+negative coverage, retain descriptor-only activity, and preserve the existing
+runtime/testkit/core public baseline. Do not contact a provider, run a live
+probe, restart watcher or skill-visibility work, promote another candidate, or
+compile Batch 9.5.
 
 ## Standing Lanes
 

@@ -1,13 +1,13 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: planned; public baseline planning gate open
+Status: planned; Batch 9.1 awaiting Realtime acknowledgement API decision
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: roadmap compiled; exact Rust surface and numeric maxima unplanned; no ready card
+Planning state: shared baseline and numeric maxima drafted; one route-local API fork remains; no ready card
 
 ## Problem
 
@@ -15,8 +15,12 @@ Contract 061 settles the semantic projection boundary, and the
 realization-readiness inventory maps the current owners and dependency graph.
 The operator selected runtime-owned composition, immutable adapter
 contributions with explicit source identities, fixed library admission maxima,
-and a two-route first proof. Exact Rust names, signatures, and numeric maxima
-remain unplanned, so implementation cannot start yet.
+and a two-route first proof. Batch 9.1 now closes the shared runtime names,
+composer shape, fixed maxima, failure behavior, replacement, fixtures,
+validation, and stops. The realized OpenAI Realtime path privately validates
+and then discards the exact `session.updated` acknowledgement, so one
+route-local public return seam still requires an operator decision before
+implementation can start.
 
 ## Generation Runway Goal
 
@@ -56,17 +60,24 @@ or mutation authority.
 
 ### Batch 9.1 — Public Baseline Planning Gate
 
-- [ ] select exact public Rust record, contribution, source-identity, view,
-      composer, failure, and accessor names and signatures inside
-      `swallowtail-runtime`
-- [ ] select fixed library maxima for rows per view, enumerable values per
+- [ ] finish the exact public Rust record, contribution, source-identity, view,
+      composer, failure, and accessor names and signatures; the shared family,
+      accessor names, and composer signature are selected, but the route-local
+      acknowledgement seam still governs the final contribution surface
+- [x] select fixed library maxima for rows per view, enumerable values per
       control, namespaced extension count and text, and copied safe-reason bytes
       from per-route high-water marks plus explicit headroom
-- [ ] define the exact admission failures, source-replacement behavior,
+- [x] define the exact admission failures, source-replacement behavior,
       portable fixtures, validation scope, and stop conditions needed by the
       first implementation card
-- [ ] apply the readiness rubric and create no implementation card unless all
+- [x] apply the readiness rubric and create no implementation card unless all
       public API and bound decisions are closed
+- [ ] obtain the operator decision for the additive adapter-owned typed
+      `openai.realtime` acknowledgement result, or another exact public seam,
+      then close its route-local names and signatures
+
+The [Batch 9.1 gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+records the selected maxima and the failed readiness result. No card is ready.
 
 ### Batch 9.2 — Runtime Composer And Portable Conformance
 
@@ -146,7 +157,7 @@ or mutation authority.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: Batch 9.1 planning gate; no ready card
+- immediate state: Batch 9.1 operator API fork; no ready card
 - first execution tranche after the gate: runtime/testkit kernel plus the two
   named route proofs
 - later runway: package-coherent adapter expansion, then one all-route audit
@@ -154,14 +165,15 @@ or mutation authority.
 
 ## Batch Cards
 
-None. The first card waits for Batch 9.1 to close exact Rust surface and fixed
-numeric maxima.
+None. The first card waits for the Realtime acknowledgement return seam and
+the remaining exact route-local names to close Batch 9.1.
 
 ## References
 
 - [Contract 061 Consumer Route Feature And Control Projection](../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [g05.008 contract promotion](008-consumer-route-feature-and-control-projection.md)
 - [realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
+- [Batch 9.1 public baseline gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)

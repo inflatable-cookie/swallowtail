@@ -200,8 +200,13 @@ implementation card. The operator selected that planning-only inventory on
 2026-08-31. The inventory is drafted and returns material package, API, bound,
 coverage, and tranche forks to the operator. The operator accepted all four
 recommended option 1 decisions. g05.009 now compiles the realization runway;
-its exact Rust surface and fixed-maxima Batch 9.1 planning gate remains open,
-so g05 remains open and no ready card follows yet. No Darwin dispatch,
+its Batch 9.1 shared runtime surface, fixed maxima, failure behavior,
+replacement, fixtures, validation, and stops are drafted. The readiness rubric
+finds one material API fork: OpenAI Realtime privately validates and discards
+its exact `session.updated` acknowledgement, so the operator must select a
+public route into an immutable active-session contribution before route-local
+signatures or a card can close. g05 remains open and no ready card follows yet.
+No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container backend,
 new route, second provider turn, implementation card, generation rollover, or
 parked Bedrock work is authorized.

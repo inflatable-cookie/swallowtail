@@ -83,9 +83,18 @@ per-platform digest repair before the same one-shot turn. Card 020 repaired
 selection at `adb04f17`, then consumed the turn. The ordered recorder kept
 only `JoinedZero`. Its honest evidence stop merged through PR 128 at
 `528a31c9`. Watcher claims stay unpublished. No g05 milestone or card is
-ready; the roadmaps front door points to operator planning reassessment. No
-new worker, second provider turn, fallback, rerun, or Darwin dispatch is
-authorized. PR 127 remains unmerged.
+ready. The post-card-020 reassessment classifies g05 as `strict-paused` and
+routes the sole Next Task to the consumer projection promotion decision. The
+reviewed 767-row census is the clearest planning candidate, not runtime or
+implementation authority. No g05.008, new worker, second provider turn,
+fallback, rerun, or Darwin dispatch is authorized. PR 127 remains unmerged.
+
+The reassessment resolves immutable replacement snapshots, exact
+instance/route/model/operation scoping, lifecycle-separated views, downstream
+presentation ownership, and unchanged Contracts 037/047/057 authority from
+existing contracts. It recommends one composing contract and deferring a
+closed availability-reason taxonomy, but leaves those promotion choices to the
+operator before a provisional spec or roadmap is compiled.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.

@@ -183,10 +183,13 @@ probe repair before the same one-shot turn. The lock and API-tool validation
 gaps were cleared. Card 020 repaired digest selection at `adb04f17`, then
 consumed the turn, and its honest evidence stop merged through PR 128 at
 `528a31c9`. The ordered recorder kept only `JoinedZero`. Watcher claims stay
-unpublished. No g05 milestone or card is ready; the sole front-door pointer is
-an operator planning reassessment. No Darwin dispatch, overlapping watcher
-worker, orchestrator-side live selector, container backend, new route, second
-provider turn, or parked Bedrock work is authorized.
+unpublished. The post-card-020 reassessment classifies g05 as `strict-paused`.
+No g05 milestone or card is ready. The reviewed consumer route-feature and
+control census is the clearest next planning candidate, but it remains open
+triage evidence until the operator settles its promotion and contract shape.
+The sole front-door pointer names that decision. No Darwin dispatch,
+overlapping watcher worker, orchestrator-side live selector, container backend,
+new route, second provider turn, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

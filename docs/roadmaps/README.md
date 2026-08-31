@@ -15,10 +15,12 @@ shape.
 
 ## Next Task
 
-Reassess g05 after card 020's Linux live evidence stop merged through PR 128
-at `528a31c9`. No implementation card is ready. Do not open a worker or
-authorize another Claude turn, fallback, rerun, or Darwin dispatch. PR 127
-remains unmerged.
+Settle whether the reviewed consumer route-feature and control census becomes
+g05's next provisional spec and contract-discussion lane. The
+[post-card-020 reassessment](../logs/2026-08-31-g05-post-card-020-planning-reassessment.md)
+recommends one composing contract and deferring a closed availability-reason
+taxonomy. No implementation card or worker handoff is ready. Do not authorize
+another Claude turn, fallback, rerun, or Darwin dispatch. Do not merge PR 127.
 
 ## Standing Lanes
 

@@ -339,3 +339,18 @@ availability-reason taxonomy, consumer presentation boundary, or whether
 Contracts 037, 047, and 057 need an amendment versus a composing contract.
 Those remain promotion questions. No runtime authority or implementation
 claim is created here; Status: open remains unchanged.
+
+## g05 Reassessment Disposition (2026-08-31)
+
+The post-card-020 orchestrator reassessment selects this census as g05's
+clearest next planning candidate without promoting it. Existing authority
+settles immutable replacement snapshots, exact instance/route/model/operation
+scoping, lifecycle-separated views, downstream presentation ownership, and
+unchanged Contracts 037/047/057 authority.
+
+Promotion still needs the operator to confirm that this becomes the next
+provisional spec, choose one composing contract versus amendments, and decide
+whether the first contract owns a closed availability-reason taxonomy. The
+reassessment recommends a composing contract and deferring the closed taxonomy.
+Until those choices are settled, this note stays open and no g05.008 roadmap,
+batch card, contract, architecture claim, or worker handoff follows.

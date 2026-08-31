@@ -14,3 +14,8 @@ pub(crate) fn session_effort(mode: &ReasoningMode) -> Option<&'static str> {
         _ => return None,
     })
 }
+
+/// Reports whether the provider acknowledged a well-formed session effort.
+pub(crate) fn is_session_effort(value: &str) -> bool {
+    matches!(value, "minimal" | "low" | "medium" | "high" | "xhigh")
+}

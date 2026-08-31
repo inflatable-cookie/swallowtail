@@ -5,6 +5,8 @@ mod pump;
 mod session;
 mod worker;
 
+pub(crate) use session::{RealtimeAcknowledgement, open_realtime_lifecycle};
+
 use crate::failure::failure;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint,

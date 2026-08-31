@@ -3,10 +3,11 @@ use std::collections::BTreeSet;
 use super::applicability::ConsumerRouteApplicability;
 use super::failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind, failure};
 use super::identity::{ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity};
-use super::row::{ConsumerRouteProjectionRow, ConsumerRouteValueDomain};
+use super::row::{
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionRow, ConsumerRouteValueDomain,
+};
 use super::semantics::{
     ConsumerRouteActorPosture, ConsumerRouteLifecycle, ConsumerRouteMutationAuthority,
-    ConsumerRouteRowIdentity,
 };
 use super::{
     MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS, MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS,
@@ -245,29 +246,34 @@ fn admit_row(
 }
 
 fn admit_value(row: &ConsumerRouteProjectionRow) -> Result<(), ConsumerRouteProjectionFailure> {
-    let is_control = matches!(row.identity(), ConsumerRouteRowIdentity::Control(_));
-    match (is_control, row.control_value()) {
-        (true, Some(value)) => {
+    match row.control_value() {
+        Some(value) => {
             if matches!(value.domain(), ConsumerRouteValueDomain::Descriptor)
                 && !matches!(
                     value.omission(),
-                    super::row::ConsumerRouteOmissionSemantics::NotSelectable
+                    ConsumerRouteOmissionSemantics::NotSelectable
                 )
             {
                 return Err(failure(
                     ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
                     "swallowtail.consumer_route_projection.value_domain_rejected",
-                    "A descriptor-only control domain cannot carry selectable omission truth",
+                    "A descriptor-only domain cannot carry selectable omission truth",
                 ));
             }
             Ok(())
         }
-        (false, None) => Ok(()),
-        _ => Err(failure(
-            ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
-            "swallowtail.consumer_route_projection.value_domain_rejected",
-            "Only a control row carries a value kind, domain, and omission truth",
-        )),
+        None if matches!(
+            row.actor_posture(),
+            ConsumerRouteActorPosture::ConsumerSelectable
+        ) =>
+        {
+            Err(failure(
+                ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
+                "swallowtail.consumer_route_projection.value_domain_rejected",
+                "A consumer-selectable row must publish its value kind, domain, and omission truth",
+            ))
+        }
+        None => Ok(()),
     }
 }
 

@@ -19,6 +19,7 @@ mod prepared_realtime_profile;
 mod prepared_reconciliation;
 mod protocol;
 mod realtime;
+mod realtime_projection;
 mod realtime_protocol;
 mod realtime_reasoning;
 mod realtime_selection;
@@ -50,6 +51,10 @@ pub use prepared_reconciliation::{
     OpenAiBackgroundReconciliationInput, OpenAiPreparedBackgroundReconciliation,
 };
 pub use realtime::{OpenAiRealtimeDriver, openai_realtime_descriptor};
+pub use realtime_projection::{
+    OpenAiRealtimeProjectionOpenFailure, OpenAiRealtimeProjectionOpenFuture,
+    OpenAiRealtimeProjectionOpenOutcome,
+};
 pub use realtime_selection::{
     OPENAI_REALTIME_ACCESS_PROFILE_ID, OPENAI_REALTIME_CONFIGURED_INSTANCE_ID,
     OPENAI_REALTIME_ENDPOINT, OPENAI_REALTIME_ENDPOINT_AUDIENCE, OPENAI_REALTIME_FACADE_REVISION,

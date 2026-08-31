@@ -36,6 +36,62 @@ pub(super) struct OpenAiRealtimeSession {
     pub(super) deadline: Option<swallowtail_runtime::Deadline>,
 }
 
+/// Exact provider acknowledgement observed while the session was configured.
+pub(crate) enum RealtimeAcknowledgement {
+    /// The session-start request selected no reasoning effort.
+    NotRequested,
+    /// The provider acknowledged exactly the selected reasoning effort.
+    Effective(String),
+}
+
+/// Exact rejection observed while the session was configured.
+pub(crate) struct RealtimeOpenRejection {
+    failure: RuntimeFailure,
+    rejected_effort: Option<String>,
+}
+
+impl RealtimeOpenRejection {
+    const fn unknown(failure: RuntimeFailure) -> Self {
+        Self {
+            failure,
+            rejected_effort: None,
+        }
+    }
+
+    /// Returns the exact well-formed differing effort the provider acknowledged.
+    pub(crate) fn rejected_effort(&self) -> Option<&str> {
+        self.rejected_effort.as_deref()
+    }
+
+    pub(crate) fn into_failure(self) -> RuntimeFailure {
+        self.failure
+    }
+}
+
+/// Open Realtime session paired with the acknowledgement its setup observed.
+pub(crate) type RealtimeOpenResult =
+    Result<(Box<dyn RealtimeMediaSessionHandle>, RealtimeAcknowledgement), RealtimeOpenRejection>;
+
+/// Opens one Realtime media connection and reports its exact acknowledgement.
+///
+/// Both public prepared open methods share this private lifecycle, so
+/// transport, setup, `session.updated` validation, handle construction,
+/// failure, and cleanup stay identical.
+pub(crate) fn open_realtime_lifecycle(
+    plan: PreflightPlan,
+    request: OpenRealtimeMediaSessionRequest,
+    services: HostServices,
+) -> BoxFuture<'static, RealtimeOpenResult> {
+    Box::pin(async move {
+        services
+            .require_execution_host(plan.execution_host_id())
+            .map_err(RealtimeOpenRejection::unknown)?;
+        OpenAiRealtimeDriver::validate(&plan, &request, &services)
+            .map_err(RealtimeOpenRejection::unknown)?;
+        open_configured_session(plan, request, services).await
+    })
+}
+
 impl RealtimeMediaSessionDriver for OpenAiRealtimeDriver {
     fn open_realtime_media_session(
         &self,
@@ -44,72 +100,87 @@ impl RealtimeMediaSessionDriver for OpenAiRealtimeDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            services.require_execution_host(plan.execution_host_id())?;
-            Self::validate(&plan, &request, &services)?;
-            let scope = ScopeId::new(format!(
-                "openai-realtime:session:{}",
-                request.request_id().as_str()
-            ))
-            .map_err(|_| invalid_scope())?;
-            let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
-            let (worker, worker_work) = match access.connect(scope.clone(), &services).await {
-                Ok(connection) => connection,
-                Err(error) => {
-                    let _ = access.release(&services).await;
-                    return Err(error);
-                }
-            };
-            let mut updates = worker.take_updates().expect("new worker owns updates");
-            let configured = configure(
-                &worker,
-                &mut updates,
-                request.maximum_output_tokens(),
-                request
-                    .reasoning_mode()
-                    .and_then(crate::realtime_reasoning::session_effort),
-            )
-            .await;
-            if let Err(error) = configured {
-                let _ = worker.close().await;
-                let _ = worker_work.await;
-                let _ = access.release(&services).await;
-                return Err(error);
-            }
-            let session_id =
-                RuntimeSessionId::new(format!("openai-realtime:{}", request.request_id().as_str()))
-                    .map_err(|_| invalid_scope())?;
-            let config = request.config().clone();
-            let state = Arc::new(Mutex::new(RealtimeMediaSessionState::new(
-                session_id.clone(),
-                config.clone(),
-            )));
-            let reusable = Arc::new(AtomicBool::new(true));
-            let active = Arc::new(Mutex::new(None));
-            let cancellation = Arc::new(SessionCancellation::new(
-                worker.clone(),
-                Arc::clone(&active),
-                Arc::clone(&reusable),
-            ));
-            Ok(Box::new(OpenAiRealtimeSession {
-                request_id: request.request_id().clone(),
-                session_id,
-                config,
-                services,
-                worker,
-                worker_work: Some(worker_work),
-                updates: Arc::new(Mutex::new(Some(updates))),
-                access: Some(access),
-                state,
-                reusable,
-                next_event_sequence: Arc::new(AtomicU64::new(1)),
-                active,
-                cancellation,
-                turn_index: 0,
-                next_append_event: 1,
-                deadline: request.deadline(),
-            }) as Box<dyn RealtimeMediaSessionHandle>)
+            open_realtime_lifecycle(plan, request, services)
+                .await
+                .map(|(handle, _)| handle)
+                .map_err(RealtimeOpenRejection::into_failure)
         })
     }
+}
+
+async fn open_configured_session(
+    plan: PreflightPlan,
+    request: OpenRealtimeMediaSessionRequest,
+    services: HostServices,
+) -> RealtimeOpenResult {
+    let scope = ScopeId::new(format!(
+        "openai-realtime:session:{}",
+        request.request_id().as_str()
+    ))
+    .map_err(|_| RealtimeOpenRejection::unknown(invalid_scope()))?;
+    let mut access = AccessLeases::acquire(&plan, scope.clone(), &services)
+        .await
+        .map_err(RealtimeOpenRejection::unknown)?;
+    let (worker, worker_work) = match access.connect(scope.clone(), &services).await {
+        Ok(connection) => connection,
+        Err(error) => {
+            let _ = access.release(&services).await;
+            return Err(RealtimeOpenRejection::unknown(error));
+        }
+    };
+    let mut updates = worker.take_updates().expect("new worker owns updates");
+    let configured = configure(
+        &worker,
+        &mut updates,
+        request.maximum_output_tokens(),
+        request
+            .reasoning_mode()
+            .and_then(crate::realtime_reasoning::session_effort),
+    )
+    .await;
+    let acknowledgement = match configured {
+        Ok(acknowledgement) => acknowledgement,
+        Err(rejection) => {
+            let _ = worker.close().await;
+            let _ = worker_work.await;
+            let _ = access.release(&services).await;
+            return Err(rejection);
+        }
+    };
+    let session_id =
+        RuntimeSessionId::new(format!("openai-realtime:{}", request.request_id().as_str()))
+            .map_err(|_| RealtimeOpenRejection::unknown(invalid_scope()))?;
+    let config = request.config().clone();
+    let state = Arc::new(Mutex::new(RealtimeMediaSessionState::new(
+        session_id.clone(),
+        config.clone(),
+    )));
+    let reusable = Arc::new(AtomicBool::new(true));
+    let active = Arc::new(Mutex::new(None));
+    let cancellation = Arc::new(SessionCancellation::new(
+        worker.clone(),
+        Arc::clone(&active),
+        Arc::clone(&reusable),
+    ));
+    let handle = Box::new(OpenAiRealtimeSession {
+        request_id: request.request_id().clone(),
+        session_id,
+        config,
+        services,
+        worker,
+        worker_work: Some(worker_work),
+        updates: Arc::new(Mutex::new(Some(updates))),
+        access: Some(access),
+        state,
+        reusable,
+        next_event_sequence: Arc::new(AtomicU64::new(1)),
+        active,
+        cancellation,
+        turn_index: 0,
+        next_append_event: 1,
+        deadline: request.deadline(),
+    }) as Box<dyn RealtimeMediaSessionHandle>;
+    Ok((handle, acknowledgement))
 }
 
 async fn configure(
@@ -117,8 +188,8 @@ async fn configure(
     updates: &mut mpsc::Receiver<WorkerUpdate>,
     maximum_output_tokens: Option<std::num::NonZeroU64>,
     reasoning_effort: Option<&str>,
-) -> Result<(), RuntimeFailure> {
-    expect_created(update(updates).await?)?;
+) -> Result<RealtimeAcknowledgement, RealtimeOpenRejection> {
+    expect_created(next_update(updates).await?)?;
     worker
         .send(
             ClientEvent::SessionUpdate {
@@ -127,48 +198,75 @@ async fn configure(
             }
             .to_json(),
         )
-        .await?;
-    expect_updated(update(updates).await?, reasoning_effort)
+        .await
+        .map_err(RealtimeOpenRejection::unknown)?;
+    expect_updated(next_update(updates).await?, reasoning_effort)
 }
 
-fn expect_created(update: WorkerUpdate) -> Result<(), RuntimeFailure> {
+async fn next_update(
+    updates: &mut mpsc::Receiver<WorkerUpdate>,
+) -> Result<WorkerUpdate, RealtimeOpenRejection> {
+    update(updates)
+        .await
+        .map_err(RealtimeOpenRejection::unknown)
+}
+
+fn expect_created(update: WorkerUpdate) -> Result<(), RealtimeOpenRejection> {
     match update {
         WorkerUpdate::Event(RealtimeServerEvent::SessionCreated) => Ok(()),
-        WorkerUpdate::Event(_) => Err(failure(
-            "swallowtail.openai.realtime_session_order_invalid",
-            "OpenAI Realtime session handshake ordering was invalid",
-        )),
-        WorkerUpdate::Failed(error) => Err(error),
-        WorkerUpdate::Disconnected => Err(disconnected()),
+        WorkerUpdate::Event(_) => Err(RealtimeOpenRejection::unknown(order_invalid())),
+        WorkerUpdate::Failed(error) => Err(RealtimeOpenRejection::unknown(error)),
+        WorkerUpdate::Disconnected => Err(RealtimeOpenRejection::unknown(disconnected())),
     }
 }
 
+/// Classifies the exact `session.updated` reasoning acknowledgement.
+///
+/// Only a matching effort proves provider-effective reasoning. Only an exact,
+/// well-formed differing effort carries a rejected state. Missing, malformed,
+/// out-of-order, transport, timeout, and disconnect evidence carries none.
 fn expect_updated(
     update: WorkerUpdate,
     expected_effort: Option<&str>,
-) -> Result<(), RuntimeFailure> {
+) -> Result<RealtimeAcknowledgement, RealtimeOpenRejection> {
     match update {
         WorkerUpdate::Event(RealtimeServerEvent::SessionUpdated { reasoning }) => {
-            match expected_effort {
-                None => Ok(()),
-                Some(wanted) => match reasoning {
-                    crate::realtime_protocol::SessionReasoningAck::Effort(got) if got == wanted => {
-                        Ok(())
-                    }
-                    _ => Err(failure(
-                        "swallowtail.openai.realtime_reasoning_acknowledgement_invalid",
-                        "OpenAI Realtime session reasoning acknowledgement did not match the selected effort",
-                    )),
-                },
+            let Some(wanted) = expected_effort else {
+                return Ok(RealtimeAcknowledgement::NotRequested);
+            };
+            match reasoning {
+                crate::realtime_protocol::SessionReasoningAck::Effort(got) if got == wanted => {
+                    Ok(RealtimeAcknowledgement::Effective(got))
+                }
+                crate::realtime_protocol::SessionReasoningAck::Effort(got)
+                    if crate::realtime_reasoning::is_session_effort(&got) =>
+                {
+                    Err(RealtimeOpenRejection {
+                        failure: acknowledgement_invalid(),
+                        rejected_effort: Some(got),
+                    })
+                }
+                _ => Err(RealtimeOpenRejection::unknown(acknowledgement_invalid())),
             }
         }
-        WorkerUpdate::Event(_) => Err(failure(
-            "swallowtail.openai.realtime_session_order_invalid",
-            "OpenAI Realtime session handshake ordering was invalid",
-        )),
-        WorkerUpdate::Failed(error) => Err(error),
-        WorkerUpdate::Disconnected => Err(disconnected()),
+        WorkerUpdate::Event(_) => Err(RealtimeOpenRejection::unknown(order_invalid())),
+        WorkerUpdate::Failed(error) => Err(RealtimeOpenRejection::unknown(error)),
+        WorkerUpdate::Disconnected => Err(RealtimeOpenRejection::unknown(disconnected())),
     }
+}
+
+fn order_invalid() -> RuntimeFailure {
+    failure(
+        "swallowtail.openai.realtime_session_order_invalid",
+        "OpenAI Realtime session handshake ordering was invalid",
+    )
+}
+
+fn acknowledgement_invalid() -> RuntimeFailure {
+    failure(
+        "swallowtail.openai.realtime_reasoning_acknowledgement_invalid",
+        "OpenAI Realtime session reasoning acknowledgement did not match the selected effort",
+    )
 }
 
 pub(super) async fn update(

@@ -472,15 +472,38 @@ fn assert_failure_kinds() {
                     ConsumerRouteFeatureId::InteractiveSession,
                     ConsumerRouteLifecycle::SessionStartOnly,
                 )
+                .with_actor_posture(ConsumerRouteActorPosture::ConsumerSelectable)
+                .with_mutation_authority(
+                    ConsumerRouteMutationAuthority::PreparedSessionStart(
+                        ConsumerRouteProjectionSourceId::new(ADAPTER_SOURCE)
+                            .expect("source id is valid"),
+                    ),
+                ),
+            ],
+            Vec::new(),
+        )
+        .expect_err("a selectable row must publish its value domain"),
+        ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
+    );
+    assert_kind(
+        &contribution(
+            &applicability,
+            Vec::new(),
+            vec![
+                feature_row(
+                    &applicability,
+                    ConsumerRouteFeatureId::InteractiveSession,
+                    ConsumerRouteLifecycle::SessionStartOnly,
+                )
                 .with_control_value(ConsumerRouteControlValue::new(
                     ConsumerRouteValueKind::CapabilityState,
                     ConsumerRouteValueDomain::Descriptor,
-                    ConsumerRouteOmissionSemantics::NotSelectable,
+                    ConsumerRouteOmissionSemantics::SuppliesNothing,
                 )),
             ],
             Vec::new(),
         )
-        .expect_err("only a control row carries a value domain"),
+        .expect_err("a descriptor-only domain cannot carry selectable omission truth"),
         ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
     );
 

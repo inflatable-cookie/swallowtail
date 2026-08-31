@@ -29,6 +29,8 @@ impl swallowtail_adapter_qoder::QoderHeadlessPreparedIntegration
 pub fn swallowtail_adapter_qoder::QoderHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_qoder::QoderHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_qoder::QoderHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_qoder::QoderHeadlessPreparedRun
 impl swallowtail_adapter_qoder::QoderHeadlessPreparedRun
+pub fn swallowtail_adapter_qoder::QoderHeadlessPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_qoder::QoderHeadlessPreparedRun
 pub const fn swallowtail_adapter_qoder::QoderHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_qoder::QoderHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_qoder::QoderHeadlessDriver
 pub const fn swallowtail_adapter_qoder::QoderHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

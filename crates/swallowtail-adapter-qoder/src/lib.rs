@@ -9,6 +9,7 @@
 
 mod access;
 mod command;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;

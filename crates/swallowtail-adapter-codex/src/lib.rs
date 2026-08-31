@@ -8,6 +8,7 @@ mod addable;
 mod app_server;
 mod app_server_activity;
 mod callback_exchange;
+mod consumer_route_projection;
 mod discovery;
 mod exec;
 mod exec_activity;

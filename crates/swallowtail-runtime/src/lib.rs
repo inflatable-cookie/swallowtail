@@ -12,6 +12,7 @@ mod attachment;
 mod callback;
 mod cancellation;
 mod connection_lifecycle;
+mod consumer_route_projection;
 mod content;
 mod debug_observation;
 mod detachment;
@@ -112,6 +113,26 @@ pub use connection_lifecycle::{
     apply_model_presentation_overlay, apply_stored_model_presentation_overlay, cancel_sign_in,
     complete_sign_in, observe_authenticated_subject, observe_instance_update, poll_sign_in,
     refresh_readiness, start_sign_in, submit_sign_in_credential_field,
+};
+pub use consumer_route_projection::{
+    ConsumerRouteActiveSessionState, ConsumerRouteActorPosture, ConsumerRouteApplicability,
+    ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension, ConsumerRouteControlId,
+    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
+    ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
+    ConsumerRouteModelBinding, ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjection, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind,
+    ConsumerRouteProjectionIdentity, ConsumerRouteProjectionInput, ConsumerRouteProjectionRow,
+    ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity,
+    ConsumerRouteProjectionSourceKind, ConsumerRouteRowIdentity, ConsumerRouteSafeReason,
+    ConsumerRouteSelectionSummary, ConsumerRouteSessionStartControls, ConsumerRouteSourceClass,
+    ConsumerRouteStateSupport, ConsumerRouteSupportPosture, ConsumerRouteValueDomain,
+    ConsumerRouteValueKind, MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS,
+    MAX_CONSUMER_ROUTE_ENUMERABLE_VALUE_BYTES, MAX_CONSUMER_ROUTE_ENUMERABLE_VALUES,
+    MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES, MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS,
+    MAX_CONSUMER_ROUTE_SAFE_REASON_BYTES, MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS,
+    MAX_CONSUMER_ROUTE_SESSION_START_ROWS, MAX_CONSUMER_ROUTE_SOURCE_ID_BYTES,
+    MAX_CONSUMER_ROUTE_SOURCE_IDENTITIES, compose_consumer_route_projection,
 };
 pub use content::OperationContent;
 pub use debug_observation::{

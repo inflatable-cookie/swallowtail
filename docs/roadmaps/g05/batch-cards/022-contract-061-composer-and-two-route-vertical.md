@@ -1,6 +1,7 @@
 # 022 Contract 061 Composer And Two-Route Vertical
 
-Status: ready; one four-package 51-row implementation tranche
+Status: ready; the repaired four-package 51-row tranche is implemented and
+revised on PR 131; awaiting the orchestrator two-route checkpoint
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -165,41 +166,41 @@ downcast, provider payload, or composer execution seam.
 
 ## Acceptance Criteria
 
-- [ ] runtime and core dependency direction remains acyclic and unchanged
-- [ ] the public runtime surface, constants, failure kinds, accessors, and
+- [x] runtime and core dependency direction remains acyclic and unchanged
+- [x] the public runtime surface, constants, failure kinds, accessors, and
       composer match the Batch 9.1 baseline exactly
-- [ ] invalid contributions fail before composition and mixed snapshots reject
+- [x] invalid contributions fail before composition and mixed snapshots reject
       as a whole
-- [ ] the composer compares configured policy and every shared access and
+- [x] the composer compares configured policy and every shared access and
       credential/readiness dimension; cross-access composition fails closed
-- [ ] applicability exposes credential, entitlement, endpoint-authorization,
+- [x] applicability exposes credential, entitlement, endpoint-authorization,
       runtime-readiness, and support-authority states without flattening them
       into aggregate availability
-- [ ] equal rows with a changed source identity produce a replacement snapshot
-- [ ] testkit covers every fixed maximum, failure kind, and Contract 061
+- [x] equal rows with a changed source identity produce a replacement snapshot
+- [x] testkit covers every fixed maximum, failure kind, and Contract 061
       counterexample without adapter production dependencies
-- [ ] the nine named Codex prepared facades and coverage ledger disposition
+- [x] the nine named Codex prepared facades and coverage ledger disposition
       exactly the 36 `codex.app-server` rows across their operation shapes;
       matrix-only, incompatible-operation, `ProviderSessionHistory`, and
       `ProviderSessionReconciliation` feature rows are withheld, not emitted
       then filtered
-- [ ] per-turn exchange remains per-turn under
+- [x] per-turn exchange remains per-turn under
       `ConsumerMediatedPerTurn`, never `PreparedSessionStart`, and creates no
       provider mutation or acknowledgement claim
-- [ ] existing `OpenAiPreparedRealtimeSession::open_session` remains source and
+- [x] existing `OpenAiPreparedRealtimeSession::open_session` remains source and
       behavior compatible
-- [ ] both OpenAI public open methods share one private low-level lifecycle
-- [ ] only a matching exact `session.updated` acknowledgement produces
+- [x] both OpenAI public open methods share one private low-level lifecycle
+- [x] only a matching exact `session.updated` acknowledgement produces
       provider-effective reasoning
-- [ ] only an exact well-formed different effort produces a rejected-state
+- [x] only an exact well-formed different effort produces a rejected-state
       contribution; every unknown failure carries none
-- [ ] Realtime prepared and active-observation source IDs are distinct and
+- [x] Realtime prepared and active-observation source IDs are distinct and
       independently retained in their respective rows and authority records
-- [ ] deterministic coverage evidence proves exactly the selected 51 rows and
+- [x] deterministic coverage evidence proves exactly the selected 51 rows and
       does not imply the other 716
-- [ ] every PR-131-added god-file finding is split below threshold and the final
+- [x] every PR-131-added god-file finding is split below threshold and the final
       scan is at most 391 total, 7 critical, 42 high, and 342 warning
-- [ ] no raw target, command, credential, path, environment value, provider
+- [x] no raw target, command, credential, path, environment value, provider
       payload, unbounded diagnostic, or presentation prose enters projection
 
 ## Review Oracle
@@ -230,6 +231,8 @@ Counterexamples and required proof:
   contribution
 - one source ID used for both prepared Realtime evidence and the active
   `session.updated` observation — reject before returning a contribution
+- a row that names a supplied source id under another evidence class — reject;
+  admission compares the exact `(id, kind)` identity, never the id alone
 - `ProviderSessionHistory` or `ProviderSessionReconciliation` emitted and then
   removed or exempted to make the Codex ledger equal 36 — fail; construction
   must withhold both rows

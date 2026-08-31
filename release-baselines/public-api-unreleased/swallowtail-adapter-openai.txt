@@ -1,4 +1,13 @@
 pub mod swallowtail_adapter_openai
+pub enum swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected::contribution: swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected::failure: swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::into_parts(self) -> (swallowtail_runtime::failure::RuntimeFailure, core::option::Option<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>)
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::rejected_contribution(&self) -> core::option::Option<&swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>
 pub struct swallowtail_adapter_openai::OpenAiBackgroundDriver
 impl swallowtail_adapter_openai::OpenAiBackgroundDriver
 pub fn swallowtail_adapter_openai::OpenAiBackgroundDriver::new() -> Self
@@ -93,6 +102,8 @@ pub const fn swallowtail_adapter_openai::OpenAiPreparedModels::plan(&self) -> &s
 pub const fn swallowtail_adapter_openai::OpenAiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
 impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
 pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::evidence(&self) -> &swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence
 pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::into_parts(self) -> (swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest)
 pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiRealtimeDriver
@@ -100,6 +111,8 @@ pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session(&
 pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::request(&self) -> &swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest
+impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture
 pub struct swallowtail_adapter_openai::OpenAiRealtimeDriver
 impl swallowtail_adapter_openai::OpenAiRealtimeDriver
 pub fn swallowtail_adapter_openai::OpenAiRealtimeDriver::new() -> Self
@@ -123,6 +136,11 @@ pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::low_level_
 pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration
 pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::prepare_realtime_session(&self, swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput) -> core::result::Result<swallowtail_adapter_openai::OpenAiPreparedRealtimeSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome
+impl swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle
 pub struct swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput
 impl swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput
 pub fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
@@ -170,3 +188,4 @@ pub fn swallowtail_adapter_openai::openai_realtime_requirements(swallowtail_core
 pub fn swallowtail_adapter_openai::prepare_openai_background(swallowtail_adapter_openai::OpenAiBackgroundPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_openai::prepare_openai_models(swallowtail_adapter_openai::OpenAiModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_openai::prepare_openai_realtime(swallowtail_adapter_openai::OpenAiRealtimePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome, swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure>>

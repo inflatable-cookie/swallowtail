@@ -10,5 +10,5 @@ mod authority;
 mod control;
 mod failure;
 mod mapping;
-mod support;
+pub(super) mod support;
 mod topology;

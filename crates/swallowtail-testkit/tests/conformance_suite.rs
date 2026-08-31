@@ -2,6 +2,8 @@
 mod addable_route_catalog;
 #[path = "conformance_profiles.rs"]
 mod conformance_profiles;
+#[path = "consumer_route_projection.rs"]
+mod consumer_route_projection;
 #[path = "contract_kernel.rs"]
 mod contract_kernel;
 #[path = "harness_configuration_policy.rs"]

@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — ready; repaired four-package 51-row tranche; PR 131 same-worker revision; stops before package expansion
+- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — ready; repaired four-package 51-row tranche implemented and revised on PR 131; awaiting the orchestrator two-route checkpoint
 
 ## Blocked
 

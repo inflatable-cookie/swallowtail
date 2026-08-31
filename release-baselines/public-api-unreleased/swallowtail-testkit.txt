@@ -235,6 +235,16 @@ impl swallowtail_testkit::ConformanceReport
 pub fn swallowtail_testkit::ConformanceReport::covers(&self, swallowtail_testkit::ConformanceAssertion) -> bool
 pub fn swallowtail_testkit::ConformanceReport::passed(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_testkit::ConformanceAssertion> + '_
 pub const fn swallowtail_testkit::ConformanceReport::profile(&self) -> swallowtail_testkit::SyntheticProfile
+pub struct swallowtail_testkit::ConsumerRouteProjectionFixture
+impl swallowtail_testkit::ConsumerRouteProjectionFixture
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::applicability(&self) -> swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::canonical() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::degraded_runtime_readiness() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::exhausted_entitlement() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::plan(&self) -> swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::prepared(&self) -> swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::record(&self) -> swallowtail_runtime::provider_instance_catalogue::instance::ConfiguredProviderInstanceRecord
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::superseded() -> Self
 pub struct swallowtail_testkit::ContractKernelFixture
 impl swallowtail_testkit::ContractKernelFixture
 pub fn swallowtail_testkit::ContractKernelFixture::canonical() -> Self
@@ -347,6 +357,8 @@ pub fn swallowtail_testkit::SessionAccessPreflightFixture::provider_side_effect_
 pub fn swallowtail_testkit::SessionAccessPreflightFixture::record_provider_side_effect(&self)
 pub fn swallowtail_testkit::SessionAccessPreflightFixture::with_session_plan_echoes(self, swallowtail_core::session_provider_state::SessionProviderStatePolicy, swallowtail_core::harness_configuration::HarnessConfigurationPosture) -> Self
 pub const fn swallowtail_testkit::SessionAccessPreflightFixture::working_resource(&self) -> &swallowtail_runtime::host_reference::WorkingResourceRef
+pub const swallowtail_testkit::CONSUMER_ROUTE_PRIVATE_CREDENTIAL: &str
+pub const swallowtail_testkit::CONSUMER_ROUTE_PRIVATE_TARGET: &str
 pub const swallowtail_testkit::REMOTE_ACP_CORE_SDK_VERSION: &str
 pub const swallowtail_testkit::REMOTE_ACP_RFD_REVISION: &str
 pub const swallowtail_testkit::REMOTE_ACP_TRANSPORT_SDK_VERSION: &str
@@ -354,6 +366,7 @@ pub fn swallowtail_testkit::assert_capability_rejection(&swallowtail_core::capab
 pub fn swallowtail_testkit::assert_changed_revision_invalidates_plan()
 pub fn swallowtail_testkit::assert_cleanup_states_remain_distinct()
 pub fn swallowtail_testkit::assert_closed_semantic_compatibility_window(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, &swallowtail_testkit::ClosedSemanticWindowCase)
+pub fn swallowtail_testkit::assert_consumer_route_projection_contract()
 pub fn swallowtail_testkit::assert_contract_kernel(&swallowtail_testkit::ContractKernelFixture)
 pub fn swallowtail_testkit::assert_diagnostic_redaction(&swallowtail_core::diagnostic::Diagnostic)
 pub fn swallowtail_testkit::assert_dynamic_role_registration_and_calls()
@@ -395,6 +408,7 @@ pub fn swallowtail_testkit::assert_watcher_operation_data_redaction()
 pub fn swallowtail_testkit::assert_watcher_ownership_rejection(&swallowtail_runtime::watcher::registry::WatcherRegistry)
 pub fn swallowtail_testkit::assert_watcher_stale_id_fails_closed()
 pub fn swallowtail_testkit::assert_watcher_wait_representation()
+pub fn swallowtail_testkit::consumer_route_projection_source(&str, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceKind) -> swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceIdentity
 pub fn swallowtail_testkit::fixture_hosted_available_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_testkit::fixture_hosted_missing_host_service_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_testkit::fixture_installed_available_with_config_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor

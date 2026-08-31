@@ -9,6 +9,8 @@
 mod contribution;
 #[path = "realtime_projection/open.rs"]
 mod open;
+#[path = "realtime_projection/rows.rs"]
+mod rows;
 
 pub use open::{
     OpenAiRealtimeProjectionOpenFailure, OpenAiRealtimeProjectionOpenFuture,

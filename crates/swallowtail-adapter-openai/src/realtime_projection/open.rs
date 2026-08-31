@@ -1,5 +1,6 @@
 use super::contribution::{ObservedReasoning, observed_contribution};
 use crate::OpenAiPreparedRealtimeSession;
+use crate::failure::failure;
 use crate::realtime::open_realtime_lifecycle;
 use swallowtail_runtime::{
     BoxFuture, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId, HostServices,
@@ -105,11 +106,26 @@ impl OpenAiPreparedRealtimeSession {
     /// after an exact, well-formed different effort. Every other failure
     /// carries no contribution, and omitted reasoning produces no reasoning
     /// state.
+    ///
+    /// The two source ids are independently admitted and must differ. Prepared
+    /// selection and session-start rows keep `prepared_source_id`; post-open
+    /// observation, provider-effective, rejected, and acknowledgement truth
+    /// keeps `active_session_source_id`. Equal ids are rejected before any
+    /// provider work rather than collapsing the two evidence sources.
     pub fn open_session_with_projection(
         &self,
+        prepared_source_id: ConsumerRouteProjectionSourceId,
         active_session_source_id: ConsumerRouteProjectionSourceId,
         services: HostServices,
     ) -> OpenAiRealtimeProjectionOpenFuture {
+        if prepared_source_id == active_session_source_id {
+            return Box::pin(async {
+                Err(OpenAiRealtimeProjectionOpenFailure::Runtime(failure(
+                    "swallowtail.openai.realtime_projection_source_identity_invalid",
+                    "OpenAI Realtime prepared and active-session projection sources must differ",
+                )))
+            });
+        }
         let prepared = self.clone();
         let plan = self.plan().clone();
         let request = self.request().clone();
@@ -124,13 +140,17 @@ impl OpenAiPreparedRealtimeSession {
                             ObservedReasoning::Effective(effort)
                         }
                     };
-                    let contribution =
-                        observed_contribution(&prepared, active_session_source_id, observed)
-                            .map_err(|rejection| {
-                                OpenAiRealtimeProjectionOpenFailure::Runtime(RuntimeFailure::new(
-                                    rejection.diagnostic().clone(),
-                                ))
-                            })?;
+                    let contribution = observed_contribution(
+                        &prepared,
+                        prepared_source_id,
+                        active_session_source_id,
+                        observed,
+                    )
+                    .map_err(|rejection| {
+                        OpenAiRealtimeProjectionOpenFailure::Runtime(RuntimeFailure::new(
+                            rejection.diagnostic().clone(),
+                        ))
+                    })?;
                     Ok(OpenAiRealtimeProjectionOpenOutcome {
                         session,
                         contribution,
@@ -144,6 +164,7 @@ impl OpenAiPreparedRealtimeSession {
                     };
                     match observed_contribution(
                         &prepared,
+                        prepared_source_id,
                         active_session_source_id,
                         ObservedReasoning::Rejected(&effort),
                     ) {

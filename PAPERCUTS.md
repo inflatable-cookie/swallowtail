@@ -17,15 +17,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   on this head is 390 (341 / 49), matching `main`.
 - Surface: g05.006 card 019 PR 126 review revision.
 
-### [ ] Effigy validation materializes an untracked repo skill — 2026-08-30
-- Friction: running the card 011 docs/Northstar validation copied the Effigy
-  skill and references into untracked `.agents/skills/effigy/`.
-- Impact: a read-only validation round dirties the planning checkout and risks
-  accidental inclusion in unrelated commits.
-- Fix: make skill materialization explicit, install it outside the repository,
-  or add a repository-owned ignored/generated contract for the output.
-- Surface: Effigy startup or validation skill installation; `.agents/skills/`.
-
 ### [ ] Route-matrix docs validation leaves Python bytecode — 2026-08-30
 - Friction: `effigy qa:docs` imports the route inventory checker and leaves
   `scripts/provider_route_matrix/__pycache__/` untracked.
@@ -236,6 +227,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   indexes.
 
 ## Closed
+
+### [x] Effigy validation materializes an untracked repo skill — 2026-08-30
+- Friction: running the card 011 docs/Northstar validation copied the Effigy
+  skill and references into untracked `.agents/skills/effigy/`.
+- Impact: a read-only validation round dirties the planning checkout and risks
+  accidental inclusion in unrelated commits.
+- Fix: Swallowtail PR 125 committed the 11-file project-local skill tree.
+  Effigy `f3057b9bb554f1a54b4c2d4cab2df27d5f6da202` (PR 58) syncs that managed
+  tree instead of leaving an untracked copy. On
+  `effigy v0.12.1+local.f3057b9`, `effigy qa:docs` left
+  `git status --porcelain` empty for `.agents/skills/effigy/`.
+- Surface: Effigy startup or validation skill installation; `.agents/skills/`.
+- Closed: 2026-08-31 papercuts wave 21 skill closeout.
 
 ### [x] Roadmap status census requires undocumented exact prose — 2026-08-30
 - Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording

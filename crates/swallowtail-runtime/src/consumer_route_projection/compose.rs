@@ -5,10 +5,7 @@ use super::agreement::{require_record_agreement, snapshot_disagreement};
 use super::applicability::ConsumerRouteApplicability;
 use super::contribution::{ConsumerRouteProjectionContribution, admit_extension_budget};
 use super::failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind, failure};
-use super::identity::{
-    ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity,
-    ConsumerRouteProjectionSourceKind,
-};
+use super::identity::{ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind};
 use super::row::ConsumerRouteProjectionRow;
 use super::view::ConsumerRouteView;
 use super::views::{
@@ -102,27 +99,27 @@ pub fn compose_consumer_route_projection(
         }
         sources.extend(contribution.sources().cloned());
     }
-    let source_ids = admit_sources(&sources)?;
+    let source_identities = admit_sources(&sources)?;
     let selection_rows = merge(
         ConsumerRouteView::SelectionSummary,
         &input,
         ConsumerRouteProjectionContribution::selection_rows,
         &applicability,
-        &source_ids,
+        &source_identities,
     )?;
     let session_start_rows = merge(
         ConsumerRouteView::SessionStart,
         &input,
         ConsumerRouteProjectionContribution::session_start_rows,
         &applicability,
-        &source_ids,
+        &source_identities,
     )?;
     let active_session_rows = merge(
         ConsumerRouteView::ActiveSession,
         &input,
         ConsumerRouteProjectionContribution::active_session_rows,
         &applicability,
-        &source_ids,
+        &source_identities,
     )?;
     admit_extension_budget(
         selection_rows
@@ -144,7 +141,7 @@ fn merge<'a, I>(
     input: &'a ConsumerRouteProjectionInput<'a>,
     rows_of: fn(&'a ConsumerRouteProjectionContribution) -> I,
     applicability: &ConsumerRouteApplicability,
-    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
 ) -> Result<Vec<ConsumerRouteProjectionRow>, ConsumerRouteProjectionFailure>
 where
     I: Iterator<Item = &'a ConsumerRouteProjectionRow>,

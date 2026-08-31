@@ -1,12 +1,15 @@
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    ConsumerRouteAvailabilityDimension, ConsumerRouteControlId, ConsumerRouteFeatureId,
-    ConsumerRouteLifecycle, ConsumerRouteProjectionFailureKind, ConsumerRouteProjectionInput,
-    ConsumerRouteProjectionSourceId, ConsumerRouteSafeReason, MAX_CONSUMER_ROUTE_SAFE_REASON_BYTES,
+    ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension, ConsumerRouteControlId,
+    ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
+    ConsumerRouteProjectionFailureKind, ConsumerRouteProjectionInput, ConsumerRouteProjectionRow,
+    ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity,
+    ConsumerRouteProjectionSourceKind, ConsumerRouteRowIdentity, ConsumerRouteSafeReason,
+    ConsumerRouteSourceClass, ConsumerRouteSupportPosture, MAX_CONSUMER_ROUTE_SAFE_REASON_BYTES,
     compose_consumer_route_projection,
 };
 
-use crate::ConsumerRouteProjectionFixture;
+use crate::{ConsumerRouteProjectionFixture, consumer_route_projection_source};
 
 use super::support::*;
 
@@ -120,4 +123,62 @@ pub(super) fn assert_named_counterexamples() {
             ConsumerRouteProjectionFailureKind::SnapshotIdentityDisagreement,
         );
     }
+}
+
+/// Rejects a row that borrows a supplied source id under another evidence class.
+///
+/// A source id alone is not an identity. Admitting the id without its kind
+/// would let one prepared adapter contribution masquerade as an active-session
+/// observation, collapsing two independently replaceable evidence sources.
+pub(super) fn assert_source_kind_is_part_of_identity() {
+    let applicability = ConsumerRouteProjectionFixture::canonical().applicability();
+    for (id, kind) in [
+        (
+            ADAPTER_SOURCE,
+            ConsumerRouteProjectionSourceKind::ActiveSessionObservation,
+        ),
+        (
+            OBSERVATION_SOURCE,
+            ConsumerRouteProjectionSourceKind::AdapterContribution,
+        ),
+    ] {
+        let borrowed = observation_row(consumer_route_projection_source(id, kind));
+        assert_kind(
+            &contribution(&applicability, Vec::new(), Vec::new(), vec![borrowed])
+                .expect_err("a supplied source id under another evidence class is rejected"),
+            ConsumerRouteProjectionFailureKind::IdentityInvalid,
+        );
+    }
+
+    let exact = observation_row(observation_source());
+    let admitted = contribution(&applicability, Vec::new(), Vec::new(), vec![exact])
+        .expect("the exact supplied identity is admitted");
+    let projection = ConsumerRouteProjectionFixture::canonical();
+    let composed = compose(&projection, &[&admitted]).expect("the projection composes");
+    let row = composed
+        .active_session_state()
+        .rows()
+        .next()
+        .expect("the observed row survives");
+    assert_eq!(
+        row.source().kind(),
+        ConsumerRouteProjectionSourceKind::ActiveSessionObservation,
+        "composition preserves the exact evidence class the source was supplied under"
+    );
+}
+
+/// Builds one post-open observation row attributed to the supplied source.
+fn observation_row(source: ConsumerRouteProjectionSourceIdentity) -> ConsumerRouteProjectionRow {
+    ConsumerRouteProjectionRow::new(
+        ConsumerRouteRowIdentity::Feature(
+            ConsumerRouteFeatureId::ActiveSessionReasoningAcknowledgement,
+        ),
+        ConsumerRouteProjectionFixture::canonical().applicability(),
+        source,
+        ConsumerRouteSourceClass::RouteAcknowledgementEvidence,
+        ConsumerRouteEvidenceStrength::WireAcknowledgement,
+        ConsumerRouteLifecycle::PostOpenObservationOnly,
+    )
+    .with_support(ConsumerRouteSupportPosture::Supported)
+    .with_availability(ConsumerRouteAvailability::Available)
 }

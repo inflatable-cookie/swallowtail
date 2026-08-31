@@ -15,6 +15,7 @@ pub fn assert_consumer_route_projection_contract() {
     maxima::assert_fixed_maxima();
     failures::assert_failure_kinds();
     counterexamples::assert_named_counterexamples();
+    counterexamples::assert_source_kind_is_part_of_identity();
     separation::assert_view_and_lifecycle_separation();
     separation::assert_exact_access_dimensions_stay_observable();
     separation::assert_consumer_mediated_per_turn_authority();

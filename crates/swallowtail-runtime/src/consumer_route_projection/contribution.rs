@@ -32,24 +32,24 @@ impl ConsumerRouteProjectionContribution {
         let selection_rows = selection_rows.into_iter().collect::<Vec<_>>();
         let session_start_rows = session_start_rows.into_iter().collect::<Vec<_>>();
         let active_session_rows = active_session_rows.into_iter().collect::<Vec<_>>();
-        let source_ids = admit_sources(&sources)?;
+        let source_identities = admit_sources(&sources)?;
         admit_view(
             ConsumerRouteView::SelectionSummary,
             &selection_rows,
             &applicability,
-            &source_ids,
+            &source_identities,
         )?;
         admit_view(
             ConsumerRouteView::SessionStart,
             &session_start_rows,
             &applicability,
-            &source_ids,
+            &source_identities,
         )?;
         admit_view(
             ConsumerRouteView::ActiveSession,
             &active_session_rows,
             &applicability,
-            &source_ids,
+            &source_identities,
         )?;
         admit_extension_budget(
             selection_rows

@@ -231,6 +231,8 @@ Counterexamples and required proof:
   contribution
 - one source ID used for both prepared Realtime evidence and the active
   `session.updated` observation — reject before returning a contribution
+- a row that names a supplied source id under another evidence class — reject;
+  admission compares the exact `(id, kind)` identity, never the id alone
 - `ProviderSessionHistory` or `ProviderSessionReconciliation` emitted and then
   removed or exempted to make the Codex ledger equal 36 — fail; construction
   must withhold both rows

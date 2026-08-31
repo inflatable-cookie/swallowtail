@@ -11,9 +11,13 @@ use super::semantics::{
 use super::value::{ConsumerRouteOmissionSemantics, ConsumerRouteValueDomain};
 use super::view::ConsumerRouteView;
 
+/// Admits the exact supplied source identities, preserving evidence class.
+///
+/// The admitted set keeps each `(id, kind)` pair whole so a row can never
+/// borrow a known id under a different, independently replaceable class.
 pub(super) fn admit_sources(
     sources: &[ConsumerRouteProjectionSourceIdentity],
-) -> Result<BTreeSet<ConsumerRouteProjectionSourceId>, ConsumerRouteProjectionFailure> {
+) -> Result<BTreeSet<ConsumerRouteProjectionSourceIdentity>, ConsumerRouteProjectionFailure> {
     if sources.is_empty() {
         return Err(failure(
             ConsumerRouteProjectionFailureKind::IdentityInvalid,
@@ -29,6 +33,7 @@ pub(super) fn admit_sources(
         ));
     }
     let mut ids = BTreeSet::new();
+    let mut identities = BTreeSet::new();
     for source in sources {
         if !ids.insert(source.id().clone()) {
             return Err(failure(
@@ -37,15 +42,24 @@ pub(super) fn admit_sources(
                 "Projection repeats one source identity",
             ));
         }
+        identities.insert(source.clone());
     }
-    Ok(ids)
+    Ok(identities)
+}
+
+/// Reports whether the supplied identities name this exact bounded source id.
+fn names_id(
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
+    id: &ConsumerRouteProjectionSourceId,
+) -> bool {
+    sources.iter().any(|source| source.id() == id)
 }
 
 pub(super) fn admit_view(
     view: ConsumerRouteView,
     rows: &[ConsumerRouteProjectionRow],
     applicability: &ConsumerRouteApplicability,
-    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
 ) -> Result<(), ConsumerRouteProjectionFailure> {
     if rows.len() > view.maximum_rows() {
         let (code, message) = view.limit_code();
@@ -73,7 +87,7 @@ fn admit_row(
     view: ConsumerRouteView,
     row: &ConsumerRouteProjectionRow,
     applicability: &ConsumerRouteApplicability,
-    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
 ) -> Result<(), ConsumerRouteProjectionFailure> {
     if !view.admits(row.lifecycle()) || row.applicability() != applicability {
         return Err(failure(
@@ -82,7 +96,7 @@ fn admit_row(
             "A projected row is not applicable to its exact binding or view",
         ));
     }
-    if !sources.contains(row.source().id()) {
+    if !sources.contains(row.source()) {
         return Err(failure(
             ConsumerRouteProjectionFailureKind::IdentityInvalid,
             "swallowtail.consumer_route_projection.row_source_unknown",
@@ -128,12 +142,12 @@ fn admit_value(row: &ConsumerRouteProjectionRow) -> Result<(), ConsumerRouteProj
 
 fn admit_reason(
     row: &ConsumerRouteProjectionRow,
-    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
 ) -> Result<(), ConsumerRouteProjectionFailure> {
     let Some(reason) = row.safe_reason() else {
         return Ok(());
     };
-    if sources.contains(reason.source()) {
+    if names_id(sources, reason.source()) {
         Ok(())
     } else {
         Err(failure(
@@ -150,10 +164,10 @@ fn admit_reason(
 /// session-start authority, prepared state, or a provider acknowledgement.
 fn admit_authority(
     row: &ConsumerRouteProjectionRow,
-    sources: &BTreeSet<ConsumerRouteProjectionSourceId>,
+    sources: &BTreeSet<ConsumerRouteProjectionSourceIdentity>,
 ) -> Result<(), ConsumerRouteProjectionFailure> {
     if let Some(source) = row.mutation_authority().source()
-        && !sources.contains(source)
+        && !names_id(sources, source)
     {
         return Err(failure(
             ConsumerRouteProjectionFailureKind::IdentityInvalid,

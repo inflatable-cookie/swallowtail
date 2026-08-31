@@ -1,0 +1,222 @@
+{
+  "version": "2.1.251",
+  "axis": "claude-code.headless-stream-json",
+  "source": {
+    "help_command": "claude --help",
+    "host_version": "2.1.251",
+    "host_help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+    "host_help_matches_official_extracted": true,
+    "parser_probe_command": "env -i HOME=<throwaway> PATH=/usr/bin:/bin claude -p <candidate argv> </dev/null",
+    "parser_probe_boundary": "no prompt, no credentials, no model request; every variant stops at argv parsing or print-input validation",
+    "provider_prompt_sent": false,
+    "credentials_used": false,
+    "model_request_sent": false
+  },
+  "help_text": {
+    "--bare": "Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery. Sets CLAUDE_CODE_SIMPLE=1. Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read). 3P providers (Bedrock/Vertex/Foundry) use their own credentials. Skills still resolve via /skill-name. Explicitly provide context via: --system-prompt[-file], --append-system-prompt[-file], --add-dir (CLAUDE.md dirs), --mcp-config, --settings, --agents, --plugin-dir.",
+    "--restricted": "Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell, REPL and the other code-running tools) and WebFetch unless --tools names them, and ignores user, project and local settings files (managed settings and --settings still apply; add --strict-mcp-config to skip MCP servers too). Also confines the file tools to the working directories (--add-dir included), refuses bypassPermissions, and lets only a person or the configured permission handler approve writes to settings, git and tool-configuration files.",
+    "--safe-mode": "Start with all customizations (CLAUDE.md, skills, plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled — useful for troubleshooting a broken configuration. Admin-managed (policy) settings still apply. Auth, model selection, built-in tools, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.",
+    "--setting-sources": "Comma-separated list of setting sources to load (user, project, local).",
+    "--settings": "Path to a settings JSON file or a JSON string to load additional settings from",
+    "--mcp-config": "Load MCP servers from JSON files or strings (space-separated)",
+    "--strict-mcp-config": "Only use MCP servers from --mcp-config, ignoring all other MCP configurations",
+    "--add-dir": "Additional directories to allow tool access to",
+    "--tools": "Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use all tools, or specify tool names (e.g. \"Bash,Edit,Read\").",
+    "--permission-mode": "Permission mode to use for the session (choices: \"acceptEdits\", \"auto\", \"bypassPermissions\", \"manual\", \"dontAsk\", \"plan\")",
+    "--include-hook-events": "Include all hook lifecycle events in the output stream (only works with --output-format=stream-json)"
+  },
+  "parser_probe": [
+    {
+      "variant": "watcher-candidate-restricted",
+      "argv_delta": [
+        "--restricted"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "watcher-current-bare",
+      "argv_delta": [
+        "--bare"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "empty-setting-sources",
+      "argv_delta": [
+        "--setting-sources",
+        ""
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "restricted-with-empty-setting-sources",
+      "argv_delta": [
+        "--restricted",
+        "--setting-sources",
+        ""
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "restricted-with-ambient-setting-sources",
+      "argv_delta": [
+        "--restricted",
+        "--setting-sources",
+        "user,project,local"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "safe-mode",
+      "argv_delta": [
+        "--safe-mode"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "invalid-setting-source-value",
+      "argv_delta": [
+        "--setting-sources",
+        "bogus"
+      ],
+      "result": "parse-rejected-invalid-setting-source"
+    },
+    {
+      "variant": "unknown-option-negative-control",
+      "argv_delta": [
+        "--restricted",
+        "--swallowtail-nonexistent"
+      ],
+      "result": "parse-rejected-unknown-option"
+    }
+  ],
+  "authority": {
+    "--bare": {
+      "ambient_settings": "excluded",
+      "ambient_hooks": "excluded",
+      "ambient_skills": "reachable-via-slash-name",
+      "explicit_settings_hooks": "unstated-mode-skips-hooks",
+      "private_mcp_with_strict_mcp_config": "admitted",
+      "configured_authentication": "removed",
+      "oauth_and_keychain": "never-read",
+      "working_directory_confinement": "not-stated"
+    },
+    "--restricted": {
+      "ambient_settings": "excluded",
+      "ambient_hooks": "excluded",
+      "ambient_skills": "reachable",
+      "explicit_settings_hooks": "still-apply",
+      "private_mcp_with_strict_mcp_config": "admitted",
+      "configured_authentication": "preserved",
+      "oauth_and_keychain": "not-restricted",
+      "working_directory_confinement": "file-tools-confined-to-working-and-add-dir"
+    },
+    "--setting-sources-empty": {
+      "ambient_settings": "excluded",
+      "ambient_hooks": "excluded",
+      "ambient_skills": "reachable",
+      "explicit_settings_hooks": "unstated",
+      "private_mcp_with_strict_mcp_config": "admitted",
+      "configured_authentication": "preserved",
+      "oauth_and_keychain": "not-restricted",
+      "working_directory_confinement": "not-stated"
+    },
+    "--safe-mode": {
+      "ambient_settings": "excluded",
+      "ambient_hooks": "excluded",
+      "ambient_skills": "excluded",
+      "explicit_settings_hooks": "disabled-with-all-customizations",
+      "private_mcp_with_strict_mcp_config": "disabled-with-all-customizations",
+      "configured_authentication": "preserved",
+      "oauth_and_keychain": "not-restricted",
+      "working_directory_confinement": "not-stated"
+    }
+  },
+  "candidates": [
+    {
+      "name": "current-bare",
+      "argv": [
+        "--bare"
+      ],
+      "preserves_private_watcher_composition": false,
+      "preserves_configured_authentication": false,
+      "excludes_ambient_setting_sources": true,
+      "disposition": "rejected",
+      "reason": "help removes keychain reads and never reads OAuth, leaving only ANTHROPIC_API_KEY or apiKeyHelper; the same clause also skips hooks, so the operation-private Stop completion gate has no stated guarantee"
+    },
+    {
+      "name": "watcher-only-restricted",
+      "argv": [
+        "--restricted"
+      ],
+      "preserves_private_watcher_composition": true,
+      "preserves_configured_authentication": true,
+      "excludes_ambient_setting_sources": true,
+      "disposition": "selected",
+      "reason": "help ignores user, project and local settings files while managed settings and --settings still apply, names --strict-mcp-config as the MCP exclusion, confines file tools to the working and --add-dir directories, and states no credential change"
+    },
+    {
+      "name": "empty-setting-sources",
+      "argv": [
+        "--setting-sources",
+        ""
+      ],
+      "preserves_private_watcher_composition": true,
+      "preserves_configured_authentication": true,
+      "excludes_ambient_setting_sources": true,
+      "disposition": "rejected",
+      "reason": "parser accepts the empty source list, but help states no carve-out that explicit --settings survives it and adds no working-resource confinement; it is also two argv tokens against one"
+    },
+    {
+      "name": "safe-mode",
+      "argv": [
+        "--safe-mode"
+      ],
+      "preserves_private_watcher_composition": false,
+      "preserves_configured_authentication": true,
+      "excludes_ambient_setting_sources": true,
+      "disposition": "rejected",
+      "reason": "help disables all customizations including hooks, MCP servers and skills with no --settings or --mcp-config carve-out, so the private MCP family, Stop gate and injected skill have no stated survival"
+    }
+  ],
+  "selection": {
+    "selected": "watcher-only-restricted",
+    "argv_removed": [
+      "--bare"
+    ],
+    "argv_added": [
+      "--restricted"
+    ],
+    "watcher_argv_token_delta": 1,
+    "watcher_omission_argv_changed": false,
+    "normal_non_watcher_argv_changed": false,
+    "contract_059_060_changed": false,
+    "watcher_version_claim_changed": false
+  },
+  "counterexamples": [
+    {
+      "name": "ambient-setting-source-reopened",
+      "candidate": "watcher argv that names user, project or local setting sources, or drops the isolating mode",
+      "selected_candidate_exhibits": false,
+      "disposition": "rejected"
+    },
+    {
+      "name": "every-configured-authentication-path-removed",
+      "candidate": "watcher argv that keeps --bare",
+      "selected_candidate_exhibits": false,
+      "disposition": "rejected"
+    },
+    {
+      "name": "omission-or-normal-argv-changed",
+      "candidate": "watcher repair that edits the omission or non-watcher command",
+      "selected_candidate_exhibits": false,
+      "disposition": "rejected"
+    }
+  ],
+  "residual": [
+    "--restricted does not skip LSP, plugin sync, attribution, auto-memory, background prefetches, or CLAUDE.md auto-discovery, which --bare did; none of these is an ambient setting, hook, skill, or MCP server",
+    "neither --bare nor --restricted excludes ambient skills: --bare leaves them reachable via /skill-name and --restricted leaves skill loading unchanged, so the selected candidate closes no skill axis and reopens none",
+    "authentication preservation is a help-stated absence of any credential change under --restricted; it is not a live observation and no credential was read here"
+  ],
+  "live_turn_authorized": false
+}

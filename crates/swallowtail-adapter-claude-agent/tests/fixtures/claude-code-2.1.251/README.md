@@ -25,3 +25,14 @@ corpus to freeze `--tools` as a built-in-set filter, separate from MCP
 configuration. It rejects watcher-MCP suppression as the card 026 hypothesis
 and records `--bare` authentication as the alternative pre-initialization
 blocker. No provider prompt or credential was used.
+
+`watcher-isolation.json` reuses the same byte-identical official/host help
+corpus to freeze the exact `--bare`, `--restricted`, `--safe-mode`,
+`--setting-sources`, `--settings`, `--mcp-config`, `--strict-mcp-config`,
+`--add-dir`, and `--tools` clauses, the prompt-free parser probe results, and
+the authority delta of every compared watcher candidate. It selects
+watcher-only `--restricted` over `--bare`, records why empty `--setting-sources`
+and `--safe-mode` were rejected, and keeps the unclosed skill and CLAUDE.md
+residual explicit. The parser probe ran with `env -i`, a throwaway `HOME`, and
+no prompt; every variant stopped at argv parsing or print-input validation. No
+provider prompt, credential, or model request was used.

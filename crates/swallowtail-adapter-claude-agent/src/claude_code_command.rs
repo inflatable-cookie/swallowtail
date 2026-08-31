@@ -31,9 +31,11 @@ pub(crate) fn arguments(
             .map(str::to_owned),
     );
     match watchers {
+        // `--restricted`, not `--bare`: bare removes every OAuth and keychain
+        // authentication path. See `tests/fixtures/claude-code-2.1.251/watcher-isolation.json`.
         Some(files) => {
             arguments.extend([
-                "--bare".to_owned(),
+                "--restricted".to_owned(),
                 "--mcp-config".to_owned(),
                 files.mcp_config.clone(),
                 "--strict-mcp-config".to_owned(),
@@ -66,6 +68,7 @@ pub(crate) fn arguments(
 mod tests {
     use super::arguments;
     use crate::ClaudeCodeMaximumTurns;
+    use crate::claude_code_watcher::WatcherCommandFiles;
     use swallowtail_core::{ModelId, ReasoningMode};
 
     #[test]
@@ -109,6 +112,97 @@ mod tests {
                 "--setting-sources",
                 "user,project,local",
                 r#"--mcp-config"#,
+                r#"{"mcpServers":{}}"#,
+                "--strict-mcp-config",
+            ]
+        );
+    }
+
+    fn watcher_files() -> WatcherCommandFiles {
+        WatcherCommandFiles {
+            mcp_config: "/private/root/mcp.json".to_owned(),
+            settings: "/private/root/settings.json".to_owned(),
+            add_dir: "/private/root".to_owned(),
+        }
+    }
+
+    #[test]
+    fn watcher_opt_in_replaces_bare_with_restricted_and_keeps_the_private_composition() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        assert_eq!(
+            selected,
+            [
+                "-p",
+                "--input-format",
+                "text",
+                "--output-format",
+                "stream-json",
+                "--verbose",
+                "--no-session-persistence",
+                "--model",
+                "claude-opus-5",
+                "--permission-mode",
+                "plan",
+                "--tools",
+                "Read,Glob,Grep",
+                "--restricted",
+                "--mcp-config",
+                "/private/root/mcp.json",
+                "--strict-mcp-config",
+                "--settings",
+                "/private/root/settings.json",
+                "--add-dir",
+                "/private/root",
+                "--include-hook-events",
+            ]
+        );
+    }
+
+    #[test]
+    fn watcher_opt_in_admits_no_authentication_removing_or_ambient_setting_source() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        assert!(!selected.iter().any(|argument| argument == "--bare"));
+        assert!(!selected.iter().any(|argument| argument == "--safe-mode"));
+        assert!(
+            !selected
+                .iter()
+                .any(|argument| argument == "--setting-sources")
+        );
+        assert!(
+            !selected
+                .iter()
+                .any(|argument| argument == "user,project,local")
+        );
+        assert_eq!(
+            selected
+                .iter()
+                .filter(|argument| *argument == "--restricted")
+                .count(),
+            1
+        );
+    }
+
+    #[test]
+    fn watcher_opt_in_leaves_the_omitted_command_prefix_byte_identical() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let omitted = arguments(&model, None, None, None);
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        let shared = omitted
+            .iter()
+            .position(|argument| argument == "--setting-sources")
+            .expect("omission carries its ambient setting sources");
+        assert_eq!(omitted[..shared], selected[..shared]);
+        assert_eq!(
+            omitted[shared..],
+            [
+                "--setting-sources",
+                "user,project,local",
+                "--mcp-config",
                 r#"{"mcpServers":{}}"#,
                 "--strict-mcp-config",
             ]

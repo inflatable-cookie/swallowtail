@@ -214,11 +214,13 @@ cross-access agreement, construction-time withholding of two out-of-tranche
 Codex feature rows, the restored 391/7/42/342 god-file baseline, and exact
 source-identity admission. Exact head `b632d9e6` passed the orchestrator
 two-route checkpoint and five green checks; PR 131 merged at `fdd2b018`. Both
-ledgers claim nothing for the remaining 716 rows. The g05.009 Batch 9.4
-planning checkpoint now assigns those rows exactly once to 12 bounded
-complete-package candidates. Candidate A alone passes the readiness rubric and
-is promoted as card 023: 35 `codex.exec` plus 24 `openai.background` rows.
-Candidates B-L remain unnumbered planning rows. No Darwin dispatch,
+ledgers claimed nothing for the remaining 716 rows. The g05.009 Batch 9.4
+planning checkpoint assigned those rows exactly once to 12 bounded
+complete-package candidates. Candidate A alone passed the readiness rubric.
+Card 023 completed its 35 `codex.exec` plus 24 `openai.background` rows through
+PR 133 at `58be7122`; exact head `fbb4b118` passed review and all five checks.
+Candidates B-L remain unnumbered planning rows. The sole Next Task is a
+planning-only Batch 9.4 reassessment against current `main`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized. PR 130 remains extracurricular and

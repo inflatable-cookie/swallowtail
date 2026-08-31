@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [023-contract-061-codex-openai-package-completion.md](./023-contract-061-codex-openai-package-completion.md) — ready; exact 35-row `codex.exec` plus 24-row `openai.background` provider-free tranche
+- None.
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [023-contract-061-codex-openai-package-completion.md](./023-contract-061-codex-openai-package-completion.md) — complete; exact 35-row `codex.exec` plus 24-row `openai.background` proof merged through PR 133 at `58be7122`
 - [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — complete; exact reviewed head merged through PR 131 at `fdd2b018`
 - [021-consumer-route-feature-and-control-projection-contract.md](./021-consumer-route-feature-and-control-projection-contract.md) — complete; Contract 061 active; Spec 012 archived; implementation unplanned
 - [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — evidence stop; one Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld

@@ -1,6 +1,6 @@
 # 023 Contract 061 Codex And OpenAI Package Completion
 
-Status: ready; exact 59-row provider-free package tranche
+Status: complete; exact 59-row tranche merged through PR 133 at `58be7122`
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -12,6 +12,15 @@ Depends on: completed card 022; Batch 9.4 package-expansion checkpoint
 Complete the remaining Contract 061 census dispositions owned by
 `swallowtail-adapter-codex` and `swallowtail-adapter-openai`: all 35
 `codex.exec` rows and all 24 `openai.background` rows.
+
+## Outcome
+
+PR 133 merged exact reviewed head `fbb4b118` through merge commit
+`58be7122`. `CodexPreparedExec` and `OpenAiPreparedBackgroundRun` now publish
+only exact prepared-operation truth. The independent ledgers reconcile the
+full 35-row and 24-row census tuples, including explicit construction-time
+withholding. No runtime, testkit, core, contract, provider-operation, or
+active-observation surface changed.
 
 ## Scope
 
@@ -67,24 +76,24 @@ Complete the remaining Contract 061 census dispositions owned by
 
 ## Acceptance Criteria
 
-- [ ] the Codex ledger dispositions exactly 35 `codex.exec` rows and no other
+- [x] the Codex ledger dispositions exactly 35 `codex.exec` rows and no other
       route
-- [ ] the OpenAI ledger dispositions exactly 24 `openai.background` rows and
+- [x] the OpenAI ledger dispositions exactly 24 `openai.background` rows and
       no other route
-- [ ] every emitted row comes from one exact prepared operation and retains
+- [x] every emitted row comes from one exact prepared operation and retains
       its supplied source `(id, kind)`, route, operation, lifecycle, value,
       omission, applicability, and evidence truth
-- [ ] documentation-only, incompatible-operation, route-wide, and unobserved
+- [x] documentation-only, incompatible-operation, route-wide, and unobserved
       rows are withheld at construction rather than emitted then filtered
-- [ ] prepared or successful execution/reconciliation truth does not become
+- [x] prepared or successful execution/reconciliation truth does not become
       provider-effective, rejected, or acknowledged truth
-- [ ] exact access dimensions and configured/prepared agreement continue to
+- [x] exact access dimensions and configured/prepared agreement continue to
       fail closed without aggregate flattening
-- [ ] the existing 36-row Codex App Server and 15-row OpenAI Realtime proofs
+- [x] the existing 36-row Codex App Server and 15-row OpenAI Realtime proofs
       remain unchanged and exact
-- [ ] no runtime/testkit/core public API, contract, provider operation, or
+- [x] no runtime/testkit/core public API, contract, provider operation, or
       execution/mutation authority is added
-- [ ] touched source remains below the configured god-file thresholds and the
+- [x] touched source remains below the configured god-file thresholds and the
       repository scan does not exceed its accepted baseline
 
 ## Review Oracle
@@ -143,6 +152,10 @@ No. Stop after one reviewable PR. The orchestrator must review the exact
 
 ## Evidence
 
+- [PR 133](https://github.com/inflatable-cookie/swallowtail/pull/133) — exact
+  head `fbb4b118`; merged at `58be7122`
+- [exact-head orchestrator review](https://github.com/inflatable-cookie/swallowtail/pull/133#issuecomment-5479727867)
+- [card 023 closeout](../../../logs/2026-08-31-g05-009-card-023-package-completion.md)
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)

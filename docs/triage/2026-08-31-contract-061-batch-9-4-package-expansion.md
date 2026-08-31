@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidate A promoted as card 023
+Status: active planning evidence; candidate A complete; B-L unpromoted
 Owner: Tom
 Date: 2026-08-31
 
@@ -46,7 +46,7 @@ explicitly.
 
 | Candidate | Complete adapter-package remainder | Exact route rows | Total | Sensitive truth retained | State |
 | --- | --- | --- | ---: | --- | --- |
-| A | Codex; OpenAI | `codex.exec` 35; `openai.background` 24 | 59 | prepared-only controls; background recovery descriptors | promoted as card 023 |
+| A | Codex; OpenAI | `codex.exec` 35; `openai.background` 24 | 59 | prepared-only controls; background recovery descriptors | complete through card 023 / PR 133 |
 | B | Alibaba Model Studio; Anthropic; xAI | `alibaba.conversations` 19; `anthropic.managed-agent` 17; `anthropic.messages` 23; `xai.responses-websocket` 17 | 76 | one consumer-mediated per-turn exchange | candidate only |
 | C | Antigravity; Bedrock; Cursor | `antigravity.catalogue` 14; `antigravity.headless` 18; `bedrock.catalogue` 9; `bedrock.runtime` 10; `cursor-agent.acp` 13; `cursor-agent.catalogue` 13; `cursor-agent.headless` 17 | 94 | four explicit no-control route audits | candidate only |
 | D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | candidate only |
@@ -67,6 +67,9 @@ H (`deepagents.acp`, `kiro.acp`, and `qoder.headless`). The three remaining
 exact active-session acknowledgement rows stay isolated in D, F, and G. The
 eight remaining per-turn rows stay in B, K, and L; none may be relabelled as
 session-start authority.
+
+After candidate A, the active remainder is 657 rows across 44 route IDs and 29
+adapter packages in candidates B-L. Those candidates remain planning rows.
 
 ## Promotion Rubric
 
@@ -94,9 +97,9 @@ Candidates B-L remain planning rows, not reserved cards or execution
 authority. Promote one only after its adapter-local façade and ledger audit
 passes this rubric against the then-current main branch.
 
-## Candidate A Readiness
+## Candidate A Completion
 
-Candidate A passes the rubric and is promoted as card 023:
+Candidate A passed the rubric and was promoted as card 023:
 
 - its exact set is the 35 `codex.exec` plus 24 `openai.background` rows;
 - `CodexPreparedExec` and `OpenAiPreparedBackgroundRun` are the existing
@@ -115,8 +118,15 @@ Candidate A passes the rubric and is promoted as card 023:
 - two exact adapter packages plus their deterministic 59-row ledgers fit one
   bounded provider-free validation tranche.
 
-The first implementation move is card 023. This planning checkpoint does not
-start that work.
+PR 133 merged exact reviewed head `fbb4b118` through `58be7122`. The proof
+keeps the 35-row and 24-row ledgers independent, rejects mixed access evidence,
+keeps prepared activity descriptors descriptor-only, and leaves unsupported
+rows withheld at construction. No shared public or contract surface changed.
+
+The next move is a planning-only reassessment. Resolve the open `codex.exec`
+output-token census-source question, then audit candidates B-L against current
+`main`. Promote at most one candidate only after the whole-candidate rubric
+passes; this checkpoint itself grants no further execution authority.
 
 ## All-Route Gate
 

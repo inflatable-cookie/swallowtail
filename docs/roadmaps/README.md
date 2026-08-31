@@ -15,16 +15,16 @@ shape.
 
 ## Next Task
 
-Implement
-[g05.009 card 023](g05/batch-cards/023-contract-061-codex-openai-package-completion.md)
-as one provider-free two-package PR. Disposition exactly the remaining 35
-`codex.exec` and 24 `openai.background` census rows through their existing
-prepared facades, emit only exact operation-owned truth, and withhold
-documentation-only, incompatible-operation, route-wide, lifecycle, or
-unobserved rows at construction. Keep the Contract 061 runtime/testkit/core
-public baseline unchanged and stop for exact-head orchestrator review. Do not
-contact a provider, promote candidates B-L, compile Batch 9.5, restart a
-blocked g05 surface, act on PR 127 or PR 130, or close the generation.
+Reassess the
+[g05.009 Batch 9.4 package-expansion checkpoint](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+after card 023 merged through PR 133 at `58be7122`. Resolve the open
+`codex.exec` output-token census-source question, then audit candidates B-L
+against current `main` and the existing whole-candidate promotion rubric.
+Promote at most one complete package candidate only if its exact facades,
+ledgers, withholding rules, validation, and stops are closed. Keep candidates
+B-L unnumbered until that audit passes. Do not contact a provider, compile
+Batch 9.5, restart a blocked g05 surface, act on PR 127 or PR 130, or close the
+generation.
 
 ## Standing Lanes
 

@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 g05.009 Card 023 Package Completion](./2026-08-31-g05-009-card-023-package-completion.md) — PR 133 merged at `58be7122`; exact 35-row Codex Exec and 24-row OpenAI Background proof complete
 - [2026-08-31 g05.009 Batch 9.4 Package Expansion Compiled](./2026-08-31-g05-009-batch-9-4-package-expansion-compiled.md) — 716 rows partitioned across 12 complete-package candidates; card 023 is the sole ready 59-row tranche
 - [2026-08-31 Papercuts wave 21 closeout](./2026-08-31-papercuts-wave21-closeout.md) — PR 132 merged; untracked Effigy skill papercut closed
 - [2026-08-31 g05 Post-Contract-061 Planning Reassessment](./2026-08-31-g05-post-contract-061-reassessment.md) — planning-only Contract 061 realization-readiness inventory selected; g05 strict-paused; no ready card

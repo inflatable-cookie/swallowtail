@@ -1,15 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 merged; Batch 9.4 partition compiled and card
-023 ready
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidate A merged; package
+reassessment next
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; card 023 is the sole promoted package-expansion
-candidate
+Planning state: strict-ready; no implementation card ready; Batch 9.4
+reassessment is the sole Next Task
 
 ## Problem
 
@@ -29,6 +29,12 @@ access-state dimensions. The operator accepted all three, plus fail-closed
 cross-access composition, exact-tranche Codex withholding, and restoration of
 the measured god-file baseline. These are repairs inside card 022, not new
 architecture or runway.
+
+Card 023 then completed the remaining Codex and OpenAI package rows. PR 133
+merged the exact 35-row `codex.exec` and 24-row `openai.background` proof at
+`58be7122`, preserving the shared public baseline and restoring exact tuple,
+cross-access, and descriptor-only observation proof during review. Candidate A
+is complete; candidates B-L still have no card numbers or execution authority.
 
 ## Generation Runway Goal
 
@@ -123,6 +129,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
 - [x] group the remaining adapter contributions into 12 bounded,
       package-coherent candidates after the two-route checkpoint
+- [x] complete candidate A as the exact 35-row `codex.exec` plus 24-row
+      `openai.background` tranche
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -133,10 +141,11 @@ The
 [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 assigns all 716 remaining rows exactly once across candidates A-L. Each owns
 the complete remainder for one to four adapter packages and stays within 35 to
-94 rows. Only candidate A passes the full façade, ledger, dependency,
-validation, and stop-condition rubric today. Card 023 promotes its exact 35
-`codex.exec` plus 24 `openai.background` rows. Candidates B-L have no card
-numbers or execution authority.
+94 rows. Candidate A passed the full façade, ledger, dependency, validation,
+and stop-condition rubric at its promotion checkpoint. Card 023 completed its
+exact 35 `codex.exec` plus 24 `openai.background` rows through PR 133 at
+`58be7122`. Candidates B-L still have no card numbers or execution authority
+and must be reassessed against current `main` before any promotion.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -186,15 +195,16 @@ numbers or execution authority.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: card 022 is complete through PR 131 at `fdd2b018`; the
-  716-row package partition is compiled and card 023 is the sole ready card
-- completed first tranche: runtime/testkit kernel plus the two named route
-  proofs in one card
-- active tranche: complete the remaining Codex and OpenAI package rows without
-  changing the shared public baseline
-- later runway: promote candidates B-L one at a time after exact readiness
-  audits, then compile one all-route audit
-- next strategy checkpoint: after card 023's exact 59-row proof
+- immediate state: cards 022-023 are complete through PRs 131 and 133; no
+  implementation card is ready
+- completed tranches: runtime/testkit kernel plus four exact route proofs in
+  two reviewed cards, covering 110 census rows
+- active tranche: planning-only Batch 9.4 reassessment of the 657 rows left in
+  candidates B-L, including the open Codex output-token census-source question
+- later runway: promote candidates B-L at most one at a time after exact
+  readiness audits, then compile one all-route audit
+- next strategy checkpoint: select at most one whole candidate only after the
+  current-main promotion rubric passes
 
 ## Batch Cards
 
@@ -202,8 +212,8 @@ numbers or execution authority.
   — complete; repaired runtime/testkit composer plus the exact 36-row Codex
   and 15-row OpenAI Realtime proof merged through PR 131 at `fdd2b018`
 - [023 Contract 061 Codex And OpenAI Package Completion](batch-cards/023-contract-061-codex-openai-package-completion.md)
-  — ready; exact 35-row `codex.exec` plus 24-row `openai.background`
-  provider-free tranche
+  — complete; exact 35-row `codex.exec` plus 24-row `openai.background`
+  provider-free tranche merged through PR 133 at `58be7122`
 
 ## References
 
@@ -212,6 +222,7 @@ numbers or execution authority.
 - [realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
 - [Batch 9.1 public baseline gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+- [Codex exec output-token census-source question](../../triage/2026-08-31-codex-exec-output-token-census-source.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)

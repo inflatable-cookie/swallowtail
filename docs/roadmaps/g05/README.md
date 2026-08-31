@@ -100,6 +100,23 @@ Implementation stays unplanned pending orchestrator reassessment. No Rust,
 public API baseline, architecture realization claim, second provider turn,
 fallback, rerun, or Darwin dispatch is authorized. PR 127 remains unmerged.
 
+The post-Contract-061 reassessment classifies g05 as `strict-paused` with no
+ready milestone or card. Qoder skill visibility still lacks positive evidence,
+the watcher lanes remain evidence stops, and bounded consumer-facing watcher
+observation still depends on a successful route proof. Structural closeout is
+not automatic at eight numbered roadmaps. The reassessment recommends one
+planning-only Contract 061 realization-readiness inventory to settle current
+source ownership, dependency direction, the first meaningful tranche,
+all-route coverage, and projection bounds. No provisional spec, roadmap, public
+API baseline, implementation card, or worker handoff followed before the
+operator decision.
+
+The operator accepted the recommendation on 2026-08-31. The sole Next Task is
+the planning-only Contract 061 realization-readiness inventory. g05 stays open;
+no blocked surface, implementation card, or worker handoff follows unless the
+completed inventory proves a bounded card ready without inventing package,
+API, bound, coverage, or tranche policy.
+
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 

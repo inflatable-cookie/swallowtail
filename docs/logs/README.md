@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 g05 Post-Contract-061 Planning Reassessment](./2026-08-31-g05-post-contract-061-reassessment.md) — planning-only Contract 061 realization-readiness inventory selected; g05 strict-paused; no ready card
 - [2026-08-31 g05.008 Consumer Projection Contract Promotion](./2026-08-31-g05-008-consumer-projection-contract-promotion.md) — Contract 061 active; Spec 012 archived; card 021 and g05.008 complete; implementation unplanned
 - [2026-08-31 g05.008 Consumer Projection Spec Compilation](./2026-08-31-g05-008-consumer-projection-spec-compilation.md) — Spec 012 active; dedicated Contract 061 card 021 ready; one docs-only handoff
 - [2026-08-31 g05 Post-Card-020 Planning Reassessment](./2026-08-31-g05-post-card-020-planning-reassessment.md) — strict-paused; no ready card; consumer projection promotion decision is next

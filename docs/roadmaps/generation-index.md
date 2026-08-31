@@ -192,10 +192,15 @@ index, and summaries agree. Contract 061 composes Contracts 037/047/057 without
 amending them, keeps the three projection views and per-turn truth distinct,
 uses source dimensions plus bounded safe reasons instead of a closed
 availability taxonomy, and names four fail-closed points. Implementation stays
-unplanned pending orchestrator reassessment. No Darwin dispatch, overlapping
-watcher worker, orchestrator-side live selector, container backend, new route,
-second provider turn, implementation card, or parked Bedrock work is
-authorized.
+unplanned. The post-contract reassessment keeps g05 `strict-paused` with no
+ready milestone or card. It recommends a planning-only Contract 061
+realization-readiness inventory to settle source ownership, dependency
+direction, tranche, coverage, and bound questions before any public API or
+implementation card. The operator selected that planning-only inventory on
+2026-08-31; g05 remains open and no ready card follows yet. No Darwin dispatch,
+overlapping watcher worker, orchestrator-side live selector, container backend,
+new route, second provider turn, implementation card, generation rollover, or
+parked Bedrock work is authorized.
 
 ## Rollover Rule
 

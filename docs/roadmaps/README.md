@@ -15,13 +15,15 @@ shape.
 
 ## Next Task
 
-Reassess g05 after the
-[Contract 061 promotion](../contracts/061-consumer-route-feature-and-control-projection.md).
-g05.008 and card 021 are complete, Spec 012 is archived, and no ready card
-remains. The orchestrator decides whether a projection implementation lane, a
-different g05 surface, or generation closeout comes next. Do not authorize
-implementation, a public API baseline, another Claude turn, fallback, rerun, or
-Darwin dispatch without that decision. Do not merge PR 127.
+Compile the planning-only Contract 061 realization-readiness inventory selected
+through the
+[post-contract reassessment](../logs/2026-08-31-g05-post-contract-061-reassessment.md).
+Map current source ownership, dependency direction, the first meaningful
+tranche, all-route coverage, and projection bounds. Return material package,
+API, bound, coverage, or tranche forks to the operator. No milestone, card, or
+worker handoff is ready. Do not authorize implementation, another blocked g05
+surface, provider contact, generation closeout, or PR 127 action. Create a card
+or handoff only if the completed inventory independently proves it ready.
 
 ## Standing Lanes
 

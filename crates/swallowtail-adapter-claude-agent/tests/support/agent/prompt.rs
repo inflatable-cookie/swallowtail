@@ -28,18 +28,43 @@ impl SharedAgent {
                     {"value": "plan", "name": "Plan"}
                 ]
             }));
-            let effort_options = ["default", "low", "medium", "high", "xhigh", "max"]
+            let mut effort_options = ["default", "low", "medium", "high", "xhigh", "max"]
                 .into_iter()
                 .map(|value| json!({"value": value, "name": value}))
                 .collect::<Vec<_>>();
-            options.push(json!({
+            let selected = state.effort.as_deref();
+            let current = match (self.scenario, selected) {
+                (Scenario::ReasoningMismatchAdvertised, Some("low")) => json!("high"),
+                (Scenario::ReasoningMismatchUnadvertised, Some("low")) => {
+                    effort_options.retain(|option| option["value"] != "high");
+                    json!("high")
+                }
+                (Scenario::ReasoningMismatchUnqualified, Some("low")) => {
+                    effort_options.push(json!({"value": "ultra", "name": "ultra"}));
+                    json!("ultra")
+                }
+                (Scenario::ReasoningConfirmationMalformed, Some(_)) => json!(42),
+                (Scenario::ReasoningConfirmationUnbounded, Some(_)) => {
+                    let value = "x".repeat(1024);
+                    effort_options.push(json!({"value": value, "name": "unbounded"}));
+                    json!(value)
+                }
+                _ => json!(selected.unwrap_or("default")),
+            };
+            let effort = json!({
                 "type": "select",
                 "id": "effort",
                 "name": "Effort",
                 "category": "thought_level",
-                "currentValue": state.effort.as_deref().unwrap_or("default"),
+                "currentValue": current,
                 "options": effort_options
-            }));
+            });
+            if !(self.scenario == Scenario::ReasoningConfirmationMissing && selected.is_some()) {
+                options.push(effort.clone());
+            }
+            if self.scenario == Scenario::ReasoningConfirmationDuplicate && selected.is_some() {
+                options.push(effort);
+            }
         }
         Ok(Value::Array(options))
     }
@@ -164,6 +189,13 @@ impl SharedAgent {
             | Scenario::ModelDrift
             | Scenario::AuthDrift
             | Scenario::LifecycleDrift
+            | Scenario::ReasoningMismatchAdvertised
+            | Scenario::ReasoningMismatchUnadvertised
+            | Scenario::ReasoningMismatchUnqualified
+            | Scenario::ReasoningConfirmationMissing
+            | Scenario::ReasoningConfirmationMalformed
+            | Scenario::ReasoningConfirmationDuplicate
+            | Scenario::ReasoningConfirmationUnbounded
             | Scenario::Version => {
                 return Err(fixture_failure());
             }

@@ -26,6 +26,13 @@ pub enum Scenario {
     ModelDrift,
     AuthDrift,
     LifecycleDrift,
+    ReasoningMismatchAdvertised,
+    ReasoningMismatchUnadvertised,
+    ReasoningMismatchUnqualified,
+    ReasoningConfirmationMissing,
+    ReasoningConfirmationMalformed,
+    ReasoningConfirmationDuplicate,
+    ReasoningConfirmationUnbounded,
     Version,
 }
 

@@ -1,0 +1,24 @@
+{
+  "worktree": {
+    "setup": "effigy skill run --path \"${NORTHSTAR_SKILL_PATH:-$HOME/.agents/skills/northstar}\" paseo:worktree -- prepare && effigy skill run --path \"${NORTHSTAR_SKILL_PATH:-$HOME/.agents/skills/northstar}\" paseo:worktree -- link",
+    "teardown": "effigy skill run --path \"${NORTHSTAR_SKILL_PATH:-$HOME/.agents/skills/northstar}\" paseo:worktree -- unlink"
+  },
+  "scripts": {
+    "qa": { "command": "effigy qa" },
+    "docs": { "command": "effigy qa:docs" }
+  },
+  "metadataGeneration": {
+    "title": {
+      "instructions": "Name the bounded Swallowtail outcome in a short title. Use card or contract language when a governing Northstar card exists."
+    },
+    "branchName": {
+      "instructions": "Use worker/<short-kebab-case-outcome> for implementation lanes. Keep the worker/ prefix. Target pull requests at main."
+    },
+    "commitMessage": {
+      "instructions": "Use a Conventional Commit subject: <type>(<scope>): <imperative outcome>. Common types are feat, fix, docs, and test. Omit the scope when it adds no signal."
+    },
+    "pullRequest": {
+      "instructions": "Lead with the shipped outcome. Name the governing Northstar card or contract when one exists, list validation evidence, and state unresolved items. Do not claim merge authority."
+    }
+  }
+}

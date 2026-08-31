@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom / local Swallowtail orchestrator
 created: 2026-08-31
 updated: 2026-08-31
@@ -34,15 +34,15 @@ on this Mac; repository selectors must not depend on that ambient setting.
 
 - **Repository:** `/Users/tom/Dev/projects/swallowtail`
 - **Planning branch:** `main`
-- **Planning base commit:** `af339fb65d5a249bddcf0f58abae95953d4d465a`
-- **Pushed main verification:** the orchestrator will commit this handoff and
-  closeout batch, push it, and verify local `HEAD == origin/main` before launch.
+- **Worker base commit:** `8337520c36d7f18d475935cb946bd242d26e6dfa`.
+- **Pushed main verification:** the worker launched only after local `HEAD ==
+  origin/main` at that base.
 - **Planning checkout:** clean before the closeout/handoff batch.
-- **Queue state:** reserved; no worker, workspace, worktree, or branch exists.
-- **Worker mode:** implementation worker only after orchestrator dispatch.
+- **Queue state:** complete; the serial wave 23 papercut lane is closed.
+- **Worker mode:** completed by the dispatched implementation worker.
 - **Worker branch:** `worker/papercuts-wave23-route-matrix-bytecode`
-- **Worker worktree:** launcher first; manual fallback
-  `/Users/tom/Dev/worktrees/papercuts-wave23-route-matrix-bytecode`.
+- **Worker worktree:**
+  `/Users/tom/.paseo/worktrees/2ee7rnl8/papercuts-wave23-route-matrix-bytecode`.
 - **Required sibling worktree links:** none.
 - **Roadmap milestone:** none; keep the g05 Next Task on card 024.
 - **Allowed runway:** reproduce source-tree bytecode under a deliberately empty
@@ -67,10 +67,14 @@ on this Mac; repository selectors must not depend on that ambient setting.
   `effigy qa:guides`; `effigy qa:routes`; `effigy qa:docs`;
   `effigy qa:northstar`; `git diff --check`; clean generated-file audit after
   every affected selector under a neutral cache-prefix environment.
-- **PR base/head:** current pushed `main` / worker branch above.
-- **PR URL:** pending.
-- **Review state:** awaiting dispatch, then exact-head orchestrator review.
-- **Merge authorisation:** the local orchestrator may merge after a clean
+- **PR base/head:** `8337520c36d7f18d475935cb946bd242d26e6dfa` /
+  `86804e3866b4783ab8556992850e4eec6c735cb2`.
+- **PR URL:** [#137](https://github.com/inflatable-cookie/swallowtail/pull/137),
+  squash-merged as `8cb66d1b512f6406a206f506a8beba018cb0f023`.
+- **Review state:** accepted exact worker head
+  `86804e3866b4783ab8556992850e4eec6c735cb2`; verdict recorded on the PR;
+  all five required checks passed on the unchanged-head retry.
+- **Merge authorisation:** exercised by the local orchestrator after clean
   exact-head review and settled checks under standing operator authority.
 
 ## Boundaries
@@ -104,9 +108,8 @@ on this Mac; repository selectors must not depend on that ambient setting.
 
 ## Suggested Next Move
 
-Do not launch from this reservation alone. After orchestrator dispatch, run the
-worker preflight, reproduce under a neutral cache-prefix environment, implement
-the smallest prevention guard, and validate the complete bounded tranche.
+Complete. Resume the sole roadmap Next Task, g05 card 024, when the operator
+continues the main Swallowtail runway. No later papercut is reserved here.
 
 ## Completion Protocol
 

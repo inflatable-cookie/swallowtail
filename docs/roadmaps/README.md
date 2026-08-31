@@ -15,17 +15,17 @@ shape.
 
 ## Next Task
 
-Revise PR 131 through the same sole `g05-009` worker against
-[card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-and the repaired Batch 9.1 gate. Keep separate prepared and active Realtime
-source identities, add consumer-mediated per-turn authority, preserve exact
-access dimensions, fail closed on cross-access disagreement, withhold the two
-out-of-tranche Codex feature rows at construction, and restore the measured
-391/7/42/342 god-file baseline. Preserve the existing Realtime `open_session`,
-use no provider contact or live probe, and stop after the revised PR for the
-required two-route checkpoint. Do not merge PR 131, expand to the remaining
-716 rows, start another worker, restart another g05 surface, close the
-generation, or reopen PR 127.
+Review the revised PR 131 exact head at the required orchestrator two-route
+checkpoint against
+[card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md),
+the [repaired Batch 9.1 gate](../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md),
+and the reviewed census. Confirm the 36 `codex.app-server` and 15
+`openai.realtime` dispositions, the six accepted repairs, the preserved
+Realtime `open_session`, the restored 391/7/42/342 god-file baseline, and the
+absence of any claim for the remaining 716 rows. Merge only after a
+merge-authorized verdict. Do not compile a Batch 9.4 package-expansion card,
+contact a provider, start another worker, restart another g05 surface, close
+the generation, or act on PR 127 before that checkpoint returns.
 
 ## Standing Lanes
 

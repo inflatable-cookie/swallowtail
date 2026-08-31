@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has twelve roadmaps: 5 completed milestones, honest evidence stops at 002,
-003, and 007, and ready milestones at 009, 010, 011, 012. Milestones
+g05 has twelve roadmaps: 6 completed milestones, honest evidence stops at 002,
+003, and 007, and ready milestones at 009, 010, 011. Milestones
 004 and 005 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 g05.001 is
@@ -229,9 +229,11 @@ per-turn candidates B/K/L, then breadth candidates C/E/I/J. Spec 013 and
 g05.010 add the missing bounded global/project/harness skill-inventory layer
 without weakening Contract 058 effective truth. g05.011 isolates exact Claude
 watcher MCP tool admission as provider-free card 026 before any new live
-attempt. g05.012 selects conflicting PR 130's Codex `0.151.0` work as the
-current one-family Contract 029 repair; card 027 is the front-door Next Task
-and card 028 remains conditional on an admitted identity segment. No Darwin dispatch,
+attempt. g05.012 reconstructed PR 130 as two identity-before-claim commits,
+recorded the current signed host `0.150.1` binary, and qualified Codex exec and
+app-server through official `0.151.0` while retaining feature-specific exact
+sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
+is the front-door Next Task. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

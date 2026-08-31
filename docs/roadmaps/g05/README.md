@@ -30,11 +30,11 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; cards 022-023 merged through PRs 131 and 133; 110 rows proved; candidate H card 024 ready | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-024 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Spec 013 active; Contract 058 retained as effective overlay; card 025 ready | explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | provider-neutral core complete; two live stops; `--tools` interaction with reserved watcher MCP tools unproved; card 026 ready | exact `2.1.251` provider-free admission evidence | `g05.011` card 026 |
-| Keep production route versions current one family at a time. | persistent standing lane; Codex `0.151.0` PR 130 conflicts; cards 027-028 compiled | Contract 029 identity-before-claim; current stable recheck; current-main validation | `g05.012` cards 027-028 |
+| Keep production route versions current one family at a time. | Codex exec and app-server qualified through official `0.151.0`; cards 027-028 complete | Contract 029 identity-before-claim; Research 262; current-main validation | `g05.012` cards 027-028 |
 
 ## Planned Next Roadmaps
 
-- [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — ready; card 027 identity restack is Next Task; card 028 claim restack auto-continues only after admission
+- [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — ready; card 026 provider-free Claude watcher tool-admission evidence and repair
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 promotes the dedicated inventory contract
 - [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready
@@ -47,9 +47,9 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twelve numbered roadmaps: five completed milestones including standing
-currentness at 004 and 005 and contract promotion at 008, honest evidence stops
-at 002, 003, and 007, and ready milestones at 009, 010, 011, 012.
+g05 has twelve numbered roadmaps: six completed milestones including standing
+currentness at 004, 005, and 012 and contract promotion at 008, honest evidence
+stops at 002, 003, and 007, and ready milestones at 009, 010, 011.
 
 ## Current Boundary
 
@@ -174,14 +174,15 @@ Contract 058's stronger selected-harness effective truth. g05.011 makes the
 unproved Claude `--tools` and reserved MCP admission interaction the next
 watcher blocker; it authorizes no provider turn. g05.009 keeps card 024 ready,
 then prioritizes acknowledgement and per-turn candidates before breadth-only
-packages. The persistent Contract 029 lane selects Codex `0.151.0` first:
-g05.012 restacks conflicting PR 130 as identity-before-claim. This recovery is
-the canonical Next Task because the evidence already exists and branch drift
-will only make it harder to preserve.
+packages. The persistent Contract 029 lane selected Codex `0.151.0` first.
+g05.012 reconstructed PR 130 as identity-before-claim, refreshed newly present
+host `0.150.1` evidence, retained every feature-specific exact set through
+`0.149.1`, and qualified the exec and app-server axes through official
+`0.151.0`. Card 025 is now the canonical Next Task.
 
 ## Milestones
 
-- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — ready; card 027 next; card 028 conditional auto-continuation
+- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — ready; card 026 provider-free tool-admission evidence and repair
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 contract promotion
 - [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready

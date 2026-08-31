@@ -22,7 +22,9 @@ pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
 /// Oldest app-server version qualified for thread catalogue and import.
 pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
 /// Most recent qualified Codex CLI version.
-pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.149.1";
+pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.151.0";
+/// Unpublished stables inside the maintained window. Stay incompatible.
+const CODEX_UNPUBLISHED_GAPS: &[&str] = &["0.149.2", "0.150.2"];
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";
 const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
     "codex.exec.jsonl-v1.retained-boolean-search";
@@ -133,6 +135,8 @@ pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
         [
             version("0.108.0").expect("static Codex version is valid"),
             version("0.109.0").expect("static Codex version is valid"),
+            version("0.149.2").expect("static Codex unpublished gap is valid"),
+            version("0.150.2").expect("static Codex unpublished gap is valid"),
         ],
     )
     .expect("static Codex exec claim is valid")
@@ -179,7 +183,10 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Maintained,
             ),
         ],
-        [],
+        [
+            version("0.149.2").expect("static Codex unpublished gap is valid"),
+            version("0.150.2").expect("static Codex unpublished gap is valid"),
+        ],
     )
     .expect("static Codex app-server claim is valid")
 }
@@ -232,6 +239,12 @@ pub(crate) fn supports_thread_catalogue_version(version: &InterfaceVersion) -> b
     };
     let latest = semver::Version::parse(CODEX_LATEST_QUALIFIED_VERSION)
         .expect("static Codex latest qualified version is valid");
+    if CODEX_UNPUBLISHED_GAPS
+        .iter()
+        .any(|gap| semver::Version::parse(gap).is_ok_and(|parsed| parsed == version))
+    {
+        return false;
+    }
     (version >= semver::Version::new(0, 105, 0) && version <= semver::Version::new(0, 107, 0))
         || (version >= semver::Version::new(0, 110, 0) && version <= latest)
 }

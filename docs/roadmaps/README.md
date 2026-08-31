@@ -15,14 +15,14 @@ shape.
 
 ## Next Task
 
-Implement [g05 card 027](g05/batch-cards/027-codex-0-151-0-identity-restack.md):
-revalidate official Codex `0.151.0` and reconstruct conflicting PR 130's
-identity evidence on current `main` without a production claim edit. Preserve
-Research 262 and its fixtures only after corroboration. If the segment remains
-admitted, auto-continue to card 028 for the separate claim restack, current
-gates, exact-head review, and merge. Do not contact a provider, widen an
-unproved feature pin, touch another route family, run papercuts, or combine the
-watcher, skill-inventory, and feature-façade cards into this PR.
+Implement [g05 card 025](g05/batch-cards/025-bounded-skill-inventory-contract-promotion.md):
+promote Spec 013 into dedicated Contract 062 and close the boundary between
+bounded global/project/harness-distribution inventory and Contract 058's exact
+selected-harness effective roster. Fix root authority, traversal and symlink
+rules, bounds, source-specific decoding, provenance, conflicts, freshness,
+privacy, and composition. Implement no Rust. Do not contact a provider, scan
+an ambient home or project tree, infer model visibility, or combine watcher,
+feature-façade, currentness, or papercut work into this card.
 
 ## Standing Lanes
 

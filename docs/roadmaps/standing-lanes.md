@@ -26,30 +26,33 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Claude Code headless and response-only `2.1.251`
-(g05.005, cards 017-018). Unpublished `2.1.244` and `2.1.249` stay
-incompatible. Feature-specific exact version sets stay on the
-`2.1.220..=2.1.241` probed points.
+Last one-family claim: Codex exec and app-server `0.151.0` (g05.012, cards
+027-028). Published `0.150.0` and `0.150.1` are qualified. Unpublished
+`0.149.2` and `0.150.2` stay incompatible. Feature-specific exact sets remain
+on the `0.147.0..=0.149.1` probed points.
 
-Previous one-family claim: Qwen headless `0.22.3` (g05.004, cards 012-013).
+Previous one-family claim: Claude Code headless and response-only `2.1.251`
+(g05.005, cards 017-018). Qwen headless `0.22.3` remains qualified through
+g05.004 cards 012-013.
 Kimi Code headless exact `0.38.0` default agent-core-v2 stream-json under
 `kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
 `0.37.2` remains on `kimi.headless.stream-json.v1`. Claude Code
 `2.1.241` (g04.055, cards 153-154) is superseded by g05.005.
 
-### Active Family
+### Latest Completed Family
 
-Codex exec and app-server official `0.151.0` are selected as the current
-one-family repair. PR 130 froze Research 262 and the proposed claim but now
-conflicts with current `main`. g05.012 cards 027-028 reconstruct its evidence
-as identity-before-claim, rerun current gates, and merge the exact reviewed
-head. On 2026-08-31 npm stable remained `0.151.0`; `0.152.0` existed only as
-prerelease alphas.
+Codex exec and app-server `0.151.0` are compatible extensions of their existing
+maintained behaviors. Research 262 and g05.012 cards 027-028 reconstruct the
+old PR as identity-before-claim. Current host `0.150.1` matches the official
+signed darwin-arm64 package. Published `0.150.0` and `0.150.1` are qualified;
+unpublished `0.149.2` and `0.150.2` remain incompatible; `0.151.1` remains
+permitted `UnverifiedNewer`. No provider prompt, live session, login, install,
+or host update was required.
 
-After that claim merges, run the all-route checkpoint and choose one next
-family. Do not preselect the family from registry `latest` alone.
+The next all-route checkpoint remains queued. It must choose only one next
+family and must not infer that family from registry `latest` alone.
 
-### Completed Family
+### Previous Completed Family
 
 Claude Code `2.1.251` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Published intermediates `2.1.242`, `2.1.243`,

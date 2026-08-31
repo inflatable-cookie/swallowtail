@@ -1,0 +1,51 @@
+{
+  "axis": "codex.cli",
+  "version": "0.151.0",
+  "observed_at": "2026-08-31",
+  "npm_package": "@openai/codex",
+  "npm_latest": true,
+  "published_at": "2026-08-29T09:59:26.300Z",
+  "npm_integrity": "sha512-mhtWmOZRdmWD1jPbLDnQb59BsaVP/V+lXe/OFNR9ZcLZU0UCiBwn98Fcav1ss7sDIlHkuqj6nWd44IPeXoOhJA==",
+  "npm_shasum": "515ca678dd9eec6afd4a7dc34f571c6536b3f282",
+  "git_tag": "rust-v0.151.0",
+  "tag_commit": "78c290807ce710180111df227df3b7a4fe845452",
+  "local_cli": null,
+  "official_cli": "codex-cli 0.151.0",
+  "published_intermediates": ["0.150.0", "0.150.1"],
+  "unpublished_gaps": ["0.149.2", "0.150.2"],
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "v2_bundle_sha256": "2442b15801bc019ad55987ad03e0f0ae60c51417825b9b6d708db640e6c2651c",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "claim_at_observation": {
+    "latest_qualified": "0.149.1",
+    "classification": "unverified_newer"
+  },
+  "segment_decision": {
+    "shape": "compatible-extension",
+    "exec_behavior": "codex.exec.jsonl-v1",
+    "app_server_behavior": "codex.app-server.v2.workspace-roots",
+    "lifecycle_behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "extend_through": "0.151.0",
+    "raise_thread_catalogue_ceiling": true,
+    "new_milestone": false,
+    "later_unverified_after_qualification": "0.151.1"
+  }
+}

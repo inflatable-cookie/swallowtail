@@ -106,4 +106,28 @@ fn model_verbosity_rejects_older_or_foreign_models() {
         foreign_failure.diagnostic().safe().code(),
         "swallowtail.codex.preparation.model_verbosity_unsupported"
     );
+
+    let later = prepared(
+        CodexPreparedDriver::StructuredExec,
+        "0.151.0",
+        &recording,
+        false,
+    );
+    let later_failure = later
+        .prepare_structured_exec(
+            CodexExecProfileInput::new(
+                RequestId::new("exec-later-verbosity").unwrap(),
+                OperationContent::new("private prompt").unwrap(),
+                model(),
+                working_resource(),
+                ExternalNetworkPolicy::Denied,
+                ExternalSearchPolicy::Disabled,
+            )
+            .with_model_verbosity(CodexModelVerbosity::Low),
+        )
+        .expect_err("later qualified version must fail closed");
+    assert_eq!(
+        later_failure.diagnostic().safe().code(),
+        "swallowtail.codex.preparation.model_verbosity_unsupported"
+    );
 }

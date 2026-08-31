@@ -2,7 +2,7 @@
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "claim": "codex.app-server.lifecycle-window-1",
-  "qualified_range": "0.80.0..=0.149.1",
+  "qualified_range": "0.80.0..=0.151.0",
   "evidence_checked_at": "2026-07-30",
   "upstream_repository": "https://github.com/openai/codex",
   "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
@@ -65,7 +65,7 @@
       "archive_descendants": "best-effort"
     },
     {
-      "range": "0.140.0..=0.149.1",
+      "range": "0.140.0..=0.151.0",
       "behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
       "support": "maintained",
       "capabilities": ["archive", "restore", "delete"],
@@ -112,10 +112,12 @@
   "exclusions": [
     {"range": "0.82.0..=0.83.0", "reason": "not-qualified-by-existing-app-server-claim"},
     {"range": "0.108.0..=0.109.0", "reason": "source-tags-without-published-npm-releases"},
-    {"range": "0.146.0-alpha.4", "reason": "prerelease"}
+    {"range": "0.146.0-alpha.4", "reason": "prerelease"},
+    {"range": "0.149.2", "reason": "unpublished-stable"},
+    {"range": "0.150.2", "reason": "unpublished-stable"}
   ],
   "unverified_newer": {
-    "example": "0.149.2",
+    "example": "0.151.1",
     "execution": "permitted-with-explicit-unverified-status",
     "mapped_behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
     "guaranteed": false
@@ -270,6 +272,24 @@
       "tag_commit": "ff29a44391deccde0aba0f8390337d7f3c319ea4",
       "schema_authority": "upstream-published",
       "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "1024db9d23b156e04b020a5d101982841dab158b84ecc9ecec399ab119ac9a1f", "be5e648ebf969cba14befd535a20463befb0ea99ae03a923471547b7f473161e", "e5ae9078cddac333262ae392fe25558d6054b77e4beb00784b77cf606849d063"]
+    },
+    {
+      "version": "0.150.0", "published_at": "2026-08-26T19:43:31.702Z",
+      "tag_commit": "3b3b4f8fb3f6403e72c2d0533ed0d2f309c59717",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "efcd14b3433960c5e64a294e0071d48150429a603a5a18df536c84b76a902317", "432409b3673be99fb8ddd300e98b052d7d241e1b118054740ecf5c8a058c7743", "7f3d08082bb9f5db72eb6417f0145eb5945064d0060464363dca38a40887168f"]
+    },
+    {
+      "version": "0.150.1", "published_at": "2026-08-27T02:01:46.851Z",
+      "tag_commit": "90854393966b21e9ebfd21b122334eb09a20c93d",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "efcd14b3433960c5e64a294e0071d48150429a603a5a18df536c84b76a902317", "432409b3673be99fb8ddd300e98b052d7d241e1b118054740ecf5c8a058c7743", "7f3d08082bb9f5db72eb6417f0145eb5945064d0060464363dca38a40887168f"]
+    },
+    {
+      "version": "0.151.0", "published_at": "2026-08-29T09:59:26.300Z",
+      "tag_commit": "78c290807ce710180111df227df3b7a4fe845452",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "9d1371107d5d24b3b714e33da3d10beb1044ee94d6fdae728b83b54f7ea5fbc9", "52d6817d7fdc1020b7c57fe5b943816c4b5a884da8feacf37acd8d444bc67619", "7f3d08082bb9f5db72eb6417f0145eb5945064d0060464363dca38a40887168f"]
     }
   ],
   "current_main_observation": {

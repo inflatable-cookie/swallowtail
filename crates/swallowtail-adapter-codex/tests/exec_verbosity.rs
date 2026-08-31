@@ -2,8 +2,7 @@ use crate::support;
 
 use futures_executor::block_on;
 use support::{
-    FakeProcessService, current_exec_policy, exec_policy_for_version, host_services, plan,
-    plan_with, plan_with_version, working_resource,
+    FakeProcessService, exec_policy_for_version, host_services, plan_with_version, working_resource,
 };
 use swallowtail_adapter_codex::{CodexExecDriver, CodexModelVerbosity};
 use swallowtail_core::{Capability, CapabilityConstraint, CapabilityRequirement, ReasoningMode};
@@ -24,13 +23,17 @@ fn explicit_model_verbosity_appends_quoted_config_without_changing_omission() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-verbosity").expect("request id is valid"),
         OperationContent::new("private prompt").expect("content is valid"),
-        current_exec_policy(),
+        exec_policy_for_version("0.149.1"),
     )
     .with_working_resource(working_resource());
     let handle = block_on(
         driver()
             .with_model_verbosity(CodexModelVerbosity::High)
-            .start_run(plan(), request, host_services(process)),
+            .start_run(
+                plan_with_version("0.149.1", [], []),
+                request,
+                host_services(process),
+            ),
     )
     .expect("run starts");
     assert_eq!(
@@ -49,7 +52,7 @@ fn explicit_model_verbosity_appends_quoted_config_without_changing_omission() {
 fn model_verbosity_composes_with_reasoning_without_serializing_a_default() {
     let (process, state) = FakeProcessService::completed(COMPLETED_JSONL);
     let reasoning = ReasoningMode::new("high").expect("reasoning mode is valid");
-    let policy = current_exec_policy().with_reasoning_mode(reasoning.clone());
+    let policy = exec_policy_for_version("0.149.1").with_reasoning_mode(reasoning.clone());
     let request = StructuredRunRequest::new(
         RequestId::new("request-verbosity-compose").expect("request id is valid"),
         OperationContent::new("private prompt").expect("content is valid"),
@@ -60,7 +63,8 @@ fn model_verbosity_composes_with_reasoning_without_serializing_a_default() {
         driver()
             .with_model_verbosity(CodexModelVerbosity::Low)
             .start_run(
-                plan_with(
+                plan_with_version(
+                    "0.149.1",
                     [CapabilityRequirement::new(
                         Capability::ReasoningSelection,
                         [CapabilityConstraint::reasoning_mode(reasoning)],
@@ -98,7 +102,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
         "0.147.1",
         "0.148.1",
         "0.149.1+build.1",
-        "0.149.2",
+        "0.151.1",
     ] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(
@@ -118,6 +122,36 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
         )
         .err()
         .expect("unsupported version must fail");
+        assert_eq!(
+            failure.diagnostic().code(),
+            "swallowtail.codex.exec.model_verbosity_unsupported",
+            "unexpected diagnostic for {version}",
+        );
+        assert!(!state.started(), "process started for {version}");
+    }
+}
+
+#[test]
+fn later_qualified_versions_reject_verbosity_before_process_start() {
+    for version in ["0.150.0", "0.150.1", "0.151.0"] {
+        let (process, state) = FakeProcessService::completed("");
+        let request = StructuredRunRequest::new(
+            RequestId::new("request-later-qualified-verbosity").expect("request id is valid"),
+            OperationContent::new("private prompt").expect("content is valid"),
+            exec_policy_for_version(version),
+        )
+        .with_working_resource(working_resource());
+        let failure = block_on(
+            driver()
+                .with_model_verbosity(CodexModelVerbosity::Low)
+                .start_run(
+                    plan_with_version(version, [], []),
+                    request,
+                    host_services(process),
+                ),
+        )
+        .err()
+        .expect("later qualified version must fail closed for verbosity");
         assert_eq!(
             failure.diagnostic().code(),
             "swallowtail.codex.exec.model_verbosity_unsupported",

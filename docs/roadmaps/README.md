@@ -15,18 +15,16 @@ shape.
 
 ## Next Task
 
-Compile the planning-only package-coherent expansion checkpoint for
-[g05.009 Batch 9.4](g05/009-contract-061-consumer-projection-realization.md#batch-94--package-coherent-expansion).
-Start from the 716 census rows left after PR 131 merged the exact 36-row
-`codex.app-server` plus 15-row `openai.realtime` vertical at `fdd2b018`.
-Group the remaining adapter contributions into bounded package-coherent
-candidate batches, preserve the existing Contract 061 lifecycle, authority,
-applicability, evidence, negative-coverage, and dependency boundaries, and
-apply the readiness rubric before making any card ready. This checkpoint is
-planning only: do not start a worker, implement another route, contact a
-provider, restart a blocked g05 surface, act on PR 127, or close the
-generation. PR 130 remains extracurricular and may enter review only when it
-is no longer draft; it is not the active roadmap pointer.
+Implement
+[g05.009 card 023](g05/batch-cards/023-contract-061-codex-openai-package-completion.md)
+as one provider-free two-package PR. Disposition exactly the remaining 35
+`codex.exec` and 24 `openai.background` census rows through their existing
+prepared facades, emit only exact operation-owned truth, and withhold
+documentation-only, incompatible-operation, route-wide, lifecycle, or
+unobserved rows at construction. Keep the Contract 061 runtime/testkit/core
+public baseline unchanged and stop for exact-head orchestrator review. Do not
+contact a provider, promote candidates B-L, compile Batch 9.5, restart a
+blocked g05 surface, act on PR 127 or PR 130, or close the generation.
 
 ## Standing Lanes
 

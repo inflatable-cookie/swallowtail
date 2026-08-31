@@ -1,15 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 delivered on the revised PR 131 branch;
-Batches 9.4-9.5 remain
+Status: ready; Batches 9.1-9.3 merged; Batch 9.4 partition compiled and card
+023 ready
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; the accepted PR 131 review repair is implemented
-and awaiting the orchestrator two-route checkpoint
+Planning state: strict-ready; card 023 is the sole promoted package-expansion
+candidate
 
 ## Problem
 
@@ -121,13 +121,22 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
 ### Batch 9.4 — Package-Coherent Expansion
 
-- [ ] group the remaining adapter contributions into package-coherent batches
-      after the two-route checkpoint
+- [x] group the remaining adapter contributions into 12 bounded,
+      package-coherent candidates after the two-route checkpoint
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
 - [ ] retain explicit no-control dispositions as negative coverage
 - [ ] make no route support or mutation claim from documentation-only evidence
+
+The
+[Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+assigns all 716 remaining rows exactly once across candidates A-L. Each owns
+the complete remainder for one to four adapter packages and stays within 35 to
+94 rows. Only candidate A passes the full façade, ledger, dependency,
+validation, and stop-condition rubric today. Card 023 promotes its exact 35
+`codex.exec` plus 24 `openai.background` rows. Candidates B-L have no card
+numbers or execution authority.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -170,28 +179,31 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
   lifecycle and acknowledgement distinctions.
 - Stop if the accepted access, source-identity, per-turn-authority, exact-ledger,
   or god-file repair cannot fit the existing Contract 061/card 022 boundary.
-- Stop after the two-route vertical for a package-expansion planning
-  checkpoint; do not preallocate speculative all-route cards.
+- Stop after each promoted package tranche for an orchestrator checkpoint; do
+  not turn candidates B-L into speculative cards.
 - Stop if Contracts 037, 047, 057, or 061 would need amendment.
 
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: card 022's six accepted repairs are implemented on
-  `worker/g05-009-contract-061-two-route-vertical`; PR 131 is revised and
-  awaits the orchestrator two-route checkpoint; the worker holds no merge
-  authority
-- first execution tranche: runtime/testkit kernel plus the two named route
+- immediate state: card 022 is complete through PR 131 at `fdd2b018`; the
+  716-row package partition is compiled and card 023 is the sole ready card
+- completed first tranche: runtime/testkit kernel plus the two named route
   proofs in one card
-- later runway: package-coherent adapter expansion, then one all-route audit
-- next strategy checkpoint: after the 51-row two-route vertical
+- active tranche: complete the remaining Codex and OpenAI package rows without
+  changing the shared public baseline
+- later runway: promote candidates B-L one at a time after exact readiness
+  audits, then compile one all-route audit
+- next strategy checkpoint: after card 023's exact 59-row proof
 
 ## Batch Cards
 
 - [022 Contract 061 Composer And Two-Route Vertical](batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-  — ready; repaired runtime/testkit composer plus the exact 36-row Codex and
-  15-row OpenAI Realtime proof implemented and revised on PR 131; awaiting the
-  two-route checkpoint; stops before package expansion
+  — complete; repaired runtime/testkit composer plus the exact 36-row Codex
+  and 15-row OpenAI Realtime proof merged through PR 131 at `fdd2b018`
+- [023 Contract 061 Codex And OpenAI Package Completion](batch-cards/023-contract-061-codex-openai-package-completion.md)
+  — ready; exact 35-row `codex.exec` plus 24-row `openai.background`
+  provider-free tranche
 
 ## References
 
@@ -199,6 +211,7 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [g05.008 contract promotion](008-consumer-route-feature-and-control-projection.md)
 - [realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
 - [Batch 9.1 public baseline gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+- [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)

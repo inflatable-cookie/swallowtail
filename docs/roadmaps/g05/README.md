@@ -24,11 +24,11 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; Batch 9.4 planning checkpoint next | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 gate | `g05.008` card 021; `g05.009` card 022 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; 716-row Batch 9.4 partition compiled; card 023 ready | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-023 |
 
 ## Planned Next Roadmaps
 
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; the planning-only Batch 9.4 package-coherent expansion checkpoint is next
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; Batch 9.4 partition compiled and card 023 ready
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -140,9 +140,12 @@ withholding of two out-of-tranche Codex feature rows, and restoration of the
 391/7/42/342 god-file baseline. The same worker repaired those points plus the
 exact source-identity admission defect found on re-review. Exact head
 `b632d9e6` passed the orchestrator checkpoint and five green checks; Helm
-merged it through PR 131 at `fdd2b018`. g05.009 now advances to the existing
-planning-only Batch 9.4 package-coherent expansion checkpoint. No later
-implementation card or provider contact is authorized by that merge.
+merged it through PR 131 at `fdd2b018`. The Batch 9.4 checkpoint then assigned
+all 716 remaining rows exactly once to 12 bounded complete-package candidates.
+Only candidate A passed the full readiness rubric. Card 023 is ready for the
+remaining 35 `codex.exec` and 24 `openai.background` rows. Candidates B-L are
+planning rows without card numbers or execution authority. No provider contact
+or Batch 9.5 audit is authorized.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -152,7 +155,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; the planning-only Batch 9.4 package-coherent expansion checkpoint is next
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; 716-row Batch 9.4 partition compiled and card 023 ready
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

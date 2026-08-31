@@ -1,7 +1,6 @@
 # 022 Contract 061 Composer And Two-Route Vertical
 
-Status: ready; the repaired four-package 51-row tranche is implemented and
-revised on PR 131; awaiting the orchestrator two-route checkpoint
+Status: complete; exact reviewed head merged through PR 131 at `fdd2b018`
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -257,9 +256,9 @@ No live probe or provider contact belongs to this card.
 
 ## Auto-Continuation
 
-No. Stop after one reviewable PR. The orchestrator must review the exact 51-row
-proof and compile package-expansion planning before another card can become
-ready.
+No. The exact 51-row proof passed orchestrator review and merged through PR
+131 at `fdd2b018`. The later package-expansion planning checkpoint promoted
+card 023 separately.
 
 ## Stop Conditions
 
@@ -288,3 +287,4 @@ ready.
 - reviewed 767-row census; exact first-tranche split is 36 Codex plus 15
   OpenAI Realtime rows
 - operator-approved additive Realtime prepared-open seam on 2026-08-31
+- exact reviewed PR 131 head `b632d9e6`, merged at `fdd2b018`

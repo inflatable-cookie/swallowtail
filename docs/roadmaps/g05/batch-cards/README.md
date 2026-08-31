@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — ready; repaired four-package 51-row tranche implemented and revised on PR 131; awaiting the orchestrator two-route checkpoint
+- [023-contract-061-codex-openai-package-completion.md](./023-contract-061-codex-openai-package-completion.md) — ready; exact 35-row `codex.exec` plus 24-row `openai.background` provider-free tranche
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — complete; exact reviewed head merged through PR 131 at `fdd2b018`
 - [021-consumer-route-feature-and-control-projection-contract.md](./021-consumer-route-feature-and-control-projection-contract.md) — complete; Contract 061 active; Spec 012 archived; implementation unplanned
 - [020-claude-code-watcher-live-acceptance.md](./020-claude-code-watcher-live-acceptance.md) — evidence stop; one Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [019-watcher-proof-oracle-and-activity-delivery-repair.md](./019-watcher-proof-oracle-and-activity-delivery-repair.md) — merged through PR 126 at `c8691e84`; credential-free lifecycle feed and Stop-reentry oracle; no live claim

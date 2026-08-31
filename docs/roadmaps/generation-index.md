@@ -191,9 +191,10 @@ Contract 061 is active, Spec 012 is archived, and the contract front door,
 index, and summaries agree. Contract 061 composes Contracts 037/047/057 without
 amending them, keeps the three projection views and per-turn truth distinct,
 uses source dimensions plus bounded safe reasons instead of a closed
-availability taxonomy, and names four fail-closed points. Implementation stays
-unplanned. The post-contract reassessment keeps g05 `strict-paused` with no
-ready milestone or card. It recommends a planning-only Contract 061
+availability taxonomy, and names four fail-closed points. At that checkpoint,
+implementation was unplanned. The post-contract reassessment classified g05
+as `strict-paused` with no ready milestone or card and recommended a
+planning-only Contract 061
 realization-readiness inventory to settle source ownership, dependency
 direction, tranche, coverage, and bound questions before any public API or
 implementation card. The operator selected that planning-only inventory on
@@ -213,13 +214,15 @@ cross-access agreement, construction-time withholding of two out-of-tranche
 Codex feature rows, the restored 391/7/42/342 god-file baseline, and exact
 source-identity admission. Exact head `b632d9e6` passed the orchestrator
 two-route checkpoint and five green checks; PR 131 merged at `fdd2b018`. Both
-ledgers claim nothing for the remaining 716 rows. g05 remains open and advances
-only to the planning-only g05.009 Batch 9.4 package-coherent expansion
-checkpoint. No Darwin dispatch, overlapping watcher worker,
-orchestrator-side live selector, container backend, new route, second provider
-turn, additional implementation card, generation rollover, or parked Bedrock
-work is authorized. PR 130 remains an extracurricular review-only queue item
-when it is no longer draft, not part of this generation pointer.
+ledgers claim nothing for the remaining 716 rows. The g05.009 Batch 9.4
+planning checkpoint now assigns those rows exactly once to 12 bounded
+complete-package candidates. Candidate A alone passes the readiness rubric and
+is promoted as card 023: 35 `codex.exec` plus 24 `openai.background` rows.
+Candidates B-L remain unnumbered planning rows. No Darwin dispatch,
+overlapping watcher worker, orchestrator-side live selector, container
+backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
+or parked Bedrock work is authorized. PR 130 remains extracurricular and
+merge-withheld, not part of this generation pointer.
 
 ## Rollover Rule
 
@@ -230,6 +233,6 @@ pointer; later rollover still requires explicit operator authority.
 
 ## Next Task
 
-Reassess g05 only through the planning checkpoint named by the
+Implement the ready g05 card named by the
 [roadmaps front door](README.md#next-task). This index records generation
 status; the sole actionable pointer stays in the front door.

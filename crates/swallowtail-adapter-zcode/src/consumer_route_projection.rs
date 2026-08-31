@@ -100,3 +100,22 @@ const fn availability(status: &AccessStatus) -> ConsumerRouteAvailability {
         ConsumerRouteAvailability::Conditional
     }
 }
+
+#[cfg(test)]
+#[path = "consumer_route_projection/claims.rs"]
+mod claims;
+#[cfg(test)]
+#[path = "consumer_route_projection/controls.rs"]
+mod controls;
+#[cfg(test)]
+#[path = "consumer_route_projection/fixtures.rs"]
+mod fixtures;
+#[cfg(test)]
+#[path = "consumer_route_projection/ledger.rs"]
+mod ledger;
+#[cfg(test)]
+#[path = "consumer_route_projection/naming.rs"]
+mod naming;
+#[cfg(test)]
+#[path = "consumer_route_projection/proof.rs"]
+mod proof;

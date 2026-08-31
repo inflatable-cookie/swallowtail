@@ -27,7 +27,7 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
+- [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
 - [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
@@ -81,8 +81,11 @@ could not satisfy the Darwin-only digest envelope; PR 127 remains unmerged.
 The operator selected Linux on 2026-08-31 and authorized a bounded
 per-platform digest repair before the same one-shot turn. Card 020 repaired
 selection at `adb04f17`, then consumed the turn. The ordered recorder kept
-only `JoinedZero`. Watcher claims stay unpublished. No second provider turn,
-Darwin dispatch, or merge is authorized.
+only `JoinedZero`. Its honest evidence stop merged through PR 128 at
+`528a31c9`. Watcher claims stay unpublished. No g05 milestone or card is
+ready; the roadmaps front door points to operator planning reassessment. No
+new worker, second provider turn, fallback, rerun, or Darwin dispatch is
+authorized. PR 127 remains unmerged.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -92,7 +95,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence; card 020 Linux Haiku turn consumed; claims withheld
+- [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013

@@ -181,10 +181,12 @@ Darwin-only digest envelope; PR 127 remains unmerged. The operator selected
 the `linux-x86_64` host on 2026-08-31 and authorized a bounded per-platform
 probe repair before the same one-shot turn. The lock and API-tool validation
 gaps were cleared. Card 020 repaired digest selection at `adb04f17`, then
-consumed the turn. The ordered recorder kept only `JoinedZero`. Watcher claims
-stay unpublished. No Darwin dispatch, overlapping watcher worker,
-orchestrator-side live selector, container backend, new route, second provider
-turn, or parked Bedrock work is authorized.
+consumed the turn, and its honest evidence stop merged through PR 128 at
+`528a31c9`. The ordered recorder kept only `JoinedZero`. Watcher claims stay
+unpublished. No g05 milestone or card is ready; the sole front-door pointer is
+an operator planning reassessment. No Darwin dispatch, overlapping watcher
+worker, orchestrator-side live selector, container backend, new route, second
+provider turn, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 
@@ -195,6 +197,6 @@ pointer; later rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement the active task named by the [roadmaps front door](README.md#next-task).
-This index records generation status; the sole actionable pointer stays in the
-front door.
+Reassess g05 only through the planning checkpoint named by the
+[roadmaps front door](README.md#next-task). This index records generation
+status; the sole actionable pointer stays in the front door.

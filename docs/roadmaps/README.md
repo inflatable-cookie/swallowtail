@@ -15,8 +15,10 @@ shape.
 
 ## Next Task
 
-Reassess g05 after card 020's Linux live evidence stop. No second provider
-turn, Darwin dispatch, or merge is authorized.
+Reassess g05 after card 020's Linux live evidence stop merged through PR 128
+at `528a31c9`. No implementation card is ready. Do not open a worker or
+authorize another Claude turn, fallback, rerun, or Darwin dispatch. PR 127
+remains unmerged.
 
 ## Standing Lanes
 

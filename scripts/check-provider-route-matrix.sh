@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Keep route-matrix Python entry points from writing __pycache__ under scripts/.
+export PYTHONDONTWRITEBYTECODE=1
+
 route_matrix_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 route_matrix_file="$route_matrix_repo_root/docs/guides/provider-route-matrix.md"
 feature_matrix_file="$route_matrix_repo_root/docs/guides/provider-solution-feature-matrix.csv"

@@ -14,3 +14,4 @@ Archived specs are historical evidence, not current authority.
 - [009 DeepSeek Harness Web `/api` Route](009-deepseek-harness-web-api-route.md)
 - [010 ZCode App-Server Route](010-zcode-app-server-route.md)
 - [011 Route Readiness And Connection Admission](011-route-readiness-and-connection-admission.md)
+- [012 Consumer Route Feature And Control Projection](012-consumer-route-feature-and-control-projection.md)

@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-- [012 Consumer Route Feature And Control Projection](012-consumer-route-feature-and-control-projection.md) — draft; dedicated Contract 061 promotion ready through g05.008 card 021
+None. Spec 012 was promoted into Contract 061 through g05.008 card 021.
 
 ## Promoted Specs
 
@@ -15,6 +15,7 @@ architecture, contracts, roadmaps, or logs.
 - [006 Pluggable Learned Idioms](006-pluggable-learned-idioms.md)
 - [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
 - [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
+- [012 Consumer Route Feature And Control Projection](archive/012-consumer-route-feature-and-control-projection.md)
 
 ## Archived Specs
 
@@ -27,6 +28,7 @@ architecture, contracts, roadmaps, or logs.
 - [009 DeepSeek Harness Web `/api` Route](archive/009-deepseek-harness-web-api-route.md)
 - [010 ZCode App-Server Route](archive/010-zcode-app-server-route.md)
 - [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
+- [012 Consumer Route Feature And Control Projection](archive/012-consumer-route-feature-and-control-projection.md)
 
 ## Support
 

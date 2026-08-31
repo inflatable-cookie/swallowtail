@@ -15,12 +15,13 @@ shape.
 
 ## Next Task
 
-Execute g05.008 ready card 021 through the single committed
-[Contract 061 worker handoff](../handoffs/20260831-005345-g05-008-consumer-projection-contract.md)
-after this planning batch is published on `main`. The lane is documentation
-only: promote Spec 012 into one composing contract, then stop for
-reassessment. Do not authorize implementation, another Claude turn, fallback,
-rerun, or Darwin dispatch. Do not merge PR 127.
+Reassess g05 after the
+[Contract 061 promotion](../contracts/061-consumer-route-feature-and-control-projection.md).
+g05.008 and card 021 are complete, Spec 012 is archived, and no ready card
+remains. The orchestrator decides whether a projection implementation lane, a
+different g05 surface, or generation closeout comes next. Do not authorize
+implementation, a public API baseline, another Claude turn, fallback, rerun, or
+Darwin dispatch without that decision. Do not merge PR 127.
 
 ## Standing Lanes
 

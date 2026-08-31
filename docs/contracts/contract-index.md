@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-08-31
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -66,3 +66,4 @@ Updated: 2026-08-30
 | [058 Effective Harness Skill Visibility](058-effective-harness-skill-visibility.md) | active | Exact selected-context effective skill rosters with provenance, completeness, freshness, and no ambient scan or mutation authority |
 | [059 Operation-Scoped Process Watchers](059-operation-scoped-process-watchers.md) | active | Host-owned turn-scoped watcher lifecycle, model and operator control, bounded activity, explicit wait, and fail-closed same-turn completion |
 | [060 Operation-Scoped Watcher HTTP Bridge](060-operation-scoped-watcher-http-bridge.md) | active | Closed host-owned operation bridge from qualified harness watcher calls to the exact turn-owned registry, with private authority and joined cleanup |
+| [061 Consumer Route Feature And Control Projection](061-consumer-route-feature-and-control-projection.md) | active | Composing descriptive projection of route, model, and operation features and lifecycle-scoped controls over 037/047/057 evidence, with immutable snapshots, bounded safe reasons, and fail-closed composition |

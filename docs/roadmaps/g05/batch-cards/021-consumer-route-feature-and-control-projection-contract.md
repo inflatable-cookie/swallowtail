@@ -1,8 +1,9 @@
 # 021 Consumer Route Feature And Control Projection Contract
 
-Status: ready
+Status: complete; Contract 061 active; implementation unplanned
 Owner: Tom
 Created: 2026-08-31
+Updated: 2026-08-31
 Milestone: `../008-consumer-route-feature-and-control-projection.md`
 Depends on: operator-approved Spec 012 contract direction
 
@@ -14,8 +15,8 @@ implementation decision for post-contract reassessment.
 ## Scope
 
 1. Create
-   `docs/contracts/061-consumer-route-feature-and-control-projection.md` from
-   Spec 012.
+   [`061-consumer-route-feature-and-control-projection.md`](../../../contracts/061-consumer-route-feature-and-control-projection.md)
+   from Spec 012.
 2. Govern selection-summary, session-start, and active-session projection
    views; exact source, snapshot, applicability, lifecycle, value-domain, and
    state truth; bounded namespaced extensions; bounded safe reasons; immutable
@@ -39,22 +40,22 @@ implementation decision for post-contract reassessment.
 
 ## Acceptance Criteria
 
-- [ ] Contract 061 owns one descriptive composing surface and does not absorb
+- [x] Contract 061 owns one descriptive composing surface and does not absorb
       preparation, selection, or pre-session lifecycle authority
-- [ ] exact configured-instance revision, route, model when applicable,
+- [x] exact configured-instance revision, route, model when applicable,
       operation shape, evidence identity, applicability, and lifecycle survive
       projection
-- [ ] selection-summary, session-start, per-turn, post-open observation, and
+- [x] selection-summary, session-start, per-turn, post-open observation, and
       exact negotiated state remain distinct
-- [ ] route-wide, matrix, catalogue, prepared, and negotiated evidence cannot
+- [x] route-wide, matrix, catalogue, prepared, and negotiated evidence cannot
       silently widen one another
-- [ ] source dimensions and bounded safe reasons remain visible without a
+- [x] source dimensions and bounded safe reasons remain visible without a
       claimed exhaustive reason taxonomy
-- [ ] snapshot replacement and cross-boundary rejection are explicit
-- [ ] every Spec 012 review-oracle counterexample names its rejection or
+- [x] snapshot replacement and cross-boundary rejection are explicit
+- [x] every Spec 012 review-oracle counterexample names its rejection or
       withholding point
-- [ ] Spec 012 is archived and all required indexes agree
-- [ ] no production code, existing contract amendment, architecture
+- [x] Spec 012 is archived and all required indexes agree
+- [x] no production code, existing contract amendment, architecture
       realization claim, or implementation card is added
 
 ## Review Oracle

@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: worker-pr-open
 owner: Tom
 created: 2026-08-31
 updated: 2026-08-31
@@ -73,8 +73,8 @@ authority.
 - **Required validation:** `effigy qa:docs`, `effigy qa:northstar`,
   `git diff --check`, and documentation-only changed-path proof
 - **PR base/head:** published `main` / worker branch
-- **PR URL:** pending
-- **Review state:** awaiting worker PR
+- **PR URL:** pending push; recorded in the worker report
+- **Review state:** worker complete; awaiting orchestrator review
 - **Merge authorisation:** withheld until orchestrator review, required checks,
   and a merge-authorized GitHub verdict; the worker never merges
 
@@ -179,7 +179,8 @@ and keep every implementation question out of the diff.
 ### Review and merge path
 
 The orchestrator reviews the PR against Spec 012, card 021, the census, and
-Contracts 037/047/057. Current review state: awaiting worker PR.
+Contracts 037/047/057. Current review state: worker complete; awaiting
+orchestrator review.
 
 If the orchestrator and worker share a GitHub identity, the orchestrator posts
 the verdict as a PR comment. A `planning-change` returns here before revision.

@@ -268,9 +268,12 @@ pub swallowtail_runtime::ConsumerRouteLifecycle::SessionStartOnly
 pub enum swallowtail_runtime::ConsumerRouteMutationAuthority
 pub swallowtail_runtime::ConsumerRouteMutationAuthority::Absent
 pub swallowtail_runtime::ConsumerRouteMutationAuthority::Acknowledged(swallowtail_runtime::ConsumerRouteProjectionSourceId)
+pub swallowtail_runtime::ConsumerRouteMutationAuthority::ConsumerMediatedPerTurn(swallowtail_runtime::ConsumerRouteProjectionSourceId)
 pub swallowtail_runtime::ConsumerRouteMutationAuthority::PreparedSessionStart(swallowtail_runtime::ConsumerRouteProjectionSourceId)
 impl swallowtail_runtime::ConsumerRouteMutationAuthority
 pub const fn swallowtail_runtime::ConsumerRouteMutationAuthority::is_acknowledged(&self) -> bool
+pub const fn swallowtail_runtime::ConsumerRouteMutationAuthority::is_consumer_mediated_per_turn(&self) -> bool
+pub const fn swallowtail_runtime::ConsumerRouteMutationAuthority::is_prepared_session_start(&self) -> bool
 pub const fn swallowtail_runtime::ConsumerRouteMutationAuthority::source(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteProjectionSourceId>
 pub enum swallowtail_runtime::ConsumerRouteOmissionSemantics
 pub swallowtail_runtime::ConsumerRouteOmissionSemantics::NotSelectable
@@ -1064,19 +1067,24 @@ pub struct swallowtail_runtime::ConsumerRouteApplicability
 impl swallowtail_runtime::ConsumerRouteApplicability
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::access_profile_id(&self) -> &swallowtail_core::runtime_identity::AccessProfileId
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::credential_mechanism(&self) -> &swallowtail_core::access::CredentialMechanism
+pub const fn swallowtail_runtime::ConsumerRouteApplicability::credential_state(&self) -> swallowtail_core::access::CredentialState
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::driver_identity(&self) -> &swallowtail_core::identity::AdapterIdentity
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::driver_role(&self) -> swallowtail_core::runtime_identity::DriverRole
+pub const fn swallowtail_runtime::ConsumerRouteApplicability::endpoint_authorization(&self) -> swallowtail_core::access::EndpointAuthorization
+pub const fn swallowtail_runtime::ConsumerRouteApplicability::entitlement_state(&self) -> swallowtail_core::access::EntitlementState
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::execution_layer(&self) -> swallowtail_core::runtime_identity::ExecutionLayer
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::filesystem_boundary(&self) -> core::option::Option<swallowtail_core::session_access::FilesystemBoundary>
 pub fn swallowtail_runtime::ConsumerRouteApplicability::from_plan(&swallowtail_core::preflight::PreflightPlan) -> Self
 pub fn swallowtail_runtime::ConsumerRouteApplicability::from_prepared_operation(&swallowtail_runtime::PreparedOperationEvidence) -> Self
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub const fn swallowtail_runtime::ConsumerRouteApplicability::instance_policy_id(&self) -> &swallowtail_core::runtime_identity::InstancePolicyId
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::instance_revision(&self) -> &swallowtail_core::runtime_identity::InstanceRevision
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::model(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteModelBinding>
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::operation_shape(&self) -> swallowtail_core::runtime_identity::OperationShape
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::protocol_facade_id(&self) -> &swallowtail_core::runtime_identity::ProtocolFacadeId
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::resource_access(&self) -> core::option::Option<swallowtail_core::session_access::ResourceAccess>
+pub const fn swallowtail_runtime::ConsumerRouteApplicability::runtime_readiness(&self) -> swallowtail_core::access::RuntimeReadiness
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::support_authority(&self) -> swallowtail_core::access::SupportAuthority
 pub struct swallowtail_runtime::ConsumerRouteControlValue
 impl swallowtail_runtime::ConsumerRouteControlValue

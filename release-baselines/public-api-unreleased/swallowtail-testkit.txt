@@ -239,6 +239,8 @@ pub struct swallowtail_testkit::ConsumerRouteProjectionFixture
 impl swallowtail_testkit::ConsumerRouteProjectionFixture
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::applicability(&self) -> swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::canonical() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::degraded_runtime_readiness() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::exhausted_entitlement() -> Self
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::plan(&self) -> swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::prepared(&self) -> swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::record(&self) -> swallowtail_runtime::provider_instance_catalogue::instance::ConfiguredProviderInstanceRecord

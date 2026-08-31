@@ -112,7 +112,7 @@ pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::plan(&se
 pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::request(&self) -> &swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest
 impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
-pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture
 pub struct swallowtail_adapter_openai::OpenAiRealtimeDriver
 impl swallowtail_adapter_openai::OpenAiRealtimeDriver
 pub fn swallowtail_adapter_openai::OpenAiRealtimeDriver::new() -> Self

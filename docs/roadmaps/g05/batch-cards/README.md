@@ -17,7 +17,7 @@
 
 ## Completed
 
-- [028-codex-0-151-0-claim-restack.md](./028-codex-0-151-0-claim-restack.md) — complete; Codex exec and app-server qualified through official `0.151.0`; exact feature pins retained
+- [028-codex-0-151-0-claim-restack.md](./028-codex-0-151-0-claim-restack.md) — complete; PR 130 merged at `3360d497`; Codex exec and app-server qualified through official `0.151.0`
 - [027-codex-0-151-0-identity-restack.md](./027-codex-0-151-0-identity-restack.md) — complete; Research 262 and current host/official identity reconstructed before claim
 - [023-contract-061-codex-openai-package-completion.md](./023-contract-061-codex-openai-package-completion.md) — complete; exact 35-row `codex.exec` plus 24-row `openai.background` proof merged through PR 133 at `58be7122`
 - [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — complete; exact reviewed head merged through PR 131 at `fdd2b018`

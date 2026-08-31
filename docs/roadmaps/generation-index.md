@@ -233,7 +233,8 @@ attempt. g05.012 reconstructed PR 130 as two identity-before-claim commits,
 recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
-is the front-door Next Task. No Darwin dispatch,
+is the front-door Next Task. PR 130 merged exact reviewed head `63324b4f`
+through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

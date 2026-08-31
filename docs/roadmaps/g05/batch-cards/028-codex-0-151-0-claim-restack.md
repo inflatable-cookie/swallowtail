@@ -62,3 +62,4 @@ intermediates `0.150.0` and `0.150.1`. Unpublished gaps remain incompatible.
 Model verbosity and every other feature-specific exact set remain bounded
 through `0.149.1`. Current-main focused, affected-package, semantic API, route,
 docs, Northstar, format, and diff gates pass without provider work.
+PR 130 merged exact head `63324b4f` through `3360d497` with five green checks.

@@ -52,4 +52,5 @@ Research 262 remains a compatible extension. The current host's signed Codex
 npm stable remains `0.151.0`. Exec, app-server, lifecycle, and thread catalogue
 claims now qualify published `0.150.0`, `0.150.1`, and `0.151.0`; unpublished
 `0.149.2` and `0.150.2` remain incompatible. Feature-specific exact sets stay
-through `0.149.1`.
+through `0.149.1`. PR 130 merged exact reviewed head `63324b4f` through
+`3360d497` after all five required checks passed.

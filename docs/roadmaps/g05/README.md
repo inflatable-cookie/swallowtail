@@ -34,7 +34,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
+- [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — ready; card 026 provider-free Claude watcher tool-admission evidence and repair
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 promotes the dedicated inventory contract
 - [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready
@@ -178,11 +178,12 @@ packages. The persistent Contract 029 lane selected Codex `0.151.0` first.
 g05.012 reconstructed PR 130 as identity-before-claim, refreshed newly present
 host `0.150.1` evidence, retained every feature-specific exact set through
 `0.149.1`, and qualified the exec and app-server axes through official
-`0.151.0`. Card 025 is now the canonical Next Task.
+`0.151.0`. PR 130 merged exact reviewed head `63324b4f` through `3360d497`.
+Card 025 is now the canonical Next Task.
 
 ## Milestones
 
-- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed; cards 027-028; Research 262; official `0.151.0`
+- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — ready; card 026 provider-free tool-admission evidence and repair
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 contract promotion
 - [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready

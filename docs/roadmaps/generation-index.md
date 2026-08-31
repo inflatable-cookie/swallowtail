@@ -227,8 +227,14 @@ alone. Card 024 completed exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
 through PR 138 at `8b295e6b`. Candidates B-G and I-L remain without
 implementation authority. The four-track reframe now prioritizes
 acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
-candidates C/E/I/J. Planning-only card 030 owns the current-main D/F/G audit
-and may promote at most one complete candidate. Contract 062 and
+candidates C/E/I/J. Planning-only card 030 audited D, F, and G on current
+`main` and promoted none: `claude-agent.acp`, `kimi-code.acp`, and `cline.acp`
+each validate their provider confirmation and discard it, so rubric item 2 has
+no active-observation facade to name and the census `rejected` state has no
+retained value. Candidate D is the narrowest unblock, so the next gate is
+scoped to `claude-agent.acp` alone; `kimi-code.acp`, `cline.acp`, and the F/G
+extra observation seams stay later route-local gate work. g05.009 is
+`strict-paused` with no ready batch card until that gate closes. Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
 Spec 013 is archived and realization remains unplanned. g05.011 card 026
@@ -242,7 +248,9 @@ recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
 promoted Contract 062 without Rust. Cards 026 and 029 closed without a
-production behavior change. Card 030 is the front-door Next Task. PR
+production behavior change. Card 030 closed as an evidence stop without Rust or
+a promoted candidate; compiling the `claude-agent.acp` gate is the front-door
+Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
@@ -258,6 +266,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement the ready g05 card named by the
-[roadmaps front door](README.md#next-task). This index records generation
-status; the canonical actionable pointer stays in the front door.
+Define the g05 acknowledgement gate named by the
+[roadmaps front door](README.md#next-task). g05.009 is `strict-paused` with no
+ready batch card, so the pending action is gate compilation, not card
+implementation. This index records generation status; the canonical actionable
+pointer stays in the front door.

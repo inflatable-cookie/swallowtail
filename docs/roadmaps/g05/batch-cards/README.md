@@ -7,7 +7,9 @@
 
 ## Ready
 
-- [030-contract-061-acknowledgement-candidate-reassessment.md](./030-contract-061-acknowledgement-candidate-reassessment.md) — ready; planning-only current-main audit of candidates D, F, and G
+- None. g05.009 is `strict-paused`: no card may be compiled until the
+  `claude-agent.acp` acknowledgement public-baseline gate closes on an operator
+  decision. See the [roadmaps front door](../../README.md#next-task).
 
 ## Blocked
 
@@ -15,6 +17,7 @@
 
 ## Completed
 
+- [030-contract-061-acknowledgement-candidate-reassessment.md](./030-contract-061-acknowledgement-candidate-reassessment.md) — evidence stop; D, F, and G all fail rubric item 2 on current `main`; no candidate promoted; `claude-agent.acp` gate needed next
 - [024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md](./024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md) — complete; exact 38-row candidate H proof merged through PR 138 at `8b295e6b`
 - [029-claude-watcher-credential-preserving-isolation.md](./029-claude-watcher-credential-preserving-isolation.md) — evidence stop; no exact flag shape; no production behavior change; PR 135 merged at `e1313e5f`
 - [026-claude-watcher-tool-admission-evidence-and-repair.md](./026-claude-watcher-tool-admission-evidence-and-repair.md) — complete; `--tools` suppression rejected; `--bare` authentication blocker named; no production change

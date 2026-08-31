@@ -35,13 +35,13 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "catalogue_activity"
+name = "catalogue_suite"
 path = "tests/catalogue_suite.rs"
 
 [[test]]
-name = "prepared_facade"
+name = "direct_suite"
 path = "tests/direct_suite.rs"
 
 [[test]]
-name = "realtime_prepared_facade"
+name = "realtime_suite"
 path = "tests/realtime_suite.rs"

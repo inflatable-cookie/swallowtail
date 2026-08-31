@@ -48,7 +48,51 @@ impl ConsumerRouteProjectionFixture {
         Self::with_revision("revision-2")
     }
 
+    #[must_use]
+    /// Builds the same identity under one explicitly degraded access dimension.
+    ///
+    /// Only runtime readiness differs, so composing this evidence against the
+    /// canonical record proves the exact cross-access comparison rather than
+    /// an identity or revision difference.
+    pub fn degraded_runtime_readiness() -> Self {
+        Self::with_access(
+            "revision-1",
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Degraded,
+        )
+    }
+
+    #[must_use]
+    /// Builds the same identity under one exhausted entitlement dimension.
+    pub fn exhausted_entitlement() -> Self {
+        Self::with_access(
+            "revision-1",
+            CredentialState::Ready,
+            EntitlementState::Exhausted,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+        )
+    }
+
     fn with_revision(revision: &str) -> Self {
+        Self::with_access(
+            revision,
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+        )
+    }
+
+    fn with_access(
+        revision: &str,
+        credential: CredentialState,
+        entitlement: EntitlementState,
+        endpoint_authorization: EndpointAuthorization,
+        runtime_readiness: RuntimeReadiness,
+    ) -> Self {
         let adapter_id = AdapterId::new("fixture.consumer-route").expect("adapter id is valid");
         let host_id = ExecutionHostId::new("fixture.host.local").expect("host id is valid");
         let access_id =
@@ -101,10 +145,10 @@ impl ConsumerRouteProjectionFixture {
         );
         let access_evidence = PreparedAccessEvidence::caller_asserted(AccessStatus::new(
             access_id,
-            CredentialState::Ready,
-            EntitlementState::Available,
-            EndpointAuthorization::Allowed,
-            RuntimeReadiness::Ready,
+            credential,
+            entitlement,
+            endpoint_authorization,
+            runtime_readiness,
             SupportAuthority::ProviderSupported,
         ));
         Self {

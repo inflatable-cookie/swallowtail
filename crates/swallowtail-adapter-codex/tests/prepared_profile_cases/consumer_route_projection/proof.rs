@@ -177,7 +177,10 @@ fn the_per_turn_exchange_stays_per_turn_and_claims_no_provider_mutation() {
         observation.actor_posture(),
         ConsumerRouteActorPosture::ObservationOnly
     );
-    assert!(observation.state_support().observed());
+    assert!(
+        observation.state_support().is_descriptor_only(),
+        "prepared capability evidence proves no post-open observation"
+    );
     assert!(!observation.state_support().provider_effective());
 }
 

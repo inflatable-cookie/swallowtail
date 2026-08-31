@@ -1,4 +1,4 @@
-//! Contract 061 contributions emitted by prepared Codex app-server operations.
+//! Contract 061 contributions emitted by prepared Codex operations.
 //!
 //! Every row is proved by one exact prepared plan or bound request. A row
 //! backed only by a documentation matrix or route-wide posture is withheld.
@@ -7,6 +7,8 @@
 mod builder;
 #[path = "consumer_route_projection/controls.rs"]
 mod controls;
+#[path = "consumer_route_projection/exec.rs"]
+mod exec;
 #[path = "consumer_route_projection/facades.rs"]
 mod facades;
 
@@ -21,11 +23,11 @@ use swallowtail_runtime::{ConsumerRouteAvailability, ConsumerRouteFeatureId};
 
 /// Maps one exact prepared capability to portable feature identity.
 ///
-/// A capability without a portable feature in this tranche stays withheld
-/// rather than inventing a projected row. `ProviderSessionHistory` and
-/// `ProviderSessionReconciliation` are outside the 36-row first tranche, so
-/// they are withheld here at construction rather than emitted and then
-/// filtered or exempted by a coverage test.
+/// A capability without a portable feature identity stays withheld rather
+/// than inventing a projected row. `ProviderSessionHistory` and
+/// `ProviderSessionReconciliation` are outside the app-server and exec census
+/// tranches, so they are withheld here at construction rather than emitted and
+/// then filtered or exempted by a coverage test.
 pub(crate) const fn feature_for(capability: Capability) -> Option<ConsumerRouteFeatureId> {
     Some(match capability {
         Capability::ModelCatalog => ConsumerRouteFeatureId::ModelCatalogue,

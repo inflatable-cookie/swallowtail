@@ -7,6 +7,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod background_projection;
 mod catalogue;
 mod checkpoint;
 mod driver;

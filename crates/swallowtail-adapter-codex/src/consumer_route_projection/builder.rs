@@ -61,6 +61,10 @@ impl<'a> CodexProjectionBuilder<'a> {
     }
 
     /// Emits one selection-summary feature row per exact prepared capability.
+    ///
+    /// Activity observation keeps its post-open lifecycle and observation-only
+    /// posture, but prepared capability evidence proves no observation, so its
+    /// state support stays descriptor-only.
     pub(crate) fn with_prepared_capabilities(mut self) -> Self {
         self.selection.push(
             self.row(
@@ -84,9 +88,7 @@ impl<'a> CodexProjectionBuilder<'a> {
                 );
                 self.active_session.push(
                     row.with_actor_posture(ConsumerRouteActorPosture::ObservationOnly)
-                        .with_state_support(
-                            ConsumerRouteStateSupport::descriptor_only().with_observed(),
-                        ),
+                        .with_state_support(ConsumerRouteStateSupport::descriptor_only()),
                 );
                 continue;
             }

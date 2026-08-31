@@ -120,7 +120,7 @@ contract file owns the exact rules.
   from provider identity, scopes connection and affinity state, excludes
   authentication and implicit recovery, and requires explicit joined close.
 
-## Release, Prepared Integration, And Consumer Surfaces (036-059)
+## Release, Prepared Integration, And Consumer Surfaces (036-062)
 
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
   in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
@@ -279,6 +279,13 @@ contract file owns the exact rules.
   identity, mutation authority, and unbounded reason points where composition
   fails closed. It grants no execution, mutation, acknowledgement, routing,
   default, or presentation authority.
+- **062** defines descriptor-only skill inventory over explicit host-approved
+  global, exact-working-resource project, and exact-version harness-distribution
+  roots. It fixes traversal, byte, row, text, symlink, completeness, freshness,
+  conflict, cancellation, and cleanup behavior; preserves duplicates and
+  provenance; and keeps discovered inventory weaker than Contract 058's exact
+  selected-harness effective roster. It grants no ambient scan, skill-body,
+  mutation, execution, prompt, provider, or model-visibility authority.
 
 ## Amendments
 

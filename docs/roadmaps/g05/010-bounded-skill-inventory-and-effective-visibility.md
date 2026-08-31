@@ -1,10 +1,10 @@
 # g05.010 Bounded Skill Inventory And Effective Visibility
 
-Status: ready; card 025 ready
+Status: complete; Contract 062 active; implementation unplanned
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
-Depends on: Contract 058; active Spec 013; operator four-track reframe
+Depends on: Contracts 058 and 062; archived Spec 013; operator four-track reframe
 Vision tags: skill discovery, explicit authority, working-resource truth
 
 ## Purpose
@@ -14,16 +14,13 @@ bounded inventory of skills distributed through approved global, project, and
 harness-specific locations. Contract 058 remains the stronger claim about what
 one exact selected harness context exposes to its model.
 
-## Runway
+## Result
 
-1. Promote Spec 013 into a dedicated bounded-inventory contract.
-2. Compile a provider-free runtime and testkit proof only after root authority,
-   decoders, bounds, traversal, provenance, conflicts, freshness, and
-   disclosure are closed.
-3. Prove global, project-bound, and one adapter-declared harness source without
-   claiming model visibility.
-4. Compose inventory with Contract 058 as separate discovered and effective
-   states.
+Card 025 promoted Spec 013 into Contract 062. The contract fixes root and
+decoder authority, positive limits, deterministic traversal and containment,
+descriptor-only disclosure, immutable completeness-aware snapshots, and
+fail-closed composition with Contract 058. Provider-free runtime, testkit,
+host-local, and adapter realization remain unplanned pending review.
 
 ## Boundary
 
@@ -33,11 +30,11 @@ this milestone. The contract card does not implement Rust.
 
 ## Batch Cards
 
-- [025 Bounded Skill Inventory Contract Promotion](batch-cards/025-bounded-skill-inventory-contract-promotion.md) — ready
+- [025 Bounded Skill Inventory Contract Promotion](batch-cards/025-bounded-skill-inventory-contract-promotion.md) — complete; Contract 062 active; implementation unplanned
 
 ## Acceptance
 
-- one dedicated contract owns inventory without weakening Contract 058
-- every root and decoder has exact ownership and positive bounds
-- discovery, partial, stale, conflict, and model-effective states stay distinct
-- implementation remains unplanned until the contract promotion is reviewed
+- [x] one dedicated contract owns inventory without weakening Contract 058
+- [x] every root and decoder has exact ownership and positive bounds
+- [x] discovery, partial, stale, conflict, and model-effective states stay distinct
+- [x] implementation remains unplanned until the contract promotion is reviewed

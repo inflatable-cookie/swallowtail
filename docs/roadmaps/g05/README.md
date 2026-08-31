@@ -28,7 +28,7 @@ enforcement.
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; cards 022-023 merged through PRs 131 and 133; 110 rows proved; candidate H card 024 ready | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-024 |
-| Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Spec 013 active; Contract 058 retained as effective overlay; card 025 ready | explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
+| Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | provider-neutral core complete; two live stops; `--tools` interaction with reserved watcher MCP tools unproved; card 026 ready | exact `2.1.251` provider-free admission evidence | `g05.011` card 026 |
 | Keep production route versions current one family at a time. | Codex exec and app-server qualified through official `0.151.0`; cards 027-028 complete | Contract 029 identity-before-claim; Research 262; current-main validation | `g05.012` cards 027-028 |
 
@@ -36,7 +36,7 @@ enforcement.
 
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — ready; card 026 provider-free Claude watcher tool-admission evidence and repair
-- [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 promotes the dedicated inventory contract
+- [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
 - [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
@@ -47,9 +47,9 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twelve numbered roadmaps: six completed milestones including standing
-currentness at 004, 005, and 012 and contract promotion at 008, honest evidence
-stops at 002, 003, and 007, and ready milestones at 009, 010, 011.
+g05 has twelve numbered roadmaps: seven completed milestones including standing
+currentness at 004, 005, and 012 and contract promotion at 008 and 010, honest
+evidence stops at 002, 003, and 007, and ready milestones at 009, 011.
 
 ## Current Boundary
 
@@ -169,8 +169,9 @@ automatically.
 Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 The 2026-08-31 four-track reframe keeps all four product outcomes visible.
-Spec 013 and g05.010 split bounded installed/discoverable inventory from
-Contract 058's stronger selected-harness effective truth. g05.011 makes the
+Contract 062 and completed g05.010 split bounded installed/discoverable
+inventory from Contract 058's stronger selected-harness effective truth.
+Spec 013 is archived; runtime realization remains unplanned. g05.011 makes the
 unproved Claude `--tools` and reserved MCP admission interaction the next
 watcher blocker; it authorizes no provider turn. g05.009 keeps card 024 ready,
 then prioritizes acknowledgement and per-turn candidates before breadth-only
@@ -179,13 +180,14 @@ g05.012 reconstructed PR 130 as identity-before-claim, refreshed newly present
 host `0.150.1` evidence, retained every feature-specific exact set through
 `0.149.1`, and qualified the exec and app-server axes through official
 `0.151.0`. PR 130 merged exact reviewed head `63324b4f` through `3360d497`.
-Card 025 is now the canonical Next Task.
+Card 025 promoted Contract 062 without Rust or a production claim. Card 026 is
+now the canonical Next Task.
 
 ## Milestones
 
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — ready; card 026 provider-free tool-admission evidence and repair
-- [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — ready; card 025 contract promotion
+- [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
 - [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 022-023 merged through PRs 131 and 133; candidate H card 024 ready
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld

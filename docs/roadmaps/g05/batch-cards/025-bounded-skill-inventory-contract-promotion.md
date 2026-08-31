@@ -1,11 +1,11 @@
 # 025 Bounded Skill Inventory Contract Promotion
 
-Status: ready
+Status: complete; Contract 062 active; implementation unplanned
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Milestone: `../010-bounded-skill-inventory-and-effective-visibility.md`
-Depends on: active Spec 013; Contract 058; operator four-track reframe
+Depends on: archived Spec 013; Contracts 058 and 062; operator four-track reframe
 
 ## Goal
 
@@ -41,12 +41,12 @@ selected-harness effective roster. Implement no Rust.
 
 ## Acceptance Criteria
 
-- Contract 062 is active and Spec 013 is archived
-- ownership, bounds, snapshot identity, freshness, traversal, conflicts,
+- [x] Contract 062 is active and Spec 013 is archived
+- [x] ownership, bounds, snapshot identity, freshness, traversal, conflicts,
   privacy, and fail-closed behavior are exact enough to test
-- global, project, and harness distribution sources remain distinguishable
-- discovered and selected-harness effective truth cannot be silently composed
-- a provider-free first implementation tranche can be compiled without a new
+- [x] global, project, and harness distribution sources remain distinguishable
+- [x] discovered and selected-harness effective truth cannot be silently composed
+- [x] a provider-free first implementation tranche can be compiled without a new
   product-policy decision
 
 ## Validation
@@ -58,3 +58,10 @@ selected-harness effective roster. Implement no Rust.
 ## Auto-Continuation
 
 No. Stop after contract promotion for an implementation-readiness review.
+
+## Result
+
+Contract 062 now owns explicit root authority, deterministic bounded
+traversal, descriptor-only decoding, completeness, freshness, duplicates,
+conflicts, cancellation, joined cleanup, and fail-closed composition with
+Contract 058. Spec 013 is archived. No Rust or production claim changed.

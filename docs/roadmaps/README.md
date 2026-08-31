@@ -15,14 +15,15 @@ shape.
 
 ## Next Task
 
-Implement [g05 card 025](g05/batch-cards/025-bounded-skill-inventory-contract-promotion.md):
-promote Spec 013 into dedicated Contract 062 and close the boundary between
-bounded global/project/harness-distribution inventory and Contract 058's exact
-selected-harness effective roster. Fix root authority, traversal and symlink
-rules, bounds, source-specific decoding, provenance, conflicts, freshness,
-privacy, and composition. Implement no Rust. Do not contact a provider, scan
-an ambient home or project tree, infer model visibility, or combine watcher,
-feature-façade, currentness, or papercut work into this card.
+Implement [g05 card 026](g05/batch-cards/026-claude-watcher-tool-admission-evidence-and-repair.md):
+prove provider-free whether Claude Code `2.1.251` command admission with
+`--tools Read,Glob,Grep` suppresses the reserved
+`mcp__swallowtail-watchers__*` family. Freeze exact tool-admission evidence,
+compare watcher-disabled, current watcher-enabled, and minimally repaired
+commands, and repair only the watcher command boundary if the hypothesis is
+confirmed. Do not send a provider prompt, publish a watcher claim, redesign
+the provider-neutral watcher core, or combine skill-inventory,
+feature-façade, currentness, papercut, or release work into this card.
 
 ## Standing Lanes
 

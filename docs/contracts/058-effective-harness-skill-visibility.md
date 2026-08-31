@@ -13,9 +13,9 @@ provider-managed, and distribution-bundled skills without treating installed
 or discovered files as effective visibility.
 
 This contract owns the selected-harness effective overlay only. It does not
-inventory installed skills. Spec 013 plans a separate host-approved inventory
-surface for global, project-bound, and harness-distributed roots. That surface
-must preserve its weaker discovery evidence and cannot satisfy this contract.
+inventory installed skills. Contract 062 separately owns host-approved
+inventory for global, project-bound, and harness-distribution roots. Its
+discovery evidence cannot satisfy this contract.
 
 ## Effective Roster
 
@@ -117,8 +117,9 @@ widen roster fields, completeness, provenance, or lifetime.
 
 Selecting a harness, working resource, and ambient configuration posture
 authorizes only the exact harness observation. It does not grant Swallowtail
-general host inventory authority. The harness performs its own resolution;
-the adapter maps the bounded result.
+general host inventory authority. Contract 062 requires separate explicit root
+approval. The harness performs its own resolution; the adapter maps the bounded
+result.
 
 Consumers own whether names and descriptions are displayed, persisted, or
 shared. Swallowtail owns bounds, identity, provenance preservation, redacted
@@ -137,9 +138,10 @@ tool, filesystem, network, prompt, process, or permission authority.
 - Contract 059's injected watcher skill may appear with
   `InjectedBySwallowtail` provenance only when this contract independently
   observes it.
-- Spec 013's proposed inventory may contribute discovery and provenance only.
-  Inventory membership never upgrades to harness-declared or selected-context
-  confirmation without this contract's evidence.
+- Contract 062 inventory may contribute discovery and provenance only through
+  its exact same-context mapping. Inventory membership never upgrades to
+  harness-declared or selected-context confirmation without this contract's
+  evidence.
 
 ## First Proof Disposition
 

@@ -144,10 +144,11 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has twelve roadmaps: 6 completed milestones, honest evidence stops at 002,
-003, and 007, and ready milestones at 009, 010, 011. Milestones
+g05 has twelve roadmaps: 7 completed milestones, honest evidence stops at 002,
+003, and 007, and ready milestones at 009, 011. Milestones
 004 and 005 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
+Milestone 010 is completed contract promotion with implementation unplanned.
 g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
@@ -225,16 +226,17 @@ alone. Card 024 is ready for exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
 8-row `qoder.headless`, and 12-row `zcode.app-server` package completion.
 Candidates B-G and I-L remain unnumbered planning rows. The four-track reframe
 keeps card 024 ready but prioritizes later acknowledgement candidates D/F/G,
-per-turn candidates B/K/L, then breadth candidates C/E/I/J. Spec 013 and
-g05.010 add the missing bounded global/project/harness skill-inventory layer
-without weakening Contract 058 effective truth. g05.011 isolates exact Claude
-watcher MCP tool admission as provider-free card 026 before any new live
-attempt. g05.012 reconstructed PR 130 as two identity-before-claim commits,
+per-turn candidates B/K/L, then breadth candidates C/E/I/J. Contract 062 and
+completed g05.010 add the missing bounded global/project/harness
+skill-inventory contract without weakening Contract 058 effective truth;
+Spec 013 is archived and realization remains unplanned. g05.011 isolates exact
+Claude watcher MCP tool admission as provider-free card 026 before any new
+live attempt. g05.012 reconstructed PR 130 as two identity-before-claim commits,
 recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
-is the front-door Next Task. PR 130 merged exact reviewed head `63324b4f`
-through `3360d497`. No Darwin dispatch,
+promoted Contract 062 without Rust. Card 026 is the front-door Next Task. PR
+130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

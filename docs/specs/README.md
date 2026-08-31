@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-- [013 Bounded Skill Inventory And Effective Visibility](013-bounded-skill-inventory-and-effective-visibility.md)
+None.
 
 ## Promoted Specs
 
@@ -16,6 +16,7 @@ architecture, contracts, roadmaps, or logs.
 - [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
 - [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
 - [012 Consumer Route Feature And Control Projection](archive/012-consumer-route-feature-and-control-projection.md)
+- [013 Bounded Skill Inventory And Effective Visibility](archive/013-bounded-skill-inventory-and-effective-visibility.md)
 
 ## Archived Specs
 
@@ -29,6 +30,7 @@ architecture, contracts, roadmaps, or logs.
 - [010 ZCode App-Server Route](archive/010-zcode-app-server-route.md)
 - [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
 - [012 Consumer Route Feature And Control Projection](archive/012-consumer-route-feature-and-control-projection.md)
+- [013 Bounded Skill Inventory And Effective Visibility](archive/013-bounded-skill-inventory-and-effective-visibility.md)
 
 ## Support
 

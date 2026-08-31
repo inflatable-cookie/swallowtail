@@ -15,17 +15,18 @@ shape.
 
 ## Next Task
 
-Review the revised PR 131 exact head at the required orchestrator two-route
-checkpoint against
-[card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md),
-the [repaired Batch 9.1 gate](../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md),
-and the reviewed census. Confirm the 36 `codex.app-server` and 15
-`openai.realtime` dispositions, the six accepted repairs, the preserved
-Realtime `open_session`, the restored 391/7/42/342 god-file baseline, and the
-absence of any claim for the remaining 716 rows. Merge only after a
-merge-authorized verdict. Do not compile a Batch 9.4 package-expansion card,
-contact a provider, start another worker, restart another g05 surface, close
-the generation, or act on PR 127 before that checkpoint returns.
+Compile the planning-only package-coherent expansion checkpoint for
+[g05.009 Batch 9.4](g05/009-contract-061-consumer-projection-realization.md#batch-94--package-coherent-expansion).
+Start from the 716 census rows left after PR 131 merged the exact 36-row
+`codex.app-server` plus 15-row `openai.realtime` vertical at `fdd2b018`.
+Group the remaining adapter contributions into bounded package-coherent
+candidate batches, preserve the existing Contract 061 lifecycle, authority,
+applicability, evidence, negative-coverage, and dependency boundaries, and
+apply the readiness rubric before making any card ready. This checkpoint is
+planning only: do not start a worker, implement another route, contact a
+provider, restart a blocked g05 surface, act on PR 127, or close the
+generation. PR 130 remains extracurricular and may enter review only when it
+is no longer draft; it is not the active roadmap pointer.
 
 ## Standing Lanes
 

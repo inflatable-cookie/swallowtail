@@ -205,19 +205,21 @@ replacement, fixtures, validation, and stops are closed. The operator approved
 an additive adapter-owned prepared-open result that preserves exact
 `session.updated` truth while retaining the existing generic open method.
 Batch 9.1 names the exact route-local surface and passes the readiness rubric.
-Card 022 is ready as one four-package 51-row tranche and stops before package
-expansion. Its worker delivered that tranche on
-`worker/g05-009-contract-061-two-route-vertical` and then revised it against
-the accepted PR 131 review packet: distinct Realtime prepared and
-active-observation sources, consumer-mediated per-turn authority, exact access
-dimensions, fail-closed cross-access agreement, construction-time withholding
-of two out-of-tranche Codex feature rows, and the restored 391/7/42/342
-god-file baseline. Both ledgers claim nothing for the remaining 716 rows. PR
-131 awaits the orchestrator two-route checkpoint and is not merge-authorized.
-g05 remains open. No Darwin dispatch,
-overlapping watcher worker, orchestrator-side live selector, container backend,
-new route, second provider turn, additional implementation card, generation
-rollover, or parked Bedrock work is authorized.
+Card 022 delivered one four-package 51-row tranche and stopped before package
+expansion. Its worker revised that tranche against the accepted PR 131 review
+packet: distinct Realtime prepared and active-observation sources,
+consumer-mediated per-turn authority, exact access dimensions, fail-closed
+cross-access agreement, construction-time withholding of two out-of-tranche
+Codex feature rows, the restored 391/7/42/342 god-file baseline, and exact
+source-identity admission. Exact head `b632d9e6` passed the orchestrator
+two-route checkpoint and five green checks; PR 131 merged at `fdd2b018`. Both
+ledgers claim nothing for the remaining 716 rows. g05 remains open and advances
+only to the planning-only g05.009 Batch 9.4 package-coherent expansion
+checkpoint. No Darwin dispatch, overlapping watcher worker,
+orchestrator-side live selector, container backend, new route, second provider
+turn, additional implementation card, generation rollover, or parked Bedrock
+work is authorized. PR 130 remains an extracurricular review-only queue item
+when it is no longer draft, not part of this generation pointer.
 
 ## Rollover Rule
 

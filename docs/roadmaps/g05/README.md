@@ -24,11 +24,11 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; repaired g05.009 Batch 9.1 gate closed; card 022 ready; PR 131 revision required | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 gate | `g05.008` card 021; `g05.009` card 022 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; Batch 9.4 planning checkpoint next | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 gate | `g05.008` card 021; `g05.009` card 022 |
 
 ## Planned Next Roadmaps
 
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; repaired Batch 9.1 gate closed; card 022's repaired four-package 51-row vertical is implemented on the worker branch; PR 131 revised and awaiting the orchestrator two-route checkpoint
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; the planning-only Batch 9.4 package-coherent expansion checkpoint is next
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -123,22 +123,26 @@ operator approved one additive adapter-owned typed prepared-open result while
 preserving the existing `open_session` method. Batch 9.1 names that exact
 surface and now passes the readiness rubric.
 
-Card 022 is ready as one inseparable four-package tranche: runtime composer,
+Card 022 delivered one inseparable four-package tranche: runtime composer,
 testkit conformance, all 36 `codex.app-server` rows, and all 15
-`openai.realtime` rows. A kernel-only or one-route card does not satisfy the
-accepted evidence bar. The card forbids provider contact and live probes and
-stops after one reviewable PR for the two-route checkpoint. The remaining 716
+`openai.realtime` rows. A kernel-only or one-route card would not have
+satisfied the accepted evidence bar. The card forbade provider contact and
+live probes and stopped after one reviewable PR for the two-route checkpoint.
+PR 131 merged that exact reviewed head through `fdd2b018`. The remaining 716
 rows, package expansion, blocked g05 surfaces, generation closeout, and PR 127
-remain outside its authority.
+were outside its authority.
 
 PR 131 review found three planning gaps and three execution misses inside that
 same tranche. The operator accepted separate prepared and active Realtime
 source IDs, explicit consumer-mediated per-turn authority, exact access-state
 applicability, fail-closed cross-access agreement, construction-time
 withholding of two out-of-tranche Codex feature rows, and restoration of the
-391/7/42/342 god-file baseline. The repaired gate and card keep g05.009
-strict-ready. PR 131 is changes-requested; only the same `g05-009` worker may
-revise it, and merge authority remains withheld.
+391/7/42/342 god-file baseline. The same worker repaired those points plus the
+exact source-identity admission defect found on re-review. Exact head
+`b632d9e6` passed the orchestrator checkpoint and five green checks; Helm
+merged it through PR 131 at `fdd2b018`. g05.009 now advances to the existing
+planning-only Batch 9.4 package-coherent expansion checkpoint. No later
+implementation card or provider contact is authorized by that merge.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -148,7 +152,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; repaired Batch 9.1 gate closed; card 022's repaired four-package 51-row vertical is implemented on the worker branch; PR 131 revised and awaiting the orchestrator two-route checkpoint
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; Batches 9.1-9.3 merged through PR 131 at `fdd2b018`; the planning-only Batch 9.4 package-coherent expansion checkpoint is next
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

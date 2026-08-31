@@ -15,13 +15,8 @@ shape.
 
 ## Next Task
 
-Dispatch g05.007 card 020 through its single new committed manual worker
-handoff. The worker first repairs and credential-free proves per-platform
-native-digest selection, then may run the still-unconsumed Claude Code
-`2.1.251` turn with exact `claude-haiku-4-5` on the selected `linux-x86_64`
-host after every named pre-contact gate passes. No Darwin dispatch, fallback,
-rerun, overlapping watcher worker, or orchestrator-side live selector is
-authorized.
+Reassess g05 after card 020's Linux live evidence stop. No second provider
+turn, Darwin dispatch, or merge is authorized.
 
 ## Standing Lanes
 

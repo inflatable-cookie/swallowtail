@@ -1,6 +1,6 @@
 # 020 Claude Code Watcher Live Acceptance
 
-Status: ready; Linux probe repair plus one exact provider turn authorized
+Status: complete; live evidence stop after one authorized Linux Haiku turn
 Owner: Tom
 Created: 2026-08-30
 Updated: 2026-08-31
@@ -20,7 +20,7 @@ same-turn oracle.
 
 The operator authorized one fresh provider turn on 2026-08-30, then selected
 the Linux envelope on 2026-08-31 after the first worker stopped before contact.
-The turn remains unconsumed. The complete current bounds are:
+The turn is now consumed. The complete bounds were:
 
 - exact installed Claude Code `2.1.251`
 - exact `linux-x86_64` host and official `linux-x64` native SHA-256
@@ -97,23 +97,43 @@ to planning without contacting Claude.
   platform accepts both values, or an unsupported platform silently falls back
   to one. Each must fail in credential-free proof before contact.
 
+## Live Evidence Stop
+
+The per-platform digest repair committed at `adb04f17`. Credential-free proof
+selects only the frozen `linux-x64` digest on rustc `linux`/`x86_64` and only
+the existing `darwin-arm64` digest on rustc `macos`/`aarch64`. Unsupported
+targets, including npm-style `darwin`/`arm64`, do not fall through.
+
+Pre-contact validation and the exact Linux envelope passed on that clean head.
+One `effigy probe:claude-code-watcher-live` turn then ran with exact
+`claude-haiku-4-5`. The ordered recorder kept one fact for turn
+`claude-code-headless:live-claude-code-watcher`: `JoinedZero`. It did not
+record MCP initialize, reserved tool discovery, watcher start, Stop-hook start,
+Stop-attributed completion-gate, Stop-hook response, same-session continuation,
+explicit wait or stop, or provider success. No session correlation was
+observed. Terminal cleanup produced `JoinedZero`; provider success did not.
+
+No watcher capability, matrix, or integration-guide claim follows. The attempt
+is consumed. Card 011, g05.003, and PR 127 stay unchanged. No second provider
+turn, Darwin dispatch, prompt change, or merge is authorized.
+
 ## Acceptance Criteria
 
-- [ ] the bounded per-platform probe repair is committed and credential-free
+- [x] the bounded per-platform probe repair is committed and credential-free
       proof rejects cross-platform or unsupported-target fallback
-- [ ] pre-contact validation and exact Linux identity/digest checks pass on a
+- [x] pre-contact validation and exact Linux identity/digest checks pass on a
       clean committed worker head
-- [ ] exactly one provider turn is run with exact `claude-haiku-4-5`; no other
+- [x] exactly one provider turn is run with exact `claude-haiku-4-5`; no other
       live selector, prompt, fallback, or retry runs
-- [ ] the live proof either satisfies the full ordered oracle or records the
+- [x] the live proof either satisfies the full ordered oracle or records the
       exact bounded missing/reordered fact as a sanitized stop
 - [ ] successful proof includes complete HostWatcher lifecycle activity and
       clean joined cleanup; terminal text alone is insufficient
-- [ ] no private or raw material enters logs, diagnostics, fixtures, docs, PR
+- [x] no private or raw material enters logs, diagnostics, fixtures, docs, PR
       text, or consumer events
-- [ ] route claims remain exact to the live-proved version/model point and are
+- [x] route claims remain exact to the live-proved version/model point and are
       published only after the full oracle passes
-- [ ] one outcome PR reconciles card, milestone, logs, indexes, and Next Task
+- [x] one outcome PR reconciles card, milestone, logs, indexes, and Next Task
       without authorizing merge or another provider turn
 
 ## Validation

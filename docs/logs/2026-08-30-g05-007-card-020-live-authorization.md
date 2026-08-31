@@ -1,6 +1,6 @@
 # 2026-08-30 g05.007 Card 020 Live Authorization
 
-Status: superseded for platform envelope; provider turn unconsumed
+Status: superseded for platform envelope; turn later consumed on Linux
 Owner: Tom
 Milestone: g05.007
 Card: 020
@@ -12,8 +12,9 @@ The operator selected the Linux envelope on 2026-08-31 after the first worker
 stopped before contact. This log remains the historical initial authorization;
 its `darwin-arm64` digest and unchanged-probe boundary are superseded by
 [the Linux envelope](./2026-08-31-g05-007-card-020-linux-envelope.md). No
-provider request occurred under this envelope, so the one-turn budget remains
-unconsumed.
+provider request occurred under this Darwin envelope. The one-turn budget was
+later consumed on Linux; see
+[the card 020 live stop](./2026-08-31-g05-007-card-020-linux-live-stop.md).
 
 ## Decision
 

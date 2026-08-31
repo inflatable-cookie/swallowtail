@@ -102,6 +102,9 @@ const fn availability(status: &AccessStatus) -> ConsumerRouteAvailability {
 }
 
 #[cfg(test)]
+#[path = "consumer_route_projection/assembly.rs"]
+mod assembly;
+#[cfg(test)]
 #[path = "consumer_route_projection/claims.rs"]
 mod claims;
 #[cfg(test)]
@@ -114,8 +117,14 @@ mod fixtures;
 #[path = "consumer_route_projection/ledger.rs"]
 mod ledger;
 #[cfg(test)]
+#[path = "consumer_route_projection/mixture.rs"]
+mod mixture;
+#[cfg(test)]
 #[path = "consumer_route_projection/naming.rs"]
 mod naming;
+#[cfg(test)]
+#[path = "consumer_route_projection/posture.rs"]
+mod posture;
 #[cfg(test)]
 #[path = "consumer_route_projection/proof.rs"]
 mod proof;

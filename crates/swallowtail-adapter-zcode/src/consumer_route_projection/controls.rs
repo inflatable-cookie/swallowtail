@@ -1,6 +1,8 @@
 use crate::ZcodeAppServerMode;
 use crate::prepared::projection_fixture;
-use swallowtail_runtime::{ConsumerRouteLifecycle, ConsumerRouteValueKind};
+use swallowtail_runtime::{
+    ConsumerRouteLifecycle, ConsumerRouteOmissionSemantics, ConsumerRouteValueKind,
+};
 
 use super::fixtures::{contribution, profile};
 use super::ledger::{BUILD, PLAN};
@@ -40,23 +42,36 @@ fn model_selection_and_app_server_mode_come_from_the_exact_prepared_binding() {
         );
 
         let mode_row = row(&published, "control.app-server-mode");
+        let mode_value = mode_row
+            .control_value()
+            .expect("the mode control publishes its value");
         assert_eq!(
             mode_row.lifecycle(),
             ConsumerRouteLifecycle::SessionStartOnly
         );
         assert_eq!(
-            mode_row
-                .control_value()
-                .expect("the mode control publishes its value")
-                .kind(),
+            mode_value.kind(),
             ConsumerRouteValueKind::BoundedEnumeration
         );
         assert_eq!(
-            row(&published, "control.model-selection")
-                .control_value()
-                .expect("the model control publishes its value")
-                .kind(),
-            ConsumerRouteValueKind::ExactModelRoute
+            mode_value.omission(),
+            ConsumerRouteOmissionSemantics::Required,
+            "the route constructor supplies no mode default"
+        );
+
+        let model_row = row(&published, "control.model-selection");
+        let model_value = model_row
+            .control_value()
+            .expect("the model control publishes its value");
+        assert_eq!(
+            model_row.lifecycle(),
+            ConsumerRouteLifecycle::SelectionSummary
+        );
+        assert_eq!(model_value.kind(), ConsumerRouteValueKind::ExactModelRoute);
+        assert_eq!(
+            model_value.omission(),
+            ConsumerRouteOmissionSemantics::Required,
+            "the route selection constructor supplies no model default"
         );
     }
 }

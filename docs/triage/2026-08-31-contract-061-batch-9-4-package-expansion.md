@@ -1,6 +1,7 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A and H complete; candidate D promoted as ready card 031 after the accepted `claude-agent.acp` acknowledgement gate
+Status: active planning evidence; candidates A, D, and H complete; no
+implementation card ready pending the `cline.acp` active-observation decision
 Owner: Tom
 Date: 2026-08-31
 
@@ -49,7 +50,7 @@ explicitly.
 | A | Codex; OpenAI | `codex.exec` 35; `openai.background` 24 | 59 | prepared-only controls; background recovery descriptors | complete through card 023 / PR 133 |
 | B | Alibaba Model Studio; Anthropic; xAI | `alibaba.conversations` 19; `anthropic.managed-agent` 17; `anthropic.messages` 23; `xai.responses-websocket` 17 | 76 | one consumer-mediated per-turn exchange | candidate only |
 | C | Antigravity; Bedrock; Cursor | `antigravity.catalogue` 14; `antigravity.headless` 18; `bedrock.catalogue` 9; `bedrock.runtime` 10; `cursor-agent.acp` 13; `cursor-agent.catalogue` 13; `cursor-agent.headless` 17 | 94 | four explicit no-control route audits | candidate only |
-| D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | promoted as card 031 |
+| D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | complete through card 031 / PR 141 |
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
 | G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | candidate only |
@@ -68,9 +69,8 @@ exact active-session acknowledgement rows stay isolated in D, F, and G. The
 eight remaining per-turn rows stay in B, K, and L; none may be relabelled as
 session-start authority.
 
-After candidates A and H, 619 rows across 40 route IDs and 25 adapter packages
-remain unproved. Candidate D's 53 rows are now authorized by card 031; the
-other 566 rows in candidates B, C, E-G, and I-L remain planning rows.
+After candidates A, D, and H, 566 rows across 37 route IDs and 24 adapter
+packages remain unproved in candidates B, C, E-G, and I-L.
 
 ## Promotion Rubric
 
@@ -279,23 +279,70 @@ fixes the exact public signatures, source split, state transitions, unknown
 failure boundary, shared-open lifecycle, and provider-free review oracle. It
 adds no runtime/core public decision and grants no authority to Kimi or Cline.
 
-Candidate D now passes the promotion rubric and is ready as card 031. Its one
-adapter package owns the exact 30 `claude-agent.acp`, 12
+At that gate, candidate D passed the promotion rubric and became card 031.
+Its one adapter package owns the exact 30 `claude-agent.acp`, 12
 `claude-code.headless`, and 11 `claude-code.response-only` tuples. The card
 combines the adapter-local public-baseline repair with the full 53-row package
-proof. It must stop for orchestrator review before any later candidate is
-reassessed.
+proof. The following completion records the reviewed result.
+
+## Candidate D Completion
+
+PR 141 merged exact reviewed head `1edc7e73` through `5d1f173a`. Three
+independent ledgers prove all 30 `claude-agent.acp`, 12
+`claude-code.headless`, and 11 `claude-code.response-only` tuples: 29/1,
+11/1, and 9/2 emitted/withheld. Exact ACP reasoning acknowledgement uses the
+accepted adapter-local open-with-projection surface. Prepared and active
+sources remain distinct, malformed or unqualified confirmation publishes no
+state, and the preserved and additive open methods share one private
+lifecycle.
+
+Only the Claude Agent adapter semantic API baseline changed, with 27 additive
+lines. Focused validation passed 188 tests, package and semantic API checks
+passed, the god-file scan improved from 391 to 387, and all five CI jobs were
+green. No provider contact or live probe occurred.
+
+The proved total is now 201: 51 from card 022, 59 from card 023, 38 from card
+024, and 53 from card 031. The exact remainder is 566 rows across 37 route IDs
+and 24 adapter packages.
+
+## Post-Card-031 Lifecycle Reassessment
+
+The lifecycle-priority sequence returns to F and G. Neither passes the
+promotion rubric on `main` at `5d1f173a`.
+
+F remains the larger coupled stop. Its 89 rows cover two packages and four
+route shapes. `kimi-code.acp` still needs three distinct post-open families:
+compound reasoning-and-plan acknowledgement, negotiated model options, and
+provider-session catalogue observation. Card 031 changed only the Claude
+Agent adapter and grants Kimi no public-baseline authority.
+
+G is the narrower next gate, not a ready card. Its 48 rows cover four complete
+adapter-package remainders. The Copilot CLI and Goose no-control audits already
+have a proved negative-coverage pattern, but `cline.acp` still discards the
+exact Plan confirmation, parses no model-option snapshot into its session
+handle, and has no adapter-owned active-observation projection result. Card
+031's route-local API does not transfer to Cline.
+
+The
+[Cline active-observation gate](2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
+therefore records the sole next decision. It asks whether Cline may retain
+exact effective/rejected Plan acknowledgement plus exact bounded negotiated
+model options and expose both through one additive adapter-owned projected
+open while preserving `ClinePreparedSession::open_session`. Until the operator
+answers and a later planning batch fixes exact signatures and proof oracles,
+candidate G has no card number or implementation authority.
+
+Candidates B, C, E, I-L stay in their existing later bands. Batch 9.5 remains
+uncompiled.
 
 ## Lifecycle-Priority Sequence
 
-The four-track reframe keeps candidate H as the next ready feature-façade
-tranche, but changes how later candidates are selected. Row count is no longer
-the primary ordering signal. After card 024 review, reassess in these bands:
+The four-track reframe keeps lifecycle value ahead of row count. After card
+031 completion, reassess the remaining candidates in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   card 030 audited all three on current `main` and promoted none. The accepted
-   `claude-agent.acp` gate now promotes D as card 031; F and G wait on their own
-   later route-local gates.
+   D is complete through card 031. F and G still fail rubric item 2. G owns the
+   narrower route-local next gate; neither has implementation authority.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

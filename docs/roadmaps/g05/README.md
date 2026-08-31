@@ -117,6 +117,17 @@ no blocked surface, implementation card, or worker handoff follows unless the
 completed inventory proves a bounded card ready without inventing package,
 API, bound, coverage, or tranche policy.
 
+The
+[realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
+is drafted. It confirms the current adapters -> runtime -> core import
+direction, the 48-route and 767-row coverage obligation, and the need for a
+projection-specific admission bound. It recommends a runtime-owned normalized
+contribution/composer boundary, explicit replaceable-source identity, fixed
+library projection maxima, and a Codex app-server plus OpenAI Realtime first
+proof before package-coherent all-route expansion. Those package, API, bound,
+coverage, and tranche choices remain operator decisions. No milestone, card,
+or handoff is ready.
+
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
 

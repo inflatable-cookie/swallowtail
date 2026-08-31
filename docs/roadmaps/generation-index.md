@@ -197,10 +197,12 @@ ready milestone or card. It recommends a planning-only Contract 061
 realization-readiness inventory to settle source ownership, dependency
 direction, tranche, coverage, and bound questions before any public API or
 implementation card. The operator selected that planning-only inventory on
-2026-08-31; g05 remains open and no ready card follows yet. No Darwin dispatch,
-overlapping watcher worker, orchestrator-side live selector, container backend,
-new route, second provider turn, implementation card, generation rollover, or
-parked Bedrock work is authorized.
+2026-08-31. The inventory is drafted and returns material package, API, bound,
+coverage, and tranche forks to the operator; g05 remains open and no ready card
+follows yet. No Darwin dispatch, overlapping watcher worker,
+orchestrator-side live selector, container backend, new route, second provider
+turn, implementation card, generation rollover, or parked Bedrock work is
+authorized.
 
 ## Rollover Rule
 

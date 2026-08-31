@@ -144,9 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has seven roadmaps: 4 completed milestones, honest evidence stops at 002,
-003, and 007. Milestones 004 and 005 are completed standing currentness.
-Milestone 006 is completed credential-free repair.
+g05 has eight roadmaps: 4 completed milestones, honest evidence stops at 002,
+003, and 007, and one ready milestone at 008. Milestones 004 and 005 are
+completed standing currentness. Milestone 006 is completed credential-free
+repair.
 g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
@@ -183,13 +184,15 @@ probe repair before the same one-shot turn. The lock and API-tool validation
 gaps were cleared. Card 020 repaired digest selection at `adb04f17`, then
 consumed the turn, and its honest evidence stop merged through PR 128 at
 `528a31c9`. The ordered recorder kept only `JoinedZero`. Watcher claims stay
-unpublished. The post-card-020 reassessment classifies g05 as `strict-paused`.
-No g05 milestone or card is ready. The reviewed consumer route-feature and
-control census is the clearest next planning candidate, but it remains open
-triage evidence until the operator settles its promotion and contract shape.
-The sole front-door pointer names that decision. No Darwin dispatch,
-overlapping watcher worker, orchestrator-side live selector, container backend,
-new route, second provider turn, or parked Bedrock work is authorized.
+unpublished. The operator accepted the post-card-020 recommendation. Spec 012
+promotes the reviewed consumer route-feature and control census into one
+dedicated composing-contract lane. It preserves Contracts 037/047/057, uses
+source dimensions plus bounded safe reasons, and defers a closed availability
+taxonomy. g05.008 is the one ready milestone and card 021 is the only ready
+card, limited to Contract 061 documentation and spec/index closeout. No Darwin
+dispatch, overlapping watcher worker, orchestrator-side live selector,
+container backend, new route, second provider turn, implementation card, or
+parked Bedrock work is authorized.
 
 ## Rollover Rule
 

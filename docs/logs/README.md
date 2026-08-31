@@ -24,6 +24,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 g05.008 Consumer Projection Spec Compilation](./2026-08-31-g05-008-consumer-projection-spec-compilation.md) — Spec 012 active; dedicated Contract 061 card 021 ready; one docs-only handoff
 - [2026-08-31 g05 Post-Card-020 Planning Reassessment](./2026-08-31-g05-post-card-020-planning-reassessment.md) — strict-paused; no ready card; consumer projection promotion decision is next
 - [2026-08-31 g05.007 Card 020 Linux Live Stop](./2026-08-31-g05-007-card-020-linux-live-stop.md) — one Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [2026-08-31 g05.007 Card 020 Linux Envelope](./2026-08-31-g05-007-card-020-linux-envelope.md) — Linux/per-platform probe repair; exact `linux-x64` digest; turn later consumed by the card 020 live stop

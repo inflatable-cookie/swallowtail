@@ -15,12 +15,12 @@ shape.
 
 ## Next Task
 
-Settle whether the reviewed consumer route-feature and control census becomes
-g05's next provisional spec and contract-discussion lane. The
-[post-card-020 reassessment](../logs/2026-08-31-g05-post-card-020-planning-reassessment.md)
-recommends one composing contract and deferring a closed availability-reason
-taxonomy. No implementation card or worker handoff is ready. Do not authorize
-another Claude turn, fallback, rerun, or Darwin dispatch. Do not merge PR 127.
+Execute g05.008 ready card 021 through the single committed
+[Contract 061 worker handoff](../handoffs/20260831-005345-g05-008-consumer-projection-contract.md)
+after this planning batch is published on `main`. The lane is documentation
+only: promote Spec 012 into one composing contract, then stop for
+reassessment. Do not authorize implementation, another Claude turn, fallback,
+rerun, or Darwin dispatch. Do not merge PR 127.
 
 ## Standing Lanes
 

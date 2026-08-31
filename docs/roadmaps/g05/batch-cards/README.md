@@ -7,7 +7,7 @@
 
 ## Ready
 
-- None.
+- [021-consumer-route-feature-and-control-projection-contract.md](./021-consumer-route-feature-and-control-projection-contract.md) — ready; docs-only Contract 061 promotion from Spec 012
 
 ## Blocked
 

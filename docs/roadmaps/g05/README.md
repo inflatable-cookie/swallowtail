@@ -24,9 +24,11 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Spec 012 active; Contract 061 promotion ready | reviewed 767-row census; Contracts 037, 047, 057; operator decisions | `g05.008` card 021 |
 
 ## Planned Next Roadmaps
 
+- [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — ready; Spec 012; card 021 docs-only Contract 061 promotion
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
 - [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
@@ -35,8 +37,9 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has seven numbered roadmaps: four completed milestones including standing
-currentness at 004 and 005, honest evidence stops at 002, 003, and 007.
+g05 has eight numbered roadmaps: four completed milestones including standing
+currentness at 004 and 005, honest evidence stops at 002, 003, and 007, and one
+ready milestone at 008.
 
 ## Current Boundary
 
@@ -82,19 +85,17 @@ The operator selected Linux on 2026-08-31 and authorized a bounded
 per-platform digest repair before the same one-shot turn. Card 020 repaired
 selection at `adb04f17`, then consumed the turn. The ordered recorder kept
 only `JoinedZero`. Its honest evidence stop merged through PR 128 at
-`528a31c9`. Watcher claims stay unpublished. No g05 milestone or card is
-ready. The post-card-020 reassessment classifies g05 as `strict-paused` and
-routes the sole Next Task to the consumer projection promotion decision. The
-reviewed 767-row census is the clearest planning candidate, not runtime or
-implementation authority. No g05.008, new worker, second provider turn,
-fallback, rerun, or Darwin dispatch is authorized. PR 127 remains unmerged.
+`528a31c9`. Watcher claims stay unpublished. The operator accepted the
+post-card-020 recommendation. Spec 012 now promotes the reviewed 767-row census
+as a provisional composing-contract lane. It preserves immutable replacement
+snapshots, exact instance/route/model/operation scoping, lifecycle-separated
+views, downstream presentation ownership, and unchanged Contracts 037/047/057
+authority. It reserves one dedicated Contract 061 and defers a closed
+availability-reason taxonomy.
 
-The reassessment resolves immutable replacement snapshots, exact
-instance/route/model/operation scoping, lifecycle-separated views, downstream
-presentation ownership, and unchanged Contracts 037/047/057 authority from
-existing contracts. It recommends one composing contract and deferring a
-closed availability-reason taxonomy, but leaves those promotion choices to the
-operator before a provisional spec or roadmap is compiled.
+g05.008 and card 021 are ready for one docs-only contract-promotion worker.
+No Rust/API implementation, second provider turn, fallback, rerun, or Darwin
+dispatch is authorized. PR 127 remains unmerged.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -104,6 +105,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
+- [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — ready; Spec 012; card 021 dedicated Contract 061 promotion only
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018

@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-None. Spec 011 is promoted to Contract 057.
+- [012 Consumer Route Feature And Control Projection](012-consumer-route-feature-and-control-projection.md) — draft; dedicated Contract 061 promotion ready through g05.008 card 021
 
 ## Promoted Specs
 

@@ -1,6 +1,6 @@
 # 2026-08-30 Consumer Route Feature And Option Projection
 
-Status: open
+Status: promoted; Spec 012; g05.008
 Owner: Tom
 Source: operator direction during g05 execution
 
@@ -337,8 +337,8 @@ acknowledgement questions enough to design the next contract discussion. It
 does not choose the facade's snapshot identity, freshness signal,
 availability-reason taxonomy, consumer presentation boundary, or whether
 Contracts 037, 047, and 057 need an amendment versus a composing contract.
-Those remain promotion questions. No runtime authority or implementation
-claim is created here; Status: open remains unchanged.
+Those remained promotion questions at census close. No runtime authority or
+implementation claim was created by the evidence lane.
 
 ## g05 Reassessment Disposition (2026-08-31)
 
@@ -348,9 +348,23 @@ settles immutable replacement snapshots, exact instance/route/model/operation
 scoping, lifecycle-separated views, downstream presentation ownership, and
 unchanged Contracts 037/047/057 authority.
 
-Promotion still needs the operator to confirm that this becomes the next
-provisional spec, choose one composing contract versus amendments, and decide
-whether the first contract owns a closed availability-reason taxonomy. The
-reassessment recommends a composing contract and deferring the closed taxonomy.
-Until those choices are settled, this note stays open and no g05.008 roadmap,
-batch card, contract, architecture claim, or worker handoff follows.
+At that checkpoint, promotion still needed the operator to confirm that this
+became the next provisional spec, choose one composing contract versus
+amendments, and decide whether the first contract owned a closed
+availability-reason taxonomy. The reassessment recommended a composing
+contract and deferring the closed taxonomy. No roadmap, card, contract, or
+handoff followed before the operator decisions below.
+
+## Operator Promotion Decision (2026-08-31)
+
+The operator accepted the reassessment recommendation:
+
+- promote the census through Spec 012 and g05.008
+- use one dedicated composing Contract 061 without amending Contracts 037,
+  047, or 057
+- defer a closed availability-reason taxonomy; preserve existing source
+  dimensions plus bounded safe reasons
+
+This note is now promoted planning evidence. Spec 012 owns the provisional
+shape. Ready card 021 owns docs-only Contract 061 promotion. No runtime or
+implementation authority follows from the census itself.

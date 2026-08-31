@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: worker-in-flight
 owner: Tom
 created: 2026-08-31
 updated: 2026-08-31
@@ -38,10 +38,11 @@ acknowledgement route; the common kernel or either route alone is insufficient.
 - **Repository:** `/home/box/Dev/projects/swallowtail`
 - **Planning branch:** `main`
 - **Planning base commit:** `be98c30d682bea9ab01c5fa5e9af46e7180d4fbc`
-- **Pushed main verification:** the planning base was verified equal to
-  `origin/main`; Helm must publish this planning batch before dispatch
-- **Planning checkout:** planning docs are ready, but this session cannot write
-  `.git`; the tracked handoff at the published head is canonical
+- **Pushed main verification:** Helm published the planning batch at
+  `693e75352701eaae13e3642ffd369936a591c682`; `HEAD == origin/main` was
+  verified before this in-flight status update
+- **Planning checkout:** the tracked handoff at the published head is canonical;
+  this session can write docs but not `.git`
 - **Worker mode:** implementation worker dispatched by the orchestrator; this
   handoff activates the worker-only worktree preflight
 - **Planning artifacts included at the published handoff head:** completed
@@ -80,7 +81,8 @@ acknowledgement route; the common kernel or either route alone is insufficient.
 - **Required validation:** the eight exact commands in card 022; no live probe
 - **PR base/head:** published `main` / selected worker branch
 - **PR URL:** pending worker push
-- **Review state:** awaiting implementation and orchestrator review
+- **Review state:** worker in flight; awaiting its PR, checks, and orchestrator
+  review
 - **Merge authorisation:** withheld until exact-head checks, orchestrator
   review, and a merge-authorized GitHub verdict; the worker never merges
 

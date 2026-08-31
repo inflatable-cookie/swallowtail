@@ -28,6 +28,9 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: name each `[[test]]` target after its suite file, or note the mapping in
   the crate's test module header.
 - Surface: `swallowtail-adapter-openai` integration test targets.
+- Queue 2026-08-31: papercuts wave 23 reserved in the local Swallowtail
+  orchestrator. It is independent of merged card 023, owns only the OpenAI
+  test-target manifest names and this entry, and has not been dispatched.
 
 ### [ ] Route-matrix docs validation leaves Python bytecode — 2026-08-30
 - Friction: `effigy qa:docs` imports the route inventory checker and leaves
@@ -37,6 +40,8 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: disable bytecode for the selector, direct its cache outside the source
   tree, or ignore the generated directory explicitly.
 - Surface: `qa:consumer-docs`, `qa:routes`, and route-inventory imports.
+- Queue 2026-08-31: next serial candidate after the OpenAI test-target lane;
+  not reserved for implementation and not dispatched.
 
 ### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
 - Friction: the card 011 Claude watcher probe removes its temporary workspace

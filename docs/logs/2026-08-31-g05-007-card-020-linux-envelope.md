@@ -1,6 +1,6 @@
 # 2026-08-31 g05.007 Card 020 Linux Envelope
 
-Status: ready
+Status: consumed; see card 020 live stop
 Owner: Tom
 Milestone: g05.007
 Card: 020
@@ -57,3 +57,8 @@ The worker returns one reviewable PR and never merges it. Under the operator's
 standing instruction, Helm may merge that later PR only after the orchestrator
 reviews the exact head and posts a merge-authorized verdict after required
 checks pass. A withheld verdict means no merge. PR 127 remains excluded.
+
+## Later Outcome
+
+Card 020 later consumed this turn. The ordered recorder kept only `JoinedZero`.
+See [2026-08-31 g05.007 Card 020 Linux Live Stop](./2026-08-31-g05-007-card-020-linux-live-stop.md).

@@ -27,9 +27,19 @@ use swallowtail_runtime::{
 use watcher_proof::{WatcherProofRecorder, assert_stop_reentry_proof};
 
 const WATCHER_VERSION: &str = "2.1.251";
-const WATCHER_NATIVE_SHA256: &str =
+const WATCHER_NATIVE_SHA256_DARWIN_ARM64: &str =
     "625869b01e0050f260b2980fac248fd9cef9e462612bded4ec9d3d49ff8969a5";
+const WATCHER_NATIVE_SHA256_LINUX_X64: &str =
+    "fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7";
 const WATCHER_MODEL: &str = "claude-haiku-4-5";
+
+fn watcher_native_sha256(os: &str, arch: &str) -> Option<&'static str> {
+    match (os, arch) {
+        ("linux", "x86_64") => Some(WATCHER_NATIVE_SHA256_LINUX_X64),
+        ("macos", "aarch64") => Some(WATCHER_NATIVE_SHA256_DARWIN_ARM64),
+        _ => None,
+    }
+}
 
 struct TempWorkspace {
     path: PathBuf,
@@ -71,9 +81,11 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
     let _workspace = TempWorkspace::create();
     let source_before = git_status();
     let binary = installed_claude();
+    let expected_digest = watcher_native_sha256(std::env::consts::OS, std::env::consts::ARCH)
+        .expect("unsupported target for Claude Code 2.1.251 watcher native digest");
     assert_eq!(
         sha256_hex(&binary),
-        WATCHER_NATIVE_SHA256,
+        expected_digest,
         "native digest drifted"
     );
     let (local, target, environment, working_resource, execution_host_id) =
@@ -160,6 +172,44 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
         source_before,
         "provider created a source artifact"
     );
+}
+
+#[test]
+fn linux_x86_64_selects_only_the_official_linux_x64_digest() {
+    let digest = watcher_native_sha256("linux", "x86_64")
+        .expect("linux-x86_64 must select the frozen linux-x64 digest");
+    assert_eq!(digest, WATCHER_NATIVE_SHA256_LINUX_X64);
+    assert_ne!(digest, WATCHER_NATIVE_SHA256_DARWIN_ARM64);
+}
+
+#[test]
+fn macos_aarch64_selects_only_the_official_darwin_arm64_digest() {
+    let digest = watcher_native_sha256("macos", "aarch64")
+        .expect("macos-aarch64 must select the frozen darwin-arm64 digest");
+    assert_eq!(digest, WATCHER_NATIVE_SHA256_DARWIN_ARM64);
+    assert_ne!(digest, WATCHER_NATIVE_SHA256_LINUX_X64);
+}
+
+#[test]
+fn unsupported_targets_do_not_select_either_frozen_digest() {
+    assert_ne!(
+        WATCHER_NATIVE_SHA256_LINUX_X64,
+        WATCHER_NATIVE_SHA256_DARWIN_ARM64
+    );
+    for (os, arch) in [
+        ("linux", "aarch64"),
+        ("macos", "x86_64"),
+        ("windows", "x86_64"),
+        ("freebsd", "x86_64"),
+        ("linux", "x86"),
+        ("darwin", "arm64"),
+    ] {
+        assert_eq!(
+            watcher_native_sha256(os, arch),
+            None,
+            "{os}-{arch} must not fall through to a frozen digest"
+        );
+    }
 }
 
 fn live_host(

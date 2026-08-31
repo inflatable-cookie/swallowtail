@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-08-31
 
 ## Generations
 
@@ -144,9 +144,9 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has seven roadmaps: 4 completed milestones, honest evidence stops at 002
-and 003, and one ready milestone at 007. Milestones 004 and 005 are completed
-standing currentness. Milestone 006 is completed credential-free repair.
+g05 has seven roadmaps: 4 completed milestones, honest evidence stops at 002,
+003, and 007. Milestones 004 and 005 are completed standing currentness.
+Milestone 006 is completed credential-free repair.
 g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
@@ -177,12 +177,14 @@ official `0.22.3`. No second provider prompt was authorized through card 011.
 The operator authorized g05.007 card 020 for one fresh exact Claude Code
 `2.1.251` turn using exact `claude-haiku-4-5`, with no fallback or rerun. Its
 first worker stopped before contact because the Linux host could not satisfy a
-Darwin-only digest envelope; PR 127 remains unmerged and the turn is
-unconsumed. The operator selected the `linux-x86_64` host on 2026-08-31 and
-authorized a bounded per-platform probe repair before the same one-shot turn.
-The lock and API-tool validation gaps are cleared. No Darwin dispatch,
-overlapping watcher worker, orchestrator-side live selector, container backend,
-new route, or parked Bedrock work is authorized.
+Darwin-only digest envelope; PR 127 remains unmerged. The operator selected
+the `linux-x86_64` host on 2026-08-31 and authorized a bounded per-platform
+probe repair before the same one-shot turn. The lock and API-tool validation
+gaps were cleared. Card 020 repaired digest selection at `adb04f17`, then
+consumed the turn. The ordered recorder kept only `JoinedZero`. Watcher claims
+stay unpublished. No Darwin dispatch, overlapping watcher worker,
+orchestrator-side live selector, container backend, new route, second provider
+turn, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

@@ -1,0 +1,262 @@
+{
+  "version": "2.1.251",
+  "axis": "claude-code.headless-stream-json",
+  "source": {
+    "help_command": "claude --help",
+    "host_version": "2.1.251",
+    "host_help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+    "host_help_matches_official_extracted": true,
+    "parser_probe_command": "env -i HOME=<throwaway> PATH=/usr/bin:/bin claude -p <candidate argv> </dev/null",
+    "parser_probe_boundary": "no prompt, no credentials, no model request; every variant stops at argv parsing or print-input validation",
+    "provider_prompt_sent": false,
+    "credentials_used": false,
+    "model_request_sent": false
+  },
+  "help_text": {
+    "--bare": "Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery. Sets CLAUDE_CODE_SIMPLE=1. Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read). 3P providers (Bedrock/Vertex/Foundry) use their own credentials. Skills still resolve via /skill-name. Explicitly provide context via: --system-prompt[-file], --append-system-prompt[-file], --add-dir (CLAUDE.md dirs), --mcp-config, --settings, --agents, --plugin-dir.",
+    "--restricted": "Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell, REPL and the other code-running tools) and WebFetch unless --tools names them, and ignores user, project and local settings files (managed settings and --settings still apply; add --strict-mcp-config to skip MCP servers too). Also confines the file tools to the working directories (--add-dir included), refuses bypassPermissions, and lets only a person or the configured permission handler approve writes to settings, git and tool-configuration files.",
+    "--safe-mode": "Start with all customizations (CLAUDE.md, skills, plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled — useful for troubleshooting a broken configuration. Admin-managed (policy) settings still apply. Auth, model selection, built-in tools, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.",
+    "--setting-sources": "Comma-separated list of setting sources to load (user, project, local).",
+    "--settings": "Path to a settings JSON file or a JSON string to load additional settings from",
+    "--mcp-config": "Load MCP servers from JSON files or strings (space-separated)",
+    "--strict-mcp-config": "Only use MCP servers from --mcp-config, ignoring all other MCP configurations",
+    "--add-dir": "Additional directories to allow tool access to",
+    "--tools": "Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use all tools, or specify tool names (e.g. \"Bash,Edit,Read\").",
+    "--permission-mode": "Permission mode to use for the session (choices: \"acceptEdits\", \"auto\", \"bypassPermissions\", \"manual\", \"dontAsk\", \"plan\")",
+    "--include-hook-events": "Include all hook lifecycle events in the output stream (only works with --output-format=stream-json)"
+  },
+  "named_ambient_authority": [
+    "settings",
+    "hooks",
+    "skills",
+    "mcp_servers",
+    "memory_claude_md",
+    "plugins"
+  ],
+  "classification_rule": "fail closed: an ambient axis counts as excluded only where exact 2.1.251 help states the exclusion. An unstated axis is admitted-unstated, not excluded. A private-composition part counts as preserved only where help states it survives the mode.",
+  "parser_probe": [
+    {
+      "variant": "watcher-candidate-restricted",
+      "argv_delta": [
+        "--restricted"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "watcher-current-bare",
+      "argv_delta": [
+        "--bare"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "empty-setting-sources",
+      "argv_delta": [
+        "--setting-sources",
+        ""
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "restricted-with-empty-setting-sources",
+      "argv_delta": [
+        "--restricted",
+        "--setting-sources",
+        ""
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "restricted-with-ambient-setting-sources",
+      "argv_delta": [
+        "--restricted",
+        "--setting-sources",
+        "user,project,local"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "safe-mode",
+      "argv_delta": [
+        "--safe-mode"
+      ],
+      "result": "parse-accepted-print-input-validation"
+    },
+    {
+      "variant": "invalid-setting-source-value",
+      "argv_delta": [
+        "--setting-sources",
+        "bogus"
+      ],
+      "result": "parse-rejected-invalid-setting-source"
+    },
+    {
+      "variant": "unknown-option-negative-control",
+      "argv_delta": [
+        "--restricted",
+        "--swallowtail-nonexistent"
+      ],
+      "result": "parse-rejected-unknown-option"
+    }
+  ],
+  "candidates": [
+    {
+      "name": "current-bare",
+      "argv": [
+        "--bare"
+      ],
+      "ambient_authority": {
+        "settings": "admitted-unstated",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "excluded",
+        "plugins": "excluded"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "unstated",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "removed",
+      "configured_authentication_evidence": "help: Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read)",
+      "excludes_all_named_ambient_authority": false,
+      "preserves_configured_authentication": false,
+      "preserves_private_watcher_composition": false,
+      "disposition": "rejected",
+      "reason": "removes every OAuth and keychain path; help says skills still resolve via /skill-name, states no settings-file exclusion, and the same clause that skips hooks leaves the operation-private Stop gate unstated"
+    },
+    {
+      "name": "watcher-only-restricted",
+      "argv": [
+        "--restricted"
+      ],
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "admitted",
+        "plugins": "admitted"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "preserved",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help states no credential change for restricted mode",
+      "excludes_all_named_ambient_authority": false,
+      "preserves_configured_authentication": true,
+      "preserves_private_watcher_composition": true,
+      "disposition": "rejected",
+      "reason": "restores authentication and keeps the private composition, but help excludes no ambient skill, CLAUDE.md, or plugin authority, so watcher opt-in would admit more than the invariant's closed list"
+    },
+    {
+      "name": "empty-setting-sources",
+      "argv": [
+        "--setting-sources",
+        ""
+      ],
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "admitted",
+        "plugins": "admitted"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "unstated",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help states no credential change for setting-source selection",
+      "excludes_all_named_ambient_authority": false,
+      "preserves_configured_authentication": true,
+      "preserves_private_watcher_composition": false,
+      "disposition": "rejected",
+      "reason": "parser accepts the empty source list, but help states no carve-out that explicit --settings survives it and excludes no ambient skill, CLAUDE.md, or plugin authority"
+    },
+    {
+      "name": "safe-mode",
+      "argv": [
+        "--safe-mode"
+      ],
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "excluded",
+        "mcp_servers": "excluded",
+        "memory_claude_md": "excluded",
+        "plugins": "excluded"
+      },
+      "private_composition": {
+        "private_mcp": "disabled",
+        "stop_hook": "disabled",
+        "injected_skill": "disabled"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help: Auth, model selection, built-in tools, and permissions work normally",
+      "excludes_all_named_ambient_authority": true,
+      "preserves_configured_authentication": true,
+      "preserves_private_watcher_composition": false,
+      "disposition": "rejected",
+      "reason": "the only compared shape that excludes every named ambient authority, and it does so by disabling the same hook, MCP-server, and skill mechanisms the private watcher composition needs; help states no --settings or --mcp-config carve-out"
+    }
+  ],
+  "outcome": {
+    "kind": "evidence-stop",
+    "selected": null,
+    "production_command_changed": false,
+    "watcher_argv_unchanged": true,
+    "omission_argv_unchanged": true,
+    "normal_non_watcher_argv_unchanged": true,
+    "contract_059_060_changed": false,
+    "watcher_version_claim_changed": false,
+    "invariant_weakened": false
+  },
+  "stop_reason": "No compared 2.1.251 command shape preserves configured authentication, retains the operation-private MCP, Stop hook and injected skill, and excludes every named ambient authority. The injected watcher skill and ambient user, project, and local skills reach the session through the same discovery mechanism, and the only documented switches over that mechanism, --safe-mode and --disable-slash-commands, are all-or-nothing. The current production --bare command does not satisfy the invariant either: it removes every OAuth and keychain path and still admits ambient skills.",
+  "counterexamples": [
+    {
+      "name": "ambient-authority-reopened",
+      "candidate": "a watcher argv that admits any named ambient settings, hooks, skills, MCP servers, CLAUDE.md memory, or plugins",
+      "exhibited_by": [
+        "current-bare",
+        "watcher-only-restricted",
+        "empty-setting-sources"
+      ],
+      "disposition": "rejected"
+    },
+    {
+      "name": "every-configured-authentication-path-removed",
+      "candidate": "a watcher argv that keeps --bare",
+      "exhibited_by": [
+        "current-bare"
+      ],
+      "disposition": "rejected"
+    },
+    {
+      "name": "private-watcher-composition-lost",
+      "candidate": "a watcher argv that disables the hook, MCP-server, or skill mechanism the private composition needs",
+      "exhibited_by": [
+        "safe-mode"
+      ],
+      "disposition": "rejected"
+    },
+    {
+      "name": "omission-or-normal-argv-changed",
+      "candidate": "a watcher repair that edits the omission or non-watcher command",
+      "exhibited_by": [],
+      "disposition": "rejected"
+    }
+  ],
+  "residual": [
+    "the current production --bare watcher command remains blocked: it removes every OAuth and keychain authentication path before MCP initialization, so the watcher route is still not live-ready",
+    "--bare and --restricted both leave ambient user, project, and local skills reachable, so neither closes the skill axis the invariant names",
+    "--safe-mode is the only compared shape that excludes every named ambient authority, but exact help gives it no --settings or --mcp-config carve-out, so the private MCP family, Stop gate, and injected skill have no stated survival",
+    "a later card, not this one, would have to change the mechanism rather than the flag: delivering the watcher instructions through a channel that is not ambient skill discovery would let --disable-slash-commands or --safe-mode close the skill axis. That is outside card 029"
+  ],
+  "live_turn_authorized": false
+}

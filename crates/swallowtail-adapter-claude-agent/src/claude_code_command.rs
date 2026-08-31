@@ -31,6 +31,10 @@ pub(crate) fn arguments(
             .map(str::to_owned),
     );
     match watchers {
+        // `--bare` is retained unrepaired. It removes every OAuth and keychain
+        // authentication path, but no exact `2.1.251` flag shape excludes ambient
+        // skill authority while keeping the injected watcher skill, so no candidate
+        // is admitted. See `tests/fixtures/claude-code-2.1.251/watcher-isolation.json`.
         Some(files) => {
             arguments.extend([
                 "--bare".to_owned(),
@@ -66,6 +70,7 @@ pub(crate) fn arguments(
 mod tests {
     use super::arguments;
     use crate::ClaudeCodeMaximumTurns;
+    use crate::claude_code_watcher::WatcherCommandFiles;
     use swallowtail_core::{ModelId, ReasoningMode};
 
     #[test]
@@ -109,6 +114,84 @@ mod tests {
                 "--setting-sources",
                 "user,project,local",
                 r#"--mcp-config"#,
+                r#"{"mcpServers":{}}"#,
+                "--strict-mcp-config",
+            ]
+        );
+    }
+
+    fn watcher_files() -> WatcherCommandFiles {
+        WatcherCommandFiles {
+            mcp_config: "/private/root/mcp.json".to_owned(),
+            settings: "/private/root/settings.json".to_owned(),
+            add_dir: "/private/root".to_owned(),
+        }
+    }
+
+    #[test]
+    fn watcher_opt_in_keeps_the_unrepaired_bare_command_under_the_card_029_stop() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        assert_eq!(
+            selected,
+            [
+                "-p",
+                "--input-format",
+                "text",
+                "--output-format",
+                "stream-json",
+                "--verbose",
+                "--no-session-persistence",
+                "--model",
+                "claude-opus-5",
+                "--permission-mode",
+                "plan",
+                "--tools",
+                "Read,Glob,Grep",
+                "--bare",
+                "--mcp-config",
+                "/private/root/mcp.json",
+                "--strict-mcp-config",
+                "--settings",
+                "/private/root/settings.json",
+                "--add-dir",
+                "/private/root",
+                "--include-hook-events",
+            ]
+        );
+    }
+
+    #[test]
+    fn no_rejected_isolation_candidate_reached_the_watcher_command() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        for rejected in ["--restricted", "--safe-mode", "--setting-sources"] {
+            assert!(
+                !selected.iter().any(|argument| argument == rejected),
+                "{rejected}"
+            );
+        }
+    }
+
+    #[test]
+    fn watcher_opt_in_leaves_the_omitted_command_prefix_byte_identical() {
+        let model = ModelId::new("claude-opus-5").expect("model is valid");
+        let omitted = arguments(&model, None, None, None);
+        let files = watcher_files();
+        let selected = arguments(&model, None, None, Some(&files));
+        let shared = omitted
+            .iter()
+            .position(|argument| argument == "--setting-sources")
+            .expect("omission carries its ambient setting sources");
+        assert_eq!(omitted[..shared], selected[..shared]);
+        assert_eq!(
+            omitted[shared..],
+            [
+                "--setting-sources",
+                "user,project,local",
+                "--mcp-config",
                 r#"{"mcpServers":{}}"#,
                 "--strict-mcp-config",
             ]

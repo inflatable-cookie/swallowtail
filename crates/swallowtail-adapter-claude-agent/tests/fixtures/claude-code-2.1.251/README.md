@@ -25,3 +25,18 @@ corpus to freeze `--tools` as a built-in-set filter, separate from MCP
 configuration. It rejects watcher-MCP suppression as the card 026 hypothesis
 and records `--bare` authentication as the alternative pre-initialization
 blocker. No provider prompt or credential was used.
+
+`watcher-isolation.json` reuses the same byte-identical official/host help
+corpus to freeze the exact `--bare`, `--restricted`, `--safe-mode`,
+`--setting-sources`, `--settings`, `--mcp-config`, `--strict-mcp-config`,
+`--add-dir`, and `--tools` clauses, the prompt-free parser probe results, and
+the per-axis ambient authority of every compared watcher candidate. It
+classifies fail closed: an ambient axis counts as excluded only where help
+states the exclusion. On that rule no compared candidate satisfies card 029's
+invariant, so the card stops with no production command change. `--bare` and
+`--restricted` both leave ambient skills reachable, and `--safe-mode` excludes
+every ambient axis only by disabling the hook, MCP-server, and skill mechanisms
+the private watcher composition needs. The parser probe ran with `env -i`, a
+throwaway `HOME`, and no prompt; every variant stopped at argv parsing or
+print-input validation. No provider prompt, credential, or model request was
+used.

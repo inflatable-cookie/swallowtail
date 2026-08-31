@@ -15,16 +15,15 @@ shape.
 
 ## Next Task
 
-Reassess the
-[g05.009 Batch 9.4 package-expansion checkpoint](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
-after card 023 merged through PR 133 at `58be7122`. Resolve the open
-`codex.exec` output-token census-source question, then audit candidates B-L
-against current `main` and the existing whole-candidate promotion rubric.
-Promote at most one complete package candidate only if its exact facades,
-ledgers, withholding rules, validation, and stops are closed. Keep candidates
-B-L unnumbered until that audit passes. Do not contact a provider, compile
-Batch 9.5, restart a blocked g05 surface, act on PR 127 or PR 130, or close the
-generation.
+Implement
+[g05 card 024](g05/batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md):
+the exact 9-row `deepagents.acp`, 9-row `kiro.acp`, 8-row `qoder.headless`, and
+12-row `zcode.app-server` Contract 061 package tranche. Keep the three explicit
+no-route-specific-control audits negative, activity descriptor-only, and
+ZCode model/mode truth bound to its exact prepared run. Stop after one
+reviewable four-package PR. Do not contact a provider, promote another Batch
+9.4 candidate, compile Batch 9.5, restart a blocked g05 surface, act on PR 127
+or PR 130, run papercuts in this lane, or close the generation.
 
 ## Standing Lanes
 

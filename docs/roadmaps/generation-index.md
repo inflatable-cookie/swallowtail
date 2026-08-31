@@ -219,8 +219,11 @@ planning checkpoint assigned those rows exactly once to 12 bounded
 complete-package candidates. Candidate A alone passed the readiness rubric.
 Card 023 completed its 35 `codex.exec` plus 24 `openai.background` rows through
 PR 133 at `58be7122`; exact head `fbb4b118` passed review and all five checks.
-Candidates B-L remain unnumbered planning rows. The sole Next Task is a
-planning-only Batch 9.4 reassessment against current `main`. No Darwin dispatch,
+The post-card-023 current-main reassessment corrected the Codex output-token
+census row as descriptor-only negative coverage and promoted candidate H
+alone. Card 024 is ready for exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
+8-row `qoder.headless`, and 12-row `zcode.app-server` package completion.
+Candidates B-G and I-L remain unnumbered planning rows. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized. PR 130 remains extracurricular and

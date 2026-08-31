@@ -1,6 +1,6 @@
 # Codex Exec Output-Token Census Source
 
-Status: open
+Status: resolved; census row corrected as route-rejected descriptor evidence
 Owner: Tom
 Source: PR 133 exact-head review at `a787b942dd64ff9dea5c0b93455bba350abf087b`
 
@@ -25,7 +25,23 @@ named public source and state-support description, record a prepared-facade
 gap, or remove the row. Do not widen card 023 or add a prepared input from this
 note.
 
+## Resolution
+
+Keep the row as negative census coverage, but correct its authority. The public
+source is the generic
+`StructuredRunRequest::with_maximum_output_tokens(NonZeroU64)` surface followed
+by `codex.exec` route validation. Every present value is rejected as
+unsupported. `CodexExecProfileInput` cannot construct the value, so the row
+has no requested, prepared, effective, or acknowledged state on this route.
+
+The corrected row is descriptor-only evidence of a generic runtime control
+that must be withheld from the Codex Exec contribution. This matches card
+023's construction-time disposition and preserves the 767-row census
+partition. It does not create a Codex control, change runtime behavior, or
+authorize a later prepared-facade input.
+
 ## Boundary
 
-This note is planning evidence only. It changes no census row, contract,
-roadmap, compatibility claim, or execution authority.
+This resolution changes only the census source and state description. It
+changes no contract, compatibility claim, runtime behavior, or execution
+authority.

@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidate A complete; B-L unpromoted
+Status: active planning evidence; candidate A complete; candidate H ready
 Owner: Tom
 Date: 2026-08-31
 
@@ -53,7 +53,7 @@ explicitly.
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
 | G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | candidate only |
-| H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | candidate only |
+| H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | ready as card 024 |
 | I | DeepSeek; DeepSeek Harness | `deepseek.continuation` 19; `deepseek-harness.jsonrpc` 11; `deepseek-harness.local-server` 17 | 47 | continuation and local-server lifecycle remain distinct | candidate only |
 | J | llama.cpp; Ollama | `llama-cpp.attached` 10; `llama-cpp.owned` 6; `ollama.attached` 19 | 35 | attached and owned applicability remain distinct | candidate only |
 | K | Mistral Vibe; Muse; Oh My Pi; Qwen | `mistral-vibe.headless` 8; `muse-code.headless` 10; `oh-my-pi.rpc` 18; `qwen.headless` 16 | 52 | one consumer-mediated per-turn attachment row | candidate only |
@@ -93,7 +93,7 @@ closed for its whole package set:
 6. the card stops after one reviewable package tranche and does not claim later
    candidates or the 767-row all-route audit.
 
-Candidates B-L remain planning rows, not reserved cards or execution
+Before reassessment, candidates B-L were planning rows without execution
 authority. Promote one only after its adapter-local façade and ledger audit
 passes this rubric against the then-current main branch.
 
@@ -123,10 +123,52 @@ keeps the 35-row and 24-row ledgers independent, rejects mixed access evidence,
 keeps prepared activity descriptors descriptor-only, and leaves unsupported
 rows withheld at construction. No shared public or contract surface changed.
 
-The next move is a planning-only reassessment. Resolve the open `codex.exec`
-output-token census-source question, then audit candidates B-L against current
-`main`. Promote at most one candidate only after the whole-candidate rubric
-passes; this checkpoint itself grants no further execution authority.
+The `codex.exec` output-token row is now corrected as descriptor-only negative
+coverage: the generic runtime request can carry a positive value, the prepared
+facade cannot construct it, and route validation rejects every present value.
+Card 023's construction-time withholding remains exact.
+
+## Post-Card-023 Reassessment
+
+The current-main audit selected candidate H and no other candidate. Its four
+contributing facades are `DeepAgentsPreparedSession`, `KiroPreparedSession`,
+`QoderHeadlessPreparedRun`, and `ZcodePreparedRun`. Each already retains exact
+prepared-operation evidence and activity posture. ZCode additionally retains
+the exact model route and app-server mode needed for its two route-specific
+controls. All contributions can use the established `AdapterContribution`
+source kind and caller-supplied source ID.
+
+Candidate H passes the promotion rubric:
+
+- its 38 rows reconcile exactly as 9 `deepagents.acp`, 9 `kiro.acp`, 8
+  `qoder.headless`, and 12 `zcode.app-server` rows;
+- the first three routes have explicit no-public-route-specific-control audit
+  rows, not hidden composer controls;
+- catalogue-only and audit rows can be withheld at construction, while
+  activity remains descriptor-only;
+- no active-observation, acknowledgement, per-turn mutation, provider contact,
+  new runtime/core/testkit public type, or contract change is needed; and
+- four exact adapter packages fit the normal focused-validation maximum.
+
+The other candidates remain unpromoted:
+
+| Candidate | Current-main audit disposition |
+| --- | --- |
+| B | Hold. Its consumer-mediated per-turn exchange needs a dedicated authority and lifecycle proof. |
+| C | Viable later, but its 94 rows and seven route shapes are a larger negative-coverage tranche than H. |
+| D | Hold. Exact active-session acknowledgement needs separate active-observation source and state proof. |
+| E | Viable later, but ACP, headless, and live applicability need a larger three-family proof. |
+| F | Hold. Exact active-session acknowledgement and four route shapes remain coupled. |
+| G | Hold. Exact acknowledgement, two no-control audits, ACP, and headless evidence remain coupled. |
+| H | Promote as card 024. The complete four-package 38-row proof is closed. |
+| I | Viable later, but continuation, JSON-RPC, and local-server lifecycle need a distinct multi-facade audit. |
+| J | Viable later. It has fewer rows than H but more route-specific controls and attached/owned prepared families. |
+| K | Hold. The consumer-mediated per-turn attachment row needs its own authority proof. |
+| L | Hold. Six per-turn rows and observed callbacks need a dedicated lifecycle and callback boundary audit. |
+
+Candidates B-G and I-L remain planning rows without card numbers or execution
+authority. Card 024 is the sole ready implementation tranche. Stop after its
+review before promoting another candidate.
 
 ## All-Route Gate
 

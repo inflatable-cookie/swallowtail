@@ -7,7 +7,7 @@
 
 ## Ready
 
-- None.
+- [024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md](./024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md) — ready; exact 38-row candidate H package tranche
 
 ## Blocked
 

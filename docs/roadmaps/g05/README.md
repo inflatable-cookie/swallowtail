@@ -24,10 +24,11 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; Spec 012 archived; implementation unplanned | reviewed 767-row census; Contracts 037, 047, 057; operator decisions | `g05.008` card 021 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; g05.009 realization roadmap planned; public baseline gate open | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization-readiness decisions | `g05.008` card 021; `g05.009` |
 
 ## Planned Next Roadmaps
 
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — planned; Batch 9.1 exact Rust surface and fixed-maxima gate open; no ready card
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -37,9 +38,9 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has eight numbered roadmaps: five completed milestones including standing
-currentness at 004 and 005 and contract promotion at 008, honest evidence stops
-at 002, 003, and 007, and no ready milestone.
+g05 has nine numbered roadmaps: five completed milestones including standing
+currentness at 004 and 005 and contract promotion at 008, one planned milestone
+at 009, honest evidence stops at 002, 003, and 007, and no ready milestone.
 
 ## Current Boundary
 
@@ -96,9 +97,9 @@ availability dimensions plus bounded safe reasons without an exhaustive
 taxonomy, and names four fail-closed points. Contracts 037, 047, and 057 are
 unchanged.
 
-Implementation stays unplanned pending orchestrator reassessment. No Rust,
-public API baseline, architecture realization claim, second provider turn,
-fallback, rerun, or Darwin dispatch is authorized. PR 127 remains unmerged.
+Implementation remains unauthorized pending g05.009 Batch 9.1. No Rust, public
+API baseline, architecture realization claim, second provider turn, fallback,
+rerun, or Darwin dispatch is authorized. PR 127 remains unmerged.
 
 The post-Contract-061 reassessment classifies g05 as `strict-paused` with no
 ready milestone or card. Qoder skill visibility still lacks positive evidence,
@@ -125,8 +126,11 @@ projection-specific admission bound. It recommends a runtime-owned normalized
 contribution/composer boundary, explicit replaceable-source identity, fixed
 library projection maxima, and a Codex app-server plus OpenAI Realtime first
 proof before package-coherent all-route expansion. Those package, API, bound,
-coverage, and tranche choices remain operator decisions. No milestone, card,
-or handoff is ready.
+coverage, and tranche choices were all accepted by the operator on 2026-08-31.
+g05.009 compiles the realization runway. Batch 9.1 must still select exact Rust
+names, signatures, fixed numeric maxima, admission failures, replacement
+behavior, fixtures, validation, and stop conditions. No card or handoff is
+ready.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -136,6 +140,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — planned; public baseline planning gate open; no ready card
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

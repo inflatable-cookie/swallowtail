@@ -144,10 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has eight roadmaps: 5 completed milestones, honest evidence stops at 002,
-003, and 007, and no ready milestone. Milestones 004 and 005 are
-completed standing currentness. Milestone 006 is completed credential-free
-repair. Milestone 008 is completed contract promotion.
+g05 has nine roadmaps: 5 completed milestones, one planned milestone at 009,
+honest evidence stops at 002, 003, and 007, and no ready milestone. Milestones
+004 and 005 are completed standing currentness. Milestone 006 is completed
+credential-free repair. Milestone 008 is completed contract promotion.
 g05.001 is
 completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
@@ -198,11 +198,13 @@ realization-readiness inventory to settle source ownership, dependency
 direction, tranche, coverage, and bound questions before any public API or
 implementation card. The operator selected that planning-only inventory on
 2026-08-31. The inventory is drafted and returns material package, API, bound,
-coverage, and tranche forks to the operator; g05 remains open and no ready card
-follows yet. No Darwin dispatch, overlapping watcher worker,
-orchestrator-side live selector, container backend, new route, second provider
-turn, implementation card, generation rollover, or parked Bedrock work is
-authorized.
+coverage, and tranche forks to the operator. The operator accepted all four
+recommended option 1 decisions. g05.009 now compiles the realization runway;
+its exact Rust surface and fixed-maxima Batch 9.1 planning gate remains open,
+so g05 remains open and no ready card follows yet. No Darwin dispatch,
+overlapping watcher worker, orchestrator-side live selector, container backend,
+new route, second provider turn, implementation card, generation rollover, or
+parked Bedrock work is authorized.
 
 ## Rollover Rule
 

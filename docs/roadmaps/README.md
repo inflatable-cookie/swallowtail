@@ -15,14 +15,15 @@ shape.
 
 ## Next Task
 
-Settle the operator forks returned by the planning-only
-[Contract 061 realization-readiness inventory](../triage/2026-08-31-contract-061-realization-readiness-inventory.md):
-runtime versus split core/runtime ownership, the normalized contribution and
-source-identity API rule, fixed versus caller-supplied projection limits, and
-the recommended Codex app-server plus OpenAI Realtime first tranche versus
-selection-summary breadth. No milestone, card, worker handoff, implementation,
-blocked g05 surface, provider contact, generation closeout, or PR 127 action is
-ready or authorized.
+Close the planning-only Batch 9.1 public baseline gate in
+[g05.009](g05/009-contract-061-consumer-projection-realization.md). Select exact
+Rust names and signatures for the accepted runtime-owned contribution/composer
+surface and select fixed library maxima from per-route high-water marks plus
+explicit headroom. Define admission failures, replacement behavior, portable
+fixtures, validation, and stop conditions, then apply the card readiness rubric.
+No implementation card, worker handoff, provider contact, blocked g05 surface,
+generation closeout, or PR 127 action is ready or authorized by roadmap
+compilation alone.
 
 ## Standing Lanes
 

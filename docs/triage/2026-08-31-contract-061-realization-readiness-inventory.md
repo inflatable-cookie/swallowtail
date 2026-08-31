@@ -1,6 +1,6 @@
 # 2026-08-31 Contract 061 Realization-Readiness Inventory
 
-Status: operator decision required; no ready card
+Status: complete; all four recommended option 1 decisions accepted; g05.009 compiled
 Owner: Tom
 Source: Contract 061 and the reviewed consumer projection census
 
@@ -191,24 +191,42 @@ Operator tranche and coverage fork:
 The first choice is recommended. A one-route implementation card does not meet
 the evidence bar.
 
+## Operator Decision
+
+On 2026-08-31 the operator accepted all four option 1 recommendations:
+
+1. `swallowtail-runtime` owns the first projection family and composer;
+   adapters construct runtime-owned contributions; testkit owns portable
+   assertions; core remains unchanged.
+2. contributions are immutable, adapter-local prepared facades emit them, one
+   pure composer admits exact current source records, and every replaceable
+   source observation has explicit typed identity.
+3. projection admission uses fixed library maxima for every named collection
+   and text surface; later planning selects exact values from per-route
+   high-water marks plus explicit headroom.
+4. Codex app-server plus OpenAI Realtime form the first vertical, followed by
+   package-coherent expansion and one final 767-row audit.
+
+The decision rejects an umbrella crate or registry, core/runtime split,
+adapter downcasts or callbacks, runtime enumeration, generic provider payload,
+caller-supplied limits, selection-summary breadth first, and a one-route first
+proof. Exact Rust names, signatures, and numeric maxima remain unplanned.
+
 ## Readiness Verdict
 
 Posture: `strict-paused`.
 
-Planning verdict: `materially ambiguous`. Contract 061 has enough realized
-substrate for a bounded implementation lane, but not for a ready card. Package
-placement, the contribution/source-identity API baseline, projection-bound
-policy, and first-tranche/coverage sequence are material operator decisions.
+Planning verdict: `coherent`. The four material forks are settled, and g05.009
+now holds the approved realization runway. Exact Rust names, signatures, fixed
+numeric maxima, failure surfaces, and fixture baseline remain the Batch 9.1
+planning gate. No implementation card is ready until that gate closes.
 
-The single next route is an operator intent decision on those four forks. If
-the operator accepts the recommended set, the next planning action is roadmap
-compilation. If a recommendation is rejected, refocus only that fork before
-compiling a roadmap. Execution remains blocked either way until the ordinary
-roadmap, card, validation, and handoff gates are satisfied.
+The single next route is Batch 9.1 planning. Execution remains blocked until
+the ordinary roadmap, card, validation, and handoff gates are satisfied.
 
-No milestone, card, worker handoff, implementation authority, provider contact,
-generation closeout, blocked-surface restart, or PR 127 action follows from
-this inventory.
+The planning-only g05.009 milestone follows. No card, worker handoff,
+implementation authority, provider contact, generation closeout,
+blocked-surface restart, or PR 127 action follows directly from this inventory.
 
 ## Authority
 

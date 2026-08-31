@@ -28,7 +28,7 @@ controller, skill registry, or consumer UI. Prompt text is not enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; Batch 9.1 gate closed; card 022 is the four-package 51-row first vertical
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; Batch 9.1 gate closed; card 022's four-package 51-row vertical is implemented on the worker branch and awaiting the orchestrator two-route checkpoint
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -139,7 +139,7 @@ Bedrock items 79-80 and the compact deferred-route note remain parked.
 
 ## Milestones
 
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; Batch 9.1 gate closed; card 022 is the four-package 51-row first vertical
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; Batch 9.1 gate closed; card 022's four-package 51-row vertical is implemented on the worker branch and awaiting the orchestrator two-route checkpoint
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

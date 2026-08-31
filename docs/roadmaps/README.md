@@ -15,15 +15,17 @@ shape.
 
 ## Next Task
 
-Implement
+Validate
 [card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-as the single first Contract 061 realization tranche: the runtime composer,
-portable testkit conformance, all 36 `codex.app-server` rows, and all 15
-`openai.realtime` rows through the operator-approved additive prepared-open
-result. Preserve the existing Realtime `open_session`, use no provider contact
-or live probe, and stop after one reviewable PR for the required two-route
-checkpoint. Do not expand to the remaining 716 rows, restart another g05
-surface, close the generation, or act on PR 127.
+at the required orchestrator two-route checkpoint: review the exact worker
+pull request head against Contract 061, the
+[Batch 9.1 gate](../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md),
+and the reviewed census, confirming the 36 `codex.app-server` and 15
+`openai.realtime` dispositions, the preserved Realtime `open_session`, and the
+absence of any claim for the remaining 716 rows. Merge only after a
+merge-authorized verdict. Do not compile a Batch 9.4 package-expansion card,
+contact a provider, restart another g05 surface, close the generation, or act
+on PR 127 before that checkpoint returns.
 
 ## Standing Lanes
 

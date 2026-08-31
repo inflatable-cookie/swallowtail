@@ -206,7 +206,15 @@ an additive adapter-owned prepared-open result that preserves exact
 `session.updated` truth while retaining the existing generic open method.
 Batch 9.1 names the exact route-local surface and passes the readiness rubric.
 Card 022 is ready as one four-package 51-row tranche and stops before package
-expansion. g05 remains open. No Darwin dispatch,
+expansion. Its worker delivered that tranche on
+`worker/g05-009-contract-061-two-route-vertical`: the runtime-owned composer
+and fixed maxima, portable testkit conformance for every bound, failure kind,
+and Contract 061 counterexample, nine Codex prepared-facade contributions
+dispositioning all 36 `codex.app-server` rows, and the additive Realtime
+prepared-open seam dispositioning all 15 `openai.realtime` rows while the
+existing `open_session` stays unchanged. Both ledgers claim nothing for the
+remaining 716 rows. The pull request awaits the orchestrator two-route
+checkpoint; merge authority stays withheld. g05 remains open. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container backend,
 new route, second provider turn, additional implementation card, generation
 rollover, or parked Bedrock work is authorized.

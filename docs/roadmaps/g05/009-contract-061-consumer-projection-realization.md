@@ -1,13 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batch 9.1 complete; card 022 ready
+Status: ready; Batches 9.1-9.3 delivered on the worker branch; card 022
+awaiting the orchestrator two-route checkpoint; Batches 9.4-9.5 remain
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; exact public baseline closed; card 022 is the two-route first vertical
+Planning state: strict-ready; exact public baseline closed; card 022's
+two-route first vertical is implemented and under review
 
 ## Problem
 
@@ -31,10 +33,10 @@ or mutation authority.
 ## Goals
 
 - [x] close the public Rust baseline and fixed-bound planning gate
-- [ ] implement the runtime-owned immutable records and pure fail-closed
+- [x] implement the runtime-owned immutable records and pure fail-closed
       composer
-- [ ] publish portable conformance assertions from `swallowtail-testkit`
-- [ ] prove the first vertical through `codex.app-server` and
+- [x] publish portable conformance assertions from `swallowtail-testkit`
+- [x] prove the first vertical through `codex.app-server` and
       `openai.realtime`
 - [ ] expand in package-coherent adapter batches without route enumeration
 - [ ] audit all 767 census rows, including the 9 explicit no-control routes
@@ -79,25 +81,25 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
 ### Batch 9.2 — Runtime Composer And Portable Conformance
 
-- [ ] add immutable runtime-owned contribution and projection records
-- [ ] admit exact current source records through one pure fail-closed composer
-- [ ] preserve the three Contract 061 views, per-turn truth, source dimensions,
+- [x] add immutable runtime-owned contribution and projection records
+- [x] admit exact current source records through one pure fail-closed composer
+- [x] preserve the three Contract 061 views, per-turn truth, source dimensions,
       explicit source identity, and bounded safe reasons
-- [ ] add testkit assertions for applicability disagreement, snapshot identity
+- [x] add testkit assertions for applicability disagreement, snapshot identity
       disagreement, absent mutation authority, unbounded reason rejection, and
       every fixed collection/text bound
 
 ### Batch 9.3 — Two-Route Vertical
 
-- [ ] make the `codex.app-server` prepared facades emit normalized
+- [x] make the `codex.app-server` prepared facades emit normalized
       contributions for its 36 census rows, including per-turn exchange without
       inferred mutation
-- [ ] make the `openai.realtime` prepared facade and exact acknowledgement path
+- [x] make the `openai.realtime` prepared facade and exact acknowledgement path
       emit normalized contributions and requested/pending/effective/rejected
       state for its 15 census rows
-- [ ] prove the 51-row first tranche without claiming coverage for the
+- [x] prove the 51-row first tranche without claiming coverage for the
       remaining 716 rows
-- [ ] stop for a planning checkpoint before compiling package-expansion cards
+- [x] stop for a planning checkpoint before compiling package-expansion cards
 
 ### Batch 9.4 — Package-Coherent Expansion
 
@@ -122,20 +124,20 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
 ## Acceptance Criteria
 
-- [ ] `swallowtail-runtime` owns the first public projection family and pure
+- [x] `swallowtail-runtime` owns the first public projection family and pure
       composer; core retains its current vocabulary and dependency direction
-- [ ] adapter-local prepared facades emit immutable runtime-owned normalized
+- [x] adapter-local prepared facades emit immutable runtime-owned normalized
       contributions without downcasts, callbacks, or runtime enumeration
-- [ ] every replaceable source observation carries explicit typed identity
-- [ ] fixed library maxima cover every selected collection and text surface;
+- [x] every replaceable source observation carries explicit typed identity
+- [x] fixed library maxima cover every selected collection and text surface;
       callers cannot choose projection limits
-- [ ] selection-summary, session-start, per-turn, post-open observation, and
+- [x] selection-summary, session-start, per-turn, post-open observation, and
       exact acknowledgement state remain distinct
-- [ ] all four Contract 061 fail-closed points have portable counterexamples
-- [ ] Codex app-server and OpenAI Realtime jointly prove the first 51 rows
+- [x] all four Contract 061 fail-closed points have portable counterexamples
+- [x] Codex app-server and OpenAI Realtime jointly prove the first 51 rows
 - [ ] later adapter work is package-coherent and ends in one exact 767-row
       audit
-- [ ] no projection row creates execution, request, mutation, routing,
+- [x] no projection row creates execution, request, mutation, routing,
       fallback, or provider acknowledgement authority
 
 ## Decision Gates
@@ -155,17 +157,21 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: card 022 ready; no worker dispatched by planning
+- immediate state: card 022's four-package tranche is implemented on
+  `worker/g05-009-contract-061-two-route-vertical` and awaits the orchestrator
+  two-route checkpoint; the worker holds no merge authority
 - first execution tranche: runtime/testkit kernel plus the two named route
-  proofs in one card
+  proofs delivered in one card
 - later runway: package-coherent adapter expansion, then one all-route audit
-- next strategy checkpoint: after the 51-row two-route vertical
+- next strategy checkpoint: the 51-row two-route review, before any Batch 9.4
+  package-expansion card
 
 ## Batch Cards
 
 - [022 Contract 061 Composer And Two-Route Vertical](batch-cards/022-contract-061-composer-and-two-route-vertical.md)
   — ready; runtime/testkit composer plus the exact 36-row Codex and 15-row
-  OpenAI Realtime proof; stops before package expansion
+  OpenAI Realtime proof implemented on the worker branch; awaiting the
+  orchestrator two-route checkpoint; stops before package expansion
 
 ## References
 

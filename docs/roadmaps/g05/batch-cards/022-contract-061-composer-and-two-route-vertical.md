@@ -1,6 +1,8 @@
 # 022 Contract 061 Composer And Two-Route Vertical
 
-Status: ready; one four-package 51-row implementation tranche
+Status: ready; four-package 51-row tranche implemented on
+`worker/g05-009-contract-061-two-route-vertical`; awaiting the orchestrator
+two-route checkpoint and merge authority
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -145,28 +147,28 @@ downcast, provider payload, or composer execution seam.
 
 ## Acceptance Criteria
 
-- [ ] runtime and core dependency direction remains acyclic and unchanged
-- [ ] the public runtime surface, constants, failure kinds, accessors, and
+- [x] runtime and core dependency direction remains acyclic and unchanged
+- [x] the public runtime surface, constants, failure kinds, accessors, and
       composer match the Batch 9.1 baseline exactly
-- [ ] invalid contributions fail before composition and mixed snapshots reject
+- [x] invalid contributions fail before composition and mixed snapshots reject
       as a whole
-- [ ] equal rows with a changed source identity produce a replacement snapshot
-- [ ] testkit covers every fixed maximum, failure kind, and Contract 061
+- [x] equal rows with a changed source identity produce a replacement snapshot
+- [x] testkit covers every fixed maximum, failure kind, and Contract 061
       counterexample without adapter production dependencies
-- [ ] the nine named Codex prepared facades and coverage ledger disposition
+- [x] the nine named Codex prepared facades and coverage ledger disposition
       exactly the 36 `codex.app-server` rows across their operation shapes;
       matrix-only or incompatible-operation rows are withheld, not emitted
-- [ ] per-turn exchange remains per-turn and creates no mutation claim
-- [ ] existing `OpenAiPreparedRealtimeSession::open_session` remains source and
+- [x] per-turn exchange remains per-turn and creates no mutation claim
+- [x] existing `OpenAiPreparedRealtimeSession::open_session` remains source and
       behavior compatible
-- [ ] both OpenAI public open methods share one private low-level lifecycle
-- [ ] only a matching exact `session.updated` acknowledgement produces
+- [x] both OpenAI public open methods share one private low-level lifecycle
+- [x] only a matching exact `session.updated` acknowledgement produces
       provider-effective reasoning
-- [ ] only an exact well-formed different effort produces a rejected-state
+- [x] only an exact well-formed different effort produces a rejected-state
       contribution; every unknown failure carries none
-- [ ] deterministic coverage evidence proves exactly the selected 51 rows and
+- [x] deterministic coverage evidence proves exactly the selected 51 rows and
       does not imply the other 716
-- [ ] no raw target, command, credential, path, environment value, provider
+- [x] no raw target, command, credential, path, environment value, provider
       payload, unbounded diagnostic, or presentation prose enters projection
 
 ## Review Oracle
@@ -233,3 +235,38 @@ ready.
 - reviewed 767-row census; exact first-tranche split is 36 Codex plus 15
   OpenAI Realtime rows
 - operator-approved additive Realtime prepared-open seam on 2026-08-31
+
+## Implementation Evidence
+
+Delivered on `worker/g05-009-contract-061-two-route-vertical`; merge authority
+withheld pending the orchestrator two-route checkpoint.
+
+- `swallowtail-runtime::consumer_route_projection` publishes the Batch 9.1
+  family, the ten fixed maxima, the nine failure kinds, immutable contribution
+  admission, and the pure `compose_consumer_route_projection`.
+- `swallowtail-testkit::assert_consumer_route_projection_contract` proves every
+  fixed maximum, every failure kind, the four Contract 061 counterexamples,
+  view and lifecycle separation, identical-row source replacement, and unknown
+  or absent truth without an invented reason. The testkit keeps its
+  core/idioms/runtime dependencies only.
+- Documentation and QA matrices have no `ConsumerRouteEvidenceStrength`
+  variant, so a matrix-only row cannot be expressed, let alone published.
+- The nine Codex prepared facades disposition all 36 `codex.app-server` rows:
+  29 emitted across ten prepared snapshots, 7 withheld with recorded reasons
+  (`feature.structured-run`, `feature.structured-output`,
+  `feature.attachments`, `feature.external-search` are codex.exec-only;
+  `feature.usage-evidence` and `feature.cancellation-or-interruption` are
+  matrix-only; `feature.bounded-workspace-text-write` has no prepared
+  app-server capability). The prepared app-server route additionally proves
+  `feature.provider-session-history` and
+  `feature.provider-session-reconciliation`, which the 36-row tranche does not
+  name; the ledger records them as out-of-tranche rather than hiding them.
+- `OpenAiPreparedRealtimeSession` dispositions all 15 `openai.realtime` rows:
+  12 emitted, 3 withheld (`feature.model-catalogue`,
+  `feature.persistent-session-posture`, `feature.activity-observation`).
+- Both public Realtime open methods delegate to one private
+  `open_realtime_lifecycle`; `open_session` keeps its exact signature,
+  diagnostic codes, and cleanup ordering.
+- `open_session_with_projection` names exactly the one source identity its
+  accepted signature supplies, and each row keeps its own evidence class.
+- Neither ledger claims coverage for the remaining 716 census rows.

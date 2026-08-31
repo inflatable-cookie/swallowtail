@@ -65,11 +65,15 @@ impl swallowtail_adapter_codex::CodexPreparationProbe
 pub const fn swallowtail_adapter_codex::CodexPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_codex::CodexPreparedArchive
 impl swallowtail_adapter_codex::CodexPreparedArchive
+pub fn swallowtail_adapter_codex::CodexPreparedArchive::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_codex::CodexPreparedArchive
 pub const fn swallowtail_adapter_codex::CodexPreparedArchive::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedArchive::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_codex::CodexPreparedArchive::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedArchive::request(&self) -> &swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest
 pub struct swallowtail_adapter_codex::CodexPreparedCatalogue
+impl swallowtail_adapter_codex::CodexPreparedCatalogue
+pub fn swallowtail_adapter_codex::CodexPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_codex::CodexPreparedCatalogue
 pub const fn swallowtail_adapter_codex::CodexPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_codex::CodexPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
@@ -78,6 +82,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedCatalogue::low_level_driver(&self
 pub const fn swallowtail_adapter_codex::CodexPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_codex::CodexPreparedDelete
+impl swallowtail_adapter_codex::CodexPreparedDelete
+pub fn swallowtail_adapter_codex::CodexPreparedDelete::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_codex::CodexPreparedDelete
 pub const fn swallowtail_adapter_codex::CodexPreparedDelete::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedDelete::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -135,11 +141,15 @@ impl swallowtail_adapter_codex::CodexPreparedIntegration
 pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_codex::CodexSessionReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_codex::CodexPreparedRestore
 impl swallowtail_adapter_codex::CodexPreparedRestore
+pub fn swallowtail_adapter_codex::CodexPreparedRestore::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_codex::CodexPreparedRestore
 pub const fn swallowtail_adapter_codex::CodexPreparedRestore::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedRestore::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_codex::CodexPreparedRestore::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedRestore::request(&self) -> &swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest
 pub struct swallowtail_adapter_codex::CodexPreparedSession
+impl swallowtail_adapter_codex::CodexPreparedSession
+pub fn swallowtail_adapter_codex::CodexPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_codex::CodexPreparedSession
 pub const fn swallowtail_adapter_codex::CodexPreparedSession::evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
 pub fn swallowtail_adapter_codex::CodexPreparedSession::into_parts(self) -> (swallowtail_adapter_codex::CodexPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
@@ -162,6 +172,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::low_level_drive
 pub fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::next_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCursor) -> core::result::Result<swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::plan(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
+impl swallowtail_adapter_codex::CodexPreparedSessionCatalogue
+pub fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_codex::CodexPreparedSessionHistory
 impl swallowtail_adapter_codex::CodexPreparedSessionHistory
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::codex_evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
@@ -172,6 +184,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::page(&self, swall
 pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::page_history(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::plan(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::request(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest
+impl swallowtail_adapter_codex::CodexPreparedSessionHistory
+pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_codex::CodexPreparedSessionImport
 impl swallowtail_adapter_codex::CodexPreparedSessionImport
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionImport::codex_evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
@@ -180,6 +194,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedSessionImport::import_session(&se
 pub fn swallowtail_adapter_codex::CodexPreparedSessionImport::low_level_driver(&self) -> swallowtail_adapter_codex::CodexAppServerDriver
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionImport::plan(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionImport::request(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest
+impl swallowtail_adapter_codex::CodexPreparedSessionImport
+pub fn swallowtail_adapter_codex::CodexPreparedSessionImport::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_codex::CodexPreparedSessionReconciliation
 impl swallowtail_adapter_codex::CodexPreparedSessionReconciliation
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::codex_evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
@@ -188,6 +204,8 @@ pub const fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::plan
 pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::prepare_settled_session_restoration(self, swallowtail_adapter_codex::CodexPreparedSession, swallowtail_runtime::identity::RequestId) -> core::result::Result<swallowtail_runtime::settled_session_restoration::PreparedSettledSessionRestoration, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::reconcile(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::request(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest
+impl swallowtail_adapter_codex::CodexPreparedSessionReconciliation
+pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_runtime::settled_session_restoration::SettledSessionReconciliationOperation for swallowtail_adapter_codex::CodexPreparedSessionReconciliation
 pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::reconcile(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_codex::CodexPreparedSessionReconciliation

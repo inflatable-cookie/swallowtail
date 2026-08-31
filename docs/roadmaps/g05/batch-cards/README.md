@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — ready; one four-package 51-row tranche; stops before package expansion
+- [022-contract-061-composer-and-two-route-vertical.md](./022-contract-061-composer-and-two-route-vertical.md) — ready; four-package 51-row tranche implemented on the worker branch; awaiting the orchestrator two-route checkpoint
 
 ## Blocked
 

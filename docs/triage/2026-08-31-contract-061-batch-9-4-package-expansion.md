@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A and H complete; card 030 stopped D, F, and G on current `main`; `claude-agent.acp` acknowledgement gate needed next
+Status: active planning evidence; candidates A and H complete; candidate D promoted as ready card 031 after the accepted `claude-agent.acp` acknowledgement gate
 Owner: Tom
 Date: 2026-08-31
 
@@ -49,7 +49,7 @@ explicitly.
 | A | Codex; OpenAI | `codex.exec` 35; `openai.background` 24 | 59 | prepared-only controls; background recovery descriptors | complete through card 023 / PR 133 |
 | B | Alibaba Model Studio; Anthropic; xAI | `alibaba.conversations` 19; `anthropic.managed-agent` 17; `anthropic.messages` 23; `xai.responses-websocket` 17 | 76 | one consumer-mediated per-turn exchange | candidate only |
 | C | Antigravity; Bedrock; Cursor | `antigravity.catalogue` 14; `antigravity.headless` 18; `bedrock.catalogue` 9; `bedrock.runtime` 10; `cursor-agent.acp` 13; `cursor-agent.catalogue` 13; `cursor-agent.headless` 17 | 94 | four explicit no-control route audits | candidate only |
-| D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | candidate only |
+| D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | promoted as card 031 |
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
 | G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | candidate only |
@@ -68,9 +68,9 @@ exact active-session acknowledgement rows stay isolated in D, F, and G. The
 eight remaining per-turn rows stay in B, K, and L; none may be relabelled as
 session-start authority.
 
-After candidates A and H, the active remainder is 619 rows across 40 route IDs
-and 25 adapter packages in candidates B-G and I-L. Those candidates remain
-planning rows.
+After candidates A and H, 619 rows across 40 route IDs and 25 adapter packages
+remain unproved. Candidate D's 53 rows are now authorized by card 031; the
+other 566 rows in candidates B, C, E-G, and I-L remain planning rows.
 
 ## Promotion Rubric
 
@@ -228,7 +228,7 @@ it for `claude-agent.acp`, `kimi-code.acp`, or `cline.acp`.
 
 | Candidate | Disposition |
 | --- | --- |
-| D | Stop, narrowest. One adapter package, one acknowledgement row, no other non-descriptor post-open row. `ClaudeAgentPreparedSession`, `ClaudeCodePreparedRun`, and `ClaudeCodeResponsePreparedRun` cover the prepared side. Only the missing acknowledgement retention and its route-local public decision block it. Best first candidate once the gate closes. |
+| D | Promote after gate acceptance. One adapter package, one acknowledgement row, no other non-descriptor post-open row. The prepared facades already exist; the accepted route-local baseline adds only exact acknowledgement retention and the additive open result. Card 031 owns the complete 53-row proof. |
 | F | Stop, largest and most coupled. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
 | G | Stop. 48 rows but all four adapter packages, so rubric item 5 has zero headroom. Its two `audit.no-public-route-specific-selectable-control` rows on `copilot-cli.acp` and `goose.acp` are fine — card 024 proved that negative-coverage pattern. `cline.acp` adds one further post-open family, `feature.negotiated-model-options-observation`. |
 
@@ -260,8 +260,31 @@ adapter-local concern or becomes a runtime public decision, and whether
 or G can be promoted. Coupling all three routes into one gate would cut across
 the one-candidate-at-a-time runway and delay the smallest unblock.
 
-Candidates B-G and I-L still hold no card number or execution authority. The
-per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 030.
+Candidates B, C, E-G, and I-L still hold no card number or execution
+authority. The per-turn band B/K/L and the breadth band C/E/I/J are unchanged
+by card 030.
+
+## Claude Agent Gate Acceptance And Candidate D Promotion
+
+The operator accepted the two route-local decisions Card 030 named:
+
+- retain exact provider-effective and rejected reasoning values inside
+  `swallowtail-adapter-claude-agent`; and
+- add one adapter-owned open-with-projection outcome/failure while preserving
+  `ClaudeAgentPreparedSession::open_session`.
+
+The
+[Claude Agent public-baseline gate](2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
+fixes the exact public signatures, source split, state transitions, unknown
+failure boundary, shared-open lifecycle, and provider-free review oracle. It
+adds no runtime/core public decision and grants no authority to Kimi or Cline.
+
+Candidate D now passes the promotion rubric and is ready as card 031. Its one
+adapter package owns the exact 30 `claude-agent.acp`, 12
+`claude-code.headless`, and 11 `claude-code.response-only` tuples. The card
+combines the adapter-local public-baseline repair with the full 53-row package
+proof. It must stop for orchestrator review before any later candidate is
+reassessed.
 
 ## Lifecycle-Priority Sequence
 
@@ -270,9 +293,9 @@ tranche, but changes how later candidates are selected. Row count is no longer
 the primary ordering signal. After card 024 review, reassess in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   card 030 audited all three on current `main` and promoted none. D unblocks
-   first through the `claude-agent.acp` acknowledgement gate above; F and G
-   wait on their own later route-local gates.
+   card 030 audited all three on current `main` and promoted none. The accepted
+   `claude-agent.acp` gate now promotes D as card 031; F and G wait on their own
+   later route-local gates.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

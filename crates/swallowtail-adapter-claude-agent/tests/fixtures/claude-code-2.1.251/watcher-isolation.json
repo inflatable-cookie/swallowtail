@@ -25,6 +25,15 @@
     "--permission-mode": "Permission mode to use for the session (choices: \"acceptEdits\", \"auto\", \"bypassPermissions\", \"manual\", \"dontAsk\", \"plan\")",
     "--include-hook-events": "Include all hook lifecycle events in the output stream (only works with --output-format=stream-json)"
   },
+  "named_ambient_authority": [
+    "settings",
+    "hooks",
+    "skills",
+    "mcp_servers",
+    "memory_claude_md",
+    "plugins"
+  ],
+  "classification_rule": "fail closed: an ambient axis counts as excluded only where exact 2.1.251 help states the exclusion. An unstated axis is admitted-unstated, not excluded. A private-composition part counts as preserved only where help states it survives the mode.",
   "parser_probe": [
     {
       "variant": "watcher-candidate-restricted",
@@ -90,70 +99,58 @@
       "result": "parse-rejected-unknown-option"
     }
   ],
-  "authority": {
-    "--bare": {
-      "ambient_settings": "excluded",
-      "ambient_hooks": "excluded",
-      "ambient_skills": "reachable-via-slash-name",
-      "explicit_settings_hooks": "unstated-mode-skips-hooks",
-      "private_mcp_with_strict_mcp_config": "admitted",
-      "configured_authentication": "removed",
-      "oauth_and_keychain": "never-read",
-      "working_directory_confinement": "not-stated"
-    },
-    "--restricted": {
-      "ambient_settings": "excluded",
-      "ambient_hooks": "excluded",
-      "ambient_skills": "reachable",
-      "explicit_settings_hooks": "still-apply",
-      "private_mcp_with_strict_mcp_config": "admitted",
-      "configured_authentication": "preserved",
-      "oauth_and_keychain": "not-restricted",
-      "working_directory_confinement": "file-tools-confined-to-working-and-add-dir"
-    },
-    "--setting-sources-empty": {
-      "ambient_settings": "excluded",
-      "ambient_hooks": "excluded",
-      "ambient_skills": "reachable",
-      "explicit_settings_hooks": "unstated",
-      "private_mcp_with_strict_mcp_config": "admitted",
-      "configured_authentication": "preserved",
-      "oauth_and_keychain": "not-restricted",
-      "working_directory_confinement": "not-stated"
-    },
-    "--safe-mode": {
-      "ambient_settings": "excluded",
-      "ambient_hooks": "excluded",
-      "ambient_skills": "excluded",
-      "explicit_settings_hooks": "disabled-with-all-customizations",
-      "private_mcp_with_strict_mcp_config": "disabled-with-all-customizations",
-      "configured_authentication": "preserved",
-      "oauth_and_keychain": "not-restricted",
-      "working_directory_confinement": "not-stated"
-    }
-  },
   "candidates": [
     {
       "name": "current-bare",
       "argv": [
         "--bare"
       ],
-      "preserves_private_watcher_composition": false,
+      "ambient_authority": {
+        "settings": "admitted-unstated",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "excluded",
+        "plugins": "excluded"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "unstated",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "removed",
+      "configured_authentication_evidence": "help: Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read)",
+      "excludes_all_named_ambient_authority": false,
       "preserves_configured_authentication": false,
-      "excludes_ambient_setting_sources": true,
+      "preserves_private_watcher_composition": false,
       "disposition": "rejected",
-      "reason": "help removes keychain reads and never reads OAuth, leaving only ANTHROPIC_API_KEY or apiKeyHelper; the same clause also skips hooks, so the operation-private Stop completion gate has no stated guarantee"
+      "reason": "removes every OAuth and keychain path; help says skills still resolve via /skill-name, states no settings-file exclusion, and the same clause that skips hooks leaves the operation-private Stop gate unstated"
     },
     {
       "name": "watcher-only-restricted",
       "argv": [
         "--restricted"
       ],
-      "preserves_private_watcher_composition": true,
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "admitted",
+        "plugins": "admitted"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "preserved",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help states no credential change for restricted mode",
+      "excludes_all_named_ambient_authority": false,
       "preserves_configured_authentication": true,
-      "excludes_ambient_setting_sources": true,
-      "disposition": "selected",
-      "reason": "help ignores user, project and local settings files while managed settings and --settings still apply, names --strict-mcp-config as the MCP exclusion, confines file tools to the working and --add-dir directories, and states no credential change"
+      "preserves_private_watcher_composition": true,
+      "disposition": "rejected",
+      "reason": "restores authentication and keeps the private composition, but help excludes no ambient skill, CLAUDE.md, or plugin authority, so watcher opt-in would admit more than the invariant's closed list"
     },
     {
       "name": "empty-setting-sources",
@@ -161,62 +158,105 @@
         "--setting-sources",
         ""
       ],
-      "preserves_private_watcher_composition": true,
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "admitted",
+        "mcp_servers": "excluded-with-strict-mcp-config",
+        "memory_claude_md": "admitted",
+        "plugins": "admitted"
+      },
+      "private_composition": {
+        "private_mcp": "preserved",
+        "stop_hook": "unstated",
+        "injected_skill": "preserved"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help states no credential change for setting-source selection",
+      "excludes_all_named_ambient_authority": false,
       "preserves_configured_authentication": true,
-      "excludes_ambient_setting_sources": true,
+      "preserves_private_watcher_composition": false,
       "disposition": "rejected",
-      "reason": "parser accepts the empty source list, but help states no carve-out that explicit --settings survives it and adds no working-resource confinement; it is also two argv tokens against one"
+      "reason": "parser accepts the empty source list, but help states no carve-out that explicit --settings survives it and excludes no ambient skill, CLAUDE.md, or plugin authority"
     },
     {
       "name": "safe-mode",
       "argv": [
         "--safe-mode"
       ],
-      "preserves_private_watcher_composition": false,
+      "ambient_authority": {
+        "settings": "excluded",
+        "hooks": "excluded",
+        "skills": "excluded",
+        "mcp_servers": "excluded",
+        "memory_claude_md": "excluded",
+        "plugins": "excluded"
+      },
+      "private_composition": {
+        "private_mcp": "disabled",
+        "stop_hook": "disabled",
+        "injected_skill": "disabled"
+      },
+      "configured_authentication": "preserved",
+      "configured_authentication_evidence": "help: Auth, model selection, built-in tools, and permissions work normally",
+      "excludes_all_named_ambient_authority": true,
       "preserves_configured_authentication": true,
-      "excludes_ambient_setting_sources": true,
+      "preserves_private_watcher_composition": false,
       "disposition": "rejected",
-      "reason": "help disables all customizations including hooks, MCP servers and skills with no --settings or --mcp-config carve-out, so the private MCP family, Stop gate and injected skill have no stated survival"
+      "reason": "the only compared shape that excludes every named ambient authority, and it does so by disabling the same hook, MCP-server, and skill mechanisms the private watcher composition needs; help states no --settings or --mcp-config carve-out"
     }
   ],
-  "selection": {
-    "selected": "watcher-only-restricted",
-    "argv_removed": [
-      "--bare"
-    ],
-    "argv_added": [
-      "--restricted"
-    ],
-    "watcher_argv_token_delta": 1,
-    "watcher_omission_argv_changed": false,
-    "normal_non_watcher_argv_changed": false,
+  "outcome": {
+    "kind": "evidence-stop",
+    "selected": null,
+    "production_command_changed": false,
+    "watcher_argv_unchanged": true,
+    "omission_argv_unchanged": true,
+    "normal_non_watcher_argv_unchanged": true,
     "contract_059_060_changed": false,
-    "watcher_version_claim_changed": false
+    "watcher_version_claim_changed": false,
+    "invariant_weakened": false
   },
+  "stop_reason": "No compared 2.1.251 command shape preserves configured authentication, retains the operation-private MCP, Stop hook and injected skill, and excludes every named ambient authority. The injected watcher skill and ambient user, project, and local skills reach the session through the same discovery mechanism, and the only documented switches over that mechanism, --safe-mode and --disable-slash-commands, are all-or-nothing. The current production --bare command does not satisfy the invariant either: it removes every OAuth and keychain path and still admits ambient skills.",
   "counterexamples": [
     {
-      "name": "ambient-setting-source-reopened",
-      "candidate": "watcher argv that names user, project or local setting sources, or drops the isolating mode",
-      "selected_candidate_exhibits": false,
+      "name": "ambient-authority-reopened",
+      "candidate": "a watcher argv that admits any named ambient settings, hooks, skills, MCP servers, CLAUDE.md memory, or plugins",
+      "exhibited_by": [
+        "current-bare",
+        "watcher-only-restricted",
+        "empty-setting-sources"
+      ],
       "disposition": "rejected"
     },
     {
       "name": "every-configured-authentication-path-removed",
-      "candidate": "watcher argv that keeps --bare",
-      "selected_candidate_exhibits": false,
+      "candidate": "a watcher argv that keeps --bare",
+      "exhibited_by": [
+        "current-bare"
+      ],
+      "disposition": "rejected"
+    },
+    {
+      "name": "private-watcher-composition-lost",
+      "candidate": "a watcher argv that disables the hook, MCP-server, or skill mechanism the private composition needs",
+      "exhibited_by": [
+        "safe-mode"
+      ],
       "disposition": "rejected"
     },
     {
       "name": "omission-or-normal-argv-changed",
-      "candidate": "watcher repair that edits the omission or non-watcher command",
-      "selected_candidate_exhibits": false,
+      "candidate": "a watcher repair that edits the omission or non-watcher command",
+      "exhibited_by": [],
       "disposition": "rejected"
     }
   ],
   "residual": [
-    "--restricted does not skip LSP, plugin sync, attribution, auto-memory, background prefetches, or CLAUDE.md auto-discovery, which --bare did; none of these is an ambient setting, hook, skill, or MCP server",
-    "neither --bare nor --restricted excludes ambient skills: --bare leaves them reachable via /skill-name and --restricted leaves skill loading unchanged, so the selected candidate closes no skill axis and reopens none",
-    "authentication preservation is a help-stated absence of any credential change under --restricted; it is not a live observation and no credential was read here"
+    "the current production --bare watcher command remains blocked: it removes every OAuth and keychain authentication path before MCP initialization, so the watcher route is still not live-ready",
+    "--bare and --restricted both leave ambient user, project, and local skills reachable, so neither closes the skill axis the invariant names",
+    "--safe-mode is the only compared shape that excludes every named ambient authority, but exact help gives it no --settings or --mcp-config carve-out, so the private MCP family, Stop gate, and injected skill have no stated survival",
+    "a later card, not this one, would have to change the mechanism rather than the flag: delivering the watcher instructions through a channel that is not ambient skill discovery would let --disable-slash-commands or --safe-mode close the skill axis. That is outside card 029"
   ],
   "live_turn_authorized": false
 }

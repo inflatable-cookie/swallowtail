@@ -232,7 +232,7 @@ fn omitted_watchers_keep_empty_strict_mcp_on_exact_2_1_251() {
             "--strict-mcp-config".to_owned(),
         ]
     );
-    for forbidden in ["--bare", "--restricted"] {
+    for forbidden in ["--bare", "--restricted", "--safe-mode"] {
         assert!(
             !state
                 .request()
@@ -316,9 +316,9 @@ fn watcher_opt_in_composes_private_mcp_settings_skill_and_stop() {
         std::thread::yield_now();
     }
     let arguments = state.request().arguments;
-    assert!(arguments.iter().any(|argument| argument == "--restricted"));
+    assert!(arguments.iter().any(|argument| argument == "--bare"));
     assert!(arguments.iter().any(|argument| argument == "--include-hook-events"));
-    assert!(!arguments.iter().any(|argument| argument == "--bare"));
+    assert!(!arguments.iter().any(|argument| argument == "--restricted"));
     assert!(!arguments.iter().any(|argument| argument == "--setting-sources"));
     assert!(arguments.windows(2).any(|pair| pair == ["--permission-mode", "plan"]));
     assert!(arguments.windows(2).any(|pair| pair == ["--tools", "Read,Glob,Grep"]));

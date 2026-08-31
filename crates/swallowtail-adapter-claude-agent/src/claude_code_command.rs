@@ -31,11 +31,13 @@ pub(crate) fn arguments(
             .map(str::to_owned),
     );
     match watchers {
-        // `--restricted`, not `--bare`: bare removes every OAuth and keychain
-        // authentication path. See `tests/fixtures/claude-code-2.1.251/watcher-isolation.json`.
+        // `--bare` is retained unrepaired. It removes every OAuth and keychain
+        // authentication path, but no exact `2.1.251` flag shape excludes ambient
+        // skill authority while keeping the injected watcher skill, so no candidate
+        // is admitted. See `tests/fixtures/claude-code-2.1.251/watcher-isolation.json`.
         Some(files) => {
             arguments.extend([
-                "--restricted".to_owned(),
+                "--bare".to_owned(),
                 "--mcp-config".to_owned(),
                 files.mcp_config.clone(),
                 "--strict-mcp-config".to_owned(),
@@ -127,7 +129,7 @@ mod tests {
     }
 
     #[test]
-    fn watcher_opt_in_replaces_bare_with_restricted_and_keeps_the_private_composition() {
+    fn watcher_opt_in_keeps_the_unrepaired_bare_command_under_the_card_029_stop() {
         let model = ModelId::new("claude-opus-5").expect("model is valid");
         let files = watcher_files();
         let selected = arguments(&model, None, None, Some(&files));
@@ -147,7 +149,7 @@ mod tests {
                 "plan",
                 "--tools",
                 "Read,Glob,Grep",
-                "--restricted",
+                "--bare",
                 "--mcp-config",
                 "/private/root/mcp.json",
                 "--strict-mcp-config",
@@ -161,29 +163,16 @@ mod tests {
     }
 
     #[test]
-    fn watcher_opt_in_admits_no_authentication_removing_or_ambient_setting_source() {
+    fn no_rejected_isolation_candidate_reached_the_watcher_command() {
         let model = ModelId::new("claude-opus-5").expect("model is valid");
         let files = watcher_files();
         let selected = arguments(&model, None, None, Some(&files));
-        assert!(!selected.iter().any(|argument| argument == "--bare"));
-        assert!(!selected.iter().any(|argument| argument == "--safe-mode"));
-        assert!(
-            !selected
-                .iter()
-                .any(|argument| argument == "--setting-sources")
-        );
-        assert!(
-            !selected
-                .iter()
-                .any(|argument| argument == "user,project,local")
-        );
-        assert_eq!(
-            selected
-                .iter()
-                .filter(|argument| *argument == "--restricted")
-                .count(),
-            1
-        );
+        for rejected in ["--restricted", "--safe-mode", "--setting-sources"] {
+            assert!(
+                !selected.iter().any(|argument| argument == rejected),
+                "{rejected}"
+            );
+        }
     }
 
     #[test]

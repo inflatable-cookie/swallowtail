@@ -29,6 +29,7 @@ mod claude_code_selection;
 mod claude_code_validation;
 mod claude_code_watcher;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod elicitation;
@@ -63,6 +64,10 @@ pub use claude_code_selection::{
     CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_HEADLESS_BASELINE_VERSION,
     CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, claude_code_headless_binding,
     claude_code_headless_claim,
+};
+pub use consumer_route_projection::{
+    ClaudeAgentProjectionOpenFailure, ClaudeAgentProjectionOpenFuture,
+    ClaudeAgentProjectionOpenOutcome,
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
 pub use permission::claude_agent_permission_namespace;

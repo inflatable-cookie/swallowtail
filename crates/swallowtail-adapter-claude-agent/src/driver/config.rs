@@ -1,4 +1,5 @@
 use serde_json::Value;
+use std::collections::BTreeSet;
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::RuntimeFailure;
 
@@ -71,17 +72,45 @@ pub(super) fn validate_reasoning_option(
     }
 }
 
+pub(super) enum ReasoningConfirmation {
+    Effective(String),
+    Rejected(String),
+}
+
 pub(super) fn confirm_reasoning(
     response: &Value,
     requested: &ReasoningMode,
-) -> Result<(), RuntimeFailure> {
-    confirm_value(
-        response,
-        EFFORT_CONFIG_ID,
-        requested.as_str(),
+) -> Result<ReasoningConfirmation, RuntimeFailure> {
+    let option = select_option(response, EFFORT_CONFIG_ID, Some(THOUGHT_LEVEL_CATEGORY))?;
+    let current = option
+        .get("currentValue")
+        .and_then(Value::as_str)
+        .ok_or_else(malformed)?;
+    let advertised = option
+        .get("options")
+        .and_then(Value::as_array)
+        .ok_or_else(malformed)?;
+    let mut values = BTreeSet::new();
+    for candidate in advertised {
+        let value = candidate
+            .get("value")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or_else(malformed)?;
+        if !values.insert(value) {
+            return Err(malformed());
+        }
+    }
+    if current == requested.as_str() && values.contains(current) {
+        return Ok(ReasoningConfirmation::Effective(current.to_owned()));
+    }
+    if values.contains(current) && crate::prepared::instance::REASONING_MODES.contains(&current) {
+        return Ok(ReasoningConfirmation::Rejected(current.to_owned()));
+    }
+    Err(failure(
         "swallowtail.claude_agent.acp.reasoning_mismatch",
         "Claude Agent reasoning confirmation does not match the requested mode",
-    )
+    ))
 }
 
 pub(super) fn validate_plan_mode_option(response: &Value) -> Result<(), RuntimeFailure> {

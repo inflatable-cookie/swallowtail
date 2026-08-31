@@ -5,6 +5,10 @@ use crate::driver::validation::validate_initialize;
 use crate::selection::ClaudeAgentPlanSelection;
 use swallowtail_core::{HarnessMode, ReasoningMode};
 
+use super::{
+    ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement, config::ReasoningConfirmation,
+};
+
 pub(super) struct PendingSession {
     pub(super) connection: Arc<AcpConnection>,
     pump_task: Option<Box<dyn JoinedTask>>,
@@ -21,7 +25,13 @@ impl ClaudeAgentAcpDriver {
         services: &HostServices,
         selected: ClaudeAgentPlanSelection,
         reasoning: Option<ReasoningMode>,
-    ) -> Result<ClaudeAgentSessionHandle, RuntimeFailure> {
+    ) -> Result<
+        (
+            ClaudeAgentSessionHandle,
+            ClaudeAgentReasoningAcknowledgement,
+        ),
+        ClaudeAgentOpenRejection,
+    > {
         let working_resource = request
             .working_resource()
             .expect("validated working resource")
@@ -39,8 +49,13 @@ impl ClaudeAgentAcpDriver {
                 services,
             )
             .await?;
-        let opened = async {
-            let initialized = pending.connection.initialize().await?;
+        let opened: Result<_, ClaudeAgentOpenRejection> = async {
+            let mut acknowledgement = ClaudeAgentReasoningAcknowledgement::NotRequested;
+            let initialized = pending
+                .connection
+                .initialize()
+                .await
+                .map_err(ClaudeAgentOpenRejection::from)?;
             let lifecycle = validate_initialize(&initialized, &selected)?;
             let owned_session_cleanup =
                 plan.requirements().operation_shape() == OperationShape::StructuredRun
@@ -51,7 +66,8 @@ impl ClaudeAgentAcpDriver {
                 return Err(failure(
                     "swallowtail.claude_agent.acp.owned_cleanup_unavailable",
                     "Claude Agent did not negotiate the qualified close and delete lifecycle required by this run",
-                ));
+                )
+                .into());
             }
             let model = plan.model_id().expect("validated model").as_str();
             let response = pending
@@ -73,7 +89,23 @@ impl ClaudeAgentAcpDriver {
                         .connection
                         .set_config_option(&provider_id, "effort", reasoning.as_str())
                         .await?;
-                    crate::driver::config::confirm_reasoning(&confirmed, reasoning)?;
+                    acknowledgement = match crate::driver::config::confirm_reasoning(
+                        &confirmed,
+                        reasoning,
+                    )? {
+                        ReasoningConfirmation::Effective(value) => {
+                            ClaudeAgentReasoningAcknowledgement::Effective(value)
+                        }
+                        ReasoningConfirmation::Rejected(value) => {
+                            return Err(ClaudeAgentOpenRejection::rejected(
+                                failure(
+                                    "swallowtail.claude_agent.acp.reasoning_mismatch",
+                                    "Claude Agent reasoning confirmation does not match the requested mode",
+                                ),
+                                value,
+                            ));
+                        }
+                    };
                 }
                 if request.options().harness_mode() == Some(HarnessMode::Plan) {
                     crate::driver::config::validate_plan_mode_option(&configured)?;
@@ -106,7 +138,7 @@ impl ClaudeAgentAcpDriver {
                     .clone(),
                 request.access_policy().clone(),
             );
-            pending.take_handle(
+            let handle = pending.take_handle(
                 SessionHandleInput {
                     request_id: request.request_id().clone(),
                     provider_ref,
@@ -117,11 +149,12 @@ impl ClaudeAgentAcpDriver {
                     native_delete: lifecycle.delete && selected.is_qualified(),
                 },
                 services,
-            )
+            )?;
+            Ok::<_, ClaudeAgentOpenRejection>((handle, acknowledgement))
         }
         .await;
         match opened {
-            Ok(handle) => Ok(handle),
+            Ok(opened) => Ok(opened),
             Err(error) => {
                 let _ = pending.abort(services).await;
                 Err(error)

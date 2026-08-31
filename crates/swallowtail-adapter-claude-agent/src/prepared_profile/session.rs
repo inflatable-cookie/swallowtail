@@ -3,6 +3,7 @@ use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
 use super::{ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture};
+use crate::driver::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
 use crate::prepared::instance::{REASONING_MODES, session_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
@@ -19,6 +20,17 @@ mod restoration;
 
 use handle::wrap_management_handle;
 use restoration::ClaudeAgentContinuationRecovery;
+
+type ClaudeAgentPreparedOpenLifecycleFuture = swallowtail_runtime::BoxFuture<
+    'static,
+    Result<
+        (
+            Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+            ClaudeAgentReasoningAcknowledgement,
+        ),
+        ClaudeAgentOpenRejection,
+    >,
+>;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Prepared interactive Claude Agent ACP session.
@@ -55,22 +67,42 @@ impl ClaudeAgentPreparedSession {
 
     /// Opens a new provider-owned session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> ClaudeAgentPreparedSessionFuture {
+        let lifecycle = self.open_lifecycle(services);
+        Box::pin(async move {
+            lifecycle
+                .await
+                .map(|(session, _)| session)
+                .map_err(ClaudeAgentOpenRejection::into_failure)
+        })
+    }
+
+    pub(crate) fn open_lifecycle(
+        &self,
+        services: HostServices,
+    ) -> ClaudeAgentPreparedOpenLifecycleFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
         let request = self.request.clone();
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
-            let handle = driver.open_session(plan, request.clone(), services).await?;
-            wrap_management_handle(
+            let (handle, acknowledgement) = driver
+                .open_session_lifecycle(plan, request.clone(), services.clone())
+                .await?;
+            let handle = wrap_management_handle(
                 handle,
                 management_instance,
                 access,
                 request.working_resource().cloned(),
                 ProviderSessionBindingOrigin::Created,
             )
-            .await
+            .await?;
+            Ok((handle, acknowledgement))
         })
+    }
+
+    pub(crate) const fn management_instance(&self) -> &swallowtail_core::ConfiguredInstance {
+        &self.management_instance
     }
 
     /// Builds an exact provider-session load request with bounded replay.

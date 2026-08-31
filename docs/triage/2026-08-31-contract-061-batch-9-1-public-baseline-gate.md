@@ -14,6 +14,9 @@ PR 127.
 
 The review uses main through
 `be98c30d682bea9ab01c5fa5e9af46e7180d4fbc` and the reviewed 767-row census.
+The 2026-08-31 PR 131 review repair keeps the same Contract 061 architecture
+and first-tranche boundary while closing three public-baseline gaps and three
+execution misses accepted by the operator.
 
 ## Settled Package And Composition Shape
 
@@ -60,6 +63,27 @@ of the public baseline:
   rejects an invalid contribution before composition. The composer rejects a
   mixed snapshot as a whole.
 
+`ConsumerRouteApplicability` preserves the complete safe access posture from
+the exact prepared plan. Alongside access-profile identity and credential
+mechanism, it exposes `credential_state() -> CredentialState`,
+`entitlement_state() -> EntitlementState`,
+`endpoint_authorization() -> EndpointAuthorization`,
+`runtime_readiness() -> RuntimeReadiness`, and
+`support_authority() -> SupportAuthority`. The aggregate
+`ConsumerRouteAvailability` remains a row summary only. It cannot erase or
+substitute for those fields: `Unknown`, `Required`, `Expired`, `Rejected`,
+`Unavailable`, `Exhausted`, `Restricted`, `Denied`, and `Degraded` remain
+observable through their owning access dimension instead of being flattened
+to `Conditional`.
+
+`ConsumerRouteMutationAuthority` has exactly four postures:
+`Absent`, `PreparedSessionStart(ConsumerRouteProjectionSourceId)`,
+`ConsumerMediatedPerTurn(ConsumerRouteProjectionSourceId)`, and
+`Acknowledged(ConsumerRouteProjectionSourceId)`. A `PerTurn` row that the
+consumer may supply uses `ConsumerMediatedPerTurn`; it must not use
+`PreparedSessionStart`, claim prepared session-start state, or imply provider
+acknowledgement. Contribution admission rejects lifecycle/authority mismatch.
+
 Portable feature identity is a closed runtime enum over current portable
 capability and integration concepts, with a bounded namespaced variant.
 Portable control identity is a closed runtime enum, also with a bounded
@@ -105,6 +129,15 @@ authority record, and a safe reason not supplied by its named source. Whole
 snapshot composition rejects instance, revision, driver, facade, route, model,
 operation, access, or source-identity disagreement between the configured
 record, prepared evidence, and contributions.
+
+The record/evidence agreement is exact and fail closed. Before row merge the
+composer compares the configured instance policy, access-profile identity,
+credential mechanism, endpoint audience, and every readiness dimension both
+records expose: credential, entitlement, endpoint authorization, runtime
+readiness, and support authority. It also requires the prepared access evidence
+to equal the immutable plan access status. Any mismatch returns
+`SnapshotIdentityDisagreement`; a conservative readiness summary is not a
+substitute for this comparison.
 
 The four Contract 061 points map directly:
 
@@ -208,6 +241,7 @@ impl OpenAiRealtimeProjectionOpenFailure {
 impl OpenAiPreparedRealtimeSession {
     pub fn open_session_with_projection(
         &self,
+        prepared_source_id: ConsumerRouteProjectionSourceId,
         active_session_source_id: ConsumerRouteProjectionSourceId,
         services: HostServices,
     ) -> OpenAiRealtimeProjectionOpenFuture;
@@ -222,6 +256,14 @@ disconnect, or otherwise unknown evidence returns `Runtime` and no rejected
 contribution. When reasoning was not requested, successful open does not
 invent a reasoning state.
 
+The two source IDs are independently admitted and must differ. Prepared
+selection/session-start rows and their mutation authority use
+`prepared_source_id` with `AdapterContribution` source kind. Post-open
+observed, provider-effective, and rejected rows and acknowledgement authority
+use `active_session_source_id` with `ActiveSessionObservation` source kind.
+The active observation never retroactively becomes the source of prepared
+truth.
+
 The adapter does not expose its private acknowledgement payload. The new
 method adds no callback, handle downcast, generic provider payload,
 composer-side execution, runtime enumeration, or mutation authority.
@@ -235,9 +277,34 @@ unknown/absence without an invented reason; and no raw targets, commands,
 credentials, paths, environment, provider payload, or presentation prose.
 
 The two adapter packages must add deterministic, provider-free fixtures for
-all 36 Codex rows and 15 Realtime rows. Realtime fixtures must cover exact
-requested, pending, matching-effective, mismatched/rejected, transport-failed,
-and absent-reasoning states. No live probe belongs to this lane.
+all 36 Codex rows and 15 Realtime rows. Codex must construct the exact 36-row
+ledger directly: `ProviderSessionHistory` and
+`ProviderSessionReconciliation` feature rows are outside this tranche and are
+withheld at construction, not emitted and then removed or exempted by the
+ledger. Realtime fixtures must cover exact requested, pending,
+matching-effective, mismatched/rejected, transport-failed, and absent-reasoning
+states, plus distinct prepared and active-observation source identities. No
+live probe belongs to this lane.
+
+Structural acceptance uses `main` at
+`969b9cbffcaa31822966697c80878d5a7618efee` as the measured god-file baseline:
+391 findings (7 critical, 42 high, 342 warning). PR 131 head
+`6f30a542ff69ded641158999c21192cad96f13a1` raised that to 400 (8/44/348).
+The nine newly counted files must be split below their configured thresholds,
+and the final scan must not exceed the 391/7/42/342 baseline. Acceptance does
+not raise or relabel the baseline.
+
+| Newly counted PR 131 file | PR-head severity | Code lines |
+| --- | --- | ---: |
+| `crates/swallowtail-testkit/src/consumer_route_projection_assertions.rs` | critical | 774 |
+| `crates/swallowtail-adapter-codex/tests/prepared_profile_cases/consumer_route_projection.rs` | high | 669 |
+| `crates/swallowtail-adapter-openai/tests/realtime_projection.rs` | high | 438 |
+| `crates/swallowtail-adapter-openai/src/realtime_projection/contribution.rs` | warning | 346 |
+| `crates/swallowtail-runtime/src/consumer_route_projection/contribution.rs` | warning | 319 |
+| `crates/swallowtail-runtime/src/consumer_route_projection/semantics.rs` | warning | 319 |
+| `crates/swallowtail-adapter-codex/src/consumer_route_projection.rs` | warning | 300 |
+| `crates/swallowtail-adapter-openai/src/realtime/session.rs` | warning | 288 |
+| `crates/swallowtail-runtime/src/consumer_route_projection/row.rs` | warning | 255 |
 
 The accepting validation tier is:
 
@@ -248,24 +315,26 @@ The accepting validation tier is:
 - `effigy qa:routes`
 - `effigy qa:docs`
 - `effigy qa:northstar`
+- `effigy --json scan god-files`
 - `git diff --check`
 
 ## Readiness Verdict
 
 Posture: `strict-ready`.
 
-Planning verdict: `coherent`. Package ownership, dependency direction,
+Planning verdict: `coherent after the accepted PR 131 review repair`. Package ownership, dependency direction,
 composer and contribution shape, fixed maxima, failure behavior, replacement,
 route-local public signatures, fixtures, validation, and stops are bounded.
 The additive Realtime seam preserves exact acknowledgement truth without
 widening the generic handle or changing the existing open path.
 
-Card 022 passes the Batch 9.1 readiness rubric as one coherent four-package,
+Card 022 passes the repaired Batch 9.1 readiness rubric as one coherent four-package,
 two-route tranche. A runtime/testkit-only card would not prove contribution;
 a one-route card would not meet the accepted evidence bar. The card does not
 authorize provider contact, the remaining 716 rows, package expansion,
-generation closeout, or PR 127 action. It stops after the 51-row proof for an
-orchestrator checkpoint.
+generation closeout, or PR 127 action. PR 131 requires one same-worker revision
+against this repaired gate and card 022; it is not merge-authorized. The card
+stops after the 51-row proof for an orchestrator checkpoint.
 
 ## Authority
 

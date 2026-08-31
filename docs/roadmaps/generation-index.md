@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has nine roadmaps: 5 completed milestones, one planned milestone at 009,
-honest evidence stops at 002, 003, and 007, and no ready milestone. Milestones
+g05 has nine roadmaps: 5 completed milestones, honest evidence stops at 002,
+003, and 007, and one ready milestone at 009. Milestones
 004 and 005 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 g05.001 is
@@ -201,15 +201,15 @@ implementation card. The operator selected that planning-only inventory on
 coverage, and tranche forks to the operator. The operator accepted all four
 recommended option 1 decisions. g05.009 now compiles the realization runway;
 its Batch 9.1 shared runtime surface, fixed maxima, failure behavior,
-replacement, fixtures, validation, and stops are drafted. The readiness rubric
-finds one material API fork: OpenAI Realtime privately validates and discards
-its exact `session.updated` acknowledgement, so the operator must select a
-public route into an immutable active-session contribution before route-local
-signatures or a card can close. g05 remains open and no ready card follows yet.
-No Darwin dispatch,
+replacement, fixtures, validation, and stops are closed. The operator approved
+an additive adapter-owned prepared-open result that preserves exact
+`session.updated` truth while retaining the existing generic open method.
+Batch 9.1 names the exact route-local surface and passes the readiness rubric.
+Card 022 is ready as one four-package 51-row tranche and stops before package
+expansion. g05 remains open. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container backend,
-new route, second provider turn, implementation card, generation rollover, or
-parked Bedrock work is authorized.
+new route, second provider turn, additional implementation card, generation
+rollover, or parked Bedrock work is authorized.
 
 ## Rollover Rule
 

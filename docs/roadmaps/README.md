@@ -15,17 +15,15 @@ shape.
 
 ## Next Task
 
-Resolve the one operator API fork in the
-[Contract 061 Batch 9.1 gate](../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md):
-whether `openai.realtime` may preserve its exact private `session.updated`
-acknowledgement through an additive adapter-owned typed prepared-open result,
-or must use another exact public contribution seam. Then close the route-local
-names and signatures and reapply the readiness rubric in
-[g05.009](g05/009-contract-061-consumer-projection-realization.md). The shared
-runtime shape, fixed maxima, failure behavior, replacement, fixtures,
-validation, and stops are drafted, but no card passes readiness while this
-fork remains. No worker handoff, implementation, provider contact, blocked g05
-surface, generation closeout, or PR 127 action is authorized.
+Implement
+[card 022](g05/batch-cards/022-contract-061-composer-and-two-route-vertical.md)
+as the single first Contract 061 realization tranche: the runtime composer,
+portable testkit conformance, all 36 `codex.app-server` rows, and all 15
+`openai.realtime` rows through the operator-approved additive prepared-open
+result. Preserve the existing Realtime `open_session`, use no provider contact
+or live probe, and stop after one reviewable PR for the required two-route
+checkpoint. Do not expand to the remaining 716 rows, restart another g05
+surface, close the generation, or act on PR 127.
 
 ## Standing Lanes
 

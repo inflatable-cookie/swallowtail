@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-08-31
 
 ## Non-Negotiables
 
@@ -20,9 +20,10 @@ Updated: 2026-08-30
   proliferation.
 - Testable boundaries: failure, interruption, and lifecycle behavior must have
   fixture coverage.
-- Effective skill truth: report what the exact selected harness context sees,
-  including deliberate global and project installation; never substitute
-  package membership or an ambient filesystem scan.
+- Two-layer skill truth: bounded inventory may scan only host-approved global,
+  project-bound, and adapter-declared harness distribution roots. Discovery
+  preserves source and conflict truth. It never substitutes for the exact
+  selected harness roster or claims that the model can see a discovered skill.
 - Host-owned watchers: provider activity is not process authority; background
   work remains turn-scoped, controllable by model and operator, bounded in
   disclosure, and joined before successful completion. Process-backed watchers
@@ -33,6 +34,9 @@ Updated: 2026-08-30
   exact-scope, admission-frozen before completion, and joined on every terminal
   path. It never becomes a generic MCP server, public HTTP service, ambient
   configuration mutation, consumer-tool transport, or container requirement.
+- Rolling route currentness: version expansion stays one family at a time,
+  separates identity evidence from production claims, and never bulk-bumps
+  from a registry's `latest` tag.
 
 ## Anti-Patterns
 
@@ -51,5 +55,7 @@ Updated: 2026-08-30
 - one catch-all crate containing vocabulary, processes, adapters, and fixtures
 - wholesale extraction of Nucleus modules before their product logic is split
 - treating installed skill files as proof that a selected model can see them
+- recursively scanning an ambient home or project tree as skill inventory
+- silently selecting one duplicate skill as effective from inventory alone
 - treating provider command, task, or subagent activity as a controllable
   process watcher

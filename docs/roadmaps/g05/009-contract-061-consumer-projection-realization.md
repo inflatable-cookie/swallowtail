@@ -8,7 +8,7 @@ Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; card 024 is the sole Next Task
+Planning state: strict-ready; card 024 ready in the feature-façade track
 
 ## Problem
 
@@ -152,8 +152,10 @@ exact 35 `codex.exec` plus 24 `openai.background` rows through PR 133 at
 prepared facades, three negative no-control audits, construction-time
 withholding, descriptor-only activity, validation, and stops fit one exact
 38-row card without new shared public or acknowledgement machinery. Card 024
-is ready. Candidates B-G and I-L still have no card numbers or execution
-authority.
+is ready. After its review, lifecycle value sets the reassessment order:
+acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
+candidates C/E/I/J. Candidates B-G and I-L still have no card numbers or
+execution authority.
 
 ### Batch 9.5 — All-Route Census Audit
 

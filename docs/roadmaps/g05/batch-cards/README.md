@@ -2,11 +2,15 @@
 
 ## Planned
 
+- [028-codex-0-151-0-claim-restack.md](./028-codex-0-151-0-claim-restack.md) — planned; auto-continues only after card 027 admits the segment
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
+- [027-codex-0-151-0-identity-restack.md](./027-codex-0-151-0-identity-restack.md) — ready; canonical Next Task; reconstruct PR 130 identity evidence on current main
+- [026-claude-watcher-tool-admission-evidence-and-repair.md](./026-claude-watcher-tool-admission-evidence-and-repair.md) — ready; provider-free watcher MCP admission recovery
+- [025-bounded-skill-inventory-contract-promotion.md](./025-bounded-skill-inventory-contract-promotion.md) — ready; promote dedicated Contract 062 boundary
 - [024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md](./024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md) — ready; exact 38-row candidate H package tranche
 
 ## Blocked

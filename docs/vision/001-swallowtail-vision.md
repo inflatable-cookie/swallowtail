@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-08-31
 
 ## Intent
 
@@ -44,6 +44,17 @@ A consumer should integrate one small, capability-led surface, then retain
 provider-specific power where it matters. Supporting a new provider should not
 require copying process supervision, event translation, cancellation, and
 diagnostics into every application.
+
+Four continuing product tracks make that goal concrete:
+
+- operation-scoped watchers let the active agent and operator inspect, wait
+  for, and stop long-running work during one turn
+- bounded skill inventory discovers global, project, and harness-distributed
+  skills while keeping discovery distinct from model-effective visibility
+- one lifecycle-aware feature facade reports route truth at session start,
+  turn start, during a turn, and after exact provider acknowledgement
+- recurring one-family version qualification keeps production routes useful as
+  official harness and agent releases move
 
 ## Integration Ecosystem
 

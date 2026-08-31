@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-08-31
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -14,9 +14,10 @@ Workflow. Runbook:
 [Version Currentness Checkpoint](../guides/version-currentness-checkpoint.md).
 Execute through the repo skill `version-currentness`.
 
-Cadence is operator-triggered: after a consumer defect on an
-unverified-newer point, after a cluster of stables move, or when the
-operator asks. It is not CI and not a calendar job.
+Currentness is a persistent serial queue. Continue it after a consumer defect
+on an unverified-newer point, after official stables move, or when the operator
+asks. It is not CI, a calendar job, or authority to qualify several families
+at once.
 
 A checkpoint writes research. It does not change claims and does not
 need an active generation.
@@ -35,6 +36,18 @@ Kimi Code headless exact `0.38.0` default agent-core-v2 stream-json under
 `kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
 `0.37.2` remains on `kimi.headless.stream-json.v1`. Claude Code
 `2.1.241` (g04.055, cards 153-154) is superseded by g05.005.
+
+### Active Family
+
+Codex exec and app-server official `0.151.0` are selected as the current
+one-family repair. PR 130 froze Research 262 and the proposed claim but now
+conflicts with current `main`. g05.012 cards 027-028 reconstruct its evidence
+as identity-before-claim, rerun current gates, and merge the exact reviewed
+head. On 2026-08-31 npm stable remained `0.151.0`; `0.152.0` existed only as
+prerelease alphas.
+
+After that claim merges, run the all-route checkpoint and choose one next
+family. Do not preselect the family from registry `latest` alone.
 
 ### Completed Family
 

@@ -2,15 +2,20 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-28
+Updated: 2026-08-31
 Research: 255
 
 ## Purpose
 
 Let a consumer observe the bounded effective skill roster visible to the model
 in one exact prepared harness context. Preserve global, project-local, plugin,
-provider-managed, and distribution-bundled skills without turning Swallowtail
-into a filesystem scanner, package manager, or skill registry.
+provider-managed, and distribution-bundled skills without treating installed
+or discovered files as effective visibility.
+
+This contract owns the selected-harness effective overlay only. It does not
+inventory installed skills. Spec 013 plans a separate host-approved inventory
+surface for global, project-bound, and harness-distributed roots. That surface
+must preserve its weaker discovery evidence and cannot satisfy this contract.
 
 ## Effective Roster
 
@@ -132,6 +137,9 @@ tool, filesystem, network, prompt, process, or permission authority.
 - Contract 059's injected watcher skill may appear with
   `InjectedBySwallowtail` provenance only when this contract independently
   observes it.
+- Spec 013's proposed inventory may contribute discovery and provenance only.
+  Inventory membership never upgrades to harness-declared or selected-context
+  confirmation without this contract's evidence.
 
 ## First Proof Disposition
 

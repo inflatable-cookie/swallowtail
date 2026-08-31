@@ -170,6 +170,21 @@ Candidates B-G and I-L remain planning rows without card numbers or execution
 authority. Card 024 is the sole ready implementation tranche. Stop after its
 review before promoting another candidate.
 
+## Lifecycle-Priority Sequence
+
+The four-track reframe keeps candidate H as the next ready feature-façade
+tranche, but changes how later candidates are selected. Row count is no longer
+the primary ordering signal. After card 024 review, reassess in these bands:
+
+1. D, F, and G: exact active-session acknowledgements and post-open state.
+2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
+   observed callbacks.
+3. C, E, I, and J: remaining breadth and negative applicability coverage.
+
+Promote only one candidate at a time against current `main`. A lifecycle-rich
+candidate still must pass the existing rubric; this order grants no execution
+authority and does not compile Batch 9.5 early.
+
 ## All-Route Gate
 
 Batch 9.5 remains uncompiled. It may become ready only after candidates A-L

@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-None. Spec 012 was promoted into Contract 061 through g05.008 card 021.
+- [013 Bounded Skill Inventory And Effective Visibility](013-bounded-skill-inventory-and-effective-visibility.md)
 
 ## Promoted Specs
 

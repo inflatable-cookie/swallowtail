@@ -5,7 +5,7 @@ shape.
 
 ## Current Generation
 
-- [g05 Harness Skill Visibility And Process Observability](g05/README.md) — active
+- [g05 Agent Runtime Surfaces And Route Truth](g05/README.md) — active
 - [g04 Route Readiness And Connection Admission](g04/README.md) — completed
 - [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — completed
 - [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
@@ -15,15 +15,14 @@ shape.
 
 ## Next Task
 
-Implement
-[g05 card 024](g05/batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md):
-the exact 9-row `deepagents.acp`, 9-row `kiro.acp`, 8-row `qoder.headless`, and
-12-row `zcode.app-server` Contract 061 package tranche. Keep the three explicit
-no-route-specific-control audits negative, activity descriptor-only, and
-ZCode model/mode truth bound to its exact prepared run. Stop after one
-reviewable four-package PR. Do not contact a provider, promote another Batch
-9.4 candidate, compile Batch 9.5, restart a blocked g05 surface, act on PR 127
-or PR 130, run papercuts in this lane, or close the generation.
+Implement [g05 card 027](g05/batch-cards/027-codex-0-151-0-identity-restack.md):
+revalidate official Codex `0.151.0` and reconstruct conflicting PR 130's
+identity evidence on current `main` without a production claim edit. Preserve
+Research 262 and its fixtures only after corroboration. If the segment remains
+admitted, auto-continue to card 028 for the separate claim restack, current
+gates, exact-head review, and merge. Do not contact a provider, widen an
+unproved feature pin, touch another route family, run papercuts, or combine the
+watcher, skill-inventory, and feature-façade cards into this PR.
 
 ## Standing Lanes
 
@@ -50,8 +49,8 @@ first standing lane. It does not keep a generation open.
   consumer-proven hardening generation
 - [g04/README.md](g04/README.md) — completed route-readiness and
   connection-admission generation
-- [g05/README.md](g05/README.md) — active harness skill visibility and process
-  observability generation
+- [g05/README.md](g05/README.md) — active watchers, bounded skill inventory,
+  feature projection, and route-currentness generation
 
 ## Status And Census
 

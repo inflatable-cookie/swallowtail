@@ -12,7 +12,7 @@ Updated: 2026-08-31
 | `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
 | `g03` | completed | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
 | `g04` | completed | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
-| `g05` | active | Harness skill visibility and dependable process observability without ambient host scanning, arbitrary process authority, or prompt-only enforcement. |
+| `g05` | active | Bounded skill inventory and effective visibility, in-turn watcher control, lifecycle-aware feature projection, and serial route currentness without ambient authority or silent flattening. |
 
 ## Generation Size
 
@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has nine roadmaps: 5 completed milestones, honest evidence stops at 002,
-003, and 007, and one ready milestone at 009. Milestones
+g05 has twelve roadmaps: 5 completed milestones, honest evidence stops at 002,
+003, and 007, and ready milestones at 009, 010, 011, 012. Milestones
 004 and 005 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 g05.001 is
@@ -223,21 +223,29 @@ The post-card-023 current-main reassessment corrected the Codex output-token
 census row as descriptor-only negative coverage and promoted candidate H
 alone. Card 024 is ready for exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
 8-row `qoder.headless`, and 12-row `zcode.app-server` package completion.
-Candidates B-G and I-L remain unnumbered planning rows. No Darwin dispatch,
+Candidates B-G and I-L remain unnumbered planning rows. The four-track reframe
+keeps card 024 ready but prioritizes later acknowledgement candidates D/F/G,
+per-turn candidates B/K/L, then breadth candidates C/E/I/J. Spec 013 and
+g05.010 add the missing bounded global/project/harness skill-inventory layer
+without weakening Contract 058 effective truth. g05.011 isolates exact Claude
+watcher MCP tool admission as provider-free card 026 before any new live
+attempt. g05.012 selects conflicting PR 130's Codex `0.151.0` work as the
+current one-family Contract 029 repair; card 027 is the front-door Next Task
+and card 028 remains conditional on an admitted identity segment. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
-or parked Bedrock work is authorized. PR 130 remains extracurricular and
-merge-withheld, not part of this generation pointer.
+or parked Bedrock work is authorized.
 
 ## Rollover Rule
 
 g04 passed the normal 30-50 roadmap range and closed after explicit operator
-authority. g05 is the sole active generation. Execute the sole Next Task
-pointer; later rollover still requires explicit operator authority.
+authority. g05 is the sole active generation. Several independent track cards
+may be ready, but the front door keeps one canonical serial Next Task. Later
+rollover still requires explicit operator authority.
 
 
 ## Next Task
 
 Implement the ready g05 card named by the
 [roadmaps front door](README.md#next-task). This index records generation
-status; the sole actionable pointer stays in the front door.
+status; the canonical actionable pointer stays in the front door.

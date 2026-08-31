@@ -12,7 +12,8 @@ cluster by delivery generation:
 - **g01** — foundation: contract kernel, runtime records, Codex proof drivers
 - **g02** — stabilization: provider-wide prepared facades, activity,
   compatibility, lifecycle, and release discipline
-- **g05** — active: harness skill visibility and process observability
+- **g05** — active: watchers, bounded skill inventory, feature projection, and
+  route currentness
 - **g04** — completed: route readiness, connection admission, and
   consumer-driven model selection
 - **g03** — completed: compatibility maintenance and consumer-proven hardening
@@ -24,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 Four-Track Runway Reframe](./2026-08-31-four-track-runway-reframe.md) — watchers, skill inventory, lifecycle-aware feature projection, and serial currentness now have explicit blockers and ready moves; card 027 is canonical next
 - [2026-08-31 Feature Runway Reconciliation](./2026-08-31-feature-runway-reconciliation.md) — 83-item g04 programme closed; Contract 061 card 024 is the sole ready feature tranche; evidence-gated, parked, currentness, and papercut lanes separated
 - [2026-08-31 g05.009 Card 023 Package Completion](./2026-08-31-g05-009-card-023-package-completion.md) — PR 133 merged at `58be7122`; exact 35-row Codex Exec and 24-row OpenAI Background proof complete
 - [2026-08-31 g05.009 Batch 9.4 Package Expansion Compiled](./2026-08-31-g05-009-batch-9-4-package-expansion-compiled.md) — 716 rows partitioned across 12 complete-package candidates; card 023 is the sole ready 59-row tranche

@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidate A complete; candidate H ready
+Status: active planning evidence; candidates A and H complete; acknowledgement reassessment ready
 Owner: Tom
 Date: 2026-08-31
 
@@ -53,7 +53,7 @@ explicitly.
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
 | G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | candidate only |
-| H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | ready as card 024 |
+| H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | complete through card 024 / PR 138 |
 | I | DeepSeek; DeepSeek Harness | `deepseek.continuation` 19; `deepseek-harness.jsonrpc` 11; `deepseek-harness.local-server` 17 | 47 | continuation and local-server lifecycle remain distinct | candidate only |
 | J | llama.cpp; Ollama | `llama-cpp.attached` 10; `llama-cpp.owned` 6; `ollama.attached` 19 | 35 | attached and owned applicability remain distinct | candidate only |
 | K | Mistral Vibe; Muse; Oh My Pi; Qwen | `mistral-vibe.headless` 8; `muse-code.headless` 10; `oh-my-pi.rpc` 18; `qwen.headless` 16 | 52 | one consumer-mediated per-turn attachment row | candidate only |
@@ -68,8 +68,9 @@ exact active-session acknowledgement rows stay isolated in D, F, and G. The
 eight remaining per-turn rows stay in B, K, and L; none may be relabelled as
 session-start authority.
 
-After candidate A, the active remainder is 657 rows across 44 route IDs and 29
-adapter packages in candidates B-L. Those candidates remain planning rows.
+After candidates A and H, the active remainder is 619 rows across 40 route IDs
+and 25 adapter packages in candidates B-G and I-L. Those candidates remain
+planning rows.
 
 ## Promotion Rubric
 
@@ -167,8 +168,23 @@ The other candidates remain unpromoted:
 | L | Hold. Six per-turn rows and observed callbacks need a dedicated lifecycle and callback boundary audit. |
 
 Candidates B-G and I-L remain planning rows without card numbers or execution
-authority. Card 024 is the sole ready implementation tranche. Stop after its
-review before promoting another candidate.
+authority. Card 024 was the sole ready implementation tranche at that
+checkpoint; its review had to close before another candidate could be
+promoted.
+
+## Candidate H Completion
+
+PR 138 merged exact reviewed head `c796ad7f` through `8b295e6b`. Four
+independent ledgers prove all 9 `deepagents.acp`, 9 `kiro.acp`, 8
+`qoder.headless`, and 12 `zcode.app-server` rows. The three no-control audits
+remain negative coverage; activity remains descriptor-only; ZCode model and
+mode controls come from exact prepared bindings. Matching-source cross-route
+and cross-access mixtures fail closed. No shared public type, contract,
+provider contact, or live probe was added.
+
+Card 030 is the post-card-024 planning checkpoint. It audits D, F, and G
+against current `main` and may promote at most one complete acknowledgement
+candidate. No implementation candidate is promoted yet.
 
 ## Lifecycle-Priority Sequence
 
@@ -176,7 +192,8 @@ The four-track reframe keeps candidate H as the next ready feature-façade
 tranche, but changes how later candidates are selected. Row count is no longer
 the primary ordering signal. After card 024 review, reassess in these bands:
 
-1. D, F, and G: exact active-session acknowledgements and post-open state.
+1. D, F, and G: exact active-session acknowledgements and post-open state;
+   card 030 is the ready reassessment authority.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

@@ -15,14 +15,13 @@ shape.
 
 ## Next Task
 
-Implement [g05 card 024](g05/batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md):
-complete candidate H's exact 9-row `deepagents.acp`, 9-row `kiro.acp`, 8-row
-`qoder.headless`, and 12-row `zcode.app-server` Contract 061 package tranche.
-Use only exact prepared-operation truth, keep the three no-control audits as
-negative coverage, retain descriptor-only activity, and preserve the existing
-runtime/testkit/core public baseline. Do not contact a provider, run a live
-probe, restart watcher or skill-visibility work, promote another candidate, or
-compile Batch 9.5.
+Reassess [g05 card 030](g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md):
+audit Contract 061 candidates D, F, and G against current `main`, including
+their exact active-session acknowledgement sources and lifecycle state.
+Promote at most one complete package candidate only if it passes the existing
+Batch 9.4 rubric; otherwise record an honest stop. This is planning-only. Do
+not change Rust or contracts, contact a provider, implement the selected
+candidate, promote the per-turn or breadth bands, or compile Batch 9.5.
 
 ## Standing Lanes
 

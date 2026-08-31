@@ -222,11 +222,13 @@ Card 023 completed its 35 `codex.exec` plus 24 `openai.background` rows through
 PR 133 at `58be7122`; exact head `fbb4b118` passed review and all five checks.
 The post-card-023 current-main reassessment corrected the Codex output-token
 census row as descriptor-only negative coverage and promoted candidate H
-alone. Card 024 is ready for exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
-8-row `qoder.headless`, and 12-row `zcode.app-server` package completion.
-Candidates B-G and I-L remain unnumbered planning rows. The four-track reframe
-keeps card 024 ready but prioritizes later acknowledgement candidates D/F/G,
-per-turn candidates B/K/L, then breadth candidates C/E/I/J. Contract 062 and
+alone. Card 024 completed exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
+8-row `qoder.headless`, and 12-row `zcode.app-server` package completion
+through PR 138 at `8b295e6b`. Candidates B-G and I-L remain without
+implementation authority. The four-track reframe now prioritizes
+acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
+candidates C/E/I/J. Planning-only card 030 owns the current-main D/F/G audit
+and may promote at most one complete candidate. Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
 Spec 013 is archived and realization remains unplanned. g05.011 card 026
@@ -240,7 +242,7 @@ recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
 promoted Contract 062 without Rust. Cards 026 and 029 closed without a
-production behavior change. Card 024 is the front-door Next Task. PR
+production behavior change. Card 030 is the front-door Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,

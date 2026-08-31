@@ -1,14 +1,14 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidate A merged; candidate H
-card 024 ready
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A and H merged;
+acknowledgement reassessment card 030 ready
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; card 024 ready in the feature-façade track
+Planning state: strict-ready; card 030 ready in the feature-façade track
 
 ## Problem
 
@@ -34,8 +34,10 @@ merged the exact 35-row `codex.exec` and 24-row `openai.background` proof at
 `58be7122`, preserving the shared public baseline and restoring exact tuple,
 cross-access, and descriptor-only observation proof during review. Candidate A
 is complete. The post-card-023 reassessment resolved the Codex output-token
-census source and promoted candidate H alone as card 024. Candidates B-G and
-I-L still have no card numbers or execution authority.
+census source and promoted candidate H alone as card 024. PR 138 merged its
+exact 38-row proof through `8b295e6b`. Candidates B-G and I-L still have no
+implementation card numbers or execution authority; card 030 now owns the
+current-main acknowledgement reassessment for D, F, and G.
 
 ## Generation Runway Goal
 
@@ -132,7 +134,7 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       package-coherent candidates after the two-route checkpoint
 - [x] complete candidate A as the exact 35-row `codex.exec` plus 24-row
       `openai.background` tranche
-- [ ] complete candidate H as the exact 9-row `deepagents.acp`, 9-row
+- [x] complete candidate H as the exact 9-row `deepagents.acp`, 9-row
       `kiro.acp`, 8-row `qoder.headless`, and 12-row `zcode.app-server`
       tranche
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
@@ -152,10 +154,11 @@ exact 35 `codex.exec` plus 24 `openai.background` rows through PR 133 at
 prepared facades, three negative no-control audits, construction-time
 withholding, descriptor-only activity, validation, and stops fit one exact
 38-row card without new shared public or acknowledgement machinery. Card 024
-is ready. After its review, lifecycle value sets the reassessment order:
-acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
-candidates C/E/I/J. Candidates B-G and I-L still have no card numbers or
-execution authority.
+merged through PR 138 at `8b295e6b` after exact-head review repaired its
+mixed-assembly and per-identity posture proofs. Lifecycle value now sets the
+reassessment order: acknowledgement candidates D/F/G, per-turn candidates
+B/K/L, then breadth candidates C/E/I/J. Card 030 owns the D/F/G planning audit;
+no later implementation candidate is promoted yet.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -205,18 +208,17 @@ execution authority.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: cards 022-023 are complete through PRs 131 and 133; card
-  024 is ready
-- completed tranches: runtime/testkit kernel plus four exact route proofs in
-  two reviewed cards, covering 110 census rows
-- active tranche: candidate H's exact 38-row, four-package card 024; the Codex
-  output-token census-source question is resolved as descriptor-only negative
-  coverage
-- later runway: 619 rows remain in candidates B-G and I-L after card 024;
+- immediate state: cards 022-024 are complete through PRs 131, 133, and 138;
+  planning-only card 030 is ready
+- completed tranches: runtime/testkit kernel plus eight exact route proofs in
+  three reviewed implementation cards, covering 148 census rows
+- active tranche: current-main acknowledgement reassessment across candidates
+  D, F, and G; no implementation candidate is promoted
+- later runway: 619 rows remain in candidates B-G and I-L;
   promote them at most one at a time after exact readiness audits, then compile
   one all-route audit
-- next strategy checkpoint: review card 024's exact PR before selecting another
-  whole candidate
+- next strategy checkpoint: card 030 selects at most one acknowledgement
+  candidate or records an honest current-main stop
 
 ## Batch Cards
 
@@ -227,7 +229,10 @@ execution authority.
   — complete; exact 35-row `codex.exec` plus 24-row `openai.background`
   provider-free tranche merged through PR 133 at `58be7122`
 - [024 Contract 061 Deep Agents, Kiro, Qoder, And ZCode Package Completion](batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md)
-  — ready; exact candidate H 9/9/8/12-row provider-free tranche
+  — complete; exact candidate H 9/9/8/12-row proof merged through PR 138 at
+  `8b295e6b`
+- [030 Contract 061 Acknowledgement Candidate Reassessment](batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
+  — ready; planning-only current-main audit of candidates D, F, and G
 
 ## References
 

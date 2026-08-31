@@ -1,6 +1,6 @@
 # 024 Contract 061 Deep Agents, Kiro, Qoder, And ZCode Package Completion
 
-Status: ready
+Status: complete; merged through PR 138 at `8b295e6b`
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
@@ -60,22 +60,22 @@ Complete candidate H's Contract 061 census dispositions: all 9
 
 ## Acceptance Criteria
 
-- [ ] four independent ledgers reconcile exactly to 9, 9, 8, and 12 rows
-- [ ] every emitted row comes from its exact prepared operation and retains
+- [x] four independent ledgers reconcile exactly to 9, 9, 8, and 12 rows
+- [x] every emitted row comes from its exact prepared operation and retains
       source, route, operation, lifecycle, value, omission, applicability, and
       evidence truth
-- [ ] the three no-route-specific-control audits remain negative coverage and
+- [x] the three no-route-specific-control audits remain negative coverage and
       produce no public control descriptor
-- [ ] ZCode model selection and app-server mode agree with the exact prepared
+- [x] ZCode model selection and app-server mode agree with the exact prepared
       model route and mode binding
-- [ ] catalogue-only, audit, documentation-only, and incompatible-operation
+- [x] catalogue-only, audit, documentation-only, and incompatible-operation
       rows are withheld at construction
-- [ ] activity observation remains descriptor-only on all four routes
-- [ ] cross-route, cross-operation, cross-access, cross-instance, and stale
+- [x] activity observation remains descriptor-only on all four routes
+- [x] cross-route, cross-operation, cross-access, cross-instance, and stale
       source assembly fail closed or replace according to the existing composer
-- [ ] no runtime/testkit/core public API, contract, provider operation, active
+- [x] no runtime/testkit/core public API, contract, provider operation, active
       observation, acknowledgement, execution, or mutation authority is added
-- [ ] touched source remains below the configured god-file thresholds and the
+- [x] touched source remains below the configured god-file thresholds and the
       repository scan does not exceed its accepted baseline
 
 ## Review Oracle
@@ -119,6 +119,16 @@ No live probe or provider contact belongs to this card.
 
 No. Stop after one reviewable PR. The orchestrator must review the exact
 38-row proof before another Batch 9.4 candidate can be promoted.
+
+## Closeout
+
+PR 138 merged exact reviewed head `c796ad7f` through `8b295e6b`. Independent
+review required matching-source cross-route and access-dimension
+counterexamples plus exact per-identity posture assertions before acceptance.
+The repaired proof passed 169 focused tests, four extracted-package checks,
+semantic API, route/docs/Northstar checks, the exact 391 god-file baseline,
+and all five CI jobs. No provider was contacted and no shared public or
+contract surface changed.
 
 ## Stop Conditions
 

@@ -224,17 +224,23 @@ The post-card-023 current-main reassessment corrected the Codex output-token
 census row as descriptor-only negative coverage and promoted candidate H
 alone. Card 024 completed exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
 8-row `qoder.headless`, and 12-row `zcode.app-server` package completion
-through PR 138 at `8b295e6b`. Candidates B-G and I-L remain without
-implementation authority. The four-track reframe now prioritizes
+through PR 138 at `8b295e6b`. Candidates B-G and I-L initially remained
+without implementation authority. The four-track reframe now prioritizes
 acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
 candidates C/E/I/J. Planning-only card 030 audited D, F, and G on current
 `main` and promoted none: `claude-agent.acp`, `kimi-code.acp`, and `cline.acp`
 each validate their provider confirmation and discard it, so rubric item 2 has
 no active-observation facade to name and the census `rejected` state has no
-retained value. Candidate D is the narrowest unblock, so the next gate is
-scoped to `claude-agent.acp` alone; `kimi-code.acp`, `cline.acp`, and the F/G
-extra observation seams stay later route-local gate work. g05.009 is
-`strict-paused` with no ready batch card until that gate closes. Contract 062 and
+retained value. Candidate D is the narrowest unblock, so its gate is scoped to
+`claude-agent.acp` alone. The operator accepted adapter-local exact effective
+and rejected retention plus one additive adapter-owned open-with-projection
+result preserving the existing open method. The exact public surface, source
+split, state transitions, unknown-failure boundary, shared-open lifecycle, and
+provider-free oracle are closed. Candidate D is promoted as ready card 031 for
+the complete 30/12/11-row Claude Agent package remainder. `kimi-code.acp`,
+`cline.acp`, and the F/G extra observation seams stay later route-local gate
+work. g05.009 is `strict-ready` with card 031 as its sole ready batch card.
+Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
 Spec 013 is archived and realization remains unplanned. g05.011 card 026
@@ -249,8 +255,8 @@ app-server through official `0.151.0` while retaining feature-specific exact
 sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
 promoted Contract 062 without Rust. Cards 026 and 029 closed without a
 production behavior change. Card 030 closed as an evidence stop without Rust or
-a promoted candidate; compiling the `claude-agent.acp` gate is the front-door
-Next Task. PR
+a promoted candidate; the later accepted `claude-agent.acp` gate promotes card
+031 as the front-door Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
@@ -266,8 +272,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the g05 acknowledgement gate named by the
-[roadmaps front door](README.md#next-task). g05.009 is `strict-paused` with no
-ready batch card, so the pending action is gate compilation, not card
-implementation. This index records generation status; the canonical actionable
-pointer stays in the front door.
+Implement the ready g05 card named by the
+[roadmaps front door](README.md#next-task). g05.009 is `strict-ready`; card 031
+owns the accepted Claude Agent acknowledgement baseline and complete candidate
+D package remainder. This index records generation status; the canonical
+actionable pointer stays in the front door.

@@ -1,16 +1,16 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A and H merged;
-card 030 stopped the acknowledgement band; no ready implementation card
+candidate D promoted as ready card 031
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-paused`; no ready implementation card and none may be
-compiled until the `claude-agent.acp` acknowledgement public-baseline gate
-closes on an operator decision
+Planning state: `strict-ready`; the accepted `claude-agent.acp`
+acknowledgement public baseline makes card 031 the sole ready implementation
+card
 
 ## Problem
 
@@ -37,12 +37,15 @@ merged the exact 35-row `codex.exec` and 24-row `openai.background` proof at
 cross-access, and descriptor-only observation proof during review. Candidate A
 is complete. The post-card-023 reassessment resolved the Codex output-token
 census source and promoted candidate H alone as card 024. PR 138 merged its
-exact 38-row proof through `8b295e6b`. Card 030 then audited acknowledgement candidates D,
-F, and G against current `main` and promoted none: all three exact
+exact 38-row proof through `8b295e6b`. Card 030 then audited acknowledgement
+candidates D, F, and G against current `main` and promoted none: all three exact
 active-session acknowledgement routes validate their provider confirmation and
 discard it, so no active-observation facade or rejected value exists to name.
-D is the narrowest unblock and owns the next gate alone. Candidates B-G and I-L
-still have no implementation card numbers or execution authority.
+D was the narrowest unblock and owned the next gate alone. The operator
+approved adapter-local exact effective/rejected retention plus one additive
+adapter-owned open-with-projection result preserving the existing open method.
+That gate promotes D as ready card 031. Candidates B, C, E-G, and I-L still
+have no implementation card numbers or execution authority.
 
 ## Generation Runway Goal
 
@@ -142,6 +145,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [x] complete candidate H as the exact 9-row `deepagents.acp`, 9-row
       `kiro.acp`, 8-row `qoder.headless`, and 12-row `zcode.app-server`
       tranche
+- [ ] complete candidate D as the exact 30-row `claude-agent.acp`, 12-row
+      `claude-code.headless`, and 11-row `claude-code.response-only` tranche
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -163,13 +168,16 @@ merged through PR 138 at `8b295e6b` after exact-head review repaired its
 mixed-assembly and per-identity posture proofs. Lifecycle value now sets the
 reassessment order: acknowledgement candidates D/F/G, per-turn candidates
 B/K/L, then breadth candidates C/E/I/J. Card 030 closed the D/F/G planning
-audit as an evidence stop. Candidate D unblocks first, behind one Batch
-9.1-class public-baseline gate scoped to `claude-agent.acp` alone: adapter-local
-exact effective and rejected retention plus one additive adapter-owned
+audit as an evidence stop. The operator then accepted D's one Batch 9.1-class
+public-baseline gate scoped to `claude-agent.acp` alone: adapter-local exact
+effective and rejected retention plus one additive adapter-owned
 open-with-projection outcome and failure preserving the existing
-`open_session`. `kimi-code.acp`, `cline.acp`, and the F/G extra observation
-seams stay later route-local gate work and are not coupled into it. No
-implementation candidate is promoted.
+`open_session`. The
+[gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
+fixes the exact public signatures, source split, state transitions, malformed
+failure boundary, and provider-free oracle. Candidate D now passes the rubric
+and is promoted as card 031. `kimi-code.acp`, `cline.acp`, and the F/G extra
+observation seams stay later route-local gate work and are not coupled into it.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -213,26 +221,25 @@ implementation candidate is promoted.
 - Stop if the accepted access, source-identity, per-turn-authority, exact-ledger,
   or god-file repair cannot fit the existing Contract 061/card 022 boundary.
 - Stop after each promoted package tranche for an orchestrator checkpoint; do
-  not turn candidates B-G or I-L into speculative cards.
+  not turn candidates B, C, E-G, or I-L into speculative cards.
 - Stop if Contracts 037, 047, 057, or 061 would need amendment.
 
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 are complete through PRs 131, 133, and 138;
-  planning-only card 030 closed as an evidence stop with no candidate; the
-  milestone is `strict-paused` with no ready card
+  planning-only card 030 closed as an evidence stop; the operator accepted the
+  narrow Claude Agent gate and card 031 is ready
 - completed tranches: runtime/testkit kernel plus eight exact route proofs in
   three reviewed implementation cards, covering 148 census rows
-- active tranche: none. Card 030 stopped D, F, and G on current `main`;
-  candidate D needs the `claude-agent.acp` acknowledgement gate before any
-  promotion
-- later runway: 619 rows remain in candidates B-G and I-L;
+- active tranche: card 031 owns candidate D's exact 30/12/11-row package
+  remainder plus the adapter-local acknowledgement baseline
+- later runway: candidate D's 53 rows remain unproved until card 031 merges;
+  566 further rows remain in candidates B, C, E-G, and I-L
   promote them at most one at a time after exact readiness audits, then compile
   one all-route audit
-- next strategy checkpoint: compile the `claude-agent.acp` acknowledgement
-  public-baseline gate, or have the operator redirect promotion to the per-turn
-  or breadth band
+- next strategy checkpoint: review card 031's exact public API and 53-row
+  proof, then reassess one later candidate against the resulting `main`
 
 ## Batch Cards
 
@@ -249,6 +256,9 @@ implementation candidate is promoted.
   — complete; evidence stop; D, F, and G all fail rubric item 2 on current
   `main` because each acknowledgement route discards its confirmation; no
   candidate promoted and no Rust changed
+- [031 Contract 061 Claude Agent Package And Acknowledgement](batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
+  — ready; accepted adapter-local acknowledgement baseline plus exact
+  candidate D 30/12/11-row package completion
 
 ## References
 
@@ -257,6 +267,7 @@ implementation candidate is promoted.
 - [realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
 - [Batch 9.1 public baseline gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+- [Claude Agent acknowledgement public-baseline gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
 - [Codex exec output-token census-source question](../../triage/2026-08-31-codex-exec-output-token-census-source.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)

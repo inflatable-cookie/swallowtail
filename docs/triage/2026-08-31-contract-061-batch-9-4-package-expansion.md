@@ -1,6 +1,6 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A and H complete; card 030 stopped D, F, and G on current `main`; acknowledgement public-baseline gate needed
+Status: active planning evidence; candidates A and H complete; card 030 stopped D, F, and G on current `main`; `claude-agent.acp` acknowledgement gate needed next
 Owner: Tom
 Date: 2026-08-31
 
@@ -239,19 +239,26 @@ selection.
 
 ### Next Planning Move
 
-One Batch 9.1-class public-baseline gate, not an implementation card. It must
-close, with an operator decision, the route-local acknowledgement surface for
-`claude-agent.acp`, `kimi-code.acp`, and `cline.acp`:
+One Batch 9.1-class public-baseline gate, not an implementation card, scoped to
+`claude-agent.acp` alone. That is candidate D's only acknowledgement route and,
+by this audit's own evidence, the smallest useful unblock: one adapter package,
+one acknowledgement row, and no second post-open observation family. The gate
+must close, with an operator decision:
 
 - adapter-local retention of the exact provider-effective and rejected values
-  on each of the three routes;
-- the per-route adapter-owned additive open-with-projection result, failure,
-  and future types, preserving each existing `open_session` signature;
-- whether `EffectiveReasoningSetup`'s missing rejected state stays an
-  adapter-local concern or becomes a runtime public decision; and
-- whether `feature.negotiated-model-options-observation` and post-open
-  `control.provider-session-catalogue` need their own observation seams before
-  F or G can be promoted.
+  on `claude-agent.acp`; and
+- one additive adapter-owned open-with-projection outcome and failure that
+  preserves the existing `ClaudeAgentPreparedSession::open_session` signature
+  and behavior.
+
+`kimi-code.acp` and `cline.acp` are deliberately excluded. Their route-local
+gates come later and separately, and they carry questions this gate must not
+answer: whether `EffectiveReasoningSetup`'s missing rejected state stays an
+adapter-local concern or becomes a runtime public decision, and whether
+`feature.negotiated-model-options-observation` and post-open
+`control.provider-session-catalogue` need their own observation seams before F
+or G can be promoted. Coupling all three routes into one gate would cut across
+the one-candidate-at-a-time runway and delay the smallest unblock.
 
 Candidates B-G and I-L still hold no card number or execution authority. The
 per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 030.
@@ -263,8 +270,9 @@ tranche, but changes how later candidates are selected. Row count is no longer
 the primary ordering signal. After card 024 review, reassess in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   card 030 audited all three on current `main` and promoted none. The band is
-   blocked behind the acknowledgement public-baseline gate above.
+   card 030 audited all three on current `main` and promoted none. D unblocks
+   first through the `claude-agent.acp` acknowledgement gate above; F and G
+   wait on their own later route-local gates.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

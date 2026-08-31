@@ -1,6 +1,6 @@
 # 2026-08-31 g05.009 Card 030 Acknowledgement Reassessment Stop
 
-Status: complete; evidence stop
+Status: complete; evidence stop; g05.009 `strict-paused`
 Owner: Tom
 Date: 2026-08-31
 Card: 030
@@ -54,14 +54,17 @@ blocker to force a selection.
   changed
 - no provider contact and no live probe
 - candidates B-G and I-L still hold no card number or execution authority
-- g05.009 has no ready implementation card; the acknowledgement band is blocked
-- Next Task: compile the acknowledgement public-baseline gate, which needs an
-  operator decision on adapter-local retention of exact effective and rejected
-  values, the per-route adapter-owned additive open-with-projection result,
-  whether `EffectiveReasoningSetup`'s missing rejected state stays
-  adapter-local, and whether `feature.negotiated-model-options-observation` and
-  post-open `control.provider-session-catalogue` need their own observation
-  seams
+- g05.009 is `strict-paused`: no batch card is ready and none may be compiled
+  until the next gate closes
+- Next Task: compile the `claude-agent.acp` acknowledgement public-baseline
+  gate. Candidate D is the narrowest unblock, so the gate is scoped to that one
+  route and must close two points on an operator decision — adapter-local
+  retention of the exact provider-effective and rejected values, and one
+  additive adapter-owned open-with-projection outcome and failure preserving
+  the existing `ClaudeAgentPreparedSession::open_session`
+- `kimi-code.acp`, `cline.acp`, Kimi's runtime-versus-adapter rejection
+  question, and the F/G extra observation seams stay later route-local gate
+  work; they are not coupled into the D gate
 
 ## Validation
 

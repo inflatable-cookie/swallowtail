@@ -15,18 +15,24 @@ shape.
 
 ## Next Task
 
-Compile the Contract 061 acknowledgement public-baseline gate under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md).
+Compile the `claude-agent.acp` acknowledgement public-baseline gate under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md). g05.009 is
+`strict-paused`: no batch card is ready, and none may be compiled until this
+gate closes on an operator decision.
+
 [Card 030](g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
 stopped candidates D, F, and G on current `main`: `claude-agent.acp`,
 `kimi-code.acp`, and `cline.acp` each validate their provider confirmation and
 discard it, so no active-observation facade or exact rejected value exists to
-name. The gate must close, with an operator decision, adapter-local retention
-of the exact effective and rejected values, the per-route adapter-owned
-additive open-with-projection result, whether `EffectiveReasoningSetup`'s
-missing rejected state stays adapter-local, and whether
-`feature.negotiated-model-options-observation` and post-open
-`control.provider-session-catalogue` need their own observation seams. This is
+name. Candidate D is the narrowest unblock — one adapter package, one
+acknowledgement row, no second post-open observation family — so the gate is
+scoped to `claude-agent.acp` alone and must close two points: adapter-local
+retention of the exact provider-effective and rejected values, and one additive
+adapter-owned open-with-projection outcome and failure preserving the existing
+`ClaudeAgentPreparedSession::open_session`.
+
+`kimi-code.acp`, `cline.acp`, and the F/G extra observation seams stay later
+route-local gate work; do not couple them into this gate. This is
 planning-only. Do not change Rust or contracts, contact a provider, promote any
 Batch 9.4 candidate, or compile Batch 9.5.
 

@@ -1,14 +1,16 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A and H merged;
-card 030 stopped the acknowledgement band; public-baseline gate needed
+card 030 stopped the acknowledgement band; no ready implementation card
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-08-31
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: strict-ready; no ready implementation card; acknowledgement public-baseline gate is the next planning move
+Planning state: `strict-paused`; no ready implementation card and none may be
+compiled until the `claude-agent.acp` acknowledgement public-baseline gate
+closes on an operator decision
 
 ## Problem
 
@@ -39,8 +41,8 @@ exact 38-row proof through `8b295e6b`. Card 030 then audited acknowledgement can
 F, and G against current `main` and promoted none: all three exact
 active-session acknowledgement routes validate their provider confirmation and
 discard it, so no active-observation facade or rejected value exists to name.
-Candidates B-G and I-L still have no implementation card numbers or execution
-authority.
+D is the narrowest unblock and owns the next gate alone. Candidates B-G and I-L
+still have no implementation card numbers or execution authority.
 
 ## Generation Runway Goal
 
@@ -161,11 +163,13 @@ merged through PR 138 at `8b295e6b` after exact-head review repaired its
 mixed-assembly and per-identity posture proofs. Lifecycle value now sets the
 reassessment order: acknowledgement candidates D/F/G, per-turn candidates
 B/K/L, then breadth candidates C/E/I/J. Card 030 closed the D/F/G planning
-audit as an evidence stop. The acknowledgement band is blocked behind one
-Batch 9.1-class public-baseline gate that must close the route-local
-acknowledgement surface for `claude-agent.acp`, `kimi-code.acp`, and
-`cline.acp` with an operator decision. No implementation candidate is
-promoted.
+audit as an evidence stop. Candidate D unblocks first, behind one Batch
+9.1-class public-baseline gate scoped to `claude-agent.acp` alone: adapter-local
+exact effective and rejected retention plus one additive adapter-owned
+open-with-projection outcome and failure preserving the existing
+`open_session`. `kimi-code.acp`, `cline.acp`, and the F/G extra observation
+seams stay later route-local gate work and are not coupled into it. No
+implementation candidate is promoted.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -216,16 +220,19 @@ promoted.
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 are complete through PRs 131, 133, and 138;
-  planning-only card 030 closed as an evidence stop with no candidate
+  planning-only card 030 closed as an evidence stop with no candidate; the
+  milestone is `strict-paused` with no ready card
 - completed tranches: runtime/testkit kernel plus eight exact route proofs in
   three reviewed implementation cards, covering 148 census rows
-- active tranche: none. Card 030 stopped D, F, and G on current `main`; the
-  band needs an acknowledgement public-baseline gate before any promotion
+- active tranche: none. Card 030 stopped D, F, and G on current `main`;
+  candidate D needs the `claude-agent.acp` acknowledgement gate before any
+  promotion
 - later runway: 619 rows remain in candidates B-G and I-L;
   promote them at most one at a time after exact readiness audits, then compile
   one all-route audit
-- next strategy checkpoint: compile the acknowledgement public-baseline gate,
-  or have the operator redirect promotion to the per-turn or breadth band
+- next strategy checkpoint: compile the `claude-agent.acp` acknowledgement
+  public-baseline gate, or have the operator redirect promotion to the per-turn
+  or breadth band
 
 ## Batch Cards
 

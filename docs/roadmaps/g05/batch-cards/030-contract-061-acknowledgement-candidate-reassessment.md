@@ -51,8 +51,9 @@ candidate passes the existing Batch 9.4 rubric.
 
 - [x] D, F, and G totals reconcile to 53, 89, and 48 exact rows with no filter
       or exception list
-- [x] every route's prepared and active-observation facade and source identity
-      are named, including the exact acknowledgement transition retained
+- [x] every route's prepared facade, active-observation facade, source
+      identity, and exact acknowledgement transition is either named or its
+      exact absence on current `main` is proved
 - [x] documentation, prepared success, and session existence cannot masquerade
       as active-session acknowledgement
 - [x] construction-time withholding and negative no-control coverage are
@@ -153,15 +154,23 @@ requires the complete package remainder and forbids exception lists, and
 withholding the one acknowledgement row that defines the band would weaken a
 blocker to force a selection.
 
-Next planning move: one Batch 9.1-class public-baseline gate that closes the
-route-local acknowledgement surface for `claude-agent.acp`, `kimi-code.acp`,
-and `cline.acp`. It needs an operator decision on adapter-local retention of
-the exact effective and rejected values, the per-route adapter-owned additive
-open-with-projection result, whether `EffectiveReasoningSetup`'s missing
-rejected state stays adapter-local or becomes a runtime decision, and whether
-`feature.negotiated-model-options-observation` and post-open
-`control.provider-session-catalogue` need their own observation seams. Card 030
-names that move; it does not compile it.
+Next planning move: one Batch 9.1-class public-baseline gate scoped to
+`claude-agent.acp` alone — candidate D's only acknowledgement route and the
+smallest useful unblock. It needs an operator decision on two points:
+adapter-local retention of the exact provider-effective and rejected values on
+that route, and one additive adapter-owned open-with-projection outcome and
+failure that preserves the existing
+`ClaudeAgentPreparedSession::open_session` signature and behavior.
+
+`kimi-code.acp` and `cline.acp` stay later route-local gate work and are not
+coupled into this one. Kimi's question of whether `EffectiveReasoningSetup`'s
+missing rejected state stays adapter-local or becomes a runtime decision, and
+F's and G's extra post-open families
+(`feature.negotiated-model-options-observation` and post-open
+`control.provider-session-catalogue`), belong to those later gates. One
+candidate at a time remains the runway rule.
+
+Card 030 names that move; it does not compile it.
 
 No Rust, manifest, release-baseline, contract, architecture, or census file
 changed. No provider was contacted and no live probe ran.

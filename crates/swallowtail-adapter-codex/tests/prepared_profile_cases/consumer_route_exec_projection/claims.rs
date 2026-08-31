@@ -141,8 +141,10 @@ fn prepared_exec_rows_claim_no_execution_acknowledgement_or_per_turn_authority()
         observation.actor_posture(),
         ConsumerRouteActorPosture::ObservationOnly
     );
-    assert!(observation.state_support().observed());
-    assert!(!observation.state_support().prepared());
+    assert!(
+        observation.state_support().is_descriptor_only(),
+        "prepared capability evidence proves no post-open observation"
+    );
 
     let rendered = format!("{full:?}");
     for forbidden in ["codex-executable", "private prompt", "saved-login"] {

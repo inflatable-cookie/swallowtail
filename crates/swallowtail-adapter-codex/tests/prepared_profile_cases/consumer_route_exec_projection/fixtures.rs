@@ -1,6 +1,7 @@
 use super::super::*;
 use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_adapter_codex::CodexPreparedExec;
+use swallowtail_core::OperationShape;
 use swallowtail_runtime::ConsumerRouteProjectionContribution;
 
 use super::ledger::*;
@@ -89,16 +90,48 @@ pub(super) fn contribution(
         .expect("prepared exec contributes")
 }
 
-/// Collects the exact rows each prepared exec profile emits.
-pub(super) fn observed_dispositions() -> BTreeMap<&'static str, BTreeSet<String>> {
+/// Collects the exact census identities each prepared exec profile emits.
+pub(super) fn observed_dispositions() -> BTreeMap<&'static str, BTreeSet<RowIdentity>> {
     BTreeMap::from([
         (
             MAXIMAL,
-            rows(&contribution(&maximal(), "codex.exec.maximal")),
+            identities(&contribution(&maximal(), "codex.exec.maximal")),
         ),
         (
             MINIMAL,
-            rows(&contribution(&minimal(), "codex.exec.minimal")),
+            identities(&contribution(&minimal(), "codex.exec.minimal")),
         ),
     ])
+}
+
+/// Returns the exact prepared operation shape each profile binds its rows to.
+pub(super) fn prepared_operation_shapes() -> BTreeMap<&'static str, OperationShape> {
+    BTreeMap::from([
+        (
+            MAXIMAL,
+            operation_shape_of(&contribution(&maximal(), "codex.exec.shape-maximal")),
+        ),
+        (
+            MINIMAL,
+            operation_shape_of(&contribution(&minimal(), "codex.exec.shape-minimal")),
+        ),
+    ])
+}
+
+/// Returns the operation shape every row of one contribution is bound to.
+fn operation_shape_of(contribution: &ConsumerRouteProjectionContribution) -> OperationShape {
+    let shape = contribution.applicability().operation_shape();
+    for row in contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+    {
+        assert_eq!(
+            row.applicability(),
+            contribution.applicability(),
+            "{:?} is not bound to the contribution's exact applicability",
+            row.identity()
+        );
+    }
+    shape
 }

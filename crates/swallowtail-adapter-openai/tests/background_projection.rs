@@ -1,5 +1,7 @@
 //! Contract 061 disposition proof for the exact 24 `openai.background` rows.
 
+#[path = "background_projection/access.rs"]
+mod access;
 #[path = "background_projection/claims.rs"]
 mod claims;
 #[path = "background_projection/fixtures.rs"]

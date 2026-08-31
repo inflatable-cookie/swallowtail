@@ -62,3 +62,73 @@ pub(super) fn rows(contribution: &ConsumerRouteProjectionContribution) -> BTreeS
         .map(|row| semantic_id(row.identity()))
         .collect()
 }
+
+/// One exact census row identity: route, operation shape, and semantic id.
+pub(super) type RowIdentity = (String, &'static str, String);
+
+/// Returns the census operation shape one published exec row belongs to.
+///
+/// This map is written independently of the ledger, so a drifted ledger
+/// operation shape fails the emitted comparison instead of agreeing with
+/// itself.
+pub(super) fn operation_shape(identity: &ConsumerRouteRowIdentity) -> &'static str {
+    if let Some(extension) = identity.namespaced_extension() {
+        return match extension.semantic_id() {
+            "control.structured-output"
+            | "control.attachments"
+            | "control.external-network-policy"
+            | "control.external-search-policy"
+            | "control.model-verbosity" => "structured-run",
+            other => panic!("unexpected bounded codex.exec descriptor {other}"),
+        };
+    }
+    match identity {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::StructuredRun => "structured-run",
+            ConsumerRouteFeatureId::StreamingEvents
+            | ConsumerRouteFeatureId::ActivityObservation => "route-observation",
+            ConsumerRouteFeatureId::ReasoningSelection
+            | ConsumerRouteFeatureId::StructuredOutput
+            | ConsumerRouteFeatureId::Attachments
+            | ConsumerRouteFeatureId::ExternalSearch
+            | ConsumerRouteFeatureId::PreparedFacade => "route-capability",
+            other => panic!("unexpected codex.exec projection feature {other:?}"),
+        },
+        ConsumerRouteRowIdentity::Control(control) => match control {
+            ConsumerRouteControlId::ModelSelection | ConsumerRouteControlId::ReasoningSelection => {
+                "structured-run"
+            }
+            other => panic!("unexpected codex.exec projection control {other:?}"),
+        },
+    }
+}
+
+/// Returns the exact route one published exec row was admitted under.
+///
+/// A bounded descriptor names its own route, so a drifted extension route is
+/// visible here as well as in the qualification assertions.
+pub(super) fn route_of(identity: &ConsumerRouteRowIdentity) -> String {
+    identity.namespaced_extension().map_or_else(
+        || EXEC_ROUTE.to_owned(),
+        |extension| extension.route().to_owned(),
+    )
+}
+
+pub(super) fn row_identity(identity: &ConsumerRouteRowIdentity) -> RowIdentity {
+    (
+        route_of(identity),
+        operation_shape(identity),
+        semantic_id(identity),
+    )
+}
+
+pub(super) fn identities(
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<RowIdentity> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| row_identity(row.identity()))
+        .collect()
+}

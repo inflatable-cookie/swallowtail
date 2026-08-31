@@ -66,8 +66,10 @@ impl<'a> BackgroundProjectionBuilder<'a> {
 
     /// Emits one selection-summary feature row per exact prepared capability.
     ///
-    /// Observable activity stays post-open observation truth and never becomes
-    /// a selection-time or provider-effective claim.
+    /// Observable activity keeps its post-open lifecycle and observation-only
+    /// posture. Prepared capability evidence proves no observation, so its
+    /// state support stays descriptor-only and never becomes a selection-time,
+    /// observed, or provider-effective claim.
     pub(crate) fn with_prepared_capabilities(mut self) -> Self {
         self.selection.push(
             self.row(
@@ -103,9 +105,7 @@ impl<'a> BackgroundProjectionBuilder<'a> {
                         ConsumerRouteLifecycle::PostOpenObservationOnly,
                     )
                     .with_actor_posture(ConsumerRouteActorPosture::ObservationOnly)
-                    .with_state_support(
-                        ConsumerRouteStateSupport::descriptor_only().with_observed(),
-                    ),
+                    .with_state_support(ConsumerRouteStateSupport::descriptor_only()),
                 );
                 continue;
             }

@@ -153,8 +153,10 @@ fn prepared_background_rows_claim_no_acknowledgement_recovery_or_per_turn_author
         observation.actor_posture(),
         ConsumerRouteActorPosture::ObservationOnly
     );
-    assert!(observation.state_support().observed());
-    assert!(!observation.state_support().prepared());
+    assert!(
+        observation.state_support().is_descriptor_only(),
+        "prepared capability evidence proves no post-open observation"
+    );
 
     let rendered = format!("{tiered:?}");
     for forbidden in [

@@ -26,21 +26,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   on this head is 390 (341 / 49), matching `main`.
 - Surface: g05.006 card 019 PR 126 review revision.
 
-### [ ] OpenAI adapter test target name does not match its suite file — 2026-08-31
-- Friction: `crates/swallowtail-adapter-openai/Cargo.toml` binds the test target
-  `prepared_facade` to `tests/direct_suite.rs`, so
-  `cargo test -p swallowtail-adapter-openai --test direct_suite` fails with
-  "no test target named `direct_suite`".
-- Impact: adding a module to the direct suite costs one failed command before
-  the real target name is discovered; the same mismatch exists for
-  `catalogue_activity` and `realtime_prepared_facade`.
-- Fix: name each `[[test]]` target after its suite file, or note the mapping in
-  the crate's test module header.
-- Surface: `swallowtail-adapter-openai` integration test targets.
-- Queue 2026-08-31: papercuts wave 23 reserved in the local Swallowtail
-  orchestrator. It is independent of merged card 023, owns only the OpenAI
-  test-target manifest names and this entry, and has not been dispatched.
-
 ### [ ] Route-matrix docs validation leaves Python bytecode — 2026-08-30
 - Friction: `effigy qa:docs` imports the route inventory checker and leaves
   `scripts/provider_route_matrix/__pycache__/` untracked.
@@ -253,6 +238,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   indexes.
 
 ## Closed
+
+### [x] OpenAI adapter test target name does not match its suite file — 2026-08-31
+- Friction: `crates/swallowtail-adapter-openai/Cargo.toml` binds the test target
+  `prepared_facade` to `tests/direct_suite.rs`, so
+  `cargo test -p swallowtail-adapter-openai --test direct_suite` fails with
+  "no test target named `direct_suite`".
+- Impact: adding a module to the direct suite costs one failed command before
+  the real target name is discovered; the same mismatch exists for
+  `catalogue_activity` and `realtime_prepared_facade`.
+- Fix: renamed the three explicit `[[test]]` targets to `catalogue_suite`,
+  `direct_suite`, and `realtime_suite` so each matches its suite-root filename.
+  Suite counts retained: catalogue 7, direct 35, realtime 33.
+- Surface: `swallowtail-adapter-openai` integration test targets.
+- Closed: 2026-08-31 papercuts wave 23 OpenAI test target names.
 
 ### [x] Effigy validation materializes an untracked repo skill — 2026-08-30
 - Friction: running the card 011 docs/Northstar validation copied the Effigy

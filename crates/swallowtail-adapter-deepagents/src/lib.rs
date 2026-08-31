@@ -14,6 +14,7 @@ mod access;
 mod acp_activity;
 mod command;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;

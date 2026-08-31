@@ -349,6 +349,9 @@ fn failure(
 
 #[path = "prepared_profile.rs"]
 mod profile;
+#[cfg(test)]
+#[path = "prepared/projection_fixture.rs"]
+pub(crate) mod projection_fixture;
 
 pub use profile::{
     ZcodeModelSelection, ZcodePreparedEvidence, ZcodePreparedRun, ZcodeRunProfileInput,

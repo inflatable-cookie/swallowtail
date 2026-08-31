@@ -29,6 +29,8 @@ impl swallowtail_adapter_kiro::KiroPreparedIntegration
 pub fn swallowtail_adapter_kiro::KiroPreparedIntegration::prepare_session(&self, swallowtail_adapter_kiro::KiroSessionProfileInput) -> core::result::Result<swallowtail_adapter_kiro::KiroPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_kiro::KiroPreparedSession
 impl swallowtail_adapter_kiro::KiroPreparedSession
+pub fn swallowtail_adapter_kiro::KiroPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kiro::KiroPreparedSession
 pub const fn swallowtail_adapter_kiro::KiroPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_kiro::KiroPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_kiro::KiroPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

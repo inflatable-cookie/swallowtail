@@ -45,3 +45,7 @@ path = "tests/acp_suite.rs"
 [[test]]
 name = "prepared_facade"
 path = "tests/prepared_facade.rs"
+
+[[test]]
+name = "consumer_route_projection"
+path = "tests/consumer_route_projection.rs"

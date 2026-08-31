@@ -50,6 +50,8 @@ impl swallowtail_adapter_zcode::ZcodePreparedIntegration
 pub fn swallowtail_adapter_zcode::ZcodePreparedIntegration::prepare_run(&self, swallowtail_adapter_zcode::ZcodeRunProfileInput) -> core::result::Result<swallowtail_adapter_zcode::ZcodePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_zcode::ZcodePreparedRun
 impl swallowtail_adapter_zcode::ZcodePreparedRun
+pub fn swallowtail_adapter_zcode::ZcodePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_zcode::ZcodePreparedRun
 pub const fn swallowtail_adapter_zcode::ZcodePreparedRun::evidence(&self) -> &swallowtail_adapter_zcode::ZcodePreparedEvidence
 pub fn swallowtail_adapter_zcode::ZcodePreparedRun::into_parts(self) -> (swallowtail_adapter_zcode::ZcodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_zcode::ZcodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_zcode::ZcodeAppServerDriver

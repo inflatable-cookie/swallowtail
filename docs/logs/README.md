@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-31 Codex 0.151.0 Identity](./2026-08-31-codex-0-151-0-identity.md) — Research 262; compatible extension; host `0.150.1` and official stable `0.151.0` corroborated; claims unchanged
 - [2026-08-31 Four-Track Runway Reframe](./2026-08-31-four-track-runway-reframe.md) — watchers, skill inventory, lifecycle-aware feature projection, and serial currentness now have explicit blockers and ready moves; card 027 is canonical next
 - [2026-08-31 Feature Runway Reconciliation](./2026-08-31-feature-runway-reconciliation.md) — 83-item g04 programme closed; Contract 061 card 024 is the sole ready feature tranche; evidence-gated, parked, currentness, and papercut lanes separated
 - [2026-08-31 g05.009 Card 023 Package Completion](./2026-08-31-g05-009-card-023-package-completion.md) — PR 133 merged at `58be7122`; exact 35-row Codex Exec and 24-row OpenAI Background proof complete

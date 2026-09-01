@@ -347,7 +347,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   surface: never assign zsh special parameters in snippets; use
   task-specific names.
 
-### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
+### [x] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
   raising the doctor god-file baseline from 41 to 42 errors.
 - Impact: the completed feature lane leaves structural health worse and makes
@@ -355,6 +355,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: split model-parameter preparation and rejection proofs into a focused
   test module without reducing coverage.
 - Surface: `crates/swallowtail-adapter-cursor/tests/prepared_suite.rs`.
+- Closed: 2026-09-01 papercuts Cursor prepared-suite god-file split. The live
+  finding was 577 code lines (high), not the historical 454-line/error count;
+  that older wording predates the current critical/high/warning taxonomy.
+  Capability/plan, model-parameter, and rejection/drift proofs plus shared
+  fixture builders moved into
+  `tests/prepared_suite/{plans,model_parameters,rejections,support}.rs` with
+  bodies intact under the existing `prepared_suite` target. Nine tests held.
+  `effigy --json scan god-files` dropped from 379 findings (7 critical / 42
+  high / 330 warning) to 378 (7 critical / 41 high / 330 warning); the 577-line
+  root finding is gone and no new module entered the scan.
 
 ### [ ] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
 - Friction: PR 31 added a 566-line Kimi Platform lifecycle integration test,

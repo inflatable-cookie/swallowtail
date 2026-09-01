@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [033-contract-061-card-032-closeout-and-kimi-reassessment.md](./033-contract-061-card-032-closeout-and-kimi-reassessment.md) — sole ready planning card; reconcile 249/518 coverage and reassess candidate F's exact 89-row Kimi remainder
+- None.
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [033-contract-061-card-032-closeout-and-kimi-reassessment.md](./033-contract-061-card-032-closeout-and-kimi-reassessment.md) — evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage reconciled to 249/518, and candidate F left unpromoted behind a named `kimi-code.acp` gate
 - [032-contract-061-cline-command-code-copilot-goose-package-completion.md](./032-contract-061-cline-command-code-copilot-goose-package-completion.md) — complete; exact 11/8/11/9/9-row candidate G proof merged through PR 144 at `18a6907e`
 - [031-contract-061-claude-agent-package-and-acknowledgement.md](./031-contract-061-claude-agent-package-and-acknowledgement.md) — complete; exact 30/12/11-row candidate D proof merged through PR 141 at `5d1f173a`
 - [030-contract-061-acknowledgement-candidate-reassessment.md](./030-contract-061-acknowledgement-candidate-reassessment.md) — evidence stop; D, F, and G failed rubric item 2 on that `main`; the later accepted Claude Agent gate promoted D as card 031

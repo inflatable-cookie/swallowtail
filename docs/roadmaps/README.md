@@ -15,18 +15,28 @@ shape.
 
 ## Next Task
 
-Execute planning-only
-[card 033](g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-under [g05.009](g05/009-contract-061-consumer-projection-realization.md) as the
-sole ready checkpoint. Bind card 032's reviewed 48-row candidate G completion,
-reconcile Contract 061 to 249 proved and 518 remaining rows, and reassess
-candidate F's complete 89-row Kimi package remainder on current `main`.
+Decide the narrow `kimi-code.acp` active-observation public baseline under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md).
+[Card 033](g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
+is complete: it bound card 032 to `e50e3f46`/`18a6907e`, reconciled Contract
+061 to 249 proved and 518 remaining rows, and stopped candidate F. No card is
+ready.
 
-Promote F only if its compound acknowledgement, negotiated model options, and
-post-open provider-session catalogue already satisfy the existing rubric
-without a new decision. Otherwise record the exact stop and return the narrow
-Kimi-only public-baseline gate to the operator. Do not implement Kimi, promote
-another candidate, contact a provider, or compile Batch 9.5.
+F's 89 rows reconcile exactly, and 86 of them rest on proved prepared
+patterns. Three `kimi-code.acp` post-open rows block it. The gate needs five
+operator decisions: adapter-local retention of exact effective and rejected
+reasoning and Plan values versus a runtime `EffectiveReasoningSetup` change;
+the exact publishable reasoning value domain given `DeclaredEffort` admits
+foreign catalogue rows; whether exact provider-effective effort replaces the
+requested-`"on"` normalization on a projected path; whether one additive
+`KimiPreparedSession::open_session_with_projection` seam is the whole
+interactive surface; and whether the post-open provider-session catalogue gets
+a second additive seam over `KimiPreparedSessionCatalogue::list_sessions` or
+stays withheld as unobserved.
+
+Acceptance would authorize a later exact API gate and one candidate F
+implementation card, not implementation by itself. Do not implement Kimi,
+promote another candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes
 

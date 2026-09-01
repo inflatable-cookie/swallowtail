@@ -1,7 +1,8 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A, D, and H complete; candidate G
-promoted as ready card 032 after the accepted `cline.acp` public-baseline gate
+Status: active planning evidence; candidates A, D, G, and H complete through
+cards 023, 024, 031, and 032; 249 rows proved and 518 remaining; candidate F
+reassessed by card 033 and left unpromoted pending a `kimi-code.acp` gate
 Owner: Tom
 Date: 2026-08-31
 
@@ -53,7 +54,7 @@ explicitly.
 | D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | complete through card 031 / PR 141 |
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
-| G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | promoted as card 032 |
+| G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | complete through card 032 / PR 144 |
 | H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | complete through card 024 / PR 138 |
 | I | DeepSeek; DeepSeek Harness | `deepseek.continuation` 19; `deepseek-harness.jsonrpc` 11; `deepseek-harness.local-server` 17 | 47 | continuation and local-server lifecycle remain distinct | candidate only |
 | J | llama.cpp; Ollama | `llama-cpp.attached` 10; `llama-cpp.owned` 6; `ollama.attached` 19 | 35 | attached and owned applicability remain distinct | candidate only |
@@ -69,8 +70,8 @@ exact active-session acknowledgement rows stay isolated in D, F, and G. The
 eight remaining per-turn rows stay in B, K, and L; none may be relabelled as
 session-start authority.
 
-After candidates A, D, and H, 566 rows across 37 route IDs and 24 adapter
-packages remain unproved in candidates B, C, E-G, and I-L.
+After candidates A, D, G, and H, 518 rows across 32 route IDs and 22 adapter
+packages remain unproved in candidates B, C, E, F, and I-L.
 
 ## Promotion Rubric
 
@@ -334,14 +335,143 @@ no authority to Kimi or another candidate.
 Candidates B, C, E, I-L stay in their existing later bands. Batch 9.5 remains
 uncompiled.
 
+## Candidate G Completion
+
+PR 144 merged exact reviewed head `e50e3f46` through `18a6907e`. The squash
+merge preserves the reviewed head exactly: both commits resolve to tree
+`5c4774f2`. Five independent ledgers in the merged source prove 11
+`cline.acp`, 8 `cline.headless`, 11 `command-code.headless`, 9
+`copilot-cli.acp`, and 9 `goose.acp` rows with 9/2, 7/1, 10/1, 6/3, and 6/3
+emitted/withheld, totalling 48 rows and 38 emitted. Cline's preserved and
+projected opens share one private lifecycle and one Plan failure code. Only
+the four candidate G adapter semantic API baselines and the package index
+changed. No provider contact or live probe occurred.
+
+The proved total is now 249: 51 from card 022, 59 from card 023, 38 from card
+024, 53 from card 031, and 48 from card 032. The exact remainder is 518 rows
+across 32 route IDs and 22 adapter packages.
+
+## Post-Card-032 Candidate F Reassessment
+
+Card 033 audited candidate F against current `main` and did not promote it.
+The census repartitions independently of the tables above: all 48 route IDs
+are assigned exactly once, proved 249 (16 routes) plus remaining 518 (32
+routes) equals 767, and the remaining candidates decompose as B 76, C 94, E
+56, F 89, I 47, J 35, K 52, L 69.
+
+F owns 89 distinct tuples across two complete package remainders: 25
+`kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, and 13
+`kimi-platform.chat`. It holds no no-control audit row and no per-turn row.
+Its lifecycle partition is 60 selection-summary, 22 session-start-only, and 7
+post-open-observation-only rows. Four post-open rows are per-route
+`feature.activity-observation` and stay descriptor-only under the proved
+pattern. The other three sit on `kimi-code.acp` alone and block the candidate.
+
+### Current-Main Truth For The Three Coupled Families
+
+Card 030 called all three unproved. The current-main trace separates them:
+
+| Family | Retained on current `main` | Exact blocker |
+| --- | --- | --- |
+| `feature.active-session-reasoning-and-plan-ack` | nothing | both confirmations discarded; the Plan half has a frozen domain, the reasoning half does not |
+| `feature.negotiated-model-options-observation` | **yes** — exact current value and bounded advertised list on `KimiSessionHandle::negotiated_model_options()` | publication only; no adapter-owned route-qualified active source |
+| post-open `control.provider-session-catalogue` | nothing after the call | observation lives on a separate prepared operation, not on an open session |
+
+Acknowledgement detail. `driver.rs` writes
+`let _ = selection.confirm(&confirmation, selected.behavior())?` and
+`mode::confirm_plan_mode(&confirmation)?` inside `open_session` and keeps
+neither. `driver/mode.rs` freezes the Plan domain to exactly
+`["default", "plan", "auto", "yolo"]`, so its rejected value is bounded and
+present at the site — the exact `cline.acp` analogue. `driver/reasoning.rs`
+does not: `validate_behavior_shape` deliberately admits foreign catalogue rows
+under `KimiAcpBehavior::DeclaredEffort`, so a confirmation may carry an
+identifier outside `{off, on, low, medium, high, xhigh, max}` and no bounded
+rejected reasoning domain exists to publish. That branch also normalizes any
+non-`"off"` current value to `"on"` when `"on"` was requested, so Kimi
+additionally loses exact *effective* effort — a loss candidates D and G never
+had. `EffectiveReasoningSetup` cannot absorb either loss: its only constructor
+rejects `requested != effective` with
+`swallowtail.negotiated_reasoning.effective_mismatch`.
+
+Model-option detail. `driver/validation.rs` `parse_model_options` extracts one
+current value plus the bounded advertised list with optional display names,
+and `driver.rs` threads it into the handle on open, load, and resume. Kimi
+already holds what the Cline gate authorized adding; only the publishing seam
+is missing.
+
+Catalogue detail. `driver/session_catalogue.rs` implements
+`ProviderSessionCatalogueDriver` for `KimiAcpDriver`, and
+`KimiPreparedSessionCatalogue::list_sessions` returns a
+`ProviderSessionCatalogueOutcome` exposing only `candidates()`,
+`next_cursor()`, and `cleanup()`. The adapter retains nothing and the outcome
+carries no contribution. This is a third seam *shape*, not a third instance of
+the projected-open shape. Emitting the row from
+`PreparedProviderSessionCatalogueEvidence` would publish the census `observed`
+half from prepared success, which Contract 061's absent-mutation-authority
+point rejects.
+
+### Rubric Result
+
+Items 1, 4, 5, and 6 pass: 89 distinct tuples with no exception list, four
+provider-free ledgers, two packages against a four-package maximum, and one
+reviewable tranche. Items 2 and 3 fail — no active-observation facade exists
+for the three `kimi-code.acp` post-open rows, and each family needs an
+additive adapter-owned public surface. F cannot be narrowed around the
+blocker; the fixed boundary requires the complete package remainder.
+
+### Withholding Correction Carried Forward
+
+`kimi-code.acp` carries two provider state policies by operation shape:
+`prepared_profile/plan.rs` sets `SessionProviderStatePolicy::Prohibited` on
+the interactive-session plan while
+`prepared_profile/provider_session_catalogue.rs` sets
+`DurableProviderSessionPreserved` on the `ProviderSessionCatalogue` and
+`ProviderSessionImport` requirements. Card 032's route-scoped persistence
+withholding must become operation-shape-scoped here, so the `session-lifecycle`
+`feature.persistent-session-posture` row belongs to the durable family.
+`feature.model-catalogue` is withheld on `kimi-code.acp` and
+`kimi-code.headless`, which carry no `DriverRole::ModelCatalog`;
+`kimi-code.local-server` and `kimi-platform.chat` do carry it, so their
+catalogue rows stay a maximal-ledger determination for the implementation
+card.
+
+### Next Planning Move
+
+One Batch 9.1-class public-baseline gate scoped to `kimi-code.acp` alone, not
+an implementation card. Card 033 names it and does not compile it. Its
+operator decisions are:
+
+1. adapter-local retention of exact provider-effective and exact rejected
+   reasoning and Plan values, or a `swallowtail-runtime` decision on
+   `EffectiveReasoningSetup`'s missing rejected state;
+2. the exact bounded reasoning value domain publishable under
+   `DeclaredEffort`'s open catalogue, and what a foreign confirmation does;
+3. whether exact provider-effective effort replaces the requested-`"on"`
+   normalization on a projected path while the preserved `open_session` keeps
+   its behavior and failure codes;
+4. whether one additive `KimiPreparedSession::open_session_with_projection`
+   seam is the whole interactive surface, leaving `open_session`,
+   `load_session`, and `resume_session` unchanged; and
+5. whether post-open `control.provider-session-catalogue` gets a second
+   additive adapter-owned seam over
+   `KimiPreparedSessionCatalogue::list_sessions`, or stays withheld as
+   unobserved.
+
+Decisions 2, 3, and 5 have no precedent in the Claude Agent or Cline gates.
+Neither gate grants Kimi authority.
+
+Candidates B, C, E, and I-L keep no card number or execution authority. The
+per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 033.
+Batch 9.5 remains uncompiled.
+
 ## Lifecycle-Priority Sequence
 
 The four-track reframe keeps lifecycle value ahead of row count. After card
 031 completion, reassess the remaining candidates in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   D is complete through card 031, G is the sole ready tranche as card 032,
-   and F still fails rubric item 2 across three Kimi post-open families.
+   D is complete through card 031, G is complete through card 032, and F
+   still fails rubric items 2 and 3 on three `kimi-code.acp` post-open rows.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

@@ -12,6 +12,7 @@
 mod access;
 mod activity;
 mod command;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod events;

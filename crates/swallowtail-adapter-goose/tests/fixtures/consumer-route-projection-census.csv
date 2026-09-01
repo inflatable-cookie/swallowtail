@@ -1,0 +1,10 @@
+route_id,operation_shape,semantic_id
+goose.acp,model-catalogue,feature.model-catalogue
+goose.acp,interactive-session,feature.interactive-session
+goose.acp,route-observation,feature.streaming-events
+goose.acp,route-capability,feature.cancellation-or-interruption
+goose.acp,route-capability,feature.working-resource
+goose.acp,session-lifecycle,feature.persistent-session-posture
+goose.acp,route-capability,feature.prepared-facade
+goose.acp,route-observation,feature.activity-observation
+goose.acp,route-selection,audit.no-public-route-specific-selectable-control

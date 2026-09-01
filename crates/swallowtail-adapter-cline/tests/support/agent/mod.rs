@@ -39,6 +39,12 @@ pub enum Scenario {
     PlanConfirmationMalformed,
     PlanDrift,
     PlanDisconnect,
+    ModelExact,
+    ModelMalformed,
+    ModelDuplicate,
+    ModelUnadvertised,
+    ModelUnbounded,
+    ModelExactPlanDrift,
 }
 
 #[derive(Clone, Debug)]

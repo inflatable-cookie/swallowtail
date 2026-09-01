@@ -17,6 +17,7 @@ struct ClineSessionHandle {
     services: HostServices,
     resource: Option<ResourceLease>,
     active: ActiveSlot,
+    negotiated_model_options: Option<swallowtail_runtime::NegotiatedSessionModelOptions>,
 }
 
 impl InteractiveSessionHandle for ClineSessionHandle {
@@ -33,7 +34,7 @@ impl InteractiveSessionHandle for ClineSessionHandle {
         None
     }
     fn negotiated_model_options(&self) -> Option<&swallowtail_runtime::NegotiatedSessionModelOptions> {
-        None
+        self.negotiated_model_options.as_ref()
     }
 
     fn start_turn<'a>(

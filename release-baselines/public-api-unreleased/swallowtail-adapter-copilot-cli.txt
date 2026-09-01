@@ -29,6 +29,8 @@ impl swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration
 pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::prepare_session(&self, swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput) -> core::result::Result<swallowtail_adapter_copilot_cli::CopilotCliPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
 impl swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
 pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

@@ -1,4 +1,5 @@
 use super::ClinePreparedIntegration;
+use crate::driver::{ClineOpenObservation, ClineOpenRejection};
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
@@ -8,11 +9,15 @@ use swallowtail_core::{
     SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparationStage, PreparedOperationEvidence,
-    PreparedWorkingStateRestoration, RequestId, RuntimeFailure, RuntimeTurnId, SessionAccessPolicy,
-    SessionOptions, WorkingResourceRef,
+    BoxFuture, HostServices, InteractiveSessionHandle, OpenSessionRequest, PreparationFailure,
+    PreparationStage, PreparedOperationEvidence, PreparedWorkingStateRestoration, RequestId,
+    RuntimeFailure, RuntimeTurnId, SessionAccessPolicy, SessionOptions, WorkingResourceRef,
 };
+
+pub(crate) type ClinePreparedOpenLifecycleFuture = BoxFuture<
+    'static,
+    Result<(Box<dyn InteractiveSessionHandle>, ClineOpenObservation), ClineOpenRejection>,
+>;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Working resource for one bounded Cline ACP session.
@@ -170,10 +175,23 @@ impl ClinePreparedSession {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        let lifecycle = self.open_lifecycle(services);
+        Box::pin(async move {
+            lifecycle
+                .await
+                .map(|(session, _)| session)
+                .map_err(ClineOpenRejection::into_failure)
+        })
+    }
+
+    pub(crate) fn open_lifecycle(
+        &self,
+        services: HostServices,
+    ) -> ClinePreparedOpenLifecycleFuture {
         let driver = crate::ClineAcpDriver::new(self.environment.clone());
         let plan = self.plan().clone();
         let request = self.request.clone();
-        Box::pin(async move { driver.open_session(plan, request, services).await })
+        Box::pin(async move { driver.open_session_lifecycle(plan, request, services).await })
     }
 
     #[must_use]

@@ -37,6 +37,10 @@ name = "corpus"
 path = "tests/corpus.rs"
 
 [[test]]
+name = "consumer_route_projection"
+path = "tests/consumer_route_projection.rs"
+
+[[test]]
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"
 required-features = ["live-probes"]

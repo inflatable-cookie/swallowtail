@@ -1,4 +1,13 @@
 pub mod swallowtail_adapter_cline
+pub enum swallowtail_adapter_cline::ClineProjectionOpenFailure
+pub swallowtail_adapter_cline::ClineProjectionOpenFailure::Rejected
+pub swallowtail_adapter_cline::ClineProjectionOpenFailure::Rejected::contribution: swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub swallowtail_adapter_cline::ClineProjectionOpenFailure::Rejected::failure: swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_adapter_cline::ClineProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_cline::ClineProjectionOpenFailure
+pub const fn swallowtail_adapter_cline::ClineProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_cline::ClineProjectionOpenFailure::into_parts(self) -> (swallowtail_runtime::failure::RuntimeFailure, core::option::Option<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>)
+pub const fn swallowtail_adapter_cline::ClineProjectionOpenFailure::rejected_contribution(&self) -> core::option::Option<&swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>
 pub struct swallowtail_adapter_cline::ClineAcpDriver
 impl swallowtail_adapter_cline::ClineAcpDriver
 pub const fn swallowtail_adapter_cline::ClineAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
@@ -38,6 +47,8 @@ impl swallowtail_adapter_cline::ClineHeadlessPreparedIntegration
 pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_cline::ClineHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_cline::ClineHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_cline::ClineHeadlessPreparedRun
 impl swallowtail_adapter_cline::ClineHeadlessPreparedRun
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_cline::ClineHeadlessPreparedRun
 pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_cline::ClineHeadlessDriver
@@ -70,12 +81,22 @@ impl swallowtail_adapter_cline::ClinePreparedIntegration
 pub fn swallowtail_adapter_cline::ClinePreparedIntegration::prepare_session(&self, swallowtail_adapter_cline::ClineSessionProfileInput) -> core::result::Result<swallowtail_adapter_cline::ClinePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_cline::ClinePreparedSession
 impl swallowtail_adapter_cline::ClinePreparedSession
+pub fn swallowtail_adapter_cline::ClinePreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_cline::ClinePreparedSession
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
 pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_cline::ClinePreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+impl swallowtail_adapter_cline::ClinePreparedSession
+pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_cline::ClineProjectionOpenFuture
+pub struct swallowtail_adapter_cline::ClineProjectionOpenOutcome
+impl swallowtail_adapter_cline::ClineProjectionOpenOutcome
+pub const fn swallowtail_adapter_cline::ClineProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_cline::ClineProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_cline::ClineProjectionOpenOutcome::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>
+pub fn swallowtail_adapter_cline::ClineProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::InteractiveSessionHandle
 pub struct swallowtail_adapter_cline::ClineSessionProfileInput
 impl swallowtail_adapter_cline::ClineSessionProfileInput
 pub const fn swallowtail_adapter_cline::ClineSessionProfileInput::harness_mode(&self) -> core::option::Option<swallowtail_core::harness_mode::HarnessMode>
@@ -93,3 +114,4 @@ pub fn swallowtail_adapter_cline::cline_local_account_access_profile(swallowtail
 pub fn swallowtail_adapter_cline::cline_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub async fn swallowtail_adapter_cline::prepare_cline_acp(swallowtail_adapter_cline::ClinePreparationInput, swallowtail_adapter_cline::ClinePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_cline::ClinePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub async fn swallowtail_adapter_cline::prepare_cline_headless(swallowtail_adapter_cline::ClineHeadlessPreparationInput, swallowtail_adapter_cline::ClineHeadlessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_cline::ClineHeadlessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_cline::ClineProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_cline::ClineProjectionOpenOutcome, swallowtail_adapter_cline::ClineProjectionOpenFailure>>

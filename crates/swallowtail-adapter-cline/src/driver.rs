@@ -118,49 +118,10 @@ impl InteractiveSessionDriver for ClineAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            let selected = self.validate_plan(&plan)?;
-            services.require_execution_host(plan.execution_host_id())?;
-            validate_open(&plan, &request, &services)?;
-            let scope = ScopeId::new(format!(
-                "cline-acp:session:{}",
-                request.request_id().as_str()
-            ))
-            .map_err(|_| malformed())?;
-            let resource_service = services
-                .working_resource()
-                .cloned()
-                .expect("validated working-resource service");
-            let resource_access = session_resource_access(&plan)?;
-            let resource = resource_service
-                .resolve(
-                    scope.clone(),
-                    request
-                        .working_resource()
-                        .expect("validated resource")
-                        .clone(),
-                    resource_access,
-                    ResourceRepresentation::Filesystem,
-                )
-                .await?;
-            if let Err(error) = validate_session_resource_lease(
-                request.access_policy(),
-                request.working_resource().expect("validated resource"),
-                &resource,
-            ) {
-                let _ = resource_service.release(resource).await;
-                return Err(error);
-            }
-            let result = self
-                .start_session(&plan, &request, &services, scope, resource, selected)
-                .await;
-            match result {
-                Ok(session) => Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>),
-                Err(pair) => {
-                    let (error, resource) = *pair;
-                    let _ = resource_service.release(resource).await;
-                    Err(error)
-                }
-            }
+            self.open_session_lifecycle(plan, request, services)
+                .await
+                .map(|(session, _)| session)
+                .map_err(ClineOpenRejection::into_failure)
         })
     }
 
@@ -183,7 +144,8 @@ impl ClineAcpDriver {
         scope: ScopeId,
         resource: ResourceLease,
         selected: crate::selection::ClinePlanSelection,
-    ) -> Result<ClineSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
+    ) -> Result<(ClineSessionHandle, ClineOpenObservation), Box<(ClineOpenRejection, ResourceLease)>>
+    {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -207,7 +169,7 @@ impl ClineAcpDriver {
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
                 Ok(process) => Arc::from(process),
-                Err(error) => return Err(Box::new((error, resource))),
+                Err(error) => return Err(Box::new((error.into(), resource))),
             };
         let connection = AcpConnection::new(Arc::clone(&process), services.clone());
         let pump_connection = Arc::clone(&connection);
@@ -219,7 +181,7 @@ impl ClineAcpDriver {
             Err(error) => {
                 let _ = process.force_stop().await;
                 let _ = process.wait().await;
-                return Err(Box::new((error, resource)));
+                return Err(Box::new((error.into(), resource)));
             }
         };
         let opened = async {
@@ -229,9 +191,10 @@ impl ClineAcpDriver {
                 .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
                 .await?;
             let provider_id = parse_new_session(&response)?;
+            let model = observe_model_options(&response);
             let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             connection.set_session_id(provider_id.clone())?;
-            if requested_plan_mode(request.options()) {
+            let plan_acknowledgement = if requested_plan_mode(request.options()) {
                 prepare_plan_mode(&response)?;
                 let confirmation = connection
                     .request(
@@ -243,12 +206,14 @@ impl ClineAcpDriver {
                         }),
                     )
                     .await?;
-                confirm_plan_mode(&confirmation)?;
-            }
-            Ok((provider_id, provider_ref))
+                confirm_plan_mode(&confirmation)?
+            } else {
+                ClinePlanAcknowledgement::NotRequested
+            };
+            Ok((provider_id, provider_ref, plan_acknowledgement, model))
         }
         .await;
-        let (provider_id, provider_ref) = match opened {
+        let (provider_id, provider_ref, plan_acknowledgement, model) = match opened {
             Ok(opened) => opened,
             Err(error) => {
                 connection.begin_close().await;
@@ -258,9 +223,10 @@ impl ClineAcpDriver {
         };
         let runtime_id =
             RuntimeSessionId::new(format!("cline-acp:{}", request.request_id().as_str()))
-                .map_err(|_| Box::new((malformed(), resource.clone())))?;
+                .map_err(|_| Box::new((ClineOpenRejection::from(malformed()), resource.clone())))?;
         let active = Arc::new(Mutex::new(None));
-        Ok(ClineSessionHandle {
+        let negotiated_model_options = model.exact().cloned();
+        let session = ClineSessionHandle {
             request_id: request.request_id().clone(),
             runtime_id,
             provider_ref,
@@ -272,10 +238,20 @@ impl ClineAcpDriver {
             services: services.clone(),
             resource: Some(resource),
             active,
-        })
+            negotiated_model_options,
+        };
+        Ok((
+            session,
+            ClineOpenObservation {
+                plan_acknowledgement,
+                model,
+            },
+        ))
     }
 }
 
+include!("driver/open.rs");
+include!("driver/model.rs");
 include!("driver/mode.rs");
 include!("driver/validation.rs");
 include!("driver/cancellation.rs");

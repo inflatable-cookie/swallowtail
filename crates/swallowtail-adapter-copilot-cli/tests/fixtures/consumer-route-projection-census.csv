@@ -1,0 +1,10 @@
+route_id,operation_shape,semantic_id
+copilot-cli.acp,model-catalogue,feature.model-catalogue
+copilot-cli.acp,interactive-session,feature.interactive-session
+copilot-cli.acp,route-observation,feature.streaming-events
+copilot-cli.acp,route-capability,feature.cancellation-or-interruption
+copilot-cli.acp,route-capability,feature.working-resource
+copilot-cli.acp,session-lifecycle,feature.persistent-session-posture
+copilot-cli.acp,route-capability,feature.prepared-facade
+copilot-cli.acp,route-observation,feature.activity-observation
+copilot-cli.acp,route-selection,audit.no-public-route-specific-selectable-control

@@ -37,12 +37,16 @@ impl swallowtail_adapter_command_code::CommandCodePreparedIntegration
 pub fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::prepare_session(&self, swallowtail_adapter_command_code::CommandCodeSessionProfileInput) -> core::result::Result<swallowtail_adapter_command_code::CommandCodePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_command_code::CommandCodePreparedRun
 impl swallowtail_adapter_command_code::CommandCodePreparedRun
+pub fn swallowtail_adapter_command_code::CommandCodePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_command_code::CommandCodePreparedRun
 pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_command_code::CommandCodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_command_code::CommandCodeHeadlessDriver
 pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_command_code::CommandCodePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_command_code::CommandCodePreparedSession
+impl swallowtail_adapter_command_code::CommandCodePreparedSession
+pub fn swallowtail_adapter_command_code::CommandCodePreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_command_code::CommandCodePreparedSession
 pub const fn swallowtail_adapter_command_code::CommandCodePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_command_code::CommandCodePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>

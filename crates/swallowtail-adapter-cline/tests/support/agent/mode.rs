@@ -158,7 +158,13 @@ fn plan_set_response(scenario: Scenario) -> Option<PlanSetResponse> {
         | Scenario::Permission
         | Scenario::Cancellation
         | Scenario::Disconnect
-        | Scenario::Oversized => Some(PlanSetResponse::Confirm),
+        | Scenario::Oversized
+        | Scenario::ModelExact
+        | Scenario::ModelMalformed
+        | Scenario::ModelDuplicate
+        | Scenario::ModelUnadvertised
+        | Scenario::ModelUnbounded => Some(PlanSetResponse::Confirm),
+        Scenario::ModelExactPlanDrift => Some(PlanSetResponse::Drift),
         _ => None,
     }
 }
@@ -223,8 +229,69 @@ fn session_new_result(scenario: Scenario) -> Value {
             result["configOptions"] = json!([mode_option("plan")]);
             result
         }
+        Scenario::ModelExact | Scenario::ModelExactPlanDrift => {
+            result["configOptions"] = json!([
+                mode_option("act"),
+                model_option(
+                    "fixture-model",
+                    [
+                        ("fixture-model", Some("Fixture Model")),
+                        ("other-model", None),
+                    ]
+                )
+            ]);
+            result
+        }
+        Scenario::ModelMalformed => {
+            let mut model = model_option("fixture-model", [("fixture-model", None)]);
+            model["category"] = Value::String("other".to_owned());
+            result["configOptions"] = json!([mode_option("act"), model]);
+            result
+        }
+        Scenario::ModelDuplicate => {
+            result["configOptions"] = json!([
+                mode_option("act"),
+                model_option("fixture-model", [("fixture-model", None)]),
+                model_option("fixture-model", [("fixture-model", None)])
+            ]);
+            result
+        }
+        Scenario::ModelUnadvertised => {
+            result["configOptions"] = json!([
+                mode_option("act"),
+                model_option("missing-model", [("fixture-model", None)])
+            ]);
+            result
+        }
+        Scenario::ModelUnbounded => {
+            let long = "x".repeat(257);
+            result["configOptions"] = json!([
+                mode_option("act"),
+                model_option(&long, [(long.as_str(), None)])
+            ]);
+            result
+        }
         _ => result,
     }
+}
+
+fn model_option<'a>(
+    current: &str,
+    rows: impl IntoIterator<Item = (&'a str, Option<&'a str>)>,
+) -> Value {
+    json!({
+        "id": "model",
+        "name": "Model",
+        "category": "model",
+        "type": "select",
+        "currentValue": current,
+        "options": rows.into_iter().map(|(value, name)| {
+            match name {
+                Some(name) => json!({"value": value, "name": name}),
+                None => json!({"value": value}),
+            }
+        }).collect::<Vec<_>>()
+    })
 }
 
 fn mode_option(current: &str) -> Value {

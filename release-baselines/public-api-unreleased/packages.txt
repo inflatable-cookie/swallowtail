@@ -2,10 +2,13 @@ swallowtail-adapter-anthropic
 swallowtail-adapter-claude-agent
 swallowtail-adapter-cline
 swallowtail-adapter-codex
+swallowtail-adapter-command-code
+swallowtail-adapter-copilot-cli
 swallowtail-adapter-cursor
 swallowtail-adapter-deepagents
 swallowtail-adapter-deepseek
 swallowtail-adapter-gemini
+swallowtail-adapter-goose
 swallowtail-adapter-kimi-platform
 swallowtail-adapter-kiro
 swallowtail-adapter-llama-cpp

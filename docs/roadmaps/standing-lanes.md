@@ -52,6 +52,12 @@ permitted `UnverifiedNewer`. Watcher stays exact `2.1.251` and is not
 live-ready. No provider prompt, live session, login, install, or host update
 was required.
 
+Research 267 revalidated all 40 families after Claude Code `2.1.252`. Pi
+`0.84.4` is the sole next-family candidate. Host `0.83.0` already sits on a
+qualified bound. This checkpoint changes no claim. One-family qualification
+waits for a later Upgrade Workflow PR and must not infer the family from
+registry `latest` alone.
+
 ### Previous Completed Family
 
 Codex exec and app-server `0.152.0` are compatible extensions of their existing

@@ -16,6 +16,8 @@
 
 ## Completed
 
+- [045-claude-agent-acp-0-73-0-claim.md](./045-claude-agent-acp-0-73-0-claim.md) — complete; Claude Agent ACP qualified through official `0.73.0`; unpublished `0.58.0` stays a gap; unpublished `0.74.0` stays UnverifiedNewer
+- [044-claude-agent-acp-0-73-0-identity.md](./044-claude-agent-acp-0-73-0-identity.md) — complete; Research 272 operator restart; current host/official `0.73.0` identity frozen before claim
 - [043-kimi-code-acp-qualified-only-cap.md](./043-kimi-code-acp-qualified-only-cap.md) — complete; operator A2; ACP `QualifiedOnly` at `0.38.0` with one artifact-level reopen trigger; exact `0.39.0` and `0.39.1` stay excluded
 - [042-kimi-code-0-39-1-claim.md](./042-kimi-code-0-39-1-claim.md) — complete; ACP stops at exact `0.28.1` plus `0.29.0..=0.38.0` with exact `0.39.0` and `0.39.1` excluded; headless v1 corrected to `0.29.0..=0.32.0`; headless v2 corrected and qualified `0.33.0..=0.39.1`; `kimi-code.local-server` unchanged
 - [041-kimi-code-0-39-1-identity.md](./041-kimi-code-0-39-1-identity.md) — complete; Research 270 and cross-corpus oracles frozen before claim

@@ -15,14 +15,15 @@ shape.
 
 ## Next Task
 
-Implement Claude Agent ACP useful-newer qualification for official `0.72.0`.
-Host already sits on qualified `0.63.0`. Do not leave official `0.72.0`
-UnverifiedNewer without a named incompatible reason. Do not start a second
-family from this PR. Do not reopen `kimi-code.acp`. Do not bulk-bump from
-registry `latest`, do not lift Gemini's deferral, and do not keep g05 open
-for currentness. The g05.009 provider-operation observation decision remains
-queued; card 034 stays planned, not ready, and candidate F remains unpromoted
-at 249 proved / 518 remaining rows.
+Implement Claude Code useful-newer qualification for official `2.1.257`.
+Host already sits on qualified `2.1.251`. Do not leave official `2.1.257`
+UnverifiedNewer without a named incompatible reason. Watcher stays exact
+`2.1.251`. Do not start a second family from this PR. Do not reopen
+`kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
+Gemini's deferral, and do not keep g05 open for currentness. The g05.009
+provider-operation observation decision remains queued; card 034 stays
+planned, not ready, and candidate F remains unpromoted at 249 proved / 518
+remaining rows.
 
 ## Standing Lanes
 

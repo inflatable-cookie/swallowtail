@@ -144,10 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has seventeen roadmaps: 12 completed milestones, honest evidence stops at 002,
+g05 has 18 roadmaps: 13 completed milestones, honest evidence stops at 002,
 003, 007, and 011. Milestone 009 is planned and
 strict-paused on its operator decision. Milestones
-004, 005, 012, 013, 014, 015, and 016 are completed standing currentness. Milestone 017 is
+004, 005, 012, 013, 014, 015, 016, and 018 are completed standing currentness. Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
@@ -313,7 +313,9 @@ evidence, and left local-server `AllowUnverified`. Every point above `0.38.0`
 fails closed. The trigger authorizes a fresh identity/claim decision, never
 automatic admission and never restoration of `AllowUnverified` by itself.
 Research 271 selected Claude Agent ACP `0.72.0` as the next one-family
-Upgrade Workflow. The checkpoint changes no claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+Upgrade Workflow. The checkpoint changes no claim. Operator restart after
+official latest moved to `0.73.0`. Research 272 and g05.018 cards 044-045
+then qualify official `0.73.0` as a compatible extension of v7. Coverage stays 249/518. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.
@@ -332,7 +334,8 @@ Define the next g05 state through the pointer named by the
 [roadmaps front door](README.md#next-task). One milestone is `strict-paused`
 on a queued operator decision. g05.009 keeps its `planned` bucket and waits on
 the shared provider-operation observation public-baseline decision; card 034
-stays planned and not ready, and coverage stays 249/518. g05.017 is complete:
+stays planned and not ready, and coverage stays 249/518. g05.018 is complete:
+Claude Agent ACP qualifies official `0.73.0`. g05.017 remains complete:
 the operator selected A2 and card 043 capped `kimi-code.acp` at `QualifiedOnly`.
 This index records generation status; the
 canonical actionable pointer stays in the front door.

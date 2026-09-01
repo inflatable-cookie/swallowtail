@@ -41,7 +41,7 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
     for host_name in ["fixture.run.local", "fixture.run.remote-authoritative"] {
         for version in [
             "0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0",
-            "0.70.0",
+            "0.70.0", "0.71.0", "0.72.0", "0.73.0",
         ] {
             let host_id = ExecutionHostId::new(host_name).expect("host id");
             let selected = run_selection(host_id.clone(), version);

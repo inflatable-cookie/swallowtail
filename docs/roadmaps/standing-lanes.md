@@ -26,8 +26,15 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Kimi Code installed harness `0.39.1` (g05.016, cards
-041-042) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
+Last one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
+Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
+`0.72.0`, and `0.73.0` are qualified. Unpublished `0.58.0` stays
+incompatible. Unpublished `0.74.0` stays permitted `UnverifiedNewer`. Host
+`0.63.0` stays observation-only Qualified Deprecated. Claude Code and the
+watcher stay untouched. `AllowUnverified` remains.
+
+Previous one-family claim: Kimi Code installed harness `0.39.1` (g05.016,
+cards 041-042) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
 `0.29.0..=0.32.0` and headless v2 is `0.33.0..=0.39.1`, above which unpublished
 `0.39.2` stays permitted `UnverifiedNewer`. ACP is `QualifiedOnly` at exact
 `0.28.1` plus `0.29.0..=0.38.0` with exact `0.39.0` and `0.39.1` excluded as
@@ -40,12 +47,10 @@ AllowUnverified by itself.
 `kimi-code.local-server` stays exact `0.28.1` plus `0.29.0..=0.38.0` and
 remains `AllowUnverified`.
 
-Previous one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
+Earlier one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
 Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
-`0.84.2`.
-
-Earlier one-family claim: Claude Code headless and response-only `2.1.252`
-(g05.014, cards 037-038). Unpublished `2.1.244` and `2.1.249` stay
+`0.84.2`. Claude Code headless and response-only `2.1.252` (g05.014, cards
+037-038) remain qualified. Unpublished `2.1.244` and `2.1.249` stay
 incompatible. Watcher stays exact `2.1.251` behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
 Codex exec and app-server `0.152.0` (g05.013, cards 035-036) remain qualified.
@@ -59,6 +64,36 @@ corrected that revision's baseline to `0.33.0` and extended it to
 recorded.
 
 ### Latest Completed Family
+
+Claude Agent ACP `0.73.0` is a compatible extension of
+`claude-agent.acp.initialize-meta-extensions-v7`. Operator restart after
+official latest moved during the unmerged `0.72.0` family. Research 272 and
+g05.018 cards 044-045 freeze identity before the claim. Host `0.63.0`
+matches the frozen `0.70.0` host digest and was not installed, updated,
+replaced, or executed beyond `--version`. Official npm and GitHub stable at
+identity was `0.73.0` published 2026-09-01T20:27:53.428Z; published stables
+above the previous `0.70.0` ceiling are exactly `0.71.0`, `0.72.0`, and
+`0.73.0`. Mapped `dist/index.js`, `dist/elicitation.js`, `dist/lib.js`,
+`dist/settings.js`, and `dist/utils.js` are byte-identical to `0.70.0`.
+Complete dist inventory `0.70.0` (33 files) → `0.71.0` (96) → `0.72.0`
+(96) → `0.73.0` (96, only `package.json` changed) is frozen; every
+`dist/**` file is byte-identical `0.72.0` to `0.73.0`. Remaining named
+files stay unmapped with reason. `#1004` keeps mapped mode ids/categories
+and `plan`/`acceptEdits`; `#1045` leaves steering unmapped and the
+permission callback observable contract unchanged. `0.72.0` effort, result
+attribution, PostModelSwitch, and PreModelSwitch stay classified;
+Swallowtail still fails closed on explicit `set_config_option` + confirm.
+The `0.73.0` Agent SDK pin `0.3.252`→`0.3.257` is unmapped. Five new
+emitted update kinds stay unmapped. Unpublished `0.58.0` stays
+incompatible; unpublished `0.74.0` remains permitted `UnverifiedNewer`.
+Claude Code and the watcher stay untouched. No provider prompt, live ACP
+initialize, login, install, host update, or execution of downloaded
+official binaries was required.
+
+Research 271 selected this family alone after the Kimi A2 cap when latest
+was `0.72.0` and changed no claim.
+
+### Previous Completed Family
 
 Kimi Code installed harness `0.39.1` produced a split outcome, and a
 same-family claim correction. Research 270 and g05.016 cards 041-042 freeze
@@ -105,12 +140,10 @@ not adopt a growing exclusion set as a substitute for the posture.
 
 Research 271 revalidated all 40 families after the Kimi A2 cap. Headless
 `0.39.1` is on-ceiling. `kimi-code.acp` stays `QualifiedOnly` at `0.38.0` and
-is not reopened. Claude Agent ACP `0.72.0` is the sole next-family candidate.
-Host `0.63.0` already sits on a qualified bound. This checkpoint changes no
-claim. One-family qualification waits for a later Upgrade Workflow PR and
-must not infer the family from registry `latest` alone.
+is not reopened. Claude Agent ACP `0.72.0` was the sole next-family
+candidate. Operator restart compiled official `0.73.0` in g05.018.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Pi RPC `0.84.4` is a compatible extension of
 `pi.rpc.strict-lf-v0.84.0-message-update-delta`. Research 268 and g05.015
@@ -126,8 +159,6 @@ downloaded official binaries was required.
 Research 269 revalidated all 40 families after Pi RPC `0.84.4` and selected
 Kimi Code installed harness `0.39.1` as the sole next-family candidate. That
 checkpoint changed no claim; g05.016 then compiled the qualification.
-
-### Earlier Completed Family
 
 Claude Code `2.1.252` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 266 and g05.014 cards 037-038 freeze

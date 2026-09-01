@@ -298,7 +298,9 @@ app-server through official `0.152.0`. Research 265 selected Claude Code
 `2.1.252` while keeping watcher exact `2.1.251`. Research 267 selected Pi
 `0.84.4` as the next one-family Upgrade Workflow. The checkpoint changes no
 claim. g05.015 cards 039-040 qualify Pi RPC through official `0.84.4` while
-keeping sidecar exact `0.84.2`. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+keeping sidecar exact `0.84.2`. Research 269 selected Kimi Code installed
+harness `0.39.1` as the next one-family Upgrade Workflow. The checkpoint
+changes no claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

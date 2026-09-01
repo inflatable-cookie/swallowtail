@@ -15,11 +15,12 @@ shape.
 
 ## Next Task
 
-Reassess remaining AllowUnverified currentness families after official Pi
-`0.84.4`. Do not start a second family from this PR. The g05.009
-provider-operation observation decision remains queued; card 034 stays planned,
-not ready, and candidate F remains unpromoted at 249 proved / 518 remaining
-rows.
+Implement Kimi Code installed-harness useful-newer qualification for official
+`0.39.1`. Host already sits on qualified `0.34.0`. Do not leave official
+`0.39.1` UnverifiedNewer without a named incompatible reason. Do not start a
+second family from this PR. The g05.009 provider-operation observation
+decision remains queued; card 034 stays planned, not ready, and candidate F
+remains unpromoted at 249 proved / 518 remaining rows.
 
 ## Standing Lanes
 

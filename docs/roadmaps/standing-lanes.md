@@ -54,6 +54,13 @@ permitted `UnverifiedNewer`. `pi.sdk-sidecar` stays exact `0.84.2`. No
 provider prompt, live session, login, install, host update, or execution of
 downloaded official binaries was required.
 
+Research 269 revalidated all 40 families after Pi RPC `0.84.4`. Pi is now
+unchanged/on-ceiling. Kimi Code installed harness `0.39.1` is the sole
+next-family candidate. Host `0.34.0` already sits on a qualified bound. This
+checkpoint changes no claim. One-family qualification waits for a later
+Upgrade Workflow PR and must not infer the family from registry `latest`
+alone.
+
 ### Previous Completed Family
 
 Claude Code `2.1.252` is a compatible extension of the separate headless and

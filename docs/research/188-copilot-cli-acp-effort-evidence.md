@@ -3,7 +3,7 @@
 Status: promoted
 Owner: Tom
 Created: 2026-08-22
-Updated: 2026-08-22
+Updated: 2026-09-01
 Card: g04.040 / 110
 
 ## Question
@@ -46,7 +46,12 @@ Wrapper integrity matches Research 149:
 `@github/copilot-darwin-arm64@1.0.80` integrity remains
 `sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==`.
 
-HTML digests identify the retrieved documentation bodies. They are not a
+The documentation SHA-256 values above identify the retrieved 2026-08-22 HTML
+page bodies. Those bodies are Next.js SPA shells; they do not identify
+converted documentation text. Research 218 supersedes this retrieval method:
+binding corpus digests are `.md` exports, with HTML as corroboration only. The
+table above remains historical truth and is not rewritten. Package and
+extracted-artifact digests are unaffected. HTML digests are not a
 compatibility guarantee. The tagged changelog is not the ACP implementation
 source.
 

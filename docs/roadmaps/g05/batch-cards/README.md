@@ -7,11 +7,11 @@
 
 ## Ready
 
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — ready; exact candidate F 25/20/31/13-row Kimi and Kimi Platform tranche behind the accepted active-observation gate
+- None.
 
 ## Blocked
 
-- None.
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — blocked; candidate F's re-derived 25/20/31/13-row evidence retained behind two open operator decisions; not authorized for implementation
 
 ## Completed
 

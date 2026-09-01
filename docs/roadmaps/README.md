@@ -15,25 +15,34 @@ shape.
 
 ## Next Task
 
-Implement
-[Card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md) under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md). It is the
-sole ready card. The operator accepted the narrow `kimi-code.acp`
-[active-observation public baseline](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md):
-`EffectiveReasoningSetup` is unchanged, exact reasoning and Plan values stay
-adapter-local behind one bounded 128-byte Kimi provider value, one additive
-`KimiPreparedSession::open_session_with_projection` covers the interactive
-surface, one separate seam projects
-`KimiPreparedSessionCatalogue::list_sessions`, and prepared and active source
-IDs stay distinct.
+Answer two `kimi-code.acp` operator decisions under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md). No card is
+ready. The
+[Kimi gate](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+stopped: four of the operator's five answers are realizable route-locally, but
+the fifth is not.
 
-Card 034 owns candidate F's complete 89-row remainder across both Kimi
-packages: 25 `kimi-code.acp`, 20 `kimi-code.headless`, 31
-`kimi-code.local-server`, and 13 `kimi-platform.chat`. Its four independent
-ledgers expect 22/3, 10/10, 31/0, and 12/1 emitted/withheld — 75 emitted and 14
-withheld. Only the two Kimi adapter semantic API baselines may change.
+1. **Provider-operation observation baseline.**
+   `KimiPreparedSessionCatalogue::list_sessions` opens no session, yet
+   publishing `control.provider-session-catalogue` needs
+   `ActiveSessionObservation`, `PostOpenObservationOnly`, and
+   `ConsumerRouteActiveSessionState` — all three defined in
+   `swallowtail-runtime` as post-open *session* semantics. Either broaden that
+   shared vocabulary, which is a runtime public decision with cross-route reach
+   that touches Contract 061, or leave the row withheld as unrepresentable and
+   accept one permanently unproved census row.
+2. **Compound acknowledgement representation.** Fix a shape for
+   `feature.active-session-reasoning-and-plan-ack` that preserves each half's
+   state generically, without adapter downcasts and without inventing pending
+   state, and that honestly represents a Plan half requested but never
+   dispatched because reasoning rejected first.
 
-Do not count the 89 rows as proved before card 034 merges. Do not promote
+Decision 1 gates candidate F as a whole; decision 2 gates any implementation
+card. [Card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md)
+is `blocked` and retains the re-derived 89-row evidence: 74 emitted, 14
+withheld, 1 undecided pending decision 1.
+
+Coverage stays at 249 proved and 518 remaining. Do not implement Kimi, promote
 another candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes

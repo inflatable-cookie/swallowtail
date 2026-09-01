@@ -256,13 +256,16 @@ rejected or effective effort survives, the already-retained negotiated model
 options have no publishing seam, and the provider-session catalogue observes
 through a separate prepared operation. One `kimi-code.acp`-only gate with five
 operator decisions is named and not compiled. The operator then answered all
-five, and the compiled Kimi active-observation gate keeps
+five, and the compiled Kimi active-observation gate stopped. It keeps
 `EffectiveReasoningSetup` unchanged, retains exact reasoning and Plan values
 adapter-locally behind one bounded 128-byte Kimi provider value, adds one
-projected-open and one projected-catalogue seam, and re-derives F's four route
-ledgers as 22/3, 10/10, 31/0, and 12/1 emitted/withheld — 75 emitted and 14
-withheld across 89 rows. Candidate F is ready as card 034 and g05.009 is
-`strict-ready`.
+projected-open seam, and re-derives F's four route ledgers as 74 emitted, 14
+withheld, and 1 undecided across 89 rows. It cannot add the projected catalogue
+seam: `list_sessions` opens no session, while `ActiveSessionObservation`,
+`PostOpenObservationOnly`, and `ConsumerRouteActiveSessionState` are each
+post-open session semantics. The compound acknowledgement row is a second
+unresolved item. Candidate F is not promoted, card 034 is `blocked`, and
+g05.009 is `strict-paused`.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
@@ -299,7 +302,8 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Define the next g05 state through the pointer named by the
-[roadmaps front door](README.md#next-task). g05.009 is `strict-ready`; card 034
-is the sole ready card and the sole Next Task after the accepted
-`kimi-code.acp` active-observation public baseline. This index records
-generation status; the canonical actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). g05.009 is `strict-paused`; no card
+is ready, and the sole Next Task is two `kimi-code.acp` operator decisions —
+the provider-operation observation baseline and the compound acknowledgement
+representation. This index records generation status; the canonical actionable
+pointer stays in the front door.

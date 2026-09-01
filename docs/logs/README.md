@@ -25,7 +25,7 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-09-01 g05.009 Kimi Active-Observation Gate Compiled](./2026-09-01-g05-009-kimi-active-observation-gate-compiled.md) — five `kimi-code.acp` decisions answered; one projected-open and one projected-catalogue seam fixed; candidate F ready as card 034 with 75 emitted and 14 withheld rows
+- [2026-09-01 g05.009 Kimi Active-Observation Gate Stop](./2026-09-01-g05-009-kimi-active-observation-gate-stop.md) — four of five `kimi-code.acp` answers realizable; provider-session catalogue observation has no shared runtime source, lifecycle, or view; gate stopped, card 034 blocked, coverage stays 249/518
 - [2026-09-01 g05.009 Card 033 Closeout And Kimi Reassessment](./2026-09-01-g05-009-card-033-closeout-and-kimi-reassessment.md) — card 032 bound to `e50e3f46`/`18a6907e`; coverage reconciled to 249/518; candidate F stopped on three `kimi-code.acp` post-open rows and one named gate
 - [2026-09-01 Papercuts live-probe temporary-workspace cleanup closeout](./2026-09-01-papercuts-live-probe-workspace-cleanup-closeout.md) — card 019 Drop owner and panic proof already load-bearing; stale PAPERCUTS entry closed
 - [2026-09-01 Papercuts Effigy graph-explore timeout ownership stop](./2026-09-01-papercuts-effigy-graph-explore-timeout-stop.md) — Swallowtail cannot emit rebuild progress or own the graph timeout envelope; papercut left open for Effigy

@@ -1,15 +1,16 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
-card 034 ready for candidate F
+strict-paused behind two `kimi-code.acp` operator decisions
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-01
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-ready`; card 034 is the sole ready implementation card
-after the accepted `kimi-code.acp` active-observation public baseline
+Planning state: `strict-paused`; no implementation card is ready until the
+operator settles the provider-operation observation baseline and the compound
+acknowledgement representation
 
 ## Problem
 
@@ -53,13 +54,15 @@ reassessed candidate F against current `main` and stopped: 86 of its 89 rows
 rest on proved prepared patterns, but three `kimi-code.acp` post-open rows —
 compound reasoning-and-plan acknowledgement, negotiated model options, and
 provider-session catalogue — failed rubric items 2 and 3. The operator then
-answered all five decisions that card 033 returned: `EffectiveReasoningSetup`
-is unchanged, exact reasoning and Plan values stay adapter-local behind one
-bounded 128-byte Kimi provider value, one additive
-`open_session_with_projection` covers the interactive surface, one separate
-projected seam covers `KimiPreparedSessionCatalogue::list_sessions`, and
-prepared and active source IDs stay distinct. Candidate F now passes the
-rubric as card 034. Candidates B, C, E, and I-L retain no implementation
+answered all five decisions that card 033 returned, and the gate stopped on the
+fifth. `EffectiveReasoningSetup` stays unchanged, exact reasoning and Plan
+values stay adapter-local behind one bounded 128-byte Kimi provider value, one
+additive `open_session_with_projection` covers the interactive surface, and
+prepared and active source IDs stay distinct — but no shared runtime source
+kind, lifecycle band, or view can represent a completed provider-session
+catalogue query, and the compound acknowledgement row has no shape that keeps
+half-to-state association generic. Candidate F is not promoted, card 034 is
+`blocked`, and candidates B, C, E, and I-L retain no implementation
 authority.
 
 ## Generation Runway Goal
@@ -166,8 +169,9 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       `cline.headless`, 11-row `command-code.headless`, 9-row
       `copilot-cli.acp`, and 9-row `goose.acp` tranche
 - [x] reassess candidate F's exact 89-row Kimi remainder; card 033 stopped it
-      on three `kimi-code.acp` post-open rows, and the accepted Kimi gate
-      promoted it as card 034
+      on three `kimi-code.acp` post-open rows, and the compiled Kimi gate
+      stopped again on a missing shared provider-operation observation
+      vocabulary
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -222,14 +226,19 @@ through a separate prepared operation and needs a different seam shape. Card
 033 names one `kimi-code.acp`-only gate with five operator decisions and
 compiles nothing. The
 [Kimi gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-answers all five, fixes the exact adapter-owned names, bounded provider value,
-compound acknowledgement states, projected-open and projected-catalogue
-outcomes and failures, source identities, preservation boundary, and
-provider-free oracle, and re-derives the four route ledgers from current
-source: 22/3, 10/10, 31/0, and 12/1 emitted/withheld, 75 emitted and 14
-withheld across 89 rows. Card 033's provisional 86/3 reading does not survive.
-Candidate F is ready as card 034 and its rows are not counted as proved before
-implementation review and merge.
+answers all five and stops. It fixes the adapter-owned names, bounded provider
+value, projected-open outcome and failure, source identities, preservation
+boundary, and provider-free oracle, and re-derives the four route ledgers from
+current source as 74 emitted, 14 withheld, and 1 undecided across 89 rows.
+Card 033's provisional 86/3 reading does not survive. It cannot fix the
+projected catalogue seam: `list_sessions` opens no session, while
+`ActiveSessionObservation`, `PostOpenObservationOnly`, and
+`ConsumerRouteActiveSessionState` are each defined as post-open session
+semantics, so publishing that row would widen shared Contract 061 vocabulary
+from an adapter document. The compound acknowledgement row is a second
+unresolved item: encoding both halves as domain entries with row-level union
+flags loses half-to-state association for a generic consumer. Candidate F is
+not promoted, card 034 is `blocked`, and coverage stays 249/518.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -280,14 +289,16 @@ implementation review and merge.
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 and 030-033 are complete through PRs 131,
-  133, 138, 141, and 144 plus two planning stops; card 034 is ready
+  133, 138, 141, and 144 plus two planning stops; card 034 is blocked and no
+  card is ready
 - completed tranches: runtime/testkit kernel plus sixteen exact route proofs in
   five reviewed implementation cards, covering 249 census rows
-- active checkpoint: none; the operator accepted the `kimi-code.acp`
-  public-baseline gate and card 034 is compiled
+- active checkpoint: none; the compiled `kimi-code.acp` gate stopped and
+  returned two operator decisions
 - later runway: 518 rows remain in candidates B, C, E, F, and I-L
-- next strategy checkpoint: card 034 merges its exact 89-row candidate F proof,
-  after which the lane reassesses the per-turn candidates B, K, and L
+- next strategy checkpoint: the operator settles the provider-operation
+  observation baseline and the compound acknowledgement representation, or
+  redirects the lane to another Batch 9.4 band
 
 ## Batch Cards
 
@@ -315,8 +326,9 @@ implementation review and merge.
   reconciled to 249/518, and candidate F left unpromoted behind a named
   `kimi-code.acp` gate; no Rust changed
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md)
-  — ready; exact candidate F 25/20/31/13-row tranche with 75 emitted and 14
-  withheld rows behind the accepted Kimi active-observation gate
+  — blocked; candidate F's re-derived 25/20/31/13-row evidence with 74 emitted,
+  14 withheld, and 1 undecided row, retained behind two open operator
+  decisions; no rows counted as proved
 
 ## References
 
@@ -327,7 +339,7 @@ implementation review and merge.
 - [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Claude Agent acknowledgement public-baseline gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
 - [Cline active-observation public-baseline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
-- [Kimi active-observation public-baseline gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+- [Kimi active-observation public-baseline gate stop](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
 - [Codex exec output-token census-source question](../../triage/2026-08-31-codex-exec-output-token-census-source.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)

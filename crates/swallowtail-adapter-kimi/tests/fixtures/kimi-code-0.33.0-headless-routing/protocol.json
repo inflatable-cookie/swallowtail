@@ -1,0 +1,74 @@
+{
+  "engine_gate": {
+    "source_path": "apps/kimi-code/src/cli/experimental-v2.ts",
+    "blob_0_32_0": "de40d76c2d3a6e07347850540f8bd53d46d045a9",
+    "blob_0_33_0_through_0_39_1": "09deacc9c2f891fa27944171662116ea5e2e2c83",
+    "bundle_digest_0_32_0": "7230b195c7c13aed6f1bf4c4400ec305765e3894815b536a81f4c8077b6995bc",
+    "bundle_digest_0_33_0_through_0_39_1": "944f431748ea1799c94ebf8c87e14cb4d37aa8167674b7f3f00178bdf0a57959",
+    "flip_point": "0.33.0"
+  },
+  "dispatch_site": {
+    "source_path": "apps/kimi-code/src/cli/run-prompt.ts",
+    "blob_0_32_0": "fd795e838dba411411084bc41188a74b8ec78f2f",
+    "blob_0_33_0_through_0_39_1": "cd519b223ea79355a0656a0254b8803576c3deb0",
+    "body_semantically_unchanged_across_the_flip": true,
+    "note": "runPrompt immediately delegates to runV2Print when isKimiV2Enabled(); only the gate's meaning changed at 0.33.0"
+  },
+  "v2_mapped_surface_digests": {
+    "prompt_json_writer": {
+      "digest": "aca3e562cf5270c38d39eede736628c9305589a6b4bd38b2d9ee3923807f7e8a",
+      "stable_from": "0.32.0",
+      "stable_through": "0.39.1"
+    },
+    "write_experimental_version": {
+      "digest": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+      "stable_from": "0.32.0",
+      "stable_through": "0.39.1"
+    },
+    "write_resume_hint": {
+      "digest": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+      "stable_from": "0.32.0",
+      "stable_through": "0.39.1"
+    },
+    "stringify_tool_output": {
+      "digest": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+      "stable_from": "0.32.0",
+      "stable_through": "0.39.1"
+    }
+  },
+  "v2_dispatch_retype_at_0_37_0": {
+    "digest_0_33_0_through_0_36_1": "216fdc315ad681d564f7ab2b08c492a2b7f3beab657ec09ba64a9acd5d78288a",
+    "digest_0_37_0_through_0_39_1": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+    "kind": "typescript-retype-only",
+    "detail": "DomainEvent becomes Event2<any> with explicit casts; every case label, writer call, argument, and stderr branch is unchanged",
+    "case_labels": [
+      "turn.step.started",
+      "turn.step.interrupted",
+      "turn.step.retrying",
+      "assistant.delta",
+      "hook.result",
+      "thinking.delta",
+      "tool.call.started",
+      "tool.call.delta",
+      "tool.result",
+      "tool.progress"
+    ],
+    "case_labels_identical_0_33_0_through_0_39_1": true,
+    "emitted_jsonl_unchanged": true
+  },
+  "v2_runner_background_wait_change_at_0_34_0": {
+    "kind": "unmapped",
+    "detail": "setTimeout becomes setClampedTimeout in the print background-policy wait loop; a clamped early expiry re-arms instead of returning",
+    "reachable_under_swallowtail": false,
+    "reason": "the adapter selects no goal, no session resume, and no print background configuration"
+  },
+  "cross_distribution": {
+    "corpora": ["npm-dist-main-mjs", "github-darwin-arm64-extracted"],
+    "versions_checked": ["0.32.0", "0.33.0", "0.34.0", "0.38.0", "0.39.0", "0.39.1"],
+    "every_mapped_surface_identical_between_corpora": true
+  },
+  "swallowtail_v1_decoder_rejects_v2_preamble": true,
+  "swallowtail_sets_legacy_flag": false,
+  "provider_prompt_sent": false,
+  "downloaded_binaries_executed": false
+}

@@ -8,7 +8,7 @@
 
 ## Ready
 
-- None.
+- [042-kimi-code-0-39-1-claim.md](./042-kimi-code-0-39-1-claim.md) — ready; apply only the per-axis dispositions card 041 proved
 
 ## Blocked
 
@@ -16,6 +16,7 @@
 
 ## Completed
 
+- [041-kimi-code-0-39-1-identity.md](./041-kimi-code-0-39-1-identity.md) — complete; Research 270 and cross-corpus oracles frozen before claim
 - [040-pi-rpc-0-84-4-claim.md](./040-pi-rpc-0-84-4-claim.md) — complete; Pi RPC qualified through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2`
 - [039-pi-rpc-0-84-4-identity.md](./039-pi-rpc-0-84-4-identity.md) — complete; Research 268 and current host/official identity frozen before claim
 - [038-claude-code-2-1-252-claim.md](./038-claude-code-2-1-252-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.252`; unpublished `2.1.244` and `2.1.249` stay gaps; watcher stays exact `2.1.251`

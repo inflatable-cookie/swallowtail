@@ -90,6 +90,22 @@ required. Terminal success still requires `session.resume_hint` after a
 successful exit; interruption and non-zero exit semantics stay on the existing
 pump/terminal contract.
 
+## Errata (2026-09-01, Research 270)
+
+This record's v2 grammar, digests, and decoder analysis stand. Its version
+boundary does not.
+
+"Naked `kimi -p` defaults to v2 unless `KIMI_CODE_LEGACY_FLAG` is truthy" is
+true, but it has been true since `0.33.0`, not since `0.38.0`. `0.38.0` was
+the only point sampled. Qualifying exact `0.38.0` alone therefore left
+`0.33.0..=0.37.2` claimed as `kimi.headless.stream-json.v1` while its default
+`-p` path emits the v2 `system.version` preamble that the v1 decoder rejects.
+
+The corrected segmentation is v1 `0.29.0..=0.32.0` and v2
+`0.33.0..=0.39.1`. The `0.38.1` synthetic newer point is superseded by
+`0.39.2`. See
+`crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.33.0-headless-routing/`.
+
 ## Sources
 
 - npm `@moonshot-ai/kimi-code@0.38.0`

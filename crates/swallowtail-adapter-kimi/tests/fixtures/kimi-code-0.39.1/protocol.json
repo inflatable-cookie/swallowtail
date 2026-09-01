@@ -1,0 +1,218 @@
+{
+  "executing_path": {
+    "npm_bin": "dist/main.mjs",
+    "github_archive_member": "kimi",
+    "archive_format": "node-single-executable-application",
+    "acp_argv": [
+      "acp"
+    ],
+    "headless_argv": [
+      "--model",
+      "<model>",
+      "--prompt",
+      "<content>",
+      "--output-format",
+      "stream-json"
+    ],
+    "legacy_env_not_set_by_swallowtail": "KIMI_CODE_LEGACY_FLAG",
+    "acp_default_implementation": "packages/acp-server (agent-core-v2) from 0.33.0",
+    "acp_legacy_implementation": "packages/acp-adapter (only when KIMI_CODE_LEGACY_FLAG is truthy)",
+    "headless_default_implementation": "apps/kimi-code/src/cli/v2/run-v2-print.ts (agent-core-v2 runV2Print) from 0.33.0",
+    "headless_legacy_implementation": "apps/kimi-code/src/cli/run-prompt.ts v1 print body; default only through 0.32.0, and after that only when KIMI_CODE_LEGACY_FLAG is truthy",
+    "acp_native_since": "0.33.0",
+    "headless_v2_default_since": "0.33.0",
+    "routing_corpus": "kimi-code-0.33.0-headless-routing"
+  },
+  "selected_acp_source": {
+    "native_acp_first_shipped": "0.33.0",
+    "note": "the acp-adapter entries are the legacy path, reachable only when KIMI_CODE_LEGACY_FLAG is truthy; they are recorded for completeness and are not the selected surface",
+    "acp_server_server_ts": {
+      "0.33.0..=0.36.1": "4f1b3e464027d3b80a6d560aa042d173d747d671",
+      "0.37.0..=0.39.1": "6e4ee87840af172117d66673bafe3426479c3b5b"
+    },
+    "acp_server_events_map_ts_unchanged_0_33_0_through_0_39_1": "cb549b736199c4857f43791fb9153894f3f18a0b",
+    "acp_server_auth_methods_ts_unchanged_0_33_0_through_0_39_1": "7b537995c99b5dcb5e065f4fde86e8d1600e3925",
+    "acp_server_modes_ts_unchanged_0_33_0_through_0_39_1": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+    "acp_server_config_options_ts_unchanged_0_33_0_through_0_39_1": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+    "acp_server_approval_ts_unchanged_0_33_0_through_0_39_1": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+    "acp_server_model_catalog_ts_unchanged_0_33_0_through_0_39_1": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+    "acp_adapter_events_map_ts_unchanged_0_33_0_through_0_39_1": "0448f2eb9cb111755c5b0855f5ec72bf4d6bcd4c",
+    "acp_adapter_server_ts_unchanged_0_33_0_through_0_39_1": "6707fd4cae43708cd2e9aeeb0eb01a4659c18d85",
+    "dispatch_acp_ts": {
+      "0.33.0..=0.37.2": "4da7e892ea86dad9b5dc27625513c07c174244fb",
+      "0.38.0..=0.39.1": "d0803a852fdaca4fcb68cb1794a626854fcd1224"
+    },
+    "dispatch_acp_native_ts": {
+      "0.33.0..=0.37.2": "2b9886769f660c04d3d643bef16d4912068da952",
+      "0.38.0..=0.39.1": "83d444e343f6c54448e596c36026c7492c6d6645"
+    }
+  },
+  "changed_acp_source": {
+    "acp_server_convert_ts": {
+      "from_0_38_0": "308d400a0d30419d12be7e19c998257657b53ad3",
+      "at_0_39_0_and_0_39_1": "48c34bff63d69079604bc7e2d94a4a17e25aa47b",
+      "delta": "stdio MCP servers without a declared runtime identity default to transport stdio with runtime_id local instead of throwing",
+      "mapped": false,
+      "inert_reason": "Swallowtail sends mcpServers [] on session/new and session/load, so the converted loop body is unreachable"
+    },
+    "acp_server_session_ts": {
+      "from_0_38_0": "66741fe42b38d1eae1b4dd6e9692226fdffb59b4",
+      "at_0_39_0_and_0_39_1": "9c82c912e1f3e15e23f258864431031afa043571",
+      "delta": "doc-comment wording only",
+      "mapped": false
+    },
+    "acp_server_start_ts": {
+      "from_0_38_0": "f7f66e1173993247ea253df30d73472c8195826b",
+      "at_0_39_0_and_0_39_1": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "delta": "agent-core-v2 dependency-injection plumbing; ensureMainAgent returns an agent context resolved through IAgentLifecycleService.handleOf, and IHostProcessService is threaded into the ACP runtime provider",
+      "mapped": false
+    },
+    "acp_server_acp_terminal_runner_ts": {
+      "from_0_38_0": "ec70df18027066d984dc543a3647d3563ac6ca6f",
+      "at_0_39_0_and_0_39_1": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "delta": "process spawn falls back to a local host process when the client advertises no terminal capability or the invocation is not the interactive Bash tool, replacing two hard errors",
+      "mapped": false,
+      "material": true,
+      "reachable_under_swallowtail": true,
+      "reachable_reason": "Swallowtail advertises clientCapabilities.terminal false, so 0.38.0 raised ACP terminal capability is unavailable where 0.39.x now spawns locally",
+      "classification": "uncontained process-authority delta; see kimi-code-0.39.0-acp-authority",
+      "blocks_acp_qualification_of_0_39_x": true,
+      "contract_029_trigger": "capability and failure behavior",
+      "contract_015_clause": "a client that omits terminal capability treats any terminal request as unsupported and stops the scope"
+    }
+  },
+  "selected_headless_source": {
+    "prompt_render_ts_unchanged_0_30_0_through_0_39_1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "options_ts_unchanged_0_32_0_through_0_39_1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+    "run_prompt_ts_unchanged_0_33_0_through_0_39_1": "cd519b223ea79355a0656a0254b8803576c3deb0",
+    "experimental_v2_ts_unchanged_0_33_0_through_0_39_1": "09deacc9c2f891fa27944171662116ea5e2e2c83"
+  },
+  "changed_headless_source": {
+    "run_v2_print_ts": {
+      "from_0_38_0": "40a8c31ac64a0ab737ca6cc308cda84376629ce1",
+      "at_0_39_0_and_0_39_1": "299e926caa6d749c873d5c3fc277aa1e96303887",
+      "delta": "agent-core-v2 dependency-injection refactor: IAgentGoalService and ISessionCronService accessor lookups become IAgentLifecycleService.resolve(agentContextOf(agent), AgentGoal|AgentCron), ensureMainAgent returns an agent context resolved through handleOf, and IAgentLifecycleService.list() yields agent contexts",
+      "mapped": false,
+      "emission_sites_unchanged": true
+    }
+  },
+  "cross_corpus_oracle": {
+    "method": "brace-matched extraction of each mapped surface from the npm dist/main.mjs bundle and from both extracted single-executable archives, with bundler alias suffixes normalized",
+    "corpora": [
+      "npm-dist-main-mjs",
+      "github-darwin-arm64-extracted",
+      "github-linux-x64-extracted"
+    ],
+    "versions": [
+      "0.32.0",
+      "0.33.0",
+      "0.34.0",
+      "0.37.2",
+      "0.38.0",
+      "0.39.0",
+      "0.39.1"
+    ],
+    "headless_surface_digests": {
+      "prompt_json_writer": "aca3e562cf5270c38d39eede736628c9305589a6b4bd38b2d9ee3923807f7e8a",
+      "prompt_transcript_writer": "7e7f5ef7a8cc5e788f40a73a8bb6d795a74ebabb68695ea5bd0204c2a8c22eac",
+      "write_experimental_version": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+      "write_resume_hint": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+      "stringify_tool_output": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+      "run_prompt_dispatch": "d6d2b7cedd4526c8b9cb09a602ff45f6966113a93338e7871dae88b1fe20eff5"
+    },
+    "headless_identical_across_every_corpus_and_version": true,
+    "acp_paired_copy_digests": {
+      "acp_adapter_server_class": "c3989805e568ebfac943e220eb753d99ca752e83905a50b0221c9f026d82bcd7",
+      "acp_server_server_class": "84ed94fcde1250394e63dd4131411ef9e3438020b81c51f3592e1c89c84c5bdb",
+      "acp_adapter_assistant_delta_to_session_update": "e027ba18e9812f63966f3c0e18fadc2ab4e5f9093bb32f5b1007fc7c61602b88",
+      "acp_server_assistant_delta_to_session_update": "0ca31da27a0d2a6da21e022e7c2f969719e95f8609bd282a4bc566f528a131af"
+    },
+    "acp_identical_across_versions": true,
+    "acp_process_service_digest_0_38_0": "8f8a2726e86de2461e23783b19eae335e12807e2aa5bb5f5eff3cf9a75f8072b",
+    "acp_process_service_digest_0_39_0_and_0_39_1": "7c58e045273d9dbcea96e38d0792d6122193810cd3b9a7c93bb02d40d21284e4",
+    "acp_process_service_is_the_only_selected_acp_difference": true,
+    "engine_gate_digests": {
+      "through_0_32_0": "7230b195c7c13aed6f1bf4c4400ec305765e3894815b536a81f4c8077b6995bc",
+      "from_0_33_0_through_0_39_1": "944f431748ea1799c94ebf8c87e14cb4d37aa8167674b7f3f00178bdf0a57959"
+    },
+    "dispatch_native_event_digests": {
+      "from_0_32_0_through_0_36_1": "216fdc315ad681d564f7ab2b08c492a2b7f3beab657ec09ba64a9acd5d78288a",
+      "from_0_37_0_through_0_39_1": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+      "kind": "typescript-retype-only",
+      "emitted_jsonl_unchanged": true
+    }
+  },
+  "selected_headless_v2_grammar": {
+    "roles": [
+      "meta",
+      "assistant",
+      "tool"
+    ],
+    "meta_types": [
+      "system.version",
+      "turn.step.retrying",
+      "session.resume_hint"
+    ],
+    "retry_fields": [
+      "failed_attempt",
+      "next_attempt",
+      "max_attempts",
+      "delay_ms",
+      "error_name",
+      "error_message",
+      "status_code"
+    ],
+    "tool_fields": [
+      "tool_call_id",
+      "content"
+    ],
+    "output_format_choices": [
+      "text",
+      "stream-json"
+    ],
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "public_facade_id": "kimi-headless-stream-json-v1",
+    "decoder_corpus": "kimi-code-0.38.0-headless-v2",
+    "qualified_range": "0.33.0..=0.39.1"
+  },
+  "unmapped_deltas": [
+    "acp-server local process fallback when the client advertises no terminal capability",
+    "acp-server stdio MCP server default runtime identity",
+    "kimi rc / kimi web --remote-control / /remote-control experimental Remote Control behind KIMI_CODE_EXPERIMENTAL_REMOTE_CONTROL",
+    "experimental subagent and swarm fork parameter behind KIMI_CODE_EXPERIMENTAL_SUBAGENT_FORK",
+    "experimental tower multi-agent orchestration behind KIMI_CODE_EXPERIMENTAL_TOWER",
+    "swarm timeout_ms configuration and KIMI_CODE_SWARM_TIMEOUT_MS",
+    "kimi update request timeout",
+    "login and sign-in device-code presentation fixes",
+    "TUI and web client rendering, composer, mobile, and panel changes",
+    "MCP structuredContent forwarding rule",
+    "skill instruction transcript rebuild fix",
+    "session resume background-task warning"
+  ],
+  "other_family_observations_not_acted_on": {
+    "kimi_code_local_server": {
+      "note": "recorded for the separate kimi-code.local-server currentness family; no claim, fixture, route, guide, or matrix cell is edited by this record",
+      "web_removed_flag": "--allow-remote-terminals removed from kimi web at 0.39.0; PTY terminal routes stay on loopback binds only",
+      "web_changed_source": [
+        "apps/kimi-code/src/cli/sub/web/index.ts",
+        "apps/kimi-code/src/cli/sub/web/run.ts",
+        "apps/kimi-code/src/cli/sub/web/shared.ts"
+      ],
+      "web_added_source": [
+        "apps/kimi-code/src/cli/sub/web/remote-control.ts",
+        "apps/kimi-code/src/cli/sub/web/remote-control-lock.ts"
+      ],
+      "kap_server_changed_protocol": [
+        "packages/kap-server/src/middleware/auth.ts",
+        "packages/kap-server/src/protocol/rest-modelCatalog.ts",
+        "packages/kap-server/src/protocol/ws-control.ts"
+      ]
+    }
+  },
+  "provider_prompt_sent": false,
+  "authentication_performed": false,
+  "live_probe_run": false,
+  "local_server_started": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

@@ -22,15 +22,15 @@ fn prepare_plan_mode(snapshot: &Value) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
-fn confirm_plan_mode(response: &Value) -> Result<(), RuntimeFailure> {
+fn confirm_plan_mode(response: &Value) -> Result<ClinePlanAcknowledgement, ClineOpenRejection> {
     let option = parse_mode_option(response, OptionPhase::Confirmation)?;
     if option.current == PLAN_VALUE {
-        Ok(())
+        Ok(ClinePlanAcknowledgement::Effective(PLAN_VALUE.to_owned()))
     } else {
-        Err(failure(
+        Err(ClineOpenRejection::rejected_plan(failure(
             "swallowtail.cline.acp.harness_mode_mismatch",
             "Cline ACP harness-mode confirmation does not match the requested mode",
-        ))
+        ), ACT_VALUE.to_owned()))
     }
 }
 

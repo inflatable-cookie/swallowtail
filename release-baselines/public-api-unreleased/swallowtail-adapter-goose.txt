@@ -29,6 +29,8 @@ impl swallowtail_adapter_goose::GoosePreparedIntegration
 pub fn swallowtail_adapter_goose::GoosePreparedIntegration::prepare_session(&self, swallowtail_adapter_goose::GooseSessionProfileInput) -> core::result::Result<swallowtail_adapter_goose::GoosePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_goose::GoosePreparedSession
 impl swallowtail_adapter_goose::GoosePreparedSession
+pub fn swallowtail_adapter_goose::GoosePreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_goose::GoosePreparedSession
 pub const fn swallowtail_adapter_goose::GoosePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_goose::GoosePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_goose::GoosePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

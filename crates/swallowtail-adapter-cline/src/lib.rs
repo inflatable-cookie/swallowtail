@@ -14,6 +14,7 @@ mod access;
 mod acp_activity;
 mod command;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
@@ -24,6 +25,9 @@ mod selection;
 mod turn;
 
 pub use access::{CLINE_LOCAL_ACCOUNT_AUDIENCE, cline_local_account_access_profile};
+pub use consumer_route_projection::{
+    ClineProjectionOpenFailure, ClineProjectionOpenFuture, ClineProjectionOpenOutcome,
+};
 pub use driver::{ClineAcpDriver, cline_acp_descriptor};
 pub use headless::{ClineHeadlessDriver, cline_headless_descriptor};
 pub use prepared::{

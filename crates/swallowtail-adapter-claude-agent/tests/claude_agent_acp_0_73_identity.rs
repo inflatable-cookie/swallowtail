@@ -11,7 +11,7 @@ const IDENTITY: &str = include_str!("fixtures/claude-agent-acp-0.73.0/identity.j
 const PROTOCOL: &str = include_str!("fixtures/claude-agent-acp-0.73.0/protocol.json");
 
 #[test]
-fn identity_freezes_0_73_0_while_production_stays_at_0_70_0() {
+fn identity_and_claim_qualify_0_73_0_as_compatible_extension() {
     let identity: Value =
         serde_json::from_str(IDENTITY).expect("Claude Agent 0.73.0 identity corpus is valid JSON");
     let protocol: Value =
@@ -121,9 +121,13 @@ fn identity_freezes_0_73_0_while_production_stays_at_0_70_0() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.70.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.73.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
+        "0.70.0"
+    );
+    assert_eq!(
+        identity["identity_decision"]["raise_latest_qualified_to"],
         CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION
     );
 
@@ -133,7 +137,7 @@ fn identity_freezes_0_73_0_while_production_stays_at_0_70_0() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    for version in ["0.66.0", "0.69.0", "0.70.0"] {
+    for version in ["0.66.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0"] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -143,12 +147,10 @@ fn identity_freezes_0_73_0_while_production_stays_at_0_70_0() {
         ));
     }
     assert!(!claim.permits(&version_value("0.58.0")));
-    for newer in ["0.71.0", "0.72.0", "0.73.0"] {
-        assert!(matches!(
-            claim.assess(&version_value(newer)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.74.0")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         claude_agent_acp_binding("0.73.0")
             .expect("version binds")

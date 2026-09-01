@@ -183,7 +183,7 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.70.0`, excluding `0.58.0`, over
+  sessions for Claude Agent ACP `0.53.0..=0.73.0`, excluding `0.58.0`, over
   ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
@@ -918,14 +918,14 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0` through `0.70.0` behavior milestones.
+`0.62.0` through `0.73.0` behavior milestones.
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
-`0.70.0` add private behavior revisions without changing deletion truth.
+`0.73.0` add private behavior revisions without changing deletion truth.
 Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization

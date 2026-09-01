@@ -26,6 +26,25 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Claude Agent ACP qualified ceiling from `0.70.0` to official npm
+  `@agentclientprotocol/claude-agent-acp` `0.73.0`. Operator restart after
+  official latest moved during the unmerged `0.72.0` family. Compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7`: selected
+  mapped ACP routes stay; `#1004` keeps mapped mode `id`/`category` and
+  `plan`/`acceptEdits`; `#1045` leaves steering unmapped and the permission
+  callback observable contract unchanged; `0.72.0` effort,
+  `user_message_uuid` result attribution, PostModelSwitch mirroring, and
+  PreModelSwitch session/new fallback stay classified and selected-compatible
+  because Swallowtail still confirms model/effort via explicit
+  `set_config_option` plus exact match. `0.73.0` changes only `package.json`
+  (version plus Agent SDK pin `0.3.252`→`0.3.257`); every `dist/**` file is
+  byte-identical to `0.72.0`. Additive `sessionCapabilities.subagents`,
+  native subagent/async-task updates, session titles, Providers API, ACP SDK
+  `1.4.0` elicitation rename, and the Agent SDK pin stay unmapped. Published
+  intermediates `0.71.0`, `0.72.0`, and `0.73.0` are qualified; unpublished
+  `0.58.0` stays incompatible; unpublished `0.74.0` remains visible
+  `UnverifiedNewer`. Host `0.63.0` stays observation-only. Claude Code and
+  the watcher stay untouched. Research 272, g05.018.
 - cap `kimi-code.acp` at `0.38.0` under `QualifiedOnly`. Operator A2: indefinite
   posture change with one artifact-level reopen trigger. Claim identity moved
   from `kimi.acp.executable-window-2` to `kimi.acp.executable-window-5` because

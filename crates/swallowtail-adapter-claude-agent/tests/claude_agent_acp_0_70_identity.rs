@@ -1,7 +1,7 @@
 use serde_json::Value;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,
-    CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, claude_agent_acp_binding, claude_agent_acp_claim,
+    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION, claude_agent_acp_binding,
+    claude_agent_acp_claim,
 };
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
@@ -74,7 +74,6 @@ fn identity_and_claim_qualify_0_70_0_as_compatible_extension() {
     assert_eq!(protocol["live_acp_initialize"], false);
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.70.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.69.0"
@@ -96,10 +95,6 @@ fn identity_and_claim_qualify_0_70_0_as_compatible_extension() {
         ));
     }
     assert!(!claim.permits(&version_value("0.58.0")));
-    assert!(matches!(
-        claim.assess(&version_value("0.70.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
     assert_eq!(
         claude_agent_acp_binding("0.70.0")
             .expect("version binds")

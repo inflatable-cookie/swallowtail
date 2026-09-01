@@ -1,6 +1,6 @@
 # g05.018 Claude Agent ACP 0.73.0 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -36,13 +36,13 @@ g05.009 card 034, release, or execution of downloaded official binaries.
 ## Batch Cards
 
 - [044 Claude Agent ACP 0.73.0 Identity](batch-cards/044-claude-agent-acp-0-73-0-identity.md) — completed
-- [045 Claude Agent ACP 0.73.0 Claim](batch-cards/045-claude-agent-acp-0-73-0-claim.md) — ready
+- [045 Claude Agent ACP 0.73.0 Claim](batch-cards/045-claude-agent-acp-0-73-0-claim.md) — completed
 
 ## Acceptance
 
 - [x] exact official identity is reproducible
 - [x] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] unpublished gaps, exclusion `0.58.0`, and other families stay unchanged
-- [ ] focused, package, API, route, docs, Northstar, god-file, and diff gates pass
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] unpublished gaps, exclusion `0.58.0`, and other families stay unchanged
+- [x] focused, package, API, route, docs, Northstar, god-file, and diff gates pass

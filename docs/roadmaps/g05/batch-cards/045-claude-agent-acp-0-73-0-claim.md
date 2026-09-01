@@ -1,6 +1,6 @@
 # 045 Claude Agent ACP 0.73.0 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -69,3 +69,13 @@ checks.
 ## Auto-Continuation
 
 No. Review and merge. Do not start a second family from this PR.
+
+## Result
+
+The Claude Agent ACP axis qualifies official `0.71.0`, `0.72.0`, and
+`0.73.0` as a compatible extension of
+`claude-agent.acp.initialize-meta-extensions-v7`. Unpublished `0.58.0`
+remains incompatible. `AllowUnverified` remains. Unpublished `0.74.0` is
+the synthetic later `UnverifiedNewer` point. Host `0.63.0` stays
+observation-only. Claude Code and the watcher stay untouched. Identity
+evidence remains commit `af9ddfd4`.

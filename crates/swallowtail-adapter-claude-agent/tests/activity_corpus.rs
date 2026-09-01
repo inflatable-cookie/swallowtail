@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.70.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.73.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -65,12 +65,51 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         range["current_external_releases"][4]["profile"],
         "0.70.0-guarantee"
     );
+    assert_eq!(range["current_external_releases"][5]["version"], "0.71.0");
+    assert_eq!(
+        range["current_external_releases"][5]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][5]["profile"],
+        "0.73.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][5]["activity_delta"],
+        "session-titles-subagents-modes-steering-unmapped"
+    );
+    assert_eq!(range["current_external_releases"][6]["version"], "0.72.0");
+    assert_eq!(
+        range["current_external_releases"][6]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][6]["profile"],
+        "0.73.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][6]["activity_delta"],
+        "effort-result-attribution-model-switch-hooks-unmapped"
+    );
+    assert_eq!(range["current_external_releases"][7]["version"], "0.73.0");
+    assert_eq!(
+        range["current_external_releases"][7]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][7]["profile"],
+        "0.73.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][7]["activity_delta"],
+        "agent-sdk-pin-unmapped"
+    );
     assert_eq!(
         range["current_external_releases"]
             .as_array()
             .expect("releases")
             .len(),
-        5
+        8
     );
 }
 

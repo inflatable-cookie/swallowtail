@@ -64,8 +64,8 @@ unmerged `0.72.0` family. Official stable is exact `0.73.0` published
 frozen `0.70.0` host digest. Published intermediates after `0.70.0` are
 exactly `0.71.0`, `0.72.0`, and `0.73.0`. Research 272 and the frozen
 corpus, including the complete dist inventory and exact 0.71/0.72/0.73
-delta classification, land in this identity-only commit; production claims
-remain `0.70.0`. Mapped `dist/index.js`, `dist/elicitation.js`,
+delta classification, land in identity-only commit `af9ddfd4`; production
+claims remain `0.70.0` in that commit. Mapped `dist/index.js`, `dist/elicitation.js`,
 `dist/lib.js`, `dist/settings.js`, and `dist/utils.js` are byte-identical
 to `0.70.0`. Every `dist/**` file is byte-identical `0.72.0` to `0.73.0`;
 the only package change is `package.json` version plus Agent SDK pin

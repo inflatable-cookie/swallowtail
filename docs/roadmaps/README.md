@@ -15,9 +15,10 @@ shape.
 
 ## Next Task
 
-Reassess the next all-route currentness checkpoint after Codex `0.152.0`
-qualification. Choose only one next family. Do not start a second family from
-this PR.
+Implement Claude Code useful-newer qualification for official `2.1.252`. Host
+already sits on qualified `2.1.251`. Do not leave official `2.1.252`
+UnverifiedNewer without a named incompatible reason. Do not start a second
+family from this PR.
 
 The provider-operation observation decision under
 [g05.009](g05/009-contract-061-consumer-projection-realization.md) remains

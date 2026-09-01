@@ -295,7 +295,9 @@ the `kimi-code.acp` operator gate remains queued behind card 034, which is
 planned and not ready. g05.013 cards 035-036 qualify Codex exec and
 app-server through official `0.152.0`. Research 265 selected Claude Code
 `2.1.252`. g05.014 cards 037-038 qualify both Claude Code axes through official
-`2.1.252` while keeping watcher exact `2.1.251`. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+`2.1.252` while keeping watcher exact `2.1.251`. Research 267 selected Pi
+`0.84.4` as the next one-family Upgrade Workflow. The checkpoint changes no
+claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

@@ -309,6 +309,21 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Impact: card-gate commands fail with missing-catalog or "not a git repository" errors after an otherwise successful evidence fetch.
 - Fix: `cd` back to the worktree after temp-dir evidence work, or run later repo commands with an explicit working directory.
 - Surface: agent shell sessions that download provider evidence outside the worktree.
+- Progress 2026-09-01 (evidence-download cwd lane): inventory finds no
+  repo-owned script or helper that cds into temp evidence dirs — all
+  `scripts/*.sh` temp use stays in-process and `run-with-isolated-home.sh`
+  restores `HOME` only — so there is no execution seam to repair. The skill
+  prose rule "Always `cd` to the Swallowtail repo root before `cargo` /
+  `effigy`" was already in force (2026-08-18) when this was observed
+  (2026-08-22), so prose does not fail-close the leak. The only leak-shaped
+  repo text is the reference.md manifest snippet run "inside"
+  `/tmp/<pkg>-<ver>/package`; repairing it to a subshell form requires
+  editing `.cursor/skills/version-currentness/**`, out of scope while the
+  currentness worker is active. Ownership stop: the remaining seam is agent
+  shell behavior; reproduced `git diff --check` → "not a git repository"
+  (exit 129) and `effigy validate:focused` → "not defined in effective
+  catalogs" (exit 1) from a leaked cwd, while a subshell evidence run keeps
+  the caller cwd stable.
 
 ### [ ] zsh special variables break ordinary shell snippets — 2026-08-22
 - Friction: authority-read snippets used `path` and `status` as ordinary

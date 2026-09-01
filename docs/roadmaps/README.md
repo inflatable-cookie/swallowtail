@@ -15,19 +15,18 @@ shape.
 
 ## Next Task
 
-Implement
-[card 032](g05/batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
+Execute planning-only
+[card 033](g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
 under [g05.009](g05/009-contract-061-consumer-projection-realization.md) as the
-sole ready tranche. Prove candidate G's exact 48 rows: `cline.acp` 11,
-`cline.headless` 8, `command-code.headless` 11, `copilot-cli.acp` 9, and
-`goose.acp` 9.
+sole ready checkpoint. Bind card 032's reviewed 48-row candidate G completion,
+reconcile Contract 061 to 249 proved and 518 remaining rows, and reassess
+candidate F's complete 89-row Kimi package remainder on current `main`.
 
-Use the accepted
-[`cline.acp` active-observation public baseline](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md):
-retain exact effective/rejected Plan acknowledgement and exact bounded
-negotiated model options through one additive adapter-owned projected-open
-seam while preserving `ClinePreparedSession::open_session`. Do not couple
-Kimi, enter another candidate, contact a provider, or compile Batch 9.5.
+Promote F only if its compound acknowledgement, negotiated model options, and
+post-open provider-session catalogue already satisfy the existing rubric
+without a new decision. Otherwise record the exact stop and return the narrow
+Kimi-only public-baseline gate to the operator. Do not implement Kimi, promote
+another candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes
 

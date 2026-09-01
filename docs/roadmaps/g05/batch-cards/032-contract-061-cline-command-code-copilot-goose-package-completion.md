@@ -1,6 +1,6 @@
 # 032 Contract 061 Cline, Command Code, Copilot CLI, And Goose Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -81,44 +81,44 @@ through the accepted additive adapter-owned projected-open seam.
 
 ## Acceptance Criteria
 
-- [ ] independent ledgers reconcile exactly to 11, 8, 11, 9, and 9 rows,
+- [x] independent ledgers reconcile exactly to 11, 8, 11, 9, and 9 rows,
       with each `(route_id, operation_shape, semantic_id)` named once and no
       exception list
-- [ ] maximal dispositions equal 9/2, 7/1, 10/1, 6/3, and 6/3
+- [x] maximal dispositions equal 9/2, 7/1, 10/1, 6/3, and 6/3
       emitted/withheld; minimal and maximal prepared/open fixtures prove every
       optional Cline row is genuinely absent or present
-- [ ] every emitted row retains exact source, route, operation, lifecycle,
+- [x] every emitted row retains exact source, route, operation, lifecycle,
       value, omission, applicability, access, evidence, support, availability,
       actor posture, and mutation posture
-- [ ] prepared Cline Plan is requested/prepared/pending on ACP and
+- [x] prepared Cline Plan is requested/prepared/pending on ACP and
       requested/prepared on headless; neither prepared facade claims
       provider-effective or rejected state
-- [ ] exact matching ACP Plan confirmation opens a session and emits
+- [x] exact matching ACP Plan confirmation opens a session and emits
       provider-effective `"plan"`; exact admitted `"act"` returns `Rejected`
       with no session
-- [ ] missing, malformed, duplicate, transport, setup, or ambiguous Plan
+- [x] missing, malformed, duplicate, transport, setup, or ambiguous Plan
       confirmation returns `Runtime` with no rejected contribution
-- [ ] exact model options survive on both the generic handle and outcome
+- [x] exact model options survive on both the generic handle and outcome
       accessor; absent data stays absent; invalid data preserves legacy-open
       success with no snapshot and fails projected open after cleanup with
       `swallowtail.negotiated_model_options.invalid`
-- [ ] model-option projection is observed, not selectable, acknowledged,
+- [x] model-option projection is observed, not selectable, acknowledged,
       provider-effective, mutable, or catalogue authority
-- [ ] rejected Plan never carries a model-option row; omitted Plan carries no
+- [x] rejected Plan never carries a model-option row; omitted Plan carries no
       acknowledgement row; an unused active source is absent
-- [ ] existing and projected Cline open methods preserve Plan failure code,
+- [x] existing and projected Cline open methods preserve Plan failure code,
       handle shape, and cleanup outcome through one private lifecycle
-- [ ] model catalogue, prohibited persistence, no-control audits, and any
+- [x] model catalogue, prohibited persistence, no-control audits, and any
       out-of-census capability are withheld at construction
-- [ ] Command Code model selection is exact for both structured-run and
+- [x] Command Code model selection is exact for both structured-run and
       interactive-session facades without flattening their applicability
-- [ ] matching-source cross-route and cross-operation mixtures reject in both
+- [x] matching-source cross-route and cross-operation mixtures reject in both
       directions; cross-instance, stale-revision, and each exact access drift
       fail closed or stop before a row can form
-- [ ] only the four candidate G adapter semantic API baselines change; shared
+- [x] only the four candidate G adapter semantic API baselines change; shared
       APIs, contracts, census, provider claims, and compatibility claims remain
       unchanged
-- [ ] touched source stays below configured god-file thresholds and the scan
+- [x] touched source stays below configured god-file thresholds and the scan
       does not exceed the accepted 387-finding repository baseline
 
 ## Review Oracle
@@ -201,3 +201,20 @@ another Batch 9.4 candidate is reassessed or promoted.
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](../../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+
+## Closeout
+
+PR 144 merged exact reviewed head `e50e3f46` through `18a6907e`. The five
+independent ledgers prove 11/8/11/9/9 rows and 9/2, 7/1, 10/1, 6/3, 6/3
+emitted/withheld. Cline's preserved and projected opens share one private
+lifecycle while exact Plan acknowledgement and bounded model options remain
+route-local active observations. Command Code operation shapes stay separate;
+Copilot CLI and Goose no-control audits remain negative coverage.
+
+Root review restored exact tuple equality, corrected Command Code's usage
+identity, and required independent instance, revision, access, mixture,
+source-kind, value-domain, lifecycle, omission, and posture proof across all
+five routes. Focused validation passed 183 tests, all four extracted-package
+checks passed, semantic API and route/docs/Northstar checks passed, the
+god-file scan held at 387, and all five CI jobs were green. No provider contact
+or live probe occurred.

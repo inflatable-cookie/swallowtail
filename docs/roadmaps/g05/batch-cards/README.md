@@ -7,7 +7,7 @@
 
 ## Ready
 
-- [032-contract-061-cline-command-code-copilot-goose-package-completion.md](./032-contract-061-cline-command-code-copilot-goose-package-completion.md) — sole ready card; exact 11/8/11/9/9-row candidate G proof under the accepted Cline active-observation public baseline
+- [033-contract-061-card-032-closeout-and-kimi-reassessment.md](./033-contract-061-card-032-closeout-and-kimi-reassessment.md) — sole ready planning card; reconcile 249/518 coverage and reassess candidate F's exact 89-row Kimi remainder
 
 ## Blocked
 
@@ -15,6 +15,7 @@
 
 ## Completed
 
+- [032-contract-061-cline-command-code-copilot-goose-package-completion.md](./032-contract-061-cline-command-code-copilot-goose-package-completion.md) — complete; exact 11/8/11/9/9-row candidate G proof merged through PR 144 at `18a6907e`
 - [031-contract-061-claude-agent-package-and-acknowledgement.md](./031-contract-061-claude-agent-package-and-acknowledgement.md) — complete; exact 30/12/11-row candidate D proof merged through PR 141 at `5d1f173a`
 - [030-contract-061-acknowledgement-candidate-reassessment.md](./030-contract-061-acknowledgement-candidate-reassessment.md) — evidence stop; D, F, and G failed rubric item 2 on that `main`; the later accepted Claude Agent gate promoted D as card 031
 - [024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md](./024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md) — complete; exact 38-row candidate H proof merged through PR 138 at `8b295e6b`

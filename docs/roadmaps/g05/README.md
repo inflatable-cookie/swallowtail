@@ -27,7 +27,7 @@ enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, and H complete through cards 022-024 and 031; 201 rows proved; 566 remain; candidate G ready as card 032 | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-032 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; candidate F reassessment ready as card 033 | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-033 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | Codex exec and app-server qualified through official `0.151.0`; cards 027-028 complete | Contract 029 identity-before-claim; Research 262; current-main validation | `g05.012` cards 027-028 |
@@ -37,7 +37,7 @@ enforcement.
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-024 and 031 merged through PRs 131, 133, 138, and 141; 201 rows proved; candidate G ready as card 032
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-024 and 031-032 merged through PRs 131, 133, 138, 141, and 144; 249 rows proved; candidate F reassessment ready as card 033
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -175,14 +175,16 @@ adapter-owned open-with-projection outcome and failure preserving the existing
 adapter-owned signatures, source split, state transitions, unknown-failure
 boundary, shared-open lifecycle, and provider-free oracle. Card 031 completed
 candidate D's exact 30/12/11-row proof through PR 141 at `5d1f173a`.
-Contract 061 projection now covers 201 rows; 566 remain across candidates B,
-C, E-G, and I-L. Candidate F still couples three Kimi post-open families.
-Candidate G is narrower. The operator approved Cline adapter-local retention
+Contract 061 projection covered 201 rows before candidate G. Candidate F still
+couples three Kimi post-open families. Candidate G was narrower. The operator
+approved Cline adapter-local retention
 of exact effective/rejected Plan acknowledgement plus exact bounded negotiated
 model options through one additive adapter-owned projected-open seam while
 preserving `ClinePreparedSession::open_session`. The gate fixes its exact API,
-state, source, lifecycle, failure, and oracle boundary. Candidate G is ready as
-card 032. No provider contact or Batch 9.5 audit is authorized.
+state, source, lifecycle, failure, and oracle boundary. Card 032 completed
+candidate G through PR 144 at `18a6907e`; 249 rows are now proved and 518
+remain. Card 033 reassesses candidate F. No Kimi implementation, provider
+contact, or Batch 9.5 audit is authorized.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -214,14 +216,14 @@ PR 138 at `8b295e6b`. Card 030 closed without promoting a candidate or changing
 Rust. The later operator decision closed the narrow `claude-agent.acp`
 public-baseline gate, and card 031 merged through PR 141 at `5d1f173a`. The
 operator then closed the narrow `cline.acp` active-observation public baseline.
-g05.009 is `strict-ready`; card 032 is the sole ready implementation card.
+g05.009 is `strict-ready`; card 033 is the sole ready planning card.
 
 ## Milestones
 
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 022-024 and 031 merged; 201 rows proved; candidate G ready as card 032
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 022-024 and 031-032 merged; 249 rows proved; candidate F reassessment ready as card 033
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

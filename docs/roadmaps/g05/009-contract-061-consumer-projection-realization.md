@@ -1,14 +1,14 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, and H merged;
-candidate G ready as card 032
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
+candidate F reassessment ready as card 033
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-01
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-ready`; card 032 is the sole ready implementation card
+Planning state: `strict-ready`; card 033 is the sole ready planning card
 
 ## Problem
 
@@ -46,9 +46,10 @@ Card 031 merged candidate D's exact 53-row proof through PR 141 at `5d1f173a`.
 The operator then approved the narrow Cline route-local public baseline for
 exact Plan acknowledgement and bounded negotiated model-option observation.
 The gate fixes one additive adapter-owned projected-open seam while preserving
-the existing open method. Candidate G passes the current-main promotion rubric
-and is ready as card 032. Candidates B, C, E, F, and I-L retain no execution
-authority.
+the existing open method. Card 032 completed candidate G through PR 144 at
+`18a6907e`. Contract 061 now covers 249 rows; 518 remain. Card 033 is the sole
+ready planning checkpoint and reassesses candidate F. Candidates B, C, E, F,
+and I-L retain no implementation authority.
 
 ## Generation Runway Goal
 
@@ -150,7 +151,7 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       tranche
 - [x] complete candidate D as the exact 30-row `claude-agent.acp`, 12-row
       `claude-code.headless`, and 11-row `claude-code.response-only` tranche
-- [ ] complete candidate G as the exact 11-row `cline.acp`, 8-row
+- [x] complete candidate G as the exact 11-row `cline.acp`, 8-row
       `cline.headless`, 11-row `command-code.headless`, 9-row
       `copilot-cli.acp`, and 9-row `goose.acp` tranche
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
@@ -241,16 +242,15 @@ rubric and card 032 is ready.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: cards 022-024 and 031 are complete through PRs 131, 133,
-  138, and 141; card 032 is the sole ready implementation card
-- completed tranches: runtime/testkit kernel plus eleven exact route proofs in
-  four reviewed implementation cards, covering 201 census rows
-- active tranche: card 032 owns candidate G's exact 48 rows across Cline,
-  Command Code, Copilot CLI, and Goose
-- later runway: 566 rows remain unproved until card 032 merges; 518 of them are
-  outside candidate G in candidates B, C, E, F, and I-L
-- next strategy checkpoint: implement and review card 032, then reassess the
-  lifecycle-priority sequence on current `main`
+- immediate state: cards 022-024, 031, and 032 are complete through PRs 131,
+  133, 138, 141, and 144; card 033 is the sole ready planning card
+- completed tranches: runtime/testkit kernel plus sixteen exact route proofs in
+  five reviewed implementation cards, covering 249 census rows
+- active checkpoint: card 033 reconciles candidate G and reassesses candidate
+  F's exact 89-row Kimi remainder
+- later runway: 518 rows remain in candidates B, C, E, F, and I-L
+- next strategy checkpoint: review card 033's exact current-main candidate F
+  disposition before compiling any public-baseline gate or implementation card
 
 ## Batch Cards
 
@@ -271,8 +271,11 @@ rubric and card 032 is ready.
   — complete; exact candidate D 30/12/11-row proof merged through PR 141 at
   `5d1f173a`
 - [032 Contract 061 Cline, Command Code, Copilot CLI, And Goose Package Completion](batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
-  — ready; exact candidate G 11/8/11/9/9-row proof with the accepted Cline
-  active-observation public baseline
+  — complete; exact candidate G 11/8/11/9/9-row proof merged through PR 144 at
+  `18a6907e`
+- [033 Contract 061 Card 032 Closeout And Kimi Reassessment](batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
+  — ready; planning-only 249/518 coverage closeout and exact candidate F
+  reassessment
 
 ## References
 

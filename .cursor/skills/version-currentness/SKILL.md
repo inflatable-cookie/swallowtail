@@ -44,6 +44,10 @@ rediscover them.
 - **One family per run.** No bulk bump from registry `latest`.
 - **Identity before claim.** Freeze evidence and name the segment shape
   before editing production claims.
+- **Changelog is discovery, not completeness evidence.** Release notes
+  and changelogs find candidate changes. When shipped files feeding
+  mapped behavior are non-byte-identical or package trees refactor,
+  derive a deterministic artifact tree inventory.
 - **Do not flatten families.** Adjacent products, auth paths, packages, or
   transports stay separate even when they share a vendor.
 - **No provider work.** No prompt, login, live catalogue, live session,
@@ -58,6 +62,9 @@ rediscover them.
 - **Do not reopen closed families** from this sweep.
 - **Gemini stays deferred** until the operator lifts that gate. Completing
   every other family does not lift it.
+- **Recheck official latest before final push.** Re-probe official latest
+  after evidence repairs and immediately before push; if it moved, stop
+  and ask.
 - **Ask** on major-line resets, exact-pin widening, new public operations,
   or anything Contract 029 does not settle.
 
@@ -110,6 +117,24 @@ unchanged. Pick the next rank or stop.
 Compare the **selected mapped** CLI/protocol subset to the frozen corpus.
 Help dumps, argv0, and unselected flags are not protocol changes.
 
+Changelog is discovery, never completeness evidence. For each published hop
+from the previous ceiling through intermediates to official latest:
+
+- If all executable files feeding mapped behavior are byte-identical (with
+  only package metadata or version bumps), record a compact exact
+  byte-identity ledger.
+- If any shipped file containing or feeding mapped behavior is
+  non-byte-identical, or package trees refactor, derive a deterministic
+  artifact tree inventory and classify every changed file affecting mapped
+  wire shape, lifecycle, failure, permissions, usage, capability
+  advertisement, session updates, config/mode, or session operations.
+- Explicitly bound provider-internal and unmapped changes with why they
+  cannot affect selected behavior.
+- Freeze the ledger with mutation-sensitive assertions on exact file and
+  key sets.
+- See [reference.md](reference.md) for recursive tree extraction, fixture
+  schema, and proof mechanics.
+
 Record:
 
 - host identity when present (version, digest, size, signature/publisher,
@@ -119,14 +144,17 @@ Record:
 - published stables between the previous ceiling and official latest
 - independently unqualified older points
 - the first unpublished later stable (synthetic `UnverifiedNewer` fixture)
-- changelog deltas that touch mapped flags versus new unmapped surfaces
+- tree inventory diffs or byte-identity hashes, classified deltas, and bounded unmapped keys
 
 Official artifacts live in `/tmp`, not the repo. Freeze secret-free JSON
 plus a short README under the adapter `tests/fixtures/`. No credentials,
 host paths, account ids, payloads, or conversation ids.
 
 Public git may be changelog-only. Then evidence is host binary + official
-release binary + changelog, not a source diff.
+release binary + changelog + artifact inventory, not an unverified source diff.
+
+Re-probe official latest after evidence repairs and immediately before final
+push; if it moved, obey the stop-and-ask rule.
 
 Always `cd` to the Swallowtail repo root before `cargo` / `effigy`.
 
@@ -142,8 +170,9 @@ Name one of:
 - **new-driver-or-facade** — public lifecycle changed materially; stop
   and ask
 - **stop** — identity needs a prompt/live session; mapped protocol
-  differs; official point moved mid-run; would flatten onto another
-  family; would require mapping a new public operation to close the pin
+  differs; official point moved mid-run or before push; would flatten onto
+  another family; would require mapping a new public operation to close
+  the pin
 
 Fixes that make already-mapped flags actually apply are compatible
 extension, not a milestone.

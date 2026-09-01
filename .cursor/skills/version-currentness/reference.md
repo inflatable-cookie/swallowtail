@@ -66,9 +66,39 @@ npm view <package> time --json
 <cli> --version
 ```
 
+Intermediate published hops and artifact tree comparison:
+
+Extract tarballs/binaries for previous ceiling, intermediate stables, and
+official latest into `/tmp/<pkg>-<ver>/`.
+
+Generate relative-path file manifests with SHA-256 digests across each
+extracted root without embedding host paths:
+
+```sh
+# Inside each extracted package root (e.g. /tmp/<pkg>-<ver>/package):
+find . -type f | sort | while read -r f; do
+  printf "%s  %s\n" "$(shasum -a 256 "$f" | awk '{print $1}')" "${f#./}"
+done > /tmp/manifest-<ver>.txt
+
+# Compare file inventory and digest deltas between hops
+diff -u /tmp/manifest-<vA>.txt /tmp/manifest-<vB>.txt
+```
+
 Compare selected mapped help against the frozen `help.txt` / protocol
 fixture. Diff the whole dump only to find additions, then classify each
 addition as mapped, unmapped, or argv0 noise.
+
+For multi-file packages or refactored trees, inspect every changed file that
+feeds mapped routes. Byte-identical mapped files across hops are strong
+stability evidence. For non-identical files, inspect `diff -u` to bound
+internal/unmapped changes vs wire/lifecycle changes.
+
+Pre-push official latest recheck:
+
+```sh
+npm view <package> version
+# or gh api repos/<owner>/<repo>/releases/latest
+```
 
 Do not re-download an official asset already extracted in this session
 unless the digest does not match.
@@ -81,9 +111,31 @@ Secret-free directory, for example
 - `identity.json` — axis, host, official, published stables since previous
   ceiling, unpublished next, keep-gap flags, claim-at-observation, and
   `identity_decision`
-- `protocol.json` — selected flags still present, unmapped additions,
-  decoder specimen name, no-prompt / no-live / no-host-change flags
+- `protocol.json` — selected protocol invariants, classified deltas across
+  published hops, bounded unmapped key sets with explicit rationale,
+  byte-identical mapped file flags, no-prompt / no-live / no-host-change flags
+- `dist-inventory.json` — required when shipped files feeding mapped behavior
+  are non-byte-identical or package trees refactor:
+  - `compared`: array of version strings from previous ceiling through official latest
+  - `package_file_counts`: map of version to total file count
+  - `identical_through_<range>`: array of files unchanged across all hops
+  - `from_<vA>_to_<vB>`: per-hop `added`, `removed`, `changed`, `identical` arrays
+  - `hashes`: map of key files to per-version SHA-256 digests
 - `README.md` — short, no secrets
+
+The inventory proves the exact file delta across published hops; it does not
+require an exhaustive semantic function catalogue for clearly internal code.
+When all executable and shipped files feeding mapped behavior are byte-identical
+across hops (with only package metadata or version string bumps), a compact
+byte-identity ledger in `protocol.json` and `identity.json` suffices without
+authoring a full `dist-inventory.json`.
+
+Delta ledger tests (`<family>_<ver>_delta_ledger.rs` or integration test):
+
+- assert exact string sets and key objects (`assert_exact_string_set`, `assert_true_object`, exact arrays)
+- assert package file counts and exact `added`/`changed`/`identical` sets when a full inventory is used
+- assert byte-identical mapped file hashes or compact byte-identity assertions across hops
+- ensure test fails if unmapped keys or file sets mutate independently of self-authored booleans
 
 `claim_at_observation` is the **before** claim. The decision records the
 intended after shape. Production `selection.rs` still matches "before"
@@ -97,9 +149,12 @@ until the claim card.
 - Question: remaining rank plus compatible-extension / milestone / stop
 - Remaining AllowUnverified table at observation time (this family's rank
   only needs to be honest; do not rewrite older research tables)
-- Method: what was compared; no prompt; host not replaced
+- Method: what was compared; versions extracted in `/tmp`; file counts or
+  byte-identity digests per hop; reference to frozen `dist-inventory.json`
+  when generated; no prompt; host not replaced
 - Identity table: host vs official, with digests
-- Selected protocol: mapped subset vs unmapped extras
+- Selected protocol: mapped subset vs unmapped extras; byte-identical mapped
+  files; classified delta categories; unmapped boundaries with reasons
 - Decision: bullet the intended claim shape; name the claim card
 - Sources: host, official URL, changelog, asset
 
@@ -210,8 +265,10 @@ Stop the family and ask, leaving claims unchanged, when:
 - exact artifact identity cannot be corroborated from official sources
 - selected mapped help or protocol differs from recorded evidence
 - qualifying the official point needs a provider prompt or live session
-- official latest moves during the run
+- official latest moves during the run or before final push
 - the shape would flatten onto another family
 - a new mapped public operation is required before the pin can be named
 - the family is exact-pin / qualified-only and the operator did not ask
   to reopen it
+- shipped tree inventory reveals unclassified changes to mapped wire format,
+  lifecycle, or failure behavior

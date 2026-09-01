@@ -16,7 +16,7 @@ fn pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled() {
     let version = String::from_utf8(output.stdout).expect("version output is UTF-8");
     let binding = kimi_code_binding(version.trim()).expect("Kimi emits one semantic version");
     assert!(
-        kimi_acp_claim().permits(binding.version()),
-        "installed stable Kimi remains qualified or visibly unverified newer"
+        kimi_acp_claim().supports(binding.version()),
+        "installed stable Kimi remains exact qualified"
     );
 }

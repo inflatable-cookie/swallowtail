@@ -1,10 +1,11 @@
 # Kimi Code ACP 0.39.x Containment And Mediation Gate
 
-Status: stopped; one operator decision required; no direction accepted
+Status: completed; operator selected A2
 Owner: Tom
 Date: 2026-09-01
 Source: operator gate request, completed g05.016 cards 041-042, Research 270,
-and `main` at `2756ad6fa11c5d7cf48e5a5022fa107ad233f3a7`
+`main` at `2756ad6fa11c5d7cf48e5a5022fa107ad233f3a7`, and operator answer A2
+on merge `018c4769eee1bef26aaf8173c44b5656316212b9`
 
 ## Purpose
 
@@ -21,9 +22,20 @@ analyses each, marks the impossible, dishonest, inconsistent, and incomplete
 shapes that are not choices, and returns exactly one question with no
 sub-choice.
 
-It is planning evidence. It authorizes no Rust, no contract amendment, no
-claim change, no implementation card, no provider contact, and no coverage
-claim. The recommendation below is analysis, not an accepted decision.
+It is planning evidence for the recorded operator answer. Card 043 is the
+authorized claim change. This document does not authorize containment,
+contract amendment, or a second operator question. Section 4 remains analysis,
+not a substitute for the recorded answer.
+
+## Operator Answer
+
+**A2**, recorded 2026-09-01.
+
+Indefinite `QualifiedOnly` cap at `0.38.0` with one artifact-level upstream
+reopen trigger. Card 043 is the follow-on claim card. The trigger authorizes a
+fresh identity run and a fresh claim decision. It never authorizes automatic
+admission and does not restore `AllowUnverified`. No further question is
+returned.
 
 ## Preserved Facts
 
@@ -31,11 +43,11 @@ These are load-bearing inputs, not conclusions of this gate.
 
 - Kimi ACP `0.39.0` and `0.39.1` are exact excluded points and classify
   `Incompatible`. `InterfaceCompatibilityClaim::assess` tests exclusions
-  before the `AllowUnverified` newer path.
-- The ACP claim's newer-version posture is `AllowUnverified`
-  (`selection.rs:116`), so current `main` is safe only for those two exact
-  points. Any other published point above `0.38.0` falls through to the
-  unverified-newer path.
+  before the newer-version path.
+- At gate compile, the ACP claim's newer-version posture was `AllowUnverified`
+  (`selection.rs:116`), so `main` was safe only for those two exact points.
+  Any other published point above `0.38.0` would fall through to the
+  unverified-newer path. Card 043 moved that posture to `QualifiedOnly`.
 - Under `terminal: false`, upstream `0.39.x` local-spawns host processes in
   the session working directory.
 - `HarnessIsolation::AmbientHost` plus a `Read` or `ReadWrite` resource lease
@@ -191,17 +203,18 @@ Not governing choices:
 
 ### Why a cap must move the posture
 
-`kimi_acp_claim()` binds `InterfaceNewerVersionPosture::AllowUnverified`
-(`selection.rs:116`). `assess` tests exclusions first, so exact `0.39.0` and
-`0.39.1` are `Incompatible` — and every *other* point above `0.38.0` falls
-through to the `AllowUnverified` path. The claim's own test already records
-this: unpublished `0.39.2` assesses as `UnverifiedNewer` today.
+Before card 043 applied operator A2, `kimi_acp_claim()` bound
+`InterfaceNewerVersionPosture::AllowUnverified`. `assess` tests exclusions
+first, so exact `0.39.0` and `0.39.1` were `Incompatible` — and every *other*
+point above `0.38.0` fell through to the `AllowUnverified` path. Pre-A2 claim
+tests recorded unpublished `0.39.2` as `UnverifiedNewer`.
 
-So the current shape is not a cap. It is a ceiling plus two named holes
-plugged. The moment upstream publishes `0.39.2` or `0.40.0`, that release is
-admissible on the most recent qualified behavior revision, carrying the same
-uncontained runner, before any checkpoint can add an exclusion. Capping by
-exclusion is a race against publication that Swallowtail loses by default.
+So the pre-A2 shape was not a cap. It was a ceiling plus two named holes
+plugged. The moment upstream published `0.39.2` or `0.40.0`, that release would
+have been admissible on the most recent qualified behavior revision, carrying
+the same uncontained runner, before any checkpoint could add an exclusion.
+Capping by exclusion is a race against publication that Swallowtail loses by
+default.
 
 R3 is therefore rejected rather than offered. A cap that has to be re-armed
 after each upstream release is not a cap, and an operator selecting "cap"
@@ -214,10 +227,10 @@ only mechanism in the current claim shape that closes the future-release race,
 and it makes the two exclusions redundant rather than load-bearing — they stay
 as recorded evidence of why the cap exists.
 
-**Current `main` is safe only for the exact known exclusions.** `0.39.0` and
-`0.39.1` cannot run. Nothing in `main` prevents a future published point from
-running. Closing that is work the chosen A follow-on card does; it is not
-already done.
+A2 is now applied. `kimi_acp_claim()` binds `QualifiedOnly`. Current `main` is
+no longer the pre-A2 exclusion-only shape: every point above `0.38.0` fails
+closed. Closing the future-release race is the work card 043 did; this section
+is the pre-A2 analysis that made that card necessary.
 
 ### Why A1 and A2 still differ
 
@@ -570,20 +583,18 @@ it.
 
 ## Review Oracle
 
-Invariant: this document is planning evidence for a stopped gate. It authorizes
-no implementation and accepts no direction.
+Invariant: this document is planning evidence for a recorded A2 answer. Card
+043 is the authorized claim change. Section 4 remains analysis.
 
 Fail any later change that:
 
-- treats this gate as decided, or reads section 4 as an accepted direction;
-- records a direction in roadmap status, contract language, the standing lane,
-  or the Next Task pointer without a recorded operator answer;
+- treats A1 or B as the recorded answer, or reads section 4 as if it were the
+  operator answer;
+- records a different direction without a new recorded operator answer;
 - offers, records, or implements a cap that leaves `kimi-code.acp` on
   `InterfaceNewerVersionPosture::AllowUnverified` and relies on adding
-  exclusions release by release — that is R3; the next published point is
-  admissible before any checkpoint can react;
-- treats the `QualifiedOnly` move as an open sub-question, an optional part of
-  A1 or A2, or work that is already done on current `main`;
+  exclusions release by release — that is R3;
+- treats the `QualifiedOnly` move as an open sub-question or as optional;
 - implements A2's trigger as automatic admission, as a return to
   `AllowUnverified`, or as anything short of a fresh identity run and a fresh
   claim decision;
@@ -624,25 +635,19 @@ Fail any later change that:
   `terminal: false` — see R1; there is no message to mediate;
 - requalifies `0.39.0` or `0.39.1`, removes either from
   `ACP_EXCLUDED_AUTHORITY_VERSIONS`, or raises
-  `KIMI_CODE_LATEST_QUALIFIED_VERSION` above `0.38.0`, before a recorded
-  operator answer and the proof obligations that answer carries;
+  `KIMI_CODE_LATEST_QUALIFIED_VERSION` above `0.38.0` without a fresh identity
+  run authorized by the A2 trigger and a fresh claim decision;
 - publishes a platform-conditional qualified segment through the current
   `InterfaceCompatibilityClaim` shape — it has no host or platform dimension;
 - changes `kimi-code.local-server`, `kimi-code.headless`, `kimi-platform.chat`,
   or any second family from this gate;
 - touches g05.009, card 034, or the 249 proved / 518 remaining projection
   counts;
-- lifts the Gemini deferral, or runs the all-route currentness checkpoint
-  before this decision is recorded;
-- compiles an implementation card for any direction before the operator
-  answers, or compiles the follow-on card for one direction as if the others
-  were closed.
+- lifts the Gemini deferral from this gate.
 
 ## Validation Boundary
 
-None beyond the planning batch that carries it: `effigy qa:docs`,
-`effigy qa:northstar`, and `git diff --check`. This document changes no Rust,
-no manifest, no fixture, no matrix, no guide, and no contract.
+The gate itself was planning-only. Card 043 owns the claim-change validation.
 
 ## Authority
 

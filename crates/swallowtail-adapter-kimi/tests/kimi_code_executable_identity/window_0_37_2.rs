@@ -82,10 +82,14 @@ fn identity_and_claim_qualify_0_37_2_as_compatible_extension() {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
-    assert!(matches!(
+    assert_eq!(
+        claim.assess(&version("0.38.1")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert_eq!(
         claim.assess(&version("0.39.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert_eq!(
         kimi_code_binding("0.37.2")
             .expect("version binds")

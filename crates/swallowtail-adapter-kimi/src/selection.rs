@@ -13,12 +13,14 @@ pub const KIMI_CODE_AXIS: &str = "kimi-code.executable";
 pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
 /// Most recent qualified Kimi Code ACP version.
 ///
-/// This does not track the family's newest stable. From `0.39.0` the
-/// agent-core-v2 ACP terminal runner replaces two fail-closed errors with a
-/// local host-process spawn, and Swallowtail always advertises
-/// `terminal: false`, so that branch always applies. Nothing in this adapter
-/// or the runtime contains that spawn, so those points are excluded rather
-/// than qualified. See `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
+/// This does not track the family's newest stable. The ACP claim is
+/// `QualifiedOnly` at this ceiling: every point above `0.38.0` fails closed.
+/// From `0.39.0` the agent-core-v2 ACP terminal runner replaces two
+/// fail-closed errors with a local host-process spawn, and Swallowtail always
+/// advertises `terminal: false`, so that branch always applies. Nothing in
+/// this adapter or the runtime contains that spawn. Exact `0.39.0` and
+/// `0.39.1` stay excluded as recorded evidence. See
+/// `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
 pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
@@ -38,9 +40,9 @@ const HEADLESS_V2_DEFAULT_BASELINE: &str = "0.33.0";
 
 /// Exact ACP points rejected for an uncontained process-authority change.
 ///
-/// Exclusions are assessed before the `AllowUnverified` newer-version path, so
-/// naming them here makes both points `Incompatible` instead of silently
-/// admissible.
+/// Under `QualifiedOnly` every point above `0.38.0` already fails closed.
+/// These exclusions stay as recorded evidence of why the cap exists; they are
+/// not a growing deny-list.
 const ACP_EXCLUDED_AUTHORITY_VERSIONS: [&str; 2] = ["0.39.0", "0.39.1"];
 
 pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
@@ -109,11 +111,11 @@ pub fn kimi_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 /// Returns the qualified compatibility claim for Kimi Code ACP.
 pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-2")
+        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-5")
             .expect("static Kimi claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
-        InterfaceNewerVersionPosture::AllowUnverified,
+        InterfaceNewerVersionPosture::QualifiedOnly,
         [
             InterfaceVersionSegment::exact(
                 version(KIMI_CODE_BASELINE_VERSION).expect("static Kimi version is valid"),
@@ -328,9 +330,13 @@ mod tests {
         }
 
         // The 0.39 line carries an uncontained process-authority change under
-        // the `terminal: false` capabilities this adapter advertises, so both
-        // exact points are excluded rather than left admissible.
-        for excluded in ACP_EXCLUDED_AUTHORITY_VERSIONS {
+        // the `terminal: false` capabilities this adapter advertises. The
+        // `QualifiedOnly` cap refuses every point above `0.38.0`; the named
+        // exclusions stay as recorded evidence. Expected membership is a
+        // local exact set, independent of `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
+        let excluded: Vec<&str> = claim.exclusions().map(InterfaceVersion::as_str).collect();
+        assert_eq!(excluded, ["0.39.0", "0.39.1"]);
+        for excluded in ["0.39.0", "0.39.1"] {
             assert_eq!(
                 claim.assess(&version(excluded)),
                 InterfaceCompatibilityAssessment::Incompatible,
@@ -339,14 +345,14 @@ mod tests {
             assert!(!claim.permits(&version(excluded)));
         }
 
-        // `0.39.2` is unpublished and stays the first admissible newer point.
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.39.2"))
-        else {
-            panic!("stable newer release remains unverified");
-        };
-        assert_eq!(newer.behavior_revision().as_str(), DECLARED_EFFORT_BEHAVIOR);
-        assert_eq!(newer.latest_qualified().as_str(), "0.38.0");
+        for newer in ["0.38.1", "0.39.2", "0.40.0"] {
+            assert_eq!(
+                claim.assess(&version(newer)),
+                InterfaceCompatibilityAssessment::Incompatible,
+                "{newer} must fail closed under QualifiedOnly"
+            );
+            assert!(!claim.permits(&version(newer)));
+        }
     }
 
     #[test]
@@ -417,21 +423,20 @@ mod tests {
     }
 
     #[test]
-    fn installed_observation_keeps_qualified_and_unverified_distinct() {
+    fn installed_observation_maps_qualified_acp_points() {
         let claim = kimi_acp_claim();
-        for (value, qualified, behavior) in [
-            ("0.28.1", true, KimiAcpBehavior::LegacyReasoning),
-            ("0.29.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.29.1", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.29.2", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.30.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.31.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.31.1", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.32.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.36.1", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.37.2", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.38.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.39.2", false, KimiAcpBehavior::DeclaredEffort),
+        for (value, behavior) in [
+            ("0.28.1", KimiAcpBehavior::LegacyReasoning),
+            ("0.29.0", KimiAcpBehavior::DeclaredEffort),
+            ("0.29.1", KimiAcpBehavior::DeclaredEffort),
+            ("0.29.2", KimiAcpBehavior::DeclaredEffort),
+            ("0.30.0", KimiAcpBehavior::DeclaredEffort),
+            ("0.31.0", KimiAcpBehavior::DeclaredEffort),
+            ("0.31.1", KimiAcpBehavior::DeclaredEffort),
+            ("0.32.0", KimiAcpBehavior::DeclaredEffort),
+            ("0.36.1", KimiAcpBehavior::DeclaredEffort),
+            ("0.37.2", KimiAcpBehavior::DeclaredEffort),
+            ("0.38.0", KimiAcpBehavior::DeclaredEffort),
         ] {
             let observation = InstalledExecutableObservation::classify(
                 swallowtail_core::ExecutionHostId::new("fixture.host").expect("valid host"),
@@ -442,28 +447,18 @@ mod tests {
                 &claim,
             )
             .expect("observation classifies");
-            assert_eq!(observation.is_qualified(), qualified);
-            match observation.compatibility() {
-                InstalledExecutableCompatibility::Qualified(matched) => {
-                    assert!(qualified);
-                    assert_eq!(
-                        matched.behavior_revision().as_str(),
-                        match behavior {
-                            KimiAcpBehavior::LegacyReasoning => {
-                                "kimi.acp.reasoning.legacy-select-v1"
-                            }
-                            KimiAcpBehavior::DeclaredEffort => DECLARED_EFFORT_BEHAVIOR,
-                        }
-                    );
+            assert!(observation.is_qualified());
+            let InstalledExecutableCompatibility::Qualified(matched) = observation.compatibility()
+            else {
+                panic!("selected observations stay qualified under QualifiedOnly");
+            };
+            assert_eq!(
+                matched.behavior_revision().as_str(),
+                match behavior {
+                    KimiAcpBehavior::LegacyReasoning => "kimi.acp.reasoning.legacy-select-v1",
+                    KimiAcpBehavior::DeclaredEffort => DECLARED_EFFORT_BEHAVIOR,
                 }
-                InstalledExecutableCompatibility::UnverifiedNewer(newer) => {
-                    assert!(!qualified);
-                    assert_eq!(newer.behavior_revision().as_str(), DECLARED_EFFORT_BEHAVIOR);
-                }
-                InstalledExecutableCompatibility::Incompatible => {
-                    panic!("selected observations are permitted");
-                }
-            }
+            );
         }
     }
 

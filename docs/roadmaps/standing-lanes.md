@@ -27,12 +27,18 @@ then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
 Last one-family claim: Kimi Code installed harness `0.39.1` (g05.016, cards
-041-042). Headless v1 is `0.29.0..=0.32.0` and headless v2 is
-`0.33.0..=0.39.1`, above which unpublished `0.39.2` stays permitted
-`UnverifiedNewer`. ACP stops at `0.28.1` plus `0.29.0..=0.38.0` with exact
-`0.39.0` and `0.39.1` excluded as `Incompatible`; above its `0.38.0` ceiling
-the first admissible unverified-newer point is unpublished `0.38.1`.
-`kimi-code.local-server` stays exact `0.28.1` plus `0.29.0..=0.38.0`.
+041-042) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
+`0.29.0..=0.32.0` and headless v2 is `0.33.0..=0.39.1`, above which unpublished
+`0.39.2` stays permitted `UnverifiedNewer`. ACP is `QualifiedOnly` at exact
+`0.28.1` plus `0.29.0..=0.38.0` with exact `0.39.0` and `0.39.1` excluded as
+recorded evidence; every point above `0.38.0` fails closed. A shipped-artifact
+identity run may reopen planning only if every invocation path fails closed
+again for a terminal-less client, or upstream supplies a ProviderEnforced
+boundary satisfying Contracts 017/023. The trigger authorizes a fresh
+identity/claim decision, never automatic admission and never restoration of
+AllowUnverified by itself.
+`kimi-code.local-server` stays exact `0.28.1` plus `0.29.0..=0.38.0` and
+remains `AllowUnverified`.
 
 Previous one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
 Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
@@ -73,37 +79,31 @@ rejects. `kimi.headless.stream-json.v1` corrects down to `0.29.0..=0.32.0`;
 `0.33.0..=0.39.1`; host `0.34.0` reclassifies to qualified Maintained v2.
 Unpublished `0.39.2` remains permitted `UnverifiedNewer` on that axis.
 
-`kimi-code.acp` stops at `0.38.0`. From `0.39.0` the agent-core-v2 ACP
-terminal runner replaces two fail-closed errors with a local host-process
-spawn in the leased working resource, and the route always advertises
-`terminal: false`, so that branch always applies. The containment trace found
-none: `HarnessIsolation::AmbientHost` makes no isolation claim, Contract 015
-denies filesystem containment from process ownership and treats a terminal
-request from a terminal-less client as scope-stopping, and no adapter or
-runtime control mediates the spawn. Exact `0.39.0` and `0.39.1` are excluded
-and classify `Incompatible`; unpublished `0.38.1` remains the first admissible
-unverified-newer point above the `0.38.0` ACP ceiling. No new ACP behavior
-revision was created.
+`kimi-code.acp` stops at `0.38.0` under `QualifiedOnly`. From `0.39.0` the
+agent-core-v2 ACP terminal runner replaces two fail-closed errors with a local
+host-process spawn in the leased working resource, and the route always
+advertises `terminal: false`, so that branch always applies. The containment
+trace found none: `HarnessIsolation::AmbientHost` makes no isolation claim,
+Contract 015 denies filesystem containment from process ownership and treats a
+terminal request from a terminal-less client as scope-stopping, and no adapter
+or runtime control mediates the spawn. Exact `0.39.0` and `0.39.1` stay
+excluded as recorded evidence; unpublished `0.38.1`, unpublished `0.39.2`, and
+farther `0.40.x` fail closed with them. No new ACP behavior revision was
+created.
 
 `kimi-code.local-server` stays a separate family and is unchanged; its `kimi
 web` deltas are recorded as observations only. No provider prompt, model
 request, authentication, catalogue or session work, live session, install,
 host update, or execution of downloaded official binaries was required.
 
-The direction for that ACP stop is not settled by the claim. g05.017 compiles
-the
-[containment and mediation gate](../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
-and returns exactly three mutually exclusive directions; no direction is
-accepted, and this lane records none. All three move the claim's newer-version
-posture to `QualifiedOnly`, so the lane must treat the present state as
-incomplete: the ACP claim binds `AllowUnverified`, and a newly published point
-above `0.38.0` would fall through to the unverified-newer path before a
-checkpoint could react. Until the operator answers, the lane keeps
-`kimi-code.acp` capped at `0.38.0`, keeps exact `0.39.0` and `0.39.1` excluded,
-and adds no new exclusion, trigger, or posture change on its own authority. It
-must not adopt a growing exclusion set as a substitute for the posture move.
-The next all-route currentness checkpoint runs serially after that answer, not
-alongside it, and does not rank the Kimi family until then.
+Operator A2 is recorded. A shipped-artifact identity run may reopen planning
+only if every invocation path fails closed again for a terminal-less client,
+or upstream supplies a ProviderEnforced boundary satisfying Contracts 017/023.
+The trigger authorizes a fresh identity/claim decision, never automatic
+admission and never restoration of AllowUnverified by itself. The lane must
+not adopt a growing exclusion set as a substitute for the posture. The next
+all-route currentness checkpoint runs serially after that cap, and does not
+rank the Kimi family until then.
 
 ### Previous Completed Family
 

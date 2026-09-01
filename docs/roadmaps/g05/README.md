@@ -31,11 +31,11 @@ enforcement.
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | g05.016 split the Kimi Code installed-harness family: headless v2 corrected to `0.33.0..=0.39.1`, headless v1 corrected to `0.29.0..=0.32.0`, and `kimi-code.acp` stopped at `0.38.0` with exact `0.39.0` and `0.39.1` excluded for an uncontained process-authority change; `kimi-code.local-server` stays a separate family | Contract 029 identity-before-claim; Research 267-270; current-main validation | `g05.016` cards 041-042 |
-| Settle the direction for a route whose upstream gained uncontained process authority. | gate compiled; strict-paused on one operator decision; exactly three mutually exclusive directions; no direction accepted | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, no batch card |
+| Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 
 ## Planned Next Roadmaps
 
-- [g05.017 Kimi Code ACP 0.39.x Containment Gate](017-kimi-code-acp-0-39-containment-gate.md) — planned; strict-paused; the containment and mediation gate compiles the authority failure path, the actor ledger, and exactly three mutually exclusive directions for `kimi-code.acp` above `0.38.0`, all of which move the claim to `QualifiedOnly`; no batch card, because each direction implies a different first card
+- [g05.017 Kimi Code ACP 0.39.x Containment Gate](017-kimi-code-acp-0-39-containment-gate.md) — completed; operator selected A2; card 043 capped `kimi-code.acp` at `QualifiedOnly` with one artifact-level reopen trigger
 - [g05.016 Kimi Code 0.39.1 Useful Newer](016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 corrected to `0.33.0..=0.39.1` and v1 to `0.29.0..=0.32.0`; the ACP axis holds its `0.38.0` ceiling and excludes exact `0.39.0` and `0.39.1`
 - [g05.015 Pi RPC 0.84.4 Useful Newer](015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official npm `0.84.4`
 - [g05.014 Claude Code 2.1.252 Useful Newer](014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official npm `2.1.252`
@@ -53,10 +53,11 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has seventeen numbered roadmaps: 11 completed milestones including
-standing currentness at 004, 005, 012, 013, 014, 015, and 016 and contract
-promotion at 008 and 010, honest evidence stops at 002, 003, 007, and 011.
-Milestones 009 and 017 are planned and strict-paused, each on its own operator
+g05 has seventeen numbered roadmaps: 12 completed milestones including
+standing currentness at 004, 005, 012, 013, 014, 015, and 016, the A2 ACP cap
+at 017, and contract promotion at 008 and 010, honest evidence stops at 002,
+003, 007, and 011.
+Milestone 009 is planned and strict-paused on its operator
 decision.
 
 ## Current Boundary
@@ -275,47 +276,16 @@ excluded because the agent-core-v2 ACP terminal runner spawns uncontained
 local host processes under the `terminal: false` capabilities the route
 advertises. `kimi-code.local-server` stays a separate family.
 
-g05.017 then compiles the direction that g05.016 deliberately did not record.
-The
-[containment and mediation gate](../../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
-re-derives the authority failure path from current source: the prepared plan
-binds `HarnessIsolation::AmbientHost` and `SessionAccessPolicy::ambient_harness`,
-the working-resource lease supplies the `cwd`, the process service starts
-`kimi acp`, and `initialize` advertises `terminal: false` — after which the
-`0.39.x` runner's `local.spawn` branch is the only branch this route can take.
-The actor ledger finds nothing that observes, prevents, mediates, or attests
-it; `session/cancel` and process-group cleanup reach it only transitively and
-only for cooperative descendants. The `Read` lease used by catalogue and import
-passes `resource_io: None` and advertises `writeTextFile: false`, so a
-read-declared operation would attach an agent with unrestricted process
-authority in the leased root. Exactly three mutually exclusive directions are
-compiled — a permanent `QualifiedOnly` cap, an indefinite `QualifiedOnly` cap
-with an artifact-level upstream re-open trigger, and funding `HostEnforced`
-execution-host containment while the cap holds — and none is accepted. All
-three move the claim's newer-version posture to `QualifiedOnly`: the ACP claim
-binds `AllowUnverified` today, so current `main` is safe only for the exact
-known exclusions and a newly published point above `0.38.0` would fall through
-to the unverified-newer path before a checkpoint could react. Adapter or
-runtime mediation under `terminal: false` is impossible because the agent
-issues no terminal request. A cap that keeps `AllowUnverified` and adds
-exclusions release by release is internally inconsistent and rejected.
-Negotiated terminal execution is not a governing choice: it does not close
-`0.39.1` alone, because the runner also falls back for any invocation that is
-not the interactive Bash tool, and it cannot be selected without containment or
-an upstream change, so B+C and C-plus-upstream are recorded as later designs
-only. Containment's mechanism fits the existing host-private launch recipe, but
-its claim does not: no `ProcessRequest` field, `ProcessService` parameter, or
-`HostServiceKind` binds or attests it, `HarnessIsolation::HostEnforced`
-compiles today without any attestation, and `InterfaceCompatibilityClaim` has
-no platform dimension for a per-platform result. The gate states a
-recommendation as analysis only and carries no batch card, because each
-direction implies a different first card.
-g05.017 is planned and `strict-paused` on that one question; the all-route
-currentness checkpoint stays serially after it.
+g05.017 then compiled the direction that g05.016 deliberately did not record.
+The operator selected **A2**: indefinite `QualifiedOnly` cap at `0.38.0` with
+one artifact-level upstream reopen trigger. Card 043 moved
+`kimi-code.acp` from `AllowUnverified` to `QualifiedOnly`, kept exact
+`0.39.0` and `0.39.1` excluded, and left local-server `AllowUnverified`. The
+all-route currentness checkpoint runs serially after that cap.
 
 ## Milestones
 
-- [017 Kimi Code ACP 0.39.x Containment Gate](./017-kimi-code-acp-0-39-containment-gate.md) — planned; strict-paused on one operator decision; exactly three mutually exclusive directions compiled; no direction accepted
+- [017 Kimi Code ACP 0.39.x Containment Gate](./017-kimi-code-acp-0-39-containment-gate.md) — completed; operator selected A2; card 043
 - [016 Kimi Code 0.39.1 Useful Newer](./016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 `0.33.0..=0.39.1`, headless v1 `0.29.0..=0.32.0`, ACP ceiling held at `0.38.0` with `0.39.0` and `0.39.1` excluded
 - [015 Pi RPC 0.84.4 Useful Newer](./015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official `0.84.4`
 - [014 Claude Code 2.1.252 Useful Newer](./014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official `2.1.252`

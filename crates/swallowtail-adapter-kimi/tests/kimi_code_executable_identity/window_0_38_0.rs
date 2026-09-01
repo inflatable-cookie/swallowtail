@@ -130,10 +130,14 @@ fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
-    assert!(matches!(
+    assert_eq!(
+        acp_claim.assess(&version("0.38.1")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert_eq!(
         acp_claim.assess(&version("0.39.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     let headless_claim = kimi_headless_claim();
     // Research 270 corrected this: 0.37.2's default -p engine is v2, so the
     // last Deprecated v1 point is 0.32.0, not 0.37.2.

@@ -32,7 +32,6 @@ impl SharedAgent {
             | Scenario::ReasoningEffort300Success
             | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess
             | Scenario::PlanConfirmationMissing
             | Scenario::PlanDrift
             | Scenario::PlanRejected => {
@@ -80,7 +79,6 @@ impl SharedAgent {
             | Scenario::PlanSuccess
             | Scenario::PlanLegacySuccess
             | Scenario::PlanCeilingSuccess
-            | Scenario::PlanNewerSuccess
             | Scenario::PlanMissing
             | Scenario::PlanAmbiguous
             | Scenario::PlanMalformed

@@ -113,7 +113,7 @@ fn owned_import_uses_the_same_binding_contract_and_joins_its_child() {
 }
 
 #[test]
-fn unverified_newer_import_requires_explicit_acceptance() {
+fn unverified_newer_local_server_stays_visible_without_an_acp_source_above_the_cap() {
     let server = FixtureServer::start_with_version("0.38.1");
     let host = LocalHost::new(&server);
     let host_id = value(ExecutionHostId::new, "fixture.host.newer");
@@ -130,33 +130,24 @@ fn unverified_newer_import_requires_explicit_acceptance() {
     let prepared = block_on(prepare_kimi_local_server_attached(
         input,
         probe("fixture-newer-prepare"),
-        services.clone(),
+        services,
     ))
     .expect("newer local server remains visible");
-    let source = source_authority(
+    assert!(
+        !prepared.server().is_qualified(),
+        "local-server 0.38.1 stays UnverifiedNewer"
+    );
+    let error = source_authority(
         host_id,
         "0.38.1",
         Some("fixture.kimi.state-root"),
         "session-1",
     )
-    .unwrap();
-    let rejected = prepared
-        .prepare_binding_import(import_input(
-            &prepared,
-            source.clone(),
-            "fixture-newer-rejected",
-        ))
-        .expect_err("newer import needs acceptance");
+    .expect_err("ACP above 0.38.0 cannot mint import authority");
     assert_eq!(
-        rejected.diagnostic().safe().code(),
-        "swallowtail.kimi.local_server.import.unverified_newer"
+        error.diagnostic().safe().code(),
+        "swallowtail.kimi.preparation.discovery_rejected"
     );
-    let accepted = prepared
-        .prepare_binding_import(
-            import_input(&prepared, source, "fixture-newer-accepted").allow_unverified_newer(),
-        )
-        .expect("explicitly accepted newer import preflights");
-    block_on(accepted.execute(services)).expect("accepted newer target imports");
 }
 
 #[test]

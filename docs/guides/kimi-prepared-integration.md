@@ -38,12 +38,14 @@ required by the immutable plan. ACP import also requires the opaque state-root
 identity. The membership OAuth credential remains a scoped opaque lease;
 Swallowtail never exposes or persists its value.
 
-ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified. Exact `0.39.0` and
-`0.39.1` are **excluded**: from `0.39.0` the agent-core-v2 ACP terminal runner
-replaces two fail-closed errors with a local host-process spawn in the leased
-working resource, and this route always advertises `terminal: false`, so that
-branch always applies. Nothing in the adapter or the runtime contains that
-spawn, so the points are refused rather than attempted.
+ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified under `QualifiedOnly`.
+Exact `0.39.0` and `0.39.1` are **excluded**: from `0.39.0` the agent-core-v2
+ACP terminal runner replaces two fail-closed errors with a local host-process
+spawn in the leased working resource, and this route always advertises
+`terminal: false`, so that branch always applies. Nothing in the adapter or
+the runtime contains that spawn. Every point above `0.38.0` fails closed,
+including unpublished `0.38.1`, the named exclusions, unpublished `0.39.2`,
+and farther `0.40.x`. ACP does not admit `UnverifiedNewer`.
 
 Headless `0.29.0..=0.32.0` is qualified under the audited legacy agent-core v1
 stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Headless
@@ -53,7 +55,7 @@ The split point is exact: through `0.32.0` the print engine is selected by
 `KIMI_CODE_EXPERIMENTAL_FLAG` and defaults to v1; from `0.33.0` it is selected
 by `KIMI_CODE_LEGACY_FLAG` and defaults to v2, and this adapter never sets
 that flag. Public facade `kimi-headless-stream-json-v1` covers both revisions.
-Later stable releases remain visible `UnverifiedNewer`; they do not inherit
+Later headless stables remain visible `UnverifiedNewer`; they do not inherit
 ACP catalogue/import support. Older, excluded, and prerelease observations do
 not prepare.
 
@@ -117,8 +119,7 @@ The portable options are reasoning `off`, `on`, `low`, `medium`, `high`,
 `xhigh`, or `max`, and optional `HarnessMode::Plan`. Prepared capability
 admission for reasoning follows the selected ACP behavior revision: exact
 `0.28.1` legacy boolean select rejects `xhigh` and `max` before host effects;
-exact `0.29.0..=0.38.0` (and permitted `UnverifiedNewer` mapped to
-declared-effort) may prepare them only when the current session-open
+exact `0.29.0..=0.38.0` may prepare them only when the current session-open
 `thinking` snapshot advertises that exact value. Catalogue declaration,
 caller request, one `session/set_config_option` dispatch, and response
 `currentValue` confirmation stay distinct; foreign advertised rows may

@@ -96,25 +96,31 @@ fn installed_solution_facade_keeps_acp_and_headless_selection_explicit() {
 }
 
 #[test]
-fn exact_newer_evidence_and_preparation_failures_remain_visible_before_effects() {
+fn exact_newer_points_fail_closed_before_preparation_effects() {
     let host_id = ExecutionHostId::new("fixture.prepared.newer").unwrap();
-    let host = FixtureHost::new(Scenario::ReasoningNewerSuccess);
-    let prepared = prepared(&host, host_id.clone(), "0.39.2");
-    assert!(!prepared.observation().is_qualified());
-    let profile = prepared
-        .prepare_session(profile_input(
-            "newer",
-            SessionOptions::default()
-                .with_reasoning_mode(swallowtail_core::ReasoningMode::new("high").unwrap()),
-        ))
-        .expect("unverified newer Kimi prepares");
-    assert!(!profile.evidence().observation().is_qualified());
-    let session =
-        block_on(profile.open_session(host.services(host_id))).expect("newer session opens");
-    assert_eq!(
-        block_on(session.close()),
-        swallowtail_runtime::CleanupOutcome::Clean
+    let operation_host = FixtureHost::new(Scenario::Complete);
+    let input = KimiPreparationInput::new(
+        ConfiguredInstanceId::new("kimi.prepared.newer").unwrap(),
+        InstanceRevision::new("1").unwrap(),
+        host_id.clone(),
+        target(),
+        EnvironmentRef::new("kimi.prepared.state").unwrap(),
+        access_profile(),
+        PreparedAccessEvidence::caller_asserted(access_status()),
     );
+    let (process, state) = FakeProcessService::completed("0.39.2\n");
+    let failure = block_on(prepare_kimi(
+        input,
+        probe(),
+        preparation_services(&operation_host, host_id, process),
+    ))
+    .expect_err("QualifiedOnly ACP refuses 0.39.2");
+    assert_eq!(
+        failure.stage(),
+        PreparationStage::CompatibilityClassification
+    );
+    assert!(state.waited());
+    assert!(!operation_host.process_started());
 
     let host_id = ExecutionHostId::new("fixture.prepared.rejected").unwrap();
     let operation_host = FixtureHost::new(Scenario::Complete);

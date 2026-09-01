@@ -1,6 +1,6 @@
 # g05.017 Kimi Code ACP 0.39.x Containment Gate
 
-Status: planned; strict-paused on one operator decision; no direction accepted
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -13,36 +13,30 @@ Vision tags: process authority, route currentness, Kimi Code, compatibility
 Hold `kimi-code.acp` above `0.38.0` on exactly one operator decision, with the
 authority failure path re-derived and the choice space closed.
 
-g05.016 recorded the claim outcome: exact `0.39.0` and `0.39.1` are excluded
-and classify `Incompatible` because the agent-core-v2 ACP terminal runner
-spawns local host processes under the `terminal: false` capabilities the route
-advertises, and no adapter or runtime control contains that spawn. It did not
-record a direction. This milestone compiles the direction question and stops.
+The operator selected **A2** on 2026-09-01: indefinite `QualifiedOnly` cap at
+`0.38.0` with one artifact-level upstream reopen trigger. Card 043 is the
+follow-on claim change. No further operator question is returned.
 
 The
 [containment and mediation gate](../../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
 holds the re-derived failure path, the actor ledger, the mutually exclusive
 choices, the per-choice analysis, the proved uncertainties, the review oracle,
-and the single question. It states a recommendation as analysis only. That
-recommendation is deliberately absent from this file, from the front doors,
-from the standing lane, and from every contract.
+and the single question. The operator recorded **A2**; the gate's section-4
+recommendation remains analysis, not a substitute for that answer.
 
 ## Runway
 
-1. The gate is compiled. The lane is paused.
-2. The operator answers the single question the gate returns.
-3. The answer selects one follow-on card shape. The gate names one per
-   direction; none is compiled here, because compiling one would choose the
-   direction. Every shape includes the `QualifiedOnly` posture move, because
-   the cap is not real without it.
+1. The gate is compiled. The lane was paused.
+2. The operator answered A2.
+3. Card 043 is the A2 follow-on claim card.
 4. The fresh all-route Contract 029 currentness checkpoint runs serially after
-   the answer is recorded, not before and not alongside.
+   card 043, not before and not alongside.
 
 ## Boundary
 
-Planning only. No Rust, no manifest, no fixture, no matrix, no guide, no
-claim change, no contract amendment, no behavior revision, no public API
-change, and no implementation card.
+This milestone is the planning gate. Card 043 owns the claim change. No
+contract amendment, behavior revision, public API change, containment
+implementation, or second operator question.
 
 No provider or model call, authentication, install, host mutation, live probe,
 or execution of a downloaded binary.
@@ -51,7 +45,7 @@ or execution of a downloaded binary.
 second family, the Gemini deferral, g05.009, card 034, and the 249 proved /
 518 remaining projection counts stay untouched.
 
-## Choices Compiled, Not Chosen
+## Choices Compiled; Operator Selected A2
 
 Exactly one of these governs. There is no sub-choice.
 
@@ -63,11 +57,10 @@ Exactly one of these governs. There is no sub-choice.
 
 All three move the claim's newer-version posture to
 `InterfaceNewerVersionPosture::QualifiedOnly`. That is not a separate question.
-The ACP claim binds `AllowUnverified` today, so current `main` is safe only for
-the exact known exclusions: any other published point above `0.38.0` falls
-through to the unverified-newer path and would be admissible before a
-checkpoint could react. The chosen direction's follow-on claim card closes that
-future-release race. A2's trigger authorizes a fresh identity run and a fresh
+Until card 043, the ACP claim bound `AllowUnverified`, so `main` was safe only
+for the exact known exclusions: any other published point above `0.38.0` fell
+through to the unverified-newer path and would have been admissible before a
+checkpoint could react. Card 043 closes that future-release race. A2's trigger authorizes a fresh identity run and a fresh
 claim decision; it never authorizes automatic admission and does not restore
 `AllowUnverified`.
 
@@ -85,9 +78,7 @@ of these rejections.
 
 ## Batch Cards
 
-None. Each direction implies a different first card, so compiling one would
-silently accept that direction. The gate names the smallest follow-on shape
-for each.
+- [043 Kimi Code ACP QualifiedOnly Cap](batch-cards/043-kimi-code-acp-qualified-only-cap.md) — completed; operator A2
 
 ## Acceptance
 
@@ -112,7 +103,7 @@ for each.
       wrapper
 - [x] production claims, code, manifests, matrices, fixtures, contracts,
       architecture, PAPERCUTS, and existing logs are unchanged
-- [ ] the operator answers the single question
+- [x] the operator answers the single question: **A2**
 
 ## Stop Conditions
 
@@ -126,4 +117,5 @@ for each.
 
 ## Auto-Continuation
 
-No. This lane is strict-paused on the operator decision.
+No. Card 043 closed the claim change. Next Task is the fresh all-route
+Contract 029 checkpoint.

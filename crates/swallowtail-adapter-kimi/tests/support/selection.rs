@@ -34,12 +34,28 @@ pub fn version_selection(host: ExecutionHostId, version: &str) -> FixtureSelecti
     selection_for(host, version, None, false)
 }
 
+pub fn try_version_selection(
+    host: ExecutionHostId,
+    version: &str,
+) -> Result<FixtureSelection, swallowtail_core::PreflightFailure> {
+    try_selection_for(host, version, None, false)
+}
+
 fn selection_for(
     host: ExecutionHostId,
     version: &str,
     reasoning: Option<&str>,
     plan_mode: bool,
 ) -> FixtureSelection {
+    try_selection_for(host, version, reasoning, plan_mode).expect("Kimi fixture preflight succeeds")
+}
+
+fn try_selection_for(
+    host: ExecutionHostId,
+    version: &str,
+    reasoning: Option<&str>,
+    plan_mode: bool,
+) -> Result<FixtureSelection, swallowtail_core::PreflightFailure> {
     let descriptor = swallowtail_adapter_kimi::kimi_acp_descriptor();
     let credential = CredentialRef::new("kimi.fixture.delegated-auth").expect("valid credential");
     let access_id = AccessProfileId::new("kimi.fixture.membership-oauth").expect("valid access id");
@@ -189,10 +205,10 @@ fn selection_for(
     .require_model_route();
     let context = PreflightContext::new(&descriptor, &instance, &access, &status, service_kinds)
         .with_model_route(&route);
-    let plan = preflight(&context, &requirements).expect("Kimi fixture preflight succeeds");
-    FixtureSelection {
+    let plan = preflight(&context, &requirements)?;
+    Ok(FixtureSelection {
         plan,
         credential,
         resource: WorkingResourceRef::new("kimi.fixture.workspace").expect("valid resource"),
-    }
+    })
 }

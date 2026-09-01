@@ -54,10 +54,10 @@ fn the_fixture_decision_is_the_shape_production_actually_encodes() {
 #[test]
 fn acp_holds_at_0_38_0_with_the_baseline_and_legacy_point_intact() {
     let claim = kimi_acp_claim();
-    assert_eq!(claim.id().as_str(), "kimi.acp.executable-window-2");
+    assert_eq!(claim.id().as_str(), "kimi.acp.executable-window-5");
     assert_eq!(
         claim.newer_version_posture(),
-        InterfaceNewerVersionPosture::AllowUnverified
+        InterfaceNewerVersionPosture::QualifiedOnly
     );
     assert_eq!(KIMI_CODE_BASELINE_VERSION, "0.28.1");
 

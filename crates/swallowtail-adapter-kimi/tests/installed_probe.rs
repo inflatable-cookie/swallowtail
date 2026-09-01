@@ -18,19 +18,9 @@ fn exact_versions_probe_only_the_host_approved_target() {
         swallowtail_testkit::ExecutionTopologyFixture::local(),
         swallowtail_testkit::ExecutionTopologyFixture::remote_authoritative(),
     ] {
-        for (version, qualified) in [
-            ("0.28.1", true),
-            ("0.29.0", true),
-            ("0.29.1", true),
-            ("0.29.2", true),
-            ("0.30.0", true),
-            ("0.31.0", true),
-            ("0.31.1", true),
-            ("0.32.0", true),
-            ("0.36.1", true),
-            ("0.37.2", true),
-            ("0.38.0", true),
-            ("0.39.2", false),
+        for version in [
+            "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0",
+            "0.36.1", "0.37.2", "0.38.0",
         ] {
             let host = topology.execution_host_id().clone();
             let executable = ExecutableRef::from_instance_target(topology.instance_target());
@@ -51,15 +41,11 @@ fn exact_versions_probe_only_the_host_approved_target() {
             assert_eq!(observation.execution_host_id(), &host);
             assert_eq!(observation.version().version().as_str(), version);
             assert_eq!(observation.claim_id(), kimi_acp_claim().id());
-            assert_eq!(observation.is_qualified(), qualified);
-            if !qualified {
-                let InstalledExecutableCompatibility::UnverifiedNewer(unverified) =
-                    observation.compatibility()
-                else {
-                    panic!("newer stable version remains unverified");
-                };
-                assert_eq!(unverified.latest_qualified().as_str(), "0.38.0");
-            }
+            assert!(observation.is_qualified());
+            assert!(matches!(
+                observation.compatibility(),
+                InstalledExecutableCompatibility::Qualified(_)
+            ));
             let captured = state.request();
             assert_eq!(captured.executable, executable.as_host_value());
             assert_eq!(captured.arguments, ["--version"]);
@@ -74,6 +60,25 @@ fn exact_versions_probe_only_the_host_approved_target() {
 #[test]
 fn incompatible_malformed_and_precancelled_observations_stay_distinct_and_safe() {
     let host = ExecutionHostId::new("fixture.host.classification").expect("valid host");
+    for newer in ["0.38.1", "0.39.2", "0.40.0"] {
+        let (process, _) = FakeProcessService::completed(&format!("{newer}\n"));
+        let incompatible = block_on(driver().discover_installed_executable(
+            request(
+                host.clone(),
+                fixture_executable(),
+                DiscoveryCancellation::new(),
+            ),
+            services(host.clone(), process),
+        ))
+        .expect("incompatible discovery completes");
+        assert_eq!(
+            incompatible.status(),
+            DiscoveryStatus::Incompatible,
+            "{newer} fails closed under QualifiedOnly"
+        );
+        assert!(incompatible.installed_executable_observation().is_some());
+    }
+
     let (process, _) = FakeProcessService::completed("0.28.2\n");
     let incompatible = block_on(driver().discover_installed_executable(
         request(

@@ -26,7 +26,8 @@ use swallowtail_runtime::{
 
 mod selection;
 pub use selection::{
-    plan_reasoning_selection, plan_selection, reasoning_selection, selection, version_selection,
+    plan_reasoning_selection, plan_selection, reasoning_selection, selection,
+    try_version_selection, version_selection,
 };
 mod agent;
 pub use agent::Scenario;

@@ -33,7 +33,6 @@ impl SharedAgent {
             Scenario::PlanSuccess
             | Scenario::PlanLegacySuccess
             | Scenario::PlanCeilingSuccess
-            | Scenario::PlanNewerSuccess
             | Scenario::ReasoningLegacySuccess
             | Scenario::ReasoningEffortSuccess
             | Scenario::ReasoningEffort291Success
@@ -41,7 +40,6 @@ impl SharedAgent {
             | Scenario::ReasoningEffort300Success
             | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess
             | Scenario::ReasoningEffortExtended => {
                 mode_confirmation(id, requested_value(message)?)
             }

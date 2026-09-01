@@ -25,7 +25,6 @@ fn qualified_and_unverified_versions_dispatch_one_plan_selection() {
             ("0.28.1", Scenario::PlanLegacySuccess, true),
             ("0.29.0", Scenario::PlanSuccess, true),
             ("0.38.0", Scenario::PlanCeilingSuccess, true),
-            ("0.39.2", Scenario::PlanNewerSuccess, false),
         ] {
             let host_id = topology.execution_host_id().clone();
             let selected = plan_selection(host_id.clone(), version);
@@ -90,8 +89,6 @@ fn admitted_reasoning_values_compose_before_plan_mode() {
         ("0.29.0", "high", Scenario::ReasoningEffortSuccess),
         ("0.29.0", "xhigh", Scenario::ReasoningEffortSuccess),
         ("0.29.0", "max", Scenario::ReasoningEffortSuccess),
-        ("0.39.2", "high", Scenario::ReasoningNewerSuccess),
-        ("0.39.2", "max", Scenario::ReasoningNewerSuccess),
     ] {
         let host_id = ExecutionHostId::new(format!("fixture.host.plan.compose.{version}.{mode}"))
             .expect("valid host id");

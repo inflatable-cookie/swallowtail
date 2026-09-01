@@ -47,10 +47,8 @@ pub(crate) fn acp_behavior(
         InstalledExecutableCompatibility::Qualified(assessment) => {
             assessment.behavior_revision().as_str()
         }
-        InstalledExecutableCompatibility::UnverifiedNewer(assessment) => {
-            assessment.behavior_revision().as_str()
-        }
-        InstalledExecutableCompatibility::Incompatible => {
+        InstalledExecutableCompatibility::UnverifiedNewer(_)
+        | InstalledExecutableCompatibility::Incompatible => {
             return Err(preparation_failure(
                 PreparationStage::CompatibilityClassification,
                 "swallowtail.kimi.preparation.behavior_incompatible",

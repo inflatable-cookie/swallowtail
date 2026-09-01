@@ -5,8 +5,7 @@ use swallowtail_core::{
 use swallowtail_runtime::SessionOptions;
 use swallowtail_testkit::{
     ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
-    assert_closed_semantic_compatibility_window, assert_unverified_newer_execution,
-    run_persistent_acp_profile,
+    assert_closed_semantic_compatibility_window, run_persistent_acp_profile,
 };
 
 #[test]
@@ -55,7 +54,14 @@ fn qualified_kimi_milestones_compose_with_shared_compatibility_assertions() {
             version("0.39.1"),
         ]);
     assert_closed_semantic_compatibility_window(&claim, &case);
-    assert_unverified_newer_execution(&claim, &version("0.39.2"));
+    for newer in ["0.38.1", "0.39.2", "0.40.0"] {
+        assert_eq!(
+            claim.assess(&version(newer)),
+            swallowtail_core::InterfaceCompatibilityAssessment::Incompatible,
+            "{newer} fails closed under QualifiedOnly"
+        );
+        assert!(!claim.permits(&version(newer)));
+    }
 }
 
 #[test]

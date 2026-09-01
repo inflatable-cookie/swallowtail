@@ -24,7 +24,6 @@ pub enum Scenario {
     ReasoningEffort300Success,
     ReasoningEffort310Success,
     ReasoningEffort311Success,
-    ReasoningNewerSuccess,
     ReasoningEffortExtended,
     ReasoningEffortNarrow,
     ReasoningMissing,
@@ -37,7 +36,6 @@ pub enum Scenario {
     PlanSuccess,
     PlanLegacySuccess,
     PlanCeilingSuccess,
-    PlanNewerSuccess,
     PlanMissing,
     PlanAmbiguous,
     PlanMalformed,
@@ -67,7 +65,6 @@ impl Scenario {
             Self::ReasoningEffort300Success => "0.30.0",
             Self::ReasoningEffort310Success => "0.31.0",
             Self::ReasoningEffort311Success => "0.31.1",
-            Self::ReasoningNewerSuccess | Self::PlanNewerSuccess => "0.39.2",
             Self::PlanLegacySuccess => "0.28.1",
             Self::PlanCeilingSuccess => "0.38.0",
             _ => "0.29.0",
@@ -89,7 +86,6 @@ impl Scenario {
                 | Self::PlanSuccess
                 | Self::PlanLegacySuccess
                 | Self::PlanCeilingSuccess
-                | Self::PlanNewerSuccess
                 | Self::PlanMissing
                 | Self::PlanAmbiguous
                 | Self::PlanMalformed
@@ -103,7 +99,6 @@ impl Scenario {
             Self::PlanSuccess
                 | Self::PlanLegacySuccess
                 | Self::PlanCeilingSuccess
-                | Self::PlanNewerSuccess
                 | Self::PlanConfirmationMissing
                 | Self::PlanDrift
                 | Self::PlanRejected
@@ -114,7 +109,6 @@ impl Scenario {
                 | Self::ReasoningEffort300Success
                 | Self::ReasoningEffort310Success
                 | Self::ReasoningEffort311Success
-                | Self::ReasoningNewerSuccess
                 | Self::ReasoningEffortExtended
         )
     }
@@ -280,8 +274,7 @@ impl SharedAgent {
             | Scenario::ReasoningEffort292Success
             | Scenario::ReasoningEffort300Success
             | Scenario::ReasoningEffort310Success
-            | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess => {
+            | Scenario::ReasoningEffort311Success => {
                 enqueue_session_metadata(state);
                 Self::enqueue(
                     state,

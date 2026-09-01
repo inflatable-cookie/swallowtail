@@ -29,11 +29,12 @@ generation to house currentness.
 Last one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
 Headless is `2.1.220..=2.1.257` and response-only is `2.1.227..=2.1.257`.
 Unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253` through
-`2.1.256` stay incompatible. Unpublished `2.1.258` stays permitted
-`UnverifiedNewer`. Host `2.1.257` matches official darwin-arm64 and stays
-observation-only. Watcher stays exact `2.1.251` behind its mechanism-change
-gate. Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed
-points. `AllowUnverified` remains.
+`2.1.256` stay incompatible. Official `2.1.258` is newer than the qualified
+bound and remains an exact `UnverifiedNewer` observation until a later family
+run. Host `2.1.257` matches official darwin-arm64 and stays observation-only.
+Watcher stays exact `2.1.251` behind its mechanism-change gate.
+Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
+`AllowUnverified` remains.
 
 Previous one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
 Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
@@ -89,13 +90,24 @@ frozen `2.1.252`; the dump adds `--system-prompt-snapshot` and expands
 `--bg` resume wording. Selected mapped stream-JSON flags stay. Changelog
 `2.1.257` extras stay unmapped. Unpublished `2.1.244`, `2.1.249`, and
 hop-skipped `2.1.253` through `2.1.256` remain incompatible; unpublished
-`2.1.258` remains permitted `UnverifiedNewer`. Watcher stays exact
-`2.1.251` and is not live-ready; official `2.1.257` is rejected at both
+`2.1.258` was permitted `UnverifiedNewer` at identity. Research 274 later
+observed official `2.1.258` as visible newer. Watcher stays exact `2.1.251`
+and is not live-ready; official `2.1.257` is rejected at both
 watcher admission seams. No provider prompt, live session, login, install,
 or host update was required.
 
 Research 271 remaining family after Claude Agent ACP `0.73.0` was this
 family alone and changed no claim.
+
+### Latest Checkpoint
+
+Research 274 revalidated all 40 production families on 2026-09-01. The
+partition is 12 unchanged, 7 visible unverified-newer, 20 record-only, and 1
+material candidate. Codex npm and GitHub stable moved to `0.152.1`; host
+`0.150.1` remains inside the qualified `0.152.0` range, so Codex is the sole
+next-family candidate. Claude Code `2.1.258` is visible newer but is not
+reopened after the completed g05.019 family. Gemini remains deferred,
+`kimi-code.acp` remains QualifiedOnly, and the checkpoint changes no claim.
 
 ### Previous Completed Family
 

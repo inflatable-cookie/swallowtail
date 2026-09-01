@@ -1,0 +1,12 @@
+route_id,operation_shape,semantic_id
+command-code.headless,model-catalogue,feature.model-catalogue
+command-code.headless,structured-run,feature.structured-run
+command-code.headless,interactive-session,feature.interactive-session
+command-code.headless,route-observation,feature.streaming-events
+command-code.headless,route-observation,feature.usage-evidence
+command-code.headless,route-capability,feature.cancellation-or-interruption
+command-code.headless,route-capability,feature.working-resource
+command-code.headless,route-capability,feature.prepared-facade
+command-code.headless,route-observation,feature.activity-observation
+command-code.headless,structured-run,control.model-selection
+command-code.headless,interactive-session,control.model-selection

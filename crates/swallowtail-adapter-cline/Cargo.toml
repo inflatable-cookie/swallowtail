@@ -65,3 +65,7 @@ path = "tests/prepared_facade.rs"
 [[test]]
 name = "prepared_headless_facade"
 path = "tests/prepared_headless_facade.rs"
+
+[[test]]
+name = "consumer_route_projection"
+path = "tests/consumer_route_projection.rs"

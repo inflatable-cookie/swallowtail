@@ -19,11 +19,35 @@ catalogue observation. `open_session`, `load_session`, `resume_session`,
 their exact behavior.
 
 The gate resolves the two decisions with no Claude Agent or Cline precedent. A
-foreign `DeclaredEffort` confirmation is an ordinary `Runtime` failure on the
-projected path, never a publishable rejection; the preserved path is unchanged.
-Under requested `"on"` the projected path publishes the exact
-provider-confirmed effort while the preserved path keeps its normalization, so
-the two cannot drift in failure code or cleanup.
+foreign `DeclaredEffort` confirmation is never a publishable rejection; the
+preserved path is unchanged. Under requested `"on"` the projected path
+publishes the exact provider-confirmed effort while the preserved path keeps
+its normalization, so the two cannot drift in failure code or cleanup.
+
+Exact-head review closed five gaps before merge review. Foreign and
+unretainable tokens reach the projected path through two disjoint branches, and
+the gate now fixes both separately. A concrete request confirmed foreign has
+already aborted in `NegotiatedReasoningSetup::confirm`, so no session exists to
+close and case 2 returns that preserved `effective_mismatch` unchanged; the new
+adapter codes belong only to case 4, reachable solely under `DeclaredEffort`
+with requested `"on"`, where the lifecycle succeeded and the projected path
+closes the opened session.
+
+`driver.rs` confirms reasoning before Plan, so a maximal request whose
+reasoning rejects never observes Plan. Both acknowledgement halves gain
+`RequestedNotObserved`, which contributes `pending` state and no domain entry,
+so the compound row carries only the observed reasoning rejection without
+inventing Plan truth or performing further provider work.
+
+Cross-seam source isolation is applicability, not identifier inequality:
+neither seam can observe the other's IDs, so each rejects only its own supplied
+pair, and the runtime composer's `snapshot_identity_rejected` is the
+cross-operation boundary. `KimiCatalogueProjectionFailure` gains
+`SourceIdentity(RuntimeFailure)` because `ConsumerRouteProjectionFailure` has
+no public constructor and `ProviderSessionOperationFailure` is the wrong
+authority before dispatch. `control.provider-session-catalogue` has exactly one
+emitter — a completed `list_sessions_with_projection` — and the prepared
+catalogue facade must not emit it in any state.
 
 Candidate F now passes the Batch 9.4 promotion rubric and is ready as card 034.
 

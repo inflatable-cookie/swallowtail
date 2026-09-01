@@ -31,7 +31,9 @@ through the two accepted additive adapter-owned seams.
    `KimiAcpSessionImportAuthority`, and
    `KimiLocalServerSessionConfiguration` gain no contribution method.
 2. Add `KimiProviderValue`, `KimiReasoningAcknowledgement`,
-   `KimiPlanAcknowledgement`, `KimiProjectionOpenFuture`,
+   `KimiPlanAcknowledgement` — each with `NotRequested`,
+   `RequestedNotObserved`, `Effective`, `Rejected`, and an
+   `observed_value()` accessor — `KimiProjectionOpenFuture`,
    `KimiProjectionOpenOutcome`, `KimiProjectionOpenFailure`,
    `KimiCatalogueProjectionFuture`, `KimiCatalogueProjectionOutcome`, and
    `KimiCatalogueProjectionFailure` with the exact signatures and accessors
@@ -49,41 +51,74 @@ through the two accepted additive adapter-owned seams.
    preserved `list_sessions` path with its own prepared and observed source
    IDs. Keep `list_sessions`, `list_page`, `next_page_request`, continuation
    paging, candidate projection, cursor semantics, failure stages, and cleanup
-   unchanged and unprojected.
+   unchanged and unprojected. Give `KimiCatalogueProjectionFailure` three
+   disjoint variants ordered by when they occur — `SourceIdentity(RuntimeFailure)`
+   before dispatch, `Operation(ProviderSessionOperationFailure)` during the
+   preserved call, `Projection(ConsumerRouteProjectionFailure)` only after it
+   completed — each with its own accessor. `SourceIdentity` exists because
+   `ConsumerRouteProjectionFailure` has no public constructor and
+   `ProviderSessionOperationFailure` is the wrong authority before dispatch.
+   Make `control.provider-session-catalogue` emitted **only** by a completed
+   `list_sessions_with_projection`, with `with_observed()` set;
+   `KimiPreparedSessionCatalogue::consumer_route_projection_contribution`
+   emits the prepared `feature.provider-session-catalogue` row and must not
+   emit the control in any state.
 5. Add one adapter-private `MAXIMUM_KIMI_PROVIDER_VALUE_BYTES = 128` constant
    and one adapter-private admission function. Do not import, re-export, or
    alias `swallowtail-core`'s `ProviderCatalogValue` bound and do not add a
    shared constant. Retain a confirmation token only when it is non-blank,
    untrimmed-equal, control-free, and within the bound.
-6. Publish the compound acknowledgement row only from admitted tokens. Under
-   `DeclaredEffort` with requested `"on"`, publish the exact provider-confirmed
-   effort, not `"on"`. Return `Rejected` only for
+6. Publish the compound acknowledgement row only when at least one half is
+   observed, and only from admitted tokens. Under `DeclaredEffort` with
+   requested `"on"`, publish the exact provider-confirmed effort, not `"on"`.
+   Return `Rejected` only for
    `swallowtail.negotiated_reasoning.effective_mismatch` and
    `swallowtail.kimi.acp.harness_mode_mismatch` with the retained exact value.
-   Foreign or unretainable tokens close the opened session and return `Runtime`
-   with `swallowtail.kimi.acp.reasoning_value_foreign` or
-   `swallowtail.kimi.acp.reasoning_value_unbounded`, publishing no row.
-7. Publish `feature.negotiated-model-options-observation` only when
+   Implement the two disjoint foreign/unretainable branches the gate fixes and
+   do not merge them:
+   - **pre-lifecycle (case 2)** — the lifecycle already aborted, so return its
+     exact preserved `RuntimeFailure` unchanged with no contribution. No
+     session exists to close and the new adapter codes must not appear.
+   - **projection-only (case 4)** — reachable only under `DeclaredEffort` with
+     requested `"on"` and a non-`"off"` confirmation that is foreign or
+     over-bound. Close the opened session and return `Runtime` with
+     `swallowtail.kimi.acp.reasoning_value_foreign` or
+     `swallowtail.kimi.acp.reasoning_value_unbounded`, publishing no row, while
+     `open_session` still succeeds on the identical fixture.
+7. Preserve `driver.rs`'s reasoning-then-Plan confirmation order and control
+   flow exactly. When a maximal request asks for both halves and reasoning
+   rejects, mark the Plan half `RequestedNotObserved`, perform no further
+   provider work, and publish a compound row carrying only the observed
+   reasoning entry. `RequestedNotObserved` contributes `with_pending()` state,
+   no domain entry, and no effective or rejected bit. A contribution whose
+   every requested half is `RequestedNotObserved` publishes no row and retains
+   no active source.
+8. Publish `feature.negotiated-model-options-observation` only when
    `parse_model_options` returned `Some`. Change neither `parse_model_options`
    nor `validate_session_configuration`, and introduce no preserved-versus-
    projected model split where current `main` fails both paths identically.
-8. Publish all three Kimi-only active identities plus the prepared
+9. Publish all three Kimi-only active identities plus the
    `control.provider-session-catalogue` and `control.provider-session-import`
    identities as bounded namespaced extensions qualified by exact route ID and
    exact `protocol_facade_id`. Do not substitute
-   `ConsumerRouteControlId::SessionCatalogueBounds`.
-9. Disposition exactly 89 census tuples with no filter or exception list: 25
+   `ConsumerRouteControlId::SessionCatalogueBounds`. Scope source-identity
+   preflight to each seam's own supplied pair; neither seam may assert anything
+   about the other's IDs. Prove cross-operation isolation through exact
+   applicability and the runtime composer's
+   `swallowtail.consumer_route_projection.snapshot_identity_rejected`, never
+   through differing fixture literals.
+10. Disposition exactly 89 census tuples with no filter or exception list: 25
    `kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, and
    13 `kimi-platform.chat`. Name each tuple once with an emitted or
    construction-time-withheld reason matching the ledgers below.
-10. Prove these maximal ledger totals independently: `kimi-code.acp` 22/3,
+11. Prove these maximal ledger totals independently: `kimi-code.acp` 22/3,
     `kimi-code.headless` 10/10, `kimi-code.local-server` 31/0, and
     `kimi-platform.chat` 12/1 emitted/withheld — 75 emitted and 14 withheld
     across four independent ledgers generated from the reviewed CSV.
-11. Emit `feature.persistent-session-posture` on `kimi-code.acp` only from
+12. Emit `feature.persistent-session-posture` on `kimi-code.acp` only from
     `KimiPreparedSessionImport`. `KimiPreparedSession` must not emit it; its
     plan is `SessionProviderStatePolicy::Prohibited`.
-12. Add deterministic provider-free fixtures and the exact proof set named
+13. Add deterministic provider-free fixtures and the exact proof set named
     below. Stop after one reviewable two-package PR.
 
 ## Exact Four-Route Ledgers
@@ -121,7 +156,7 @@ card 033's provisional 86/3 split.
 | 21 | `interactive-session` | `control.session-options` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 22 | `session-management` | `control.load-session` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 23 | `session-management` | `control.resume-session` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
-| 24 | `session-management` | `control.provider-session-catalogue` | emitted — `KimiPreparedSessionCatalogue`; `list_sessions_with_projection` |
+| 24 | `session-management` | `control.provider-session-catalogue` | emitted — `list_sessions_with_projection` only; the prepared catalogue facade must not emit it |
 | 25 | `session-management` | `control.provider-session-import` | emitted — `KimiPreparedSessionImport` |
 
 25 distinct tuples; 22 emitted; 3 withheld.
@@ -246,16 +281,43 @@ by construction.
   with the same preserved failure code.
 - `DeclaredEffort`, requested `"high"`, confirmation `"medium"` —
   `Rejected("medium")`.
-- `DeclaredEffort`, requested `"high"`, confirmation of a foreign catalogue row
-  — projected `Runtime` with
-  `swallowtail.kimi.acp.reasoning_value_foreign`, no contribution; preserved
-  path unchanged.
-- confirmation exceeding 128 bytes, or containing a control character or
-  surrounding whitespace — projected `Runtime` with
-  `swallowtail.kimi.acp.reasoning_value_unbounded`, no contribution.
 - missing, malformed, duplicate, ambiguous, unadvertised, transport, and setup
   confirmations — `Runtime` with no contribution on both paths.
 - reasoning omitted — no half, no row, no retained active source.
+
+### Foreign And Unretainable Tokens — Two Disjoint Branches
+
+These are separate fixtures with separate expected codes. A single blanket
+assertion does not satisfy this card.
+
+**Pre-lifecycle, case 2 — the new adapter codes must not appear.**
+
+- `DeclaredEffort`, requested `"high"`, confirmation of a foreign catalogue row
+  such as `"ultra"` — `NegotiatedReasoningSetup::confirm` already aborts with
+  `swallowtail.negotiated_reasoning.effective_mismatch`. The projected path
+  returns that exact preserved `RuntimeFailure` with no contribution, no
+  session is closed because none was opened, and cleanup matches
+  `open_session` byte for byte. Assert the code is **not**
+  `reasoning_value_foreign`.
+- `DeclaredEffort`, requested `"high"`, confirmation exceeding 128 bytes or
+  carrying a control character or surrounding whitespace — same branch, same
+  preserved `effective_mismatch`, and **not** `reasoning_value_unbounded`.
+- `LegacyReasoning` with any non-matching confirmation — same branch; the
+  `{off, on}` domain makes foreign and over-bound tokens unreachable here.
+
+**Projection-only, case 4 — the sole branch the new codes belong to.**
+
+- `DeclaredEffort`, requested `"on"`, confirmation of a foreign catalogue row —
+  `confirm` normalizes to `"on"` and the lifecycle succeeds, so
+  `open_session` returns a live session on this fixture. The projected path
+  closes that session and returns `Runtime` with
+  `swallowtail.kimi.acp.reasoning_value_foreign` and no contribution.
+- `DeclaredEffort`, requested `"on"`, confirmation exceeding 128 bytes or
+  carrying a control character or surrounding whitespace — same branch with
+  `swallowtail.kimi.acp.reasoning_value_unbounded`; `open_session` still
+  succeeds on the identical fixture.
+- Assert this branch is unreachable elsewhere: no `LegacyReasoning`, concrete
+  `DeclaredEffort`, or Plan fixture may produce either new code.
 
 ### Plan Acknowledgement
 
@@ -269,6 +331,29 @@ by construction.
   omitted, both produce exactly one compound row with the correct union state
   support.
 - both halves omitted — no row and no active source in the contribution.
+
+### Maximal Early Stop — Reasoning Rejects While Plan Was Requested
+
+The load-bearing `RequestedNotObserved` fixture. A maximal prepared session
+requests reasoning `"high"` and Plan; the provider confirms `"medium"`.
+
+- the lifecycle aborts at the reasoning `confirm` call and never reaches
+  `mode::prepare_plan_mode`; assert no `set_config_option` for `"mode"` was
+  dispatched, so no further provider work occurred;
+- `open_session` returns `swallowtail.negotiated_reasoning.effective_mismatch`
+  with its existing cleanup, unchanged from `main`;
+- `open_session_with_projection` returns `Rejected` carrying that same
+  `RuntimeFailure`, `reasoning: Rejected("medium")`, and
+  `plan: RequestedNotObserved`;
+- the compound row's enumerated domain is exactly `["reasoning=medium"]` with
+  no `plan=` entry, and its state support is `requested + pending + rejected`;
+- `plan_acknowledgement()` is `RequestedNotObserved`, distinguishable from
+  `NotRequested`, and `observed_value()` is `None`; and
+- no session and no model-option row accompany the rejection.
+
+Also prove the symmetric termination: reasoning `Effective` with Plan requested
+but its option missing or malformed leaves Plan `RequestedNotObserved`, takes
+case 2, and publishes nothing.
 
 ### Model Observation
 
@@ -291,22 +376,54 @@ by construction.
   `ProviderSessionCatalogue` applicability and the observed catalogue source is
   published.
 - cancelled, timed-out, dispatch, list, projection, and cleanup failure stages
-  — `KimiCatalogueProjectionFailure::Operation` with no contribution.
-- prepared catalogue evidence alone emits the prepared
-  `feature.provider-session-catalogue` and
-  `control.provider-session-catalogue` rows without observed state.
+  — `KimiCatalogueProjectionFailure::Operation` with no contribution and no
+  `control.provider-session-catalogue` row.
+- equal prepared and observed catalogue IDs on one call —
+  `KimiCatalogueProjectionFailure::SourceIdentity` carrying
+  `swallowtail.kimi.projection_source_identity_invalid`, with the fixture
+  asserting that **no catalogue dispatch occurred**: no attachment started, no
+  `initialize_catalogue`, no `list_sessions` request. Assert the variant is
+  `SourceIdentity`, not `Operation` or `Projection`, and that
+  `source_identity()` returns the diagnostic while `operation()` and
+  `projection()` return `None`.
+- a contribution rejected after a completed operation —
+  `KimiCatalogueProjectionFailure::Projection`, proving the two post-dispatch
+  variants stay distinct.
+- prepared catalogue evidence alone emits exactly the prepared
+  `feature.provider-session-catalogue` row and **no**
+  `control.provider-session-catalogue` row in any state. Assert its absence
+  directly: the control is `post-open-observation-only` with
+  `descriptor-only; observed` support, so emitting it from
+  `PreparedProviderSessionCatalogueEvidence` would backdate observed truth to
+  preparation.
 - `list_page` and `next_page_request` continuation produce identical results to
   `main` and publish no row.
-- catalogue observation never carries the interactive-session active source ID
-  or `OperationShape::InteractiveSession`.
+
+### Cross-Seam Isolation Through Applicability
+
+- every catalogue row carries `OperationShape::ProviderSessionCatalogue`,
+  `DriverRole::ProviderSessionCatalogue`, and no model route; every
+  interactive-session row carries `OperationShape::InteractiveSession`.
+- composing a catalogue contribution into an interactive-session snapshot, and
+  the inverse, fail in the runtime composer with
+  `swallowtail.consumer_route_projection.snapshot_identity_rejected`.
+- prove that boundary with fixtures that deliberately **reuse the same bounded
+  source ID** across the two independently composed seams. Reusing the ID must
+  still fail on applicability. A proof that passes only because its fixtures
+  chose different literals does not satisfy this card, because neither seam can
+  observe the other's identifiers.
 
 ### Sources, Mixtures, And Preservation
 
-- equal prepared and active source IDs fail with
+- equal prepared and active source IDs supplied to one call fail with
   `swallowtail.kimi.projection_source_identity_invalid` before any process,
-  connection, or provider work, on both the open and catalogue seams.
+  connection, or provider work — as `KimiProjectionOpenFailure::Runtime` on the
+  open seam and `KimiCatalogueProjectionFailure::SourceIdentity` on the
+  catalogue seam. Neither seam inspects, nor asserts anything about, the
+  other's IDs.
 - an active source that names no published active row is absent from the
-  contribution.
+  contribution, including a contribution whose every requested half is
+  `RequestedNotObserved`.
 - matching-source cross-route, cross-operation, cross-instance,
   stale-revision, and each exact access-dimension drift fail closed in both
   directions across all four routes.
@@ -345,15 +462,33 @@ by construction.
       only the accepted reasoning and Plan subset
 - [ ] the compound acknowledgement row publishes both halves independently,
       with the exact provider-confirmed effort under requested `"on"` and
-      never the normalized `"on"`
-- [ ] foreign and unretainable confirmation tokens fail closed on the projected
-      path with their exact adapter codes and publish no row, while
-      `open_session` behavior is byte-identical to `main`
+      never the normalized `"on"`, and publishes only when a half is observed
+- [ ] a maximal request whose reasoning rejects marks Plan
+      `RequestedNotObserved`, performs no further provider work, preserves
+      `driver.rs`'s confirmation order, and publishes a row carrying only the
+      observed reasoning entry with `requested + pending + rejected` state
+- [ ] pre-lifecycle foreign or unretainable tokens return the exact preserved
+      `RuntimeFailure` with no contribution and without emitting either new
+      adapter code
+- [ ] projection-only foreign or unretainable tokens — reachable only under
+      `DeclaredEffort` with requested `"on"` — close the opened session and
+      return the exact new adapter code with no contribution, while
+      `open_session` succeeds on the identical fixture
+- [ ] `open_session` behavior is byte-identical to `main` on every fixture in
+      both branches
 - [ ] exact model options survive on both the generic handle and the outcome
       accessor; absent data stays absent; malformed data fails both paths with
       the existing code
 - [ ] catalogue observation is session-management truth with its own source and
-      applicability, and prepared catalogue success never sets observed state
+      applicability; `control.provider-session-catalogue` is emitted only by a
+      completed `list_sessions_with_projection` with `with_observed()` set, and
+      never by the prepared catalogue facade in any state
+- [ ] `KimiCatalogueProjectionFailure` carries equal-source rejection as
+      `SourceIdentity` before any catalogue dispatch, distinct from `Operation`
+      and from post-operation `Projection`, with matching accessors
+- [ ] cross-seam isolation is proved through exact applicability and composer
+      rejection using fixtures that reuse one source ID, not through differing
+      fixture literals
 - [ ] `feature.persistent-session-posture` on `kimi-code.acp` comes only from
       `KimiPreparedSessionImport`
 - [ ] all 14 withheld rows are withheld at construction with their exact
@@ -379,7 +514,25 @@ catalogue state.
 Counterexamples and required proof:
 
 - publish a foreign or over-bound Kimi token as portable reasoning truth —
-  fail; return the exact adapter runtime code with no contribution
+  fail; no row publishes on either branch
+- answer a pre-lifecycle foreign or over-bound token — `DeclaredEffort`
+  requested `"high"` confirmed foreign — with `reasoning_value_foreign` or
+  `reasoning_value_unbounded` — fail; the lifecycle already aborted with
+  `swallowtail.negotiated_reasoning.effective_mismatch`, no session exists to
+  close, and case 2 must return that preserved failure unchanged
+- answer a projection-only foreign or over-bound token — `DeclaredEffort`
+  requested `"on"` confirmed foreign or over-bound — with the preserved success
+  or with `effective_mismatch` — fail; case 4 must close the opened session and
+  return the new adapter code
+- describe or prove case 4 as a general fallback rather than the
+  reasoning-only, requested-`"on"`-only branch — fail
+- report Plan as `NotRequested`, `Effective`, or `Rejected` when a maximal
+  request's reasoning rejected before Plan confirmation — fail; it is
+  `RequestedNotObserved`
+- perform extra provider work, reorder `driver.rs`'s confirmations, or emit a
+  `plan=` domain entry to resolve that early stop — fail
+- publish a row or retain an active source when every requested half is
+  `RequestedNotObserved` — fail; no half was observed
 - publish `"on"` in place of the exact provider-confirmed effort — fail the
   exact-effective proof
 - present a static mismatch diagnostic as a rejection without the retained
@@ -391,8 +544,17 @@ Counterexamples and required proof:
 - give `load_session`, `resume_session`, or continuation recovery projection
   authority from the open-only decision — fail
 - present prepared catalogue success as observed catalogue truth — fail
-- give catalogue observation the interactive-session active source or operation
-  shape — fail
+- emit `control.provider-session-catalogue` from
+  `KimiPreparedSessionCatalogue::consumer_route_projection_contribution`, in
+  any state — fail; prepared evidence would backdate observed truth
+- leave `control.provider-session-catalogue` present after an operation
+  failure, or absent after a completed `list_sessions_with_projection` — fail
+- surface equal catalogue source IDs as `Operation`, as `Projection`, or after
+  any catalogue dispatch — fail; it is `SourceIdentity` before dispatch
+- give a catalogue row `OperationShape::InteractiveSession` applicability, or
+  an interactive-session row `OperationShape::ProviderSessionCatalogue` — fail
+- prove cross-seam isolation only by choosing different source-ID literals —
+  fail; reuse one ID and require composer applicability rejection
 - publish a catalogue row from `list_page` or a continuation cursor — fail
 - treat model options as selection, mutation, acknowledgement, or catalogue
   authority — fail the observation-only posture
@@ -448,6 +610,11 @@ evidence before another Batch 9.4 candidate is reassessed or promoted.
 - Stop if interactive-session acknowledgement, model-option observation, and
   session-management catalogue observation cannot remain three distinct
   sources, lifecycles, and applicabilities.
+- Stop if `RequestedNotObserved` cannot be represented without extra provider
+  work or a change to `driver.rs`'s confirmation order.
+- Stop if the catalogue seam cannot carry equal-source rejection before
+  dispatch without constructing a `ConsumerRouteProjectionFailure` or misusing
+  `ProviderSessionOperationFailure`.
 - Stop if any 25/20/31/13 ledger needs an exception list, inferred support, or
   truth borrowed from another route or operation.
 - Stop if the derived 22/3, 10/10, 31/0, or 12/1 disposition cannot be proved

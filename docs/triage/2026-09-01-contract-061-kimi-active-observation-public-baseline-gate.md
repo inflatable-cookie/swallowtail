@@ -60,14 +60,24 @@ impl KimiProviderValue {
 
 pub enum KimiReasoningAcknowledgement {
     NotRequested,
+    RequestedNotObserved,
     Effective(KimiProviderValue),
     Rejected(KimiProviderValue),
 }
 
+impl KimiReasoningAcknowledgement {
+    pub const fn observed_value(&self) -> Option<&KimiProviderValue>;
+}
+
 pub enum KimiPlanAcknowledgement {
     NotRequested,
+    RequestedNotObserved,
     Effective(KimiProviderValue),
     Rejected(KimiProviderValue),
+}
+
+impl KimiPlanAcknowledgement {
+    pub const fn observed_value(&self) -> Option<&KimiProviderValue>;
 }
 
 pub type KimiProjectionOpenFuture = BoxFuture<
@@ -139,11 +149,13 @@ impl KimiCatalogueProjectionOutcome {
 }
 
 pub enum KimiCatalogueProjectionFailure {
+    SourceIdentity(RuntimeFailure),
     Operation(ProviderSessionOperationFailure),
     Projection(ConsumerRouteProjectionFailure),
 }
 
 impl KimiCatalogueProjectionFailure {
+    pub const fn source_identity(&self) -> Option<&RuntimeFailure>;
     pub const fn operation(&self) -> Option<&ProviderSessionOperationFailure>;
     pub const fn projection(&self) -> Option<&ConsumerRouteProjectionFailure>;
 }
@@ -162,6 +174,29 @@ impl KimiPreparedSessionCatalogue {
 adapter's private open lifecycle, so no caller can manufacture an
 acknowledgement value. The projected open never exposes the ACP response,
 config-option object, command, path, credential, or any other provider payload.
+
+Two variants exist because current `main` cannot always produce both halves.
+
+`RequestedNotObserved` is load-bearing, not defensive. `driver.rs` confirms
+reasoning first and Plan second, and the gate preserves that order and control
+flow exactly. When a maximal request asks for both halves and reasoning
+rejects, the lifecycle returns before `mode::prepare_plan_mode`, so the Plan
+control was genuinely requested and genuinely never observed.
+`NotRequested` would be false, and `Effective` or `Rejected` would be invented
+truth. `RequestedNotObserved` states exactly what happened without continuing
+provider work or reordering confirmations. It is defined on both halves so a
+later order change needs no new type.
+
+`KimiCatalogueProjectionFailure::SourceIdentity` is load-bearing for the same
+reason. Source-identity preflight runs before any catalogue dispatch, so it
+cannot honestly be an `Operation` failure, and
+`ConsumerRouteProjectionFailure` has no public constructor — only
+`pub(super) fn failure` inside `swallowtail-runtime` — so the adapter cannot
+build one carrying an adapter-specific diagnostic. `RuntimeFailure::new` is
+public and is what the adapter's existing `crate::failure::failure` already
+uses, so `SourceIdentity(RuntimeFailure)` is the one shape that can truthfully
+carry `swallowtail.kimi.projection_source_identity_invalid` before dispatch.
+The variants are ordered by when they can occur.
 
 The exact prepared contribution method established by cards 022-024 is added to
 the candidate F prepared facades with no callback and no provider payload:
@@ -228,9 +263,11 @@ when it is additionally *admitted* for the exact prepared
   `driver/mode.rs` already freezes as one exact ordered domain.
 
 A token outside its half's admitted set is *foreign*. Foreign tokens and
-unretainable tokens both fail closed on the projected path. Neither ever
-becomes `ReasoningMode`, `NegotiatedReasoningSetup`, `EffectiveReasoningSetup`,
-or any other portable value.
+unretainable tokens both fail closed on the projected path, through one of the
+two disjoint branches fixed under **Which Branch A Foreign Or Unretainable
+Token Takes** below. Neither ever becomes `ReasoningMode`,
+`NegotiatedReasoningSetup`, `EffectiveReasoningSetup`, or any other portable
+value.
 
 ## Preserved Versus Projected Behavior
 
@@ -253,19 +290,61 @@ normalization to `ReasoningMode::new("on")`.
 order:
 
 1. Lifecycle failed with `swallowtail.negotiated_reasoning.effective_mismatch`
-   or `swallowtail.kimi.acp.harness_mode_mismatch`, and every recorded token is
-   retainable and admitted — return `Rejected { failure, contribution,
-   reasoning, plan }` carrying the same `RuntimeFailure` the preserved path
-   returns, the compound acknowledgement row, and no session.
-2. Lifecycle failed for any other reason, or a recorded token is unretainable
-   or foreign — return `Runtime(failure)` with the exact failure the preserved
-   path returns and no contribution.
+   or `swallowtail.kimi.acp.harness_mode_mismatch`, and every token it actually
+   recorded is retainable and admitted — return `Rejected { failure,
+   contribution, reasoning, plan }` carrying the same `RuntimeFailure` the
+   preserved path returns, the compound acknowledgement row, and no session. A
+   half the lifecycle never reached records no token and blocks nothing here;
+   it is `RequestedNotObserved`.
+2. Lifecycle failed for any other reason, **or** lifecycle failed with one of
+   those two codes but a token it recorded is unretainable or foreign — return
+   `Runtime(failure)` with the exact failure the preserved path returns and no
+   contribution.
 3. Lifecycle succeeded and every recorded token is retainable and admitted —
    return the outcome with the prepared rows plus whichever active rows exist.
 4. Lifecycle succeeded but a recorded token is unretainable or foreign — close
    the opened session, return `Runtime` with
    `swallowtail.kimi.acp.reasoning_value_unbounded` or
    `swallowtail.kimi.acp.reasoning_value_foreign`, and publish no contribution.
+
+### Which Branch A Foreign Or Unretainable Token Takes
+
+Foreign and unretainable tokens reach the projected path through two disjoint
+branches, and the two adapter codes belong to exactly one of them. Card 034
+must prove both separately; neither may be described with blanket wording.
+
+**Pre-lifecycle — case 2.** When the requested mode is concrete, current
+`main` already compares it against the confirmation. `LegacyReasoning` and
+`DeclaredEffort` with a concrete request both pass `currentValue` straight into
+`NegotiatedReasoningSetup::confirm`, which returns
+`swallowtail.negotiated_reasoning.effective_mismatch` whenever it differs from
+the request. A foreign or over-bound confirmation therefore differs by
+construction, the lifecycle has already aborted and cleaned up, and **no
+session exists to close**. The projected path returns that exact preserved
+`RuntimeFailure` unchanged with no contribution. It must not substitute
+`reasoning_value_foreign` or `reasoning_value_unbounded` here, because the new
+adapter code would misreport a failure the preserved path already owns and
+would break route-code parity.
+
+**Projection-only — case 4.** The lifecycle succeeds while holding a token the
+projection cannot publish in exactly one situation: `DeclaredEffort` with
+requested `"on"` and any non-`"off"` confirmation. `confirm` normalizes that
+confirmation to `"on"`, so `NegotiatedReasoningSetup::confirm` sees requested
+equal to effective and the open completes. The recorded token, however, is the
+provider's exact effort and may be a foreign catalogue row or exceed the byte
+bound. This is the only branch where the new adapter codes are correct: close
+the opened session and return `reasoning_value_foreign` or
+`reasoning_value_unbounded` with no contribution, while `open_session` still
+succeeds on the identical fixture.
+
+Every other combination is unreachable. `LegacyReasoning` confirmations are
+constrained to `{off, on}` by `validate_behavior_shape`; concrete
+`DeclaredEffort` requests only succeed on an exact match with an
+already-admitted short identifier; and `driver/mode.rs` freezes the Plan domain
+to `["default", "plan", "auto", "yolo"]`, so no Plan token can be foreign or
+over-bound. Case 4 is consequently a reasoning-only, requested-`"on"`-only
+branch, and card 034 must name it that precisely rather than as a general
+fallback.
 
 Case 4 is the only place the projected path may differ from a successful
 preserved open, and it fails closed. Cases 1 and 2 keep exact route-code and
@@ -281,6 +360,9 @@ The two halves are sourced independently and never substitute for each other.
 
 - reasoning not requested — `NotRequested`; no half, no row contribution, no
   active source;
+- reasoning requested but never confirmed because an earlier step aborted the
+  lifecycle — `RequestedNotObserved`; no token, no domain entry, no
+  effective or rejected state;
 - `B = LegacyReasoning`, `C == R` — `Effective(C)`;
 - `B = LegacyReasoning`, `C != R` — `Rejected(C)`, preserving
   `swallowtail.negotiated_reasoning.effective_mismatch`;
@@ -302,34 +384,56 @@ in listed order and rejects any other shape as malformed, so the Plan token is
 always admitted and always within the byte bound:
 
 - Plan not requested — `NotRequested`;
+- Plan requested but never confirmed because reasoning rejected or otherwise
+  terminated the lifecycle first — `RequestedNotObserved`;
 - `currentValue == "plan"` — `Effective("plan")`; and
 - `currentValue` exactly `default`, `auto`, or `yolo` — `Rejected(value)`,
   preserving `swallowtail.kimi.acp.harness_mode_mismatch`.
 
 Every other Plan outcome is ordinary `Runtime` with no contribution.
 
+**Fixed confirmation order and the early stop.** `driver.rs` confirms reasoning
+at the `selection.confirm(...)` call and Plan afterwards, and this gate
+preserves that order, that control flow, and the `?` propagation exactly. A
+maximal request that asks for both halves and rejects on reasoning therefore
+returns before `mode::prepare_plan_mode` runs. The Plan half is
+`RequestedNotObserved`: no further provider work is performed to discover what
+Plan would have done, and no Plan truth is invented. The symmetric case —
+reasoning `Effective` and Plan requested but terminated by a malformed or
+missing Plan option — is also `RequestedNotObserved`, though it takes case 2
+and publishes nothing.
+
 **One row from two halves.** The bounded namespaced
-`feature.active-session-reasoning-and-plan-ack` row is published when at least
-one half is not `NotRequested`. It carries:
+`feature.active-session-reasoning-and-plan-ack` row is published only when at
+least one half is **observed**, that is `Effective` or `Rejected`. A
+contribution in which every requested half is `RequestedNotObserved` publishes
+no row and retains no active source. It carries:
 
 - `ConsumerRouteValueKind::AcknowledgementState`;
-- `ConsumerRouteValueDomain::Enumerated` with exactly one entry per
-  non-`NotRequested` half, in fixed order — reasoning first, then Plan — each
-  entry rendered as `reasoning=<token>` or `plan=<token>` from the exact
-  retained `KimiProviderValue`;
+- `ConsumerRouteValueDomain::Enumerated` with exactly one entry per **observed**
+  half, in fixed order — reasoning first, then Plan — each entry rendered as
+  `reasoning=<token>` or `plan=<token>` from the exact retained
+  `KimiProviderValue`. A `RequestedNotObserved` half contributes no entry, so
+  the domain never asserts that half was effective, rejected, or absent;
 - `ConsumerRouteOmissionSemantics::NotSelectable`;
 - `ConsumerRouteSourceClass::RouteAcknowledgementEvidence` and
   `ConsumerRouteEvidenceStrength::WireAcknowledgement`;
 - `ConsumerRouteLifecycle::PostOpenObservationOnly`;
 - `ConsumerRouteActorPosture::ObservationOnly` and
   `ConsumerRouteMutationAuthority::Acknowledged(active_session_source_id)`; and
-- state support `with_requested()`, plus `with_provider_effective()` if any
-  half is `Effective`, plus `with_rejected()` if any half is `Rejected`.
+- state support `with_requested()` if any half is not `NotRequested`, plus
+  `with_pending()` if any half is `RequestedNotObserved`, plus
+  `with_provider_effective()` if any half is `Effective`, plus
+  `with_rejected()` if any half is `Rejected`. This is the census's own
+  `requested; pending; effective; rejected` vocabulary, so an unobserved
+  requested half is reported as still pending rather than silently dropped.
 
-The exact typed halves stay reachable through
-`reasoning_acknowledgement()`, `plan_acknowledgement()`, and the `Rejected`
-failure fields, so the rendered string domain is never the only carrier. Both
-halves omitted produces no row and no retained active source.
+The exact typed halves stay reachable through `reasoning_acknowledgement()`,
+`plan_acknowledgement()`, their `observed_value()` accessors, and the
+`Rejected` failure fields, so the rendered string domain is never the only
+carrier and a consumer can always distinguish `NotRequested` from
+`RequestedNotObserved`. Both halves omitted produces no row and no retained
+active source.
 
 ## Negotiated Model-Option Observation
 
@@ -376,24 +480,69 @@ verbatim, then projects only the fact of the completed bounded query:
 - the row's applicability comes from the catalogue plan, so its operation shape
   is `ProviderSessionCatalogue` and never `InteractiveSession`;
 - its source is `ActiveSessionObservation(observed_catalogue_source_id)`, which
-  must differ from both catalogue-prepared and interactive-session source IDs;
+  must differ from the catalogue-prepared ID supplied on the same call;
+- equal IDs on that call return
+  `KimiCatalogueProjectionFailure::SourceIdentity` carrying
+  `swallowtail.kimi.projection_source_identity_invalid` before any catalogue
+  dispatch, so no process, connection, or provider work occurs;
 - any `ProviderSessionOperationFailure` — including a cancelled, timed-out,
-  dispatch, projection, or cleanup stage — returns
+  dispatch, list, projection, or cleanup stage — returns
   `KimiCatalogueProjectionFailure::Operation` with no contribution; and
-- a contribution that cannot be admitted returns
+- a contribution that cannot be admitted after a completed operation returns
   `KimiCatalogueProjectionFailure::Projection` with no partial row.
+
+The three failure variants are disjoint and ordered by when they can occur:
+`SourceIdentity` before dispatch, `Operation` during the preserved catalogue
+call, `Projection` only after that call completed. No variant may stand in for
+another.
 
 `list_page`, `next_page_request`, and continuation paging stay preserved-only
 and gain no projection authority. Prepared catalogue success alone never
-publishes the observed half:
-`PreparedProviderSessionCatalogueEvidence` contributes the prepared
-`feature.provider-session-catalogue` row and nothing more.
+publishes the observed half.
+`KimiPreparedSessionCatalogue::consumer_route_projection_contribution`
+contributes the prepared `feature.provider-session-catalogue` row and nothing
+more; it must not emit `control.provider-session-catalogue` in any state. The
+census gives that control lifecycle `post-open-observation-only` and state
+`descriptor-only; observed`, so emitting it from
+`PreparedProviderSessionCatalogueEvidence` — even without the observed bit —
+would backdate observed truth to preparation, exactly the substitution card
+033 rejected. The tuple has one emitter: a completed
+`list_sessions_with_projection`, from exact completed-operation evidence, with
+`with_observed()` set. Prepared success and every operation failure leave the
+row absent.
+
+### Cross-Seam Source Isolation Is Applicability, Not Identity
+
+The two seams are composed independently and share no state. A caller may
+therefore legitimately reuse one bounded source ID across an
+`open_session_with_projection` call and a `list_sessions_with_projection`
+call, and neither method can observe the other's identifiers. This gate
+consequently makes no claim it cannot enforce:
+
+- each seam admits only the two IDs supplied to that call, and rejects their
+  equality before provider work; and
+- the cross-operation boundary is exact applicability, not identifier
+  inequality. Every catalogue row carries the catalogue plan's
+  `OperationShape::ProviderSessionCatalogue`,
+  `DriverRole::ProviderSessionCatalogue`, and absent model route, so composing
+  a catalogue contribution into an interactive-session snapshot fails in the
+  runtime composer with
+  `swallowtail.consumer_route_projection.snapshot_identity_rejected`, and the
+  inverse fails likewise.
+
+Card 034 must prove the boundary that way. A proof that passes only because a
+fixture chose different source-ID literals proves nothing and is rejected.
 
 ## Projection Semantics
 
-Prepared and active sources are caller-supplied and must differ. Equal IDs fail
-before any process, connection, or provider work with
-`swallowtail.kimi.projection_source_identity_invalid`.
+Prepared and active sources are caller-supplied. Each seam admits exactly the
+two IDs passed to that call and rejects their equality before any process,
+connection, or provider work with
+`swallowtail.kimi.projection_source_identity_invalid` — as
+`KimiProjectionOpenFailure::Runtime` on the open seam and
+`KimiCatalogueProjectionFailure::SourceIdentity` on the catalogue seam.
+Neither seam can observe the other's identifiers, so neither asserts anything
+about them.
 
 Prepared selection and session-start rows use
 `AdapterContribution(prepared_source_id)`. Post-open acknowledgement and model
@@ -517,9 +666,23 @@ diagnostic, or another route cannot substitute.
 Counterexamples and required proof:
 
 - a foreign or over-bound confirmation token published as portable reasoning
-  truth — fail; the projected path returns `Runtime` with
-  `reasoning_value_foreign` or `reasoning_value_unbounded`, no contribution,
-  and the preserved path is unchanged
+  truth — fail; it publishes no row on either branch below
+- a **pre-lifecycle** foreign or over-bound confirmation — concretely,
+  `DeclaredEffort` requested `"high"` confirmed as a foreign catalogue row —
+  answered with `reasoning_value_foreign` or `reasoning_value_unbounded` — fail;
+  `NegotiatedReasoningSetup::confirm` already aborted with
+  `swallowtail.negotiated_reasoning.effective_mismatch`, no session exists to
+  close, and case 2 must return that exact preserved failure with no
+  contribution
+- a **projection-only** foreign or over-bound confirmation — concretely,
+  `DeclaredEffort` requested `"on"` confirmed as a foreign or over-bound effort
+  — answered with the preserved success or with `effective_mismatch` — fail;
+  case 4 must close the opened session and return
+  `reasoning_value_foreign` or `reasoning_value_unbounded` with no
+  contribution, while `open_session` still succeeds on the identical fixture
+- case 4 described or proved as a general fallback rather than the
+  reasoning-only, requested-`"on"`-only branch — fail; every other combination
+  is unreachable on current `main`
 - requested `"on"` under `DeclaredEffort` publishing `"on"` instead of the
   exact provider-confirmed effort — fail the exact-effective proof
 - a rejection published from `swallowtail.negotiated_reasoning.effective_mismatch`
@@ -530,12 +693,38 @@ Counterexamples and required proof:
 - the preserved and projected open paths differing in setup order, route
   failure code, handle shape, or cleanup outcome for the same fixture — fail
   the shared-lifecycle proof
+- a maximal request for both halves whose reasoning rejects, reporting Plan as
+  `NotRequested`, `Effective`, or `Rejected` — fail; the Plan control was
+  requested and never confirmed, so it is `RequestedNotObserved`
+- that same early stop performing any further provider work, reordering
+  `driver.rs`'s reasoning-then-Plan confirmations, or letting the compound row
+  domain carry a `plan=` entry — fail
+- a contribution in which every requested half is `RequestedNotObserved`
+  publishing a row or retaining an active source — fail; no half was observed
 - `load_session`, `resume_session`, or `prepare_working_state_restoration`
   gaining projection authority from the open-only decision — fail
 - prepared catalogue success presented as observed catalogue truth — fail; only
   a completed `list_sessions_with_projection` may set `observed`
-- catalogue observation carrying the interactive-session active source ID or
-  `OperationShape::InteractiveSession` applicability — fail
+- a catalogue row carrying `OperationShape::InteractiveSession` applicability,
+  or an interactive-session row carrying
+  `OperationShape::ProviderSessionCatalogue` — fail on the row's own
+  applicability
+- a catalogue contribution composed into an interactive-session snapshot, or
+  the inverse — fail in the composer with
+  `swallowtail.consumer_route_projection.snapshot_identity_rejected`
+- a cross-seam isolation proof that passes only because its fixtures chose
+  different source-ID literals — fail; neither seam can observe the other's
+  IDs, so identifier inequality is not the boundary
+- equal prepared and observed catalogue IDs on one
+  `list_sessions_with_projection` call reaching catalogue dispatch, or
+  surfacing as `Operation` or `Projection` rather than `SourceIdentity` — fail
+- `control.provider-session-catalogue` emitted by
+  `KimiPreparedSessionCatalogue::consumer_route_projection_contribution`, in
+  any state — fail; prepared evidence would backdate observed truth to
+  preparation
+- `control.provider-session-catalogue` present after an operation failure, or
+  absent after a completed `list_sessions_with_projection` — fail; the seam is
+  its sole emitter and sets `with_observed()`
 - `list_page`, `next_page_request`, or a continuation cursor publishing a
   catalogue row — fail; the seam covers `list_sessions` only
 - model options inferred from session existence, or presented as selectable,

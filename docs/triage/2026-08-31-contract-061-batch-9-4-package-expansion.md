@@ -471,8 +471,12 @@ only `KimiPreparedSession::open_session_with_projection` plus a separate
 `KimiPreparedSessionCatalogue::list_sessions_with_projection`, and keeps
 prepared and active source IDs distinct. Under `DeclaredEffort` with requested
 `"on"` the projected path publishes the exact provider-confirmed effort;
-foreign or over-bound confirmations are ordinary `Runtime` failures that
-publish no row while the preserved path stays unchanged.
+foreign or over-bound confirmations publish no row while the preserved path
+stays unchanged, through two disjoint branches the gate fixes separately. Both
+acknowledgement halves carry a `RequestedNotObserved` state so a maximal
+request whose reasoning rejects never invents Plan truth, and the catalogue
+seam carries equal-source rejection before dispatch as its own failure
+variant.
 
 The gate re-derives candidate F's four route ledgers from current source
 rather than inheriting card 033's provisional 86/3 reading:

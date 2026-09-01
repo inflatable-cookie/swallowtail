@@ -196,8 +196,11 @@ decisions is named and not compiled. The operator then answered all five:
 adapter-local behind one bounded 128-byte Kimi provider value, one additive
 `open_session_with_projection` covers the interactive surface, one separate
 seam projects `KimiPreparedSessionCatalogue::list_sessions`, and prepared and
-active source IDs stay distinct. Foreign or over-bound confirmations fail
-closed on the projected path and publish no row. The Kimi gate re-derives F's
+active source IDs stay distinct. Foreign or over-bound confirmations publish no
+row, through two disjoint branches: a concrete request already aborts in
+`NegotiatedReasoningSetup::confirm` and keeps that preserved failure, while
+requested `"on"` succeeds and the projected path alone closes the opened
+session with the new adapter code. The Kimi gate re-derives F's
 four route ledgers from current source as 22/3, 10/10, 31/0, and 12/1
 emitted/withheld — 75 emitted and 14 withheld across 89 rows — and promotes F
 as card 034. No Kimi implementation, provider contact, or Batch 9.5 audit is

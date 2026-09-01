@@ -1,20 +1,39 @@
 use crate::output::failure;
-use futures_executor::block_on;
+use std::future::Future;
 use std::sync::Arc;
+use std::thread;
 use swallowtail_core::{WatcherOwningTurn, WatcherSummary};
 use swallowtail_runtime::{
     ProcessHandle, RuntimeFailure, RuntimeTurnId, ScopeId, WatcherFailure, WatcherFailureKind,
 };
 
+/// Drive a future without nesting `futures_executor::block_on` on the caller.
+///
+/// `LocalScopedTaskService` already polls work with `block_on`. Watcher host
+/// start/stop/join helpers used to call `block_on` on that same thread and
+/// panic with `EnterError`. A joined scoped thread owns the nested executor so
+/// ownership, error propagation, and cleanup stay explicit.
+pub(super) fn drive_future<T>(future: impl Future<Output = T> + Send) -> T
+where
+    T: Send,
+{
+    thread::scope(|scope| {
+        scope
+            .spawn(|| futures_executor::block_on(future))
+            .join()
+            .unwrap_or_else(|payload| std::panic::resume_unwind(payload))
+    })
+}
+
 pub(super) fn cleanup_process(process: &Arc<dyn ProcessHandle>) -> Result<(), RuntimeFailure> {
-    block_on(process.force_stop())?;
-    block_on(process.wait()).map(|_| ())
+    drive_future(process.force_stop())?;
+    drive_future(process.wait()).map(|_| ())
 }
 
 pub(super) fn request_process_stop(process: &Arc<dyn ProcessHandle>) -> Result<(), RuntimeFailure> {
-    match block_on(process.request_stop()) {
+    match drive_future(process.request_stop()) {
         Ok(()) => Ok(()),
-        Err(graceful_error) => match block_on(process.force_stop()) {
+        Err(graceful_error) => match drive_future(process.force_stop()) {
             Ok(()) => Ok(()),
             Err(_) => Err(graceful_error),
         },

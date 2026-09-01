@@ -4,6 +4,8 @@ mod feed;
 mod lifecycle;
 #[path = "watcher_service/policy.rs"]
 mod policy;
+#[path = "watcher_service/scoped_task.rs"]
+mod scoped_task;
 #[allow(dead_code)]
 #[path = "local_process/support.rs"]
 mod support;

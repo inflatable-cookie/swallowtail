@@ -1,6 +1,5 @@
 use super::{LocalWatcherEntry, LocalWatcherHostService, LocalWatcherTurn};
 use crate::output::failure;
-use futures_executor::block_on;
 use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester};
@@ -81,16 +80,17 @@ impl LocalWatcherHostService {
         };
         state.publish(&turn, accepted.clone())?;
         let watcher_id = accepted.watcher_id().clone();
-        let process = match block_on(self.process_host.start(scope.clone(), request)) {
-            Ok(process) => Arc::<dyn ProcessHandle>::from(process),
-            Err(error) => {
-                if let Some(turn_state) = state.active.get_mut(&turn) {
-                    let _ = turn_state.registry.reject_start(&watcher_id);
+        let process =
+            match super::support::drive_future(self.process_host.start(scope.clone(), request)) {
+                Ok(process) => Arc::<dyn ProcessHandle>::from(process),
+                Err(error) => {
+                    if let Some(turn_state) = state.active.get_mut(&turn) {
+                        let _ = turn_state.registry.reject_start(&watcher_id);
+                    }
+                    state.remove_empty_turn(&turn);
+                    return Err(error);
                 }
-                state.remove_empty_turn(&turn);
-                return Err(error);
-            }
-        };
+            };
         if let Err(error) = {
             let turn_state = state
                 .active

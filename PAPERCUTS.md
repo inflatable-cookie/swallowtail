@@ -63,16 +63,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   prototype head `49f2692f`.
 - Closed: 2026-09-01 live-probe temporary-workspace cleanup reconciliation.
 
-### [ ] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
+### [x] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
 - Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.
   `LocalWatcherHostService` also calls `block_on` inside method invocation for
   process start/stop/join. A bridge listener running on a scoped task panics
   with `EnterError`.
 - Impact: operation-scoped HTTP listeners cannot reuse the scoped-task executor
   without changing the watcher host to true async.
-- Fix: make watcher host methods executor-neutral, or keep joined std threads
-  for listeners that must call those methods.
+- Fix: watcher host start/stop/join helpers drive process and task futures on a
+  joined scoped thread via `drive_future`, so nested executor entry cannot
+  panic; `watcher_host_methods_succeed_inside_a_scoped_task_executor` proves
+  accept/stop/join from work polled by `LocalScopedTaskService`.
 - Surface: `swallowtail-host-local` watcher host and watcher HTTP bridge.
+- Closed: 2026-09-01 papercuts scoped-task watcher EnterError repair.
 
 ### [ ] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
 - Friction: PR 117 added four warning-level files above the configured size

@@ -15,28 +15,26 @@ shape.
 
 ## Next Task
 
-Decide the narrow `kimi-code.acp` active-observation public baseline under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md).
-[Card 033](g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-is complete: it bound card 032 to `e50e3f46`/`18a6907e`, reconciled Contract
-061 to 249 proved and 518 remaining rows, and stopped candidate F. No card is
-ready.
+Implement
+[Card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md) under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md). It is the
+sole ready card. The operator accepted the narrow `kimi-code.acp`
+[active-observation public baseline](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md):
+`EffectiveReasoningSetup` is unchanged, exact reasoning and Plan values stay
+adapter-local behind one bounded 128-byte Kimi provider value, one additive
+`KimiPreparedSession::open_session_with_projection` covers the interactive
+surface, one separate seam projects
+`KimiPreparedSessionCatalogue::list_sessions`, and prepared and active source
+IDs stay distinct.
 
-F's 89 rows reconcile exactly, and 86 of them rest on proved prepared
-patterns. Three `kimi-code.acp` post-open rows block it. The gate needs five
-operator decisions: adapter-local retention of exact effective and rejected
-reasoning and Plan values versus a runtime `EffectiveReasoningSetup` change;
-the exact publishable reasoning value domain given `DeclaredEffort` admits
-foreign catalogue rows; whether exact provider-effective effort replaces the
-requested-`"on"` normalization on a projected path; whether one additive
-`KimiPreparedSession::open_session_with_projection` seam is the whole
-interactive surface; and whether the post-open provider-session catalogue gets
-a second additive seam over `KimiPreparedSessionCatalogue::list_sessions` or
-stays withheld as unobserved.
+Card 034 owns candidate F's complete 89-row remainder across both Kimi
+packages: 25 `kimi-code.acp`, 20 `kimi-code.headless`, 31
+`kimi-code.local-server`, and 13 `kimi-platform.chat`. Its four independent
+ledgers expect 22/3, 10/10, 31/0, and 12/1 emitted/withheld — 75 emitted and 14
+withheld. Only the two Kimi adapter semantic API baselines may change.
 
-Acceptance would authorize a later exact API gate and one candidate F
-implementation card, not implementation by itself. Do not implement Kimi,
-promote another candidate, contact a provider, or compile Batch 9.5.
+Do not count the 89 rows as proved before card 034 merges. Do not promote
+another candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes
 

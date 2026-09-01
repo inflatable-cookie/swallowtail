@@ -382,6 +382,15 @@ card answers:
 Decisions 2, 3, and 5 have no precedent in the Claude Agent or Cline gates.
 Neither of those gates grants Kimi authority.
 
+### Gate Outcome
+
+The operator answered all five decisions. The
+[Kimi active-observation public-baseline gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+compiles them and promotes candidate F as
+[card 034](034-contract-061-kimi-package-completion.md). Its re-derivation from
+current source replaces this card's provisional 86/3 reading with four exact
+ledgers totalling 75 emitted and 14 withheld rows.
+
 ### Validation
 
 `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` pass. No Rust
@@ -393,5 +402,7 @@ validation, live probe, or provider contact belongs to this card.
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+- [Kimi active-observation public-baseline gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+- [ready card 034](034-contract-061-kimi-package-completion.md)
 - [card 030 acknowledgement reassessment](030-contract-061-acknowledgement-candidate-reassessment.md)
 - [card 031 closeout log](../../../logs/2026-09-01-g05-009-card-031-closeout-and-lifecycle-reassessment.md)

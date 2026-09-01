@@ -1,15 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
-strict-paused behind the `kimi-code.acp` active-observation decision
+card 034 ready for candidate F
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-01
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-paused`; no implementation card is ready until the
-operator decides the narrow `kimi-code.acp` active-observation public baseline
+Planning state: `strict-ready`; card 034 is the sole ready implementation card
+after the accepted `kimi-code.acp` active-observation public baseline
 
 ## Problem
 
@@ -52,8 +52,15 @@ the existing open method. Card 032 completed candidate G through PR 144 at
 reassessed candidate F against current `main` and stopped: 86 of its 89 rows
 rest on proved prepared patterns, but three `kimi-code.acp` post-open rows —
 compound reasoning-and-plan acknowledgement, negotiated model options, and
-provider-session catalogue — fail rubric items 2 and 3. No card is ready.
-Candidates B, C, E, F, and I-L retain no implementation authority.
+provider-session catalogue — failed rubric items 2 and 3. The operator then
+answered all five decisions that card 033 returned: `EffectiveReasoningSetup`
+is unchanged, exact reasoning and Plan values stay adapter-local behind one
+bounded 128-byte Kimi provider value, one additive
+`open_session_with_projection` covers the interactive surface, one separate
+projected seam covers `KimiPreparedSessionCatalogue::list_sessions`, and
+prepared and active source IDs stay distinct. Candidate F now passes the
+rubric as card 034. Candidates B, C, E, and I-L retain no implementation
+authority.
 
 ## Generation Runway Goal
 
@@ -159,7 +166,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       `cline.headless`, 11-row `command-code.headless`, 9-row
       `copilot-cli.acp`, and 9-row `goose.acp` tranche
 - [x] reassess candidate F's exact 89-row Kimi remainder; card 033 stopped it
-      on three `kimi-code.acp` post-open rows
+      on three `kimi-code.acp` post-open rows, and the accepted Kimi gate
+      promoted it as card 034
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -212,7 +220,16 @@ model options are already retained on `KimiSessionHandle`, so that family
 blocks only on publication. The post-open provider-session catalogue observes
 through a separate prepared operation and needs a different seam shape. Card
 033 names one `kimi-code.acp`-only gate with five operator decisions and
-compiles nothing.
+compiles nothing. The
+[Kimi gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+answers all five, fixes the exact adapter-owned names, bounded provider value,
+compound acknowledgement states, projected-open and projected-catalogue
+outcomes and failures, source identities, preservation boundary, and
+provider-free oracle, and re-derives the four route ledgers from current
+source: 22/3, 10/10, 31/0, and 12/1 emitted/withheld, 75 emitted and 14
+withheld across 89 rows. Card 033's provisional 86/3 reading does not survive.
+Candidate F is ready as card 034 and its rows are not counted as proved before
+implementation review and merge.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -263,14 +280,14 @@ compiles nothing.
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 and 030-033 are complete through PRs 131,
-  133, 138, 141, and 144 plus two planning stops; no card is ready
+  133, 138, 141, and 144 plus two planning stops; card 034 is ready
 - completed tranches: runtime/testkit kernel plus sixteen exact route proofs in
   five reviewed implementation cards, covering 249 census rows
-- active checkpoint: none; card 033 closed as an evidence stop and returned the
-  `kimi-code.acp` public-baseline gate to the operator
+- active checkpoint: none; the operator accepted the `kimi-code.acp`
+  public-baseline gate and card 034 is compiled
 - later runway: 518 rows remain in candidates B, C, E, F, and I-L
-- next strategy checkpoint: the operator answers the five `kimi-code.acp` gate
-  decisions, or redirects the lane to another Batch 9.4 band
+- next strategy checkpoint: card 034 merges its exact 89-row candidate F proof,
+  after which the lane reassesses the per-turn candidates B, K, and L
 
 ## Batch Cards
 
@@ -297,6 +314,9 @@ compiles nothing.
   — complete; evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage
   reconciled to 249/518, and candidate F left unpromoted behind a named
   `kimi-code.acp` gate; no Rust changed
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md)
+  — ready; exact candidate F 25/20/31/13-row tranche with 75 emitted and 14
+  withheld rows behind the accepted Kimi active-observation gate
 
 ## References
 
@@ -307,6 +327,7 @@ compiles nothing.
 - [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Claude Agent acknowledgement public-baseline gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
 - [Cline active-observation public-baseline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
+- [Kimi active-observation public-baseline gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
 - [Codex exec output-token census-source question](../../triage/2026-08-31-codex-exec-output-token-census-source.md)
 - [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)

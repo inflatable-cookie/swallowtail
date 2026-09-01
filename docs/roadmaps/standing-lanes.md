@@ -101,9 +101,14 @@ only if every invocation path fails closed again for a terminal-less client,
 or upstream supplies a ProviderEnforced boundary satisfying Contracts 017/023.
 The trigger authorizes a fresh identity/claim decision, never automatic
 admission and never restoration of AllowUnverified by itself. The lane must
-not adopt a growing exclusion set as a substitute for the posture. The next
-all-route currentness checkpoint runs serially after that cap, and does not
-rank the Kimi family until then.
+not adopt a growing exclusion set as a substitute for the posture.
+
+Research 271 revalidated all 40 families after the Kimi A2 cap. Headless
+`0.39.1` is on-ceiling. `kimi-code.acp` stays `QualifiedOnly` at `0.38.0` and
+is not reopened. Claude Agent ACP `0.72.0` is the sole next-family candidate.
+Host `0.63.0` already sits on a qualified bound. This checkpoint changes no
+claim. One-family qualification waits for a later Upgrade Workflow PR and
+must not infer the family from registry `latest` alone.
 
 ### Previous Completed Family
 

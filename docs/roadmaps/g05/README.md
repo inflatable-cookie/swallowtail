@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | g05.016 split the Kimi Code installed-harness family: headless v2 corrected to `0.33.0..=0.39.1`, headless v1 corrected to `0.29.0..=0.32.0`, and `kimi-code.acp` stopped at `0.38.0` with exact `0.39.0` and `0.39.1` excluded for an uncontained process-authority change; `kimi-code.local-server` stays a separate family | Contract 029 identity-before-claim; Research 267-270; current-main validation | `g05.016` cards 041-042 |
+| Keep production route versions current one family at a time. | Research 271 selected Claude Agent ACP `0.72.0` as the next one-family Upgrade Workflow after the Kimi A2 ACP cap; no claim change | Contract 029 identity-before-claim; Research 267-271; current-main validation | `g05.016` cards 041-042 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 
 ## Planned Next Roadmaps
@@ -280,8 +280,9 @@ g05.017 then compiled the direction that g05.016 deliberately did not record.
 The operator selected **A2**: indefinite `QualifiedOnly` cap at `0.38.0` with
 one artifact-level upstream reopen trigger. Card 043 moved
 `kimi-code.acp` from `AllowUnverified` to `QualifiedOnly`, kept exact
-`0.39.0` and `0.39.1` excluded, and left local-server `AllowUnverified`. The
-all-route currentness checkpoint runs serially after that cap.
+`0.39.0` and `0.39.1` excluded, and left local-server `AllowUnverified`.
+Research 271 selected Claude Agent ACP `0.72.0` as the next one-family
+Upgrade Workflow and changed no claim.
 
 ## Milestones
 

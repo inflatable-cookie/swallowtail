@@ -3,7 +3,7 @@
 Status: promoted
 Owner: Tom
 Created: 2026-08-25
-Updated: 2026-08-25
+Updated: 2026-09-01
 Card: g04.066 / 184
 
 ## Question
@@ -52,7 +52,64 @@ maintained behavior `codex.exec.jsonl-v1`. App-server is out of scope.
 | `rust-v0.149.0` models.json | byte-identical to `0.149.1` | 2026-08-25 | SHA-256 `c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549` |
 
 Current official HTML shells were not used as the digestable corpus. Markdown
-exports are the recorded docs.
+exports are the recorded docs. The Learn `.md` digests in the table above are
+2026-08-25 historical identities and are not rewritten when moving
+documentation drifts. Official release-tag paths remain binding for source and
+catalog identity; current-`main` URLs remain leads only.
+
+## Deterministic Markdown Corpus
+
+The four official Codex config documentation pages named above, their Learn
+HTML shells, the `developers.openai.com/codex/config-*` entry URLs, and the
+GitHub models paths called out by the corpus papercut were retrieved without
+authentication at `2026-09-01T13:21:37Z`. The first status and location below
+are the un-followed response hop; `effective` and the final body metadata are
+from the followed GET. Direct rows have no redirect. Body digests are SHA-256
+over the downloaded bytes. Historical 2026-08-25 Learn `.md` digests in Frozen
+Sources stay intact; the current Learn HTML bodies are SPA corroboration only;
+the final `text/markdown` bodies are the digestable docs corpus.
+
+| Source row | HTML retrieval: requested → effective; response metadata | Markdown retrieval: requested → effective; response metadata |
+| --- | --- | --- |
+| [Config reference](https://learn.chatgpt.com/docs/config-file/config-reference.md) | `https://developers.openai.com/codex/config-reference` → `https://learn.chatgpt.com/docs/config-file/config-reference`; hop `308` `text/plain`, 15 bytes, SHA-256 `7c040f8633b8823d72ed63da9b3b2dfe9846e912c66a64c9433ec9c4815d76c2`, `Location: https://learn.chatgpt.com/docs/config-file/config-reference`; final `200` `text/html; charset=utf-8`, 1244872 bytes, SHA-256 `5014ac020dff359bf87efad4be9186934c9911166f2440308fd72c4ba8de1970`. Direct Learn HTML `https://learn.chatgpt.com/docs/config-file/config-reference` → same URL; `200`; `text/html; charset=utf-8`; 1244872 bytes; SHA-256 `5014ac020dff359bf87efad4be9186934c9911166f2440308fd72c4ba8de1970` | `https://learn.chatgpt.com/docs/config-file/config-reference.md` → same URL; `200`; `text/markdown; charset=utf-8`; 92585 bytes; SHA-256 `b60fbf91a216b9a1136fb42c7dbbbf42d3943b212101aae09a1d5b946805e6dd`. Entry `https://developers.openai.com/codex/config-reference.md` → same Learn `.md` URL; hop `308` `text/plain`, 15 bytes, SHA-256 `7c040f8633b8823d72ed63da9b3b2dfe9846e912c66a64c9433ec9c4815d76c2`; final body byte-identical to the Learn `.md` row |
+| [Config basics](https://learn.chatgpt.com/docs/config-file/config-basic.md) | `https://developers.openai.com/codex/config-basic` → `https://learn.chatgpt.com/docs/config-file/config-basic`; hop `308` `text/plain`, 15 bytes, SHA-256 `7c040f8633b8823d72ed63da9b3b2dfe9846e912c66a64c9433ec9c4815d76c2`; final `200` `text/html; charset=utf-8`, 372859 bytes, SHA-256 `ecc7fdb565ba2ec6f0f98411be3cd45a32625dff84085cdb260e9c1888530621`. Direct Learn HTML same effective URL/body | `https://learn.chatgpt.com/docs/config-file/config-basic.md` → same URL; `200`; `text/markdown; charset=utf-8`; 11028 bytes; SHA-256 `46d88f56b56542ff72e50b851d5e011dd01009815c4845137036868320c188a2` (byte-identical to the 2026-08-25 Frozen Sources digest). Entry `https://developers.openai.com/codex/config-basic.md` 308-hops to the same Learn `.md` body |
+| [Advanced config](https://learn.chatgpt.com/docs/config-file/config-advanced.md) | `https://developers.openai.com/codex/config-advanced` → `https://learn.chatgpt.com/docs/config-file/config-advanced`; hop `308` `text/plain`, 15 bytes, SHA-256 `7c040f8633b8823d72ed63da9b3b2dfe9846e912c66a64c9433ec9c4815d76c2`; final `200` `text/html; charset=utf-8`, 491195 bytes, SHA-256 `0f822644f9c1f29d447162f2e5c012bb37b762d18a004f0757a240c5c2744ccf`. Direct Learn HTML same effective URL/body | `https://learn.chatgpt.com/docs/config-file/config-advanced.md` → same URL; `200`; `text/markdown; charset=utf-8`; 52023 bytes; SHA-256 `6b2e6132e2eb0506231005c1d55f46fdd462e0d876de363ed3213b621756a751` (byte-identical to the 2026-08-25 Frozen Sources digest). Entry `https://developers.openai.com/codex/config-advanced.md` 308-hops to the same Learn `.md` body |
+| [Sample config](https://learn.chatgpt.com/docs/config-file/config-sample.md) | `https://developers.openai.com/codex/config-sample` → `https://learn.chatgpt.com/docs/config-file/config-sample`; hop `308` `text/plain`, 15 bytes, SHA-256 `7c040f8633b8823d72ed63da9b3b2dfe9846e912c66a64c9433ec9c4815d76c2`; final `200` `text/html; charset=utf-8`, 562591 bytes, SHA-256 `f92bd751dec891b475479703ac1332198a1b7c5ebe18592046f614dc7377175f`. Direct Learn HTML same effective URL/body | `https://learn.chatgpt.com/docs/config-file/config-sample.md` → same URL; `200`; `text/markdown; charset=utf-8`; 30694 bytes; SHA-256 `085f334489c5b5ae5cc10db59d5537bc3cd2decfd9daf32785e895492b6505d7`. Entry `https://developers.openai.com/codex/config-sample.md` 308-hops to the same Learn `.md` body |
+
+All four final Learn `.md` bodies are `text/markdown`. Learn HTML shells are
+0.37–1.24 MiB SPA pages and do not identify converted text. The eight
+`developers.openai.com` hops share the same 15-byte `Redirecting...\n` body.
+
+GitHub path check at the same retrieval time:
+
+| Path | Role | Response metadata |
+| --- | --- | --- |
+| `https://raw.githubusercontent.com/openai/codex/rust-v0.149.1/codex-rs/models-manager/models.json` | binding release-tag catalog | `200`; `text/plain; charset=utf-8`; 192664 bytes; SHA-256 `c18214b1ba88ab9bd164753115324a7a29c0582e8d071f7b3babf749d892f549` (byte-identical to Frozen Sources) |
+| `https://raw.githubusercontent.com/openai/codex/main/codex-rs/core/models.json` | current-main lead only | `404`; `text/plain; charset=utf-8`; 14 bytes (`404: Not Found`); SHA-256 `d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed` |
+| `https://raw.githubusercontent.com/openai/codex/main/codex-rs/models-manager/models.json` | current-main lead only | `200`; `text/plain; charset=utf-8`; 424117 bytes; SHA-256 `eb0d7b9a5dcaf103895c5f8a14c16b269df46e039b375a55ba97f6238542d2ed` (not the frozen catalog) |
+
+## Markdown Corpus Reconciliation
+
+The 2026-09-01 Markdown corpus supports every decisive docs-facing statement in
+this record. Tag-bound source and catalog identities remain the capability
+authority; moving docs do not widen the deliver-now table.
+
+| Research 213 statement | Supporting Markdown / tag evidence | Current vs 2026-08-25 |
+| --- | --- | --- |
+| `model_verbosity` is optional `low\|medium\|high`; unset uses the selected model/preset default | [Config reference](https://learn.chatgpt.com/docs/config-file/config-reference.md) | reference `.md` body moved; statement still present |
+| CLI flags and `--config` are highest precedence | [Config basics](https://learn.chatgpt.com/docs/config-file/config-basic.md) | basics `.md` byte-identical; still lists CLI/`--config` first (current docs also name a system config layer before built-in defaults; that does not change maintained-exec `--config` authority) |
+| `--config` values are TOML; docs still say Chat Completions providers ignore verbosity | [Advanced config](https://learn.chatgpt.com/docs/config-file/config-advanced.md) | advanced `.md` byte-identical; Chat Completions ignore note remains stale relative to exact `rust-v0.149.1` Responses-only `WireApi` |
+| Sample shows `model_verbosity = "medium"` | [Sample config](https://learn.chatgpt.com/docs/config-file/config-sample.md) | sample `.md` body moved; commented example and `low \| medium \| high` note still present |
+| Digestable docs corpus is Learn `.md`, not HTML SPA shells | four Learn `.md` rows above; HTML shells 0.37–1.24 MiB | method confirmed; HTML remains corroboration only |
+| Release-tag models path binds; current-main `codex-rs/core/models.json` does not | tag `models-manager/models.json` digest match; main `core/models.json` still 404; main `models-manager/models.json` is a lead only | tag binding unchanged; main remains non-binding |
+
+Falsification check for this papercut close: an export disappearance, a
+non-Markdown final `.md` body, loss of the `low\|medium\|high` / unset-default
+docs shape, loss of CLI/`--config` highest precedence, a tag `models.json`
+digest mismatch, or any need to change the deliver-now table would stop the
+close. None of those fired. The existing exact `0.147.0`/`0.148.0`/`0.149.0`/
+`0.149.1` seven-slug × `low\|medium\|high` deliver-now set and its claim bounds
+remain unchanged; no capability, fixture, or claim change is required.
 
 ## Syntax And Parser
 

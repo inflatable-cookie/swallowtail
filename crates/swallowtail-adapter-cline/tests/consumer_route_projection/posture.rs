@@ -32,6 +32,7 @@ fn assert_cline_row(
     use swallowtail_runtime::{
         ConsumerRouteActorPosture as Actor, ConsumerRouteEvidenceStrength as Evidence,
         ConsumerRouteLifecycle as Lifecycle, ConsumerRouteOmissionSemantics as Omission,
+        ConsumerRouteProjectionSourceKind as SourceKind,
         ConsumerRouteSourceClass as Class, ConsumerRouteStateSupport as State,
         ConsumerRouteValueKind as Kind,
     };
@@ -71,18 +72,19 @@ fn assert_cline_row(
         "feature.prepared-facade" => assert_exact(
             row, view, "selection-summary", prepared_source, Class::PreparedOperationRecord,
             Evidence::PreparedOperation, Lifecycle::SelectionSummary, Actor::Informational,
-            State::descriptor_only(), false, None, None,
+            State::descriptor_only(), SourceKind::AdapterContribution, false, None, None, None,
         ),
         "feature.interactive-session" | "feature.streaming-events"
         | "feature.cancellation-or-interruption" | "feature.working-resource" => assert_exact(
             row, view, "selection-summary", prepared_source, Class::CapabilityProfile,
             Evidence::PreparedOperation, Lifecycle::SelectionSummary, Actor::Informational,
-            State::descriptor_only(), false, None, None,
+            State::descriptor_only(), SourceKind::AdapterContribution, false, None, None, None,
         ),
         "feature.activity-observation" => assert_exact(
             row, view, "active-session", prepared_source, Class::PreparedOperationRecord,
             Evidence::PreparedOperation, Lifecycle::PostOpenObservationOnly,
-            Actor::ObservationOnly, State::descriptor_only(), false, None, None,
+            Actor::ObservationOnly, State::descriptor_only(), SourceKind::AdapterContribution,
+            false, None, None, None,
         ),
         "control.harness-mode" => {
             assert!(row.mutation_authority().is_prepared_session_start());
@@ -90,7 +92,9 @@ fn assert_cline_row(
                 row, view, "session-start", prepared_source, Class::AdapterPreparedInput,
                 Evidence::RouteValidation, Lifecycle::SessionStartOnly, Actor::ConsumerSelectable,
                 State::descriptor_only().with_requested().with_prepared().with_pending(),
-                true, Some(Kind::AcknowledgedEnumeration), Some(Omission::PreservesRouteBehavior),
+                SourceKind::AdapterContribution, true, Some(Kind::AcknowledgedEnumeration),
+                Some(ExpectedDomain::Enumerated("plan")),
+                Some(Omission::PreservesRouteBehavior),
             );
         }
         "feature.active-session-plan-ack" => {
@@ -100,17 +104,27 @@ fn assert_cline_row(
                 Evidence::WireAcknowledgement, Lifecycle::PostOpenObservationOnly,
                 Actor::ObservationOnly,
                 State::descriptor_only().with_requested().with_provider_effective(),
-                true, Some(Kind::AcknowledgementState), Some(Omission::NotSelectable),
+                SourceKind::ActiveSessionObservation, true, Some(Kind::AcknowledgementState),
+                Some(ExpectedDomain::Enumerated("plan")), Some(Omission::NotSelectable),
             );
         }
         "feature.negotiated-model-options-observation" => assert_exact(
             row, view, "active-session", active_source, Class::RouteAcknowledgementEvidence,
             Evidence::WireAcknowledgement, Lifecycle::PostOpenObservationOnly,
             Actor::ObservationOnly, State::descriptor_only().with_observed(),
-            false, Some(Kind::Observation), Some(Omission::NotSelectable),
+            SourceKind::ActiveSessionObservation, false, Some(Kind::Observation),
+            Some(ExpectedDomain::Unenumerated(
+                "exact bounded negotiated model options on the open session",
+            )), Some(Omission::NotSelectable),
         ),
         other => panic!("unexpected Cline semantic {other}"),
     }
+}
+
+#[derive(Clone, Copy)]
+enum ExpectedDomain {
+    Enumerated(&'static str),
+    Unenumerated(&'static str),
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -124,22 +138,63 @@ fn assert_exact(
     lifecycle: swallowtail_runtime::ConsumerRouteLifecycle,
     actor: swallowtail_runtime::ConsumerRouteActorPosture,
     state: swallowtail_runtime::ConsumerRouteStateSupport,
+    source_kind: swallowtail_runtime::ConsumerRouteProjectionSourceKind,
     expected_mutation: bool,
     value_kind: Option<swallowtail_runtime::ConsumerRouteValueKind>,
+    value_domain: Option<ExpectedDomain>,
     omission: Option<swallowtail_runtime::ConsumerRouteOmissionSemantics>,
 ) {
     assert_eq!(view, expected_view);
     assert_eq!(row.source().id(), source);
+    assert_eq!(row.source().kind(), source_kind);
     assert_eq!(row.source_class(), source_class);
     assert_eq!(row.evidence_strength(), evidence);
     assert_eq!(row.lifecycle(), lifecycle);
     assert_eq!(row.actor_posture(), actor);
     assert_eq!(row.state_support(), state);
     assert_eq!(row.control_value().map(|value| value.kind()), value_kind);
+    assert_value_domain(row, value_domain);
     assert_eq!(row.control_value().map(|value| value.omission()), omission);
     if expected_mutation {
         assert_eq!(row.mutation_authority().source(), Some(source));
     } else {
         assert!(row.mutation_authority().source().is_none());
+    }
+}
+
+fn assert_value_domain(
+    row: &swallowtail_runtime::ConsumerRouteProjectionRow,
+    expected: Option<ExpectedDomain>,
+) {
+    use swallowtail_runtime::ConsumerRouteValueDomain;
+
+    match (row.control_value().map(|value| value.domain()), expected) {
+        (None, None) => {}
+        (
+            Some(ConsumerRouteValueDomain::Enumerated(values)),
+            Some(ExpectedDomain::Enumerated(text)),
+        ) => {
+            assert_eq!(
+                values
+                    .values()
+                    .map(|value| value.as_str())
+                    .collect::<Vec<_>>(),
+                [text]
+            );
+        }
+        (
+            Some(ConsumerRouteValueDomain::Unenumerated(value)),
+            Some(ExpectedDomain::Unenumerated(text)),
+        ) => {
+            assert_eq!(value.as_str(), text);
+        }
+        (actual, expected) => panic!(
+            "unexpected value domain: actual={actual:?}, expected={}",
+            match expected {
+                None => "none",
+                Some(ExpectedDomain::Enumerated(_)) => "enumerated",
+                Some(ExpectedDomain::Unenumerated(_)) => "unenumerated",
+            }
+        ),
     }
 }

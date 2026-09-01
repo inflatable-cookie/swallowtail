@@ -37,3 +37,4 @@ include!("consumer_route_projection/mixture.rs");
 include!("consumer_route_projection/headless_mixture.rs");
 include!("consumer_route_projection/fixtures.rs");
 include!("consumer_route_projection/posture.rs");
+include!("consumer_route_projection/headless_posture.rs");

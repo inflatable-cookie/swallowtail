@@ -2,8 +2,9 @@ use std::collections::BTreeSet;
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteAvailability, ConsumerRouteControlId,
     ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
-    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution, ConsumerRouteRowIdentity,
-    ConsumerRouteSourceClass, ConsumerRouteStateSupport, ConsumerRouteSupportPosture,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionSourceKind, ConsumerRouteRowIdentity, ConsumerRouteSourceClass,
+    ConsumerRouteStateSupport, ConsumerRouteSupportPosture, ConsumerRouteValueDomain,
     ConsumerRouteValueKind,
 };
 
@@ -81,6 +82,10 @@ fn every_identity_on_both_facades_keeps_exact_posture_and_source() {
         assert_eq!(observed(&prepared), expected(&prepared));
         for row in rows(&prepared) {
             assert_eq!(row.source().id(), &source_id);
+            assert_eq!(
+                row.source().kind(),
+                ConsumerRouteProjectionSourceKind::AdapterContribution
+            );
             assert_eq!(row.support(), ConsumerRouteSupportPosture::Supported);
             assert_eq!(row.availability(), ConsumerRouteAvailability::Available);
             match row.identity() {
@@ -89,6 +94,16 @@ fn every_identity_on_both_facades_keeps_exact_posture_and_source() {
                     let value = row.control_value().expect("model value");
                     assert_eq!(value.kind(), ConsumerRouteValueKind::ExactModelRoute);
                     assert_eq!(value.omission(), ConsumerRouteOmissionSemantics::Required);
+                    let ConsumerRouteValueDomain::Enumerated(values) = value.domain() else {
+                        panic!("model selection needs an exact enumerated domain");
+                    };
+                    assert_eq!(
+                        values
+                            .values()
+                            .map(|value| value.as_str())
+                            .collect::<Vec<_>>(),
+                        [common::FIXTURE_MODEL_ID]
+                    );
                 }
                 _ => {
                     assert!(row.mutation_authority().source().is_none());

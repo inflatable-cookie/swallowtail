@@ -80,6 +80,36 @@ fn exact_act_is_rejected_without_session_or_model_row() {
     let rows = semantic_ids(&contribution);
     assert!(rows.contains("feature.active-session-plan-ack"));
     assert!(!rows.contains("feature.negotiated-model-options-observation"));
+    let acknowledgement = projection_rows(&contribution)
+        .find(|row| {
+            row.identity().namespaced_extension().is_some_and(|extension| {
+                extension.semantic_id() == "feature.active-session-plan-ack"
+            })
+        })
+        .expect("rejected Plan acknowledgement row");
+    assert_eq!(
+        acknowledgement.source().kind(),
+        ConsumerRouteProjectionSourceKind::ActiveSessionObservation
+    );
+    assert!(acknowledgement.state_support().rejected());
+    assert!(!acknowledgement.state_support().provider_effective());
+    let value = acknowledgement.control_value().expect("rejected value");
+    assert_eq!(
+        value.kind(),
+        swallowtail_runtime::ConsumerRouteValueKind::AcknowledgementState
+    );
+    assert_eq!(
+        value.omission(),
+        swallowtail_runtime::ConsumerRouteOmissionSemantics::NotSelectable
+    );
+    assert!(acknowledgement.mutation_authority().is_acknowledged());
+    let swallowtail_runtime::ConsumerRouteValueDomain::Enumerated(values) = value.domain() else {
+        panic!("rejected acknowledgement needs an exact domain");
+    };
+    assert_eq!(
+        values.values().map(|value| value.as_str()).collect::<Vec<_>>(),
+        ["act"]
+    );
     assert_eq!(host.releases(), 1);
 }
 

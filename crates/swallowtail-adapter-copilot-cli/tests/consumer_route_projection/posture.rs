@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteAvailability, ConsumerRouteEvidenceStrength,
-    ConsumerRouteLifecycle, ConsumerRouteProjectionContribution, ConsumerRouteSourceClass,
-    ConsumerRouteStateSupport, ConsumerRouteSupportPosture,
+    ConsumerRouteLifecycle, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceKind,
+    ConsumerRouteSourceClass, ConsumerRouteStateSupport, ConsumerRouteSupportPosture,
 };
 
 use super::{identity_name, prepared_session, rows, source};
@@ -96,6 +96,10 @@ fn every_identity_keeps_exact_posture_and_source() {
     assert_eq!(rows(&contribution).count(), 6);
     for row in rows(&contribution) {
         assert_eq!(row.source().id(), &source_id);
+        assert_eq!(
+            row.source().kind(),
+            ConsumerRouteProjectionSourceKind::AdapterContribution
+        );
         assert_eq!(row.support(), ConsumerRouteSupportPosture::Supported);
         assert_eq!(row.availability(), ConsumerRouteAvailability::Available);
         assert!(row.mutation_authority().source().is_none());

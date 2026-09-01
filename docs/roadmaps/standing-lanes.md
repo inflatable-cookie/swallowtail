@@ -48,8 +48,11 @@ darwin-arm64 package. Official npm and GitHub stable is `0.152.0`. Unpublished
 permitted `UnverifiedNewer`. No provider prompt, live session, login, install,
 or host update was required.
 
-The next all-route checkpoint remains queued. It must choose only one next
-family and must not infer that family from registry `latest` alone.
+Research 265 revalidated all 40 families after Codex `0.152.0`. Claude Code
+`2.1.252` is the sole next-family candidate. Host `2.1.251` already sits on
+the qualified ceiling. This checkpoint changes no claim. One-family
+qualification waits for a later Upgrade Workflow PR and must not infer the
+family from registry `latest` alone.
 
 ### Previous Completed Family
 

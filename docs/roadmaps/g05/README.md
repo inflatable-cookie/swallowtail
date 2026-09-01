@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Research 264 and g05.013 cards 035-036 qualify Codex exec and app-server through official `0.152.0`; next all-route checkpoint queued | Contract 029 identity-before-claim; Research 263-264; current-main validation | `g05.013` cards 035-036 |
+| Keep production route versions current one family at a time. | Research 265 selected Claude Code `2.1.252` as the next one-family Upgrade Workflow after Codex `0.152.0`; no claim change | Contract 029 identity-before-claim; Research 263-265; current-main validation | `g05.013` cards 035-036 |
 
 ## Planned Next Roadmaps
 
@@ -253,8 +253,8 @@ represent that completed query honestly. g05.009 is planned and
 The corrected interim 89-row ledger is 74 emitted / 14 withheld / 1 undecided
 as reassessment evidence only; coverage stays 249/518. Research 263 separately
 selected Codex `0.152.0`. g05.013 cards 035-036 freeze identity then qualify
-exec and app-server through official `0.152.0`. The next all-route checkpoint
-is queued.
+exec and app-server through official `0.152.0`. Research 265 selected Claude
+Code `2.1.252` as the next one-family Upgrade Workflow and changed no claim.
 
 ## Milestones
 

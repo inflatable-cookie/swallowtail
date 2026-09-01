@@ -15,7 +15,8 @@ shape.
 
 ## Next Task
 
-Reassess remaining AllowUnverified currentness families. Do not start a
+Implement Codex `0.152.1` useful-newer qualification for the current official
+stable. Host `0.150.1` already sits on a qualified bound. Do not start a
 second family from this PR. Watcher stays exact `2.1.251`. Do not reopen
 `kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
 Gemini's deferral, and do not keep g05 open for currentness. The g05.009

@@ -112,7 +112,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   keeps its historical HTML table and now notes that Research 227 supersedes
   the retrieval method.
 
-### [ ] Cline Plan acceptance widens the god-file warning baseline — 2026-08-26
+### [x] Cline Plan acceptance widens the god-file warning baseline — 2026-08-26
 - Friction: PR 72 expands `tests/prepared_headless_facade.rs` to 395 code
   lines, raising doctor findings from 378 to 379 while the error count remains
   46.
@@ -123,6 +123,13 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   test modules without reducing coverage; record the 379 finding baseline.
 - Surface: `swallowtail-adapter-cline` prepared headless acceptance tests;
   g04.073 closeout evidence.
+- Closed: 2026-09-01 papercuts Cline prepared-headless god-file split. Moved
+  default-run, Plan, and rejection/binding proofs plus shared fixture builders
+  into `tests/prepared_headless_facade/{default_run,plan,rejections,support}.rs`
+  with bodies intact under the existing `prepared_headless_facade` target.
+  `effigy --json scan god-files` dropped from 385 findings (7 critical / 42
+  high / 336 warning) to 384 (7 critical / 42 high / 335 warning); the 395-line
+  root finding is gone and no new module entered the scan.
 
 ### [ ] Launcher cleanup leaves stale Git worktree registrations — 2026-08-26
 - Friction: the PR 67 launcher worktree directory was removed after merge, but

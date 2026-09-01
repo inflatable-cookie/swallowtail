@@ -23,6 +23,15 @@ use swallowtail_runtime::{
     PreparedAccessEvidence, RequestId, RuntimeEventKind, ScopeId, TerminalStatus,
 };
 
+const PROBE_INSTANCE_REVISION: &str = "live-claude-code-response-only";
+const PROBE_ROUTE_REVISION: &str = "live-claude-code-response-only";
+
+#[test]
+fn live_response_only_revisions_are_not_the_moving_ceiling() {
+    assert_ne!(PROBE_INSTANCE_REVISION, CLAUDE_CODE_RESPONSE_ONLY_VERSION);
+    assert_ne!(PROBE_ROUTE_REVISION, CLAUDE_CODE_RESPONSE_ONLY_VERSION);
+}
+
 #[test]
 #[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_CODE_RESPONSE_ONLY=1, a qualified Claude Code release, and local Max/OAuth state"]
 fn configured_claude_code_returns_one_tool_free_text_response() {
@@ -48,7 +57,7 @@ fn configured_claude_code_returns_one_tool_free_text_response() {
     let prepared = block_on(prepare_claude_code_response_only(
         ClaudeCodeResponsePreparationInput::new(
             ConfiguredInstanceId::new("live.claude-code.response-only").expect("instance id"),
-            InstanceRevision::new(CLAUDE_CODE_RESPONSE_ONLY_VERSION).expect("revision"),
+            InstanceRevision::new(PROBE_INSTANCE_REVISION).expect("revision"),
             execution_host_id,
             target,
             environment,
@@ -76,7 +85,7 @@ fn configured_claude_code_returns_one_tool_free_text_response() {
             RequestId::new("live-claude-code-response").expect("request id"),
             ClaudeCodeResponseModelSelection::new(
                 ModelRouteId::new("live.claude-code.response-only").expect("route id"),
-                ModelRouteRevision::new(CLAUDE_CODE_RESPONSE_ONLY_VERSION).expect("route revision"),
+                ModelRouteRevision::new(PROBE_ROUTE_REVISION).expect("route revision"),
                 ModelId::new("claude-sonnet-5").expect("model id"),
             ),
             OperationContent::new("Reply exactly CLAUDE_RESPONSE_ONLY_LIVE_OK.").expect("prompt"),
@@ -117,8 +126,7 @@ fn configured_claude_code_returns_one_tool_free_text_response() {
                 ClaudeCodeResponseModelSelection::new(
                     ModelRouteId::new("live.claude-code.response-only.medium")
                         .expect("route id"),
-                    ModelRouteRevision::new(CLAUDE_CODE_RESPONSE_ONLY_VERSION)
-                        .expect("route revision"),
+                    ModelRouteRevision::new(PROBE_ROUTE_REVISION).expect("route revision"),
                     ModelId::new("claude-sonnet-5").expect("model id"),
                 ),
                 OperationContent::new(
@@ -172,7 +180,7 @@ fn configured_claude_code_returns_one_tool_free_text_response() {
             RequestId::new("live-claude-code-response-cancel").expect("request id"),
             ClaudeCodeResponseModelSelection::new(
                 ModelRouteId::new("live.claude-code.response-only.cancel").expect("route id"),
-                ModelRouteRevision::new(CLAUDE_CODE_RESPONSE_ONLY_VERSION).expect("route revision"),
+                ModelRouteRevision::new(PROBE_ROUTE_REVISION).expect("route revision"),
                 ModelId::new("claude-sonnet-5").expect("model id"),
             ),
             OperationContent::new("Write a long plain-text essay about cancellation.")

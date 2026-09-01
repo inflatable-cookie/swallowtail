@@ -254,9 +254,10 @@ positive integer produces the documented bound, so only a positive integer is
 selectable here.
 
 A selection requires one of the exact Claude Code versions Research 226 probed.
-That set is narrower than the route's qualified window in two ways, and both
-matter:
+That set is narrower than the route's qualified window:
 
+- published qualified points `2.1.242..=2.1.252` excluding unpublished
+  `2.1.244` and `2.1.249` were never probed for this feature
 - the compatibility claim permits later stable points as `UnverifiedNewer`, and
   no artifact for one has been probed
 - the claim's segment is a semantic range that contains `2.1.230`, which was

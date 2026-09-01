@@ -140,7 +140,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   its owned directory, or retain the directory until Git deregistration finishes.
 - Surface: T3 launcher-owned Swallowtail review worktrees; Git worktree metadata.
 
-### [ ] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
+### [x] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
 - Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB
   Next.js shells. Markdown exports exist by appending `.md` and are 11–348 KiB.
 - Impact: hashing the HTML shell does not identify the converted text used as
@@ -149,6 +149,10 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: retrieve GitHub docs `.md` exports for Copilot CLI reference pages;
   hash those bodies; treat HTML as SPA corroboration only.
 - Surface: g04.071 / Research 218 official-source retrieval.
+- Closed: 2026-09-01 papercuts Copilot docs corpus. Research 218 already
+  records binding `.md` digests with HTML as corroboration only. Research 188
+  keeps its historical HTML table and now notes that Research 218 supersedes
+  the retrieval method.
 
 ### [ ] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
 - Friction: `developers.openai.com/codex/config-*` 200-redirects to

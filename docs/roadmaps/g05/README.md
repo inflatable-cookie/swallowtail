@@ -27,7 +27,7 @@ enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; card 033 stopped candidate F behind a named `kimi-code.acp` gate | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1 and 9.4 gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-033 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | Codex exec and app-server qualified through official `0.151.0`; cards 027-028 complete | Contract 029 identity-before-claim; Research 262; current-main validation | `g05.012` cards 027-028 |
@@ -37,7 +37,7 @@ enforcement.
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; strict-paused; cards 022-024 and 031-032 merged through PRs 131, 133, 138, 141, and 144; 249 rows proved; card 033 closed without promoting candidate F, which stays behind the named `kimi-code.acp` gate; no card ready
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; strict-paused; cards 022-024 and 031-032 merged through PRs 131, 133, 138, 141, and 144; 249 rows proved; the Kimi active-observation gate awaits the provider-operation observation decision and card 034 is not ready
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -190,9 +190,26 @@ prepared patterns, but three `kimi-code.acp` post-open rows fail rubric items
 reasoning value domain admits foreign catalogue rows so no exact rejected or
 effective effort survives, its already-retained negotiated model options have
 no publishing seam, and its provider-session catalogue observes through a
-separate prepared operation. One `kimi-code.acp`-only gate with five operator
-decisions is named and not compiled. No Kimi implementation, provider contact,
-or Batch 9.5 audit is authorized.
+separate prepared operation. One `kimi-code.acp`-only gate with five first-round
+decisions is named and not compiled. The route-local repairs retain
+`EffectiveReasoningSetup` unchanged, exact reasoning and Plan values
+adapter-local behind one bounded 128-byte Kimi provider value, one additive
+`open_session_with_projection` for the interactive surface, and distinct
+prepared and active source IDs. A separate catalogue seam is not authorized:
+the gate stopped on the provider-operation observation decision. The first-round
+route-local repairs remain evidence, but no shared design is selected.
+A completed `KimiPreparedSessionCatalogue::list_sessions` query opens no
+session, while `ActiveSessionObservation`, `PostOpenObservationOnly`, and
+`ConsumerRouteActiveSessionState` are each defined in `swallowtail-runtime` as
+post-open session semantics, so publishing `control.provider-session-catalogue`
+would widen shared Contract 061 vocabulary from an adapter document. The
+compound acknowledgement item retains its unresolved generic half-to-state and
+terminal not-observed corrections; the profile-conditional attachment controls
+and platform catalogue model-selection correction are also retained. The gate
+re-derives F's four route ledgers as 74 emitted, 14 withheld, and 1 undecided
+across 89 rows as reassessment evidence only, leaves candidate F unpromoted, and leaves card
+034 planned; not ready; blocked by the provider-operation observation
+public-baseline decision. Coverage stays 249/518.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer.
@@ -225,16 +242,24 @@ Rust. The later operator decision closed the narrow `claude-agent.acp`
 public-baseline gate, and card 031 merged through PR 141 at `5d1f173a`. The
 operator then closed the narrow `cline.acp` active-observation public baseline,
 and card 032 merged through PR 144 at `18a6907e`. Card 033 closed as an
-evidence stop without promoting candidate F or changing Rust. g05.009 is
-`strict-paused`; no card is ready, and the sole Next Task is the
-`kimi-code.acp` operator gate decision.
+evidence stop without promoting candidate F or changing Rust. The operator's
+The Kimi first-round route-local repairs remain evidence, but the gate stopped
+on the provider-operation observation vocabulary: `list_sessions` opens no
+session, and the existing runtime source, lifecycle, and view names cannot
+represent that completed query honestly. g05.009 is `strict-paused`; no card
+is ready, and the sole Next Task is whether to compile a shared
+provider-operation observation public-baseline gate with honest
+source/lifecycle/view vocabulary, or leave `control.provider-session-catalogue`
+withheld and candidate F unpromoted. The corrected interim 89-row ledger is 74
+emitted / 14 withheld / 1 undecided as reassessment evidence only; coverage
+stays 249/518.
 
 ## Milestones
 
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; strict-paused; cards 022-024 and 031-032 merged; 249 rows proved; card 033 left candidate F unpromoted behind a named `kimi-code.acp` gate
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; strict-paused; cards 022-024 and 031-032 merged; 249 rows proved; the Kimi gate awaits the provider-operation observation decision and card 034 is not ready
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

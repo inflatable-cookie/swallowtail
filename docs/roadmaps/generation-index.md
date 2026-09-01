@@ -254,8 +254,22 @@ activity. The other three sit on `kimi-code.acp`: both confirmations are
 discarded, the reasoning value domain admits foreign catalogue rows so no exact
 rejected or effective effort survives, the already-retained negotiated model
 options have no publishing seam, and the provider-session catalogue observes
-through a separate prepared operation. One `kimi-code.acp`-only gate with five
-operator decisions is named and not compiled; g05.009 is `strict-paused`.
+through a separate prepared operation. The first-round Kimi route-local
+repairs remain evidence, but the gate stops on the provider-operation
+observation decision. It keeps `EffectiveReasoningSetup` unchanged, retains
+exact reasoning and Plan values adapter-locally behind one bounded 128-byte
+Kimi provider value, preserves the projected-open evidence and source split,
+and records the profile-conditional attachment controls and platform catalogue
+model-selection correction. It cannot add a projected catalogue seam:
+`list_sessions` opens no session, while `ActiveSessionObservation`,
+`PostOpenObservationOnly`, and `ConsumerRouteActiveSessionState` are each
+post-open session semantics. The compound acknowledgement item retains its
+unresolved generic half-to-state and terminal not-observed corrections; no
+replacement shape is selected. The corrected interim 89-row ledger remains 74
+emitted, 14 withheld, and 1 undecided as reassessment evidence only. Candidate F is not promoted,
+card 034 is planned; not ready; blocked by the provider-operation observation
+public-baseline decision, and g05.009 is `strict-paused` with no ready
+implementation card.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
@@ -292,7 +306,11 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Define the next g05 state through the pointer named by the
-[roadmaps front door](README.md#next-task). g05.009 is `strict-paused`; no card
-is ready, and the sole Next Task is the `kimi-code.acp` active-observation
-operator decision. This index records generation status; the canonical
-actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). g05.009 keeps its milestone
+`Status` bucket `ready` but is `strict-paused`; no implementation card is ready.
+The sole Next Task is the operator decision whether to compile a shared
+provider-operation observation public-baseline gate with honest
+source/lifecycle/view vocabulary, or leave
+`control.provider-session-catalogue` withheld and candidate F unpromoted. This
+index records generation status; the canonical actionable pointer stays in the
+front door.

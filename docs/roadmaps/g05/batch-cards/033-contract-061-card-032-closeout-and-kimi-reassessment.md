@@ -382,6 +382,18 @@ card answers:
 Decisions 2, 3, and 5 have no precedent in the Claude Agent or Cline gates.
 Neither of those gates grants Kimi authority.
 
+### Gate Outcome
+
+The first-round route-local repairs remain evidence, but the
+[Kimi active-observation gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+stops because no shared runtime source kind, lifecycle band, or view represents
+a completed provider-session catalogue query. Candidate F is still not
+promoted and [card 034](034-contract-061-kimi-package-completion.md) is
+planned; not ready; blocked by the provider-operation observation
+public-baseline decision. The corrected 89-row reassessment remains four exact
+ledgers totalling 74 emitted, 14 withheld, and 1 undecided as evidence only; none is proved
+coverage or implementation authority.
+
 ### Validation
 
 `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` pass. No Rust
@@ -393,5 +405,7 @@ validation, live probe, or provider contact belongs to this card.
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+- [stopped Kimi active-observation gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+- [planned card 034](034-contract-061-kimi-package-completion.md)
 - [card 030 acknowledgement reassessment](030-contract-061-acknowledgement-candidate-reassessment.md)
 - [card 031 closeout log](../../../logs/2026-09-01-g05-009-card-031-closeout-and-lifecycle-reassessment.md)

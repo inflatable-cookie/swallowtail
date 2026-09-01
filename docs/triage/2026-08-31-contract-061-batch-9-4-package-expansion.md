@@ -2,7 +2,7 @@
 
 Status: active planning evidence; candidates A, D, G, and H complete through
 cards 023, 024, 031, and 032; 249 rows proved and 518 remaining; candidate F
-reassessed by card 033 and left unpromoted pending a `kimi-code.acp` gate
+still unpromoted after the `kimi-code.acp` gate stopped
 Owner: Tom
 Date: 2026-08-31
 
@@ -230,7 +230,7 @@ it for `claude-agent.acp`, `kimi-code.acp`, or `cline.acp`.
 | Candidate | Disposition |
 | --- | --- |
 | D | Promote after gate acceptance. One adapter package, one acknowledgement row, no other non-descriptor post-open row. The prepared facades already exist; the accepted route-local baseline adds only exact acknowledgement retention and the additive open result. Card 031 owns the complete 53-row proof. |
-| F | Stop, largest and most coupled. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
+| F | Still stopped after the `kimi-code.acp` gate. Card 034 is planned, not ready, and blocked by the provider-operation observation public-baseline decision. Largest and most coupled candidate. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
 | G | Stop. 48 rows but all four adapter packages, so rubric item 5 has zero headroom. Its two `audit.no-public-route-specific-selectable-control` rows on `copilot-cli.acp` and `goose.acp` are fine — card 024 proved that negative-coverage pattern. `cline.acp` adds one further post-open family, `feature.negotiated-model-options-observation`. |
 
 No candidate can be narrowed around the blocker. The fixed boundary requires
@@ -460,9 +460,64 @@ operator decisions are:
 Decisions 2, 3, and 5 have no precedent in the Claude Agent or Cline gates.
 Neither gate grants Kimi authority.
 
+### Compiled Kimi Gate — Stopped
+
+The operator answered all five, and the
+[Kimi active-observation public-baseline gate](2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+stopped on the fifth. It keeps `EffectiveReasoningSetup` unchanged, retains
+exact reasoning and Plan values adapter-locally behind one bounded 128-byte
+`KimiProviderValue`, adds only
+`KimiPreparedSession::open_session_with_projection`, and keeps prepared and
+active source IDs distinct. Under `DeclaredEffort` with requested `"on"` the
+projected path publishes the exact provider-confirmed effort; foreign or
+over-bound confirmations publish no row while the preserved path stays
+unchanged, through two disjoint branches the gate fixes separately.
+
+No projected catalogue seam is authorized.
+`KimiPreparedSessionCatalogue::list_sessions` opens no session, while
+`ConsumerRouteProjectionSourceKind::ActiveSessionObservation`,
+`ConsumerRouteLifecycle::PostOpenObservationOnly`, and
+`ConsumerRouteActiveSessionState` are each defined as post-open session
+semantics. Publishing `control.provider-session-catalogue` through them would
+widen shared Contract 061 vocabulary from an adapter document. The compound
+`feature.active-session-reasoning-and-plan-ack` remains an unresolved
+route-local item: its generic representation must associate each reasoning and
+Plan half with its exact effective, rejected, or not-observed state without an
+adapter downcast. A requested-but-never-dispatched Plan half must not be mapped
+to `with_pending()` because no acknowledgement was dispatched and the failure
+is terminal. `KimiReasoningAcknowledgement::RequestedNotObserved` is
+speculative and unreachable under fixed reasoning-first order, so it is not an
+accepted public baseline.
+
+The route-local evidence also corrects two emitters: `control.load-session` and
+`control.resume-session` are emitted only from attachment-compatible profiles
+with no bound reasoning or Plan option, and `KimiPlatformPreparedCatalogue`
+does not emit `control.model-selection`; only
+`KimiPlatformPreparedInferenceAttempt` does.
+
+The gate still re-derives candidate F's four route ledgers from current source,
+replacing card 033's provisional 86/3 reading:
+
+| Route | Census | Emitted | Withheld | Undecided |
+| --- | ---: | ---: | ---: | ---: |
+| `kimi-code.acp` | 25 | 21 | 3 | 1 |
+| `kimi-code.headless` | 20 | 10 | 10 | 0 |
+| `kimi-code.local-server` | 31 | 31 | 0 | 0 |
+| `kimi-platform.chat` | 13 | 12 | 1 | 0 |
+| **Total** | **89** | **74** | **14** | **1** |
+
+The undecided `kimi-code.acp` `control.provider-session-catalogue` row becomes
+emitted only if a provider-operation observation baseline is authorized, and
+withheld otherwise. No row counts toward coverage or grants implementation
+authority.
+
+Candidate F still fails rubric item 3 and is not promoted. Card 034 is
+planned; not ready; blocked by the provider-operation observation
+public-baseline decision, and none of its 89 rows counts toward coverage.
+
 Candidates B, C, E, and I-L keep no card number or execution authority. The
-per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 033.
-Batch 9.5 remains uncompiled.
+per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 033 and
+the Kimi gate. Batch 9.5 remains uncompiled.
 
 ## Lifecycle-Priority Sequence
 
@@ -471,7 +526,8 @@ The four-track reframe keeps lifecycle value ahead of row count. After card
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
    D is complete through card 031, G is complete through card 032, and F
-   still fails rubric items 2 and 3 on three `kimi-code.acp` post-open rows.
+   remains unpromoted behind the `kimi-code.acp` provider-operation
+   observation public-baseline decision.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

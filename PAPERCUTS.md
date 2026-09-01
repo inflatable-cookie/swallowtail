@@ -281,7 +281,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   compilation (`a40cefd5`); current checker taxonomy is
   critical/high/warning, so that historical paragraph was left unchanged.
 
-### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
+### [x] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,
   `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above
   the warning threshold, raising doctor findings from 371 to 374.
@@ -290,6 +290,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: split protocol encoding, context-compression, and output-maximum proofs
   into focused test modules without reducing route-local coverage.
 - Surface: `swallowtail-adapter-gemini` Live protocol and acceptance tests.
+- Closed: 2026-09-01 papercuts Gemini Live god-file split. Current scan named
+  two live targets: `tests/live_context_compression.rs` (267 code lines) and
+  `tests/live_output_maximum.rs` (257 code lines). The historical
+  `live_protocol/tests.rs` path cited in the initial entry was stale papercut
+  evidence and not present in `tests/`. Split `live_context_compression.rs` into
+  `tests/live_context_compression/{support,rollover,restoration,composition}.rs`
+  and `live_output_maximum.rs` into
+  `tests/live_output_maximum/{support,preparation,rejections,facades}.rs` under
+  the existing `live_prepared_facade` target. Test bodies and counts held (4
+  context-compression tests, 7 output-maximum tests). `effigy --json scan
+  god-files` improved from 381 findings (7 critical / 42 high / 332 warning) to
+  379 (7 critical / 42 high / 330 warning); both warning findings are resolved
+  and no new file entered the scan.
 
 ### [ ] evidence-download cwd steals later repo commands — 2026-08-22
 - Friction: a disposable evidence directory became the persistent shell cwd, so later `effigy` and `git diff --check` ran outside the worktree.

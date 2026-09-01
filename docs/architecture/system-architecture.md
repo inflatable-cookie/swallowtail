@@ -328,7 +328,7 @@ OpenHands adds a package without a production route.
   llama.cpp and owns its access, reasoning, error, usage, and lifecycle mapping
 - `swallowtail-adapter-pi` implements maintained Pi
   `0.80.10`, `0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, `0.83.0`, `0.84.0`,
-  `0.84.1`, `0.84.2`, and `0.84.3` restrictive
+  `0.84.1`, `0.84.2`, `0.84.3`, and `0.84.4` restrictive
   ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
@@ -1063,7 +1063,7 @@ posture remains unmigrated state, not an ambient alias; no posture falls back
 to another.
 
 The Pi RPC records compose with the existing long-lived RPC profile. Exact
-published points from baseline `0.80.10` through `0.84.3` now form six
+published points from baseline `0.80.10` through `0.84.4` now form six
 behavior segments. They retain strict-LF framing while separately
 recording thinking-level and nested-usage evidence, summarization-retry events,
 direct-bash correlation, the later direct-bash extension hook, and the `0.84.0`
@@ -1098,6 +1098,7 @@ Research 053 plus the g03.010 range corpus check every stable point from
 `0.80.10` through `0.83.0`. Research 140 plus g03.083 add published
 `0.84.0` through `0.84.2` without closing unpublished `0.83.1`.
 Research 215 plus g04.068 raise the official ceiling through `0.84.3`.
+Research 268 plus g05.015 raise the official ceiling through `0.84.4`.
 Public RPC session switching recreates runtime services from the cwd stored in
 the session file, checks only that the directory exists, and exposes no
 effective cwd for host-resource corroboration, so `pi.rpc` stays fresh-only

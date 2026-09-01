@@ -1,6 +1,6 @@
 # 040 Pi RPC 0.84.4 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -70,3 +70,11 @@ checks.
 ## Auto-Continuation
 
 No. Review and merge. Do not start a second family from this PR.
+
+## Result
+
+The Pi RPC `pi.package` axis qualifies official `0.84.4` as a compatible
+extension of `pi.rpc.strict-lf-v0.84.0-message-update-delta`. Unpublished
+`0.83.1` remains incompatible. `pi.sdk-sidecar` stays exact `0.84.2`.
+Unpublished `0.84.5` remains permitted `UnverifiedNewer`. Identity evidence
+remains commit `60e7a0a0`.

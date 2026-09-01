@@ -1,6 +1,6 @@
 # g05.015 Pi RPC 0.84.4 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -34,14 +34,14 @@ card 034, release, or execution of downloaded official binaries.
 
 ## Batch Cards
 
-- [039 Pi RPC 0.84.4 Identity](batch-cards/039-pi-rpc-0-84-4-identity.md) — ready
-- [040 Pi RPC 0.84.4 Claim](batch-cards/040-pi-rpc-0-84-4-claim.md) — ready
+- [039 Pi RPC 0.84.4 Identity](batch-cards/039-pi-rpc-0-84-4-identity.md) — completed
+- [040 Pi RPC 0.84.4 Claim](batch-cards/040-pi-rpc-0-84-4-claim.md) — completed
 
 ## Acceptance
 
-- [ ] exact official identity is reproducible
-- [ ] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] unpublished gaps, sidecar exact pin, and other families stay unchanged
-- [ ] focused, package, API, route, docs, Northstar, god-file, and diff gates pass
+- [x] exact official identity is reproducible
+- [x] mapped and unmapped protocol changes are classified
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] unpublished gaps, sidecar exact pin, and other families stay unchanged
+- [x] focused, package, API, route, docs, Northstar, god-file, and diff gates pass

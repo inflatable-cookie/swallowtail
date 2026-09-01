@@ -1,6 +1,6 @@
 # 039 Pi RPC 0.84.4 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -52,3 +52,14 @@ downloaded official binaries.
 ## Auto-Continuation
 
 Yes, to card 040 only after an admitted segment is recorded.
+
+## Result
+
+Official stable remained exact `0.84.4`. Host `0.83.0` matches the previously
+frozen `0.84.2` host digest. Research 268 and the frozen corpus landed in
+identity-only commit `60e7a0a0`; production claims remained unchanged in that
+commit. Mapped `jsonl.ts`, `session-cwd.ts`, `json-event.ts`, and `args.ts`
+are byte-identical to `0.84.3`. Unused `clear_queue` stays unmapped.
+`pi.sdk-sidecar` stays exact `0.84.2`. The selected protocol classifies as a
+compatible extension of `pi.rpc.strict-lf-v0.84.0-message-update-delta`, so
+card 040 continued.

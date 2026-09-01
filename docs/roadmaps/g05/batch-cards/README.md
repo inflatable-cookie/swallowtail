@@ -8,8 +8,7 @@
 
 ## Ready
 
-- [039-pi-rpc-0-84-4-identity.md](./039-pi-rpc-0-84-4-identity.md) — ready; freeze official `0.84.4` identity before any claim edit
-- [040-pi-rpc-0-84-4-claim.md](./040-pi-rpc-0-84-4-claim.md) — ready; depends on card 039 with an admitted segment
+- None.
 
 ## Blocked
 
@@ -17,6 +16,8 @@
 
 ## Completed
 
+- [040-pi-rpc-0-84-4-claim.md](./040-pi-rpc-0-84-4-claim.md) — complete; Pi RPC qualified through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2`
+- [039-pi-rpc-0-84-4-identity.md](./039-pi-rpc-0-84-4-identity.md) — complete; Research 268 and current host/official identity frozen before claim
 - [038-claude-code-2-1-252-claim.md](./038-claude-code-2-1-252-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.252`; unpublished `2.1.244` and `2.1.249` stay gaps; watcher stays exact `2.1.251`
 - [037-claude-code-2-1-252-identity.md](./037-claude-code-2-1-252-identity.md) — complete; Research 266 and current host/official identity frozen before claim
 - [036-codex-0-152-0-claim.md](./036-codex-0-152-0-claim.md) — complete; Codex exec and app-server qualified through official `0.152.0`; unpublished `0.151.1` stays a gap

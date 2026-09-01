@@ -213,7 +213,7 @@ mod tests {
             assessment.behavior_revision().unwrap().as_str(),
             PI_SDK_SIDECAR_BEHAVIOR
         );
-        for rejected in ["0.84.1", "0.84.3", "0.84.2-rc.1", "0.80.10"] {
+        for rejected in ["0.84.1", "0.84.3", "0.84.4", "0.84.2-rc.1", "0.80.10"] {
             assert!(
                 !claim.permits(&version(rejected)),
                 "unqualified point {rejected} must be rejected"

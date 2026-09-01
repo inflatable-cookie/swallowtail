@@ -64,6 +64,7 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!package.permits(&InterfaceVersion::new("0.84.3").expect("valid version")));
+    assert!(!package.permits(&InterfaceVersion::new("0.84.4").expect("valid version")));
     assert!(
         swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())

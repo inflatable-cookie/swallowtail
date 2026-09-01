@@ -158,7 +158,7 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [x] complete candidate G as the exact 11-row `cline.acp`, 8-row
       `cline.headless`, 11-row `command-code.headless`, 9-row
       `copilot-cli.acp`, and 9-row `goose.acp` tranche
-- [ ] reassess candidate F's exact 89-row Kimi remainder; card 033 stopped it
+- [x] reassess candidate F's exact 89-row Kimi remainder; card 033 stopped it
       on three `kimi-code.acp` post-open rows
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added

@@ -248,7 +248,7 @@ fn omitted_watchers_keep_empty_strict_mcp_on_exact_2_1_251() {
 #[test]
 fn watcher_opt_in_rejects_every_version_except_exact_2_1_251() {
     let topology = ExecutionTopologyFixture::local();
-    for version in ["2.1.220", "2.1.241", "2.1.250", "2.1.252"] {
+    for version in ["2.1.220", "2.1.241", "2.1.250", "2.1.252", "2.1.257"] {
         let prepared = prepared_at(topology.execution_host_id().clone(), version);
         let error = watcher_profile(
             &prepared,

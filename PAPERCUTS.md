@@ -48,17 +48,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   imports.
 - Closed: 2026-08-31 papercuts wave 23 route-matrix bytecode.
 
-### [ ] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
+### [x] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
 - Friction: the card 011 Claude watcher probe removes its temporary workspace
   only after success assertions. Its expected live evidence failure panicked
   first and left one empty workspace behind.
 - Impact: failed opt-in probes can retain temporary state and contradict their
   own cleanup claims even when bridge-private material was released.
-- Fix: own the workspace with a drop guard or equivalent finally-style cleanup
-  established before the provider request; assert cleanup after the guarded
-  run returns.
+- Fix: g05.006 card 019 (PR 126 at `c8691e84`) owns the live-probe workspace
+  with `TempWorkspace` Drop before provider contact and before fallible
+  assertions; credential-free
+  `temporary_workspace_cleanup_is_established_before_assertions` proves a
+  caught assertion panic leaves no directory.
 - Surface: ignored provider live probes with temporary working resources;
   prototype head `49f2692f`.
+- Closed: 2026-09-01 live-probe temporary-workspace cleanup reconciliation.
 
 ### [ ] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
 - Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.

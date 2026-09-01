@@ -8,7 +8,8 @@
 
 ## Ready
 
-- None.
+- [039-pi-rpc-0-84-4-identity.md](./039-pi-rpc-0-84-4-identity.md) — ready; freeze official `0.84.4` identity before any claim edit
+- [040-pi-rpc-0-84-4-claim.md](./040-pi-rpc-0-84-4-claim.md) — ready; depends on card 039 with an admitted segment
 
 ## Blocked
 

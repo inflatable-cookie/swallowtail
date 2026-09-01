@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Pi RPC 0.84.4 Identity](./2026-09-01-pi-rpc-0-84-4-identity.md) — Research 268; compatible extension; host `0.83.0` and official stable `0.84.4` corroborated; sidecar stays exact `0.84.2`; claims unchanged
 - [2026-09-01 Papercuts launcher worktree-cleanup ownership stop](./2026-09-01-papercuts-launcher-worktree-cleanup-stop.md) — T3/Paseo own Git deregistration after directory removal; Swallowtail teardown cannot prune; papercut left open
 - [2026-09-01 Claude Code 2.1.252 Claim](./2026-09-01-claude-code-2-1-252-claim.md) — headless and response-only qualified through official `2.1.252`; unpublished `2.1.244` and `2.1.249` stay gaps; watcher stays exact `2.1.251`
 - [2026-09-01 Claude Code 2.1.252 Identity](./2026-09-01-claude-code-2-1-252-identity.md) — Research 266; compatible extension; host `2.1.251` and official stable `2.1.252` corroborated; watcher stays exact `2.1.251`; claims unchanged

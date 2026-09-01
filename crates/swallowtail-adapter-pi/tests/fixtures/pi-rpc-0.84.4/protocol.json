@@ -1,0 +1,125 @@
+{
+  "selected_commands": [
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort",
+    "get_state",
+    "get_available_models",
+    "set_auto_compaction",
+    "set_auto_retry",
+    "set_steering_mode",
+    "set_follow_up_mode"
+  ],
+  "selected_absences": [
+    "bash",
+    "switch_session",
+    "fork",
+    "clone",
+    "extensions",
+    "clear_queue"
+  ],
+  "help_selected_flags_present": [
+    "--mode",
+    "--no-session",
+    "--offline",
+    "--provider",
+    "--model",
+    "--tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates",
+    "--no-themes",
+    "--no-context-files",
+    "--no-tools"
+  ],
+  "selected_mode": "rpc",
+  "rpc_types_source_changed_only_by_additive_clear_queue": true,
+  "rpc_mode_source_changed_only_by_additive_clear_queue": true,
+  "jsonl_identical_0_83_0_through_0_84_4": true,
+  "session_cwd_identical": true,
+  "json_event_identical_to_0_84_3": true,
+  "args_identical_to_0_84_3": true,
+  "message_update_drops_cumulative_snapshot_from": "0.84.0",
+  "message_update_usage_sibling_from": "0.84.2",
+  "toolcall_start_id_and_tool_name_from": "0.84.3",
+  "clear_queue_from": "0.84.4",
+  "decoder_maps_assistant_message_event_delta_only": true,
+  "qualified_usage_still_from_message_end": true,
+  "toolcall_start_classifies_as_progress": true,
+  "decoder_corpus": "pi-rpc-0.80.10",
+  "mapped_deltas_from_0_84_3": [],
+  "standing_unused_help_unselected": ["--use-theme", "defaultTools", "--", "powershell"],
+  "standing_unused_help_unselected_carried_from": "0.84.3",
+  "standing_unused_help_unselected_not_new_0_84_4_delta": true,
+  "unmapped_changelog": [
+    "0.84.4 RPC clear_queue",
+    "0.84.4 terminal capability overrides",
+    "0.84.4 extension ui_prompt_start and ui_prompt_end",
+    "0.84.4 fullscreen selection copy controls",
+    "0.84.4 DeepSeek V4 Flash Vision",
+    "0.84.4 JSONL resume trailing-newline fix outside mapped jsonl.ts",
+    "0.84.4 large tool results crossing auto-compaction threshold / _compactBeforeNextAssistantResponse",
+    "0.84.4 extension messages with triggerTurn:false delaying message_start/message_end"
+  ],
+  "unmapped_changelog_inert_reasons": {
+    "0.84.4 large tool results crossing auto-compaction threshold / _compactBeforeNextAssistantResponse": "Swallowtail sends set_auto_compaction false, so shouldCompact is false despite mapped auto_compaction events",
+    "0.84.4 extension messages with triggerTurn:false delaying message_start/message_end": "both argv shapes use --no-extensions; non-assistant message_end decodes as Progress"
+  },
+  "packaging_deltas": {
+    "classification": "unmapped; twelve provider-transport chunks plus a main-application-chunk rehash whose only RPC dispatch delta is additive clear_queue",
+    "cli_js_digest_changed": true,
+    "rpc_entry_js_digest_changed": true,
+    "executing_bundle_entry": "dist/bundle/index.js",
+    "index_js_digest_changed": true,
+    "added_chunks": [
+      "chunk-2KVJKXS2",
+      "chunk-OMWWHBTG",
+      "google-generative-ai-YMUPJBKR",
+      "google-vertex-MPWMV4OF",
+      "https-proxy-agent-2VXB7436",
+      "mistral-conversations-Q3AWZJAZ",
+      "openai-completions-ERMU2SS7"
+    ],
+    "removed_chunks": [
+      "chunk-E5KXRMZK",
+      "chunk-GPPBJGBU",
+      "dist-RDWOYWHR",
+      "google-generative-ai-XDKMGBCJ",
+      "google-vertex-D5FGEO3Y",
+      "mistral-conversations-YK73UAOZ",
+      "openai-completions-JD4WAC3R"
+    ],
+    "main_application_chunks": {
+      "added": ["chunk-OMWWHBTG"],
+      "removed": ["chunk-E5KXRMZK"],
+      "rpc_dispatch_command_count_from": 32,
+      "rpc_dispatch_command_count_to": 33,
+      "rpc_dispatch_added_commands": ["clear_queue"],
+      "rpc_dispatch_removed_commands": [],
+      "rpc_dispatch_delta_is_only_additive_clear_queue": true
+    },
+    "provider_transport_chunks": {
+      "added": [
+        "chunk-2KVJKXS2",
+        "google-generative-ai-YMUPJBKR",
+        "google-vertex-MPWMV4OF",
+        "https-proxy-agent-2VXB7436",
+        "mistral-conversations-Q3AWZJAZ",
+        "openai-completions-ERMU2SS7"
+      ],
+      "removed": [
+        "chunk-GPPBJGBU",
+        "dist-RDWOYWHR",
+        "google-generative-ai-XDKMGBCJ",
+        "google-vertex-D5FGEO3Y",
+        "mistral-conversations-YK73UAOZ",
+        "openai-completions-JD4WAC3R"
+      ]
+    }
+  },
+  "provider_prompt_sent": false,
+  "live_rpc_session": false,
+  "host_install_changed": false,
+  "official_binary_executed": false
+}

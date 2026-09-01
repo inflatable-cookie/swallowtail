@@ -1,11 +1,11 @@
 use crate::support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, reasoning_selection};
+use support::{CleanupEvent, FixtureHost, Scenario, reasoning_selection, try_version_selection};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{
-    ExecutionHostId, InterfaceCompatibilityAssessment, ReasoningMode, ResourceAccess,
-    SessionProviderStatePolicy,
+    ExecutionHostId, InterfaceCompatibilityAssessment, PreflightDimension, ReasoningMode,
+    ResourceAccess, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OpenSessionRequest, RequestId, SessionAccessPolicy,
@@ -32,8 +32,6 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
             ("0.31.1", "high", Scenario::ReasoningEffort311Success, true),
             ("0.31.1", "xhigh", Scenario::ReasoningEffort311Success, true),
             ("0.31.1", "max", Scenario::ReasoningEffort311Success, true),
-            ("0.39.2", "high", Scenario::ReasoningNewerSuccess, false),
-            ("0.39.2", "max", Scenario::ReasoningNewerSuccess, false),
         ] {
             let host_id = topology.execution_host_id().clone();
             let selected = reasoning_selection(host_id.clone(), version, mode);
@@ -79,6 +77,19 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
             assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
             assert_eq!(host.cleanup_events(), joined_cleanup());
         }
+    }
+}
+
+#[test]
+fn newer_acp_points_fail_closed_before_session_open() {
+    for version in ["0.38.1", "0.39.2", "0.40.0"] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.host.acp.cap.{version}")).expect("valid host id");
+        let error = try_version_selection(host_id, version)
+            .err()
+            .expect("newer ACP point fails closed at preflight");
+        assert_eq!(error.dimension(), PreflightDimension::InterfaceVersion);
+        assert_eq!(error.diagnostic().code(), "swallowtail.preflight_rejected");
     }
 }
 

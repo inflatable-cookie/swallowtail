@@ -1,9 +1,9 @@
 //! ACP process-authority proofs.
 //!
 //! These fail if the excluded `0.39` points become admissible, if the
-//! exclusion mechanism stops producing `Incompatible`, if the containment
-//! trace is quietly reversed without evidence, or if the stop leaks onto the
-//! headless or local-server families.
+//! containment trace is quietly reversed without evidence, or if the stop
+//! leaks onto the headless or local-server families. Newer-point fail-closed
+//! proofs live in `qualified_only`.
 
 use super::support::{AUTHORITY, json, strings, text, version};
 use swallowtail_adapter_kimi::{
@@ -32,58 +32,31 @@ fn the_excluded_points_classify_incompatible_not_unverified_newer() {
 }
 
 #[test]
-fn the_acp_ladder_around_the_ceiling_is_exact() {
-    // The whole point of an exact stop is that it removes two published points
-    // without collapsing the axis into qualified-only. This walks every
-    // classification boundary the stop touches, against the real claim.
+fn the_acp_ladder_around_the_ceiling_fails_closed() {
     let claim = kimi_acp_claim();
 
-    // Unpublished 0.38.1 sits directly above the ceiling and stays admissible:
-    // it is the first point a forward attempt could reach.
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(first) = claim.assess(&version("0.38.1"))
-    else {
-        panic!("0.38.1 is the first admissible unverified-newer point above the ceiling");
-    };
-    assert_eq!(first.version().as_str(), "0.38.1");
-    assert_eq!(first.latest_qualified().as_str(), "0.38.0");
-    assert_eq!(first.behavior_revision().as_str(), ACP_REVISION);
+    assert!(claim.supports(&version("0.38.0")));
 
-    // The two published 0.39 points are excluded outright.
-    for excluded in EXCLUDED {
+    for point in ["0.38.1", "0.39.0", "0.39.1", "0.39.2", "0.40.0"] {
         assert_eq!(
-            claim.assess(&version(excluded)),
+            claim.assess(&version(point)),
             InterfaceCompatibilityAssessment::Incompatible,
-            "{excluded} carries the uncontained process-authority change"
+            "{point} fails closed under QualifiedOnly"
         );
+        assert!(!claim.permits(&version(point)));
     }
-
-    // A point above the exclusions is admissible again on the same revision and
-    // the same unmoved ceiling, so the stop is exact rather than a posture flip.
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(later) = claim.assess(&version("0.39.2"))
-    else {
-        panic!("0.39.2 remains admissible above the exclusions");
-    };
-    assert_eq!(later.version().as_str(), "0.39.2");
-    assert_eq!(later.latest_qualified().as_str(), "0.38.0");
-    assert_eq!(later.behavior_revision().as_str(), ACP_REVISION);
-
-    // Both admissible points report the same ceiling and revision: the stop
-    // introduced no second ACP behavior revision.
-    assert_eq!(first.latest_qualified(), later.latest_qualified());
-    assert_eq!(first.behavior_revision(), later.behavior_revision());
 }
 
 #[test]
-fn allow_unverified_still_holds_for_points_above_the_exclusions() {
-    // The stop is exact, not a posture change: the claim keeps admitting
-    // genuinely later points, so this is not a silent qualified-only flip.
+fn the_ceiling_does_not_move_and_adds_no_revision() {
     let claim = kimi_acp_claim();
-    assert!(matches!(
-        claim.assess(&version("0.39.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
     assert!(claim.supports(&version("0.38.0")));
+    let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("0.38.0"))
+    else {
+        panic!("0.38.0 stays qualified");
+    };
+    assert_eq!(matched.behavior_revision().as_str(), ACP_REVISION);
 }
 
 #[test]

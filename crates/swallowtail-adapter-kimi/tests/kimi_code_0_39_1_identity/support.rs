@@ -19,6 +19,10 @@ pub(super) const FROZEN_0_37_2_README: &str =
     include_str!("../fixtures/kimi-code-0.37.2/README.md");
 pub(super) const FROZEN_0_38_0_HEADLESS_V2_PROTOCOL: &str =
     include_str!("../fixtures/kimi-code-0.38.0-headless-v2/protocol.json");
+pub(super) const FROZEN_0_30_0_0_31_0_RANGE: &str =
+    include_str!("../fixtures/kimi-code-0.30.0-0.31.0/installed-range.json");
+pub(super) const FROZEN_0_31_1_RELEASE: &str =
+    include_str!("../fixtures/kimi-code-0.31.1/release.json");
 
 pub(super) fn json(value: &str) -> Value {
     serde_json::from_str(value).expect("frozen corpus JSON is valid")

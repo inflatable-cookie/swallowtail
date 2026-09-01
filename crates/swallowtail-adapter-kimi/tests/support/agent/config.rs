@@ -21,7 +21,6 @@ impl SharedAgent {
             | Scenario::ReasoningEffort300Success
             | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningEffort311Success
-            | Scenario::ReasoningNewerSuccess
             | Scenario::ReasoningConfirmationMissing
             | Scenario::ReasoningDrift => {
                 options.push(reasoning_option(
@@ -69,7 +68,6 @@ impl SharedAgent {
             | Scenario::PlanSuccess
             | Scenario::PlanLegacySuccess
             | Scenario::PlanCeilingSuccess
-            | Scenario::PlanNewerSuccess
             | Scenario::PlanMissing
             | Scenario::PlanAmbiguous
             | Scenario::PlanMalformed

@@ -310,8 +310,9 @@ OpenHands adds a package without a production route.
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
   route-specific behavior segments whose bounds differ per route.
-  `kimi-code.acp` qualifies `0.29.0..=0.38.0` and excludes exact `0.39.0` and
-  `0.39.1`. Its ACP route owns ambient-host
+  `kimi-code.acp` qualifies `0.29.0..=0.38.0` under `QualifiedOnly` and
+  excludes exact `0.39.0` and `0.39.1`; every point above `0.38.0` fails
+  closed. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process

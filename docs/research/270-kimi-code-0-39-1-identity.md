@@ -287,6 +287,12 @@ stops.
 Keep claim ids `kimi.acp.executable-window-2` and
 `kimi.headless.executable-window-2`, both baselines, and `AllowUnverified`.
 
+This identity-run observation is superseded for ACP. Card 043 later moved ACP
+to `QualifiedOnly` and, per Contract 029, revised the ACP claim identity to
+`kimi.acp.executable-window-5`. Frozen corpora still record historical
+`kimi.acp.executable-window-3` and `kimi.acp.executable-window-4`; those are
+not live. Headless remains `kimi.headless.executable-window-2`.
+
 **ACP — stop.**
 
 - Keep exact `0.28.1` Deprecated on `kimi.acp.reasoning.legacy-select-v1`.

@@ -55,8 +55,7 @@ fn source_authority(
         input,
         fixtures::probe(),
         fixtures::preparation_services(&operation_host, host_id, process),
-    ))
-    .expect("ACP source prepares");
+    ))?;
     let profile = prepared
         .prepare_session(profile_input())
         .expect("ACP session prepares");

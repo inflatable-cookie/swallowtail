@@ -26,6 +26,16 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- cap `kimi-code.acp` at `0.38.0` under `QualifiedOnly`. Operator A2: indefinite
+  posture change with one artifact-level reopen trigger. Claim identity moved
+  from `kimi.acp.executable-window-2` to `kimi.acp.executable-window-5` because
+  Contract 029 revises the claim when newer-version posture or exclusions
+  change. Frozen historical `window-3` and `window-4` stay reserved.
+  Segments stay exact `0.28.1` plus `0.29.0..=0.38.0`; exact `0.39.0`
+  and `0.39.1` stay excluded. Unpublished `0.38.1`, unpublished `0.39.2`, and
+  farther `0.40.x` fail closed with them. No new ACP behavior revision.
+  `kimi-code.local-server` and headless stay `AllowUnverified`. g05.017, card
+  043.
 - correct the Kimi Code headless compatibility split and qualify the
   agent-core-v2 revision through official npm and GitHub
   `@moonshot-ai/kimi-code` `0.39.1`. The default `kimi -p` engine becomes
@@ -49,9 +59,9 @@ annotated Git tags from the canonical repository.
   process ownership and treats a terminal request from a terminal-less client
   as scope-stopping, and no adapter or runtime control mediates the spawn.
   Both points classify `Incompatible` rather than unverified-newer, because
-  exclusions are assessed before the `AllowUnverified` path. The ACP ceiling
-  stays `0.38.0`, so unpublished `0.38.1` remains the first admissible
-  unverified-newer point on that axis and unpublished `0.39.2` a later one. No new ACP
+  exclusions are assessed before the newer-version path. The ACP ceiling
+  stayed `0.38.0`. That landing left `AllowUnverified` above the named
+  exclusions; card 043 later moved the posture to `QualifiedOnly`. No new ACP
   behavior revision was created: wire-shape stability across
   `0.38.0`→`0.39.1` is real and is not sufficient to qualify an authority
   change. Research 270, g05.016.

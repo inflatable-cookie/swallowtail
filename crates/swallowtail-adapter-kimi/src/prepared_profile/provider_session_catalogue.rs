@@ -146,7 +146,6 @@ impl KimiPreparedIntegration {
         &self,
         input: KimiSessionCatalogueInput,
     ) -> Result<KimiPreparedSessionCatalogue, PreparationFailure> {
-        require_catalogue_version(self)?;
         require_state_root(self)?;
         let (request_id, catalogue_id, working_resource, bounds, deadline) = input.into_parts();
         let catalogue = CapabilityRequirement::new(Capability::ProviderSessionCatalogue, []);
@@ -203,7 +202,6 @@ impl KimiPreparedIntegration {
         candidate: ProviderSessionCandidate,
         input: KimiSessionProfileInput,
     ) -> Result<KimiPreparedSessionImport, PreparationFailure> {
-        require_catalogue_version(self)?;
         let state_root = require_state_root(self)?;
         if catalogue.kimi.state_root() != Some(state_root)
             || candidate.import_availability() != ProviderSessionImportAvailability::Available
@@ -281,17 +279,6 @@ impl KimiPreparedIntegration {
             )?,
             request,
         })
-    }
-}
-
-fn require_catalogue_version(prepared: &KimiPreparedIntegration) -> Result<(), PreparationFailure> {
-    if prepared.observation().is_qualified() {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.kimi.preparation.session_catalogue_version_unsupported",
-            "Kimi session catalogue requires a qualified executable version",
-        ))
     }
 }
 

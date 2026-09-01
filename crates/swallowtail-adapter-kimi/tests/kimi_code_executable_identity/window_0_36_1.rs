@@ -109,11 +109,11 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
         "0.31.1"
     );
 
-    for (claim, qualified, first_unverified_newer) in [
+    for (claim, qualified, first_newer) in [
         (
             &kimi_acp_claim(),
             ["0.32.0", "0.34.0", "0.36.1", "0.37.2", "0.38.0"].as_slice(),
-            "0.39.2",
+            "0.38.1",
         ),
         (
             &kimi_headless_claim(),
@@ -136,10 +136,17 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
                     if matched.support_status() == InterfaceSupportStatus::Maintained
             ));
         }
-        assert!(matches!(
-            claim.assess(&version(first_unverified_newer)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        if claim.id() == kimi_acp_claim().id() {
+            assert_eq!(
+                claim.assess(&version(first_newer)),
+                InterfaceCompatibilityAssessment::Incompatible
+            );
+        } else {
+            assert!(matches!(
+                claim.assess(&version(first_newer)),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ));
+        }
     }
     assert_eq!(
         kimi_code_binding("0.36.1")

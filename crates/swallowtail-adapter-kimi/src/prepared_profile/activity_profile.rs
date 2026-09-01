@@ -14,10 +14,8 @@ pub(super) fn activity_profile(
         InstalledExecutableCompatibility::Qualified(assessment) => {
             assessment.behavior_revision().clone()
         }
-        InstalledExecutableCompatibility::UnverifiedNewer(assessment) => {
-            assessment.behavior_revision().clone()
-        }
-        InstalledExecutableCompatibility::Incompatible => {
+        InstalledExecutableCompatibility::UnverifiedNewer(_)
+        | InstalledExecutableCompatibility::Incompatible => {
             return Err(failure(
                 "swallowtail.kimi.preparation.activity_version_incompatible",
                 "Kimi Code activity requires a permitted executable version",

@@ -2,7 +2,7 @@
 
 Date: 2026-09-01
 Handoff: `docs/handoffs/20260901-100306-papercuts-live-probe-cleanup.md`
-PR: pending
+PR: [#146](https://github.com/inflatable-cookie/swallowtail/pull/146)
 
 ## Outcome
 

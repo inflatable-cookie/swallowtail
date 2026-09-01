@@ -1,0 +1,128 @@
+{
+  "selected_routes": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/load",
+    "session/resume",
+    "session/close",
+    "session/delete",
+    "session/request_permission",
+    "elicitation/create",
+    "session/set_config_option",
+    "session/set_mode"
+  ],
+  "compared_to_corpus": "claude-agent-acp-0.70.0",
+  "dist_inventory": "dist-inventory.json",
+  "index_js_identical_0_70_0_through_0_73_0": true,
+  "index_js_sha256": "9d73d1f0f121fb96cc8badb28c22d5bff02d8582eb2e40360a81c189e1b9422a",
+  "elicitation_js_identical_0_64_0_through_0_73_0": true,
+  "elicitation_sha256": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+  "lib_js_identical_0_70_0_through_0_73_0": true,
+  "settings_js_identical_0_70_0_through_0_73_0": true,
+  "utils_js_identical_0_70_0_through_0_73_0": true,
+  "acp_agent_js_identical_0_72_0_through_0_73_0": true,
+  "tools_js_identical_0_72_0_through_0_73_0": true,
+  "dist_byte_identical_0_72_0_through_0_73_0": true,
+  "acp_agent_js_not_byte_identical_to_0_70_0": true,
+  "tools_js_not_byte_identical_to_0_70_0": true,
+  "initialize_selected_session_capabilities_unchanged": true,
+  "session_capabilities_mapped": ["additionalDirectories", "close", "delete", "fork", "list", "resume"],
+  "protocol_version": 1,
+  "wire_protocol_version_unchanged": true,
+  "acp_sdk_0_70_0_and_0_71_0": "1.3.0",
+  "acp_sdk_0_72_0_and_0_73_0": "1.4.0",
+  "agent_sdk_0_70_0": "0.3.232",
+  "agent_sdk_0_71_0": "0.3.238",
+  "agent_sdk_0_72_0": "0.3.252",
+  "agent_sdk_0_73_0": "0.3.257",
+  "permission_kinds_unchanged": ["allow_once", "allow_always", "reject_once"],
+  "allow_always_still_unmapped": true,
+  "reject_always_still_unmapped": true,
+  "effort_option_id_unchanged": "effort",
+  "effort_option_category_unchanged": "thought_level",
+  "mode_option_id_unchanged": "mode",
+  "mode_option_category_unchanged": "mode",
+  "plan_and_acceptEdits_still_advertised": true,
+  "prompt_usage_fields_unchanged": [
+    "inputTokens",
+    "outputTokens",
+    "cachedReadTokens",
+    "cachedWriteTokens",
+    "totalTokens"
+  ],
+  "stop_reason_mapped_domain": ["end_turn", "cancelled", "max_tokens", "max_turn_requests", "refusal"],
+  "stop_reason_unknown_is_runtime_failed_catchall": true,
+  "cancel_still_session_cancel": true,
+  "load_resume_close_delete_mapped_surface_unchanged": true,
+  "unmapped_initialize_meta": {
+    "goal_from": "0.66.0",
+    "air_session_failure_from": "0.67.0",
+    "file_change_report_from": "0.69.0"
+  },
+  "unmapped_providers_api": {
+    "from": "0.70.0",
+    "methods": ["providers/list", "providers/set", "providers/disable"]
+  },
+  "unmapped_0_71_0": {
+    "session_capabilities_subagents": true,
+    "native_subagent_session_updates": true,
+    "async_task_session_updates": true,
+    "session_titles_already_emitted_at_0_70_idle": true,
+    "github_1004_align_modes_clear_context_planning": true,
+    "github_1045_defer_steering_while_user_input_pending": true,
+    "dontAsk_dropped_from_advertised_available_modes": true,
+    "clear_context_and_exit_plan_unmapped": true,
+    "steering_meta_still_unmapped": true,
+    "permission_callback_observable_contract_unchanged": true
+  },
+  "unmapped_0_72_0": {
+    "effort_removes_session_new_applyFlagSettings": true,
+    "effort_per_model_currentValue": true,
+    "effort_pinned_by_user_gating": true,
+    "user_message_uuid_ensureActiveTurn": true,
+    "queued_cancelled_turn_ownership": true,
+    "stamped_unmatched_empty_interruption_fallback": true,
+    "post_model_switch_mirrors_cli_into_config_option_and_current_mode_updates": true,
+    "pre_model_switch_session_new_veto_logs_and_falls_back_to_models_0": true,
+    "fail_closed_moved_to_post_new_set_config_option_model_confirm": true,
+    "acp_sdk_createElicitation_rename": true
+  },
+  "unmapped_0_73_0": {
+    "dist_byte_identical_to_0_72_0": true,
+    "package_json_version_bump": true,
+    "agent_sdk_pin_0_3_252_to_0_3_257": true,
+    "acp_sdk_stays_1_4_0": true,
+    "github_1066_claude_sdk_dependency_only": true
+  },
+  "selected_compatible_because": {
+    "explicit_set_config_option_model_then_confirm_model": true,
+    "explicit_set_config_option_effort_then_confirm_reasoning": true,
+    "session_new_display_seed_is_not_the_confirmation_path": true,
+    "usage_invariant_unchanged": true,
+    "stopReason_domain_and_catchall_unchanged": true,
+    "cancel_still_session_cancel": true,
+    "unknown_session_updates_ignored": true,
+    "dist_mapped_surface_byte_identical_0_72_0_to_0_73_0": true
+  },
+  "changed_failure_point_0_72_0": {
+    "session_new_no_longer_fails_closed_on_pre_model_switch_veto": true,
+    "mapped_fail_closed_is_post_new_set_config_option_model_confirm_exact_match": true
+  },
+  "emitted_updates_added_0_71_0": [
+    "async_task_progress",
+    "async_task_spawned",
+    "async_task_state_update",
+    "subagent_spawned",
+    "subagent_state_update"
+  ],
+  "emitted_updates_added_0_73_0": [],
+  "decoder_corpus": [
+    "claude-agent-acp-v0.53.0-v0.61.0",
+    "claude-agent-acp-v0.62.0-v0.64.0"
+  ],
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

@@ -15,8 +15,8 @@ shape.
 
 ## Next Task
 
-Implement Claude Agent ACP useful-newer qualification for official `0.72.0`.
-Host already sits on qualified `0.63.0`. Do not leave official `0.72.0`
+Implement Claude Agent ACP useful-newer qualification for official `0.73.0`.
+Host already sits on qualified `0.63.0`. Do not leave official `0.73.0`
 UnverifiedNewer without a named incompatible reason. Do not start a second
 family from this PR. Do not reopen `kimi-code.acp`. Do not bulk-bump from
 registry `latest`, do not lift Gemini's deferral, and do not keep g05 open

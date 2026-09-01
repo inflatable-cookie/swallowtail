@@ -313,7 +313,10 @@ evidence, and left local-server `AllowUnverified`. Every point above `0.38.0`
 fails closed. The trigger authorizes a fresh identity/claim decision, never
 automatic admission and never restoration of `AllowUnverified` by itself.
 Research 271 selected Claude Agent ACP `0.72.0` as the next one-family
-Upgrade Workflow. The checkpoint changes no claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+Upgrade Workflow. The checkpoint changes no claim. Operator restart after
+official latest moved to `0.73.0`. Research 272 and g05.018 card 044 freeze
+that official identity as a compatible extension of v7; the production
+ceiling stays `0.70.0` until card 045. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

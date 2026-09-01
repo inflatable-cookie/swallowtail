@@ -1,0 +1,554 @@
+{
+  "compared": [
+    "0.70.0",
+    "0.71.0",
+    "0.72.0",
+    "0.73.0"
+  ],
+  "package_file_counts": {
+    "0.70.0": 33,
+    "0.71.0": 96,
+    "0.72.0": 96,
+    "0.73.0": 96
+  },
+  "inventory_scope": "complete package file set from extracted official npm tarballs (LICENSE, README.md, package.json, dist/**). Not a complete semantic changelog of every internal line.",
+  "not_a_complete_semantic_changelog": true,
+  "identical_through_0_70_0_0_71_0_0_72_0_0_73_0": [
+    "LICENSE",
+    "dist/elicitation.d.ts",
+    "dist/elicitation.d.ts.map",
+    "dist/elicitation.js",
+    "dist/file-change-audit.d.ts",
+    "dist/goal-extension.d.ts",
+    "dist/goal-extension.d.ts.map",
+    "dist/goal-extension.js",
+    "dist/index.d.ts",
+    "dist/index.d.ts.map",
+    "dist/index.js",
+    "dist/lib.d.ts",
+    "dist/lib.d.ts.map",
+    "dist/lib.js",
+    "dist/settings.d.ts",
+    "dist/settings.d.ts.map",
+    "dist/settings.js",
+    "dist/utils.d.ts",
+    "dist/utils.d.ts.map",
+    "dist/utils.js"
+  ],
+  "identical_through_0_70_0_0_71_0_0_72_0": [
+    "LICENSE",
+    "dist/elicitation.d.ts",
+    "dist/elicitation.d.ts.map",
+    "dist/elicitation.js",
+    "dist/file-change-audit.d.ts",
+    "dist/goal-extension.d.ts",
+    "dist/goal-extension.d.ts.map",
+    "dist/goal-extension.js",
+    "dist/index.d.ts",
+    "dist/index.d.ts.map",
+    "dist/index.js",
+    "dist/lib.d.ts",
+    "dist/lib.d.ts.map",
+    "dist/lib.js",
+    "dist/settings.d.ts",
+    "dist/settings.d.ts.map",
+    "dist/settings.js",
+    "dist/utils.d.ts",
+    "dist/utils.d.ts.map",
+    "dist/utils.js"
+  ],
+  "from_0_70_0_to_0_71_0": {
+    "added": [
+      "dist/acp-subagents.d.ts",
+      "dist/acp-subagents.d.ts.map",
+      "dist/acp-subagents.js",
+      "dist/air-extension.d.ts",
+      "dist/air-extension.d.ts.map",
+      "dist/air-extension.js",
+      "dist/async-tasks.d.ts",
+      "dist/async-tasks.d.ts.map",
+      "dist/async-tasks.js",
+      "dist/clear-context-coordinator.d.ts",
+      "dist/clear-context-coordinator.d.ts.map",
+      "dist/clear-context-coordinator.js",
+      "dist/exit-plan.d.ts",
+      "dist/exit-plan.d.ts.map",
+      "dist/exit-plan.js",
+      "dist/fork-session.d.ts",
+      "dist/fork-session.d.ts.map",
+      "dist/fork-session.js",
+      "dist/native-subagents.d.ts",
+      "dist/native-subagents.d.ts.map",
+      "dist/native-subagents.js",
+      "dist/permissions/effects.d.ts",
+      "dist/permissions/effects.d.ts.map",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.d.ts",
+      "dist/permissions/modes.d.ts.map",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.d.ts",
+      "dist/permissions/normalization.d.ts.map",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.d.ts",
+      "dist/permissions/options.d.ts.map",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.d.ts",
+      "dist/permissions/options/filesystem.d.ts.map",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.d.ts",
+      "dist/permissions/options/shared.d.ts.map",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.d.ts",
+      "dist/permissions/options/shell.d.ts.map",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.d.ts",
+      "dist/permissions/options/tools.d.ts.map",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.d.ts",
+      "dist/permissions/presentation.d.ts.map",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.d.ts",
+      "dist/permissions/response.d.ts.map",
+      "dist/permissions/response.js",
+      "dist/session-config-ids.d.ts",
+      "dist/session-config-ids.d.ts.map",
+      "dist/session-config-ids.js",
+      "dist/session-mode.d.ts",
+      "dist/session-mode.d.ts.map",
+      "dist/session-mode.js",
+      "dist/session-titles.d.ts",
+      "dist/session-titles.d.ts.map",
+      "dist/session-titles.js",
+      "dist/tool-result-meta.d.ts",
+      "dist/tool-result-meta.d.ts.map",
+      "dist/tool-result-meta.js"
+    ],
+    "removed": [],
+    "changed": [
+      "README.md",
+      "dist/acp-agent.d.ts",
+      "dist/acp-agent.d.ts.map",
+      "dist/acp-agent.js",
+      "dist/file-change-audit.d.ts.map",
+      "dist/file-change-audit.js",
+      "dist/session-failure-extension.d.ts",
+      "dist/session-failure-extension.d.ts.map",
+      "dist/session-failure-extension.js",
+      "dist/tools.d.ts",
+      "dist/tools.d.ts.map",
+      "dist/tools.js",
+      "package.json"
+    ],
+    "identical": [
+      "LICENSE",
+      "dist/elicitation.d.ts",
+      "dist/elicitation.d.ts.map",
+      "dist/elicitation.js",
+      "dist/file-change-audit.d.ts",
+      "dist/goal-extension.d.ts",
+      "dist/goal-extension.d.ts.map",
+      "dist/goal-extension.js",
+      "dist/index.d.ts",
+      "dist/index.d.ts.map",
+      "dist/index.js",
+      "dist/lib.d.ts",
+      "dist/lib.d.ts.map",
+      "dist/lib.js",
+      "dist/settings.d.ts",
+      "dist/settings.d.ts.map",
+      "dist/settings.js",
+      "dist/utils.d.ts",
+      "dist/utils.d.ts.map",
+      "dist/utils.js"
+    ]
+  },
+  "from_0_71_0_to_0_72_0": {
+    "added": [],
+    "removed": [],
+    "changed": [
+      "dist/acp-agent.d.ts",
+      "dist/acp-agent.d.ts.map",
+      "dist/acp-agent.js",
+      "dist/tools.d.ts.map",
+      "dist/tools.js",
+      "package.json"
+    ],
+    "identical": [
+      "LICENSE",
+      "README.md",
+      "dist/acp-subagents.d.ts",
+      "dist/acp-subagents.d.ts.map",
+      "dist/acp-subagents.js",
+      "dist/air-extension.d.ts",
+      "dist/air-extension.d.ts.map",
+      "dist/air-extension.js",
+      "dist/async-tasks.d.ts",
+      "dist/async-tasks.d.ts.map",
+      "dist/async-tasks.js",
+      "dist/clear-context-coordinator.d.ts",
+      "dist/clear-context-coordinator.d.ts.map",
+      "dist/clear-context-coordinator.js",
+      "dist/elicitation.d.ts",
+      "dist/elicitation.d.ts.map",
+      "dist/elicitation.js",
+      "dist/exit-plan.d.ts",
+      "dist/exit-plan.d.ts.map",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.d.ts",
+      "dist/file-change-audit.d.ts.map",
+      "dist/file-change-audit.js",
+      "dist/fork-session.d.ts",
+      "dist/fork-session.d.ts.map",
+      "dist/fork-session.js",
+      "dist/goal-extension.d.ts",
+      "dist/goal-extension.d.ts.map",
+      "dist/goal-extension.js",
+      "dist/index.d.ts",
+      "dist/index.d.ts.map",
+      "dist/index.js",
+      "dist/lib.d.ts",
+      "dist/lib.d.ts.map",
+      "dist/lib.js",
+      "dist/native-subagents.d.ts",
+      "dist/native-subagents.d.ts.map",
+      "dist/native-subagents.js",
+      "dist/permissions/effects.d.ts",
+      "dist/permissions/effects.d.ts.map",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.d.ts",
+      "dist/permissions/modes.d.ts.map",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.d.ts",
+      "dist/permissions/normalization.d.ts.map",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.d.ts",
+      "dist/permissions/options.d.ts.map",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.d.ts",
+      "dist/permissions/options/filesystem.d.ts.map",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.d.ts",
+      "dist/permissions/options/shared.d.ts.map",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.d.ts",
+      "dist/permissions/options/shell.d.ts.map",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.d.ts",
+      "dist/permissions/options/tools.d.ts.map",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.d.ts",
+      "dist/permissions/presentation.d.ts.map",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.d.ts",
+      "dist/permissions/response.d.ts.map",
+      "dist/permissions/response.js",
+      "dist/session-config-ids.d.ts",
+      "dist/session-config-ids.d.ts.map",
+      "dist/session-config-ids.js",
+      "dist/session-failure-extension.d.ts",
+      "dist/session-failure-extension.d.ts.map",
+      "dist/session-failure-extension.js",
+      "dist/session-mode.d.ts",
+      "dist/session-mode.d.ts.map",
+      "dist/session-mode.js",
+      "dist/session-titles.d.ts",
+      "dist/session-titles.d.ts.map",
+      "dist/session-titles.js",
+      "dist/settings.d.ts",
+      "dist/settings.d.ts.map",
+      "dist/settings.js",
+      "dist/tool-result-meta.d.ts",
+      "dist/tool-result-meta.d.ts.map",
+      "dist/tool-result-meta.js",
+      "dist/tools.d.ts",
+      "dist/utils.d.ts",
+      "dist/utils.d.ts.map",
+      "dist/utils.js"
+    ]
+  },
+  "from_0_72_0_to_0_73_0": {
+    "added": [],
+    "removed": [],
+    "changed": [
+      "package.json"
+    ],
+    "identical": [
+      "LICENSE",
+      "README.md",
+      "dist/acp-agent.d.ts",
+      "dist/acp-agent.d.ts.map",
+      "dist/acp-agent.js",
+      "dist/acp-subagents.d.ts",
+      "dist/acp-subagents.d.ts.map",
+      "dist/acp-subagents.js",
+      "dist/air-extension.d.ts",
+      "dist/air-extension.d.ts.map",
+      "dist/air-extension.js",
+      "dist/async-tasks.d.ts",
+      "dist/async-tasks.d.ts.map",
+      "dist/async-tasks.js",
+      "dist/clear-context-coordinator.d.ts",
+      "dist/clear-context-coordinator.d.ts.map",
+      "dist/clear-context-coordinator.js",
+      "dist/elicitation.d.ts",
+      "dist/elicitation.d.ts.map",
+      "dist/elicitation.js",
+      "dist/exit-plan.d.ts",
+      "dist/exit-plan.d.ts.map",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.d.ts",
+      "dist/file-change-audit.d.ts.map",
+      "dist/file-change-audit.js",
+      "dist/fork-session.d.ts",
+      "dist/fork-session.d.ts.map",
+      "dist/fork-session.js",
+      "dist/goal-extension.d.ts",
+      "dist/goal-extension.d.ts.map",
+      "dist/goal-extension.js",
+      "dist/index.d.ts",
+      "dist/index.d.ts.map",
+      "dist/index.js",
+      "dist/lib.d.ts",
+      "dist/lib.d.ts.map",
+      "dist/lib.js",
+      "dist/native-subagents.d.ts",
+      "dist/native-subagents.d.ts.map",
+      "dist/native-subagents.js",
+      "dist/permissions/effects.d.ts",
+      "dist/permissions/effects.d.ts.map",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.d.ts",
+      "dist/permissions/modes.d.ts.map",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.d.ts",
+      "dist/permissions/normalization.d.ts.map",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.d.ts",
+      "dist/permissions/options.d.ts.map",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.d.ts",
+      "dist/permissions/options/filesystem.d.ts.map",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.d.ts",
+      "dist/permissions/options/shared.d.ts.map",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.d.ts",
+      "dist/permissions/options/shell.d.ts.map",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.d.ts",
+      "dist/permissions/options/tools.d.ts.map",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.d.ts",
+      "dist/permissions/presentation.d.ts.map",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.d.ts",
+      "dist/permissions/response.d.ts.map",
+      "dist/permissions/response.js",
+      "dist/session-config-ids.d.ts",
+      "dist/session-config-ids.d.ts.map",
+      "dist/session-config-ids.js",
+      "dist/session-failure-extension.d.ts",
+      "dist/session-failure-extension.d.ts.map",
+      "dist/session-failure-extension.js",
+      "dist/session-mode.d.ts",
+      "dist/session-mode.d.ts.map",
+      "dist/session-mode.js",
+      "dist/session-titles.d.ts",
+      "dist/session-titles.d.ts.map",
+      "dist/session-titles.js",
+      "dist/settings.d.ts",
+      "dist/settings.d.ts.map",
+      "dist/settings.js",
+      "dist/tool-result-meta.d.ts",
+      "dist/tool-result-meta.d.ts.map",
+      "dist/tool-result-meta.js",
+      "dist/tools.d.ts",
+      "dist/tools.d.ts.map",
+      "dist/tools.js",
+      "dist/utils.d.ts",
+      "dist/utils.d.ts.map",
+      "dist/utils.js"
+    ]
+  },
+  "hashes": {
+    "dist/index.js": {
+      "0.70.0": "9d73d1f0f121fb96cc8badb28c22d5bff02d8582eb2e40360a81c189e1b9422a",
+      "0.71.0": "9d73d1f0f121fb96cc8badb28c22d5bff02d8582eb2e40360a81c189e1b9422a",
+      "0.72.0": "9d73d1f0f121fb96cc8badb28c22d5bff02d8582eb2e40360a81c189e1b9422a",
+      "0.73.0": "9d73d1f0f121fb96cc8badb28c22d5bff02d8582eb2e40360a81c189e1b9422a"
+    },
+    "dist/elicitation.js": {
+      "0.70.0": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+      "0.71.0": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+      "0.72.0": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+      "0.73.0": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095"
+    },
+    "dist/lib.js": {
+      "0.70.0": "e189787d1c445c3842262bd9d98171a535127c6d36bbe698fff235cc14100792",
+      "0.71.0": "e189787d1c445c3842262bd9d98171a535127c6d36bbe698fff235cc14100792",
+      "0.72.0": "e189787d1c445c3842262bd9d98171a535127c6d36bbe698fff235cc14100792",
+      "0.73.0": "e189787d1c445c3842262bd9d98171a535127c6d36bbe698fff235cc14100792"
+    },
+    "dist/settings.js": {
+      "0.70.0": "629348525ddd007ace9c06a16a19af6877af2a090b58255dd7f5974a6bdf2932",
+      "0.71.0": "629348525ddd007ace9c06a16a19af6877af2a090b58255dd7f5974a6bdf2932",
+      "0.72.0": "629348525ddd007ace9c06a16a19af6877af2a090b58255dd7f5974a6bdf2932",
+      "0.73.0": "629348525ddd007ace9c06a16a19af6877af2a090b58255dd7f5974a6bdf2932"
+    },
+    "dist/utils.js": {
+      "0.70.0": "e99a776cda7f84f00884fc6be8d754f545cd21346ba9a4d326aeea1dc422d8f2",
+      "0.71.0": "e99a776cda7f84f00884fc6be8d754f545cd21346ba9a4d326aeea1dc422d8f2",
+      "0.72.0": "e99a776cda7f84f00884fc6be8d754f545cd21346ba9a4d326aeea1dc422d8f2",
+      "0.73.0": "e99a776cda7f84f00884fc6be8d754f545cd21346ba9a4d326aeea1dc422d8f2"
+    },
+    "dist/acp-agent.js": {
+      "0.70.0": "f0cbbe408bb758cc4bacdae9a244bcac6efbdb6413f680195d017648abc6d816",
+      "0.71.0": "aed46103cb2e69973078b44b24c541b0a90446497a4c5505c87def623328496c",
+      "0.72.0": "e41014b49c5ac096b5e18a89f990ee0ec64452e440666b59dcf4e087f632e370",
+      "0.73.0": "e41014b49c5ac096b5e18a89f990ee0ec64452e440666b59dcf4e087f632e370"
+    },
+    "dist/tools.js": {
+      "0.70.0": "b9f6e42e59047bfc0554f862c0d71354cb6af54299f8947963886171657ee230",
+      "0.71.0": "223b58345e70cac10cdda81f381b6aa69b7956d866f99d2c253cb75789fa3198",
+      "0.72.0": "d8053c7880d61a0ffa25c8bd367eb2d5adc78ee7c0a3eb65b4d33be3a6c07ab4",
+      "0.73.0": "d8053c7880d61a0ffa25c8bd367eb2d5adc78ee7c0a3eb65b4d33be3a6c07ab4"
+    },
+    "dist/session-config-ids.js": {
+      "0.71.0": "24148e79435afabd7e3c6cf4f8bf5d3c16c7887b97f172cd507de60f19ec551d",
+      "0.72.0": "24148e79435afabd7e3c6cf4f8bf5d3c16c7887b97f172cd507de60f19ec551d",
+      "0.73.0": "24148e79435afabd7e3c6cf4f8bf5d3c16c7887b97f172cd507de60f19ec551d"
+    },
+    "dist/session-mode.js": {
+      "0.71.0": "0efc6f6fb78df0122145270f36d01aa7dc73d3f80b71065f830d9b41adcea0bc",
+      "0.72.0": "0efc6f6fb78df0122145270f36d01aa7dc73d3f80b71065f830d9b41adcea0bc",
+      "0.73.0": "0efc6f6fb78df0122145270f36d01aa7dc73d3f80b71065f830d9b41adcea0bc"
+    },
+    "dist/file-change-audit.js": {
+      "0.70.0": "168940a7daadac91bce4f54f0b9f4bec6cb1c2823292769afe1621fe4b22ec52",
+      "0.71.0": "95a506b045497f6b5cd94f083e722e5c65ef8d8ff3dc850faf3a681427ddabf6",
+      "0.72.0": "95a506b045497f6b5cd94f083e722e5c65ef8d8ff3dc850faf3a681427ddabf6",
+      "0.73.0": "95a506b045497f6b5cd94f083e722e5c65ef8d8ff3dc850faf3a681427ddabf6"
+    },
+    "dist/session-failure-extension.js": {
+      "0.70.0": "73594128e1d358529192e5d35622af1c3c8093f051ba900b28c082e6ec7f004c",
+      "0.71.0": "690243be1ca07bc13137673935082cd5aa5adb8353844133577860ad7ae33a51",
+      "0.72.0": "690243be1ca07bc13137673935082cd5aa5adb8353844133577860ad7ae33a51",
+      "0.73.0": "690243be1ca07bc13137673935082cd5aa5adb8353844133577860ad7ae33a51"
+    },
+    "package.json": {
+      "0.70.0": "dc85a06d256602b6ad40429b69bc7920ee4297839136b0e722199e4c7daf8567",
+      "0.71.0": "5b1b92369df5a9e50c5fc6de508f6786d4c13572627dbb0b6228ba919a514b0d",
+      "0.72.0": "24f82fb8e48693a05dc1ec100e996d1635a7828302bf29f262eafd7f777bf2ce",
+      "0.73.0": "0a5685e8534774e3878558a85b5efbfaba899da3e16ae2bbe6b84c6a57cb39be"
+    }
+  },
+  "named_unmapped_with_reason": {
+    "0.71.0_added_modules": [
+      {
+        "prefix": "dist/acp-subagents",
+        "reason": "native subagent session updates; decoder treats unknown kinds as Unknown"
+      },
+      {
+        "prefix": "dist/native-subagents",
+        "reason": "native subagent lifecycle; unmapped"
+      },
+      {
+        "prefix": "dist/async-tasks",
+        "reason": "async-task session updates; unmapped"
+      },
+      {
+        "prefix": "dist/session-titles",
+        "reason": "0.70.0 already emitted idle session_info_update; 0.71.0 is a refactor plus optional later generateSessionTitle"
+      },
+      {
+        "prefix": "dist/permissions",
+        "reason": "#1004 permission presentation split; mapped kinds stay allow_once/allow_always/reject_once; Swallowtail still skips allow_always/reject_always"
+      },
+      {
+        "prefix": "dist/clear-context-coordinator",
+        "reason": "#1004 clear-context planning; unmapped"
+      },
+      {
+        "prefix": "dist/exit-plan",
+        "reason": "#1004 ExitPlanMode; unmapped"
+      },
+      {
+        "prefix": "dist/fork-session",
+        "reason": "fork remains unmapped"
+      },
+      {
+        "prefix": "dist/air-extension",
+        "reason": "Air session-failure _meta already unmapped from 0.67.0"
+      },
+      {
+        "prefix": "dist/tool-result-meta",
+        "reason": "tool-result _meta; unmapped"
+      },
+      {
+        "prefix": "dist/session-config-ids",
+        "reason": "extract of existing effort/model/agent ids; mapped ids unchanged"
+      },
+      {
+        "prefix": "dist/session-mode",
+        "reason": "#1004 mode manager extract; mapped id mode, category mode, plan and acceptEdits still advertised; dontAsk dropped from advertised availableModes and stays unmapped"
+      }
+    ],
+    "0.71.0_changed_provider_internal": [
+      {
+        "path": "dist/file-change-audit.js",
+        "reason": "file-change _meta already unmapped from 0.69.0; .d.ts identical 0.70.0 through 0.72.0"
+      },
+      {
+        "path": "dist/session-failure-extension.js",
+        "reason": "Air session-failure already unmapped from 0.67.0"
+      },
+      {
+        "path": "dist/tools.js",
+        "reason": "provider tool/subagent implementation; not a selected mapped ACP route"
+      },
+      {
+        "path": "README.md",
+        "reason": "packaging/docs; not selected mapped ACP"
+      },
+      {
+        "path": "package.json",
+        "reason": "dependency pins; Agent SDK 0.3.232 to 0.3.238; ACP SDK stays 1.3.0"
+      }
+    ],
+    "0.71.0_changed_mapped_adjacent": [
+      {
+        "path": "dist/acp-agent.js",
+        "reason": "named 0.71.0 deltas are #1004 mode/clear-context wiring and #1045 steering deferral plus raceWithAbort around requestPermissionFromClient; remaining line-level churn is provider-internal and stays unmapped. This inventory does not claim a complete function-by-function changelog of acp-agent.js."
+      }
+    ],
+    "0.72.0_changed_provider_internal": [
+      {
+        "path": "dist/tools.js",
+        "reason": "tools.d.ts identical 0.71.0 to 0.72.0; implementation size 47042 to 52529 stays unmapped"
+      },
+      {
+        "path": "dist/tools.d.ts.map",
+        "reason": "source map only"
+      },
+      {
+        "path": "package.json",
+        "reason": "ACP SDK 1.3.0 to 1.4.0 and Agent SDK 0.3.238 to 0.3.252; wire elicitation/create unchanged"
+      }
+    ],
+    "0.72.0_changed_mapped_adjacent": [
+      {
+        "path": "dist/acp-agent.js",
+        "reason": "named 0.72.0 deltas are effort session-new applyFlagSettings removal with per-model currentValue and effortPinnedByUser gating; user_message_uuid ensureActiveTurn result attribution, queued/cancelled turn ownership, and stamped-unmatched empty-interruption fallback; PostModelSwitch mirroring of CLI model switches; PreModelSwitch session/new veto log+fallback to models[0]. Remaining line-level churn is provider-internal and stays unmapped. This inventory does not claim a complete function-by-function changelog of acp-agent.js."
+      }
+    ],
+    "0.73.0_changed_provider_internal": [
+      {
+        "path": "package.json",
+        "reason": "only changed file 0.72.0 to 0.73.0: version field and Agent SDK pin 0.3.252 to 0.3.257; ACP SDK stays 1.4.0; GitHub #1066. Every dist file is byte-identical to 0.72.0. Swallowtail maps ACP stdio, not the Agent SDK package pin."
+      }
+    ],
+    "0.73.0_changed_mapped_adjacent": []
+  },
+  "identical_through_reason": "byte-identical files including mapped dist/index.js, dist/elicitation.js, dist/lib.js, dist/settings.js, dist/utils.js plus unmapped goal-extension and file-change-audit.d.ts",
+  "operator_restart_to_0_73_0": true
+}

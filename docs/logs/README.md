@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Claude Agent ACP 0.73.0 Identity](./2026-09-01-claude-agent-acp-0-73-0-identity.md) — Research 272; operator restart after unmerged `0.72.0`; compatible extension; host `0.63.0` and official stable `0.73.0` corroborated; claims unchanged; Claude Code and watcher untouched
 - [2026-09-01 Papercuts llama.cpp context-size god-file closeout](./2026-09-01-papercuts-llama-context-god-file-closeout.md) — prepared-facade selections/support split and owned-driver failure proofs; 383→381 god-file baseline; historical g04.056 378 record left unchanged
 - [2026-09-01 Papercuts Antigravity host `agy` auto-update ownership stop](./2026-09-01-papercuts-antigravity-host-drift-stop.md) — PATH `agy` research probes are agent-direct; Swallowtail cannot refuse qualified-range drift; papercut left open
 - [2026-09-01 Kimi Code ACP QualifiedOnly Cap](./2026-09-01-kimi-code-acp-qualified-only-cap.md) — operator A2; `kimi-code.acp` `QualifiedOnly` at `0.38.0`; claim id `kimi.acp.executable-window-5`; frozen `window-3`/`window-4` reserved; exact `0.39.0` and `0.39.1` stay excluded; local-server and headless unchanged

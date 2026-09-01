@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Research 268 and g05.015 qualify Pi RPC through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2` | Contract 029 identity-before-claim; Research 267-268; current-main validation | `g05.015` cards 039-040 |
+| Keep production route versions current one family at a time. | Research 269 selected Kimi Code installed harness `0.39.1` as the next one-family Upgrade Workflow after Pi RPC `0.84.4`; no claim change | Contract 029 identity-before-claim; Research 267-269; current-main validation | `g05.015` cards 039-040 |
 
 ## Planned Next Roadmaps
 
@@ -260,7 +260,9 @@ Code `2.1.252`. g05.014 cards 037-038 freeze identity then qualify both Claude
 Code axes through official `2.1.252` while keeping watcher exact `2.1.251`.
 Research 267 selected Pi `0.84.4` as the next one-family Upgrade Workflow and
 changed no claim. g05.015 cards 039-040 freeze identity then qualify Pi RPC
-through official `0.84.4` while keeping sidecar exact `0.84.2`.
+through official `0.84.4` while keeping sidecar exact `0.84.2`. Research 269
+selected Kimi Code installed harness `0.39.1` as the next one-family Upgrade
+Workflow and changed no claim.
 
 ## Milestones
 

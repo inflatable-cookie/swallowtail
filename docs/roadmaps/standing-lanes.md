@@ -90,6 +90,21 @@ web` deltas are recorded as observations only. No provider prompt, model
 request, authentication, catalogue or session work, live session, install,
 host update, or execution of downloaded official binaries was required.
 
+The direction for that ACP stop is not settled by the claim. g05.017 compiles
+the
+[containment and mediation gate](../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
+and returns exactly three mutually exclusive directions; no direction is
+accepted, and this lane records none. All three move the claim's newer-version
+posture to `QualifiedOnly`, so the lane must treat the present state as
+incomplete: the ACP claim binds `AllowUnverified`, and a newly published point
+above `0.38.0` would fall through to the unverified-newer path before a
+checkpoint could react. Until the operator answers, the lane keeps
+`kimi-code.acp` capped at `0.38.0`, keeps exact `0.39.0` and `0.39.1` excluded,
+and adds no new exclusion, trigger, or posture change on its own authority. It
+must not adopt a growing exclusion set as a substitute for the posture move.
+The next all-route currentness checkpoint runs serially after that answer, not
+alongside it, and does not rank the Kimi family until then.
+
 ### Previous Completed Family
 
 Pi RPC `0.84.4` is a compatible extension of

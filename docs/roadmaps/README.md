@@ -15,11 +15,9 @@ shape.
 
 ## Next Task
 
-Implement
-[card 035](g05/batch-cards/035-codex-0-152-0-identity.md): freeze official
-Codex `0.152.0` identity and classify the selected exec/app-server surfaces
-before any production claim edit. Auto-continue to card 036 only for an
-admitted Contract 029 segment.
+Reassess the next all-route currentness checkpoint after Codex `0.152.0`
+qualification. Choose only one next family. Do not start a second family from
+this PR.
 
 The provider-operation observation decision under
 [g05.009](g05/009-contract-061-consumer-projection-realization.md) remains

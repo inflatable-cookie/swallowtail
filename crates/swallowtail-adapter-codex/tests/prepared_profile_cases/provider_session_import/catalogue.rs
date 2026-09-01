@@ -13,7 +13,8 @@ fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus(
         ("0.150.0", true),
         ("0.150.1", true),
         ("0.151.0", true),
-        ("0.151.1", false),
+        ("0.152.0", true),
+        ("0.152.1", false),
     ] {
         let recording = RecordingHostServices::default();
         let prepared_app = prepared(CodexPreparedDriver::AppServer, version, &recording, true);

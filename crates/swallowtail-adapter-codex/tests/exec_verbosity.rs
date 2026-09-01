@@ -102,7 +102,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
         "0.147.1",
         "0.148.1",
         "0.149.1+build.1",
-        "0.151.1",
+        "0.152.1",
     ] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(
@@ -133,7 +133,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
 
 #[test]
 fn later_qualified_versions_reject_verbosity_before_process_start() {
-    for version in ["0.150.0", "0.150.1", "0.151.0"] {
+    for version in ["0.150.0", "0.150.1", "0.151.0", "0.152.0"] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(
             RequestId::new("request-later-qualified-verbosity").expect("request id is valid"),

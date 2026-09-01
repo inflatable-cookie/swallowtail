@@ -144,10 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has thirteen roadmaps: 7 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 013. Milestone 009 is planned and
+g05 has thirteen roadmaps: 8 completed milestones, honest evidence stops at 002,
+003, 007, and 011. Milestone 009 is planned and
 strict-paused on its operator decision. Milestones
-004 and 005 are completed standing currentness. Milestone 006 is completed
+004, 005, 012, and 013 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
 g05.001 is
@@ -283,15 +283,18 @@ planning lane before any live attempt. g05.012
 reconstructed PR 130 as two identity-before-claim commits,
 recorded the current signed host `0.150.1` binary, and qualified Codex exec and
 app-server through official `0.151.0` while retaining feature-specific exact
-sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
+sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. g05.013
+then qualified official `0.152.0` through cards 035-036. Card 025
 promoted Contract 062 without Rust. Cards 026 and 029 closed without a
 production behavior change. Card 030 closed as an evidence stop without Rust or
 a promoted candidate; the later accepted `claude-agent.acp` gate led to card
 031, now complete through PR 141. The accepted Cline route-local gate promoted
 candidate G as card 032; PR 144 completed it at `18a6907e`. Card 033 then
 closed as an evidence stop without promoting candidate F or changing Rust, and
-the `kimi-code.acp` operator gate decision is now the sole Next Task. PR
-130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+the `kimi-code.acp` operator gate remains queued behind card 034, which is
+planned and not ready. g05.013 cards 035-036 qualify Codex exec and
+app-server through official `0.152.0`. The next all-route checkpoint is
+queued. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

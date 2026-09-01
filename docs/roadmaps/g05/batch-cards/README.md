@@ -2,14 +2,13 @@
 
 ## Planned
 
-- [036-codex-0-152-0-claim.md](./036-codex-0-152-0-claim.md) — planned; gated on card 035 admitted identity
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- [035-codex-0-152-0-identity.md](./035-codex-0-152-0-identity.md) — ready; one-family Contract 029 identity before claim
+- None.
 
 ## Blocked
 
@@ -17,6 +16,8 @@
 
 ## Completed
 
+- [036-codex-0-152-0-claim.md](./036-codex-0-152-0-claim.md) — complete; Codex exec and app-server qualified through official `0.152.0`; unpublished `0.151.1` stays a gap
+- [035-codex-0-152-0-identity.md](./035-codex-0-152-0-identity.md) — complete; Research 264 and current host/official identity frozen before claim
 - [033-contract-061-card-032-closeout-and-kimi-reassessment.md](./033-contract-061-card-032-closeout-and-kimi-reassessment.md) — evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage reconciled to 249/518, and candidate F left unpromoted behind a named `kimi-code.acp` gate
 - [032-contract-061-cline-command-code-copilot-goose-package-completion.md](./032-contract-061-cline-command-code-copilot-goose-package-completion.md) — complete; exact 11/8/11/9/9-row candidate G proof merged through PR 144 at `18a6907e`
 - [031-contract-061-claude-agent-package-and-acknowledgement.md](./031-contract-061-claude-agent-package-and-acknowledgement.md) — complete; exact 30/12/11-row candidate D proof merged through PR 141 at `5d1f173a`

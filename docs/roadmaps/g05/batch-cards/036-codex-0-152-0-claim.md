@@ -1,6 +1,6 @@
 # 036 Codex 0.152.0 Claim
 
-Status: planned; gated on card 035 admitted identity
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -49,3 +49,12 @@ projection, papercut, release, or unrelated cleanup.
 ## Auto-Continuation
 
 No. Review and merge, then queue the next all-route checkpoint.
+
+## Result
+
+The Codex exec and app-server axes qualify official `0.152.0`. Unpublished
+gaps including `0.151.1` remain incompatible. Model verbosity and every other
+feature-specific exact set remain bounded through `0.149.1`. Focused,
+affected-package, semantic API, route, docs, Northstar, format, and diff
+gates pass without provider work. Identity evidence remains commit
+`68a1099f`.

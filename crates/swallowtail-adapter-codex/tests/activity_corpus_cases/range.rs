@@ -6,8 +6,8 @@ fn range_freezes_separate_app_server_and_exec_schema_segments() {
     let range = json(RANGE);
     assert_eq!(range["axis"], "codex.cli");
     assert_eq!(range["facade"], "codex-app-server-v2");
-    assert_eq!(range["qualified_upper"], "0.151.0");
-    assert_eq!(range["current_external_release"]["version"], "0.151.0");
+    assert_eq!(range["qualified_upper"], "0.152.0");
+    assert_eq!(range["current_external_release"]["version"], "0.152.0");
     assert_eq!(
         range["current_external_release"]["classification"],
         "qualified-current"

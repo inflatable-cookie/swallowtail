@@ -1,6 +1,5 @@
 use super::{LocalWatcherEntry, LocalWatcherHostService};
 use crate::output::failure;
-use futures_executor::block_on;
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use swallowtail_core::{WatcherId, WatcherLifecyclePhase, WatcherTerminalCause};
@@ -29,7 +28,7 @@ impl LocalWatcherHostService {
                 .expect("local watcher task lock poisoned")
                 .take();
             if let Some(task) = task {
-                if let Err(error) = block_on(task.join()) {
+                if let Err(error) = super::support::drive_future(task.join()) {
                     entry.record_join_error(error.clone());
                     return Err(error);
                 }
@@ -41,10 +40,10 @@ impl LocalWatcherHostService {
                 entry.record_join_error(error.clone());
                 return Err(error);
             }
-            let mut process_result = block_on(entry.process.wait());
+            let mut process_result = super::support::drive_future(entry.process.wait());
             if process_result.is_err() {
-                let _ = block_on(entry.process.force_stop());
-                process_result = block_on(entry.process.wait());
+                let _ = super::support::drive_future(entry.process.force_stop());
+                process_result = super::support::drive_future(entry.process.wait());
             }
             if let Err(error) = process_result {
                 entry.record_join_error(error.clone());

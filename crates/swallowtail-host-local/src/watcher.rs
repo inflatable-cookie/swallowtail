@@ -10,7 +10,6 @@ mod wait;
 
 use crate::host::LocalProcessHost;
 use crate::task::LocalScopedTaskService;
-use futures_executor::block_on;
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
@@ -264,8 +263,8 @@ impl WatcherHostService for LocalWatcherHostService {
 impl Drop for LocalWatcherEntry {
     fn drop(&mut self) {
         if !self.joined.load(Ordering::Acquire) {
-            let _ = block_on(self.process.force_stop());
-            let _ = block_on(self.process.wait());
+            let _ = support::drive_future(self.process.force_stop());
+            let _ = support::drive_future(self.process.wait());
         }
     }
 }

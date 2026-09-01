@@ -238,12 +238,14 @@ result preserving the existing open method. The exact public surface, source
 split, state transitions, unknown-failure boundary, shared-open lifecycle, and
 provider-free oracle are closed. Card 031 completed the exact 30/12/11-row
 Claude Agent package remainder through PR 141 at `5d1f173a`. Batch 9.4 now has
-201 proved rows and 566 remaining across candidates B, C, E-G, and I-L. The
-post-merge lifecycle audit promotes no implementation card. F remains coupled
-across three Kimi post-open families. G is narrower, but `cline.acp` has no
-retained exact Plan acknowledgement, negotiated model-option observation, or
-adapter-owned active-observation projection result. g05.009 is `strict-paused`
-behind that route-local operator decision.
+201 proved rows and 566 remaining across candidates B, C, E-G, and I-L. F
+remains coupled across three Kimi post-open families. The operator approved
+G's narrower Cline route-local baseline: exact effective/rejected Plan
+acknowledgement plus exact bounded negotiated model options through one
+additive adapter-owned projected-open seam preserving the existing open
+method. The gate fixes exact names, signatures, state, source identity,
+lifecycle, failure preservation, and provider-free oracles. Candidate G is
+ready as card 032; g05.009 is `strict-ready`.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
@@ -260,8 +262,8 @@ sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. Card 025
 promoted Contract 062 without Rust. Cards 026 and 029 closed without a
 production behavior change. Card 030 closed as an evidence stop without Rust or
 a promoted candidate; the later accepted `claude-agent.acp` gate led to card
-031, now complete through PR 141. The front-door Next Task is the narrow Cline
-operator decision. PR
+031, now complete through PR 141. The accepted Cline route-local gate promoted
+candidate G as card 032, the front-door Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
@@ -277,8 +279,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the g05 planning decision named by the
-[roadmaps front door](README.md#next-task). g05.009 is `strict-paused`; no
-implementation card is ready until the operator answers the narrow
-`cline.acp` active-observation gate. This index records generation status; the
-canonical actionable pointer stays in the front door.
+Implement the ready g05 card named by the
+[roadmaps front door](README.md#next-task). g05.009 is `strict-ready`; card 032
+is the sole ready implementation card. This index records generation status;
+the canonical actionable pointer stays in the front door.

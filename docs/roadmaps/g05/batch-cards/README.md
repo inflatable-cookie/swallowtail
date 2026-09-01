@@ -7,9 +7,7 @@
 
 ## Ready
 
-- None. Card 031 is complete. g05.009 is strict-paused behind the
-  `cline.acp` active-observation operator decision; candidate G has no card
-  number or implementation authority.
+- [032-contract-061-cline-command-code-copilot-goose-package-completion.md](./032-contract-061-cline-command-code-copilot-goose-package-completion.md) — sole ready card; exact 11/8/11/9/9-row candidate G proof under the accepted Cline active-observation public baseline
 
 ## Blocked
 

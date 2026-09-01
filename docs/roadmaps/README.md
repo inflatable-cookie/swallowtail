@@ -15,21 +15,14 @@ shape.
 
 ## Next Task
 
-Validate a fresh all-route Contract 029 currentness checkpoint and select the
-next single family from re-probed official points rather than from Research
-269's consumed rank. OpenCode, Ollama, Antigravity, Grok, and
-`kimi-code.local-server` remain visible ordered-newer candidates;
-`kimi-code.local-server` is its own family and needs its own identity run
-before any claim. Do not bulk-bump from registry `latest`, do not lift
-Gemini's deferral, and do not keep g05 open for currentness. The g05.009
-provider-operation observation decision remains queued; card 034 stays
-planned, not ready, and candidate F remains unpromoted at 249 proved / 518
-remaining rows.
-
-Operator A2 is recorded: `kimi-code.acp` is capped at `0.38.0` under
-`QualifiedOnly` with one artifact-level reopen trigger in the standing lane.
-Exact `0.39.0` and `0.39.1` stay excluded. The trigger authorizes a fresh
-identity and claim decision, never automatic admission.
+Implement Claude Agent ACP useful-newer qualification for official `0.72.0`.
+Host already sits on qualified `0.63.0`. Do not leave official `0.72.0`
+UnverifiedNewer without a named incompatible reason. Do not start a second
+family from this PR. Do not reopen `kimi-code.acp`. Do not bulk-bump from
+registry `latest`, do not lift Gemini's deferral, and do not keep g05 open
+for currentness. The g05.009 provider-operation observation decision remains
+queued; card 034 stays planned, not ready, and candidate F remains unpromoted
+at 249 proved / 518 remaining rows.
 
 ## Standing Lanes
 

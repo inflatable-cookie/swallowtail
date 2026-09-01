@@ -311,8 +311,9 @@ trigger. Card 043 moved `kimi-code.acp` from `AllowUnverified` to
 `QualifiedOnly`, kept exact `0.39.0` and `0.39.1` excluded as recorded
 evidence, and left local-server `AllowUnverified`. Every point above `0.38.0`
 fails closed. The trigger authorizes a fresh identity/claim decision, never
-automatic admission and never restoration of `AllowUnverified` by itself. The
-all-route currentness checkpoint stays serially after that cap. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+automatic admission and never restoration of `AllowUnverified` by itself.
+Research 271 selected Claude Agent ACP `0.72.0` as the next one-family
+Upgrade Workflow. The checkpoint changes no claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

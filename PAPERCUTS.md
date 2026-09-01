@@ -154,7 +154,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   keeps its historical HTML table and now notes that Research 218 supersedes
   the retrieval method.
 
-### [ ] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
+### [x] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
 - Friction: `developers.openai.com/codex/config-*` 200-redirects to
   `learn.chatgpt.com` HTML shells (~0.4–1.2 MiB). Markdown exports exist by
   appending `.md` and are 11–91 KiB.
@@ -164,6 +164,13 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: retrieve Learn `.md` exports for Codex config docs; hash those bodies;
   treat GitHub tag paths as binding and current-main URLs as leads only.
 - Surface: g04.066 / Research 213 official-source retrieval.
+- Closed: 2026-09-01 papercuts Codex docs corpus. Research 213 already hashed
+  Learn `.md` as the digestable corpus. The 2026-09-01 reconciliation re-fetched
+  all four config pages' Learn `.md`/HTML bodies, the `developers.openai.com`
+  308 hops (now exact; not 200), and the tag/main models paths; preserved the
+  2026-08-25 digests; recorded current URL/status/body-kind/byte/digest
+  evidence; confirmed basics/advanced `.md` and tag `models.json` still match
+  while reference/sample `.md` moved; left deliver-now claims unchanged.
 
 ### [x] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
 - Friction: `platform.claude.com/docs` HTTP bodies are 0.9–2.0 MiB Next.js

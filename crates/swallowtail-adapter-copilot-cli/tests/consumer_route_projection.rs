@@ -1,7 +1,13 @@
 #![allow(dead_code)]
 
+#[path = "consumer_route_projection/assembly.rs"]
+mod assembly;
+#[path = "consumer_route_projection/assembly_support.rs"]
+mod assembly_support;
 #[path = "support/discovery.rs"]
 mod discovery_support;
+#[path = "consumer_route_projection/posture.rs"]
+mod posture;
 mod support;
 
 use discovery_support::DiscoveryHost;
@@ -23,7 +29,8 @@ use swallowtail_runtime::{
     ConsumerRouteLifecycle, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId,
     ConsumerRouteRowIdentity, ConsumerRouteStateSupport, ConsumerRouteSupportPosture, Deadline,
     DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
-    MonotonicInstant, PreparedAccessEvidence, RequestId, ScopeId, WorkingResourceRef,
+    MonotonicInstant, PreparationFailure, PreparedAccessEvidence, RequestId, ScopeId,
+    WorkingResourceRef,
 };
 
 #[test]
@@ -119,9 +126,30 @@ fn exact_six_rows_and_three_negative_ledger_entries_are_proved() {
             .collect::<BTreeSet<_>>(),
         census_tuples()
     );
+    let emitted = LEDGER
+        .iter()
+        .filter(|row| row.2)
+        .map(|(shape, semantic, _)| {
+            (
+                "copilot-cli.acp".to_owned(),
+                (*shape).to_owned(),
+                (*semantic).to_owned(),
+            )
+        })
+        .collect::<BTreeSet<_>>();
+    assert_eq!(posture::observed_tuples(&contribution), emitted);
 }
 
 fn prepared_session() -> swallowtail_adapter_copilot_cli::CopilotCliPreparedSession {
+    prepared_session_at("copilot-cli.projection.instance", "1", ready_status())
+        .expect("Copilot CLI session prepares")
+}
+
+fn prepared_session_at(
+    instance_id: &str,
+    revision: &str,
+    status: AccessStatus,
+) -> Result<swallowtail_adapter_copilot_cli::CopilotCliPreparedSession, PreparationFailure> {
     let host_id = ExecutionHostId::new("fixture.projection.local").expect("host");
     let discovery = DiscoveryHost::new(COPILOT_CLI_PACKAGE_VERSION);
     let operation = FixtureHost::new(Scenario::Success);
@@ -134,8 +162,8 @@ fn prepared_session() -> swallowtail_adapter_copilot_cli::CopilotCliPreparedSess
     );
     let integration = block_on(prepare_copilot_cli_acp(
         CopilotCliPreparationInput::new(
-            ConfiguredInstanceId::new("copilot-cli.projection.instance").expect("instance"),
-            InstanceRevision::new("1").expect("revision"),
+            ConfiguredInstanceId::new(instance_id).expect("instance"),
+            InstanceRevision::new(revision).expect("revision"),
             host_id,
             InstalledExecutableTarget::new(
                 ExecutableRef::new(format!("/fixture/bin/{COPILOT_CLI_EXECUTABLE_NAME}"))
@@ -146,7 +174,7 @@ fn prepared_session() -> swallowtail_adapter_copilot_cli::CopilotCliPreparedSess
             copilot_cli_host_account_access_profile(
                 AccessProfileId::new("copilot-cli.projection.host-account").expect("profile"),
             ),
-            evidence(),
+            PreparedAccessEvidence::caller_asserted(status),
         ),
         CopilotCliPreparationProbe::new(
             RequestId::new("copilot-cli.projection.probe").expect("request"),
@@ -155,44 +183,47 @@ fn prepared_session() -> swallowtail_adapter_copilot_cli::CopilotCliPreparedSess
             DiscoveryCancellation::new(),
         ),
         services,
+    ))?;
+    integration.prepare_session(CopilotCliSessionProfileInput::new(
+        RequestId::new("copilot-cli.projection.session").expect("request"),
+        WorkingResourceRef::new("copilot-cli.projection.workspace").expect("resource"),
     ))
-    .expect("Copilot CLI prepares");
-    integration
-        .prepare_session(CopilotCliSessionProfileInput::new(
-            RequestId::new("copilot-cli.projection.session").expect("request"),
-            WorkingResourceRef::new("copilot-cli.projection.workspace").expect("resource"),
-        ))
-        .expect("session prepares")
 }
 
 fn evidence() -> PreparedAccessEvidence {
-    PreparedAccessEvidence::caller_asserted(AccessStatus::new(
+    PreparedAccessEvidence::caller_asserted(ready_status())
+}
+
+fn ready_status() -> AccessStatus {
+    AccessStatus::new(
         AccessProfileId::new("copilot-cli.projection.host-account").expect("profile"),
         CredentialState::NotRequired,
         EntitlementState::Available,
         EndpointAuthorization::Allowed,
         RuntimeReadiness::Ready,
         SupportAuthority::ExperimentalObserved,
-    ))
+    )
 }
 
 fn identities(contribution: &ConsumerRouteProjectionContribution) -> BTreeSet<&'static str> {
-    rows(contribution)
-        .map(|row| match row.identity() {
-            ConsumerRouteRowIdentity::Feature(feature) => match feature {
-                ConsumerRouteFeatureId::InteractiveSession => "feature.interactive-session",
-                ConsumerRouteFeatureId::StreamingEvents => "feature.streaming-events",
-                ConsumerRouteFeatureId::CancellationOrInterruption => {
-                    "feature.cancellation-or-interruption"
-                }
-                ConsumerRouteFeatureId::WorkingResource => "feature.working-resource",
-                ConsumerRouteFeatureId::ActivityObservation => "feature.activity-observation",
-                ConsumerRouteFeatureId::PreparedFacade => "feature.prepared-facade",
-                other => panic!("unexpected feature {other:?}"),
-            },
-            other => panic!("no selectable control is admitted: {other:?}"),
-        })
-        .collect()
+    rows(contribution).map(identity_name).collect()
+}
+
+fn identity_name(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> &'static str {
+    match row.identity() {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::InteractiveSession => "feature.interactive-session",
+            ConsumerRouteFeatureId::StreamingEvents => "feature.streaming-events",
+            ConsumerRouteFeatureId::CancellationOrInterruption => {
+                "feature.cancellation-or-interruption"
+            }
+            ConsumerRouteFeatureId::WorkingResource => "feature.working-resource",
+            ConsumerRouteFeatureId::ActivityObservation => "feature.activity-observation",
+            ConsumerRouteFeatureId::PreparedFacade => "feature.prepared-facade",
+            other => panic!("unexpected feature {other:?}"),
+        },
+        other => panic!("no selectable control is admitted: {other:?}"),
+    }
 }
 
 fn rows(

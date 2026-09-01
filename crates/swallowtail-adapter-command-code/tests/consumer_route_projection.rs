@@ -1,7 +1,13 @@
 #![allow(dead_code)]
 
+#[path = "consumer_route_projection/assembly.rs"]
+mod assembly;
+#[path = "consumer_route_projection/assembly_support.rs"]
+mod assembly_support;
 #[path = "corpus/common.rs"]
 mod common;
+#[path = "consumer_route_projection/posture.rs"]
+mod posture;
 mod support;
 
 use std::collections::BTreeSet;
@@ -117,6 +123,22 @@ fn exact_run_and_session_facades_reconcile_the_eleven_row_ledger() {
     assert_eq!(ledger, census_tuples());
     assert_eq!(LEDGER.iter().filter(|row| row.2).count(), 10);
     assert_eq!(LEDGER.iter().filter(|row| !row.2).count(), 1);
+    let emitted = LEDGER
+        .iter()
+        .filter(|row| row.2)
+        .map(|(shape, semantic, _)| {
+            (
+                "command-code.headless".to_owned(),
+                (*shape).to_owned(),
+                (*semantic).to_owned(),
+            )
+        })
+        .collect::<BTreeSet<_>>();
+    let observed = [&run_projection, &session_projection]
+        .into_iter()
+        .flat_map(posture::observed_tuples)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(observed, emitted);
 
     let run_row = rows(&run_projection).next().expect("run row").clone();
     let rejection = ConsumerRouteProjectionContribution::new(
@@ -170,27 +192,29 @@ fn assert_exact_posture(projection: &ConsumerRouteProjectionContribution) {
 }
 
 fn identities(projection: &ConsumerRouteProjectionContribution) -> BTreeSet<&'static str> {
-    rows(projection)
-        .map(|row| match row.identity() {
-            ConsumerRouteRowIdentity::Feature(feature) => match feature {
-                ConsumerRouteFeatureId::StructuredRun => "feature.structured-run",
-                ConsumerRouteFeatureId::InteractiveSession => "feature.interactive-session",
-                ConsumerRouteFeatureId::StreamingEvents => "feature.streaming-events",
-                ConsumerRouteFeatureId::UsageEvidence => "feature.usage-reporting",
-                ConsumerRouteFeatureId::CancellationOrInterruption => {
-                    "feature.cancellation-or-interruption"
-                }
-                ConsumerRouteFeatureId::WorkingResource => "feature.working-resource",
-                ConsumerRouteFeatureId::ActivityObservation => "feature.activity-observation",
-                ConsumerRouteFeatureId::PreparedFacade => "feature.prepared-facade",
-                other => panic!("unexpected feature {other:?}"),
-            },
-            ConsumerRouteRowIdentity::Control(ConsumerRouteControlId::ModelSelection) => {
-                "control.model-selection"
+    rows(projection).map(identity_name).collect()
+}
+
+fn identity_name(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> &'static str {
+    match row.identity() {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::StructuredRun => "feature.structured-run",
+            ConsumerRouteFeatureId::InteractiveSession => "feature.interactive-session",
+            ConsumerRouteFeatureId::StreamingEvents => "feature.streaming-events",
+            ConsumerRouteFeatureId::UsageEvidence => "feature.usage-evidence",
+            ConsumerRouteFeatureId::CancellationOrInterruption => {
+                "feature.cancellation-or-interruption"
             }
-            other => panic!("unexpected row {other:?}"),
-        })
-        .collect()
+            ConsumerRouteFeatureId::WorkingResource => "feature.working-resource",
+            ConsumerRouteFeatureId::ActivityObservation => "feature.activity-observation",
+            ConsumerRouteFeatureId::PreparedFacade => "feature.prepared-facade",
+            other => panic!("unexpected feature {other:?}"),
+        },
+        ConsumerRouteRowIdentity::Control(ConsumerRouteControlId::ModelSelection) => {
+            "control.model-selection"
+        }
+        other => panic!("unexpected row {other:?}"),
+    }
 }
 
 fn rows(

@@ -34,4 +34,6 @@ const HEADLESS_SUCCESS: &str = include_str!("fixtures/cline-headless-3.0.55/succ
 include!("consumer_route_projection/cases.rs");
 include!("consumer_route_projection/ledger.rs");
 include!("consumer_route_projection/mixture.rs");
+include!("consumer_route_projection/headless_mixture.rs");
 include!("consumer_route_projection/fixtures.rs");
+include!("consumer_route_projection/posture.rs");

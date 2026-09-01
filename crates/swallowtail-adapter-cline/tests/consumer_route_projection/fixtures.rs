@@ -81,6 +81,21 @@ fn session_preparation_with_status(
 }
 
 fn headless_run(plan: bool) -> swallowtail_adapter_cline::ClineHeadlessPreparedRun {
+    headless_run_at(
+        plan,
+        "cline.projection.headless",
+        "1",
+        ready_status(),
+    )
+    .expect("headless run prepares")
+}
+
+fn headless_run_at(
+    plan: bool,
+    instance_id: &str,
+    revision: &str,
+    status: AccessStatus,
+) -> Result<swallowtail_adapter_cline::ClineHeadlessPreparedRun, PreparationFailure> {
     let host_id = ExecutionHostId::new("fixture.projection.headless").expect("host");
     let discovery = DiscoveryHost::new(CLINE_PACKAGE_VERSION);
     let operation = headless_support::FixtureHost::scripted([HEADLESS_SUCCESS]);
@@ -89,15 +104,15 @@ fn headless_run(plan: bool) -> swallowtail_adapter_cline::ClineHeadlessPreparedR
     );
     let integration = block_on(prepare_cline_headless(
         ClineHeadlessPreparationInput::new(
-            ConfiguredInstanceId::new("cline.projection.headless").expect("instance"),
-            InstanceRevision::new("1").expect("revision"),
+            ConfiguredInstanceId::new(instance_id).expect("instance"),
+            InstanceRevision::new(revision).expect("revision"),
             host_id,
             target(),
             EnvironmentRef::new("cline.projection.headless").expect("environment"),
             cline_local_account_access_profile(
                 AccessProfileId::new("cline.projection.local-account").expect("profile"),
             ),
-            evidence(),
+            PreparedAccessEvidence::caller_asserted(status),
         ),
         ClineHeadlessPreparationProbe::new(
             RequestId::new("cline.projection.headless.probe").expect("request"),
@@ -106,7 +121,7 @@ fn headless_run(plan: bool) -> swallowtail_adapter_cline::ClineHeadlessPreparedR
             DiscoveryCancellation::new(),
         ),
         services,
-    )).expect("headless prepares");
+    ))?;
     let mut input = ClineHeadlessRunProfileInput::new(
         RequestId::new("cline.projection.headless.run").expect("request"),
         OperationContent::new("fixture prompt").expect("content"),
@@ -114,7 +129,7 @@ fn headless_run(plan: bool) -> swallowtail_adapter_cline::ClineHeadlessPreparedR
         Deadline::at(MonotonicInstant::from_ticks(1_000)),
     );
     if plan { input = input.with_harness_mode(HarnessMode::Plan); }
-    integration.prepare_run(input).expect("run prepares")
+    integration.prepare_run(input)
 }
 
 fn semantic_ids(contribution: &ConsumerRouteProjectionContribution) -> BTreeSet<String> {
@@ -176,12 +191,16 @@ fn probe(id: &str) -> ClinePreparationProbe {
 }
 
 fn evidence() -> PreparedAccessEvidence {
-    PreparedAccessEvidence::caller_asserted(AccessStatus::new(
+    PreparedAccessEvidence::caller_asserted(ready_status())
+}
+
+fn ready_status() -> AccessStatus {
+    AccessStatus::new(
         AccessProfileId::new("cline.projection.local-account").expect("profile"),
         CredentialState::NotRequired,
         EntitlementState::Available,
         EndpointAuthorization::Allowed,
         RuntimeReadiness::Ready,
         SupportAuthority::ProviderSupported,
-    ))
+    )
 }

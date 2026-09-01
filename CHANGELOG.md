@@ -26,6 +26,15 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Pi RPC qualified ceiling from `0.84.3` to official npm
+  `@earendil-works/pi-coding-agent` `0.84.4`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; `clear_queue`, terminal capability overrides, extension UI
+  prompt events, bundled bin path, and streaming `usage` stay unmapped.
+  Standing-unused help-unselected `--` and `powershell` remain unmapped
+  carry-forwards, not new `0.84.4` deltas. Unpublished `0.83.1` stays incompatible;
+  unpublished `0.84.5` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 268, g05.015.
 - raise the Claude Code headless and response-only qualified ceilings from
   `2.1.251` to official npm `@anthropic-ai/claude-code` `2.1.252`. Compatible
   extension of the existing stream-JSON behaviors: selected mapped flags stay;

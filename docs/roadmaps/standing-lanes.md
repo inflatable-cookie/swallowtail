@@ -26,21 +26,35 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Claude Code headless and response-only `2.1.252`
+Last one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040). Unpublished
+`0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact `0.84.2`.
+
+Previous one-family claim: Claude Code headless and response-only `2.1.252`
 (g05.014, cards 037-038). Unpublished `2.1.244` and `2.1.249` stay
 incompatible. Watcher stays exact `2.1.251` behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
-
-Previous one-family claim: Codex exec and app-server `0.152.0` (g05.013, cards
-035-036). Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
+Codex exec and app-server `0.152.0` (g05.013, cards 035-036) remain qualified.
+Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
 Feature-specific exact sets remain on the `0.147.0..=0.149.1` probed points.
-Claude Code `2.1.251` (g05.005, cards 017-018) is superseded by g05.014. Qwen
-headless `0.22.3` remains qualified through g05.004 cards 012-013. Kimi Code
-headless exact `0.38.0` default agent-core-v2 stream-json under
+Qwen headless `0.22.3` remains qualified through g05.004 cards 012-013. Kimi
+Code headless exact `0.38.0` default agent-core-v2 stream-json under
 `kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
 `0.37.2` remains on `kimi.headless.stream-json.v1`.
 
 ### Latest Completed Family
+
+Pi RPC `0.84.4` is a compatible extension of
+`pi.rpc.strict-lf-v0.84.0-message-update-delta`. Research 268 and g05.015
+cards 039-040 freeze identity before the claim. Current host `0.83.0`
+matches the previously frozen `0.84.2` host digest. Official npm and GitHub
+stable is `0.84.4`. Mapped `jsonl.ts`, `session-cwd.ts`, `json-event.ts`, and
+`args.ts` are byte-identical to `0.84.3`. `clear_queue` stays unmapped.
+Unpublished `0.83.1` remains incompatible; unpublished `0.84.5` remains
+permitted `UnverifiedNewer`. `pi.sdk-sidecar` stays exact `0.84.2`. No
+provider prompt, live session, login, install, host update, or execution of
+downloaded official binaries was required.
+
+### Previous Completed Family
 
 Claude Code `2.1.252` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 266 and g05.014 cards 037-038 freeze
@@ -52,24 +66,8 @@ permitted `UnverifiedNewer`. Watcher stays exact `2.1.251` and is not
 live-ready. No provider prompt, live session, login, install, or host update
 was required.
 
-Research 267 revalidated all 40 families after Claude Code `2.1.252`. Pi
-`0.84.4` is the sole next-family candidate. Host `0.83.0` already sits on a
-qualified bound. This checkpoint changes no claim. One-family qualification
-waits for a later Upgrade Workflow PR and must not infer the family from
-registry `latest` alone.
-
-### Previous Completed Family
-
-Codex exec and app-server `0.152.0` are compatible extensions of their existing
-maintained behaviors. Research 264 and g05.013 cards 035-036 freeze identity
-before the claim. Current host `0.150.1` matches the official signed
-darwin-arm64 package. Official npm and GitHub stable is `0.152.0`. Unpublished
-`0.149.2`, `0.150.2`, and `0.151.1` remain incompatible; `0.152.1` remains
-permitted `UnverifiedNewer`. No provider prompt, live session, login, install,
-or host update was required.
-
-Research 265 revalidated all 40 families after Codex `0.152.0` and selected
-Claude Code `2.1.252` as the sole next-family candidate. That checkpoint
+Research 267 revalidated all 40 families after Claude Code `2.1.252` and
+selected Pi `0.84.4` as the sole next-family candidate. That checkpoint
 changed no claim.
 
 ### Do Not

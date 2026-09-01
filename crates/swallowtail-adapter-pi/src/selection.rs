@@ -12,7 +12,7 @@ pub const PI_PACKAGE_AXIS: &str = "pi.package";
 /// Oldest Pi package version qualified for the RPC route.
 pub const PI_PACKAGE_BASELINE_VERSION: &str = "0.80.10";
 /// Newest Pi package version behaviorally qualified for the RPC route.
-pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.84.3";
+pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.84.4";
 
 const BASELINE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.80.10";
 const THINKING_USAGE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.0-thinking-usage";
@@ -68,7 +68,7 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.84.0",
-                "0.84.3",
+                "0.84.4",
                 MESSAGE_UPDATE_DELTA_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
@@ -150,7 +150,7 @@ mod tests {
         let claim = pi_rpc_claim();
         for candidate in [
             "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.0", "0.84.1",
-            "0.84.2", "0.84.3",
+            "0.84.2", "0.84.3", "0.84.4",
         ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
@@ -164,6 +164,7 @@ mod tests {
             ("0.84.0", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
             ("0.84.2", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
             ("0.84.3", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
+            ("0.84.4", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
         ] {
             assert_eq!(
                 claim
@@ -178,7 +179,7 @@ mod tests {
             assert!(!claim.permits(&version(unsupported)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.84.4"))
+            claim.assess(&version("0.84.5"))
         else {
             panic!("later stable Pi remains unverified");
         };
@@ -186,7 +187,7 @@ mod tests {
             newer.behavior_revision().as_str(),
             "pi.rpc.strict-lf-v0.84.0-message-update-delta"
         );
-        assert!(!claim.permits(&version("0.84.4-rc.1")));
+        assert!(!claim.permits(&version("0.84.5-rc.1")));
     }
 
     #[test]
@@ -195,6 +196,7 @@ mod tests {
         assert!(pi_package_binding("0.83.0").is_some());
         assert!(pi_package_binding("0.84.2").is_some());
         assert!(pi_package_binding("0.84.3").is_some());
+        assert!(pi_package_binding("0.84.4").is_some());
         for value in ["", " 0.80.10", "pi 0.80.10", "latest"] {
             assert!(pi_package_binding(value).is_none());
         }

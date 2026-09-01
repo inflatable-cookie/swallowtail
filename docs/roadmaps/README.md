@@ -15,10 +15,8 @@ shape.
 
 ## Next Task
 
-Implement Claude Code useful-newer qualification for official `2.1.257`.
-Host already sits on qualified `2.1.251`. Do not leave official `2.1.257`
-UnverifiedNewer without a named incompatible reason. Watcher stays exact
-`2.1.251`. Do not start a second family from this PR. Do not reopen
+Reassess remaining AllowUnverified currentness families. Do not start a
+second family from this PR. Watcher stays exact `2.1.251`. Do not reopen
 `kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
 Gemini's deferral, and do not keep g05 open for currentness. The g05.009
 provider-operation observation decision remains queued; card 034 stays

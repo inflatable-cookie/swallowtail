@@ -1,0 +1,91 @@
+{
+  "version": "2.1.257",
+  "host_help_reprobed": true,
+  "official_extracted_help_reprobed": true,
+  "official_extracted_help_source": "host --help after proving host native SHA-256 equals official darwin-arm64 package claude; downloaded official binaries were hashed and not executed",
+  "official_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+  "host_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+  "frozen_2_1_252_help_sha256": "5ff2e7a0bca8535fb9ec097fa0a21e9d6b735ed94104fa0d1f58ac73a841d52d",
+  "host_help_byte_identical_to_official_extracted": true,
+  "official_help_byte_identical_to_2_1_252": false,
+  "official_help_byte_identical_to_2_1_251": false,
+  "selected_mapped_subset_source": "official 2.1.257 darwin-arm64 help compared to frozen 2.1.252 help plus changelog 2.1.257; hop has no published intermediate",
+  "selected_mapped_subset_unchanged": true,
+  "help_selected_flags_present": [
+    "-p",
+    "--print",
+    "--input-format",
+    "--output-format",
+    "--verbose",
+    "--no-session-persistence",
+    "--model",
+    "--effort",
+    "--permission-mode",
+    "--tools",
+    "--setting-sources",
+    "--mcp-config",
+    "--strict-mcp-config"
+  ],
+  "input_format_choices": ["text", "stream-json"],
+  "output_format_choices": ["text", "json", "stream-json"],
+  "effort_choices": ["low", "medium", "high", "xhigh", "max"],
+  "permission_mode_choices": [
+    "acceptEdits",
+    "auto",
+    "bypassPermissions",
+    "manual",
+    "dontAsk",
+    "plan"
+  ],
+  "selected_permission_mode": "plan",
+  "selected_tools": "Read,Glob,Grep",
+  "selected_setting_sources": "user,project,local",
+  "include_partial_messages_selected": false,
+  "help_deltas_from_2_1_252": [
+    "--bg resume wording",
+    "--system-prompt-snapshot"
+  ],
+  "unused_help_deltas": [
+    "--bare",
+    "--brief",
+    "--cloud",
+    "--include-hook-events",
+    "--include-partial-messages",
+    "--forward-subagent-text",
+    "--json-schema",
+    "--max-budget-usd",
+    "--restricted",
+    "--all",
+    "--system-prompt-snapshot"
+  ],
+  "unused_command_deltas": [
+    "attach",
+    "logs",
+    "stop",
+    "kill",
+    "respawn",
+    "rm"
+  ],
+  "unmapped_changelog": [
+    "2.1.257 Claude Fable 5.1 default Fable model alias",
+    "2.1.257 --effort lifts a new-model default-effort hold for that session only",
+    "2.1.257 claude -p waits if a Monitor the model armed is still running",
+    "2.1.257 defaultMode bypassPermissions in project settings is ignored",
+    "2.1.257 --disallowedTools dropped after settings reload under allowManagedPermissionRulesOnly",
+    "2.1.257 unbounded memory when non-JSONL is piped to -p --input-format stream-json",
+    "2.1.257 remaining interactive, VSCode, cloud, Remote Control, MCP, sandbox, telemetry, subagent, and background-session extras"
+  ],
+  "unmapped_changelog_reasons": {
+    "effort_hold": "effort argv choices unchanged; one-shot --no-session-persistence print runs have no permanent hold",
+    "print_monitor_wait": "Monitor is unmapped; selected -p/--print help text is unchanged",
+    "bypassPermissions_defaultMode": "selected runs pass --permission-mode plan explicitly",
+    "stream_json_stdin": "selected routes send --input-format text",
+    "disallowedTools": "flag is unused",
+    "fable_alias": "caller supplies --model; Fable default is unmapped"
+  },
+  "mapped_deltas_from_2_1_252": [],
+  "decoder_corpus": "claude-code-2.1.220",
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false
+}

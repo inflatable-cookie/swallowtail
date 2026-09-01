@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Papercuts llama.cpp context-size god-file closeout](./2026-09-01-papercuts-llama-context-god-file-closeout.md) — prepared-facade selections/support split and owned-driver failure proofs; 383→381 god-file baseline; historical g04.056 378 record left unchanged
 - [2026-09-01 Papercuts Antigravity host `agy` auto-update ownership stop](./2026-09-01-papercuts-antigravity-host-drift-stop.md) — PATH `agy` research probes are agent-direct; Swallowtail cannot refuse qualified-range drift; papercut left open
 - [2026-09-01 Kimi Code ACP QualifiedOnly Cap](./2026-09-01-kimi-code-acp-qualified-only-cap.md) — operator A2; `kimi-code.acp` `QualifiedOnly` at `0.38.0`; claim id `kimi.acp.executable-window-5`; frozen `window-3`/`window-4` reserved; exact `0.39.0` and `0.39.1` stay excluded; local-server and headless unchanged
 - [2026-09-01 Kimi Code 0.39.1 Claim](./2026-09-01-kimi-code-0-39-1-claim.md) — headless v1 corrects to `0.29.0..=0.32.0` and v2 to `0.33.0..=0.39.1`; ACP stops at `0.38.0` with exact `0.39.0` and `0.39.1` excluded; `kimi-code.local-server` unchanged

@@ -249,7 +249,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   use it. Leave open; do not close from Swallowtail. Research 205 stays
   historical.
 
-### [ ] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
+### [x] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
 - Friction: PR 55 expanded `prepared_facades.rs` and `owned_driver.rs` past the
   warning threshold, raising doctor findings from 376 to 378 while its worker
   closeout reported the inherited baseline unchanged.
@@ -266,6 +266,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   lines and doctor returned to the inherited 380/334/46 baseline.
   `prepared_facades.rs` remains a warning at 381 code lines and still wants the
   same treatment; the stale g04.056 closeout baseline is still uncorrected.
+- Closed: 2026-09-01 papercuts llama.cpp context-size god-file split. Current
+  scan named two still-live targets: `prepared_facades.rs` at 381 code lines
+  and `owned_driver.rs` at 260. Context-size/reasoning prepared-facade proofs
+  plus shared `owned_start` helpers moved into
+  `tests/prepared_facades/{selections,support}.rs` under the existing
+  `prepared_facades` target. Remaining owned-driver startup-failure proofs
+  moved into the existing `tests/owned_driver/failures.rs` module. Test bodies
+  and counts held (7 prepared-facade, 12 owned-driver). `effigy --json scan
+  god-files` dropped from 383 findings (7 critical / 42 high / 334 warning) to
+  381 (7 critical / 42 high / 332 warning); both named findings are gone and
+  no new module entered the scan. The g04.056 closeout already records the
+  historical 378 (332 warnings / 46 errors) correction from g04.057
+  compilation (`a40cefd5`); current checker taxonomy is
+  critical/high/warning, so that historical paragraph was left unchanged.
 
 ### [ ] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
 - Friction: the context-compression batch left `live_protocol/tests.rs`,

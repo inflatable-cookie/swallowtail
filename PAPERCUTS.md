@@ -325,7 +325,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   catalogs" (exit 1) from a leaked cwd, while a subshell evidence run keeps
   the caller cwd stable.
 
-### [ ] zsh special variables break ordinary shell snippets — 2026-08-22
+### [x] zsh special variables break ordinary shell snippets — 2026-08-22
 - Friction: authority-read snippets used `path` and `status` as ordinary
   variables; zsh hid the executable search path for the former and rejected
   assignment to the read-only latter.
@@ -334,6 +334,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: document common reserved names or lint generated zsh snippets for
   assignments to zsh special parameters.
 - Surface: agent-authored zsh orchestration commands.
+- Closed: 2026-09-01 papercuts zsh special-variables shell-snippet rule.
+  Reproduced `zsh -c 'path=/tmp'` → `PATH` collapses to `/tmp` and `ls` is
+  no longer found, and `zsh -c 'status=0'` → "read-only variable: status"
+  (exit 1); the positive specimen `output_path=/tmp; exit_status=0` runs
+  clean. `bash` accepts both names, and every repo-owned execution path is
+  bash (all `scripts/*.sh` shebangs and `effigy.toml` `bash scripts/...`
+  tasks), so the rule stays zsh-only and no bash script changes. Inventory
+  found no repo snippet assigning `path=`/`status=` and no deterministic
+  corpus of generated zsh snippets, so no lint was added. Added a Shell
+  Snippet Rule to root `AGENTS.md` — the narrowest agent-authoring authority
+  surface: never assign zsh special parameters in snippets; use
+  task-specific names.
 
 ### [ ] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
 - Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,

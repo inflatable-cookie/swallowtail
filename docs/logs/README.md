@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Codex 0.152.0 Claim](./2026-09-01-codex-0-152-0-claim.md) — exec and app-server qualified through official `0.152.0`; exact feature sets retained through `0.149.1`; unpublished `0.151.1` stays a gap
 - [2026-09-01 Codex 0.152.0 Identity](./2026-09-01-codex-0-152-0-identity.md) — Research 264; compatible extension; host `0.150.1` and official stable `0.152.0` corroborated; claims unchanged
 - [2026-09-01 Papercuts host-local watcher god-file closeout](./2026-09-01-papercuts-host-local-watcher-god-file-closeout.md) — acceptance/lookup and process launch/validation split; 387→385 god-file baseline; focused behavior and semantic API proofs
 - [2026-09-01 Papercuts scoped-task watcher EnterError closeout](./2026-09-01-papercuts-scoped-task-watcher-enter-error-closeout.md) — `drive_future` joined-thread repair; scoped-task accept/stop/join proof; matching PAPERCUTS entry closed

@@ -26,32 +26,30 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Codex exec and app-server `0.151.0` (g05.012, cards
-027-028). Published `0.150.0` and `0.150.1` are qualified. Unpublished
-`0.149.2` and `0.150.2` stay incompatible. Feature-specific exact sets remain
-on the `0.147.0..=0.149.1` probed points.
+Last one-family claim: Codex exec and app-server `0.152.0` (g05.013, cards
+035-036). Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
+Feature-specific exact sets remain on the `0.147.0..=0.149.1` probed points.
 
-Previous one-family claim: Claude Code headless and response-only `2.1.251`
-(g05.005, cards 017-018). Qwen headless `0.22.3` remains qualified through
-g05.004 cards 012-013.
-Kimi Code headless exact `0.38.0` default agent-core-v2 stream-json under
-`kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
-`0.37.2` remains on `kimi.headless.stream-json.v1`. Claude Code
-`2.1.241` (g04.055, cards 153-154) is superseded by g05.005.
+Previous one-family claim: Codex exec and app-server `0.151.0` (g05.012, cards
+027-028). Claude Code headless and response-only `2.1.251` (g05.005, cards
+017-018). Qwen headless `0.22.3` remains qualified through g05.004 cards
+012-013. Kimi Code headless exact `0.38.0` default agent-core-v2 stream-json
+under `kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
+`0.37.2` remains on `kimi.headless.stream-json.v1`. Claude Code `2.1.241`
+(g04.055, cards 153-154) is superseded by g05.005.
 
 ### Latest Completed Family
 
-Codex exec and app-server `0.151.0` are compatible extensions of their existing
-maintained behaviors. Research 262 and g05.012 cards 027-028 reconstruct the
-old PR as identity-before-claim. Current host `0.150.1` matches the official
-signed darwin-arm64 package. Published `0.150.0` and `0.150.1` are qualified;
-unpublished `0.149.2` and `0.150.2` remain incompatible; `0.151.1` remains
+Codex exec and app-server `0.152.0` are compatible extensions of their existing
+maintained behaviors. Research 264 and g05.013 cards 035-036 freeze identity
+before the claim. Current host `0.150.1` matches the official signed
+darwin-arm64 package. Official npm and GitHub stable is `0.152.0`. Unpublished
+`0.149.2`, `0.150.2`, and `0.151.1` remain incompatible; `0.152.1` remains
 permitted `UnverifiedNewer`. No provider prompt, live session, login, install,
 or host update was required.
 
-Research 263 completed the next all-route checkpoint across all 40 production
-families. It selected Codex `0.152.0` alone for g05.013 cards 035-036. The
-checkpoint changed no claim; identity work remains first.
+The next all-route checkpoint remains queued. It must choose only one next
+family and must not infer that family from registry `latest` alone.
 
 ### Previous Completed Family
 

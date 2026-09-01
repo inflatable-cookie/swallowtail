@@ -3,10 +3,10 @@ fn thread_catalogue_corpus_freezes_the_complete_import_floor() {
     let corpus = json(APP_SERVER_THREAD_CATALOGUE);
     assert_eq!(corpus["claim_status"], "evidence-only");
     assert_eq!(corpus["qualified_range"]["baseline"], "0.80.0");
-    assert_eq!(corpus["qualified_range"]["latest"], "0.151.0");
+    assert_eq!(corpus["qualified_range"]["latest"], "0.152.0");
     assert_eq!(
         strings(&corpus["qualified_range"]["excluded_gaps"]),
-        ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2"]
+        ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1"]
     );
 
     let segments = corpus["segments"]
@@ -23,7 +23,7 @@ fn thread_catalogue_corpus_freezes_the_complete_import_floor() {
             "0.105.0..=0.107.0",
             "0.110.0..=0.128.0",
             "0.129.0..=0.130.0",
-            "0.131.0..=0.151.0"
+            "0.131.0..=0.152.0"
         ]
     );
     for legacy in &segments[..4] {
@@ -81,7 +81,7 @@ fn thread_catalogue_corpus_keeps_selected_wire_shape_narrow() {
 fn thread_reconciliation_corpus_separates_exact_and_session_scoped_truth() {
     let corpus = json(APP_SERVER_THREAD_RECONCILIATION);
     assert_eq!(corpus["minimum"], "0.105.0");
-    assert_eq!(corpus["latest_qualified"], "0.151.0");
+    assert_eq!(corpus["latest_qualified"], "0.152.0");
     assert_eq!(corpus["request"]["method"], "thread/read");
     assert_eq!(corpus["request"]["params"]["includeTurns"], true);
     assert_eq!(corpus["exact_turn"]["status"]["completed"], "completed");
@@ -112,7 +112,7 @@ fn thread_catalogue_milestones_have_exact_release_and_source_identity() {
         [
             "0.80.0", "0.91.0", "0.92.0", "0.103.0", "0.104.0", "0.105.0", "0.107.0", "0.110.0",
             "0.123.0", "0.129.0", "0.130.0", "0.131.0", "0.139.0", "0.144.6", "0.145.0", "0.146.0",
-            "0.147.0", "0.148.0", "0.149.0", "0.149.1", "0.150.0", "0.150.1", "0.151.0"
+            "0.147.0", "0.148.0", "0.149.0", "0.149.1", "0.150.0", "0.150.1", "0.151.0", "0.152.0"
         ]
     );
 

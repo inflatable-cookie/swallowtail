@@ -26,6 +26,16 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Codex CLI qualified ceiling from `0.151.0` to official npm
+  `@openai/codex` `0.152.0` on the shared `codex.cli` exec and app-server
+  axes. Compatible extension of the existing JSONL and workspace-roots
+  behaviors: selected mapped flags stay; `fork`, `--thread-source`,
+  `thread/turns/list`, `thread/items/list`, `--code-mode-host`,
+  `thread/shellCommand`, and ModelProvider auth-recovery notifications stay
+  unmapped. Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay
+  incompatible; `0.152.1` remains visible `UnverifiedNewer`. Feature-specific
+  exact version sets stay on the `0.147.0..=0.149.1` probed points.
+  Research 264.
 - raise the Codex CLI qualified ceiling from `0.149.1` to official npm
   `@openai/codex` `0.151.0` on the shared `codex.cli` exec and app-server
   axes. Compatible extension of the existing JSONL and workspace-roots

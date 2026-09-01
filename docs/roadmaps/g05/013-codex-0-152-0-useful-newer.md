@@ -1,6 +1,6 @@
 # g05.013 Codex 0.152.0 Useful Newer
 
-Status: ready; card 035 identity first
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -31,15 +31,15 @@ feature-façade, watcher, skill, papercut, release, or feature-specific widening
 
 ## Batch Cards
 
-- [035 Codex 0.152.0 Identity](batch-cards/035-codex-0-152-0-identity.md) — ready
-- [036 Codex 0.152.0 Claim](batch-cards/036-codex-0-152-0-claim.md) — planned; gated on card 035
+- [035 Codex 0.152.0 Identity](batch-cards/035-codex-0-152-0-identity.md) — completed
+- [036 Codex 0.152.0 Claim](batch-cards/036-codex-0-152-0-claim.md) — completed
 
 ## Acceptance
 
-- [ ] exact official identity is reproducible
-- [ ] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] exact feature pins, gaps, and other families stay unchanged
-- [ ] focused, package, API, route, docs, and Northstar gates pass
+- [x] exact official identity is reproducible
+- [x] mapped and unmapped protocol changes are classified
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] exact feature pins, gaps, and other families stay unchanged
+- [x] focused, package, API, route, docs, and Northstar gates pass
 

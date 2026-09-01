@@ -109,7 +109,7 @@ fn model_verbosity_rejects_older_or_foreign_models() {
 
     let later = prepared(
         CodexPreparedDriver::StructuredExec,
-        "0.151.0",
+        "0.152.0",
         &recording,
         false,
     );

@@ -1,6 +1,6 @@
 # 035 Codex 0.152.0 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -48,4 +48,11 @@ papercut, release, or broad workspace work.
 ## Auto-Continuation
 
 Yes, to card 036 only after an admitted segment is recorded.
+
+## Result
+
+Official stable remained exact `0.152.0`. Host `0.150.1` matches the official
+signed darwin-arm64 package. Research 264 and the frozen corpus landed in
+identity-only commit `c8e7c715`; production claims remained unchanged. The
+selected protocol classifies as a compatible extension, so card 036 continued.
 

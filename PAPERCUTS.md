@@ -237,6 +237,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   refuse host probes once the binary drifts from the named qualified range;
   prefer extracted release artifacts for version-scoped help.
 - Surface: Antigravity host PATH binary; Research 205 method notes.
+- Progress 2026-09-01: Swallowtail ownership stop. No live-probe, script, or
+  card mechanism owns host PATH `agy` argv. Production discovery records
+  `--version` at prepare and then permits `UnverifiedNewer` under
+  `AllowUnverified`, so `1.1.19` is not a qualified-range refusal.
+  Catalogue/headless spawn `models` / `--print` without re-probing.
+  `scripts/run-with-isolated-home.sh` forwards a fake that drifted
+  `1.1.9` → `1.1.19` between `--version` and `--help`. Agent-direct PATH
+  `--help` has the same empty intercept. Frozen `antigravity-cli-1.1.9`
+  help remains the extracted specimen; nothing forces research sessions to
+  use it. Leave open; do not close from Swallowtail. Research 205 stays
+  historical.
 
 ### [ ] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
 - Friction: PR 55 expanded `prepared_facades.rs` and `owned_driver.rs` past the

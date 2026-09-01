@@ -15,14 +15,29 @@ shape.
 
 ## Next Task
 
-Define the containment or mediation gate that Kimi Code ACP `0.39.0` and
-`0.39.1` need before they can be requalified. g05.016 stopped that axis at
-`0.38.0` and excluded both exact points because the agent-core-v2 ACP terminal
-runner spawns local host processes under the `terminal: false` capabilities
-the route advertises, and neither the adapter nor the runtime contains it.
-Decide whether Swallowtail mediates, whether Contract 015 gains terminal
-support, or whether the route stays capped; do not requalify on wire-shape
-stability alone.
+Close the single operator decision compiled by
+[g05.017](g05/017-kimi-code-acp-0-39-containment-gate.md) and its
+[containment and mediation gate](../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md).
+The gate re-derives the authority failure path from the prepared working
+resource through the `terminal: false` advertisement to the upstream
+`local.spawn`, and returns exactly three mutually exclusive directions for
+`kimi-code.acp` above `0.38.0`: a permanent `QualifiedOnly` cap, an indefinite
+`QualifiedOnly` cap with one artifact-level upstream re-open trigger, or
+funding `HostEnforced` execution-host containment while the cap holds. All
+three move the claim's newer-version posture to `QualifiedOnly`; that is part
+of the direction, not a sub-choice. The ACP claim binds `AllowUnverified`
+today, so current `main` is safe only for the exact known exclusions and a
+newly published point above `0.38.0` would otherwise be admissible before a
+checkpoint could react. Adapter or runtime mediation under `terminal: false`
+is impossible; requalification from wire-shape stability, process ownership,
+capability omission, `AmbientHost`, or a test-only wrapper is rejected; a cap
+that keeps `AllowUnverified` and adds exclusions release by release is
+internally inconsistent; and negotiated terminal execution is not a governing
+choice, because it cannot close `0.39.1` alone and cannot be selected without
+containment or an upstream change. The gate states a recommendation as
+analysis only; no direction is accepted, and none is recorded in status,
+contract language, or this pointer. Exact `0.39.0` and `0.39.1` stay excluded
+and `Incompatible` until the operator answers.
 
 Then validate a fresh all-route Contract 029 currentness checkpoint and select
 the next single family from re-probed official points rather than from

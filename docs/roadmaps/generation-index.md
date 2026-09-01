@@ -144,9 +144,9 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has sixteen roadmaps: 11 completed milestones, honest evidence stops at 002,
-003, 007, and 011. Milestone 009 is planned and
-strict-paused on its operator decision. Milestones
+g05 has seventeen roadmaps: 11 completed milestones, honest evidence stops at 002,
+003, 007, and 011. Milestones 009 and 017 are planned and
+strict-paused, each on its own operator decision. Milestones
 004, 005, 012, 013, 014, 015, and 016 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
@@ -303,7 +303,26 @@ harness `0.39.1` as the next one-family Upgrade Workflow. The checkpoint
 changes no claim. g05.016 cards 041-042 then corrected the headless
 agent-core-v2 routing boundary to `0.33.0` and qualified headless v2 through
 official `0.39.1`, while the `kimi-code.acp` ceiling stays `0.38.0` with exact
-`0.39.0` and `0.39.1` excluded for an uncontained process-authority delta. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+`0.39.0` and `0.39.1` excluded for an uncontained process-authority delta.
+g05.017 compiles the direction that split outcome deliberately left open. Its
+[containment and mediation gate](../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
+re-derives the failure path from the prepared working resource through the
+`terminal: false` advertisement to the upstream `local.spawn`, ledgers every
+actor that can and cannot observe, prevent, mediate, cancel, clean up, or
+attest it, and returns exactly three mutually exclusive directions: a permanent
+`QualifiedOnly` cap, an indefinite `QualifiedOnly` cap with an artifact-level
+upstream re-open trigger, or funding `HostEnforced` execution-host containment
+while the cap holds. All three move the claim's newer-version posture to
+`QualifiedOnly`, because the ACP claim binds `AllowUnverified` today and
+current `main` is safe only for the exact known exclusions. Adapter or runtime
+mediation under `terminal: false` is impossible; a permissive cap with a
+growing exclusion set is internally inconsistent; negotiated terminal execution
+is not a governing choice, because it cannot close `0.39.1` alone and cannot be
+selected without containment or an upstream change; containment's mechanism
+fits existing host seams but its claim does not. The gate recommends only as
+analysis, carries no batch card, and accepts no direction. g05.017 is planned and
+strict-paused on that one question, and the all-route currentness checkpoint
+stays serially after it. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.
@@ -319,11 +338,12 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Define the next g05 state through the pointer named by the
-[roadmaps front door](README.md#next-task). g05.009 keeps its milestone
-`Status` bucket `ready` but is `strict-paused`; no implementation card is ready.
-The sole Next Task is the operator decision whether to compile a shared
-provider-operation observation public-baseline gate with honest
-source/lifecycle/view vocabulary, or leave
-`control.provider-session-catalogue` withheld and candidate F unpromoted. This
-index records generation status; the canonical actionable pointer stays in the
-front door.
+[roadmaps front door](README.md#next-task). Two milestones are `strict-paused`
+on distinct queued operator decisions, and neither has a ready implementation
+card. g05.009 keeps its `planned` bucket and waits on the shared
+provider-operation observation public-baseline decision; card 034 stays planned
+and not ready, and coverage stays 249/518. g05.017 keeps its `planned` bucket
+and waits on the `kimi-code.acp` containment and mediation direction; it carries
+no batch card, and exact `0.39.0` and `0.39.1` stay excluded and `Incompatible`
+until that decision is recorded. This index records generation status; the
+canonical actionable pointer stays in the front door.

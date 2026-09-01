@@ -1,6 +1,6 @@
 # g05.016 Kimi Code 0.39.1 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -47,7 +47,7 @@ g05.009 card 034, release, or execution of downloaded official binaries.
 ## Batch Cards
 
 - [041 Kimi Code 0.39.1 Identity](batch-cards/041-kimi-code-0-39-1-identity.md) — completed
-- [042 Kimi Code 0.39.1 Claim](batch-cards/042-kimi-code-0-39-1-claim.md) — ready
+- [042 Kimi Code 0.39.1 Claim](batch-cards/042-kimi-code-0-39-1-claim.md) — completed
 
 ## Acceptance
 
@@ -57,5 +57,5 @@ g05.009 card 034, release, or execution of downloaded official binaries.
 - [x] capability and authority changes are traced before any revision label
 - [x] identity evidence lands before a production claim edit
 - [x] each installed-harness axis is classified independently
-- [ ] exact gaps, negative points, local-server, and g05.009 stay unchanged
-- [ ] focused, package, API, route, docs, Northstar, god-file, and diff gates pass
+- [x] exact gaps, negative points, local-server, and g05.009 stay unchanged
+- [x] focused, package, API, route, docs, Northstar, god-file, and diff gates pass

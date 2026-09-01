@@ -8,7 +8,7 @@
 
 ## Ready
 
-- [042-kimi-code-0-39-1-claim.md](./042-kimi-code-0-39-1-claim.md) — ready; apply only the per-axis dispositions card 041 proved
+- None.
 
 ## Blocked
 
@@ -16,6 +16,7 @@
 
 ## Completed
 
+- [042-kimi-code-0-39-1-claim.md](./042-kimi-code-0-39-1-claim.md) — complete; ACP stops at exact `0.28.1` plus `0.29.0..=0.38.0` with exact `0.39.0` and `0.39.1` excluded; headless v1 corrected to `0.29.0..=0.32.0`; headless v2 corrected and qualified `0.33.0..=0.39.1`; `kimi-code.local-server` unchanged
 - [041-kimi-code-0-39-1-identity.md](./041-kimi-code-0-39-1-identity.md) — complete; Research 270 and cross-corpus oracles frozen before claim
 - [040-pi-rpc-0-84-4-claim.md](./040-pi-rpc-0-84-4-claim.md) — complete; Pi RPC qualified through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2`
 - [039-pi-rpc-0-84-4-identity.md](./039-pi-rpc-0-84-4-identity.md) — complete; Research 268 and current host/official identity frozen before claim

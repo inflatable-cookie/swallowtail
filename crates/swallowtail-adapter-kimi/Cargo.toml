@@ -52,3 +52,7 @@ path = "tests/headless_suite.rs"
 [[test]]
 name = "local_server_interactive"
 path = "tests/local_suite.rs"
+
+[[test]]
+name = "executable_identity"
+path = "tests/identity_suite.rs"

@@ -67,7 +67,7 @@ impl Scenario {
             Self::ReasoningEffort300Success => "0.30.0",
             Self::ReasoningEffort310Success => "0.31.0",
             Self::ReasoningEffort311Success => "0.31.1",
-            Self::ReasoningNewerSuccess | Self::PlanNewerSuccess => "0.38.1",
+            Self::ReasoningNewerSuccess | Self::PlanNewerSuccess => "0.39.2",
             Self::PlanLegacySuccess => "0.28.1",
             Self::PlanCeilingSuccess => "0.38.0",
             _ => "0.29.0",

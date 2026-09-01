@@ -32,8 +32,8 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
             ("0.31.1", "high", Scenario::ReasoningEffort311Success, true),
             ("0.31.1", "xhigh", Scenario::ReasoningEffort311Success, true),
             ("0.31.1", "max", Scenario::ReasoningEffort311Success, true),
-            ("0.38.1", "high", Scenario::ReasoningNewerSuccess, false),
-            ("0.38.1", "max", Scenario::ReasoningNewerSuccess, false),
+            ("0.39.2", "high", Scenario::ReasoningNewerSuccess, false),
+            ("0.39.2", "max", Scenario::ReasoningNewerSuccess, false),
         ] {
             let host_id = topology.execution_host_id().clone();
             let selected = reasoning_selection(host_id.clone(), version, mode);

@@ -26,10 +26,19 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040). Unpublished
-`0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact `0.84.2`.
+Last one-family claim: Kimi Code installed harness `0.39.1` (g05.016, cards
+041-042). Headless v1 is `0.29.0..=0.32.0` and headless v2 is
+`0.33.0..=0.39.1`, above which unpublished `0.39.2` stays permitted
+`UnverifiedNewer`. ACP stops at `0.28.1` plus `0.29.0..=0.38.0` with exact
+`0.39.0` and `0.39.1` excluded as `Incompatible`; above its `0.38.0` ceiling
+the first admissible unverified-newer point is unpublished `0.38.1`.
+`kimi-code.local-server` stays exact `0.28.1` plus `0.29.0..=0.38.0`.
 
-Previous one-family claim: Claude Code headless and response-only `2.1.252`
+Previous one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
+Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
+`0.84.2`.
+
+Earlier one-family claim: Claude Code headless and response-only `2.1.252`
 (g05.014, cards 037-038). Unpublished `2.1.244` and `2.1.249` stay
 incompatible. Watcher stays exact `2.1.251` behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
@@ -37,11 +46,51 @@ Codex exec and app-server `0.152.0` (g05.013, cards 035-036) remain qualified.
 Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
 Feature-specific exact sets remain on the `0.147.0..=0.149.1` probed points.
 Qwen headless `0.22.3` remains qualified through g05.004 cards 012-013. Kimi
-Code headless exact `0.38.0` default agent-core-v2 stream-json under
-`kimi.headless.stream-json.v2` (g04.064, cards 179-180). The v1 ceiling
-`0.37.2` remains on `kimi.headless.stream-json.v1`.
+Code headless agent-core-v2 stream-json first qualified as exact `0.38.0`
+under `kimi.headless.stream-json.v2` (g04.064, cards 179-180); g05.016
+corrected that revision's baseline to `0.33.0` and extended it to
+`0.33.0..=0.39.1`. The v1 ceiling is `0.32.0`, not the `0.37.2` g04.064
+recorded.
 
 ### Latest Completed Family
+
+Kimi Code installed harness `0.39.1` produced a split outcome, and a
+same-family claim correction. Research 270 and g05.016 cards 041-042 freeze
+identity before the claim. Host `0.34.0` is byte-identical to the official
+`0.34.0` darwin-arm64 extracted artifact and was not installed, updated,
+replaced, or executed. Official npm and GitHub stable is `0.39.1`; published
+stables above the previous `0.38.0` ceiling are exactly `0.39.0` and `0.39.1`.
+
+Re-testing the routing premise inherited from Research 179 and 211 moved the
+boundary. `experimental-v2.ts` redefines `isKimiV2Enabled()` at `0.33.0` from
+`KIMI_CODE_EXPERIMENTAL_FLAG` truthy to `KIMI_CODE_LEGACY_FLAG` not truthy, so
+the default `kimi -p` engine is agent-core-v2 from `0.33.0`, not `0.38.0`, and
+the same release makes naked `kimi acp` run `packages/acp-server`. Production
+had claimed `0.33.0..=0.37.2` as qualified `kimi.headless.stream-json.v1`
+while those releases emit the `system.version` preamble the v1 decoder
+rejects. `kimi.headless.stream-json.v1` corrects down to `0.29.0..=0.32.0`;
+`kimi.headless.stream-json.v2` corrects down and extends to
+`0.33.0..=0.39.1`; host `0.34.0` reclassifies to qualified Maintained v2.
+Unpublished `0.39.2` remains permitted `UnverifiedNewer` on that axis.
+
+`kimi-code.acp` stops at `0.38.0`. From `0.39.0` the agent-core-v2 ACP
+terminal runner replaces two fail-closed errors with a local host-process
+spawn in the leased working resource, and the route always advertises
+`terminal: false`, so that branch always applies. The containment trace found
+none: `HarnessIsolation::AmbientHost` makes no isolation claim, Contract 015
+denies filesystem containment from process ownership and treats a terminal
+request from a terminal-less client as scope-stopping, and no adapter or
+runtime control mediates the spawn. Exact `0.39.0` and `0.39.1` are excluded
+and classify `Incompatible`; unpublished `0.38.1` remains the first admissible
+unverified-newer point above the `0.38.0` ACP ceiling. No new ACP behavior
+revision was created.
+
+`kimi-code.local-server` stays a separate family and is unchanged; its `kimi
+web` deltas are recorded as observations only. No provider prompt, model
+request, authentication, catalogue or session work, live session, install,
+host update, or execution of downloaded official binaries was required.
+
+### Previous Completed Family
 
 Pi RPC `0.84.4` is a compatible extension of
 `pi.rpc.strict-lf-v0.84.0-message-update-delta`. Research 268 and g05.015
@@ -54,14 +103,11 @@ permitted `UnverifiedNewer`. `pi.sdk-sidecar` stays exact `0.84.2`. No
 provider prompt, live session, login, install, host update, or execution of
 downloaded official binaries was required.
 
-Research 269 revalidated all 40 families after Pi RPC `0.84.4`. Pi is now
-unchanged/on-ceiling. Kimi Code installed harness `0.39.1` is the sole
-next-family candidate. Host `0.34.0` already sits on a qualified bound. This
-checkpoint changes no claim. One-family qualification waits for a later
-Upgrade Workflow PR and must not infer the family from registry `latest`
-alone.
+Research 269 revalidated all 40 families after Pi RPC `0.84.4` and selected
+Kimi Code installed harness `0.39.1` as the sole next-family candidate. That
+checkpoint changed no claim; g05.016 then compiled the qualification.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Claude Code `2.1.252` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 266 and g05.014 cards 037-038 freeze

@@ -12,11 +12,36 @@ pub const KIMI_CODE_AXIS: &str = "kimi-code.executable";
 /// Oldest qualified Kimi Code ACP version.
 pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
 /// Most recent qualified Kimi Code ACP version.
+///
+/// This does not track the family's newest stable. From `0.39.0` the
+/// agent-core-v2 ACP terminal runner replaces two fail-closed errors with a
+/// local host-process spawn, and Swallowtail always advertises
+/// `terminal: false`, so that branch always applies. Nothing in this adapter
+/// or the runtime contains that spawn, so those points are excluded rather
+/// than qualified. See `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
 pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.39.1";
+
+/// Newest Kimi Code release whose default `kimi -p` engine is agent-core v1.
+///
+/// `experimental-v2.ts` gates the print engine. Through this version
+/// `isKimiV2Enabled()` means `KIMI_CODE_EXPERIMENTAL_FLAG` is truthy, so the
+/// default is the legacy v1 print body. From the next published point it means
+/// `KIMI_CODE_LEGACY_FLAG` is *not* truthy, so the default is agent-core-v2
+/// `runV2Print`. This adapter never sets `KIMI_CODE_LEGACY_FLAG`.
+const HEADLESS_V1_DEFAULT_CEILING: &str = "0.32.0";
+/// Oldest Kimi Code release whose default `kimi -p` engine is agent-core-v2.
+const HEADLESS_V2_DEFAULT_BASELINE: &str = "0.33.0";
+
+/// Exact ACP points rejected for an uncontained process-authority change.
+///
+/// Exclusions are assessed before the `AllowUnverified` newer-version path, so
+/// naming them here makes both points `Incompatible` instead of silently
+/// admissible.
+const ACP_EXCLUDED_AUTHORITY_VERSIONS: [&str; 2] = ["0.39.0", "0.39.1"];
 
 pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
 pub(crate) const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
@@ -102,7 +127,9 @@ pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Maintained,
             ),
         ],
-        [],
+        ACP_EXCLUDED_AUTHORITY_VERSIONS
+            .iter()
+            .map(|value| version(value).expect("static Kimi exclusion is valid")),
     )
     .expect("static Kimi compatibility claim is valid")
 }
@@ -119,12 +146,14 @@ pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
         [
             InterfaceVersionSegment::new(
                 version(KIMI_HEADLESS_BASELINE_VERSION).expect("static Kimi version is valid"),
-                version("0.37.2").expect("static Kimi version is valid"),
+                version(HEADLESS_V1_DEFAULT_CEILING).expect("static Kimi version is valid"),
                 behavior(HEADLESS_BEHAVIOR),
                 InterfaceSupportStatus::Deprecated,
             ),
-            InterfaceVersionSegment::exact(
-                version("0.38.0").expect("static Kimi version is valid"),
+            InterfaceVersionSegment::new(
+                version(HEADLESS_V2_DEFAULT_BASELINE).expect("static Kimi version is valid"),
+                version(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION)
+                    .expect("static Kimi version is valid"),
                 behavior(HEADLESS_BEHAVIOR_V2),
                 InterfaceSupportStatus::Maintained,
             ),
@@ -269,8 +298,9 @@ fn behavior(value: &str) -> InterfaceBehaviorRevision {
 #[cfg(test)]
 mod tests {
     use super::{
-        DECLARED_EFFORT_BEHAVIOR, HEADLESS_BEHAVIOR, HEADLESS_BEHAVIOR_V2, KIMI_CODE_AXIS,
-        KimiAcpBehavior, kimi_acp_claim, kimi_code_binding, kimi_headless_claim,
+        ACP_EXCLUDED_AUTHORITY_VERSIONS, DECLARED_EFFORT_BEHAVIOR, HEADLESS_BEHAVIOR,
+        HEADLESS_BEHAVIOR_V2, HEADLESS_V1_DEFAULT_CEILING, HEADLESS_V2_DEFAULT_BASELINE,
+        KIMI_CODE_AXIS, KimiAcpBehavior, kimi_acp_claim, kimi_code_binding, kimi_headless_claim,
     };
     use swallowtail_core::{
         InstalledExecutableCompatibility, InstalledExecutableObservation,
@@ -297,12 +327,26 @@ mod tests {
             assert!(!claim.permits(&version(rejected)));
         }
 
+        // The 0.39 line carries an uncontained process-authority change under
+        // the `terminal: false` capabilities this adapter advertises, so both
+        // exact points are excluded rather than left admissible.
+        for excluded in ACP_EXCLUDED_AUTHORITY_VERSIONS {
+            assert_eq!(
+                claim.assess(&version(excluded)),
+                InterfaceCompatibilityAssessment::Incompatible,
+                "{excluded} must not be admitted as unverified newer"
+            );
+            assert!(!claim.permits(&version(excluded)));
+        }
+
+        // `0.39.2` is unpublished and stays the first admissible newer point.
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.38.1"))
+            claim.assess(&version("0.39.2"))
         else {
             panic!("stable newer release remains unverified");
         };
         assert_eq!(newer.behavior_revision().as_str(), DECLARED_EFFORT_BEHAVIOR);
+        assert_eq!(newer.latest_qualified().as_str(), "0.38.0");
     }
 
     #[test]
@@ -320,12 +364,12 @@ mod tests {
     }
 
     #[test]
-    fn headless_claim_preserves_v1_through_0_37_2_and_qualifies_exact_v2() {
+    fn headless_claim_splits_v1_and_v2_at_the_default_engine_boundary() {
         let claim = kimi_headless_claim();
         assert!(!claim.permits(&version("0.28.1")));
+        // v1 covers only the releases whose default `-p` engine is v1.
         for qualified in [
-            "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0", "0.33.0",
-            "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
+            "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0",
         ] {
             let assessment = claim.assess(&version(qualified));
             let InterfaceCompatibilityAssessment::Qualified(matched) = assessment else {
@@ -334,17 +378,42 @@ mod tests {
             assert_eq!(matched.behavior_revision().as_str(), HEADLESS_BEHAVIOR);
             assert_eq!(matched.support_status(), InterfaceSupportStatus::Deprecated);
         }
-        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("0.38.0"))
-        else {
-            panic!("exact 0.38.0 qualifies under v2");
-        };
-        assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
+        // From the boundary the default `-p` path is agent-core-v2
+        // `runV2Print`, which prepends a `system.version` preamble the v1
+        // decoder rejects. Everything from there is v2, including the points
+        // this claim previously mislabelled v1.
+        for v2_point in [
+            "0.33.0", "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
+            "0.38.0", "0.39.0", "0.39.1",
+        ] {
+            let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version(v2_point))
+            else {
+                panic!("{v2_point} qualifies under v2");
+            };
+            assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
+            assert_eq!(v2.support_status(), InterfaceSupportStatus::Maintained);
+        }
+        // The boundary is exact and the two segments are adjacent published
+        // points, so no gap opens between them.
+        assert_eq!(HEADLESS_V1_DEFAULT_CEILING, "0.32.0");
+        assert_eq!(HEADLESS_V2_DEFAULT_BASELINE, "0.33.0");
+        let segments = claim.milestones().collect::<Vec<_>>();
+        assert_eq!(segments[0].maximum().as_str(), HEADLESS_V1_DEFAULT_CEILING);
+        assert_eq!(segments[1].minimum().as_str(), HEADLESS_V2_DEFAULT_BASELINE);
+
+        // The headless axis carries no ACP authority exclusion: the print
+        // route never constructs the ACP runtime provider.
+        for acp_excluded in ACP_EXCLUDED_AUTHORITY_VERSIONS {
+            assert!(claim.supports(&version(acp_excluded)));
+        }
+
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.38.1"))
+            claim.assess(&version("0.39.2"))
         else {
             panic!("stable newer release remains unverified");
         };
         assert_eq!(newer.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
+        assert_eq!(newer.latest_qualified().as_str(), "0.39.1");
     }
 
     #[test]
@@ -362,7 +431,7 @@ mod tests {
             ("0.36.1", true, KimiAcpBehavior::DeclaredEffort),
             ("0.37.2", true, KimiAcpBehavior::DeclaredEffort),
             ("0.38.0", true, KimiAcpBehavior::DeclaredEffort),
-            ("0.38.1", false, KimiAcpBehavior::DeclaredEffort),
+            ("0.39.2", false, KimiAcpBehavior::DeclaredEffort),
         ] {
             let observation = InstalledExecutableObservation::classify(
                 swallowtail_core::ExecutionHostId::new("fixture.host").expect("valid host"),

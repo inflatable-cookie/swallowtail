@@ -46,9 +46,16 @@ fn qualified_kimi_milestones_compose_with_shared_compatibility_assertions() {
             version("0.37.2"),
             version("0.38.0"),
         ])
-        .with_rejected([version("0.28.0"), version("0.28.2"), version("0.29.0-rc.1")]);
+        .with_rejected([
+            version("0.28.0"),
+            version("0.28.2"),
+            version("0.29.0-rc.1"),
+            // Excluded above the ceiling for the 0.39 process-authority delta.
+            version("0.39.0"),
+            version("0.39.1"),
+        ]);
     assert_closed_semantic_compatibility_window(&claim, &case);
-    assert_unverified_newer_execution(&claim, &version("0.38.1"));
+    assert_unverified_newer_execution(&claim, &version("0.39.2"));
 }
 
 #[test]

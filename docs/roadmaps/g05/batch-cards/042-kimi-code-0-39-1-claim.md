@@ -1,6 +1,6 @@
 # 042 Kimi Code 0.39.1 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -90,4 +90,28 @@ No. Review and merge. Do not start a second family from this PR.
 
 ## Result
 
-Pending.
+Split outcome.
+
+Headless: `kimi.headless.stream-json.v1` corrects down from
+`0.29.0..=0.37.2` to `0.29.0..=0.32.0`, and
+`kimi.headless.stream-json.v2` corrects down and extends from exact `0.38.0`
+to `0.33.0..=0.39.1`. `KIMI_HEADLESS_LATEST_QUALIFIED_VERSION` becomes
+`0.39.1`. Host `0.34.0` reclassifies from a broken v1 point to qualified
+Maintained v2. The two segments stay adjacent: `0.32.0` and `0.33.0` are
+consecutive published points.
+
+ACP: stops. `KIMI_CODE_LATEST_QUALIFIED_VERSION` stays `0.38.0` and exact
+`0.39.0` and `0.39.1` join the claim's exclusions, classifying `Incompatible`
+because `assess` tests exclusions before the `AllowUnverified` newer path. No
+new ACP behavior revision was created; wire-shape stability alone does not
+qualify an authority change.
+
+Exact negative points survive: `0.28.0` and `0.28.2` stay outside ACP and
+`0.28.1` stays outside headless. `kimi-code.local-server` stays exact `0.28.1`
+plus `0.29.0..=0.38.0` and still reports `0.38.1` as `UnverifiedNewer`. Public
+API surface is unchanged.
+
+Proof modules landed under `tests/kimi_code_0_39_1_identity/` behind the
+`executable_identity` test target, which also adopts
+`tests/kimi_code_executable_identity.rs` — `autotests = false` had left it
+orphaned and never compiled.

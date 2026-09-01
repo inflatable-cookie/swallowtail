@@ -1,0 +1,96 @@
+use super::support::{IDENTITY_0_37_2, PROTOCOL_0_37_2, is_sha256, version};
+use serde_json::Value;
+use swallowtail_adapter_kimi::{
+    KIMI_CODE_AXIS, KIMI_CODE_LATEST_QUALIFIED_VERSION, kimi_acp_claim, kimi_code_binding,
+};
+use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
+
+#[test]
+fn identity_and_claim_qualify_0_37_2_as_compatible_extension() {
+    let identity: Value =
+        serde_json::from_str(IDENTITY_0_37_2).expect("Kimi 0.37.2 identity corpus is valid JSON");
+    let protocol: Value =
+        serde_json::from_str(PROTOCOL_0_37_2).expect("Kimi 0.37.2 protocol corpus is valid JSON");
+
+    assert_eq!(identity["axis"], KIMI_CODE_AXIS);
+    assert_eq!(identity["npm_package"], "@moonshot-ai/kimi-code");
+    assert_eq!(identity["npm_latest"], true);
+    assert_eq!(identity["not_python_kimi_cli"], true);
+    assert_eq!(identity["host"]["version"], "0.34.0");
+    assert_eq!(identity["official"]["version"], "0.37.2");
+    assert_eq!(
+        identity["official"]["npm_integrity"],
+        "sha512-TAteYb84mV44MEzCaAlfz5f3TiN2yMHuwj9Kd0ePEIMBUqgjlqV1w7PvMT9TN0t87LYfv7BhIYz+ZCHDOM5aJw=="
+    );
+    assert_eq!(
+        identity["official"]["darwin_arm64_zip_sha256"],
+        "d5256d7dc5f43bda1cddbdccd810d247becbc4884d6c971e465044e3a6999c7a"
+    );
+    assert!(is_sha256(
+        identity["official"]["extracted_executable_sha256"]
+            .as_str()
+            .expect("official digest is text")
+    ));
+    assert_eq!(identity["unpublished_0_37_3"], true);
+
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(
+        decision["acp_reuse_behavior"],
+        "kimi.acp.reasoning.declared-effort-v2"
+    );
+    assert_eq!(
+        decision["headless_reuse_behavior"],
+        "kimi.headless.stream-json.v1"
+    );
+    assert_eq!(
+        decision["local_server_keep_heartbeat_ping"],
+        "0.35.0..=0.37.2"
+    );
+    assert_eq!(decision["raise_latest_qualified_to"], "0.37.2");
+    assert_eq!(decision["map_watch_fs_runtime_id"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["local_server_started"], false);
+    assert_eq!(decision["host_install_changed"], false);
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "0.36.1"
+    );
+
+    assert_eq!(protocol["selected_acp_command"], "acp");
+    assert_eq!(protocol["acp_initialize"]["protocol_version"], 1);
+    assert_eq!(
+        protocol["acp_initialize"]["auth_methods"],
+        serde_json::json!(["login"])
+    );
+    assert_eq!(protocol["acp_initialize"]["host_paths_discarded"], true);
+    assert_eq!(
+        protocol["selected_source"]["local_server_heartbeat"],
+        "application-ping-pong-from-0.35.0"
+    );
+    assert_eq!(
+        protocol["selected_source"]["watch_fs_optional_runtime_id_from"],
+        "0.37.0"
+    );
+
+    assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
+    let claim = kimi_acp_claim();
+    for value in ["0.37.0", "0.37.1", "0.37.2", "0.38.0"] {
+        assert!(matches!(
+            claim.assess(&version(value)),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+        ));
+    }
+    assert!(matches!(
+        claim.assess(&version("0.39.2")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        kimi_code_binding("0.37.2")
+            .expect("version binds")
+            .axis()
+            .as_str(),
+        KIMI_CODE_AXIS
+    );
+}

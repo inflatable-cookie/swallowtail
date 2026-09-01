@@ -38,15 +38,24 @@ required by the immutable plan. ACP import also requires the opaque state-root
 identity. The membership OAuth credential remains a scoped opaque lease;
 Swallowtail never exposes or persists its value.
 
-ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified. Headless exact
-`0.29.0..=0.37.2` remains qualified under the audited legacy agent-core v1
-stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Exact
-`0.38.0` headless qualifies under agent-core-v2 `runV2Print`
+ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified. Exact `0.39.0` and
+`0.39.1` are **excluded**: from `0.39.0` the agent-core-v2 ACP terminal runner
+replaces two fail-closed errors with a local host-process spawn in the leased
+working resource, and this route always advertises `terminal: false`, so that
+branch always applies. Nothing in the adapter or the runtime contains that
+spawn, so the points are refused rather than attempted.
+
+Headless `0.29.0..=0.32.0` is qualified under the audited legacy agent-core v1
+stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Headless
+`0.33.0..=0.39.1` qualifies under agent-core-v2 `runV2Print`
 (`kimi.headless.stream-json.v2`) with a matching `system.version` preamble.
-Public facade `kimi-headless-stream-json-v1` covers both revisions. Later
-stable releases remain visible `UnverifiedNewer`; they do not inherit ACP
-catalogue/import support. Older, excluded, and prerelease observations do not
-prepare.
+The split point is exact: through `0.32.0` the print engine is selected by
+`KIMI_CODE_EXPERIMENTAL_FLAG` and defaults to v1; from `0.33.0` it is selected
+by `KIMI_CODE_LEGACY_FLAG` and defaults to v2, and this adapter never sets
+that flag. Public facade `kimi-headless-stream-json-v1` covers both revisions.
+Later stable releases remain visible `UnverifiedNewer`; they do not inherit
+ACP catalogue/import support. Older, excluded, and prerelease observations do
+not prepare.
 
 ## Prepare The Installation
 
@@ -87,9 +96,9 @@ Import remains a separate operation:
 The catalogue and import must retain the same configured instance, execution
 host, exact qualified Kimi version, access evidence, opaque state root, working
 resource, model route, and session policy. Missing, changed, active, or
-cross-plan candidates issue no binding. Versions above qualified `0.38.0` may
-still run other unverified-newer Kimi operations, but cannot inherit catalogue
-or import support.
+cross-plan candidates issue no binding. Versions above qualified `0.38.0` that
+are not excluded may still run other unverified-newer Kimi operations, but
+cannot inherit catalogue or import support.
 
 Claude Agent and Cursor remain unavailable on this operation. Stable ACP wire
 support or a provider capability advertisement does not qualify an adapter's
@@ -115,7 +124,7 @@ caller request, one `session/set_config_option` dispatch, and response
 `currentValue` confirmation stay distinct; foreign advertised rows may
 coexist but never become public selections.
 
-`HarnessMode::Plan` is new-session only on exact `0.28.1` and exact
+`HarnessMode::Plan` is new-session only on exact `0.28.1` and
 `0.29.0..=0.38.0`. The current `mode` select must advertise exact `plan`.
 That snapshot is the `session/new` result when reasoning is omitted, or the
 reasoning `session/set_config_option` confirmation when reasoning ran first.
@@ -207,13 +216,15 @@ host operating system may still expose process arguments. Consumers that
 cannot accept that host boundary should use another route.
 
 The prepared route qualifies the audited legacy agent-core v1 stream-json
-corpus through exact `0.37.2` as `Deprecated` (`kimi.headless.stream-json.v1`).
-Exact `0.38.0` qualifies under agent-core-v2 `runV2Print`
+corpus through exact `0.32.0` as `Deprecated` (`kimi.headless.stream-json.v1`).
+Headless `0.33.0..=0.39.1` qualifies under agent-core-v2 `runV2Print`
 (`kimi.headless.stream-json.v2`) with a matching `system.version` preamble
-before shared JSONL output. Public facade `kimi-headless-stream-json-v1` covers
-both revisions. The adapter does not set `KIMI_CODE_LEGACY_FLAG` or inspect
-`KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant, tool activity, retry, and
-terminal events without claiming consumer tool callbacks. Cancellation and
+before shared JSONL output. The v1 window ends at `0.32.0` because the default
+`-p` engine becomes agent-core-v2 at `0.33.0`. Public facade
+`kimi-headless-stream-json-v1` covers both revisions. The adapter does not
+set `KIMI_CODE_LEGACY_FLAG` or inspect `KIMI_CODE_EXPERIMENTAL_FLAG`. It
+reports assistant, tool activity, retry, and terminal events without claiming
+consumer tool callbacks. Cancellation and
 deadline stop and join the child. Kimi may retain provider state, so the
 operation requires `DurableAllowed`; no reusable session, archive, restore,
 or delete authority escapes.

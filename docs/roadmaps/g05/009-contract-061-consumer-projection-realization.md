@@ -1,14 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
-candidate F reassessment ready as card 033
+strict-paused behind the `kimi-code.acp` active-observation decision
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-01
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-ready`; card 033 is the sole ready planning card
+Planning state: `strict-paused`; no implementation card is ready until the
+operator decides the narrow `kimi-code.acp` active-observation public baseline
 
 ## Problem
 
@@ -47,9 +48,12 @@ The operator then approved the narrow Cline route-local public baseline for
 exact Plan acknowledgement and bounded negotiated model-option observation.
 The gate fixes one additive adapter-owned projected-open seam while preserving
 the existing open method. Card 032 completed candidate G through PR 144 at
-`18a6907e`. Contract 061 now covers 249 rows; 518 remain. Card 033 is the sole
-ready planning checkpoint and reassesses candidate F. Candidates B, C, E, F,
-and I-L retain no implementation authority.
+`18a6907e`. Contract 061 now covers 249 rows; 518 remain. Card 033 then
+reassessed candidate F against current `main` and stopped: 86 of its 89 rows
+rest on proved prepared patterns, but three `kimi-code.acp` post-open rows —
+compound reasoning-and-plan acknowledgement, negotiated model options, and
+provider-session catalogue — fail rubric items 2 and 3. No card is ready.
+Candidates B, C, E, F, and I-L retain no implementation authority.
 
 ## Generation Runway Goal
 
@@ -154,6 +158,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [x] complete candidate G as the exact 11-row `cline.acp`, 8-row
       `cline.headless`, 11-row `command-code.headless`, 9-row
       `copilot-cli.acp`, and 9-row `goose.acp` tranche
+- [x] reassess candidate F's exact 89-row Kimi remainder; card 033 stopped it
+      on three `kimi-code.acp` post-open rows
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -191,8 +197,22 @@ negotiated model options through one additive adapter-owned projected-open
 seam. The
 [Cline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 fixes names, signatures, typed state, source identities, lifecycle, failure
-preservation, and falsifiable oracles. Candidate G now passes the promotion
-rubric and card 032 is ready.
+preservation, and falsifiable oracles. Candidate G passed the promotion rubric
+and card 032 merged through PR 144 at `18a6907e`, proving 11/8/11/9/9 rows with
+9/2, 7/1, 10/1, 6/3, and 6/3 emitted/withheld. Card 033 then bound that result
+to the merged source, repartitioned the census to 249 proved and 518 remaining
+rows, and reassessed candidate F. F stops. Its 89 rows partition as 60
+selection-summary, 22 session-start-only, and 7 post-open, of which four are
+descriptor-only activity. The remaining three sit on `kimi-code.acp` alone.
+`driver.rs` discards both the reasoning and Plan confirmations;
+`driver/mode.rs` freezes the Plan domain but `driver/reasoning.rs` admits
+foreign catalogue rows and normalizes requested-`"on"` effort, so neither an
+exact rejected nor an exact effective reasoning value survives. Negotiated
+model options are already retained on `KimiSessionHandle`, so that family
+blocks only on publication. The post-open provider-session catalogue observes
+through a separate prepared operation and needs a different seam shape. Card
+033 names one `kimi-code.acp`-only gate with five operator decisions and
+compiles nothing.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -242,15 +262,15 @@ rubric and card 032 is ready.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: cards 022-024, 031, and 032 are complete through PRs 131,
-  133, 138, 141, and 144; card 033 is the sole ready planning card
+- immediate state: cards 022-024 and 030-033 are complete through PRs 131,
+  133, 138, 141, and 144 plus two planning stops; no card is ready
 - completed tranches: runtime/testkit kernel plus sixteen exact route proofs in
   five reviewed implementation cards, covering 249 census rows
-- active checkpoint: card 033 reconciles candidate G and reassesses candidate
-  F's exact 89-row Kimi remainder
+- active checkpoint: none; card 033 closed as an evidence stop and returned the
+  `kimi-code.acp` public-baseline gate to the operator
 - later runway: 518 rows remain in candidates B, C, E, F, and I-L
-- next strategy checkpoint: review card 033's exact current-main candidate F
-  disposition before compiling any public-baseline gate or implementation card
+- next strategy checkpoint: the operator answers the five `kimi-code.acp` gate
+  decisions, or redirects the lane to another Batch 9.4 band
 
 ## Batch Cards
 
@@ -274,8 +294,9 @@ rubric and card 032 is ready.
   — complete; exact candidate G 11/8/11/9/9-row proof merged through PR 144 at
   `18a6907e`
 - [033 Contract 061 Card 032 Closeout And Kimi Reassessment](batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-  — ready; planning-only 249/518 coverage closeout and exact candidate F
-  reassessment
+  — complete; evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage
+  reconciled to 249/518, and candidate F left unpromoted behind a named
+  `kimi-code.acp` gate; no Rust changed
 
 ## References
 

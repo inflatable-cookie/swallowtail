@@ -246,8 +246,16 @@ additive adapter-owned projected-open seam preserving the existing open
 method. The gate fixes exact names, signatures, state, source identity,
 lifecycle, failure preservation, and provider-free oracles. Card 032 completed
 candidate G through PR 144 at `18a6907e`. Contract 061 now has 249 proved rows
-and 518 remaining; card 033 is the sole ready planning checkpoint for
-candidate F; g05.009 is `strict-ready`.
+and 518 remaining. Card 033 bound that result to the merged source — both
+commits resolve to one tree — repartitioned the census independently, and
+reassessed candidate F. F stops. Its 89 rows split 60 selection-summary, 22
+session-start-only, and 7 post-open, four of which are descriptor-only
+activity. The other three sit on `kimi-code.acp`: both confirmations are
+discarded, the reasoning value domain admits foreign catalogue rows so no exact
+rejected or effective effort survives, the already-retained negotiated model
+options have no publishing seam, and the provider-session catalogue observes
+through a separate prepared operation. One `kimi-code.acp`-only gate with five
+operator decisions is named and not compiled; g05.009 is `strict-paused`.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
@@ -265,8 +273,9 @@ promoted Contract 062 without Rust. Cards 026 and 029 closed without a
 production behavior change. Card 030 closed as an evidence stop without Rust or
 a promoted candidate; the later accepted `claude-agent.acp` gate led to card
 031, now complete through PR 141. The accepted Cline route-local gate promoted
-candidate G as card 032; PR 144 completed it at `18a6907e`. Card 033 now owns
-the front-door planning checkpoint for candidate F. PR
+candidate G as card 032; PR 144 completed it at `18a6907e`. Card 033 then
+closed as an evidence stop without promoting candidate F or changing Rust, and
+the `kimi-code.acp` operator gate decision is now the sole Next Task. PR
 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
@@ -282,7 +291,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the next g05 state through the ready card named by the
-[roadmaps front door](README.md#next-task). g05.009 is `strict-ready`; card 033
-is the sole ready planning card. This index records generation status;
-the canonical actionable pointer stays in the front door.
+Define the next g05 state through the pointer named by the
+[roadmaps front door](README.md#next-task). g05.009 is `strict-paused`; no card
+is ready, and the sole Next Task is the `kimi-code.acp` active-observation
+operator decision. This index records generation status; the canonical
+actionable pointer stays in the front door.

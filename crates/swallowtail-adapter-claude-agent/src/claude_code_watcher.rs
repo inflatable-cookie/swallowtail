@@ -33,7 +33,7 @@ mod tests {
         assert!(admits(
             &claude_code_headless_binding(CLAUDE_CODE_WATCHER_VERSION).expect("binding")
         ));
-        for version in ["2.1.241", "2.1.250", "2.1.252", "2.1.220"] {
+        for version in ["2.1.241", "2.1.250", "2.1.252", "2.1.253", "2.1.220"] {
             assert!(
                 !admits(&claude_code_headless_binding(version).expect("binding")),
                 "{version}"

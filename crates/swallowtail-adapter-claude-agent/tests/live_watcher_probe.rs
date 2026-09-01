@@ -74,10 +74,6 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
         std::env::var_os("ANTHROPIC_API_KEY").is_none(),
         "watcher live proof must use local subscription auth"
     );
-    assert_eq!(
-        CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-        WATCHER_VERSION
-    );
     let _workspace = TempWorkspace::create();
     let source_before = git_status();
     let binary = installed_claude();
@@ -171,6 +167,15 @@ fn configured_claude_code_blocks_early_completion_then_joins_one_watcher() {
         git_status(),
         source_before,
         "provider created a source artifact"
+    );
+}
+
+#[test]
+fn live_watcher_pin_is_independent_of_the_headless_ceiling() {
+    assert_eq!(WATCHER_VERSION, "2.1.251");
+    assert_ne!(
+        WATCHER_VERSION,
+        CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION
     );
 }
 

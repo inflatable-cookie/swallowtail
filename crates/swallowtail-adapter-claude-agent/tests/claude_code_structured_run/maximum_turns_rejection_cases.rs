@@ -11,11 +11,11 @@ fn zero_overflow_and_unqualified_versions_reject_before_process_work() {
     let topology = ExecutionTopologyFixture::local();
     let selection = ClaudeCodeMaximumTurns::from_u64(3).expect("value is admitted");
 
-    // `2.1.242` is now route-qualified but still outside Research 226's
-    // probed set. `2.1.230` sits inside the semantic window but was never
-    // published. `2.1.252` is permitted `UnverifiedNewer`. None may admit
-    // the feature.
-    for unprobed in ["2.1.242", "2.1.230", "2.1.252"] {
+    // `2.1.242` and `2.1.252` are now route-qualified but still outside
+    // Research 226's probed set. `2.1.230` sits inside the semantic window
+    // but was never published. `2.1.253` is permitted `UnverifiedNewer`.
+    // None may admit the feature.
+    for unprobed in ["2.1.242", "2.1.230", "2.1.252", "2.1.253"] {
         let integration = prepared_at(topology.execution_host_id().clone(), unprobed);
         let error = integration
             .prepare_run(

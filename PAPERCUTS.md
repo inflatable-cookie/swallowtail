@@ -139,6 +139,14 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: have launcher cleanup run safe worktree metadata pruning after removing
   its owned directory, or retain the directory until Git deregistration finishes.
 - Surface: T3 launcher-owned Swallowtail review worktrees; Git worktree metadata.
+- Progress 2026-09-01: Swallowtail ownership stop. Host Paseo `0.6.1` and
+  published `deletePaseoWorktree` (`git worktree remove --force`, then
+  directory delete, then `git worktree prune`) own launcher cleanup; T3 used
+  `~/.t3/worktrees/…`. Swallowtail has no `git worktree add|remove|prune`
+  surface. `paseo.json` teardown only runs Northstar `paseo:worktree unlink`
+  (Effigy deps) and runs while the directory still exists, so it cannot
+  deregister a later-deleted tree without a repo-wide prune. Leave open for
+  the T3/Paseo launcher lane; do not close from Swallowtail.
 
 ### [x] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
 - Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB

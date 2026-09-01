@@ -96,7 +96,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   total from 387 findings (7 critical / 42 high / 338 warning) to 385
   (7 critical / 42 high / 336 warning).
 
-### [ ] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
+### [x] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
 - Friction: `docs.x.ai/developers/...` HTML bodies are 0.4–1.1 MiB Next.js
   shells with `x-nextjs-cache`. Markdown exports exist by appending `.md` and
   are 0.8–47 KiB. `https://docs.x.ai/openapi.json` is a separate 219 KiB schema
@@ -107,6 +107,10 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: retrieve xAI docs `.md` exports and OpenAPI JSON; hash those bodies;
   treat HTML as SPA corroboration only.
 - Surface: g04.080 / Research 227 official-source retrieval.
+- Closed: 2026-09-01 papercuts xAI docs corpus. Research 227 already records
+  binding `.md`/OpenAPI digests with HTML as corroboration only. Research 187
+  keeps its historical HTML table and now notes that Research 227 supersedes
+  the retrieval method.
 
 ### [ ] Cline Plan acceptance widens the god-file warning baseline — 2026-08-26
 - Friction: PR 72 expands `tests/prepared_headless_facade.rs` to 395 code

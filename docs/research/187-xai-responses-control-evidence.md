@@ -3,6 +3,7 @@
 Status: promoted
 Owner: Tom
 Date: 2026-08-22
+Updated: 2026-09-01
 
 ## Question
 
@@ -43,9 +44,14 @@ route behavior and do not turn provider defaults into an explicit selection.
 | [Responses comparison](https://docs.x.ai/developers/model-capabilities/text/comparison) | Responses maps the generation maximum to `max_output_tokens`; continuation uses `previous_response_id` | 2026-08-22 | `2232433dd9aca65d3fb6777a4a9e625aadc2ebfbcd2347399679b3c9d5876292` |
 | [Release notes](https://docs.x.ai/developers/release-notes) | Current release notes corroborate Grok 4.5 low/medium/high and Grok 4.6 low/medium/high/xhigh plus no intrinsic Grok 4.6 text output limit | 2026-08-22 | `61dd0b9f6cf54e481151443854ddee5e68addea7560c58f5417897590ea73fe2` |
 
-The HTML snapshots preserve the source pages at retrieval time. The exact
-JSON specimens below are the stable provider examples normalized only for the
-secret-free fixture and control comparison; they are not provider output.
+The SHA-256 values above identify the retrieved 2026-08-22 HTML page bodies.
+Those bodies are Next.js SPA shells; they do not identify converted
+documentation text. Research 227 supersedes this retrieval method: binding
+corpus digests are `.md` exports and `openapi.json`, with HTML as
+corroboration only. The table above remains historical truth and is not
+rewritten. The exact JSON specimens below are the stable provider examples
+normalized only for the secret-free fixture and control comparison; they are
+not provider output.
 
 ## Exact WebSocket Specimens
 

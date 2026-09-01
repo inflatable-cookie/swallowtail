@@ -165,7 +165,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   treat GitHub tag paths as binding and current-main URLs as leads only.
 - Surface: g04.066 / Research 213 official-source retrieval.
 
-### [ ] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
+### [x] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
 - Friction: `platform.claude.com/docs` HTTP bodies are 0.9–2.0 MiB Next.js
   shells with no `Last-Modified` or `ETag`. Several thinking URLs 307-redirect.
   The digestable corpus is converted page text, not the hashed HTML shell.
@@ -176,6 +176,14 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   both HTTP body and converted-text hashes; treat 307 targets as the corpus
   page rather than hashing the redirect hop twice.
 - Surface: g04.062 / Research 209 official-source retrieval.
+- Closed: 2026-09-01 papercuts Anthropic docs corpus. Research 209 records all
+  9 source rows' followed `.md` bodies, retrieved from public official URLs at
+  `2026-09-01T13:00:30Z`, with requested/effective URLs, statuses, body kinds,
+  byte counts, and SHA-256 digests. The historical HTML hashes remain intact;
+  `adaptive-thinking` is explicitly equivalent to
+  `thinking-steering-and-cost`. The Markdown reconciliation preserves the
+  existing `claude-opus-4-7` adaptive/omitted-display conclusion without any
+  capability, fixture, or claim change.
 
 ### [ ] Antigravity invalid-`--agent` probes crossed card 161's no-prompt boundary — 2026-08-24
 - Friction: card 161 requires promptless help/listing and forbids provider

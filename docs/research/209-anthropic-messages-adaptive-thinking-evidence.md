@@ -3,7 +3,7 @@
 Status: promoted
 Owner: Tom
 Created: 2026-08-25
-Updated: 2026-08-25
+Updated: 2026-09-01
 Card: g04.062 / 173
 
 ## Question
@@ -81,6 +81,53 @@ the thinking overview remains the primary configuration corpus.
 
 Converted documentation text extracted from those pages was the digestable
 corpus. HTML bodies are Next.js shells without cache validators.
+
+## Deterministic Markdown Corpus
+
+The same nine official source URLs and their `.md` forms were retrieved without
+authentication at `2026-09-01T13:00:30Z`. The first status and location below
+are the un-followed response hop; `effective` and the final body metadata are
+from the followed GET. Direct rows have no redirect. Body digests are SHA-256
+over the downloaded bytes. The historical HTML hashes in the table above are
+unchanged and remain 2026-08-25 response-body hashes; the current HTML bodies
+below are SPA corroboration, while the final `text/markdown` bodies are the
+binding corpus.
+
+| Source row | HTML retrieval: requested → effective; response metadata | Markdown retrieval: requested → effective; response metadata |
+| --- | --- | --- |
+| [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) | `https://platform.claude.com/docs/en/build-with-claude/thinking` → same URL; `200`; `text/html; charset=utf-8`; 978202 bytes; SHA-256 `d2c9c95d9b27b58a7c1a5408a4ff39f2924cce2c5d7ba7723cdee59fe15ec70a` | `https://platform.claude.com/docs/en/build-with-claude/thinking.md` → same URL; `200`; `text/markdown; charset=utf-8`; 59987 bytes; SHA-256 `74f14085aaebec1b0c8c73b354d877fd88f60f0e386300fb0894101ce4c8f56d` |
+| [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting) | `https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting` → same URL; `200`; `text/html; charset=utf-8`; 517244 bytes; SHA-256 `2add54c11c46ca4e8d80edada3c876a9044eb5e570927fc633ddd3071f1f7778` | `https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting.md` → same URL; `200`; `text/markdown; charset=utf-8`; 13275 bytes; SHA-256 `71a865a060f38ff841395b9b4367fae05312cd40dcfdcab077234aacb43e68de` |
+| [Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming) | `https://platform.claude.com/docs/en/build-with-claude/streaming` → same URL; `200`; `text/html; charset=utf-8`; 1380342 bytes; SHA-256 `ff547a2ab28436c05a2687eac3ea756c3405d540aa1f0b1b3ecac4556749486a` | `https://platform.claude.com/docs/en/build-with-claude/streaming.md` → same URL; `200`; `text/markdown; charset=utf-8`; 50087 bytes; SHA-256 `82fabc5d2e31d7a82284e3502872738c512d5ed305bace782d13eb7c3f60bd6d` |
+| [Thinking tool workflows](https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows) | `https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows` → same URL; `200`; `text/html; charset=utf-8`; 834759 bytes; SHA-256 `82dbc56cbb8522d4e84fa284e8355fdd05a647c68ee32b75b5dd4d2213650330` | `https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows.md` → same URL; `200`; `text/markdown; charset=utf-8`; 32088 bytes; SHA-256 `6115e95e9d463e6ef7317bf3fb52975984a71361837ddafc406d02d557bff705` |
+| [Messages create API](https://platform.claude.com/docs/en/api/messages/create) | `https://platform.claude.com/docs/en/api/messages/create` → same URL; `200`; `text/html; charset=utf-8`; 1656338 bytes; SHA-256 `ad332047c02b6ed1552bc7a3841069b564407e4c6b1dc9b03d235fe5d83dba52` | `https://platform.claude.com/docs/en/api/messages/create.md` → same URL; `200`; `text/markdown; charset=utf-8`; 131472 bytes; SHA-256 `300ceef14e553b46ba3207fc4c8c591a0b9f3c10c4bdfab4ed95ea768259df5e` |
+| [Effort](https://platform.claude.com/docs/en/build-with-claude/effort) | `https://platform.claude.com/docs/en/build-with-claude/effort` → same URL; `200`; `text/html; charset=utf-8`; 611426 bytes; SHA-256 `abfacbeb37aafad8cd85000f69ed9b9887f235e7935d1de04b17a51d78bfb78f` | `https://platform.claude.com/docs/en/build-with-claude/effort.md` → same URL; `200`; `text/markdown; charset=utf-8`; 22657 bytes; SHA-256 `146dd4b0204249c0cb2dde2d81d998ae0f738c191ae4025cf9f9c1b93150c892` |
+| [Model IDs and versions](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions) | `https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions` → same URL; `200`; `text/html; charset=utf-8`; 422549 bytes; SHA-256 `888dfcb8104132005952d8ce304adc780834aca24fae05b9445bac757268ba98` | `https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md` → same URL; `200`; `text/markdown; charset=utf-8`; 4032 bytes; SHA-256 `2a2353199b7d09aa111b8287ecab1c6c9649ecadd04835017e8b3a03ea177f03` |
+| [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking` → `https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost`; hop `307` `text/html`, 53 bytes, SHA-256 `f7b5ec31da1e0bc51f2257a3c811393055a79144657008ef522e92ffe4d7056b`, `Location: /docs/en/build-with-claude/thinking-steering-and-cost`; final `200` `text/html; charset=utf-8`, 847925 bytes, SHA-256 `fbd445e8251e88dd138d93fd3c7aa7bb4e71da001745c253cdb5cf8fc8124575` | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md` → `https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost.md`; hop `307` `text/html`, 56 bytes, SHA-256 `df51c7707d6ca1eccb83166905b965089383bcdd7350d20dc34ab3f8cd77c909`, `Location: /docs/en/build-with-claude/thinking-steering-and-cost.md`; final `200` `text/markdown; charset=utf-8`, 41336 bytes, SHA-256 `4c9186b0826656ab962c5b36753dbffe2033c50e369ce0c53218131356c76ba1` |
+| [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost) | `https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost` → same URL; `200`; `text/html; charset=utf-8`; 847928 bytes; SHA-256 `3b9f2a48673ab2c0778100ba114a54c32bc34a98926b3587ad92b147c31251a2` | `https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost.md` → same URL; `200`; `text/markdown; charset=utf-8`; 41336 bytes; SHA-256 `4c9186b0826656ab962c5b36753dbffe2033c50e369ce0c53218131356c76ba1` |
+
+The final Markdown body for `adaptive-thinking.md` is byte-identical to the
+final body for `thinking-steering-and-cost.md`; the two source rows therefore
+bind one effective Markdown page, not two corpus identities. All nine final
+`.md` effective bodies are Markdown, and the eight effective pages are current
+official documentation only.
+
+## Markdown Corpus Reconciliation
+
+The deterministic corpus supports every decisive statement in this record:
+
+| Research 209 statement | Supporting Markdown |
+| --- | --- |
+| Adaptive, disabled, and enabled request shapes; Claude Opus 4.7 is adaptive-only, off until configured, and rejects manual `enabled` | [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting), [Messages create API](https://platform.claude.com/docs/en/api/messages/create) |
+| Explicit omitted display returns an empty `thinking` field while retaining the signature; adaptive mode may skip the block | [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Messages create API](https://platform.claude.com/docs/en/api/messages/create) |
+| Omitted-display streaming opens the block, emits one `signature_delta`, emits no `thinking_delta`, then closes it | [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming) |
+| Tool results replay the complete, unmodified assistant content array, including `thinking` and `redacted_thinking` blocks | [Thinking tool workflows](https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows), [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Messages create API](https://platform.claude.com/docs/en/api/messages/create) |
+| Effort is independent of the thinking mode and steers how often and how deeply adaptive thinking runs | [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) |
+| `claude-opus-4-7` is the exact pinned model identity; steering does not add a portable value | [Model IDs and versions](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions), [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost) |
+
+No export disappeared, final effective body was Markdown for every requested
+`.md` form, and the redirect equivalence is explicit. The existing
+`claude-opus-4-7` adaptive/omitted-display deliver-now row and its claim bounds
+remain unchanged; no capability, fixture, or claim change is required.
 
 ## Exact Request Forms
 

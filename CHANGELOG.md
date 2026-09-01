@@ -26,6 +26,17 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Claude Code headless and response-only qualified ceilings from
+  `2.1.252` to official npm `@anthropic-ai/claude-code` `2.1.257`. Compatible
+  extension of the existing stream-JSON behaviors: selected mapped flags stay;
+  `--system-prompt-snapshot`, `--bg` resume wording, `sdk-tools.d.ts` extras,
+  and changelog `2.1.257` surfaces stay unmapped. Official `2.1.257` help is
+  not byte-identical to frozen `2.1.252`. Unpublished `2.1.244`, `2.1.249`,
+  and hop-skipped `2.1.253` through `2.1.256` stay incompatible; unpublished
+  `2.1.258` remains visible `UnverifiedNewer`. Watcher stays exact `2.1.251`
+  and is not live-ready. Maximum-turn and other feature-specific exact
+  version sets stay on the `2.1.220..=2.1.241` probed points. Research 273,
+  g05.019.
 - raise the Claude Agent ACP qualified ceiling from `0.70.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.73.0`. Operator restart after
   official latest moved during the unmerged `0.72.0` family. Compatible

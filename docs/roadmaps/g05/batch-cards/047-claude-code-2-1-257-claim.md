@@ -1,6 +1,6 @@
 # 047 Claude Code 2.1.257 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -74,3 +74,11 @@ checks.
 ## Auto-Continuation
 
 No. Review and merge. Do not start a second family from this PR.
+
+## Result
+
+The Claude Code headless and response-only axes qualify official `2.1.257`.
+Unpublished `2.1.244` and `2.1.249` remain incompatible. Hop-skipped
+unpublished `2.1.253` through `2.1.256` are gaps. Watcher stays exact
+`2.1.251`. Maximum-turn and other feature-specific exact sets remain bounded
+through `2.1.241`. Identity evidence remains commit `de3b94a9`.

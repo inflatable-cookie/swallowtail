@@ -26,14 +26,23 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
+Last one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
+Headless is `2.1.220..=2.1.257` and response-only is `2.1.227..=2.1.257`.
+Unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253` through
+`2.1.256` stay incompatible. Unpublished `2.1.258` stays permitted
+`UnverifiedNewer`. Host `2.1.257` matches official darwin-arm64 and stays
+observation-only. Watcher stays exact `2.1.251` behind its mechanism-change
+gate. Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed
+points. `AllowUnverified` remains.
+
+Previous one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
 Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
 `0.72.0`, and `0.73.0` are qualified. Unpublished `0.58.0` stays
 incompatible. Unpublished `0.74.0` stays permitted `UnverifiedNewer`. Host
-`0.63.0` stays observation-only Qualified Deprecated. Claude Code and the
-watcher stay untouched. `AllowUnverified` remains.
+`0.63.0` stays observation-only Qualified Deprecated. `AllowUnverified`
+remains.
 
-Previous one-family claim: Kimi Code installed harness `0.39.1` (g05.016,
+Earlier one-family claim: Kimi Code installed harness `0.39.1` (g05.016,
 cards 041-042) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
 `0.29.0..=0.32.0` and headless v2 is `0.33.0..=0.39.1`, above which unpublished
 `0.39.2` stays permitted `UnverifiedNewer`. ACP is `QualifiedOnly` at exact
@@ -49,9 +58,11 @@ remains `AllowUnverified`.
 
 Earlier one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
 Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
-`0.84.2`. Claude Code headless and response-only `2.1.252` (g05.014, cards
-037-038) remain qualified. Unpublished `2.1.244` and `2.1.249` stay
-incompatible. Watcher stays exact `2.1.251` behind its mechanism-change gate.
+`0.84.2`. Claude Code headless and response-only later rose through official
+`2.1.257` (g05.019, cards 046-047). g05.014 cards 037-038 remain the
+`2.1.252` identity/claim. Unpublished `2.1.244`, `2.1.249`, and hop-skipped
+`2.1.253` through `2.1.256` stay incompatible. Watcher stays exact `2.1.251`
+behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
 Codex exec and app-server `0.152.0` (g05.013, cards 035-036) remain qualified.
 Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
@@ -64,6 +75,29 @@ corrected that revision's baseline to `0.33.0` and extended it to
 recorded.
 
 ### Latest Completed Family
+
+Claude Code `2.1.257` is a compatible extension of the separate headless and
+response-only stream-JSON axes. Research 273 and g05.019 cards 046-047 freeze
+identity before the claim. Host `2.1.257` matches the official darwin-arm64
+package and was not installed, updated, or replaced. Official binaries were
+hashed and not executed. Official npm and GitHub stable is `2.1.257`
+published 2026-09-01T17:15:33.223Z. The only published stable after
+`2.1.252` is `2.1.257`; `2.1.253` through `2.1.256` are unpublished.
+Wrapper installer files except `package.json` and `sdk-tools.d.ts` are
+byte-identical to `2.1.252`. Official `--help` is not byte-identical to
+frozen `2.1.252`; the dump adds `--system-prompt-snapshot` and expands
+`--bg` resume wording. Selected mapped stream-JSON flags stay. Changelog
+`2.1.257` extras stay unmapped. Unpublished `2.1.244`, `2.1.249`, and
+hop-skipped `2.1.253` through `2.1.256` remain incompatible; unpublished
+`2.1.258` remains permitted `UnverifiedNewer`. Watcher stays exact
+`2.1.251` and is not live-ready; official `2.1.257` is rejected at both
+watcher admission seams. No provider prompt, live session, login, install,
+or host update was required.
+
+Research 271 remaining family after Claude Agent ACP `0.73.0` was this
+family alone and changed no claim.
+
+### Previous Completed Family
 
 Claude Agent ACP `0.73.0` is a compatible extension of
 `claude-agent.acp.initialize-meta-extensions-v7`. Operator restart after
@@ -93,7 +127,7 @@ official binaries was required.
 Research 271 selected this family alone after the Kimi A2 cap when latest
 was `0.72.0` and changed no claim.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Kimi Code installed harness `0.39.1` produced a split outcome, and a
 same-family claim correction. Research 270 and g05.016 cards 041-042 freeze

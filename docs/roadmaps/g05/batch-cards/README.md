@@ -8,8 +8,7 @@
 
 ## Ready
 
-- [046-claude-code-2-1-257-identity.md](./046-claude-code-2-1-257-identity.md) — ready; freeze official `2.1.257` identity before any claim edit
-- [047-claude-code-2-1-257-claim.md](./047-claude-code-2-1-257-claim.md) — ready; depends on card 046 with an admitted segment
+- None.
 
 ## Blocked
 
@@ -17,6 +16,8 @@
 
 ## Completed
 
+- [047-claude-code-2-1-257-claim.md](./047-claude-code-2-1-257-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.257`; unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253`–`2.1.256` stay gaps; watcher stays exact `2.1.251`
+- [046-claude-code-2-1-257-identity.md](./046-claude-code-2-1-257-identity.md) — complete; Research 273 and current host/official identity frozen before claim
 - [045-claude-agent-acp-0-73-0-claim.md](./045-claude-agent-acp-0-73-0-claim.md) — complete; Claude Agent ACP qualified through official `0.73.0`; unpublished `0.58.0` stays a gap; unpublished `0.74.0` stays UnverifiedNewer
 - [044-claude-agent-acp-0-73-0-identity.md](./044-claude-agent-acp-0-73-0-identity.md) — complete; Research 272 operator restart; current host/official `0.73.0` identity frozen before claim
 - [043-kimi-code-acp-qualified-only-cap.md](./043-kimi-code-acp-qualified-only-cap.md) — complete; operator A2; ACP `QualifiedOnly` at `0.38.0` with one artifact-level reopen trigger; exact `0.39.0` and `0.39.1` stay excluded

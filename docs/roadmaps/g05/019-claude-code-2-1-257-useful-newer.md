@@ -1,6 +1,6 @@
 # g05.019 Claude Code 2.1.257 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -37,14 +37,14 @@ execution of downloaded official binaries.
 
 ## Batch Cards
 
-- [046 Claude Code 2.1.257 Identity](batch-cards/046-claude-code-2-1-257-identity.md) — ready
-- [047 Claude Code 2.1.257 Claim](batch-cards/047-claude-code-2-1-257-claim.md) — ready; depends on card 046
+- [046 Claude Code 2.1.257 Identity](batch-cards/046-claude-code-2-1-257-identity.md) — completed
+- [047 Claude Code 2.1.257 Claim](batch-cards/047-claude-code-2-1-257-claim.md) — completed
 
 ## Acceptance
 
-- [ ] exact official identity is reproducible
-- [ ] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] unpublished gaps, watcher exact pin, and other families stay unchanged
-- [ ] focused, package, API, route, docs, Northstar, god-file, and diff gates pass
+- [x] exact official identity is reproducible
+- [x] mapped and unmapped protocol changes are classified
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] unpublished gaps, watcher exact pin, and other families stay unchanged
+- [x] focused, package, API, route, docs, Northstar, god-file, and diff gates pass

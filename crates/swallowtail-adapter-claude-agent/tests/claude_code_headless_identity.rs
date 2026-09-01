@@ -94,7 +94,7 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
     );
 
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.252");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.257");
     assert_eq!(
         identity["claim_at_observation"]["headless_latest_qualified"],
         "2.1.241"
@@ -119,7 +119,13 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        claim.assess(&version("2.1.253")),
+        claim.assess(&version("2.1.257")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(!claim.permits(&version("2.1.253")));
+    assert!(matches!(
+        claim.assess(&version("2.1.258")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

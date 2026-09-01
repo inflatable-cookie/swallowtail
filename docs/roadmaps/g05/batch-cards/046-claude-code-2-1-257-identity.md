@@ -1,6 +1,6 @@
 # 046 Claude Code 2.1.257 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -56,4 +56,10 @@ Yes, to card 047 only after an admitted segment is recorded.
 
 ## Result
 
-Pending identity freeze.
+Official stable remained exact `2.1.257`. Host `2.1.257` matches the
+official darwin-arm64 package. Research 273 and the frozen corpus landed in
+identity-only commit `de3b94a9`; production claims remained unchanged in that
+commit. Official help is not byte-identical to frozen `2.1.252`. Watcher
+help/digest stays on exact `2.1.251`; official `2.1.257` is rejected at both
+watcher admission seams. The selected protocol classifies as a compatible
+extension, so card 047 continued.

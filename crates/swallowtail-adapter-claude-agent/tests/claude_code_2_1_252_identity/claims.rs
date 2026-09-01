@@ -71,23 +71,19 @@ fn unpublished_gaps_and_later_2_1_253_stay_classified() {
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
-        &["2.1.244", "2.1.249"]
+        &[
+            "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256",
+        ]
     );
 
     let headless = claude_code_headless_claim();
     assert!(!headless.permits(&version("2.1.244")));
     assert!(!headless.permits(&version("2.1.249")));
-    assert!(matches!(
-        headless.assess(&version("2.1.253")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!headless.permits(&version("2.1.253")));
     let response = claude_code_response_only_claim();
     assert!(!response.permits(&version("2.1.244")));
     assert!(!response.permits(&version("2.1.249")));
-    assert!(matches!(
-        response.assess(&version("2.1.253")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!response.permits(&version("2.1.253")));
 }
 
 #[test]
@@ -116,11 +112,11 @@ fn identity_and_claim_qualify_2_1_252_as_compatible_extension() {
         "2.1.251"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.252");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.257");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.252"
+        "2.1.257"
     );
 
     let headless = claude_code_headless_claim();
@@ -134,9 +130,19 @@ fn identity_and_claim_qualify_2_1_252_as_compatible_extension() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
+    assert!(matches!(
+        headless.assess(&version("2.1.257")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
     let response = claude_code_response_only_claim();
     assert!(matches!(
         response.assess(&version("2.1.252")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));

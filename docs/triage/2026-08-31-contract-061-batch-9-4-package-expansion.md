@@ -1,7 +1,7 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A, D, and H complete; no
-implementation card ready pending the `cline.acp` active-observation decision
+Status: active planning evidence; candidates A, D, and H complete; candidate G
+promoted as ready card 032 after the accepted `cline.acp` public-baseline gate
 Owner: Tom
 Date: 2026-08-31
 
@@ -53,7 +53,7 @@ explicitly.
 | D | Claude Agent | `claude-agent.acp` 30; `claude-code.headless` 12; `claude-code.response-only` 11 | 53 | exact active-session acknowledgement | complete through card 031 / PR 141 |
 | E | Gemini; Grok | `gemini-cli.acp` 14; `gemini-cli.headless` 13; `gemini.live` 16; `grok-build.acp` 13 | 56 | ACP, headless, and live applicability remain distinct | candidate only |
 | F | Kimi; Kimi Platform | `kimi-code.acp` 25; `kimi-code.headless` 20; `kimi-code.local-server` 31; `kimi-platform.chat` 13 | 89 | exact active-session acknowledgement | candidate only |
-| G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | candidate only |
+| G | Cline; Command Code; Copilot CLI; Goose | `cline.acp` 11; `cline.headless` 8; `command-code.headless` 11; `copilot-cli.acp` 9; `goose.acp` 9 | 48 | exact active-session acknowledgement; two no-control audits | promoted as card 032 |
 | H | Deep Agents; Kiro; Qoder; Zcode | `deepagents.acp` 9; `kiro.acp` 9; `qoder.headless` 8; `zcode.app-server` 12 | 38 | three explicit no-control route audits | complete through card 024 / PR 138 |
 | I | DeepSeek; DeepSeek Harness | `deepseek.continuation` 19; `deepseek-harness.jsonrpc` 11; `deepseek-harness.local-server` 17 | 47 | continuation and local-server lifecycle remain distinct | candidate only |
 | J | llama.cpp; Ollama | `llama-cpp.attached` 10; `llama-cpp.owned` 6; `ollama.attached` 19 | 35 | attached and owned applicability remain distinct | candidate only |
@@ -307,8 +307,7 @@ and 24 adapter packages.
 
 ## Post-Card-031 Lifecycle Reassessment
 
-The lifecycle-priority sequence returns to F and G. Neither passes the
-promotion rubric on `main` at `5d1f173a`.
+The lifecycle-priority sequence returns to F and G on `main` at `153e3e43`.
 
 F remains the larger coupled stop. Its 89 rows cover two packages and four
 route shapes. `kimi-code.acp` still needs three distinct post-open families:
@@ -316,21 +315,21 @@ compound reasoning-and-plan acknowledgement, negotiated model options, and
 provider-session catalogue observation. Card 031 changed only the Claude
 Agent adapter and grants Kimi no public-baseline authority.
 
-G is the narrower next gate, not a ready card. Its 48 rows cover four complete
+G is the narrower route-local tranche. Its 48 rows cover four complete
 adapter-package remainders. The Copilot CLI and Goose no-control audits already
-have a proved negative-coverage pattern, but `cline.acp` still discards the
-exact Plan confirmation, parses no model-option snapshot into its session
-handle, and has no adapter-owned active-observation projection result. Card
-031's route-local API does not transfer to Cline.
+have a proved negative-coverage pattern. The operator has now approved Cline
+adapter-local retention of exact effective/rejected Plan acknowledgement plus
+exact bounded negotiated model options, exposed through one additive
+adapter-owned projected-open seam while preserving
+`ClinePreparedSession::open_session`.
 
 The
 [Cline active-observation gate](2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
-therefore records the sole next decision. It asks whether Cline may retain
-exact effective/rejected Plan acknowledgement plus exact bounded negotiated
-model options and expose both through one additive adapter-owned projected
-open while preserving `ClinePreparedSession::open_session`. Until the operator
-answers and a later planning batch fixes exact signatures and proof oracles,
-candidate G has no card number or implementation authority.
+fixes the exact adapter-owned signatures, typed state, prepared and active
+source identities, lifecycle, failure preservation, construction-time
+withholding, and provider-free oracles. Candidate G now passes all six
+promotion criteria and is ready as card 032. This route-local decision grants
+no authority to Kimi or another candidate.
 
 Candidates B, C, E, I-L stay in their existing later bands. Batch 9.5 remains
 uncompiled.
@@ -341,8 +340,8 @@ The four-track reframe keeps lifecycle value ahead of row count. After card
 031 completion, reassess the remaining candidates in these bands:
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
-   D is complete through card 031. F and G still fail rubric item 2. G owns the
-   narrower route-local next gate; neither has implementation authority.
+   D is complete through card 031, G is the sole ready tranche as card 032,
+   and F still fails rubric item 2 across three Kimi post-open families.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

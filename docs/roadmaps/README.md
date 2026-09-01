@@ -15,19 +15,19 @@ shape.
 
 ## Next Task
 
-Decide the narrow
-[`cline.acp` active-observation public-baseline gate](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
-under [g05.009](g05/009-contract-061-consumer-projection-realization.md).
-Card 031 merged candidate D through PR 141 at `5d1f173a`, taking the proved
-total to 201 and leaving 566 rows. The lifecycle-priority reassessment promotes
-no implementation card on current `main`.
+Implement
+[card 032](g05/batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
+under [g05.009](g05/009-contract-061-consumer-projection-realization.md) as the
+sole ready tranche. Prove candidate G's exact 48 rows: `cline.acp` 11,
+`cline.headless` 8, `command-code.headless` 11, `copilot-cli.acp` 9, and
+`goose.acp` 9.
 
-Decide only whether the Cline adapter may retain exact effective/rejected Plan
-acknowledgement plus exact bounded negotiated model options and expose both
-through one additive adapter-owned projected-open seam while preserving
-`ClinePreparedSession::open_session`. Do not fix signatures, compile candidate
-G, couple Kimi, enter the per-turn or breadth bands, implement Rust, contact a
-provider, or compile Batch 9.5 until that operator decision is recorded.
+Use the accepted
+[`cline.acp` active-observation public baseline](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md):
+retain exact effective/rejected Plan acknowledgement and exact bounded
+negotiated model options through one additive adapter-owned projected-open
+seam while preserving `ClinePreparedSession::open_session`. Do not couple
+Kimi, enter another candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes
 

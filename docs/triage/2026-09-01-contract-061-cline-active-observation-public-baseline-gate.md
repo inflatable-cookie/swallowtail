@@ -1,128 +1,265 @@
 # Contract 061 Cline Active-Observation Public-Baseline Gate
 
-Status: operator decision required; no implementation card ready
+Status: complete; strict-ready; card 032 ready
 Owner: Tom
 Date: 2026-09-01
-Source: Card 031 merge, Batch 9.4 lifecycle-priority sequence, Contract 061,
-and `main` at `5d1f173ad0637c16c24f5134ef45dc559f67c61d`
+Source: operator decision, Card 031 merge, Contract 061, and `main` at
+`153e3e43e9f3c52c3819d0f55b104dbfae6d3058`
 
 ## Purpose
 
-Name candidate G's smallest current-main blocker without coupling Kimi,
-per-turn candidates, or breadth work. This is planning evidence. It does not
-approve a public API, implement Rust, change a contract, contact a provider,
-or promote candidate G.
+Close candidate G's route-local public blocker without transferring Cline
+authority to Kimi or changing a shared runtime contract. This is planning
+evidence. It fixes the adapter-owned surface and proof boundary for card 032;
+it does not implement Rust, contact a provider, or authorize another candidate.
 
-## Current-Main Evidence
+## Operator Decision
 
-Card 031 completed candidate D. Batch 9.4 now has 201 proved census rows and
-566 rows remaining in candidates B, C, E-G, and I-L. The lifecycle-priority
-sequence therefore returns first to F and G.
+The operator approved both Cline points:
 
-F is not the next narrow gate. Its 89 rows combine four route shapes with a
-compound reasoning-and-plan acknowledgement, negotiated model options, and a
-post-open provider-session catalogue on `kimi-code.acp`. That is three
-unproved observation families across two adapter packages.
+1. retain inside `swallowtail-adapter-cline` exact provider-effective or exact
+   rejected Plan acknowledgement plus exact bounded negotiated model options;
+   and
+2. expose that truth through one additive adapter-owned projected-open seam
+   while preserving `ClinePreparedSession::open_session`.
 
-G is smaller at 48 rows across four complete adapter-package remainders:
+The decision is route-local to `cline.acp`. It adds no runtime/testkit/core
+public type and grants no authority to Kimi, another candidate G route, or
+Batch 9.5.
 
-- `cline.acp` 11 and `cline.headless` 8;
-- `command-code.headless` 11;
-- `copilot-cli.acp` 9; and
-- `goose.acp` 9.
+## Exact Public Surface
 
-Its two no-control audits already have a proved negative-coverage pattern.
-The unresolved public boundary is route-local to `cline.acp`:
+`ClinePreparedSession::open_session` keeps its current signature, handle,
+failure codes, and cleanup behavior. Both open methods use one private open
+lifecycle. Card 032 adds this public Cline family:
 
-- `driver/mode.rs::confirm_plan_mode` validates the exact provider mode and
-  returns only `Result<(), RuntimeFailure>`; `driver.rs` discards the
-  confirmation, so neither exact effective nor exact rejected Plan state is
-  retained;
-- `session/new` can carry a bounded model config-option snapshot, but
-  production parses only the session ID and Plan-mode evidence;
-  `ClineSessionHandle::negotiated_model_options` always returns `None`; and
-- `ClinePreparedSession::open_session` returns only the generic interactive
-  handle, so no cohesive active-observation contribution can be named.
+```rust
+pub type ClineProjectionOpenFuture = BoxFuture<
+    'static,
+    Result<ClineProjectionOpenOutcome, ClineProjectionOpenFailure>,
+>;
 
-Prepared success, an open session, or matrix documentation cannot substitute
-for either post-open observation. Candidate G therefore still fails promotion
-rubric item 2. No numbered implementation card is honest on current `main`.
+pub struct ClineProjectionOpenOutcome { /* private fields */ }
 
-## Narrow Operator Decision
+impl ClineProjectionOpenOutcome {
+    pub fn session(&self) -> &dyn InteractiveSessionHandle;
+    pub const fn contribution(&self) -> &ConsumerRouteProjectionContribution;
+    pub fn negotiated_model_options(&self) -> Option<&NegotiatedSessionModelOptions>;
+    pub fn into_parts(
+        self,
+    ) -> (
+        Box<dyn InteractiveSessionHandle>,
+        ConsumerRouteProjectionContribution,
+    );
+}
 
-Decide only whether `cline.acp` may use the same route-local pattern already
-accepted separately for OpenAI Realtime and Claude Agent, extended to the two
-exact Cline observation families:
+pub enum ClineProjectionOpenFailure {
+    Runtime(RuntimeFailure),
+    Rejected {
+        failure: RuntimeFailure,
+        contribution: ConsumerRouteProjectionContribution,
+    },
+}
 
-1. retain inside `swallowtail-adapter-cline` the exact provider-effective or
-   exact rejected Plan acknowledgement, plus any exact bounded current and
-   advertised model-option snapshot returned while opening that session; and
-2. expose those retained values through one additive adapter-owned
-   open-with-projection outcome/failure while preserving
-   `ClinePreparedSession::open_session` and one shared private open lifecycle.
+impl ClineProjectionOpenFailure {
+    pub const fn failure(&self) -> &RuntimeFailure;
+    pub const fn rejected_contribution(
+        &self,
+    ) -> Option<&ConsumerRouteProjectionContribution>;
+    pub fn into_parts(
+        self,
+    ) -> (RuntimeFailure, Option<ConsumerRouteProjectionContribution>);
+}
 
-Acceptance would authorize a later planning batch to fix exact adapter-owned
-type names, signatures, state transitions, source identities, malformed and
-absent-value behavior, provider-free fixtures, and then reassess the complete
-candidate G package. It would not itself make candidate G ready.
+impl ClinePreparedSession {
+    pub fn open_session_with_projection(
+        &self,
+        prepared_source_id: ConsumerRouteProjectionSourceId,
+        active_session_source_id: ConsumerRouteProjectionSourceId,
+        services: HostServices,
+    ) -> ClineProjectionOpenFuture;
+}
+```
 
-Rejection keeps candidate G unpromoted and returns the lifecycle-priority
-audit to candidate F. Deferral leaves g05.009 paused with no ready
-implementation card.
+The outcome's direct model-option accessor returns the same snapshot as
+`session().negotiated_model_options()`. The generic handle remains the exact
+bounded value carrier, including current value, provider order, and optional
+display names. The contribution names the observation without flattening that
+typed snapshot into an ambiguous string domain.
 
-## Fixed Boundary
+The six prepared facades add the established exact method:
 
-Any accepted surface must remain adapter-local. It may reuse existing runtime
-projection records, `NegotiatedSessionModelOptions`, active-observation source
-identity, fixed bounds, and composer failures. Stop if it needs a new
-runtime/testkit/core public type, generic provider payload, callback, registry,
-runtime route enumeration, or amendment to Contracts 037, 047, 057, or 061.
+```rust
+pub fn consumer_route_projection_contribution(
+    &self,
+    source_id: ConsumerRouteProjectionSourceId,
+) -> Result<
+    ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionFailure,
+>;
+```
 
-The later gate must preserve these distinctions:
+The facades are `ClinePreparedSession`, `ClineHeadlessPreparedRun`,
+`CommandCodePreparedRun`, `CommandCodePreparedSession`,
+`CopilotCliPreparedSession`, and `GoosePreparedSession`. Only the Cline adapter
+exports the projected-open family. The Cline, Command Code, Copilot CLI, and
+Goose adapter semantic API baselines may change; runtime, testkit, core, and all
+other adapter baselines may not.
 
-- omitted Plan creates no acknowledgement state;
-- prepared Plan is requested, prepared, or pending only;
-- provider-effective and rejected Plan require one exact well-formed wire
-  confirmation;
-- absent model options remain absent, not an inferred catalogue;
-- a model option snapshot is observation, not model mutation or route-wide
-  catalogue authority;
-- prepared and active-session sources differ; and
-- malformed, duplicate, unadvertised, unbounded, or ambiguous values produce
-  runtime failure with no invented contribution.
+## Retained Cline State
 
-## Exclusions
+One private Cline open lifecycle returns a handle plus route-local observation
+state or one typed internal rejection. The exact internal shape is:
 
-- `kimi-code.acp`, candidate F, or `EffectiveReasoningSetup`
-- `cline.headless`, Command Code, Copilot CLI, or Goose public-baseline changes
-- candidates B, C, E, I-L or Batch 9.5
-- runtime/core public API, contracts, census, compatibility, currentness,
-  watcher, skill-discovery, papercut, or generation-closeout work
-- provider contact or live probes
+- Plan omitted: `NotRequested`;
+- exact confirmation `currentValue = "plan"`: `Effective("plan")`;
+- exact well-formed confirmation `currentValue = "act"`, with the frozen
+  unique provider domain `["plan", "act"]`: rejected `"act"`; and
+- missing, malformed, duplicate, transport, setup, or otherwise ambiguous Plan
+  confirmation: ordinary runtime failure with no contribution.
+
+The projected failure uses `Rejected` only for the exact admitted `"act"`
+mismatch and preserves the existing
+`swallowtail.cline.acp.harness_mode_mismatch` diagnostic. Every other failure
+uses `Runtime`. The preserved method unwraps the same internal rejection to its
+original `RuntimeFailure`, so both methods keep route code and cleanup parity.
+
+The shared lifecycle classifies model evidence as absent, exact, or invalid.
+An exact snapshot comes only from one `configOptions` row with `id = "model"`,
+`type = "select"`, `category = "model"`, one non-blank current value, a
+non-empty unique option list containing that value, and optional bounded
+display names. `NegotiatedSessionModelOptions::new` remains the count, text,
+uniqueness, and current-membership authority.
+
+Absent model evidence is `None` on either path. Exact evidence is retained on
+the session handle. Invalid, duplicate, ambiguous, unadvertised, or unbounded
+model evidence preserves legacy `open_session` success with no snapshot. The
+projected path instead closes the opened session and returns `Runtime` with
+`swallowtail.negotiated_model_options.invalid`; it publishes no contribution.
+This split preserves the existing open contract and the accepted fail-closed
+projection rule. Plan confirmation remains route admission and retains its
+existing failures.
+
+## Projection Semantics
+
+Prepared and active sources are caller-supplied and must differ. Equal IDs fail
+before provider work with
+`swallowtail.cline.projection_source_identity_invalid`.
+
+Prepared rows use `AdapterContribution(prepared_source_id)`. Post-open Plan
+acknowledgement and model observation use
+`ActiveSessionObservation(active_session_source_id)`. The active source is
+omitted when neither row exists.
+
+Both Cline-only active identities use bounded namespaced extensions qualified
+by exact route and protocol-facade revision:
+
+- `feature.active-session-plan-ack` carries `AcknowledgementState`, exact
+  `"plan"` effective or exact `"act"` rejected, `NotSelectable`,
+  wire-acknowledgement evidence, observation-only actor posture, and
+  acknowledged mutation authority from the active source;
+- `feature.negotiated-model-options-observation` carries `Observation`, a
+  descriptor domain, `NotSelectable`, observed state, wire evidence,
+  observation-only actor posture, and no mutation authority. Its exact typed
+  values remain on the generic handle and outcome accessor.
+
+The prepared `control.harness-mode` is also a bounded namespaced identity. On
+`cline.acp`, exact `"plan"` is requested, prepared, and pending at session
+start. On `cline.headless`, it is requested and prepared only. Omission creates
+no row and no Swallowtail default. Provider-effective or rejected state never
+appears on the prepared control.
+
+A successful projected open carries the prepared contribution plus whichever
+exact active rows exist. Exact rejected Plan carries the rejected
+acknowledgement row and no session or model-option row. Invalid model evidence
+or later projection admission failure closes the opened session and returns
+`Runtime`.
+
+## Candidate G Readiness
+
+The gate closes rubric item 2 for the complete four-package candidate. Card
+032 owns 48 exact census tuples with these maximal dispositions:
+
+| Route | Census | Emitted | Withheld |
+| --- | ---: | ---: | ---: |
+| `cline.acp` | 11 | 9 | 2 |
+| `cline.headless` | 8 | 7 | 1 |
+| `command-code.headless` | 11 | 10 | 1 |
+| `copilot-cli.acp` | 9 | 6 | 3 |
+| `goose.acp` | 9 | 6 | 3 |
+| **Total** | **48** | **38** | **10** |
+
+Model-catalogue rows are withheld on all five routes. Cline ACP, Copilot CLI,
+and Goose persistence rows are withheld because their exact prepared session
+policy is `Prohibited`; documentation cannot override it. Copilot CLI and
+Goose no-control audits remain construction-time negative coverage. No Command
+Code capability absent from the census may leak into the ledger.
+
+Prepared capability, model-selection, harness-mode, activity, and active
+observation rows come only from their exact facades. Activity remains
+descriptor-only. Command Code model selection stays distinct for structured
+run and interactive session. Cline Plan and model-observation rows are proved
+present in maximal projected opens and absent from omitted or observation-free
+opens.
+
+No shared public decision, provider contact, live probe, callback, registry,
+runtime enumeration, generic provider payload, or contract amendment is
+needed. Four exact packages fit the normal focused-validation maximum.
+Candidate G therefore passes the promotion rubric as card 032.
 
 ## Review Oracle
 
-Invariant: no candidate is promoted until exact Cline post-open truth has one
-operator-approved adapter-local retention and projection boundary.
+Invariant: only exact prepared evidence or one exact Cline active observation
+may publish a candidate G row. Session existence, documentation, another route,
+or malformed optional data cannot substitute.
 
-Counterexamples:
+Counterexamples and required proof:
 
-- prepared Plan presented as provider-effective — stop; no wire confirmation
-- an open session presented as model-option evidence — stop; exact current and
-  advertised values are required
-- a model option list treated as mutation or catalogue authority — stop
-- a static mismatch diagnostic presented as exact rejected Plan state — stop;
-  the rejected value is not retained
-- one active source borrowed by another route or operation — fail closed
-- candidate G narrowed to omit Cline's post-open rows — fail the complete
-  package-remainder rule
-- candidate G promoted before exact adapter signatures and deterministic
-  oracles are fixed — stop before implementation
+- prepared Plan marked provider-effective — fail; it remains pending until the
+  exact confirmation
+- static mismatch failure presented as rejected without exact `"act"` in the
+  unique `["plan", "act"]` response — fail as `Runtime` with no contribution
+- model options inferred from session existence — fail; exact wire evidence is
+  required
+- malformed, duplicate, ambiguous, unadvertised, or unbounded model evidence
+  accepted by projected open — fail; close and return the exact runtime error
+  with no contribution; preserved open remains successful with no snapshot
+- model options presented as selectable, acknowledged mutation, or catalogue
+  authority — fail the observation-only posture
+- a rejected Plan contribution retaining model options or a session — fail;
+  the open did not complete
+- equal prepared and active source IDs — fail before process or resource work
+- active source attached to prepared rows, or retained when both observations
+  are absent — fail source admission
+- preserved and projected opens differing in route failure code or cleanup for
+  the same Plan fixture — fail shared-lifecycle proof
+- Cline ACP observation published on Cline headless, Command Code, Copilot CLI,
+  or Goose — fail route and operation applicability
+- persistence inferred on Cline, Copilot CLI, or Goose from documentation —
+  fail against exact prepared provider-state policy
+- either no-control audit emitted as a selectable row — fail negative coverage
+- 48 rows reached through a filter, exception list, duplicate semantic ID, or
+  borrowed route identity — fail exact tuple reconciliation
+- matching-source cross-route, cross-operation, cross-instance, stale-revision,
+  or cross-access mixture accepted — fail closed
+
+## Validation Boundary
+
+Card 032 names exactly these packages:
+
+- `swallowtail-adapter-cline`
+- `swallowtail-adapter-command-code`
+- `swallowtail-adapter-copilot-cli`
+- `swallowtail-adapter-goose`
+
+It adds package-scoped formatting, focused validation, extracted-package,
+semantic API, route, docs, Northstar, god-file, and diff checks. No provider
+contact or live probe belongs to the card.
 
 ## Authority
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
-- [card 030 acknowledgement stop](../roadmaps/g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
 - [completed card 031](../roadmaps/g05/batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
 - [reviewed census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+- [Batch 9.1 public baseline](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)

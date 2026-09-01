@@ -1,15 +1,14 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
 Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, and H merged;
-strict-paused behind the `cline.acp` active-observation decision
+candidate G ready as card 032
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-01
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-paused`; no implementation card is ready until the
-operator decides the narrow `cline.acp` active-observation public baseline
+Planning state: `strict-ready`; card 032 is the sole ready implementation card
 
 ## Problem
 
@@ -44,10 +43,12 @@ D was the narrowest unblock and owned the next gate alone. The operator
 approved adapter-local exact effective/rejected retention plus one additive
 adapter-owned open-with-projection result preserving the existing open method.
 Card 031 merged candidate D's exact 53-row proof through PR 141 at `5d1f173a`.
-The current-main lifecycle reassessment promotes no further candidate.
-Candidates B, C, E-G, and I-L still have no implementation card numbers or
-execution authority. Candidate G is the narrower next gate, scoped only to
-`cline.acp` Plan acknowledgement and negotiated model-option observation.
+The operator then approved the narrow Cline route-local public baseline for
+exact Plan acknowledgement and bounded negotiated model-option observation.
+The gate fixes one additive adapter-owned projected-open seam while preserving
+the existing open method. Candidate G passes the current-main promotion rubric
+and is ready as card 032. Candidates B, C, E, F, and I-L retain no execution
+authority.
 
 ## Generation Runway Goal
 
@@ -149,6 +150,9 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       tranche
 - [x] complete candidate D as the exact 30-row `claude-agent.acp`, 12-row
       `claude-code.headless`, and 11-row `claude-code.response-only` tranche
+- [ ] complete candidate G as the exact 11-row `cline.acp`, 8-row
+      `cline.headless`, 11-row `command-code.headless`, 9-row
+      `copilot-cli.acp`, and 9-row `goose.acp` tranche
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -179,12 +183,15 @@ open-with-projection outcome and failure preserving the existing
 fixes the exact public signatures, source split, state transitions, malformed
 failure boundary, and provider-free oracle. Candidate D passed the rubric and
 card 031 completed its exact 53-row proof through PR 141 at `5d1f173a`. The
-post-merge current-main audit returns to F and G. F still combines three Kimi
-post-open families. G is narrower, but `cline.acp` still discards exact Plan
-confirmation, exposes no negotiated model-option snapshot, and has no
-adapter-owned active-observation projection result. The operator must decide
-that route-local public baseline before an exact API gate or candidate G card
-can be compiled.
+post-merge current-main audit returned to F and G. F still combines three Kimi
+post-open families. The operator approved G's narrower Cline route-local
+baseline: exact effective/rejected Plan acknowledgement plus exact bounded
+negotiated model options through one additive adapter-owned projected-open
+seam. The
+[Cline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
+fixes names, signatures, typed state, source identities, lifecycle, failure
+preservation, and falsifiable oracles. Candidate G now passes the promotion
+rubric and card 032 is ready.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -228,24 +235,22 @@ can be compiled.
 - Stop if the accepted access, source-identity, per-turn-authority, exact-ledger,
   or god-file repair cannot fit the existing Contract 061/card 022 boundary.
 - Stop after each promoted package tranche for an orchestrator checkpoint; do
-  not turn candidates B, C, E-G, or I-L into speculative cards.
+  not turn candidates B, C, E, F, or I-L into speculative cards.
 - Stop if Contracts 037, 047, 057, or 061 would need amendment.
 
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
 - immediate state: cards 022-024 and 031 are complete through PRs 131, 133,
-  138, and 141; no implementation card is ready
+  138, and 141; card 032 is the sole ready implementation card
 - completed tranches: runtime/testkit kernel plus eleven exact route proofs in
   four reviewed implementation cards, covering 201 census rows
-- active tranche: none; g05.009 is strict-paused behind the route-local Cline
-  active-observation decision
-- later runway: 566 rows remain in candidates B, C, E-G, and I-L; promote them
-  at most one at a time after exact readiness audits, then compile one
-  all-route audit
-- next strategy checkpoint: decide whether `cline.acp` may retain and project
-  exact Plan acknowledgement plus bounded negotiated model options through one
-  additive adapter-owned projected-open seam
+- active tranche: card 032 owns candidate G's exact 48 rows across Cline,
+  Command Code, Copilot CLI, and Goose
+- later runway: 566 rows remain unproved until card 032 merges; 518 of them are
+  outside candidate G in candidates B, C, E, F, and I-L
+- next strategy checkpoint: implement and review card 032, then reassess the
+  lifecycle-priority sequence on current `main`
 
 ## Batch Cards
 
@@ -265,6 +270,9 @@ can be compiled.
 - [031 Contract 061 Claude Agent Package And Acknowledgement](batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
   — complete; exact candidate D 30/12/11-row proof merged through PR 141 at
   `5d1f173a`
+- [032 Contract 061 Cline, Command Code, Copilot CLI, And Goose Package Completion](batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
+  — ready; exact candidate G 11/8/11/9/9-row proof with the accepted Cline
+  active-observation public baseline
 
 ## References
 

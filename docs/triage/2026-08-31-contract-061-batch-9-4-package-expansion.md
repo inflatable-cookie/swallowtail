@@ -230,7 +230,7 @@ it for `claude-agent.acp`, `kimi-code.acp`, or `cline.acp`.
 | Candidate | Disposition |
 | --- | --- |
 | D | Promote after gate acceptance. One adapter package, one acknowledgement row, no other non-descriptor post-open row. The prepared facades already exist; the accepted route-local baseline adds only exact acknowledgement retention and the additive open result. Card 031 owns the complete 53-row proof. |
-| F | Still stopped after the `kimi-code.acp` gate. Card 034 is blocked, not ready. Largest and most coupled candidate. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
+| F | Still stopped after the `kimi-code.acp` gate. Card 034 is planned, not ready, and blocked by the provider-operation observation public-baseline decision. Largest and most coupled candidate. 89 rows, two packages, four route shapes, a compound reasoning-and-plan acknowledgement, plus two further unproved post-open families on `kimi-code.acp`: `feature.negotiated-model-options-observation` and post-open `control.provider-session-catalogue`. Three observation seams, not one. |
 | G | Stop. 48 rows but all four adapter packages, so rubric item 5 has zero headroom. Its two `audit.no-public-route-specific-selectable-control` rows on `copilot-cli.acp` and `goose.acp` are fine — card 024 proved that negative-coverage pattern. `cline.acp` adds one further post-open family, `feature.negotiated-model-options-observation`. |
 
 No candidate can be narrowed around the blocker. The fixed boundary requires
@@ -480,9 +480,20 @@ No projected catalogue seam is authorized.
 `ConsumerRouteActiveSessionState` are each defined as post-open session
 semantics. Publishing `control.provider-session-catalogue` through them would
 widen shared Contract 061 vocabulary from an adapter document. The compound
-`feature.active-session-reasoning-and-plan-ack` row is a second unresolved
-item: encoding both halves as domain entries with row-level union flags loses
-half-to-state association for a generic consumer.
+`feature.active-session-reasoning-and-plan-ack` remains an unresolved
+route-local item: its generic representation must associate each reasoning and
+Plan half with its exact effective, rejected, or not-observed state without an
+adapter downcast. A requested-but-never-dispatched Plan half must not be mapped
+to `with_pending()` because no acknowledgement was dispatched and the failure
+is terminal. `KimiReasoningAcknowledgement::RequestedNotObserved` is
+speculative and unreachable under fixed reasoning-first order, so it is not an
+accepted public baseline.
+
+The route-local evidence also corrects two emitters: `control.load-session` and
+`control.resume-session` are emitted only from attachment-compatible profiles
+with no bound reasoning or Plan option, and `KimiPlatformPreparedCatalogue`
+does not emit `control.model-selection`; only
+`KimiPlatformPreparedInferenceAttempt` does.
 
 The gate still re-derives candidate F's four route ledgers from current source,
 replacing card 033's provisional 86/3 reading:
@@ -495,12 +506,14 @@ replacing card 033's provisional 86/3 reading:
 | `kimi-platform.chat` | 13 | 12 | 1 | 0 |
 | **Total** | **89** | **74** | **14** | **1** |
 
-The undecided row is `kimi-code.acp` `control.provider-session-catalogue`:
-75/14 if a provider-operation observation baseline is authorized, 74/15
-otherwise.
+The undecided `kimi-code.acp` `control.provider-session-catalogue` row becomes
+emitted only if a provider-operation observation baseline is authorized, and
+withheld otherwise. No row counts toward coverage or grants implementation
+authority.
 
 Candidate F still fails rubric item 3 and is not promoted. Card 034 is
-`blocked` and none of its 89 rows counts toward coverage.
+planned; not ready; blocked by the provider-operation observation
+public-baseline decision, and none of its 89 rows counts toward coverage.
 
 Candidates B, C, E, and I-L keep no card number or execution authority. The
 per-turn band B/K/L and the breadth band C/E/I/J are unchanged by card 033 and
@@ -513,7 +526,8 @@ The four-track reframe keeps lifecycle value ahead of row count. After card
 
 1. D, F, and G: exact active-session acknowledgements and post-open state;
    D is complete through card 031, G is complete through card 032, and F
-   remains unpromoted behind two `kimi-code.acp` operator decisions.
+   remains unpromoted behind the `kimi-code.acp` provider-operation
+   observation public-baseline decision.
 2. B, K, and L: turn-start and mid-turn consumer-mediated truth, including
    observed callbacks.
 3. C, E, I, and J: remaining breadth and negative applicability coverage.

@@ -1,6 +1,6 @@
 # 2026-09-01 g05.009 Kimi Active-Observation Gate Stop
 
-Status: complete; evidence stop; gate incomplete; candidate F not promoted
+Status: stopped; shared provider-operation observation decision required; card 034 not ready
 Owner: Tom
 Date: 2026-09-01
 Contracts: 037, 047, 057, 061
@@ -71,7 +71,8 @@ builds its plan with no model route.
 ## Current State
 
 - g05.009 is `strict-paused`
-- card 034 is `blocked`; no card is ready
+- card 034 is planned; not ready; first blocked by the provider-operation
+  observation public-baseline decision
 - coverage remains 249 proved and 518 remaining; none of candidate F's 89 rows
   is proved
 - candidate F is not promoted and no 89-row package completion is authorized
@@ -87,19 +88,18 @@ builds its plan with no model route.
 
 ## Next Move
 
-Two operator decisions. First, whether to broaden the shared Contract 061
-vocabulary so a completed provider-operation query can be projected honestly,
-or to leave `kimi-code.acp` `control.provider-session-catalogue` withheld as
-unrepresentable. Second, an exact compound-acknowledgement shape that preserves
-each half's state generically without adapter downcasts or invented pending
-state. Decision 1 gates candidate F as a whole; decision 2 gates any
-implementation card. Do not implement Kimi, promote another candidate, contact
-a provider, or compile Batch 9.5 before both land.
+One operator decision: compile a shared provider-operation observation
+public-baseline gate with honest source/lifecycle/view vocabulary, or leave
+`kimi-code.acp` `control.provider-session-catalogue` withheld and candidate F
+unpromoted. The compound acknowledgement remains an unresolved route-local
+planning requirement if candidate F continues; it does not create a second
+current Next Task. Do not implement Kimi, promote another candidate, contact a
+provider, or compile Batch 9.5.
 
 ## Authority
 
 - [stopped gate](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-- [blocked card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
+- [planned card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 package expansion](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

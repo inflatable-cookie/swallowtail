@@ -1,6 +1,6 @@
 # Contract 061 Kimi Active-Observation Public-Baseline Gate
 
-Status: stopped; evidence stop; gate incomplete; candidate F not promoted
+Status: stopped; shared provider-operation observation decision required; card 034 not ready
 Owner: Tom
 Date: 2026-09-01
 Source: operator decision, Card 033 evidence stop, Contract 061, and `main` at
@@ -8,21 +8,18 @@ Source: operator decision, Card 033 evidence stop, Contract 061, and `main` at
 
 ## Purpose
 
-Compile the operator's five `kimi-code.acp` answers into one exact
-public-baseline gate for candidate F.
-
-The gate could not be completed. Four of the five answers are realizable
-route-locally against current `main`. The fifth is not: no shared runtime
-source kind, lifecycle band, or projection view can represent a completed
-provider-session catalogue query, and reinterpreting the existing ones in
-adapter documentation would silently widen shared public semantics. That is the
-stop condition the handoff fixed, so this document records the exact conflict
-and returns one further operator decision instead of weakening the baseline.
+Record the first-round `kimi-code.acp` route-local evidence and stop at the
+provider-operation observation boundary. No shared runtime source kind,
+lifecycle band, or projection view can represent a completed provider-session
+catalogue query, and reinterpreting the existing ones in adapter documentation
+would silently widen shared public semantics. This document records the exact
+conflict and returns the sole provider-operation observation decision without
+weakening the baseline.
 
 This is planning evidence. It authorizes no Rust, no implementation card, no
 provider contact, and no coverage claim.
 
-## Operator Decision As Given
+## First-Round Decisions Retained As Evidence
 
 1. `swallowtail-runtime::EffectiveReasoningSetup` is unchanged. Exact Kimi
    reasoning and Plan effective and rejected values stay inside
@@ -35,16 +32,17 @@ provider contact, and no coverage claim.
 3. Only `KimiPreparedSession::open_session_with_projection` is added.
    `open_session`, `load_session`, and `resume_session` keep their exact public
    behavior. Both open methods share one private lifecycle.
-4. A separate projected catalogue seam is added over
-   `KimiPreparedSessionCatalogue::list_sessions`. **This answer cannot be
-   realized without a shared runtime decision the operator has not made.** See
-   the blocker below.
+4. A separate projected catalogue seam over
+   `KimiPreparedSessionCatalogue::list_sessions` was considered. **This cannot
+   be realized without a shared runtime decision.** No catalogue seam is
+   authorized; see the blocker below.
 5. Prepared and active-observation source IDs are distinct and
    caller-supplied. No runtime, testkit, core, contract, registry, callback,
    generic provider payload, or cross-route decision is added.
 
-Decisions 1, 2, 3, and 5 remain route-local to `kimi-code.acp` and grant no
-authority to any other route or candidate.
+The first-round route-local repairs remain evidence only and grant no authority
+to any other route or candidate. The sole open decision is the provider-
+operation observation public-baseline direction below.
 
 ## Blocker: Provider-Operation Observation Has No Shared Representation
 
@@ -315,8 +313,9 @@ perform extra provider work to discover an unobserved half.
 
 Because reasoning is confirmed first, no exposed outcome or rejected failure
 can carry a "reasoning requested but not observed" state. Every earlier failure
-takes case 2 and publishes nothing. A `RequestedNotObserved` variant on the
-reasoning half would be unreachable and is explicitly rejected.
+takes case 2 and publishes nothing. `KimiReasoningAcknowledgement::RequestedNotObserved`
+is speculative and unreachable under that fixed order, so it is not an
+accepted public baseline.
 
 **Plan half.** `driver/mode.rs` freezes `["default", "plan", "auto", "yolo"]`
 in listed order, so the Plan token is always admitted and always within the
@@ -327,8 +326,9 @@ byte bound:
 - `currentValue` exactly `default`, `auto`, or `yolo` — rejected, exact value,
   preserving `swallowtail.kimi.acp.harness_mode_mismatch`; and
 - Plan requested but never confirmed because reasoning rejected first — a real,
-  reachable state with no observed value. This is the case 1 early stop, and it
-  is exactly what the unresolved item below must represent.
+  reachable not-observed state with no acknowledgement dispatched. The failure
+  is terminal, so this state must not be mapped to `with_pending()`. This is
+  the case 1 early stop and remains part of the unresolved item below.
 
 Every other Plan outcome is ordinary `Runtime` with no contribution.
 
@@ -355,9 +355,9 @@ implementation card:
 
 An eventual exact design must preserve each half's state generically, without
 downcasting and without inventing pending truth, and must represent "requested,
-never dispatched, will not arrive" honestly. Whether that is achievable with
-two separate namespaced rows inside the one census tuple, or needs its own
-operator decision, is open. This gate does not choose.
+never dispatched, will not arrive" honestly. This gate records the unresolved
+route-local requirement but does not choose a replacement shape or create a
+second operator decision.
 
 ## Negotiated Model-Option Observation
 
@@ -441,8 +441,8 @@ not closed. Coverage stays at 249 proved and 518 remaining rows. Its 89 rows
 remain unproved.
 
 The four route ledgers below are re-derived from the reviewed census plus
-current `main` and are retained as evidence for whichever direction the
-operator chooses. They are not authorization.
+current `main` and are retained as reassessment evidence only. They are not
+authorization or proved coverage.
 
 | Route | Census | Emitted | Withheld | Undecided |
 | --- | ---: | ---: | ---: | ---: |
@@ -452,11 +452,11 @@ operator chooses. They are not authorization.
 | `kimi-platform.chat` | 13 | 12 | 1 | 0 |
 | **Total** | **89** | **74** | **14** | **1** |
 
-The single undecided row is `kimi-code.acp`
-`session-management` / `control.provider-session-catalogue`. If the operator
-authorizes a provider-operation observation baseline it becomes emitted and the
-totals are 75/14; if the row stays withheld they are 74/15. Card 033's
-provisional 86/3 reading does not survive either way.
+The undecided `kimi-code.acp` `session-management` /
+`control.provider-session-catalogue` row becomes emitted only if a
+provider-operation observation baseline is authorized, and withheld otherwise.
+No row counts toward coverage or grants implementation authority. Card 033's
+provisional 86/3 reading does not survive.
 
 The 14 construction-time withholdings, each with its exact reason:
 
@@ -497,28 +497,18 @@ the `HostOwnedEphemeral` owned topology. `kimi-code.acp`
 `control.load-session` and `control.resume-session` are the inverse: emitted
 only from attachment-compatible profiles.
 
-## Operator Decisions Required
+## Operator Decision Required
 
-Two decisions are open. Neither is answered here.
+Choose one direction:
 
-1. **Provider-operation observation baseline.** Either broaden the shared
-   Contract 061 vocabulary so a completed provider-operation query can be
-   projected honestly — a new source kind, lifecycle band, and view, or an
-   explicit widening of the existing three — or leave
-   `kimi-code.acp` `control.provider-session-catalogue` withheld as
-   unrepresentable. The first is a `swallowtail-runtime` public decision with
-   cross-route reach and would touch Contract 061; the second keeps this gate
-   route-local but leaves one census row permanently unproved on a route that
-   demonstrably performs the observation.
-2. **Compound acknowledgement representation.** Fix a shape that preserves each
-   half's state generically, without adapter downcasts and without inventing
-   pending state, and that represents a requested-but-never-dispatched Plan
-   half honestly.
+- compile a shared provider-operation observation public-baseline gate with
+  honest source/lifecycle/view vocabulary; or
+- leave `control.provider-session-catalogue` withheld and candidate F
+  unpromoted.
 
-Decision 1 gates candidate F as a whole. Decision 2 gates the
-`feature.active-session-reasoning-and-plan-ack` row and therefore also gates
-any implementation card, because the census carries that row on
-`kimi-code.acp`.
+This sole decision gates candidate F as a whole. The compound acknowledgement
+and emitter corrections above remain route-local evidence requirements; they do
+not create a second Next Task or authorize an implementation card.
 
 ## Review Oracle
 
@@ -573,7 +563,7 @@ and `git diff --check`.
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [completed card 033](../roadmaps/g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-- [blocked card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
+- [planned card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
 - [reviewed census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [Claude Agent acknowledgement gate](2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)

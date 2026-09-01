@@ -1,37 +1,40 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: blocked; two open operator decisions; not authorized for implementation
+Status: planned; not ready; blocked by provider-operation observation public-baseline decision
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
 Milestone: `../009-contract-061-consumer-projection-realization.md`
-Depends on: completed card 033; an accepted provider-operation observation
-baseline; an accepted compound-acknowledgement representation
+Depends on: completed card 033; provider-operation observation public-baseline
+decision; an accepted compound-acknowledgement representation if candidate F
+continues
 
 ## Why This Card Is Blocked
 
-The `kimi-code.acp` gate could not be completed. Two decisions remain open, and
-neither is this card's to make:
+The Kimi gate is stopped. Publishing
+`control.provider-session-catalogue` needs
+`ConsumerRouteProjectionSourceKind::ActiveSessionObservation`,
+`ConsumerRouteLifecycle::PostOpenObservationOnly`, and
+`ConsumerRouteActiveSessionState`. Current `swallowtail-runtime` defines all
+three as post-open **session** semantics, while
+`KimiPreparedSessionCatalogue::list_sessions` opens no session. The completed
+query therefore cannot be published honestly through those names. Do not
+broaden or reinterpret the shared vocabulary here.
 
-1. **Provider-operation observation baseline.** Publishing
-   `control.provider-session-catalogue` needs
-   `ConsumerRouteProjectionSourceKind::ActiveSessionObservation`,
-   `ConsumerRouteLifecycle::PostOpenObservationOnly`, and
-   `ConsumerRouteActiveSessionState`. Current `swallowtail-runtime` defines all
-   three as post-open **session** semantics, and
-   `KimiPreparedSessionCatalogue::list_sessions` opens no session. Either the
-   shared vocabulary broadens, or the row stays withheld as unrepresentable.
-2. **Compound acknowledgement representation.** The
-   `feature.active-session-reasoning-and-plan-ack` row has no fixed shape that
-   preserves each half's state generically without adapter downcasts and
-   without inventing pending state.
-
-Both are recorded in the
+The sole open operator decision is whether to compile a shared
+provider-operation observation public-baseline gate with honest
+source/lifecycle/view vocabulary, or to leave
+`control.provider-session-catalogue` withheld and candidate F unpromoted. Both
+directions are recorded in the
 [stopped gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md).
-This card is retained as the derived, re-verified evidence an implementation
-worker will need once they are answered. It is **not** a ready card, it
-authorizes no Rust, and none of its 89 rows count toward coverage. Coverage
-stays at 249 proved and 518 remaining.
+
+This card is retained as planned, not-ready evidence. If candidate F continues,
+the compound acknowledgement shape must still be settled in planning before
+this card can become ready. It authorizes no Rust,
+and none of its 89 rows count toward coverage. Coverage stays at 249 proved and
+518 remaining. The compound acknowledgement, attachment-control, and
+platform-catalogue corrections below remain route-local evidence requirements;
+they do not select a replacement design or create another Next Task.
 
 Do not implement this card. Do not compile a replacement card. Do not choose
 the shared runtime direction inside a batch card.
@@ -45,9 +48,10 @@ through the accepted additive adapter-owned open seam.
 
 ## Retained Scope
 
-Every item below is contingent on both decisions. Items 6 and 7 cannot be
-written exactly until decision 2 lands; item 4 cannot be written at all until
-decision 1 lands.
+Every item below is contingent on the provider-operation observation decision.
+Items 6 and 7 cannot be written exactly until an acknowledgement representation
+is accepted; the notes retain unresolved route-local evidence and do not select
+that public shape.
 
 1. Add the established
    `consumer_route_projection_contribution(source_id)` method to
@@ -73,7 +77,8 @@ decision 1 lands.
    `load_request`, `load_session`, `resume_request`, `resume_session`,
    `prepare_working_state_restoration`, and `into_parts` exactly as they are on
    `main`, including the `DeclaredEffort` requested-`"on"` normalization.
-4. **Blocked by decision 1.** No projected catalogue seam is authorized.
+4. **Blocked by the provider-operation observation decision.** No projected
+   catalogue seam is authorized.
    `KimiPreparedSessionCatalogue::consumer_route_projection_contribution` emits
    the prepared `feature.provider-session-catalogue` row and must not emit
    `control.provider-session-catalogue` in any state, because that control is
@@ -86,13 +91,14 @@ decision 1 lands.
    alias `swallowtail-core`'s `ProviderCatalogValue` bound and do not add a
    shared constant. Retain a confirmation token only when it is non-blank,
    trimmed-equal, control-free, and within the bound.
-6. **Shape blocked by decision 2.** Publish the acknowledgement row only from
-   admitted tokens. Under `DeclaredEffort` with requested `"on"`, publish the
-   exact provider-confirmed effort, not `"on"`. Return `Rejected` only for
-   `swallowtail.negotiated_reasoning.effective_mismatch` and
-   `swallowtail.kimi.acp.harness_mode_mismatch` with the retained exact value.
-   Implement the two disjoint foreign/unretainable branches the gate fixes and
-   do not merge them:
+6. Preserve the first-round acknowledgement evidence without selecting a
+   public shape. The generic compound row must associate each reasoning/Plan
+   half with its exact effective, rejected, or not-observed state without an
+   adapter downcast. A requested-but-never-dispatched Plan half must not be
+   mapped to `with_pending()` because no acknowledgement was dispatched and
+   the reasoning failure is terminal. Under `DeclaredEffort` with requested
+   `"on"`, retain the exact provider-confirmed effort rather than `"on"`.
+   Keep the two disjoint foreign/unretainable branches the gate fixes separate:
    - **pre-lifecycle (case 2)** — the lifecycle already aborted, so return its
      exact preserved `RuntimeFailure` unchanged with no contribution. No
      session exists to close and the new adapter codes must not appear.
@@ -102,14 +108,15 @@ decision 1 lands.
      `swallowtail.kimi.acp.reasoning_value_foreign` or
      `swallowtail.kimi.acp.reasoning_value_unbounded`, publishing no row, while
      `open_session` still succeeds on the identical fixture.
-7. **Shape blocked by decision 2.** Preserve `driver.rs`'s reasoning-then-Plan
-   confirmation order and control flow exactly. A maximal request whose
-   reasoning rejects never dispatches the Plan request, so the accepted design
-   must represent that Plan half as requested, never dispatched, and never
-   arriving — without extra provider work, without claiming pending
-   acknowledgement state, and without requiring an adapter downcast to read it.
-   Because reasoning is confirmed first, no exposed outcome can carry an
-   unobserved *reasoning* half; every earlier failure takes case 2.
+7. Preserve `driver.rs`'s reasoning-then-Plan confirmation order and control
+   flow exactly. A maximal request whose reasoning rejects never dispatches the
+   Plan request, so any eventual design must represent that Plan half as
+   requested but not observed, without extra provider work, without mapping it
+   to pending acknowledgement state, and without requiring an adapter downcast
+   to read it. `KimiReasoningAcknowledgement::RequestedNotObserved` is
+   speculative and unreachable under the fixed order and is not an accepted
+   public baseline. Because reasoning is confirmed first, no exposed outcome
+   can carry an unobserved reasoning half; every earlier failure takes case 2.
 8. Publish `feature.negotiated-model-options-observation` only when
    `parse_model_options` returned `Some`. Change neither `parse_model_options`
    nor `validate_session_configuration`, and introduce no preserved-versus-
@@ -124,10 +131,10 @@ decision 1 lands.
     `kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, and
     13 `kimi-platform.chat`. Name each tuple once with an emitted or
     construction-time-withheld reason matching the ledgers below.
-11. Prove the ledger totals the accepted decision 1 fixes: 74 emitted and 14
-    withheld with `control.provider-session-catalogue` withheld, or 75 emitted
-    and 14 withheld if a provider-operation observation baseline is authorized.
-    Four independent ledgers generated from the reviewed CSV.
+11. Preserve the corrected interim four-ledger arithmetic as reassessment
+    evidence: 89 rows, 74 emitted, 14 withheld, and 1 undecided. These totals
+    are not proved coverage or implementation authority while the
+    provider-operation observation decision is open.
 12. Emit `feature.persistent-session-posture` on `kimi-code.acp` only from
     `KimiPreparedSessionImport`. `KimiPreparedSession` must not emit it; its
     plan is `SessionProviderStatePolicy::Prohibited`.
@@ -176,10 +183,11 @@ these rows counts toward Contract 061 coverage while this card is blocked.
 | 21 | `interactive-session` | `control.session-options` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 22 | `session-management` | `control.load-session` | emitted — attachment-compatible profiles only — `load_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
 | 23 | `session-management` | `control.resume-session` | emitted — attachment-compatible profiles only — `resume_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
-| 24 | `session-management` | `control.provider-session-catalogue` | **undecided** — no shared runtime source, lifecycle, or view represents a completed provider-operation observation; emitted only if the operator authorizes that baseline, otherwise withheld |
+| 24 | `session-management` | `control.provider-session-catalogue` | **undecided** — emitted only if a provider-operation observation baseline is authorized; withheld otherwise |
 | 25 | `session-management` | `control.provider-session-import` | emitted — `KimiPreparedSessionImport` |
 
-25 distinct tuples; 21 emitted; 3 withheld; 1 undecided.
+25 distinct tuples; 21 emitted; 3 withheld; 1 undecided. These dispositions
+are evidence only while the gate is stopped.
 
 ### `kimi-code.headless` — 20 Rows, 10 Emitted, 10 Withheld
 
@@ -266,15 +274,13 @@ these rows counts toward Contract 061 coverage while this card is blocked.
 
 13 distinct tuples; 12 emitted; 1 withheld.
 The four ledgers total 89 distinct tuples: 74 emitted, 14 withheld, and 1
-undecided. Owning packages split 76 `swallowtail-adapter-kimi` and 13
-`swallowtail-adapter-kimi-platform` rows. `ConsumerRouteEvidenceStrength` has
-no documentation or QA-matrix variant, so every withheld row is unprojectable
-by construction.
-
-The undecided row is `kimi-code.acp` `session-management` /
-`control.provider-session-catalogue`. It resolves to emitted (totals 75/14)
-only if the operator authorizes a provider-operation observation baseline, and
-to withheld (totals 74/15) otherwise. No implementation may pick a side.
+undecided in the corrected reassessment arithmetic. Owning packages split 76
+`swallowtail-adapter-kimi` and 13 `swallowtail-adapter-kimi-platform` rows.
+`ConsumerRouteEvidenceStrength` has no documentation or QA-matrix variant, so
+every withheld row is unprojectable by construction. These totals are evidence
+only, not proved coverage or implementation authority. The undecided
+`kimi-code.acp` `control.provider-session-catalogue` row remains governed by
+the provider-operation observation decision; no implementation may pick a direction.
 
 ## Required Proofs
 
@@ -371,8 +377,8 @@ assertion does not satisfy this card.
 
 ### Maximal Early Stop — Reasoning Rejects While Plan Was Requested
 
-The fixture decision 2 must satisfy. A maximal prepared session requests
-reasoning `"high"` and Plan; the provider confirms `"medium"`.
+The retained early-stop evidence covers a maximal prepared session requesting
+reasoning `"high"` and Plan while the provider confirms `"medium"`.
 
 - the lifecycle aborts at the reasoning `confirm` call and never reaches
   `mode::prepare_plan_mode`; assert no `set_config_option` for `"mode"` was
@@ -381,9 +387,10 @@ reasoning `"high"` and Plan; the provider confirms `"medium"`.
   with its existing cleanup, unchanged from `main`;
 - `open_session_with_projection` returns `Rejected` carrying that same
   `RuntimeFailure` and no session;
-- the published row asserts the exact reasoning rejection and asserts **nothing
-  false about Plan**: not requested, not effective, not rejected, and not
-  pending;
+- any compound row associates the exact reasoning rejection with the Plan
+  half's exact requested-but-not-observed state. It must not map that Plan half
+  to `with_pending()`: no acknowledgement was dispatched and the failure is
+  terminal;
 - a generic Contract 061 consumer can read each half's state without
   downcasting to a Kimi type; and
 - no model-option row accompanies the rejection.
@@ -430,7 +437,8 @@ but its option missing or malformed takes case 2 and publishes nothing.
 
 ## Out Of Scope
 
-- choosing either open operator decision, or implementing this card
+- choosing the provider-operation observation decision, or implementing this
+  card
 - candidates B, C, E, I-L, Batch 9.5, or generation closeout
 - runtime, testkit, core, or any other adapter public API; `ReasoningMode`,
   `NegotiatedReasoningSetup`, `EffectiveReasoningSetup`, contracts,
@@ -448,17 +456,17 @@ but its option missing or malformed takes case 2 and publishes nothing.
 
 ## Acceptance Criteria
 
-None may be checked. This card is blocked and no implementation acceptance has
-been earned.
+None may be checked. This card is planned, not ready, and no implementation
+acceptance has been earned.
 
-- [ ] both operator decisions are answered before any of the following is
-      attempted
+- [ ] the provider-operation observation public-baseline decision is answered
+      before any of the following is attempted
 - [ ] four independent ledgers reconcile exactly to 25, 20, 31, and 13 rows,
       with each `(route_id, operation_shape, semantic_id)` named once and no
       exception list
-- [ ] dispositions match the accepted decision 1 outcome — 74/15 with the
-      catalogue control withheld, or 75/14 with a provider-operation
-      observation baseline — and minimal and maximal profiles prove every
+- [ ] the corrected interim 89-row arithmetic of 74 emitted, 14 withheld, and
+      1 undecided is re-derived as evidence only; it is not counted as proved
+      coverage or implementation authority, and minimal and maximal profiles prove every
       optional row is genuinely absent or present
 - [ ] every emitted row retains exact source, route, operation, lifecycle,
       value, omission, applicability, access, evidence, support, availability,
@@ -468,10 +476,11 @@ been earned.
       only the accepted reasoning and Plan subset
 - [ ] the acknowledgement row publishes the exact provider-confirmed effort
       under requested `"on"` and never the normalized `"on"`
-- [ ] a maximal request whose reasoning rejects asserts nothing false about
-      Plan — not requested, not effective, not rejected, not pending — performs
-      no further provider work, preserves `driver.rs`'s confirmation order, and
-      is readable generically without an adapter downcast
+- [ ] a maximal request whose reasoning rejects associates the exact reasoning
+      rejection with the requested-but-not-observed Plan half, performs no
+      further provider work, does not map that terminal state to
+      `with_pending()`, preserves `driver.rs`'s confirmation order, and is
+      readable generically without an adapter downcast
 - [ ] pre-lifecycle foreign or unretainable tokens return the exact preserved
       `RuntimeFailure` with no contribution and without emitting either new
       adapter code
@@ -492,6 +501,9 @@ been earned.
 - [ ] `kimi-platform.chat` `control.model-selection` is emitted only by
       `KimiPlatformPreparedInferenceAttempt` and is absent from
       `KimiPlatformPreparedCatalogue`
+- [ ] `KimiReasoningAcknowledgement::RequestedNotObserved` is not introduced as
+      an accepted public baseline; fixed reasoning-first order makes it
+      speculative and unreachable
 - [ ] `feature.persistent-session-posture` on `kimi-code.acp` comes only from
       `KimiPreparedSessionImport`
 - [ ] all 14 withheld rows are withheld at construction with their exact
@@ -509,15 +521,15 @@ been earned.
 
 ## Review Oracle
 
-Invariant: this card is blocked. Nothing in it authorizes implementation, and
-none of its 89 rows counts toward coverage.
+Invariant: this card is planned and not ready. Nothing in it authorizes
+implementation, and none of its 89 rows counts toward coverage.
 
 Counterexamples and required proof:
 
 - treat this card as ready, implement it, or count any of its rows as proved —
   fail; coverage is 249/518
-- answer either operator decision inside this card, or pick a shared runtime
-  direction — fail
+- answer the provider-operation observation decision inside this card, or pick
+  a shared runtime direction — fail
 - add a projected catalogue seam, or publish
   `control.provider-session-catalogue` through
   `ActiveSessionObservation`, `PostOpenObservationOnly`, or
@@ -538,8 +550,9 @@ Counterexamples and required proof:
   return the new adapter code
 - describe or prove case 4 as a general fallback rather than the
   reasoning-only, requested-`"on"`-only branch — fail
-- claim Plan was not requested, effective, rejected, or pending when a maximal
-  request's reasoning rejected before Plan dispatch — fail; all four are false
+- lose the fact that Plan was requested but not observed when a maximal request's
+  reasoning rejected before Plan dispatch, or map that terminal state to
+  `with_pending()` — fail
 - require an adapter downcast to read either half's state — fail Contract 061's
   facade requirement
 - introduce a reachable unobserved *reasoning* half — fail; reasoning is
@@ -579,7 +592,7 @@ operation-shape label, or semantic identity cannot agree with itself.
 
 ## Validation
 
-None while blocked. The planning batch that carries this card runs
+None while planned and not ready. The planning batch that carries this card runs
 `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` only.
 
 Once unblocked, an implementation PR would name:
@@ -598,28 +611,33 @@ No live probe or provider contact belongs to this card.
 
 ## Auto-Continuation
 
-No. This card is blocked pending two operator decisions. Do not dispatch an
-implementation worker and do not compile a replacement card.
+No. This card is planned but not ready pending the provider-operation
+observation public-baseline decision. Do not dispatch an implementation worker
+and do not compile a replacement card.
 
 ## Stop Conditions
 
-- Stop if either operator decision is still open; that is the current state.
+- Stop while the provider-operation observation public-baseline decision is
+  open; that is the current state.
 - Stop if the card needs a runtime/testkit/core public type, source kind,
   composer rule, fixed maximum, failure kind, or contract amendment beyond
-  whatever decision 1 authorizes.
+  whatever the provider-operation observation decision authorizes.
 - Stop if exact reasoning or Plan rejection requires accepting an unadvertised,
   ambiguous, foreign, or unbounded value, or a raw ACP payload.
 - Stop if the preserved `open_session`, `load_session`, `resume_session`,
   `list_sessions`, `list_page`, `next_page_request`, or cleanup behavior cannot
   stay unchanged.
-- Stop if the accepted acknowledgement shape cannot preserve each half's state
-  generically without an adapter downcast or invented pending state.
+- Stop if the unresolved acknowledgement shape cannot preserve each half's
+  exact state generically without an adapter downcast or invented pending
+  state. `RequestedNotObserved` must not be mapped to `with_pending()` when no
+  acknowledgement was dispatched and the failure is terminal.
 - Stop if any 25/20/31/13 ledger needs an exception list, inferred support, or
   truth borrowed from another route or operation.
-- Stop if the derived 74/14/1 disposition cannot be proved from current source;
-  report the exact divergence instead of adjusting the census.
+- Stop if the corrected 74/14/1 reassessment arithmetic cannot be preserved
+  from current source; report the exact divergence instead of adjusting the census.
 - Stop if scope widens to another candidate, Batch 9.5, shared public API
-  beyond decision 1, provider contact, or another product track.
+  beyond the provider-operation observation decision, provider contact, or
+  another product track.
 
 ## Evidence
 

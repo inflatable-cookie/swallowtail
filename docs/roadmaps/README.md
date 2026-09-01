@@ -15,35 +15,26 @@ shape.
 
 ## Next Task
 
-Answer two `kimi-code.acp` operator decisions under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md). No card is
-ready. The
+Choose the provider-operation observation public-baseline direction under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md). The sole
+Next Task is one operator decision:
+
+- compile a shared provider-operation observation public-baseline gate with
+  honest source/lifecycle/view vocabulary; or
+- leave `control.provider-session-catalogue` withheld and candidate F
+  unpromoted.
+
+`KimiPreparedSessionCatalogue::list_sessions` opens no session, so current
+runtime vocabulary cannot honestly publish its completed query through
+`ActiveSessionObservation`, `PostOpenObservationOnly`, or
+`ConsumerRouteActiveSessionState`. Do not broaden or reinterpret those shared
+names. The
 [Kimi gate](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-stopped: four of the operator's five answers are realizable route-locally, but
-the fifth is not.
-
-1. **Provider-operation observation baseline.**
-   `KimiPreparedSessionCatalogue::list_sessions` opens no session, yet
-   publishing `control.provider-session-catalogue` needs
-   `ActiveSessionObservation`, `PostOpenObservationOnly`, and
-   `ConsumerRouteActiveSessionState` — all three defined in
-   `swallowtail-runtime` as post-open *session* semantics. Either broaden that
-   shared vocabulary, which is a runtime public decision with cross-route reach
-   that touches Contract 061, or leave the row withheld as unrepresentable and
-   accept one permanently unproved census row.
-2. **Compound acknowledgement representation.** Fix a shape for
-   `feature.active-session-reasoning-and-plan-ack` that preserves each half's
-   state generically, without adapter downcasts and without inventing pending
-   state, and that honestly represents a Plan half requested but never
-   dispatched because reasoning rejected first.
-
-Decision 1 gates candidate F as a whole; decision 2 gates any implementation
-card. [Card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md)
-is `blocked` and retains the re-derived 89-row evidence: 74 emitted, 14
-withheld, 1 undecided pending decision 1.
-
-Coverage stays at 249 proved and 518 remaining. Do not implement Kimi, promote
-another candidate, contact a provider, or compile Batch 9.5.
+is stopped and card 034 is planned; not ready; blocked by the provider-operation
+observation public-baseline decision. The corrected interim ledger is 74
+emitted / 14 withheld / 1 undecided as reassessment evidence only; coverage
+remains 249 proved and 518 remaining. Do not choose the decision, implement Kimi, promote another
+candidate, contact a provider, or compile Batch 9.5.
 
 ## Standing Lanes
 

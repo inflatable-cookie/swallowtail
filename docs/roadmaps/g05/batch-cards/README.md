@@ -2,6 +2,7 @@
 
 ## Planned
 
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
@@ -11,7 +12,7 @@
 
 ## Blocked
 
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — blocked; candidate F's re-derived 25/20/31/13-row evidence retained behind two open operator decisions; not authorized for implementation
+- None.
 
 ## Completed
 

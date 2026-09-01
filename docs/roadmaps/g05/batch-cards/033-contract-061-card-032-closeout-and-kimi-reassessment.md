@@ -384,14 +384,15 @@ Neither of those gates grants Kimi authority.
 
 ### Gate Outcome
 
-The operator answered all five decisions, and the
-[compiled gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-stopped on the fifth: no shared runtime source kind, lifecycle band, or view
-represents a completed provider-session catalogue query. Candidate F is still
-not promoted and [card 034](034-contract-061-kimi-package-completion.md) is
-`blocked`. The gate's re-derivation from current source does replace this
-card's provisional 86/3 reading with four exact ledgers totalling 74 emitted,
-14 withheld, and 1 undecided row.
+The first-round route-local repairs remain evidence, but the
+[Kimi active-observation gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+stops because no shared runtime source kind, lifecycle band, or view represents
+a completed provider-session catalogue query. Candidate F is still not
+promoted and [card 034](034-contract-061-kimi-package-completion.md) is
+planned; not ready; blocked by the provider-operation observation
+public-baseline decision. The corrected 89-row reassessment remains four exact
+ledgers totalling 74 emitted, 14 withheld, and 1 undecided as evidence only; none is proved
+coverage or implementation authority.
 
 ### Validation
 
@@ -405,6 +406,6 @@ validation, live probe, or provider contact belongs to this card.
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [stopped Kimi active-observation gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-- [blocked card 034](034-contract-061-kimi-package-completion.md)
+- [planned card 034](034-contract-061-kimi-package-completion.md)
 - [card 030 acknowledgement reassessment](030-contract-061-acknowledgement-candidate-reassessment.md)
 - [card 031 closeout log](../../../logs/2026-09-01-g05-009-card-031-closeout-and-lifecycle-reassessment.md)

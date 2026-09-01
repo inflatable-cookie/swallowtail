@@ -215,6 +215,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   one boundary breach.
 - Surface: g04.058 / Research 205 invalid-`--agent` incidents; Antigravity
   headless worker method.
+- Progress 2026-09-01: Swallowtail ownership stop. Card 161 already forbade
+  provider prompts; Research 205 already records the two `--print` runs as
+  authority-boundary / `UnverifiedNewer` incidents only (nonexistent
+  `--agent swallowtail-nonexistent-agent-zzzz`, then whitespace-only
+  `--agent`; both JSON `status: SUCCESS` with usage). Production
+  `headless_command.rs` still omits `--agent`. No Swallowtail script, wrapper,
+  or task owns host `agy` argv: `scripts/run-with-isolated-home.sh` forwards
+  the incident shapes to a fake `agy` unchanged, and agent-direct PATH
+  invocation has the same empty intercept. A repo wrapper would be fail-open
+  against the method that actually ran. Leave open; do not close from
+  Swallowtail and do not treat those runs as qualified fail-open proof.
 
 ### [ ] Host `agy` auto-updated from 1.1.9 to 1.1.19 mid-research — 2026-08-24
 - Friction: PATH `agy` reported `1.1.9` with stdout help matching the frozen

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Papercuts Antigravity invalid-`--agent` no-prompt ownership stop](./2026-09-01-papercuts-antigravity-agent-probes-stop.md) — host `agy --print` research probes are agent-direct; Swallowtail cannot intercept; papercut left open
 - [2026-09-01 Pi RPC 0.84.4 Claim](./2026-09-01-pi-rpc-0-84-4-claim.md) — Pi RPC qualified through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2`
 - [2026-09-01 Pi RPC 0.84.4 Identity](./2026-09-01-pi-rpc-0-84-4-identity.md) — Research 268; compatible extension; host `0.83.0` and official stable `0.84.4` corroborated; sidecar stays exact `0.84.2`; claims unchanged
 - [2026-09-01 Papercuts launcher worktree-cleanup ownership stop](./2026-09-01-papercuts-launcher-worktree-cleanup-stop.md) — T3/Paseo own Git deregistration after directory removal; Swallowtail teardown cannot prune; papercut left open

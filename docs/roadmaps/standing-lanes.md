@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-31
+Updated: 2026-09-01
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -49,8 +49,9 @@ unpublished `0.149.2` and `0.150.2` remain incompatible; `0.151.1` remains
 permitted `UnverifiedNewer`. No provider prompt, live session, login, install,
 or host update was required.
 
-The next all-route checkpoint remains queued. It must choose only one next
-family and must not infer that family from registry `latest` alone.
+Research 263 completed the next all-route checkpoint across all 40 production
+families. It selected Codex `0.152.0` alone for g05.013 cards 035-036. The
+checkpoint changed no claim; identity work remains first.
 
 ### Previous Completed Family
 

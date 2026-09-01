@@ -2,13 +2,14 @@
 
 ## Planned
 
+- [036-codex-0-152-0-claim.md](./036-codex-0-152-0-claim.md) — planned; gated on card 035 admitted identity
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [035-codex-0-152-0-identity.md](./035-codex-0-152-0-identity.md) — ready; one-family Contract 029 identity before claim
 
 ## Blocked
 

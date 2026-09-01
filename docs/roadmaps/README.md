@@ -15,26 +15,17 @@ shape.
 
 ## Next Task
 
-Choose the provider-operation observation public-baseline direction under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md). The sole
-Next Task is one operator decision:
+Implement
+[card 035](g05/batch-cards/035-codex-0-152-0-identity.md): freeze official
+Codex `0.152.0` identity and classify the selected exec/app-server surfaces
+before any production claim edit. Auto-continue to card 036 only for an
+admitted Contract 029 segment.
 
-- compile a shared provider-operation observation public-baseline gate with
-  honest source/lifecycle/view vocabulary; or
-- leave `control.provider-session-catalogue` withheld and candidate F
-  unpromoted.
-
-`KimiPreparedSessionCatalogue::list_sessions` opens no session, so current
-runtime vocabulary cannot honestly publish its completed query through
-`ActiveSessionObservation`, `PostOpenObservationOnly`, or
-`ConsumerRouteActiveSessionState`. Do not broaden or reinterpret those shared
-names. The
-[Kimi gate](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-is stopped and card 034 is planned; not ready; blocked by the provider-operation
-observation public-baseline decision. The corrected interim ledger is 74
-emitted / 14 withheld / 1 undecided as reassessment evidence only; coverage
-remains 249 proved and 518 remaining. Do not choose the decision, implement Kimi, promote another
-candidate, contact a provider, or compile Batch 9.5.
+The provider-operation observation decision under
+[g05.009](g05/009-contract-061-consumer-projection-realization.md) remains
+queued. Card 034 is planned, not ready, and candidate F remains unpromoted at
+249 proved / 518 remaining rows. Do not choose that operator decision inside
+the independent currentness lane.
 
 ## Standing Lanes
 

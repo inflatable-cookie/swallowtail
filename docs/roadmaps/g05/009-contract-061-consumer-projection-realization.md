@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
+Status: planned; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
 strict-paused; no implementation card is ready
 Owner: Tom
 Created: 2026-08-31

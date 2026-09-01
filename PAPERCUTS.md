@@ -77,17 +77,24 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: `swallowtail-host-local` watcher host and watcher HTTP bridge.
 - Closed: 2026-09-01 papercuts scoped-task watcher EnterError repair.
 
-### [ ] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
+### [x] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
 - Friction: PR 117 added four warning-level files above the configured size
   threshold: `watcher/accept.rs`, `process.rs`, `watcher_service/policy.rs`, and
   `watcher.rs`. Effigy doctor rose from 381 findings (334 warnings / 47 errors)
   to 385 (338 warnings / 47 errors).
 - Impact: later g05 lanes inherit noisier structural-health evidence even
   though the error-level baseline is unchanged.
-- Fix: split watcher acceptance/lookup, local process construction, entry state,
-  and policy proofs into focused modules without reducing lifecycle coverage.
+- Fix: split watcher acceptance/lookup and local process construction/validation
+  into focused private modules without reducing lifecycle coverage; reconcile
+  the stale four-file claim before changing already-compliant files.
 - Surface: `swallowtail-host-local` process and watcher registry implementation
   and policy tests; g05.003 card 009 closeout.
+- Closed: 2026-09-01 papercuts host-local watcher god-file split. The live
+  four-path re-measure found only `watcher/accept.rs` at 288 code lines and
+  `process.rs` at 284 above threshold; `watcher.rs` and
+  `watcher_service/policy.rs` were already below it. The split reduced the
+  total from 387 findings (7 critical / 42 high / 338 warning) to 385
+  (7 critical / 42 high / 336 warning).
 
 ### [ ] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
 - Friction: `docs.x.ai/developers/...` HTML bodies are 0.4–1.1 MiB Next.js

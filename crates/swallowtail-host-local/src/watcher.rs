@@ -2,6 +2,7 @@ mod accept;
 mod cleanup;
 mod feed;
 mod join;
+mod lookup;
 mod process;
 mod support;
 #[cfg(test)]

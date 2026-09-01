@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Papercuts Effigy graph-explore timeout ownership stop](./2026-09-01-papercuts-effigy-graph-explore-timeout-stop.md) — Swallowtail cannot emit rebuild progress or own the graph timeout envelope; papercut left open for Effigy
 - [2026-09-01 g05.009 Cline Active-Observation Gate Compiled](./2026-09-01-g05-009-cline-active-observation-gate-compiled.md) — operator approved the narrow adapter-local baseline; candidate G promoted as ready card 032 and sole Next Task
 - [2026-09-01 g05.009 Card 031 Closeout And Lifecycle Reassessment](./2026-09-01-g05-009-card-031-closeout-and-lifecycle-reassessment.md) — PR 141 merged at `5d1f173a`; 201 rows proved; F/G still fail rubric item 2; g05.009 strict-paused behind the narrow `cline.acp` decision
 - [2026-08-31 g05.009 Claude Agent Acknowledgement Gate Compiled](./2026-08-31-g05-009-claude-agent-acknowledgement-gate-compiled.md) — operator approved the narrow adapter-local baseline; candidate D promoted as ready card 031 and sole Next Task

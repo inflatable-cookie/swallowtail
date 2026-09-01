@@ -13,6 +13,14 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: emit rebuild progress and enforce a bounded query/index timeout with a
   structured fallback diagnostic.
 - Surface: Effigy graph indexing and `graph explore --json` in Swallowtail.
+- Progress 2026-09-01: Swallowtail ownership stop. Host
+  `effigy v0.12.1+local.47458a1` already bounds graph *queries* with
+  `EFFIGY_GRAPH_TIMEOUT_MS` (default 120000) and returns
+  `effigy.graph.timeout.v1` health/`next` diagnostics. Rebuild remains silent
+  for the full budget (0 stdout/stderr bytes until timeout). No Swallowtail
+  `effigy.toml`, task, script, or wrapper can emit in-command rebuild progress
+  or change that built-in behavior without patching Effigy; leave open for an
+  Effigy product lane.
 
 ### [x] Watcher proof repair restored the 390 god-file baseline — 2026-08-30
 - Friction: the first PR 126 revision raised doctor from 390 findings

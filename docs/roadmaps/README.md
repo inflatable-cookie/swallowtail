@@ -15,22 +15,19 @@ shape.
 
 ## Next Task
 
-Implement
-[card 031](g05/batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
+Decide the narrow
+[`cline.acp` active-observation public-baseline gate](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 under [g05.009](g05/009-contract-061-consumer-projection-realization.md).
-The accepted `claude-agent.acp` public-baseline gate makes candidate D the sole
-ready Batch 9.4 tranche: complete the Claude Agent adapter package's exact 30
-`claude-agent.acp`, 12 `claude-code.headless`, and 11
-`claude-code.response-only` rows.
+Card 031 merged candidate D through PR 141 at `5d1f173a`, taking the proved
+total to 201 and leaving 566 rows. The lifecycle-priority reassessment promotes
+no implementation card on current `main`.
 
-Retain exact provider-effective and rejected ACP reasoning only inside the
-adapter. Add the fixed adapter-owned open-with-projection outcome/failure while
-preserving `ClaudeAgentPreparedSession::open_session`; keep prepared and
-active-session source identities distinct. `kimi-code.acp`, `cline.acp`,
-candidates F/G, runtime/core public APIs, negotiated-model observation,
-provider-session catalogue observation, provider contact, and Batch 9.5 stay
-outside the card. Stop after one reviewable 53-row PR for orchestrator
-exact-head review.
+Decide only whether the Cline adapter may retain exact effective/rejected Plan
+acknowledgement plus exact bounded negotiated model options and expose both
+through one additive adapter-owned projected-open seam while preserving
+`ClinePreparedSession::open_session`. Do not fix signatures, compile candidate
+G, couple Kimi, enter the per-turn or breadth bands, implement Rust, contact a
+provider, or compile Batch 9.5 until that operator decision is recorded.
 
 ## Standing Lanes
 

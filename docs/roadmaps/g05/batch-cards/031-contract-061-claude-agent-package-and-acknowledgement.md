@@ -1,9 +1,9 @@
 # 031 Contract 061 Claude Agent Package And Acknowledgement
 
-Status: ready
+Status: complete; PR 141 merged at `5d1f173a`
 Owner: Tom
 Created: 2026-08-31
-Updated: 2026-08-31
+Updated: 2026-09-01
 Milestone: `../009-contract-061-consumer-projection-realization.md`
 Depends on: completed card 030; accepted Claude Agent acknowledgement
 public-baseline gate
@@ -74,37 +74,37 @@ adapter-owned prepared-open result without changing the existing open path.
 
 ## Acceptance Criteria
 
-- [ ] independent ledgers reconcile exactly to 30, 12, and 11 rows, with each
+- [x] independent ledgers reconcile exactly to 30, 12, and 11 rows, with each
       `(route_id, operation_shape, semantic_id)` named once and no exception
       list
-- [ ] every emitted row retains exact source, route, operation, lifecycle,
+- [x] every emitted row retains exact source, route, operation, lifecycle,
       value, omission, applicability, access, and evidence truth
-- [ ] prepared reasoning is requested/prepared/pending only; it never claims
+- [x] prepared reasoning is requested/prepared/pending only; it never claims
       provider-effective or rejected state
-- [ ] an exact matching ACP effort acknowledgement returns an open session and
+- [x] an exact matching ACP effort acknowledgement returns an open session and
       a contribution carrying the exact provider-effective value
-- [ ] only an exact, well-formed different effort admitted by both the response
+- [x] only an exact, well-formed different effort admitted by both the response
       and qualified route returns `Rejected` with its exact value; missing,
       malformed, duplicate,
       unadvertised, unbounded, transport, setup, or cleanup failures carry no
       rejected contribution
-- [ ] omitted reasoning produces no acknowledgement row and no unused
+- [x] omitted reasoning produces no acknowledgement row and no unused
       active-observation source
-- [ ] prepared and active-session source IDs are distinct; prepared rows use
+- [x] prepared and active-session source IDs are distinct; prepared rows use
       `AdapterContribution` and acknowledged rows use
       `ActiveSessionObservation`
-- [ ] existing `open_session` callers retain the same signature, handle,
+- [x] existing `open_session` callers retain the same signature, handle,
       failure code, and cleanup outcome; both public methods share one private
       lifecycle
-- [ ] activity remains descriptor-only; model-catalogue, documentation-only,
+- [x] activity remains descriptor-only; model-catalogue, documentation-only,
       incompatible-operation, and unproved lifecycle rows are withheld at
       construction
-- [ ] matching-source cross-route, cross-operation, cross-access,
+- [x] matching-source cross-route, cross-operation, cross-access,
       cross-instance, and stale-revision assembly fail closed
-- [ ] only the Claude Agent adapter semantic API baseline changes; shared
+- [x] only the Claude Agent adapter semantic API baseline changes; shared
       public APIs, contracts, census, provider claims, and compatibility claims
       remain unchanged
-- [ ] touched source stays below configured god-file thresholds and the scan
+- [x] touched source stays below configured god-file thresholds and the scan
       does not exceed the accepted repository baseline
 
 ## Review Oracle
@@ -155,6 +155,28 @@ No live probe or provider contact belongs to this card.
 No. Stop after one reviewable PR. The orchestrator must review the exact
 53-row proof and public API head before another Batch 9.4 candidate is
 reassessed or promoted.
+
+## Closeout
+
+PR 141 merged exact reviewed head `1edc7e73019a450605cb681eb56aeb35ad188557`
+through `5d1f173ad0637c16c24f5134ef45dc559f67c61d`. The independent
+ledgers reconcile to 30 = 29 emitted / 1 withheld for `claude-agent.acp`,
+12 = 11/1 for `claude-code.headless`, and 11 = 9/2 for
+`claude-code.response-only`.
+
+The adapter retains exact reasoning acknowledgement, keeps prepared and
+active-observation sources distinct, and serves the preserved and additive
+open methods from one private lifecycle. Missing, malformed, duplicate,
+unadvertised, unqualified, or unbounded confirmation produces runtime failure
+with no contribution. Only the Claude Agent adapter API baseline changed,
+with 27 additive lines. Focused validation passed 188 tests, extracted-package
+and semantic API checks passed, the god-file scan improved from 391 to 387,
+and all five CI jobs were green. No provider contact or live probe occurred.
+
+Candidate D therefore adds 53 proved rows to the earlier 148. Batch 9.4 now
+has 201 proved rows and 566 remaining rows in candidates B, C, E-G, and I-L.
+The next current-main lifecycle audit is recorded in the Batch 9.4 checkpoint;
+it promotes no implementation card.
 
 ## Stop Conditions
 

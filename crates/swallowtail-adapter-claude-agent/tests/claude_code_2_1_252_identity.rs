@@ -15,7 +15,7 @@ const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.252/protocol.json"
 const RESPONSE_ONLY: &str = include_str!("fixtures/claude-code-2.1.252/response-only.json");
 
 #[test]
-fn identity_freezes_official_2_1_252_before_any_claim_edit() {
+fn identity_and_claim_qualify_2_1_252_as_compatible_extension() {
     let identity: Value =
         serde_json::from_str(IDENTITY).expect("Claude Code 2.1.252 identity corpus is valid JSON");
     let protocol: Value =
@@ -126,11 +126,11 @@ fn identity_freezes_official_2_1_252_before_any_claim_edit() {
         "2.1.251"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.251");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.252");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.251"
+        "2.1.252"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -145,6 +145,11 @@ fn identity_freezes_official_2_1_252_before_any_claim_edit() {
     ));
     assert!(matches!(
         headless.assess(&version("2.1.252")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        headless.assess(&version("2.1.253")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!headless.permits(&version("2.1.244")));
@@ -158,6 +163,11 @@ fn identity_freezes_official_2_1_252_before_any_claim_edit() {
     ));
     assert!(matches!(
         response.assess(&version("2.1.252")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.253")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

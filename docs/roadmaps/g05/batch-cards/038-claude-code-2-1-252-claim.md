@@ -1,6 +1,6 @@
 # 038 Claude Code 2.1.252 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -72,3 +72,10 @@ checks.
 
 No. Review and merge. Same-repo merge order is serial: PR 157 lands before
 this implementation PR. Do not start a second family from this PR.
+
+## Result
+
+The Claude Code headless and response-only axes qualify official `2.1.252`.
+Unpublished `2.1.244` and `2.1.249` remain incompatible. Watcher stays exact
+`2.1.251`. Maximum-turn and other feature-specific exact sets remain bounded
+through `2.1.241`. Identity evidence remains commit `967cd0f3`.

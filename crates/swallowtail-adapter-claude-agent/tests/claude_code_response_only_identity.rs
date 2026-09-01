@@ -69,7 +69,7 @@ fn response_only_qualifies_2_1_251_as_compatible_extension() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.251"
+        "2.1.252"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -97,6 +97,11 @@ fn response_only_qualifies_2_1_251_as_compatible_extension() {
     ));
     assert!(matches!(
         claim.assess(&version("2.1.252")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("2.1.253")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

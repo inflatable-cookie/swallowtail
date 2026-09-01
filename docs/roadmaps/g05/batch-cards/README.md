@@ -8,8 +8,7 @@
 
 ## Ready
 
-- [037-claude-code-2-1-252-identity.md](./037-claude-code-2-1-252-identity.md) — ready; freeze official `2.1.252` identity before any claim edit
-- [038-claude-code-2-1-252-claim.md](./038-claude-code-2-1-252-claim.md) — ready; depends on card 037 with an admitted segment
+- None.
 
 ## Blocked
 
@@ -17,6 +16,8 @@
 
 ## Completed
 
+- [038-claude-code-2-1-252-claim.md](./038-claude-code-2-1-252-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.252`; unpublished `2.1.244` and `2.1.249` stay gaps; watcher stays exact `2.1.251`
+- [037-claude-code-2-1-252-identity.md](./037-claude-code-2-1-252-identity.md) — complete; Research 266 and current host/official identity frozen before claim
 - [036-codex-0-152-0-claim.md](./036-codex-0-152-0-claim.md) — complete; Codex exec and app-server qualified through official `0.152.0`; unpublished `0.151.1` stays a gap
 - [035-codex-0-152-0-identity.md](./035-codex-0-152-0-identity.md) — complete; Research 264 and current host/official identity frozen before claim
 - [033-contract-061-card-032-closeout-and-kimi-reassessment.md](./033-contract-061-card-032-closeout-and-kimi-reassessment.md) — evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage reconciled to 249/518, and candidate F left unpromoted behind a named `kimi-code.acp` gate

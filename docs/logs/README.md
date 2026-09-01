@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Claude Code 2.1.252 Claim](./2026-09-01-claude-code-2-1-252-claim.md) — headless and response-only qualified through official `2.1.252`; unpublished `2.1.244` and `2.1.249` stay gaps; watcher stays exact `2.1.251`
 - [2026-09-01 Claude Code 2.1.252 Identity](./2026-09-01-claude-code-2-1-252-identity.md) — Research 266; compatible extension; host `2.1.251` and official stable `2.1.252` corroborated; watcher stays exact `2.1.251`; claims unchanged
 - [2026-09-01 Codex 0.152.0 Claim](./2026-09-01-codex-0-152-0-claim.md) — exec and app-server qualified through official `0.152.0`; exact feature sets retained through `0.149.1`; unpublished `0.151.1` stays a gap
 - [2026-09-01 Codex 0.152.0 Identity](./2026-09-01-codex-0-152-0-identity.md) — Research 264; compatible extension; host `0.150.1` and official stable `0.152.0` corroborated; claims unchanged

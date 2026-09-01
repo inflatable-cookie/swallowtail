@@ -15,16 +15,11 @@ shape.
 
 ## Next Task
 
-Implement Claude Code useful-newer qualification for official `2.1.252`. Host
-already sits on qualified `2.1.251`. Do not leave official `2.1.252`
-UnverifiedNewer without a named incompatible reason. Do not start a second
-family from this PR.
-
-The provider-operation observation decision under
-[g05.009](g05/009-contract-061-consumer-projection-realization.md) remains
-queued. Card 034 is planned, not ready, and candidate F remains unpromoted at
-249 proved / 518 remaining rows. Do not choose that operator decision inside
-the independent currentness lane.
+Reassess remaining AllowUnverified currentness families after official Claude
+Code `2.1.252`. Do not start a second family from this PR. The g05.009
+provider-operation observation decision remains queued; card 034 stays planned,
+not ready, and candidate F remains unpromoted at 249 proved / 518 remaining
+rows.
 
 ## Standing Lanes
 

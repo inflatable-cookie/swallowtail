@@ -30,11 +30,11 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Research 265 selected Claude Code `2.1.252`; g05.014 cards 037-038 compile identity-before-claim | Contract 029 identity-before-claim; Research 265-266; current-main validation | `g05.014` cards 037-038 |
+| Keep production route versions current one family at a time. | Claude Code `2.1.252` qualified through g05.014 cards 037-038; Research 266 | Contract 029 identity-before-claim; Research 265-266; current-main validation | `g05.014` cards 037-038 |
 
 ## Planned Next Roadmaps
 
-- [g05.014 Claude Code 2.1.252 Useful Newer](014-claude-code-2-1-252-useful-newer.md) — ready; Research 266; cards 037-038; official npm `2.1.252`
+- [g05.014 Claude Code 2.1.252 Useful Newer](014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official npm `2.1.252`
 - [g05.013 Codex 0.152.0 Useful Newer](013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official npm `0.152.0`
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
@@ -49,10 +49,10 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has fourteen numbered roadmaps: 8 completed milestones including standing
-currentness at 004, 005, 012, and 013 and contract promotion at 008 and 010,
-honest evidence stops at 002, 003, 007, and 011, and one ready milestone at 014.
-Milestone 009 is planned and strict-paused on its operator decision.
+g05 has fourteen numbered roadmaps: 9 completed milestones including standing
+currentness at 004, 005, 012, 013, and 014 and contract promotion at 008 and
+010, honest evidence stops at 002, 003, 007, and 011. Milestone 009 is planned
+and strict-paused on its operator decision.
 
 ## Current Boundary
 
@@ -255,11 +255,12 @@ The corrected interim 89-row ledger is 74 emitted / 14 withheld / 1 undecided
 as reassessment evidence only; coverage stays 249/518. Research 263 separately
 selected Codex `0.152.0`. g05.013 cards 035-036 freeze identity then qualify
 exec and app-server through official `0.152.0`. Research 265 selected Claude
-Code `2.1.252` as the next one-family Upgrade Workflow and changed no claim.
+Code `2.1.252`. g05.014 cards 037-038 freeze identity then qualify both Claude
+Code axes through official `2.1.252` while keeping watcher exact `2.1.251`.
 
 ## Milestones
 
-- [014 Claude Code 2.1.252 Useful Newer](./014-claude-code-2-1-252-useful-newer.md) — ready; Research 266; cards 037-038; official `2.1.252`
+- [014 Claude Code 2.1.252 Useful Newer](./014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official `2.1.252`
 - [013 Codex 0.152.0 Useful Newer](./013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official `0.152.0`
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned

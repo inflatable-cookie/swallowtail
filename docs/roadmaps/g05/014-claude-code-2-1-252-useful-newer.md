@@ -1,6 +1,6 @@
 # g05.014 Claude Code 2.1.252 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-01
@@ -35,14 +35,14 @@ release, or feature-specific exact-set widening.
 
 ## Batch Cards
 
-- [037 Claude Code 2.1.252 Identity](batch-cards/037-claude-code-2-1-252-identity.md) — ready
-- [038 Claude Code 2.1.252 Claim](batch-cards/038-claude-code-2-1-252-claim.md) — ready; depends on card 037
+- [037 Claude Code 2.1.252 Identity](batch-cards/037-claude-code-2-1-252-identity.md) — completed
+- [038 Claude Code 2.1.252 Claim](batch-cards/038-claude-code-2-1-252-claim.md) — completed
 
 ## Acceptance
 
-- [ ] exact official identity is reproducible
-- [ ] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] unpublished gaps, watcher exact pin, and other families stay unchanged
-- [ ] focused, package, route, docs, and Northstar gates pass
+- [x] exact official identity is reproducible
+- [x] mapped and unmapped protocol changes are classified
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] unpublished gaps, watcher exact pin, and other families stay unchanged
+- [x] focused, package, route, docs, and Northstar gates pass

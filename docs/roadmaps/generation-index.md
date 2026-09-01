@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has thirteen roadmaps: 8 completed milestones, honest evidence stops at 002,
-003, 007, and 011. Milestone 009 is planned and
+g05 has fourteen roadmaps: 8 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 014. Milestone 009 is planned and
 strict-paused on its operator decision. Milestones
 004, 005, 012, and 013 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.

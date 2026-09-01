@@ -8,7 +8,8 @@
 
 ## Ready
 
-- None.
+- [037-claude-code-2-1-252-identity.md](./037-claude-code-2-1-252-identity.md) — ready; freeze official `2.1.252` identity before any claim edit
+- [038-claude-code-2-1-252-claim.md](./038-claude-code-2-1-252-claim.md) — ready; depends on card 037 with an admitted segment
 
 ## Blocked
 

@@ -13,6 +13,14 @@ effigy test --plan
 Prefer `effigy <task>` for supported work before raw commands. Do not add
 package scripts that merely re-export Effigy tasks.
 
+## Shell Snippet Rule
+
+Snippets run under the default interactive shell (zsh), not the bash
+shebangs of `scripts/`. Never assign zsh special parameters as ordinary
+variables: `path` is tied to `PATH` and hides the executable search path,
+and `status` is read-only and rejects assignment. Use task-specific names
+(`output_path`, `exit_status`) instead.
+
 ## Docs Authority
 
 - `docs/README.md`

@@ -2,7 +2,7 @@
 
 Date: 2026-09-01
 Handoff: `docs/handoffs/20260901-124337-papercuts-scoped-task-watcher-enter-error.md`
-PR: pending
+PR: [#149](https://github.com/inflatable-cookie/swallowtail/pull/149)
 
 ## Outcome
 

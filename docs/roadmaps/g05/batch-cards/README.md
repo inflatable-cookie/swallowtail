@@ -8,7 +8,8 @@
 
 ## Ready
 
-- None.
+- [048-codex-0-152-1-identity.md](./048-codex-0-152-1-identity.md) — ready; freeze official `0.152.1` identity before any claim edit
+- [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — ready; depends on card 048 with an admitted segment
 
 ## Blocked
 

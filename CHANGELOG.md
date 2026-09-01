@@ -26,6 +26,35 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- correct the Kimi Code headless compatibility split and qualify the
+  agent-core-v2 revision through official npm and GitHub
+  `@moonshot-ai/kimi-code` `0.39.1`. The default `kimi -p` engine becomes
+  agent-core-v2 `runV2Print` at `0.33.0`, not `0.38.0`:
+  `experimental-v2.ts` redefines `isKimiV2Enabled()` there from
+  `KIMI_CODE_EXPERIMENTAL_FLAG` truthy to `KIMI_CODE_LEGACY_FLAG` not truthy,
+  and this adapter never sets that flag. `kimi.headless.stream-json.v1`
+  therefore corrects down from `0.29.0..=0.37.2` to `0.29.0..=0.32.0`, and
+  `kimi.headless.stream-json.v2` corrects down and extends from exact
+  `0.38.0` to `0.33.0..=0.39.1`. `0.33.0..=0.37.2` had been claimed as
+  qualified v1 since g04.064 while emitting the `system.version` preamble the
+  v1 decoder rejects; host `0.34.0` sat inside that span and now classifies
+  as qualified Maintained v2. Unpublished `0.39.2` remains visible
+  `UnverifiedNewer` on the headless axis. Research 270, g05.016.
+- stop the Kimi Code ACP axis at `0.38.0` and exclude exact `0.39.0` and
+  `0.39.1`. From `0.39.0` the agent-core-v2 ACP terminal runner replaces two
+  fail-closed errors with a local host-process spawn in the leased working
+  resource, and this route always advertises `terminal: false`, so that
+  branch always applies. The route declares `HarnessIsolation::AmbientHost`
+  with no isolation claim, Contract 015 denies filesystem containment from
+  process ownership and treats a terminal request from a terminal-less client
+  as scope-stopping, and no adapter or runtime control mediates the spawn.
+  Both points classify `Incompatible` rather than unverified-newer, because
+  exclusions are assessed before the `AllowUnverified` path. The ACP ceiling
+  stays `0.38.0`, so unpublished `0.38.1` remains the first admissible
+  unverified-newer point on that axis and unpublished `0.39.2` a later one. No new ACP
+  behavior revision was created: wire-shape stability across
+  `0.38.0`→`0.39.1` is real and is not sufficient to qualify an authority
+  change. Research 270, g05.016.
 - raise the Pi RPC qualified ceiling from `0.84.3` to official npm
   `@earendil-works/pi-coding-agent` `0.84.4`. Compatible extension of
   `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands

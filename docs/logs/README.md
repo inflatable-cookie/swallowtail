@@ -25,6 +25,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-01 Kimi Code 0.39.1 Claim](./2026-09-01-kimi-code-0-39-1-claim.md) — headless v1 corrects to `0.29.0..=0.32.0` and v2 to `0.33.0..=0.39.1`; ACP stops at `0.38.0` with exact `0.39.0` and `0.39.1` excluded; `kimi-code.local-server` unchanged
+- [2026-09-01 Kimi Code 0.39.1 Identity](./2026-09-01-kimi-code-0-39-1-identity.md) — Research 270; proves the headless agent-core-v2 boundary is `0.33.0` and that the claimed v1 span `0.33.0..=0.37.2` could not run; traces the `0.39.0` ACP process-authority delta to no containment; claims unchanged; local-server untouched
 - [2026-09-01 Papercuts Antigravity invalid-`--agent` no-prompt ownership stop](./2026-09-01-papercuts-antigravity-agent-probes-stop.md) — host `agy --print` research probes are agent-direct; Swallowtail cannot intercept; papercut left open
 - [2026-09-01 Pi RPC 0.84.4 Claim](./2026-09-01-pi-rpc-0-84-4-claim.md) — Pi RPC qualified through official `0.84.4`; unpublished `0.83.1` stays a gap; sidecar stays exact `0.84.2`
 - [2026-09-01 Pi RPC 0.84.4 Identity](./2026-09-01-pi-rpc-0-84-4-identity.md) — Research 268; compatible extension; host `0.83.0` and official stable `0.84.4` corroborated; sidecar stays exact `0.84.2`; claims unchanged

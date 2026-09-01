@@ -30,10 +30,11 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Research 269 selected Kimi Code installed harness `0.39.1` as the next one-family Upgrade Workflow after Pi RPC `0.84.4`; no claim change | Contract 029 identity-before-claim; Research 267-269; current-main validation | `g05.015` cards 039-040 |
+| Keep production route versions current one family at a time. | g05.016 split the Kimi Code installed-harness family: headless v2 corrected to `0.33.0..=0.39.1`, headless v1 corrected to `0.29.0..=0.32.0`, and `kimi-code.acp` stopped at `0.38.0` with exact `0.39.0` and `0.39.1` excluded for an uncontained process-authority change; `kimi-code.local-server` stays a separate family | Contract 029 identity-before-claim; Research 267-270; current-main validation | `g05.016` cards 041-042 |
 
 ## Planned Next Roadmaps
 
+- [g05.016 Kimi Code 0.39.1 Useful Newer](016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 corrected to `0.33.0..=0.39.1` and v1 to `0.29.0..=0.32.0`; the ACP axis holds its `0.38.0` ceiling and excludes exact `0.39.0` and `0.39.1`
 - [g05.015 Pi RPC 0.84.4 Useful Newer](015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official npm `0.84.4`
 - [g05.014 Claude Code 2.1.252 Useful Newer](014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official npm `2.1.252`
 - [g05.013 Codex 0.152.0 Useful Newer](013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official npm `0.152.0`
@@ -50,10 +51,10 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has fifteen numbered roadmaps: 10 completed milestones including standing
-currentness at 004, 005, 012, 013, 014, and 015 and contract promotion at 008 and
-010, honest evidence stops at 002, 003, 007, and 011. Milestone 009 is planned
-and strict-paused on its operator decision.
+g05 has sixteen numbered roadmaps: 11 completed milestones including standing
+currentness at 004, 005, 012, 013, 014, 015, and 016 and contract promotion at
+008 and 010, honest evidence stops at 002, 003, 007, and 011. Milestone 009 is
+planned and strict-paused on its operator decision.
 
 ## Current Boundary
 
@@ -262,10 +263,18 @@ Research 267 selected Pi `0.84.4` as the next one-family Upgrade Workflow and
 changed no claim. g05.015 cards 039-040 freeze identity then qualify Pi RPC
 through official `0.84.4` while keeping sidecar exact `0.84.2`. Research 269
 selected Kimi Code installed harness `0.39.1` as the next one-family Upgrade
-Workflow and changed no claim.
+Workflow and changed no claim. g05.016 cards 041-042 freeze identity then
+deliver a split: the headless agent-core-v2 routing boundary is `0.33.0`, so
+`kimi.headless.stream-json.v1` corrects to `0.29.0..=0.32.0` and
+`kimi.headless.stream-json.v2` corrects and qualifies `0.33.0..=0.39.1`,
+while `kimi-code.acp` stops at `0.38.0` with exact `0.39.0` and `0.39.1`
+excluded because the agent-core-v2 ACP terminal runner spawns uncontained
+local host processes under the `terminal: false` capabilities the route
+advertises. `kimi-code.local-server` stays a separate family.
 
 ## Milestones
 
+- [016 Kimi Code 0.39.1 Useful Newer](./016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 `0.33.0..=0.39.1`, headless v1 `0.29.0..=0.32.0`, ACP ceiling held at `0.38.0` with `0.39.0` and `0.39.1` excluded
 - [015 Pi RPC 0.84.4 Useful Newer](./015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official `0.84.4`
 - [014 Claude Code 2.1.252 Useful Newer](./014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official `2.1.252`
 - [013 Codex 0.152.0 Useful Newer](./013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official `0.152.0`

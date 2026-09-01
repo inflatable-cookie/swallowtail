@@ -30,7 +30,7 @@ fn exact_versions_probe_only_the_host_approved_target() {
             ("0.36.1", true),
             ("0.37.2", true),
             ("0.38.0", true),
-            ("0.38.1", false),
+            ("0.39.2", false),
         ] {
             let host = topology.execution_host_id().clone();
             let executable = ExecutableRef::from_instance_target(topology.instance_target());

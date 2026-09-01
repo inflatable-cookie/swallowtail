@@ -99,7 +99,7 @@ fn installed_solution_facade_keeps_acp_and_headless_selection_explicit() {
 fn exact_newer_evidence_and_preparation_failures_remain_visible_before_effects() {
     let host_id = ExecutionHostId::new("fixture.prepared.newer").unwrap();
     let host = FixtureHost::new(Scenario::ReasoningNewerSuccess);
-    let prepared = prepared(&host, host_id.clone(), "0.38.1");
+    let prepared = prepared(&host, host_id.clone(), "0.39.2");
     assert!(!prepared.observation().is_qualified());
     let profile = prepared
         .prepare_session(profile_input(

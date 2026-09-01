@@ -109,6 +109,28 @@ Headless qualified ceiling is therefore retracted to `0.37.2` under existing
 `UnverifiedNewer` until agent-core-v2 stream-json is independently qualified
 under an exact revision. ACP and local-server `0.38.0` qualifications stand.
 
+## Errata (2026-09-01, Research 270)
+
+Two named surfaces in this record are wrong, though its digests and its
+`0.38.0` identity stand.
+
+The selected ACP source is `packages/acp-server`, not
+`packages/acp-adapter`. `sub/acp.ts` has registered the native `acp-server`
+command unless `KIMI_CODE_LEGACY_FLAG` is truthy since `0.33.0`, and
+Swallowtail never sets that flag. The blob list above describes the legacy
+path. No qualified ACP point moves: the mapped `acp-server` blobs are
+byte-identical from `0.33.0` through `0.39.1` apart from `server.ts`, which
+changes once at `0.37.0`, and the prompt-free initialize observation recorded
+here was already taken on the native path.
+
+The 2026-08-25 errata below dates the headless v1→v2 default flip at
+`0.38.0`. The flip is `0.33.0`:
+`KIMI_CODE_EXPERIMENTAL_FLAG` stopped selecting the engine there, and
+`isKimiV2Enabled()` became `!isLegacyEnabled()`. `0.38.0` was simply the only
+point sampled. Consequently `0.33.0..=0.37.2` was never a working
+`kimi.headless.stream-json.v1` span. See
+`crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.33.0-headless-routing/`.
+
 ## Sources
 
 - npm `@moonshot-ai/kimi-code@0.38.0`

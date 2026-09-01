@@ -32,5 +32,21 @@ discarded. The host executable was not installed or replaced. The frozen
 `0.37.2` corpus stays. Python `kimi-cli` `1.49.0` and Kimi Platform Chat
 stay separate.
 
+## Errata (2026-09-01, Research 270)
+
+The `0.38.0` statements here are individually true but their onset is wrong.
+The default `-p` flip to agent-core-v2 `runV2Print` happened at `0.33.0`, not
+`0.38.0`; `0.38.0` was simply the only point sampled at the time. The
+`headless_qualified_ceiling: 0.37.2` decision recorded in `identity.json` is
+therefore superseded: `0.33.0..=0.37.2` was never a working
+`kimi.headless.stream-json.v1` span. Corrected segmentation is v1
+`0.29.0..=0.32.0` and v2 `0.33.0..=0.39.1`. See
+`kimi-code-0.33.0-headless-routing`.
+
+Likewise, the ACP selected-source blobs named here belong to the legacy
+`packages/acp-adapter`. A naked `kimi acp` has run `packages/acp-server`
+since `0.33.0`. The recorded initialize observation was taken on that native
+path and stands.
+
 No fixture contains a credential, bearer token, host path, account
 identity, provider payload, real session id, or model observation.

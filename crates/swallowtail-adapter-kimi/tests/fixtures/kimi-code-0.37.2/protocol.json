@@ -12,7 +12,14 @@
   "selected_headless": {
     "prompt": true,
     "output_format": "stream-json",
-    "experimental_v2_selected": false
+    "experimental_v2_selected": false,
+    "errata_2026_09_01": {
+      "corrected_by": "Research 270",
+      "statement_was_wrong": "experimental_v2_selected false was read as meaning the default -p path at 0.37.2 is agent-core v1",
+      "correction": "KIMI_CODE_EXPERIMENTAL_FLAG stopped selecting the engine at 0.33.0; from 0.33.0 the default -p path is agent-core-v2 runV2Print unless KIMI_CODE_LEGACY_FLAG is truthy",
+      "actual_default_engine_at_0_37_2": "agent-core-v2-run-v2-print",
+      "routing_corpus": "kimi-code-0.33.0-headless-routing"
+    }
   },
   "selected_acp_command": "acp",
   "selected_local_server_command": "web",

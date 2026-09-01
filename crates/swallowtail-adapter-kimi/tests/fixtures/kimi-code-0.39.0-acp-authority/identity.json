@@ -1,0 +1,66 @@
+{
+  "axis": "kimi-code.executable",
+  "route": "kimi-code.acp",
+  "observed_at": "2026-09-01",
+  "question": "does the 0.39.0 acp-server terminal-runner change alter process authority under the exact client capabilities Swallowtail advertises",
+  "answer": "yes",
+  "changed_source": {
+    "path": "packages/acp-server/src/acp-terminal/acpTerminalRunner.ts",
+    "blob_0_37_2_and_0_38_0": "ec70df18027066d984dc543a3647d3563ac6ca6f",
+    "blob_0_39_0_and_0_39_1": "9016d48b643f35b263449d98dee25597a9a24d30",
+    "bundle_digest_0_38_0": "8f8a2726e86de2461e23783b19eae335e12807e2aa5bb5f5eff3cf9a75f8072b",
+    "bundle_digest_0_39_0_and_0_39_1": "7c58e045273d9dbcea96e38d0792d6122193810cd3b9a7c93bb02d40d21284e4"
+  },
+  "before": {
+    "terminal_disabled": "throws: ACP terminal capability is unavailable",
+    "non_bash_invocation": "throws: ACP runtime only supports interactive Bash tool processes",
+    "effect": "an ACP session whose client advertises no terminal capability could not execute a host process"
+  },
+  "after": {
+    "terminal_disabled": "this.local.spawn(command, args, { ...options, cwd: options?.cwd ?? this.cwd })",
+    "non_bash_invocation": "same local spawn",
+    "effect": "the agent executes a host process in the leased cwd with no ACP terminal negotiation and no client callback"
+  },
+  "swallowtail_advertised_client_capabilities": {
+    "fs.readTextFile": false,
+    "fs.writeTextFile": "true for the session initialize, false for the catalogue initialize",
+    "terminal": false,
+    "auth.terminal": false,
+    "mcpServers": []
+  },
+  "reachability": {
+    "terminal_enabled_is_always_false": true,
+    "therefore_the_new_local_spawn_path_is_always_taken": true,
+    "read_only_sessions_pass_resource_io_none": true,
+    "read_only_refuses_fs_write_text_file_callbacks": true
+  },
+  "containment_trace": {
+    "question": "does any current adapter or runtime control contain local.spawn under terminal false and ReadOnly",
+    "harness_isolation_declared": "AmbientHost",
+    "harness_isolation_meaning": "harness inherits the ambient host environment without an isolation claim",
+    "contract_015_clause": "Process ownership implies neither callback authority nor filesystem containment.",
+    "contract_015_terminal_clause": "The first client advertises filesystem write as false and omits terminal capability. Any write or terminal request is unsupported and stops the scope.",
+    "adapter_control_found": false,
+    "runtime_control_found": false,
+    "conclusion": "containment is absent; the ReadOnly lease governs the ACP callback channel only, not the harness process"
+  },
+  "disposition": {
+    "shape": "stop",
+    "acp_latest_qualified_stays": "0.38.0",
+    "exclude_exact": ["0.39.0", "0.39.1"],
+    "exclusion_produces": "Incompatible",
+    "reason": "InterfaceCompatibilityClaim::assess checks exclusions before the AllowUnverified newer path, so an excluded exact point cannot be silently admitted",
+    "new_acp_behavior_revision": false,
+    "new_shared_type_required": false,
+    "wire_shape_stability_is_not_sufficient": true
+  },
+  "headless_is_unaffected": {
+    "reason": "the headless route runs kimi -p, which bootstraps its own scope and never constructs AcpRuntimeProviderFactory or AcpProcessService",
+    "headless_agent_process_authority_unchanged_across_0_38_0_to_0_39_1": true
+  },
+  "local_server_untouched": true,
+  "provider_prompt_sent": false,
+  "authentication_performed": false,
+  "live_probe_run": false,
+  "downloaded_binaries_executed": false
+}

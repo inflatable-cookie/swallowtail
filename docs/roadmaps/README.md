@@ -15,12 +15,25 @@ shape.
 
 ## Next Task
 
-Implement Kimi Code installed-harness useful-newer qualification for official
-`0.39.1`. Host already sits on qualified `0.34.0`. Do not leave official
-`0.39.1` UnverifiedNewer without a named incompatible reason. Do not start a
-second family from this PR. The g05.009 provider-operation observation
-decision remains queued; card 034 stays planned, not ready, and candidate F
-remains unpromoted at 249 proved / 518 remaining rows.
+Define the containment or mediation gate that Kimi Code ACP `0.39.0` and
+`0.39.1` need before they can be requalified. g05.016 stopped that axis at
+`0.38.0` and excluded both exact points because the agent-core-v2 ACP terminal
+runner spawns local host processes under the `terminal: false` capabilities
+the route advertises, and neither the adapter nor the runtime contains it.
+Decide whether Swallowtail mediates, whether Contract 015 gains terminal
+support, or whether the route stays capped; do not requalify on wire-shape
+stability alone.
+
+Then validate a fresh all-route Contract 029 currentness checkpoint and select
+the next single family from re-probed official points rather than from
+Research 269's consumed rank. OpenCode, Ollama, Antigravity, Grok, and
+`kimi-code.local-server` remain visible ordered-newer candidates;
+`kimi-code.local-server` is its own family and needs its own identity run
+before any claim. Do not bulk-bump from registry `latest`, do not lift
+Gemini's deferral, and do not keep g05 open for currentness. The g05.009
+provider-operation observation decision remains queued; card 034 stays
+planned, not ready, and candidate F remains unpromoted at 249 proved / 518
+remaining rows.
 
 ## Standing Lanes
 

@@ -144,10 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has fifteen roadmaps: 10 completed milestones, honest evidence stops at 002,
+g05 has sixteen roadmaps: 11 completed milestones, honest evidence stops at 002,
 003, 007, and 011. Milestone 009 is planned and
 strict-paused on its operator decision. Milestones
-004, 005, 012, 013, 014, and 015 are completed standing currentness. Milestone 006 is completed
+004, 005, 012, 013, 014, 015, and 016 are completed standing currentness. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
 g05.001 is
@@ -300,7 +300,10 @@ app-server through official `0.152.0`. Research 265 selected Claude Code
 claim. g05.015 cards 039-040 qualify Pi RPC through official `0.84.4` while
 keeping sidecar exact `0.84.2`. Research 269 selected Kimi Code installed
 harness `0.39.1` as the next one-family Upgrade Workflow. The checkpoint
-changes no claim. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+changes no claim. g05.016 cards 041-042 then corrected the headless
+agent-core-v2 routing boundary to `0.33.0` and qualified headless v2 through
+official `0.39.1`, while the `kimi-code.acp` ceiling stays `0.38.0` with exact
+`0.39.0` and `0.39.1` excluded for an uncontained process-authority delta. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized.

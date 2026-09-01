@@ -366,7 +366,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   high / 330 warning) to 378 (7 critical / 41 high / 330 warning); the 577-line
   root finding is gone and no new module entered the scan.
 
-### [ ] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
+### [x] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
 - Friction: PR 31 added a 566-line Kimi Platform lifecycle integration test,
   raising the doctor god-file baseline from 40 to 41 errors.
 - Impact: the completed route lane leaves repository structure health worse and
@@ -374,6 +374,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: split admission/preparation and refresh/catalogue/047 proofs into focused
   test modules without changing coverage.
 - Surface: `crates/swallowtail-adapter-kimi-platform/tests/connection_lifecycle.rs`.
+- Closed: 2026-09-01 papercuts Kimi Platform lifecycle god-file split. The live
+  finding was 512 code lines (566 total, high); the historical 566-line/error
+  wording predates the current critical/high/warning taxonomy. Admission,
+  preparation, failure/drift, refresh, catalogue, Contract 047, and shared
+  fixture proofs moved into focused fragments under the existing
+  `connection_lifecycle` target with bodies intact. All 8 tests held.
+  `effigy --json scan god-files` dropped from 378 findings (7 critical / 41
+  high / 330 warning) to 377 (7 critical / 40 high / 330 warning); the root
+  finding is gone and no new module entered the scan.
 
 ### [ ] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
 - Friction: PRs 24-30 allocated cards 076-085 from older planning bases while

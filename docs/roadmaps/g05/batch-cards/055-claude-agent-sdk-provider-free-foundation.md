@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: ready
+Status: blocked; PR 188 preserved behind g05.023 cards 057-058
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`

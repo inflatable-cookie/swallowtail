@@ -15,14 +15,14 @@ shape.
 
 ## Next Task
 
-Continue [g05.022 card 055](g05/022-claude-agent-dual-route-parity.md)
-now. Card 055 is the priority `claude-agent.sdk` provider-free foundation:
-exact SDK identity, credential non-custody, read-only streaming, and joined
-descendant-tree cleanup. After card 056 merges, restack card 055 onto that
-head before review or merge. Card 056's ACP negotiated model-option
-observation is in review and lands first. Neither card opens a provider
-session. g05.021 and cards 050-052 remain planned and paused;
-release evidence must restart against the later exact source head.
+Implement [g05.023 card 057](g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
+now. Add provider-neutral process completion evidence that distinguishes root
+exit from an attested-empty host-owned descendant tree. Card 058 awaits the
+operator's decision on a breaking caller-bounded session-close seam. Card 055
+and PR 188 remain paused and unmerged behind both prerequisites; preserve their
+workspace and branch for later restack. g05.021 and cards 050-052 remain
+planned and paused; release evidence must restart against the later exact
+source head.
 
 ## Standing Lanes
 

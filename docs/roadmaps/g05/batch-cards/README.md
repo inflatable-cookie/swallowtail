@@ -2,6 +2,7 @@
 
 ## Planned
 
+- [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — planned; awaiting operator decision on the breaking close seam
 - [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — planned; partial audit evidence retained, fresh exact-head restart required after g05.022
 - [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits card 051's frozen candidate and the full operator-authorized authenticated application-smoke packet
 - [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on card 050 audit acceptance; mutating Effigy prepare requires separate operator authorization
@@ -11,11 +12,11 @@
 
 ## Ready
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native SDK foundation; continues in parallel; restack after card 056 merges
+- [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — ready; additive provider-neutral tree-completion evidence
 
 ## Blocked
 
-- None.
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked on g05.023 cards 057-058; PR 188 branch/workspace preserved
 
 ## Completed
 

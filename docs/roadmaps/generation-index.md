@@ -144,17 +144,19 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 22 roadmaps: 15 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 022. Milestone 009 is planned
+g05 has 23 roadmaps: 15 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 023. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
-is not accepted release evidence. Milestone 022 is ready through card 055, which continues in parallel.
+is not accepted release evidence. Milestone 022 is planned after card 055's
+exact-head lifecycle stop. Milestone 023 is ready through card 057.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
-promoted. Card 056 lands first; after it merges, card 055 restacks onto that head before review. No card
+promoted. Card 056 is complete. Card 058 awaits the breaking close-API
+decision, and card 055/PR 188 remain paused behind both prerequisites. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

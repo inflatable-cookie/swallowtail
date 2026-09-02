@@ -1,6 +1,6 @@
 # 054 Claude Agent ACP Parity Census And Delivery Gate
 
-Status: ready
+Status: complete; evidence-only; implementation deferred to orchestrator integration
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -78,9 +78,46 @@ MCP identity tests, and explicit withheld rows.
 
 No. Implementation compilation follows joint review with card 053.
 
+## Closeout
+
+Research 279 and the ACP parity delivery gate complete the full capability
+partition for qualified `claude-agent.acp`. The census covers protocol
+presence, parsing, prepared admission, effective acknowledgement, active
+observation, lifecycle, host/process authority, public facade, consumer
+projection, and withholding for every capability named by this card.
+
+The largest independent next tranche is exact negotiated model-options
+observation on the existing adapter-owned projected session-open seam. It
+retains one bounded `configOptions[id=model]` snapshot through the existing
+`InteractiveSessionHandle::negotiated_model_options` seam and publishes an
+observation-only active-session row only after exact validation. It does not
+create a model catalogue or mid-session control. Read-write interactive
+access, session permission/mode mutation, mid-session model/effort controls,
+terminal/Bash, MCP, auth, management expansion, richer prompt content,
+queueing, steering, and subagent topology remain explicitly withheld for the
+joint integration step.
+
+No Rust, claim, matrix, fixture, contract, package pin, release, provider, or
+shared front-door surface changed. No provider contact or live probe occurred.
+The exact worker head, validation transcript, and PR identity are reported in
+the worker handoff and final closeout; this card does not authorize merge or
+implementation.
+
+## Evidence
+
+- [Research 279](../../../research/279-claude-agent-acp-capability-census-and-tranche-selection.md)
+- [ACP parity delivery gate](../../../triage/2026-09-02-claude-agent-acp-parity-gate.md)
+- [ACP parity lane log](../../../logs/2026-09-02-claude-agent-acp-parity-gate.md)
+- [Research 277](../../../research/277-claude-subscription-dual-route-direction.md)
+- [Contract 015](../../../contracts/015-acp-v1-negotiation-and-client-callbacks.md)
+- [Contract 017](../../../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+- [Contract 029](../../../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 038](../../../contracts/038-provider-session-management-and-consumer-thread-boundary.md)
+- [Contract 041](../../../contracts/041-input-callback-and-provider-tool-admission.md)
+- [Contract 047](../../../contracts/047-configured-provider-instance-catalogue.md)
+
 ## Stop Conditions
 
 Stop on an unqualified bridge dependency, provider contact need, missing
 effective acknowledgement, unbounded process or MCP authority, a required
 shared public API decision, or overlap with the SDK worker's owned surfaces.
-

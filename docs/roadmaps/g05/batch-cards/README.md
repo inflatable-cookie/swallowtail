@@ -11,7 +11,6 @@
 
 ## Ready
 
-- [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — ready; qualified ACP capability census and tranche gate
 - [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278 and the contract gate; official `0.3.258` frozen; credential non-custody proved; descendant-tree Contract 019 invariant pending orchestrator promotion
 
 ## Blocked
@@ -20,6 +19,7 @@
 
 ## Completed
 
+- [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279 and ACP delivery gate; negotiated model-options observation selected as the only adapter-only next tranche
 - [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — complete; Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer
 - [048-codex-0-152-1-identity.md](./048-codex-0-152-1-identity.md) — complete; Research 275 and current host/official identity frozen before claim without executing downloaded binaries
 - [047-claude-code-2-1-257-claim.md](./047-claude-code-2-1-257-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.257`; unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253`–`2.1.256` stay gaps; watcher stays exact `2.1.251`

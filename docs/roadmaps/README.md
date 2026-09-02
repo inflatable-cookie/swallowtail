@@ -15,17 +15,16 @@ shape.
 
 ## Next Task
 
-Map [g05.021 card 050](g05/batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md):
-freeze the exact `v0.3.3` to reviewed-current-source package, dependency,
-48-route, semantic API, and guaranteed-behavior delta before any candidate
-mutation. Audit the complete 770-plus-commit public delta, not only the known
-OpenAI Background `minimal` removal. Change no Cargo version or requirement,
-release baseline, code, claim, fixture, or workflow. Keep feature/currentness
-implementation frozen; Kimi local server `0.40.1` and closed PR 182 remain
-parked post-release. Cards 051-052 stay planned. Card 051 has a separate
-operator gate before Effigy's sole mutating prepare path; card 052 remains
-blocked until the operator supplies a complete authenticated working-application
-smoke authority packet. No card authorizes tag creation or push.
+Run [g05.022 cards 053 and 054](g05/022-claude-agent-dual-route-parity.md) in
+parallel. Card 053 freezes the official Claude Agent SDK, current subscription
+authority, credential non-custody boundary, sidecar lifecycle, and native
+`claude-agent.sdk` contract gate. Card 054 derives the complete qualified
+`claude-agent.acp` capability census and selects the largest honest independent
+delivery tranches. Neither card changes production code, claims, fixtures, or
+package pins, and neither contacts a provider. Shared contract promotion and
+implementation compilation follow accepted review of both lanes. g05.021 and
+cards 050-052 remain planned and paused; release evidence must restart against
+the later exact source head.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: ready; card 050 only
+Status: planned; paused for g05.022 Claude dual-route work
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-02
@@ -38,16 +38,15 @@ mutation.
   lock. That partial run is not release evidence. All 11 configured local gates
   must rerun on the final frozen candidate.
 
-## Freeze
+## Paused Freeze
 
-From compilation through milestone completion, do not start or merge new
-feature or currentness implementation. Kimi Code local server `0.40.1` is the
-first post-release currentness candidate. Closed PR 182 and its Antigravity
-branch/evidence remain parked and are not qualification. Keep Gemini deferred,
-the watcher exact `2.1.251` and not live-ready, `kimi-code.acp` QualifiedOnly at
-the A2 `0.38.0` cap, bounded skill-inventory implementation unplanned, and
-g05.009/card 034 deferred at 249 of 767 rows proved and 518 remaining. Defer all
-non-gating papercuts.
+The operator broke the feature freeze on 2026-09-02 for g05.022's native Claude
+Agent SDK route and independent Claude Agent ACP expansion. Card 050's partial
+semantic API generation is retained as non-accepted audit evidence. Cards
+050-052 are planned and paused. No release mutation, candidate preparation,
+tag, or push is authorized. When the Claude work reaches a reviewed boundary,
+card 050 must restart against the new exact source head before cards 051-052
+can advance.
 
 ## Runway
 
@@ -97,7 +96,7 @@ different SHA is accepted.
 
 ## Batch Cards
 
-- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready
+- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — planned; paused until g05.022 reaches a release boundary
 - [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050; mutating prepare requires separate operator authorization
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 

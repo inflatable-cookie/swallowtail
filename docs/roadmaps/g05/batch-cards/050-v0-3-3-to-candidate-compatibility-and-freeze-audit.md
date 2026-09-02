@@ -1,6 +1,6 @@
 # 050 v0.3.3 To Candidate Compatibility And Freeze Audit
 
-Status: ready
+Status: planned; paused until g05.022 reaches a release boundary
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`

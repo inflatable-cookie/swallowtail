@@ -32,11 +32,13 @@ enforcement.
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
-| Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | ready; feature/currentness freeze active; compatibility audit first | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, card 050 |
+| Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
+| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ready; parallel evidence and contract gates first | Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047 | `g05.022`, cards 053-054 |
 
 ## Planned Next Roadmaps
 
-- [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — ready; card 050 only; later cards remain serial and gated
+- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — ready; cards 053-054 in parallel; production implementation awaits joint integration
+- [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
 - [g05.019 Claude Code 2.1.257 Useful Newer](019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official npm `2.1.257`
@@ -59,12 +61,13 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-one numbered roadmaps: 15 completed milestones including
+g05 has twenty-two numbered roadmaps: 15 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, and contract promotion at 008 and 010, honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
-its operator decision. Milestone 021 is ready through card 050 only.
+its operator decision. Milestone 021 is planned and paused. Milestone 022 is
+ready through parallel cards 053-054.
 
 ## Current Boundary
 
@@ -311,7 +314,7 @@ Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini remains
 deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
 249 proved / 518 remaining.
 
-g05.021 now owns the bounded `v0.4.0` release-readiness runway. Current source
+g05.021 owns the paused `v0.4.0` release-readiness runway. Current source
 is 40 packages and 48 production routes; immutable `v0.3.3` remains 40 packages
 and 47 routes. At compilation the source delta is 773 commits and 2,405 changed
 files, so card 050 requires a complete semantic API and guaranteed-behavior
@@ -320,14 +323,23 @@ whole compatibility result. Card 051 stays planned behind the accepted audit
 and a separate authorization gate for Effigy's sole mutating prepare path.
 Card 052 is planned and blocked until the operator supplies the complete
 authenticated working-application authority packet. No card authorizes tag
-creation or push. The feature/currentness freeze keeps Kimi
-local server `0.40.1`, closed PR 182, Gemini, watcher work, Kimi ACP work,
-skill-inventory implementation, g05.009/card 034, and non-gating papercuts out
-of this milestone.
+creation or push. The operator broke the feature freeze for g05.022. Card 050's
+partial semantic API output remains non-accepted evidence, and all three
+release cards require a fresh exact-head restart after the Claude work.
+
+Research 277 and g05.022 split Claude parity into two routes. Card 053 owns the
+native Agent SDK policy, artifact, credential, sidecar, lifecycle, and route
+gate. Card 054 owns the qualified ACP bridge capability census and delivery
+selection. They run in parallel without production changes or provider
+contact. The orchestrator owns later shared-contract reconciliation and
+implementation compilation. Native SDK delivery is the priority; ACP remains
+an independently useful portable route rather than an approximation hidden
+behind the SDK identity.
 
 ## Milestones
 
-- [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — ready; card 050; later cards serial and gated; no tag authority
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — ready; parallel cards 053-054
+- [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 
 - [019 Claude Code 2.1.257 Useful Newer](./019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official `2.1.257`

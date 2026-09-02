@@ -144,20 +144,19 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 21 roadmaps: 15 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 021. Milestone 009 is planned
+g05 has 22 roadmaps: 15 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 022. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
-Milestone 021 compiles cards 050-052 for a bounded `v0.4.0` source candidate.
-Card 050 is ready for the complete `v0.3.3` compatibility and freeze census.
-Cards 051-052 remain planned and serial; card 052 also waits on the operator's
-complete authenticated working-application authority packet. Card 051 stops at
-its read-only Effigy plan until separate authorization for the sole mutating
-prepare path. Feature and currentness implementation is frozen through the
-milestone, and no card authorizes tag creation or push.
+Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
+is not accepted release evidence. Milestone 022 is ready through parallel cards
+053-054: one native Claude Agent SDK evidence and contract gate, and one
+qualified Claude Agent ACP parity and delivery gate. Shared contract promotion
+and implementation compilation follow both reviews. No card authorizes a
+provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.

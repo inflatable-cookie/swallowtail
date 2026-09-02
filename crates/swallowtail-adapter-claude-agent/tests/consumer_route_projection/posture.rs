@@ -33,7 +33,8 @@ fn every_row_keeps_exact_view_lifecycle_actor_support_and_availability() {
             let is_control = semantic.starts_with("control.");
             let is_activity = semantic == "feature.activity-observation";
             let is_ack = semantic == "feature.active-session-reasoning-ack";
-            let expected_view = if is_activity || is_ack {
+            let is_model = semantic == "feature.negotiated-model-options-observation";
+            let expected_view = if is_activity || is_ack || is_model {
                 "active"
             } else if is_control && semantic != "control.model-selection" {
                 "session-start"
@@ -43,7 +44,7 @@ fn every_row_keeps_exact_view_lifecycle_actor_support_and_availability() {
             assert_eq!(view, expected_view, "{profile}: {semantic}");
             assert_eq!(
                 row.lifecycle(),
-                if is_activity || is_ack {
+                if is_activity || is_ack || is_model {
                     ConsumerRouteLifecycle::PostOpenObservationOnly
                 } else if expected_view == "session-start" {
                     ConsumerRouteLifecycle::SessionStartOnly
@@ -54,7 +55,7 @@ fn every_row_keeps_exact_view_lifecycle_actor_support_and_availability() {
             );
             assert_eq!(
                 row.actor_posture(),
-                if is_activity || is_ack {
+                if is_activity || is_ack || is_model {
                     ConsumerRouteActorPosture::ObservationOnly
                 } else if is_control {
                     ConsumerRouteActorPosture::ConsumerSelectable
@@ -155,7 +156,8 @@ fn each_control_keeps_its_exact_omission_semantics() {
                 | "control.provider-session-delete" => {
                     ConsumerRouteOmissionSemantics::SuppliesNothing
                 }
-                "feature.active-session-reasoning-ack" => {
+                "feature.active-session-reasoning-ack"
+                | "feature.negotiated-model-options-observation" => {
                     ConsumerRouteOmissionSemantics::NotSelectable
                 }
                 other => panic!("unexpected control {other}"),

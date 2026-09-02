@@ -1,4 +1,4 @@
-use super::{ProjectionBuilder, exact};
+use super::{ProjectionBuilder, bounded, exact};
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteControlId, ConsumerRouteControlValue,
     ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
@@ -106,6 +106,33 @@ impl ProjectionBuilder<'_> {
             .with_control_value(ConsumerRouteControlValue::new(
                 ConsumerRouteValueKind::AcknowledgementState,
                 exact(reasoning)?,
+                ConsumerRouteOmissionSemantics::NotSelectable,
+            ));
+        self.active_session.push(row);
+        Ok(self)
+    }
+
+    pub(crate) fn with_model_observation(mut self) -> Result<Self, ConsumerRouteProjectionFailure> {
+        let source = self
+            .observation_source
+            .clone()
+            .expect("model observation names an active-session source");
+        let identity = ConsumerRouteRowIdentity::Feature(
+            self.local_feature("feature.negotiated-model-options-observation")?,
+        );
+        let row = self
+            .row(
+                identity,
+                &source,
+                ConsumerRouteSourceClass::RouteAcknowledgementEvidence,
+                ConsumerRouteEvidenceStrength::WireAcknowledgement,
+                ConsumerRouteLifecycle::PostOpenObservationOnly,
+            )
+            .with_actor_posture(ConsumerRouteActorPosture::ObservationOnly)
+            .with_state_support(ConsumerRouteStateSupport::descriptor_only().with_observed())
+            .with_control_value(ConsumerRouteControlValue::new(
+                ConsumerRouteValueKind::Observation,
+                bounded("exact bounded negotiated model options on the open session")?,
                 ConsumerRouteOmissionSemantics::NotSelectable,
             ));
         self.active_session.push(row);

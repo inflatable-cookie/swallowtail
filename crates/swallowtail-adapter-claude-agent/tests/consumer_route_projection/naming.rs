@@ -86,9 +86,9 @@ fn operation_shape(semantic_id: &str, prepared_shape: OperationShape) -> &'stati
     match semantic_id {
         "feature.model-catalogue" => "model-catalogue",
         "feature.structured-run" => "structured-run",
-        "feature.interactive-session" | "feature.active-session-reasoning-ack" => {
-            "interactive-session"
-        }
+        "feature.interactive-session"
+        | "feature.active-session-reasoning-ack"
+        | "feature.negotiated-model-options-observation" => "interactive-session",
         "feature.streaming-events" | "feature.usage-evidence" | "feature.activity-observation" => {
             "route-observation"
         }

@@ -164,6 +164,9 @@ fn acknowledgement_cannot_publish_on_structured_or_claude_code_applicability() {
     let acknowledgement = all_rows(observed)
         .find(|row| semantic_id(row.identity()) == "feature.active-session-reasoning-ack")
         .expect("acknowledgement exists");
+    let model = all_rows(observed)
+        .find(|row| semantic_id(row.identity()) == "feature.negotiated-model-options-observation")
+        .expect("model observation exists");
     let structured = agent_run_at_revision("1")
         .consumer_route_projection_contribution(source("projection.ack.structured"))
         .expect("structured contributes");
@@ -172,6 +175,8 @@ fn acknowledgement_cannot_publish_on_structured_or_claude_code_applicability() {
         .expect("code contributes");
     assert_applicability_rejects(&structured, acknowledgement);
     assert_applicability_rejects(&code, acknowledgement);
+    assert_applicability_rejects(&structured, model);
+    assert_applicability_rejects(&code, model);
 }
 
 #[test]

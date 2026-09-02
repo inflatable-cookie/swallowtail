@@ -1,6 +1,8 @@
 use super::contribution::observed_session_contribution;
 use crate::ClaudeAgentPreparedSession;
-use crate::driver::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
+use crate::driver::{
+    ClaudeAgentModelObservation, ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement,
+};
 use crate::failure::failure;
 use swallowtail_runtime::{
     BoxFuture, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId, HostServices,
@@ -88,7 +90,8 @@ impl ClaudeAgentProjectionOpenFailure {
 }
 
 impl ClaudeAgentPreparedSession {
-    /// Opens the prepared session and projects its exact reasoning acknowledgement.
+    /// Opens the prepared session and projects its exact reasoning acknowledgement
+    /// and negotiated model-options observation.
     pub fn open_session_with_projection(
         &self,
         prepared_source_id: ConsumerRouteProjectionSourceId,
@@ -107,11 +110,18 @@ impl ClaudeAgentPreparedSession {
         let lifecycle = self.open_lifecycle(services);
         Box::pin(async move {
             match lifecycle.await {
-                Ok((session, acknowledgement)) => {
-                    let reasoning = match &acknowledgement {
+                Ok((session, observation)) => {
+                    let reasoning = match &observation.reasoning {
                         ClaudeAgentReasoningAcknowledgement::NotRequested => None,
                         ClaudeAgentReasoningAcknowledgement::Effective(value) => {
                             Some((value.as_str(), false))
+                        }
+                    };
+                    let has_model = match observation.model {
+                        ClaudeAgentModelObservation::Exact(_) => true,
+                        ClaudeAgentModelObservation::Invalid(error) => {
+                            let _ = session.close().await;
+                            return Err(ClaudeAgentProjectionOpenFailure::Runtime(error));
                         }
                     };
                     let contribution = match observed_session_contribution(
@@ -119,6 +129,7 @@ impl ClaudeAgentPreparedSession {
                         prepared_source_id,
                         active_session_source_id,
                         reasoning,
+                        has_model,
                     ) {
                         Ok(contribution) => contribution,
                         Err(rejection) => {
@@ -162,6 +173,7 @@ fn rejected_failure(
         prepared_source_id,
         active_session_source_id,
         Some((&reasoning, true)),
+        false,
     ) {
         Ok(contribution) => contribution,
         Err(_) => return Err(ClaudeAgentProjectionOpenFailure::Runtime(failure)),

@@ -114,6 +114,7 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
                         execution_host_id: plan.execution_host_id().clone(),
                         native_close: lifecycle.close && selected.is_qualified(),
                         native_delete: lifecycle.delete && selected.is_qualified(),
+                        negotiated_model_options: None,
                     },
                     &services,
                 )
@@ -179,6 +180,7 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
                         execution_host_id: plan.execution_host_id().clone(),
                         native_close: lifecycle.close && selected.is_qualified(),
                         native_delete: lifecycle.delete && selected.is_qualified(),
+                        negotiated_model_options: None,
                     },
                     &services,
                 )?;
@@ -248,6 +250,7 @@ mod access;
 mod config;
 mod descriptor;
 mod handle;
+mod model;
 mod open;
 mod run;
 mod session;
@@ -255,4 +258,7 @@ mod session_management;
 mod validation;
 
 pub use descriptor::claude_agent_acp_descriptor;
-pub(crate) use open::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
+pub(crate) use model::{ClaudeAgentModelObservation, observe_model_options};
+pub(crate) use open::{
+    ClaudeAgentOpenObservation, ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement,
+};

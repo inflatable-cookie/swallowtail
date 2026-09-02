@@ -1,7 +1,10 @@
 use super::*;
 use crate::driver::config::ReasoningConfirmation;
 use crate::driver::validation::validate_initialize;
-use crate::driver::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
+use crate::driver::{
+    ClaudeAgentOpenObservation, ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement,
+    observe_model_options,
+};
 use crate::selection::ClaudeAgentPlanSelection;
 use swallowtail_core::{HarnessMode, ReasoningMode};
 
@@ -27,13 +30,8 @@ impl ClaudeAgentAcpDriver {
         services: &HostServices,
         selected: ClaudeAgentPlanSelection,
         reasoning: Option<ReasoningMode>,
-    ) -> Result<
-        (
-            ClaudeAgentSessionHandle,
-            ClaudeAgentReasoningAcknowledgement,
-        ),
-        ClaudeAgentOpenRejection,
-    > {
+    ) -> Result<(ClaudeAgentSessionHandle, ClaudeAgentOpenObservation), ClaudeAgentOpenRejection>
+    {
         let working_resource = request
             .working_resource()
             .expect("validated working resource")
@@ -53,6 +51,7 @@ impl ClaudeAgentAcpDriver {
             .await?;
         let opened: Result<_, ClaudeAgentOpenRejection> = async {
             let mut acknowledgement = ClaudeAgentReasoningAcknowledgement::NotRequested;
+            let model_observation;
             let initialized = pending
                 .connection
                 .initialize()
@@ -85,6 +84,7 @@ impl ClaudeAgentAcpDriver {
                     .set_config_option(&provider_id, "model", model)
                     .await?;
                 crate::driver::config::confirm_model(&configured, model)?;
+                model_observation = observe_model_options(&configured);
                 if let Some(reasoning) = reasoning.as_ref() {
                     crate::driver::config::validate_reasoning_option(&configured, reasoning)?;
                     let confirmed = pending
@@ -119,6 +119,7 @@ impl ClaudeAgentAcpDriver {
                 }
             } else {
                 crate::driver::config::validate_legacy_model(&response, model)?;
+                model_observation = observe_model_options(&response);
             }
             if resource_access == ResourceAccess::ReadWrite {
                 crate::driver::config::validate_write_mode(&response)?;
@@ -149,10 +150,17 @@ impl ClaudeAgentAcpDriver {
                     execution_host_id: plan.execution_host_id().clone(),
                     native_close: lifecycle.close && selected.is_qualified(),
                     native_delete: lifecycle.delete && selected.is_qualified(),
+                    negotiated_model_options: model_observation.exact().cloned(),
                 },
                 services,
             )?;
-            Ok::<_, ClaudeAgentOpenRejection>((handle, acknowledgement))
+            Ok::<_, ClaudeAgentOpenRejection>((
+                handle,
+                ClaudeAgentOpenObservation {
+                    reasoning: acknowledgement,
+                    model: model_observation,
+                },
+            ))
         }
         .await;
         match opened {

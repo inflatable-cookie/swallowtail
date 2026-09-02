@@ -35,6 +35,11 @@ pub enum Scenario {
     ReasoningConfirmationMalformed,
     ReasoningConfirmationDuplicate,
     ReasoningConfirmationUnbounded,
+    ModelMalformed,
+    ModelDuplicate,
+    ModelUnadvertised,
+    ModelUnbounded,
+    ModelEntryMissing,
     Version,
 }
 

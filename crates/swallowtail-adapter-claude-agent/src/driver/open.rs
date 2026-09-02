@@ -6,6 +6,11 @@ pub(crate) enum ClaudeAgentReasoningAcknowledgement {
     Effective(String),
 }
 
+pub(crate) struct ClaudeAgentOpenObservation {
+    pub(crate) reasoning: ClaudeAgentReasoningAcknowledgement,
+    pub(crate) model: super::model::ClaudeAgentModelObservation,
+}
+
 pub(crate) struct ClaudeAgentOpenRejection {
     failure: RuntimeFailure,
     rejected_reasoning: Option<String>,
@@ -50,7 +55,7 @@ impl ClaudeAgentAcpDriver {
     ) -> Result<
         (
             Box<dyn InteractiveSessionHandle>,
-            ClaudeAgentReasoningAcknowledgement,
+            ClaudeAgentOpenObservation,
         ),
         ClaudeAgentOpenRejection,
     > {

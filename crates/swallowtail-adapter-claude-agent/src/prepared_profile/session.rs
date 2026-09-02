@@ -3,7 +3,7 @@ use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
 use super::{ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture};
-use crate::driver::{ClaudeAgentOpenRejection, ClaudeAgentReasoningAcknowledgement};
+use crate::driver::{ClaudeAgentOpenObservation, ClaudeAgentOpenRejection};
 use crate::prepared::instance::{REASONING_MODES, session_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
@@ -80,7 +80,7 @@ impl ClaudeAgentPreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
-            let (handle, acknowledgement) = driver
+            let (handle, observation) = driver
                 .open_session_lifecycle(plan, request.clone(), services.clone())
                 .await?;
             let handle = wrap_management_handle(
@@ -91,7 +91,7 @@ impl ClaudeAgentPreparedSession {
                 ProviderSessionBindingOrigin::Created,
             )
             .await?;
-            Ok((handle, acknowledgement))
+            Ok((handle, observation))
         })
     }
 

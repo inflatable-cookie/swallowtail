@@ -170,16 +170,21 @@ The orchestrator may compile one later implementation card for
 3. Mark the row observation-only, post-open, not selectable, and tied to the
    active source. It is negotiated session evidence, not a model catalogue,
    selection authority, provider registry, or mid-session mutation handle.
-4. On the preserved open path, malformed/duplicate/unbounded optional model
-   evidence may remain absent to preserve existing behavior. On the projected
-   path, invalid evidence must close the opened session and return the bounded
-   runtime diagnostic without a contribution. Exact absent evidence emits no
-   row. Load and resume do not emit this row until their attachment responses
-   have an equally exact parser and lifecycle proof.
-5. The provider-free oracle must cover exact, absent, malformed, duplicate,
-   unbounded, current-not-in-options, source-id disagreement, projected
-   cleanup, preserved-open compatibility, and the negative assertion that a
-   negotiated snapshot is not a catalogue.
+4. Required missing `configOptions[id=model]` fails both public opens through
+   the existing confirmation path. That is not a successful-open Absent
+   snapshot: confirmation already requires the model entry. On the preserved
+   open path, snapshot-detail malformation that still confirms `currentValue`
+   (wrong category, duplicate option values, unbounded option, current not in
+   advertised options) may remain absent to preserve existing behavior. On the
+   projected path, that invalid snapshot-detail evidence must close the opened
+   session and return the bounded runtime diagnostic without a contribution.
+   Load and resume do not emit this row until their attachment responses have
+   an equally exact parser and lifecycle proof.
+5. The provider-free oracle must cover exact, missing required model entry,
+   snapshot-detail malformation, duplicate option values, unbounded,
+   current-not-in-options, source-id disagreement, projected cleanup,
+   preserved-open compatibility, and the negative assertion that a negotiated
+   snapshot is not a catalogue.
 
 This proposal uses an existing runtime type, source kind, lifecycle, and
 projection identity. It does not select a shared contract amendment or a new

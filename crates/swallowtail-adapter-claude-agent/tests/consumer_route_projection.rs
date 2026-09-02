@@ -14,6 +14,8 @@ mod fixtures;
 mod ledger;
 #[path = "consumer_route_projection/mixture.rs"]
 mod mixture;
+#[path = "consumer_route_projection/model.rs"]
+mod model;
 #[path = "consumer_route_projection/naming.rs"]
 mod naming;
 #[path = "consumer_route_projection/posture.rs"]

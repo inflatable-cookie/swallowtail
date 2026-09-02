@@ -11,8 +11,7 @@
 
 ## Ready
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native SDK foundation; frontier implementation and review
-- [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — ready; bounded adapter-only ACP observation; lands before card 055 restack
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native SDK foundation; continues in parallel; restack after card 056 merges
 
 ## Blocked
 
@@ -20,6 +19,7 @@
 
 ## Completed
 
+- [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded adapter-only ACP observation on projected open; lands before card 055 restack
 - [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278; official `0.3.258` frozen; credential non-custody and route gate proved
 - [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279 and ACP delivery gate; negotiated model-options observation selected as the only adapter-only next tranche
 - [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — complete; Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer

@@ -28,6 +28,7 @@ pub(crate) fn observed_session_contribution(
     prepared_source_id: ConsumerRouteProjectionSourceId,
     active_source_id: ConsumerRouteProjectionSourceId,
     reasoning: Option<(&str, bool)>,
+    has_model_observation: bool,
 ) -> Contribution {
     let mut builder = ProjectionBuilder::observed(
         session.plan(),
@@ -93,6 +94,9 @@ pub(crate) fn observed_session_contribution(
     }
     if let Some((value, rejected)) = reasoning {
         builder = builder.with_observed_reasoning(value, rejected)?;
+    }
+    if has_model_observation {
+        builder = builder.with_model_observation()?;
     }
     builder.build()
 }

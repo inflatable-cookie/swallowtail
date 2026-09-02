@@ -31,9 +31,10 @@ The orchestrator may compile one later adapter implementation card for
   `feature.negotiated-model-options-observation` row only on the additive
   projected open path, with a distinct active-session source;
 - keep the preserved `open_session` signature and shared lifecycle unchanged;
-- treat absent evidence as absent, preserved-path malformed optional evidence
-  as no snapshot, and projected-path malformed/ambiguous evidence as
-  close-and-fail with no contribution;
+- treat required missing `configOptions[id=model]` as existing confirmation
+  failure on both public opens; treat preserved-path snapshot-detail
+  malformation as no snapshot; treat projected-path snapshot-detail
+  malformation as close-and-fail with no contribution;
 - keep this as negotiated session evidence, never a model catalogue,
   selectable control, provider registry, or mid-session mutation;
 - do not add the row to load/resume until their response and lifecycle paths
@@ -89,10 +90,12 @@ Fail a later implementation or promotion if it:
 - adds a shared type, contract rule, public facade, provider claim, or live
   evidence without the orchestrator's later integration decision.
 
-Required proof for C1 is provider-free and exact: matching, absent, invalid,
-duplicate, unbounded, current-not-in-options, source identity disagreement,
-preserved-open parity, projected cleanup, load/resume omission, and catalogue
-negative cases.
+Required proof for C1 is provider-free and exact: matching, missing required
+model entry (confirmation failure on both opens), snapshot-detail
+malformation, duplicate option values, unbounded, current-not-in-options,
+source identity disagreement, preserved-open parity, projected cleanup,
+load/resume omission, and catalogue negative cases. Successful-open Absent
+does not apply: confirmation already requires the model entry.
 
 ## Validation Boundary
 

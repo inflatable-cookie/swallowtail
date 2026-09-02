@@ -65,11 +65,12 @@ rediscover them.
 - **Recheck official latest before final push.** Re-probe official latest
   after evidence repairs and immediately before push; if it moved, stop
   and ask.
-- **Number from pushed main.** Fetch `origin/main`. Next unused
-  research, roadmap, and batch-card ids are the max on that ref, not this
-  worktree. Restack before push if main moved. Do not leave colliding
-  numbered files for orchestrator restack.
-  `effigy qa:docs:roadmaps:numbers` must pass.
+- **Number from canonical pushed main.** Authority is
+  `https://github.com/inflatable-cookie/swallowtail.git` `main`, not
+  `origin/main`. Refresh it immediately before allocating ids and again
+  immediately before push with `effigy qa:docs:roadmaps:numbers`. Fetch
+  failure is a stop. Renumber onto a new unused id; do not reuse a
+  canonical number on another path.
 - **Ask** on major-line resets, exact-pin widening, new public operations,
   or anything Contract 029 does not settle.
 
@@ -203,9 +204,10 @@ Do **not** edit historical research, immutable release notes, or
 
 Copy the nearest prior family in the then-active generation for card,
 research, log, and fixture shape. Numbers: next unused research, that
-generation's next roadmap, and batch card **on current pushed
-`origin/main`**. Do not take ids from a stale worktree. Do not roll a
-generation to house currentness. If none is active, stop and ask.
+generation's next roadmap, and batch card **on refreshed canonical
+pushed main**. Do not take ids from this worktree or from `origin/main`.
+Do not roll a generation to house currentness. If none is active, stop
+and ask.
 
 ## Validation
 

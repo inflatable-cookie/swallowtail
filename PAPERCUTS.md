@@ -393,18 +393,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `main`, or defer final numbering to the orchestrator restack.
 - Surface: version-currentness worker handoffs; g04 roadmap and batch-card
   indexes.
-- Closed: 2026-09-02 papercuts currentness card allocation. The defect was
-  still live: the skill took next-unused ids from the local tree, and no
-  check compared them to pushed main. Pre-restack `66d43f90` added
-  `076-claude-code-2-1-238-identity.md` while `1c8fa6c3` on the planning
-  line added `076-kimi-platform-chat-addable-descriptor.md`. Repo-owned
-  prevention is `scripts/check-roadmap-number-collision.py` behind
-  `qa:docs:roadmaps:numbers`, plus skill/reference numbering from
-  `origin/main`. Mutation tests in
-  `scripts/tests/roadmap-number-collision.sh` fail the original 076
-  clash and an in-tree duplicate, and pass restacked 079-080, a
-  same-number retitle, and current `origin/main`. Not an orchestrator
-  scheduler.
+- Closed: 2026-09-02 papercuts currentness card allocation. The first
+  gate still trusted stale or fork `origin/main`, allowed delete-and-add
+  reuse as a "retitle", and left the mutation suite off CI. Repair:
+  `check-roadmap-number-collision.py` fetches canonical
+  `https://github.com/inflatable-cookie/swallowtail.git` `main` immediately
+  before enforcement and fails closed on fetch failure; number reuse on
+  another path is rejected; `qa:docs:roadmaps:numbers:test` is hermetic;
+  CI job `roadmap-numbers` runs the production checker and that suite.
+  Skill/reference allocate from that refreshed ref, not `origin/main`.
 
 ## Closed
 

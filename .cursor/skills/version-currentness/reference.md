@@ -14,7 +14,7 @@ numbers.
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
 | Current deferrals | `docs/roadmaps/standing-lanes.md` |
-| Next unused numbers | highest research, roadmap, and batch-card ids on current pushed `origin/main`, not this worktree |
+| Next unused numbers | highest research, roadmap, and batch-card ids on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
 
 Do not treat a frozen currentness table as still-true official latest.
 Re-probe.
@@ -166,11 +166,23 @@ One milestone in the then-active generation, two batch cards. Status
 starts ready and is completed on closeout. If no generation is active,
 stop and ask. Do not invent a generation to house currentness.
 
-`git fetch origin main` before choosing ids. Next unused is the max
-numbered `docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that
-ref. `effigy qa:docs:roadmaps:numbers` rejects a number that pushed main
-already assigned to a different file. Restack onto current main rather
-than landing a collision.
+Canonical pushed-main authority is
+`https://github.com/inflatable-cookie/swallowtail.git` `refs/heads/main`.
+`origin/main` is not authority (forks, stale tracking refs). Immediately
+before allocating ids, and again immediately before push:
+
+```sh
+effigy qa:docs:roadmaps:numbers
+```
+
+That selector fetches the canonical ref into
+`refs/swallowtail/roadmap-authority` and fails closed if the fetch cannot
+refresh it. Next unused is the max numbered
+`docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that refreshed
+tree. A number already assigned to a path on canonical main cannot move
+to another path; take a new unused number. Same-path content edits are
+allowed. Forks that need an explicit base pass `--authority` at that URL;
+do not point it at the fork's origin.
 
 Milestone name shape: `<NNN> <Family> <version> Useful Newer`.
 

@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Fail when numbered roadmap or batch-card files collide.
 
-In-tree uniqueness is required. A number that this tree assigns to a
-different file than the pushed base (`origin/main` by default) is the
-stale-planning-base collision from PRs 24-30: g04.024 kept cards 076-078
-while parallel currentness branches reused those ids from older bases.
+Canonical pushed-main authority is
+``https://github.com/inflatable-cookie/swallowtail.git`` ``refs/heads/main``.
+This checker fetches that ref immediately before enforcement and aborts if
+the fetch cannot refresh it. ``origin/main`` is not authority: a fork's
+origin, a stale tracking ref, or a failed fetch must not pass.
 
-A same-number retitle against an unchanged base path is allowed. Fetch
-the base before allocating numbers; this checker does not fetch.
+In-tree uniqueness is required. A number that canonical main already
+assigns to a path may not appear on a different path in this tree.
+Same-path content edits are allowed. Reuse via delete-and-add, rename, or
+edited rename is not; take a new unused number instead.
 """
 
 from __future__ import annotations
@@ -21,6 +24,9 @@ from pathlib import Path
 
 
 SCRIPT_ROOT = Path(__file__).resolve().parent.parent
+CANONICAL_AUTHORITY = "https://github.com/inflatable-cookie/swallowtail.git"
+CANONICAL_REF = "refs/heads/main"
+AUTHORITY_FETCH_REF = "refs/swallowtail/roadmap-authority"
 NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-.+\.md$")
 GENERATION_DIR = re.compile(r"^g\d{2}$")
 NUMBERED_PATH = re.compile(
@@ -120,42 +126,43 @@ def format_key(key: tuple[str, str, str]) -> str:
     return f"{generation} {kind} {number}"
 
 
+def refresh_authority(root: Path, authority: str, ref: str) -> str:
+    spec = f"+{ref}:{AUTHORITY_FETCH_REF}"
+    proc = git_run(root, "fetch", "--quiet", authority, spec)
+    if proc.returncode != 0:
+        detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
+        fail(
+            f"cannot refresh canonical main from {authority} ({ref}): {detail}. "
+            "Refusing to trust a stale or missing snapshot."
+        )
+    sha = resolve_commit(root, AUTHORITY_FETCH_REF)
+    if sha is None:
+        fail(
+            f"canonical main fetch from {authority} ({ref}) did not produce "
+            f"{AUTHORITY_FETCH_REF}. Refusing to trust a stale or missing snapshot."
+        )
+    return sha
+
+
 def check_against_base(
     root: Path,
     head: dict[tuple[str, str, str], str],
-    base_ref: str,
+    base_sha: str,
+    base_label: str,
 ) -> None:
-    base_sha = resolve_commit(root, base_ref)
-    if base_sha is None:
-        fail(
-            f"cannot resolve base {base_ref!r}; fetch origin main before "
-            "allocating numbered roadmaps or cards"
-        )
-    head_sha = resolve_commit(root, "HEAD")
-    if head_sha is None:
-        fail("cannot resolve HEAD")
-    if head_sha == base_sha:
-        return
-
-    merge_base = git_text(root, "merge-base", "HEAD", base_sha).strip()
-    base_occ = occupancy_from_paths(git_paths(root, base_sha), base_ref)
-    merge_occ = occupancy_from_paths(git_paths(root, merge_base), "merge-base")
-
+    base_occ = occupancy_from_paths(git_paths(root, base_sha), base_label)
     collisions: list[str] = []
     for key, head_path in sorted(head.items()):
         base_path = base_occ.get(key)
         if base_path is None or base_path == head_path:
             continue
-        merge_path = merge_occ.get(key)
-        if merge_path == base_path:
-            continue
         collisions.append(
-            f"{format_key(key)}\n  HEAD: {head_path}\n  {base_ref}: {base_path}"
+            f"{format_key(key)}\n  HEAD: {head_path}\n  {base_label}: {base_path}"
         )
     if collisions:
         fail(
-            "stale-base number collision; restack onto current pushed main:\n"
-            + "\n".join(collisions)
+            "stale-base number collision; take a new unused number on current "
+            f"canonical main ({base_label}):\n" + "\n".join(collisions)
         )
 
 
@@ -170,9 +177,25 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
         help="repository root to scan (default: this checkout)",
     )
     parser.add_argument(
-        "--base",
-        default="origin/main",
-        help="pushed base ref that owns allocated numbers (default: origin/main)",
+        "--authority",
+        default=CANONICAL_AUTHORITY,
+        help=(
+            "canonical git URL or path to fetch for pushed main "
+            f"(default: {CANONICAL_AUTHORITY})"
+        ),
+    )
+    parser.add_argument(
+        "--ref",
+        default=CANONICAL_REF,
+        help=f"ref to fetch from authority (default: {CANONICAL_REF})",
+    )
+    parser.add_argument(
+        "--local-base",
+        default=None,
+        help=(
+            "skip fetch and compare against this existing ref; diagnostics "
+            "and hermetic tests only, never the worker or CI enforcement path"
+        ),
     )
     return parser.parse_args(argv)
 
@@ -181,10 +204,22 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     root = args.root.resolve()
     head = occupancy_from_paths(working_tree_paths(root), "HEAD")
-    check_against_base(root, head, args.base)
+    if args.local_base:
+        base_sha = resolve_commit(root, args.local_base)
+        if base_sha is None:
+            fail(
+                f"cannot resolve local base {args.local_base!r}; refusing to "
+                "trust a missing snapshot"
+            )
+        base_label = args.local_base
+    else:
+        base_sha = refresh_authority(root, args.authority, args.ref)
+        base_label = f"{args.authority} {args.ref}"
+    check_against_base(root, head, base_sha, base_label)
     print(
         "roadmap number collision check passed: "
-        f"{len(head)} numbered milestone/card files unique against {args.base}"
+        f"{len(head)} numbered milestone/card files unique against {base_label} "
+        f"at {base_sha[:12]}"
     )
 
 

@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 48
+EXPECTED_ROUTE_COUNT = 49
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -31,6 +31,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "bedrock.catalogue": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "bedrock.runtime": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "claude-agent.acp": ("supported", "yes", "unsupported", "unsupported", "supported", "ProviderDataDeleted"),
+    "claude-agent.sdk": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "claude-code.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "cline.acp": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "cline.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),

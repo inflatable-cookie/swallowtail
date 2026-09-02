@@ -53,6 +53,30 @@ annotated Git tags from the canonical repository.
   `open_session_with_projection` with
   `swallowtail.negotiated_model_options.invalid`. Load, resume, catalogue, and
   prepared contribution stay negative. Research 279, g05.022 card 056.
+- add the provider-free `claude-agent.sdk` route: Anthropic's official
+  `@anthropic-ai/claude-agent-sdk` `0.3.258`, carrying native `2.1.258`, driven
+  through a source-tagged Node sidecar (exact Node `22.23.2`) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire at behavior revision
+  `claude-agent.sdk-v1`. Five qualified-only one-point axes bind the SDK
+  wrapper, native binary, runtime, wire, and sidecar revision independently;
+  no ACP or Claude Code claim transfers in either direction. The application
+  provisions the runtime, the `.` SDK entry point, its peer dependencies, and
+  the platform package; Swallowtail never installs, vendors, updates, repairs,
+  or redistributes them. Swallowtail holds no subscription credential: it
+  leases a delegated reference, admits only `firstParty` provenance with an
+  `oauth` key source, refuses account identity fields, and mechanically
+  forbids the credential-bearing `/bridge` and `/browser` subpaths, API-key
+  helpers, and cloud auth refresh. One fresh read-only session delivers
+  streamed output, identity-and-lifecycle activity, consumer-mediated
+  `canUseTool` admission, and capability-gated interrupt. Because the upstream
+  SDK offers no joined stop, close joins the descendant tree rather than the
+  nearest child: the sidecar joins its own retained native handle to a
+  declared 2000 ms bound, the execution host escalates through descendant-tree
+  termination on expiry and re-joins, and close reports `graceful`,
+  `escalated`, or `unconfirmed`, where unconfirmed is cleanup failure.
+  Session persistence is disabled, so load, resume, fork, session management,
+  model, effort, thinking, usage detail, MCP, hooks, plugins, skills,
+  subagents, Bash, and terminal remain later layers. Research 278, g05.055.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional
   `ClineSessionProfileInput::with_harness_mode(Plan)` advertises
   `HarnessModeSelection(Plan)`, requires unique `session/new` plan membership,

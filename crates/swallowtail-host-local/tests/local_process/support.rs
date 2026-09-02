@@ -59,6 +59,23 @@ fn process_fixture() {
                 .expect("fixture writes inside the host-owned resource");
         }
         "sleep" => thread::sleep(Duration::from_secs(30)),
+        // A foreign-language sidecar whose SDK launches a further
+        // provider-owned process: the parent stays alive while the native
+        // grandchild runs.
+        "sidecar-with-native-descendant" => {
+            spawn_native_descendant();
+            thread::sleep(Duration::from_secs(30));
+        }
+        // The same topology, except the nearest child exits immediately. A
+        // join of that child alone reports success while the descendant lives.
+        "sidecar-exits-with-native-descendant" => spawn_native_descendant(),
+        "native-descendant" => {
+            std::fs::write("descendant-started", b"started")
+                .expect("fixture records descendant start");
+            thread::sleep(Duration::from_secs(3));
+            std::fs::write("descendant-survived", b"survived")
+                .expect("fixture records descendant survival");
+        }
         "sleep-with-cooperative-child" => spawn_cooperative_child_and_sleep(),
         "exit-zero" => {}
         "exit-one" => std::process::exit(1),
@@ -95,6 +112,26 @@ fn process_fixture() {
         }
         _ => panic!("unknown fixture mode"),
     }
+}
+
+/// Spawns this test executable again as the fixture's "native" grandchild.
+///
+/// It is portable on purpose: every supported platform runs the same topology,
+/// so descendant enrollment is proved rather than asserted. The descendant
+/// closes the supervised pipes so liveness is observed through markers rather
+/// than through pipe drain.
+#[allow(clippy::zombie_processes)]
+fn spawn_native_descendant() {
+    std::process::Command::new(std::env::current_exe().expect("test executable"))
+        .args(fixture_arguments())
+        .env_clear()
+        .envs(fixture_environment("native-descendant"))
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .expect("fixture spawns a native descendant");
+    std::fs::write("sidecar-started", b"started").expect("fixture records sidecar start");
 }
 
 /// Spawns a same-group child, records its pid, then keeps the parent alive so

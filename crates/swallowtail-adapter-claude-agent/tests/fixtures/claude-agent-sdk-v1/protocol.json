@@ -1,0 +1,49 @@
+{
+  "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
+  "behavior_revision": "claude-agent.sdk-v1",
+  "sdk_package": "@anthropic-ai/claude-agent-sdk",
+  "sdk_version": "0.3.258",
+  "native_version": "2.1.258",
+  "node_runtime": "22.23.2",
+  "sidecar_entry_file": "claude-agent-sdk-sidecar.mjs",
+  "sidecar_source_tag_prefix": "swallowtail-claude-agent-sdk-sidecar@",
+  "compatibility_claim": "qualified_only_one_point",
+  "sdk_entry_point": ".",
+  "commands": ["open", "query", "interrupt", "close"],
+  "open_params": ["cwd"],
+  "close_params": ["joinBoundMs"],
+  "close_states": ["graceful", "escalated", "unconfirmed"],
+  "sidecar_reportable_close_states": ["graceful", "unconfirmed"],
+  "join_bound_ms": 2000,
+  "tools": ["Read", "Glob", "Grep"],
+  "account_fields": ["apiProvider", "apiKeySource", "subscriptionPresent"],
+  "required_api_provider": "firstParty",
+  "required_api_key_source": "oauth",
+  "environment": {
+    "sdk_module": "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE",
+    "native_binary": "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY",
+    "manifest": "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST"
+  },
+  "bounds": {
+    "record_bytes": 1048576,
+    "command_id_bytes": 128,
+    "pending_commands": 16,
+    "pending_callbacks": 8,
+    "capabilities": 64,
+    "capability_bytes": 96
+  },
+  "forbidden_specifiers": [
+    "claude-agent-sdk/bridge",
+    "claude-agent-sdk/browser",
+    "bridge.mjs",
+    "browser-sdk.js",
+    "fetchRemoteCredentials",
+    "createCodeSession",
+    "worker_jwt",
+    "OAuthCredential",
+    "apiKeyHelper",
+    "awsAuthRefresh",
+    "gcpAuthRefresh",
+    "ANTHROPIC_API_KEY"
+  ]
+}

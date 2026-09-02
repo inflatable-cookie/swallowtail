@@ -28,6 +28,9 @@ retained_execution_classifications = {
     ("retained_background_execution", "bedrock.catalogue; bedrock.runtime"): "separate_route_and_contract_required",
     ("stream_reattachment", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
     ("provider_managed_recovery", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("retained_background_execution", "claude-agent.sdk"): "operation_shape_not_applicable",
+    ("stream_reattachment", "claude-agent.sdk"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "claude-agent.sdk"): "selected_surface_absence",
     ("retained_background_execution", "claude-agent.acp"): "operation_shape_not_applicable",
     ("stream_reattachment", "claude-agent.acp"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "claude-agent.acp"): "upstream_unsupported",
@@ -130,6 +133,7 @@ working_resource_write_classifications = {
     ("bounded_workspace_text_write", "alibaba.conversations"): "operation_shape_not_applicable",
     ("working_resource", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "claude-agent.sdk"): "selected_surface_absence",
     ("bounded_workspace_text_write", "claude-agent.acp"): "upstream_unsupported",
     ("bounded_workspace_text_write", "claude-code.headless; claude-code.response-only"): "upstream_unsupported",
     ("working_resource", "anthropic.managed-agent"): "operation_shape_not_applicable",
@@ -281,6 +285,7 @@ residual_exact_release_only = {
     ("unverified_newer_allowed", "deepseek-harness.local-server"),
     ("unverified_newer_allowed", "zcode.app-server"),
     ("unverified_newer_allowed", "pi.sdk-sidecar"),
+    ("unverified_newer_allowed", "claude-agent.sdk"),
 }
 residual_contract_or_corpus = {
     ("interactive_session", "qwen.headless"),
@@ -349,6 +354,7 @@ residual_separate_route = {
 residual_no_provider_billing = {
     ("billed_cost_evidence", route)
     for route in {
+        "claude-agent.sdk",
         "claude-code.headless; claude-code.response-only",
         "llama-cpp.attached",
         "kimi-code.acp + kimi-code.headless",

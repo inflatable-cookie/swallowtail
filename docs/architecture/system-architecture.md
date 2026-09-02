@@ -201,7 +201,19 @@ OpenHands adds a package without a production route.
   qualified `2.1.227..=2.1.235`, later stables UnverifiedNewer, explicit
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
-  structured-output capability
+  structured-output capability. The same crate also implements the separate
+  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
+  `0.3.258`, carrying native `2.1.258`, running in a source-tagged Node
+  sidecar (exact Node `22.23.2`) over the private bounded
+  `swallowtail-claude-agent-sdk-jsonl-v1` wire, with five qualified-only
+  one-point version axes, an application-provisioned launch recipe and
+  environment, no credential custody (delegated lease plus first-party
+  `oauth` readiness only), read-only tools, consumer-mediated tool admission,
+  capability-gated interrupt, and a host-owned descendant-tree close that
+  reports graceful, escalated, or unconfirmed. The route is two processes
+  deep, so the nearest sidecar is not the lifecycle boundary: the sidecar
+  joins its own retained native handle to a declared bound and the execution
+  host terminates the whole tree on expiry
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, exact portable

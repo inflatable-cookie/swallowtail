@@ -1,9 +1,9 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 ready after card 060 lands; PR 188 preserved
+Status: planned; card 055 ready on preserved PR 188 under accepted macOS degraded cleanup
 Owner: Tom
 Created: 2026-09-02
-Depends on: Research 277; Contracts 010, 015, 017, 019, 023, 029, 038, 041, 047; g05.024 card 060
+Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
 Vision tags: Claude Agent SDK, ACP, subscription auth, interactive sessions
 
 ## Purpose
@@ -35,10 +35,6 @@ or production implementation before the two evidence gates close.
    seam and recorded the macOS evidence stop. The operator then accepted
    root-only `Degraded` cleanup on ordinary macOS, so card 055 resumes on its
    existing branch and PR identity.
-5. A later exact-head review found that caller expiry could still drop a
-   running `JoinedTask` and block. g05.024/card 060 adds exact-host/scope
-   relinquishment with autonomous reap. PR 188 restacks only after it lands;
-   accepted-for-reap never strengthens SDK cleanup truth.
 
 ## Boundaries
 
@@ -57,7 +53,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready after card 060 lands; preserve and restack PR 188 under the accepted macOS root-only degraded posture
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — in review; PR 188 restacked on the accepted macOS root-only degraded posture
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

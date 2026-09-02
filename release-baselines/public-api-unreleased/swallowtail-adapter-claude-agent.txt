@@ -1,4 +1,80 @@
 pub mod swallowtail_adapter_claude_agent
+pub mod swallowtail_adapter_claude_agent::sdk
+pub mod swallowtail_adapter_claude_agent::sdk::protocol
+pub enum swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::EmptyRecord
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::InvalidCallback
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::InvalidEvent
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::InvalidResponse
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::InvalidTerminal
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::MalformedJson
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::MissingLfDelimiter
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::MissingType
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::RecordTooLarge
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::UnknownRecord
+pub enum swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind::Callback
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind::Diagnostic
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind::Event
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind::Response
+pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind::Terminal
+pub struct swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
+impl swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
+pub const fn swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure::kind(&self) -> swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind
+impl core::error::Error for swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
+impl core::fmt::Display for swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
+pub fn swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn swallowtail_adapter_claude_agent::sdk::protocol::decode_records(&[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind>, swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure>
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::low_level_driver(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> Self
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_BEHAVIOR: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_CREDENTIAL_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_LAUNCH_RECIPE_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_AXIS: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_AXIS: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_PACKAGE: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_AXIS: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_WIRE: &str
+pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_WIRE_AXIS: &str
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_native_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_native_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_node_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_node_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_package_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_sidecar_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_sidecar_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_tool_admission_namespace() -> swallowtail_core::event::ExtensionNamespace
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_claude_agent::sdk::prepare_claude_agent_sdk_session(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation, swallowtail_runtime::session_options::SessionOptions) -> core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub enum swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::ConsumerMediated
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::RejectAndStop

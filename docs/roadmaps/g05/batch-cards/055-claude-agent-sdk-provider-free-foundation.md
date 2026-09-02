@@ -117,6 +117,14 @@ evidence, an SDK-only type leaking into shared API, provider contact need, or a
 required shared public vocabulary decision. Stop if card 060 is not on the
 restacked base or any accepted-for-reap result is treated as joined cleanup.
 
+## Closeout
+
+Implemented as `claude-agent.sdk` in `swallowtail-adapter-claude-agent`, with
+the descendant-tree enrollment proof in `swallowtail-host-local`. The Help
+Center subscription article and official npm stable were rechecked immediately
+before implementation and both held exactly; no stop condition fired. Record:
+`../../../logs/2026-09-02-claude-agent-sdk-foundation.md`.
+
 ## Auto-Continuation
 
 No. Exact-head frontier review before merge. Later SDK layers compile only

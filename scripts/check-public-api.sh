@@ -38,6 +38,19 @@ release_expected_packages="$release_actual_dir/expected-packages.txt"
   cat "$release_unreleased_packages"
 } | LC_ALL=C sort -u > "$release_expected_packages"
 diff -u "$release_expected_packages" "$release_actual_dir/packages.txt"
+while IFS= read -r release_approved_file; do
+  release_approved_package=$(basename "$release_approved_file" .txt)
+  if ! grep -Fxq "$release_approved_package" "$release_expected_packages"; then
+    printf 'approved v0.4.0 removal names an unknown current package: %s\n' \
+      "$release_approved_package" >&2
+    exit 1
+  fi
+  if [[ ! -f "$release_immutable_baseline_dir/$release_approved_package.txt" ]]; then
+    printf 'approved v0.4.0 removal names a package without an immutable baseline: %s\n' \
+      "$release_approved_package" >&2
+    exit 1
+  fi
+done < <(find "$release_approved_breaking_dir" -maxdepth 1 -type f -name '*.txt' | LC_ALL=C sort)
 while IFS= read -r release_package; do
   if grep -Fxq "$release_package" "$release_unreleased_packages"; then
     release_api="$release_unreleased_baseline_dir/$release_package.txt"

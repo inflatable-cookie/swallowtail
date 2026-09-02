@@ -23,12 +23,22 @@ finish card 055.
    every platform and constructs no tree claim.
 2. On 2026-09-02 the operator authorized the narrow unsafe/dependency posture
    needed for a sound Unix tree observation and the v0.4 breaking close seam.
-3. Cards 058 and 059 now run in parallel. Card 058 makes every public
-   post-expiry cleanup path caller-bounded. Card 059 pursues exact Unix
-   owned-tree attestation and must defeat escape, descriptor-close, and
-   identity-reuse counterexamples rather than treating unsafe as proof.
+3. Cards 058 and 059 ran in parallel. Card 058 makes every public post-expiry
+   cleanup path caller-bounded. Card 059 attacked exact Unix owned-tree
+   attestation and stopped: four native counterexamples falsify the candidate
+   primitives (`setsid` escape, descriptor EOF with a live child, released-group
+   identity, and reparenting to `launchd`), and no sound owned-tree observation
+   was found within the current ordinary host-local authority on macOS, so the
+   local host stays root-only and adds no unsafe. A sound observation would need
+   an inescapable owned-tree identity with exclusive host ownership and denied
+   migration; that shape is Linux-territory (a PID namespace or a delegated
+   cgroup v2 subtree) or an out-of-scope entitlement/system-extension mechanism,
+   none validated from this macOS host. macOS remains unattestable under current
+   authority pending an operator decision.
 4. Card 055 then restacks onto both shared prerequisites. The existing worker,
-   workspace, branch, and PR remain the continuation identity.
+   workspace, branch, and PR remain the continuation identity. The tree-empty
+   gate is unresolved on macOS under current authority, so the SDK route cannot
+   claim the full tree there yet.
 
 The implementation lanes are parallel, but same-repository merge ordering is
 serial: merge card 059 first if both touch runtime/API evidence, then restack
@@ -52,7 +62,7 @@ stays unconfirmed, so card 055 cannot restack on the first decision alone.
 
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — ready; operator accepted the v0.4 breaking close seam
-- [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — ready; operator authorized a narrow unsafe or dependency boundary, subject to the adversarial oracle
+- [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
 - [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on 058-059; preserve PR 188 for restack
 
 ## Acceptance

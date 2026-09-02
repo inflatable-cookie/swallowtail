@@ -962,13 +962,28 @@ Windows terminates the tree through `taskkill /T`. Emptiness afterwards is not
 proved. The Unix owner is itself a member of the group it anchors, so a
 group-directed liveness probe can only report the owner; answering the
 question would mean reaping the owner first and then probing a released,
-reusable group number. The two mechanisms that would observe emptiness
-honestly — an extra inherited descendant-liveness descriptor installed through
-`CommandExt::pre_exec`, or process-table enumeration by group through `sysctl`
-or procfs — both need `unsafe` or a platform dependency, and every crate here
-is `forbid(unsafe_code)`. The local host therefore reports
+reusable group number. The candidate mechanisms
+that could observe emptiness — an extra inherited descendant-liveness descriptor
+installed through `CommandExt::pre_exec`, process-table enumeration by group
+through `sysctl` or procfs, or an ancestry walk through `proc_listchildpids` —
+each need `unsafe` or a platform dependency, and every crate here is
+`forbid(unsafe_code)`. Card 059 falsified those candidate
+primitives natively under the operator-authorized boundary: a live descendant
+closes or does not inherit the liveness descriptor, so its end-of-file is not
+emptiness; a `setsid` descendant leaves the owned group, so group enumeration
+misses it; a released group number is reusable once the owner is reaped; and an
+orphaned descendant reparents to `launchd`, which macOS never reassigns to the
+launcher because it has no child-subreaper. No sound owned-tree observation was
+found and validated within the current ordinary host-local authority. A sound
+one would need a mechanism whose owned-tree identity a descendant cannot escape
+by session change, descriptor drop, or reparenting, with exclusive host
+ownership and denied migration out of the owned set — for example a PID
+namespace, or a delegated cgroup v2 subtree the provider cannot write itself out
+of via `cgroup.procs`; entitlement or system-extension facilities such as Apple
+Endpoint Security exist but are outside this bounded host-local lane, not proved
+nonexistent. The local host therefore reports
 `ProcessTreeCompletion::RootOnly` on every platform, including exits where
-termination succeeded, and never constructs the attested state. A native arm64
+termination succeeded, adds no unsafe, and never constructs the attested state. A native arm64
 probe proves that a security-scoped project grant propagates through a
 compatible inherited App Sandbox helper to shell and background descendants.
 The exact Kimi `0.28.1` single executable cannot retain V8 and extracted-

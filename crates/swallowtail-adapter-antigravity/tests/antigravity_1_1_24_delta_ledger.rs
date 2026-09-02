@@ -287,7 +287,7 @@ fn dist_inventory_is_one_changed_binary_per_hop() {
 }
 
 #[test]
-fn claim_at_observation_still_ends_at_1_1_17() {
+fn claim_raises_1_1_24_and_keeps_observation_ceiling_as_history() {
     let identity = json(IDENTITY);
     assert_eq!(identity["claim_at_observation"]["baseline"], "1.1.9");
     assert_eq!(
@@ -295,11 +295,13 @@ fn claim_at_observation_still_ends_at_1_1_17() {
         "1.1.17"
     );
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
+    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.24");
 
     let catalogue = antigravity_catalogue_claim();
     let headless = antigravity_headless_claim();
-    for candidate in ["1.1.9", "1.1.17"] {
+    for candidate in [
+        "1.1.9", "1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24",
+    ] {
         assert!(matches!(
             catalogue.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -317,16 +319,14 @@ fn claim_at_observation_still_ends_at_1_1_17() {
     }
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
-    for newer in ["1.1.18", "1.1.24"] {
-        assert!(matches!(
-            catalogue.assess(&version(newer)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-        assert!(matches!(
-            headless.assess(&version(newer)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        catalogue.assess(&version("1.1.25")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert!(matches!(
+        headless.assess(&version("1.1.25")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 fn json(value: &str) -> Value {

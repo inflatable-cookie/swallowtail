@@ -14,7 +14,7 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest release in the current maintained qualification window.
-pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
+pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.24";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
     "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1";
@@ -179,9 +179,11 @@ mod tests {
         assert!(claim.supports(&version("1.1.15")));
         assert!(claim.supports(&version("1.1.16")));
         assert!(claim.supports(&version("1.1.17")));
+        assert!(claim.supports(&version("1.1.18")));
+        assert!(claim.supports(&version("1.1.24")));
         assert!(!claim.permits(&version("1.1.8")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.1.18"))
+            claim.assess(&version("1.1.25"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };
@@ -200,7 +202,7 @@ mod tests {
                 .as_str(),
             ANTIGRAVITY_RELEASE_AXIS
         );
-        assert!(antigravity_release_binding("1.1.17").is_some());
+        assert!(antigravity_release_binding("1.1.24").is_some());
         for rejected in [
             "",
             " 1.1.9",

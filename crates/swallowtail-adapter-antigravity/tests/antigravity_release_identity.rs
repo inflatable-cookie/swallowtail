@@ -88,7 +88,7 @@ fn identity_and_claim_qualify_1_1_14_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
+    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.24");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "1.1.9"
@@ -212,7 +212,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
+    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.24");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "1.1.14"
@@ -239,7 +239,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.1.18")),
+        catalogue.assess(&version("1.1.25")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -354,7 +354,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
+    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.24");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "1.1.15"
@@ -381,7 +381,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.1.18")),
+        catalogue.assess(&version("1.1.25")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

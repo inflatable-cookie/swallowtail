@@ -63,4 +63,8 @@ family from this PR.
 
 ## Result
 
-Pending the claim commit.
+The Antigravity catalogue and headless axes qualify official `1.1.24`.
+Published intermediates `1.1.18` through `1.1.23` are qualified. `1.1.8`
+stays incompatible. Unpublished `1.1.25` stays `UnverifiedNewer`.
+`AllowUnverified` remains. Identity evidence remains the identity-only
+commit. Next Task and northstar-loop state were not changed.

@@ -26,6 +26,15 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- raise the Antigravity catalogue and headless qualified ceilings from
+  `1.1.17` to official GitHub `google-antigravity/antigravity-cli`
+  `1.1.24`. Compatible extension of the existing catalogue and stream-JSON
+  behaviors: selected mapped flags stay; `mic-serve`, `mcp`,
+  `--input-format`, `/voice`, and Gemini API-key extras stay unmapped.
+  Downloaded official binaries were hashed and not executed. Published
+  intermediates `1.1.18` through `1.1.23` are qualified; `1.1.8` stays
+  independently unqualified; unpublished `1.1.25` remains visible
+  `UnverifiedNewer`. Research 276, g05.021.
 - raise the Codex CLI qualified ceiling from `0.152.0` to official npm
   `@openai/codex` `0.152.1` on the shared `codex.cli` exec and app-server
   axes. Compatible extension of the existing JSONL and workspace-roots

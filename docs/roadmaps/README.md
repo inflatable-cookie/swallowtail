@@ -15,8 +15,10 @@ shape.
 
 ## Next Task
 
-Implement Codex `0.152.1` useful-newer qualification for the current official
-stable. Host `0.150.1` already sits on a qualified bound. Do not start a
+Reassess the active generation now that remaining currentness
+`AllowUnverified` families except the deferred Gemini family and the other
+recorded deferrals sit behind queued one-family runs, and Codex CLI
+`0.152.1` has been qualified through g05.020 cards 048-049. Do not start a
 second family from this PR. Watcher stays exact `2.1.251`. Do not reopen
 `kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
 Gemini's deferral, and do not keep g05 open for currentness. The g05.009

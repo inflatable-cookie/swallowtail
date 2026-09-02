@@ -3,65 +3,64 @@ use swallowtail_adapter_codex::{codex_app_server_claim, codex_exec_claim};
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn production_exec_claim_still_ends_at_0_152_0_before_the_claim_card() {
+fn production_exec_claim_admits_0_152_1_as_the_maintained_ceiling() {
     let exec = codex_exec_claim();
-    let qualified = exec.assess(&version("0.152.0"));
-    let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
-        panic!("0.152.0 must stay qualified before the claim card");
-    };
-    assert_eq!(matched.behavior_revision().as_str(), "codex.exec.jsonl-v1");
-    assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
-    assert!(exec.permits(&version("0.150.1")));
+    for point in ["0.150.1", "0.152.0", "0.152.1"] {
+        let qualified = exec.assess(&version(point));
+        let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
+            panic!("{point} must be qualified after the claim card");
+        };
+        assert_eq!(matched.behavior_revision().as_str(), "codex.exec.jsonl-v1");
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+    }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        exec.assess(&version("0.152.1"))
+        exec.assess(&version("0.152.2"))
     else {
-        panic!("0.152.1 must stay unverified newer before the claim card");
+        panic!("0.152.2 must remain unverified newer after the claim card");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.152.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "codex.exec.jsonl-v1"
     );
-    for gap in ["0.149.2", "0.150.2", "0.151.1"] {
+    for gap in ["0.149.2", "0.150.2", "0.151.1", "0.108.0", "0.109.0"] {
         assert_eq!(
             exec.assess(&version(gap)),
             InterfaceCompatibilityAssessment::Incompatible,
-            "{gap} must stay incompatible before the claim card"
-        );
-    }
-    for gap in ["0.108.0", "0.109.0"] {
-        assert_eq!(
-            exec.assess(&version(gap)),
-            InterfaceCompatibilityAssessment::Incompatible,
-            "{gap} must stay incompatible before the claim card"
+            "{gap} must stay incompatible after the claim card"
         );
     }
 }
 
 #[test]
-fn production_app_server_claim_still_ends_at_0_152_0_before_the_claim_card() {
+fn production_app_server_claim_admits_0_152_1_as_the_maintained_ceiling() {
     let app_server = codex_app_server_claim();
-    let qualified = app_server.assess(&version("0.152.0"));
-    let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
-        panic!("0.152.0 must stay qualified before the claim card");
+    for point in ["0.150.1", "0.152.0", "0.152.1"] {
+        let qualified = app_server.assess(&version(point));
+        let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
+            panic!("{point} must be qualified after the claim card");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            "codex.app-server.v2.workspace-roots"
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+    }
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+        app_server.assess(&version("0.152.2"))
+    else {
+        panic!("0.152.2 must remain unverified newer after the claim card");
     };
+    assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
     assert_eq!(
-        matched.behavior_revision().as_str(),
+        unverified.behavior_revision().as_str(),
         "codex.app-server.v2.workspace-roots"
     );
-    assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
-    assert!(app_server.permits(&version("0.150.1")));
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        app_server.assess(&version("0.152.1"))
-    else {
-        panic!("0.152.1 must stay unverified newer before the claim card");
-    };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.152.0");
     for gap in ["0.149.2", "0.150.2", "0.151.1"] {
         assert_eq!(
             app_server.assess(&version(gap)),
             InterfaceCompatibilityAssessment::Incompatible,
-            "{gap} must stay incompatible before the claim card"
+            "{gap} must stay incompatible after the claim card"
         );
     }
 }

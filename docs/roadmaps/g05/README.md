@@ -30,12 +30,12 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Research 274 remaining family is Codex `0.152.1`; g05.020 cards 048-049 compile identity-before-claim | Contract 029 identity-before-claim; Research 274-275; current-main validation | `g05.020` cards 048-049 |
+| Keep production route versions current one family at a time. | completed standing currentness; Codex through official `0.152.1`; no claim changes in Research 275 beyond the admitted family | Contract 029 identity-before-claim; Research 274-275; current-main validation | `g05.020` cards 048-049 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 
 ## Planned Next Roadmaps
 
-- [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — ready; Research 275; cards 048-049; official npm `0.152.1`
+- [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
 - [g05.019 Claude Code 2.1.257 Useful Newer](019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official npm `2.1.257`
 - [g05.018 Claude Agent ACP 0.73.0 Useful Newer](018-claude-agent-acp-0-73-0-useful-newer.md) — completed; Research 272; cards 044-045; official npm `0.73.0`
@@ -57,12 +57,12 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty numbered roadmaps: 14 completed milestones including
-standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, and 019, the A2 ACP cap
-at 017, and contract promotion at 008 and 010, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 020. Milestone 019 is complete:
-Claude Code qualifies official `2.1.257`. Milestone 009 is planned and
-strict-paused on its operator decision.
+g05 has twenty numbered roadmaps: 15 completed milestones including
+standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
+020, the A2 ACP cap at 017, and contract promotion at 008 and 010, honest
+evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
+qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
+its operator decision.
 
 ## Current Boundary
 
@@ -298,11 +298,13 @@ Research 271's remaining family is Claude Code `2.1.257`. g05.019 cards
 Research 274 is the latest standing currentness checkpoint. It revalidated all
 40 production families and selects Codex `0.152.1` as the sole next family;
 the checkpoint changes no claim and opens no g05 roadmap or batch card.
-g05.020 cards 048-049 compile identity-before-claim for Codex `0.152.1`.
+g05.020 cards 048-049 froze identity then qualified exec and app-server
+through official `0.152.1` while keeping every feature-specific exact pin
+and unpublished gap unchanged.
 
 ## Milestones
 
-- [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — ready; Research 275; cards 048-049; official `0.152.1`
+- [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 
 - [019 Claude Code 2.1.257 Useful Newer](./019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official `2.1.257`
 - [018 Claude Agent ACP 0.73.0 Useful Newer](./018-claude-agent-acp-0-73-0-useful-newer.md) — completed; Research 272; cards 044-045; official `0.73.0`

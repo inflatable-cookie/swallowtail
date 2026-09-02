@@ -1,6 +1,6 @@
 # 048 Codex 0.152.1 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-02
@@ -55,4 +55,9 @@ Yes, to card 049 only after an admitted segment is recorded.
 
 ## Result
 
-Pending identity freeze.
+Official stable remained exact `0.152.1`. Host `0.150.1` keeps its recorded
+identity. Research 275 and the frozen corpus landed in the identity-only
+commit `97babfe0`; production claims remained unchanged. Downloaded binaries
+were hashed and never executed; the shipped-tree and source-tree deltas are
+Guardian, test, and version-bump bounded, so the selected protocol
+classifies as a compatible extension and card 049 continued.

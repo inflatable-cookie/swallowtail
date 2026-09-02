@@ -1,6 +1,6 @@
 # g05.020 Codex 0.152.1 Useful Newer
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-02
@@ -33,14 +33,14 @@ feature-specific widening.
 
 ## Batch Cards
 
-- [048 Codex 0.152.1 Identity](batch-cards/048-codex-0-152-1-identity.md) — ready
-- [049 Codex 0.152.1 Claim](batch-cards/049-codex-0-152-1-claim.md) — ready; depends on card 048
+- [048 Codex 0.152.1 Identity](batch-cards/048-codex-0-152-1-identity.md) — completed
+- [049 Codex 0.152.1 Claim](batch-cards/049-codex-0-152-1-claim.md) — completed
 
 ## Acceptance
 
-- [ ] exact official identity is reproducible
-- [ ] mapped and unmapped protocol changes are classified
-- [ ] identity evidence lands before a production claim edit
-- [ ] only an admitted segment reaches the claim
-- [ ] exact feature pins, gaps, and other families stay unchanged
-- [ ] focused, package, API, route, docs, and Northstar gates pass
+- [x] exact official identity is reproducible
+- [x] mapped and unmapped protocol changes are classified
+- [x] identity evidence lands before a production claim edit
+- [x] only an admitted segment reaches the claim
+- [x] exact feature pins, gaps, and other families stay unchanged
+- [x] focused, package, API, route, docs, and Northstar gates pass

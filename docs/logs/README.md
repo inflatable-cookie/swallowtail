@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-02 Codex 0.152.1 Claim](./2026-09-02-codex-0-152-1-claim.md) — Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer
 - [2026-09-02 Codex 0.152.1 Identity](./2026-09-02-codex-0-152-1-identity.md) — Research 275; compatible extension frozen without executing downloaded binaries; shipped-tree and source-tree deltas Guardian, test, and version-bump bounded; claims unchanged
 
 - [2026-09-01 Claude Code 2.1.257 Claim](./2026-09-01-claude-code-2-1-257-claim.md) — headless and response-only qualified through official `2.1.257`; unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253`–`2.1.256` stay gaps; watcher stays exact `2.1.251`

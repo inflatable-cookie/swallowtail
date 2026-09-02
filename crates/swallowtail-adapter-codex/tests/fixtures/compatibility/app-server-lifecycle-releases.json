@@ -2,7 +2,7 @@
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "claim": "codex.app-server.lifecycle-window-1",
-  "qualified_range": "0.80.0..=0.152.0",
+  "qualified_range": "0.80.0..=0.152.1",
   "evidence_checked_at": "2026-07-30",
   "upstream_repository": "https://github.com/openai/codex",
   "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
@@ -65,7 +65,7 @@
       "archive_descendants": "best-effort"
     },
     {
-      "range": "0.140.0..=0.152.0",
+      "range": "0.140.0..=0.152.1",
       "behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
       "support": "maintained",
       "capabilities": ["archive", "restore", "delete"],
@@ -118,7 +118,7 @@
     {"range": "0.151.1", "reason": "unpublished-stable"}
   ],
   "unverified_newer": {
-    "example": "0.152.1",
+    "example": "0.152.2",
     "execution": "permitted-with-explicit-unverified-status",
     "mapped_behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
     "guaranteed": false
@@ -295,6 +295,12 @@
     {
       "version": "0.152.0", "published_at": "2026-09-01T02:02:46.635Z",
       "tag_commit": "316795b3cf2a45e90d121d9f46499d4658b2645c",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "bf81a1b0dd34378e24f9ab8e1b32d236ee20f32f705d4d96cc5f81fed6d0c933", "e93a1bf70c039bb2b717c87bd0adb39365fabce2016ef1e85c447a2d78cada61", "31f580ad468fbd18766eb7adb12744be4e3790e3357b58bd4413c0108c4f65d0"]
+    },
+    {
+      "version": "0.152.1", "published_at": "2026-09-01T22:36:50.784Z",
+      "tag_commit": "5adb68a49933ae446bf11935662c83dba55a0804",
       "schema_authority": "upstream-published",
       "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "bf81a1b0dd34378e24f9ab8e1b32d236ee20f32f705d4d96cc5f81fed6d0c933", "e93a1bf70c039bb2b717c87bd0adb39365fabce2016ef1e85c447a2d78cada61", "31f580ad468fbd18766eb7adb12744be4e3790e3357b58bd4413c0108c4f65d0"]
     }

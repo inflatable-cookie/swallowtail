@@ -8,8 +8,7 @@
 
 ## Ready
 
-- [048-codex-0-152-1-identity.md](./048-codex-0-152-1-identity.md) — ready; freeze official `0.152.1` identity before any claim edit
-- [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — ready; depends on card 048 with an admitted segment
+- None.
 
 ## Blocked
 
@@ -17,6 +16,8 @@
 
 ## Completed
 
+- [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — complete; Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer
+- [048-codex-0-152-1-identity.md](./048-codex-0-152-1-identity.md) — complete; Research 275 and current host/official identity frozen before claim without executing downloaded binaries
 - [047-claude-code-2-1-257-claim.md](./047-claude-code-2-1-257-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.257`; unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253`–`2.1.256` stay gaps; watcher stays exact `2.1.251`
 - [046-claude-code-2-1-257-identity.md](./046-claude-code-2-1-257-identity.md) — complete; Research 273 and current host/official identity frozen before claim
 - [045-claude-agent-acp-0-73-0-claim.md](./045-claude-agent-acp-0-73-0-claim.md) — complete; Claude Agent ACP qualified through official `0.73.0`; unpublished `0.58.0` stays a gap; unpublished `0.74.0` stays UnverifiedNewer

@@ -1,6 +1,6 @@
 # 049 Codex 0.152.1 Claim
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-02
@@ -52,4 +52,8 @@ No. Review and merge, then queue the next all-route checkpoint.
 
 ## Result
 
-Pending card 048's admitted segment.
+The Codex exec and app-server axes qualify official `0.152.1`. Unpublished
+gaps including `0.151.1` remain incompatible; unpublished `0.152.2` stays
+`UnverifiedNewer`. Model verbosity and every other feature-specific exact
+set remain bounded through `0.149.1`. Identity evidence remains commit
+`97babfe0` and identity-before-claim stays a two-commit PR.

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-01
+Updated: 2026-09-02
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -136,15 +136,19 @@ family alone and changed no claim.
 
 ### Latest Checkpoint
 
-Research 274 revalidated all 40 production families on 2026-09-01. The
-partition is 12 unchanged, 7 visible unverified-newer, 20 record-only, and 1
-material candidate. Codex npm and GitHub stable moved to `0.152.1`; host
-`0.150.1` remains inside the qualified `0.152.0` range, so Codex is the sole
-next-family candidate. Claude Code `2.1.258` is visible newer but is not
-reopened after the completed g05.019 family. Gemini remains deferred,
-`kimi-code.acp` remains QualifiedOnly, and the checkpoint changes no claim.
-g05.020 cards 048-049 then qualified Codex `0.152.1` through the Upgrade
-Workflow.
+Research 276 revalidated all 40 production families on 2026-09-02. The
+partition is 13 unchanged, 6 visible unverified-newer, 20 record-only, and 1
+material candidate. Kimi Code npm and GitHub stable moved to `0.40.1`; the
+separate `kimi-code.local-server` family is the sole rank-1 candidate because
+its AllowUnverified boundary ends at `0.38.0`, the installed host is qualified
+at `0.34.0`, and Research 270 recorded the local/web protocol delta. The
+installed harness remains split: headless is separately bounded, while ACP
+stays QualifiedOnly at `0.38.0` under the A2 gate. Claude Code `2.1.258`,
+Antigravity `1.1.24`, Cursor `2026.08.31-4057e58`, Ollama `0.33.2`, OpenCode
+`1.18.26`, and Grok stable `1.0.13` are visible newer observations. Codex
+remains closed at qualified `0.152.1`; watcher stays exact `2.1.251`; Gemini
+remains deferred. The checkpoint changes no claim and opens no roadmap or
+batch card.
 
 ### Earlier Completed Family
 

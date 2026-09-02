@@ -12,7 +12,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 - [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite
 - [260 Claude Code Watcher Bridge Transport Evidence](./260-claude-code-watcher-bridge-transport.md) — evidence stop promoted into Contract 060; card 016 owns the provider-neutral HTTP bridge while Claude cards 010-011 remain planned
-- [278 Claude Agent SDK Route Evidence](./278-claude-agent-sdk-route-evidence.md) — evidence gate; official `0.3.258` frozen on the npm digest alone; credential non-custody proved for the default entry point; two Contract 019 lifecycle gaps sent to the contract gate
+- [278 Claude Agent SDK Route Evidence](./278-claude-agent-sdk-route-evidence.md) — evidence gate; official `0.3.258` frozen on the npm digest alone; credential non-custody proved for the default entry point; shipped `sdk.mjs` shows no joined stop, sending a descendant-tree ownership invariant to the contract gate
 
 ### Foundation And Runtime
 

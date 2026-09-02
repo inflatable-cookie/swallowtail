@@ -39,12 +39,29 @@ invalidate Research 272's correct classification of the ACP bridge's Agent SDK
 pin as unmapped. It cannot reuse `claude-code.headless` or `.response-only`,
 which sit on the Claude Code axis.
 
-Two Contract 019 gaps are real and went to the gate rather than being invented
-here: §Foreign-Language SDK Sidecars says "join the sidecar process," which the
-nested native grandchild defeats, and it sets no bound or escalation path for a
-join the SDK declares as bounded at roughly two seconds. `Query.close()` returns
-`void` and is not a join; the joined path is `Query.return()` awaiting a bounded
-`Transport.waitForExit()`.
+The lifecycle finding is sharper than the declarations suggest, and reading
+shipped `sdk.mjs` was what settled it. The SDK exposes **no joined stop at
+all**. `Query.close()` returns `void`; `performCleanup` races
+`waitForExit()` against a 2 000 ms timer inside `try{}catch{}` and discards the
+outcome, so it can resolve silently while the native child is still alive with
+nothing distinguishing exit from expiry. Its own SIGTERM/SIGKILL escalation and
+exit registry are all `.unref()`'d and reach only the direct child.
+
+One Contract 019 gap went to the gate, stated as a provider-neutral invariant
+rather than a mechanism: the execution host owns and can terminate the full
+descendant tree, close joins the tree rather than the nearest child, and close
+returns an explicit graceful / escalated / unconfirmed outcome, with a
+discarded wait never counting as evidence of exit. Naming
+`spawnClaudeCodeProcess` in the contract was rejected — it would bind every
+future sidecar to one vendor callback that covers only the direct child.
+
+Because the SDK supplies no join, the route carries a matching implementation
+obligation: hold an independently joinable process handle in the sidecar and
+return the three-valued close state over the private wire. That is layer 1, not
+a later hardening step. `spawnClaudeCodeProcess` is recorded as one route-local
+option, with its costs — a custom spawner loses the SDK's stderr-tail drain and
+suppresses its default `--debug-file` — alongside a host-created process group
+or Windows job object that covers the tree.
 
 No production code, manifest, package pin, claim, fixture, or matrix changed.
 No shared vocabulary was named and no implementation card was compiled; both

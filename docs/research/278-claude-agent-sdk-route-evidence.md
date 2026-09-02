@@ -16,16 +16,17 @@ user's own Claude subscription, without Swallowtail possessing the credential
 and without an unjoined process surviving session cleanup?
 
 Answer: yes for the credential and route-identity halves, which current
-contracts already fix. The lifecycle half needs two named contract
-extensions, because the real topology is two processes deep and the SDK's
-declared close path is not a join. No stop condition fired.
+contracts already fix. The lifecycle half needs a named contract extension
+and new sidecar behavior: the real topology is a descendant tree, not one
+child, and the SDK provides no joined stop at all — only a bounded wait
+attempt whose outcome is discarded. No stop condition fired.
 
 ## Method
 
 Compared official npm registry metadata, the extracted `0.3.258` package
-tree, the shipped TypeScript declarations, the shipped `manifest.json`, and
-the public GitHub repository against Contracts 010, 014, 017, 019, 023, 029,
-038, 041, 047, 049, 051, and 057.
+tree, the shipped TypeScript declarations, the shipped `manifest.json`, the
+shipped `sdk.mjs` implementation, and the public GitHub repository against
+Contracts 010, 014, 017, 019, 023, 029, 038, 041, 047, 049, 051, and 057.
 
 Retrieval: npm metadata and tarball `2026-09-02T18:29:34Z`; Help Center
 article rechecked immediately before freeze in the same window; GitHub
@@ -36,6 +37,9 @@ or run. No provider turn, login, OAuth flow, token read, or authenticated
 probe. No installed host was mutated. Artifacts stayed in `/tmp` and are not
 committed. Declarations, shipped artifact, and runtime behavior are kept as
 three separate evidence classes throughout; nothing below is a runtime claim.
+§6 reads shipped `sdk.mjs` source because the declarations and the shipped
+implementation disagree there; reading is not executing, and a read of minified
+shipped source is still artifact evidence, not runtime proof.
 
 ## 1 Subscription authority
 
@@ -426,27 +430,76 @@ Callbacks that cross the wire and must be correlated and bounded:
 `canUseTool`, `hooks`, `onElicitation`, `onUserDialog`, `stderr`, and SDK MCP
 tool handlers.
 
-### Cancellation and close — the declared paths differ
+### Cancellation and close — the SDK offers no joined stop
 
-This is the lifecycle core, and the SDK is explicit that its two close paths
-are not equivalent.
+This is the lifecycle core. The declarations read as though a bounded join
+exists; the shipped implementation is weaker, and the difference is the whole
+reason this section exists. Evidence class here is **shipped artifact**:
+`sdk.mjs`, SHA-256 `4d9286bd9ca8f802e27c9be2cfa2e0769502dfabb693a6e3d16b62e4fbe3e69a`,
+read but never executed.
+
+**What the declarations say.**
 
 - `Query.close(): void` — "forcefully ends the query, cleaning up all
-  resources including … the CLI subprocess." Returns `void`. **It is not
-  awaitable and therefore not a join.**
-- `Query.return()` / `AsyncDisposable` — runs `performCleanup()`, which
-  "awaits it (bounded)" where *it* is `Transport.waitForExit()`, "so
-  `.return()` / asyncDispose don't resolve while the child is still draining
-  the stdin EOF that `close()` just sent."
-- `SpawnOptions.signal` is a **forwarded** signal owned by
-  `ProcessTransport`, not `Options.abortController.signal`. It fires only
-  after stdin EOF plus a declared `GRACEFUL_EXIT_TIMEOUT_MS` grace of about
-  two seconds.
+  resources including … the CLI subprocess." Returns `void`. Not awaitable.
+- `Query.return()` / `AsyncDisposable` — runs `performCleanup()`, documented
+  to await `Transport.waitForExit()` "(bounded)" so cleanup does not "resolve
+  while the child is still draining the stdin EOF that `close()` just sent."
 
-So a joined stop exists, but it is **bounded, not guaranteed**. The route's
-close order is: `interrupt()` if a turn is live → `Query.return()` /
-asyncDispose → await the bounded `waitForExit()` → on expiry, escalate to
-host-owned process-group termination → report the degradation.
+**What the shipped code does.** `performCleanup` ends with:
+
+```js
+if (this.transport.waitForExit) {
+  let t = new AbortController;
+  try { await Promise.race([this.transport.waitForExit(), Lr(2000, t.signal)]) }
+  catch {}
+  finally { t.abort() }
+}
+```
+
+Three properties, each independently disqualifying:
+
+1. It is a **race against a 2 000 ms timer**, not a wait for exit.
+2. The `catch {}` **swallows** the outcome. `waitForExit()` is written to
+   *reject* on non-zero exit or signal termination — that rejection is
+   discarded.
+3. **No result is captured.** Nothing downstream can distinguish "the child
+   exited" from "two seconds elapsed" from "the child exited with an error."
+
+So `Query.return()` can resolve, reporting nothing, while the native child is
+still alive. **The SDK provides a bounded wait attempt, not a joined stop.**
+Neither close path is a join, and the swallowed timeout can never be the proof
+that a process stopped.
+
+The SDK's own escalation is best-effort too. `ProcessTransport.close()`
+schedules SIGTERM after the same 2 000 ms grace and SIGKILL 5 000 ms later
+(on Windows, SIGKILL only), and a module-level registry sends SIGTERM to
+tracked children on Node's `exit` event. **Every one of these timers is
+`.unref()`'d**, so none holds the event loop open: if the sidecar exits or is
+killed first, the escalation never runs. All of it targets the direct child
+only — nothing in the SDK reaches the native binary's own descendants.
+
+**Therefore the joined stop is sidecar work, not an SDK guarantee.** To close
+a session the route must, in the sidecar, retain a process handle it can join
+independently of the SDK, and return an explicit close state over the private
+wire. That state is three-valued and must never collapse:
+
+| Close state | Meaning |
+| --- | --- |
+| `graceful` | the process exited on its own after stdin EOF, observed |
+| `escalated` | exit observed, but only after host-owned termination |
+| `unconfirmed` | no exit was observed; the process may still be running |
+
+`unconfirmed` is a cleanup failure under Contract 017 ("provider completion
+never hides cleanup degradation or failure"), not a slow success. Close order:
+`interrupt()` if a turn is live → end input → await the sidecar's own join to
+its declared bound → on expiry escalate through host termination authority →
+re-join → report one of the three states → release provider state,
+credentials, and host resources in Contract 017 owner order.
+
+`SpawnOptions.signal` is a **forwarded** signal owned by `ProcessTransport`,
+not `Options.abortController.signal`; it fires only after stdin EOF plus the
+same ~2 s grace. It is therefore also unusable as a stop primitive.
 
 ### Crash, disconnect, and resume
 
@@ -457,7 +510,11 @@ host-owned process-group termination → report the degradation.
   `killed`, `exitCode`, `signalCode?`. The built-in local spawn delivers
   `exit` only after stderr closes; **custom spawners emit plain process exit**
   — so a Swallowtail-supplied spawner loses the stderr-tail guarantee and must
-  reconstruct it.
+  reconstruct it. Shipped `sdk.mjs` confirms both halves: the built-in spawn
+  remaps `exit` to an internal `sdk-exit-after-stderr-drained` event with a
+  200 ms drain grace, and setting `spawnClaudeCodeProcess` also suppresses the
+  SDK's default `--debug-file` argument. Both are costs of that mechanism, not
+  of the route.
 - `Query.reinitialize()` is the declared transport-gap recovery: it re-sends
   `initialize`, redelivers blocked `can_use_tool` / `request_user_dialog`
   requests, and re-registers hooks. Its declared cost is explicit — callbacks
@@ -490,25 +547,39 @@ Declared vocabulary to map onto Contract 051:
   to stay visible and binding, and the typed rate-limit path
   (`SDKRateLimitEvent`, `SDKRateLimitInfo`) is that path.
 
-### The two true gaps in Contract 019
+### The gap in Contract 019, and the obligation it creates
 
-1. **Nested process ownership.** Contract 019 says cancellation and close
-   "join the sidecar process" — one process. The real topology is Rust → Node
-   → native `claude`, and the grandchild is the one that holds provider state,
-   spawns Bash, and owns ~200 MB of resident binary. `Options.spawnClaudeCodeProcess`
-   is the lever that closes this: the sidecar delegates creation, so the native
-   child can be created inside a Swallowtail-declared process group whose pid
-   Rust holds and can group-terminate independently of sidecar health. Contract
-   019 does not currently require that, and the "join the sidecar" clause is
-   satisfiable today while the grandchild survives. **This is the exact Review
-   Oracle counterexample and it needs a contract clause, not just a code
-   convention.**
-2. **Bounded join versus guaranteed join.** Contract 019 says "join the
-   sidecar process" without a time bound or an escalation path. The SDK's join
-   is explicitly bounded at roughly two seconds. Contract 017 already requires
-   that "provider completion never hides cleanup degradation or failure," so
-   the reporting duty exists — but the bounded-join-then-escalate sequence is
-   not stated anywhere.
+**The contract gap.** Contract 019 says cancellation and close "join the
+sidecar process" — one process, no bound, no escalation path, no reporting
+duty. The real topology is a **descendant tree**: Rust → Node sidecar →
+native `claude` → whatever that binary spawns, including Bash tool
+subprocesses. The grandchild holds provider state and the credential reach.
+The clause as written is satisfied by joining the Node process alone while
+the rest of the tree survives, which is precisely the card 053 Review Oracle
+counterexample. Contract 017's "provider completion never hides cleanup
+degradation or failure" establishes a reporting duty but says nothing about
+what a join must prove or what to do when it cannot.
+
+The durable fix is an invariant about tree ownership and join outcome, not a
+selection of any particular provider callback. It is stated in the contract
+gate.
+
+**The implementation obligation, which is not a contract matter.** Because
+the SDK exposes no joined stop, the route cannot satisfy that invariant by
+calling the SDK correctly. New sidecar behavior is required: retain a process
+handle that can be joined independently of the SDK's own cleanup, and return
+the three-valued `graceful` / `escalated` / `unconfirmed` close state over the
+private wire. This belongs to the implementation card.
+
+`Options.spawnClaudeCodeProcess` is **one** route-local way to obtain that
+handle — the callback runs inside Node and returns a Node `SpawnedProcess`,
+so what it yields is a sidecar-held handle that the sidecar must then report
+over the wire. It does not hand Rust a PID, and nothing in the current wire
+does. Its costs are recorded in §8 and the contract gate. A host-created POSIX
+process group or a Windows job object that captures descendants is another
+route, and has the advantage of covering the tree rather than one child.
+Choosing between them is implementation work; both must satisfy the same
+invariant.
 
 Everything else in §6 is already fixed by Contracts 010, 017, 019, 023, 041,
 and 049.
@@ -584,8 +655,14 @@ parity layers are not smuggled into layer 1.
 **Layer 1 — the smallest thing that proves the invariant.** Sidecar launch
 with explicit runtime, binary, cwd, and env; `query()` with streaming input;
 `SDKSystemMessage` and `capabilities` capture; `AccountInfo` readiness
-observation; `canUseTool` admission; `interrupt()`; bounded joined close with
-escalation; typed failure mapping. No tools beyond read-only. No Bash.
+observation; `canUseTool` admission; `interrupt()`; a sidecar-owned joined
+close returning `graceful` / `escalated` / `unconfirmed`, built on an
+independently joinable process handle rather than on SDK cleanup; typed
+failure mapping. No tools beyond read-only. No Bash.
+
+The close path is layer 1, not a later hardening step. It is the only thing
+that proves the Review Oracle invariant, and §6 shows the SDK does not supply
+it.
 
 **Layer 2.** Permission mode changes; model/effort/thinking; resume and fork
 with cwd and account rebinding checks; `supportedCommands` / `supportedModels`
@@ -616,7 +693,9 @@ break it.
 | npm license field disagrees with shipped file | read both | held; README has no license section |
 | `testedWrapperVersions` excludes the shipping wrapper | read `manifest.json` | held; tops out at `0.3.227` |
 | `Query.close()` is not a join | read the declaration | held; returns `void` |
-| A joined stop exists | `Transport.waitForExit`, `performCleanup` docs | held, but **bounded**, not guaranteed |
+| The SDK offers a joined stop | read shipped `performCleanup` in `sdk.mjs` | **refuted**; a `Promise.race` against a 2 000 ms timer, in `try{}catch{}`, discarding the outcome |
+| A caller can tell exit from timeout | inspect what `performCleanup` returns | **refuted**; no result is captured or propagated |
+| The SDK escalates reliably | read `ProcessTransport.close()` timers | **refuted**; SIGTERM/SIGKILL timers and the exit-registry are all `.unref()`'d and target only the direct child |
 | `Options.env` inherits when omitted | read the declaration | held; stated verbatim |
 | `settingSources` loads everything when omitted | read the declaration | held |
 | Omitting `skills` is not "skills off" | read the declaration | held; stated verbatim |
@@ -628,10 +707,16 @@ break it.
 1. *A token appears in a sidecar request, fixture, or log.* Only reachable by
    importing `/bridge` or `/browser`, or by setting `apiKeyHelper`. Both are
    prohibited in §5 with a mechanical grep falsifier. No fixture was written.
-2. *A detached Node process survives Rust session cleanup.* Not fully closed
-   by current contracts. `Query.close()` is not a join, the SDK's join is
-   ~2 s bounded, and the native grandchild is a second process. Named as gap 1
-   and gap 2 in §6; both go to the contract gate.
+2. *A detached process survives Rust session cleanup.* Open on current
+   evidence, and the sharpest finding in this research. Neither SDK close path
+   is a join: `Query.close()` returns `void`, and `performCleanup` races
+   `waitForExit()` against a 2 000 ms timer inside `try{}catch{}` without
+   capturing the outcome, so it can resolve silently while the native child
+   lives. The SDK's own SIGTERM/SIGKILL escalation is `.unref()`'d and reaches
+   only the direct child, never the descendant tree. Closing this needs both a
+   Contract 019 invariant about tree ownership and join outcome, and new
+   sidecar behavior returning an explicit three-valued close state. Both are in
+   §6 and the contract gate.
 3. *A resumed session binds a different cwd or user.* `Options.resume` does
    not re-verify either. Answer: re-read `SDKSystemMessage.cwd` and
    `AccountInfo` after resume and fail closed. Stated in §6.
@@ -672,10 +757,17 @@ Credential non-custody is proved for the `.` entry point and reduces to one
 mechanically checkable import rule. Route identity cannot be flattened onto
 any existing Claude route.
 
-Two Contract 019 lifecycle gaps — nested process ownership and bounded versus
-guaranteed join — are real and are not fixed by current contracts. Both are
-narrow, both have a proposed clause, and both go to the orchestrator in
+One Contract 019 lifecycle gap is real and is not fixed by current contracts:
+close is specified against a single sidecar process, with no bound, no
+escalation, and no required join outcome, while the route owns a descendant
+tree. The proposed provider-neutral invariant is in
 `../triage/2026-09-02-claude-agent-sdk-route-contract-gate.md`.
+
+That gap cannot be closed by using the SDK correctly. The SDK supplies a
+bounded wait attempt whose outcome is discarded, not a joined stop, so the
+route carries a matching implementation obligation: an independently joinable
+process handle held in the sidecar and an explicit `graceful` / `escalated` /
+`unconfirmed` close state on the private wire. That obligation is layer 1.
 
 This is not an honest stop: nothing here blocks on an operator product, API,
 persistence, or security choice. It is a completed evidence gate with two

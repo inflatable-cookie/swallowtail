@@ -22,7 +22,7 @@ pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
 /// Oldest app-server version qualified for thread catalogue and import.
 pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
 /// Most recent qualified Codex CLI version.
-pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.152.0";
+pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.152.1";
 /// Unpublished stables inside the maintained window. Stay incompatible.
 const CODEX_UNPUBLISHED_GAPS: &[&str] = &["0.149.2", "0.150.2", "0.151.1"];
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";

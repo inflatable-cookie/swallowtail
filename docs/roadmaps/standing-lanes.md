@@ -26,7 +26,17 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
+Last one-family claim: Codex exec and app-server `0.152.1` (g05.020, cards
+048-049). The shared `codex.cli` window extends through exact npm `0.152.1`
+as a compatible extension. Unpublished `0.149.2`, `0.150.2`, and `0.151.1`
+stay incompatible. Unpublished `0.152.2` stays permitted `UnverifiedNewer`.
+Host `0.150.1` remains inside the qualified range and stays observation-only.
+Downloaded official binaries were hashed and never executed; the complete
+shipped-tree and source-tree deltas are Guardian, test, and version-bump
+bounded. Feature-specific exact sets remain on the `0.147.0..=0.149.1`
+probed points. `AllowUnverified` remains.
+
+Previous one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
 Headless is `2.1.220..=2.1.257` and response-only is `2.1.227..=2.1.257`.
 Unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253` through
 `2.1.256` stay incompatible. Official `2.1.258` is newer than the qualified
@@ -36,7 +46,7 @@ Watcher stays exact `2.1.251` behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
 `AllowUnverified` remains.
 
-Previous one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
+Earlier one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
 Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
 `0.72.0`, and `0.73.0` are qualified. Unpublished `0.58.0` stays
 incompatible. Unpublished `0.74.0` stays permitted `UnverifiedNewer`. Host
@@ -65,7 +75,8 @@ Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
 `2.1.253` through `2.1.256` stay incompatible. Watcher stays exact `2.1.251`
 behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
-Codex exec and app-server `0.152.0` (g05.013, cards 035-036) remain qualified.
+Codex exec and app-server later rose through official `0.152.1` (g05.020,
+cards 048-049). g05.013 cards 035-036 remain the `0.152.0` identity/claim.
 Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
 Feature-specific exact sets remain on the `0.147.0..=0.149.1` probed points.
 Qwen headless `0.22.3` remains qualified through g05.004 cards 012-013. Kimi
@@ -76,6 +87,30 @@ corrected that revision's baseline to `0.33.0` and extended it to
 recorded.
 
 ### Latest Completed Family
+
+Codex exec and app-server `0.152.1` are compatible extensions of their
+existing maintained behaviors. Research 275 and g05.020 cards 048-049 freeze
+identity before the claim. Host `0.150.1` keeps its recorded identity and
+stays observation-only. Downloaded official binaries were hashed and never
+executed. Official npm and GitHub stable is `0.152.1` published
+2026-09-01T22:36:50.784Z; the only published stable after `0.152.0` is
+`0.152.1`. The complete shipped-tree delta is `package.json`,
+`codex-package.json`, and the two rebuilt binaries plus a darwin-only
+vendored ripgrep and zsh refresh. The complete GitHub source delta between
+the two release tag commits is exactly 12 files: the workspace version bump,
+Guardian auto-review/node-REPL policy sources and tests, and test files. No
+file feeding a selected surface changed, and every upstream-published schema
+file is byte-identical to the frozen `0.152.0` corpus values. Selected
+mapped exec flags and app-server methods stay. The new optional Guardian
+`AutoReviewMessages.node_repl_policy` stays unmapped. Unpublished `0.149.2`,
+`0.150.2`, and `0.151.1` remain incompatible; unpublished `0.152.2` remains
+permitted `UnverifiedNewer`. No provider prompt, live session, login,
+install, or host update was required.
+
+Research 274 remaining family after Claude Code `2.1.257` was this family
+alone and changed no claim.
+
+### Previous Completed Family
 
 Claude Code `2.1.257` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 273 and g05.019 cards 046-047 freeze
@@ -108,8 +143,10 @@ material candidate. Codex npm and GitHub stable moved to `0.152.1`; host
 next-family candidate. Claude Code `2.1.258` is visible newer but is not
 reopened after the completed g05.019 family. Gemini remains deferred,
 `kimi-code.acp` remains QualifiedOnly, and the checkpoint changes no claim.
+g05.020 cards 048-049 then qualified Codex `0.152.1` through the Upgrade
+Workflow.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Claude Agent ACP `0.73.0` is a compatible extension of
 `claude-agent.acp.initialize-meta-extensions-v7`. Operator restart after

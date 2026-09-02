@@ -15,14 +15,17 @@ shape.
 
 ## Next Task
 
-Implement Codex `0.152.1` useful-newer qualification for the current official
-stable. Host `0.150.1` already sits on a qualified bound. Do not start a
-second family from this PR. Watcher stays exact `2.1.251`. Do not reopen
+Reassess every production family through a fresh all-route Contract 029
+currentness checkpoint now that Codex CLI `0.152.1` has qualified through
+g05.020 cards 048-049. The checkpoint observes official stable points,
+writes research, and selects at most one next family; no family is
+preselected and no one-family run is queued. Do not start a second family
+from this PR. Watcher stays exact `2.1.251`. Do not reopen
 `kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
 Gemini's deferral, and do not keep g05 open for currentness. The g05.009
-provider-operation observation decision remains queued; card 034 stays
-planned, not ready, and candidate F remains unpromoted at 249 proved / 518
-remaining rows.
+provider-operation observation decision remains awaiting the operator; card
+034 stays planned, not ready, and candidate F remains unpromoted at 249
+proved / 518 remaining rows.
 
 ## Standing Lanes
 

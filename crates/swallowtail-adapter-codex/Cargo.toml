@@ -47,3 +47,7 @@ path = "tests/connection_lifecycle_suite.rs"
 [[test]]
 name = "prepared_profiles"
 path = "tests/exec_suite.rs"
+
+[[test]]
+name = "codex_0_152_1_identity"
+path = "tests/codex_0_152_1_identity.rs"

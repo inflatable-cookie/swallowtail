@@ -1,0 +1,60 @@
+{
+  "axis": "codex.cli",
+  "version": "0.152.1",
+  "observed_at": "2026-09-02",
+  "npm_package": "@openai/codex",
+  "npm_latest": true,
+  "published_at": "2026-09-01T22:36:50.784Z",
+  "npm_integrity": "sha512-dSwQzl6JgsFe8L9i8xUnwRz9Vy8gn4UvXFU9xq2IJ1eC7zsSttqQ2SGq49ZZIjEyZQ0LZjCs6Bvtxort2Iyebg==",
+  "npm_shasum": "9e51ebd177c5523b299636a2d5f788922fe6eb03",
+  "git_tag": "rust-v0.152.1",
+  "tag_commit": "5adb68a49933ae446bf11935662c83dba55a0804",
+  "local_cli": "codex-cli 0.150.1",
+  "official_cli": "codex-cli 0.152.1",
+  "published_intermediates": ["0.152.1"],
+  "unpublished_gaps": ["0.149.2", "0.150.2", "0.151.1"],
+  "source_delta": {
+    "base_tag": "rust-v0.152.0",
+    "base_commit": "316795b3cf2a45e90d121d9f46499d4658b2645c",
+    "head_commit": "5adb68a49933ae446bf11935662c83dba55a0804",
+    "changed_files": 12,
+    "mapped_feeding_changed_files": 0,
+    "note": "downloaded binaries were hashed and never executed; selected surfaces are proved through byte-identical generating sources and upstream-published schema digests"
+  },
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "authority": "upstream-published checked-in schema files",
+    "v2_bundle_sha256": "08fa1b1072c5d8a889f00fdd96d1c853084e288d89d246552c1c47c23142adbb",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "claim_at_observation": {
+    "latest_qualified": "0.152.0",
+    "classification": "unverified_newer"
+  },
+  "segment_decision": {
+    "shape": "compatible-extension",
+    "exec_behavior": "codex.exec.jsonl-v1",
+    "app_server_behavior": "codex.app-server.v2.workspace-roots",
+    "lifecycle_behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "extend_through": "0.152.1",
+    "raise_thread_catalogue_ceiling": true,
+    "new_milestone": false,
+    "later_unverified_after_qualification": "0.152.2"
+  }
+}

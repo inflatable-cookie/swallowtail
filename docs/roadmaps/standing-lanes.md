@@ -155,6 +155,17 @@ qualification. Codex remains closed at qualified `0.152.1`; watcher stays exact
 `2.1.251`; Gemini remains deferred. The checkpoint changes no claim and opens
 no roadmap or batch card.
 
+### v0.4.0 Freeze
+
+g05.021 now owns the bounded release-readiness runway. Do not start or merge a
+Contract 029 identity/claim family until that milestone completes. Kimi Code
+local server `0.40.1` remains the first post-release candidate. Closed PR 182
+and its Antigravity branch/evidence remain parked and are not qualification.
+Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer
+observations stay recorded without implementation. Gemini stays deferred,
+watcher stays exact `2.1.251`, and `kimi-code.acp` stays QualifiedOnly at the
+A2 `0.38.0` cap. The freeze changes no current claim.
+
 ### Earlier Completed Family
 
 Claude Agent ACP `0.73.0` is a compatible extension of
@@ -275,8 +286,8 @@ changed no claim.
 
 ## Next Task
 
-Define and compile the bounded v0.4.0 release-readiness milestone named by the
-[roadmaps front door](README.md#next-task). Freeze new feature and currentness
-implementation until then. Kimi Code local server `0.40.1` is the first
-post-release currentness candidate, and PR 182 remains closed/parked evidence;
-this file records standing lanes and the batch pointer stays in the front door.
+Implement the active task named by the
+[roadmaps front door](README.md#next-task). Currentness implementation remains
+frozen through the milestone; Kimi local server `0.40.1` stays first after the
+release and PR 182 stays closed/parked evidence. This file records standing
+lanes; the sole actionable pointer stays in the front door.

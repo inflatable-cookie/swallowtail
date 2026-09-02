@@ -2,13 +2,15 @@
 
 ## Planned
 
+- [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits card 051's frozen candidate and the full operator-authorized authenticated application-smoke packet
+- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on card 050 audit acceptance; mutating Effigy prepare requires separate operator authorization
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-- None.
+- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready; exhaustive compatibility and freeze census only
 
 ## Blocked
 

@@ -15,16 +15,17 @@ shape.
 
 ## Next Task
 
-Define and compile a bounded v0.4.0 release-readiness milestone. Freeze new
-feature and currentness implementation until that milestone is complete. Park
-Kimi Code local-server `0.40.1` as the first post-release currentness
-candidate, and keep closed PR 182 plus its Antigravity branch/evidence parked
-post-release; PR 182 is not a merged qualification. Preserve Gemini's
-deferral, watcher exact `2.1.251`, and `kimi-code.acp` QualifiedOnly under its
-A2 `0.38.0` cap. Do not start a family run before v0.4.0. The g05.009
-provider-operation observation decision remains awaiting the operator; card
-034 stays planned, not ready, and candidate F remains unpromoted at 249 proved
-/ 518 remaining rows.
+Map [g05.021 card 050](g05/batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md):
+freeze the exact `v0.3.3` to reviewed-current-source package, dependency,
+48-route, semantic API, and guaranteed-behavior delta before any candidate
+mutation. Audit the complete 770-plus-commit public delta, not only the known
+OpenAI Background `minimal` removal. Change no Cargo version or requirement,
+release baseline, code, claim, fixture, or workflow. Keep feature/currentness
+implementation frozen; Kimi local server `0.40.1` and closed PR 182 remain
+parked post-release. Cards 051-052 stay planned. Card 051 has a separate
+operator gate before Effigy's sole mutating prepare path; card 052 remains
+blocked until the operator supplies a complete authenticated working-application
+smoke authority packet. No card authorizes tag creation or push.
 
 ## Standing Lanes
 

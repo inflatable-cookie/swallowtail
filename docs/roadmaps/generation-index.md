@@ -148,8 +148,10 @@ g05 has 20 roadmaps: 15 completed milestones, honest evidence stops at 002,
 003, 007, and 011. Milestone 009 is planned and
 strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
-currentness. Research 274 selects Codex `0.152.1` as the next standing
-family; g05.020 cards 048-049 then froze identity and qualified it. Milestone 017 is
+currentness. Research 276 records Kimi Code local server `0.40.1` as the first
+post-release standing candidate; no family work has started from the checkpoint.
+Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
+Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
 Milestone 010 is completed contract promotion with implementation unplanned.
@@ -343,8 +345,11 @@ stays planned and not ready, and coverage stays 249/518. g05.018 is complete:
 Claude Agent ACP qualifies official `0.73.0`. g05.019 is complete: Claude Code
 qualifies official `2.1.257`. g05.017 remains complete:
 the operator selected A2 and card 043 capped `kimi-code.acp` at `QualifiedOnly`.
-Research 274 selects Codex `0.152.1` as the sole next standing currentness
-family; g05.020 cards 048-049 then froze identity and qualified it through
-the Upgrade Workflow.
+The front door now defines and compiles a bounded v0.4.0 release-readiness
+milestone and freezes new feature and currentness implementation. Research 276
+keeps Kimi Code local server `0.40.1` as the first post-release currentness
+candidate. PR 182 is closed/unmerged and its Antigravity branch/evidence is
+parked post-release, not merged qualification. No family work has started from
+the checkpoint; the canonical actionable pointer stays in the front door.
 This index records generation status; the
 canonical actionable pointer stays in the front door.

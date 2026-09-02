@@ -15,17 +15,16 @@ shape.
 
 ## Next Task
 
-Reassess every production family through a fresh all-route Contract 029
-currentness checkpoint now that Codex CLI `0.152.1` has qualified through
-g05.020 cards 048-049. The checkpoint observes official stable points,
-writes research, and selects at most one next family; no family is
-preselected and no one-family run is queued. Do not start a second family
-from this PR. Watcher stays exact `2.1.251`. Do not reopen
-`kimi-code.acp`. Do not bulk-bump from registry `latest`, do not lift
-Gemini's deferral, and do not keep g05 open for currentness. The g05.009
+Define and compile a bounded v0.4.0 release-readiness milestone. Freeze new
+feature and currentness implementation until that milestone is complete. Park
+Kimi Code local-server `0.40.1` as the first post-release currentness
+candidate, and keep closed PR 182 plus its Antigravity branch/evidence parked
+post-release; PR 182 is not a merged qualification. Preserve Gemini's
+deferral, watcher exact `2.1.251`, and `kimi-code.acp` QualifiedOnly under its
+A2 `0.38.0` cap. Do not start a family run before v0.4.0. The g05.009
 provider-operation observation decision remains awaiting the operator; card
-034 stays planned, not ready, and candidate F remains unpromoted at 249
-proved / 518 remaining rows.
+034 stays planned, not ready, and candidate F remains unpromoted at 249 proved
+/ 518 remaining rows.
 
 ## Standing Lanes
 

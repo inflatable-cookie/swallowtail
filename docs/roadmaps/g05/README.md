@@ -35,6 +35,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.021 Antigravity 1.1.24 Useful Newer](021-antigravity-1-1-24-useful-newer.md) — completed extracurricular currentness; Research 276; cards 050-051; official GitHub `1.1.24`; does not take Next Task
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
 - [g05.019 Claude Code 2.1.257 Useful Newer](019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official npm `2.1.257`
@@ -304,6 +305,7 @@ and unpublished gap unchanged.
 
 ## Milestones
 
+- [021 Antigravity 1.1.24 Useful Newer](./021-antigravity-1-1-24-useful-newer.md) — completed extracurricular currentness; Research 276; cards 050-051; official `1.1.24`; does not take Next Task
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 
 - [019 Claude Code 2.1.257 Useful Newer](./019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official `2.1.257`

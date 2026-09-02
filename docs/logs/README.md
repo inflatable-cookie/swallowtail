@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-02 Antigravity 1.1.24 Identity](./2026-09-02-antigravity-1-1-24-identity.md) — Research 276; compatible extension; official GitHub `1.1.24` corroborated without executing downloaded binaries; claims unchanged
 - [2026-09-02 Codex 0.152.1 Claim](./2026-09-02-codex-0-152-1-claim.md) — Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer
 - [2026-09-02 Codex 0.152.1 Identity](./2026-09-02-codex-0-152-1-identity.md) — Research 275; compatible extension frozen without executing downloaded binaries; shipped-tree and source-tree deltas Guardian, test, and version-bump bounded; claims unchanged
 

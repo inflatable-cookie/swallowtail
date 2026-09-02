@@ -16,6 +16,8 @@
 
 ## Completed
 
+- [051-antigravity-1-1-24-claim.md](./051-antigravity-1-1-24-claim.md) — complete; Antigravity catalogue and headless qualified through official `1.1.24`; published intermediates `1.1.18`–`1.1.23` qualified; unpublished `1.1.25` stays UnverifiedNewer
+- [050-antigravity-1-1-24-identity.md](./050-antigravity-1-1-24-identity.md) — complete; Research 276 and official `1.1.17`–`1.1.24` identity frozen before claim without executing downloaded binaries
 - [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — complete; Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer
 - [048-codex-0-152-1-identity.md](./048-codex-0-152-1-identity.md) — complete; Research 275 and current host/official identity frozen before claim without executing downloaded binaries
 - [047-claude-code-2-1-257-claim.md](./047-claude-code-2-1-257-claim.md) — complete; Claude Code headless and response-only qualified through official `2.1.257`; unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253`–`2.1.256` stay gaps; watcher stays exact `2.1.251`

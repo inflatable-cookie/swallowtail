@@ -33,6 +33,10 @@ name = "antigravity_release_identity"
 path = "tests/antigravity_release_identity.rs"
 
 [[test]]
+name = "antigravity_1_1_24_delta_ledger"
+path = "tests/antigravity_1_1_24_delta_ledger.rs"
+
+[[test]]
 name = "foundation"
 path = "tests/foundation.rs"
 

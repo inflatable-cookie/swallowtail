@@ -1,0 +1,153 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-09-02",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "github_latest": true,
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "host": {
+    "installed": false,
+    "source": "not-on-path",
+    "note": "missing install is not a gap"
+  },
+  "official": {
+    "version": "1.1.24",
+    "source": "official-github-release",
+    "published_at": "2026-09-02T02:38:18Z",
+    "github_commit": "bf27ce1134b4ead2f7bfa0a4fb3cb5fcbebcaa5a",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "cff1fb7ed735da72c35658645a4f916cf74f020d4cd30ab95ebe8c2a49a4d569",
+    "extracted_cli_name": "antigravity",
+    "extracted_cli_sha256": "22c6ddeb06d2da6049ff861e44954bf232b77bd791986104326e9500f5327193",
+    "extracted_cli_size": 209273088,
+    "elf_build_id": "0d87e8b60bfaf0d76a8d5e6f838dddae",
+    "version_literal_in_binary": "1.1.24",
+    "version_literal_note": "linux-x64 extracted binary contains the 1.1.24 version literal; downloaded binaries were hashed and never executed"
+  },
+  "official_mac_arm64_tarball_sha256": "189af288ed9527f567ab3a53b35a6da2fc0c3812c6245f266c75a2a3604bdec3",
+  "published_stables_from_previous_ceiling": [
+    "1.1.18",
+    "1.1.19",
+    "1.1.20",
+    "1.1.21",
+    "1.1.22",
+    "1.1.23",
+    "1.1.24"
+  ],
+  "intermediate_1_1_18": {
+    "published_at": "2026-08-22T01:46:57Z",
+    "github_commit": "f09d6b583d0f902d3f0f63736af23d34f0a5ddbe",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "1aa7e3c1f5ba02372d24ba2f99ed015c7135016becc7dcbb18bf8332f513a818",
+    "extracted_cli_sha256": "60eb243a68bfbc1bffa3823c7fb90df27a72502550b333c6248fc55f20d02564",
+    "extracted_cli_size": 206024960,
+    "elf_build_id": "dd44555625e546bec8bd0befba77123a",
+    "version_literal_in_binary": "1.1.18"
+  },
+  "intermediate_1_1_19": {
+    "published_at": "2026-08-22T23:30:26Z",
+    "github_commit": "ee5766c17fce8f27ea85185f97183575058218ec",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "a02132a7c6c647ef0ad483ecbe767619adf6b660a5589cba5c937b0c83909b97",
+    "extracted_cli_sha256": "68d229d37aeabde76d15af0003d4c1ce07b211414e7452fb0309be9714ae7dd4",
+    "extracted_cli_size": 206188800,
+    "elf_build_id": "708bc379032a11dfc939a59a9b461991",
+    "version_literal_in_binary": "1.1.19"
+  },
+  "intermediate_1_1_20": {
+    "published_at": "2026-08-25T02:58:27Z",
+    "github_commit": "ade702a5439c2bc67de2f9cfcb83c5370768f0c6",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "6ceeb0ac91df6dca60a4fa02856807ed2e2fc6d3d70bb734d1ad61a9e44ef4da",
+    "extracted_cli_sha256": "d743ebe97c822b07d010a5a836804528119f926de9b136c9f5b2c0925fe710cb",
+    "extracted_cli_size": 208085248,
+    "elf_build_id": "917b0a8cc7c33aec77e9e26374c01659",
+    "version_literal_in_binary": "1.1.20"
+  },
+  "intermediate_1_1_21": {
+    "published_at": "2026-08-26T02:21:06Z",
+    "github_commit": "7cc1925c8cbe021699038606ada488618dbda5a2",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "4806a347119d36be6d8ab5cc3f03319bc6aa8407a8d9203de7976a42954cabde",
+    "extracted_cli_sha256": "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
+    "extracted_cli_size": 208183552,
+    "elf_build_id": "54865ceacda7fc2f3ff8071b1b8180fb",
+    "version_literal_in_binary": "1.1.21"
+  },
+  "intermediate_1_1_22": {
+    "published_at": "2026-08-27T04:03:21Z",
+    "github_commit": "556846a4bb94117222f53846896c7eb0d645307e",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "1e1a219a86e75d7c6351f96d182ca2105302d5c34d8fa9c31265dc0adf24145f",
+    "extracted_cli_sha256": "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
+    "extracted_cli_size": 208429312,
+    "elf_build_id": "a9f978445e9528435a7fcaa6983687aa",
+    "version_literal_in_binary": "1.1.22"
+  },
+  "intermediate_1_1_23": {
+    "published_at": "2026-09-01T04:47:50Z",
+    "github_commit": "4c150a22f7f68061e8af35412b05b9f8974e4c56",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "379693509ca4d68d74f75def6c95996739aa6c1dc38b120c399035c108f1a39a",
+    "extracted_cli_sha256": "caf4a5f9ae0f02e0ac3db01600a7dd4a9697354e3f4dc3f0a08b2de30d3aefbc",
+    "extracted_cli_size": 208986368,
+    "elf_build_id": "7d25d7790a3dc495ec30cb513b299199",
+    "version_literal_in_binary": "1.1.23"
+  },
+  "previous_ceiling_1_1_17": {
+    "published_at": "2026-08-20T22:13:58Z",
+    "github_commit": "efa16f096dc02fb654b7e86958d268195284d014",
+    "tarball_sha256": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+    "extracted_cli_sha256": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+    "extracted_cli_size": 205574400,
+    "elf_build_id": "de253ec6ade81ddac11b45a8558af46a",
+    "matches_frozen_1_1_17_identity": true
+  },
+  "public_git_1_1_17_to_1_1_24": "changelog-only",
+  "shared_git_sha_does_not_unify_binaries": true,
+  "unpublished_1_1_25": true,
+  "keep_1_1_8_incompatible": true,
+  "frozen_corpus_ceiling": "1.1.17",
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "flatten_to_antigravity_acp": false,
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "latest_qualified": "1.1.17",
+    "posture": "allow_unverified",
+    "classification_of_1_1_9": "qualified_maintained",
+    "classification_of_1_1_17": "qualified_maintained",
+    "classification_of_1_1_18": "unverified_newer",
+    "classification_of_1_1_24": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "reuse_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+    "raise_latest_qualified_to": "1.1.24",
+    "keep_baseline": "1.1.9",
+    "qualify_intermediates": [
+      "1.1.18",
+      "1.1.19",
+      "1.1.20",
+      "1.1.21",
+      "1.1.22",
+      "1.1.23"
+    ],
+    "new_milestone": false,
+    "keep_1_1_8_incompatible": true,
+    "later_unverified_after_qualification": "1.1.25",
+    "map_input_format": false,
+    "map_mcp_subcommand": false,
+    "map_mic_serve": false,
+    "map_voice": false,
+    "map_remote_control": false,
+    "map_project_name": false,
+    "flatten_to_gemini_api_key": false,
+    "flatten_to_antigravity_acp": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false
+  }
+}

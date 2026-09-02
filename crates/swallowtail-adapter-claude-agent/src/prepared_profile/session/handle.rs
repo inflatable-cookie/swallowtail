@@ -56,6 +56,12 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
         self.inner.resume_binding()
     }
 
+    fn negotiated_model_options(
+        &self,
+    ) -> Option<&swallowtail_runtime::NegotiatedSessionModelOptions> {
+        self.inner.negotiated_model_options()
+    }
+
     fn management_binding(&self) -> Option<&ProviderSessionManagementBinding> {
         Some(&self.binding)
     }

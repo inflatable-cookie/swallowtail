@@ -6,7 +6,7 @@ pub(in crate::prepared_profile) type ClaudeAgentPreparedOpenLifecycleFuture =
         Result<
             (
                 Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
-                ClaudeAgentReasoningAcknowledgement,
+                ClaudeAgentOpenObservation,
             ),
             ClaudeAgentOpenRejection,
         >,

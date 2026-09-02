@@ -4,9 +4,7 @@ use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenFailure;
 use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::{
-    CleanupOutcome, ConsumerRouteProjectionSourceKind, ConsumerRouteValueDomain,
-};
+use swallowtail_runtime::{CleanupOutcome, ConsumerRouteValueDomain};
 
 const PREPARED: &str = "claude-agent.projection.prepared";
 const ACTIVE: &str = "claude-agent.projection.active";
@@ -124,7 +122,7 @@ fn ambiguous_or_unbounded_confirmations_return_runtime_without_contribution() {
 }
 
 #[test]
-fn omitted_reasoning_names_no_acknowledgement_or_active_source() {
+fn omitted_reasoning_names_no_acknowledgement_and_keeps_model_observation() {
     let fixture = FixtureHost::new(Scenario::Success, "0.61.0");
     let outcome = block_on(agent_session(None, false).open_session_with_projection(
         source(PREPARED),
@@ -134,17 +132,7 @@ fn omitted_reasoning_names_no_acknowledgement_or_active_source() {
     .map_err(|failure| failure.failure().diagnostic().code())
     .expect("omitted reasoning opens");
     assert!(!rows(outcome.contribution()).contains("feature.active-session-reasoning-ack"));
-    assert_eq!(
-        outcome
-            .contribution()
-            .sources()
-            .map(|source| (source.id().as_str(), source.kind()))
-            .collect::<Vec<_>>(),
-        [(
-            PREPARED,
-            ConsumerRouteProjectionSourceKind::AdapterContribution
-        )]
-    );
+    assert!(rows(outcome.contribution()).contains("feature.negotiated-model-options-observation"));
     let (session, _) = outcome.into_parts();
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }
@@ -240,6 +228,11 @@ fn both_public_open_paths_keep_the_same_managed_handle_shape() {
         preserved_handle.management_binding(),
         projected_handle.management_binding()
     );
+    assert_eq!(
+        preserved_handle.negotiated_model_options(),
+        projected_handle.negotiated_model_options()
+    );
+    assert!(preserved_handle.negotiated_model_options().is_some());
     assert_eq!(block_on(preserved_handle.close()), CleanupOutcome::Clean);
     assert_eq!(block_on(projected_handle.close()), CleanupOutcome::Clean);
     assert_eq!(

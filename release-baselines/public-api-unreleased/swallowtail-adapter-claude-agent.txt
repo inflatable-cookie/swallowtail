@@ -103,6 +103,7 @@ pub struct swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome
 impl swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::InteractiveSessionHandle
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentRunProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeAgentRunProfileInput

@@ -154,6 +154,7 @@ impl PendingSession {
             execution_host_id,
             native_close,
             native_delete,
+            negotiated_model_options,
         } = input;
         let runtime_id = RuntimeSessionId::new(format!("claude-agent-acp:{}", request_id.as_str()))
             .map_err(|_| malformed())?;
@@ -176,6 +177,7 @@ impl PendingSession {
             resource: self.resource.take(),
             credential: self.credential.take(),
             active,
+            negotiated_model_options,
         })
     }
 
@@ -205,6 +207,7 @@ pub(super) struct SessionHandleInput {
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
     pub(super) native_close: bool,
     pub(super) native_delete: bool,
+    pub(super) negotiated_model_options: Option<swallowtail_runtime::NegotiatedSessionModelOptions>,
 }
 
 async fn release_all(

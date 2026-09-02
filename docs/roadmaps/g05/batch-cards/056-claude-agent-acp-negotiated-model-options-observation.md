@@ -1,6 +1,6 @@
 # 056 Claude Agent ACP Negotiated Model-Options Observation
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -47,14 +47,14 @@ provider work; release preparation.
 
 ## Acceptance Criteria
 
-- [ ] exact bounded negotiated model options survive session open
-- [ ] existing runtime type and handle seam are reused with no shared API change
-- [ ] preserved open remains behavior-compatible for absent and malformed optional evidence
-- [ ] projected invalid evidence closes and fails without a contribution
-- [ ] only projected active open publishes the observation row
-- [ ] load/resume and catalogue remain negative
-- [ ] all named mutations and cleanup counterexamples fail provider-free
-- [ ] public API and god-file baselines hold
+- [x] exact bounded negotiated model options survive session open
+- [x] existing runtime type and handle seam are reused with no shared API change
+- [x] preserved open remains behavior-compatible for absent and malformed optional evidence
+- [x] projected invalid evidence closes and fails without a contribution
+- [x] only projected active open publishes the observation row
+- [x] load/resume and catalogue remain negative
+- [x] all named mutations and cleanup counterexamples fail provider-free
+- [x] public API and god-file baselines hold
 
 ## Validation
 

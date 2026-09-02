@@ -15,13 +15,12 @@ shape.
 
 ## Next Task
 
-Implement [g05.022 cards 055 and 056](g05/022-claude-agent-dual-route-parity.md)
-in parallel. Card 055 is the priority `claude-agent.sdk` provider-free
-foundation: exact SDK identity, credential non-custody, read-only streaming,
-and joined descendant-tree cleanup. Card 056 adds exact negotiated model-option
-observation to `claude-agent.acp` through existing runtime vocabulary. Card 056
-lands first; card 055 then restacks before frontier review. Neither card opens
-a provider session. g05.021 and cards 050-052 remain planned and paused;
+Restack and implement [g05.022 card 055](g05/022-claude-agent-dual-route-parity.md)
+after the card 056 PR merges. Card 055 is the priority `claude-agent.sdk`
+provider-free foundation: exact SDK identity, credential non-custody, read-only
+streaming, and joined descendant-tree cleanup. Card 056's ACP negotiated
+model-option observation is in review and lands first. Neither card opens a
+provider session. g05.021 and cards 050-052 remain planned and paused;
 release evidence must restart against the later exact source head.
 
 ## Standing Lanes

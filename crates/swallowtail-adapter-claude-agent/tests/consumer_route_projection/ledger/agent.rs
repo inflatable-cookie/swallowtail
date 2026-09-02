@@ -22,7 +22,7 @@ const fn emitted(
     }
 }
 
-pub(crate) const AGENT_TRANCHE: [LedgerEntry; 30] = [
+pub(crate) const AGENT_TRANCHE: [LedgerEntry; 31] = [
     LedgerEntry {
         route_id: AGENT_ROUTE,
         operation_shape: "model-catalogue",
@@ -90,6 +90,11 @@ pub(crate) const AGENT_TRANCHE: [LedgerEntry; 30] = [
     emitted(
         "interactive-session",
         "feature.active-session-reasoning-ack",
+        OBSERVED,
+    ),
+    emitted(
+        "interactive-session",
+        "feature.negotiated-model-options-observation",
         OBSERVED,
     ),
     emitted("structured-run", "control.model-selection", RUN),

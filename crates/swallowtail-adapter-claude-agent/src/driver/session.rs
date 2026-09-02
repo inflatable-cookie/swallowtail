@@ -37,6 +37,7 @@ pub(super) struct ClaudeAgentSessionHandle {
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
     pub(super) active: ActiveSlot,
+    pub(super) negotiated_model_options: Option<swallowtail_runtime::NegotiatedSessionModelOptions>,
 }
 
 impl ClaudeAgentSessionHandle {
@@ -96,6 +97,12 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
         Some(&self.binding)
+    }
+
+    fn negotiated_model_options(
+        &self,
+    ) -> Option<&swallowtail_runtime::NegotiatedSessionModelOptions> {
+        self.negotiated_model_options.as_ref()
     }
 
     fn start_turn<'a>(

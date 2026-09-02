@@ -22,8 +22,8 @@ fn claimed(profile: &str) -> BTreeSet<RowIdentity> {
 }
 
 #[test]
-fn independent_ledgers_disposition_exactly_thirty_twelve_and_eleven_rows() {
-    assert_eq!(AGENT_TRANCHE.len(), 30);
+fn independent_ledgers_disposition_exactly_thirty_one_twelve_and_eleven_rows() {
+    assert_eq!(AGENT_TRANCHE.len(), 31);
     assert_eq!(CODE_TRANCHE.len(), 12);
     assert_eq!(RESPONSE_TRANCHE.len(), 11);
     let mut tuples = BTreeSet::new();
@@ -45,8 +45,8 @@ fn independent_ledgers_disposition_exactly_thirty_twelve_and_eleven_rows() {
         }
         *counts.entry(entry.route_id).or_insert(0) += 1;
     }
-    assert_eq!(tuples.len(), 53);
-    assert_eq!(counts[AGENT_ROUTE], 30);
+    assert_eq!(tuples.len(), 54);
+    assert_eq!(counts[AGENT_ROUTE], 31);
     assert_eq!(counts[CODE_ROUTE], 12);
     assert_eq!(counts[RESPONSE_ROUTE], 11);
 }
@@ -115,14 +115,16 @@ fn each_profile_binds_every_row_to_its_exact_prepared_applicability() {
 }
 
 #[test]
-fn only_the_acknowledgement_row_uses_the_active_observation_source() {
+fn only_active_observation_rows_use_the_active_observation_source() {
     for (profile, contribution) in profile_contributions() {
         for row in contribution
             .selection_rows()
             .chain(contribution.session_start_rows())
             .chain(contribution.active_session_rows())
         {
-            let expected = if semantic_id(row.identity()) == "feature.active-session-reasoning-ack"
+            let semantic = semantic_id(row.identity());
+            let expected = if semantic == "feature.active-session-reasoning-ack"
+                || semantic == "feature.negotiated-model-options-observation"
             {
                 assert_eq!(profile, AGENT_OBSERVED);
                 ConsumerRouteProjectionSourceKind::ActiveSessionObservation

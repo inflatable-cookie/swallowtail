@@ -33,11 +33,11 @@ enforcement.
 | Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
-| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ready; parallel evidence and contract gates first | Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047 | `g05.022`, cards 053-054 |
+| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ready; card 056 ACP observation in review; card 055 restacks after merge | Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047 | `g05.022`, cards 053-056 |
 
 ## Planned Next Roadmaps
 
-- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — ready; cards 053-054 in parallel; production implementation awaits joint integration
+- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — ready; cards 053-054 accepted; card 056 ACP observation in review; card 055 restacks after 056 merges
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
@@ -67,7 +67,7 @@ standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
-ready through parallel cards 053-054.
+ready through card 055 after card 056.
 
 ## Current Boundary
 
@@ -330,15 +330,15 @@ release cards require a fresh exact-head restart after the Claude work.
 Research 277-279 and g05.022 split Claude parity into two routes. Cards 053-054
 closed the SDK and ACP evidence gates. Contract 019 now requires joined
 descendant-tree cleanup, and Contract 029 records artifact-only authority when
-public source cannot corroborate a package. Cards 055-056 are ready in
-parallel. Native SDK delivery is the priority; the bounded ACP observation
-lands first to clear same-adapter merge ordering. ACP remains an independently
-useful portable route rather than an approximation hidden behind the SDK
-identity.
+public source cannot corroborate a package. Card 056's ACP observation is in
+review. Card 055 is ready and restacks after 056 merges. Native SDK delivery
+is the priority; the bounded ACP observation lands first to clear same-adapter
+merge ordering. ACP remains an independently useful portable route rather than
+an approximation hidden behind the SDK identity.
 
 ## Milestones
 
-- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — ready; evidence accepted; implementation cards 055-056 ready
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — ready; card 056 ACP observation in review; card 055 restacks after merge
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 

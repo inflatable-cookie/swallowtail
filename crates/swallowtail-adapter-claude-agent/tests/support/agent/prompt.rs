@@ -9,12 +9,36 @@ impl SharedAgent {
             "type": "select",
             "id": "model",
             "name": "Model",
+            "category": "model",
             "currentValue": current,
             "options": [
                 {"value": "default", "name": "Default"},
                 {"value": requested, "name": requested}
             ]
         })];
+        match self.scenario {
+            Scenario::ModelMalformed => {
+                options[0]["category"] = json!("other");
+            }
+            Scenario::ModelDuplicate => {
+                options[0]["options"] = json!([
+                    {"value": requested, "name": requested},
+                    {"value": requested, "name": "Duplicate"}
+                ]);
+            }
+            Scenario::ModelUnadvertised => {
+                options[0]["options"] = json!([{"value": "default", "name": "Default"}]);
+            }
+            Scenario::ModelUnbounded => {
+                let long = "x".repeat(257);
+                options[0]["options"] = json!([
+                    {"value": "default", "name": "Default"},
+                    {"value": requested, "name": requested},
+                    {"value": long, "name": "Unbounded"}
+                ]);
+            }
+            _ => {}
+        }
         let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
         if version >= semver::Version::new(0, 54, 0) {
             options.push(json!({
@@ -163,6 +187,10 @@ impl SharedAgent {
             | Scenario::ReasoningConfirmationMalformed
             | Scenario::ReasoningConfirmationDuplicate
             | Scenario::ReasoningConfirmationUnbounded
+            | Scenario::ModelMalformed
+            | Scenario::ModelDuplicate
+            | Scenario::ModelUnadvertised
+            | Scenario::ModelUnbounded
             | Scenario::Version => {
                 return Err(fixture_failure());
             }

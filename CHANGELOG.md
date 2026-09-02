@@ -7,6 +7,16 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- publish exact negotiated model-options observation on projected Claude Agent
+  ACP session open: after existing model confirmation, parse one bounded
+  `configOptions[id=model]` select, retain it on the session handle through
+  the existing runtime seam, and emit only
+  `feature.negotiated-model-options-observation` from a distinct active
+  source. Preserved `open_session` still treats absent or malformed optional
+  evidence as no snapshot. Invalid evidence on `open_session_with_projection`
+  closes the session and fails with
+  `swallowtail.negotiated_model_options.invalid`. Load, resume, catalogue, and
+  prepared contribution stay negative. Research 279, g05.022 card 056.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional
   `ClineSessionProfileInput::with_harness_mode(Plan)` advertises
   `HarnessModeSelection(Plan)`, requires unique `session/new` plan membership,

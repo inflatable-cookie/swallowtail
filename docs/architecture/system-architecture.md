@@ -962,13 +962,24 @@ Windows terminates the tree through `taskkill /T`. Emptiness afterwards is not
 proved. The Unix owner is itself a member of the group it anchors, so a
 group-directed liveness probe can only report the owner; answering the
 question would mean reaping the owner first and then probing a released,
-reusable group number. The two mechanisms that would observe emptiness
-honestly — an extra inherited descendant-liveness descriptor installed through
-`CommandExt::pre_exec`, or process-table enumeration by group through `sysctl`
-or procfs — both need `unsafe` or a platform dependency, and every crate here
-is `forbid(unsafe_code)`. The local host therefore reports
+reusable group number. The candidate mechanisms
+that could observe emptiness — an extra inherited descendant-liveness descriptor
+installed through `CommandExt::pre_exec`, process-table enumeration by group
+through `sysctl` or procfs, or an ancestry walk through `proc_listchildpids` —
+each need `unsafe` or a platform dependency, and every crate here is
+`forbid(unsafe_code)`. Card 059 drove the three review counterexamples through
+them natively under the operator-authorized boundary: a live descendant closes
+or does not inherit the liveness descriptor, so its end-of-file is not
+emptiness; a `setsid` descendant leaves the owned group, so group enumeration
+misses it; and an orphaned descendant reparents to `launchd`, which macOS never
+reassigns to the launcher because it has no child-subreaper. The only sound
+mechanism is a kernel-enforced owned-tree container — a PID namespace or a
+cgroup v2 `populated` view — where the kernel owns a non-forgeable identity that
+`setsid` cannot escape and no descriptor can drop. macOS provides none of these,
+so it cannot make a positive claim; a kernel-container route is Linux-only and
+privilege-bearing. The local host therefore reports
 `ProcessTreeCompletion::RootOnly` on every platform, including exits where
-termination succeeded, and never constructs the attested state. A native arm64
+termination succeeded, adds no unsafe, and never constructs the attested state. A native arm64
 probe proves that a security-scoped project grant propagates through a
 compatible inherited App Sandbox helper to shell and background descendants.
 The exact Kimi `0.28.1` single executable cannot retain V8 and extracted-

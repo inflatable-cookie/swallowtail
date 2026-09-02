@@ -11,7 +11,6 @@
 
 ## Ready
 
-- [059-unix-owned-tree-attestation.md](./059-unix-owned-tree-attestation.md) — ready; exact Unix owned-tree observation with adversarial escape and identity-reuse proofs
 - [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — ready; operator accepted the v0.4 breaking caller-bounded close seam
 
 ## Blocked
@@ -20,6 +19,7 @@
 
 ## Completed
 
+- [059-unix-owned-tree-attestation.md](./059-unix-owned-tree-attestation.md) — evidence stop; every candidate mechanism fails a review counterexample on macOS, which has no PID namespace, cgroup `populated` view, or child-subreaper; the host stays root-only and adds no unsafe
 - [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — evidence stop; additive provider-neutral tree-completion vocabulary landed; the local Unix owner proves enrollment and termination but cannot observe emptiness, so every local exit stays root-only
 - [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded adapter-only ACP observation on projected open; lands before card 055 restack
 - [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278; official `0.3.258` frozen; credential non-custody and route gate proved

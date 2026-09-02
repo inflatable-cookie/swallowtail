@@ -84,9 +84,13 @@ is cleanup failure. It is never evidence of clean close.
 
 Root exit is not tree completion. A close outcome may report the descendant
 tree as joined only where the execution host attests owned-tree emptiness from
-a concrete Contract 010 observation. Root-only evidence closes the root and
-leaves the tree unconfirmed, so a route that requires the full tree stays
-unavailable until a host on that platform can make the observation.
+a concrete Contract 010 observation, which requires a kernel-enforced owned-tree
+container that a descendant cannot escape by session change, descriptor drop, or
+reparenting. Root-only evidence closes the root and leaves the tree unconfirmed,
+so a route that requires the full tree stays unavailable until a host on that
+platform can make the observation. macOS provides no such container, so the
+subscription-backed SDK route that requires the full tree stays unavailable
+there.
 
 ## Runtime And Task Ownership
 

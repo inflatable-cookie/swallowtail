@@ -16,14 +16,17 @@ shape.
 ## Next Task
 
 Implement [g05.023](g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
-cards 058 and 059 as the parallel ready frontier. The operator authorized the
-v0.4 breaking caller-bounded close seam and a narrowly contained unsafe or
-dependency boundary for exact Unix owned-tree observation. Card 059 must still
-defeat descriptor-close, non-inheritance, `setsid`, and identity-reuse
-counterexamples; authorization is not evidence. Merge shared runtime/API work
-serially, then restack the preserved PR 188 branch onto both prerequisites.
-g05.021 and cards 050-052 remain planned and paused; release evidence must
-restart against the later exact source head.
+card 058, the v0.4 breaking caller-bounded close seam, as the remaining ready
+prerequisite. Card 059 stopped at an evidence stop: no mechanism the authorized
+unsafe or dependency boundary permits defeats the `setsid`, descriptor-close,
+and identity-reuse counterexamples on macOS, which has no PID namespace, cgroup
+`populated` view, or child-subreaper, so the local host stays root-only and adds
+no unsafe. The only sound mechanism is a kernel-enforced owned-tree container,
+which is Linux-only and cannot be validated from this macOS host; unblocking the
+macOS SDK tree gate is now an operator decision. Merge shared runtime/API work
+serially, then restack the preserved PR 188 branch. g05.021 and cards 050-052
+remain planned and paused; release evidence must restart against the later exact
+source head.
 
 ## Standing Lanes
 

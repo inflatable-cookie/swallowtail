@@ -230,13 +230,26 @@ pub(crate) fn supervise_child(
 /// owner first would answer the question, but only by probing a bare process
 /// group number after ownership was released, which this host refuses.
 ///
-/// The two mechanisms that could observe emptiness are both unavailable to a
-/// `forbid(unsafe_code)` crate with no platform dependency: an extra
-/// inherited descendant-liveness descriptor needs `CommandExt::pre_exec`, and
-/// process-table enumeration by group needs `sysctl` or a procfs walk. Until
-/// one of those is authorized, every local exit stays
-/// [`ProcessTreeCompletion::RootOnly`], including exits where termination
-/// succeeded.
+/// Card 059 asked whether the operator-authorized `unsafe`/dependency boundary
+/// lets this host observe emptiness soundly, and drove all three review
+/// counterexamples through every candidate mechanism natively (see the
+/// `attestation` integration tests). None survives on macOS:
+///
+/// - an inherited liveness descriptor installed through `CommandExt::pre_exec`
+///   reaches end-of-file when a live descendant closes or does not inherit it,
+///   so its EOF is not tree emptiness;
+/// - process-group enumeration through `sysctl` or a procfs walk cannot see a
+///   `setsid` descendant that has left the owned group, and observing the group
+///   empty at all would require reaping the owner and probing a released,
+///   reusable group number;
+/// - an ancestry walk loses a descendant that is reparented to `launchd` after
+///   its intermediate parent exits, because macOS has no child-subreaper.
+///
+/// The only sound mechanism is a kernel-enforced owned-tree container — a PID
+/// namespace or a cgroup `populated` view — and macOS provides neither. This
+/// host therefore keeps reporting [`ProcessTreeCompletion::RootOnly`] on every
+/// platform, including exits where termination succeeded, rather than
+/// publishing a best-effort tree claim.
 ///
 /// [`ProcessTreeCompletion::RootOnly`]: swallowtail_runtime::ProcessTreeCompletion::RootOnly
 fn exit_record(status: ExitStatus) -> ProcessExit {

@@ -156,11 +156,15 @@ is not accepted release evidence. Milestone 022 is planned after card 055's
 exact-head lifecycle stop. Milestone 023 is ready: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, and the
 operator authorized cards 058-059 for the breaking bounded-close seam and a
-narrowly contained Unix attestation mechanism. PR 188 stays paused until both
-merge.
+narrowly contained Unix attestation mechanism. Card 059 then stopped at an
+evidence stop: no mechanism the authorized boundary permits defeats the setsid,
+descriptor-close, and identity-reuse counterexamples on macOS, which lacks a PID
+namespace, a cgroup `populated` view, and a child-subreaper, so the host stays
+root-only and adds no unsafe. PR 188 stays paused until the bounded-close seam
+lands and the macOS tree gate is resolved.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
-promoted. Card 056 is complete. Cards 058-059 are ready, and card 055/PR 188
-remain paused behind both prerequisites. No card
+promoted. Card 056 is complete. Card 058 is ready; card 059 is an evidence stop;
+card 055/PR 188 remain paused behind the bounded-close prerequisite. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

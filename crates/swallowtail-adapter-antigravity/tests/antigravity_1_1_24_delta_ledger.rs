@@ -336,7 +336,7 @@ fn json(value: &str) -> Value {
 fn assert_sha256(value: &Value, expected: &str) {
     let value = value.as_str().expect("digest is text");
     assert_eq!(value.len(), 64);
-    assert!(value.bytes().all(u8::is_ascii_hexdigit));
+    assert!(value.bytes().all(|byte| byte.is_ascii_hexdigit()));
     assert_eq!(value, expected);
 }
 

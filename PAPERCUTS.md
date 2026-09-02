@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] `effigy release gates` does not return the documented gate inventory — 2026-09-02
+- Friction: the read-only command stayed silent for more than 90 seconds and
+  required interruption instead of listing the configured release gates.
+- Impact: release planning cannot rely on the documented inspection route to
+  inventory gates without risking an unbounded wait.
+- Fix: make `release gates` print the configured names immediately, or emit
+  progress and a bounded diagnostic if it performs gate work.
+- Surface: Effigy release inspection against Swallowtail's
+  `config/release.toml`; deferred outside the v0.4.0 milestone.
+
 ### [ ] Effigy graph explore can rebuild silently without a useful timeout — 2026-08-31
 - Friction: `effigy graph explore ... --json` produced no envelope or progress
   while rebuilding for more than 60 seconds and required an interrupt.

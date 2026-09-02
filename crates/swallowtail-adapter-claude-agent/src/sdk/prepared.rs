@@ -15,12 +15,17 @@ use swallowtail_core::{
     ModelRouteRevision, PreflightPlan,
 };
 use swallowtail_runtime::{
-    BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparationStage, RequestId, RuntimeFailure,
-    SessionOptions, WorkingResourceRef,
+    BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, OpenSessionRequest, PreparationFailure, PreparationStage, RequestId,
+    RuntimeFailure, SessionOptions, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one fresh Claude Agent SDK sidecar session.
+///
+/// `deadline` is caller-supplied and mandatory: it bounds open and every
+/// startup await against the host clock. Close carries no caller deadline on
+/// the shared session seam, and monotonic tick units are host-defined, so this
+/// route does not derive a close bound from it.
 pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -34,6 +39,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) model: ModelId,
     pub(crate) working_resource: WorkingResourceRef,
     pub(crate) request_id: RequestId,
+    pub(crate) deadline: Deadline,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -54,6 +60,7 @@ impl ClaudeAgentSdkSessionPreparation {
         model: ModelId,
         working_resource: WorkingResourceRef,
         request_id: RequestId,
+        deadline: Deadline,
     ) -> Self {
         Self {
             instance_id,
@@ -68,6 +75,7 @@ impl ClaudeAgentSdkSessionPreparation {
             model,
             working_resource,
             request_id,
+            deadline,
         }
     }
 
@@ -84,6 +92,7 @@ impl ClaudeAgentSdkSessionPreparation {
         model: ModelId,
         working_resource: WorkingResourceRef,
         request_id: RequestId,
+        deadline: Deadline,
     ) -> Result<Self, PreparationFailure> {
         if admitted.route_id().as_str() != super::CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID {
             return Err(failure(
@@ -134,6 +143,7 @@ impl ClaudeAgentSdkSessionPreparation {
             model,
             working_resource,
             request_id,
+            deadline,
         ))
     }
 }

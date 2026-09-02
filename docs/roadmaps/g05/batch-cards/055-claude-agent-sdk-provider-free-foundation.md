@@ -120,10 +120,42 @@ restacked base or any accepted-for-reap result is treated as joined cleanup.
 ## Closeout
 
 Implemented as `claude-agent.sdk` in `swallowtail-adapter-claude-agent`, with
-the descendant-tree enrollment proof in `swallowtail-host-local`. The Help
-Center subscription article and official npm stable were rechecked immediately
-before implementation and both held exactly; no stop condition fired. Record:
+the descendant-tree enrollment proof in `swallowtail-host-local` and a
+sidecar-level falsification that runs the shipped asset under Node against a
+fake SDK. The Help Center subscription article and official npm stable were
+rechecked immediately before implementation and both held exactly; no stop
+condition fired. Record:
 `../../../logs/2026-09-02-claude-agent-sdk-foundation.md`.
+
+**Contract 019 foundation acceptance is not met.** Two requirements cannot be
+satisfied from inside this route, and are stopped rather than approximated. The
+work that does hold is listed above and is independently green; what follows is
+what is missing, exactly.
+
+1. **Bounded close and bounded post-expiry cleanup.**
+   `InteractiveSessionHandle::close` carries no caller deadline, and
+   `MonotonicInstant` ticks are host-defined, so no fresh host-observed bound
+   can be derived. `close_tree` still awaits the correlated close response and
+   the pump join without an observable bound, and the open-expiry `abort` path
+   joins the pump after escalation the same way. Open and turn expiry are
+   detected on the caller's `Deadline`; the cleanup that follows expiry is not
+   bounded by it. Smallest prerequisite: a caller-provided cleanup deadline on
+   the shared session seam, or a host-published way to derive a fresh
+   `Deadline` from the current instant.
+2. **Whole-tree completion evidence.** The host process API reports a root
+   exit, not that the owned tree is empty, so `graceful`/`Clean` is unreachable
+   and observed exits are reported as `escalated`. Smallest prerequisite: the
+   host process API attests that the tree it owns is empty after termination,
+   so close can distinguish "nothing remained" from "something was killed".
+
+Both are shared runtime API/contract expansions and belong to an orchestrator
+decision, not to this worker.
+
+One non-blocking follow-on is recorded rather than taken: the sidecar asset is
+a single file because the application provisions one entry point. Splitting it
+into focused modules would make the launch recipe provision a directory, which
+is a provisioning-contract change, so it waits for a bounded card rather than
+riding along here.
 
 ## Auto-Continuation
 

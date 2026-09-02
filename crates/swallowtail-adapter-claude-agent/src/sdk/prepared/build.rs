@@ -149,9 +149,13 @@ pub(super) fn prepare(
         &status,
         services,
     )?;
-    let request =
-        OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?
-            .with_options(options);
+    let request = OpenSessionRequest::from_plan(
+        &plan,
+        input.request_id,
+        input.working_resource,
+        Some(input.deadline),
+    )?
+    .with_options(options);
     Ok(super::build_prepared(
         plan,
         request,

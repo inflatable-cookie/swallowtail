@@ -3,7 +3,7 @@
 use super::handle::{ClaudeAgentSdkTurnHandle, SessionCancellation, TurnBinding};
 use super::startup::SessionReadiness;
 use super::validation::validate_turn;
-use crate::sdk::close::ClaudeAgentSdkCloseState;
+use crate::sdk::close::SidecarNativeJoin;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use crate::sdk::turn::SdkActiveTurn;
@@ -17,8 +17,10 @@ use swallowtail_runtime::{
 };
 
 mod close;
+mod deadline;
 
 pub(super) use close::merge_cleanup;
+use deadline::{reap_finished, spawn_turn_deadline};
 
 /// Bound the sidecar states, and honours, when joining its own retained
 /// native child handle before the host escalates.
@@ -27,7 +29,13 @@ pub(super) const CLOSE_JOIN_BOUND_MS: u64 = 2_000;
 /// admissible.
 pub(super) const INTERRUPT_RECEIPT_CAPABILITY: &str = "interrupt_receipt_v1";
 
-pub(super) type ActiveSlot = Arc<Mutex<Option<Arc<SdkActiveTurn>>>>;
+pub(super) type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
+
+/// One live turn and the host-deadline task that bounds it.
+pub(super) struct ActiveTurn {
+    pub(super) turn: Arc<SdkActiveTurn>,
+    pub(super) deadline_task: Option<Box<dyn JoinedTask>>,
+}
 
 pub(super) struct ClaudeAgentSdkSessionHandle {
     pub(super) request_id: RequestId,
@@ -68,7 +76,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
         Box::pin(async move {
             services.require_execution_host(&self.execution_host_id)?;
             validate_turn(&request)?;
-            self.reap_finished();
+            reap_finished(&self.active).await;
             if self
                 .active
                 .lock()
@@ -80,16 +88,35 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                     "Claude Agent SDK sidecar session already has an active turn",
                 ));
             }
+            let deadline = request.deadline().expect("validated turn deadline");
             let (turn, events, callbacks, terminal) = SdkActiveTurn::new(
                 request.turn_id().clone(),
                 Arc::downgrade(&self.connection),
-                request.deadline(),
+                Some(deadline),
             )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
+            // The host deadline races real completion. On expiry it interrupts
+            // provider work and resolves the turn as timed out rather than
+            // letting an unbounded provider turn hold the session.
+            let deadline_task = match spawn_turn_deadline(
+                &services,
+                Arc::clone(&self.connection),
+                Arc::clone(&turn),
+                deadline,
+            ) {
+                Ok(task) => task,
+                Err(error) => {
+                    self.connection.clear_active_turn(&turn);
+                    return Err(error);
+                }
+            };
             *self
                 .active
                 .lock()
-                .expect("SDK sidecar active lock poisoned") = Some(Arc::clone(&turn));
+                .expect("SDK sidecar active lock poisoned") = Some(ActiveTurn {
+                turn: Arc::clone(&turn),
+                deadline_task: Some(deadline_task),
+            });
             let id = format!("query:{}", request.turn_id().as_str());
             let response = self
                 .connection
@@ -131,15 +158,32 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 .lock()
                 .expect("SDK sidecar active lock poisoned")
                 .take();
-            if let Some(turn) = &active
-                && !turn.is_finished()
+            // Closing the session ends any live turn first. The turn must
+            // reach its terminal outcome before its host-deadline task can be
+            // joined: that task waits on completion or expiry, so joining it
+            // while the turn is still open would wait for an event that close
+            // itself just prevented.
+            if let Some(active) = &active
+                && !active.turn.is_finished()
             {
-                turn.mark_cancelled();
+                active.turn.mark_cancelled();
+                active
+                    .turn
+                    .fail_connection(swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.claude-agent.sdk.session_closing",
+                        "Claude Agent SDK sidecar session closed while a turn was active",
+                    ));
+            }
+            let turn_active = active.is_some();
+            if let Some(mut active) = active
+                && let Some(task) = active.deadline_task.take()
+            {
+                let _ = task.join().await;
             }
             let state = close::close_tree(
                 &self.connection,
                 &self.request_id,
-                active.is_some(),
+                turn_active,
                 self.pump_task.take(),
             )
             .await;
@@ -152,16 +196,6 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
 }
 
 impl ClaudeAgentSdkSessionHandle {
-    fn reap_finished(&self) {
-        let mut active = self
-            .active
-            .lock()
-            .expect("SDK sidecar active lock poisoned");
-        if active.as_ref().is_some_and(|turn| turn.is_finished()) {
-            active.take();
-        }
-    }
-
     fn reject_turn(&self, turn: &Arc<SdkActiveTurn>, error: RuntimeFailure) -> RuntimeFailure {
         turn.fail_connection(error.diagnostic().clone());
         self.connection.clear_active_turn(turn);
@@ -173,17 +207,16 @@ impl ClaudeAgentSdkSessionHandle {
     }
 }
 
-pub(super) fn close_state(data: Option<&Value>) -> Option<ClaudeAgentSdkCloseState> {
+pub(super) fn native_join(data: Option<&Value>) -> Option<SidecarNativeJoin> {
     let data = data?;
     if data.get("joinBoundMs").and_then(Value::as_u64) != Some(CLOSE_JOIN_BOUND_MS) {
         return None;
     }
     let observed = data.get("nativeExitObserved").and_then(Value::as_bool)?;
-    let state = ClaudeAgentSdkCloseState::from_sidecar(data.get("closeState")?.as_str()?)?;
-    // A reported graceful join must carry the observation that produced it.
-    match (state, observed) {
-        (ClaudeAgentSdkCloseState::Graceful, true)
-        | (ClaudeAgentSdkCloseState::Unconfirmed, false) => Some(state),
+    let join = SidecarNativeJoin::from_sidecar(data.get("closeState")?.as_str()?)?;
+    // A reported join must carry the observation that produced it.
+    match (join, observed) {
+        (SidecarNativeJoin::Observed, true) | (SidecarNativeJoin::Unconfirmed, false) => Some(join),
         _ => None,
     }
 }

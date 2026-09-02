@@ -37,6 +37,7 @@ pub fn prepared_session_with(
         ModelId::new("claude-sonnet-5").expect("valid model"),
         WorkingResourceRef::new("claude-agent-sdk.fixture.workspace").expect("valid resource"),
         RequestId::new("request-1").expect("valid request"),
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
     );
     prepare_claude_agent_sdk_session(input, options)
 }

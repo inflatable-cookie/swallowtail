@@ -30,16 +30,43 @@ omission inherits the parent environment and would silently switch the access
 profile. Open accepts only `firstParty` provenance with an `oauth` key source,
 refuses account identity fields outright, and projects readiness labels only.
 
+Exact-head review returned six blocking findings; five are repaired here and
+the sixth is stopped on a seam. The selected model is now sent explicitly and
+confirmed from `system/init` evidence, so the route cannot silently run
+Claude's ambient default. Tool availability is restricted with `tools` rather
+than `allowedTools`, which auto-allows without prompting; the read-only
+allow-list is enforced inside the sidecar before any consumer round trip, and
+an allowed decision returns the provider's own tool input unchanged while that
+input never crosses the wire. Open and each turn are raced against their
+caller-supplied host deadlines. Windows is declared unsupported rather than
+best-effort, because the host retains a process-group owner only on Unix. A
+sidecar-level falsification now runs the shipped asset under Node against a
+fake SDK and fake native child, proving the option surface, the admission
+contract, input intactness, and both native-join outcomes.
+
 The lifecycle half is the reason this card was frontier work. The upstream SDK
 supplies no joined stop: its cleanup races a 2000 ms timer inside a swallowed
 `catch`, discards the outcome, and its own escalation is unreferenced and
 reaches only the direct child. The route therefore never reads SDK cleanup as
 evidence. The sidecar retains its own native child handle through
 `spawnClaudeCodeProcess` and joins it independently; Rust escalates through
-the execution host's descendant-tree termination authority on expiry, re-joins,
-and reports exactly one of `graceful` (Clean), `escalated` (Degraded), or
-`unconfirmed` (Failed). A graceful claim that carries no observation is
-rejected and escalated like any other unproved join.
+the execution host's descendant-tree termination authority, re-joins, and
+reports `escalated` (Degraded) or `unconfirmed` (Failed). A graceful claim
+that carries no observation is rejected and escalated like any other unproved
+join.
+
+`graceful` (Clean) is deliberately unreachable today. The host terminates the
+tree it owns during cleanup but does not report whether anything remained, so
+an observed root exit does not prove every descendant exited, and claiming
+otherwise would be the Review Oracle counterexample wearing a success label.
+Contract 019 foundation acceptance is therefore not met, and the card is not
+marked complete. Two shared prerequisites are reported rather than
+approximated. Close and post-expiry cleanup have no observable bound, because
+`close` carries no caller deadline and tick units are host-defined; inventing a
+conversion would fake a guarantee. And whole-tree completion evidence does not
+exist in the host process API, so an observed root exit cannot be upgraded to
+`Clean`. Both are shared runtime expansions and belong to an orchestrator
+decision.
 
 Descendant enrollment is proved, not asserted. Two new `swallowtail-host-local`
 cases run one portable sidecar-plus-native-descendant topology on whichever

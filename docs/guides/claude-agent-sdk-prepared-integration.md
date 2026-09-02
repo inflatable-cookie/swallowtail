@@ -12,7 +12,8 @@ policy, preflight plan, and session request.
 New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `claude-agent.sdk` in `swallowtail-adapter-claude-agent`, with
-driver ID `swallowtail.claude-agent.sdk`. Choose it for one fresh read-only
+driver ID `swallowtail.claude-agent.sdk`. It is Unix-only: see
+[Supported Platforms](#supported-platforms). Choose it for one fresh read-only
 interactive session on the user's own Claude subscription, with streamed
 output, identity-and-lifecycle activity, consumer-mediated tool admission,
 interrupt, and a host-owned descendant-tree close. Reject it when the
@@ -66,6 +67,20 @@ messages, and any reference to them fails the build's identity test. And
 parent environment and would silently switch the access profile if
 `ANTHROPIC_API_KEY` were present.
 
+## Supported Platforms
+
+Contract 019 requires the launch recipe to prove descendant enrollment or
+containment on every supported platform, and makes a platform where that
+cannot be proved unsupported rather than best-effort.
+
+The execution host retains a process-group owner on Unix, so the tree stays
+owned for as long as the session does. Windows terminates a tree by request
+without retaining ownership of it, so a native descendant that outlives the
+Node root cannot be proved gone. This route therefore declares Windows
+unsupported: the addable row reports `Unsupported` and `open_session` refuses
+before any process starts. That is deliberate — an unprovable lifecycle is
+worse than an absent route.
+
 ## Explicit Inputs
 
 Admission requires an admitted instance record for the `claude-agent.sdk`
@@ -78,13 +93,16 @@ addable route carrying opaque host-owned references only:
   `CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY`, and
   `CLAUDE_AGENT_SDK_SIDECAR_MANIFEST`
 - a delegated subscription credential reference
+- an open `Deadline`, which bounds open, startup, and readiness against the
+  host clock
 
 `ClaudeAgentSdkSessionPreparation::from_admitted` lifts those references into
 the explicit preparation input without exposing paths, environment values, or
 credential bytes. Direct construction takes the same pieces explicitly:
 configured-instance identity and revision, execution host, launch target,
 environment, credential, access profile, model route, model, working-resource
-reference, and request identity. This layer admits no session options.
+reference, request identity, and the open deadline. This layer admits no
+session options.
 
 Swallowtail does not choose the model, account, credential, workspace, Node
 runtime, SDK package, native binary, or fallback route, and never installs,
@@ -123,8 +141,23 @@ as behavior.
 
 Open runs before any provider work and fails closed on any mismatch: wire,
 behavior revision, SDK package and version, native version, Node version, the
-host-leased working directory, the read-only `Read`/`Glob`/`Grep` tool set,
-and first-party subscription readiness. Ambient behavior is suppressed by
+host-leased working directory, the effective model, the read-only
+`Read`/`Glob`/`Grep` tool set, and first-party subscription readiness.
+
+The selected model is sent as `options.model` and then confirmed from the
+runtime's own `system/init` evidence. A session that silently ran Claude's
+ambient default instead of the plan's model is a substitution, not a
+convenience, and fails closed.
+
+Open, startup, and each turn are raced against their caller-supplied host
+deadlines through the host `TimeService`. Expiry interrupts provider work,
+hands the tree to host termination, and reports the deadline; it never resolves
+as if the work had finished.
+
+One limit is stated rather than implied: that deadline bounds *detection* of
+stuck work, not the return of the cleanup that follows it. The post-expiry join
+depends on host termination completing, and close has no caller deadline at
+all. See [Close And The Descendant Tree](#close-and-the-descendant-tree). Ambient behavior is suppressed by
 construction rather than by omission: setting sources are empty, skills are an
 explicit empty list (omission is documented *not* to mean "skills off"),
 session persistence is disabled, and MCP servers, plugins, hooks, subagents,
@@ -138,10 +171,21 @@ a bonus.
 ## Tool Admission
 
 Read-only tool use is admitted by the consumer, never inferred by the sidecar.
-Each `canUseTool` request crosses the wire as a bounded correlated callback in
-the route-local `claude-agent-sdk/can-use-tool` namespace carrying the tool
-name and nothing else. A consumer failure, an abandoned turn, or a closed
-exchange all deny. The namespace is deliberately route-local: shared
+
+Availability is restricted with `Options.tools`. `Options.allowedTools` is
+never set: it auto-allows without prompting, which would bypass per-use
+admission entirely. The exact read-only allow-list is enforced inside the
+sidecar before any consumer round trip, so an unknown tool is denied without
+ever being offered, and the Rust side rejects an out-of-set request as a
+transport failure rather than delegating it.
+
+Each admitted request crosses the wire as a bounded correlated callback in the
+route-local `claude-agent-sdk/can-use-tool` namespace carrying the tool name
+and nothing else. The tool's own input never crosses the wire: the sidecar
+retains it privately and returns it unchanged as `updatedInput` on allow,
+because `updatedInput` replaces what the provider would otherwise use — an
+empty object would silently destroy the path or pattern the tool needs. A
+consumer failure, an abandoned turn, or a closed exchange all deny. The namespace is deliberately route-local: shared
 permission vocabulary is orchestrator work once a second provider proves the
 same semantics.
 
@@ -160,23 +204,42 @@ None of that may be read as evidence that a process exited.
 
 Close therefore runs in this order and reports one explicit outcome:
 
-1. interrupt a live turn
-2. end sidecar input through the explicit `close` command
-3. the sidecar joins its own independently retained native child handle to the
-   declared 2000 ms bound
-4. on expiry, the host escalates through its descendant-tree termination
-   authority, which owns the whole tree rooted at the sidecar
-5. re-join, then release resource and credential leases in contract order
+1. resolve any live turn, then join its host-deadline task
+2. interrupt a live turn
+3. end sidecar input through the explicit `close` command
+4. the sidecar joins its own independently retained native child handle to the
+   declared 2000 ms bound, which it starts before any other close await so no
+   SDK-side drain can consume the bound
+5. the host terminates the descendant tree it owns
+6. re-join, then release resource and credential leases in contract order
+
+Close itself carries no host-observed bound today. `close` takes no caller
+deadline on the shared session seam, and monotonic tick units are host-defined,
+so deriving one would mean inventing a conversion. Open and each turn are
+bounded through their existing caller `Deadline`s; close relies on the
+sidecar's declared join bound plus host termination. Closing that gap needs a
+timing seam decision, and this route reports it rather than guessing.
 
 | Close state | `CleanupOutcome` | Meaning |
 | --- | --- | --- |
-| `graceful` | `Clean` | every provider process exited on its own, observed |
-| `escalated` | `Degraded` | exit observed, but only after host termination |
+| `graceful` | `Clean` | the owned tree was attested empty without host termination |
+| `escalated` | `Degraded` | exits were observed, and host termination was part of getting there |
 | `unconfirmed` | `Failed` | no exit was observed; cleanup failed |
 
-`unconfirmed` is cleanup failure, never a slow success, and a graceful claim
-that carries no observation is rejected. Treat `Degraded` as a real signal:
-the tree needed forcing.
+Two limits are deliberate and load-bearing.
+
+The sidecar can observe only its own direct native child, so its report is
+about that child, never the tree. A graceful claim that carries no observation
+is rejected outright.
+
+`graceful` is currently unreachable, and that is the honest state rather than a
+gap to paper over. The execution host terminates the tree it owns during
+cleanup but does not report whether anything remained, so an observed root exit
+does not prove every descendant exited. Until the host process API attests
+tree-emptiness, this route reports `escalated` with a diagnostic naming which
+cause applied — host owned-tree cleanup, or host termination after an unproved
+join — and never upgrades that to `Clean`. Treat `Degraded` as the normal
+close signal for this route today.
 
 ## Failure Diagnostics
 

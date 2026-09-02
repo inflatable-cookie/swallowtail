@@ -205,7 +205,7 @@ impl TurnHandle for ClaudeAgentSdkTurnHandle {
                 .expect("SDK sidecar active lock poisoned");
             if slot
                 .as_ref()
-                .is_some_and(|active| Arc::ptr_eq(active, &self.turn))
+                .is_some_and(|active| Arc::ptr_eq(&active.turn, &self.turn))
             {
                 slot.take();
             }

@@ -14,6 +14,7 @@
 mod activity;
 mod addable;
 mod asset;
+mod bounded;
 mod close;
 mod connection;
 mod driver;
@@ -65,3 +66,18 @@ pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.258";
 /// Exact approved Node runtime version satisfying the upstream `>=18.0.0`
 /// requirement.
 pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.2";
+
+/// Reports whether this route is supported on the running execution host
+/// platform.
+///
+/// Contract 019 requires the launch recipe to prove descendant enrollment or
+/// containment on every supported platform, and makes a platform where that
+/// cannot be proved unsupported rather than best-effort. The host's retained
+/// process-group owner exists on Unix only; on Windows the host terminates a
+/// tree by request without retaining ownership of it, so a native descendant
+/// that outlives the Node root cannot be proved gone. This route therefore
+/// declares Windows unsupported instead of shipping an unprovable lifecycle.
+#[must_use]
+pub const fn claude_agent_sdk_platform_supported() -> bool {
+    !cfg!(windows)
+}

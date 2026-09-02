@@ -38,6 +38,8 @@ pub enum SdkScenario {
     CloseGracefulWithoutObservation,
     /// One `canUseTool` admission request during the turn.
     ToolAdmission,
+    /// An admission request for a tool outside the read-only set.
+    UnadmittedToolAdmission,
     /// More admission requests than the bounded exchange accepts.
     ToolAdmissionOverflow,
     /// Interrupt reports a receipt the runtime never advertised.
@@ -52,6 +54,10 @@ pub enum SdkScenario {
     IdentityMismatch,
     /// Open reports a cwd other than the leased resource root.
     CwdMismatch,
+    /// Open reports an effective model other than the selected one.
+    ModelMismatch,
+    /// The sidecar accepts open and never answers it.
+    OpenHold,
     /// Open advertises tools beyond the read-only set.
     ToolsWidened,
     /// The stream carries an unqualified event name.
@@ -123,6 +129,18 @@ impl SdkFixtureHost {
         self
     }
 
+    /// Fires every host deadline as soon as it is awaited.
+    pub fn with_immediate_time(self) -> Self {
+        let mut time = self
+            .shared
+            .time
+            .lock()
+            .expect("SDK fixture time lock poisoned");
+        time.fire_through = Some(u64::MAX);
+        drop(time);
+        self
+    }
+
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService))
@@ -187,3 +205,5 @@ pub(super) fn fixture_failure() -> swallowtail_runtime::RuntimeFailure {
 
 /// Leased working-resource root the fixture reports back through the wire.
 pub const FIXTURE_CWD: &str = "/fixture/claude-agent-sdk-workspace";
+/// Selected model the fixture confirms as effective.
+pub const FIXTURE_MODEL: &str = "claude-sonnet-5";

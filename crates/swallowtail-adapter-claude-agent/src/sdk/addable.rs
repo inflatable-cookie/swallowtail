@@ -32,15 +32,21 @@ pub const CLAUDE_AGENT_SDK_CREDENTIAL_FIELD_ID: &str = "delegated_subscription";
 /// Returns the installed addable-route descriptor for the Claude Agent SDK
 /// sidecar.
 ///
-/// The route is `Available` when the host exposes the Process and Credential
-/// services that admission and preparation start the sidecar and lease the
-/// delegated credential through. Without either the row is
-/// `Unavailable(HostService)`. Topology is installed; the row does not probe.
+/// The route is `Available` when this platform can prove descendant-tree
+/// ownership and the host exposes the Process and Credential services that
+/// admission and preparation start the sidecar and lease the delegated
+/// credential through. Without either service the row is
+/// `Unavailable(HostService)`. On a platform where descendant enrollment
+/// cannot be proved the row is `Unsupported`: the adapter declines to offer
+/// the route rather than shipping a lifecycle it cannot establish. Topology is
+/// installed; the row does not probe.
 #[must_use]
 pub fn claude_agent_sdk_addable_route_descriptor(
     services: &HostServices,
 ) -> AddableRouteDescriptor {
-    let availability = if services.process().is_some() && services.credential().is_some() {
+    let availability = if !super::claude_agent_sdk_platform_supported() {
+        AddableRouteAvailability::Unsupported
+    } else if services.process().is_some() && services.credential().is_some() {
         AddableRouteAvailability::Available
     } else {
         AddableRouteAvailability::Unavailable(AddableRouteMissingRequirement::HostService)

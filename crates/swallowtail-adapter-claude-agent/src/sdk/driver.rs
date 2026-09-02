@@ -9,6 +9,7 @@
 
 use self::session::ClaudeAgentSdkSessionHandle;
 use self::validation::validate_open;
+use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use std::sync::{Arc, Mutex};
@@ -62,7 +63,15 @@ pub(super) struct PendingSession {
 
 impl PendingSession {
     /// Closes the sidecar through host authority and releases leases in
-    /// contract order. Used when readiness fails.
+    /// contract order. Used when readiness fails or the open deadline expires.
+    ///
+    /// LIMIT, stated rather than hidden: escalation runs first, but the join
+    /// that follows is not itself bounded by the caller's deadline. That
+    /// deadline has already expired by the time abort runs, and no fresh
+    /// host-observed bound can be derived without a timing seam, so this path
+    /// depends on host termination completing. The caller's deadline therefore
+    /// bounds *detection* of a stuck open, not the return of every cleanup
+    /// await after it.
     pub(in crate::sdk::driver) async fn abort(mut self) {
         self.connection.begin_close().await;
         let _ = self.connection.escalate().await;
@@ -112,17 +121,15 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_open(&plan, &request, &services, &self.credential)?;
-            if request.deadline().is_some_and(|deadline| {
+            let bounded = HostBound::new(
                 services
                     .time()
-                    .expect("validated sidecar time service")
-                    .now()
-                    >= deadline.instant()
-            }) {
-                return Err(failure(
-                    "swallowtail.claude-agent.sdk.open_deadline_elapsed",
-                    "Claude Agent SDK sidecar session deadline elapsed before startup",
-                ));
+                    .cloned()
+                    .expect("validated sidecar time service"),
+                request.deadline().expect("validated open deadline"),
+            );
+            if bounded.expired() {
+                return Err(open_deadline_elapsed());
             }
             let pending = self
                 .spawn_session(
@@ -136,12 +143,27 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                     services,
                 )
                 .await?;
-            match startup::open(&pending.connection, &plan, &pending.leased_cwd).await {
-                Ok(readiness) => Ok(Box::new(pending.into_handle(&plan, readiness))
+            // Startup is raced against the caller's host deadline: an SDK that
+            // never initializes must not hold the open await, and expiry hands
+            // the tree to the host's termination authority. See `abort` for the
+            // exact limit of that guarantee.
+            match bounded
+                .run(startup::open(
+                    &pending.connection,
+                    &plan,
+                    &pending.leased_cwd,
+                ))
+                .await
+            {
+                Some(Ok(readiness)) => Ok(Box::new(pending.into_handle(&plan, readiness))
                     as Box<dyn InteractiveSessionHandle>),
-                Err(error) => {
+                Some(Err(error)) => {
                     pending.abort().await;
                     Err(error)
+                }
+                None => {
+                    pending.abort().await;
+                    Err(open_deadline_elapsed())
                 }
             }
         })
@@ -166,6 +188,13 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
     }
 }
 
+fn open_deadline_elapsed() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.open_deadline_elapsed",
+        "Claude Agent SDK sidecar session reached its host deadline before readiness",
+    )
+}
+
 fn scope_invalid() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.scope_invalid",
@@ -175,4 +204,5 @@ fn scope_invalid() -> RuntimeFailure {
 
 pub use descriptor::claude_agent_sdk_descriptor;
 
+pub(crate) use startup::EXPECTED_TOOLS;
 pub(crate) use validation::{ACCESS_NAMESPACE, ENDPOINT_AUDIENCE};

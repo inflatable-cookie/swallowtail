@@ -1,0 +1,90 @@
+//! Host-deadline work for one turn: arming the bound, and reaping a finished
+//! turn's task before the next turn may start.
+
+use super::ActiveSlot;
+use crate::sdk::connection::SdkConnection;
+use crate::sdk::failure::failure;
+use crate::sdk::turn::SdkActiveTurn;
+use crate::sdk::wire::ClaudeAgentSdkCommand;
+use serde_json::json;
+use std::future::{Future, poll_fn};
+use std::sync::Arc;
+use std::task::Poll;
+use swallowtail_runtime::{Deadline, HostServices, JoinedTask, RuntimeFailure, ScopeId};
+
+/// Drops a finished turn and joins its host-deadline task before a new turn
+/// may start, so deadline work never outlives the turn it bounds.
+/// Spawns the host-deadline task for one turn. Expiry interrupts provider work
+/// through the SDK's own control surface and marks the turn timed out; it
+/// never claims the provider stopped.
+pub(super) fn spawn_turn_deadline(
+    services: &HostServices,
+    connection: Arc<SdkConnection>,
+    turn: Arc<SdkActiveTurn>,
+    deadline: Deadline,
+) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+    let mut wait = services
+        .time()
+        .cloned()
+        .expect("validated sidecar time service")
+        .wait_until(deadline);
+    let mut finished = Box::pin(turn.finished_future());
+    let scope = ScopeId::new(format!(
+        "claude-agent-sdk:deadline:{}",
+        turn.runtime_id().as_str()
+    ))
+    .map_err(|_| {
+        failure(
+            "swallowtail.claude-agent.sdk.scope_invalid",
+            "Claude Agent SDK sidecar turn scope was invalid",
+        )
+    })?;
+    services
+        .task()
+        .expect("validated sidecar task service")
+        .spawn(
+            scope,
+            Box::pin(async move {
+                let timed_out = poll_fn(|context| {
+                    if finished.as_mut().poll(context).is_ready() {
+                        Poll::Ready(false)
+                    } else if wait.as_mut().poll(context).is_ready() {
+                        Poll::Ready(true)
+                    } else {
+                        Poll::Pending
+                    }
+                })
+                .await;
+                if timed_out {
+                    turn.mark_timed_out();
+                    let id = format!("deadline-interrupt:{}", turn.runtime_id().as_str());
+                    let _ = connection
+                        .command(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
+                        .await;
+                    turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
+                        "Claude Agent SDK sidecar turn reached its host deadline",
+                    ));
+                }
+            }),
+        )
+}
+
+pub(super) async fn reap_finished(active: &ActiveSlot) {
+    let finished = {
+        let mut active = active.lock().expect("SDK sidecar active lock poisoned");
+        if active
+            .as_ref()
+            .is_some_and(|active| active.turn.is_finished())
+        {
+            active.take()
+        } else {
+            None
+        }
+    };
+    if let Some(mut active) = finished
+        && let Some(task) = active.deadline_task.take()
+    {
+        let _ = task.join().await;
+    }
+}

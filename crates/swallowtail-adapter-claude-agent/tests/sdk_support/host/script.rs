@@ -1,4 +1,4 @@
-use super::super::host::{FIXTURE_CWD, ProcessState, SdkScenario};
+use super::super::host::{FIXTURE_CWD, FIXTURE_MODEL, ProcessState, SdkScenario};
 use serde_json::{Value, json};
 use swallowtail_runtime::{ProcessOutputChunk, ProcessOutputStream, RuntimeFailure};
 
@@ -41,6 +41,10 @@ pub(super) fn respond(
 
 fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
     state.opened = true;
+    if matches!(scenario, SdkScenario::OpenHold) {
+        // No response and no exit: only the host deadline can end this.
+        return;
+    }
     let mut data = json!({
         "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
         "behavior": "claude-agent.sdk-v1",
@@ -49,6 +53,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         "nativeVersion": "2.1.258",
         "nodeVersion": "22.23.2",
         "cwd": FIXTURE_CWD,
+        "model": FIXTURE_MODEL,
         "capabilities": ["interrupt_receipt_v1"],
         "account": {
             "apiProvider": "firstParty",
@@ -65,6 +70,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         }
         SdkScenario::IdentityMismatch => data["sdkVersion"] = json!("0.3.257"),
         SdkScenario::CwdMismatch => data["cwd"] = json!("/fixture/elsewhere"),
+        SdkScenario::ModelMismatch => data["model"] = json!("claude-opus-5"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
         SdkScenario::UnadvertisedInterruptReceipt => data["capabilities"] = json!([]),
         _ => {}
@@ -88,6 +94,13 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                 state,
                 json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
                        "toolName": "Read"}),
+            );
+        }
+        SdkScenario::UnadmittedToolAdmission => {
+            push(
+                state,
+                json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
+                       "toolName": "Bash"}),
             );
         }
         SdkScenario::ToolAdmissionOverflow => {

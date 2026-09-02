@@ -1,6 +1,10 @@
 //! One active Claude Agent SDK sidecar turn: streamed events, bounded
 //! output, correlated tool admission, and one terminal outcome.
 
+mod events;
+mod finished;
+
+use self::finished::FinishedState;
 use super::activity::SdkActivityProjection;
 use super::failure::failure;
 use super::permission::AdmissionHub;
@@ -30,7 +34,9 @@ pub(crate) struct SdkActiveTurn {
     admission: AdmissionHub,
     deadline: Option<Deadline>,
     cancelled: AtomicBool,
+    timed_out: AtomicBool,
     finished: AtomicBool,
+    finish_signal: Arc<Mutex<FinishedState>>,
 }
 
 impl SdkActiveTurn {
@@ -62,7 +68,9 @@ impl SdkActiveTurn {
                 admission,
                 deadline,
                 cancelled: AtomicBool::new(false),
+                timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
+                finish_signal: Arc::new(Mutex::new(FinishedState::default())),
             }),
             Box::pin(stream),
             exchange,
@@ -82,6 +90,15 @@ impl SdkActiveTurn {
         self.cancelled.store(true, Ordering::SeqCst);
     }
 
+    /// Records that the host deadline, not the consumer, ended this turn.
+    pub(crate) fn mark_timed_out(&self) {
+        self.timed_out.store(true, Ordering::SeqCst);
+    }
+
+    pub(crate) fn finished_future(&self) -> finished::TurnFinishedFuture {
+        finished::TurnFinishedFuture::new(Arc::clone(&self.finish_signal))
+    }
+
     pub(crate) fn abandon_admissions(&self, reason: CallbackAbandonment) {
         self.admission.abandon(reason);
     }
@@ -95,6 +112,15 @@ impl SdkActiveTurn {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.admission_after_terminal",
                 "Claude Agent SDK sidecar requested admission after the turn terminated",
+            ));
+        }
+        // The read-only set is an allow-list on both sides of the wire. A tool
+        // outside it never reaches the consumer, and its arrival is itself a
+        // transport failure rather than a decision to delegate.
+        if !crate::sdk::driver::EXPECTED_TOOLS.contains(&tool_name) {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.admission_tool_unadmitted",
+                "Claude Agent SDK sidecar requested admission for a tool outside the read-only set",
             ));
         }
         let sequence = self.next_sequence();
@@ -111,48 +137,10 @@ impl SdkActiveTurn {
         ))
     }
 
-    pub(crate) fn handle_event(&self, event: ClaudeAgentSdkEvent) -> Result<(), RuntimeFailure> {
-        if self.is_finished() {
-            return Err(failure(
-                "swallowtail.claude-agent.sdk.event_after_terminal",
-                "Claude Agent SDK sidecar emitted an event after the active turn terminated",
-            ));
-        }
-        self.project_activity(&event)?;
-        match event {
-            ClaudeAgentSdkEvent::TurnStarted | ClaudeAgentSdkEvent::Progress => self.progress(),
-            ClaudeAgentSdkEvent::OutputDelta(delta) => self.output_delta(delta),
-            ClaudeAgentSdkEvent::ToolStarted { .. } | ClaudeAgentSdkEvent::ToolEnded { .. } => {
-                Ok(())
-            }
-            ClaudeAgentSdkEvent::TurnFailed => {
-                self.complete_activity(ActivityStatus::Failed)?;
-                self.finish(TerminalStatus::ProviderFailed(provider_diagnostic()));
-                Ok(())
-            }
-            ClaudeAgentSdkEvent::TurnEnded {
-                stop_reason,
-                failed,
-            } => {
-                let (status, activity_status) = if failed || stop_reason != "success" {
-                    (
-                        TerminalStatus::ProviderFailed(provider_diagnostic()),
-                        ActivityStatus::Failed,
-                    )
-                } else if self.cancelled.load(Ordering::SeqCst) {
-                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
-                } else {
-                    (TerminalStatus::Completed, ActivityStatus::Completed)
-                };
-                self.complete_activity(activity_status)?;
-                self.finish(status);
-                Ok(())
-            }
-        }
-    }
-
     pub(crate) fn fail_connection(&self, diagnostic: SafeDiagnostic) {
-        let status = if self.cancelled.load(Ordering::SeqCst) {
+        let status = if self.timed_out.load(Ordering::SeqCst) {
+            TerminalStatus::TimedOut
+        } else if self.cancelled.load(Ordering::SeqCst) {
             TerminalStatus::Cancelled
         } else {
             TerminalStatus::RuntimeFailed(diagnostic)
@@ -254,10 +242,18 @@ impl SdkActiveTurn {
         }
         self.events.mark_terminal();
         let _ = self.terminal.complete(outcome);
+        let mut signal = self
+            .finish_signal
+            .lock()
+            .expect("SDK sidecar turn-finished lock poisoned");
+        signal.finished = true;
+        if let Some(waiter) = signal.waiter.take() {
+            waiter.wake();
+        }
     }
 }
 
-fn provider_diagnostic() -> SafeDiagnostic {
+pub(super) fn provider_diagnostic() -> SafeDiagnostic {
     SafeDiagnostic::new(
         "swallowtail.claude-agent.sdk.provider_failed",
         "Claude Agent SDK sidecar reported a downstream provider failure",

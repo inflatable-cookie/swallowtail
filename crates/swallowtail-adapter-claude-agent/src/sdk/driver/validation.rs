@@ -19,6 +19,11 @@ pub(super) fn validate_open(
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
 ) -> Result<(), RuntimeFailure> {
+    // A platform that cannot prove descendant-tree ownership is unsupported
+    // for this route, not best-effort.
+    if !crate::sdk::claude_agent_sdk_platform_supported() {
+        return Err(unsupported("this execution host platform"));
+    }
     if plan.driver_identity().id().as_str() != SDK_DRIVER_ID {
         return Err(plan_mismatch("driver"));
     }
@@ -74,6 +79,10 @@ pub(super) fn validate_open(
     }
     if request.working_resource().is_none() {
         return Err(unsupported("resource-free session"));
+    }
+    // Open, startup, and every provider await are raced against this bound.
+    if request.deadline().is_none() {
+        return Err(unsupported("session open without a host deadline"));
     }
     if has_unsupported_options(request.options()) {
         return Err(unsupported("session options"));

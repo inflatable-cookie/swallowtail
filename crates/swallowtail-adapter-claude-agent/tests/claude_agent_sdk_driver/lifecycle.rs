@@ -22,7 +22,7 @@ fn drain(events: &mut swallowtail_runtime::BoxEventStream) -> Vec<RuntimeEventKi
 }
 
 #[test]
-fn open_streams_one_turn_and_closes_gracefully() {
+fn open_streams_one_turn_and_closes_without_claiming_a_graceful_tree() {
     let host = host_id("claude-agent-sdk.fixture.complete");
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);
     let prepared = prepared_session(host.clone());
@@ -52,11 +52,21 @@ fn open_streams_one_turn_and_closes_gracefully() {
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
 
     assert_eq!(fixture.credential_acquisitions(), 1);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    // Both known processes exited and the sidecar proved its own native join,
+    // yet the host process API does not attest the owned tree was empty
+    // beforehand, so close reports degraded rather than clean.
+    let outcome = block_on(session.close());
+    let CleanupOutcome::Degraded(diagnostic) = &outcome else {
+        panic!("an unattested tree cannot close clean, got {outcome:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_escalated_host_owned_tree_cleanup"
+    );
     let cleanup = fixture.cleanup_events();
     assert!(
         !cleanup.contains(&CleanupEvent::ProcessForceStop),
-        "a sidecar-joined graceful close needs no host escalation"
+        "a sidecar-joined native exit needs no driver-forced termination"
     );
     assert_ordered(
         &cleanup,
@@ -77,9 +87,12 @@ fn open_streams_one_turn_and_closes_gracefully() {
 #[test]
 fn an_unconfirmed_sidecar_join_escalates_through_host_authority() {
     let (outcome, cleanup) = close_with(SdkScenario::CloseUnconfirmed, true);
-    assert!(
-        matches!(outcome, CleanupOutcome::Degraded(_)),
-        "escalated close is honest degradation, not a clean stop"
+    let CleanupOutcome::Degraded(diagnostic) = &outcome else {
+        panic!("escalated close is honest degradation, not a clean stop");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_escalated_host_termination"
     );
     assert_ordered(
         &cleanup,
@@ -98,7 +111,13 @@ fn a_claimed_graceful_join_without_an_observed_exit_is_not_evidence() {
     // carries no observation is rejected and the host still terminates the
     // whole descendant tree.
     let (outcome, cleanup) = close_with(SdkScenario::CloseGracefulWithoutObservation, true);
-    assert!(matches!(outcome, CleanupOutcome::Degraded(_)));
+    let CleanupOutcome::Degraded(diagnostic) = &outcome else {
+        panic!("an unproved join cannot close clean, got {outcome:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_escalated_host_termination"
+    );
     assert!(cleanup.contains(&CleanupEvent::ProcessForceStop));
 }
 

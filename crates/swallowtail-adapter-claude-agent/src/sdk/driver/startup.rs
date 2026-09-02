@@ -40,11 +40,16 @@ pub(crate) async fn open(
     plan: &PreflightPlan,
     leased_cwd: &str,
 ) -> Result<SessionReadiness, RuntimeFailure> {
+    let model = plan
+        .model_id()
+        .expect("validated sidecar model route")
+        .as_str()
+        .to_owned();
     let response = connection
         .command(
             "open-1".to_owned(),
             ClaudeAgentSdkCommand::Open,
-            json!({"cwd": leased_cwd}),
+            json!({"cwd": leased_cwd, "model": model}),
         )
         .await?;
     if !response.success {
@@ -55,6 +60,7 @@ pub(crate) async fn open(
     }
     let expected = Expectation {
         cwd: leased_cwd,
+        model: &model,
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
@@ -74,6 +80,7 @@ fn bound_version(plan: &PreflightPlan, axis: &str) -> String {
 
 struct Expectation<'a> {
     cwd: &'a str,
+    model: &'a str,
     sdk_version: &'a str,
     native_version: &'a str,
     node_version: &'a str,
@@ -93,12 +100,15 @@ fn readiness(
             && text(data, "nativeVersion") == Some(expected.native_version)
             && text(data, "nodeVersion") == Some(expected.node_version)
             && text(data, "cwd") == Some(expected.cwd)
+            // The effective model is confirmed from the runtime's own init
+            // evidence; a session that silently ran an ambient default fails.
+            && text(data, "model") == Some(expected.model)
             && tools_match(data)
     });
     if !identity_matches {
         return Err(failure(
             "swallowtail.claude-agent.sdk.open_mismatch",
-            "Claude Agent SDK sidecar identity did not match the preflight-bound runtime, wire, package, native binary, resource, or tool set",
+            "Claude Agent SDK sidecar identity did not match the preflight-bound runtime, wire, package, native binary, resource, model, or tool set",
         ));
     }
     let data = data.expect("validated sidecar open identity carries data");

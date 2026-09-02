@@ -24,6 +24,26 @@ impl TimeService for SdkFixtureHost {
     }
 }
 
+impl SdkFixtureHost {
+    /// Fires every host deadline that is already armed, so a test can expire a
+    /// turn without expiring the open that preceded it.
+    pub fn advance_time(&self) {
+        let waiters = {
+            let mut time = self
+                .shared
+                .time
+                .lock()
+                .expect("SDK fixture time lock poisoned");
+            time.now = u64::MAX;
+            time.fire_through = Some(u64::MAX);
+            std::mem::take(&mut time.waiters)
+        };
+        for waiter in waiters {
+            waiter.wake();
+        }
+    }
+}
+
 struct DeadlineFuture {
     shared: Arc<Shared>,
     deadline: Deadline,

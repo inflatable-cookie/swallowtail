@@ -63,6 +63,10 @@ const MAXIMUM_JOIN_BOUND_MS = 60_000;
 // Read-only tools only. Bash, terminal, and every write tool stay outside
 // this route until Contract 023 process authority and Contract 041 mediation
 // evidence admit them.
+//
+// This list is passed as `tools`, which restricts availability. It is never
+// passed as `allowedTools`, which auto-allows a tool without prompting and
+// would bypass the host's per-use admission decision.
 const ALLOWED_TOOLS = ["Read", "Glob", "Grep"];
 const DISALLOWED_TOOLS = [
   "Bash",
@@ -236,6 +240,19 @@ async function readNativeVersion() {
   return version;
 }
 
+/// One shared bound for every await inside close. The timer is unreferenced,
+/// so a resolved close never keeps the event loop alive.
+function boundedWait(boundMs) {
+  let timer;
+  const expiry = new Promise((resolve) => {
+    timer = setTimeout(resolve, boundMs);
+    if (typeof timer.unref === "function") {
+      timer.unref();
+    }
+  });
+  return { expiry, cancel: () => clearTimeout(timer) };
+}
+
 /// Retains the native child independently of SDK cleanup. The SDK's own
 /// bounded wait discards its outcome, so only this handle may be joined.
 class NativeChild {
@@ -330,31 +347,44 @@ function callbackRecord(toolName, callbackId) {
 }
 
 /// Bridges one SDK `canUseTool` request onto the private wire and blocks on
-/// the correlated host decision. Admission is never inferred locally.
-function canUseTool(toolName) {
+/// the correlated host decision.
+///
+/// Three rules hold together. The exact read-only allow-list is enforced here
+/// first, so an unknown tool is denied without ever reaching the consumer.
+/// The tool's input never crosses the wire: it is retained privately and
+/// returned unchanged on allow, because `updatedInput` replaces the input the
+/// provider would otherwise use. And admission is never inferred locally: an
+/// allowed tool always waits for the host's decision.
+function canUseTool(toolName, input) {
+  const name = String(toolName ?? "");
+  if (!ALLOWED_TOOLS.includes(name)) {
+    return Promise.resolve({ behavior: "deny", message: "tool is outside the read-only set" });
+  }
   if (state.callbacks.size >= MAXIMUM_PENDING_CALLBACKS) {
     return Promise.resolve({ behavior: "deny", message: "callback capacity exceeded" });
   }
   state.nextCallbackId += 1;
   const callbackId = `cb-${state.nextCallbackId}`;
   return new Promise((resolve) => {
-    state.callbacks.set(callbackId, resolve);
-    void writeRecord(callbackRecord(toolName, callbackId));
+    state.callbacks.set(callbackId, { resolve, input });
+    void writeRecord(callbackRecord(name, callbackId));
   });
 }
 
 function resolveCallback(record) {
-  const resolve = state.callbacks.get(record.id);
-  if (!resolve) {
+  const pending = state.callbacks.get(record.id);
+  if (!pending) {
     return terminal("callback_unknown");
   }
   if (record.decision !== "allow" && record.decision !== "deny") {
     return terminal("callback_invalid");
   }
   state.callbacks.delete(record.id);
-  resolve(
+  // An allow returns the provider's own input unchanged. Returning an empty
+  // object here would silently destroy the path or pattern the tool needs.
+  pending.resolve(
     record.decision === "allow"
-      ? { behavior: "allow", updatedInput: {} }
+      ? { behavior: "allow", updatedInput: pending.input }
       : { behavior: "deny", message: "host denied tool use" },
   );
   return Promise.resolve();
@@ -435,8 +465,9 @@ async function handleOpen(params) {
   if (state.query) {
     throw new SidecarFailure("already_open");
   }
-  requireExactParams(params, ["cwd"]);
+  requireExactParams(params, ["cwd", "model"]);
   const cwd = requireString(params, "cwd");
+  const model = requireString(params, "model");
   if (!checkNodeFloor()) {
     throw new SidecarFailure("node_runtime_unsupported");
   }
@@ -451,6 +482,7 @@ async function handleOpen(params) {
       prompt: inputStream(),
       options: {
         cwd,
+        model,
         executable: "node",
         pathToClaudeCodeExecutable: nativeBinary,
         // Always explicit: omission would inherit `process.env` and could
@@ -465,10 +497,12 @@ async function handleOpen(params) {
         hooks: {},
         persistSession: false,
         includePartialMessages: false,
-        allowedTools: ALLOWED_TOOLS,
+        // `tools` restricts availability; `allowedTools` is deliberately
+        // never set, because it auto-allows without prompting.
+        tools: ALLOWED_TOOLS,
         disallowedTools: DISALLOWED_TOOLS,
         permissionMode: "default",
-        canUseTool: (toolName) => canUseTool(toolName),
+        canUseTool: (toolName, input) => canUseTool(toolName, input),
         spawnClaudeCodeProcess: (command, args, options) => spawnNative(command, args, options),
       },
     });
@@ -493,6 +527,11 @@ async function handleOpen(params) {
   if (typeof system.cwd !== "string" || system.cwd !== cwd) {
     throw new SidecarFailure("cwd_mismatch");
   }
+  // The effective model is proved from the runtime's own init evidence, never
+  // assumed from the request.
+  if (typeof system.model !== "string" || system.model !== model) {
+    throw new SidecarFailure("model_mismatch");
+  }
   const capabilities = boundedCapabilities(system.capabilities);
   let account;
   try {
@@ -515,6 +554,7 @@ async function handleOpen(params) {
     nativeVersion,
     nodeVersion: process.versions.node,
     cwd,
+    model: system.model,
     capabilities,
     account: readiness,
     tools: ALLOWED_TOOLS,
@@ -619,10 +659,17 @@ async function handleClose(id, command, params) {
     process.exit(1);
     return;
   }
+  // The declared bound governs everything after this point. The native join
+  // starts first, so no SDK-side drain can consume the bound and leave the
+  // join unreachable, and every remaining await is raced against the same
+  // bound. An expired bound is not evidence of exit; it hands the tree to the
+  // host's termination authority.
+  const joinPromise = state.native ? state.native.join(boundMs) : Promise.resolve(false);
+  const bound = boundedWait(boundMs);
   if (state.query) {
     if (state.turnActive) {
       try {
-        await state.query.interrupt();
+        await Promise.race([state.query.interrupt(), bound.expiry]);
       } catch {
         await emitDiagnostic("warning", "interrupt_before_close_failed");
       }
@@ -636,17 +683,18 @@ async function handleClose(id, command, params) {
     }
     if (state.reader) {
       try {
-        await state.reader;
+        await Promise.race([state.reader, bound.expiry]);
       } catch {
         await emitDiagnostic("warning", "reader_drain_failed");
       }
     }
   }
-  for (const resolve of state.callbacks.values()) {
-    resolve({ behavior: "deny", message: "session closing" });
+  for (const pending of state.callbacks.values()) {
+    pending.resolve({ behavior: "deny", message: "session closing" });
   }
   state.callbacks.clear();
-  const joined = state.native ? await state.native.join(boundMs) : false;
+  const joined = await joinPromise;
+  bound.cancel();
   await respond(id, command, true, {
     closeState: joined ? "graceful" : "unconfirmed",
     joinBoundMs: boundMs,

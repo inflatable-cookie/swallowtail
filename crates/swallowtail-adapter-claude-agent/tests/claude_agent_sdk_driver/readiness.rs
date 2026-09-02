@@ -90,3 +90,85 @@ fn preparation_admits_no_session_options_in_this_layer() {
         "swallowtail.claude-agent.sdk.preparation.unsupported_options"
     );
 }
+
+#[test]
+fn an_effective_model_other_than_the_selected_one_fails_closed() {
+    // The plan binds the model; running Claude's ambient default instead is a
+    // silent substitution, so open confirms the effective model from the
+    // runtime's own init evidence.
+    let (code, _) = open_failure(SdkScenario::ModelMismatch);
+    assert_eq!(code, "swallowtail.claude-agent.sdk.open_mismatch");
+}
+
+#[test]
+fn the_selected_model_crosses_the_wire_on_open() {
+    let host = host_id("claude-agent-sdk.fixture.model");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
+    let open = fixture
+        .inputs()
+        .into_iter()
+        .find(|value| value["command"] == "open")
+        .expect("open command is sent");
+    assert_eq!(open["params"]["model"], "claude-sonnet-5");
+    assert_eq!(open["params"].as_object().expect("params").len(), 2);
+    let _ = block_on(session.close());
+}
+
+#[test]
+fn an_open_that_never_reaches_readiness_expires_on_the_host_deadline() {
+    // The sidecar holds its open response; only the host clock ends the wait.
+    let host = host_id("claude-agent-sdk.fixture.open-deadline");
+    let fixture = SdkFixtureHost::new(SdkScenario::OpenHold).with_immediate_time();
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("an unbounded open must fail on the host deadline");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_deadline_elapsed"
+    );
+    // Expiry hands the tree to host termination rather than resolving.
+    assert!(
+        fixture
+            .cleanup_events()
+            .contains(&crate::sdk_support::CleanupEvent::ProcessForceStop)
+    );
+}
+
+#[cfg(windows)]
+#[test]
+fn windows_is_an_unsupported_platform_for_this_route() {
+    use swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_addable_route_descriptor;
+    let host = host_id("claude-agent-sdk.fixture.windows");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    assert_eq!(
+        claude_agent_sdk_addable_route_descriptor(&services).availability(),
+        swallowtail_core::AddableRouteAvailability::Unsupported
+    );
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("an unprovable descendant-tree platform must refuse to open");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.unsupported_input"
+    );
+}
+
+#[cfg(not(windows))]
+#[test]
+fn a_platform_with_retained_tree_ownership_admits_the_route() {
+    use swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_addable_route_descriptor;
+    let host = host_id("claude-agent-sdk.fixture.platform");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let services = fixture.services(host);
+    assert_eq!(
+        claude_agent_sdk_addable_route_descriptor(&services).availability(),
+        swallowtail_core::AddableRouteAvailability::Available
+    );
+}

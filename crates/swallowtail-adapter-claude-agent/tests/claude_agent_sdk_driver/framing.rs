@@ -151,3 +151,70 @@ fn the_launch_surface_carries_only_opaque_host_owned_references() {
     }
     let _ = block_on(session.close());
 }
+
+#[test]
+fn an_admission_request_outside_the_read_only_set_never_reaches_the_consumer() {
+    // The allow-list is enforced on both sides of the wire. Its arrival here is
+    // a transport failure, not a decision to delegate to the consumer.
+    let status = terminal_status(SdkScenario::UnadmittedToolAdmission);
+    let TerminalStatus::RuntimeFailed(diagnostic) = &status else {
+        panic!("an unadmitted tool must fail the turn, got {status:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.admission_tool_unadmitted"
+    );
+}
+
+#[test]
+fn closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline() {
+    // Regression: the turn's host-deadline task waits on completion or expiry,
+    // so close must end the turn before joining that task. Joining first waits
+    // for an event close itself prevented.
+    let host = host_id("claude-agent-sdk.fixture.close-live-turn");
+    let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let mut session =
+        block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("SDK sidecar turn starts");
+    let terminal = turn
+        .take_terminal_outcome()
+        .expect("terminal outcome exists");
+
+    let outcome = block_on(session.close());
+    assert!(
+        matches!(outcome, swallowtail_runtime::CleanupOutcome::Degraded(_)),
+        "closing over a live turn still reports the tree honestly"
+    );
+    assert_eq!(block_on(terminal).status(), &TerminalStatus::Cancelled);
+}
+
+#[test]
+fn a_turn_that_never_ends_resolves_on_the_host_deadline() {
+    let host = host_id("claude-agent-sdk.fixture.turn-deadline");
+    let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let mut session =
+        block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("SDK sidecar turn starts");
+    // The open bound already passed; only the turn's own deadline fires here.
+    fixture.advance_time();
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome exists"),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
+    // Expiry interrupts provider work through the SDK's own control surface.
+    assert!(
+        fixture
+            .inputs()
+            .iter()
+            .any(|value| value["command"] == "interrupt")
+    );
+    let _ = block_on(turn.close());
+    let _ = block_on(session.close());
+}

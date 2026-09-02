@@ -14,7 +14,11 @@ CANONICAL_AUTHORITY = "https://github.com/inflatable-cookie/swallowtail.git"
 CANONICAL_REF = "refs/heads/main"
 ADVERTISED_OBJECT = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 KEEP_GIT_ENV = frozenset({"GIT_EXEC_PATH", "GIT_SSL_CAINFO", "GIT_SSL_CAPATH"})
-HTTPS_CONFIG = ("http.sslVerify=true", "http.followRedirects=false")
+ISOLATED_CONFIG = (
+    "http.sslVerify=true",
+    "http.followRedirects=false",
+    "core.quotePath=false",
+)
 
 
 class AuthorityError(Exception):
@@ -37,24 +41,52 @@ def isolated_git_env(home: Path) -> dict[str, str]:
 
 
 def isolated_git(
-    store: Path, env: dict[str, str], *args: str
-) -> subprocess.CompletedProcess[str]:
+    store: Path,
+    env: dict[str, str],
+    *args: str,
+    text: bool = True,
+) -> subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]:
     command = ["git", "--git-dir", str(store)]
-    for setting in HTTPS_CONFIG:
+    for setting in ISOLATED_CONFIG:
         command.extend(["-c", setting])
     command.extend(args)
     return subprocess.run(
         command,
         check=False,
         capture_output=True,
-        text=True,
+        text=text,
         env=env,
         cwd=str(store.parent),
     )
 
 
-def git_detail(proc: subprocess.CompletedProcess[str]) -> str:
-    return proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
+def git_detail(
+    proc: subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes],
+) -> str:
+    err = proc.stderr
+    out = proc.stdout
+    if isinstance(err, bytes):
+        err = err.decode("utf-8", "replace")
+    if isinstance(out, bytes):
+        out = out.decode("utf-8", "replace")
+    return err.strip() or out.strip() or f"exit {proc.returncode}"
+
+
+def decode_z_paths(payload: bytes) -> list[str]:
+    if not payload:
+        return []
+    parts = payload.split(b"\0")
+    if parts and parts[-1] == b"":
+        parts = parts[:-1]
+    paths: list[str] = []
+    for raw in parts:
+        if not raw:
+            continue
+        try:
+            paths.append(raw.decode("utf-8"))
+        except UnicodeDecodeError as exc:
+            raise AuthorityError(f"authority path is not utf-8: {raw!r}") from exc
+    return paths
 
 
 @contextmanager
@@ -136,10 +168,20 @@ def fetch_authority_sha(
 
 
 def occupancy_paths(store: Path, env: dict[str, str], sha: str) -> list[str]:
-    proc = isolated_git(store, env, "ls-tree", "-r", "--name-only", "--", sha)
+    proc = isolated_git(
+        store,
+        env,
+        "ls-tree",
+        "-z",
+        "-r",
+        "--name-only",
+        "--",
+        sha,
+        text=False,
+    )
     if proc.returncode != 0:
         raise AuthorityError(git_detail(proc))
-    return [line for line in proc.stdout.splitlines() if line]
+    return decode_z_paths(proc.stdout)
 
 
 def refresh_authority(authority: str, ref: str) -> tuple[str, list[str]]:

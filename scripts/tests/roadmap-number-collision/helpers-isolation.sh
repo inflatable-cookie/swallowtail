@@ -88,26 +88,17 @@ collision_write_instead_of() {
   local collision_malicious=$2
   git config --file "$collision_file" \
     "url.file://${collision_malicious}.insteadOf" \
-    "$collision_canonical_https"
+    "$collision_canonical"
 }
 
-collision_expect_malicious_rejected() {
+collision_assert_rewrite_honored() {
   local collision_label=$1
-  local collision_malicious_sha=$2
-  shift 2
-  local collision_output
-  local collision_exit_status=0
-  collision_output=$("$@" 2>&1) || collision_exit_status=$?
-  if [[ "$collision_exit_status" -eq 0 ]]; then
-    printf '%s accepted rewritten authority\n%s\n' "$collision_label" "$collision_output" >&2
-    exit 1
-  fi
-  if [[ "$collision_output" == *"$collision_malicious_sha"* ]]; then
-    printf '%s leaked malicious SHA\n%s\n' "$collision_label" "$collision_output" >&2
-    exit 1
-  fi
-  if [[ "$collision_output" != *"$collision_canonical_https"* ]]; then
-    printf '%s lost canonical URL\n%s\n' "$collision_label" "$collision_output" >&2
+  shift
+  local collision_resolved
+  collision_resolved=$("$@" ls-remote --get-url "$collision_canonical")
+  if [[ "$collision_resolved" != *"$collision_fork"* ]]; then
+    printf '%s rewrite not honored outside isolation: %s\n' \
+      "$collision_label" "$collision_resolved" >&2
     exit 1
   fi
 }

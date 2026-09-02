@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Shared helpers for hermetic roadmap-number collision tests.
 
-collision_canonical_https='https://github.com/inflatable-cookie/swallowtail.git'
-
 collision_git() {
   local collision_cwd=$1
   shift

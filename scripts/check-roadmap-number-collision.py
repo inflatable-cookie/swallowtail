@@ -27,10 +27,14 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from roadmap_number_authority import (
+# Keep sibling imports from writing __pycache__ under scripts/.
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from roadmap_number_authority import (  # noqa: E402
     CANONICAL_AUTHORITY,
     CANONICAL_REF,
     AuthorityError,
+    decode_z_paths,
     refresh_authority,
 )
 
@@ -109,17 +113,35 @@ def git_run(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def git_text(root: Path, *args: str) -> str:
-    proc = git_run(root, *args)
-    if proc.returncode != 0:
-        detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
-        fail(f"git {' '.join(args)} failed: {detail}")
-    return proc.stdout
-
-
 def git_paths(root: Path, ref: str) -> list[str]:
-    output = git_text(root, "ls-tree", "-r", "--name-only", ref)
-    return [line for line in output.splitlines() if line]
+    proc = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(root),
+            "-c",
+            "core.quotePath=false",
+            "ls-tree",
+            "-z",
+            "-r",
+            "--name-only",
+            "--",
+            ref,
+        ],
+        check=False,
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        detail = (
+            proc.stderr.decode("utf-8", "replace").strip()
+            or proc.stdout.decode("utf-8", "replace").strip()
+            or f"exit {proc.returncode}"
+        )
+        fail(f"git ls-tree failed: {detail}")
+    try:
+        return decode_z_paths(proc.stdout)
+    except AuthorityError as exc:
+        fail(str(exc))
 
 
 def resolve_commit(root: Path, ref: str) -> str | None:

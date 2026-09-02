@@ -14,7 +14,7 @@ numbers.
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
 | Current deferrals | `docs/roadmaps/standing-lanes.md` |
-| Next unused numbers | highest research file plus the then-active generation's next roadmap and batch-card numbers |
+| Next unused numbers | highest research, roadmap, and batch-card ids on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
 
 Do not treat a frozen currentness table as still-true official latest.
 Re-probe.
@@ -165,6 +165,28 @@ Index it in `docs/research/README.md` under Research Records.
 One milestone in the then-active generation, two batch cards. Status
 starts ready and is completed on closeout. If no generation is active,
 stop and ask. Do not invent a generation to house currentness.
+
+Canonical pushed-main authority is
+`https://github.com/inflatable-cookie/swallowtail.git` `refs/heads/main`.
+`origin/main` is not authority (forks, stale tracking refs). Immediately
+before allocating ids, and again immediately before push:
+
+```sh
+effigy qa:docs:roadmaps:numbers
+```
+
+That selector discovers and fetches the advertised canonical commit from an
+isolated Git object store with sanitized config (`--no-tags`,
+`--no-write-fetch-head`, no destination ref, `http.sslVerify=true`,
+`http.followRedirects=false`). User, repository, global, system, and included
+`url.*.insteadOf` rewrites cannot redirect the canonical HTTPS URL. Fetch
+failure is a stop. It does not mutate the checked repository's object db,
+refs, tags, or `FETCH_HEAD`. Next unused is the max numbered
+`docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that refreshed
+tree. A number already assigned to a path on canonical main cannot move
+to another path; take a new unused number. Same-path content edits are
+allowed. Forks that need an explicit base pass `--authority` at that URL;
+do not point it at the fork's origin.
 
 Milestone name shape: `<NNN> <Family> <version> Useful Newer`.
 

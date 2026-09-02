@@ -64,6 +64,16 @@ jobs:
       - name: Semantic public API baseline
         run: bash scripts/check-public-api.sh
 
+  roadmap-numbers:
+    name: Roadmap number uniqueness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Collision check against canonical main
+        run: python3 scripts/check-roadmap-number-collision.py
+      - name: Collision mutation suite
+        run: bash scripts/tests/roadmap-number-collision.sh
+
   rust-floor:
     name: Pinned MSRV floor
     runs-on: macos-latest

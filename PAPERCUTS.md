@@ -384,7 +384,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   high / 330 warning) to 377 (7 critical / 40 high / 330 warning); the root
   finding is gone and no new module entered the scan.
 
-### [ ] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
+### [x] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
 - Friction: PRs 24-30 allocated cards 076-085 from older planning bases while
   pushed `main` already assigns 076-078 to g04.024.
 - Impact: independently correct family branches conflict at integration and
@@ -393,6 +393,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `main`, or defer final numbering to the orchestrator restack.
 - Surface: version-currentness worker handoffs; g04 roadmap and batch-card
   indexes.
+- Closed: 2026-09-02 papercuts currentness card allocation. The first
+  gate still trusted stale or fork `origin/main`, allowed delete-and-add
+  reuse as a "retitle", and left the mutation suite off CI. Repair:
+  `check-roadmap-number-collision.py` fetches the advertised canonical
+  `https://github.com/inflatable-cookie/swallowtail.git` `main` commit from
+  an isolated Git store immediately before enforcement and fails closed on
+  transport, config, or fetch failure. User `url.*.insteadOf` rewrites
+  cannot redirect that URL. The fetch does not mutate the checked
+  repository. Number reuse on another path is rejected;
+  `qa:docs:roadmaps:numbers:test` is hermetic, including insteadOf,
+  symbolic-ref, similarly named tag, and `FETCH_HEAD` isolation; CI job
+  `roadmap-numbers` runs the production checker and that suite.
+  Skill/reference allocate from that refreshed commit, not `origin/main`.
 
 ## Closed
 

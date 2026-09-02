@@ -25,6 +25,14 @@ Normal validation scripts:
   and generation-index ready/completed/stop counts against Status frontmatter
   behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
   phrases: `docs/roadmaps/status-grammar.md`
+- `check-roadmap-number-collision.py` — unique numbered milestone and
+  batch-card files in the working tree, after fetching the advertised
+  canonical `https://github.com/inflatable-cookie/swallowtail.git` `main`
+  commit into an isolated Git store (sanitized config, no user-repo
+  destination ref, tags, or `FETCH_HEAD`). A number already assigned to a
+  path on that commit cannot appear on another path. Behind
+  `effigy qa:docs:roadmaps:numbers` and CI `roadmap-numbers`.
+  Hermetic mutation tests: `effigy qa:docs:roadmaps:numbers:test`
 - `check-docs-links.py` — front-door Markdown links plus `docs/research` and
   `docs/logs` bodies behind `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one

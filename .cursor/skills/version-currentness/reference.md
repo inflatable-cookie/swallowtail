@@ -14,7 +14,7 @@ numbers.
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
 | Current deferrals | `docs/roadmaps/standing-lanes.md` |
-| Next unused numbers | highest research file plus the then-active generation's next roadmap and batch-card numbers |
+| Next unused numbers | highest research, roadmap, and batch-card ids on current pushed `origin/main`, not this worktree |
 
 Do not treat a frozen currentness table as still-true official latest.
 Re-probe.
@@ -165,6 +165,12 @@ Index it in `docs/research/README.md` under Research Records.
 One milestone in the then-active generation, two batch cards. Status
 starts ready and is completed on closeout. If no generation is active,
 stop and ask. Do not invent a generation to house currentness.
+
+`git fetch origin main` before choosing ids. Next unused is the max
+numbered `docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that
+ref. `effigy qa:docs:roadmaps:numbers` rejects a number that pushed main
+already assigned to a different file. Restack onto current main rather
+than landing a collision.
 
 Milestone name shape: `<NNN> <Family> <version> Useful Newer`.
 

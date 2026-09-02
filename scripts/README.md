@@ -25,6 +25,11 @@ Normal validation scripts:
   and generation-index ready/completed/stop counts against Status frontmatter
   behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
   phrases: `docs/roadmaps/status-grammar.md`
+- `check-roadmap-number-collision.py` — unique numbered milestone and
+  batch-card files in the working tree, and no stale-base reuse of a
+  number that `origin/main` already assigned to a different file, behind
+  `effigy qa:docs:roadmaps:numbers`. Mutation tests:
+  `scripts/tests/roadmap-number-collision.sh`
 - `check-docs-links.py` — front-door Markdown links plus `docs/research` and
   `docs/logs` bodies behind `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one

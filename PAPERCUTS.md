@@ -384,7 +384,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   high / 330 warning) to 377 (7 critical / 40 high / 330 warning); the root
   finding is gone and no new module entered the scan.
 
-### [ ] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
+### [x] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
 - Friction: PRs 24-30 allocated cards 076-085 from older planning bases while
   pushed `main` already assigns 076-078 to g04.024.
 - Impact: independently correct family branches conflict at integration and
@@ -393,6 +393,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `main`, or defer final numbering to the orchestrator restack.
 - Surface: version-currentness worker handoffs; g04 roadmap and batch-card
   indexes.
+- Closed: 2026-09-02 papercuts currentness card allocation. The defect was
+  still live: the skill took next-unused ids from the local tree, and no
+  check compared them to pushed main. Pre-restack `66d43f90` added
+  `076-claude-code-2-1-238-identity.md` while `1c8fa6c3` on the planning
+  line added `076-kimi-platform-chat-addable-descriptor.md`. Repo-owned
+  prevention is `scripts/check-roadmap-number-collision.py` behind
+  `qa:docs:roadmaps:numbers`, plus skill/reference numbering from
+  `origin/main`. Mutation tests in
+  `scripts/tests/roadmap-number-collision.sh` fail the original 076
+  clash and an in-tree duplicate, and pass restacked 079-080, a
+  same-number retitle, and current `origin/main`. Not an orchestrator
+  scheduler.
 
 ## Closed
 

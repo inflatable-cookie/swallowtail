@@ -54,19 +54,22 @@ non-gating papercuts.
 1. Card 050 audits exact `v0.3.3` to reviewed-current-source package,
    dependency, route, semantic API, and guaranteed-behavior deltas; freezes the
    release census; and classifies every break and compatibility claim.
-2. Card 051 prepares coordinated `0.4.0` metadata and requirements, changelog
-   and release notes, new candidate baselines, source inventory, upgrade and
-   rollback instructions, and a clean candidate. It reruns all 11 local gates,
-   receives exact-head review, lands on canonical `main`, and requires CI for
-   that exact SHA.
+2. Card 051 first restructures release prose and completes non-Effigy candidate
+   edits, then requires read-only release status to infer minor `0.4.0` and an
+   explicit-version preparation plan. After separate operator authorization,
+   one Effigy prepare mutation owns workspace-version and changelog promotion,
+   reruns all 11 local gates, and freezes the exact extracted `0.4.0`
+   changelog. The accepted candidate then lands on canonical `main` and requires
+   CI for that exact SHA.
 3. Card 052 reruns the current external source consumer against that exact
-   candidate, performs one operator-selected normal working-application
-   smoke/rebuild, compiles final release evidence, and stops for an explicit
-   operator tag decision.
+   candidate, performs one operator-authorized current authenticated normal
+   working-application path, compiles final release evidence, and stops for an
+   explicit operator tag decision.
 
 The cards are serial. Card 051 consumes card 050's frozen classifications and
 baseline set. Card 052 consumes card 051's immutable candidate SHA and also
-requires the operator to name the working application and exact smoke boundary.
+requires the operator to name the working application and complete authenticated
+smoke authority, including exact source consumption and retry budget.
 
 ## Release Boundary
 
@@ -95,8 +98,8 @@ different SHA is accepted.
 ## Batch Cards
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050
-- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; depends on completed card 051 and operator-selected application smoke
+- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050; mutating prepare requires separate operator authorization
+- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 
 ## Acceptance
 
@@ -110,8 +113,13 @@ different SHA is accepted.
 - the clean candidate contains no generated cache, build output, host path,
   secret, auth state, private endpoint, or unreviewed live capture
 - no mergeable feature/currentness PR remains open inside the freeze
-- current external source-consumer and one operator-selected working-application
-  smoke/rebuild pass against the exact candidate
+- read-only release status selects minor `0.4.0`; Effigy alone applies the
+  authorized workspace-version and changelog-promotion mutations; the promoted
+  changelog has deduplicated headings and a structural `Removed` entry for the
+  OpenAI Background `minimal` removal
+- current external source-consumer and one operator-authorized working
+  application pass against the exact candidate through a current normal
+  authenticated product path; provider-free substitutes do not count
 - final evidence names the exact SHA and stops before tag creation or push
 
 ## Review Oracle
@@ -126,14 +134,18 @@ the candidate.
 
 Required proof: complete semantic and behavior ledgers keyed to the
 `v0.3.3` peel and candidate SHA; immutable-baseline diff; 40-package and
-48-route inventories; all 11 local gate results; exact-SHA CI identity; clean
-source inventory; exact-revision source consumer; selected application smoke;
-and an operator decision request that grants no release mutation by itself.
+48-route inventories; release-status and explicit-version prepare-plan output;
+separate prepare authorization; frozen exact changelog extraction; all 11 local
+gate results; exact-SHA CI identity; clean source inventory; exact-revision
+source consumer; selected authenticated application smoke; and an operator
+decision request that grants no release mutation by itself.
 
 ## Stop Conditions
 
 Stop on an unclassified break, package or route mismatch, modified historical
 baseline, open mergeable feature/currentness PR, dirty or identity-ambiguous
-candidate, red or mismatched gate/CI evidence, unnamed application, unauthorized
-consumer/provider mutation, or any request to create or push a tag before the
-final explicit operator authorization.
+candidate, red or mismatched gate/CI evidence, an Effigy prepare path that
+cannot operate on the intended tree, missing prepare authorization, unnamed or
+unauthenticated application, incomplete retry/mutation/credential/provider
+authority, or any request to create or push a tag before the final explicit
+operator authorization.

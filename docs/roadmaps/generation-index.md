@@ -154,8 +154,10 @@ Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 compiles cards 050-052 for a bounded `v0.4.0` source candidate.
 Card 050 is ready for the complete `v0.3.3` compatibility and freeze census.
 Cards 051-052 remain planned and serial; card 052 also waits on the operator's
-working-application smoke selection. Feature and currentness implementation is
-frozen through the milestone, and no card authorizes tag creation or push.
+complete authenticated working-application authority packet. Card 051 stops at
+its read-only Effigy plan until separate authorization for the sole mutating
+prepare path. Feature and currentness implementation is frozen through the
+milestone, and no card authorizes tag creation or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.

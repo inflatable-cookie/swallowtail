@@ -22,9 +22,10 @@ mutation. Audit the complete 770-plus-commit public delta, not only the known
 OpenAI Background `minimal` removal. Change no Cargo version or requirement,
 release baseline, code, claim, fixture, or workflow. Keep feature/currentness
 implementation frozen; Kimi local server `0.40.1` and closed PR 182 remain
-parked post-release. Cards 051-052 stay planned, and card 052 also awaits the
-operator's working-application smoke selection. No card authorizes tag creation
-or push.
+parked post-release. Cards 051-052 stay planned. Card 051 has a separate
+operator gate before Effigy's sole mutating prepare path; card 052 remains
+blocked until the operator supplies a complete authenticated working-application
+smoke authority packet. No card authorizes tag creation or push.
 
 ## Standing Lanes
 

@@ -37,9 +37,11 @@ guaranteed-behavior delta from `v0.3.3` to one reviewed current-source head.
 7. Confirm coordinated minor `0.4.0`, 40 packages, 48 routes, Rust `1.95.0`,
    Apple Silicon macOS, and source-only annotated-tag intent. Freeze the exact
    candidate inputs for card 051.
-8. Return the working-application smoke as an explicit operator question. Name
-   the evidence the later choice must provide, but do not select an application
-   or contact a provider.
+8. Return the authenticated working-application smoke as an explicit operator
+   question. Require the later authority packet to name repository/application,
+   route, command, exact candidate SHA/tag consumption, credential/provider
+   authority, permitted mutations, evidence/redaction, cleanup, and retry
+   budget. Do not select an application or contact a provider.
 
 ## Out Of Scope
 
@@ -74,6 +76,8 @@ mutation, application smoke, feature/currentness work, or papercut repair.
 - `effigy qa:docs:index:roadmaps:batch-cards`
 - `effigy qa:docs:roadmaps:status`
 - `effigy qa:docs:next-action:roadmaps`
+- `effigy qa:docs:links`
+- `effigy qa:docs:roadmaps:numbers`
 - `effigy qa:northstar`
 - `git diff --check`
 

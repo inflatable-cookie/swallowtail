@@ -316,9 +316,11 @@ is 40 packages and 48 production routes; immutable `v0.3.3` remains 40 packages
 and 47 routes. At compilation the source delta is 773 commits and 2,405 changed
 files, so card 050 requires a complete semantic API and guaranteed-behavior
 audit rather than treating the known OpenAI Background `minimal` removal as the
-whole compatibility result. Card 051 stays planned behind the accepted audit;
-card 052 also waits for an operator-selected working application. No card
-authorizes tag creation or push. The feature/currentness freeze keeps Kimi
+whole compatibility result. Card 051 stays planned behind the accepted audit
+and a separate authorization gate for Effigy's sole mutating prepare path.
+Card 052 is planned and blocked until the operator supplies the complete
+authenticated working-application authority packet. No card authorizes tag
+creation or push. The feature/currentness freeze keeps Kimi
 local server `0.40.1`, closed PR 182, Gemini, watcher work, Kimi ACP work,
 skill-inventory implementation, g05.009/card 034, and non-gating papercuts out
 of this milestone.

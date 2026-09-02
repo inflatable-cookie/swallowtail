@@ -41,8 +41,9 @@ and 2,825-test pass stopped at a checkpoint-held `qa:docs` lock. It is not
 release evidence; card 051 reruns all 11 gates on the frozen candidate.
 
 PR 184 review also requires `[Unreleased]` to be deduplicated and the known
-guaranteed-value removal to sit under a structural `Removed` heading before
-promotion. The exact promoted `0.4.0` extraction is frozen as candidate
+guaranteed-value removal to sit under a structural `### Breaking` heading
+before promotion; that is the category Effigy's pre-1.0 minor inference
+recognizes. The exact promoted `0.4.0` extraction is frozen as candidate
 evidence. Manual workspace-version or changelog promotion is not a fallback if
 Effigy cannot prepare the intended tree.
 

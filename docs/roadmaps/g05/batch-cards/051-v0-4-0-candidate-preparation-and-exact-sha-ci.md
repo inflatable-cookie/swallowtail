@@ -18,10 +18,12 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    no open mergeable feature/currentness PR inside the freeze.
 2. Audit and restructure release prose before promotion. Consolidate the
    current `[Unreleased]` content so each present structural heading occurs
-   once, including one `### Added`, one `### Changed`, and one `### Removed`.
+   once, including one `### Added`, one `### Changed`, and one `### Breaking`.
    Put the removed OpenAI Background `minimal` guaranteed value under
-   `### Removed`. Do not rename `[Unreleased]`, create its dated `0.4.0`
-   heading, edit release comparison links, or change
+   `### Breaking` with an entry that names the removal explicitly; Effigy
+   v0.12.1 infers the pre-1.0 minor only from the `Breaking` category, while
+   `Removed` alone resolves to patch. Do not rename `[Unreleased]`, create its
+   dated `0.4.0` heading, edit release comparison links, or change
    `workspace.package.version`; Effigy owns those preparation mutations.
 3. Complete the candidate edits outside Effigy's preparation ownership. Set
    every normal/build internal compatible requirement to coordinated `0.4.0`,
@@ -63,8 +65,8 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
 10. Immediately extract the promoted release with
     `effigy changelog extract CHANGELOG.md --version 0.4.0`. Freeze the exact
     output and its digest in candidate evidence. Prove the extracted section
-    has the single deduplicated headings and structural `Removed` entry, then
-    make no further candidate edit.
+    has the single deduplicated headings and the structural `Breaking` entry,
+    then make no further candidate edit.
 11. Open one candidate PR, receive exact-head review, and land only the accepted
    head on canonical `main`. Record the resulting candidate SHA; no later
    closeout commit may be presented as that candidate.
@@ -85,7 +87,7 @@ the accepted audit, CI workflow edits, or papercut repair.
 - all 40 packages and internal requirements use coordinated `0.4.0`
 - new `v0.4.0` baselines match the accepted audit; every older baseline is
   byte-for-byte unchanged
-- `[Unreleased]` is deduplicated before promotion, its structural `Removed`
+- `[Unreleased]` is deduplicated before promotion, its structural `Breaking`
   section names the `minimal` guaranteed-value removal, and read-only release
   status selects minor `0.4.0`
 - Effigy alone applies the workspace-version and changelog-promotion mutations
@@ -118,10 +120,11 @@ Invariant: the reviewed candidate tree is the tree that passed every local gate
 and canonical CI, and all release copy describes that exact tree.
 
 Smallest counterexample: one dependency still requires `^0.3.3`, the
-`minimal` removal remains under `Changed`, duplicate headings enter the
-promoted section, a person pre-applies an Effigy-owned mutation, one prior
-baseline changes, a gate passes before the last edit, CI points at another
-commit, or release notes omit one audit-ledger break.
+`minimal` removal lacks a structural `### Breaking` entry or sits only in a
+non-breaking category, duplicate headings enter the promoted section, a person
+pre-applies an Effigy-owned mutation, one prior baseline changes, a gate
+passes before the last edit, CI points at another commit, or release notes
+omit one audit-ledger break.
 
 Required proof: pre-mutation status and explicit-version plan, separate
 operator authorization, the single mutating prepare transcript,

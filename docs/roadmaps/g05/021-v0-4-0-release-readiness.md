@@ -115,7 +115,7 @@ different SHA is accepted.
 - no mergeable feature/currentness PR remains open inside the freeze
 - read-only release status selects minor `0.4.0`; Effigy alone applies the
   authorized workspace-version and changelog-promotion mutations; the promoted
-  changelog has deduplicated headings and a structural `Removed` entry for the
+  changelog has deduplicated headings and a structural `Breaking` entry for the
   OpenAI Background `minimal` removal
 - current external source-consumer and one operator-authorized working
   application pass against the exact candidate through a current normal

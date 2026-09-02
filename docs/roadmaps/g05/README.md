@@ -34,11 +34,11 @@ enforcement.
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation paused after review found shared close-bound and tree-attestation gaps | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
-| Supply the shared lifecycle evidence required by the Claude SDK route. | ready; card 057 landed tree-completion vocabulary; card 058 ready for bounded close; card 059 evidence stop, macOS unattestable | Contracts 010 and 019; PR 188 review; 2026-09-02 operator decision | `g05.023`, cards 057-059 |
+| Supply the shared lifecycle evidence required by the Claude SDK route. | ready; card 057 landed tree-completion vocabulary; card 058 ready for bounded close; card 059 evidence stop, no sound mechanism found within current host-local authority on macOS | Contracts 010 and 019; PR 188 review; 2026-09-02 operator decision | `g05.023`, cards 057-059 |
 
 ## Planned Next Roadmaps
 
-- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 is the remaining prerequisite; card 059 concluded that macOS cannot attest owned-tree emptiness
+- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 is the remaining prerequisite; card 059 found no sound owned-tree mechanism within current host-local authority on macOS
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
@@ -72,10 +72,12 @@ its operator decision. Milestone 021 is planned and paused. Milestone 022 is
 planned after the card 055 review stop. Milestone 023 delivered card 057's
 tree-completion vocabulary; the operator then authorized card 058's breaking
 close seam and card 059's narrow unsafe/dependency boundary. Card 058 is ready.
-Card 059 attacked the boundary and stopped: no permitted mechanism defeats the
-setsid, descriptor-close, and identity-reuse counterexamples on macOS, which has
-no PID namespace, cgroup `populated` view, or child-subreaper, so the host stays
-root-only and adds no unsafe. PR 188 stays paused and the macOS tree gate is an
+Card 059 attacked the boundary and stopped: four native counterexamples falsify
+the candidate primitives (setsid escape, descriptor EOF with a live child,
+released-group identity, and reparenting to launchd), and no sound owned-tree
+observation was found within the current ordinary host-local authority on macOS,
+so the host stays root-only and adds no unsafe; entitlement or system-extension
+mechanisms are out of scope. PR 188 stays paused and the macOS tree gate is an
 open operator decision.
 
 ## Current Boundary
@@ -347,7 +349,7 @@ an approximation hidden behind the SDK identity.
 
 ## Milestones
 
-- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 implements bounded close; card 059 concluded macOS cannot attest owned-tree emptiness
+- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 implements bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`

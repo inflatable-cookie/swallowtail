@@ -231,9 +231,9 @@ pub(crate) fn supervise_child(
 /// group number after ownership was released, which this host refuses.
 ///
 /// Card 059 asked whether the operator-authorized `unsafe`/dependency boundary
-/// lets this host observe emptiness soundly, and drove all three review
-/// counterexamples through every candidate mechanism natively (see the
-/// `attestation` integration tests). None survives on macOS:
+/// lets this host observe emptiness soundly. The candidate primitives were
+/// falsified natively (see the `attestation` integration tests); each is
+/// insufficient:
 ///
 /// - an inherited liveness descriptor installed through `CommandExt::pre_exec`
 ///   reaches end-of-file when a live descendant closes or does not inherit it,
@@ -245,11 +245,15 @@ pub(crate) fn supervise_child(
 /// - an ancestry walk loses a descendant that is reparented to `launchd` after
 ///   its intermediate parent exits, because macOS has no child-subreaper.
 ///
-/// The only sound mechanism is a kernel-enforced owned-tree container — a PID
-/// namespace or a cgroup `populated` view — and macOS provides neither. This
-/// host therefore keeps reporting [`ProcessTreeCompletion::RootOnly`] on every
-/// platform, including exits where termination succeeded, rather than
-/// publishing a best-effort tree claim.
+/// No sound owned-tree observation was found and validated within the current
+/// ordinary host-local authority (`forbid(unsafe_code)`, no privileged
+/// capability, no system extension). A sound one would require a kernel-enforced
+/// owned-tree container with exclusive host ownership and denied migration, such
+/// as a PID namespace or a delegated cgroup v2 subtree the provider cannot write
+/// itself out of; entitlement or system-extension facilities are outside this
+/// bounded lane, not proved nonexistent. This host therefore keeps reporting
+/// [`ProcessTreeCompletion::RootOnly`] on every platform, including exits where
+/// termination succeeded, rather than publishing a best-effort tree claim.
 ///
 /// [`ProcessTreeCompletion::RootOnly`]: swallowtail_runtime::ProcessTreeCompletion::RootOnly
 fn exit_record(status: ExitStatus) -> ProcessExit {

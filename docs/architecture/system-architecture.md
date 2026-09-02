@@ -967,17 +967,21 @@ that could observe emptiness — an extra inherited descendant-liveness descript
 installed through `CommandExt::pre_exec`, process-table enumeration by group
 through `sysctl` or procfs, or an ancestry walk through `proc_listchildpids` —
 each need `unsafe` or a platform dependency, and every crate here is
-`forbid(unsafe_code)`. Card 059 drove the three review counterexamples through
-them natively under the operator-authorized boundary: a live descendant closes
-or does not inherit the liveness descriptor, so its end-of-file is not
+`forbid(unsafe_code)`. Card 059 falsified those candidate
+primitives natively under the operator-authorized boundary: a live descendant
+closes or does not inherit the liveness descriptor, so its end-of-file is not
 emptiness; a `setsid` descendant leaves the owned group, so group enumeration
-misses it; and an orphaned descendant reparents to `launchd`, which macOS never
-reassigns to the launcher because it has no child-subreaper. The only sound
-mechanism is a kernel-enforced owned-tree container — a PID namespace or a
-cgroup v2 `populated` view — where the kernel owns a non-forgeable identity that
-`setsid` cannot escape and no descriptor can drop. macOS provides none of these,
-so it cannot make a positive claim; a kernel-container route is Linux-only and
-privilege-bearing. The local host therefore reports
+misses it; a released group number is reusable once the owner is reaped; and an
+orphaned descendant reparents to `launchd`, which macOS never reassigns to the
+launcher because it has no child-subreaper. No sound owned-tree observation was
+found and validated within the current ordinary host-local authority. A sound
+one would need a mechanism whose owned-tree identity a descendant cannot escape
+by session change, descriptor drop, or reparenting, with exclusive host
+ownership and denied migration out of the owned set — for example a PID
+namespace, or a delegated cgroup v2 subtree the provider cannot write itself out
+of via `cgroup.procs`; entitlement or system-extension facilities such as Apple
+Endpoint Security exist but are outside this bounded host-local lane, not proved
+nonexistent. The local host therefore reports
 `ProcessTreeCompletion::RootOnly` on every platform, including exits where
 termination succeeded, adds no unsafe, and never constructs the attested state. A native arm64
 probe proves that a security-scoped project grant propagates through a

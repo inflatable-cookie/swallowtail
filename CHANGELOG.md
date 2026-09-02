@@ -15,13 +15,12 @@ annotated Git tags from the canonical repository.
   concrete mechanism observed an empty owned tree may construct the attested
   state. `swallowtail-host-local` proves descendant enrollment and termination
   but cannot observe emptiness under `forbid(unsafe_code)`, so every local
-  exit reports root-only on every platform. Card 059 attacked the
-  operator-authorized `unsafe`/dependency boundary against the setsid,
-  descriptor-close, and identity-reuse counterexamples natively and confirmed
-  no permitted mechanism attests owned-tree emptiness on macOS, which has no PID
-  namespace, cgroup `populated` view, or child-subreaper; the host stays
-  root-only and adds no unsafe. Contracts 010 and 019, g05.023 cards 057 and
-  059.
+  exit reports root-only on every platform. Card 059 falsified the candidate
+  primitives natively — setsid escape, descriptor end-of-file with a live
+  child, released-group identity, and reparenting to `launchd` — and found no
+  sound owned-tree observation within the current ordinary host-local authority
+  on macOS; the host stays root-only and adds no unsafe. Contracts 010 and 019,
+  g05.023 cards 057 and 059.
 - publish exact negotiated model-options observation on projected Claude Agent
   ACP session open: after existing model confirmation, parse one bounded
   `configOptions[id=model]` select, retain it on the session handle through

@@ -84,15 +84,16 @@ completion reports whether the host observed that no member of its exact owned
 descendant tree remains. A host reports the attested state only from a
 concrete mechanism that made that observation. Exit code, a graceful stop
 request, a successful force-stop request, and a successful nearest-child wait
-are never that observation, and no host infers it from a platform name. A sound
-observation requires a kernel-enforced owned-tree container whose non-forgeable
-identity a descendant cannot leave by calling `setsid`, by closing or not
-inheriting a liveness descriptor, or by being reparented after its intermediate
-parent exits. A bare process-group number, an inherited descriptor's
-end-of-file, and an ancestry walk each fail one of those and are insufficient. A
-host whose mechanism cannot observe emptiness reports root-only evidence.
-Root-only evidence is honest, not a failure, and does not weaken that host's
-enrollment, termination, or cleanup authority.
+are never that observation, and no host infers it from a platform name. A bare
+process-group number, an inherited descriptor's end-of-file, and an ancestry
+walk are each insufficient: a descendant escapes them by calling `setsid`, by
+closing or not inheriting the descriptor while alive, or by being reparented
+after its intermediate parent exits. A sound observation needs a mechanism whose
+owned-tree identity a descendant cannot leave by any of those, with exclusive
+host ownership and denied migration out of the owned set. A host whose mechanism
+cannot observe emptiness reports root-only evidence. Root-only evidence is
+honest, not a failure, and does not weaken that host's enrollment, termination,
+or cleanup authority.
 
 Executable selection and host approval may occur before installed discovery.
 That host action produces one opaque approved target. It does not change

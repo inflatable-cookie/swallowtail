@@ -157,11 +157,13 @@ exact-head lifecycle stop. Milestone 023 is ready: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, and the
 operator authorized cards 058-059 for the breaking bounded-close seam and a
 narrowly contained Unix attestation mechanism. Card 059 then stopped at an
-evidence stop: no mechanism the authorized boundary permits defeats the setsid,
-descriptor-close, and identity-reuse counterexamples on macOS, which lacks a PID
-namespace, a cgroup `populated` view, and a child-subreaper, so the host stays
-root-only and adds no unsafe. PR 188 stays paused until the bounded-close seam
-lands and the macOS tree gate is resolved.
+evidence stop: four native counterexamples falsify the candidate primitives
+(setsid escape, descriptor EOF with a live child, released-group identity, and
+reparenting to launchd), and no sound owned-tree observation was found within
+the current ordinary host-local authority on macOS, so the host stays root-only
+and adds no unsafe; entitlement or system-extension mechanisms are out of scope,
+not proved nonexistent. PR 188 stays paused until the bounded-close seam lands
+and the macOS tree gate is resolved.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 is complete. Card 058 is ready; card 059 is an evidence stop;
 card 055/PR 188 remain paused behind the bounded-close prerequisite. No card

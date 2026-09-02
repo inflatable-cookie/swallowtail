@@ -1,6 +1,6 @@
 # 059 Unix Owned-Tree Attestation
 
-Status: complete; evidence stop; macOS cannot attest under the authorized boundary; host stays root-only
+Status: complete; evidence stop; no sound mechanism found within current host-local authority on macOS; host stays root-only
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../023-claude-sdk-shared-lifecycle-prerequisites.md`
@@ -43,8 +43,8 @@ tree attestation.
 
 - [ ] one concrete supported-Unix mechanism owns an identity that cannot be
       confused with a released process group or reused pid —
-      **stopped**: no such identity exists on macOS under the authorized
-      boundary, see Outcome
+      **stopped**: none was found and validated within the current ordinary
+      host-local authority on macOS, see Outcome
 - [x] `OwnedTreeEmpty` is emitted only after the mechanism observes no owned
       member remaining; root exit and successful signalling stay insufficient —
       no host constructs it; the constructor stays unused
@@ -61,9 +61,10 @@ tree attestation.
 
 ## Outcome
 
-The three review counterexamples were driven natively through every candidate
-mechanism the authorized boundary permits (see the `attestation` integration
-tests in `swallowtail-host-local`). Each candidate fails at least one:
+This is a bounded evidence stop. Four native counterexamples in the
+`attestation` integration tests in `swallowtail-host-local` falsify the
+candidate primitives; they falsify primitives rather than exercising an
+integrated host implementation. Each candidate is insufficient:
 
 - an inherited liveness descriptor installed through `CommandExt::pre_exec`
   defeats `setsid`, but a live descendant may close or not inherit it; the
@@ -79,26 +80,34 @@ tests in `swallowtail-host-local`). Each candidate fails at least one:
   (`a_released_owned_group_number_stops_existing_and_frees_its_identity`);
 - an ancestry walk loses a descendant reparented to `launchd` after its
   intermediate parent exits, because macOS has no child-subreaper
-  (`PR_SET_CHILD_SUBREAPER` is Linux-only).
+  (`PR_SET_CHILD_SUBREAPER` is Linux-only); the native
+  `a_reparented_descendant_is_orphaned_and_lost_by_an_ancestry_walk` test shows
+  the orphan's parent become pid 1 while it is alive.
 
-The only sound mechanism is a kernel-enforced owned-tree container — a PID
-namespace or a cgroup v2 `populated` view — where the kernel owns a
-non-forgeable identity that `setsid` cannot escape and no descriptor can drop.
-macOS provides neither, nor a subreaper, so it cannot make a positive claim
-under the authorized boundary. A PID-namespace or cgroup route is Linux-only,
-privilege-bearing, and cannot be natively validated from this macOS host, so it
-is not landed here: publishing an unvalidated positive claim is exactly what the
-oracle forbids.
+No sound owned-tree observation was found and validated within the current
+ordinary host-local authority: `forbid(unsafe_code)`, no privileged capability,
+and no system extension. A sound one would require a mechanism whose owned-tree
+identity a descendant cannot escape by session change, descriptor drop, or
+reparenting, with exclusive host ownership and denied migration out of the owned
+set. A PID namespace, or a delegated cgroup v2 subtree the provider cannot write
+itself out of via `cgroup.procs`, are the shapes that could satisfy that; both
+are Linux-only, privilege-bearing, and cannot be natively validated from this
+macOS host, so neither is landed here — publishing an unvalidated positive claim
+is exactly what the oracle forbids. Entitlement or system-extension facilities
+such as Apple Endpoint Security's fork/exit notifications exist but are outside
+this card's narrow host-local boundary; this stop is "not found within current
+authority", not "impossible on macOS".
 
 `swallowtail-host-local` therefore keeps reporting
 `ProcessTreeCompletion::RootOnly` on every platform, including exits where
 termination succeeded, and no host constructs
 `ProcessExit::attesting_empty_owned_tree`. No unsafe was added. Contract 019
-keeps `claude-agent.sdk` unavailable while owned-tree completion stays
-unconfirmed, so g05.023 does not close here. Unblocking macOS remains an
-operator decision: authorize a kernel-container mechanism on a platform that has
-one (Linux), or accept that the subscription-backed SDK route stays unavailable
-on macOS.
+keeps `claude-agent.sdk` unavailable under the current authority while owned-tree
+completion stays unconfirmed, so g05.023 does not close here. Unblocking macOS
+remains an operator decision: authorize and validate a container mechanism on a
+platform that has one, evaluate an out-of-scope entitlement or system-extension
+mechanism as a separate lane, or accept that the subscription-backed SDK route
+stays unavailable on macOS.
 
 ## Validation
 

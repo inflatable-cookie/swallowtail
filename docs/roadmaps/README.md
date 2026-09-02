@@ -17,16 +17,17 @@ shape.
 
 Implement [g05.023](g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
 card 058, the v0.4 breaking caller-bounded close seam, as the remaining ready
-prerequisite. Card 059 stopped at an evidence stop: no mechanism the authorized
-unsafe or dependency boundary permits defeats the `setsid`, descriptor-close,
-and identity-reuse counterexamples on macOS, which has no PID namespace, cgroup
-`populated` view, or child-subreaper, so the local host stays root-only and adds
-no unsafe. The only sound mechanism is a kernel-enforced owned-tree container,
-which is Linux-only and cannot be validated from this macOS host; unblocking the
-macOS SDK tree gate is now an operator decision. Merge shared runtime/API work
-serially, then restack the preserved PR 188 branch. g05.021 and cards 050-052
-remain planned and paused; release evidence must restart against the later exact
-source head.
+prerequisite. Card 059 stopped at an evidence stop: four native counterexamples falsify the
+candidate primitives (`setsid` escape, descriptor EOF with a live child,
+released-group identity, and reparenting to `launchd`), and no sound owned-tree
+observation was found within the current ordinary host-local authority on macOS,
+so the local host stays root-only and adds no unsafe. A sound mechanism would
+need an inescapable owned-tree identity with exclusive host ownership and denied
+migration; validating one, or an out-of-scope entitlement or system-extension
+mechanism, is a separate lane and now an operator decision. Merge shared
+runtime/API work serially, then restack the preserved PR 188 branch. g05.021 and
+cards 050-052 remain planned and paused; release evidence must restart against
+the later exact source head.
 
 ## Standing Lanes
 

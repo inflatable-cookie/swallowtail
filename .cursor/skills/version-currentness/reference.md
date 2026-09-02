@@ -175,11 +175,13 @@ before allocating ids, and again immediately before push:
 effigy qa:docs:roadmaps:numbers
 ```
 
-That selector fetches the advertised canonical commit as objects (`--no-tags`,
-`--no-write-fetch-head`, no destination ref) and fails closed if that object
-cannot be retrieved. It does not follow or overwrite
-`refs/swallowtail/roadmap-authority` or any other existing ref. Next unused is
-the max numbered
+That selector discovers and fetches the advertised canonical commit from an
+isolated Git object store with sanitized config (`--no-tags`,
+`--no-write-fetch-head`, no destination ref, `http.sslVerify=true`,
+`http.followRedirects=false`). User, repository, global, system, and included
+`url.*.insteadOf` rewrites cannot redirect the canonical HTTPS URL. Fetch
+failure is a stop. It does not mutate the checked repository's object db,
+refs, tags, or `FETCH_HEAD`. Next unused is the max numbered
 `docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that refreshed
 tree. A number already assigned to a path on canonical main cannot move
 to another path; take a new unused number. Same-path content edits are

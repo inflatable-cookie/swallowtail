@@ -3,12 +3,14 @@
 
 Canonical pushed-main authority is
 ``https://github.com/inflatable-cookie/swallowtail.git`` ``refs/heads/main``.
-This checker fetches that commit as objects immediately before enforcement
-and aborts if the advertised object cannot be retrieved. The fetch has no
-destination ref: it does not create, follow, or overwrite
-``refs/swallowtail/roadmap-authority`` or any other ref, and it does not
-import tags or write ``FETCH_HEAD``. ``origin/main`` is not authority: a
-fork's origin, a stale tracking ref, or a failed fetch must not pass.
+This checker discovers and fetches that commit from an isolated Git
+context immediately before enforcement: a throwaway object store and
+sanitized config that cannot read user, repository, global, system, or
+included URL rewrites. The fetch has no destination in the checked
+repository and must not mutate its object db, refs, config, tags,
+``FETCH_HEAD``, index, worktree, or reflogs. ``origin/main`` is not
+authority: a fork's origin, a stale tracking ref, a rewritten URL, or a
+failed fetch must not pass.
 
 In-tree uniqueness is required. A number that canonical main already
 assigns to a path may not appear on a different path in this tree.
@@ -25,11 +27,15 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+from roadmap_number_authority import (
+    CANONICAL_AUTHORITY,
+    CANONICAL_REF,
+    AuthorityError,
+    refresh_authority,
+)
+
 
 SCRIPT_ROOT = Path(__file__).resolve().parent.parent
-CANONICAL_AUTHORITY = "https://github.com/inflatable-cookie/swallowtail.git"
-CANONICAL_REF = "refs/heads/main"
-ADVERTISED_OBJECT = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-.+\.md$")
 GENERATION_DIR = re.compile(r"^g\d{2}$")
 NUMBERED_PATH = re.compile(
@@ -136,64 +142,12 @@ def fail_refresh(authority: str, ref: str, detail: str) -> None:
     )
 
 
-def advertised_authority_sha(root: Path, authority: str, ref: str) -> str:
-    proc = git_run(root, "ls-remote", "--refs", authority, ref)
-    if proc.returncode != 0:
-        detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
-        fail_refresh(authority, ref, detail)
-    lines = [line for line in proc.stdout.splitlines() if line.strip()]
-    if len(lines) != 1:
-        fail_refresh(
-            authority,
-            ref,
-            f"ls-remote advertised {len(lines)} objects; expected exactly one",
-        )
-    sha, separator, advertised = lines[0].partition("\t")
-    if not separator:
-        parts = lines[0].split()
-        if len(parts) != 2:
-            fail_refresh(authority, ref, f"malformed ls-remote line: {lines[0]!r}")
-        sha, advertised = parts
-    if not ADVERTISED_OBJECT.fullmatch(sha) or advertised != ref:
-        fail_refresh(
-            authority,
-            ref,
-            f"ls-remote advertised {lines[0]!r}; expected {ref}",
-        )
-    return sha
-
-
-def refresh_authority(root: Path, authority: str, ref: str) -> str:
-    sha = advertised_authority_sha(root, authority, ref)
-    proc = git_run(
-        root,
-        "fetch",
-        "--quiet",
-        "--no-tags",
-        "--no-write-fetch-head",
-        authority,
-        sha,
-    )
-    if proc.returncode != 0:
-        detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
-        fail_refresh(authority, ref, detail)
-    kind = git_run(root, "cat-file", "-t", sha)
-    if kind.returncode != 0 or kind.stdout.strip() != "commit":
-        fail_refresh(
-            authority,
-            ref,
-            f"advertised object {sha} is not a local commit after fetch",
-        )
-    return sha
-
-
 def check_against_base(
-    root: Path,
     head: dict[tuple[str, str, str], str],
-    base_sha: str,
+    base_paths: list[str],
     base_label: str,
 ) -> None:
-    base_occ = occupancy_from_paths(git_paths(root, base_sha), base_label)
+    base_occ = occupancy_from_paths(base_paths, base_label)
     collisions: list[str] = []
     for key, head_path in sorted(head.items()):
         base_path = base_occ.get(key)
@@ -255,10 +209,14 @@ def main(argv: list[str] | None = None) -> None:
                 "trust a missing snapshot"
             )
         base_label = args.local_base
+        base_paths = git_paths(root, base_sha)
     else:
-        base_sha = refresh_authority(root, args.authority, args.ref)
+        try:
+            base_sha, base_paths = refresh_authority(args.authority, args.ref)
+        except AuthorityError as exc:
+            fail_refresh(args.authority, args.ref, str(exc))
         base_label = f"{args.authority} {args.ref}"
-    check_against_base(root, head, base_sha, base_label)
+    check_against_base(head, base_paths, base_label)
     print(
         "roadmap number collision check passed: "
         f"{len(head)} numbered milestone/card files unique against {base_label} "

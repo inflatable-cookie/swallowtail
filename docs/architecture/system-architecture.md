@@ -537,8 +537,8 @@ Crate status:
   usage and error envelopes, and explicit bounded structural unknowns; the
   library depends only on `serde_json`
 - `swallowtail-host-local` — realized with host-owned approvals, bounded piped
-  I/O, supervised exit, graceful EOF stop, explicit force-stop, and joined
-  reader cleanup; it also owns bounded attachment/schema copies,
+  I/O, supervised exit, graceful EOF stop, explicit force-stop, joined
+  reader cleanup, and root-only process-completion evidence; it also owns bounded attachment/schema copies,
   operation-scoped temporary working resources, explicit lease release, and
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
   credential approvals remain scope- and audience-bound and redacted; per-host
@@ -952,7 +952,23 @@ ACP artifact identities separately and rejects ambient executable discovery,
 ambient state, and self-upgrade paths. The local process host sets a working directory
 but does not sandbox descendants. Current platform evidence disqualifies
 Landlock alone as incomplete, deprecated macOS `sandbox-exec` as unsupported,
-and experimental Windows process-sandbox APIs as unstable. A native arm64
+and experimental Windows process-sandbox APIs as unstable.
+
+Owned process-tree completion is realized as two separate facts. Enrollment
+and termination are proved: on Unix the local host spawns a group owner, puts
+the root process into that owner's group, and signals the group only while the
+owner handle is live, so no bare process-group number is ever signalled;
+Windows terminates the tree through `taskkill /T`. Emptiness afterwards is not
+proved. The Unix owner is itself a member of the group it anchors, so a
+group-directed liveness probe can only report the owner; answering the
+question would mean reaping the owner first and then probing a released,
+reusable group number. The two mechanisms that would observe emptiness
+honestly — an extra inherited descendant-liveness descriptor installed through
+`CommandExt::pre_exec`, or process-table enumeration by group through `sysctl`
+or procfs — both need `unsafe` or a platform dependency, and every crate here
+is `forbid(unsafe_code)`. The local host therefore reports
+`ProcessTreeCompletion::RootOnly` on every platform, including exits where
+termination succeeded, and never constructs the attested state. A native arm64
 probe proves that a security-scoped project grant propagates through a
 compatible inherited App Sandbox helper to shell and background descendants.
 The exact Kimi `0.28.1` single executable cannot retain V8 and extracted-

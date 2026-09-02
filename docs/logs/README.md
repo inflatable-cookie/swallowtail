@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-02 g05.023 Card 057 Owned Process-Tree Completion Evidence](./2026-09-02-g05-023-card-057-owned-process-tree-completion.md) — root exit and owned-tree emptiness are now distinct provider-neutral evidence; the local Unix owner proves enrollment and termination but cannot observe emptiness without a released bare group number or `unsafe`, so every local exit stays root-only; the escaped-descendant counterexample is asserted; g05.023 gains a second operator decision
 - [2026-09-02 Claude SDK Lifecycle Prerequisite Compilation](./2026-09-02-claude-sdk-lifecycle-prerequisite-compilation.md) — PR 188 paused after exact-head review; card 057 owns process-tree completion evidence; card 058 awaits the breaking close-API decision
 - [2026-09-02 g05.022 Card 056 Claude Agent ACP Model-Options Observation](./2026-09-02-g05-022-card-056-claude-agent-acp-model-options.md) — card 056 complete; projected ACP open publishes exact negotiated model-options observation; required missing model entry fails existing confirmation; snapshot-detail malformation stays no snapshot on preserved open; load, resume, and catalogue stay negative; no claim or shared runtime change
 - [2026-09-02 Claude Agent Dual-Route Integration](./2026-09-02-claude-agent-dual-route-integration.md) — cards 053-054 accepted; Contract 019 descendant-tree join and Contract 029 artifact-only authority promoted; implementation cards 055-056 ready

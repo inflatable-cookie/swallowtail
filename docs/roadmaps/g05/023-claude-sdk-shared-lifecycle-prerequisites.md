@@ -1,6 +1,6 @@
 # g05.023 Claude SDK Shared Lifecycle Prerequisites
 
-Status: ready; card 057 first
+Status: blocked; card 057 complete on an evidence stop; two operator decisions open
 Owner: Tom
 Created: 2026-09-02
 Depends on: g05.022 cards 053-056; Contracts 010 and 019; PR 188 review
@@ -15,17 +15,31 @@ finish card 055.
 
 ## Runway
 
-1. Card 057 adds honest process-tree completion evidence. It must distinguish
-   root exit from an attested-empty owned tree and prove the concrete local
-   host mechanism on every platform it claims.
+1. Card 057 added honest process-tree completion evidence. The provider-neutral
+   distinction between root exit and an attested-empty owned tree landed. The
+   concrete local mechanism did not: the Unix group owner can enrol and
+   terminate the tree but cannot observe it empty without probing a released
+   bare group number or using `unsafe`. The local host stays root-only on
+   every platform and constructs no tree claim.
 2. Card 058 makes session cleanup caller-bounded. It is planned pending the
    operator's decision on a breaking public close signature for v0.4.0.
 3. Card 055 then restacks onto both shared prerequisites. The existing worker,
    workspace, branch, and PR remain the continuation identity.
 
 The cards are serial where they touch shared runtime/public API authority.
-Card 057 is additive and ready. Card 058 is not ready until the public-API
-decision is recorded. PR 188 cannot merge ahead of either card.
+Card 057 is complete as far as it can be proved. Card 058 is not ready until
+the public-API decision is recorded. PR 188 cannot merge ahead of either card.
+
+Two operator decisions now gate this milestone, not one:
+
+- the breaking caller-bounded close signature for card 058
+- whether the local host may use `unsafe` (directly or through an
+  encapsulating dependency) to install an inherited descendant-liveness
+  descriptor, or whether a Linux-only procfs claim that leaves macOS root-only
+  is acceptable
+
+Contract 019 keeps `claude-agent.sdk` unavailable while owned-tree completion
+stays unconfirmed, so card 055 cannot restack on the first decision alone.
 
 ## Boundaries
 
@@ -40,15 +54,17 @@ decision is recorded. PR 188 cannot merge ahead of either card.
 
 ## Batch Cards
 
-- [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — ready; additive shared runtime and host-local evidence
+- [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — planned; awaiting operator acceptance of the breaking close seam
 - [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on 057-058; preserve PR 188 for restack
 
 ## Acceptance
 
-- process completion evidence cannot equate root exit with an empty tree
+- process completion evidence cannot equate root exit with an empty tree —
+  met
 - every positive tree-empty claim is produced by a concrete host mechanism and
-  fails closed on unsupported platforms
+  fails closed on unsupported platforms — met vacuously: no host in this
+  repository can make the claim, so every host fails closed
 - session close and post-expiry cleanup have a caller-selected host deadline
   before the SDK route becomes available
 - PR 188 is restacked only after both shared prerequisites merge

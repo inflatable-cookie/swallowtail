@@ -12,14 +12,13 @@
 
 ## Ready
 
-- [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — ready; additive provider-neutral tree-completion evidence
-
 ## Blocked
 
 - [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked on g05.023 cards 057-058; PR 188 branch/workspace preserved
 
 ## Completed
 
+- [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — evidence stop; additive provider-neutral tree-completion vocabulary landed; the local Unix owner proves enrollment and termination but cannot observe emptiness, so every local exit stays root-only
 - [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded adapter-only ACP observation on projected open; lands before card 055 restack
 - [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278; official `0.3.258` frozen; credential non-custody and route gate proved
 - [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279 and ACP delivery gate; negotiated model-options observation selected as the only adapter-only next tranche

@@ -452,6 +452,9 @@ pub swallowtail_runtime::PreparationStage::VersionParse
 pub enum swallowtail_runtime::ProcessOutputStream
 pub swallowtail_runtime::ProcessOutputStream::Stderr
 pub swallowtail_runtime::ProcessOutputStream::Stdout
+pub enum swallowtail_runtime::ProcessTreeCompletion
+pub swallowtail_runtime::ProcessTreeCompletion::OwnedTreeEmpty
+pub swallowtail_runtime::ProcessTreeCompletion::RootOnly
 pub enum swallowtail_runtime::ProviderCancellationOutcome
 pub swallowtail_runtime::ProviderCancellationOutcome::Confirmed
 pub swallowtail_runtime::ProviderCancellationOutcome::RacedWithCompletion
@@ -2033,9 +2036,11 @@ pub fn swallowtail_runtime::PreparedWorkingStateRestoration::provider_session_at
 pub fn swallowtail_runtime::PreparedWorkingStateRestoration::restore(self, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingStateRestorationOutcome, swallowtail_runtime::RuntimeFailure>>
 pub struct swallowtail_runtime::ProcessExit
 impl swallowtail_runtime::ProcessExit
+pub const fn swallowtail_runtime::ProcessExit::attesting_empty_owned_tree(bool, core::option::Option<i32>) -> Self
 pub const fn swallowtail_runtime::ProcessExit::code(self) -> core::option::Option<i32>
 pub const fn swallowtail_runtime::ProcessExit::new(bool, core::option::Option<i32>) -> Self
 pub const fn swallowtail_runtime::ProcessExit::success(self) -> bool
+pub const fn swallowtail_runtime::ProcessExit::tree_completion(self) -> swallowtail_runtime::ProcessTreeCompletion
 pub struct swallowtail_runtime::ProcessInputChunk
 impl swallowtail_runtime::ProcessInputChunk
 pub fn swallowtail_runtime::ProcessInputChunk::bytes(&self) -> &[u8]

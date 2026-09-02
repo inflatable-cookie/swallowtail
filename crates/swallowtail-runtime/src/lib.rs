@@ -220,7 +220,9 @@ pub use prepared_operation::{
 };
 pub use prepared_plan::{base_requirements, build_plan, instance_with_capabilities};
 pub use process_input::ProcessRequest;
-pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
+pub use process_io::{
+    ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessTreeCompletion,
+};
 pub use provider_instance_catalogue::{
     ConfiguredProviderCredentialPosture, ConfiguredProviderInstanceAdmission,
     ConfiguredProviderInstanceCatalogue, ConfiguredProviderInstanceCatalogueFailure,

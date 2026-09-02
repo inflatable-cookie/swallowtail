@@ -82,6 +82,12 @@ gracefully, exited after escalation, or exit unconfirmed. A surviving
 descendant, discarded wait, or result that cannot distinguish exit from expiry
 is cleanup failure. It is never evidence of clean close.
 
+Root exit is not tree completion. A close outcome may report the descendant
+tree as joined only where the execution host attests owned-tree emptiness from
+a concrete Contract 010 observation. Root-only evidence closes the root and
+leaves the tree unconfirmed, so a route that requires the full tree stays
+unavailable until a host on that platform can make the observation.
+
 ## Runtime And Task Ownership
 
 An adapter may privately depend on an SDK's async runtime, HTTP client, TLS

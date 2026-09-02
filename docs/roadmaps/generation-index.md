@@ -153,10 +153,10 @@ post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
 is not accepted release evidence. Milestone 022 is ready through parallel cards
-053-054: one native Claude Agent SDK evidence and contract gate, and one
-qualified Claude Agent ACP parity and delivery gate. Shared contract promotion
-and implementation compilation follow both reviews. No card authorizes a
-provider turn, release mutation, tag creation, or push.
+055-056 after evidence cards 053-054 completed. Contract 019 descendant-tree
+join and Contract 029 artifact-only authority are promoted. The ACP tranche
+lands first; the priority SDK route then restacks. No card authorizes a provider
+turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.

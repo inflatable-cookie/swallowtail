@@ -15,16 +15,14 @@ shape.
 
 ## Next Task
 
-Run [g05.022 cards 053 and 054](g05/022-claude-agent-dual-route-parity.md) in
-parallel. Card 053 freezes the official Claude Agent SDK, current subscription
-authority, credential non-custody boundary, sidecar lifecycle, and native
-`claude-agent.sdk` contract gate. Card 054 derives the complete qualified
-`claude-agent.acp` capability census and selects the largest honest independent
-delivery tranches. Neither card changes production code, claims, fixtures, or
-package pins, and neither contacts a provider. Shared contract promotion and
-implementation compilation follow accepted review of both lanes. g05.021 and
-cards 050-052 remain planned and paused; release evidence must restart against
-the later exact source head.
+Implement [g05.022 cards 055 and 056](g05/022-claude-agent-dual-route-parity.md)
+in parallel. Card 055 is the priority `claude-agent.sdk` provider-free
+foundation: exact SDK identity, credential non-custody, read-only streaming,
+and joined descendant-tree cleanup. Card 056 adds exact negotiated model-option
+observation to `claude-agent.acp` through existing runtime vocabulary. Card 056
+lands first; card 055 then restacks before frontier review. Neither card opens
+a provider session. g05.021 and cards 050-052 remain planned and paused;
+release evidence must restart against the later exact source head.
 
 ## Standing Lanes
 

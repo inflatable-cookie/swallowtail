@@ -1,6 +1,6 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: ready; cards 053 and 054
+Status: ready; cards 055 and 056
 Owner: Tom
 Created: 2026-09-02
 Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
@@ -19,20 +19,20 @@ or production implementation before the two evidence gates close.
 
 ## Parallel Runway
 
-1. Card 053 freezes the current official Agent SDK, subscription authority,
+1. Card 053 froze the current official Agent SDK, subscription authority,
    credential boundary, TypeScript API, sidecar topology, session lifecycle,
    and the smallest contract-ready native-route foundation.
-2. Card 054 maps every relevant capability of the qualified
+2. Card 054 mapped every relevant capability of the qualified
    `@agentclientprotocol/claude-agent-acp` bridge to current Swallowtail
    support, withholding, shared-contract fit, and a safe first delivery
    tranche.
-3. After both reviewed PRs merge, the orchestrator reconciles shared session
-   control, permission, terminal, MCP, authentication, packaging, and
-   lifecycle vocabulary. It then promotes contracts and compiles independent
-   implementation cards. Neither research worker owns that integration.
-4. Native SDK implementation is the priority route. ACP implementation may
-   proceed beside it when its selected tranche does not mutate the same shared
-   core or adapter files.
+3. The joint integration promotes the Contract 019 descendant-tree invariant
+   and Contract 029 artifact-authority rule. It selects no new shared public
+   vocabulary for the first ACP tranche.
+4. Card 055 implements the provider-free native SDK foundation. Card 056 adds
+   exact negotiated model-options observation to ACP. They may run in parallel;
+   same-repository merge ordering remains serial, with card 056 landing first
+   and card 055 restacking onto it.
 
 ## Boundaries
 
@@ -49,8 +49,10 @@ or production implementation before the two evidence gates close.
 
 ## Batch Cards
 
-- [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — ready; native route lane
-- [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — ready; ACP route lane
+- [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
+- [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native route
+- [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — ready; bounded ACP tranche
 
 ## Acceptance
 
@@ -88,4 +90,3 @@ barrier, required token custody, an unbounded sidecar/process boundary,
 protocol evidence requiring a provider turn, shared vocabulary that cannot be
 settled without an operator choice, or overlap between the two worker-owned
 surfaces.
-

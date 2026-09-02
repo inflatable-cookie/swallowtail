@@ -327,18 +327,18 @@ creation or push. The operator broke the feature freeze for g05.022. Card 050's
 partial semantic API output remains non-accepted evidence, and all three
 release cards require a fresh exact-head restart after the Claude work.
 
-Research 277 and g05.022 split Claude parity into two routes. Card 053 owns the
-native Agent SDK policy, artifact, credential, sidecar, lifecycle, and route
-gate. Card 054 owns the qualified ACP bridge capability census and delivery
-selection. They run in parallel without production changes or provider
-contact. The orchestrator owns later shared-contract reconciliation and
-implementation compilation. Native SDK delivery is the priority; ACP remains
-an independently useful portable route rather than an approximation hidden
-behind the SDK identity.
+Research 277-279 and g05.022 split Claude parity into two routes. Cards 053-054
+closed the SDK and ACP evidence gates. Contract 019 now requires joined
+descendant-tree cleanup, and Contract 029 records artifact-only authority when
+public source cannot corroborate a package. Cards 055-056 are ready in
+parallel. Native SDK delivery is the priority; the bounded ACP observation
+lands first to clear same-adapter merge ordering. ACP remains an independently
+useful portable route rather than an approximation hidden behind the SDK
+identity.
 
 ## Milestones
 
-- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — ready; parallel cards 053-054
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — ready; evidence accepted; implementation cards 055-056 ready
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 

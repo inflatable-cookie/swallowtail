@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-21
+Updated: 2026-09-02
 
 ## Purpose
 
@@ -67,6 +67,20 @@ Cancellation and close abort SDK work, dispose SDK/session state, drain the
 bounded wire, join the sidecar process, then release provider state,
 credentials, and host resources in contract order. Process isolation does not
 by itself prove filesystem or network containment.
+
+Where an upstream SDK launches further provider-owned processes, the nearest
+sidecar is not the lifecycle boundary. The execution host owns and can
+terminate the full descendant process tree rooted at that sidecar. The launch
+recipe proves descendant enrollment or containment on every supported
+platform. A platform where that cannot be proved is unsupported for the route,
+not best-effort.
+
+Close joins every provider process in the tree, not only the nearest child. A
+bounded join states its bound and escalates through host termination authority
+on expiry before joining again. Close reports one explicit outcome: exited
+gracefully, exited after escalation, or exit unconfirmed. A surviving
+descendant, discarded wait, or result that cannot distinguish exit from expiry
+is cleanup failure. It is never evidence of clean close.
 
 ## Runtime And Task Ownership
 

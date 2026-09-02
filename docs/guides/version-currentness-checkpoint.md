@@ -100,6 +100,14 @@ Use the family's documented official channel. The 127 checkpoint used:
 - crates.io max stable for Bedrock SDK pins
 - local `--version` only as observation
 
+When a package has no trustworthy public-source correlation, bind evidence to
+the complete published artifact tree and its digest. Do not substitute a
+public tag or changelog for shipped behavior. Record the missing correlation,
+keep source-parity claims out of the result, and recheck the official artifact
+immediately before qualification. The Claude Agent SDK is the current example:
+its npm tarball is authoritative, while its public repository does not contain
+the shipped SDK implementation.
+
 Do not send a provider prompt. Do not authenticate. Do not install or
 update a harness to complete the checkpoint. Do not run workspace `qa`.
 

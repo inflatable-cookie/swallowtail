@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-02 Claude Agent Dual-Route Integration](./2026-09-02-claude-agent-dual-route-integration.md) — cards 053-054 accepted; Contract 019 descendant-tree join and Contract 029 artifact-only authority promoted; implementation cards 055-056 ready
 - [2026-09-02 Claude Agent SDK Route Gate](./2026-09-02-claude-agent-sdk-route-gate.md) — card 053; Research 278; official `@anthropic-ai/claude-agent-sdk` `0.3.258` frozen; wrapper-plus-native-binary topology; credential non-custody proved; the SDK exposes no joined stop, so a provider-neutral descendant-tree Contract 019 invariant is proposed; no claim changed
 - [2026-09-02 Claude Agent Dual-Route Compilation](./2026-09-02-claude-agent-dual-route-compilation.md) — release freeze broken; cards 053-054 ready in parallel; native SDK and ACP evidence remain route-distinct
 - [2026-09-02 Claude Agent ACP Parity Gate](./2026-09-02-claude-agent-acp-parity-gate.md) — card 054 complete; qualified ACP capability census closed; negotiated model-options observation is the only adapter-only next tranche; no production change

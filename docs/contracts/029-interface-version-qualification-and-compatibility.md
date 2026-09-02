@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-21
+Updated: 2026-09-02
 
 ## Purpose
 
@@ -155,6 +155,22 @@ unverified newer attempts. This keeps routine qualification small while
 retaining old installed harnesses deliberately. It also prevents compatibility
 shims from accumulating in core. Provider-specific decoding and migration stay
 inside the owning driver unless two adapters prove a shared protocol boundary.
+
+### Artifact Authority Without Public Source
+
+Some published packages cannot be correlated to public source: metadata may
+omit a source commit, the public repository may exclude the shipped
+implementation, or the artifact may come from a private monorepo. In that
+case, the published artifact tree and its exact digest are the support
+authority. A public tag, repository changelog, or similarly named source tree
+is discovery evidence only and cannot prove shipped behavior or source parity.
+
+The identity record states this narrower authority explicitly. Qualification
+freezes and inspects the complete shipped tree and tests the selected behavior
+against that artifact. Rapid publication cadence does not waive exact identity,
+one-family qualification, or the requirement to recheck the official point
+immediately before a support claim. An initial claim may therefore stay on one
+exact qualified point until another artifact has its own evidence.
 
 ## Recurring Currentness Checkpoint
 

@@ -12,7 +12,7 @@
 ## Ready
 
 - [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — ready; qualified ACP capability census and tranche gate
-- [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — ready; native SDK policy, artifact, credential, sidecar, and lifecycle gate
+- [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278 and the contract gate; official `0.3.258` frozen; credential non-custody proved; two Contract 019 lifecycle gaps pending orchestrator promotion
 
 ## Blocked
 

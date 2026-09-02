@@ -51,7 +51,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on g05.023 cards 057-058; preserve PR 188 for restack
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on g05.023 cards 058-059; preserve PR 188 for restack
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

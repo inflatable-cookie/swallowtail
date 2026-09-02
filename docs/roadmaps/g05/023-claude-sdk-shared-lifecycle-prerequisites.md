@@ -1,6 +1,6 @@
 # g05.023 Claude SDK Shared Lifecycle Prerequisites
 
-Status: blocked; card 057 complete on an evidence stop; two operator decisions open
+Status: ready; cards 058 and 059 form the parallel prerequisite frontier
 Owner: Tom
 Created: 2026-09-02
 Depends on: g05.022 cards 053-056; Contracts 010 and 019; PR 188 review
@@ -21,22 +21,18 @@ finish card 055.
    terminate the tree but cannot observe it empty without probing a released
    bare group number or using `unsafe`. The local host stays root-only on
    every platform and constructs no tree claim.
-2. Card 058 makes session cleanup caller-bounded. It is planned pending the
-   operator's decision on a breaking public close signature for v0.4.0.
-3. Card 055 then restacks onto both shared prerequisites. The existing worker,
+2. On 2026-09-02 the operator authorized the narrow unsafe/dependency posture
+   needed for a sound Unix tree observation and the v0.4 breaking close seam.
+3. Cards 058 and 059 now run in parallel. Card 058 makes every public
+   post-expiry cleanup path caller-bounded. Card 059 pursues exact Unix
+   owned-tree attestation and must defeat escape, descriptor-close, and
+   identity-reuse counterexamples rather than treating unsafe as proof.
+4. Card 055 then restacks onto both shared prerequisites. The existing worker,
    workspace, branch, and PR remain the continuation identity.
 
-The cards are serial where they touch shared runtime/public API authority.
-Card 057 is complete as far as it can be proved. Card 058 is not ready until
-the public-API decision is recorded. PR 188 cannot merge ahead of either card.
-
-Two operator decisions now gate this milestone, not one:
-
-- the breaking caller-bounded close signature for card 058
-- whether the local host may use `unsafe` (directly or through an
-  encapsulating dependency) to install an inherited descendant-liveness
-  descriptor, or whether a Linux-only procfs claim that leaves macOS root-only
-  is acceptable
+The implementation lanes are parallel, but same-repository merge ordering is
+serial: merge card 059 first if both touch runtime/API evidence, then restack
+card 058. PR 188 cannot merge ahead of either card.
 
 Contract 019 keeps `claude-agent.sdk` unavailable while owned-tree completion
 stays unconfirmed, so card 055 cannot restack on the first decision alone.
@@ -55,8 +51,9 @@ stays unconfirmed, so card 055 cannot restack on the first decision alone.
 ## Batch Cards
 
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
-- [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — planned; awaiting operator acceptance of the breaking close seam
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on 057-058; preserve PR 188 for restack
+- [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — ready; operator accepted the v0.4 breaking close seam
+- [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — ready; operator authorized a narrow unsafe or dependency boundary, subject to the adversarial oracle
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on 058-059; preserve PR 188 for restack
 
 ## Acceptance
 
@@ -86,7 +83,7 @@ transition on the SDK route.
 
 ## Stop Conditions
 
-Stop on a platform that cannot positively attest tree emptiness, a design that
+Stop on a platform that cannot positively attest tree emptiness, a descriptor
+that can close or disappear while a descendant survives, a design that
 requires guessed tick units, a compatibility shim that leaves unbounded close
-callable, an unresolved public-API choice, or any attempt to merge PR 188
-before both prerequisites land.
+callable, or any attempt to merge PR 188 before both prerequisites land.

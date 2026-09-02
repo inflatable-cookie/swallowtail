@@ -15,20 +15,15 @@ shape.
 
 ## Next Task
 
-Decide [g05.023](g05/023-claude-sdk-shared-lifecycle-prerequisites.md)'s two
-open operator questions; no card in this milestone is ready without them.
-Card 057 landed the provider-neutral distinction between root exit and an
-attested-empty owned tree, then stopped: the local Unix group owner proves
-enrollment and termination but cannot observe emptiness without probing a
-released bare group number or using `unsafe`, so every local exit stays
-root-only. The first decision is whether `swallowtail-host-local` may use
-`unsafe` (or an encapsulating dependency) for an inherited descendant-liveness
-descriptor, or whether a Linux-only procfs claim leaving macOS root-only is
-acceptable. The second is card 058's breaking caller-bounded session-close
-seam. Card 055 and PR 188 remain paused and unmerged behind both
-prerequisites; preserve their workspace and branch for later restack. g05.021
-and cards 050-052 remain planned and paused; release evidence must restart
-against the later exact source head.
+Implement [g05.023](g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
+cards 058 and 059 as the parallel ready frontier. The operator authorized the
+v0.4 breaking caller-bounded close seam and a narrowly contained unsafe or
+dependency boundary for exact Unix owned-tree observation. Card 059 must still
+defeat descriptor-close, non-inheritance, `setsid`, and identity-reuse
+counterexamples; authorization is not evidence. Merge shared runtime/API work
+serially, then restack the preserved PR 188 branch onto both prerequisites.
+g05.021 and cards 050-052 remain planned and paused; release evidence must
+restart against the later exact source head.
 
 ## Standing Lanes
 

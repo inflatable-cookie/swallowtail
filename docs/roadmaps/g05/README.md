@@ -34,11 +34,11 @@ enforcement.
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation paused after review found shared close-bound and tree-attestation gaps | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
-| Supply the shared lifecycle evidence required by the Claude SDK route. | ready; card 057 first; card 058 awaits the breaking close-API decision | Contracts 010 and 019; PR 188 review | `g05.023`, cards 057-058 |
+| Supply the shared lifecycle evidence required by the Claude SDK route. | blocked; card 057 complete on an evidence stop; tree-completion vocabulary landed with no local positive attestation; two operator decisions open | Contracts 010 and 019; PR 188 review | `g05.023`, cards 057-058 |
 
 ## Planned Next Roadmaps
 
-- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 057 first
+- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — blocked; two operator decisions open behind card 057
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
@@ -69,8 +69,10 @@ standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
-planned after the card 055 review stop. Milestone 023 is ready through card
-057; card 058 awaits the operator's breaking close-API decision.
+planned after the card 055 review stop. Milestone 023 delivered card 057's
+tree-completion vocabulary and stopped on local attestation; it now waits on
+two operator decisions, the local-host `unsafe` posture and card 058's
+breaking close-API seam.
 
 ## Current Boundary
 
@@ -341,7 +343,7 @@ an approximation hidden behind the SDK identity.
 
 ## Milestones
 
-- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 057 first; card 058 awaits the close-API decision
+- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — blocked; card 058 awaits the close-API decision; local tree attestation awaits a posture decision
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`

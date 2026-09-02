@@ -7,6 +7,16 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- separate root process exit from owned descendant-tree completion in runtime
+  process evidence: `ProcessTreeCompletion::{RootOnly, OwnedTreeEmpty}`,
+  `ProcessExit::attesting_empty_owned_tree`, and
+  `ProcessExit::tree_completion`. `ProcessExit::new` stays root-only, so no
+  existing caller or fixture host gains a tree claim, and only a host whose
+  concrete mechanism observed an empty owned tree may construct the attested
+  state. `swallowtail-host-local` proves descendant enrollment and termination
+  but cannot observe emptiness under `forbid(unsafe_code)`, so every local
+  exit reports root-only on every platform. Contracts 010 and 019, g05.023
+  card 057.
 - publish exact negotiated model-options observation on projected Claude Agent
   ACP session open: after existing model confirmation, parse one bounded
   `configOptions[id=model]` select, retain it on the session handle through

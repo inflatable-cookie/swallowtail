@@ -217,6 +217,28 @@ pub(crate) fn supervise_child(
     });
 }
 
+/// Records the root exit as root-only evidence.
+///
+/// The local host proves descendant *enrollment* and *termination*: every
+/// descendant is spawned into the owned process group, and cleanup signals
+/// that group while its owner handle is still live. Neither proves the group
+/// is *empty* afterwards, and this host does not claim it.
+///
+/// The owner is the ownership primitive and is itself a member of the group,
+/// so a group-directed liveness probe answers "the owner is still here" and
+/// never distinguishes an empty group from a surviving member. Reaping the
+/// owner first would answer the question, but only by probing a bare process
+/// group number after ownership was released, which this host refuses.
+///
+/// The two mechanisms that could observe emptiness are both unavailable to a
+/// `forbid(unsafe_code)` crate with no platform dependency: an extra
+/// inherited descendant-liveness descriptor needs `CommandExt::pre_exec`, and
+/// process-table enumeration by group needs `sysctl` or a procfs walk. Until
+/// one of those is authorized, every local exit stays
+/// [`ProcessTreeCompletion::RootOnly`], including exits where termination
+/// succeeded.
+///
+/// [`ProcessTreeCompletion::RootOnly`]: swallowtail_runtime::ProcessTreeCompletion::RootOnly
 fn exit_record(status: ExitStatus) -> ProcessExit {
     ProcessExit::new(status.success(), status.code())
 }

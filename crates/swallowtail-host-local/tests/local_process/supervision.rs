@@ -1,4 +1,5 @@
 use super::*;
+use swallowtail_runtime::ProcessTreeCompletion;
 
 #[test]
 fn pipe_inheriting_descendant_does_not_stall_wait_or_output_drain() {
@@ -13,6 +14,10 @@ fn pipe_inheriting_descendant_does_not_stall_wait_or_output_drain() {
     let (stdout, stderr) = collect_output(&*process).expect("output drains to terminal");
     let exit = block_on(process.wait()).expect("descendant fixture joins");
     assert!(exit.success());
+    // The descendant was enrolled in the owned group and the group was
+    // signalled, but the host never observed the group empty afterwards.
+    // Successful termination is not completion evidence.
+    assert_eq!(exit.tree_completion(), ProcessTreeCompletion::RootOnly);
     assert!(
         stdout
             .windows(b"descendant-spawned".len())
@@ -76,13 +81,18 @@ fn escaped_descendant_can_outlive_ordinary_process_group_cleanup() {
         .parse::<u32>()
         .expect("fixture pid is numeric");
     let _cleanup = EscapedProcessCleanup(Some(pid));
-    let _exit = block_on(process.wait()).expect(
+    let exit = block_on(process.wait()).expect(
         "ordinary process-group cleanup may report success without containing a setsid child",
     );
     assert!(
         process_is_alive(pid),
         "escaped descendant remains independently live after group cleanup"
     );
+    // The review counterexample: the root exits successfully while an owned
+    // descendant is still alive. A successful root exit must never be
+    // reported as owned-tree completion.
+    assert!(exit.success());
+    assert_eq!(exit.tree_completion(), ProcessTreeCompletion::RootOnly);
 
     let _ = kill(
         Pid::from_raw(i32::try_from(pid).expect("fixture pid fits the host pid type")),
@@ -143,5 +153,42 @@ fn force_stop_racing_natural_exit_never_misreports_clean_exit() {
         let _ = block_on(process.read_output());
         drop(process);
     }
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[test]
+fn a_clean_root_exit_is_never_owned_tree_completion() {
+    let resource_directory = temporary_resource();
+    let (host, executable, environment, resource) = fixture_host(
+        "exit-zero",
+        LocalProcessLimits::default(),
+        &resource_directory,
+    );
+    let process = start(&host, request(&executable, &environment, &resource))
+        .expect("clean-exit fixture starts");
+    let _ = collect_output(&*process).expect("output drains to terminal");
+    let exit = block_on(process.wait()).expect("clean-exit fixture joins");
+
+    assert!(exit.success());
+    assert_eq!(exit.code(), Some(0));
+    assert_eq!(exit.tree_completion(), ProcessTreeCompletion::RootOnly);
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[test]
+fn a_forced_stop_is_never_owned_tree_completion() {
+    let resource_directory = temporary_resource();
+    let (host, executable, environment, resource) =
+        fixture_host("sleep", LocalProcessLimits::default(), &resource_directory);
+    let process = start(&host, request(&executable, &environment, &resource))
+        .expect("sleeping fixture starts");
+    block_on(process.force_stop()).expect("force stop is requested");
+    let exit = block_on(process.wait()).expect("forced fixture joins");
+
+    // A successful force-stop request is a termination request, not an
+    // observation that the owned tree is empty.
+    assert!(!exit.success());
+    assert_eq!(exit.tree_completion(), ProcessTreeCompletion::RootOnly);
+    let _ = block_on(process.read_output());
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
 }

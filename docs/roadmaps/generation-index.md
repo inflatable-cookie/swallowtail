@@ -145,7 +145,7 @@ goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
 g05 has 23 roadmaps: 15 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 023. Milestone 009 is planned
+003, 007, and 011, and no ready milestone. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
@@ -153,7 +153,11 @@ post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
 is not accepted release evidence. Milestone 022 is planned after card 055's
-exact-head lifecycle stop. Milestone 023 is ready through card 057.
+exact-head lifecycle stop. Milestone 023 is blocked: card 057 closed on an honest
+evidence stop that landed the provider-neutral root-exit versus owned-tree-
+empty distinction but proved the local host cannot observe emptiness, so a
+second operator decision on the local-host `unsafe` posture now gates the
+milestone alongside card 058.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 is complete. Card 058 awaits the breaking close-API
 decision, and card 055/PR 188 remain paused behind both prerequisites. No card

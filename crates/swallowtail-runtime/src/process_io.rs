@@ -86,18 +86,58 @@ impl fmt::Debug for ProcessOutputChunk {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+/// Completion evidence for the owned descendant tree behind one process exit.
+///
+/// One root process exiting is not evidence about its descendants. Only a
+/// host that concretely observed its exact owned tree may report more.
+pub enum ProcessTreeCompletion {
+    /// Only the root process exit was observed. Owned descendants are
+    /// unattested: they may have exited, and they may still be running.
+    RootOnly,
+    /// The host observed no member remaining in its exact owned tree.
+    OwnedTreeEmpty,
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 /// Joined child-process exit observation.
+///
+/// The exit carries root truth and, separately, how far the host could prove
+/// completion of the owned descendant tree.
 pub struct ProcessExit {
     success: bool,
     code: Option<i32>,
+    tree_completion: ProcessTreeCompletion,
 }
 
 impl ProcessExit {
     #[must_use]
-    /// Creates an exit observation from success truth and optional exit code.
+    /// Creates a root-only exit observation from success truth and optional
+    /// exit code.
+    ///
+    /// The observation makes no claim about owned descendants.
     pub const fn new(success: bool, code: Option<i32>) -> Self {
-        Self { success, code }
+        Self {
+            success,
+            code,
+            tree_completion: ProcessTreeCompletion::RootOnly,
+        }
+    }
+
+    #[must_use]
+    /// Creates an exit observation that also attests an empty owned tree.
+    ///
+    /// Only a host whose concrete mechanism observed that no member of its
+    /// exact owned tree remains may construct this state. Root exit, exit
+    /// code, a graceful stop request, a successful force-stop request, and a
+    /// successful nearest-child wait are never that observation. A host that
+    /// cannot make the observation reports [`ProcessExit::new`] instead.
+    pub const fn attesting_empty_owned_tree(success: bool, code: Option<i32>) -> Self {
+        Self {
+            success,
+            code,
+            tree_completion: ProcessTreeCompletion::OwnedTreeEmpty,
+        }
     }
 
     #[must_use]
@@ -111,11 +151,20 @@ impl ProcessExit {
     pub const fn code(self) -> Option<i32> {
         self.code
     }
+
+    #[must_use]
+    /// Returns how far owned-tree completion was proved for this exit.
+    pub const fn tree_completion(self) -> ProcessTreeCompletion {
+        self.tree_completion
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
+    use super::{
+        ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream,
+        ProcessTreeCompletion,
+    };
 
     #[test]
     fn process_chunks_redact_payloads() {
@@ -125,5 +174,30 @@ mod tests {
 
         assert!(!format!("{input:?}").contains("input-secret"));
         assert!(!format!("{output:?}").contains("stderr-secret"));
+    }
+
+    #[test]
+    fn ordinary_exit_construction_stays_root_only() {
+        for exit in [
+            ProcessExit::new(true, Some(0)),
+            ProcessExit::new(false, Some(1)),
+            ProcessExit::new(false, None),
+        ] {
+            assert_eq!(exit.tree_completion(), ProcessTreeCompletion::RootOnly);
+        }
+    }
+
+    #[test]
+    fn attested_tree_emptiness_is_a_distinct_explicit_state() {
+        let root_only = ProcessExit::new(true, Some(0));
+        let attested = ProcessExit::attesting_empty_owned_tree(true, Some(0));
+
+        assert_eq!(root_only.success(), attested.success());
+        assert_eq!(root_only.code(), attested.code());
+        assert_ne!(root_only, attested);
+        assert_eq!(
+            attested.tree_completion(),
+            ProcessTreeCompletion::OwnedTreeEmpty
+        );
     }
 }

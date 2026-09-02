@@ -20,20 +20,24 @@ control, new shared type, or lifecycle change.
 2. Retain valid evidence on `ClaudeAgentSessionHandle` through the existing
    `InteractiveSessionHandle::negotiated_model_options` seam and existing
    `NegotiatedSessionModelOptions` runtime type.
-3. Preserve `open_session` behavior and signature. On the preserved path,
-   absent or malformed optional evidence yields no snapshot. On
-   `open_session_with_projection`, malformed, duplicate, unbounded, or
-   current-missing evidence closes the opened session and fails.
+3. Preserve `open_session` behavior and signature. Required missing
+   `configOptions[id=model]` fails both public opens through the existing
+   model-confirmation path. Snapshot-detail malformation that still confirms
+   `currentValue` yields no snapshot on the preserved path. On
+   `open_session_with_projection`, that same snapshot-detail malformation
+   closes the opened session and fails.
 4. Publish only observation row
    `feature.negotiated-model-options-observation` from the active-session
    source on projected open. Prepared and active source ids remain distinct.
    No row on load/resume, catalogue, preserved open, or prepared evidence.
-5. Follow the Cline parser and projected-open proof shape where semantics are
-   identical. Keep Claude-specific diagnostics and lifecycle ownership inside
-   the adapter.
-6. Add exact provider-free cases for matching, absent, malformed, duplicate,
-   unbounded, current-not-in-options, source disagreement, preserved parity,
-   projected cleanup, load/resume omission, and catalogue negatives.
+5. Follow the Cline parser and projected-open proof shape where snapshot-detail
+   semantics are identical. Do not copy Cline's successful-open Absent state:
+   Claude confirmation already requires the model entry. Keep Claude-specific
+   diagnostics and lifecycle ownership inside the adapter.
+6. Add exact provider-free cases for matching, missing required model entry,
+   snapshot-detail malformation, duplicate option values, unbounded,
+   current-not-in-options, source disagreement, preserved parity, projected
+   cleanup, load/resume omission, and catalogue negatives.
 7. Update the Claude guide, route feature matrix, milestone/card closeout,
    changelog, and log only for the delivered observation.
 
@@ -49,8 +53,9 @@ provider work; release preparation.
 
 - [x] exact bounded negotiated model options survive session open
 - [x] existing runtime type and handle seam are reused with no shared API change
-- [x] preserved open remains behavior-compatible for absent and malformed optional evidence
-- [x] projected invalid evidence closes and fails without a contribution
+- [x] required missing model entry fails both public opens through existing confirmation with equal cleanup and no contribution
+- [x] preserved open remains behavior-compatible for snapshot-detail malformation
+- [x] projected invalid snapshot-detail evidence closes and fails without a contribution
 - [x] only projected active open publishes the observation row
 - [x] load/resume and catalogue remain negative
 - [x] all named mutations and cleanup counterexamples fail provider-free
@@ -78,8 +83,10 @@ tests.
 Invariant: the contribution is exact active-session observation, never a
 catalogue or control.
 
-Smallest counterexample: a duplicate option is accepted, preserved open starts
-failing on optional evidence, or a prepared/load/resume source emits the row.
+Smallest counterexample: a duplicate option is accepted, a missing model entry
+succeeds or fails as observation-invalid rather than existing confirmation,
+preserved open starts failing on snapshot-detail evidence, or a
+prepared/load/resume source emits the row.
 
 ## Stop Conditions
 

@@ -17,6 +17,9 @@ impl SharedAgent {
             ]
         })];
         match self.scenario {
+            Scenario::ModelEntryMissing => {
+                options.remove(0);
+            }
             Scenario::ModelMalformed => {
                 options[0]["category"] = json!("other");
             }
@@ -191,6 +194,7 @@ impl SharedAgent {
             | Scenario::ModelDuplicate
             | Scenario::ModelUnadvertised
             | Scenario::ModelUnbounded
+            | Scenario::ModelEntryMissing
             | Scenario::Version => {
                 return Err(fixture_failure());
             }

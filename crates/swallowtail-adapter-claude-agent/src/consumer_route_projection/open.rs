@@ -6,7 +6,7 @@ use crate::driver::{
 use crate::failure::failure;
 use swallowtail_runtime::{
     BoxFuture, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId, HostServices,
-    InteractiveSessionHandle, NegotiatedSessionModelOptions, RuntimeFailure,
+    InteractiveSessionHandle, RuntimeFailure,
 };
 
 /// Future returned by the additive prepared Claude Agent open path.
@@ -30,12 +30,6 @@ impl ClaudeAgentProjectionOpenOutcome {
     /// Returns the exact contribution the acknowledgement proved.
     pub const fn contribution(&self) -> &ConsumerRouteProjectionContribution {
         &self.contribution
-    }
-
-    #[must_use]
-    /// Returns the exact bounded model options observed during open, when present.
-    pub fn negotiated_model_options(&self) -> Option<&NegotiatedSessionModelOptions> {
-        self.session.negotiated_model_options()
     }
 
     #[must_use]
@@ -124,7 +118,6 @@ impl ClaudeAgentPreparedSession {
                         }
                     };
                     let has_model = match observation.model {
-                        ClaudeAgentModelObservation::Absent => false,
                         ClaudeAgentModelObservation::Exact(_) => true,
                         ClaudeAgentModelObservation::Invalid(error) => {
                             let _ = session.close().await;

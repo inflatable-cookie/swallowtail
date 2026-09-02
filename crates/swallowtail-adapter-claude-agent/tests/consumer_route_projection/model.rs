@@ -22,6 +22,7 @@ fn matching_model_survives_open_and_publishes_only_the_projected_active_row() {
     .map_err(|failure| failure.failure().diagnostic().code())
     .expect("matching model opens");
     let options = outcome
+        .session()
         .negotiated_model_options()
         .expect("exact model options survive");
     assert_eq!(options.current_value(), "claude-sonnet-4-6");
@@ -35,7 +36,6 @@ fn matching_model_survives_open_and_publishes_only_the_projected_active_row() {
             ("claude-sonnet-4-6", Some("claude-sonnet-4-6")),
         ]
     );
-    assert_eq!(outcome.session().negotiated_model_options(), Some(options));
     assert!(rows(outcome.contribution()).contains("feature.negotiated-model-options-observation"));
     let model = outcome
         .contribution()
@@ -110,6 +110,47 @@ fn invalid_model_is_ignored_by_preserved_open_and_closes_projected_open() {
         assert_eq!(projected.credential_releases(), 1);
         assert_eq!(projected.resource_releases(), 1);
     }
+}
+
+#[test]
+fn missing_model_entry_fails_both_opens_through_confirmation() {
+    let preserved = FixtureHost::new(Scenario::ModelEntryMissing, "0.61.0");
+    let preserved_failure =
+        match block_on(agent_session(None, false).open_session(
+            preserved.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )) {
+            Ok(_) => panic!("preserved open should reject a missing model entry"),
+            Err(failure) => failure,
+        };
+    let projected = FixtureHost::new(Scenario::ModelEntryMissing, "0.61.0");
+    let projected_failure = match block_on(agent_session(None, false).open_session_with_projection(
+        source(PREPARED),
+        source(ACTIVE),
+        projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+    )) {
+        Ok(_) => panic!("projected open should reject a missing model entry"),
+        Err(failure) => failure,
+    };
+    assert_eq!(
+        preserved_failure.diagnostic().code(),
+        "swallowtail.claude_agent.acp.config_option_missing"
+    );
+    assert_eq!(
+        preserved_failure.diagnostic().code(),
+        projected_failure.failure().diagnostic().code()
+    );
+    assert!(matches!(
+        projected_failure,
+        ClaudeAgentProjectionOpenFailure::Runtime(_)
+    ));
+    assert!(projected_failure.rejected_contribution().is_none());
+    assert_eq!(
+        preserved.credential_releases(),
+        projected.credential_releases()
+    );
+    assert_eq!(preserved.resource_releases(), projected.resource_releases());
+    assert_eq!(preserved.credential_releases(), 1);
+    assert_eq!(preserved.resource_releases(), 1);
 }
 
 #[test]

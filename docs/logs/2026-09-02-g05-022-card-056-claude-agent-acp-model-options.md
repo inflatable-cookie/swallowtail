@@ -13,23 +13,27 @@ evidence is retained on the session handle through the existing
 `NegotiatedSessionModelOptions` type and
 `InteractiveSessionHandle::negotiated_model_options` seam.
 
-Preserved `open_session` still treats absent or malformed optional evidence as
-no snapshot. Invalid evidence on `open_session_with_projection` closes the
-opened session and fails with `swallowtail.negotiated_model_options.invalid`
-and no contribution. Only the projected active source emits
+Required missing `configOptions[id=model]` fails both public opens through the
+existing confirmation path (`swallowtail.claude_agent.acp.config_option_missing`)
+with equal cleanup and no contribution. Snapshot-detail malformation that still
+confirms `currentValue` is no snapshot on preserved `open_session` and
+close+fail on `open_session_with_projection` with
+`swallowtail.negotiated_model_options.invalid` and no contribution. Successful
+open has no Absent observation state: confirmation already requires the model
+entry. Only the projected active source emits
 `feature.negotiated-model-options-observation`. Prepared contribution, load,
 resume, and catalogue stay negative. No shared runtime/core or public control
-changed. `ClaudeAgentProjectionOpenOutcome::negotiated_model_options` is the
-adapter-local public accessor.
+changed. The accepted seam is `session().negotiated_model_options()`; the
+outcome did not keep a pass-through accessor.
 
 No provider session, live probe, claim, package pin, release mutation, tag, or
 merge was authorized.
 
 ## Shared Surfaces
 
-Card 055 restacks onto this PR. Touched merge-order surfaces:
+Card 055 continues in parallel and restacks after this PR merges. Touched
+merge-order surfaces:
 
-- Claude Agent adapter public outcome accessor (no new public types)
 - `docs/guides/claude-agent-prepared-integration.md`
 - `docs/guides/provider-solution-feature-matrix.csv` notes only
 - `CHANGELOG.md` Unreleased
@@ -38,20 +42,21 @@ Card 055 restacks onto this PR. Touched merge-order surfaces:
 - this log and `docs/logs/README.md`
 - managed ACP session handle forwards `negotiated_model_options`
 
-`Cargo.toml` and `lib.rs` exports are unchanged.
+`Cargo.toml` and `lib.rs` exports are unchanged. The unreleased Claude Agent
+public API baseline has no new method from this card.
 
 ## Validation
 
 Card-exact selectors on this worker head:
 
 - `cargo fmt -p swallowtail-adapter-claude-agent`
-- `effigy validate:focused swallowtail-adapter-claude-agent` — 216 tests passed
+- `effigy validate:focused swallowtail-adapter-claude-agent` — 217 tests passed
 - `effigy package:verify-affected swallowtail-adapter-claude-agent`
-- `effigy package:api` — additive `ClaudeAgentProjectionOpenOutcome::negotiated_model_options` on the unreleased Claude Agent baseline; no shared-package change
+- `effigy package:api` — no additive public method on the unreleased Claude Agent baseline; the outcome pass-through accessor was removed; no shared-package change
 - `effigy qa:routes` — 40-solution / 48-route matrices passed
 - `effigy qa:docs`
 - `effigy qa:northstar`
-- `effigy --json scan god-files` — 377 findings; `acknowledgement.rs` left the warning set; no new adapter god-files
+- `effigy --json scan god-files` — 377 findings; `acknowledgement.rs` stayed out of the warning set; no new adapter god-files
 - `git diff --check`
 
 No provider, live, release, tag, or merge work.

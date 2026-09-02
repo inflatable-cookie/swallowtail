@@ -1,6 +1,6 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: ready; cards 055 after 056
+Status: ready; card 055 continues in parallel; restack after 056
 Owner: Tom
 Created: 2026-09-02
 Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
@@ -30,8 +30,9 @@ or production implementation before the two evidence gates close.
    and Contract 029 artifact-authority rule. It selects no new shared public
    vocabulary for the first ACP tranche.
 4. Card 056 added exact negotiated model-options observation to ACP. Card 055
-   implements the provider-free native SDK foundation. Card 056 lands first;
-   card 055 restacks onto the merged 056 head before frontier review.
+   continues the provider-free native SDK foundation in parallel. Card 056
+   lands first; after it merges, card 055 restacks onto that head before
+   frontier review.
 
 ## Boundaries
 
@@ -50,7 +51,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native route; restack after card 056 merges
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native route; continues in parallel; restack after card 056 merges
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

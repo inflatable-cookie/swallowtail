@@ -134,13 +134,15 @@ a new prepared session. It does not alter the read-only access policy or
 permission handling.
 
 These are caller selections, not provider discovery. The route exposes no
-standalone model catalogue. Projected `open_session_with_projection` may
-publish exact negotiated model-options observation from the confirmed `model`
-config option. That row is active-session observation only: not a catalogue,
-not selectable, and not emitted from preserved `open_session`, prepared
-contribution, load, or resume. Malformed, duplicate, unbounded, or
-current-missing evidence closes the opened session and fails the projected
-path; the preserved path still starts with no snapshot.
+standalone model catalogue. Projected `open_session_with_projection` publishes
+exact negotiated model-options observation from the confirmed `model`
+config option when that snapshot is bounded and well-formed. That row is
+active-session observation only: not a catalogue, not selectable, and not
+emitted from preserved `open_session`, prepared contribution, load, or resume.
+Required missing `configOptions[id=model]` fails both public opens through
+existing model confirmation. Snapshot-detail malformation that still confirms
+`currentValue` closes the opened session and fails the projected path; the
+preserved path still starts with no snapshot.
 
 ACP form elicitation is separate from permission mediation. The exact
 choice-and-Other subset projects into the common typed harness-user-input

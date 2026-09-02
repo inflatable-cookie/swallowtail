@@ -39,6 +39,7 @@ pub enum Scenario {
     ModelDuplicate,
     ModelUnadvertised,
     ModelUnbounded,
+    ModelEntryMissing,
     Version,
 }
 

@@ -12,9 +12,10 @@ annotated Git tags from the canonical repository.
   `configOptions[id=model]` select, retain it on the session handle through
   the existing runtime seam, and emit only
   `feature.negotiated-model-options-observation` from a distinct active
-  source. Preserved `open_session` still treats absent or malformed optional
-  evidence as no snapshot. Invalid evidence on `open_session_with_projection`
-  closes the session and fails with
+  source. Required missing model entry fails both public opens through
+  existing confirmation. Snapshot-detail malformation that still confirms
+  `currentValue` is no snapshot on preserved `open_session` and close+fail on
+  `open_session_with_projection` with
   `swallowtail.negotiated_model_options.invalid`. Load, resume, catalogue, and
   prepared contribution stay negative. Research 279, g05.022 card 056.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional

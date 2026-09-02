@@ -11,7 +11,7 @@
 
 ## Ready
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native SDK foundation; restack after card 056 merges
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; priority native SDK foundation; continues in parallel; restack after card 056 merges
 
 ## Blocked
 

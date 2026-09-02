@@ -26,9 +26,10 @@ Normal validation scripts:
   behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
   phrases: `docs/roadmaps/status-grammar.md`
 - `check-roadmap-number-collision.py` — unique numbered milestone and
-  batch-card files in the working tree, after fetching canonical
-  `https://github.com/inflatable-cookie/swallowtail.git` `main`. A number
-  already assigned to a path on that ref cannot appear on another path.
+  batch-card files in the working tree, after fetching the advertised
+  canonical `https://github.com/inflatable-cookie/swallowtail.git` `main`
+  commit as objects (no destination ref, tags, or `FETCH_HEAD`). A number
+  already assigned to a path on that commit cannot appear on another path.
   Behind `effigy qa:docs:roadmaps:numbers` and CI `roadmap-numbers`.
   Hermetic mutation tests: `effigy qa:docs:roadmaps:numbers:test`
 - `check-docs-links.py` — front-door Markdown links plus `docs/research` and

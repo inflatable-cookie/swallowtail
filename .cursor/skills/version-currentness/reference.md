@@ -175,9 +175,11 @@ before allocating ids, and again immediately before push:
 effigy qa:docs:roadmaps:numbers
 ```
 
-That selector fetches the canonical ref into
-`refs/swallowtail/roadmap-authority` and fails closed if the fetch cannot
-refresh it. Next unused is the max numbered
+That selector fetches the advertised canonical commit as objects (`--no-tags`,
+`--no-write-fetch-head`, no destination ref) and fails closed if that object
+cannot be retrieved. It does not follow or overwrite
+`refs/swallowtail/roadmap-authority` or any other existing ref. Next unused is
+the max numbered
 `docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that refreshed
 tree. A number already assigned to a path on canonical main cannot move
 to another path; take a new unused number. Same-path content edits are

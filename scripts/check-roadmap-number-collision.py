@@ -3,9 +3,12 @@
 
 Canonical pushed-main authority is
 ``https://github.com/inflatable-cookie/swallowtail.git`` ``refs/heads/main``.
-This checker fetches that ref immediately before enforcement and aborts if
-the fetch cannot refresh it. ``origin/main`` is not authority: a fork's
-origin, a stale tracking ref, or a failed fetch must not pass.
+This checker fetches that commit as objects immediately before enforcement
+and aborts if the advertised object cannot be retrieved. The fetch has no
+destination ref: it does not create, follow, or overwrite
+``refs/swallowtail/roadmap-authority`` or any other ref, and it does not
+import tags or write ``FETCH_HEAD``. ``origin/main`` is not authority: a
+fork's origin, a stale tracking ref, or a failed fetch must not pass.
 
 In-tree uniqueness is required. A number that canonical main already
 assigns to a path may not appear on a different path in this tree.
@@ -26,7 +29,7 @@ from pathlib import Path
 SCRIPT_ROOT = Path(__file__).resolve().parent.parent
 CANONICAL_AUTHORITY = "https://github.com/inflatable-cookie/swallowtail.git"
 CANONICAL_REF = "refs/heads/main"
-AUTHORITY_FETCH_REF = "refs/swallowtail/roadmap-authority"
+ADVERTISED_OBJECT = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-.+\.md$")
 GENERATION_DIR = re.compile(r"^g\d{2}$")
 NUMBERED_PATH = re.compile(
@@ -126,20 +129,60 @@ def format_key(key: tuple[str, str, str]) -> str:
     return f"{generation} {kind} {number}"
 
 
-def refresh_authority(root: Path, authority: str, ref: str) -> str:
-    spec = f"+{ref}:{AUTHORITY_FETCH_REF}"
-    proc = git_run(root, "fetch", "--quiet", authority, spec)
+def fail_refresh(authority: str, ref: str, detail: str) -> None:
+    fail(
+        f"cannot refresh canonical main from {authority} ({ref}): {detail}. "
+        "Refusing to trust a stale or missing snapshot."
+    )
+
+
+def advertised_authority_sha(root: Path, authority: str, ref: str) -> str:
+    proc = git_run(root, "ls-remote", "--refs", authority, ref)
     if proc.returncode != 0:
         detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
-        fail(
-            f"cannot refresh canonical main from {authority} ({ref}): {detail}. "
-            "Refusing to trust a stale or missing snapshot."
+        fail_refresh(authority, ref, detail)
+    lines = [line for line in proc.stdout.splitlines() if line.strip()]
+    if len(lines) != 1:
+        fail_refresh(
+            authority,
+            ref,
+            f"ls-remote advertised {len(lines)} objects; expected exactly one",
         )
-    sha = resolve_commit(root, AUTHORITY_FETCH_REF)
-    if sha is None:
-        fail(
-            f"canonical main fetch from {authority} ({ref}) did not produce "
-            f"{AUTHORITY_FETCH_REF}. Refusing to trust a stale or missing snapshot."
+    sha, separator, advertised = lines[0].partition("\t")
+    if not separator:
+        parts = lines[0].split()
+        if len(parts) != 2:
+            fail_refresh(authority, ref, f"malformed ls-remote line: {lines[0]!r}")
+        sha, advertised = parts
+    if not ADVERTISED_OBJECT.fullmatch(sha) or advertised != ref:
+        fail_refresh(
+            authority,
+            ref,
+            f"ls-remote advertised {lines[0]!r}; expected {ref}",
+        )
+    return sha
+
+
+def refresh_authority(root: Path, authority: str, ref: str) -> str:
+    sha = advertised_authority_sha(root, authority, ref)
+    proc = git_run(
+        root,
+        "fetch",
+        "--quiet",
+        "--no-tags",
+        "--no-write-fetch-head",
+        authority,
+        sha,
+    )
+    if proc.returncode != 0:
+        detail = proc.stderr.strip() or proc.stdout.strip() or f"exit {proc.returncode}"
+        fail_refresh(authority, ref, detail)
+    kind = git_run(root, "cat-file", "-t", sha)
+    if kind.returncode != 0 or kind.stdout.strip() != "commit":
+        fail_refresh(
+            authority,
+            ref,
+            f"advertised object {sha} is not a local commit after fetch",
         )
     return sha
 

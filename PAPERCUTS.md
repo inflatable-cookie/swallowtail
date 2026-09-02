@@ -396,12 +396,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Closed: 2026-09-02 papercuts currentness card allocation. The first
   gate still trusted stale or fork `origin/main`, allowed delete-and-add
   reuse as a "retitle", and left the mutation suite off CI. Repair:
-  `check-roadmap-number-collision.py` fetches canonical
-  `https://github.com/inflatable-cookie/swallowtail.git` `main` immediately
-  before enforcement and fails closed on fetch failure; number reuse on
-  another path is rejected; `qa:docs:roadmaps:numbers:test` is hermetic;
-  CI job `roadmap-numbers` runs the production checker and that suite.
-  Skill/reference allocate from that refreshed ref, not `origin/main`.
+  `check-roadmap-number-collision.py` fetches the advertised canonical
+  `https://github.com/inflatable-cookie/swallowtail.git` `main` commit as
+  objects immediately before enforcement and fails closed on fetch
+  failure. The fetch has no destination ref: it cannot follow
+  `refs/swallowtail/roadmap-authority`, import tags, or write
+  `FETCH_HEAD`. Number reuse on another path is rejected;
+  `qa:docs:roadmaps:numbers:test` is hermetic, including symbolic-ref,
+  similarly named tag, and `FETCH_HEAD` isolation; CI job
+  `roadmap-numbers` runs the production checker and that suite.
+  Skill/reference allocate from that refreshed commit, not `origin/main`.
 
 ## Closed
 

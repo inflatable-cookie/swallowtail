@@ -63,6 +63,105 @@ collision_expect_pass() {
   fi
 }
 
+collision_git_dir_file() {
+  local collision_cwd=$1
+  local collision_name=$2
+  printf '%s/%s\n' "$(git -C "$collision_cwd" rev-parse --absolute-git-dir)" "$collision_name"
+}
+
+collision_snapshot_graph() {
+  local collision_cwd=$1
+  local collision_out=$2
+  local collision_fetch_head
+  mkdir -p "$collision_out"
+  git -C "$collision_cwd" for-each-ref \
+    --format='%(objectname) %(objecttype) %(refname)%(if)%(symref)%(then) -> %(symref)%(end)' \
+    --sort=refname >"$collision_out/refs"
+  git -C "$collision_cwd" rev-parse HEAD >"$collision_out/HEAD"
+  if ! git -C "$collision_cwd" symbolic-ref -q HEAD >"$collision_out/HEAD_SYM"; then
+    : >"$collision_out/HEAD_SYM"
+  fi
+  collision_fetch_head=$(collision_git_dir_file "$collision_cwd" FETCH_HEAD)
+  if [[ -e "$collision_fetch_head" ]]; then
+    cp "$collision_fetch_head" "$collision_out/FETCH_HEAD"
+    printf 'present\n' >"$collision_out/FETCH_HEAD_STATE"
+  else
+    printf 'absent\n' >"$collision_out/FETCH_HEAD_STATE"
+  fi
+}
+
+collision_assert_graph_unchanged() {
+  local collision_before=$1
+  local collision_after=$2
+  local collision_label=$3
+  if ! cmp -s "$collision_before/refs" "$collision_after/refs"; then
+    printf '%s ref graph changed\n' "$collision_label" >&2
+    diff -u "$collision_before/refs" "$collision_after/refs" >&2 || true
+    exit 1
+  fi
+  if ! cmp -s "$collision_before/HEAD" "$collision_after/HEAD"; then
+    printf '%s HEAD changed\n' "$collision_label" >&2
+    diff -u "$collision_before/HEAD" "$collision_after/HEAD" >&2 || true
+    exit 1
+  fi
+  if ! cmp -s "$collision_before/HEAD_SYM" "$collision_after/HEAD_SYM"; then
+    printf '%s HEAD symbolic ref changed\n' "$collision_label" >&2
+    diff -u "$collision_before/HEAD_SYM" "$collision_after/HEAD_SYM" >&2 || true
+    exit 1
+  fi
+  if ! cmp -s "$collision_before/FETCH_HEAD_STATE" "$collision_after/FETCH_HEAD_STATE"; then
+    printf '%s FETCH_HEAD presence changed\n' "$collision_label" >&2
+    diff -u "$collision_before/FETCH_HEAD_STATE" "$collision_after/FETCH_HEAD_STATE" >&2 || true
+    exit 1
+  fi
+  if [[ "$(<"$collision_before/FETCH_HEAD_STATE")" == present ]]; then
+    if ! cmp -s "$collision_before/FETCH_HEAD" "$collision_after/FETCH_HEAD"; then
+      printf '%s FETCH_HEAD bytes changed\n' "$collision_label" >&2
+      diff -u "$collision_before/FETCH_HEAD" "$collision_after/FETCH_HEAD" >&2 || true
+      exit 1
+    fi
+  fi
+}
+
+collision_install_isolation_traps() {
+  local collision_cwd=$1
+  collision_git "$collision_cwd" commit --allow-empty -q -m 'isolation sentinel'
+  collision_git "$collision_cwd" update-ref refs/heads/review-sentinel HEAD
+  collision_git "$collision_cwd" tag roadmap-authority HEAD
+  collision_git "$collision_cwd" tag swallowtail-roadmap-authority HEAD
+  collision_git "$collision_cwd" tag v0.1.0 HEAD
+  collision_git "$collision_cwd" symbolic-ref \
+    refs/swallowtail/roadmap-authority refs/heads/review-sentinel
+}
+
+collision_write_fetch_head_sentinel() {
+  local collision_cwd=$1
+  printf 'sentinel-fetch-head-not-from-git\n' \
+    >"$(collision_git_dir_file "$collision_cwd" FETCH_HEAD)"
+}
+
+collision_assert_no_imported_release_tags() {
+  local collision_cwd=$1
+  local collision_label=$2
+  local collision_tag_oid
+  local collision_sentinel_oid
+  if git -C "$collision_cwd" show-ref --verify --quiet refs/tags/v0.3.3; then
+    printf '%s imported remote release tag v0.3.3\n' "$collision_label" >&2
+    exit 1
+  fi
+  collision_tag_oid=$(git -C "$collision_cwd" rev-parse refs/tags/v0.1.0)
+  collision_sentinel_oid=$(git -C "$collision_cwd" rev-parse refs/heads/review-sentinel)
+  if [[ "$collision_tag_oid" != "$collision_sentinel_oid" ]]; then
+    printf '%s local tag v0.1.0 was rewritten\n' "$collision_label" >&2
+    exit 1
+  fi
+  if [[ "$(git -C "$collision_cwd" symbolic-ref refs/swallowtail/roadmap-authority)" != \
+    refs/heads/review-sentinel ]]; then
+    printf '%s authority symbolic ref was rewritten\n' "$collision_label" >&2
+    exit 1
+  fi
+}
+
 # Canonical and fork remotes start at 075. Canonical later gains 076-kimi;
 # the fork does not. Worker clones the fork, so origin is not authority.
 collision_seed=$collision_scratch/seed
@@ -239,5 +338,71 @@ collision_expect_pass \
   "${collision_checker[@]}" \
   --root "$collision_updater" \
   --authority "$collision_canonical"
+
+# Tag-bearing canonical remote. Isolation clones stay tagless except for
+# similarly named local sentinels. Checker must not follow a symbolic
+# refs/swallowtail/roadmap-authority, import remote tags, or write FETCH_HEAD.
+collision_git "$collision_canonical" tag v0.1.0 HEAD
+collision_git "$collision_canonical" tag v0.3.3 HEAD
+
+collision_iso_pass=$collision_scratch/iso-pass
+collision_git "$collision_scratch" clone -q --no-tags \
+  "$collision_canonical" "$collision_iso_pass"
+collision_install_isolation_traps "$collision_iso_pass"
+collision_write_fetch_head_sentinel "$collision_iso_pass"
+collision_snapshot_graph "$collision_iso_pass" "$collision_scratch/iso-pass-before"
+collision_expect_pass \
+  "${collision_checker[@]}" \
+  --root "$collision_iso_pass" \
+  --authority "$collision_canonical"
+collision_snapshot_graph "$collision_iso_pass" "$collision_scratch/iso-pass-after"
+collision_assert_graph_unchanged \
+  "$collision_scratch/iso-pass-before" \
+  "$collision_scratch/iso-pass-after" \
+  'successful isolated check'
+collision_assert_no_imported_release_tags "$collision_iso_pass" 'successful isolated check'
+
+collision_iso_fail=$collision_scratch/iso-fail
+collision_git "$collision_scratch" clone -q --no-tags \
+  "$collision_fork" "$collision_iso_fail"
+collision_write_card \
+  "$collision_iso_fail" \
+  docs/roadmaps/g04/batch-cards/076-claude-code-2-1-238-identity.md \
+  '# 076 Claude Code identity'
+collision_git "$collision_iso_fail" add docs
+collision_git "$collision_iso_fail" commit -q -m 'stale currentness allocates 076'
+collision_install_isolation_traps "$collision_iso_fail"
+collision_write_fetch_head_sentinel "$collision_iso_fail"
+collision_snapshot_graph "$collision_iso_fail" "$collision_scratch/iso-fail-before"
+collision_expect_failure \
+  'stale-base number collision' \
+  "${collision_checker[@]}" \
+  --root "$collision_iso_fail" \
+  --authority "$collision_canonical"
+collision_snapshot_graph "$collision_iso_fail" "$collision_scratch/iso-fail-after"
+collision_assert_graph_unchanged \
+  "$collision_scratch/iso-fail-before" \
+  "$collision_scratch/iso-fail-after" \
+  'failing isolated check'
+collision_assert_no_imported_release_tags "$collision_iso_fail" 'failing isolated check'
+
+collision_iso_absent=$collision_scratch/iso-absent
+collision_git "$collision_scratch" clone -q --no-tags \
+  "$collision_canonical" "$collision_iso_absent"
+collision_install_isolation_traps "$collision_iso_absent"
+rm -f "$(collision_git_dir_file "$collision_iso_absent" FETCH_HEAD)"
+collision_snapshot_graph "$collision_iso_absent" "$collision_scratch/iso-absent-before"
+collision_expect_pass \
+  "${collision_checker[@]}" \
+  --root "$collision_iso_absent" \
+  --authority "$collision_canonical"
+collision_snapshot_graph "$collision_iso_absent" "$collision_scratch/iso-absent-after"
+collision_assert_graph_unchanged \
+  "$collision_scratch/iso-absent-before" \
+  "$collision_scratch/iso-absent-after" \
+  'isolated check with no FETCH_HEAD'
+collision_assert_no_imported_release_tags \
+  "$collision_iso_absent" \
+  'isolated check with no FETCH_HEAD'
 
 printf 'roadmap number collision tests passed\n'

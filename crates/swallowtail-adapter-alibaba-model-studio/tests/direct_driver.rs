@@ -5,7 +5,7 @@ mod failure_cases;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{DriverCall, DriverFixture, ServerScenario};
+use support::{DriverCall, DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaModelStudioDriver, alibaba_model_studio_descriptor,
 };
@@ -197,7 +197,10 @@ fn two_serial_turns_use_exact_requests_then_delete_items_before_conversation() {
         "swallowtail.alibaba_model_studio.turn_limit_reached"
     );
     assert_eq!(fixture.server.response_attempts(), 2);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.releases(), 1);
 
     let requests = fixture.requests();

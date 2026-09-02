@@ -206,7 +206,13 @@ fn prepared_binding(
         .management_binding()
         .expect("management binding exists")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            session_host.cleanup_request(),
+            session_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
     (prepared, binding, host_id)
 }
 

@@ -6,7 +6,7 @@ use swallowtail_adapter_kimi::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, OperationContent, ProviderSessionCandidate, RuntimeFailure,
-    RuntimeTurnId, SessionResumeBinding, TerminalOutcome, TurnRequest,
+    RuntimeTurnId, SessionCleanupRequest, SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
 
 async fn prepare_installation(
@@ -50,12 +50,13 @@ async fn import_selected_session(
 async fn open_prompt_and_interrupt(
     prepared: &KimiPreparedSession,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
     turn_id: RuntimeTurnId,
     content: OperationContent,
 ) -> Result<(TerminalOutcome, CleanupOutcome), RuntimeFailure> {
     let mut session = prepared.open_session(services.clone()).await?;
     let mut turn = session
-        .start_turn(TurnRequest::new(turn_id, content), services)
+        .start_turn(TurnRequest::new(turn_id, content), services.clone())
         .await?;
     let _ = turn.cancellation().request().await?;
     let outcome = turn
@@ -63,7 +64,7 @@ async fn open_prompt_and_interrupt(
         .expect("Kimi turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    Ok((outcome, session.close().await))
+    Ok((outcome, session.close(cleanup, services).await))
 }
 
 async fn load_with_replay(
@@ -71,14 +72,15 @@ async fn load_with_replay(
     request_id: swallowtail_runtime::RequestId,
     binding: SessionResumeBinding,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
 ) -> Result<usize, String> {
     let loaded = prepared
-        .load_session(request_id, binding, services)
+        .load_session(request_id, binding, services.clone())
         .map_err(|error| error.to_string())?
         .await
         .map_err(|error| error.to_string())?;
     let (replay, session) = loaded.into_parts();
-    let _ = session.close().await;
+    let _ = session.close(cleanup, services).await;
     Ok(replay.len())
 }
 
@@ -87,13 +89,14 @@ async fn resume_without_replay(
     request_id: swallowtail_runtime::RequestId,
     binding: SessionResumeBinding,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
 ) -> Result<CleanupOutcome, String> {
     let session = prepared
-        .resume_session(request_id, binding, services)
+        .resume_session(request_id, binding, services.clone())
         .map_err(|error| error.to_string())?
         .await
         .map_err(|error| error.to_string())?;
-    Ok(session.close().await)
+    Ok(session.close(cleanup, services).await)
 }
 
 fn main() {}

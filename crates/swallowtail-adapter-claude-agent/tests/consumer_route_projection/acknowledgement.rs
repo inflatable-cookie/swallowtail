@@ -16,6 +16,7 @@ fn matching_reasoning_opens_with_exact_provider_effective_state() {
         agent_session(Some("low"), false).open_session_with_projection(
             source(PREPARED),
             source(ACTIVE),
+            fixture.cleanup_request(),
             fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     )
@@ -45,7 +46,13 @@ fn matching_reasoning_opens_with_exact_provider_effective_state() {
         ["low"]
     );
     let (session, _) = outcome.into_parts();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            fixture.cleanup_request(),
+            fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -55,6 +62,7 @@ fn exact_advertised_mismatch_returns_rejected_state_and_no_session() {
         agent_session(Some("low"), false).open_session_with_projection(
             source(PREPARED),
             source(ACTIVE),
+            fixture.cleanup_request(),
             fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     ) {
@@ -105,6 +113,7 @@ fn ambiguous_or_unbounded_confirmations_return_runtime_without_contribution() {
             agent_session(Some("low"), false).open_session_with_projection(
                 source(PREPARED),
                 source(ACTIVE),
+                fixture.cleanup_request(),
                 fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
             ),
         ) {
@@ -127,6 +136,7 @@ fn omitted_reasoning_names_no_acknowledgement_and_keeps_model_observation() {
     let outcome = block_on(agent_session(None, false).open_session_with_projection(
         source(PREPARED),
         source(ACTIVE),
+        fixture.cleanup_request(),
         fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
     ))
     .map_err(|failure| failure.failure().diagnostic().code())
@@ -134,7 +144,13 @@ fn omitted_reasoning_names_no_acknowledgement_and_keeps_model_observation() {
     assert!(!rows(outcome.contribution()).contains("feature.active-session-reasoning-ack"));
     assert!(rows(outcome.contribution()).contains("feature.negotiated-model-options-observation"));
     let (session, _) = outcome.into_parts();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            fixture.cleanup_request(),
+            fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -144,6 +160,7 @@ fn equal_source_ids_fail_before_process_work() {
         agent_session(Some("low"), false).open_session_with_projection(
             source(PREPARED),
             source(PREPARED),
+            fixture.cleanup_request(),
             fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     ) {
@@ -179,6 +196,7 @@ fn both_public_open_paths_keep_failure_code_and_cleanup_equal() {
             agent_session(Some("low"), false).open_session_with_projection(
                 source(PREPARED),
                 source(ACTIVE),
+                projected.cleanup_request(),
                 projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
             ),
         ) {
@@ -209,6 +227,7 @@ fn both_public_open_paths_keep_the_same_managed_handle_shape() {
         agent_session(Some("low"), false).open_session_with_projection(
             source(PREPARED),
             source(ACTIVE),
+            projected.cleanup_request(),
             projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     ) {
@@ -233,8 +252,20 @@ fn both_public_open_paths_keep_the_same_managed_handle_shape() {
         projected_handle.negotiated_model_options()
     );
     assert!(preserved_handle.negotiated_model_options().is_some());
-    assert_eq!(block_on(preserved_handle.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(projected_handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(preserved_handle.close(
+            preserved.cleanup_request(),
+            preserved.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
+    assert_eq!(
+        block_on(projected_handle.close(
+            projected.cleanup_request(),
+            projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         preserved.credential_releases(),
         projected.credential_releases()

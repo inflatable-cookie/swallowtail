@@ -88,7 +88,10 @@ fn non_utf8_tool_result_fails_closed_without_leaking_or_posting() {
     assert!(!format!("{collected:?}{outcome:?}").contains(SIGNATURE));
     assert_eq!(fixture.server.requests().len(), 1);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -155,7 +158,10 @@ fn continuation_upload_reads_redacted_body_onto_the_wire() {
     }
     assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
     let continuation = &fixture.server.requests()[1].body;
     assert!(
         continuation

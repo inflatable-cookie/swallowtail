@@ -88,6 +88,43 @@ struct CreatedSessionCleanup {
     deletion: RemoteResourceDeletionOutcome,
 }
 
+#[derive(Clone)]
+struct RunSessionCleanupBoundary {
+    request: SessionCleanupRequest,
+    services: HostServices,
+}
+
+async fn close_run_session(
+    session: OpenCodeSessionHandle,
+    boundary: Option<RunSessionCleanupBoundary>,
+) -> CreatedSessionCleanup {
+    let Some(boundary) = boundary else {
+        return session.close_and_delete().await;
+    };
+    let expected_execution_host_id = session.resume_binding.execution_host_id().clone();
+    let deletion = Arc::new(Mutex::new(None));
+    let captured_deletion = Arc::clone(&deletion);
+    let cleanup = swallowtail_runtime::bound_session_cleanup(
+        expected_execution_host_id,
+        boundary.request,
+        boundary.services,
+        Box::pin(async move {
+            let result = session.close_and_delete().await;
+            *captured_deletion
+                .lock()
+                .expect("OpenCode run deletion lock poisoned") = Some(result.deletion);
+            result.cleanup
+        }),
+    )
+    .await;
+    let deletion = deletion
+        .lock()
+        .expect("OpenCode run deletion lock poisoned")
+        .take()
+        .unwrap_or(RemoteResourceDeletionOutcome::Unconfirmed);
+    CreatedSessionCleanup { cleanup, deletion }
+}
+
 impl OpenCodeSessionHandle {
     async fn close_and_delete(mut self) -> CreatedSessionCleanup {
         let active_cleanup = close_active(&self.active).await;

@@ -37,7 +37,10 @@ fn direct_session_restoration_opens_a_fresh_session_with_explicit_context_loss()
     assert_eq!(replacement.interrupted_turn_id(), &interrupted);
     let (_, replacement) = replacement.into_parts();
     assert!(replacement.provider_session_ref().is_none());
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(replacement.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.server.inference_attempts(), 0);
 }
 

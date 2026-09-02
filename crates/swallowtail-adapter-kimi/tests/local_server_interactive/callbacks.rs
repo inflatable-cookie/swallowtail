@@ -1,6 +1,6 @@
 use super::fixture::{id, prepare, session_profile};
 use crate::interactive_support::{InteractiveFixtureServer, InteractiveScenario};
-use crate::lifecycle_support::FixtureHost;
+use crate::lifecycle_support::{FixtureHost, close_session};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_kimi::KimiLocalServerPermissionMode;
@@ -36,7 +36,7 @@ fn manual_approval_and_question_are_explicit_callback_exchanges() {
                 turn_id.clone(),
                 OperationContent::new("fixture callback").expect("content"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn starts");
         let mut callbacks = turn
@@ -108,6 +108,9 @@ fn manual_approval_and_question_are_explicit_callback_exchanges() {
         );
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
     }
 }

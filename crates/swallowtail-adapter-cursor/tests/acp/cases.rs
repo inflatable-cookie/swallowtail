@@ -2,7 +2,7 @@
 fn exact_attachment_streams_activity_and_joins_owned_resources() {
     let (host, services, mut session) = open(Scenario::Success);
     assert!(session.negotiated_model_options().is_none());
-    let mut turn = start(&mut *session, services, "cursor-success-turn");
+    let mut turn = start(&mut *session, services.clone(), "cursor-success-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome available"),
@@ -50,7 +50,7 @@ fn exact_attachment_streams_activity_and_joins_owned_resources() {
     assert!(!format!("{events:?}").contains("private fixture prompt"));
     assert!(!format!("{outcome:?}").contains("Fixture response"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 
     let process = host
         .process
@@ -84,13 +84,16 @@ fn exact_attachment_streams_activity_and_joins_owned_resources() {
 
 #[test]
 fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_session() {
-    let (_opened_host, _opened_services, session) = open(Scenario::Success);
+    let (_opened_host, opened_services, session) = open(Scenario::Success);
     let binding = session
         .resume_binding()
         .expect("opened Cursor session exposes a durable binding")
         .clone();
     assert!(binding.model_id().is_none());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, opened_services)),
+        CleanupOutcome::Clean
+    );
 
     let host_id = ExecutionHostId::new("fixture.host.cursor").expect("host");
     let selected = selection(host_id.clone());
@@ -120,7 +123,7 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
     let recovered = block_on(driver.recover_session_attachment(
         selected.plan,
         request,
-        services,
+        services.clone(),
     ))
     .expect("exact attachment recovers");
     assert_eq!(
@@ -128,7 +131,10 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
         Some(binding.provider_session_ref())
     );
     assert_eq!(recovered.resume_binding(), Some(&binding));
-    assert_eq!(block_on(recovered.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(recovered, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         host.writes()
             .iter()
@@ -140,9 +146,9 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
 
 #[test]
 fn attachment_recovery_rejects_invalid_or_incomplete_loads_without_a_handle() {
-    let (_host, _services, session) = open(Scenario::Success);
+    let (_host, services, session) = open(Scenario::Success);
     let binding = session.resume_binding().expect("binding").clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 
     for (scenario, suffix) in [
         (Scenario::RecoveryForeign, "session_mismatch"),
@@ -229,13 +235,13 @@ fn repeated_provider_and_fallback_message_ids_remain_isolated_across_turns() {
         assert_ne!(first.key(), second.key());
     }
 
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]
 fn permission_is_observed_and_cancelled_without_ambient_approval() {
     let (host, services, mut session) = open(Scenario::Permission);
-    let mut turn = start(&mut *session, services, "cursor-permission-turn");
+    let mut turn = start(&mut *session, services.clone(), "cursor-permission-turn");
     assert!(turn.take_callbacks().is_none());
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -253,13 +259,13 @@ fn permission_is_observed_and_cancelled_without_ambient_approval() {
             && message["result"]["outcome"]["outcome"] == "cancelled"
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]
 fn active_turn_cancellation_waits_for_native_cancelled_result() {
     let (_host, services, mut session) = open(Scenario::Cancellation);
-    let mut turn = start(&mut *session, services, "cursor-cancel-turn");
+    let mut turn = start(&mut *session, services.clone(), "cursor-cancel-turn");
     block_on(turn.cancellation().request()).expect("cancel sent");
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -267,7 +273,7 @@ fn active_turn_cancellation_waits_for_native_cancelled_result() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]
@@ -275,11 +281,11 @@ fn local_and_remote_authoritative_hosts_share_the_same_wire_shape() {
     for host_id in ["fixture.host.local", "fixture.host.remote-authoritative"] {
         let host_id = ExecutionHostId::new(host_id).expect("host");
         let (host, services, mut session) = open_on(host_id.clone(), Scenario::Success);
-        let mut turn = start(&mut *session, services, "cursor-topology-turn");
+        let mut turn = start(&mut *session, services.clone(), "cursor-topology-turn");
         let outcome = block_on(turn.take_terminal_outcome().expect("terminal"));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
         assert_eq!(
             selection(host_id.clone()).plan.execution_host_id(),
             &host_id
@@ -327,11 +333,11 @@ fn malformed_negotiation_and_disconnect_are_sanitized_and_joined() {
     assert_eq!(malformed.resource_releases.load(Ordering::SeqCst), 1);
 
     let (_host, services, mut session) = open(Scenario::Disconnect);
-    let mut turn = start(&mut *session, services, "cursor-disconnect-turn");
+    let mut turn = start(&mut *session, services.clone(), "cursor-disconnect-turn");
     let outcome = block_on(turn.take_terminal_outcome().expect("terminal"));
     assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]

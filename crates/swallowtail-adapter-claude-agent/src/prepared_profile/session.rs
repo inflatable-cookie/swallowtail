@@ -19,7 +19,7 @@ mod handle;
 mod helpers;
 mod restoration;
 
-use handle::wrap_management_handle;
+use handle::{validate_management_context, wrap_management_handle};
 pub(super) use helpers::{
     ClaudeAgentPreparedOpenLifecycleFuture, lifecycle_management_instance, operation_capabilities,
     reject_attachment_reasoning, validate_options, with_activity,
@@ -80,6 +80,7 @@ impl ClaudeAgentPreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(&management_instance, &access)?;
             let (handle, observation) = driver
                 .open_session_lifecycle(plan, request.clone(), services.clone())
                 .await?;
@@ -131,6 +132,7 @@ impl ClaudeAgentPreparedSession {
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Ok(Box::pin(async move {
+            validate_management_context(&instance, &access)?;
             let loaded = driver.load_session(plan, request.clone(), services).await?;
             let (replay, handle) = loaded.into_parts();
             let handle = wrap_management_handle(
@@ -202,6 +204,7 @@ impl ClaudeAgentPreparedSession {
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Ok(Box::pin(async move {
+            validate_management_context(&instance, &access)?;
             let handle = driver
                 .resume_session(plan, request.clone(), services)
                 .await?;

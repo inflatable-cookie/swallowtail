@@ -47,7 +47,7 @@ fn every_continuity_segment_loads_oldest_first_and_resumes_without_history() {
         let (_, handle) = loaded.into_parts();
         assert_eq!(handle.resume_binding(), Some(&binding));
         assert!(matches!(
-            block_on(handle.close()),
+            block_on(close_session(handle, &fixture)),
             swallowtail_runtime::CleanupOutcome::Clean
         ));
 
@@ -80,7 +80,7 @@ fn every_continuity_segment_loads_oldest_first_and_resumes_without_history() {
             "resume must not fetch replay"
         );
         assert!(matches!(
-            block_on(resumed.close()),
+            block_on(close_session(resumed, &fixture)),
             swallowtail_runtime::CleanupOutcome::Clean
         ));
     }
@@ -107,7 +107,7 @@ fn persisted_binding_resumes_and_prompts_the_exact_session_without_fresh_creatio
         .expect("binding exports");
     let stored = persisted.as_bytes().to_vec();
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
 
@@ -234,7 +234,7 @@ fn persisted_binding_resumes_and_prompts_the_exact_session_without_fresh_creatio
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
 

@@ -17,7 +17,7 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
         .expect("source binding exists")
         .clone();
     let mut turn =
-        block_on(session.start_turn(turn("reconciliation-runtime-turn"), first_services))
+        block_on(session.start_turn(turn("reconciliation-runtime-turn"), first_services.clone()))
             .expect("source turn starts");
     let events = block_on(
         turn.take_events()
@@ -43,7 +43,10 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
         &TerminalStatus::Completed
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, first_services)),
+        CleanupOutcome::Clean
+    );
     drop(first_server);
 
     let second_server = InteractiveFixtureServer::start(InteractiveScenario::ReconcileComplete);
@@ -108,7 +111,7 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
         restoration.attachment_kind(),
         SettledSessionAttachmentKind::Resume
     );
-    let restored = block_on(restoration.restore(second_services)).unwrap_or_else(|error| {
+    let restored = block_on(restoration.restore(second_services.clone())).unwrap_or_else(|error| {
         panic!(
             "reconciliation executes: {error:?}; requests={:?}",
             second_server.requests()
@@ -137,7 +140,10 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
     let SettledSessionAttachment::Resumed(resumed) = attachment else {
         panic!("Kimi local-server settled attachment is replay-free resume");
     };
-    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(resumed, second_services)),
+        CleanupOutcome::Clean
+    );
     assert!(
         second_server
             .requests()
@@ -174,7 +180,10 @@ fn attached_turn_detaches_without_abort_and_reconciles_as_exact_active_work() {
         .resume_binding()
         .expect("detachment binding exists")
         .clone();
-    let mut turn = block_on(session.start_turn(turn("detachment-runtime-turn"), first_services))
+    let mut turn = block_on(session.start_turn(
+        turn("detachment-runtime-turn"),
+        first_services.clone(),
+    ))
         .expect("detachment turn starts");
     let mut events = turn.take_events().expect("detachment event stream exists");
     let checkpoint = block_on(async {
@@ -211,7 +220,10 @@ fn attached_turn_detaches_without_abort_and_reconciles_as_exact_active_work() {
     );
     drop(events);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, first_services)),
+        CleanupOutcome::Clean
+    );
     let first_requests = first_server.finish();
     assert!(first_requests.contains(&"WS observer closed".to_owned()));
     assert!(!first_requests.contains(&"WS unexpected control text".to_owned()));
@@ -253,4 +265,3 @@ fn attached_turn_detaches_without_abort_and_reconciles_as_exact_active_work() {
             .all(|request| { !request.contains("/prompts") && !request.contains("abort") })
     );
 }
-

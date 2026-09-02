@@ -1,6 +1,6 @@
 use super::fixture::{id, prepare, session_input, session_profile, turn};
 use crate::interactive_support::{InteractiveFixtureServer, InteractiveScenario};
-use crate::lifecycle_support::FixtureHost;
+use crate::lifecycle_support::{FixtureHost, close_session};
 use futures_executor::block_on;
 use std::sync::Arc;
 use swallowtail_adapter_kimi::{
@@ -54,7 +54,7 @@ fn turn_deadline_aborts_provider_work_and_reports_timeout() {
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let request =
         turn("turn-deadline").with_deadline(Deadline::at(MonotonicInstant::from_ticks(10)));
-    let mut turn = block_on(session.start_turn(request, services)).expect("turn starts");
+    let mut turn = block_on(session.start_turn(request, services.clone())).expect("turn starts");
     host.set_now(10);
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -62,7 +62,10 @@ fn turn_deadline_aborts_provider_work_and_reports_timeout() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -81,13 +84,17 @@ fn task_admission_failure_precedes_websocket_and_prompt_effects() {
     );
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let requests_before_turn = server.requests();
-    let failure = match block_on(session.start_turn(turn("turn-task-rejection"), services)) {
+    let failure = match block_on(session.start_turn(turn("turn-task-rejection"), services.clone()))
+    {
         Ok(_) => panic!("task rejection must stop the turn"),
         Err(failure) => failure,
     };
     assert_eq!(failure.diagnostic().code(), "fixture.kimi.task_rejected");
     assert_eq!(server.requests(), requests_before_turn);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -117,7 +124,7 @@ fn cancellation_and_terminal_state_reject_late_detachment() {
             ))
             .expect("detachment profile prepares");
         let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
-        let mut turn = block_on(session.start_turn(turn("detachment-race-turn"), services))
+        let mut turn = block_on(session.start_turn(turn("detachment-race-turn"), services.clone()))
             .expect("turn starts");
         if cancel {
             block_on(turn.cancellation().request()).expect("cancellation requests");
@@ -138,7 +145,10 @@ fn cancellation_and_terminal_state_reject_late_detachment() {
         .expect_err("late detachment rejects");
         assert_eq!(error.diagnostic().code(), expected_code);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -151,7 +161,7 @@ fn run_scenario(scenario: InteractiveScenario, cancel: bool) -> TerminalOutcome 
     let profile = session_profile(&prepared, KimiLocalServerPermissionMode::Auto, "failure");
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let mut turn =
-        block_on(session.start_turn(turn("turn-failure"), services)).expect("turn starts");
+        block_on(session.start_turn(turn("turn-failure"), services.clone())).expect("turn starts");
     if cancel {
         block_on(turn.cancellation().request()).expect("cancellation is acknowledged");
     }
@@ -160,7 +170,7 @@ fn run_scenario(scenario: InteractiveScenario, cancel: bool) -> TerminalOutcome 
             .expect("terminal outcome exists"),
     );
     let _ = block_on(turn.close());
-    let _ = block_on(session.close());
+    let _ = block_on(close_session(session, services));
     outcome
 }
 

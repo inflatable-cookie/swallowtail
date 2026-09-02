@@ -49,7 +49,7 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
             );
             let mut turn = start(
                 &mut *session,
-                services,
+                services.clone(),
                 &format!("turn-{host_suffix}-{version}"),
             );
             let outcome = block_on(
@@ -99,7 +99,10 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
                 .count();
             assert_eq!(model_selections, usize::from(version != "0.53.0"));
             assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(
+                block_on(session.close(host.cleanup_request(), services)),
+                CleanupOutcome::Clean
+            );
             assert_eq!(host.resource_releases(), 1);
             assert_eq!(host.credential_releases(), 1);
         }
@@ -153,9 +156,13 @@ fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
         );
         let (_, handle) = loaded.into_parts();
         assert_eq!(handle.resume_binding(), Some(&binding));
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(handle.close(host.cleanup_request(), services.clone())),
+            CleanupOutcome::Clean
+        );
 
         let resume_host = FixtureHost::new(Scenario::Success, version);
+        let resume_services = resume_host.services(host_id);
         let resumed = block_on(
             driver.resume_session(
                 selected.plan.clone(),
@@ -167,19 +174,22 @@ fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
                     None,
                 )
                 .unwrap(),
-                resume_host.services(host_id),
+                resume_services.clone(),
             ),
         )
         .expect("session resumes");
         assert_eq!(resumed.resume_binding(), Some(&binding));
-        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(resumed.close(resume_host.cleanup_request(), resume_services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
 #[test]
 fn permission_is_rejected_then_cancelled_and_never_becomes_a_consumer_callback() {
     let (host, mut session, services) = open(Scenario::Permission, "0.61.0", "permission");
-    let mut turn = start(&mut *session, services, "permission-turn");
+    let mut turn = start(&mut *session, services.clone(), "permission-turn");
     assert!(turn.take_callbacks().is_some());
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -205,13 +215,16 @@ fn permission_is_rejected_then_cancelled_and_never_becomes_a_consumer_callback()
         .expect("turn cancellation was sent");
     assert!(rejection < cancellation);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn cancellation_disconnect_drift_and_access_mismatch_fail_without_leaks() {
-    let (_host, mut session, services) = open(Scenario::Cancellation, "0.61.0", "cancel");
-    let mut turn = start(&mut *session, services, "cancel-turn");
+    let (host, mut session, services) = open(Scenario::Cancellation, "0.61.0", "cancel");
+    let mut turn = start(&mut *session, services.clone(), "cancel-turn");
     block_on(turn.cancellation().request()).expect("cancellation is sent");
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -219,17 +232,23 @@ fn cancellation_disconnect_drift_and_access_mismatch_fail_without_leaks() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 
-    let (_host, mut session, services) = open(Scenario::Disconnect, "0.61.0", "disconnect");
-    let mut turn = start(&mut *session, services, "disconnect-turn");
+    let (host, mut session, services) = open(Scenario::Disconnect, "0.61.0", "disconnect");
+    let mut turn = start(&mut *session, services.clone(), "disconnect-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),
     );
     assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 
     let host_id = ExecutionHostId::new("fixture.host.drift").expect("valid host");
     let selected = selection(host_id.clone(), "0.61.0");
@@ -272,8 +291,11 @@ fn cancellation_disconnect_drift_and_access_mismatch_fail_without_leaks() {
 #[test]
 fn qualified_native_close_ends_active_work_without_deleting_history() {
     let (host, mut session, services) = open(Scenario::ClosePending, "0.61.0", "native-close");
-    let mut turn = start(&mut *session, services, "native-close-turn");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    let mut turn = start(&mut *session, services.clone(), "native-close-turn");
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),

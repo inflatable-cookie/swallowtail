@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -42,6 +42,27 @@ It remains distinct from provider-reported lifecycle timestamps and monotonic
 deadline time. A host that cannot supply it fails that catalogue operation;
 the driver does not substitute provider `modified_at`, request time, or an
 ambient process clock.
+
+## Caller-Bounded Interactive Cleanup
+
+Every public `InteractiveSessionHandle::close` consumes one
+`SessionCleanupRequest` and the exact `HostServices` set for that session. The
+request carries one absolute caller-selected `Deadline`; it carries no
+duration, default timeout, provider setting, or ambient-clock authority.
+
+The close boundary covers the whole remaining session lifecycle: active-turn
+interruption, provider-native close, required escalation, pump and task joins,
+credential release, and resource release. A stage cannot select a later
+deadline or keep the public close future pending after the shared boundary.
+Post-open abort and cleanup after turn expiry use the same rule.
+
+The runtime validates the execution-host identity and requires that host's
+time service before polling cleanup. It observes host time before cleanup and
+again before accepting a ready cleanup result. Missing or cross-host time, an
+already elapsed deadline, or expiry while cleanup is pending returns an
+honest failed cleanup outcome and drops the remaining cleanup future. Expiry
+is never reported as clean. Duration-to-tick conversion, when wanted, remains
+the caller's host-time operation described above.
 
 Contract 037 permits a host crate to compose these services through one
 inspectable per-host builder or result. Composition retains one exact host id,

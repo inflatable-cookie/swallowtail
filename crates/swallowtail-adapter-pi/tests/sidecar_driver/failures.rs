@@ -1,7 +1,7 @@
 use super::{deadline, driver, make_host_id};
 use crate::support::{
-    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
-    turn_request,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, close_session, sidecar_open_request,
+    sidecar_selection, turn_request,
 };
 use futures_executor::block_on;
 use swallowtail_runtime::{CleanupOutcome, InteractiveSessionDriver, TerminalStatus};
@@ -45,9 +45,10 @@ fn provider_transport_and_protocol_failures_remain_distinct() {
             services.clone(),
         ))
         .expect("sidecar session opens");
-        let mut turn = block_on(
-            session.start_turn(turn_request("sidecar-failure-turn", deadline()), services),
-        )
+        let mut turn = block_on(session.start_turn(
+            turn_request("sidecar-failure-turn", deadline()),
+            services.clone(),
+        ))
         .expect("sidecar turn starts");
         let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
         let diagnostic = match terminal.status() {
@@ -64,7 +65,10 @@ fn provider_transport_and_protocol_failures_remain_distinct() {
         }
         assert!(!format!("{terminal:?}").contains("fixture private prompt"));
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -80,16 +84,21 @@ fn response_command_mismatch_fails_the_turn_and_still_joins() {
         services.clone(),
     ))
     .expect("sidecar session opens");
-    let error =
-        block_on(session.start_turn(turn_request("sidecar-mismatch-turn", deadline()), services))
-            .err()
-            .expect("mismatched response fails");
+    let error = block_on(session.start_turn(
+        turn_request("sidecar-mismatch-turn", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("mismatched response fails");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.sdk-sidecar.response_command_mismatch"
     );
     assert!(!format!("{error:?}").contains("fixture private prompt"));
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

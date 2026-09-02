@@ -49,7 +49,7 @@ fn success_turn_uses_acp_only_and_joins_cleanup() {
             RuntimeTurnId::new("cline-turn").expect("valid turn"),
             OperationContent::new("private fixture prompt").expect("valid prompt"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let outcome = block_on(
@@ -99,7 +99,10 @@ fn success_turn_uses_acp_only_and_joins_cleanup() {
         )
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 
@@ -128,7 +131,7 @@ fn read_write_plan_still_launches_acp_without_auto_approve() {
         services.clone(),
     ))
     .expect("write session opens");
-    let mut turn = start(&mut *session, services, "write-turn");
+    let mut turn = start(&mut *session, services.clone(), "write-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
@@ -142,13 +145,16 @@ fn read_write_plan_still_launches_acp_without_auto_approve() {
             && message["params"]["clientCapabilities"]["terminal"] == false
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn unexpected_write_callback_is_rejected_before_host_mutation() {
     let (host, mut session, services) = open(Scenario::UnexpectedWrite, "unexpected-write");
-    let mut turn = start(&mut *session, services, "unexpected-write-turn");
+    let mut turn = start(&mut *session, services.clone(), "unexpected-write-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
@@ -159,13 +165,16 @@ fn unexpected_write_callback_is_rejected_before_host_mutation() {
             && message["error"]["code"] == -32601
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn permission_observes_without_selecting_allow_always() {
     let (host, mut session, services) = open(Scenario::Permission, "permission");
-    let mut turn = start(&mut *session, services, "permission-turn");
+    let mut turn = start(&mut *session, services.clone(), "permission-turn");
     assert!(turn.take_callbacks().is_none());
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -192,13 +201,16 @@ fn permission_observes_without_selecting_allow_always() {
         )
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn active_turn_cancellation_waits_for_cancelled_prompt_result() {
-    let (_host, mut session, services) = open(Scenario::Cancellation, "cancellation");
-    let mut turn = start(&mut *session, services, "cancel-turn");
+    let (host, mut session, services) = open(Scenario::Cancellation, "cancellation");
+    let mut turn = start(&mut *session, services.clone(), "cancel-turn");
     block_on(turn.cancellation().request()).expect("cancellation is sent");
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -206,20 +218,26 @@ fn active_turn_cancellation_waits_for_cancelled_prompt_result() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
-    let (_host, mut session, services) = open(Scenario::Disconnect, "disconnect");
-    let mut turn = start(&mut *session, services, "disconnect-turn");
+    let (host, mut session, services) = open(Scenario::Disconnect, "disconnect");
+    let mut turn = start(&mut *session, services.clone(), "disconnect-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
     );
     assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -296,14 +314,17 @@ fn malformed_and_version_mismatch_fail_before_prompt() {
 #[test]
 fn oversized_update_fails_closed_and_still_joins() {
     let (host, mut session, services) = open(Scenario::Oversized, "oversized");
-    let mut turn = start(&mut *session, services, "oversized-turn");
+    let mut turn = start(&mut *session, services.clone(), "oversized-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
     );
     assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 

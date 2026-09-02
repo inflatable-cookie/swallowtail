@@ -123,13 +123,16 @@ pub(super) fn agent_delete() -> ClaudeAgentPreparedDelete {
         .expect("binding session prepares");
     let host_id = ExecutionHostId::new(AGENT_HOST).expect("host is valid");
     let fixture = FixtureHost::new(Scenario::Success, "0.61.0");
-    let opened =
-        block_on(session.open_session(fixture.services(host_id))).expect("binding session opens");
+    let opened = block_on(session.open_session(fixture.services(host_id.clone())))
+        .expect("binding session opens");
     let binding = opened
         .management_binding()
         .expect("management binding exists")
         .clone();
-    assert_eq!(block_on(opened.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(opened.close(fixture.cleanup_request(), fixture.services(host_id))),
+        CleanupOutcome::Clean
+    );
     prepared
         .prepare_delete_session(ClaudeAgentSessionManagementInput::new(
             RequestId::new("projection-agent-delete").expect("request is valid"),

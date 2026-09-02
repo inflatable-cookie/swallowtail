@@ -14,9 +14,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
     CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, OpenSessionRequest,
-    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionPlanAgreement,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TurnHandle, TurnRequest,
-    terminal_outcome_channel,
+    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionCleanupRequest,
+    SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TurnHandle,
+    TurnRequest, terminal_outcome_channel,
 };
 
 impl StructuredRunDriver for OhMyPiRpcDriver {
@@ -28,6 +28,9 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_run(&plan, &request, &services)?;
+            let cleanup = SessionCleanupRequest::new(
+                request.deadline().expect("validated OhMyPi run deadline"),
+            );
             let run_id = RuntimeRunId::new(format!(
                 "oh-my-pi-rpc:run:{}",
                 request.request_id().as_str()
@@ -71,15 +74,15 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = Box::new(session).close().await;
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(error);
                 }
             };
             let events = match turn.take_events() {
                 Some(events) => events,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.oh_my_pi.rpc.run_events_missing",
                         "OhMyPi RPC structured run did not expose its event stream",
@@ -90,8 +93,8 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
             let turn_terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.oh_my_pi.rpc.run_terminal_missing",
                         "OhMyPi RPC structured run did not expose its terminal outcome",
@@ -108,8 +111,8 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
             let active = match active {
                 Some(active) => active,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.oh_my_pi.rpc.run_active_missing",
                         "OhMyPi RPC structured run lost its active prompt",
@@ -128,6 +131,7 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
+            let task_services = services.clone();
             let task = services
                 .task()
                 .expect("validated OhMyPi task service")
@@ -140,12 +144,11 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
                             .take()
                             .expect("OhMyPi pending run exists");
                         let outcome = resources.terminal.await;
-                        let turn_cleanup = resources.turn.close().await;
-                        let session_cleanup = Box::new(resources.session).close().await;
-                        let cleanup = merge_cleanup(
-                            outcome.cleanup().clone(),
-                            merge_cleanup(turn_cleanup, session_cleanup),
-                        );
+                        drop(resources.turn);
+                        let session_cleanup = Box::new(resources.session)
+                            .close(cleanup, task_services)
+                            .await;
+                        let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
                         let finished = copy_outcome_with_cleanup(outcome, cleanup);
                         let _ = terminal_sender.complete(finished);
                     }),
@@ -153,14 +156,13 @@ impl StructuredRunDriver for OhMyPiRpcDriver {
             let task = match task {
                 Ok(task) => task,
                 Err(error) => {
-                    let _ = cancellation.request().await;
                     let resources = pending
                         .lock()
                         .expect("OhMyPi pending run lock poisoned")
                         .take();
                     if let Some(resources) = resources {
-                        let _ = resources.turn.close().await;
-                        let _ = Box::new(resources.session).close().await;
+                        drop(resources.turn);
+                        let _ = Box::new(resources.session).close(cleanup, services).await;
                     }
                     return Err(error);
                 }

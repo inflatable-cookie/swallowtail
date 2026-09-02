@@ -31,9 +31,13 @@ fn every_prepared_profile_executes_on_a_remote_authoritative_host() {
         .expect("remote read-only session prepares");
     assert_eq!(read_only.plan().execution_host_id(), &host);
     let (process, _) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
-    let handle = block_on(read_only.open_session(host_services_for(host.clone(), process)))
+    let services = host_services_for(host.clone(), process);
+    let handle = block_on(read_only.open_session(services.clone()))
         .expect("remote read-only session executes");
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
 
     let bounded = prepared_app
         .prepare_bounded_workspace_session(CodexSessionProfileInput::new(
@@ -46,14 +50,18 @@ fn every_prepared_profile_executes_on_a_remote_authoritative_host() {
         .expect("remote bounded session prepares");
     assert_eq!(bounded.plan().execution_host_id(), &host);
     let (process, _) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
-    let handle = block_on(bounded.open_session(host_services_with_for(
+    let services = host_services_with_for(
         host.clone(),
         process,
         &recording,
         [HostServiceKind::WorkingResource],
-    )))
-    .expect("remote bounded session executes");
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    );
+    let handle =
+        block_on(bounded.open_session(services.clone())).expect("remote bounded session executes");
+    assert_eq!(
+        block_on(support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
 
     let prepared_exec = prepared_on_host(
         CodexPreparedDriver::StructuredExec,

@@ -108,7 +108,10 @@ fn session_rejects_late_duplicate_and_overflow_private_blocks() {
         };
         assert_eq!(diagnostic.code(), code);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(session.close(fixture.cleanup_request(), fixture.services())),
+            CleanupOutcome::Clean
+        );
         assert_private_absent(&collected, &outcome);
         assert_eq!(fixture.server.requests().len(), 1);
     }

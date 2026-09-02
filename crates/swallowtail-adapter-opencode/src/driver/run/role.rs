@@ -9,6 +9,10 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             validate_run(&plan, &request, &services)?;
+            let cleanup_boundary = request.deadline().map(|deadline| RunSessionCleanupBoundary {
+                request: SessionCleanupRequest::new(deadline),
+                services: services.clone(),
+            });
             let run_id =
                 RuntimeRunId::new(format!("opencode:run:{}", request.request_id().as_str()))
                     .map_err(|_| invalid_run_identity())?;
@@ -27,15 +31,15 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = session.close_and_delete().await;
+                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
                     return Err(error);
                 }
             };
             let events = match turn.take_events() {
                 Some(events) => events,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = session.close_and_delete().await;
+                    drop(turn);
+                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
                     return Err(failure(
                         "swallowtail.opencode.run_events_missing",
                         "OpenCode structured run did not expose its event stream",
@@ -46,8 +50,8 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = session.close_and_delete().await;
+                    drop(turn);
+                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
                     return Err(failure(
                         "swallowtail.opencode.run_terminal_missing",
                         "OpenCode structured run did not expose its terminal outcome",
@@ -66,8 +70,8 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let (active_cancellation, terminal_flag) = match active_state {
                 Some(state) => state,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = session.close_and_delete().await;
+                    drop(turn);
+                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
                     return Err(failure(
                         "swallowtail.opencode.run_active_missing",
                         "OpenCode structured run lost its active prompt",
@@ -86,6 +90,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
+            let task_cleanup_boundary = cleanup_boundary.clone();
             let task = services.task().expect("validated task service").spawn(
                 task_scope,
                 Box::pin(async move {
@@ -95,12 +100,10 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                         .take()
                         .expect("OpenCode pending run exists");
                     let outcome = resources.terminal.await;
-                    let turn_cleanup = resources.turn.close().await;
-                    let session_cleanup = resources.session.close_and_delete().await;
-                    let cleanup = merge_cleanup(
-                        outcome.cleanup().clone(),
-                        merge_cleanup(turn_cleanup, session_cleanup.cleanup),
-                    );
+                    drop(resources.turn);
+                    let session_cleanup =
+                        close_run_session(resources.session, task_cleanup_boundary).await;
+                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup.cleanup);
                     let mut finished = copy_terminal_outcome(outcome, cleanup);
                     finished = finished.with_remote_resource_deletion(
                         OwnedRemoteResourceKind::Session,
@@ -112,14 +115,13 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let task = match task {
                 Ok(task) => task,
                 Err(error) => {
-                    let _ = cancellation.request().await;
                     let resources = pending
                         .lock()
                         .expect("OpenCode pending run lock poisoned")
                         .take();
                     if let Some(resources) = resources {
-                        let _ = resources.turn.close().await;
-                        let _ = resources.session.close_and_delete().await;
+                        drop(resources.turn);
+                        let _ = close_run_session(resources.session, cleanup_boundary).await;
                     }
                     return Err(error);
                 }

@@ -28,7 +28,7 @@ fn callback_wait_ends_when_the_host_deadline_is_observed() {
                 OperationContent::new("wait for tool").expect("content is valid"),
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(50))),
-            services,
+            services.clone(),
         ),
     )
     .expect("turn starts");
@@ -55,12 +55,16 @@ fn callback_wait_ends_when_the_host_deadline_is_observed() {
             && message.get("error").is_some()
     });
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn whole_session_cancellation_force_stops_and_joins() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::HoldTurn);
+    let services = host_services(process);
     let session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
         read_only_open_request(
@@ -68,7 +72,7 @@ fn whole_session_cancellation_force_stops_and_joins() {
             working_resource(),
             None,
         ),
-        host_services(process),
+        services.clone(),
     ))
     .expect("session opens");
     assert_eq!(
@@ -79,7 +83,10 @@ fn whole_session_cancellation_force_stops_and_joins() {
         block_on(session.cancellation().request()).expect("repeat cancellation succeeds"),
         CancellationAcknowledgement::AlreadyRequested
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.forced());
     assert!(state.waited());
 }
@@ -103,7 +110,7 @@ fn unsupported_server_request_fails_instead_of_hanging() {
             RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
             OperationContent::new("trigger callback").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn response remains correlated");
     let terminal = block_on(
@@ -116,7 +123,10 @@ fn unsupported_server_request_fails_instead_of_hanging() {
         TerminalStatus::RuntimeFailed(_)
     ));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.forced());
     assert!(state.waited());
 }
@@ -215,13 +225,16 @@ fn structured_output_is_rejected_before_turn_provider_work() {
                 OperationContent::new("return structured output").expect("content is valid"),
             )
             .with_structured_output(schema),
-            services,
+            services.clone(),
         ),
     );
 
     assert!(result.is_err());
     assert_eq!(state.methods(), methods_before_turn);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -272,7 +285,7 @@ fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
             RuntimeTurnId::new("turn-after-poison").expect("turn id is valid"),
             OperationContent::new("after poison").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ));
     let error = result
         .err()
@@ -282,7 +295,10 @@ fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
         "swallowtail.codex.app_server.connection_closed"
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.forced());
     assert!(state.waited());
 }
@@ -351,7 +367,7 @@ fn malformed_notification_emits_correlated_debug_observations_when_observer_regi
             RuntimeTurnId::new("turn-after-poison-debug").expect("turn id is valid"),
             OperationContent::new("after poison").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ));
     assert_eq!(
         result
@@ -362,7 +378,10 @@ fn malformed_notification_emits_correlated_debug_observations_when_observer_regi
         "swallowtail.codex.app_server.connection_closed"
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.forced());
     assert!(state.waited());
 }

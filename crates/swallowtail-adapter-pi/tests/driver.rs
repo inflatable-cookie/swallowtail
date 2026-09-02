@@ -11,8 +11,8 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{
-    CleanupEvent, FixtureHost, FixtureSelection, Scenario, allow_user_input_result, open_request,
-    selection, turn_request,
+    CleanupEvent, FixtureHost, FixtureSelection, Scenario, allow_user_input_result, close_session,
+    open_request, selection, turn_request,
 };
 use swallowtail_adapter_pi::{PiRpcDriver, pi_rpc_descriptor};
 use swallowtail_core::{
@@ -191,7 +191,10 @@ fn restrictive_session_relays_scheduling_ui_and_joined_cleanup() {
     );
     assert!(!format!("{terminal:?}").contains("fixture answer"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         fixture.cleanup_events(),
         [

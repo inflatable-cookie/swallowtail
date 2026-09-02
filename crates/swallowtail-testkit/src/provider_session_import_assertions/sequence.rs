@@ -78,14 +78,16 @@ fn assert_import_load_and_resume_sequence() {
             [0, 1]
         );
         let (_replay, loaded_handle) = loaded.into_parts();
-        poll_immediate(loaded_handle.close());
+        let cleanup_request =
+            SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(100)));
+        poll_immediate(loaded_handle.close(cleanup_request, host.services().clone()));
         let resumed = poll_immediate(driver.resume_session(
             import.preflight().clone(),
             resume,
             host.services().clone(),
         ))
         .expect("resume returns a ready handle without replay");
-        poll_immediate(resumed.close());
+        poll_immediate(resumed.close(cleanup_request, host.services().clone()));
         assert_eq!(
             *events.lock().expect("fixture event lock is valid"),
             [
@@ -95,7 +97,14 @@ fn assert_import_load_and_resume_sequence() {
                 ContinuationEvent::ReadyAfterResume,
             ]
         );
-        assert!(host.calls().is_empty());
+        assert_eq!(
+            host.calls(),
+            [
+                RecordedHostCall::TimeNow,
+                RecordedHostCall::TimeNow,
+                RecordedHostCall::TimeNow,
+                RecordedHostCall::TimeNow,
+            ]
+        );
     }
 }
-

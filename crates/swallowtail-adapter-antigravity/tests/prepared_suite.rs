@@ -20,8 +20,8 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     ProcessOutputChunk, ProcessOutputStream, RequestId, RuntimeTurnId, SchemaDocument, ScopeId,
-    StructuredOutputDescriptor, TerminalStatus, TurnRequest, WorkingResourceRef,
-    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    SessionCleanupRequest, StructuredOutputDescriptor, TerminalStatus, TurnRequest,
+    WorkingResourceRef, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -163,7 +163,10 @@ fn facade_keeps_catalogue_run_and_continuation_explicit() {
             .windows(2)
             .any(|pair| pair == ["--conversation", "fixture-conversation"])
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(SessionCleanupRequest::new(deadline()), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

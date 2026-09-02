@@ -14,6 +14,9 @@ impl StructuredRunDriver for GrokAcpDriver {
         Box::pin(async move {
             self.validate_plan(&plan)?;
             validate_run(&plan, &request, &services)?;
+            let cleanup = SessionCleanupRequest::new(
+                request.deadline().expect("validated caller deadline"),
+            );
             let resource = request
                 .working_resource()
                 .expect("validated working resource")
@@ -46,15 +49,15 @@ impl StructuredRunDriver for GrokAcpDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = Box::new(session).close().await;
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(error);
                 }
             };
             let events = match turn.take_events() {
                 Some(events) => events,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.grok.acp.run_events_missing",
                         "Grok structured run did not expose its event stream",
@@ -64,8 +67,8 @@ impl StructuredRunDriver for GrokAcpDriver {
             let turn_terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.grok.acp.run_terminal_missing",
                         "Grok structured run did not expose its terminal outcome",
@@ -93,6 +96,7 @@ impl StructuredRunDriver for GrokAcpDriver {
             let pending = Arc::new(Mutex::new(Some((turn, session, turn_terminal))));
             let (sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
+            let task_services = services.clone();
             let scope = ScopeId::new(format!(
                 "grok-acp:run-cleanup:{}",
                 request.request_id().as_str()
@@ -107,12 +111,9 @@ impl StructuredRunDriver for GrokAcpDriver {
                         .take()
                         .expect("Grok pending run exists");
                     let outcome = terminal.await;
-                    let turn_cleanup = turn.close().await;
-                    let session_cleanup = Box::new(session).close().await;
-                    let cleanup = merge_cleanup(
-                        outcome.cleanup().clone(),
-                        merge_cleanup(turn_cleanup, session_cleanup),
-                    );
+                    drop(turn);
+                    let session_cleanup = Box::new(session).close(cleanup, task_services).await;
+                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
                     let mut finished =
                         TerminalOutcome::new(outcome.status().clone(), cleanup);
                     if let Some(output) = outcome.output().cloned() {
@@ -124,7 +125,6 @@ impl StructuredRunDriver for GrokAcpDriver {
             let task = match task {
                 Ok(task) => task,
                 Err(error) => {
-                    let _ = cancellation.request().await;
                     let resources = {
                         pending
                             .lock()
@@ -132,8 +132,8 @@ impl StructuredRunDriver for GrokAcpDriver {
                             .take()
                     };
                     if let Some((turn, session, _)) = resources {
-                        let _ = turn.close().await;
-                        let _ = Box::new(session).close().await;
+                        drop(turn);
+                        let _ = Box::new(session).close(cleanup, services).await;
                     }
                     return Err(error);
                 }

@@ -1,7 +1,9 @@
 use crate::support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, reasoning_selection, try_version_selection};
+use support::{
+    CleanupEvent, FixtureHost, Scenario, close_session, reasoning_selection, try_version_selection,
+};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{
     ExecutionHostId, InterfaceCompatibilityAssessment, PreflightDimension, ReasoningMode,
@@ -54,10 +56,11 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
                 qualified
             );
             let host = FixtureHost::new(scenario);
+            let services = host.services(host_id);
             let session = block_on(driver(selected.credential).open_session(
                 selected.plan,
                 open_request("kimi-reasoning-open", selected.resource, requested),
-                host.services(host_id),
+                services.clone(),
             ))
             .expect("reasoning session opens");
             assert_eq!(
@@ -74,7 +77,10 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
                 .expect("one reasoning request is present");
             assert_eq!(set["params"]["configId"], "thinking");
             assert_eq!(set["params"]["value"], mode);
-            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(
+                block_on(close_session(session, services)),
+                CleanupOutcome::Clean
+            );
             assert_eq!(host.cleanup_events(), joined_cleanup());
         }
     }

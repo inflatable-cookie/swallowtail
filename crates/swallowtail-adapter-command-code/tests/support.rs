@@ -9,7 +9,7 @@ use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices, JoinedTask,
     MonotonicInstant, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
     ProcessRequest, ProcessService, ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService,
-    TimeService, WorkingResourceRef, WorkingResourceService,
+    SessionCleanupRequest, TimeService, WorkingResourceRef, WorkingResourceService,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -74,6 +74,10 @@ impl FixtureHost {
 
     pub fn services(&self, host_id: ExecutionHostId) -> HostServices {
         self.services_with_time(host_id, Arc::new(PendingTime))
+    }
+
+    pub fn cleanup_request(&self) -> SessionCleanupRequest {
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1_000)))
     }
 
     pub fn services_with_time(

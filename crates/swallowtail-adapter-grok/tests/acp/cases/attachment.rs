@@ -8,7 +8,7 @@ fn exact_attachment_activates_once_runs_activity_and_joins_owned_leases() {
             .current_value(),
         "grok-4.5"
     );
-    let mut turn = start(&mut *session, services, "grok-success-turn");
+    let mut turn = start(&mut *session, services.clone(), "grok-success-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome available"),
@@ -58,7 +58,7 @@ fn exact_attachment_activates_once_runs_activity_and_joins_owned_leases() {
     assert!(!format!("{events:?}").contains("private fixture prompt"));
     assert!(!format!("{outcome:?}").contains("Fixture response"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 
     let process = host
         .process
@@ -94,7 +94,7 @@ fn exact_attachment_activates_once_runs_activity_and_joins_owned_leases() {
 
 #[test]
 fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_session() {
-    let (_opened_host, _opened_services, session) = open(Scenario::Success);
+    let (_opened_host, opened_services, session) = open(Scenario::Success);
     let binding = session
         .resume_binding()
         .expect("opened Grok session exposes a durable binding")
@@ -103,7 +103,10 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
         binding.model_id().map(swallowtail_core::ModelId::as_str),
         Some("grok-4.5")
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, opened_services)),
+        CleanupOutcome::Clean
+    );
 
     let host_id = ExecutionHostId::new("fixture.host.grok").expect("host");
     let selected = selection(host_id.clone());
@@ -134,7 +137,7 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
     let recovered = block_on(driver.recover_session_attachment(
         selected.plan,
         request,
-        services,
+        services.clone(),
     ))
     .expect("exact attachment recovers");
     assert_eq!(
@@ -142,7 +145,10 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
         Some(binding.provider_session_ref())
     );
     assert_eq!(recovered.resume_binding(), Some(&binding));
-    assert_eq!(block_on(recovered.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(recovered, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         host.writes()
             .iter()
@@ -154,9 +160,9 @@ fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_sessio
 
 #[test]
 fn attachment_recovery_rejects_invalid_or_incomplete_loads_without_a_handle() {
-    let (_host, _services, session) = open(Scenario::Success);
+    let (_host, services, session) = open(Scenario::Success);
     let binding = session.resume_binding().expect("binding").clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 
     for (scenario, suffix) in [
         (Scenario::RecoveryForeign, "session_mismatch"),
@@ -204,7 +210,7 @@ fn attachment_recovery_rejects_invalid_or_incomplete_loads_without_a_handle() {
 #[test]
 fn permission_is_observed_and_cancelled_without_ambient_approval() {
     let (host, services, mut session) = open(Scenario::Permission);
-    let mut turn = start(&mut *session, services, "grok-permission-turn");
+    let mut turn = start(&mut *session, services.clone(), "grok-permission-turn");
     assert!(turn.take_callbacks().is_none());
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -222,13 +228,13 @@ fn permission_is_observed_and_cancelled_without_ambient_approval() {
             && message["result"]["outcome"]["outcome"] == "cancelled"
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]
 fn active_turn_cancellation_waits_for_native_cancelled_result() {
     let (_host, services, mut session) = open(Scenario::Cancellation);
-    let mut turn = start(&mut *session, services, "grok-cancel-turn");
+    let mut turn = start(&mut *session, services.clone(), "grok-cancel-turn");
     block_on(turn.cancellation().request()).expect("cancel sent");
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -236,6 +242,5 @@ fn active_turn_cancellation_waits_for_native_cancelled_result() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
-

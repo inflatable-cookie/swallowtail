@@ -21,12 +21,13 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline, DeadlineObservation,
-    DelegatedCredential, EnvironmentRef, HostServices, InteractiveSessionDriver, JoinedTask,
-    MonotonicInstant, OpenSessionRequest, OperationContent, ProcessExit, ProcessHandle,
-    ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
-    RequestId, ResourceLease, ResumeSessionRequest, RuntimeEventKind, RuntimeFailure,
-    RuntimeTurnId, ScopeId, ScopedTaskService, SessionPlanAgreement, TerminalStatus, TimeService,
-    TurnRequest, WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceRef,
+    DelegatedCredential, EnvironmentRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, JoinedTask, MonotonicInstant, OpenSessionRequest, OperationContent,
+    ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream,
+    ProcessRequest, ProcessService, RequestId, ResourceLease, ResumeSessionRequest,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
+    SessionCleanupRequest, SessionPlanAgreement, TerminalStatus, TimeService, TurnRequest,
+    WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceRef,
     WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
 };
 

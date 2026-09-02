@@ -116,7 +116,7 @@ fn session_turn_streams_output_and_preserves_provider_ids() {
             RuntimeTurnId::new("turn-runtime-1").expect("turn id is valid"),
             OperationContent::new("private prompt").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     assert_eq!(
@@ -161,7 +161,10 @@ fn session_turn_streams_output_and_preserves_provider_ids() {
     );
     assert!(!format!("{terminal:?}").contains("final answer"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.waited());
     assert_eq!(
         state.request().working_resource.as_deref(),
@@ -239,7 +242,7 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
             RuntimeTurnId::new("turn-tools").expect("turn id is valid"),
             OperationContent::new("list tasks").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let mut callbacks = turn
@@ -319,5 +322,8 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
         .expect("provider callback response was sent");
     assert_eq!(provider_response["result"]["success"], true);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }

@@ -1,4 +1,4 @@
-use super::handle::wrap_management_handle;
+use super::handle::{validate_management_context, wrap_management_handle};
 use crate::ClaudeAgentAcpDriver;
 use swallowtail_core::ProviderSessionBindingOrigin;
 use swallowtail_runtime::{
@@ -35,6 +35,7 @@ impl WorkingStateRestorationOperation for ClaudeAgentContinuationRecovery {
             interrupted_turn_id,
         } = *self;
         Box::pin(async move {
+            validate_management_context(&management_instance, &access)?;
             let loaded = driver.load_session(plan, request.clone(), services).await?;
             let (replay, handle) = loaded.into_parts();
             let handle = wrap_management_handle(

@@ -15,7 +15,7 @@ fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
         .expect("session prepares");
     let handle = block_on(session.open_session(fixture.services())).expect("session opens");
     let binding = handle.management_binding().unwrap().clone();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(fixture.close_session(handle)), CleanupOutcome::Clean);
     let delete = prepared
         .prepare_delete_session(OpenCodeSessionManagementInput::new(
             RequestId::new("delete-cancel").unwrap(),
@@ -74,7 +74,7 @@ fn provider_rejection_and_server_failure_preserve_effect_truth() {
             .expect("session prepares");
         let handle = block_on(session.open_session(fixture.services())).expect("session opens");
         let binding = handle.management_binding().unwrap().clone();
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(fixture.close_session(handle)), CleanupOutcome::Clean);
         let delete = prepared
             .prepare_delete_session(OpenCodeSessionManagementInput::new(
                 RequestId::new(format!("delete-{suffix}")).unwrap(),
@@ -107,7 +107,7 @@ fn exact_server_version_drift_stops_before_delete_dispatch() {
         .expect("session prepares");
     let handle = block_on(session.open_session(fixture.services())).expect("session opens");
     let binding = handle.management_binding().unwrap().clone();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(fixture.close_session(handle)), CleanupOutcome::Clean);
     let delete = prepared
         .prepare_delete_session(OpenCodeSessionManagementInput::new(
             RequestId::new("delete-health-drift").unwrap(),

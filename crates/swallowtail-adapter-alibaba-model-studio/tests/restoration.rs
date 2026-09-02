@@ -1,7 +1,7 @@
 mod support;
 
 use futures_executor::block_on;
-use support::{DriverFixture, ServerScenario};
+use support::{DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaConversationProfileInput, EXACT_MODEL_ID, MODEL_ROUTE_ID, prepare_alibaba_model_studio,
 };
@@ -32,7 +32,10 @@ fn delete_on_close_conversation_restoration_opens_a_fresh_replacement() {
     assert_eq!(replacement.interrupted_turn_id(), &interrupted);
     let (_, replacement) = replacement.into_parts();
     assert!(replacement.provider_session_ref().is_none());
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(replacement.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     let requests = fixture.requests();
     assert_eq!(requests[0].method, "POST");
     assert_eq!(requests[0].target, "/compatible-mode/v1/conversations");

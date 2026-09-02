@@ -70,7 +70,7 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
             RuntimeTurnId::new("workspace-turn").expect("turn id is valid"),
             OperationContent::new("perform bounded work").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("workspace turn starts");
     let terminal = block_on(
@@ -88,7 +88,10 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
     assert_eq!(sandbox["excludeSlashTmp"], true);
     assert_eq!(sandbox["excludeTmpdirEnvVar"], true);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
     assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
 }
@@ -119,7 +122,7 @@ fn read_only_session_request_shape_remains_unchanged() {
             RuntimeTurnId::new("read-only-turn").expect("turn id is valid"),
             OperationContent::new("inspect only").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("read-only turn starts");
     assert!(
@@ -128,7 +131,10 @@ fn read_only_session_request_shape_remains_unchanged() {
             .is_none()
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -211,7 +217,7 @@ fn bounded_workspace_open_retains_local_and_remote_authoritative_host_identity()
                     None,
                     app_server_session_agreement(codex_bounded_workspace_access_policy()),
                 ),
-                services,
+                services.clone(),
             ),
         )
         .expect("bounded session opens on its authoritative host");
@@ -221,7 +227,10 @@ fn bounded_workspace_open_retains_local_and_remote_authoritative_host_identity()
             Some(topology.working_resource().as_host_value())
         );
         assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -258,7 +267,7 @@ fn declared_approval_and_user_input_requests_are_observed_then_stop() {
                 RuntimeTurnId::new(format!("turn-{provider_id}")).expect("turn id is valid"),
                 OperationContent::new("trigger provider request").expect("content is valid"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn starts");
         let mut callbacks = turn
@@ -303,7 +312,10 @@ fn declared_approval_and_user_input_requests_are_observed_then_stop() {
                 && message.get("error").is_some()
         }));
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 

@@ -148,7 +148,10 @@ fn prove_session_replay(host: &str, stream: StreamFixture, expected_assistant: V
     }
     assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
     assert_eq!(block_on(later.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let requests = fixture.server.requests();
     assert_eq!(requests.len(), 3);

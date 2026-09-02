@@ -39,34 +39,42 @@ fn import_revalidates_exact_thread_and_binding_load_resume_stay_unchanged() {
         .prepare_read_only_session(session_input("continuation-profile"))
         .expect("existing read-only continuation profile prepares");
     let (process, load_state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let load_services = support::host_services(process);
     let loaded = block_on(
         session
             .load_session(
                 RequestId::new("imported-load").unwrap(),
                 outcome.binding().clone(),
-                support::host_services(process),
+                load_services.clone(),
             )
             .expect("imported load request prepares"),
     )
     .expect("imported session loads through the existing path");
     assert_eq!(loaded.replay().count(), 2);
     let (_, handle) = loaded.into_parts();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, load_services)),
+        CleanupOutcome::Clean
+    );
     assert!(load_state.methods().contains(&"thread/resume".to_owned()));
     assert!(load_state.waited());
 
     let (process, resume_state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let resume_services = support::host_services(process);
     let handle = block_on(
         session
             .resume_session(
                 RequestId::new("imported-resume").unwrap(),
                 outcome.binding().clone(),
-                support::host_services(process),
+                resume_services.clone(),
             )
             .expect("imported resume request prepares"),
     )
     .expect("imported session resumes through the existing path");
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, resume_services)),
+        CleanupOutcome::Clean
+    );
     assert!(resume_state.methods().contains(&"thread/resume".to_owned()));
     assert!(resume_state.waited());
 }
@@ -119,4 +127,3 @@ fn stale_missing_active_and_mismatched_revalidation_issue_no_binding() {
         assert!(state.waited());
     }
 }
-

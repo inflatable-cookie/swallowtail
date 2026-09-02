@@ -2,7 +2,7 @@ use crate::support;
 
 use futures_executor::block_on;
 use support::{
-    CleanupEvent, FixtureHost, Scenario, plan_reasoning_selection, plan_selection,
+    CleanupEvent, FixtureHost, Scenario, close_session, plan_reasoning_selection, plan_selection,
     version_selection,
 };
 use swallowtail_adapter_kimi::KimiAcpDriver;
@@ -41,10 +41,11 @@ fn qualified_and_unverified_versions_dispatch_one_plan_selection() {
                 qualified
             );
             let host = FixtureHost::new(scenario);
+            let services = host.services(host_id);
             let session = block_on(driver(selected.credential).open_session(
                 selected.plan,
                 plan_open_request("kimi-plan-open", selected.resource, None),
-                host.services(host_id),
+                services.clone(),
             ))
             .expect("plan-mode session opens");
             assert_eq!(
@@ -55,7 +56,10 @@ fn qualified_and_unverified_versions_dispatch_one_plan_selection() {
             assert_eq!(set.len(), 1);
             assert_eq!(set[0]["params"]["configId"], "mode");
             assert_eq!(set[0]["params"]["value"], "plan");
-            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(
+                block_on(close_session(session, services)),
+                CleanupOutcome::Clean
+            );
             assert_eq!(host.cleanup_events(), joined_cleanup());
         }
     }
@@ -66,15 +70,19 @@ fn omitted_plan_mode_preserves_the_reasoning_only_wire() {
     let host_id = ExecutionHostId::new("fixture.host.plan.omit").expect("valid host id");
     let selected = version_selection(host_id.clone(), "0.29.0");
     let host = FixtureHost::new(Scenario::PlanSuccess);
+    let services = host.services(host_id);
     let session = block_on(driver(selected.credential).open_session(
         selected.plan,
         empty_open_request("kimi-plan-omitted", selected.resource),
-        host.services(host_id),
+        services.clone(),
     ))
     .expect("omitted plan mode opens");
     assert_eq!(host.wire_methods(), ["initialize", "session/new"]);
     assert!(config_sets(&host).is_empty());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -94,6 +102,7 @@ fn admitted_reasoning_values_compose_before_plan_mode() {
             .expect("valid host id");
         let selected = plan_reasoning_selection(host_id.clone(), version, mode);
         let host = FixtureHost::new(scenario);
+        let services = host.services(host_id);
         let session = block_on(driver(selected.credential).open_session(
             selected.plan,
             plan_open_request(
@@ -101,7 +110,7 @@ fn admitted_reasoning_values_compose_before_plan_mode() {
                 selected.resource,
                 Some(ReasoningMode::new(mode).expect("valid mode")),
             ),
-            host.services(host_id),
+            services.clone(),
         ))
         .expect("composed session opens");
         assert_eq!(
@@ -119,7 +128,10 @@ fn admitted_reasoning_values_compose_before_plan_mode() {
         assert_eq!(set[0]["params"]["value"], mode);
         assert_eq!(set[1]["params"]["configId"], "mode");
         assert_eq!(set[1]["params"]["value"], "plan");
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(host.cleanup_events(), joined_cleanup());
     }
 }

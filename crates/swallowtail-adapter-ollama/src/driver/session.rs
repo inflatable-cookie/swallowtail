@@ -130,14 +130,24 @@ impl InteractiveSessionHandle for OllamaSessionHandle {
         self.cancellation.as_ref()
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            let cleanup = close_active(&self.active).await;
-            let mut state = self.state.lock().expect("Ollama session lock poisoned");
-            state.usable = false;
-            state.history.clear();
-            cleanup
-        })
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.services.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                let cleanup = close_active(&self.active).await;
+                let mut state = self.state.lock().expect("Ollama session lock poisoned");
+                state.usable = false;
+                state.history.clear();
+                cleanup
+            }),
+        )
     }
 }
 

@@ -6,7 +6,7 @@ use swallowtail_adapter_pi::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, OperationContent, PreparationFailure, RuntimeFailure,
-    RuntimeTurnId, TerminalOutcome, TurnRequest,
+    RuntimeTurnId, SessionCleanupRequest, TerminalOutcome, TurnRequest,
 };
 
 async fn prepare_installation(
@@ -27,19 +27,20 @@ fn prepare_session(
 async fn open_and_prompt(
     prepared: &PiPreparedSession,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
     turn_id: RuntimeTurnId,
     content: OperationContent,
 ) -> Result<(TerminalOutcome, CleanupOutcome), RuntimeFailure> {
     let mut session = prepared.open_session(services.clone()).await?;
     let mut turn = session
-        .start_turn(TurnRequest::new(turn_id, content), services)
+        .start_turn(TurnRequest::new(turn_id, content), services.clone())
         .await?;
     let outcome = turn
         .take_terminal_outcome()
         .expect("Pi turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    Ok((outcome, session.close().await))
+    Ok((outcome, session.close(cleanup, services).await))
 }
 
 fn main() {}

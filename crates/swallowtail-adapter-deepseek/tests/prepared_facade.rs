@@ -120,7 +120,10 @@ fn catalogue_and_consumer_authorized_continuation_run_on_both_host_topologies() 
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(fixture.server.attempts(), 2);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.releases(), 2);
         assert_eq!(fixture.release_after_blocking(), [1, 3]);
     }

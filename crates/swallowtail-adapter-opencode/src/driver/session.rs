@@ -234,14 +234,24 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
         &self.cancellation
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.resume_binding.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
             let active_cleanup = close_active(&self.active).await;
             let lease_cleanup = match self.access.as_mut() {
                 Some(access) => access.release(&self.services).await,
                 None => CleanupOutcome::NotApplicable,
             };
-            merge_cleanup(active_cleanup, lease_cleanup)
-        })
+                merge_cleanup(active_cleanup, lease_cleanup)
+            }),
+        )
     }
 }

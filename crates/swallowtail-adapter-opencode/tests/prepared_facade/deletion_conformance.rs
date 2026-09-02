@@ -280,6 +280,9 @@ fn opened_binding(
         .management_binding()
         .expect("management binding")
         .clone();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(handle)),
+        CleanupOutcome::Clean
+    );
     binding
 }

@@ -38,7 +38,9 @@ For a run or turn:
    acknowledging them as durable application state.
 9. After terminal, finish callback work, drain remaining events, and call
    `close` on the run or turn. Close the session separately when no further
-   turn will start.
+   turn will start. Session close requires a `SessionCleanupRequest` containing
+   one caller-selected absolute host deadline plus the session's exact
+   `HostServices`.
 
 `take_*` methods transfer ownership and may return `None` after the first
 call. A consumer must not assume a second observer can attach.
@@ -100,6 +102,14 @@ Always retain both terminal and cleanup truth. `close` joins operation-owned
 tasks, streams, leases, processes, credentials, and connections according to
 the route. It may return `Clean`, `Degraded`, `Failed`, or `NotApplicable`.
 Cleanup failure must not overwrite a successful or failed terminal result.
+
+One session-cleanup deadline bounds every remaining stage, including active
+turn interruption, escalation, pumps and task joins, credentials, and
+resources. Select it with the execution host's time service; do not derive
+ticks from a duration in consumer code. Missing or mismatched host time, a
+pre-elapsed deadline, or expiry during cleanup is `Failed`, never `Clean`.
+After a turn timeout, relinquish the turn handle and call bounded session close
+directly; do not wait on a separate unbounded turn close first.
 
 Closing a session does not generally archive or delete provider state.
 Provider-native close, archive, restore, delete, owned remote cleanup, and

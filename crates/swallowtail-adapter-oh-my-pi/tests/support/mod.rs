@@ -8,6 +8,18 @@ pub use selection::{
 #[allow(unused_imports)]
 pub use selection::{run_request, run_selection_for_topology};
 
+pub fn close_session(
+    session: Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+    services: swallowtail_runtime::HostServices,
+) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome> {
+    session.close(
+        swallowtail_runtime::SessionCleanupRequest::new(swallowtail_runtime::Deadline::at(
+            swallowtail_runtime::MonotonicInstant::from_ticks(100_000),
+        )),
+        services,
+    )
+}
+
 pub fn allow_user_input_result(
     request: &swallowtail_runtime::CallbackRequest,
 ) -> swallowtail_runtime::CallbackResult {

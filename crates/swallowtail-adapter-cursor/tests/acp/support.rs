@@ -20,15 +20,26 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    ActivityKind, ActivityLifecyclePhase, ActivityObservation, BoxFuture, CleanupOutcome,
-    EnvironmentRef, HostServices, InteractiveSessionDriver, JoinedTask, OpenSessionRequest,
-    OperationContent, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessOutputStream, ProcessRequest, ProcessService, RequestId, ResourceLease,
-    ResumeSessionRequest, RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId,
-    ScopedTaskService, SessionPlanAgreement, TerminalStatus, TurnRequest, WorkingResourceIoService,
-    WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
-    WorkingResourceWriteRequest,
+    ActivityKind, ActivityLifecyclePhase, ActivityObservation, BoxFuture, CleanupOutcome, Deadline,
+    DeadlineObservation, EnvironmentRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, JoinedTask, MonotonicInstant, OpenSessionRequest, OperationContent,
+    ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream,
+    ProcessRequest, ProcessService, RequestId, ResourceLease, ResumeSessionRequest,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
+    SessionCleanupRequest, SessionPlanAgreement, TerminalStatus, TimeService, TurnRequest,
+    WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceRef,
+    WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
 };
+
+fn close_session(
+    session: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+) -> BoxFuture<'static, CleanupOutcome> {
+    session.close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(10_000))),
+        services,
+    )
+}
 
 include!("agent.rs");
 include!("host.rs");

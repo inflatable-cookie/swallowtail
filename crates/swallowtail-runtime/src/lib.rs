@@ -67,6 +67,7 @@ mod serving_endpoint;
 mod serving_lifecycle;
 mod session_access;
 mod session_binding;
+mod session_cleanup;
 mod session_options;
 mod session_plan_agreement;
 mod session_provider_state;
@@ -329,6 +330,7 @@ pub use session_binding::{
     PersistedSessionResumeBinding, SessionResumeBinding, SessionResumeBindingPersistenceFailure,
     SessionResumeBindingPersistenceFailureKind,
 };
+pub use session_cleanup::{SessionCleanupRequest, bound_session_cleanup};
 pub use session_options::{SessionOptions, ToolDeclaration};
 pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agreement};
 pub use session_provider_state::validate_session_provider_state_plan;

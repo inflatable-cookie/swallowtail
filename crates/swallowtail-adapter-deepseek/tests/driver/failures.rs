@@ -30,7 +30,10 @@ fn provider_failure_and_disconnect_are_safe_and_terminal() {
         assert_eq!(diagnostic.code(), expected);
         assert!(!diagnostic.to_string().contains("raw secret detail"));
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.releases(), 1);
     }
 }
@@ -56,7 +59,10 @@ fn active_stream_cancellation_joins_before_session_credential_release() {
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
     assert_eq!(fixture.releases(), 0);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.releases(), 1);
     assert_eq!(fixture.release_after_blocking(), [2]);
 }
@@ -85,6 +91,9 @@ fn tool_wait_deadline_stops_without_authorizing_an_extra_provider_attempt() {
         "swallowtail.deepseek.tool_exchange_invalid"
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.releases(), 1);
 }

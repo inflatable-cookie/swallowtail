@@ -1,6 +1,6 @@
 use super::fixture::{attached_input, id, prepare, probe, session_profile, turn};
 use crate::interactive_support::{InteractiveFixtureServer, InteractiveScenario};
-use crate::lifecycle_support::FixtureHost;
+use crate::lifecycle_support::{FixtureHost, close_session};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::num::{NonZeroU32, NonZeroU64};

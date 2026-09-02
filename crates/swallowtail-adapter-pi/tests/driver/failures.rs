@@ -1,4 +1,6 @@
-use crate::support::{FixtureHost, Scenario, open_request, selection_for_topology, turn_request};
+use crate::support::{
+    FixtureHost, Scenario, close_session, open_request, selection_for_topology, turn_request,
+};
 use futures_executor::block_on;
 use swallowtail_adapter_pi::PiRpcDriver;
 use swallowtail_runtime::{
@@ -78,16 +80,21 @@ fn correlation_drift_fails_the_command_and_still_joins() {
         services.clone(),
     ))
     .expect("Pi session opens");
-    let error =
-        block_on(session.start_turn(turn_request("correlation-turn", deadline()), services))
-            .err()
-            .expect("mismatched response fails");
+    let error = block_on(session.start_turn(
+        turn_request("correlation-turn", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("mismatched response fails");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.rpc.response_command_mismatch"
     );
     assert!(!format!("{error:?}").contains("fixture private prompt"));
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -105,12 +112,16 @@ fn active_and_completed_prompt_bounds_fail_without_reclassification() {
     let turn =
         block_on(session.start_turn(turn_request("busy-turn-1", deadline()), services.clone()))
             .expect("first Pi turn starts");
-    let error = block_on(session.start_turn(turn_request("busy-turn-2", deadline()), services))
-        .err()
-        .expect("parallel prompt fails");
+    let error =
+        block_on(session.start_turn(turn_request("busy-turn-2", deadline()), services.clone()))
+            .err()
+            .expect("parallel prompt fails");
     assert_eq!(error.diagnostic().code(), "swallowtail.pi.rpc.turn_active");
     assert!(block_on(turn.close()) == CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 
     let fixture = FixtureHost::new(Scenario::Complete);
     let selected = selection_for_topology(&topology);
@@ -131,15 +142,20 @@ fn active_and_completed_prompt_bounds_fail_without_reclassification() {
         assert_eq!(terminal.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     }
-    let error =
-        block_on(session.start_turn(turn_request("limit-turn-overflow", deadline()), services))
-            .err()
-            .expect("third completed prompt fails");
+    let error = block_on(session.start_turn(
+        turn_request("limit-turn-overflow", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("third completed prompt fails");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.rpc.prompt_limit_reached"
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -154,12 +170,13 @@ fn provider_success_does_not_hide_process_cleanup_failure() {
         services.clone(),
     ))
     .expect("Pi cleanup session opens");
-    let mut turn = block_on(session.start_turn(turn_request("cleanup-turn", deadline()), services))
-        .expect("Pi cleanup turn starts");
+    let mut turn =
+        block_on(session.start_turn(turn_request("cleanup-turn", deadline()), services.clone()))
+            .expect("Pi cleanup turn starts");
     let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    let cleanup = block_on(session.close());
+    let cleanup = block_on(close_session(session, services));
     assert!(matches!(cleanup, CleanupOutcome::Failed(ref diagnostic)
         if diagnostic.code() == "swallowtail.pi.rpc.process_cleanup_failed"));
 }
@@ -180,12 +197,12 @@ fn terminal_case(
     .expect("Pi failure session opens");
     let mut turn = block_on(session.start_turn(
         turn_request(&format!("failure-turn-{label}"), deadline()),
-        services,
+        services.clone(),
     ))
     .expect("Pi failure turn starts");
     let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    let cleanup = block_on(session.close());
+    let cleanup = block_on(close_session(session, services));
     (terminal, cleanup)
 }
 

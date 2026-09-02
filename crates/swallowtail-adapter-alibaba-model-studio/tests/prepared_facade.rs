@@ -2,7 +2,7 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{DriverFixture, ServerScenario};
+use support::{DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaConversationProfileInput, AlibabaRetainedConversationProfileInput,
     AlibabaRunProfileInput, AlibabaSessionManagementInput, ENDPOINT_AUDIENCE, EXACT_MODEL_ID,
@@ -84,7 +84,10 @@ fn exact_conversation_lifecycle_runs_on_both_host_topologies() {
             assert_eq!(outcome.status(), &TerminalStatus::Completed);
             assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
         }
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(session.close(cleanup_request(&fixture), fixture.services())),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.server.response_attempts(), 2);
         assert_eq!(fixture.releases(), 1);
         assert_eq!(fixture.release_after_blocking(), [9]);
@@ -194,7 +197,10 @@ fn retained_prepared_session_loads_replay_and_preserves_both_attachments() {
             .origin(),
         ProviderSessionBindingOrigin::Created
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let loaded = block_on(
         retained
@@ -215,7 +221,10 @@ fn retained_prepared_session_loads_replay_and_preserves_both_attachments() {
             .origin(),
         ProviderSessionBindingOrigin::Loaded
     );
-    assert_eq!(block_on(loaded.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(loaded.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert!(
         fixture
             .requests()
@@ -239,7 +248,10 @@ fn retained_cleanup_requires_separate_management_authority() {
         .expect("management binding")
         .clone();
     assert!(session.resume_binding().is_some());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.requests().len(), 1);
 
     let deletion = prepared
@@ -279,7 +291,10 @@ fn retained_cleanup_cancellation_and_binding_drift_fail_before_effects() {
         .management_binding()
         .expect("management binding")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let deletion = prepared
         .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
@@ -325,7 +340,10 @@ fn retained_cleanup_preserves_after_effect_uncertainty() {
         .management_binding()
         .expect("management binding")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     let deletion = prepared
         .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
             RequestId::new("uncertain-delete").expect("request id"),

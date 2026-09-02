@@ -4,6 +4,7 @@ use super::{
     CallLog, FixtureServer, ServerScenario, ThreadServices, TrackingCredential, TrackingNetwork,
 };
 use std::sync::Arc;
+use std::time::Duration;
 use swallowtail_adapter_xai::{XaiPreparationInput, xai_responses_access_profile};
 use swallowtail_core::{
     AccessStatus, CredentialState, EndpointAudience, EndpointAuthorization, ExecutionHostId,
@@ -11,9 +12,10 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    NetworkPolicyService, OperationContent, PreparedAccessEvidence, RuntimeTurnId,
-    ScopedTaskService, TimeService, TurnRequest,
+    BlockingWorkService, BoxFuture, CleanupOutcome, CredentialRef, CredentialService, EndpointRef,
+    HostServices, InteractiveSessionHandle, NetworkPolicyService, OperationContent,
+    PreparedAccessEvidence, RuntimeTurnId, ScopedTaskService, SessionCleanupRequest, TimeService,
+    TurnRequest,
 };
 
 pub fn turn_request(turn_id: &str) -> TurnRequest {
@@ -86,6 +88,17 @@ impl DriverFixture {
                 inner: self.host.clone(),
                 calls: self.calls.clone(),
             }) as Arc<dyn CredentialService>)
+    }
+
+    pub fn close_session(
+        &self,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let services = self.services().with_time(self.thread.cleanup_time());
+        session.close(
+            SessionCleanupRequest::new(self.thread.deadline_after(Duration::from_secs(1))),
+            services,
+        )
     }
 
     pub fn preparation_input(&self) -> XaiPreparationInput {

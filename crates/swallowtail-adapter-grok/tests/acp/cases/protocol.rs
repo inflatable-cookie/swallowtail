@@ -2,7 +2,7 @@
 fn disconnect_and_malformed_protocol_are_distinct_and_cleanup_stays_joined() {
     let disconnected = FixtureHost::new(Scenario::Disconnect);
     let host_id = ExecutionHostId::new("fixture.host.grok.disconnect").expect("host");
-    let mut run = start_run(host_id, &disconnected, "0.2.114", None);
+    let mut run = start_run(host_id, &disconnected, "0.2.114", Some(run_deadline()));
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert!(matches!(
         outcome.status(),
@@ -13,7 +13,7 @@ fn disconnect_and_malformed_protocol_are_distinct_and_cleanup_stays_joined() {
 
     let malformed = FixtureHost::new(Scenario::Malformed);
     let host_id = ExecutionHostId::new("fixture.host.grok.malformed").expect("host");
-    let error = match try_start_run(host_id, &malformed, "0.2.114", None) {
+    let error = match try_start_run(host_id, &malformed, "0.2.114", Some(run_deadline())) {
         Ok(_) => panic!("malformed initialization must fail"),
         Err(error) => error,
     };

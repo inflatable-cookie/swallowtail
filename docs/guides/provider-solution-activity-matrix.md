@@ -7,6 +7,12 @@ It is a compiled consumer reference. The exact
 `PreparedOperationEvidence::observable_activity()` returned for a prepared
 operation remains the runtime source of truth.
 
+Interactive-session rows share one lifecycle rule outside the activity cells:
+session close requires exact host services and a caller-selected absolute
+cleanup deadline. That boundary covers all post-expiry interruption, joins,
+credential release, and resource release; deadline expiry cannot be reported
+as clean.
+
 The inventory contains 86 route-operation rows:
 
 - 56 ordinary structured-run or interactive-session profiles with

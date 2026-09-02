@@ -45,9 +45,13 @@ fn prepared_session_derives_tool_bounds_from_bounded_declarations() {
     }));
 
     let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
-    let handle = block_on(profile.open_session(support::host_services(process)))
+    let services = support::host_services(process);
+    let handle = block_on(profile.open_session(services.clone()))
         .expect("prepared session opens");
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
     let thread_start = state
         .messages()
         .into_iter()
@@ -64,4 +68,3 @@ fn prepared_session_derives_tool_bounds_from_bounded_declarations() {
     );
     assert!(state.waited());
 }
-

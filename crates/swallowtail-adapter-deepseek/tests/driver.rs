@@ -315,7 +315,10 @@ fn exact_catalogue_tool_exchange_and_private_replay_complete_three_attempts() {
         error.diagnostic().code(),
         "swallowtail.direct_continuation.limit_reached"
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 
     assert_eq!(fixture.server.attempts(), 3);
     assert_eq!(fixture.releases(), 2);
@@ -364,7 +367,10 @@ fn each_reasoning_effort_stays_fixed_across_continuation_attempts() {
         let (_, second_outcome) = complete(&mut second);
         assert_eq!(second_outcome.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(second.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
 
         let requests = fixture
             .server

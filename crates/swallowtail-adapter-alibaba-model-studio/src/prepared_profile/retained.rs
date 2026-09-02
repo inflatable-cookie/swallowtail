@@ -64,6 +64,7 @@ impl AlibabaModelStudioPreparedRetainedConversation {
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(&instance, &access)?;
             let handle = driver.open_session(plan, request, services).await?;
             wrap_management_handle(
                 handle,
@@ -115,6 +116,7 @@ pub(super) async fn load_retained_session(
     access: PreparedAccessEvidence,
     services: HostServices,
 ) -> Result<LoadedSession, RuntimeFailure> {
+    validate_management_context(&management_instance, &access)?;
     let loaded = driver.load_session(plan, request, services).await?;
     let (replay, handle) = loaded.into_parts();
     let handle = wrap_management_handle(
@@ -190,29 +192,35 @@ async fn wrap_management_handle(
     access: PreparedAccessEvidence,
     origin: ProviderSessionBindingOrigin,
 ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
-    let Some(provider_ref) = handle.provider_session_ref().cloned() else {
-        return Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-            "swallowtail.alibaba_model_studio.retained_identity_missing",
-            "Alibaba Model Studio retained conversation returned no provider identity",
-        )));
-    };
-    match ProviderSessionManagementBinding::from_bound_session(
+    let provider_ref = handle
+        .provider_session_ref()
+        .cloned()
+        .expect("retained-session driver guarantees provider identity");
+    let binding = ProviderSessionManagementBinding::from_bound_session(
         provider_ref,
         &crate::alibaba_model_studio_descriptor(),
         &instance,
         access,
         None,
         origin,
-    ) {
-        Ok(binding) => Ok(Box::new(ManagedRetainedConversation {
-            inner: handle,
-            binding,
-        })),
-        Err(error) => {
-            let _ = handle.close().await;
-            Err(RuntimeFailure::new(error.diagnostic().clone()))
-        }
-    }
+    )
+    .expect("management context was validated before provider session work");
+    Ok(Box::new(ManagedRetainedConversation {
+        inner: handle,
+        binding,
+    }))
+}
+
+fn validate_management_context(
+    instance: &swallowtail_core::ConfiguredInstance,
+    access: &PreparedAccessEvidence,
+) -> Result<(), RuntimeFailure> {
+    ProviderSessionManagementBinding::validate_bound_session_context(
+        &crate::alibaba_model_studio_descriptor(),
+        instance,
+        access,
+    )
+    .map_err(|error| RuntimeFailure::new(error.diagnostic().clone()))
 }
 
 struct ManagedRetainedConversation {
@@ -253,7 +261,11 @@ impl InteractiveSessionHandle for ManagedRetainedConversation {
         self.inner.cancellation()
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        self.inner.close()
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        self.inner.close(request, services)
     }
 }

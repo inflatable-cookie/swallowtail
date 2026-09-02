@@ -9,7 +9,8 @@ use swallowtail_runtime::{
     CleanupOutcome, HostServices, OperationContent, PreparationFailure,
     PreparedWorkingStateRestoration, ProviderSessionManagementBinding,
     ProviderSessionManagementOutcome, RequestId, RuntimeFailure, RuntimeTurnId,
-    SessionResumeBinding, TerminalOutcome, TurnRequest, WorkingStateRestorationOutcome,
+    SessionCleanupRequest, SessionResumeBinding, TerminalOutcome, TurnRequest,
+    WorkingStateRestorationOutcome,
 };
 
 async fn prepare_installation(
@@ -45,20 +46,21 @@ async fn restore_working_state(
 
 async fn open_and_prompt(
     prepared: &ClaudeAgentPreparedSession,
+    cleanup: SessionCleanupRequest,
     services: HostServices,
     turn_id: RuntimeTurnId,
     content: OperationContent,
 ) -> Result<(TerminalOutcome, CleanupOutcome), RuntimeFailure> {
     let mut session = prepared.open_session(services.clone()).await?;
     let mut turn = session
-        .start_turn(TurnRequest::new(turn_id, content), services)
+        .start_turn(TurnRequest::new(turn_id, content), services.clone())
         .await?;
     let outcome = turn
         .take_terminal_outcome()
         .expect("Claude Agent turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    Ok((outcome, session.close().await))
+    Ok((outcome, session.close(cleanup, services).await))
 }
 
 fn prepare_delete(

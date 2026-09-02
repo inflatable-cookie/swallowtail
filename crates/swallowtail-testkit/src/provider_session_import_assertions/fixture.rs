@@ -123,8 +123,17 @@ impl InteractiveSessionHandle for ContinuationFixtureHandle {
         &self.cancellation
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async { CleanupOutcome::Clean })
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        swallowtail_runtime::bound_session_cleanup(
+            self.binding.execution_host_id().clone(),
+            request,
+            services,
+            Box::pin(async { CleanupOutcome::Clean }),
+        )
     }
 }
 

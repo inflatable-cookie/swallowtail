@@ -205,7 +205,10 @@ fn qwen_plan_session_reapplies_the_same_approval_mode_on_resume_and_replacement(
         flag_value(&states[1].request().arguments, "--resume"),
         Some("123e4567-e89b-12d3-a456-426614174000")
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services.clone())),
+        CleanupOutcome::Clean
+    );
 
     let restored = block_on(restoration.restore(services.clone())).expect("replacement opens");
     let WorkingStateRestorationOutcome::SessionReplaced(replaced) = restored else {
@@ -220,7 +223,7 @@ fn qwen_plan_session_reapplies_the_same_approval_mode_on_resume_and_replacement(
                 OperationContent::new("replacement plan prompt").expect("valid content"),
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
-            services,
+            services.clone(),
         ),
     )
     .expect("replacement turn starts");
@@ -242,7 +245,10 @@ fn qwen_plan_session_reapplies_the_same_approval_mode_on_resume_and_replacement(
     assert!(!replacement_arguments
         .iter()
         .any(|argument| argument == "--continue"));
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(replacement, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

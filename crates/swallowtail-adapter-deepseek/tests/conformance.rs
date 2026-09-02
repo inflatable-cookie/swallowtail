@@ -139,7 +139,10 @@ fn assert_topology(topology: &ExecutionTopologyFixture) {
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(fixture.server.attempts(), 2);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.releases(), 1);
 }
 

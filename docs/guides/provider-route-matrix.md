@@ -8,6 +8,12 @@ fallback route.
 New to the vocabulary? Read [Key Concepts](key-concepts.md) before the type
 names pile up.
 
+Every route that exposes an interactive session uses the shared caller-bounded
+close seam. The caller supplies the session's exact host services and one
+absolute cleanup deadline; the same boundary covers interruption, escalation,
+joins, credential release, and resource release. Expiry is failed cleanup, not
+a clean close or a route-specific timeout.
+
 The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes where one public solution facade exists, then compares

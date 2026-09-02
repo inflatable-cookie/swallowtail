@@ -15,7 +15,7 @@ use swallowtail_runtime::{
     InteractiveSessionHandle, JoinedTask, NegotiatedSessionModelOption,
     NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
     ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
+    SessionCleanupRequest, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
     validate_session_plan_agreement, validate_session_resource_lease,
 };
 

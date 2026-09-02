@@ -66,7 +66,7 @@ fn catalogue_and_read_only_session_run_against_the_frozen_http_fixture() {
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
 

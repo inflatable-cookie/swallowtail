@@ -26,9 +26,12 @@ fn local_and_remote_hosts_bind_open_resume_process_and_resource_authority() {
         let plan = plan_for(&topology, []);
         let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
         let services = host_services_for(topology.execution_host_id().clone(), process);
-        let session =
-            block_on(driver().open_session(plan, open_request("open", &topology), services))
-                .expect("session opens on the selected host");
+        let session = block_on(driver().open_session(
+            plan,
+            open_request("open", &topology),
+            services.clone(),
+        ))
+        .expect("session opens on the selected host");
         let binding = session
             .resume_binding()
             .expect("open session exposes a resume binding")
@@ -48,7 +51,10 @@ fn local_and_remote_hosts_bind_open_resume_process_and_resource_authority() {
             observed.working_resource.as_deref(),
             Some(topology.working_resource().as_host_value())
         );
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert!(state.waited());
 
         let plan = plan_for(&topology, []);
@@ -82,7 +88,7 @@ fn local_and_remote_hosts_bind_open_resume_process_and_resource_authority() {
                 RuntimeTurnId::new("turn-after-resume").expect("turn id is valid"),
                 OperationContent::new("continue").expect("content is valid"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("resumed turn starts");
         let terminal = block_on(
@@ -91,7 +97,10 @@ fn local_and_remote_hosts_bind_open_resume_process_and_resource_authority() {
         );
         assert_eq!(terminal.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(resumed, services)),
+            CleanupOutcome::Clean
+        );
         assert!(state.waited());
     }
 }
@@ -179,7 +188,7 @@ fn host_instance_and_provider_session_substitution_fail_at_the_boundary() {
     let mut session = block_on(driver().open_session(
         plan_for(&local, []),
         open_request("turn-host", &local),
-        local_services,
+        local_services.clone(),
     ))
     .expect("local session opens");
     let (remote_process, remote_state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
@@ -199,5 +208,8 @@ fn host_instance_and_provider_session_substitution_fail_at_the_boundary() {
     );
     assert!(!state.methods().contains(&"turn/start".to_owned()));
     assert!(!remote_state.started());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, local_services)),
+        CleanupOutcome::Clean
+    );
 }

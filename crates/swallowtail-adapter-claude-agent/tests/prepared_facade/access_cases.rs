@@ -74,7 +74,13 @@ fn local_subscription_facade_inherits_harness_auth_without_a_credential_lease() 
         .management_binding()
         .expect("session returns a management binding")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            session_host.cleanup_request(),
+            session_host.services_without_credential(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
     assert_eq!(session_host.credential_acquires(), 0);
     assert_eq!(session_host.credential_releases(), 0);
 
@@ -94,4 +100,3 @@ fn local_subscription_facade_inherits_harness_auth_without_a_credential_lease() 
     assert_eq!(delete_host.credential_acquires(), 0);
     assert_eq!(delete_host.credential_releases(), 0);
 }
-

@@ -18,8 +18,8 @@ mod versions;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{
-    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
-    turn_request,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, close_session, sidecar_open_request,
+    sidecar_selection, turn_request,
 };
 use swallowtail_adapter_pi::{
     PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
@@ -161,7 +161,10 @@ fn fresh_session_relays_scheduling_and_joined_cleanup() {
     );
     assert!(!format!("{terminal:?}").contains("fixture answer"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         fixture.cleanup_events(),
         [

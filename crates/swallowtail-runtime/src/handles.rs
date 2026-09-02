@@ -6,7 +6,8 @@ use crate::{
     HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit,
     NegotiatedSessionModelOptions, OperationDetachmentControl, ProviderSessionManagementBinding,
     RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
-    ServingEndpointBinding, ServingInstanceId, SessionResumeBinding, TerminalOutcome, TurnRequest,
+    ServingEndpointBinding, ServingInstanceId, SessionCleanupRequest, SessionResumeBinding,
+    TerminalOutcome, TurnRequest,
 };
 use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
@@ -135,8 +136,12 @@ pub trait InteractiveSessionHandle: Send {
     }
     /// Returns session-wide cancellation control.
     fn cancellation(&self) -> &dyn CancellationControl;
-    /// Closes the session and releases its scoped resources.
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+    /// Closes the session within the caller's host-monotonic cleanup boundary.
+    fn close(
+        self: Box<Self>,
+        request: SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome>;
 }
 
 /// Owns one in-flight response on a realtime media session.

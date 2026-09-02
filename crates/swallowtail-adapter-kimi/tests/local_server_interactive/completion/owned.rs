@@ -33,14 +33,15 @@ fn owned_session_joins_transport_and_then_its_foreground_child() {
         "owned-session",
     );
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
-    let mut turn = block_on(session.start_turn(turn("owned-turn"), services)).expect("turn starts");
+    let mut turn = block_on(session.start_turn(turn("owned-turn"), services.clone()))
+        .expect("turn starts");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),
     );
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
     assert_eq!(host.credential_releases(), 2);
     assert!(!host.process_stopped_and_joined());
     assert_eq!(block_on(owned.close()), CleanupOutcome::Clean);

@@ -75,7 +75,10 @@ fn prepared_xai_controls_dispatch_on_run_and_serial_session() {
         });
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     }
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session_fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     let frames = session_fixture.server.frames();
     assert_eq!(frames.len(), 2);
     assert_wire_controls(&frames[0], Some("xhigh"), Some(512), false);

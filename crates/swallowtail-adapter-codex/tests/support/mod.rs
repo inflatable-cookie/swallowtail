@@ -22,9 +22,11 @@ use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use swallowtail_core::{ExecutionHostId, HarnessConfigurationPosture, HostServiceKind};
 use swallowtail_runtime::{
-    BoxFuture, HostServices, JoinedTask, ProcessExit, ProcessHandle, ProcessInputChunk,
-    ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure,
-    ScopeId, ScopedTaskService, SessionAccessPolicy, SessionPlanAgreement, WorkingResourceRef,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
+    InteractiveSessionHandle, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle,
+    ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
+    RuntimeFailure, ScopeId, ScopedTaskService, SessionAccessPolicy, SessionCleanupRequest,
+    SessionPlanAgreement, TimeService, WorkingResourceRef,
 };
 
 pub fn app_server_session_agreement(policy: SessionAccessPolicy) -> SessionPlanAgreement {
@@ -33,6 +35,33 @@ pub fn app_server_session_agreement(policy: SessionAccessPolicy) -> SessionPlanA
         Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
         Some(HarnessConfigurationPosture::Ambient),
     )
+}
+
+pub fn close_session(
+    handle: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+) -> BoxFuture<'static, CleanupOutcome> {
+    let services = if services.time().is_some() {
+        services
+    } else {
+        services.with_time(Arc::new(FixtureCleanupTime))
+    };
+    handle.close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(u64::MAX))),
+        services,
+    )
+}
+
+struct FixtureCleanupTime;
+
+impl TimeService for FixtureCleanupTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(std::future::pending())
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

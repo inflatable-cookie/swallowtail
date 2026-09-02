@@ -10,7 +10,7 @@ use swallowtail_core::{CancellationScope, ExecutionHostId};
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
     InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest, OperationContent, RequestId,
-    RuntimeTurnId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    RuntimeTurnId, SessionCleanupRequest, TerminalStatus, TurnRequest, WorkingResourceRef,
 };
 
 const FIRST: &str = include_str!("fixtures/antigravity-cli-1.1.9/continuation-first.jsonl");
@@ -88,7 +88,10 @@ fn later_turn_uses_only_the_exact_private_conversation_id() {
                     .iter()
                     .any(|argument| argument == "--dangerously-skip-permissions")
         }));
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(session.close(cleanup_request(), services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -125,7 +128,7 @@ fn a_mismatched_conversation_invalidates_the_runtime_handle_without_fallback() {
     );
     assert!(!format!("{second:?}").contains("different-private-conversation"));
 
-    let error = match block_on(session.start_turn(turn_request(3, "third"), services)) {
+    let error = match block_on(session.start_turn(turn_request(3, "third"), services.clone())) {
         Ok(_) => panic!("invalidated session must reject later turns"),
         Err(error) => error,
     };
@@ -134,7 +137,10 @@ fn a_mismatched_conversation_invalidates_the_runtime_handle_without_fallback() {
         "swallowtail.antigravity.headless.session_unusable"
     );
     assert_eq!(host.observations().len(), 2);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -173,8 +179,11 @@ fn active_turn_cancellation_force_stops_joins_and_invalidates_continuation() {
     assert!(host.force_stopped());
     assert!(host.waited());
     assert!(host.joined());
-    assert!(block_on(session.start_turn(turn_request(2, "later"), services)).is_err());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(block_on(session.start_turn(turn_request(2, "later"), services.clone())).is_err());
+    assert_eq!(
+        block_on(session.close(cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -206,9 +215,12 @@ fn missing_first_conversation_identity_fails_closed() {
         diagnostic.code(),
         "swallowtail.antigravity.headless.malformed_stream"
     );
-    assert!(block_on(session.start_turn(turn_request(2, "later"), services)).is_err());
+    assert!(block_on(session.start_turn(turn_request(2, "later"), services.clone())).is_err());
     assert_eq!(host.observations().len(), 1);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -236,8 +248,11 @@ fn turn_deadline_is_terminal_joined_and_invalidates_continuation() {
     assert!(host.force_stopped());
     assert!(host.waited());
     assert!(host.joined());
-    assert!(block_on(session.start_turn(turn_request(2, "later"), services)).is_err());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(block_on(session.start_turn(turn_request(2, "later"), services.clone())).is_err());
+    assert_eq!(
+        block_on(session.close(cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 fn driver() -> AntigravityHeadlessDriver {
@@ -252,6 +267,10 @@ fn turn_request(index: usize, prompt: &str) -> TurnRequest {
         OperationContent::new(prompt).expect("valid prompt"),
     )
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000)))
+}
+
+fn cleanup_request() -> SessionCleanupRequest {
+    SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1_000)))
 }
 
 fn completed_turn(

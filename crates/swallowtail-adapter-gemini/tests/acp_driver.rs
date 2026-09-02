@@ -2,7 +2,7 @@ use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario, selection, selection_with_access};
+use support::{FixtureHost, Scenario, close_session, selection, selection_with_access};
 use swallowtail_adapter_gemini::GeminiAcpDriver;
 use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
 use swallowtail_runtime::{
@@ -62,7 +62,7 @@ fn success_and_read_callbacks_preserve_local_and_remote_host_authority() {
                 RuntimeTurnId::new("gemini-turn").expect("valid turn"),
                 OperationContent::new("private fixture prompt").expect("valid prompt"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn starts");
         let outcome = block_on(
@@ -95,7 +95,10 @@ fn success_and_read_callbacks_preserve_local_and_remote_host_authority() {
         assert_eq!(observed.environment_count, 1);
         assert_eq!(observed.working_resource, Some(selected.resource));
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(host.releases(), 1);
     }
 }
@@ -126,7 +129,7 @@ fn bounded_write_profile_negotiates_and_dispatches_one_host_text_write() {
         services.clone(),
     ))
     .expect("write session opens");
-    let mut turn = start(&mut *session, services, "write-turn");
+    let mut turn = start(&mut *session, services.clone(), "write-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
@@ -144,14 +147,17 @@ fn bounded_write_profile_negotiates_and_dispatches_one_host_text_write() {
             && message["params"]["clientCapabilities"]["fs"]["writeTextFile"] == true
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 
 #[test]
 fn read_profile_rejects_an_unnegotiated_write_before_host_mutation() {
     let (host, mut session, services) = open(Scenario::UnexpectedWrite, "unexpected-write");
-    let mut turn = start(&mut *session, services, "unexpected-write-turn");
+    let mut turn = start(&mut *session, services.clone(), "unexpected-write-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
@@ -163,13 +169,16 @@ fn read_profile_rejects_an_unnegotiated_write_before_host_mutation() {
             && message["error"]["code"] == -32601
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn permission_is_observed_cancelled_and_never_becomes_a_consumer_callback() {
     let (host, mut session, services) = open(Scenario::Permission, "permission");
-    let mut turn = start(&mut *session, services, "permission-turn");
+    let mut turn = start(&mut *session, services.clone(), "permission-turn");
     assert!(turn.take_callbacks().is_none());
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -194,13 +203,16 @@ fn permission_is_observed_cancelled_and_never_becomes_a_consumer_callback() {
         )
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn active_turn_cancellation_waits_for_cancelled_prompt_result() {
     let (_host, mut session, services) = open(Scenario::Cancellation, "cancellation");
-    let mut turn = start(&mut *session, services, "cancel-turn");
+    let mut turn = start(&mut *session, services.clone(), "cancel-turn");
     block_on(turn.cancellation().request()).expect("cancellation is sent");
     let outcome = block_on(
         turn.take_terminal_outcome()
@@ -208,20 +220,26 @@ fn active_turn_cancellation_waits_for_cancelled_prompt_result() {
     );
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
 fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
     let (_host, mut session, services) = open(Scenario::Disconnect, "disconnect");
-    let mut turn = start(&mut *session, services, "disconnect-turn");
+    let mut turn = start(&mut *session, services.clone(), "disconnect-turn");
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome is available"),
     );
     assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 fn open(

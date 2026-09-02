@@ -9,7 +9,9 @@ use swallowtail_runtime::{
 
 #[path = "session/management_handle.rs"]
 mod management_handle;
-use management_handle::{lifecycle_management_instance, wrap_management_handle};
+use management_handle::{
+    lifecycle_management_instance, validate_management_context, wrap_management_handle,
+};
 #[path = "session/preparation.rs"]
 mod preparation;
 
@@ -61,6 +63,7 @@ impl CodexPreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(management_instance.as_ref(), &access)?;
             let handle = driver.open_session(plan, request.clone(), services).await?;
             wrap_management_handle(
                 handle,
@@ -151,6 +154,7 @@ impl CodexPreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(management_instance.as_ref(), &access)?;
             let loaded = driver.load_session(plan, request.clone(), services).await?;
             let (replay, handle) = loaded.into_parts();
             let handle = wrap_management_handle(
@@ -183,6 +187,7 @@ impl CodexPreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Ok(Box::pin(async move {
+            validate_management_context(management_instance.as_ref(), &access)?;
             let handle = driver
                 .resume_session(plan, request.clone(), services)
                 .await?;

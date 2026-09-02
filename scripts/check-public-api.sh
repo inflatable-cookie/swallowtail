@@ -8,6 +8,7 @@ release_immutable_baseline_dir=release-baselines/public-api-0.3.0
 release_baseline_dir=release-baselines/public-api-0.3.3
 release_unreleased_baseline_dir=release-baselines/public-api-unreleased
 release_unreleased_packages="$release_unreleased_baseline_dir/packages.txt"
+release_approved_breaking_dir="$release_unreleased_baseline_dir/approved-v0.4.0-removals"
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
 
@@ -43,15 +44,27 @@ while IFS= read -r release_package; do
   else
     release_api="$release_baseline_dir/$release_package.txt"
   fi
-  if [[ -f "$release_immutable_baseline_dir/$release_package.txt" ]] &&
+  if [[ -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
+    release_removed_api="$release_actual_dir/$release_package.removed.txt"
     grep -Fvx -f "$release_api" \
-      "$release_immutable_baseline_dir/$release_package.txt" | grep -q .
-  then
-    printf 'v0.3.3 release API removes an immutable v0.3.0 item: %s\n' "$release_package" >&2
-    exit 1
+      "$release_immutable_baseline_dir/$release_package.txt" \
+      > "$release_removed_api" || true
+    release_approved_removals="$release_approved_breaking_dir/$release_package.txt"
+    if [[ -s "$release_removed_api" ]]; then
+      if [[ ! -f "$release_approved_removals" ]]; then
+        printf 'v0.3.3 release API removes an unapproved immutable v0.3.0 item: %s\n' \
+          "$release_package" >&2
+        exit 1
+      fi
+      diff -u "$release_approved_removals" "$release_removed_api"
+    elif [[ -f "$release_approved_removals" ]]; then
+      printf 'approved v0.4.0 removal is not removed from current API: %s\n' \
+        "$release_package" >&2
+      exit 1
+    fi
   fi
   diff -u \
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: 40 packages at v0.3.3; immutable v0.3.2 remains 30; v0.3.0 removals remain forbidden\n'
+printf 'semantic API passed: 40 packages at v0.3.3; immutable v0.3.2 remains 30; v0.3.0 removals require exact approved v0.4.0 evidence\n'

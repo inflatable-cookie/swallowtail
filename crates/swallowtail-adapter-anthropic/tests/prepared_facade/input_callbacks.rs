@@ -184,7 +184,10 @@ fn prepared_direct_session_waits_for_exact_consumer_result_and_allows_later_turn
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(fixture.server.inference_attempts(), 3);
     assert_eq!(block_on(later.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.releases(), 1);
 
     let requests = fixture.server.requests();

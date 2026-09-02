@@ -1,5 +1,5 @@
 use crate::fixtures::{prepared, prepared_with_state_root, profile_input};
-use crate::support::{FixtureHost, Scenario};
+use crate::support::{FixtureHost, Scenario, close_session};
 use futures_executor::block_on;
 use std::num::NonZeroU32;
 use swallowtail_adapter_kimi::KimiSessionCatalogueInput;
@@ -92,12 +92,13 @@ fn prepared_catalogue_import_and_load_preserve_state_and_replay_boundaries() {
             ))
             .expect("ordinary attachment profile prepares");
         let load_host = FixtureHost::new(scenario(version));
+        let load_services = load_host.services(host_id);
         let loaded = block_on(
             session
                 .load_session(
                     RequestId::new(format!("load-{version}")).unwrap(),
                     imported_outcome.binding().clone(),
-                    load_host.services(host_id),
+                    load_services.clone(),
                 )
                 .expect("imported binding derives a load request"),
         )
@@ -108,7 +109,10 @@ fn prepared_catalogue_import_and_load_preserve_state_and_replay_boundaries() {
             replay[1].content().expect("agent replay").as_str(),
             "Previous answer."
         );
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(handle, load_services)),
+            CleanupOutcome::Clean
+        );
         assert!(
             load_host
                 .wire_methods()

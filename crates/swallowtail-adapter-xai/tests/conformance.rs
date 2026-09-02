@@ -125,7 +125,10 @@ fn xai_driver_preserves_local_and_remote_authority_through_chained_cleanup() {
         assert_eq!(fixture.calls.count(DriverCall::NetworkAuthorize), 1);
         assert_eq!(fixture.calls.count(DriverCall::CredentialAcquire), 1);
         assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 0);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
         let calls = fixture.calls.calls();
         assert!(last(&calls, DriverCall::TaskJoin) < last(&calls, DriverCall::CredentialRelease));

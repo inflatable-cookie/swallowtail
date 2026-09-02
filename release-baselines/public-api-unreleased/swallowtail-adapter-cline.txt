@@ -90,7 +90,7 @@ pub const fn swallowtail_adapter_cline::ClinePreparedSession::plan(&self) -> &sw
 pub fn swallowtail_adapter_cline::ClinePreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_cline::ClinePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 impl swallowtail_adapter_cline::ClinePreparedSession
-pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_cline::ClineProjectionOpenFuture
+pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::session_cleanup::SessionCleanupRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_cline::ClineProjectionOpenFuture
 pub struct swallowtail_adapter_cline::ClineProjectionOpenOutcome
 impl swallowtail_adapter_cline::ClineProjectionOpenOutcome
 pub const fn swallowtail_adapter_cline::ClineProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution

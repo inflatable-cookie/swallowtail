@@ -1,7 +1,7 @@
 mod support;
 
 use futures_executor::block_on;
-use support::{DriverFixture, ServerScenario};
+use support::{DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaRetainedConversationProfileInput, EXACT_MODEL_ID, MODEL_ROUTE_ID,
     prepare_alibaba_model_studio,
@@ -27,7 +27,10 @@ fn retained_conversation_maps_to_common_continuation_recovery() {
         .expect("retained conversation prepares");
     let session = block_on(retained.open_session(fixture.services())).expect("session opens");
     let binding = session.resume_binding().expect("resume binding").clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let interrupted_turn_id = RuntimeTurnId::new("interrupted-retained-turn").expect("turn id");
     let restoration = retained
@@ -55,7 +58,10 @@ fn retained_conversation_maps_to_common_continuation_recovery() {
     let (_, loaded) = recovered.into_parts();
     let (_, session) = loaded.into_parts();
     assert!(session.management_binding().is_some());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     assert!(
         fixture
             .requests()

@@ -27,6 +27,7 @@ impl FixtureHost {
 
     fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
+            .with_time(Arc::new(FixtureTime))
             .with_task(Arc::new(ThreadTaskService))
             .with_process(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -40,6 +41,18 @@ impl FixtureHost {
             .expect("agent lock poisoned")
             .writes
             .clone()
+    }
+}
+
+struct FixtureTime;
+
+impl TimeService for FixtureTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(std::future::pending())
     }
 }
 

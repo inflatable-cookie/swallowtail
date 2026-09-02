@@ -66,7 +66,10 @@ fn prepared_xai_session_preserves_serial_continuation_cost_and_cleanup_on_both_h
                 .expect("billed cost exists");
             assert_eq!(cost, expected_cost);
         }
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
     }
 }
@@ -105,7 +108,10 @@ fn prepared_xai_restoration_opens_a_new_websocket_session() {
         let events = complete_turn(&mut replacement, &fixture, turn);
         assert_observable_activity_trace(session.evidence().observable_activity(), &events);
     }
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(replacement)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.server.frames().len(), 2);
     let frames = fixture.server.frames();
     assert_wire_controls(&frames[0], Some("high"), Some(512), false);

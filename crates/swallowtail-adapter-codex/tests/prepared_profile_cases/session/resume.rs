@@ -21,12 +21,13 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
         profile.request().harness_configuration_posture()
     );
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let load_services = support::host_services(process);
     let loaded = block_on(
         profile
             .load_session(
                 RequestId::new("bound-load").unwrap(),
                 binding.clone(),
-                support::host_services(process),
+                load_services.clone(),
             )
             .expect("bound load prepares"),
     )
@@ -46,17 +47,21 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
             .origin(),
         swallowtail_core::ProviderSessionBindingOrigin::Loaded
     );
-    assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(loaded_handle, load_services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.methods().contains(&"thread/resume".to_owned()));
     assert!(state.waited());
 
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let resume_services = support::host_services(process);
     let handle = block_on(
         profile
             .resume_session(
                 RequestId::new("bound-resume").unwrap(),
                 binding,
-                support::host_services(process),
+                resume_services.clone(),
             )
             .expect("bound resume prepares"),
     )
@@ -68,7 +73,10 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
             .origin(),
         swallowtail_core::ProviderSessionBindingOrigin::Resumed
     );
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, resume_services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.methods().contains(&"thread/resume".to_owned()));
     assert!(state.waited());
 
@@ -83,4 +91,3 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
         .expect_err("unsupported session deadline fails during preparation");
     assert_eq!(failure.stage(), PreparationStage::Preflight);
 }
-

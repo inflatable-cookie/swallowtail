@@ -2,7 +2,7 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{DriverFixture, ServerScenario};
+use support::{DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
 use swallowtail_core::CredentialMechanism;
 use swallowtail_runtime::{
@@ -109,7 +109,10 @@ fn local_and_remote_authority_preserve_the_exact_conversation_lifecycle() {
         )));
         assert!(!format!("{events:?}").contains("private topology input"));
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(session.close(cleanup_request(&fixture), fixture.services())),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.releases(), 1);
     }
 }

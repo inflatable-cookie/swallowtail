@@ -243,7 +243,12 @@ fn configured_command_code_completes_two_interactive_turns_with_exact_resume() {
         ));
     }
     assert!(matches!(
-        block_on(handle.close()),
+        block_on(handle.close(
+            swallowtail_runtime::SessionCleanupRequest::new(
+                local.deadline_after(Duration::from_secs(30)),
+            ),
+            local.services().clone(),
+        )),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
 }

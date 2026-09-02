@@ -1,7 +1,7 @@
 use crate::support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, selection, version_selection};
+use support::{CleanupEvent, FixtureHost, Scenario, close_session, selection, version_selection};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{ExecutionHostId, ResourceAccess, SessionProviderStatePolicy, SessionRef};
 use swallowtail_runtime::{
@@ -56,7 +56,7 @@ fn qualified_versions_preserve_prompt_write_and_cleanup_authority() {
                     RuntimeTurnId::new("kimi-turn").expect("valid turn"),
                     OperationContent::new("private fixture prompt").expect("valid prompt"),
                 ),
-                services,
+                services.clone(),
             ))
             .expect("turn starts");
             let outcome = block_on(
@@ -77,7 +77,10 @@ fn qualified_versions_preserve_prompt_write_and_cleanup_authority() {
             );
             assert_eq!(host.process_arguments(), Some(vec!["acp".to_owned()]));
             assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(
+                block_on(close_session(session, services)),
+                CleanupOutcome::Clean
+            );
             assert_eq!(host.cleanup_counts(), (1, 1));
             assert_eq!(host.cleanup_events(), joined_cleanup());
         }
@@ -92,6 +95,7 @@ fn load_replays_history_but_resume_does_not() {
         let policy = SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite);
 
         let load_host = FixtureHost::new(Scenario::Complete);
+        let load_services = load_host.services(host_id.clone());
         let loaded = block_on(driver(selected.credential.clone()).load_session(
             selected.plan.clone(),
             LoadSessionRequest::new(
@@ -101,7 +105,7 @@ fn load_replays_history_but_resume_does_not() {
                 None,
                 plan_agreement(policy.clone()),
             ),
-            load_host.services(host_id.clone()),
+            load_services.clone(),
         ))
         .expect("session loads");
         let (replay, session) = loaded.into_parts();
@@ -117,10 +121,14 @@ fn load_replays_history_but_resume_does_not() {
         let replay_debug = format!("{replay:?}");
         assert!(!replay_debug.contains("kimi-session-bound"));
         assert!(!replay_debug.contains("Previous answer"));
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, load_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(load_host.cleanup_events(), joined_cleanup());
 
         let resume_host = FixtureHost::new(Scenario::Complete);
+        let resume_services = resume_host.services(host_id);
         let session = block_on(driver(selected.credential).resume_session(
             selected.plan,
             ResumeSessionRequest::new(
@@ -130,10 +138,13 @@ fn load_replays_history_but_resume_does_not() {
                 None,
                 plan_agreement(policy),
             ),
-            resume_host.services(host_id),
+            resume_services.clone(),
         ))
         .expect("session resumes without replay");
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, resume_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(resume_host.cleanup_events(), joined_cleanup());
     }
 }
@@ -180,7 +191,7 @@ fn active_turn_cancellation_uses_acp_and_keeps_cleanup_joined() {
                 RuntimeTurnId::new("kimi-cancel-turn").expect("valid turn"),
                 OperationContent::new("cancel this turn").expect("valid prompt"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn starts");
         block_on(turn.cancellation().request()).expect("cancellation is sent");
@@ -190,7 +201,10 @@ fn active_turn_cancellation_uses_acp_and_keeps_cleanup_joined() {
         );
         assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(host.cleanup_counts(), (1, 1));
         assert_eq!(host.cleanup_events(), joined_cleanup());
     }
@@ -213,7 +227,7 @@ fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
                 RuntimeTurnId::new("kimi-disconnect-turn").expect("valid turn"),
                 OperationContent::new("disconnect this turn").expect("valid prompt"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn starts");
         let outcome = block_on(
@@ -222,7 +236,10 @@ fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
         );
         assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(host.cleanup_counts(), (1, 1));
         assert_eq!(host.cleanup_events(), joined_cleanup());
     }

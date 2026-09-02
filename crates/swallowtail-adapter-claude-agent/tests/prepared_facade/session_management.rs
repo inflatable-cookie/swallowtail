@@ -33,7 +33,13 @@ fn unverified_newer_delete_requires_explicit_acceptance_and_close_is_not_promote
         .management_binding()
         .expect("unverified binding remains visible")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            session_host.cleanup_request(),
+            session_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
     assert!(!session_host.writes().iter().any(|message| {
         message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
     }));

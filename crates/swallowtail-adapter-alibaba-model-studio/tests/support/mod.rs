@@ -11,6 +11,10 @@ mod driver;
 #[allow(unused_imports)]
 pub use driver::{DriverCall, DriverFixture, FixtureRequest, ServerScenario};
 
+pub fn cleanup_request(fixture: &DriverFixture) -> swallowtail_runtime::SessionCleanupRequest {
+    swallowtail_runtime::SessionCleanupRequest::new(fixture.deadline_after(1_000))
+}
+
 pub fn conversation() -> ConversationRef {
     parse_conversation(bytes("conversation-created.json")).expect("conversation fixture is valid")
 }

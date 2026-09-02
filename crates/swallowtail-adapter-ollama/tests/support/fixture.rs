@@ -17,8 +17,9 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, EndpointRef, HostServices, NetworkPolicyService, ScopedTaskService,
-    TimeService,
+    BlockingWorkService, BoxFuture, CleanupOutcome, Deadline, EndpointRef, HostServices,
+    InteractiveSessionHandle, MonotonicInstant, NetworkPolicyService, ScopedTaskService,
+    SessionCleanupRequest, TimeService,
 };
 
 const MODEL: &str = "fixture-model:8b";
@@ -75,6 +76,16 @@ impl Fixture {
 
     pub fn services(&self) -> HostServices {
         self.services_with_time(self.thread.clone())
+    }
+
+    pub fn close_session(
+        &self,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(
+            self.thread.now().ticks().saturating_add(10_000),
+        ));
+        session.close(SessionCleanupRequest::new(deadline), self.services())
     }
 
     pub fn host_id(&self) -> &ExecutionHostId {

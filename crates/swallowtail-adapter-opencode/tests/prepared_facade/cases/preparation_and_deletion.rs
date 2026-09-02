@@ -91,7 +91,7 @@ fn prepared_session_promotes_one_exact_inactive_delete_binding() {
         .expect("prepared session exposes management binding")
         .clone();
     assert_eq!(binding.working_resource(), Some(&fixture.resource));
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(fixture.close_session(handle)), CleanupOutcome::Clean);
 
     let delete = prepared
         .prepare_delete_session(OpenCodeSessionManagementInput::new(
@@ -142,7 +142,7 @@ fn prepared_delete_rejects_route_drift_and_unverified_newer_by_default() {
         .expect("session prepares");
     let handle = block_on(session.open_session(first.services())).expect("session opens");
     let binding = handle.management_binding().unwrap().clone();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(first.close_session(handle)), CleanupOutcome::Clean);
     let error = second_prepared
         .prepare_delete_session(OpenCodeSessionManagementInput::new(
             RequestId::new("delete-drift").unwrap(),
@@ -172,7 +172,7 @@ fn prepared_delete_rejects_route_drift_and_unverified_newer_by_default() {
         .expect("newer session prepares");
     let handle = block_on(session.open_session(newer.services())).expect("newer session opens");
     let binding = handle.management_binding().unwrap().clone();
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(newer.close_session(handle)), CleanupOutcome::Clean);
     let error = newer_prepared
         .prepare_delete_session(OpenCodeSessionManagementInput::new(
             RequestId::new("delete-newer").unwrap(),
@@ -193,4 +193,3 @@ fn prepared_delete_rejects_route_drift_and_unverified_newer_by_default() {
         )
         .expect("explicit acceptance prepares");
 }
-

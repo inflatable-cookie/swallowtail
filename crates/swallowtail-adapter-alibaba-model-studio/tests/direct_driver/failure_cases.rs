@@ -1,5 +1,5 @@
 use super::{complete, open, open_request, plan_agreement, turn_request};
-use crate::support::{DriverFixture, ServerScenario};
+use crate::support::{DriverFixture, ServerScenario, cleanup_request};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
@@ -60,7 +60,7 @@ fn provider_failure_disconnect_and_cleanup_failure_remain_distinct() {
             assert!(!rendered.contains(private));
         }
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        let cleanup = block_on(session.close());
+        let cleanup = block_on(session.close(cleanup_request(&fixture), fixture.services()));
         assert_eq!(
             matches!(cleanup, CleanupOutcome::Degraded(_)),
             expected_cleanup == "degraded"
@@ -142,7 +142,7 @@ fn cancellation_and_deadline_end_session_with_unconfirmed_remote_truth() {
         }
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
         assert!(matches!(
-            block_on(session.close()),
+            block_on(session.close(cleanup_request(&fixture), fixture.services())),
             CleanupOutcome::Degraded(_)
         ));
         assert_eq!(fixture.releases(), 1);

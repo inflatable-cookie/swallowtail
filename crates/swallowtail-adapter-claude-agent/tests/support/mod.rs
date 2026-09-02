@@ -18,8 +18,9 @@ use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, Deadline, DeadlineObservation, HostServices,
     JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle, ProcessInputChunk,
     ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService, ResourceLease,
-    RuntimeFailure, ScopeId, ScopedTaskService, SecretLease, TimeService, WorkingResourceIoService,
-    WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
+    RuntimeFailure, ScopeId, ScopedTaskService, SecretLease, SessionCleanupRequest, TimeService,
+    WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceRef,
+    WorkingResourceService, WorkingResourceText,
 };
 
 mod agent;
@@ -76,6 +77,20 @@ impl FixtureHost {
                 self.immediate_deadline,
                 self.deadline_after_waits,
             )))
+            .with_process(Arc::new(self.clone()))
+            .with_credential(Arc::new(self.clone()))
+            .with_working_resource(Arc::new(self.clone()))
+            .with_working_resource_io(Arc::new(self.clone()))
+    }
+
+    pub fn cleanup_request(&self) -> SessionCleanupRequest {
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(10_000)))
+    }
+
+    pub fn cleanup_services(&self, host: ExecutionHostId) -> HostServices {
+        HostServices::new(host)
+            .with_task(Arc::new(ThreadTaskService))
+            .with_time(Arc::new(FixtureTime::new(false, None)))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))

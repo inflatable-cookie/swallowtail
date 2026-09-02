@@ -64,9 +64,13 @@ fn prepared_sessions_preserve_oh_my_pi_rpc_policy_in_both_host_topologies() {
         );
 
         let operation = FixtureHost::new(Scenario::Complete);
-        let session = block_on(profile.open_session(operation.services(host_id)))
+        let operation_services = operation.services(host_id);
+        let session = block_on(profile.open_session(operation_services.clone()))
             .expect("prepared OhMyPi session opens");
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, operation_services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -97,9 +101,13 @@ fn prepared_session_and_run_bind_exact_reasoning_selection() {
             })
     }));
     let operation = FixtureHost::new(Scenario::Complete);
-    let opened = block_on(session.open_session(operation.services(host_id)))
+    let operation_services = operation.services(host_id);
+    let opened = block_on(session.open_session(operation_services.clone()))
         .expect("reasoning session opens");
-    assert_eq!(block_on(opened.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(opened, operation_services)),
+        CleanupOutcome::Clean
+    );
     assert!(operation.inputs().iter().any(|input| {
         input["type"] == "set_thinking_level" && input["level"] == "low"
     }));
@@ -239,7 +247,7 @@ fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100_000)))
             .with_attachments([image("pi.image.session")]),
-            services,
+            services.clone(),
         ),
     )
     .expect("image turn starts");
@@ -248,7 +256,7 @@ fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
         .expect("terminal outcome is available");
     assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
     assert_prompt_image(&session_host);
     assert_eq!(
         session_host

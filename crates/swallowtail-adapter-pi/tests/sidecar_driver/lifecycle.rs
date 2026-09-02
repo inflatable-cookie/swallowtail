@@ -1,7 +1,7 @@
 use super::{deadline, driver, make_host_id};
 use crate::support::{
-    CleanupEvent, SidecarFixtureHost, SidecarScenario, sidecar_open_request, sidecar_selection,
-    sidecar_selection_with_attachments, turn_request,
+    CleanupEvent, SidecarFixtureHost, SidecarScenario, close_session, sidecar_open_request,
+    sidecar_selection, sidecar_selection_with_attachments, turn_request,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::PiSdkSidecarDriver;
@@ -23,9 +23,11 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
         services.clone(),
     ))
     .expect("sidecar session opens");
-    let mut turn =
-        block_on(session.start_turn(turn_request("sidecar-turn-cancel", deadline()), services))
-            .expect("sidecar turn starts");
+    let mut turn = block_on(session.start_turn(
+        turn_request("sidecar-turn-cancel", deadline()),
+        services.clone(),
+    ))
+    .expect("sidecar turn starts");
 
     assert_eq!(
         block_on(turn.cancellation().request()).expect("abort request succeeds"),
@@ -41,7 +43,10 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
     );
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(
         fixture
             .inputs()
@@ -62,9 +67,11 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
         services.clone(),
     ))
     .expect("sidecar session opens");
-    let mut turn =
-        block_on(session.start_turn(turn_request("sidecar-turn-timeout", deadline()), services))
-            .expect("sidecar turn starts");
+    let mut turn = block_on(session.start_turn(
+        turn_request("sidecar-turn-timeout", deadline()),
+        services.clone(),
+    ))
+    .expect("sidecar turn starts");
 
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -78,7 +85,13 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
             .any(|value| value["command"] == "abort")
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    let cleanup = block_on(close_session(session, services));
+    assert_eq!(
+        cleanup
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.session_cleanup.deadline_expired")
+    );
 }
 
 #[test]
@@ -98,16 +111,21 @@ fn prompt_bounds_hold_without_reclassification() {
         services.clone(),
     ))
     .expect("first sidecar turn starts");
-    let error =
-        block_on(session.start_turn(turn_request("sidecar-busy-turn-2", deadline()), services))
-            .err()
-            .expect("parallel prompt fails");
+    let error = block_on(session.start_turn(
+        turn_request("sidecar-busy-turn-2", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("parallel prompt fails");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.sdk-sidecar.turn_active"
     );
     assert!(block_on(turn.close()) == CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 
     let host_id = make_host_id("pi.fixture.sdk-sidecar.limit");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
@@ -131,7 +149,7 @@ fn prompt_bounds_hold_without_reclassification() {
     }
     let error = block_on(session.start_turn(
         turn_request("sidecar-limit-turn-overflow", deadline()),
-        services,
+        services.clone(),
     ))
     .err()
     .expect("third completed prompt fails");
@@ -139,7 +157,10 @@ fn prompt_bounds_hold_without_reclassification() {
         error.diagnostic().code(),
         "swallowtail.pi.sdk-sidecar.prompt_limit_reached"
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -175,26 +196,29 @@ fn preflight_mismatch_has_no_effect_and_process_cleanup_failure_surfaces() {
         services.clone(),
     ))
     .expect("sidecar cleanup session opens");
-    let mut turn =
-        block_on(session.start_turn(turn_request("sidecar-cleanup-turn", deadline()), services))
-            .expect("sidecar cleanup turn starts");
+    let mut turn = block_on(session.start_turn(
+        turn_request("sidecar-cleanup-turn", deadline()),
+        services.clone(),
+    ))
+    .expect("sidecar cleanup turn starts");
     let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    let cleanup = block_on(session.close());
+    let cleanup = block_on(close_session(session, services));
     assert!(matches!(cleanup, CleanupOutcome::Failed(ref diagnostic)
         if diagnostic.code() == "swallowtail.pi.sdk-sidecar.process_cleanup_failed"));
 
     let host_id = make_host_id("pi.fixture.sdk-sidecar.nonzero-exit");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete).with_process_exit_failure();
     let selected = sidecar_selection(host_id.clone());
+    let services = fixture.services(host_id);
     let session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
         sidecar_open_request("sidecar-nonzero-session", selected.resource),
-        fixture.services(host_id),
+        services.clone(),
     ))
     .expect("sidecar non-zero session opens");
-    let cleanup = block_on(session.close());
+    let cleanup = block_on(close_session(session, services));
     assert!(matches!(cleanup, CleanupOutcome::Failed(ref diagnostic)
         if diagnostic.code() == "swallowtail.pi.sdk-sidecar.process_cleanup_failed"));
 }
@@ -237,7 +261,7 @@ fn deadline_task_spawn_failure_clears_turn_and_releases_attachment() {
 
     let mut turn = block_on(session.start_turn(
         turn_request("sidecar-deadline-spawn-retry", deadline()),
-        services,
+        services.clone(),
     ))
     .expect("rolled-back session accepts a later turn");
     assert_eq!(
@@ -245,5 +269,8 @@ fn deadline_task_spawn_failure_clears_turn_and_releases_attachment() {
         &TerminalStatus::Completed
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }

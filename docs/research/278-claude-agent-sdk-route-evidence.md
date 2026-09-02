@@ -770,5 +770,6 @@ process handle held in the sidecar and an explicit `graceful` / `escalated` /
 `unconfirmed` close state on the private wire. That obligation is layer 1.
 
 This is not an honest stop: nothing here blocks on an operator product, API,
-persistence, or security choice. It is a completed evidence gate with two
-scoped contract amendments pending.
+persistence, or security choice. It is a completed evidence gate with one
+scoped Contract 019 amendment and one Contract 029 family note pending, plus a
+route-local implementation obligation that needs no decision.

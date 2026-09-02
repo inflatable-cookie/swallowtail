@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; 518 remain; the Kimi gate stopped and card 034 is planned, not ready, behind the provider-operation observation public-baseline decision | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024 and 030-034 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | completed standing currentness; Research 276 selects Kimi Code local server `0.40.1` as the sole material candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; next family not started |
+| Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 
 ## Planned Next Roadmaps
@@ -296,12 +296,18 @@ Research 271's remaining family is Claude Code `2.1.257`. g05.019 cards
 `2.1.253` through `2.1.256` stay gaps.
 
 Research 276 is the latest standing currentness checkpoint. It revalidated all
-40 production families and selects the separate Kimi Code local-server route
-at official `0.40.1` as the sole next family; the checkpoint changes no claim
-and opens no g05 roadmap or batch card. Codex `0.152.1` remains closed through
-g05.020 cards 048-049. The installed Kimi ACP route remains QualifiedOnly at
-the A2 `0.38.0` cap, Gemini remains deferred, watcher remains exact `2.1.251`,
-and the g05.009 card 034 stop remains 249 proved / 518 remaining.
+40 production families and records the separate Kimi Code local-server route
+at official `0.40.1` as the sole first post-release candidate; the checkpoint
+changes no claim and opens no g05 roadmap or batch card. Kimi is parked until
+after v0.4.0. The `0.40.0` Bash tool change removes the workspace restriction
+on the `cwd` parameter, the same risk class as uncontained local process
+authority; a later identity run must investigate it and must not assume a
+compatible extension or qualification. Codex `0.152.1` remains closed through
+g05.020 cards 048-049. PR 182 is closed/unmerged and its Antigravity branch and
+evidence remain parked post-release, not a merged qualification. The installed
+Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini remains
+deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
+249 proved / 518 remaining.
 
 ## Milestones
 

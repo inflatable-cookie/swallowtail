@@ -139,16 +139,21 @@ family alone and changed no claim.
 Research 276 revalidated all 40 production families on 2026-09-02. The
 partition is 13 unchanged, 6 visible unverified-newer, 20 record-only, and 1
 material candidate. Kimi Code npm and GitHub stable moved to `0.40.1`; the
-separate `kimi-code.local-server` family is the sole rank-1 candidate because
-its AllowUnverified boundary ends at `0.38.0`, the installed host is qualified
-at `0.34.0`, and Research 270 recorded the local/web protocol delta. The
-installed harness remains split: headless is separately bounded, while ACP
-stays QualifiedOnly at `0.38.0` under the A2 gate. Claude Code `2.1.258`,
-Antigravity `1.1.24`, Cursor `2026.08.31-4057e58`, Ollama `0.33.2`, OpenCode
-`1.18.26`, and Grok stable `1.0.13` are visible newer observations. Codex
-remains closed at qualified `0.152.1`; watcher stays exact `2.1.251`; Gemini
-remains deferred. The checkpoint changes no claim and opens no roadmap or
-batch card.
+separate `kimi-code.local-server` family is the first post-release candidate,
+not an active implementation task, because its AllowUnverified boundary ends
+at `0.38.0`, the installed host is qualified at `0.34.0`, and Research 270
+recorded the local/web protocol delta. The `0.40.0` Bash tool change removes
+the workspace restriction on `cwd`, the same risk class as uncontained local
+process authority; the later identity run must investigate it and cannot
+assume a compatible extension or qualify it. The installed harness remains
+split: headless is separately bounded, while ACP stays QualifiedOnly at
+`0.38.0` under the A2 gate. Claude Code `2.1.258`, Antigravity `1.1.24`,
+Cursor `2026.08.31-4057e58`, Ollama `0.33.2`, OpenCode `1.18.26`, and Grok
+stable `1.0.13` are visible newer observations. PR 182 is closed/unmerged;
+its Antigravity branch/evidence is parked post-release and is not merged
+qualification. Codex remains closed at qualified `0.152.1`; watcher stays exact
+`2.1.251`; Gemini remains deferred. The checkpoint changes no claim and opens
+no roadmap or batch card.
 
 ### Earlier Completed Family
 
@@ -270,6 +275,8 @@ changed no claim.
 
 ## Next Task
 
-Implement the active roadmap card named by the
-[roadmaps front door](README.md#next-task). This file records standing
-lanes; the batch pointer stays in the front door.
+Define and compile the bounded v0.4.0 release-readiness milestone named by the
+[roadmaps front door](README.md#next-task). Freeze new feature and currentness
+implementation until then. Kimi Code local server `0.40.1` is the first
+post-release currentness candidate, and PR 182 remains closed/parked evidence;
+this file records standing lanes and the batch pointer stays in the front door.

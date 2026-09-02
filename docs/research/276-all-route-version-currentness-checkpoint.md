@@ -8,7 +8,7 @@ Date: 2026-09-02
 
 After Codex `0.152.1` was qualified, what are the current official stable
 points and safe local observations for every production family, and which one
-family should enter the next Contract 029 Upgrade Workflow run?
+family should be the first post-release Contract 029 currentness candidate?
 
 This checkpoint is research only. It changes no compatibility claim, feature-
 matrix row, fixture, route, or runtime behavior. It does not reopen the
@@ -72,9 +72,9 @@ Result vocabulary:
 - `record only; future range work deferred` — a newer point exists, but the
   claim is exact/opaque, a major reset needs identity evidence, or an existing
   deferral or stop still holds; and
-- `material candidate` — enough evidence exists to select one family for a
-  dedicated Upgrade Workflow card; this checkpoint does not compile that
-  card.
+- `material candidate` — enough evidence exists to designate one family for a
+  dedicated post-release Upgrade Workflow card; this checkpoint does not
+  compile that card.
 
 The numbered rows below reproduce the 40 production feature-matrix families
 exactly once. The boundary is the current repository claim, not a new claim
@@ -102,7 +102,7 @@ material candidate.
 | 15 | DeepSeek Harness Web `/api` (`deepseek-harness.local-server`) | `dsh` missing from `PATH` | same npm package `0.1.1-rc.2`; current channel remains prerelease | exact Web `0.1.0-rc.6`; QualifiedOnly; do not flatten onto JSON-RPC | record only; future range work deferred |
 | 16 | DeepSeek Open Platform continuation (`deepseek.continuation`) | hosted API | Official [DeepSeek Chat Completions API](https://api-docs.deepseek.com/api/create-chat-completion/) remains an unversioned OpenAI-compatible endpoint; no replacement dated facade identity | exact `deepseek-openai-chat-2026-07-22` facade; QualifiedOnly | unchanged |
 | 17 | GitHub Copilot CLI ACP (`copilot-cli.acp`) | `copilot` missing from `PATH` | npm [`@github/copilot` `1.0.82`](https://registry.npmjs.org/@github%2Fcopilot/latest), published 2026-08-29; prerelease `1.0.83-2` ignored | exact `1.0.80`; QualifiedOnly | record only; future range work deferred |
-| 18 | Antigravity catalogue and headless (`antigravity.catalogue`; `antigravity.headless`) | `agy`; `--version` `1.1.19` | GitHub release [`1.1.24`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.1.24), published 2026-09-02 | maintained `1.1.9..=1.1.17`; later stable points visible above the ceiling; AllowUnverified | visible unverified-newer |
+| 18 | Antigravity catalogue and headless (`antigravity.catalogue`; `antigravity.headless`) | `agy`; `--version` `1.1.19` | GitHub release [`1.1.24`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.1.24), published 2026-09-02 | maintained `1.1.9..=1.1.17`; later stable points visible above the ceiling; AllowUnverified; PR 182 is closed/unmerged and its evidence is parked post-release | visible unverified-newer |
 | 19 | Gemini CLI ACP and headless (`gemini-cli.acp`; `gemini-cli.headless`) | `gemini`; `--version` `0.53.0` | npm [`@google/gemini-cli` `0.58.0`](https://registry.npmjs.org/@google%2Fgemini-cli/latest), published 2026-09-01; GitHub [`v0.58.0`](https://github.com/google-gemini/gemini-cli/releases/tag/v0.58.0); preview/nightly ignored | both axes maintained `0.51.0..=0.56.0`; later stable unverified; Gemini requalification deferred | record only; future range work deferred |
 | 20 | Gemini Live API (`gemini.live`) | hosted realtime API | Official [Gemini Live API](https://ai.google.dev/gemini-api/docs/live-api), observed 2026-09-02; no replacement dated facade identity | exact `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-context-compression-2026-08-23` facade; QualifiedOnly | unchanged |
 | 21 | Goose ACP (`goose.acp`) | `goose` missing from `PATH` | GitHub release [`v1.48.0`](https://github.com/aaif-goose/goose/releases/tag/v1.48.0), published 2026-08-27 | exact `1.46.0`; QualifiedOnly | record only; future range work deferred |
@@ -157,6 +157,9 @@ families and not new Swallowtail claims.
   `1.18.26`; and Grok's stable npm channel now has `1.0.13` as `latest` with
   off-latest stable `1.0.14..=1.0.16`. These remain visible unverified-newer
   observations, not claims.
+- PR 182, the Antigravity `1.1.24` identity/claim run, is closed unmerged
+  under the v0.4.0 feature/currentness freeze. Its branch and evidence remain
+  parked for post-release and do not constitute a merged qualification.
 - Qoder moved to `1.1.41`; Cline moved to `3.0.61`; Copilot moved to
   `1.0.82`; Vibe moved to `2.24.5`; Goose is `1.48.0`; Kiro is `2.21.0`;
   Bedrock maxima are `1.142.0` and `1.154.0`; and ZCode packaging is
@@ -173,30 +176,40 @@ families and not new Swallowtail claims.
    on the stable point published 2026-09-02. The local-server claim is
    AllowUnverified through `0.38.0`, and the installed host `0.34.0` remains on
    that qualified boundary. Research 270 recorded `kimi web` protocol deltas
-   beginning at `0.39.0`; the `0.40.x` release notes add current local/web
-   behavior changes. That is enough evidence for one dedicated identity
-   Upgrade Workflow run, without flattening the sibling routes.
+   beginning at `0.39.0`. The `0.40.0` release notes explicitly remove the
+   workspace restriction on the Bash tool's `cwd` parameter. That is the same
+   risk class as uncontained local process authority behind the Kimi ACP A2
+   gate, so a later identity run must investigate it; this record does not
+   treat it as a compatible extension or qualify it. The `0.40.1` patch fixes
+   the kimi-cli migration-prompt condition. Kimi remains the first post-release
+   currentness candidate, not an active implementation task, and the sibling
+   routes stay separate.
 
 Claude Code `2.1.258` is visible newer but is not reopened after the completed
-family. Cursor `2026.08.31-4057e58`, Antigravity `1.1.24`, Ollama `0.33.2`,
-OpenCode `1.18.26`, and Grok stable `1.0.13` remain later visible candidates
-for subsequent serial runs. Gemini stays deferred. `kimi-code.acp` stays
-QualifiedOnly at `0.38.0`; its A2 reopen trigger is unchanged and never
-automatically restores AllowUnverified. Exact/opaque families, the Oh My Pi
-18.x reset, exact llama.cpp builds, the DeepSeek RC axis, and Bedrock SDK pins
-remain record-only until their named identity or corpus work is authorized.
+family. Cursor `2026.08.31-4057e58` and OpenCode `1.18.26` also satisfy the
+generic AllowUnverified-plus-qualified-host rule, but rank below Kimi because
+Kimi has the known protocol and authority delta requiring a dedicated stop-or-
+extension decision. Antigravity `1.1.24` remains visible newer in current main,
+but its identity/claim run is PR 182, now closed unmerged and parked
+post-release. Ollama `0.33.2` and Grok stable `1.0.13` remain later visible
+observations. Gemini stays deferred. `kimi-code.acp` stays QualifiedOnly at
+`0.38.0`; its A2 reopen trigger is unchanged and never automatically restores
+AllowUnverified. Exact/opaque families, the Oh My Pi 18.x reset, exact
+llama.cpp builds, the DeepSeek RC axis, and Bedrock SDK pins remain record-only
+until their named identity or corpus work is authorized.
 
 ## Decision
 
-Implement Kimi Code local-server useful-newer qualification for official
-`0.40.1` next through the Contract 029 Upgrade Workflow, one family only.
-This checkpoint itself changes no claim, selection, matrix, fixture, or route,
-and it does not compile identity or claim cards. Keep the installed Kimi ACP
-family QualifiedOnly under its A2 `0.38.0` cap. Do not reopen the just-closed
-Codex or Claude Code families. Do not bulk-bump from registry `latest`; do not
-contact a provider; and do not lift Gemini's deferral. The g05.009
-provider-operation observation decision, card 034 planned/not-ready posture,
-and `249` proved / `518` remaining projection counts are unchanged.
+Define and compile a bounded v0.4.0 release-readiness milestone next. Freeze
+new feature and currentness implementation until that milestone is complete.
+Park Kimi Code local-server `0.40.1` as the first post-release currentness
+candidate, and keep closed PR 182 plus its Antigravity branch/evidence parked
+post-release; PR 182 is not a merged qualification. This checkpoint itself
+changes no claim, selection, matrix, fixture, or route, and it does not compile
+identity or claim cards. Keep the installed Kimi ACP family QualifiedOnly
+under its A2 `0.38.0` cap. Keep Gemini deferred, watcher exact `2.1.251`, and
+the g05.009 provider-operation observation decision, card 034 planned/not-ready
+posture, and `249` proved / `518` remaining projection counts unchanged.
 
 ## Repository Evidence
 

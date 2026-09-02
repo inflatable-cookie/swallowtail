@@ -15,17 +15,16 @@ shape.
 
 ## Next Task
 
-Implement Kimi Code local-server useful-newer qualification for official
-`0.40.1`, selected as rank 1 by Research 276. The host already sits on
-qualified `0.34.0`; keep the local-server route separate from the installed
-ACP/headless harness. Do not leave official `0.40.1` UnverifiedNewer without a
-named incompatible reason. Do not reopen the just-closed Codex or Claude Code
-families. Watcher stays exact `2.1.251`. Keep `kimi-code.acp` QualifiedOnly
-under its A2 `0.38.0` cap; do not bulk-bump from registry `latest`, lift
-Gemini's deferral, or keep g05 open for currentness. The g05.009 provider-
-operation observation decision remains awaiting the operator; card 034 stays
-planned, not ready, and candidate F remains unpromoted at 249 proved / 518
-remaining rows.
+Define and compile a bounded v0.4.0 release-readiness milestone. Freeze new
+feature and currentness implementation until that milestone is complete. Park
+Kimi Code local-server `0.40.1` as the first post-release currentness
+candidate, and keep closed PR 182 plus its Antigravity branch/evidence parked
+post-release; PR 182 is not a merged qualification. Preserve Gemini's
+deferral, watcher exact `2.1.251`, and `kimi-code.acp` QualifiedOnly under its
+A2 `0.38.0` cap. Do not start a family run before v0.4.0. The g05.009
+provider-operation observation decision remains awaiting the operator; card
+034 stays planned, not ready, and candidate F remains unpromoted at 249 proved
+/ 518 remaining rows.
 
 ## Standing Lanes
 

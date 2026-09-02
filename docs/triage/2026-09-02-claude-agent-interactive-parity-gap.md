@@ -97,9 +97,13 @@ Evidence: `docs/guides/provider-route-matrix.md:56`,
 | G10 | Sidecar packaging guidance for Tauri consumers (Node 22 + app-pinned `claude-agent-acp`, contract-008 style frozen graph) | must for the Bovine DMG | docs S |
 
 Codex (`codex.app-server`) already covers G1, G2-equivalents, catalogue and
-history. `grok-build.acp` has interactive sessions with OAuth via
-`cached_token`; its write access and permission posture were not verified
-here.
+history. `grok-build.acp` sessions are read-write with OAuth via
+`cached_token`, but permission requests are observable only and stop the
+turn (the adapter routes `session/request_permission` to rejection,
+`crates/swallowtail-adapter-grok/src/**/dispatch.rs`), with no public
+load/resume/management and no usage. Add as **G11: answerable Grok
+permissions** if Grok is to sit behind the same chat UI; otherwise it is an
+activity-only route.
 
 ## Interim path the consumer will use
 

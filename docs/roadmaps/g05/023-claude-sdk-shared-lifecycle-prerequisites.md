@@ -40,9 +40,9 @@ Preserve PR 188 for restack and finish card 055 on that existing identity.
    macOS. `OwnedTreeEmpty` remains the only basis for `Clean`; a confirmed root
    exit after the declared termination attempt is `Degraded`, while an
    unconfirmed root or observed survivor is `Failed`.
-5. Card 055 now restacks onto both shared prerequisites and this accepted
-   posture. The existing worker, workspace, branch, and PR remain the
-   continuation identity.
+5. Card 055 was expected to restack onto both shared prerequisites and this
+   accepted posture. Later rejected exact-head review proved those prerequisites
+   insufficient; PR 188's route is now withdrawn.
 
 The implementation lanes are parallel, but same-repository merge ordering is
 serial: merge card 059 first if both touch runtime/API evidence, then restack
@@ -68,7 +68,7 @@ route or platform.
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; preserved PR 188 restacked onto the card 060 relinquishment seam under the accepted macOS root-only degraded posture
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked after PR 188 containment; route withdrawn pending shared-runtime reservation/reapable-task authority
 
 ## Acceptance
 
@@ -81,8 +81,10 @@ route or platform.
   before the SDK route becomes available — met
 - root-only macOS support never reports `Clean`; confirmed root completion is
   `Degraded`, while unconfirmed root or observed survivor is `Failed` — accepted
-- PR 188 is restacked only after this milestone and later g05.024/card 060 land
-- release readiness remains paused and restarts from a later exact head
+- PR 188's route remains withdrawn after this milestone and later g05.024/card
+  060 proved insufficient for safe caller-expiry cleanup
+- release readiness remains frozen and restarts only after later exact-head
+  acceptance
 
 ## Outcome
 
@@ -96,10 +98,13 @@ root-only `Degraded` cleanup, never `Clean`. That made PR 188 eligible to
 advance until later exact-head review found the narrower task ownership gap;
 g05.024/card 060 now owns that prerequisite before card 055 resumes.
 
-Subsequent exact-head review found one narrower shared ownership gap: an
+Subsequent exact-head review first found one narrower shared ownership gap: an
 unfinished `JoinedTask` still blocks when its handle is dropped at the caller
-deadline. g05.024/card 060 owns that later prerequisite without reopening this
-milestone or changing its process-tree decision.
+deadline. g05.024/card 060 closed the successful-transfer case. Later rejected
+review proved refusal, cleanup-continuation lease ownership, and the integrated
+reaper proof still unsafe. Those findings require a new provider-neutral
+shared-runtime prerequisite without reopening this milestone's process-tree
+decision.
 
 ## Review Oracle
 

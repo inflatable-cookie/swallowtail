@@ -1,2 +1,0 @@
-{"type":"diagnostic","level":"warning","code":"sdk_close_failed","message":"sidecar diagnostic: sdk_close_failed"}
-{"type":"diagnostic","level":"error","code":"interrupt_before_close_failed","message":"sidecar diagnostic: interrupt_before_close_failed"}

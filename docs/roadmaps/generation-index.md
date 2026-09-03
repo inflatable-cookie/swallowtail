@@ -151,7 +151,7 @@ and strict-paused on its operator decision. Milestones
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
-Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
+Milestone 021 and cards 050-052 are planned and frozen; partial card-050 output
 is not accepted release evidence. Milestone 022 is planned after card 055's
 exact-head lifecycle stop. Milestone 023 is completed: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, card 058
@@ -167,12 +167,13 @@ root-only degraded cleanup on ordinary macOS: only `OwnedTreeEmpty` supports
 observed survivor is `Failed`. Milestone 024/card 060 then closes the narrower
 exact-head ownership gap: an unfinished joined task can transfer back to its
 exact selected host and scope for autonomous reap without blocking the caller
-or implying joined cleanup. PR 188 is ready to continue on its preserved
-identity after card 060 lands.
+or implying joined cleanup. PR 188 nevertheless merged despite rejected
+exact-head review. Its route is withdrawn pending provider-neutral
+shared-runtime reservation/reapable-task authority.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 060 is complete; card 055/PR 188 continue under the accepted macOS
-degraded posture and exact task-relinquishment rule. No card
+card 060 is complete; card 055 is blocked after PR 188 containment. The
+`v0.4.0` release lane remains frozen. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

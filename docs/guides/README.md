@@ -17,7 +17,6 @@ contracts or architecture.
 - [Anthropic Managed Agent Prepared Integration](anthropic-managed-agent-prepared-integration.md)
 - [Bedrock SDK Prepared Integration](bedrock-sdk-prepared-integration.md)
 - [Claude Agent Prepared Integration](claude-agent-prepared-integration.md)
-- [Claude Agent SDK Prepared Integration](claude-agent-sdk-prepared-integration.md)
 - [Codex Prepared Integration](codex-prepared-integration.md)
 - [Command Code Prepared Integration](command-code-prepared-integration.md)
 - [Connection Lifecycle](connection-lifecycle.md)

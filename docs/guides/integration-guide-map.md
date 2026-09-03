@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 49 production route rows and every portable feature family have completed
+All 48 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -41,7 +41,6 @@ conflicts or when you are qualifying a new claim.
 | `codex.exec` | [Codex](codex-prepared-integration.md) | [prepared discovery](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs) | complete |
 | `codex.app-server` | [Codex](codex-prepared-integration.md) | [prepared discovery](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs) | complete |
 | `claude-agent.acp` | [Claude Agent](claude-agent-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_acp.rs) | complete |
-| `claude-agent.sdk` | [Claude Agent SDK sidecar](claude-agent-sdk-prepared-integration.md) | [prepared SDK sidecar](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_sdk.rs) | complete |
 | `claude-code.headless` | [Claude Agent](claude-agent-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_headless.rs) | complete |
 | `claude-code.response-only` | [Claude Agent](claude-agent-prepared-integration.md) | [prepared response only](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_response_only.rs) | complete |
 | `cursor-agent.catalogue` | [Cursor](cursor-prepared-integration.md) | [prepared catalogue](../../crates/swallowtail-adapter-cursor/examples/prepared_cursor_catalogue.rs) | complete |

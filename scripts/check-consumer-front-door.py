@@ -92,7 +92,7 @@ if documented_packages != expected_packages:
 
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.3.3.txt").splitlines())
-expected_current_routes = expected_routes | {"pi.sdk-sidecar", "claude-agent.sdk"}
+expected_current_routes = expected_routes | {"pi.sdk-sidecar"}
 if current_routes != expected_current_routes:
     missing = sorted(expected_current_routes - current_routes)
     extra = sorted(current_routes - expected_current_routes)

@@ -20,7 +20,6 @@ Eight production routes currently export an `AddableRouteDescriptor`:
 | `kimi-platform.chat` | hosted | Credential | secret Platform API-key field `api_key`; no environment name |
 | `codex.app-server` | installed | Process | none; cached local ChatGPT login |
 | `claude-agent.acp` | installed | Process | none; inherited local Claude subscription |
-| `claude-agent.sdk` | installed | Process and Credential | secret delegated subscription field `delegated_subscription`; no environment name; `Unsupported` on Windows, where retained descendant-tree ownership cannot be proved |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
 | `llama-cpp.attached` | local-runtime | Network | none; local unauthenticated |
 | `pi.sdk-sidecar` | installed | Process and Credential | secret delegated harness credential field `harness_credential`; no environment name |

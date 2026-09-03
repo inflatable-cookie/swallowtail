@@ -116,11 +116,20 @@ repairs, each with a mutation-sensitive proof on real `LocalHostServices`:
   sidecar received the cooperative close command and that the ordered cleanup
   finished, which lazy activation cannot produce.
 - **Cancellation had no drop handoff.** `OpenGuard` and `SessionGuardian` each
-  held a real `LocalJoinedTask` and joined it on drop.  Both now transfer
+  held a real `LocalJoinedTask` and joined it on drop. Both now transfer
   through the held reservation.
-  `dropping_open_after_one_pending_poll_hands_the_guard_to_the_host` and
+  `cancelling_a_pending_open_starts_its_ordered_cleanup_without_blocking` and
   `dropping_close_after_one_pending_poll_hands_the_guardian_to_the_host` drop
   the public future on another thread and fail if that drop does not return.
+- **Cancellation transferred ownership without starting cleanup.** A second
+  exact-head review found that `OpenGuard::drop` relinquished the task without
+  releasing its cleanup signal, so a cancelled pending open could hold its
+  credential and working resource until the abandoned open deadline arrived.
+  The drop now triggers that signal before the handoff. The cancellation proof
+  no longer fires the host clock at all: it asserts the ordered
+  resource-then-credential release happened while `deadlines_fired()` is still
+  false. Removing the trigger fails it with
+  `host cleanup never recorded CredentialRelease`.
 - **Guardian creation was fallible after effects.** It is now started before
   them, so a failed worker creation refuses while nothing is owned.
   `a_close_guardian_that_cannot_start_refuses_before_any_effect` injects the
@@ -129,9 +138,10 @@ repairs, each with a mutation-sensitive proof on real `LocalHostServices`:
 
 Each repair was mutated back and the named proofs failed: removing the drop
 handoff produced three `did not return inside 5s` failures, restoring lazy
-activation failed the two unpolled/rejected cases, and moving the guardian's
+activation failed the two unpolled/rejected cases, moving the guardian's
 creation after the credential acquisition failed the spawn-failure case with
-`left: 1, right: 0`.
+`left: 1, right: 0`, and removing the cancellation signal failed the open
+cancellation case with `host cleanup never recorded CredentialRelease`.
 
 ## Identity And Policy
 

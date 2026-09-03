@@ -18,12 +18,14 @@ use futures_executor::block_on;
 use swallowtail_runtime::CleanupOutcome;
 
 #[test]
-fn dropping_open_after_one_pending_poll_hands_the_guard_to_the_host() {
+fn cancelling_a_pending_open_starts_its_ordered_cleanup_without_blocking() {
     // Caller cancellation is not a deadline: it drops the public future where
-    // it is suspended. By then the open guard already holds the credential and
-    // the resource, and its task handle is a real `LocalJoinedTask` whose drop
-    // joins. The guard's own drop must hand that task to the owning host
-    // instead, and the guard must still finish the ordered release afterwards.
+    // it is suspended, and the caller is owed an answer now, not at the open
+    // deadline it just abandoned. By then the open guard already holds the
+    // credential and the resource, and its task handle is a real
+    // `LocalJoinedTask` whose drop joins. So the guard's drop must do two
+    // things: release its own cleanup signal so the ordered continuation starts
+    // at once, and hand the task to the owning host rather than join it.
     let host = host_id("claude-agent-sdk.fixture.open-cancel");
     let fixture = SdkFixtureHost::new(SdkScenario::Complete).stalling(Stall::ProcessStart);
     let prepared = prepared_session(host.clone());
@@ -41,17 +43,14 @@ fn dropping_open_after_one_pending_poll_hands_the_guard_to_the_host() {
         opening,
     );
 
-    // Nothing was released by the drop itself: the guard owns that order.
-    let at_cancel = fixture.cleanup_events();
-    assert!(
-        !at_cancel.contains(&CleanupEvent::ResourceRelease)
-            && !at_cancel.contains(&CleanupEvent::CredentialRelease),
-        "a lease was released outside the guard's ordered cleanup: {at_cancel:?}"
-    );
-
-    // The transferred guard still owns the continuation and runs it in order.
-    fixture.fire_deadlines();
+    // Cancellation itself starts the ordered cleanup. The original open
+    // deadline is deliberately never fired: waiting for it would leave the
+    // credential and the working resource held for the rest of the open budget.
     fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
+    assert!(
+        !fixture.deadlines_fired(),
+        "the cleanup was caused by the open deadline arriving, not by cancellation"
+    );
     assert_ordered(
         &fixture.cleanup_events(),
         &[
@@ -59,6 +58,8 @@ fn dropping_open_after_one_pending_poll_hands_the_guard_to_the_host() {
             CleanupEvent::CredentialRelease,
         ],
     );
+    // The guard the host retained is the one that ran that cleanup, and the
+    // outer owner is what joins it.
     local
         .shutdown_task_reapers()
         .expect("the outer host owner joins what it accepted");

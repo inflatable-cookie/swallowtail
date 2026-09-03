@@ -121,7 +121,9 @@ annotated Git tags from the canonical repository.
   the guardian — never the pump alone — under the held exact-host, exact-scope
   reservation rather than joining it on the dropping thread, so no lease is
   released around still-live work and the caller reports unconfirmed cleanup
-  without waiting. `AcceptedForReap` stays ownership transfer only and never
+  without waiting. Cancelling a pending open also releases its guard's cleanup
+  signal before that handoff, so the credential and working resource it holds
+  are released immediately instead of at the abandoned open deadline. `AcceptedForReap` stays ownership transfer only and never
   becomes join or cleanup evidence. Research 278 and 280, Contracts 009, 010,
   017, 019, 029, and 047, g05.022 card 055.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional

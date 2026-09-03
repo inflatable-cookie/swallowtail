@@ -177,7 +177,10 @@ head:
   resource release, and credential release in that order. Caller expiry, caller
   cancellation, and a dropped or rejected cleanup future all transfer that
   guardian — never the pump alone — through its `Drop`, and no lease is released
-  around still-live transferred work.
+  around still-live transferred work. Cancelling a pending open additionally
+  releases the open guard's cleanup signal before the handoff, so its credential
+  and working resource are released at once rather than at the abandoned open
+  deadline.
 - The integrated deadline proof runs on real `LocalHostServices`. The
   provider-free fixture also retains every worker handle, joins on drop, and
   reaps only through an outer owner.

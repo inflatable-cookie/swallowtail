@@ -93,6 +93,20 @@ impl SdkFixtureHost {
         }
     }
 
+    /// Reports whether any host deadline has been fired.
+    ///
+    /// A cancellation proof uses this to state that the cleanup it observed was
+    /// caused by the cancellation itself, not by the original open deadline
+    /// arriving.
+    pub fn deadlines_fired(&self) -> bool {
+        self.shared
+            .time
+            .lock()
+            .expect("SDK fixture time lock poisoned")
+            .fire_through
+            .is_some()
+    }
+
     /// Fires every host deadline and moves the clock past them, so even the
     /// outer public cleanup bound observes expiry.
     pub fn advance_time(&self) {

@@ -219,7 +219,14 @@ when the runtime rejects the cleanup future — is handed back to the host
 through `ScopedTaskService::relinquish`, with the exact selected execution host
 and the exact scope its reservation named. That handoff is what dropping a
 guard or a guardian does: their `Drop` transfers, because the alternative on a
-real local host is a synchronous join of live work on the dropping thread. What transfers is always the enclosing
+real local host is a synchronous join of live work on the dropping thread.
+
+Cancellation also *starts* the cleanup rather than merely transferring it.
+Dropping a pending `open_session` releases the open guard's own cleanup signal
+before the handoff, so the credential and working resource it holds are released
+straight away instead of waiting out the abandoned open deadline. Cleanup still
+takes the guard's ledger only once the open future's recording lease is gone, so
+a release can never precede settlement of what was acquired. What transfers is always the enclosing
 guardian, never the pump on its own, so the process and both leases stay with
 the work until its ordered cleanup finishes. `AcceptedForReap` is
 ownership-transfer evidence only: it is never reported as a join and never

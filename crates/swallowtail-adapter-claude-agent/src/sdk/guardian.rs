@@ -231,15 +231,25 @@ impl OpenGuard {
     }
 }
 
-/// Dropping the guard is a handoff, never a synchronous join.
+/// Dropping the guard starts its cleanup, then hands the task over. It is
+/// never a synchronous join.
 ///
-/// A caller that cancels `open_session` after one pending acquisition poll
-/// drops this guard while its task is still armed and still owns the ordered
-/// cleanup. The task was started under the reservation open pre-admitted, so
-/// the owning host takes it back here. A guard task that already finished is
-/// refused and joined by ordinary drop, which cannot block.
+/// A caller that cancels `open_session` after one pending acquisition poll drops
+/// this guard while its task is still armed and still owns whatever the open
+/// path had acquired. Cancellation is not the caller's deadline: waiting for
+/// that deadline to arrive would leave a credential and a working resource held
+/// for the rest of the open budget, which Contract 019 forbids. So the guard
+/// releases its own cleanup signal here, before handing the task to the owning
+/// host, and the ordered continuation starts immediately.
+///
+/// Triggering is safe on every path. A guard whose open already claimed has
+/// moved the ledger to `Claimed`, so its task observes the signal, finds
+/// nothing to clean, and ends. Cleanup still takes the ledger only after the
+/// open future's recording lease is dropped, so a release can never precede
+/// settlement of what was acquired.
 impl Drop for OpenGuard {
     fn drop(&mut self) {
+        self.signal.trigger();
         let mut task = self.task.lock().expect("SDK open-guard task lock poisoned");
         if task.is_none() {
             return;

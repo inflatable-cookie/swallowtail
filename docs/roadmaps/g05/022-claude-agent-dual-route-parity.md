@@ -1,8 +1,9 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 restored on g05.025 card 061 reservations, pending independent exact-head review
+Status: completed; card 055 restored on g05.025 card 061 reservations and merged through PR 196 at `493f8194`
 Owner: Tom
 Created: 2026-09-02
+Updated: 2026-09-03
 Depends on: Research 277; Contracts 010, 015, 017, 019, 023, 029, 038, 041, 047; g05.024 card 060; g05.025 card 061
 Vision tags: Claude Agent SDK, ACP, subscription auth, interactive sessions
 
@@ -45,7 +46,8 @@ or production implementation before the two evidence gates close.
    from fresh canonical main at `53153af1` and restored the route with reap
    authority taken before every effect, one enclosing guardian owning the whole
    ordered cleanup continuation, and a real `LocalHostServices` integrated
-   proof. That restoration awaits independent exact-head review.
+   proof. That restoration passed independent exact-head review and merged
+   through PR 196 at `493f8194`.
 
 ## Boundaries
 
@@ -64,7 +66,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; restored on card 061 reservations with one enclosing cleanup guardian; pending independent exact-head review
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; restored on card 061 reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance
@@ -79,7 +81,7 @@ or production implementation before the two evidence gates close.
   for the orchestrator integration decision
 - no route is flattened, no provider-specific feature is falsely portable,
   and no production claim changes during the evidence wave
-- release readiness remains frozen and must restart from a fresh exact-head
+- release readiness was frozen and restarts from a fresh exact-head
   audit after accepted Claude implementation
 
 ## Review Oracle

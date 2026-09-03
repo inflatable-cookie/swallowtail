@@ -2,7 +2,6 @@
 
 ## Planned
 
-- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — planned; partial audit evidence retained, fresh exact-head restart required after g05.022
 - [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits card 051's frozen candidate and the full operator-authorized authenticated application-smoke packet
 - [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on card 050 audit acceptance; mutating Effigy prepare requires separate operator authorization
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
@@ -11,11 +10,11 @@
 
 ## Ready
 
-None. Card 055 is complete and awaits independent exact-head review.
+- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready; unpaused after PR 196 merged at `493f8194`; sole Next Task
 
 ## Completed
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian; pending independent exact-head review
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 - [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; pre-effect exact-host/scope reservation, cancellation-safe join, non-fallible later handoff, and real local-host shutdown-race proof
 - [060-scoped-task-relinquishment-and-host-reap.md](./060-scoped-task-relinquishment-and-host-reap.md) — complete; exact-host/scope acceptance for autonomous local reap without changing ordinary join/drop ownership
 - [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline now bound every interactive close and post-expiry session cleanup path across 22 adapter packages

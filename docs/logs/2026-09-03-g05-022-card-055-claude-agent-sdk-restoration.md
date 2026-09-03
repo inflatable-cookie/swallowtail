@@ -1,6 +1,6 @@
 # 2026-09-03 g05.022 Card 055 Claude Agent SDK Restoration
 
-Status: complete; pending independent exact-head review
+Status: complete; merged through PR 196 at `493f8194`
 Owner: Tom
 
 ## Result
@@ -155,10 +155,9 @@ ledger. Nothing stale is carried forward.
 
 ## Boundary
 
-No tag, publish, release preparation, live provider turn, login, or merge. The
-`v0.4.0` release lane and g05.021/cards 050-052 remain frozen until this
-restoration passes independent exact-head review and the operator separately
-authorizes a fresh audit.
+No tag, publish, release preparation, live provider turn, or login. PR 196
+merged at `493f8194` after independent exact-head review, unpausing the
+`v0.4.0` release lane and g05.021/card 050 for a fresh audit.
 
 ## Authority
 

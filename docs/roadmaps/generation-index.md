@@ -144,17 +144,18 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 25 roadmaps: 18 completed milestones, honest evidence stops at 002,
+g05 has 25 roadmaps: 19 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and no ready milestones. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
-Milestone 021 and cards 050-052 are planned and frozen; partial card-050 output
-is not accepted release evidence. Milestone 022 is planned; card 055 restored the
-`claude-agent.sdk` route from canonical main after milestone 025 merged, and
-awaits independent exact-head review. Milestone 023 is completed: card 057 landed the
+Milestone 021 is planned and unpaused with card 050 ready as the sole Next Task;
+prior partial card-050 output is not accepted release evidence. Milestone 022
+is completed: card 055 restored the `claude-agent.sdk` route on card 061's
+pre-effect reap reservations with one enclosing cleanup guardian and merged
+through PR 196 at `493f8194`. Milestone 023 is completed: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, card 058
 completed the breaking caller-bounded close seam, and card 059 stopped at an
 evidence stop after four native counterexamples falsified the candidate
@@ -177,13 +178,14 @@ real local-host lifecycle without changing ordinary task ownership; it merged at
 `53153af1`. Card 055 then restored the route on that seam: reap authority is
 reserved before every effect, one enclosing guardian owns the pump, process, and
 both leases through the ordered cleanup continuation, and the caller deadline
-transfers that guardian rather than the pump.
+transfers that guardian rather than the pump; it merged through PR 196 at
+`493f8194`.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
 card 060 is complete; card 061 is complete and merged; card 055 is complete and
-awaits independent exact-head review. The
-`v0.4.0` release lane remains frozen. No card
-authorizes a provider turn, release mutation, tag creation, or push.
+merged through PR 196 at `493f8194`. The
+`v0.4.0` release lane is unpaused with card 050 ready as the sole Next Task. No
+card authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
@@ -371,7 +373,8 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). Cards 051-052 remain planned,
+[roadmaps front door](README.md#next-task). Card 050 is ready as the sole Next
+Task; cards 051-052 remain planned,
 feature/currentness implementation remains frozen, and the g05.009/card 034
 249/518 stop remains intact. This index records generation status; the
 canonical actionable pointer stays in the front door.

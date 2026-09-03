@@ -1,6 +1,6 @@
 # 2026-09-03 g05.025 Card 061 Reserved Reapable Task Runtime
 
-Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
+Status: complete; merged at `53153af1`
 Owner: Tom
 
 ## Result

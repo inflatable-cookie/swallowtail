@@ -15,14 +15,20 @@ shape.
 
 ## Next Task
 
-None ready. [g05.022 card 055](g05/batch-cards/055-claude-agent-sdk-provider-free-foundation.md)
-restored the `claude-agent.sdk` route on card 061's pre-effect reap
-reservations, with one enclosing cleanup guardian owning the pump, process, and
-both leases through the whole ordered continuation. That PR awaits independent
-exact-head review and merge. Until it is accepted, g05.021/cards 050-052 and
-`v0.4.0` release readiness stay frozen and must restart from a fresh exact-head
-audit. Do not merge this PR, tag, publish, run a provider session, or resume
-release readiness in this turn.
+Map [g05.021 card 050](g05/batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md):
+freeze the exact `v0.3.3` to reviewed-current-source package, dependency,
+route, semantic API, and guaranteed-behavior delta before any candidate
+mutation. Audit the complete public and behavior delta from fresh exact main
+`493f8194` and check for open mergeable feature/currentness PRs. Immutable
+release inventory remains 47; wider current integration/route gates are 49 due
+to `pi.sdk-sidecar` and `claude-agent.sdk`. Change no Cargo version or
+requirement, release baseline, code, claim, fixture, or workflow. Keep
+feature/currentness implementation frozen; Kimi local server `0.40.1` and
+closed PR 182 remain parked post-release. Cards 051-052 stay planned. Card 051
+has a separate operator gate before Effigy's sole mutating prepare path; card
+052 remains blocked until the operator supplies a complete authenticated
+working-application smoke authority packet. No card authorizes tag creation or
+push.
 
 ## Standing Lanes
 

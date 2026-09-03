@@ -1,0 +1,104 @@
+{
+  "compared": [
+    "0.3.258",
+    "0.3.259"
+  ],
+  "package_file_counts": {
+    "0.3.258": 15,
+    "0.3.259": 15
+  },
+  "identical_through_0_3_258_to_0_3_259": [
+    "LICENSE.md",
+    "README.md",
+    "agentSdkTypes.d.ts",
+    "bridge.d.ts",
+    "browser-sdk.d.ts",
+    "extractFromBunfs.d.ts",
+    "extractFromBunfs.js"
+  ],
+  "from_0_3_258_to_0_3_259": {
+    "added": [],
+    "removed": [],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk-tools.d.ts",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js"
+    ]
+  },
+  "hashes": {
+    "LICENSE.md": {
+      "0.3.258": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.259": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+    },
+    "README.md": {
+      "0.3.258": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+      "0.3.259": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab"
+    },
+    "agentSdkTypes.d.ts": {
+      "0.3.258": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.259": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93"
+    },
+    "bridge.d.ts": {
+      "0.3.258": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+      "0.3.259": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295"
+    },
+    "bridge.mjs": {
+      "0.3.258": "8f9274d517e9dcd3bc1a7d490b58ea3deb88d69fb97159453da4044953c43350",
+      "0.3.259": "4c4bde155bf5840532d83c111c10dfaf0f43a1ac466057c99dc73481f1a52c4e"
+    },
+    "browser-sdk.d.ts": {
+      "0.3.258": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+      "0.3.259": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1"
+    },
+    "browser-sdk.js": {
+      "0.3.258": "d3bd16de4cc9084c290381046afc4f87d91d98bde12ac36055bda19f762a682e",
+      "0.3.259": "7a8544f40738e2fe1c6c6b1266a029ca3479046e45d7bd73b22484c5bb19bd82"
+    },
+    "extractFromBunfs.d.ts": {
+      "0.3.258": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.259": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984"
+    },
+    "extractFromBunfs.js": {
+      "0.3.258": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.259": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27"
+    },
+    "manifest.json": {
+      "0.3.258": "ec53b2ce3d9f95d2c94c07aacf9202e6df9f79c695b71a1af2b4491081fba60f",
+      "0.3.259": "8ed7edb84db1a4a51dcc232e8a65fe3e5c3522e0be2d31f92fd8e67dded4f57a"
+    },
+    "manifest.zst.json": {
+      "0.3.258": "5b37e3c2629043628582167e690753ddf395753a25f4bebd411dad7b54b00b31",
+      "0.3.259": "c4e5986af101ef0a8f3459b9a47c87979a0bce13eb8f798896df5e6340a45829"
+    },
+    "package.json": {
+      "0.3.258": "a8fb007bc424b11eca6a4f046f5e6bdf078c9f032a4c6f133f9bc5297e686a14",
+      "0.3.259": "25036e367de06d68ee20636a22548b5336c655c9747a6c46aee0405eaf3843b2"
+    },
+    "sdk-tools.d.ts": {
+      "0.3.258": "a8bb537bb1624e9e68d5aa7c620260027278a9f83ce81943906a9485b06d7c9d",
+      "0.3.259": "afc015ba55e73c1ea45f8fd4f959592d005ef4eb5177133164df6f7316dd7509"
+    },
+    "sdk.d.ts": {
+      "0.3.258": "b209ed293b63bb92bde59a49fe8a6e3b06f92afe0d1d4987c937a3cfea90b6dc",
+      "0.3.259": "f76aa847ddf433a2d7ff9c28935c0764467f00d31f35044226382ddf86ad7d81"
+    },
+    "sdk.mjs": {
+      "0.3.258": "4d9286bd9ca8f802e27c9be2cfa2e0769502dfabb693a6e3d16b62e4fbe3e69a",
+      "0.3.259": "7fa7c212361864544e775e7551519e790515f95d4bb6a4831b0b05f5b368a0c5"
+    }
+  }
+}

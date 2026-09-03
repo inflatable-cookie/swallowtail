@@ -1,0 +1,148 @@
+{
+  "axis_family": "claude-agent.sdk",
+  "package": "@anthropic-ai/claude-agent-sdk",
+  "channel": "npm dist-tags.latest",
+  "observed_at": "2026-09-03",
+  "claim_at_observation": {
+    "package_axis": "claude-agent.sdk.package",
+    "package_point": "0.3.258",
+    "native_axis": "claude-agent.sdk.native",
+    "native_point": "2.1.258",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "claude-agent.sdk-v1"
+  },
+  "official": {
+    "version": "0.3.259",
+    "dist_tags": [
+      "latest",
+      "next"
+    ],
+    "published": "2026-09-02T21:22:40.857Z",
+    "tarball_sha256": "0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e",
+    "tarball_sha1": "daf465f8231392ab99e1c7fc7f1e14c3d25ea012",
+    "tarball_bytes": 1403858,
+    "file_count": 15,
+    "unpacked_bytes": 5043385
+  },
+  "previous_ceiling": {
+    "version": "0.3.258",
+    "published": "2026-09-01T22:24:14.573Z",
+    "tarball_sha256": "656cf237bc567cb172a007a0fd5b3958cf960d154c03ab390a755d2c3bdbb398",
+    "tarball_sha1": "7d44d24c5a09e55537286b6546dc02d3e1d9b88a",
+    "tarball_bytes": 1397276,
+    "file_count": 15,
+    "unpacked_bytes": 5019497,
+    "corroborates_research_278": true
+  },
+  "published_stables_between": [],
+  "first_unpublished_later_stable": "0.3.260",
+  "native": {
+    "0.3.258": {
+      "version": "2.1.258",
+      "commit": "b3cd543a1f6fcdf4d8fabc0f5e5538d2ee7f38e1",
+      "buildDate": "2026-09-01T22:02:56Z"
+    },
+    "0.3.259": {
+      "version": "2.1.259",
+      "commit": "9b549c8d1c72e407ea9d3af3b9d5e50da794ec4d",
+      "buildDate": "2026-09-02T20:40:41Z"
+    }
+  },
+  "native_harness_schema": {
+    "0.3.258": 1,
+    "0.3.259": 1
+  },
+  "native_tested_wrapper_ceiling": {
+    "0.3.258": "0.3.227",
+    "0.3.259": "0.3.227"
+  },
+  "native_platform_artifacts": {
+    "darwin-arm64": {
+      "0.3.258": {
+        "checksum": "b63136194160791c27cfa7b0403060d85eb0752991625fde8c09f9acacb17c78",
+        "size": 199027600
+      },
+      "0.3.259": {
+        "checksum": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+        "size": 200225968
+      }
+    },
+    "darwin-x64": {
+      "0.3.258": {
+        "checksum": "c857db5cd712865623bd61e806cf3f7e8e279c9e5c7c0af5eca06ca6717fc7fb",
+        "size": 207778640
+      },
+      "0.3.259": {
+        "checksum": "af8741cff0d3fb5c4b893c7cb3613bd21b28fa61cca45469d60b8e5e161eb9d8",
+        "size": 209000528
+      }
+    },
+    "linux-arm64": {
+      "0.3.258": {
+        "checksum": "43dc490af55262edcb3e9b1cb315de22cc09ccb08bd52a4c39bc5eabaa63100f",
+        "size": 215014736
+      },
+      "0.3.259": {
+        "checksum": "c6ff03c389ccdeae0f19e9dc32488eeba61fbef4796f531dbfba6c00f45040d0",
+        "size": 216194384
+      }
+    },
+    "linux-arm64-musl": {
+      "0.3.258": {
+        "checksum": "d3bef6ba403fe3efba684fa93e1bb26bc7a08c054bd516639d54e77c77bb9821",
+        "size": 207894168
+      },
+      "0.3.259": {
+        "checksum": "2203a17d0dddf7c5afece2d948d60d20fdef4f227ffc0c1c1ed17ce6221fa65b",
+        "size": 209073816
+      }
+    },
+    "linux-x64": {
+      "0.3.258": {
+        "checksum": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+        "size": 215473560
+      },
+      "0.3.259": {
+        "checksum": "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6",
+        "size": 216677784
+      }
+    },
+    "linux-x64-musl": {
+      "0.3.258": {
+        "checksum": "e74a226cf174d911664aff982486c55ca770d9c00007e52e86b13d10bae72af3",
+        "size": 209493960
+      },
+      "0.3.259": {
+        "checksum": "1a595699211501087e8fb31952254d03a13ebb62a3e45f95990f15138eec6d70",
+        "size": 210702280
+      }
+    },
+    "win32-arm64": {
+      "0.3.258": {
+        "checksum": "42675c431b6014ad7243fea0ed0e371045dedc89d94aac81a9a0f528e644ed97",
+        "size": 209548960
+      },
+      "0.3.259": {
+        "checksum": "5d964b5bc68c1a4cd618a6f992ae56266cb34e68ae2c4aed9aa0ed68247dd218",
+        "size": 210756256
+      }
+    },
+    "win32-x64": {
+      "0.3.258": {
+        "checksum": "22f5f3a44093e14c75a4d1c8ce25c730b21dd634318fbe3268e9057d12b17c41",
+        "size": 218507936
+      },
+      "0.3.259": {
+        "checksum": "85429000ec9b80082613e9ecd2e0d3b2276c9d5b22a681936575d2c4c2f342ed",
+        "size": 219715232
+      }
+    }
+  },
+  "host_install_observed": false,
+  "no_prompt": true,
+  "no_live_session": true,
+  "no_login": true,
+  "no_install": true,
+  "nothing_executed": true,
+  "identity_decision": "rebind the exact QualifiedOnly package point 0.3.258 -> 0.3.259 and the coupled native point 2.1.258 -> 2.1.259; keep behavior revision, wire, node, and sidecar source-tag axes unchanged"
+}

@@ -69,6 +69,63 @@ annotated Git tags from the canonical repository.
   `open_session_with_projection` with
   `swallowtail.negotiated_model_options.invalid`. Load, resume, catalogue, and
   prepared contribution stay negative. Research 279, g05.022 card 056.
+- add the provider-free `claude-agent.sdk` route: Anthropic's official
+  `@anthropic-ai/claude-agent-sdk` `0.3.259`, carrying native `2.1.259`, driven
+  through a source-tagged Node sidecar (exact Node `22.23.2`) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire at behavior revision
+  `claude-agent.sdk-v1`. Five qualified-only one-point axes bind the SDK
+  wrapper, native binary, runtime, wire, and sidecar revision independently; no
+  ACP or Claude Code claim transfers in either direction. The application
+  provisions the runtime, the `.` SDK entry point, its peer dependencies, and
+  the platform package; Swallowtail never installs, vendors, updates, repairs,
+  or redistributes them. Swallowtail holds no subscription credential: it
+  leases a delegated reference, admits only `firstParty` provenance with an
+  `oauth` key source, refuses account identity fields, and mechanically forbids
+  the credential-bearing `/bridge` and `/browser` subpaths, API-key helpers,
+  and cloud auth refresh. The selected model is sent explicitly and confirmed
+  from `system/init` evidence. Tool availability is restricted with `tools` and
+  never auto-allowed with `allowedTools`; the read-only allow-list is enforced
+  before any consumer round trip, and an allowed decision returns the
+  provider's tool input unchanged while that input never crosses the wire. Open,
+  start-turn, interrupt, and close are bounded by caller-supplied host
+  deadlines that bound the return and the cleanup after it. The route is
+  Unix-only: Windows retains no tree owner, so the addable row reports
+  `Unsupported` and open refuses there. Close reports `Clean` only on
+  `ProcessTreeCompletion::OwnedTreeEmpty`; on ordinary macOS, confirmed root
+  completion after the declared descendant termination attempt is the
+  operator-accepted `Degraded` posture, and an observed surviving descendant or
+  unconfirmed root exit is `Failed`. Session persistence is disabled, so
+  resume, fork, session management, model, effort, thinking, usage detail, MCP,
+  hooks, plugins, skills, subagents, Bash, and terminal remain later layers.
+  The exact package and native points were rebound from `0.3.258` after a full
+  15-file package-tree inventory across the hop: 7 files identical, 8 changed,
+  none touching the mapped subset. The new `permissionPrompts` selector,
+  `user_message_uuids` correlation fields, task summary documentation, managed
+  MCP settings, and the bridge and browser implementation changes are all
+  classified unmapped, the credential-bearing subpath declarations are
+  byte-identical, and `sdkCompat.harnessSchema` is unchanged, so the behavior
+  revision, wire, Node, and sidecar source-tag axes all stay put.
+  Every effect is preceded by cleanup authority: open reserves the
+  open-guardian, pump, and close-guardian lanes from the exact selected task
+  service and starts both guardian tasks before it acquires a credential,
+  resolves a resource, starts the sidecar, or contacts the provider. A host that
+  cannot commit those lanes, or cannot create those workers, refuses the whole
+  operation there; after open returns, activating the cleanup guardian cannot
+  fail. One enclosing guardian owns the connection, process, pump, remaining
+  turn-deadline task, and both leases, and runs the ordered continuation whole:
+  interrupt, native close, host termination request, root observation, pump
+  join, working-resource release, credential release. Close hands that set over
+  before it returns a future, so a runtime that refuses an elapsed deadline,
+  missing time service, or wrong host without polling cannot strand live state.
+  Caller expiry, caller cancellation, and a dropped cleanup future all transfer
+  the guardian — never the pump alone — under the held exact-host, exact-scope
+  reservation rather than joining it on the dropping thread, so no lease is
+  released around still-live work and the caller reports unconfirmed cleanup
+  without waiting. Cancelling a pending open also releases its guard's cleanup
+  signal before that handoff, so the credential and working resource it holds
+  are released immediately instead of at the abandoned open deadline. `AcceptedForReap` stays ownership transfer only and never
+  becomes join or cleanup evidence. Research 278 and 280, Contracts 009, 010,
+  017, 019, 029, and 047, g05.022 card 055.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional
   `ClineSessionProfileInput::with_harness_mode(Plan)` advertises
   `HarnessModeSelection(Plan)`, requires unique `session/new` plan membership,

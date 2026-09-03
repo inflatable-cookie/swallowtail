@@ -1,6 +1,6 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 blocked on g05.025 card 061 after PR 188 containment
+Status: planned; card 055 restored on g05.025 card 061 reservations, pending independent exact-head review
 Owner: Tom
 Created: 2026-09-02
 Depends on: Research 277; Contracts 010, 015, 017, 019, 023, 029, 038, 041, 047; g05.024 card 060; g05.025 card 061
@@ -39,11 +39,13 @@ or production implementation before the two evidence gates close.
    relinquishment with autonomous reap; accepted-for-reap never strengthens
    SDK cleanup truth.
 6. PR 188 nevertheless merged at `ff7ec3d8`. Rejected exact-head review also
-   found unsafe lease ordering and a non-owning reaper fixture. The route is
-   withdrawn pending g05.025 card 061's provider-neutral shared-runtime
-   reservation/reapable-task authority for the complete ordered cleanup
-   continuation. Card 055 re-enters later from fresh canonical main, not the
-   reverted PR head.
+   found unsafe lease ordering and a non-owning reaper fixture, and PR 193
+   withdrew the route. g05.025 card 061 then supplied the provider-neutral
+   shared-runtime reservation and reapable-task authority. Card 055 re-entered
+   from fresh canonical main at `53153af1` and restored the route with reap
+   authority taken before every effect, one enclosing guardian owning the whole
+   ordered cleanup continuation, and a real `LocalHostServices` integrated
+   proof. That restoration awaits independent exact-head review.
 
 ## Boundaries
 
@@ -62,7 +64,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on accepted g05.025 card 061; later enclosing-guardian re-entry from fresh canonical main
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; restored on card 061 reservations with one enclosing cleanup guardian; pending independent exact-head review
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

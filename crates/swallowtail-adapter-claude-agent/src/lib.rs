@@ -39,6 +39,8 @@ mod prepared;
 mod prepared_code;
 mod prepared_profile;
 mod prepared_response;
+/// Claude Agent SDK sidecar route: asset, identity, private wire, and driver.
+pub mod sdk;
 mod selection;
 mod turn;
 

@@ -203,7 +203,29 @@ OpenHands adds a package without a production route.
   qualified `2.1.227..=2.1.235`, later stables UnverifiedNewer, explicit
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
-  structured-output capability
+  structured-output capability. The same crate also implements the separate
+  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
+  `0.3.259`, carrying native `2.1.259`, running in a source-tagged Node
+  sidecar (exact Node `22.23.2`) over the private bounded
+  `swallowtail-claude-agent-sdk-jsonl-v1` wire, with five qualified-only
+  one-point version axes, an application-provisioned launch recipe and
+  environment, no credential custody (delegated lease plus first-party
+  `oauth` readiness only), read-only tools, consumer-mediated tool admission,
+  capability-gated interrupt, and caller-bounded open, turn, interrupt, and
+  close. The route is two processes deep, so the nearest sidecar is not the
+  lifecycle boundary: the sidecar joins its own retained native handle to a
+  declared bound, the execution host makes the declared descendant termination
+  attempt, and cleanup reports `Clean` only on attested `OwnedTreeEmpty`,
+  `Degraded` on confirmed root-only completion, and `Failed` on an observed
+  survivor or unconfirmed root exit. Windows is unsupported because no tree
+  owner survives the root there. Open reserves its guardian, pump, and
+  close-guardian reap lanes from the exact selected task service and starts both
+  guardian tasks before any credential, resource, process, or provider effect,
+  so later activation is infallible. One enclosing guardian then owns the
+  connection, process, pump, and both leases through the whole ordered cleanup
+  continuation; caller expiry, caller cancellation, and a runtime-rejected
+  cleanup future all transfer that guardian, never the pump alone, and never
+  join it on the dropping thread
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, exact portable

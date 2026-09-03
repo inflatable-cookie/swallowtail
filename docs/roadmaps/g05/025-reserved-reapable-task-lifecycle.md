@@ -1,6 +1,6 @@
 # g05.025 Reserved Reapable Task Lifecycle
 
-Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
+Status: complete; merged at `53153af1`
 Owner: Tom
 Created: 2026-09-03
 Depends on: g05.024 card 060; Contracts 009, 010, 017, 019, and 047;
@@ -25,7 +25,7 @@ caller deadline can never fall back to blocking task drop.
 - [x] make shutdown close reservation admission, settle existing reservations
       and accepted tasks, then join reapers outside the task tree
 - [x] keep ordinary spawn, explicit join, and join-on-drop ownership unchanged
-- [x] leave the withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
+- [x] leave the then-withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
       lane untouched during the shared-runtime batch
 
 ## Execution Plan
@@ -57,16 +57,17 @@ caller deadline can never fall back to blocking task drop.
 
 ## Batch Card
 
-- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — PR 195 repaired pending independent exact-head re-review; provider-neutral reservation, cancellation-safe join, real local-host lifecycle, and shutdown-race proof
+- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; provider-neutral reservation, cancellation-safe join, real local-host lifecycle, and shutdown-race proof
 
 ## Adapter Re-entry Dependency
 
-g05.022 card 055 remains the sole adapter implementation card. It is blocked
-until card 061 passes independent exact-head review and merges. Its later
-guardian must own pump, process, resource, and
-credential state; preserve interrupt → native close → force-stop → root/process
-observation → pump completion/join → resource release → credential release;
-and transfer the enclosing guardian rather than the pump at the caller deadline.
+g05.022 card 055 was the sole adapter implementation card. It was blocked until
+card 061 passed independent exact-head review and merged at `53153af1`, and then
+consumed this reservation seam: its enclosing guardian owns pump, process,
+resource, and credential state; preserves interrupt → native close → force-stop
+→ root/process observation → pump completion/join → resource release →
+credential release; and transfers the enclosing guardian rather than the pump at
+the caller deadline.
 
 ## Acceptance Criteria
 

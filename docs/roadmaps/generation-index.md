@@ -152,8 +152,9 @@ currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and frozen; partial card-050 output
-is not accepted release evidence. Milestone 022 is planned after card 055's
-exact-head lifecycle stop. Milestone 023 is completed: card 057 landed the
+is not accepted release evidence. Milestone 022 is planned; card 055 restored the
+`claude-agent.sdk` route from canonical main after milestone 025 merged, and
+awaits independent exact-head review. Milestone 023 is completed: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, card 058
 completed the breaking caller-bounded close seam, and card 059 stopped at an
 evidence stop after four native counterexamples falsified the candidate
@@ -168,17 +169,19 @@ observed survivor is `Failed`. Milestone 024/card 060 then closes the narrower
 exact-head ownership gap: an unfinished joined task can transfer back to its
 exact selected host and scope for autonomous reap without blocking the caller
 or implying joined cleanup. PR 188 nevertheless merged despite rejected
-exact-head review. Its route is withdrawn pending provider-neutral
-shared-runtime reservation/reapable-task authority. Milestone 025/card 061 now
-grants that authority before operation effects, makes later valid
-exact-host/scope handoff immune to shutdown and capacity races, and proves the
-real local-host lifecycle without changing ordinary task ownership on an
-unmerged branch.
+exact-head review, and PR 193 withdrew its route pending provider-neutral
+shared-runtime reservation/reapable-task authority. Milestone 025/card 061
+granted that authority before operation effects, made later valid
+exact-host/scope handoff immune to shutdown and capacity races, and proved the
+real local-host lifecycle without changing ordinary task ownership; it merged at
+`53153af1`. Card 055 then restored the route on that seam: reap authority is
+reserved before every effect, one enclosing guardian owns the pump, process, and
+both leases through the ordered cleanup continuation, and the caller deadline
+transfers that guardian rather than the pump.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 060 is complete; card 061 is complete pending independent exact-head review
-and merge; card 055 is the sole next task but remains blocked until both gates.
-The
+card 060 is complete; card 061 is complete and merged; card 055 is complete and
+awaits independent exact-head review. The
 `v0.4.0` release lane remains frozen. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is

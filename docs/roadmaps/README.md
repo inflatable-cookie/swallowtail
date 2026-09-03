@@ -15,16 +15,15 @@ shape.
 
 ## Next Task
 
-Resolve the operator decision left by
-[g05.023](g05/023-claude-sdk-shared-lifecycle-prerequisites.md). Card 058's
-caller-bounded close seam is complete. Card 059 found no sound owned-tree
-observation within current ordinary host-local authority on macOS. Select and
-authorize one next posture: validate a sound container mechanism natively on a
-platform that has one; open a separate entitlement or system-extension lane;
-or keep `claude-agent.sdk` unavailable on macOS while tree completion remains
-unconfirmed. PR 188 stays preserved and blocked. g05.021 and cards 050-052
-remain planned and paused; release evidence must restart against the later exact
-source head.
+Continue card 055 on its preserved PR 188 identity. The 2026-09-03 operator
+decision accepts ordinary macOS availability only with caller-bounded
+root/process cleanup and an exact `Degraded` result while descendant-tree
+emptiness remains unconfirmed. `OwnedTreeEmpty` remains the sole basis for
+`Clean`; unconfirmed root exit or an observed survivor is `Failed`. Restack PR
+188 onto current `main`, preserve its accepted SDK identity, model, tool,
+credential, and wire work, and repair the lifecycle paths against Contracts 010
+and 019. g05.021 and cards 050-052 remain planned and paused; release evidence
+must restart against the later exact source head.
 
 ## Standing Lanes
 

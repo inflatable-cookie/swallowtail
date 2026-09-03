@@ -988,8 +988,13 @@ of via `cgroup.procs`; entitlement or system-extension facilities such as Apple
 Endpoint Security exist but are outside this bounded host-local lane, not proved
 nonexistent. The local host therefore reports
 `ProcessTreeCompletion::RootOnly` on every platform, including exits where
-termination succeeded, adds no unsafe, and never constructs the attested state. A native arm64
-probe proves that a security-scoped project grant propagates through a
+termination succeeded, adds no unsafe, and never constructs the attested state.
+Contract 019 permits an explicitly qualified root-only platform to expose a
+route only with caller-bounded sidecar/root join and an exact degraded cleanup
+outcome. `OwnedTreeEmpty` remains the sole basis for `Clean`; unconfirmed root
+exit or an observed survivor is failed cleanup. The Claude Agent SDK route uses
+that posture on ordinary macOS and does not transfer it to another route or
+platform. A native arm64 probe proves that a security-scoped project grant propagates through a
 compatible inherited App Sandbox helper to shell and background descendants.
 The exact Kimi `0.28.1` single executable cannot retain V8 and extracted-
 native-module runtime behavior under the documented helper signature, so that

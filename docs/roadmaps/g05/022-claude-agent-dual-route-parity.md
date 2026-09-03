@@ -1,6 +1,6 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 blocked on g05.023 shared lifecycle prerequisites
+Status: planned; card 055 ready on preserved PR 188 under accepted macOS degraded cleanup
 Owner: Tom
 Created: 2026-09-02
 Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
@@ -31,8 +31,10 @@ or production implementation before the two evidence gates close.
    vocabulary for the first ACP tranche.
 4. Card 056 added exact negotiated model-options observation to ACP. PR 188's
    exact-head review preserved the SDK foundation but found shared close-bound
-   and process-tree-attestation blockers. g05.023 owns those prerequisites;
-   card 055 resumes on its existing branch only after both land.
+   and process-tree-attestation blockers. g05.023 completed the bounded close
+   seam and recorded the macOS evidence stop. The operator then accepted
+   root-only `Degraded` cleanup on ordinary macOS, so card 055 resumes on its
+   existing branch and PR identity.
 
 ## Boundaries
 
@@ -51,7 +53,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on g05.023 cards 058-059; preserve PR 188 for restack
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready; preserve and restack PR 188 under the accepted macOS root-only degraded posture
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

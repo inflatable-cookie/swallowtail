@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 23 roadmaps: 15 completed milestones and honest evidence stops at 002,
-003, 007, 011, and 023. Milestone 009 is planned
+g05 has 23 roadmaps: 16 completed milestones and honest evidence stops at 002,
+003, 007, and 011. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
@@ -153,7 +153,7 @@ post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
 is not accepted release evidence. Milestone 022 is planned after card 055's
-exact-head lifecycle stop. Milestone 023 is stopped: card 057 landed the
+exact-head lifecycle stop. Milestone 023 is completed: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, card 058
 completed the breaking caller-bounded close seam, and card 059 stopped at an
 evidence stop after four native counterexamples falsified the candidate
@@ -161,11 +161,14 @@ primitives (setsid escape, descriptor EOF with a live child, released-group
 identity, and reparenting to launchd), and no sound owned-tree observation was
 found within the current ordinary host-local authority on macOS, so the host
 stays root-only and adds no unsafe; entitlement or system-extension mechanisms
-are out of scope, not proved nonexistent. PR 188 stays paused until the operator
-resolves the macOS tree gate.
+are out of scope, not proved nonexistent. The operator accepted bounded
+root-only degraded cleanup on ordinary macOS: only `OwnedTreeEmpty` supports
+`Clean`; confirmed root completion is `Degraded`; unconfirmed root or an
+observed survivor is `Failed`. PR 188 is ready to continue on its preserved
+identity.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 055/PR 188 remain paused behind the macOS owned-tree posture decision. No card
+card 055/PR 188 continue under the accepted macOS degraded posture. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

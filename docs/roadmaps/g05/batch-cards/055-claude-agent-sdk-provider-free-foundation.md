@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: blocked; PR 188 preserved behind the unresolved macOS owned-tree posture decision
+Status: ready; operator selected bounded root-only degraded cleanup on macOS; PR 188 preserved
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -10,7 +10,8 @@ Depends on: completed cards 053-054; Research 278-279; Contracts 019 and 029
 
 Implement the first provider-free `claude-agent.sdk` route foundation through
 a bounded Node sidecar, exact official SDK identity, subscription credential
-non-custody, read-only streaming, and a host-owned joined descendant lifecycle.
+non-custody, read-only streaming, and a caller-bounded process lifecycle with
+honest descendant-completion truth.
 
 ## Scope
 
@@ -34,11 +35,13 @@ non-custody, read-only streaming, and a host-owned joined descendant lifecycle.
    system/output/activity, runtime capabilities, first-party account readiness,
    `canUseTool`, interrupt, close, and terminal failure. Keep raw SDK values,
    credentials, paths, and payloads out of public records and diagnostics.
-6. Launch the sidecar through the host's descendant-tree authority. Prove
-   enrollment on each supported platform. Sidecar close holds an independently
-   joinable native-process handle, joins to a declared bound, escalates through
-   host authority, rejoins, and reports `graceful`, `escalated`, or
-   `unconfirmed`; the last is cleanup failure.
+6. Launch the sidecar through the host's declared process authority. Sidecar
+   close holds an independently joinable native-process handle, joins within
+   the caller cleanup deadline, escalates through host authority, and rejoins.
+   `OwnedTreeEmpty` is the only basis for `Clean`. On ordinary macOS,
+   `RootOnly` plus confirmed sidecar/root exit after the descendant termination
+   attempt is an exact `Degraded` cleanup; unconfirmed root exit or an observed
+   survivor is `Failed`. Do not claim descendant-tree completion there.
 7. Preserve cwd and first-party account binding through the session. Resume,
    fork, model/effort/thinking mutation, commands, checkpoints, usage detail,
    and broader permissions remain later layers.
@@ -65,7 +68,9 @@ preparation; tags; g05.009.
 - [ ] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
 - [ ] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
 - [ ] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
-- [ ] full descendant-tree close yields one of three explicit outcomes; unconfirmed fails
+- [ ] macOS root-only close is caller-bounded, never `Clean`, and distinguishes
+      confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
+- [ ] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
 - [ ] fake descendants prove nearest-child join alone is insufficient
 - [ ] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
 - [ ] existing ACP and Claude Code behavior and claims are unchanged
@@ -91,19 +96,20 @@ and report why.
 
 ## Review Oracle
 
-Invariant: Rust owns and confirms the whole sidecar/native descendant lifecycle
-while never possessing the user's subscription credential.
+Invariant: Rust bounds the sidecar/native lifecycle and never reports stronger
+cleanup truth than the host observes, while never possessing the user's
+subscription credential.
 
 Smallest counterexample: Node exits cleanly while native Claude or one tool
-descendant survives, or an inherited environment silently selects API-key
-authentication.
+descendant survives and the route reports `Clean`, or an inherited environment
+silently selects API-key authentication.
 
 ## Stop Conditions
 
 Stop on changed subscription policy, moved official stable, required token
-custody, inability to prove platform descendant enrollment, an SDK-only type
-leaking into shared API, provider contact need, or a required shared public
-vocabulary decision.
+custody, an unbounded or unconfirmed sidecar/root join, `Clean` from root-only
+evidence, an SDK-only type leaking into shared API, provider contact need, or a
+required shared public vocabulary decision.
 
 ## Auto-Continuation
 

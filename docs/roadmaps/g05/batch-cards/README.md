@@ -11,12 +11,7 @@
 
 ## Ready
 
-No card is ready. g05.023 stopped on the unresolved macOS owned-tree posture
-decision after cards 058 and 059 completed their bounded lanes.
-
-## Blocked
-
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked on the unresolved macOS owned-tree posture decision; PR 188 branch/workspace preserved
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; operator accepted bounded root-only degraded cleanup on ordinary macOS; continue preserved PR 188
 
 ## Completed
 

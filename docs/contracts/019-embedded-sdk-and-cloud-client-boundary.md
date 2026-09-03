@@ -69,29 +69,41 @@ credentials, and host resources in contract order. Process isolation does not
 by itself prove filesystem or network containment.
 
 Where an upstream SDK launches further provider-owned processes, the nearest
-sidecar is not the lifecycle boundary. The execution host owns and can
-terminate the full descendant process tree rooted at that sidecar. The launch
-recipe proves descendant enrollment or containment on every supported
-platform. A platform where that cannot be proved is unsupported for the route,
-not best-effort.
+sidecar is not the lifecycle boundary. The execution host owns termination of
+the sidecar root and every descendant still reachable through its declared
+tree authority. The launch recipe states exactly whether the host can attest
+tree emptiness or only root completion. A route may support the latter posture
+only as an explicit platform-qualified degraded boundary; it cannot describe
+root-only evidence as a joined tree.
 
-Close joins every provider process in the tree, not only the nearest child. A
-bounded join states its bound and escalates through host termination authority
-on expiry before joining again. Close reports one explicit outcome: exited
-gracefully, exited after escalation, or exit unconfirmed. A surviving
-descendant, discarded wait, or result that cannot distinguish exit from expiry
-is cleanup failure. It is never evidence of clean close.
+On an attested-tree platform, close joins every provider process in the tree,
+not only the nearest child. Every platform bounds its claimed join, states the
+bound, and escalates through host termination authority on expiry before
+joining again. Close reports one explicit outcome: exited gracefully, exited
+after escalation, or exit unconfirmed. A surviving descendant, discarded wait,
+or result that cannot distinguish exit from expiry is never evidence of clean
+close.
 
 Root exit is not tree completion. A close outcome may report the descendant
-tree as joined only where the execution host attests owned-tree emptiness from
-a concrete Contract 010 observation whose owned-tree identity a descendant
-cannot escape by session change, descriptor drop, or reparenting, and which
-denies migration out of the owned set. Root-only evidence closes the root and
-leaves the tree unconfirmed, so a route that requires the full tree stays
-unavailable until a host on that platform can make the observation. Card 059
-found no such observation within the current ordinary host-local authority on
-macOS, so the subscription-backed SDK route that requires the full tree stays
-unavailable there under that authority.
+tree as joined, or report cleanup `Clean`, only where the execution host attests
+owned-tree emptiness from a concrete Contract 010 observation whose owned-tree
+identity a descendant cannot escape by session change, descriptor drop, or
+reparenting, and which denies migration out of the owned set.
+
+An explicitly qualified root-only platform may still expose the route when the
+host bounds interruption, disposal, escalation, and root join by the caller's
+cleanup deadline. A confirmed root exit after the declared descendant
+termination attempt returns an exact route-qualified `Degraded` outcome because
+descendant emptiness remains unconfirmed. An unconfirmed root exit or an
+observed surviving descendant returns `Failed`. Neither outcome may be promoted
+to `Clean`, cached as tree-empty evidence, or used to widen another route or
+platform. Applications may reject the degraded platform posture at selection.
+
+Card 059 found no owned-tree-empty observation within current ordinary
+host-local authority on macOS. The subscription-backed SDK route may therefore
+qualify macOS only under the root-only degraded rule above. A future stronger
+host mechanism may replace that posture after separate evidence; it is not
+inferred from successful ordinary closes.
 
 ## Runtime And Task Ownership
 

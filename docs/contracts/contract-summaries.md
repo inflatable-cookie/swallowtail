@@ -51,7 +51,8 @@ contract file owns the exact rules.
 - **018** governs owned ephemeral serving, now realized by the llama.cpp
   proof.
 - **019** governs in-process SDK drivers, foreign-language SDK sidecars,
-  explicit client configuration, and delegated SDK credentials.
+  explicit client configuration, delegated SDK credentials, and cleanup truth
+  across attested-tree and explicit root-only degraded platform postures.
 - **020** keeps mutable catalogue observations separate from entitlement,
   runtime capability, and route selection. It distinguishes standalone sources
   from session-negotiated options and records that the current common

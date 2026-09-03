@@ -33,13 +33,13 @@ enforcement.
 | Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
-| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation paused after review found shared close-bound and tree-attestation gaps | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
-| Supply the shared lifecycle evidence required by the Claude SDK route. | stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; the remaining route posture is an operator decision | Contracts 010 and 019; PR 188 review; 2026-09-02 operator decision | `g05.023`, cards 057-059 |
+| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation ready on preserved PR 188 under the accepted macOS degraded cleanup posture | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
+| Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 
 ## Planned Next Roadmaps
 
-- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; operator posture decision required
-- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
+- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
+- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
@@ -66,10 +66,10 @@ enforcement.
 g05 has twenty-three numbered roadmaps: 15 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, and contract promotion at 008 and 010, honest
-evidence stops at 002, 003, 007, 011, and 023. Milestone 020 is complete: Codex
+evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
-planned after the card 055 review stop. Milestone 023 is stopped after
+planned after the card 055 review stop. Milestone 023 is complete after
 delivering card 057's tree-completion vocabulary and card 058's caller-bounded
 close seam. Card 059 attacked the remaining boundary and stopped: four native
 counterexamples falsify
@@ -77,8 +77,10 @@ the candidate primitives (setsid escape, descriptor EOF with a live child,
 released-group identity, and reparenting to launchd), and no sound owned-tree
 observation was found within the current ordinary host-local authority on macOS,
 so the host stays root-only and adds no unsafe; entitlement or system-extension
-mechanisms are out of scope. PR 188 stays paused and the macOS tree gate is an
-open operator decision.
+mechanisms are out of scope. The operator accepted bounded root-only degraded
+cleanup on ordinary macOS: only `OwnedTreeEmpty` supports `Clean`; confirmed
+root completion is `Degraded`; unconfirmed root or observed survivor is
+`Failed`. PR 188 is ready to continue on its preserved identity.
 
 ## Current Boundary
 
@@ -341,16 +343,16 @@ release cards require a fresh exact-head restart after the Claude work.
 Research 277-279 and g05.022 split Claude parity into two routes. Cards 053-054
 closed the SDK and ACP evidence gates. Contract 019 now requires joined
 descendant-tree cleanup, and Contract 029 records artifact-only authority when
-public source cannot corroborate a package. Card 056's ACP observation is in
-review. Card 055 continues in parallel and restacks after 056 merges. Native SDK delivery
-is the priority; the bounded ACP observation lands first to clear same-adapter
-merge ordering. ACP remains an independently useful portable route rather than
-an approximation hidden behind the SDK identity.
+public source cannot corroborate a package. Card 056's ACP observation is
+complete. Card 055 now restacks onto current `main` and applies the accepted
+macOS degraded cleanup posture. Native SDK delivery is the priority. ACP
+remains an independently useful portable route rather than an approximation
+hidden behind the SDK identity.
 
 ## Milestones
 
-- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; operator posture decision required
-- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
+- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 

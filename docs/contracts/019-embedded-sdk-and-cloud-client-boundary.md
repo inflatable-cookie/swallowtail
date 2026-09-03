@@ -136,10 +136,12 @@ boundary, it transfers the handle only through the selected execution host's
 `ScopedTaskService::relinquish` operation with the exact operation scope. The
 host accepts autonomous reap ownership before the caller returns. Acceptance
 is `AcceptedForReap`, not joined or cleanup-complete; the adapter cannot use it
-to strengthen the session's cleanup result. The selected-host lifecycle keeps
-and ultimately joins or supervises its reaper. Rejection leaves the task with
-the caller and fails closed. Adapter-global parking, a discarded reaper handle,
-and a later adapter cleanup call are not substitutes.
+to strengthen the session's cleanup result. An outer selected-host lifecycle
+owner keeps the reaper and explicitly joins it outside the task tree; a
+task-service clone has only weak handoff authority and never joins a reaper on
+drop. Rejection leaves the task with the caller and fails closed.
+Adapter-global parking, a discarded reaper handle, and a later adapter cleanup
+call are not substitutes.
 
 After a turn deadline, session cleanup owns interruption of any still-active
 turn. A structured projection must return any unfinished task to the selected

@@ -41,6 +41,7 @@ impl swallowtail_host_local::LocalHostServices
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
 pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
+pub fn swallowtail_host_local::LocalHostServices::shutdown_task_reapers(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
 pub fn swallowtail_host_local::LocalHostServices::watcher_bridge_proof(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<swallowtail_host_local::WatcherBridgeProofKind>
 pub struct swallowtail_host_local::LocalMaterializationLimits

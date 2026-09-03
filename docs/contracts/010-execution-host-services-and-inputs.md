@@ -42,9 +42,11 @@ case. It accepts only an unfinished task created under the same exact
 the host has accepted autonomous ownership and returns
 `TaskRelinquishOutcome::AcceptedForReap`. The outcome means neither finished
 nor joined. The host must reap the task after it finishes without a second
-adapter call or adapter-global parking. Its concrete selected-host service or
-lifecycle retains and supervises the reaper, then joins that infrastructure on
-shutdown; discarding a reaper handle is detached execution, not host ownership.
+adapter call or adapter-global parking. Its concrete selected-host composition
+retains and supervises the reaper through an outer lifecycle owner, then
+explicitly joins that infrastructure outside the task tree on shutdown.
+Task-service clones carry only weak handoff authority and never join reapers on
+drop; discarding a reaper handle is detached execution, not host ownership.
 Wrong-host, wrong-scope, unsupported, already-finished, and repeated transfers
 fail closed and leave ordinary task ownership with the caller.
 
@@ -374,6 +376,8 @@ billing, support authority, privacy posture, ownership, or topology.
   without waiting for unfinished task completion
 - wrong-host, wrong-scope, unsupported, finished, and repeated relinquishment
   retain ordinary caller ownership; accepted-for-reap never means joined
+- selected-host shutdown runs outside the task tree and accounts for every
+  retained reaper even when a worker captures a task-service clone
 - a hosted API driver executes without process service
 - a one-shot CLI fails preflight without process service
 - delegated harness authentication does not require secret extraction

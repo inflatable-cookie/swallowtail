@@ -551,9 +551,10 @@ Crate status:
   credential approvals remain scope- and audience-bound and redacted; per-host
   scoped task handles join explicitly or on drop. Exact-host/scope
   relinquishment can move an unfinished worker to a per-transfer reaper whose
-  handle the selected-host service retains without adapter-global state; the
-  final service owner joins all reapers while ordinary join/drop ownership
-  stays unchanged.
+  handle an outer selected-host lifecycle owner retains without adapter-global
+  state. Task-service clones retain only weak handoff authority. Explicit host
+  shutdown outside the task tree joins all reapers while ordinary join/drop
+  ownership stays unchanged.
   `LocalHostServices` composes the exact supported ports under
   one host identity, the local watcher service
   owns approved process work through terminal and joined state, installed

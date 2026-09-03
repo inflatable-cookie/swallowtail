@@ -19,8 +19,9 @@ takes back an unfinished task only under the exact execution-host and
 `ScopeId` binding and accepts responsibility for eventual reap. The result says
 only `AcceptedForReap`; it never says joined or cleanup complete.
 
-The local host uses a per-transfer reaper whose handle is retained by the
-concrete selected-host task service. The final service owner joins all retained
+The local host uses a per-transfer reaper whose handle is retained by an outer
+selected-host lifecycle owner. Task-service clones keep only weak handoff
+authority. Explicit host shutdown outside the task tree joins all retained
 reapers. This adds no adapter-global registry, parking lot, follow-up call, or
 weakened `LocalJoinedTask` drop/join rule. Rejection leaves the caller's handle
 intact.
@@ -33,7 +34,8 @@ intact.
 
 - relinquishment returns before an unfinished task completes
 - the selected host reaps the task after later completion without another call
-- final selected-host service drop joins its reaper and accepted work
+- explicit selected-host shutdown outside the task tree joins its reapers and
+  accepted work, even when a worker captures a task-service clone
 - wrong-host, wrong-scope, unsupported, finished, and repeated transfer fail closed
 - ordinary joined tasks still join explicitly or on drop
 - accepted-for-reap cannot be used as joined or cleanup-completion evidence

@@ -1,5 +1,5 @@
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex, OnceLock, Weak};
+use std::sync::{Arc, Mutex, Weak};
 use std::task::Waker;
 use std::thread::{self, JoinHandle};
 use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
@@ -19,22 +19,27 @@ use reaper::ReaperSupervisor;
 /// its dropper indefinitely; consumers that need a bounded shutdown must
 /// bound the task itself (for example through the host deadline service) or
 /// transfer an unfinished handle through [`ScopedTaskService::relinquish`]
-/// before dropping it. Service clones share ownership of every accepted
-/// task's reaper; dropping the final clone joins all retained reapers.
-/// Acceptance for reap is not join evidence.
+/// before dropping it. Relinquishment is available only when the service was
+/// created by an owning host composition. Service clones carry weak handoff
+/// access only; the outer host lifecycle must call its explicit reaper
+/// shutdown after operation work. Acceptance for reap is not join evidence.
 #[derive(Clone)]
 pub struct LocalScopedTaskService {
     execution_host_id: ExecutionHostId,
-    reaper: SharedReaper,
+    reaper: Weak<ReaperSupervisor>,
 }
 
 impl LocalScopedTaskService {
-    /// Creates a scoped task service for one exact execution host.
+    /// Creates an ordinary scoped task service for one exact execution host.
+    ///
+    /// This standalone service preserves joined-task behavior but has no outer
+    /// lifecycle owner, so relinquishment fails closed. Use the local host
+    /// composition when host-owned reap is required.
     #[must_use]
     pub const fn new(execution_host_id: ExecutionHostId) -> Self {
         Self {
             execution_host_id,
-            reaper: SharedReaper::new(),
+            reaper: Weak::new(),
         }
     }
 
@@ -44,8 +49,15 @@ impl LocalScopedTaskService {
         &self.execution_host_id
     }
 
-    fn reaper(&self) -> &Arc<ReaperSupervisor> {
-        self.reaper.get()
+    pub(crate) fn with_reaper_owner(
+        execution_host_id: ExecutionHostId,
+    ) -> (Self, LocalTaskReaperOwner) {
+        let owner = LocalTaskReaperOwner::default();
+        let service = Self {
+            execution_host_id,
+            reaper: Arc::downgrade(&owner.reaper),
+        };
+        (service, owner)
     }
 
     fn spawn_task(
@@ -73,26 +85,19 @@ impl LocalScopedTaskService {
             worker: Some(worker),
             signal,
             reaped: Arc::new(AtomicBool::new(false)),
-            reaper: Arc::downgrade(self.reaper()),
+            reaper: self.reaper.clone(),
         })
     }
 }
 
-struct SharedReaper(OnceLock<Arc<ReaperSupervisor>>);
-
-impl SharedReaper {
-    const fn new() -> Self {
-        Self(OnceLock::new())
-    }
-
-    fn get(&self) -> &Arc<ReaperSupervisor> {
-        self.0.get_or_init(|| Arc::new(ReaperSupervisor::default()))
-    }
+#[derive(Clone, Default)]
+pub(crate) struct LocalTaskReaperOwner {
+    reaper: Arc<ReaperSupervisor>,
 }
 
-impl Clone for SharedReaper {
-    fn clone(&self) -> Self {
-        Self(OnceLock::from(Arc::clone(self.get())))
+impl LocalTaskReaperOwner {
+    pub(crate) fn shutdown(&self) -> Result<(), RuntimeFailure> {
+        self.reaper.shutdown()
     }
 }
 

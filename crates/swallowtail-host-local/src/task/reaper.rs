@@ -11,7 +11,13 @@ struct ReapJob {
 
 #[derive(Default)]
 pub(super) struct ReaperSupervisor {
-    reapers: Mutex<Vec<JoinHandle<()>>>,
+    shutdown: Mutex<()>,
+    state: Mutex<ReaperState>,
+}
+
+struct ReaperState {
+    accepting: bool,
+    reapers: Vec<JoinHandle<()>>,
 }
 
 impl ReaperSupervisor {
@@ -21,8 +27,8 @@ impl ReaperSupervisor {
         reaped: Arc<AtomicBool>,
     ) -> Result<(), (RuntimeFailure, JoinHandle<()>)> {
         let job = ReapJob { worker, reaped };
-        let mut reapers = match self.reapers.lock() {
-            Ok(reapers) => reapers,
+        let mut state = match self.state.lock() {
+            Ok(state) => state,
             Err(_) => {
                 return Err((
                     task_failure(
@@ -33,6 +39,15 @@ impl ReaperSupervisor {
                 ));
             }
         };
+        if !state.accepting {
+            return Err((
+                task_failure(
+                    "swallowtail.local_task.reaper_shutdown",
+                    "Local task reaper lifecycle is shut down",
+                ),
+                job.worker,
+            ));
+        }
         let (sender, receiver) = mpsc::sync_channel(1);
         let reaper = match thread::Builder::new()
             .name("swallowtail-local-task-reaper".to_owned())
@@ -49,8 +64,8 @@ impl ReaperSupervisor {
                 ));
             }
         };
-        reapers.push(reaper);
-        drop(reapers);
+        state.reapers.push(reaper);
+        drop(state);
         sender.send(job).map_err(|mpsc::SendError(job)| {
             (
                 task_failure(
@@ -61,16 +76,35 @@ impl ReaperSupervisor {
             )
         })
     }
-}
 
-impl Drop for ReaperSupervisor {
-    fn drop(&mut self) {
-        let reapers = self
-            .reapers
-            .get_mut()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
+    pub(super) fn shutdown(&self) -> Result<(), RuntimeFailure> {
+        let (shutdown_guard, shutdown_poisoned) = match self.shutdown.lock() {
+            Ok(guard) => (guard, false),
+            Err(poisoned) => (poisoned.into_inner(), true),
+        };
+        let (mut reapers, state_poisoned) = match self.state.lock() {
+            Ok(mut state) => {
+                state.accepting = false;
+                (std::mem::take(&mut state.reapers), false)
+            }
+            Err(poisoned) => {
+                let mut state = poisoned.into_inner();
+                state.accepting = false;
+                (std::mem::take(&mut state.reapers), true)
+            }
+        };
+        let mut reaper_panicked = false;
         for reaper in reapers.drain(..) {
-            let _ = reaper.join();
+            reaper_panicked |= reaper.join().is_err();
+        }
+        drop(shutdown_guard);
+        if shutdown_poisoned || state_poisoned || reaper_panicked {
+            Err(task_failure(
+                "swallowtail.local_task.reaper_shutdown_failed",
+                "Local task reaper lifecycle did not shut down cleanly",
+            ))
+        } else {
+            Ok(())
         }
     }
 }
@@ -78,5 +112,14 @@ impl Drop for ReaperSupervisor {
 fn reap_worker_from(receiver: mpsc::Receiver<ReapJob>) {
     if let Ok(job) = receiver.recv() {
         let _ = reap_worker(Some(job.worker), &job.reaped);
+    }
+}
+
+impl Default for ReaperState {
+    fn default() -> Self {
+        Self {
+            accepting: true,
+            reapers: Vec::new(),
+        }
     }
 }

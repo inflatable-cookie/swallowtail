@@ -1,3 +1,4 @@
+use crate::task::LocalTaskReaperOwner;
 use crate::watcher::LocalWatcherHostService;
 use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
 use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
@@ -16,6 +17,7 @@ use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, RuntimeTurnI
 pub struct LocalHostServices {
     process_host: Arc<LocalProcessHost>,
     task_service: Arc<LocalScopedTaskService>,
+    task_reaper_owner: LocalTaskReaperOwner,
     watcher_bridge: Arc<LocalWatcherBridgeHostService>,
     services: HostServices,
 }
@@ -26,7 +28,9 @@ impl LocalHostServices {
         process_host: LocalProcessHost,
     ) -> Self {
         let process_host = Arc::new(process_host);
-        let task_service = Arc::new(LocalScopedTaskService::new(execution_host_id.clone()));
+        let (task_service, task_reaper_owner) =
+            LocalScopedTaskService::with_reaper_owner(execution_host_id.clone());
+        let task_service = Arc::new(task_service);
         let watcher = Arc::new(LocalWatcherHostService::new(
             process_host.clone(),
             task_service.clone(),
@@ -54,6 +58,7 @@ impl LocalHostServices {
         Self {
             process_host,
             task_service,
+            task_reaper_owner,
             watcher_bridge,
             services,
         }
@@ -75,6 +80,15 @@ impl LocalHostServices {
     #[must_use]
     pub const fn task_service(&self) -> &Arc<LocalScopedTaskService> {
         &self.task_service
+    }
+
+    /// Stops task relinquishment and joins every retained task reaper.
+    ///
+    /// The outer selected-host lifecycle must call this after operation work
+    /// and outside the task tree. It does not cancel accepted tasks and may
+    /// wait for them to finish. Calling it again is harmless.
+    pub fn shutdown_task_reapers(&self) -> Result<(), swallowtail_runtime::RuntimeFailure> {
+        self.task_reaper_owner.shutdown()
     }
 
     /// Returns reserved watcher-bridge operations observed for one turn.

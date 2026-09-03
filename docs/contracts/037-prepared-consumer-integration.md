@@ -244,6 +244,10 @@ event, and diagnostic services. Composition:
 - includes only services the host explicitly supplies
 - adds no capability or access authority
 - owns and joins every spawned or blocking task
+- retains relinquished-task reapers in an outer lifecycle owner and explicitly
+  joins them outside the task tree during selected-host shutdown
+- gives task-service clones only weak reaper-handoff authority; service-clone
+  drop never joins retained reapers
 - contains no process-global executor or detached task
 - preserves operation scope, resource ownership, limits, and cleanup order
 

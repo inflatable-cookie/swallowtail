@@ -25,8 +25,10 @@ retains the handle for ordinary join/drop ownership.
 - add the provider-neutral relinquishment outcome and service operation
 - keep the handle-side transfer hook hidden within the runtime seam
 - bind local task handles to their exact execution host and scope
-- retain each per-transfer reaper under the concrete selected-host task service
-- join all retained reapers when the final owning service clone drops
+- retain each per-transfer reaper under an outer selected-host lifecycle owner
+- give task-service clones only weak reaper-handoff authority
+- explicitly join all retained reapers outside the task tree during host
+  shutdown
 - preserve explicit join and join-on-drop for every ordinary path
 - reconcile Contracts 009, 010, and 019, runtime architecture, lifecycle
   guidance, semantic API evidence, and changelog
@@ -42,8 +44,11 @@ changing cleanup truth after acceptance for reap.
 
 - [x] a stalled local task can be relinquished without blocking its caller
 - [x] later completion is reaped autonomously with no second failure or call
-- [x] final owning-service drop accounts for and joins the reaper; discarding
-      the reaper handle would fail the deterministic lifecycle proof
+- [x] explicit selected-host shutdown outside the task tree accounts for and
+      joins the reaper; discarding the reaper handle would fail the
+      deterministic lifecycle proof
+- [x] a worker may capture and drop a task-service clone without becoming the
+      reaper join owner or deadlocking shutdown
 - [x] wrong execution host, wrong scope, and repeated ownership fail closed
       while retaining caller ownership on rejection
 - [x] an already-finished task rejects relinquishment and joins normally
@@ -77,17 +82,19 @@ blocks on handle drop, moves into adapter-global storage with no reaper, crosses
 host/scope authority, or yields `Clean` from accepted-for-reap.
 
 Required proof: a controlled stalled task, later release and observed reap,
-owning-service drop held until the supervised reaper completes, wrong-host/scope
-and repeat failures, a finished-task ordinary join, semantic API evidence, and
-unchanged local drop-join coverage.
+outer host shutdown held until the supervised reaper completes, a worker-held
+service clone dropped before completion, wrong-host/scope and repeat failures,
+a finished-task ordinary join, semantic API evidence, and unchanged local
+drop-join coverage.
 
 ## Outcome
 
 `ScopedTaskService::relinquish` now takes a mutable optional `JoinedTask` slot.
 The local task validates its exact host and scope, rejects a finished or already
-transferred worker, registers its reaper with the selected-host service, and
-only then hands over the worker and releases caller ownership. The final service
-owner joins every retained reaper. The one public outcome is
+transferred worker, registers its reaper with the outer selected-host lifecycle,
+and only then hands over the worker and releases caller ownership. Task-service
+clones keep weak handoff authority only. Explicit selected-host shutdown outside
+the task tree joins every retained reaper. The one public outcome is
 `AcceptedForReap`. Existing task handles still join explicitly or on drop.
 
 ## Auto-Continuation

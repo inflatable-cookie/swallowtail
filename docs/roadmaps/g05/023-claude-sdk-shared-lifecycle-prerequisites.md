@@ -60,7 +60,9 @@ route or platform.
   for host-defined monotonic ticks.
 - Do not expose `claude-agent.sdk` when sidecar/root join is unbounded or
   unconfirmed; macOS support must surface the accepted degraded cleanup truth.
-- Do not restore PR 188's route from this completed milestone. Its valid model,
+- This milestone never authorized restoring PR 188's route. The later card 055
+  restoration entered from canonical main after g05.025 card 061, not from the
+  reverted PR head. Its valid model,
   tool, credential, identity, sidecar, and provider-free test work remains
   historical evidence for card 055 after g05.025.
 - No provider contact, Claude login, token read, package install, release
@@ -71,7 +73,7 @@ route or platform.
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked after PR 188 containment; re-entry awaits accepted g05.025 card 061
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; re-entered from canonical main after g05.025 card 061 and restored the route under one enclosing cleanup guardian
 
 ## Acceptance
 
@@ -84,7 +86,7 @@ route or platform.
   before the SDK route becomes available — met
 - root-only macOS support never reports `Clean`; confirmed root completion is
   `Degraded`, while unconfirmed root or observed survivor is `Failed` — accepted
-- PR 188's route remains withdrawn after this milestone and later g05.024/card
+- PR 188's route remained withdrawn after this milestone and later g05.024/card
   060 proved insufficient for safe caller-expiry cleanup
 - release readiness remains frozen and restarts only after later exact-head
   acceptance
@@ -99,7 +101,8 @@ sound macOS owned-tree observation exists within current ordinary host-local
 authority. The operator accepted explicit macOS availability with bounded
 root-only `Degraded` cleanup, never `Clean`. That made PR 188 eligible to
 advance until later exact-head review found the narrower task ownership gap;
-g05.024/card 060 now owns that prerequisite before card 055 resumes.
+g05.024/card 060 owned that prerequisite, and g05.025/card 061 completed it
+before card 055 resumed.
 
 Subsequent exact-head review first found one narrower shared ownership gap: an
 unfinished `JoinedTask` still blocks when its handle is dropped at the caller

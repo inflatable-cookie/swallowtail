@@ -15,14 +15,13 @@ shape.
 
 ## Next Task
 
-After card 061's PR passes independent exact-head review and merges, execute
-[g05.022 card 055](g05/batch-cards/055-claude-agent-sdk-provider-free-foundation.md)
-from fresh canonical main. Card 055 is the sole next task but remains frozen
-until both gates complete. Its later `claude-agent.sdk` re-entry must reserve
-exact-host/exact-scope reap authority before effects and keep the enclosing
-guardian's pump, process, resource, and credential ownership through ordered
-cleanup. Until then the route stays withdrawn and g05.021/cards 050-052 stay
-frozen. Do not merge this PR, implement card 055, tag, publish, or resume
+None ready. [g05.022 card 055](g05/batch-cards/055-claude-agent-sdk-provider-free-foundation.md)
+restored the `claude-agent.sdk` route on card 061's pre-effect reap
+reservations, with one enclosing cleanup guardian owning the pump, process, and
+both leases through the whole ordered continuation. That PR awaits independent
+exact-head review and merge. Until it is accepted, g05.021/cards 050-052 and
+`v0.4.0` release readiness stay frozen and must restart from a fresh exact-head
+audit. Do not merge this PR, tag, publish, run a provider session, or resume
 release readiness in this turn.
 
 ## Standing Lanes

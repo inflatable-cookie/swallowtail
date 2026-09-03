@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: blocked; next after card 061, but frozen until its PR passes independent exact-head review and merges
+Status: complete; restored on card 061 reservations with one enclosing cleanup guardian; pending independent exact-head review
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -20,7 +20,10 @@ honest descendant-completion truth.
    exact-head review. Recheck the Anthropic subscription-use article and
    official npm stable immediately before implementation. Refresh the frozen
    identity evidence rather than copying PR 188's now-historical version point
-   or bulk-bumping from `latest`.
+   or bulk-bumping from `latest`. Both were rechecked on `2026-09-03`: the
+   article still leads with the paused-changes notice at its stated
+   `June 16, 2026` update, and official `latest`/`next` is still exactly
+   `0.3.259`, so the frozen ledger is current rather than carried forward.
 2. Add the distinct `claude-agent.sdk` route. Bind the newly frozen exact SDK,
    native wrapper, Node runtime, source-tagged sidecar, private wire, and
    behavior revision independently. Start with one exact QualifiedOnly point;
@@ -80,25 +83,25 @@ preparation; tags; g05.009.
 
 ## Acceptance Criteria
 
-- [ ] policy and official artifact are rechecked without executing downloaded code
-- [ ] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
-- [ ] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
-- [ ] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
-- [ ] macOS root-only close is caller-bounded, never `Clean`, and distinguishes
+- [x] policy and official artifact are rechecked without executing downloaded code
+- [x] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
+- [x] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
+- [x] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
+- [x] macOS root-only close is caller-bounded, never `Clean`, and distinguishes
       confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
-- [ ] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
-- [ ] fake descendants prove nearest-child join alone is insufficient
-- [ ] unsupported or closing selected hosts reject the reap reservation before
+- [x] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
+- [x] fake descendants prove nearest-child join alone is insufficient
+- [x] unsupported or closing selected hosts reject the reap reservation before
       credential, resource, process, task, or provider work
-- [ ] caller expiry transfers the enclosing guardian to the exact host and
+- [x] caller expiry transfers the enclosing guardian to the exact host and
       scope without blocking, global parking, lease release around unfinished
       work, or strengthened cleanup truth
-- [ ] a shutdown race after reservation grant cannot refuse the valid handoff
-- [ ] real `LocalHostServices` proves retained worker transfer, eventual reap,
+- [x] a shutdown race after reservation grant cannot refuse the valid handoff
+- [x] real `LocalHostServices` proves retained worker transfer, eventual reap,
       outer reaper join, and the synchronous-drop counterexample
-- [ ] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
-- [ ] existing ACP and Claude Code behavior and claims are unchanged
-- [ ] route/docs/API/god-file gates hold
+- [x] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
+- [x] existing ACP and Claude Code behavior and claims are unchanged
+- [x] route/docs/API/god-file gates hold
 
 ## Validation
 
@@ -147,21 +150,35 @@ No. Exact-head frontier review before merge. Release readiness remains frozen
 after this card until the operator separately accepts the reviewed route and
 authorizes a fresh g05.021 audit.
 
-## Containment
+## Containment And Restoration
 
 PR 188 merged at `ff7ec3d8` despite rejected exact-head review of
 `6f102f83`. The review found that refused relinquishment can synchronously join
 on drop past the caller deadline, leases can be released while transferred work
-still runs, and the integrated fixture does not retain or reap its worker.
+still runs, and the integrated fixture does not retain or reap its worker. The
+containment change forward-reverted PR 188's tree delta and withdrew
+`claude-agent.sdk`.
 
-The containment change forward-reverts PR 188's tree delta and withdraws
-`claude-agent.sdk`. PR 192/card 060 remains intact: `AcceptedForReap` is still
-transfer only, never join or cleanup success. Card 055 cannot resume until
-g05.025 card 061 establishes non-fallible reservation/reapable-task authority
-before provider work. PR 195 is repaired after rejected exact-head review and
-awaits independent exact-head re-review and merge, so this card remains frozen.
-Re-entry
-then uses a fresh branch from canonical main and
-retains the whole ordered guardian cleanup continuation through terminal lease
-release. The `v0.4.0` release lane remains frozen through that later SDK
-implementation's independent exact-head acceptance.
+This restoration re-enters from canonical main after g05.025 card 061 merged at
+`53153af1`, and repairs all three findings rather than reinstating the reverted
+head:
+
+- Reap authority is taken first. `open_session` reserves the open-guardian,
+  pump, and close-guardian lanes from the exact selected task service before any
+  credential, resource, process, task, or provider effect. The later transfer is
+  therefore non-fallible while the work is unfinished, so no refusal path can
+  drop a live handle and block the caller.
+- One enclosing guardian owns the whole ordered continuation. Close hands the
+  connection, process, pump, remaining turn-deadline task, and both leases to a
+  single reservation-backed guardian task that runs interrupt, native close,
+  force-stop, root observation, pump join, resource release, and credential
+  release in that order. Caller expiry transfers that guardian, never the pump
+  alone, and no lease is released around still-live transferred work.
+- The integrated deadline proof runs on real `LocalHostServices`. The
+  provider-free fixture also retains every worker handle, joins on drop, and
+  reaps only through an outer owner.
+
+`AcceptedForReap` remains transfer only, never join or cleanup success. The
+`v0.4.0` release lane and g05.021/cards 050-052 remain frozen until this
+restoration passes independent exact-head review and the operator separately
+authorizes a fresh audit.

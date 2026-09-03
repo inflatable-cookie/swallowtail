@@ -1,5 +1,7 @@
 #[path = "local_process/attestation.rs"]
 mod attestation;
+#[path = "local_process/descendant_tree.rs"]
+mod descendant_tree;
 #[path = "local_process/supervision.rs"]
 mod supervision;
 #[path = "local_process/support.rs"]

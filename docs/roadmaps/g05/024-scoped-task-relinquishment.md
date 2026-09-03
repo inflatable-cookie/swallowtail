@@ -46,7 +46,8 @@ intact.
 
 Card 060 adds the exact ownership-transfer seam and local host implementation.
 Contracts 009, 010, and 019 now distinguish joined completion from host-accepted
-reap ownership. This remains valid after PR 188 containment. It does not reserve
+reap ownership. This remains valid after PR 188 containment and under the
+restored route. It does not reserve
 a non-fallible transfer before provider work or own an enclosing cleanup
 continuation and its leases; later rejected review proved that separate shared
 runtime prerequisite. g05.025/card 061 now owns the pre-effect reservation and

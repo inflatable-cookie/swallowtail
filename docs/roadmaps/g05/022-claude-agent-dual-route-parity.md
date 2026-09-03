@@ -1,9 +1,9 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 complete on PR 188 at the refreshed official `0.3.259` identity
+Status: planned; card 055 blocked after PR 188 containment
 Owner: Tom
 Created: 2026-09-02
-Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
+Depends on: Research 277; Contracts 010, 015, 017, 019, 023, 029, 038, 041, 047; g05.024 card 060
 Vision tags: Claude Agent SDK, ACP, subscription auth, interactive sessions
 
 ## Purpose
@@ -35,6 +35,14 @@ or production implementation before the two evidence gates close.
    seam and recorded the macOS evidence stop. The operator then accepted
    root-only `Degraded` cleanup on ordinary macOS, so card 055 resumes on its
    existing branch and PR identity.
+5. A later exact-head review found that caller expiry could still drop a
+   running `JoinedTask` and block. g05.024/card 060 adds exact-host/scope
+   relinquishment with autonomous reap. PR 188 restacks only after it lands;
+   accepted-for-reap never strengthens SDK cleanup truth.
+6. PR 188 nevertheless merged at `ff7ec3d8`. Rejected exact-head review also
+   found unsafe lease ordering and a non-owning reaper fixture. The route is
+   withdrawn pending provider-neutral shared-runtime reservation/reapable-task
+   authority for the complete ordered cleanup continuation.
 
 ## Boundaries
 
@@ -53,7 +61,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; caller-bounded lifecycle on card 060 relinquishment, root-only degraded cleanup, and the `0.3.259` identity refresh on PR 188
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked; PR 188 route withdrawn pending shared-runtime reservation/reapable-task authority
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance
@@ -68,7 +76,7 @@ or production implementation before the two evidence gates close.
   for the orchestrator integration decision
 - no route is flattened, no provider-specific feature is falsely portable,
   and no production claim changes during the evidence wave
-- release readiness remains paused and must restart from a fresh exact-head
+- release readiness remains frozen and must restart from a fresh exact-head
   audit after accepted Claude implementation
 
 ## Review Oracle

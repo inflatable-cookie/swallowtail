@@ -24,10 +24,6 @@ no_classification_overrides = {
     ("provider_session_catalogue", "oh-my-pi.rpc"): "selected_surface_absence",
     ("provider_session_import", "oh-my-pi.rpc"): "selected_surface_absence",
     ("provider_session_import", "deepseek-harness.local-server"): "selected_surface_absence",
-    ("structured_run", "claude-agent.sdk"): "selected_surface_absence",
-    ("usage_evidence", "claude-agent.sdk"): "selected_surface_absence",
-    ("provider_session_catalogue", "claude-agent.sdk"): "selected_surface_absence",
-    ("provider_session_import", "claude-agent.sdk"): "selected_surface_absence",
     ("structured_run", "pi.sdk-sidecar"): "selected_surface_absence",
     ("provider_session_catalogue", "pi.sdk-sidecar"): "selected_surface_absence",
     ("provider_session_import", "pi.sdk-sidecar"): "selected_surface_absence",
@@ -83,9 +79,6 @@ generation_control_classifications = {
     ("structured_output", "alibaba.conversations"): "upstream_unsupported",
     ("reasoning_selection", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
     ("structured_output", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
-    ("output_token_limit", "claude-agent.sdk"): "selected_surface_absence",
-    ("reasoning_selection", "claude-agent.sdk"): "selected_surface_absence",
-    ("structured_output", "claude-agent.sdk"): "selected_surface_absence",
     ("output_token_limit", "claude-agent.acp"): "upstream_unsupported",
     ("structured_output", "claude-agent.acp"): "upstream_unsupported",
     ("output_token_limit", "claude-code.headless; claude-code.response-only"): "upstream_unsupported",
@@ -120,10 +113,6 @@ generation_control_classifications = {
     ("structured_output", "grok-build.acp"): "upstream_unsupported",
 }
 input_callback_classifications = {
-    ("attachments", "claude-agent.sdk"): "selected_surface_absence",
-    ("consumer_tool_exchange", "claude-agent.sdk"): "selected_surface_absence",
-    ("question_exchange", "claude-agent.sdk"): "selected_surface_absence",
-    ("external_search", "claude-agent.sdk"): "selected_surface_absence",
     ("attachments", "muse-code.headless"): "selected_surface_absence",
     ("consumer_tool_exchange", "muse-code.headless"): "selected_surface_absence",
     ("permission_exchange", "muse-code.headless"): "selected_surface_absence",
@@ -300,8 +289,6 @@ input_callback_classifications = {
     ("question_exchange", "grok-build.acp"): "upstream_unsupported",
 }
 session_continuity_classifications = {
-    ("load_session", "claude-agent.sdk"): "selected_surface_absence",
-    ("resume_session", "claude-agent.sdk"): "selected_surface_absence",
     ("load_session", "muse-code.headless"): "operation_shape_not_applicable",
     ("resume_session", "muse-code.headless"): "operation_shape_not_applicable",
     ("native_session_close", "muse-code.headless"): "operation_shape_not_applicable",
@@ -415,7 +402,6 @@ provider_retention_not_applicable = {
     "anthropic.messages",
     "pi.rpc",
     "pi.sdk-sidecar",
-    "claude-agent.sdk",
     "deepseek.continuation",
     "deepseek-harness.jsonrpc",
     "zcode.app-server",

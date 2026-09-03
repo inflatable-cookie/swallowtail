@@ -99,5 +99,6 @@ the task tree joins every retained reaper. The one public outcome is
 
 ## Auto-Continuation
 
-No. Review and land this independent prerequisite first. Then restack preserved
-PR 188 onto the merge commit and repair only its deadline ownership path.
+No. This independent prerequisite remains complete after PR 188 containment.
+Do not restack the withdrawn SDK route until the separate shared-runtime
+reservation/reapable-task prerequisite is compiled and accepted.

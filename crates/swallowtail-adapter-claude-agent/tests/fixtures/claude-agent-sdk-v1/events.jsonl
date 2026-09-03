@@ -1,7 +1,0 @@
-{"type":"event","event":"turn_started"}
-{"type":"event","event":"progress"}
-{"type":"event","event":"output_delta","delta":"partial answer"}
-{"type":"event","event":"tool_started","toolCallId":"tool-1","toolName":"Read"}
-{"type":"event","event":"tool_ended","toolCallId":"tool-1","isError":false}
-{"type":"event","event":"turn_ended","stopReason":"success","isError":false}
-{"type":"event","event":"turn_failed"}

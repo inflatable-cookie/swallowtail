@@ -46,9 +46,10 @@ intact.
 
 Card 060 adds the exact ownership-transfer seam and local host implementation.
 Contracts 009, 010, and 019 now distinguish joined completion from host-accepted
-reap ownership. PR 188 can restack after this prerequisite lands and use the
-operation only at its caller deadline while preserving the route's exact failed
-or degraded cleanup result.
+reap ownership. This remains valid after PR 188 containment. It does not reserve
+a non-fallible transfer before provider work or own an enclosing cleanup
+continuation and its leases; later rejected review proved that separate shared
+runtime prerequisite is required.
 
 ## Boundaries
 

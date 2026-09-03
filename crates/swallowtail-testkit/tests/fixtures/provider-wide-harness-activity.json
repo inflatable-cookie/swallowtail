@@ -98,26 +98,6 @@
    ]
   },
   {
-   "id": "claude-agent.sdk",
-   "driver": "swallowtail.claude-agent.sdk",
-   "transport": "swallowtail-claude-agent-sdk-jsonl-v1",
-   "qualified": "0.3.258",
-   "prepared_profiles": [
-    {
-     "operation": "interactive-session",
-     "availability": "available"
-    }
-   ],
-   "unavailable_operations": [],
-   "not_applicable_operations": [],
-   "unknown_posture": "fail-closed",
-   "exact_absences": [
-    "typed question and UI callback exchange",
-    "stored-session load, resume, fork, and typed replay",
-    "structured runs, usage detail, and billed cost evidence"
-   ]
-  },
-  {
    "id": "claude-code.headless",
    "driver": "swallowtail.claude-code.headless",
    "transport": "strict-lf-jsonl-stdio",

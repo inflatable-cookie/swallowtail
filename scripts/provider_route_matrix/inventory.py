@@ -1,27 +1,27 @@
 expected_no_counts = Counter(
     {
-        "unverified_newer_allowed": 17,
-        "structured_run": 9,
+        "unverified_newer_allowed": 16,
+        "structured_run": 8,
         "interactive_session": 9,
         "realtime_media_session": 3,
-        "usage_evidence": 13,
+        "usage_evidence": 12,
         "billed_cost_evidence": 19,
-        "output_token_limit": 30,
-        "reasoning_selection": 20,
-        "structured_output": 35,
-        "attachments": 34,
-        "consumer_tool_exchange": 36,
+        "output_token_limit": 29,
+        "reasoning_selection": 19,
+        "structured_output": 34,
+        "attachments": 33,
+        "consumer_tool_exchange": 35,
         "permission_exchange": 36,
-        "question_exchange": 34,
-        "load_session": 32,
-        "resume_session": 32,
-        "provider_session_catalogue": 8,
-        "provider_session_import": 9,
-        "bounded_workspace_text_write": 23,
-        "external_search": 38,
+        "question_exchange": 33,
+        "load_session": 31,
+        "resume_session": 31,
+        "provider_session_catalogue": 7,
+        "provider_session_import": 8,
+        "bounded_workspace_text_write": 22,
+        "external_search": 37,
         "retained_background_execution": 5,
         "stream_reattachment": 3,
-        "provider_managed_recovery": 34,
+        "provider_managed_recovery": 33,
         "provider_session_archive": 13,
         "provider_session_restore": 14,
         "provider_session_delete": 12,
@@ -47,11 +47,11 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 338,
-        "No": 563,
-        "Not applicable": 431,
+        "Yes": 332,
+        "No": 547,
+        "Not applicable": 421,
         "Partial": 2,
-        "Caller-supplied": 16,
+        "Caller-supplied": 15,
         "Session-negotiated": 3,
     }
 ):
@@ -62,5 +62,5 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 563 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 563 unique cells")
+if len(no_cells) != 547 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 547 unique cells")

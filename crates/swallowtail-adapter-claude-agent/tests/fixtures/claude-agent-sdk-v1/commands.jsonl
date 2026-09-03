@@ -1,6 +1,0 @@
-{"type":"command","id":"open-1","command":"open","params":{"cwd":"/fixture/claude-agent-sdk-workspace"}}
-{"type":"command","id":"query:turn-1","command":"query","params":{"text":"read the manifest"}}
-{"type":"command","id":"interrupt:turn-1","command":"interrupt","params":{}}
-{"type":"command","id":"close:request-1","command":"close","params":{"joinBoundMs":2000}}
-{"type":"callback_response","id":"cb-1","decision":"allow"}
-{"type":"callback_response","id":"cb-2","decision":"deny"}

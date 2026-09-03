@@ -15,14 +15,13 @@ shape.
 
 ## Next Task
 
-Review PR 188 at its exact head. Card 055 is restacked onto the g05.024 card
-060 merge commit and now transfers an unfinished scoped task through the exact
-selected host and spawn scope at caller expiry; `AcceptedForReap` is neither a
-join nor cleanup success, and the outer reaper shutdown stays with the
-execution-host lifecycle. The accepted macOS root-only `Degraded` posture holds,
-with `OwnedTreeEmpty` still the sole basis for `Clean`. g05.021 and cards
-050-052 remain planned and paused; release evidence must restart against the
-later exact source head.
+Review the PR 188 containment revert at its exact head. PR 188 merged at
+`ff7ec3d8` despite rejected exact-head review. Its `claude-agent.sdk` route is
+withdrawn pending a provider-neutral shared-runtime reservation/reapable-task
+prerequisite that owns the complete ordered cleanup continuation. Card 060 and
+PR 192 remain complete and unchanged. g05.021 and cards 050-052 remain planned
+and frozen; do not resume release readiness before this containment is accepted
+and a later SDK implementation passes independent exact-head review.
 
 ## Standing Lanes
 

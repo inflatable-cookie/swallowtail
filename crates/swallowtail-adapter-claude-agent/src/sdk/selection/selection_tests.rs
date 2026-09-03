@@ -28,14 +28,14 @@ fn package_claim_qualifies_only_the_exact_sdk_point() {
     );
     // The publication cadence is roughly daily; neighbouring points are not
     // qualified and never become visible unverified newer on this route.
-    for rejected in ["0.3.257", "0.3.259", "0.3.258-rc.1", "0.3.252"] {
+    for rejected in ["0.3.258", "0.3.260", "0.3.259-rc.1", "0.3.252"] {
         assert!(
             !claim.permits(&version(rejected)),
             "unqualified point {rejected} must be rejected"
         );
     }
     assert!(claude_agent_sdk_package_binding(CLAUDE_AGENT_SDK_VERSION).is_some());
-    for value in ["", " 0.3.258", "latest", "0.3.258 "] {
+    for value in ["", " 0.3.259", "latest", "0.3.259 "] {
         assert!(claude_agent_sdk_package_binding(value).is_none());
     }
 }
@@ -47,7 +47,7 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
     assert!(native.permits(&version(CLAUDE_AGENT_SDK_NATIVE_VERSION)));
     // The Claude Code routes sit on the same native version family. Their
     // qualification never transfers here and this one never transfers back.
-    for rejected in ["2.1.257", "2.1.259", "0.3.258"] {
+    for rejected in ["2.1.258", "2.1.260", "0.3.259"] {
         assert!(!native.permits(&version(rejected)));
     }
     assert!(claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION).is_some());

@@ -42,7 +42,7 @@ impl SidecarProcess {
             .expect("fake SDK is written");
         std::fs::write(
             directory.join("manifest.json"),
-            json!({"version": "2.1.258"}).to_string(),
+            json!({"version": "2.1.259"}).to_string(),
         )
         .expect("fake manifest is written");
 

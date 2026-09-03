@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: implementation complete on PR 188; stopped on the card's artifact-currentness stop condition
+Status: complete; caller-bounded lifecycle, accepted root-only degraded cleanup, and the selected 0.3.259 identity refresh delivered on PR 188
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -67,7 +67,7 @@ preparation; tags; g05.009.
 
 ## Acceptance Criteria
 
-- [x] policy and official artifact are rechecked without executing downloaded code — policy unchanged; the official stable moved to `0.3.259`, which is the stop below
+- [x] policy and official artifact are rechecked without executing downloaded code — policy unchanged; the official stable moved, and the operator-selected refresh rebound the exact points to `0.3.259` and `2.1.259`
 - [x] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
 - [x] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
 - [x] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
@@ -117,37 +117,41 @@ evidence, an SDK-only type leaking into shared API, provider contact need, or a
 required shared public vocabulary decision. Stop if card 060 is not on the
 restacked base or any accepted-for-reap result is treated as joined cleanup.
 
-## Stop
+## Artifact Refresh
 
-Rechecked on 2026-09-03, immediately before finishing this round, without
-executing anything downloaded:
+The 2026-09-03 recheck fired the artifact-currentness stop: official npm stable
+had moved off `0.3.258`. The operator selected the refresh exit, so the exact
+points were rebound rather than the route shipping a stale artifact.
 
-- **Policy holds.** The Help Center article still leads with the paused change
-  and the preserved statement that Agent SDK, `claude -p`, and third-party app
-  usage draw from the user's subscription limits.
-- **The official artifact moved.** npm `dist-tags.latest` and `.next` are now
-  `@anthropic-ai/claude-agent-sdk` `0.3.259`, published
-  `2026-09-02T21:22:40.857Z`, shasum `daf465f8231392ab99e1c7fc7f1e14c3d25ea012`,
-  15 files, 5 043 385 bytes unpacked. `0.3.258` is still published and its
-  digest is unchanged, but it is no longer the official point.
+Research 280 and
+`../../../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.259/`
+hold the frozen evidence. Both tarballs were downloaded to `/tmp`, hashed, and
+extracted; nothing was executed, no platform package was fetched, and no
+provider session, login, or token read occurred.
 
-Scope item 1 and the stop conditions both require stopping here rather than
-silently implementing against a stale artifact. Nothing false is published:
-the route's five axes are QualifiedOnly on exactly `0.3.258` with no
-unverified-newer posture, so a `0.3.259` installation is rejected by the plan
-gate rather than silently accepted. What is unresolved is whether this route
-should ship qualifying a point that is no longer official stable.
+- **Clean hop.** `0.3.258` re-hashed to the digest Research 278 froze, and no
+  published stable exists between the two points.
+- **Deterministic inventory.** 15 files both versions: 7 identical, 8 changed,
+  0 added, 0 removed, each with per-file digests.
+- **Every changed file classified, none mapped.** The new `permissionPrompts`
+  selector is forwarded only when set, so `canUseTool` still governs admission
+  and the asset is asserted never to name it; `user_message_uuids` are
+  correlation siblings the route does not read; the task `summary` change is
+  documentation; `managedMcpServers` is managed-settings tier that
+  `settingSources: []` never loads; the `sdk-tools` additions belong to skill
+  publishing, which this route prohibits.
+- **Boundaries held.** `exports` is byte-identical so the `.` entry rule is
+  unchanged, `bridge.d.ts` and `browser-sdk.d.ts` are byte-identical, and the
+  ten-pattern credential search returns the same three prose hits with no login
+  export.
+- **Native rotation without protocol movement.** All eight platform binaries
+  rotated with `2.1.258` → `2.1.259`, but `sdkCompat.harnessSchema` stays `1`.
 
-Two exits, both operator decisions:
-
-1. Refresh identity evidence to `0.3.259` — a card 053-class freeze covering the
-   tarball digest, all 15 file digests, the shipped `manifest.json` version for
-   the native axis, and the declaration deltas — then rebind the package and
-   native axes here.
-2. Accept shipping the qualified `0.3.258` point with the currentness gap
-   recorded, and schedule the refresh separately.
-
-No retarget was performed, and no tarball was fetched, extracted, or executed.
+Rebound: `claude-agent.sdk.package` to exact `0.3.259` and
+`claude-agent.sdk.native` to exact `2.1.259`. The Node, wire, and sidecar
+source-tag axes, every claim id, the `claude-agent.sdk-v1` behavior revision,
+and the QualifiedOnly posture are unchanged, and `0.3.258` becomes unqualified
+rather than a second supported point.
 
 ## Closeout
 
@@ -224,10 +228,10 @@ No retarget was performed, and no tarball was fetched, extracted, or executed.
 ## Closeout
 
 Delivered as `claude-agent.sdk` in `swallowtail-adapter-claude-agent` on the
-preserved PR 188 identity, restacked onto `027a1f34`. The subscription article
-and official npm stable were rechecked immediately before this round and both
-held exactly; no stop condition fired, and no provider contact, login, token
-read, or package installation occurred.
+preserved PR 188 identity, restacked onto `027a1f34`, with the exact identity
+refreshed to official `0.3.259` and native `2.1.259` under the operator's
+selected exit. No provider contact, login, token read, package installation,
+live turn, release mutation, or tag occurred.
 
 Every public operation is caller-bounded. Open races startup against the open
 deadline and, on expiry, makes the descendant termination request before racing

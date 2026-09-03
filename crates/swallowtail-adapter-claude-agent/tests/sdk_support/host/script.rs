@@ -49,8 +49,8 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
         "behavior": "claude-agent.sdk-v1",
         "sdkPackage": "@anthropic-ai/claude-agent-sdk",
-        "sdkVersion": "0.3.258",
-        "nativeVersion": "2.1.258",
+        "sdkVersion": "0.3.259",
+        "nativeVersion": "2.1.259",
         "nodeVersion": "22.23.2",
         "cwd": FIXTURE_CWD,
         "model": FIXTURE_MODEL,
@@ -68,7 +68,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         SdkScenario::AccountIdentityLeak => {
             data["account"]["email"] = json!("person@example.test");
         }
-        SdkScenario::IdentityMismatch => data["sdkVersion"] = json!("0.3.257"),
+        SdkScenario::IdentityMismatch => data["sdkVersion"] = json!("0.3.258"),
         SdkScenario::CwdMismatch => data["cwd"] = json!("/fixture/elsewhere"),
         SdkScenario::ModelMismatch => data["model"] = json!("claude-opus-5"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),

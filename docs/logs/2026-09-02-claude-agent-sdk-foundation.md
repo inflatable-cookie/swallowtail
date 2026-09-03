@@ -9,12 +9,10 @@ installation, or downloaded binary execution was part of this work.
 Policy and artifact were rechecked immediately before implementation, as the
 card requires, and again on 2026-09-03 before finishing the lifecycle repair.
 The second recheck fired the card's artifact-currentness stop: npm
-`dist-tags.latest` and `.next` moved to `0.3.259`, published
-`2026-09-02T21:22:40.857Z` with shasum
-`daf465f8231392ab99e1c7fc7f1e14c3d25ea012`. Policy is unchanged. The route was
-not retargeted, because a new point needs its own frozen identity evidence, and
-its QualifiedOnly claim means `0.3.259` is rejected rather than silently
-accepted. The exact stop is recorded on the card. The Help Center article still leads with the paused change and
+`dist-tags.latest` and `.next` moved to `0.3.259`. Policy is unchanged. The
+operator selected the refresh exit, so Research 280 froze the new point from
+official artifacts and the exact package and native axes were rebound to
+`0.3.259` and `2.1.259` with no behavior revision. The Help Center article still leads with the paused change and
 the preserved statement that Agent SDK, `claude -p`, and third-party app usage
 draw from the user's subscription limits. Official npm still carries `0.3.258`
 on both `latest` and `next`, with the Research 278 shasum, integrity, file

@@ -29,7 +29,7 @@ stdio through a third-party bridge and is versioned on its own adapter axis.
 CLI's stream-JSON interface directly and are versioned on the Claude Code
 axis. `claude-agent.sdk` reaches the same native binary only through the
 official SDK wrapper and is versioned on the SDK axis. The axes are coupled
-but never equal: `0.3.258` declares native `2.1.258`, so a Claude Code
+but never equal: `0.3.259` declares native `2.1.259`, so a Claude Code
 qualification never transfers to this route and this route's qualification
 never transfers back.
 
@@ -121,8 +121,8 @@ not a sandbox.
 Five separate axes carry qualified-only one-point claims; none admits an
 unverified-newer point:
 
-- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.258`
-- `claude-agent.sdk.native`: exact native `2.1.258`, as the shipped
+- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.259`
+- `claude-agent.sdk.native`: exact native `2.1.259`, as the shipped
   `manifest.json` declares it
 - `claude-agent.sdk.node`: exact Node `22.23.2` (satisfying the upstream
   `>=18.0.0` requirement)
@@ -138,8 +138,13 @@ repository holds no SDK source, so a future checkpoint cannot diff tags or
 read that repository's changelog as a shipped-behavior oracle. And shipped
 declarations are not runtime evidence — the shipped `manifest.json` declares
 tested wrapper versions topping out at `0.3.227` inside the wrapper published
-as `0.3.258`. Only the runtime `capabilities` observed at open may be treated
+as `0.3.259`. Only the runtime `capabilities` observed at open may be treated
 as behavior.
+
+The point moved once already: `0.3.258` was qualified first, and Research 280
+rebound both coupled axes to `0.3.259` after a full package-tree inventory. The
+publication cadence is roughly daily, so treat the qualified point as a frozen
+artifact identity, not as "current".
 
 ## What Open Verifies
 

@@ -46,8 +46,8 @@ import process from "node:process";
 const WIRE = "swallowtail-claude-agent-sdk-jsonl-v1";
 const BEHAVIOR = "claude-agent.sdk-v1";
 const SDK_PACKAGE = "@anthropic-ai/claude-agent-sdk";
-const SDK_VERSION = "0.3.258";
-const NATIVE_VERSION = "2.1.258";
+const SDK_VERSION = "0.3.259";
+const NATIVE_VERSION = "2.1.259";
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;

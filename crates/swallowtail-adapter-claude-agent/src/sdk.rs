@@ -58,11 +58,11 @@ pub const CLAUDE_AGENT_SDK_BEHAVIOR: &str = "claude-agent.sdk-v1";
 /// Exact upstream SDK package the sidecar loads through its `.` entry point.
 pub const CLAUDE_AGENT_SDK_PACKAGE: &str = "@anthropic-ai/claude-agent-sdk";
 /// Exact qualified SDK wrapper package version.
-pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.258";
+pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.259";
 /// Exact native binary version the shipped SDK manifest declares. The wrapper
 /// and native axes are coupled but never equal, and neither transfers a
 /// Claude Code qualification to this route.
-pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.258";
+pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.259";
 /// Exact approved Node runtime version satisfying the upstream `>=18.0.0`
 /// requirement.
 pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.2";

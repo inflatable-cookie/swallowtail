@@ -342,7 +342,7 @@ Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini remains
 deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
 249 proved / 518 remaining.
 
-g05.021 owns the paused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
+g05.021 owns the unpaused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
 is 40 packages and 47 routes, and current source is still 40 packages against
 that same 47-route release inventory. The wider integration and route gates
 prove 49, because current source carries two post-release routes beyond the

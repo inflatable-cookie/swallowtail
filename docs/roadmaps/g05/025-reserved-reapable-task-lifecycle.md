@@ -1,6 +1,6 @@
 # g05.025 Reserved Reapable Task Lifecycle
 
-Status: ready; card 061 first
+Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
 Owner: Tom
 Created: 2026-09-03
 Depends on: g05.024 card 060; Contracts 009, 010, 017, 019, and 047;
@@ -16,32 +16,31 @@ caller deadline can never fall back to blocking task drop.
 
 ## Goals
 
-- [ ] establish an operation-scoped reap reservation, or equivalent atomic
+- [x] establish an operation-scoped reap reservation, or equivalent atomic
       guaranteed-reapable capability, before provider work or acquisition
-- [ ] make valid exact-host/exact-scope relinquishment non-fallible for capacity
+- [x] make valid exact-host/exact-scope relinquishment non-fallible for capacity
       and lifecycle reasons while the reservation is live
-- [ ] bind the reservation to one enclosing task before its work begins so
+- [x] bind the reservation to one enclosing task before its work begins so
       reserved capacity cannot disappear independently from that task
-- [ ] make shutdown close reservation admission, settle existing reservations
+- [x] make shutdown close reservation admission, settle existing reservations
       and accepted tasks, then join reapers outside the task tree
-- [ ] keep ordinary spawn, explicit join, and join-on-drop ownership unchanged
-- [ ] leave the withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
+- [x] keep ordinary spawn, explicit join, and join-on-drop ownership unchanged
+- [x] leave the withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
       lane untouched during the shared-runtime batch
 
 ## Execution Plan
 
-- [ ] **Batch 1 — shared-runtime reservation and host lifecycle.** Execute card
-      061 across `swallowtail-runtime`, `swallowtail-host-local`, and only the
-      shared fixtures needed for real-host proof. Bind the grant to one exact
-      host and scope, prove shutdown races, and preserve ordinary tasks.
-- [ ] **Batch 2 — adapter re-entry.** After card 061 merges and passes
-      independent exact-head review, reassess and execute g05.022 card 055 on a
-      fresh branch from canonical main. The adapter guardian owns the pump,
-      process, resource, and credential through ordered cleanup. This planning
-      change does not execute that batch.
-- [ ] **Planning checkpoint.** After the adapter re-entry passes exact-head
-      review, reconcile route truth and decide whether the frozen g05.021
-      release-readiness audit may restart. No release action is implied.
+- [x] **Batch 1 — shared-runtime reservation and host lifecycle.** Card 061
+      implements this across `swallowtail-runtime` and
+      `swallowtail-host-local`; `swallowtail-testkit` required no change.
+- [x] **Batch 2 handoff — adapter re-entry.** Keep g05.022 card 055 as the sole
+      next task, frozen until this card's PR passes independent exact-head
+      review and merges. Its later fresh-main implementation owns the pump,
+      process, resource, and credential through ordered cleanup. This card does
+      not execute that batch.
+- [x] **Later planning checkpoint retained.** Only after adapter re-entry passes
+      exact-head review may route truth be reconciled and the frozen g05.021
+      release-readiness audit be reconsidered. No release action is implied.
 
 ## Boundaries
 
@@ -58,35 +57,39 @@ caller deadline can never fall back to blocking task drop.
 
 ## Batch Card
 
-- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — ready; provider-neutral reservation, real local-host lifecycle, and shutdown-race proof
+- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — PR 195 repaired pending independent exact-head re-review; provider-neutral reservation, cancellation-safe join, real local-host lifecycle, and shutdown-race proof
 
 ## Adapter Re-entry Dependency
 
-g05.022 card 055 remains the sole adapter implementation card. It is blocked on
-accepted card 061. Its later guardian must own pump, process, resource, and
+g05.022 card 055 remains the sole adapter implementation card. It is blocked
+until card 061 passes independent exact-head review and merges. Its later
+guardian must own pump, process, resource, and
 credential state; preserve interrupt → native close → force-stop → root/process
 observation → pump completion/join → resource release → credential release;
 and transfer the enclosing guardian rather than the pump at the caller deadline.
 
 ## Acceptance Criteria
 
-- [ ] reservation refusal on an unsupported, closing, or capacity-exhausted host
+- [x] reservation refusal on an unsupported, closing, or capacity-exhausted host
       occurs before every operation effect
-- [ ] a live reservation cannot lose a race with selected-host shutdown or later
+- [x] a live reservation cannot lose a race with selected-host shutdown or later
       capacity pressure
-- [ ] the reservation binds to the enclosing task before work is polled and
+- [x] the reservation binds to the enclosing task before work is polled and
       releases only through unused release, ordinary completion/join, or
       accepted transfer
-- [ ] accepted work remains host-owned until completion and reap, including when
+- [x] accepted work remains host-owned until completion and reap, including when
       the caller has returned
-- [ ] shutdown accounts for unused live reservations, transferred tasks, and
+- [x] shutdown accounts for unused live reservations, transferred tasks, and
       retained reapers without running shutdown inside the task tree
-- [ ] mutation from reserved handoff to boolean-probe-plus-late-relinquishment
+- [x] mutation from reserved handoff to boolean-probe-plus-late-relinquishment
       reproduces the blocking-drop counterexample
-- [ ] ordinary task spawn/join/drop tests remain unchanged and green
-- [ ] card 055 names the enclosing-guardian ownership and ordered cleanup
+- [x] ordinary task spawn/join/drop tests remain unchanged and green
+- [x] dropping a reservation-backed join future before polling or after one
+      pending poll leaves worker and shutdown-barrier ownership with the host
+- [x] card 055 names the enclosing-guardian ownership and ordered cleanup
       dependency without restoring adapter code
-- [ ] the roadmap front door names only card 061 and g05.021 remains frozen
+- [x] the roadmap front door names only frozen card 055 after card 061 review and
+      merge, and g05.021 remains frozen
 
 ## Review Oracle
 

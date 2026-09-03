@@ -173,7 +173,8 @@ pub use host_registry::HostServices;
 pub use host_traits::{
     AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService, CredentialService,
     DiagnosticObserver, JoinedTask, ProcessHandle, ProcessService, ResourceLease, SchemaFileLease,
-    SchemaService, ScopedTaskService, TaskRelinquishOutcome, TimeService, WorkingResourceService,
+    SchemaService, ScopedTaskService, TaskReapReservation, TaskRelinquishOutcome, TimeService,
+    WorkingResourceService,
 };
 pub use identity::{
     AccessEvidenceSourceId, CallbackId, DeviceAuthorizationId, DirectInferenceAttemptId,

@@ -52,6 +52,15 @@ independently from that task. Ordinary completion and join release it; accepted
 relinquishment transfers it with the task. A reservation that was never bound
 may be released without starting work.
 
+Starting join on a reservation-backed task transfers the worker into
+cancellation-safe host ownership before returning its observation future.
+Dropping that future before polling or after a pending poll may abandon the
+observation, but it cannot discard the live worker or release the shutdown
+barrier. The host still joins or reaps the worker and settles the reservation.
+Moving both worker and reservation only into a lazy join future is detached
+execution when that future is cancelled. Ordinary unreserved join and concrete
+join-on-drop behavior remain unchanged.
+
 A service-kind check or boolean `supports_reap`-style probe is explicitly
 insufficient. Host shutdown or capacity exhaustion can race the gap between a
 probe and a later transfer. Only the held reservation, or an atomic

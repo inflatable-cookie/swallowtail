@@ -18,6 +18,8 @@ use swallowtail_runtime::{
     SchemaRef, WorkingResourceRef,
 };
 
+use crate::task::DEFAULT_TASK_REAP_CAPACITY;
+
 type EnvironmentValues = Vec<(OsString, OsString)>;
 
 #[derive(Default)]
@@ -41,6 +43,7 @@ pub struct LocalProcessHostBuilder {
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) approvals: LocalApprovals,
     pub(crate) watcher_capacity: usize,
+    pub(crate) task_reap_capacity: usize,
 }
 
 impl LocalProcessHostBuilder {
@@ -137,6 +140,13 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Replaces the per-host capacity for live task-reap reservations.
+    #[must_use]
+    pub fn with_task_reap_capacity(mut self, capacity: usize) -> Self {
+        self.task_reap_capacity = capacity;
+        self
+    }
+
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -157,6 +167,7 @@ impl LocalProcessHostBuilder {
             serving_endpoints: Arc::new(LocalServingEndpointState::default()),
             execution_host_id: self.execution_host_id,
             watcher_capacity: self.watcher_capacity,
+            task_reap_capacity: self.task_reap_capacity,
             monotonic_origin: Instant::now(),
         }
     }
@@ -174,6 +185,7 @@ pub struct LocalProcessHost {
     pub(crate) serving_endpoints: Arc<LocalServingEndpointState>,
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) watcher_capacity: usize,
+    pub(crate) task_reap_capacity: usize,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -188,6 +200,7 @@ impl LocalProcessHost {
             execution_host_id: None,
             approvals: LocalApprovals::default(),
             watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
+            task_reap_capacity: DEFAULT_TASK_REAP_CAPACITY,
         }
     }
 }

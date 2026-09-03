@@ -1,7 +1,10 @@
-use super::*;
+use super::LocalScopedTaskService;
 use futures_executor::block_on;
-use std::sync::mpsc::{self, RecvTimeoutError};
+use std::sync::mpsc;
+use std::thread;
 use std::time::{Duration, Instant};
+use swallowtail_core::ExecutionHostId;
+use swallowtail_runtime::ScopeId;
 use swallowtail_runtime::ScopedTaskService;
 
 mod relinquishment;

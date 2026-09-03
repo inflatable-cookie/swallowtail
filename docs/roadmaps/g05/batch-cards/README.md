@@ -11,14 +11,16 @@
 
 ## Ready
 
-- [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — ready; pre-effect exact-host/scope reservation, non-fallible later handoff, and real local-host shutdown-race proof
+None. Card 055 is the sole next task but remains frozen pending card 061's
+independent exact-head review and merge.
 
 ## Blocked
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked on accepted g05.025 card 061; later enclosing-guardian re-entry only
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked until card 061's PR passes independent exact-head review and merges; later enclosing-guardian re-entry only
 
 ## Completed
 
+- [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — PR 195 repaired pending independent exact-head re-review; pre-effect exact-host/scope reservation, cancellation-safe join, non-fallible later handoff, and real local-host shutdown-race proof
 - [060-scoped-task-relinquishment-and-host-reap.md](./060-scoped-task-relinquishment-and-host-reap.md) — complete; exact-host/scope acceptance for autonomous local reap without changing ordinary join/drop ownership
 - [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline now bound every interactive close and post-expiry session cleanup path across 22 adapter packages
 - [059-unix-owned-tree-attestation.md](./059-unix-owned-tree-attestation.md) — evidence stop; four native counterexamples falsify the candidate primitives; no sound owned-tree observation was found within current ordinary host-local authority on macOS, so the host stays root-only and adds no unsafe; entitlement/system-extension mechanisms are out of scope

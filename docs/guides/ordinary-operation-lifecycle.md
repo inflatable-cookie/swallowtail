@@ -108,16 +108,26 @@ turn interruption, escalation, pumps and task joins, credentials, and
 resources. Select it with the execution host's time service; do not derive
 ticks from a duration in consumer code. Missing or mismatched host time, a
 pre-elapsed deadline, or expiry during cleanup is `Failed`, never `Clean`.
-After a turn timeout, pass any unfinished joined-task slot to the selected
-host's `ScopedTaskService::relinquish` operation with the exact operation
-scope, then call bounded session close directly. `AcceptedForReap` means only
-that host ownership transferred; it is not a join or cleanup-success result.
+When a route may need caller-bounded handoff, call the exact selected host's
+`ScopedTaskService::reserve_reap` before credential, working-resource, process,
+task, or provider effects. Unsupported, closing, or capacity-exhausted hosts
+fail there. The returned exact-scope grant is owned authority, not a boolean
+support probe. Start the enclosing task with `spawn_reapable`; the host binds
+the grant before polling task work. After a turn timeout, pass that unfinished
+joined-task slot to `ScopedTaskService::relinquish` with the exact operation
+scope, then call bounded session close directly. A live valid reservation makes
+that transfer independent of later capacity and shutdown admission.
+`AcceptedForReap` means only that host ownership transferred; it is not a join
+or cleanup-success result.
 Do not wait on a separate unbounded turn close first and do not park the handle
 in adapter-global state. The outer selected-host lifecycle owns the accepted
 work through its supervised reaper. After operation work, explicit host
-shutdown outside the task tree joins that infrastructure and may wait for
+shutdown outside the task tree closes new reservation admission, waits issued
+grants and bound work to settle, then joins that infrastructure. It may wait for
 accepted work even though caller relinquishment does not. Task-service clones
-hold weak handoff authority only and never join reapers on drop.
+hold weak authority only and never join reapers on drop. Ordinary unreserved
+tasks still join explicitly or synchronously on drop and cannot be upgraded by
+a late support check.
 
 Closing a session does not generally archive or delete provider state.
 Provider-native close, archive, restore, delete, owned remote cleanup, and

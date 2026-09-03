@@ -36,11 +36,11 @@ enforcement.
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK card 055 blocked and route withdrawn pending accepted g05.025 card 061 | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
-| Reserve guaranteed host reap before effects and close the shutdown race. | ready; card 061 requires pre-effect exact-host/scope reservation, non-fallible later handoff, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
+| Reserve guaranteed host reap before effects and close the shutdown race. | PR 195 repaired after rejected exact-head review; card 061 adds pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 
 ## Planned Next Roadmaps
 
-- [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — ready; card 061 first; shared-runtime reservation and shutdown-race proof only
+- [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — PR 195 repaired pending independent exact-head re-review; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof; card 055 frozen pending review and merge
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 awaits accepted g05.025 card 061
@@ -67,10 +67,10 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-five numbered roadmaps: 17 completed milestones including
+g05 has twenty-five numbered roadmaps: 18 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, and shared
-lifecycle closure at 023-024; honest
+lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and frozen. Milestone 022 is
@@ -88,9 +88,11 @@ root completion is `Degraded`; unconfirmed root or observed survivor is
 `Failed`. Exact-head review then found the task-handle ownership gap. Milestone
 024/card 060 returns unfinished task ownership to the exact host reaper without
 blocking the caller or claiming a join. PR 188 nevertheless merged despite
-rejected exact-head review; its route is withdrawn. g05.025/card 061 is ready
-to add the pre-effect reservation, non-fallible exact-host/scope handoff, and
-real local-host shutdown-race proof for the complete cleanup continuation.
+rejected exact-head review; its route is withdrawn. g05.025/card 061 now adds
+the pre-effect reservation, non-fallible exact-host/scope handoff, and real
+local-host shutdown-race proof for the complete cleanup continuation on an
+unmerged branch. Card 055 remains frozen until independent exact-head review
+passes and that PR merges.
 
 ## Current Boundary
 
@@ -338,9 +340,11 @@ deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
 249 proved / 518 remaining.
 
 g05.021 owns the paused `v0.4.0` release-readiness runway. Current source
-is 40 packages and 48 production routes; immutable `v0.3.3` remains 40 packages
-and 47 routes. At compilation the source delta is 773 commits and 2,405 changed
-files, so card 050 requires a complete semantic API and guaranteed-behavior
+is 40 packages and 47 production release routes; immutable `v0.3.3` is also 40
+packages and 47 routes. The wider integration guide covers 48 routes, including
+the non-release `pi.sdk-sidecar` integration. At compilation the source delta
+is 773 commits and 2,405 changed files, so card 050 requires a complete
+semantic API and guaranteed-behavior
 audit rather than treating the known OpenAI Background `minimal` removal as the
 whole compatibility result. Card 051 stays planned behind the accepted audit
 and a separate authorization gate for Effigy's sole mutating prepare path.
@@ -354,20 +358,19 @@ Research 277-279 and g05.022 split Claude parity into two routes. Cards 053-054
 closed the SDK and ACP evidence gates. Contract 019 now requires joined
 descendant-tree cleanup, and Contract 029 records artifact-only authority when
 public source cannot corroborate a package. Card 056's ACP observation is
-complete. g05.024/card 060 closes the later exact-head task ownership gap, but
-does not reserve non-fallible handoff before provider work or own a transferred
-cleanup continuation's leases. g05.025/card 061 is ready to add that pre-effect
-reservation and prove the real selected-host shutdown race. Card 055 stays
-blocked and `claude-agent.sdk` stays withdrawn until card 061 merges and passes
-exact-head review. Its later re-entry starts from fresh canonical main and
-transfers one enclosing guardian that retains pump, process, resource, and
+complete. g05.024/card 060 closes the later exact-head task ownership gap.
+g05.025/card 061 now adds pre-effect non-fallible handoff authority and proves
+the real selected-host shutdown race on an unmerged branch. Card 055 stays
+blocked and `claude-agent.sdk` stays withdrawn until card 061 passes independent
+exact-head review and merges. Its later re-entry starts from fresh canonical
+main and transfers one enclosing guardian that retains pump, process, resource, and
 credential ownership through ordered cleanup. ACP remains an independently
 useful portable route rather than an approximation hidden behind the SDK
 identity.
 
 ## Milestones
 
-- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — ready; card 061; pre-effect reservation, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
+- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — PR 195 repaired pending independent exact-head re-review; card 061; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 awaits accepted g05.025 card 061

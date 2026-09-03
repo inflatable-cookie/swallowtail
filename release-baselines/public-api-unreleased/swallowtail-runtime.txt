@@ -3302,7 +3302,9 @@ pub fn swallowtail_runtime::SchemaService::materialize_file(&self, swallowtail_r
 pub fn swallowtail_runtime::SchemaService::release_file(&self, swallowtail_runtime::SchemaFileLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub trait swallowtail_runtime::ScopedTaskService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ScopedTaskService::relinquish(&self, &swallowtail_runtime::ScopeId, &mut core::option::Option<alloc::boxed::Box<dyn swallowtail_runtime::JoinedTask>>) -> core::result::Result<swallowtail_runtime::TaskRelinquishOutcome, swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::ScopedTaskService::reserve_reap(&self, swallowtail_runtime::ScopeId) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::TaskReapReservation>, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::ScopedTaskService::spawn(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::JoinedTask>, swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::ScopedTaskService::spawn_reapable(&self, alloc::boxed::Box<dyn swallowtail_runtime::TaskReapReservation>, swallowtail_runtime::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::JoinedTask>, swallowtail_runtime::RuntimeFailure>
 pub trait swallowtail_runtime::ServingEndpointService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ServingEndpointService::publish(&self, swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_runtime::ObservedServingEndpoint) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::ServingEndpointLease, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::ServingEndpointService::release(&self, swallowtail_runtime::ServingEndpointLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
@@ -3316,6 +3318,7 @@ pub trait swallowtail_runtime::SettledSessionReconciliationOperation: core::mark
 pub fn swallowtail_runtime::SettledSessionReconciliationOperation::reconcile(alloc::boxed::Box<Self>, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::ProviderSessionReconciliationOutcome, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::StructuredRunDriver: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::StructuredRunDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::StructuredRunRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::RunHandle>, swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::TaskReapReservation: core::marker::Send + core::fmt::Debug
 pub trait swallowtail_runtime::TimeService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::TimeService::catalog_now(&self) -> core::result::Result<swallowtail_core::model_catalog::lifecycle::CatalogTimestamp, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::TimeService::now(&self) -> swallowtail_runtime::MonotonicInstant

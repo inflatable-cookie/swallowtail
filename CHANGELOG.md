@@ -17,6 +17,22 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add provider-neutral, operation-scoped task-reap reservations. The exact
+  selected `ScopedTaskService` must grant owned reap authority before
+  credential, resource, process, task, or provider effects, then binds that
+  grant to one exact-host/exact-scope task before its future is polled.
+  Unsupported, closing, and capacity-exhausted hosts fail at reservation;
+  valid later relinquishment cannot lose a shutdown or capacity race.
+  Host-local closes reservation admission during explicit shutdown, waits
+  unused grants and reservation-backed tasks to settle, and joins bounded
+  per-reservation reapers outside the task tree. Starting a reserved join moves
+  the worker into that host ownership before returning its observation future,
+  so cancelling the future before or after polling cannot detach work or
+  release shutdown early. Forged or mismatched authority fails closed before
+  task work. Ordinary unreserved spawn, explicit join, and join-on-drop are
+  unchanged. The grant is ownership, not a boolean support probe, and there is
+  no global task parking. Contracts 009, 010, 017, 019, and 047; g05.025 card
+  061.
 - add provider-neutral scoped-task relinquishment for caller-bounded
   operations. The selected `ScopedTaskService` accepts an unfinished
   `JoinedTask` only under its exact execution host and `ScopeId`, clears caller

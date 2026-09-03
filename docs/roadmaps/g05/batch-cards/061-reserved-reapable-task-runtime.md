@@ -1,6 +1,6 @@
 # 061 Reserved Reapable Task Runtime
 
-Status: ready
+Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
 Owner: Tom
 Created: 2026-09-03
 Milestone: `../025-reserved-reapable-task-lifecycle.md`
@@ -50,27 +50,39 @@ timeouts; release preparation; merge; tag; publish; version currentness.
 
 ## Acceptance Criteria
 
-- [ ] one exact-host/exact-scope reservation is granted before any operation
+- [x] one exact-host/exact-scope reservation is granted before any operation
       effect and is visibly owned until unused release or task transfer
-- [ ] unsupported, closing, and capacity-exhausted hosts reject before
+- [x] unsupported, closing, and capacity-exhausted hosts reject before
       credentials, resources, processes, tasks, or provider work
-- [ ] after grant, valid exact-host/exact-scope relinquishment cannot fail for
+- [x] after grant, valid exact-host/exact-scope relinquishment cannot fail for
       shutdown, capacity, or host-lifecycle reasons
-- [ ] the grant binds to one task before work is polled and releases only when
-      unused, ordinarily joined, or transferred with that task
-- [ ] a boolean capability probe plus later unreserved transfer is absent and a
+- [x] the grant binds to one task before work is polled and releases only when
+      unused, ordinarily completed/joined, or transferred with that task
+- [x] a boolean capability probe plus later unreserved transfer is absent and a
       mutation to that shape fails the shutdown-race oracle
-- [ ] caller expiry can transfer a real stalled local task without blocking on
+- [x] caller expiry can transfer a real stalled local task without blocking on
       its synchronous join-on-drop behavior
-- [ ] eventual task completion is reaped with no second adapter call, discarded
+- [x] eventual task completion is reaped with no second adapter call, discarded
       worker handle, or adapter-global parking
-- [ ] shutdown stops admission, settles all live reservations and accepted
+- [x] shutdown stops admission, settles all live reservations and accepted
       tasks, then joins retained reapers outside the task tree
-- [ ] wrong host, wrong scope, released or forged reservation, repeated
+- [x] cancelling an unpolled or pending reserved join future cannot detach its
+      worker or falsely settle the outer shutdown barrier
+- [x] wrong host, wrong scope, released or forged reservation, repeated
       transfer, and finished task retain honest ordinary ownership/failure
-- [ ] `AcceptedForReap` remains distinct from joined task and cleanup success
-- [ ] existing ordinary spawn, explicit join, and drop-join proofs remain green
-- [ ] no provider-specific type or consumer-facing task handle is added
+- [x] `AcceptedForReap` remains distinct from joined task and cleanup success
+- [x] existing ordinary spawn, explicit join, and drop-join proofs remain green
+- [x] no provider-specific type or consumer-facing task handle is added
+
+## Outcome
+
+`ScopedTaskService` now issues one opaque `TaskReapReservation` and starts its
+task through `spawn_reapable`. Host-local reserves a bounded reaper lane before
+task work, binds the grant to the exact local lifecycle and scope, and
+synchronizes ordinary completion with later transfer so acceptance cannot race
+reaper exit. Explicit shutdown closes admission, waits issued or bound work to
+settle, then joins the lanes outside the task tree. Unreserved tasks retain the
+existing spawn, join, and join-on-drop path. No provider or adapter changed.
 
 ## Validation
 
@@ -89,6 +101,11 @@ Do not run provider/live probes, release commands, broad workspace tests, or
 adapter validation. Add another shared package only if the runtime boundary
 necessarily changes it and record why.
 
+Result: focused validation passed 467 tests plus clippy; affected-package proof
+passed for all three named packages; semantic API passed all 40 v0.3.3 packages;
+docs, Northstar, and diff checks passed; the inherited god-file census remained
+386 findings with no new entry.
+
 ## Review Oracle
 
 Invariant: a reservation granted before effects makes one valid later handoff
@@ -98,12 +115,15 @@ while preserving host-owned eventual reap and ordinary task semantics.
 Smallest counterexample: real `LocalHostServices` reports support, shutdown
 closes handoff admission, a stalled local task reaches its caller deadline, and
 relinquishment returns the handle; the error arm drops it and synchronously
-joins forever.
+joins forever. A second counterexample calls reserved `join`, drops its lazy
+unpolled future, and releases both worker ownership and reservation while work
+continues detached.
 
 Required proof: the real blocking local handle, an issued-reservation/shutdown
 barrier, an accepted task released after caller return, explicit outer-owner
-reaper join, pre-effect rejection counters, and mutation that removes the held
-reservation or permits late refusal.
+reaper join, cancellation of reserved join before and after a pending poll,
+pre-effect rejection counters, and mutation that removes the held reservation
+or permits late refusal.
 
 ## Auto-Continuation
 

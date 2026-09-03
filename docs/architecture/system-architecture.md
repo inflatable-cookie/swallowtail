@@ -148,9 +148,10 @@ OpenHands adds a package without a production route.
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports; it also
-  provides per-host joined scoped tasks, exact-host/scope acceptance of
-  unfinished tasks for autonomous reap, inspectable exact service composition,
-  and explicit executable approval returning one opaque discovery target
+  provides per-host joined scoped tasks, pre-effect exact-host/scope reap
+  reservations, acceptance of reservation-backed unfinished tasks for
+  autonomous reap, inspectable exact service composition, and explicit
+  executable approval returning one opaque discovery target
 - `swallowtail-protocol-acp` is the provider-neutral ACP wire boundary; it owns
   bounded v1 NDJSON framing, message classification, and typed bounded
   session-update decoding. The decoder preserves message and thought deltas,
@@ -183,8 +184,9 @@ OpenHands adds a package without a production route.
   the whole adapter-owned interruption, escalation, join, credential-release,
   and resource-release future with host time; expiry is failed cleanup and no
   zero-argument compatibility close remains. An unfinished task may transfer
-  back to the exact host reaper without extending the caller deadline, but
-  accepted-for-reap is never joined or cleanup-completion evidence
+  back to the exact host reaper without extending the caller deadline only
+  when the operation reserved that authority before effects and bound it before
+  task polling. Accepted-for-reap is never joined or cleanup-completion evidence
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
@@ -549,12 +551,17 @@ Crate status:
   operation-scoped temporary working resources, explicit lease release, and
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
   credential approvals remain scope- and audience-bound and redacted; per-host
-  scoped task handles join explicitly or on drop. Exact-host/scope
-  relinquishment can move an unfinished worker to a per-transfer reaper whose
-  handle an outer selected-host lifecycle owner retains without adapter-global
-  state. Task-service clones retain only weak handoff authority. Explicit host
-  shutdown outside the task tree joins all reapers while ordinary join/drop
-  ownership stays unchanged.
+  scoped task handles join explicitly or on drop. Before operation effects, an
+  exact-host/scope reservation atomically admits one bounded reaper lane; the
+  grant binds to one task before polling. Exact relinquishment can then move an
+  unfinished worker without a later capacity or shutdown refusal. The outer
+  selected-host lifecycle owns every lane without adapter-global state.
+  Task-service clones retain only weak authority. Explicit host shutdown
+  outside the task tree closes admission, waits issued reservations and bound
+  tasks to settle, then joins all reapers. A reserved join transfers the worker
+  to its lane before returning a cancellable observation future, so dropping an
+  unpolled or pending future cannot detach the worker or clear shutdown.
+  Ordinary unreserved join/drop ownership stays unchanged.
   `LocalHostServices` composes the exact supported ports under
   one host identity, the local watcher service
   owns approved process work through terminal and joined state, installed
@@ -1418,10 +1425,11 @@ retains exact identity, optional instance label, route, capability, model,
 provider, and readiness posture for presentation. It has no driver handle,
 provider probe, router, default, fallback, refresh loop, or persistence policy.
 
-Host-local owns joined scoped tasks, exact-scope task relinquishment with
-autonomous host-side reap, exact service composition, and opaque executable
-target approval. Relinquishment preserves caller deadlines but supplies no
-join or cleanup-completion evidence. The Codex adapter owns an exact-target factory that
+Host-local owns joined scoped tasks, pre-effect exact-host/scope reap
+reservations, reservation-backed autonomous host-side reap, exact service
+composition, and opaque executable target approval. The reservation is owned
+authority rather than a boolean probe. Relinquishment preserves caller
+deadlines but supplies no join or cleanup-completion evidence. The Codex adapter owns an exact-target factory that
 derives its discovery request, retains exact qualified, deprecated, or
 unverified-newer evidence, preserves access provenance, and builds one
 immutable configured-instance base from the same opaque target. It also owns

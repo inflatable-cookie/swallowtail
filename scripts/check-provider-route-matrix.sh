@@ -35,6 +35,117 @@ fi
 
 diff -u "$route_matrix_expected" "$route_matrix_actual"
 
+python3 - "$route_matrix_repo_root" "$route_matrix_expected" <<'PY'
+import csv
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+current_route_file = Path(sys.argv[2])
+immutable_route_file = root / "release-baselines/production-routes-0.3.3.txt"
+ledger_file = root / (
+    "docs/research/281-v0-4-0-compatibility-and-freeze-audit/"
+    "route-behavior-ledger.tsv"
+)
+additions = {"pi.sdk-sidecar", "claude-agent.sdk"}
+
+
+def fail(message: str) -> None:
+    raise SystemExit(message)
+
+
+immutable_routes = {
+    line.strip()
+    for line in immutable_route_file.read_text().splitlines()
+    if line.strip()
+}
+current_routes = {
+    line.strip() for line in current_route_file.read_text().splitlines() if line.strip()
+}
+
+if len(immutable_routes) != 47:
+    fail(
+        "immutable v0.3.3 route inventory must contain exactly 47 rows: "
+        f"{len(immutable_routes)}"
+    )
+if len(current_routes) != 49:
+    fail(f"current route inventory must contain exactly 49 rows: {len(current_routes)}")
+if current_routes != immutable_routes | additions:
+    fail(
+        "current route inventory must equal immutable v0.3.3 plus exactly "
+        f"{sorted(additions)}: added={sorted(current_routes - immutable_routes)}, "
+        f"missing={sorted(immutable_routes - current_routes)}"
+    )
+
+with ledger_file.open(newline="") as stream:
+    reader = csv.DictReader(stream, delimiter="\t")
+    rows = list(reader)
+
+required_fields = {
+    "route",
+    "release_inventory_v0.3.3",
+    "compatibility_class",
+    "changelog_release_note_coverage",
+    "upgrade_rollback",
+}
+if reader.fieldnames is None or not required_fields <= set(reader.fieldnames):
+    fail(f"route behavior ledger lacks required fields: {sorted(required_fields)}")
+if len(rows) != len(current_routes):
+    fail(f"route behavior ledger must contain exactly 49 rows: {len(rows)}")
+
+ledger_by_route: dict[str, dict[str, str]] = {}
+for row in rows:
+    route = row["route"].strip().strip(chr(96))
+    if route in ledger_by_route:
+        fail(f"route behavior ledger contains duplicate route: {route}")
+    ledger_by_route[route] = row
+
+if set(ledger_by_route) != current_routes:
+    fail(
+        "route behavior ledger must cover the current 49-route set exactly: "
+        f"extra={sorted(set(ledger_by_route) - current_routes)}, "
+        f"missing={sorted(current_routes - set(ledger_by_route))}"
+    )
+
+expected_membership = {
+    route: "yes" if route in immutable_routes else "no" for route in current_routes
+}
+actual_membership = {
+    route: row["release_inventory_v0.3.3"].strip()
+    for route, row in ledger_by_route.items()
+}
+if actual_membership != expected_membership:
+    fail(
+        "route behavior ledger release_inventory_v0.3.3 must match the immutable "
+        "47-route set: mismatches="
+        f"{sorted(route for route in current_routes if actual_membership.get(route) != expected_membership[route])}"
+    )
+
+actual_no = {route for route, value in actual_membership.items() if value == "no"}
+if actual_no != additions:
+    fail(
+        "route behavior ledger must have exactly two historical non-members: "
+        f"{sorted(additions)}; actual={sorted(actual_no)}"
+    )
+
+candidate_phrase = "candidate inclusion is frozen by Card051's explicit 49-route boundary"
+for route in sorted(additions):
+    row = ledger_by_route[route]
+    if candidate_phrase not in row["compatibility_class"]:
+        fail(f"{route} lacks the frozen 49-route candidate inclusion evidence")
+
+pi_row = ledger_by_route["pi.sdk-sidecar"]
+if "Required Card051" not in pi_row["changelog_release_note_coverage"]:
+    fail("pi.sdk-sidecar lacks explicit Card051 release-note treatment")
+if "exact SDK/runtime/sidecar/wire/session-directory axes" not in pi_row["upgrade_rollback"]:
+    fail("pi.sdk-sidecar lacks explicit consumer provisioning treatment")
+if (
+    "omits the route and sidecar calls" not in pi_row["upgrade_rollback"]
+    or "pi.rpc" not in pi_row["upgrade_rollback"]
+):
+    fail("pi.sdk-sidecar lacks explicit v0.3.3 rollback and pi.rpc separation treatment")
+PY
+
 sed -n \
   '/<!-- provider-session-lifecycle-matrix:start -->/,/<!-- provider-session-lifecycle-matrix:end -->/p' \
   "$route_matrix_file" |
@@ -95,4 +206,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 41-solution/49-route feature, and activity matrices passed\n'
+printf 'provider route, lifecycle, 41-solution/49-route feature, activity, and Card050 immutable/current ledger boundary checks passed (47 historical yes; exact no set pi.sdk-sidecar, claude-agent.sdk)\n'

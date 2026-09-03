@@ -4,7 +4,7 @@ Status: planned; depends on accepted card 050 audit; mutating prepare requires s
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
-Depends on: completed card 050 with accepted exact-head audit and freeze census
+Depends on: completed card 050 with accepted exact-head audit and freeze census; consume its frozen 49-route candidate boundary, including `pi.sdk-sidecar` and `claude-agent.sdk`
 
 ## Goal
 
@@ -31,15 +31,24 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    `publish = false`, Rust `1.95.0`, Apple Silicon macOS support, and the
    source-only distribution boundary. Do not manually apply either
    Effigy-owned mutation and then run prepare over it.
-4. Create distinct `v0.4.0` package, dependency, 48-route, and semantic API
-   baselines from the accepted card 050 census. Never edit or regenerate a
-   prior release baseline.
+4. Create distinct `v0.4.0` package, dependency, 49-route, and semantic API
+   baselines from the accepted card 050 census. The 49-route candidate
+   includes `pi.sdk-sidecar` and `claude-agent.sdk`; this is frozen audit input,
+   not a candidate-inclusion decision. Never edit or regenerate a prior release
+   baseline.
 5. Ensure the unpromoted changelog and release notes match the audited source.
    Name every classified break, including the removed OpenAI Background
    `minimal` value, corrected opaque facade point, fail-before-effects
    behavior, consumer impact, coordinated upgrade, and exact rollback to
-   immutable `v0.3.3`.
-6. Record the 40-package source inventory, 48 production routes, release package
+   immutable `v0.3.3`. The required Pi route-add entry must name the exact
+   `0.84.2` SDK, Node `22.23.2`, source-tagged sidecar, private
+   `swallowtail-pi-sdk-jsonl-v1` wire, exact host-leased cwd, bounded load
+   replay, durable app-owned session state, and no archive/restore/delete.
+   It must say that new consumers provision those exact axes and session
+   directory, existing v0.3.3 consumers have no action unless opting in, and
+   rollback omits the route and sidecar calls without mixing workspace versions
+   or aliasing `pi.rpc`.
+6. Record the 40-package source inventory, 49 current integration/route rows, release package
    order, dependency graph, API baseline, target/floor, source contents, and the
    required known limits from the milestone.
 7. Prove the source tree contains no build output, generated cache, local
@@ -85,6 +94,9 @@ the accepted audit, CI workflow edits, or papercut repair.
 ## Acceptance Criteria
 
 - all 40 packages and internal requirements use coordinated `0.4.0`
+- the frozen 49-route candidate includes both `pi.sdk-sidecar` and
+  `claude-agent.sdk`; Pi release-note, consumer, and rollback treatment is a
+  required Card051 action, not an unresolved inclusion choice
 - new `v0.4.0` baselines match the accepted audit; every older baseline is
   byte-for-byte unchanged
 - `[Unreleased]` is deduplicated before promotion, its structural `Breaking`

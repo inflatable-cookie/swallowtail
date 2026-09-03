@@ -1,0 +1,9 @@
+item	v0.3.3	audited_head	delta	evidence
+commit	51d186208e75dca4c04f077dd7179ec3c2fafae9	b7f804b5940d666d81f7b43fb562be5797c59575	exact	git identity
+packages	40	40	no add/remove	metadata and API package lists
+immutable release routes	47	47	no rewrite	production-routes-0.3.3 baseline and set comparison
+current integration/route rows	47	49	+pi.sdk-sidecar; +claude-agent.sdk	route inventory and route gates
+immutable route membership ledger	47 yes	47 yes / exact 2 no	no set: pi.sdk-sidecar; claude-agent.sdk	route-behavior-ledger.tsv and Card050 route gate
+current lifecycle rows	47	49	+pi.sdk-sidecar; +claude-agent.sdk	lifecycle inventory and route gates
+commits in range	0	826	826	full range-commits.tsv
+changed files	0	2694	2694	full range-name-status.tsv

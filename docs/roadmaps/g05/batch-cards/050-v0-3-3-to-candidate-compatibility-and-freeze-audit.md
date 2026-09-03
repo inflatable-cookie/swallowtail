@@ -1,6 +1,6 @@
 # 050 v0.3.3 To Candidate Compatibility And Freeze Audit
 
-Status: ready; unpaused after PR 196 merged at `493f8194`; sole Next Task
+Status: complete; audit frozen at `b7f804b5`; 49-route candidate includes `pi.sdk-sidecar` and `claude-agent.sdk`; stop for independent exact-head review
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-03
@@ -21,8 +21,9 @@ guaranteed-behavior delta from `v0.3.3` to one reviewed current-source head.
    only this planning/implementation release lane; stop on an overlapping head.
 3. Reconcile the exact 40-package graph and every production release route at
    the resumed reviewed head with the immutable `v0.3.3` baselines. Immutable
-   release inventory remains 47; wider current integration/route gates are 49
-   due to `pi.sdk-sidecar` and `claude-agent.sdk`.
+   release inventory remains 47; wider current integration/route gates and
+   the Card051 candidate boundary are 49 due to `pi.sdk-sidecar` and
+   `claude-agent.sdk`; Pi inclusion is frozen, not a later candidate choice.
 4. Generate current semantic Rust API evidence with the Contract 036 toolchain
    into temporary audit output. Compare all 40 packages with the immutable
    `public-api-0.3.3` baseline and the current unreleased candidate evidence.
@@ -40,8 +41,11 @@ guaranteed-behavior delta from `v0.3.3` to one reviewed current-source head.
 7. Confirm coordinated minor `0.4.0`, 40 packages, the exact reviewed-head
    release-route count, Rust `1.95.0`, Apple Silicon macOS, and source-only
    annotated-tag intent. Immutable release inventory remains 47; wider current
-   integration/route gates are 49 due to `pi.sdk-sidecar` and `claude-agent.sdk`.
-   Freeze the exact candidate inputs for card 051.
+   integration/route gates and the Card051 candidate boundary are 49 due to
+   `pi.sdk-sidecar` and `claude-agent.sdk`. Freeze the exact candidate inputs
+   for card 051: its distinct candidate route inventory includes both current-
+   only rows, and the fixed Pi release-note, consumer, and rollback treatment
+   is not a later inclusion choice.
 8. Return the authenticated working-application smoke as an explicit operator
    question. Require the later authority packet to name repository/application,
    route, command, exact candidate SHA/tag consumption, credential/provider
@@ -59,8 +63,12 @@ mutation, application smoke, feature/currentness work, or papercut repair.
 
 - exact base/head identity and the full large delta are recorded
 - all 40 package APIs and every reviewed-head release route appear exactly once
-  in the frozen census; immutable release inventory remains 47, while wider
-  integration/route gates are 49 due to `pi.sdk-sidecar` and `claude-agent.sdk`
+  in the frozen census; immutable release inventory remains 47, while the
+  current integration/route gates and Card051 candidate boundary are 49 due to
+  `pi.sdk-sidecar` and `claude-agent.sdk`; Pi inclusion is fixed
+- route-behavior ledger membership is 47 historical `yes` rows and exactly
+  two `no` rows, `pi.sdk-sidecar` and `claude-agent.sdk`; `effigy qa:routes`
+  asserts the immutable/current set and both frozen candidate additions
 - every API and guaranteed-behavior break is explicit; no `changelog-only`
   inference substitutes for semantic or behavioral evidence
 - the known `minimal` removal is classified as breaking and no other break is
@@ -75,7 +83,9 @@ mutation, application smoke, feature/currentness work, or papercut repair.
 - feature/currentness freeze and deferred limits match Research 276 and current
   g05 authority
 - card 051 has one exact reviewed audit head and no unresolved release-version,
-  package, route, target, or compatibility choice
+  package, route, target, or compatibility choice; its 49-route candidate
+  includes both current-only additions, and Pi's required release-note,
+  consumer, and rollback wording is fixed rather than left for policy choice
 
 ## Validation
 

@@ -1,0 +1,826 @@
+b7f804b5940d666d81f7b43fb562be5797c59575	493f8194da1984a6cded7821d488e1d2758fcddc 319210edd976935ac74bf31b3d1c5dd62602d67a	2026-09-03T18:31:58+01:00	Merge pull request #197 from inflatable-cookie/worker/g05-v0-4-0-readiness-reactivation
+319210edd976935ac74bf31b3d1c5dd62602d67a	d7c0e869ea4dee4d04661fb2852b4f852aacc49d	2026-09-03T18:21:34+01:00	docs: reconcile post-PR 196 status prose in g05 front door and card 061 log
+d7c0e869ea4dee4d04661fb2852b4f852aacc49d	493f8194da1984a6cded7821d488e1d2758fcddc	2026-09-03T18:15:31+01:00	docs: reactivate v0.4.0 release readiness after PR 196
+493f8194da1984a6cded7821d488e1d2758fcddc	53153af18247d7206c1b1588aabbc1266321abdd f5b35547e22231761adf342e25affc4b5db3bd73	2026-09-03T18:02:25+01:00	Merge pull request #196 from inflatable-cookie/worker/g05-card055-claude-sdk-restoration
+f5b35547e22231761adf342e25affc4b5db3bd73	076d75ab1e9c8331e096b238d6fe66e57a63b32e	2026-09-03T17:46:07+01:00	Start open cleanup on cancellation, not at the abandoned deadline
+076d75ab1e9c8331e096b238d6fe66e57a63b32e	046ab101c398e93f992dcc7ff5eaff2df72ed658	2026-09-03T17:24:21+01:00	Own SDK cleanup before every cancellable boundary
+046ab101c398e93f992dcc7ff5eaff2df72ed658	53153af18247d7206c1b1588aabbc1266321abdd	2026-09-03T15:55:08+01:00	Restore the claude-agent.sdk route under reserved cleanup guardians
+53153af18247d7206c1b1588aabbc1266321abdd	b3f124088945b0634c8231e2278b63d32c49a150 16b56a7eead2354daac8c834c8a832a948e6e4a8	2026-09-03T15:03:41+01:00	Merge pull request #195 from inflatable-cookie/worker/g05-card061-reserved-reapable-tasks
+16b56a7eead2354daac8c834c8a832a948e6e4a8	dc8b0a254e99ee431e00f937c8c738f71713eb11	2026-09-03T14:45:43+01:00	Preserve reserved join ownership on cancellation
+dc8b0a254e99ee431e00f937c8c738f71713eb11	b3f124088945b0634c8231e2278b63d32c49a150	2026-09-03T14:15:38+01:00	Add reserved reapable task lifecycle
+b3f124088945b0634c8231e2278b63d32c49a150	3da1b3235f39c547b220d58ffb4802e21cd0c91a 6850d3bdb38fe0e831bdc47704a3b7ecada81574	2026-09-03T13:35:57+01:00	Merge pull request #194 from inflatable-cookie/worker/g05-claude-sdk-reap-reservation-plan
+6850d3bdb38fe0e831bdc47704a3b7ecada81574	3da1b3235f39c547b220d58ffb4802e21cd0c91a	2026-09-03T13:20:42+01:00	Plan reserved task reap prerequisite
+3da1b3235f39c547b220d58ffb4802e21cd0c91a	ff7ec3d81b4776fa06c611ef9f11db9b05e79bc5 9301c7d9eaea7b4d2f0b0d4dce61c17b5158db61	2026-09-03T13:03:31+01:00	Merge pull request #193 from inflatable-cookie/worker/g05-card055-post-merge-lifecycle-repair
+9301c7d9eaea7b4d2f0b0d4dce61c17b5158db61	ff7ec3d81b4776fa06c611ef9f11db9b05e79bc5	2026-09-03T12:21:06+01:00	Revert "Merge pull request #188 from inflatable-cookie/worker/g05-card055-claude-agent-sdk-foundation"
+ff7ec3d81b4776fa06c611ef9f11db9b05e79bc5	6543c90561dd8317c99e4d0578b23a376616d9b1 6f102f8368cbc94f8efe94f4b250a2d970529384	2026-09-03T12:05:03+01:00	Merge pull request #188 from inflatable-cookie/worker/g05-card055-claude-agent-sdk-foundation
+6f102f8368cbc94f8efe94f4b250a2d970529384	08af8c0224bf18bc262b59a9fd2e57f7d3787baa	2026-09-03T11:56:46+01:00	Relinquish unfinished scoped work through the exact host and scope
+08af8c0224bf18bc262b59a9fd2e57f7d3787baa	a191c20465ba9a89c4558eca02b31e391ee2e32a	2026-09-03T10:10:32+01:00	Keep the whole ordered cleanup under the open guard; stop on relinquish
+a191c20465ba9a89c4558eca02b31e391ee2e32a	d157098d33719898d0bf477ad4897a76f09b5113	2026-09-03T09:54:12+01:00	Make the open guard atomic and bound joins through the task seam
+d157098d33719898d0bf477ad4897a76f09b5113	0d9675bca01a5612c1ffc7488ccdebae761dfb18	2026-09-03T09:26:49+01:00	Bound the whole public lifecycle and keep admission races non-fatal
+0d9675bca01a5612c1ffc7488ccdebae761dfb18	d92de14d03ed5c553688eb233c22ea166fc25e1c	2026-09-03T08:27:44+01:00	Refresh the exact SDK identity to official 0.3.259
+d92de14d03ed5c553688eb233c22ea166fc25e1c	37416c0f79fd8e754d3a42f580a54e7c8108cb75	2026-09-03T01:55:21+01:00	Complete the caller-bounded SDK lifecycle; stop on artifact currentness
+37416c0f79fd8e754d3a42f580a54e7c8108cb75	601842e919cc9751e62d1f3b41a829187d6f6759	2026-09-02T22:05:57+01:00	Repair five exact-head findings; stop honestly on the close seams
+601842e919cc9751e62d1f3b41a829187d6f6759	6543c90561dd8317c99e4d0578b23a376616d9b1	2026-09-02T21:06:48+01:00	Add the provider-free claude-agent.sdk sidecar route
+6543c90561dd8317c99e4d0578b23a376616d9b1	027a1f34fb2e50c0f0b2fe70a65feb8a57bee803 6faece1df842bd4b46bddd0ae33a1ede473c862c	2026-09-03T11:33:26+01:00	Merge pull request #192 from inflatable-cookie/worker/g05-scoped-task-relinquish
+6faece1df842bd4b46bddd0ae33a1ede473c862c	e4c24d9ff46834a129310e8e799390a5660ffef5	2026-09-03T11:24:47+01:00	fix(host-local): move task reaper join outside service clones
+e4c24d9ff46834a129310e8e799390a5660ffef5	f6ce8b442242cfe9b95784e0a1a01110c457a033	2026-09-03T11:01:58+01:00	host-local: retain scoped task reapers
+f6ce8b442242cfe9b95784e0a1a01110c457a033	027a1f34fb2e50c0f0b2fe70a65feb8a57bee803	2026-09-03T10:37:52+01:00	runtime: add scoped task relinquishment
+027a1f34fb2e50c0f0b2fe70a65feb8a57bee803	a3966d982722d85a136c289d0166a9ee3e03d11a	2026-09-03T01:28:52+01:00	docs: accept degraded macOS cleanup for Claude SDK
+a3966d982722d85a136c289d0166a9ee3e03d11a	26f96e72adb2844fc47bf90ba977c02c9d0b74a0	2026-09-03T01:18:43+01:00	feat: bound interactive session cleanup by caller deadline (#191)
+26f96e72adb2844fc47bf90ba977c02c9d0b74a0	eb94f2138bb589f4382132dfa24b9d23eb948c66	2026-09-02T23:55:17+01:00	Card 059: no sound owned-tree mechanism within current host-local authority on macOS (evidence stop) (#190)
+eb94f2138bb589f4382132dfa24b9d23eb948c66	921039447ce3ec20c9ab3c5e439814b5b8e19a44	2026-09-02T23:03:44+01:00	Plan Claude SDK lifecycle completion
+921039447ce3ec20c9ab3c5e439814b5b8e19a44	515733ca10c0e3a1b7ac85adcee0126649226d47	2026-09-02T22:52:48+01:00	Card 057: separate root exit from owned-tree completion (#189)
+515733ca10c0e3a1b7ac85adcee0126649226d47	4b722eb2255a2e2319fd55f103d22dbd6456b38e	2026-09-02T22:16:19+01:00	Plan Claude SDK shared lifecycle prerequisites
+4b722eb2255a2e2319fd55f103d22dbd6456b38e	5ec641cefffe652f005c0529e25d96fcab0b2c96 af32c9fc44b0d1e001fe8cf1580e36e4023c610c	2026-09-02T21:26:54+01:00	Merge pull request #187 from inflatable-cookie/worker/g05-card056-claude-agent-acp-model-options
+af32c9fc44b0d1e001fe8cf1580e36e4023c610c	7a91770aa0ad0b6d31660402e7fdd76e396185a3	2026-09-02T20:50:04+01:00	Card 056: drop unreachable ACP model-options Absent
+7a91770aa0ad0b6d31660402e7fdd76e396185a3	5ec641cefffe652f005c0529e25d96fcab0b2c96	2026-09-02T20:36:00+01:00	Card 056: observe Claude Agent ACP negotiated model options
+5ec641cefffe652f005c0529e25d96fcab0b2c96	997002bb38c11d7f54ef71b8a5c6ce351b2d7d21	2026-09-02T20:09:51+01:00	docs: hand off Claude dual-route implementation
+997002bb38c11d7f54ef71b8a5c6ce351b2d7d21	2091d414308884f05607b023b6948e64ee01cf79	2026-09-02T20:08:58+01:00	docs: compile Claude dual-route implementation
+2091d414308884f05607b023b6948e64ee01cf79	4996b3d01ec288a15deec5142c6fbbb17487e2d6 8cd33c404cfd314c062846b3614d4b5695fbe442	2026-09-02T20:03:37+01:00	Merge pull request #186 from inflatable-cookie/worker/g05-card054-claude-agent-acp-parity-gate
+8cd33c404cfd314c062846b3614d4b5695fbe442	4996b3d01ec288a15deec5142c6fbbb17487e2d6	2026-09-02T19:47:09+01:00	docs: close Claude Agent ACP parity gate
+4996b3d01ec288a15deec5142c6fbbb17487e2d6	998807d7eeefcd8f91d4b272b8421f8b573d5423 267f91882667828c0993b10776fe25fbb57d6868	2026-09-02T19:50:07+01:00	Merge pull request #185 from inflatable-cookie/worker/g05-card053-claude-agent-sdk-route-gate
+267f91882667828c0993b10776fe25fbb57d6868	8520a8dd598f39abf46f18759197567ca4fa3c2f	2026-09-02T19:48:55+01:00	docs: reconcile Research 278 closing sentence with the repaired gate
+8520a8dd598f39abf46f18759197567ca4fa3c2f	9e9cf0b2080178740794c27ab769377bc542dbb9	2026-09-02T19:47:12+01:00	docs: correct the SDK lifecycle evidence and generalize the contract proposal
+9e9cf0b2080178740794c27ab769377bc542dbb9	998807d7eeefcd8f91d4b272b8421f8b573d5423	2026-09-02T19:38:59+01:00	docs: freeze the Claude Agent SDK route evidence and contract gate
+998807d7eeefcd8f91d4b272b8421f8b573d5423	0e4768055dd4854417d44c9a2cf84d809bbedfa6	2026-09-02T19:27:56+01:00	docs: dispatch Claude SDK and ACP evidence lanes
+0e4768055dd4854417d44c9a2cf84d809bbedfa6	8fce8b630a84c36e51c486b5f4ac6c21aa870040	2026-09-02T19:26:21+01:00	docs: compile parallel Claude SDK and ACP parity lanes
+8fce8b630a84c36e51c486b5f4ac6c21aa870040	0037ce98de374f7867fff8dec9a80fbca01a995f	2026-09-02T14:54:18+01:00	docs(triage): record the Grok permission gap in the Claude Agent parity note
+0037ce98de374f7867fff8dec9a80fbca01a995f	cac79ff9c50ebd6ad5b1a5ca7dd3a94801b24564	2026-09-02T13:57:19+01:00	docs(triage): Claude Agent interactive session parity gap for the Bovine desktop consumer
+cac79ff9c50ebd6ad5b1a5ca7dd3a94801b24564	212ebfcf9263a1a75c3127679bc792cbff8704b4	2026-09-02T13:55:27+01:00	docs: dispatch v0.4.0 freeze audit
+212ebfcf9263a1a75c3127679bc792cbff8704b4	5690a9051919883aeb6d0dd69e1a90153a7175c9 751a6c61bd968caf0968cd90407674fa0e7032de	2026-09-02T05:52:19-07:00	Merge pull request #184 from inflatable-cookie/worker/g05-v0-4-0-release-readiness-plan
+751a6c61bd968caf0968cd90407674fa0e7032de	eb146c1ace68bd08971366fd57f88d33ff6c296e	2026-09-02T13:45:12+01:00	docs: use Breaking category for the v0.4.0 changelog break signal
+eb146c1ace68bd08971366fd57f88d33ff6c296e	2197781849cc68b41139bd7e1a5480f1fdfba4d5	2026-09-02T13:28:17+01:00	docs: repair v0.4.0 release readiness plan
+2197781849cc68b41139bd7e1a5480f1fdfba4d5	5690a9051919883aeb6d0dd69e1a90153a7175c9	2026-09-02T12:57:51+01:00	docs: compile v0.4.0 release readiness
+5690a9051919883aeb6d0dd69e1a90153a7175c9	e89f7aeb56e11ff83cdb774bde8a9cac407cbf1c 8ea8b9a8599bbf768ccc2eb1450f34fac9170836	2026-09-02T04:39:02-07:00	Merge pull request #183 from inflatable-cookie/version-currentness-post-codex-checkpoint
+8ea8b9a8599bbf768ccc2eb1450f34fac9170836	f9fc3c20a4e8d67c624c7f974569def4a0d89dd9	2026-09-02T12:30:37+01:00	docs: park currentness behind v0.4.0 readiness
+f9fc3c20a4e8d67c624c7f974569def4a0d89dd9	e89f7aeb56e11ff83cdb774bde8a9cac407cbf1c	2026-09-02T12:14:57+01:00	docs: record all-route currentness checkpoint
+e89f7aeb56e11ff83cdb774bde8a9cac407cbf1c	c7f0b2845586f69ae255b97c68ecbe5e1ccb0cd6 e6f4a416c6d38bee56d12d2dd97c19031e0352d3	2026-09-02T03:47:39-07:00	Merge pull request #181 from inflatable-cookie/worker/papercuts-currentness-card-allocation
+e6f4a416c6d38bee56d12d2dd97c19031e0352d3	281a9cb546feb0509c407ea7a091cbf1d8b448ac	2026-09-02T11:33:03+01:00	Stop roadmap-number checker bytecode and hermetic isolation gaps.
+281a9cb546feb0509c407ea7a091cbf1d8b448ac	8a890eedce65955d3b2dcb6c52bead4bef1e78e5	2026-09-02T11:06:21+01:00	Isolate canonical roadmap fetch from user Git URL rewrites.
+8a890eedce65955d3b2dcb6c52bead4bef1e78e5	0d8c2def039f7f4cfcc740d443967318291e1339	2026-09-02T10:27:40+01:00	Fetch canonical roadmap authority as objects, never a dest ref.
+0d8c2def039f7f4cfcc740d443967318291e1339	427719edfb8bb4a914307239a197da94f74b4463	2026-09-02T10:06:27+01:00	Fail closed on stale or fork origin/main for roadmap numbers.
+427719edfb8bb4a914307239a197da94f74b4463	c7f0b2845586f69ae255b97c68ecbe5e1ccb0cd6	2026-09-02T09:43:14+01:00	Reject stale-base collisions on numbered roadmap cards.
+c7f0b2845586f69ae255b97c68ecbe5e1ccb0cd6	548e1757d2e179ad02808df38f22ffe72e3c6a36 f382b94c6aacb63369003c2439f4daabf4e28b2d	2026-09-02T01:32:00-07:00	Merge pull request #180 from inflatable-cookie/worker/g05-codex-0-152-1-upgrade
+f382b94c6aacb63369003c2439f4daabf4e28b2d	a65720e4e98c1caf74b10d92cc17a3619736d485	2026-09-02T01:24:49+01:00	Repair Cargo.toml newline and Next Task checkpoint wording
+a65720e4e98c1caf74b10d92cc17a3619736d485	97babfe06ace88a3a956b825f9d715c75d360280	2026-09-02T01:11:20+01:00	Qualify Codex CLI through official 0.152.1
+97babfe06ace88a3a956b825f9d715c75d360280	548e1757d2e179ad02808df38f22ffe72e3c6a36	2026-09-02T00:47:38+01:00	Record Codex 0.152.1 identity evidence
+548e1757d2e179ad02808df38f22ffe72e3c6a36	2c615c7bec2d82cda30742a3f2045712fc61b905	2026-09-02T00:10:27+01:00	docs: dispatch Codex 0.152.1 upgrade
+2c615c7bec2d82cda30742a3f2045712fc61b905	8ad283cf20e94264841bb04cdf223099c3b61057 ea28061ef987d57ac5173a5fac4d3eecf03af324	2026-09-01T16:09:14-07:00	Merge pull request #179 from inflatable-cookie/worker/version-currentness-post-claude-code-checkpoint
+ea28061ef987d57ac5173a5fac4d3eecf03af324	8ad283cf20e94264841bb04cdf223099c3b61057	2026-09-01T23:58:40+01:00	docs: record post-Claude Code currentness checkpoint
+8ad283cf20e94264841bb04cdf223099c3b61057	e66d0279d2019b32f0447a28a24ac0fc155f40e4	2026-09-01T23:41:10+01:00	docs: dispatch post-Claude currentness checkpoint
+e66d0279d2019b32f0447a28a24ac0fc155f40e4	6ac30292b073335a6d60a13e61e308c16ebd4f97 00bc129a4d820394eeb7ce3a7d9de67256908c7f	2026-09-01T15:39:45-07:00	Merge pull request #176 from inflatable-cookie/worker/version-currentness-claude-code-2-1-257
+6ac30292b073335a6d60a13e61e308c16ebd4f97	e779e9b6b30c8415c8c3deb9dd57b59e53df269e ef1cd6134b51f435a18d2c986b7993f6f56e27f7	2026-09-01T15:39:13-07:00	Merge pull request #178 from inflatable-cookie/worker/papercuts-kimi-platform-lifecycle-god-file
+ef1cd6134b51f435a18d2c986b7993f6f56e27f7	e779e9b6b30c8415c8c3deb9dd57b59e53df269e	2026-09-01T23:30:26+01:00	fix(kimi-platform): split lifecycle god-file
+00bc129a4d820394eeb7ce3a7d9de67256908c7f	de3b94a97a42c073c536fa8261128c625e27691a	2026-09-01T23:13:54+01:00	Qualify Claude Code through official 2.1.257
+de3b94a97a42c073c536fa8261128c625e27691a	e779e9b6b30c8415c8c3deb9dd57b59e53df269e	2026-09-01T23:00:15+01:00	Record Claude Code 2.1.257 identity evidence
+e779e9b6b30c8415c8c3deb9dd57b59e53df269e	302483424111552bf310dc1ed413659ef73c802a	2026-09-01T23:18:55+01:00	docs: hand off Kimi Platform lifecycle papercut
+302483424111552bf310dc1ed413659ef73c802a	799f3021a465e22851215862e9a10d53160f8bc0 1f904c65bd35b02f0b03445891737a6f2afae319	2026-09-01T15:18:09-07:00	Merge pull request #177 from inflatable-cookie/worker/papercuts-cursor-prepared-suite-god-file
+1f904c65bd35b02f0b03445891737a6f2afae319	799f3021a465e22851215862e9a10d53160f8bc0	2026-09-01T23:17:11+01:00	fix(cursor): split prepared-suite god-file
+799f3021a465e22851215862e9a10d53160f8bc0	164ab230762e8261911e7c30b7d9e3fcbdd87873	2026-09-01T23:08:22+01:00	docs: hand off Cursor prepared-suite papercut
+164ab230762e8261911e7c30b7d9e3fcbdd87873	4012b8f9ff2a6f52f2de99c48d933887e638978a 3126648dcff906d0847d340167012f1b19da0f66	2026-09-01T15:07:34-07:00	Merge pull request #175 from inflatable-cookie/worker/papercuts-zsh-special-variables
+3126648dcff906d0847d340167012f1b19da0f66	4012b8f9ff2a6f52f2de99c48d933887e638978a	2026-09-01T23:06:47+01:00	docs: add zsh special-variable shell snippet rule and close papercut
+4012b8f9ff2a6f52f2de99c48d933887e638978a	33cde9ed8a1fb27e36c0cfaa0cb0354f5b42f45b	2026-09-01T23:02:58+01:00	docs: hand off zsh special-variable papercut
+33cde9ed8a1fb27e36c0cfaa0cb0354f5b42f45b	dbb69c9df3aa4ddbcb00d418fb13029a3255875c 7b0c3dd968b7186e9ba02caac50ebca97f33470e	2026-09-01T15:02:18-07:00	Merge pull request #174 from inflatable-cookie/worker/papercuts-evidence-download-cwd
+7b0c3dd968b7186e9ba02caac50ebca97f33470e	dbb69c9df3aa4ddbcb00d418fb13029a3255875c	2026-09-01T23:00:19+01:00	docs: record evidence-download cwd ownership stop
+dbb69c9df3aa4ddbcb00d418fb13029a3255875c	e2e7ba0360bc3a78c6a1790340a3f3ddf47feeda	2026-09-01T22:48:55+01:00	docs: hand off evidence-download cwd papercut
+e2e7ba0360bc3a78c6a1790340a3f3ddf47feeda	f60cb0af786f7feb693ede80b6d732211f7946b8 808c909dfafa97b0f9d1ab3b8d2a6ce1f8a852c1	2026-09-01T14:48:01-07:00	Merge pull request #173 from inflatable-cookie/worker/papercuts-gemini-live-god-files
+808c909dfafa97b0f9d1ab3b8d2a6ce1f8a852c1	f60cb0af786f7feb693ede80b6d732211f7946b8	2026-09-01T22:44:26+01:00	fix(gemini): split live context-compression and output-maximum god-files
+f60cb0af786f7feb693ede80b6d732211f7946b8	2c1e2ef015413b52bb91301042a39ab7439179fd	2026-09-01T22:40:56+01:00	docs: hand off Claude Code 2.1.257 upgrade
+2c1e2ef015413b52bb91301042a39ab7439179fd	53f7229a5315c314d404f68a6d71aef5edfc3468 c9af383deede6067703179b5793c9578eac4c911	2026-09-01T14:39:33-07:00	Merge pull request #172 from inflatable-cookie/worker/version-currentness-full-dist-audit
+c9af383deede6067703179b5793c9578eac4c911	de7fc5c42a0f4b122e6afe202714000c8574123c	2026-09-01T22:33:09+01:00	docs: harden version-currentness skill with artifact inventory rules
+53f7229a5315c314d404f68a6d71aef5edfc3468	de7fc5c42a0f4b122e6afe202714000c8574123c	2026-09-01T22:36:02+01:00	docs: hand off Gemini Live god-file papercut
+de7fc5c42a0f4b122e6afe202714000c8574123c	3babaf9b06671e33516d3c1eb6a9a251bcd5da32 76ccfa5cac0f1f7f718fff873dc64e55ff6f87f9	2026-09-01T14:27:21-07:00	Merge pull request #171 from inflatable-cookie/worker/version-currentness-claude-agent-acp-0-72
+76ccfa5cac0f1f7f718fff873dc64e55ff6f87f9	af9ddfd4d9664e89640143fc92d5c3a3f25131b1	2026-09-01T22:12:23+01:00	feat: qualify Claude Agent ACP through official 0.73.0
+af9ddfd4d9664e89640143fc92d5c3a3f25131b1	3babaf9b06671e33516d3c1eb6a9a251bcd5da32	2026-09-01T22:04:27+01:00	docs: freeze Claude Agent ACP 0.73.0 identity before any claim
+3babaf9b06671e33516d3c1eb6a9a251bcd5da32	9aafeb0292579ec58be0aee4c086250bfc99000b 52dc22d63186610880adc75415746ce187c49713	2026-09-01T12:49:37-07:00	Merge pull request #170 from inflatable-cookie/worker/papercuts-llama-context-god-files
+52dc22d63186610880adc75415746ce187c49713	9aafeb0292579ec58be0aee4c086250bfc99000b	2026-09-01T20:46:05+01:00	fix(llama-cpp): split context-size god-file test modules
+9aafeb0292579ec58be0aee4c086250bfc99000b	0349b90f212ad7c95037e83c3e22e8087a641fd7 2eaaa2ff25c5e351367af6683c4f0db9e9ed37b2	2026-09-01T12:42:36-07:00	Merge pull request #169 from inflatable-cookie/worker/version-currentness-post-kimi-a2-checkpoint
+2eaaa2ff25c5e351367af6683c4f0db9e9ed37b2	0349b90f212ad7c95037e83c3e22e8087a641fd7	2026-09-01T20:39:22+01:00	docs: record post-Kimi A2 all-route currentness checkpoint
+0349b90f212ad7c95037e83c3e22e8087a641fd7	4c11544add62b07e35af1d0033ea57492ecfc56e e9e1fa32c38fb56b45f98e54104cfe69cd25eece	2026-09-01T12:35:18-07:00	Merge pull request #168 from inflatable-cookie/worker/papercuts-antigravity-host-drift
+e9e1fa32c38fb56b45f98e54104cfe69cd25eece	4c11544add62b07e35af1d0033ea57492ecfc56e	2026-09-01T20:34:24+01:00	Record Antigravity host agy auto-update ownership stop.
+4c11544add62b07e35af1d0033ea57492ecfc56e	018c4769eee1bef26aaf8173c44b5656316212b9 9623d9bc0dfbb9331f64b42c47c7f2a52f8d7a89	2026-09-01T12:26:50-07:00	Merge pull request #167 from inflatable-cookie/worker/g05-kimi-acp-a2-triggered-cap
+9623d9bc0dfbb9331f64b42c47c7f2a52f8d7a89	018c4769eee1bef26aaf8173c44b5656316212b9	2026-09-01T20:25:20+01:00	feat: cap kimi-code.acp above 0.38.0 under QualifiedOnly
+018c4769eee1bef26aaf8173c44b5656316212b9	2756ad6fa11c5d7cf48e5a5022fa107ad233f3a7 9e30c2e67aa413514a0b2d3971845bf00398ba76	2026-09-01T11:18:54-07:00	Merge pull request #166 from inflatable-cookie/worker/g05-kimi-acp-containment-gate
+9e30c2e67aa413514a0b2d3971845bf00398ba76	2756ad6fa11c5d7cf48e5a5022fa107ad233f3a7	2026-09-01T19:11:07+01:00	docs: compile the Kimi Code ACP 0.39.x containment and mediation gate
+2756ad6fa11c5d7cf48e5a5022fa107ad233f3a7	50531f44de1b3b44f5ef97756a9f4dd9665df6b1 6132ce01fd64f63f4f6492da8a2d9fac03800818	2026-09-01T10:59:02-07:00	Merge pull request #165 from inflatable-cookie/worker/g05-kimi-code-0-39-1-upgrade
+6132ce01fd64f63f4f6492da8a2d9fac03800818	ab6e00f81eee7e7d80d353e320234dd6a3495545	2026-09-01T18:50:52+01:00	feat: correct the Kimi headless split and stop the ACP axis at 0.38.0
+ab6e00f81eee7e7d80d353e320234dd6a3495545	50531f44de1b3b44f5ef97756a9f4dd9665df6b1	2026-09-01T18:50:04+01:00	docs: freeze Kimi Code 0.39.1 identity and correct the routing premise
+50531f44de1b3b44f5ef97756a9f4dd9665df6b1	5c3ef80617af65f72073ae381ccf2ce71c55513f 22fc836bafa349a42c7e06a62a8a1f13e0818a2b	2026-09-01T08:58:30-07:00	Merge pull request #164 from inflatable-cookie/worker/version-currentness-post-pi-checkpoint
+22fc836bafa349a42c7e06a62a8a1f13e0818a2b	5c3ef80617af65f72073ae381ccf2ce71c55513f	2026-09-01T16:55:29+01:00	docs: record post-Pi 0.84.4 all-route currentness checkpoint
+5c3ef80617af65f72073ae381ccf2ce71c55513f	fffc64ecaeeab0efe2df3e84608d06127cca7cb4 e29cd79555cb762b2ac74376370afef81dfe1e56	2026-09-01T08:52:23-07:00	Merge pull request #163 from inflatable-cookie/worker/papercuts-antigravity-agent-probes
+e29cd79555cb762b2ac74376370afef81dfe1e56	fffc64ecaeeab0efe2df3e84608d06127cca7cb4	2026-09-01T16:51:20+01:00	Record Antigravity invalid-agent probe no-prompt ownership stop.
+fffc64ecaeeab0efe2df3e84608d06127cca7cb4	0949eda8ca34e2cac09d94a482ce78f1e252336c 9f381ad81b728ad82fb160ba7b6648ae5ce579aa	2026-09-01T08:43:48-07:00	Merge pull request #162 from inflatable-cookie/worker/g05-pi-0-84-4-upgrade
+9f381ad81b728ad82fb160ba7b6648ae5ce579aa	60e7a0a0cfd1a7e9663c591f415ad8d57ecb26bf	2026-09-01T16:42:14+01:00	Qualify Pi RPC through official 0.84.4
+60e7a0a0cfd1a7e9663c591f415ad8d57ecb26bf	0949eda8ca34e2cac09d94a482ce78f1e252336c	2026-09-01T16:25:36+01:00	Record Pi RPC 0.84.4 identity evidence
+0949eda8ca34e2cac09d94a482ce78f1e252336c	ad0bb79e9a5a3ad3dd54572b5d2c0cb2d987a677 6bbeabef1a29364167b0743ddafd58c6e028dfb1	2026-09-01T07:47:39-07:00	Merge pull request #160 from inflatable-cookie/worker/papercuts-launcher-worktree-cleanup
+6bbeabef1a29364167b0743ddafd58c6e028dfb1	ad0bb79e9a5a3ad3dd54572b5d2c0cb2d987a677	2026-09-01T15:35:31+01:00	Record launcher worktree-cleanup ownership stop.
+ad0bb79e9a5a3ad3dd54572b5d2c0cb2d987a677	d8e5b49c6effc71ed8f459c02b6c18661cc1c1a0 84006fde52b8360a2fa60a13242c6ebb156ff145	2026-09-01T07:42:59-07:00	Merge pull request #161 from inflatable-cookie/worker/version-currentness-post-claude-checkpoint
+84006fde52b8360a2fa60a13242c6ebb156ff145	d8e5b49c6effc71ed8f459c02b6c18661cc1c1a0	2026-09-01T15:40:25+01:00	docs: record post-Claude Code 2.1.252 all-route currentness checkpoint
+d8e5b49c6effc71ed8f459c02b6c18661cc1c1a0	a46941b4eec7fe14227c020d9fe39d1177f2e482 db6803e2b66e4fc6dd19e3166d409af48d74f9a7	2026-09-01T07:27:21-07:00	Merge pull request #159 from inflatable-cookie/worker/g05-claude-code-2-1-252-upgrade
+db6803e2b66e4fc6dd19e3166d409af48d74f9a7	5f423e66962065f45dfec9457f4a8030767070ae	2026-09-01T15:25:09+01:00	Split Claude Code 2.1.252 identity and live-probe god-files
+5f423e66962065f45dfec9457f4a8030767070ae	cc1bed89356a5c9974010d870a7711f888c65381	2026-09-01T15:13:17+01:00	Prove Claude Code 2.1.252 identity oracles and live-probe independence
+cc1bed89356a5c9974010d870a7711f888c65381	967cd0f37484f7bb7efbdadc95abb11cac7294fa	2026-09-01T14:57:57+01:00	Qualify Claude Code through official 2.1.252
+967cd0f37484f7bb7efbdadc95abb11cac7294fa	a46941b4eec7fe14227c020d9fe39d1177f2e482	2026-09-01T14:49:40+01:00	Record Claude Code 2.1.252 identity evidence
+a46941b4eec7fe14227c020d9fe39d1177f2e482	0e7e40cfc1c43f428466662d47c159c05242ceb1 f42418cf6a22efe1b83c2a4adcdb309c89c1f746	2026-09-01T06:34:41-07:00	Merge pull request #157 from inflatable-cookie/worker/papercuts-codex-docs-corpus
+f42418cf6a22efe1b83c2a4adcdb309c89c1f746	0e7e40cfc1c43f428466662d47c159c05242ceb1	2026-09-01T14:24:35+01:00	docs: bind Codex config Markdown corpus
+0e7e40cfc1c43f428466662d47c159c05242ceb1	1c520f9061df4dd177a8134aeca46281e242f6e8 ef1626087f6a91aaa8f9af44728522117a062459	2026-09-01T06:33:21-07:00	Merge pull request #158 from inflatable-cookie/worker/version-currentness-post-codex-checkpoint
+ef1626087f6a91aaa8f9af44728522117a062459	1c520f9061df4dd177a8134aeca46281e242f6e8	2026-09-01T14:31:03+01:00	docs: record post-Codex 0.152.0 all-route currentness checkpoint
+1c520f9061df4dd177a8134aeca46281e242f6e8	69a47f1353ec1dfc1ceef9844d3cb891ad7b464a 1e09861b319af472fa0bd675fa2fed0d3d6dd8e6	2026-09-01T06:18:43-07:00	Merge pull request #156 from inflatable-cookie/worker/papercuts-anthropic-docs-corpus
+1e09861b319af472fa0bd675fa2fed0d3d6dd8e6	69a47f1353ec1dfc1ceef9844d3cb891ad7b464a	2026-09-01T14:08:59+01:00	docs: bind Anthropic Markdown corpus
+69a47f1353ec1dfc1ceef9844d3cb891ad7b464a	a9c757be9ffe1d69b7343075629f2d1a62dd8c61 c46015ee1ff057cc3f48264633f0bc8a3bb3011d	2026-09-01T06:16:43-07:00	Merge pull request #155 from inflatable-cookie/worker/g05-codex-0-152-0-upgrade
+c46015ee1ff057cc3f48264633f0bc8a3bb3011d	68a1099f4bc43f00a1770fc892d59bd5b7793c4d	2026-09-01T14:08:49+01:00	Qualify Codex CLI through official 0.152.0
+68a1099f4bc43f00a1770fc892d59bd5b7793c4d	a9c757be9ffe1d69b7343075629f2d1a62dd8c61	2026-09-01T14:08:10+01:00	Record Codex 0.152.0 identity evidence
+a9c757be9ffe1d69b7343075629f2d1a62dd8c61	803f5e7e1e62764e4097853fd65fcbb83af51808	2026-09-01T13:57:14+01:00	docs: queue Anthropic docs corpus papercut
+803f5e7e1e62764e4097853fd65fcbb83af51808	fd7880fc79c7b2e66e85520874f1ab0e7556c210 bb018a831b595fda6c50e6dfc29bb4fe1bbab449	2026-09-01T05:55:37-07:00	Merge pull request #154 from inflatable-cookie/worker/papercuts-copilot-docs-corpus
+bb018a831b595fda6c50e6dfc29bb4fe1bbab449	fd7880fc79c7b2e66e85520874f1ab0e7556c210	2026-09-01T13:54:35+01:00	docs: close Copilot docs corpus papercut via Research 218
+fd7880fc79c7b2e66e85520874f1ab0e7556c210	99809930c83dc18949da316ef302060fc94be0c4	2026-09-01T13:52:08+01:00	docs: queue Copilot docs corpus papercut
+99809930c83dc18949da316ef302060fc94be0c4	cbad672f273a40653aed0aecc52f2c7bc90c72bf fac27e78dc308a631c15bfdad188952e1a94f7b3	2026-09-01T05:50:42-07:00	Merge pull request #153 from inflatable-cookie/worker/papercuts-cline-prepared-headless-god-file
+fac27e78dc308a631c15bfdad188952e1a94f7b3	cbad672f273a40653aed0aecc52f2c7bc90c72bf	2026-09-01T13:49:21+01:00	fix(cline): split prepared-headless facade god-file
+cbad672f273a40653aed0aecc52f2c7bc90c72bf	28543770ea61865ba7da3b1af8dc003b35ba59bb	2026-09-01T13:46:12+01:00	docs: queue Cline prepared-headless god-file papercut
+28543770ea61865ba7da3b1af8dc003b35ba59bb	e639b1bda1f83e8e9bf001a282d84749760c8d36 682ece8fe3bfc77fe26be9d61a2bdb0f9bae1854	2026-09-01T05:44:19-07:00	Merge pull request #152 from inflatable-cookie/worker/papercuts-xai-docs-corpus
+682ece8fe3bfc77fe26be9d61a2bdb0f9bae1854	e639b1bda1f83e8e9bf001a282d84749760c8d36	2026-09-01T13:36:14+01:00	docs: close xAI docs corpus papercut via Research 227
+e639b1bda1f83e8e9bf001a282d84749760c8d36	228422de0bfb75ac25e2cf7506815392c3f01c31	2026-09-01T13:27:40+01:00	docs: compile Codex 0.152 and xAI corpus lanes
+228422de0bfb75ac25e2cf7506815392c3f01c31	c44eb85e93bb35da2cbf4c13cb72d264fc3ad23b 1560a5d1f0de1df89473863ce90fa5fb9d1b3bcf	2026-09-01T05:21:01-07:00	Merge pull request #150 from inflatable-cookie/worker/version-currentness-all-route-checkpoint
+c44eb85e93bb35da2cbf4c13cb72d264fc3ad23b	19a7c786034dfb7c4cc8ca08eef74b51d34d048e 7da7d58bd0e0e2b938c4bc3b59ac50be32cd815e	2026-09-01T05:20:02-07:00	Merge pull request #151 from inflatable-cookie/worker/papercuts-host-local-watcher-god-files
+1560a5d1f0de1df89473863ce90fa5fb9d1b3bcf	e9cc90be8fe3df70578636976b543578e6d53de5	2026-09-01T13:18:06+01:00	docs: correct local currentness observations
+7da7d58bd0e0e2b938c4bc3b59ac50be32cd815e	19a7c786034dfb7c4cc8ca08eef74b51d34d048e	2026-09-01T13:16:17+01:00	fix(host-local): split watcher and process god files
+e9cc90be8fe3df70578636976b543578e6d53de5	19a7c786034dfb7c4cc8ca08eef74b51d34d048e	2026-09-01T13:05:01+01:00	docs: record all-route version currentness checkpoint
+19a7c786034dfb7c4cc8ca08eef74b51d34d048e	51ed44f57a2a878628f0f30b251dd454f1907a9f	2026-09-01T12:55:58+01:00	docs: queue host-local watcher god-file papercut
+51ed44f57a2a878628f0f30b251dd454f1907a9f	600a4ccf2daa3636edd7ac7e1f80c88e069cca7f b921f49748ce7f34492be201b2f2323137107050	2026-09-01T04:54:22-07:00	Merge pull request #149 from inflatable-cookie/worker/papercuts-scoped-task-watcher-enter-error
+b921f49748ce7f34492be201b2f2323137107050	c93d92d54cac09f8815c0cd7f62f02a6afd963ca	2026-09-01T12:51:26+01:00	Record PR 149 on the scoped-task watcher EnterError closeout.
+c93d92d54cac09f8815c0cd7f62f02a6afd963ca	600a4ccf2daa3636edd7ac7e1f80c88e069cca7f	2026-09-01T12:51:07+01:00	Fix watcher host EnterError inside scoped-task executors.
+600a4ccf2daa3636edd7ac7e1f80c88e069cca7f	f56b54d6bc829975141088c4afa5ab2f5ab0454b	2026-09-01T12:45:04+01:00	docs: compile ready frontier worker handoffs
+f56b54d6bc829975141088c4afa5ab2f5ab0454b	41aae0b660ff41b75236d5410e2a9d206cc6f150 b3f2e8fef143fec631dcad21920af9781c1a93a6	2026-09-01T04:38:18-07:00	Merge pull request #148 from inflatable-cookie/worker/g05-kimi-gate-card034
+b3f2e8fef143fec631dcad21920af9781c1a93a6	d010452fa9665801f044d523b2205f210bed0abf	2026-09-01T12:32:52+01:00	Reconcile the Kimi gate evidence stop
+d010452fa9665801f044d523b2205f210bed0abf	9e722e804da118473754e3b627150c5d63be4bfc	2026-09-01T12:00:31+01:00	Convert the Kimi gate to an honest evidence stop
+9e722e804da118473754e3b627150c5d63be4bfc	be73fa306bf7e0f4060f9eb3aee74a94038facbf	2026-09-01T11:46:11+01:00	Repair five exact-head review findings on the Kimi gate and card 034
+be73fa306bf7e0f4060f9eb3aee74a94038facbf	41aae0b660ff41b75236d5410e2a9d206cc6f150	2026-09-01T11:30:11+01:00	Compile the Kimi active-observation gate and card 034
+41aae0b660ff41b75236d5410e2a9d206cc6f150	10fab5eac15f16199f8da51484f94a8a4755efeb	2026-09-01T11:11:59+01:00	Handoff Kimi gate and Card 034 planning
+10fab5eac15f16199f8da51484f94a8a4755efeb	12e511e66bb310d72d3977620cd55f5210b8d381	2026-09-01T03:07:47-07:00	Card 033: close card 032 and stop candidate F (#147)
+12e511e66bb310d72d3977620cd55f5210b8d381	63463d7b0d42f97e58efb58788db648b4e7f3a79	2026-09-01T10:37:42+01:00	Dispatch Card 033 Kimi reassessment
+63463d7b0d42f97e58efb58788db648b4e7f3a79	2bb6ff833b22dae944926e394b539690d7106362	2026-09-01T10:36:18+01:00	Close Card 032 and queue Kimi reassessment
+2bb6ff833b22dae944926e394b539690d7106362	601a505f976f6c138c9a0fb9b5deba7117abdded	2026-09-01T02:30:35-07:00	Close stale live-probe workspace cleanup papercut (#146)
+601a505f976f6c138c9a0fb9b5deba7117abdded	dc6f180f7c48dded7ffae1e3452eae9dc32db71b	2026-09-01T10:05:09+01:00	Queue live-probe cleanup papercut worker
+dc6f180f7c48dded7ffae1e3452eae9dc32db71b	18a6907e75e55a6b181632a1da35a2fefd0824fe	2026-09-01T02:02:37-07:00	Record Effigy graph-explore timeout ownership stop. (#145)
+18a6907e75e55a6b181632a1da35a2fefd0824fe	cff8a2d7d490c1fe18bb82aa7a969f4ef96f243e	2026-09-01T01:47:15-07:00	Card 032: complete candidate G projection packages (#144)
+cff8a2d7d490c1fe18bb82aa7a969f4ef96f243e	153e3e43e9f3c52c3819d0f55b104dbfae6d3058	2026-09-01T00:13:33-07:00	docs: compile Cline projection gate (#143)
+153e3e43e9f3c52c3819d0f55b104dbfae6d3058	5d1f173ad0637c16c24f5134ef45dc559f67c61d	2026-08-31T17:06:46-07:00	Close Card 031 and reassess lifecycle runway (#142)
+5d1f173ad0637c16c24f5134ef45dc559f67c61d	7088b4fc49ce1c64e562070c9ce15b0ce76f82d1	2026-08-31T16:48:15-07:00	Complete Contract 061 Claude Agent projection tranche (#141)
+7088b4fc49ce1c64e562070c9ce15b0ce76f82d1	074580eadef9d0a96c4c0c385da9a5db08786051	2026-08-31T15:40:06-07:00	Compile Claude Agent acknowledgement gate (#140)
+074580eadef9d0a96c4c0c385da9a5db08786051	f8c30d54d7d6222dbec7440e7ecba0365b5c067e	2026-08-31T15:12:21-07:00	Card 030: stop Contract 061 acknowledgement candidates D, F, and G; narrow next gate to claude-agent.acp (#139)
+f8c30d54d7d6222dbec7440e7ecba0365b5c067e	8b295e6bb17bba9ddc13efc4f8a349f9c6afaa25	2026-08-31T22:44:11+01:00	docs: close card 024 and queue acknowledgement audit
+8b295e6bb17bba9ddc13efc4f8a349f9c6afaa25	f606e9c8d90486729b08c35d6ef7c716e9d949f1	2026-08-31T14:35:57-07:00	Contract 061: complete the Deep Agents, Kiro, Qoder, and ZCode packages (#138)
+f606e9c8d90486729b08c35d6ef7c716e9d949f1	8cb66d1b512f6406a206f506a8beba018cb0f023	2026-08-31T21:40:38+01:00	docs: close papercuts wave 23
+8cb66d1b512f6406a206f506a8beba018cb0f023	8337520c36d7f18d475935cb946bd242d26e6dfa	2026-08-31T13:38:41-07:00	fix: keep route-matrix docs selectors from writing Python bytecode (#137)
+8337520c36d7f18d475935cb946bd242d26e6dfa	af339fb65d5a249bddcf0f58abae95953d4d465a	2026-08-31T19:55:55+01:00	docs: close wave 23 OpenAI targets lane
+af339fb65d5a249bddcf0f58abae95953d4d465a	786d613e5c44802f1417a9023c97e714623cbef2	2026-08-31T11:50:16-07:00	fix: align OpenAI adapter test target names with suite files (#136)
+786d613e5c44802f1417a9023c97e714623cbef2	e1313e5fb1f6b94e7996d29ed03e335f3b22e51b	2026-08-31T18:53:37+01:00	docs: close watcher isolation evidence stop
+e1313e5fb1f6b94e7996d29ed03e335f3b22e51b	d7720261e59f0a5233a785009f0bb5b55f84a236	2026-08-31T10:46:10-07:00	stop: card 029 admits no credential-preserving watcher isolation shape — no production change (g05.011) (#135)
+d7720261e59f0a5233a785009f0bb5b55f84a236	82fef2b9eb30031b6027fcfe5389695b7730b0bc	2026-08-31T10:31:41-07:00	chore: add Paseo project settings (#134)
+82fef2b9eb30031b6027fcfe5389695b7730b0bc	eb5e26dffbbd4b8ad2b9a31fcca2014dc0b13b0a	2026-08-31T18:11:35+01:00	docs(handoff): dispatch watcher isolation
+eb5e26dffbbd4b8ad2b9a31fcca2014dc0b13b0a	c7ab78201f86e3928383c18346e1bea5e1edf7a6	2026-08-31T18:08:48+01:00	docs: add watcher isolation review oracle
+c7ab78201f86e3928383c18346e1bea5e1edf7a6	427ded7b01a0472276ce917647c06df0b069bf52	2026-08-31T18:06:46+01:00	docs(handoff): dispatch Paseo project settings
+427ded7b01a0472276ce917647c06df0b069bf52	2fb2d9939e9dfbd13b924f979a7af5e75434bfa0	2026-08-31T18:02:54+01:00	test: reject Claude watcher tool suppression
+2fb2d9939e9dfbd13b924f979a7af5e75434bfa0	c93d406ab9d0db2bed250237a23fb432b3b23ba5	2026-08-31T17:26:29+01:00	docs: promote bounded skill inventory contract
+c93d406ab9d0db2bed250237a23fb432b3b23ba5	3360d49717f46d25021f7c6c8955b1efbe5b558e	2026-08-31T17:08:08+01:00	docs: record Codex 0.151.0 merge
+3360d49717f46d25021f7c6c8955b1efbe5b558e	0befeb6654bd760b9529fa8ab259371243252392 63324b4f8bdc98a1428e6678d643640e49e85926	2026-08-31T09:06:49-07:00	Qualify Codex useful-newer through official 0.151.0 (#130)
+63324b4f8bdc98a1428e6678d643640e49e85926	28e47fcb8a70b2a59d870e5d4992fc60a006d53c	2026-08-31T16:59:40+01:00	Qualify Codex CLI through official 0.151.0
+28e47fcb8a70b2a59d870e5d4992fc60a006d53c	0befeb6654bd760b9529fa8ab259371243252392	2026-08-31T16:52:25+01:00	Record Codex 0.151.0 identity evidence
+0befeb6654bd760b9529fa8ab259371243252392	bbe4fdd7ac897baf05fe8d60dd5ef0c8d676e083	2026-08-31T16:46:09+01:00	docs: reframe g05 around four product tracks
+bbe4fdd7ac897baf05fe8d60dd5ef0c8d676e083	0553c48e7f28166f317468fc8397f86ba141123e	2026-08-31T16:05:20+01:00	docs: reconcile feature runway and ready card 024
+0553c48e7f28166f317468fc8397f86ba141123e	0f19306147d5d3d5b0221db0128639fa6d6b78b7	2026-08-31T15:43:04+01:00	docs(papercuts): queue wave 23 OpenAI test targets
+0f19306147d5d3d5b0221db0128639fa6d6b78b7	58be712283a3acdfd8d1bbda631d258c534d398e	2026-08-31T15:37:44+01:00	docs(g05): close card 023 package tranche
+58be712283a3acdfd8d1bbda631d258c534d398e	c4a06ce694decd7fe132b4d3e40d9dc369b49499 fbb4b1180a3524ab8e631d6e468bedf3578f29c5	2026-08-31T07:26:00-07:00	Merge pull request #133 from inflatable-cookie/worker/g05-009-contract-061-package-completion
+fbb4b1180a3524ab8e631d6e468bedf3578f29c5	a787b942dd64ff9dea5c0b93455bba350abf087b	2026-08-31T15:14:25+01:00	fix(adapters): repair the three card 023 review misses
+c4a06ce694decd7fe132b4d3e40d9dc369b49499	c1823179f7be8b1543c12c315fc14ec8da08ee3b	2026-08-31T14:56:52+01:00	docs(triage): record Codex exec census source gap
+a787b942dd64ff9dea5c0b93455bba350abf087b	21d02b478faa1455f01b63f2b28f101d41cc0bfe	2026-08-31T14:44:40+01:00	test(adapters): prove the exact 35 exec and 24 background dispositions
+21d02b478faa1455f01b63f2b28f101d41cc0bfe	c1823179f7be8b1543c12c315fc14ec8da08ee3b	2026-08-31T14:44:40+01:00	feat(adapters): project Contract 061 truth from exec and background runs
+c1823179f7be8b1543c12c315fc14ec8da08ee3b	6619808d0a8c3931ebcc112a2ec039cbd4afd789	2026-08-31T14:18:46+01:00	docs(handoff): dispatch card 023 package completion
+6619808d0a8c3931ebcc112a2ec039cbd4afd789	9622ca8d27355d5e2e6798af50a42ef1ca922b5b	2026-08-31T13:03:42Z	docs(handoff): continue g05 orchestration on Mac
+9622ca8d27355d5e2e6798af50a42ef1ca922b5b	e5c0bf8ef570f3d1fb29636bef1ceb27caa65245	2026-08-31T12:36:24Z	docs(roadmap): compile Contract 061 package expansion
+e5c0bf8ef570f3d1fb29636bef1ceb27caa65245	811db499c2b59e42f1a290923b64ceac1468b237	2026-08-31T13:24:11+01:00	docs(papercuts): close wave 21 orchestration state
+811db499c2b59e42f1a290923b64ceac1468b237	18957eac45628a48cedbb353a5b9adb9d2aa7a80 2fa0d0b7889b66b75b1693144a68d1f5f98057f2	2026-08-31T05:15:08-07:00	Merge pull request #132 from inflatable-cookie/worker/papercuts-wave21-skill-closeout
+2fa0d0b7889b66b75b1693144a68d1f5f98057f2	18957eac45628a48cedbb353a5b9adb9d2aa7a80	2026-08-31T12:33:19+01:00	docs(papercuts): close untracked Effigy skill materialization
+18957eac45628a48cedbb353a5b9adb9d2aa7a80	fdd2b0188c47c048678caebc5fb63fd7f773aad3	2026-08-31T10:56:24Z	docs(g05): advance runway past PR 131
+fdd2b0188c47c048678caebc5fb63fd7f773aad3	2e113b8af7e36af1001169dca4e5f44fa088c1b2 b632d9e60b4f57e7d661c9fb0a3f1ae013b19838	2026-08-31T03:50:29-07:00	Merge pull request #131 from inflatable-cookie/worker/g05-009-contract-061-two-route-vertical
+b632d9e60b4f57e7d661c9fb0a3f1ae013b19838	dde6dda584d2f82def74a2c5a832523b321b958e	2026-08-31T10:42:24Z	fix(runtime): admit projection rows on the exact source identity
+dde6dda584d2f82def74a2c5a832523b321b958e	f38e38f93b3576a1ae7046b2e0694075d1fa29b0	2026-08-31T10:10:25Z	docs(g05): reconcile card 022, g05.009, and the indexes after the PR 131 repair
+f38e38f93b3576a1ae7046b2e0694075d1fa29b0	11fe7e9c07a194ee3b1c16c7e9aa80b116e15d37	2026-08-31T10:08:31Z	chore(release): record the additive Contract 061 public-API repairs
+11fe7e9c07a194ee3b1c16c7e9aa80b116e15d37	41ebfbe0170fc03ec631a2bafff200ef6a6e80c4	2026-08-31T10:08:31Z	fix(openai): keep prepared and active Realtime evidence on distinct sources
+41ebfbe0170fc03ec631a2bafff200ef6a6e80c4	dda40cf17a146d164c0ac8f3504a3f68c240ecf6	2026-08-31T10:08:31Z	fix(codex): withhold out-of-tranche rows at construction and keep per-turn truth
+dda40cf17a146d164c0ac8f3504a3f68c240ecf6	c96c6cbc2ae6a31ff7e2a980d0359f98d1b27b9e	2026-08-31T10:08:18Z	test(testkit): prove the repaired Contract 061 access and authority rules
+c96c6cbc2ae6a31ff7e2a980d0359f98d1b27b9e	5cffea6b087b183159d9950aaac02fa58d68cd0e	2026-08-31T10:08:18Z	fix(runtime): close the Contract 061 access, authority, and agreement gaps
+5cffea6b087b183159d9950aaac02fa58d68cd0e	6f30a542ff69ded641158999c21192cad96f13a1 2e113b8af7e36af1001169dca4e5f44fa088c1b2	2026-08-31T09:42:09Z	Merge remote-tracking branch 'origin/main' into worker/g05-009-contract-061-two-route-vertical
+2e113b8af7e36af1001169dca4e5f44fa088c1b2	59029aaeafbf7db26f5bb8767ff98009bbc199cf	2026-08-31T09:33:12Z	docs(g05): authorize PR 131 review revision
+59029aaeafbf7db26f5bb8767ff98009bbc199cf	969b9cbffcaa31822966697c80878d5a7618efee	2026-08-31T09:27:42Z	docs(g05): repair Contract 061 card 022 review gate
+6f30a542ff69ded641158999c21192cad96f13a1	4136aca705d5e4296b05c303b8667d70ae4ab911	2026-08-31T08:48:57Z	docs(g05): reconcile card 022 and the sole Next Task after the two-route tranche
+4136aca705d5e4296b05c303b8667d70ae4ab911	bc69cb643c4298ad5434d5996ec0b0f7ea8a90bf	2026-08-31T08:44:11Z	feat(openai): add the additive Realtime projection open seam
+bc69cb643c4298ad5434d5996ec0b0f7ea8a90bf	8fea2b4f141fc5e17d11ddddeeb1707a6a317eba	2026-08-31T08:35:42Z	feat(codex): emit Contract 061 contributions from prepared app-server facades
+8fea2b4f141fc5e17d11ddddeeb1707a6a317eba	969b9cbffcaa31822966697c80878d5a7618efee	2026-08-31T08:27:35Z	feat(runtime): add Contract 061 consumer route projection kernel
+969b9cbffcaa31822966697c80878d5a7618efee	693e75352701eaae13e3642ffd369936a591c682	2026-08-31T08:12:06Z	docs(g05): mark g05-009 handoff worker-in-flight
+693e75352701eaae13e3642ffd369936a591c682	be98c30d682bea9ab01c5fa5e9af46e7180d4fbc	2026-08-31T08:08:01Z	docs(g05): close Batch 9.1 and ready card 022 two-route vertical
+be98c30d682bea9ab01c5fa5e9af46e7180d4fbc	0f84f8fe4d96402c6ece990ee3160fd7bd5e1705	2026-08-31T04:46:36Z	docs(g05): record Batch 9.1 public baseline gate (strict-paused)
+0f84f8fe4d96402c6ece990ee3160fd7bd5e1705	a3031c732f0efe96e95a0c6bd3342e9691c83c8e	2026-08-31T04:32:03Z	docs(g05): compile Contract 061 realization roadmap
+a3031c732f0efe96e95a0c6bd3342e9691c83c8e	ee12e23bc440202ca7155353c101b66d199aad4a	2026-08-31T01:47:22Z	docs(g05): record Contract 061 realization-readiness inventory
+ee12e23bc440202ca7155353c101b66d199aad4a	9f04bc9d511a4e56c36823377ec26f686b8808ad	2026-08-31T01:28:21Z	docs(g05): select Contract 061 readiness inventory
+9f04bc9d511a4e56c36823377ec26f686b8808ad	10df200409c4a897f2922e8a656f0bcb7a465288 5e38c6ee853beccb131cc04c2f7bdf08c66cbb0e	2026-08-30T18:19:24-07:00	Merge pull request #129 from inflatable-cookie/worker/g05-008-consumer-projection-contract
+5e38c6ee853beccb131cc04c2f7bdf08c66cbb0e	10df200409c4a897f2922e8a656f0bcb7a465288	2026-08-31T01:08:14Z	docs(g05): promote Spec 012 into Contract 061 consumer projection
+10df200409c4a897f2922e8a656f0bcb7a465288	a12dc5f695dc8ad68e6ec92e89df907b6786c253	2026-08-31T00:59:34Z	docs(g05): publish g05.008 consumer projection contract planning
+a12dc5f695dc8ad68e6ec92e89df907b6786c253	b0c039b47e9975a08ed71188ae35397106415d5d	2026-08-31T00:51:36Z	docs(g05): publish post-card-020 planning reassessment
+b0c039b47e9975a08ed71188ae35397106415d5d	528a31c9213fb30fc321ca3f4a4ece0a805d6c50	2026-08-31T00:39:02Z	docs(g05): record card 020 merged stop
+528a31c9213fb30fc321ca3f4a4ece0a805d6c50	80c869ae8bad28f56be24652bf4f4d1394c15d20 3348ef3a9b1acdd768f07b765d139592473f6b0e	2026-08-30T17:33:16-07:00	Merge pull request #128 from inflatable-cookie/worker/g05-007-linux-watcher-live-acceptance
+3348ef3a9b1acdd768f07b765d139592473f6b0e	adb04f17e847bf72fbdf28dee0be13b321e3c673	2026-08-31T00:19:19Z	docs(g05): record card 020 Linux live evidence stop
+adb04f17e847bf72fbdf28dee0be13b321e3c673	80c869ae8bad28f56be24652bf4f4d1394c15d20	2026-08-31T00:09:20Z	fix(g05): bind watcher live probe digest to compile target
+80c869ae8bad28f56be24652bf4f4d1394c15d20	348090bf6ddc82155ba14e376d5257fe8d42dcbc	2026-08-30T23:59:56Z	docs(g05): prepare Linux watcher acceptance
+348090bf6ddc82155ba14e376d5257fe8d42dcbc	c055b697b9db374e7996c3a7636fd58d713b5930	2026-08-30T23:07:55Z	docs: authorize g05 watcher live acceptance
+c055b697b9db374e7996c3a7636fd58d713b5930	9a5b722928ba5c67cafe42cdae28b1ba6a90d4bc	2026-08-30T23:42:26+01:00	docs: add g05 orchestrator continuation handoff
+9a5b722928ba5c67cafe42cdae28b1ba6a90d4bc	c8691e84ffd7ac17e0fc2b530600d28e9b334b81	2026-08-30T23:32:23+01:00	docs(g05): close merged watcher proof repair
+c8691e84ffd7ac17e0fc2b530600d28e9b334b81	df7b673cc707cc46faefa4bbdec4afbccd265032	2026-08-30T23:22:25+01:00	fix(g05): bound retired bridge proof and settle in-flight traces
+df7b673cc707cc46faefa4bbdec4afbccd265032	c76f3f777bfbf19df90193bece1b964c29b192e8	2026-08-30T23:03:48+01:00	fix(g05): scope watcher proof and restore CI green
+c76f3f777bfbf19df90193bece1b964c29b192e8	129388b1953b11c3d292018bce85342bb42afb96	2026-08-30T22:33:29+01:00	fix(g05): close PR 126 watcher proof review findings
+129388b1953b11c3d292018bce85342bb42afb96	628b111be775b284b07084c0adaa017375a981ab	2026-08-30T21:41:33+01:00	feat(g05): repair watcher lifecycle feed and Stop-reentry oracle
+628b111be775b284b07084c0adaa017375a981ab	a346baa985f6b71d6bc2831ccff329fe15e9c3ed	2026-08-30T22:34:58+01:00	docs: add papercuts wave 21 worker handoff
+a346baa985f6b71d6bc2831ccff329fe15e9c3ed	b041b9eb20196fe8722824856dcf47f4eb129e4d	2026-08-30T19:52:46+01:00	docs: document roadmap status census grammar
+b041b9eb20196fe8722824856dcf47f4eb129e4d	c8b07fc32df1126faf622da48e5d0ec533208b49	2026-08-30T13:03:20-07:00	chore: add Effigy agent skill (#125)
+c8b07fc32df1126faf622da48e5d0ec533208b49	75c702a183d680242af259df84cc96bc5e8c8ff2	2026-08-30T21:02:31+01:00	docs(g05): dispatch watcher proof repair
+75c702a183d680242af259df84cc96bc5e8c8ff2	85fa30ef199e38c4fe2f40b3379fe8ba239166d4	2026-08-30T21:00:52+01:00	docs(g05): compile watcher proof repair
+85fa30ef199e38c4fe2f40b3379fe8ba239166d4	7243390c7cf8f3a59c365f5dff1ded9e446047eb	2026-08-30T20:15:39+01:00	docs(g05): record watcher live evidence stop
+7243390c7cf8f3a59c365f5dff1ded9e446047eb	ac6997146efc4e4ab34068ba4e1eac522052a1ed	2026-08-30T19:47:33+01:00	docs: add papercuts wave 19 worker handoff
+ac6997146efc4e4ab34068ba4e1eac522052a1ed	0d3b2e7277edc60550e5e5ce5ee7be0abaf300ca	2026-08-30T19:36:10+01:00	docs(g05): dispatch watcher live acceptance
+0d3b2e7277edc60550e5e5ce5ee7be0abaf300ca	a6c03527c47cca6ae55b09e223b6ba22229bf622	2026-08-30T19:22:55+01:00	docs(g05): tighten card 011 live proof gate
+a6c03527c47cca6ae55b09e223b6ba22229bf622	b301d6bf72f5b6083fc75260ef20719fa7e1dd24	2026-08-30T18:55:40+01:00	docs: quote realtime census claim
+b301d6bf72f5b6083fc75260ef20719fa7e1dd24	338ec92a2343b6391f52cc6055669390c7cb78d6	2026-08-30T18:39:01+01:00	docs: classify realtime reasoning as session-start
+338ec92a2343b6391f52cc6055669390c7cb78d6	82bb95b1780a19ec8882cd756c3eb9a9e9fc15f9	2026-08-30T18:26:25+01:00	docs: resolve route census review findings
+82bb95b1780a19ec8882cd756c3eb9a9e9fc15f9	bfb7d15cf871456fa7c3084db2ac94e5fdbeea91	2026-08-30T17:34:49+01:00	docs: add route feature option census
+bfb7d15cf871456fa7c3084db2ac94e5fdbeea91	87fe4ccdccb1f89a11b5e2c4a77aa23bc968697f	2026-08-30T18:44:23+01:00	fix(g05): exclusive-create private files at 0600
+87fe4ccdccb1f89a11b5e2c4a77aa23bc968697f	96aa5ebc59e6ab410b33a5c90de34a4f6bfa49d2	2026-08-30T18:34:01+01:00	fix(g05): create private temp material with 0700/0600
+96aa5ebc59e6ab410b33a5c90de34a4f6bfa49d2	997082b3ecf162f378df24e02163497572af39e0	2026-08-30T18:23:37+01:00	fix(g05): map Stop decision, run host futures, privatize temp files
+997082b3ecf162f378df24e02163497572af39e0	355d8b0773355684c86df5d46c7464485fe558b1	2026-08-30T18:07:10+01:00	feat(g05): bind Claude Code 2.1.251 watcher candidate
+355d8b0773355684c86df5d46c7464485fe558b1	f0c9211addfcd6480e89e6bfd6212860b45ae747	2026-08-30T17:21:26+01:00	docs(handoff): dispatch Claude watcher binding
+f0c9211addfcd6480e89e6bfd6212860b45ae747	a70254fb48eb2bb540bcf44e9d8a1fdd8499fb4e	2026-08-30T17:19:03+01:00	docs(g05): ready exact Claude watcher binding
+a70254fb48eb2bb540bcf44e9d8a1fdd8499fb4e	8762f42f8e568344f5481b19fcb17a0857fef97f	2026-08-30T17:06:24+01:00	docs(g05): record Claude currentness as completed for card 010
+8762f42f8e568344f5481b19fcb17a0857fef97f	0d94786798ac191a0ffe3a62e8fdd6259abb9bd3	2026-08-30T16:43:00+01:00	feat(g05): qualify Claude Code through 2.1.251
+0d94786798ac191a0ffe3a62e8fdd6259abb9bd3	6f5f13cc126eb8aedeb6b69e7b22739ac43d01de	2026-08-30T16:40:58+01:00	docs(handoff): dispatch route feature projection census
+6f5f13cc126eb8aedeb6b69e7b22739ac43d01de	ea22130d56e0b334860070979ae7496d0350e88c	2026-08-30T16:39:06+01:00	docs(triage): bound route feature projection census
+ea22130d56e0b334860070979ae7496d0350e88c	946ae36c6d28d4975153fa34e2556ac61b685ad8	2026-08-30T16:22:20+01:00	docs(handoff): dispatch Claude Code 2.1.251 currentness
+946ae36c6d28d4975153fa34e2556ac61b685ad8	228878c013b86925854c5d860d58186bb41b00b1	2026-08-30T16:20:32+01:00	docs(g05): sequence Claude watcher prerequisites
+228878c013b86925854c5d860d58186bb41b00b1	b60d2d9c07248a0ebe607a83d663d269c8111a9d	2026-08-30T15:56:29+01:00	fix(g05): bound watcher bridge close, wait, and JSON-RPC ids
+b60d2d9c07248a0ebe607a83d663d269c8111a9d	9406211f51557388d51132c89ab7aafbeb1755b1	2026-08-30T15:36:09+01:00	fix(g05): harden watcher HTTP bridge against Contract 060 review
+9406211f51557388d51132c89ab7aafbeb1755b1	8ad6c050780688979b927a4113e07a72713918e0	2026-08-30T11:17:28+01:00	feat(g05): add operation-scoped watcher HTTP bridge core
+8ad6c050780688979b927a4113e07a72713918e0	c56ab96526fdadc2f98d04f990b2fb97cac7f30b	2026-08-30T15:29:34+01:00	docs: distinguish session option lifecycles
+c56ab96526fdadc2f98d04f990b2fb97cac7f30b	6ebc9bc176a999acec2e1e83e82e4bca93007a30	2026-08-30T15:12:03+01:00	docs: triage consumer route feature projection
+6ebc9bc176a999acec2e1e83e82e4bca93007a30	c3ef1982dbbf52c2a21c025c987e0d4029ca17b8	2026-08-30T00:53:07+01:00	docs: add watcher HTTP bridge worker handoff
+c3ef1982dbbf52c2a21c025c987e0d4029ca17b8	040c519681d1bb9da000cdd277ce2650b3cc6fac	2026-08-30T00:51:12+01:00	docs: promote watcher HTTP bridge boundary
+040c519681d1bb9da000cdd277ce2650b3cc6fac	c36e11ad45415a8bf6e63678a948e58e73b5da3d	2026-08-30T00:29:12+01:00	docs: close watcher transport evidence lane
+c36e11ad45415a8bf6e63678a948e58e73b5da3d	00a16947f77b5e5af1dfb8d9ff31038f814a1cf4	2026-08-30T00:15:56+01:00	docs: narrow Claude bridge carrier claim
+00a16947f77b5e5af1dfb8d9ff31038f814a1cf4	71ea21113ff01986fd01f0dca66f29e7cfdbf644	2026-08-29T23:44:41+01:00	docs: record Claude watcher bridge transport stop
+71ea21113ff01986fd01f0dca66f29e7cfdbf644	b90fd073f73a90852295312a375b8febbcc4e9b6	2026-08-29T22:52:21+01:00	Clarify watcher handoff planning base
+b90fd073f73a90852295312a375b8febbcc4e9b6	eb014a9b72fb06b55d967a952ba618952991b5fa	2026-08-29T22:51:49+01:00	Compile Claude watcher bridge transport evidence
+eb014a9b72fb06b55d967a952ba618952991b5fa	1f0ce87cd2ed2a21a4f9fb5e0364e2a36fbed2d6	2026-08-29T22:41:43+01:00	Record PR 118 integration
+1f0ce87cd2ed2a21a4f9fb5e0364e2a36fbed2d6	94223f941138cd4108e8217423974160e53ae0c0	2026-08-29T22:32:45+01:00	Qualify card 014 as pending merge on PR 118.
+94223f941138cd4108e8217423974160e53ae0c0	0d4dc4539c73abe5c937b54dcc8616dfecac6d26	2026-08-29T22:23:28+01:00	Supervise host-process watchers through the ordinary process handle.
+0d4dc4539c73abe5c937b54dcc8616dfecac6d26	43a266dd9a0a907a2913e2479ce88ba100e3bf17	2026-08-29T21:02:18+01:00	Dispatch host process watcher supervision
+43a266dd9a0a907a2913e2479ce88ba100e3bf17	d01e8dd426b144982d0da7497833a41134af1933	2026-08-29T21:00:33+01:00	Refocus watchers on host process supervision
+d01e8dd426b144982d0da7497833a41134af1933	0d1ef473b54f3160ad68c0c70bf1c40917a4e396	2026-08-29T17:56:54+01:00	Dispatch Docker containment evidence
+0d1ef473b54f3160ad68c0c70bf1c40917a4e396	56c1fc69e630213d7ef5e453195c1b555594f463	2026-08-29T17:54:42+01:00	Compile Docker containment evidence card
+56c1fc69e630213d7ef5e453195c1b555594f463	ad51b0e7c907fc3f10750e8c645ebf088a592200	2026-08-29T16:17:00+01:00	Record watcher containment target decision
+ad51b0e7c907fc3f10750e8c645ebf088a592200	44c9aeda70155e9efa66477601ca8dc6552d629f	2026-08-29T16:00:52+01:00	Keep failed process exits Failed after containment proof.
+44c9aeda70155e9efa66477601ca8dc6552d629f	684ffbce58c915b07ce97450baca87a6ef1f1e5d	2026-08-29T15:44:09+01:00	Enforce containment lease truth on wait, monitor, and rollback.
+684ffbce58c915b07ce97450baca87a6ef1f1e5d	72d830287a1a3bf2984d178c10aca94a027f82dc	2026-08-29T10:52:04+01:00	Gate process-backed watchers behind an injected containment lease.
+72d830287a1a3bf2984d178c10aca94a027f82dc	b8732fb2f149934a37ec37ef99d892f028af560a	2026-08-29T09:34:27+01:00	fix: close watcher review gaps
+b8732fb2f149934a37ec37ef99d892f028af560a	0982c97c1ebd31698fdc7f37e548ccf8c659d227	2026-08-29T02:06:41+01:00	fix(g05): address host-local watcher review findings
+0982c97c1ebd31698fdc7f37e548ccf8c659d227	060990dd9cfb1145058f62fc6e17d12fa19bf324	2026-08-29T00:21:23+01:00	Record host-local watcher review handoff
+060990dd9cfb1145058f62fc6e17d12fa19bf324	181d9e594d9e9a521b34ce188e33f70f7d8f3a54	2026-08-29T00:20:31+01:00	Implement host-local watcher registry
+181d9e594d9e9a521b34ce188e33f70f7d8f3a54	18e1564b3bda498a5642c39bda866faea6bf0f4e	2026-08-29T10:34:07+01:00	Plan capability-gated watcher containment
+18e1564b3bda498a5642c39bda866faea6bf0f4e	464d45c39fc97a277a754ea6aec1190b9552fd8e	2026-08-28T23:24:41+01:00	docs(g05): dispatch host-local watcher registry
+464d45c39fc97a277a754ea6aec1190b9552fd8e	0b363d4e824e88fce96d476a57d5d2dbb5f323e1	2026-08-28T23:00:09+01:00	fix(g05): restack watcher core and split oversized modules
+0b363d4e824e88fce96d476a57d5d2dbb5f323e1	f7687feafdc76ebf4772740de4cb412018bca3b8	2026-08-28T22:26:54+01:00	fix(g05): turn-bound watcher ids and restack closeout
+f7687feafdc76ebf4772740de4cb412018bca3b8	229584bee351b4de85fcd9eeccb0f249cde9c685	2026-08-28T21:40:30+01:00	fix(g05): address portable watcher review findings
+229584bee351b4de85fcd9eeccb0f249cde9c685	a8828e572c230890958545983f80a8925a3a54e1	2026-08-28T21:16:25+01:00	feat(g05): add portable watcher lifecycle core
+a8828e572c230890958545983f80a8925a3a54e1	a790ef2555755982fadc95bcc4dd7c00c95fbd99	2026-08-28T20:53:34Z	Record Qwen 0.22.3 focused validation in the claim log
+a790ef2555755982fadc95bcc4dd7c00c95fbd99	7d17d17e3d665894a748b5e0de4c5b10bbd6689c	2026-08-28T20:53:14Z	Qualify Qwen headless through official 0.22.3
+7d17d17e3d665894a748b5e0de4c5b10bbd6689c	70badf07361038d937a6c94727e336e8cd21eaa9	2026-08-28T21:47:03+01:00	fix: catch broken research and lane-log Markdown links
+70badf07361038d937a6c94727e336e8cd21eaa9	f43b4e7306a9d22c39a32bf2d25807403ae72540	2026-08-28T21:20:48+01:00	style: rustfmt Claude watcher seam identity test
+f43b4e7306a9d22c39a32bf2d25807403ae72540	a0c436c4674b2255a07091a96ea089bbdc924623	2026-08-28T21:14:46+01:00	docs(g05): freeze Claude Code watcher seam evidence
+a0c436c4674b2255a07091a96ea089bbdc924623	0cf6bd0026f5c45b2c19eb104357b49473c47a09	2026-08-28T21:31:04+01:00	docs: add papercuts wave 8 worker handoff
+0cf6bd0026f5c45b2c19eb104357b49473c47a09	fa3b01ea7d6866519f7186b30f87daa1cece55b4	2026-08-28T21:13:23+01:00	docs(g05): close Qoder effective skill roster evidence empty
+fa3b01ea7d6866519f7186b30f87daa1cece55b4	7a6fbc584c6bb22449bcf5d950aa850b3302dc62	2026-08-28T21:04:42+01:00	docs(g05): promote skill and watcher contracts
+7a6fbc584c6bb22449bcf5d950aa850b3302dc62	ab749d6c00cfc96fc2e9ac85363b489b32786d18	2026-08-28T20:46:42+01:00	docs(g05): record watcher decisions
+ab749d6c00cfc96fc2e9ac85363b489b32786d18	a371257c62aca86797382db00bcf9c6989403a42	2026-08-28T20:38:26+01:00	docs(g05): prepare watcher decision packet
+a371257c62aca86797382db00bcf9c6989403a42	ea247a63275cb774a58d29385eb78200395d8c4d	2026-08-28T20:30:00+01:00	docs(g05): close harness census card
+ea247a63275cb774a58d29385eb78200395d8c4d	ff8a8e2fc0c11c3dff880b1464de38a55a621615	2026-08-28T20:16:40+01:00	fix: address harness census review feedback
+ff8a8e2fc0c11c3dff880b1464de38a55a621615	6f75497cb0c5fdfd9572c021aacb194beb4b84b7	2026-08-28T20:02:37+01:00	docs: record harness census pull request
+6f75497cb0c5fdfd9572c021aacb194beb4b84b7	69c8180553aace72635a2dec938d432d248c1e5e	2026-08-28T20:01:55+01:00	docs: census harness skill and watcher surfaces
+69c8180553aace72635a2dec938d432d248c1e5e	dc9f8df5797e19338ece25c15a0a1ab731d64b6c	2026-08-28T19:08:48+01:00	docs(g05): add harness census worker handoff
+dc9f8df5797e19338ece25c15a0a1ab731d64b6c	b006f49bee7917a5b4b9be9855b6e3f81512a1a8	2026-08-28T19:07:07+01:00	docs(g05): reserve harness census log
+b006f49bee7917a5b4b9be9855b6e3f81512a1a8	d63a519ba1d9079f3a1dcde39ac5dacf6b411bdb	2026-08-28T19:04:48+01:00	docs: close g04 and open g05
+d63a519ba1d9079f3a1dcde39ac5dacf6b411bdb	96b937d1d873defe18f8ddae2ccee4a69d4a7e67	2026-08-28T18:48:44+01:00	docs(g04): close residual feature qualification
+96b937d1d873defe18f8ddae2ccee4a69d4a7e67	35f394ab144f5ec93a7db8193866f6eb8add0ea7	2026-08-28T18:32:35+01:00	docs(g04): record fail-closed gate as failed on card 257
+35f394ab144f5ec93a7db8193866f6eb8add0ea7	8e1ca4c038244ffffef23ebc2fc468ffc3dff122	2026-08-28T18:20:44+01:00	docs(g04): record Kiro agent-profile evidence PR URL
+8e1ca4c038244ffffef23ebc2fc468ffc3dff122	9e317e20333f1acea7c7e9f9c8e1adddb1b26839	2026-08-28T18:20:18+01:00	docs(g04): promote Kiro ACP agent-profile empty set
+9e317e20333f1acea7c7e9f9c8e1adddb1b26839	4b460fe937173d4591c38bb2f5651081b833147e	2026-08-28T18:32:43+01:00	docs(g04): record mode drift fail-closed as failed gate
+4b460fe937173d4591c38bb2f5651081b833147e	eded2b40fa794b00910f8da22d9edaa6b1a90f3f	2026-08-28T18:20:51+01:00	docs(g04): promote Goose ACP mode empty deliver-now set
+eded2b40fa794b00910f8da22d9edaa6b1a90f3f	3d5481590d9c4c7eb087b283856892aedb6ac406	2026-08-28T18:08:01+01:00	docs: add g04.090 worker handoffs
+3d5481590d9c4c7eb087b283856892aedb6ac406	e28979a0fb7376c590cdf28675b26d9a86ac53a2	2026-08-28T18:05:53+01:00	docs: close g04.089 and compile residual audit
+e28979a0fb7376c590cdf28675b26d9a86ac53a2	6e8f111fb236ac2c468dfa32816a536ca7b1845e	2026-08-28T16:33:06+01:00	docs(g04): correct Ask read claim and card 255 withhold wording
+6e8f111fb236ac2c468dfa32816a536ca7b1845e	548a4397f1c94d42c054e49f8bd2bab90e640e64	2026-08-28T14:28:44+01:00	docs(g04): promote Mistral Vibe headless agent-profile empty set
+548a4397f1c94d42c054e49f8bd2bab90e640e64	95479b92fc4bcf9b2683ebfc3aad4a9c71f855e1	2026-08-28T16:31:43+01:00	docs(g04): stop unchecked Kiro effort parser claim on card 254
+95479b92fc4bcf9b2683ebfc3aad4a9c71f855e1	7d6f649b12d15b9b3b887b9db4449239dc3f62f7	2026-08-28T14:24:56+01:00	docs(g04): link Kiro ACP effort evidence PR
+7d6f649b12d15b9b3b887b9db4449239dc3f62f7	3a1ebcc1b1df9dbafad2aec19435bb28833150af	2026-08-28T14:24:38+01:00	docs(g04): promote Kiro ACP effort empty evidence set
+3a1ebcc1b1df9dbafad2aec19435bb28833150af	7f4c2f1761229d99365386d469db1ae51890ad77	2026-08-28T16:32:10+01:00	docs(g04): record Goose builtin rejection as failed gate
+7f4c2f1761229d99365386d469db1ae51890ad77	4ab23bb55716f6100a53137ce5d4eafbc0e80042	2026-08-28T14:27:59+01:00	docs(g04): promote Goose ACP builtin empty evidence set
+4ab23bb55716f6100a53137ce5d4eafbc0e80042	6e4d17a0361997e77e56678a7ec227b4e16745d6	2026-08-28T14:37:26+01:00	docs(g04): promote Claude headless permission-mode empty set
+6e4d17a0361997e77e56678a7ec227b4e16745d6	3491683087bbd5c0670aba7fe28355d70a89ce9b	2026-08-28T10:36:19+01:00	docs: add g04.089 worker handoffs
+3491683087bbd5c0670aba7fe28355d70a89ce9b	23278abe3887f4d82685635339371e9cd3663edb	2026-08-28T10:33:37+01:00	docs: close g04.088 and compile g04.089
+23278abe3887f4d82685635339371e9cd3663edb	82955fbda9ecb68575404db84d85783b8e814dca	2026-08-28T09:04:39+01:00	docs(g04): promote Cline ACP model-selection empty set
+82955fbda9ecb68575404db84d85783b8e814dca	1701c8fc9d261b7ac355288f52528dcc93a04fa3	2026-08-28T09:06:08+01:00	docs(g04): promote Grok ACP web-search-disable empty evidence set
+1701c8fc9d261b7ac355288f52528dcc93a04fa3	c7f07f523c673d6c0063033f772d1500a5b4f06d	2026-08-28T09:04:05+01:00	docs(g04): promote Codex app-server Plan-mode effort empty set
+c7f07f523c673d6c0063033f772d1500a5b4f06d	f73f1818512a75b7465c156ecafb2261b6b9ab1a	2026-08-28T09:19:23+01:00	docs(g04): annotate advisor card acceptance N/A for empty set
+f73f1818512a75b7465c156ecafb2261b6b9ab1a	91c0a0706f656872935f06943e08740038e0db42	2026-08-28T09:10:23+01:00	docs(g04): promote Claude headless advisor empty evidence set
+91c0a0706f656872935f06943e08740038e0db42	dc1e303bc737460e2fd5cb71c8eb0c0d8c466f1e	2026-08-28T08:59:14+01:00	docs: record wave 4 QA flakes PR URL in handoff
+dc1e303bc737460e2fd5cb71c8eb0c0d8c466f1e	16e6e41aca8af55db8481323230da4caad7e092d	2026-08-28T08:59:00+01:00	fix(qa): harden docs status drift and flake-prone deadline tests
+16e6e41aca8af55db8481323230da4caad7e092d	7aa197abe19ecf360bafc40f301bdcd64df7a24f	2026-08-28T08:54:46+01:00	docs: add g04.088 worker handoffs
+7aa197abe19ecf360bafc40f301bdcd64df7a24f	e40a5407358ea779510531b93c7b385961b850fe	2026-08-28T08:52:07+01:00	docs: close g04.087 and compile g04.088
+e40a5407358ea779510531b93c7b385961b850fe	357f10aac4eb770032e1b8fa92b6533ebc77e760	2026-08-27T23:46:59+01:00	docs(g04): promote Gemini ACP sandbox empty evidence set
+357f10aac4eb770032e1b8fa92b6533ebc77e760	7925c07d4091007259e2795c271a57229402bda4	2026-08-27T23:48:41+01:00	docs(g04): promote Cursor ACP model-parameter empty set
+7925c07d4091007259e2795c271a57229402bda4	e767d740bb20c172336a66c72ff02dbe1f08b28b	2026-08-27T23:48:28+01:00	docs(g04): promote Codex app-server Fast empty set
+e767d740bb20c172336a66c72ff02dbe1f08b28b	dd584d05b04107ea8971a6fb77ca9ff0a6593290	2026-08-27T23:56:40+01:00	docs(g04): promote Claude headless spend-cap empty set
+dd584d05b04107ea8971a6fb77ca9ff0a6593290	437af7f6ed8680f4e10e8d12705120ec48a4d040	2026-08-27T23:55:54+01:00	docs: add papercuts wave 4 worker handoff
+437af7f6ed8680f4e10e8d12705120ec48a4d040	d00cea2590f8926cb43bccfbad607719cd58d331	2026-08-27T23:34:39+01:00	docs(handoffs): dispatch g04.087 evidence lanes
+d00cea2590f8926cb43bccfbad607719cd58d331	54258e84459624a157a2e5098cd35c73d9f2072c	2026-08-27T23:31:01+01:00	docs(g04): compile fourth parallel feature wave
+54258e84459624a157a2e5098cd35c73d9f2072c	3f56aeb419296c1f539b09daa939f39fd70e10b3	2026-08-27T22:52:09+01:00	docs(g04): close Cline ACP Plan delivery
+3f56aeb419296c1f539b09daa939f39fd70e10b3	7aa34afa78af4101b54a5214f56a9f0b69877de7	2026-08-27T22:37:20+01:00	Fix Cline ACP Plan review: agree current truth, validate session id, split proof.
+7aa34afa78af4101b54a5214f56a9f0b69877de7	2f38320d5bf22b3da11512ab092cbcd3e6433b02	2026-08-27T22:20:22+01:00	docs(g04): record Cline ACP Plan worker PR URL
+2f38320d5bf22b3da11512ab092cbcd3e6433b02	a88a612bb23bb204299807f87af684cd8b15d232	2026-08-27T22:20:00+01:00	Bind Cline ACP Plan with confirmed set-config.
+a88a612bb23bb204299807f87af684cd8b15d232	abdaefd2bef66a6818953128e07388acb0dcbd6e	2026-08-27T22:04:16+01:00	docs(g04): close qualification wave and compile Cline ACP Plan
+abdaefd2bef66a6818953128e07388acb0dcbd6e	e31efeecbc51c44649de45963ee9d9a0da4cfba1	2026-08-27T20:44:06+01:00	docs(g04): promote Cline ACP Plan-mode evidence
+e31efeecbc51c44649de45963ee9d9a0da4cfba1	5aebec6809ad7adfedca5b54b5b83cd9c4b74134	2026-08-27T21:12:43+01:00	docs(g04): close Gemini sandbox version window evidence
+5aebec6809ad7adfedca5b54b5b83cd9c4b74134	87791d202d8bb27837978788c64bb48186ac79ea	2026-08-27T20:42:38+01:00	docs(g04): freeze Gemini CLI headless sandbox empty set
+87791d202d8bb27837978788c64bb48186ac79ea	a542ce49c55ffa2f92532ce1adf5339fd2723802	2026-08-27T20:44:18+01:00	Promote Codex app-server personality evidence as an empty set.
+a542ce49c55ffa2f92532ce1adf5339fd2723802	f3e7d1954b8d496fe2b47aab5f11a552a9ae815b	2026-08-27T20:50:50+01:00	docs(g04.085a): promote Claude headless autocompact empty set
+f3e7d1954b8d496fe2b47aab5f11a552a9ae815b	4861bbe07a1aaa39dbb243fbbc300f3133496475	2026-08-27T20:29:14+01:00	docs(handoffs): dispatch g04.085 evidence lanes
+4861bbe07a1aaa39dbb243fbbc300f3133496475	6cd968aa70495976fb3ab43e14a7151c3c117f67	2026-08-27T20:25:27+01:00	docs(g04): compile third parallel feature wave
+6cd968aa70495976fb3ab43e14a7151c3c117f67	266ec857cd4df1c8f3c84464c668f9a06ff4e268	2026-08-27T20:14:26+01:00	docs(g04): close realtime reasoning delivery
+266ec857cd4df1c8f3c84464c668f9a06ff4e268	3143c8db5b9300ba15ce76b1b1b1a9ac20bf7de1	2026-08-27T19:51:44+01:00	Fix Realtime reasoning acknowledgement kind and doctor baseline.
+3143c8db5b9300ba15ce76b1b1b1a9ac20bf7de1	5e322d5bb2168ddadf5dcd0a208b14ef5398528d	2026-08-27T19:05:49+01:00	Document and accept OpenAI Realtime reasoning-effort binding.
+5e322d5bb2168ddadf5dcd0a208b14ef5398528d	906224014eefbb8dbc7fad2d64fefb480dc4cf39	2026-08-27T19:05:44+01:00	Bind OpenAI Realtime session-scoped reasoning effort.
+906224014eefbb8dbc7fad2d64fefb480dc4cf39	c1e7311ed084113984b6fa337dbe3d301591c357	2026-08-27T19:44:11+01:00	test: observe mktemp calls for isolated-HOME argument failures
+c1e7311ed084113984b6fa337dbe3d301591c357	2e096f4f253f3f262ed92e2a66fd1a5912b947a8	2026-08-27T19:10:28+01:00	fix: propagate fixture join panics and avoid HOME temp leaks
+2e096f4f253f3f262ed92e2a66fd1a5912b947a8	d05d4b5ccf12c4bab17a090d4dfae60e6632e22c	2026-08-27T18:59:51+01:00	fix: close wave-2 CI and path papercuts
+d05d4b5ccf12c4bab17a090d4dfae60e6632e22c	ed1a2c296f7785deceaa08f9a014d76a8bd81361	2026-08-27T18:32:38+01:00	docs: add g04.084 Realtime reasoning handoff
+ed1a2c296f7785deceaa08f9a014d76a8bd81361	484fb69ed7b142d513a2f87a836b5fb6de6e8bdf	2026-08-27T18:29:38+01:00	docs(g04): compile Realtime reasoning delivery
+484fb69ed7b142d513a2f87a836b5fb6de6e8bdf	c918d3016b93887959e8a985cb672ab276c7851c	2026-08-27T18:16:27+01:00	docs: add papercuts wave 2 worker handoff
+c918d3016b93887959e8a985cb672ab276c7851c	64872d30f4fb1ce3a0e46b70c581c84ce5a2499c	2026-08-27T17:42:20+01:00	docs: fix planning-base provenance label in Research 236
+64872d30f4fb1ce3a0e46b70c581c84ce5a2499c	a647751eb5b0cbbdfa775faa7bd9a74828f0bea4	2026-08-27T17:29:34+01:00	docs: promote OpenAI Realtime reasoning-effort evidence for g04.083d
+a647751eb5b0cbbdfa775faa7bd9a74828f0bea4	60b440b4c438e450c7aecedabdc19afa2023050d	2026-08-27T17:30:57+01:00	docs: link g04.083c lane log to PR 87
+60b440b4c438e450c7aecedabdc19afa2023050d	5ea957eea9da36f758fc2d8b30bfe31a55bb2a66	2026-08-27T17:30:38+01:00	docs: promote Gemini CLI ACP thinking evidence empty set
+5ea957eea9da36f758fc2d8b30bfe31a55bb2a66	5903bab98f6b4150417c5818bfd06418d7e7ec4f	2026-08-27T17:53:41+01:00	docs: align Fast evidence claims with honest empty set
+5903bab98f6b4150417c5818bfd06418d7e7ec4f	373c28a634b8b99e423b8523179e7acfd9d05ae1	2026-08-27T17:43:08+01:00	docs: downgrade Codex exec Fast evidence to honest empty set
+373c28a634b8b99e423b8523179e7acfd9d05ae1	fc383fb10414f219b6d0584d2ac04ac6d4280809	2026-08-27T17:31:34+01:00	docs: promote Codex exec Fast service-tier evidence
+fc383fb10414f219b6d0584d2ac04ac6d4280809	0808a6cff4f48895e700f82b89f0d267d3f47c25	2026-08-27T17:30:27+01:00	docs: promote Claude Code headless Fast-mode evidence with honest empty set
+0808a6cff4f48895e700f82b89f0d267d3f47c25	59c8238623dfdda61a87c7147b5240d87d611ebb	2026-08-27T17:23:56+01:00	docs: dispatch g04.083 evidence workers
+59c8238623dfdda61a87c7147b5240d87d611ebb	ea48173c5b2422ccc7a64108a1a4a15e0cd76b95	2026-08-27T17:20:32+01:00	docs: compile second parallel feature wave
+ea48173c5b2422ccc7a64108a1a4a15e0cd76b95	5d9fa3f53d782b352b1a17486130bf9883bdf977	2026-08-27T17:09:54+01:00	docs: close g04.082 evidence wave
+5d9fa3f53d782b352b1a17486130bf9883bdf977	8516b91283107333cc001ceaa0e0a7e0971e5885	2026-08-27T16:28:44+01:00	docs: close Ollama think evidence review
+8516b91283107333cc001ceaa0e0a7e0971e5885	33d3ade25570be599542c63b4425379514d481ce	2026-08-27T16:03:19+01:00	docs: promote Ollama think max evidence with honest empty set
+33d3ade25570be599542c63b4425379514d481ce	eecd14669cde1fbcb268483d64615ed98d78cdaa	2026-08-27T16:15:42+01:00	Fix card 230 Research link path from batch-cards depth.
+eecd14669cde1fbcb268483d64615ed98d78cdaa	15e85289839492b9b06986379f0a8bff4756ba31	2026-08-27T15:59:38+01:00	Record PR URL on g04.082c Bedrock service-tier lane log.
+15e85289839492b9b06986379f0a8bff4756ba31	3ec2ac3a29b10bf9c33f957f6c3f034f82e61b35	2026-08-27T15:59:15+01:00	Promote empty Bedrock Runtime service-tier evidence set for g04.082c.
+3ec2ac3a29b10bf9c33f957f6c3f034f82e61b35	784c4350e7d2a6ff51680a6449b150cfc7be4a6a	2026-08-27T16:28:44+01:00	docs: close Gemini settings isolation review
+784c4350e7d2a6ff51680a6449b150cfc7be4a6a	0873134502114545217b668945574e71aa66fcb5	2026-08-27T16:16:39+01:00	docs: correct Gemini headless settings isolation analysis
+0873134502114545217b668945574e71aa66fcb5	df8ba194402c4094d13b97ea41fc99dfff66e0cf	2026-08-27T15:59:11+01:00	docs: promote empty deliver-now for Gemini headless thinking
+df8ba194402c4094d13b97ea41fc99dfff66e0cf	99f27d49b42e50fedce3c2e16c4d45f9a9c95ec6	2026-08-27T15:59:05+01:00	Promote empty app-server model verbosity evidence for g04.082 lane A.
+99f27d49b42e50fedce3c2e16c4d45f9a9c95ec6	5ffb16153ecde00fb79ee23654fb60e4899be48f	2026-08-27T16:05:45+01:00	docs: triage harness skills and process watchers
+5ffb16153ecde00fb79ee23654fb60e4899be48f	e6f7258ca2a5532b7fe9fb92fb7dd03f83b27098	2026-08-27T15:47:16+01:00	docs: add parallel feature evidence handoffs
+e6f7258ca2a5532b7fe9fb92fb7dd03f83b27098	568930d5b44b46185c02f4b777bb1c6e7a96ca64	2026-08-27T15:43:47+01:00	docs: compile parallel feature qualification wave
+568930d5b44b46185c02f4b777bb1c6e7a96ca64	31c46dc70ba65128276adbdaf3cda07cfe4cb41a	2026-08-27T15:37:33+01:00	docs: normalize per-route feature inventory
+31c46dc70ba65128276adbdaf3cda07cfe4cb41a	dc797c617f3c9eb4d4ceb1abf7e0df8779d285fe	2026-08-27T14:51:55+01:00	fix(g04.081): restore route-matrix inventory and fmt hygiene
+dc797c617f3c9eb4d4ceb1abf7e0df8779d285fe	77a27372e94b04c2ac2fe7e763a88edd86990ef0	2026-08-27T14:35:34+01:00	fix(g04.081): address review on reasoning selection binding
+77a27372e94b04c2ac2fe7e763a88edd86990ef0	a252c895ded0b418c8b6c544c4148c12ea9c60fc	2026-08-27T14:11:00+01:00	feat(g04.081): bind bounded Pi SDK sidecar reasoning selection
+a252c895ded0b418c8b6c544c4148c12ea9c60fc	9dda4735a2a111537dbe4e3cb3f36edb4c38ce48	2026-08-27T13:40:26+01:00	docs(g04.081): stop Pi SDK sidecar reasoning selection after empty evidence
+9dda4735a2a111537dbe4e3cb3f36edb4c38ce48	5cbb4d6ff4726364c7fe3bde6313fc248211f625	2026-08-27T13:31:17+01:00	docs(handoff): dispatch g04.081 worker lane
+5cbb4d6ff4726364c7fe3bde6313fc248211f625	f6a915eed7ce5a6f7a2521a13c2cdee352f9e5e5	2026-08-27T13:28:43+01:00	docs(g04): compile Pi SDK reasoning selection lane
+f6a915eed7ce5a6f7a2521a13c2cdee352f9e5e5	700b268d619a0fa08d9eb16c4ece2b5305f529a7	2026-08-27T13:03:20+01:00	docs: record g04.080 closeout PR url
+700b268d619a0fa08d9eb16c4ece2b5305f529a7	3599b5b4c657e1dc2fb2c48d363af6bd637baabe	2026-08-27T13:02:54+01:00	docs: stop g04.080 after xai websocket web search evidence
+3599b5b4c657e1dc2fb2c48d363af6bd637baabe	27dcc8fc5e520576b5dbceda90f32a84dddba254	2026-08-27T12:43:52+01:00	docs: hand off g04.080 xai websocket web search
+27dcc8fc5e520576b5dbceda90f32a84dddba254	15a871fef97c0992419fd2997e34b7a88446d924	2026-08-27T12:42:13+01:00	docs: compile g04.080 xai websocket web search
+15a871fef97c0992419fd2997e34b7a88446d924	0533aff78ac5d40e4815ca88e0c8172cd692d498	2026-08-27T12:15:41+01:00	fix(claude-code): dispatch a max-turns bound only from prepared start_run
+0533aff78ac5d40e4815ca88e0c8172cd692d498	e458602c69e9548f0ce9739fba84846b7dfd551a	2026-08-27T11:38:17+01:00	fix(claude-code): gate --max-turns on the exact probed version set
+e458602c69e9548f0ce9739fba84846b7dfd551a	a5a89bba7acf7a8760fad759aa37feef56e31de5	2026-08-27T10:43:46+01:00	docs(g04): record g04.079 PR url and god-file split note
+a5a89bba7acf7a8760fad759aa37feef56e31de5	17e9f95232dc9ff2ee1539820eb69d235fb53576	2026-08-27T10:42:57+01:00	feat(claude-code): bind headless --max-turns across the qualified window
+17e9f95232dc9ff2ee1539820eb69d235fb53576	a7b7865e2d306232ee55735cbe7d5bc28923214e	2026-08-27T09:51:30+01:00	docs(handoff): dispatch g04.079 worker
+a7b7865e2d306232ee55735cbe7d5bc28923214e	d7edcb34ed186df7738437d466d4ecaf6611077a	2026-08-27T09:49:45+01:00	docs(g04): compile Claude Code maximum turns
+d7edcb34ed186df7738437d466d4ecaf6611077a	7e82bb933980348f990c00a77d7daa9dae5ff2a5	2026-08-27T00:11:03+01:00	docs: reconcile g04.078 planning state and correct rejection claims
+7e82bb933980348f990c00a77d7daa9dae5ff2a5	2bba49656016131b024dde299d143e918d4a31be	2026-08-26T23:24:34+01:00	docs: record OpenCode fixture-flake recurrence and g04.078 PR url
+2bba49656016131b024dde299d143e918d4a31be	a963c43f78c88bc3ed34b2eddd4a90993cb9c768	2026-08-26T23:06:39+01:00	feat(llama-cpp): bind owned-serving --reasoning off on exact b10069
+a963c43f78c88bc3ed34b2eddd4a90993cb9c768	8e53a3e6b0b7e68fb5651ae1f50ef9680c4acb4f	2026-08-26T22:43:35+01:00	docs: add g04.078 worker handoff
+8e53a3e6b0b7e68fb5651ae1f50ef9680c4acb4f	f87be6924c71ee411336b3ca4b1d272c820dfdd9	2026-08-26T22:41:48+01:00	docs: compile g04.078 llama.cpp reasoning controls
+f87be6924c71ee411336b3ca4b1d272c820dfdd9	acf59d374bd43b323cdd0305e3ee24b478ae08c3	2026-08-26T22:13:49+01:00	test(cursor): drive every promoted release through the Ask path
+acf59d374bd43b323cdd0305e3ee24b478ae08c3	6bd03cb65d295250d3f655af28ef7d968cf58ee6	2026-08-26T21:57:22+01:00	feat(cursor): bind headless Ask read mode on exact qualified builds
+6bd03cb65d295250d3f655af28ef7d968cf58ee6	056d3f2912ce74b31f362d1ae89b0445cfa8f3dd	2026-08-26T21:32:33+01:00	docs: record g04.077 closeout PR url
+056d3f2912ce74b31f362d1ae89b0445cfa8f3dd	4319e7ce1a7b5154226c5ffb405f6b2db079f38f	2026-08-26T21:31:57+01:00	docs: stop g04.077 after cursor ask evidence
+4319e7ce1a7b5154226c5ffb405f6b2db079f38f	c12eeaf3ac041d66b31bd4cd26dd569efc1e6efd	2026-08-26T21:10:06+01:00	docs: hand off g04.077 cursor ask mode
+c12eeaf3ac041d66b31bd4cd26dd569efc1e6efd	347ba0a95bbc8187c4210db944c83ec636d25132	2026-08-26T21:08:02+01:00	docs: compile g04.077 cursor headless ask mode
+347ba0a95bbc8187c4210db944c83ec636d25132	9c7f4dd4e12b0df88d44d40df1123f9843a3aa08	2026-08-26T20:43:25+01:00	docs: align g04 README 076 entries with evidence stop
+9c7f4dd4e12b0df88d44d40df1123f9843a3aa08	989745732b9b6efb5add72f2499554aa7afd6d28	2026-08-26T20:22:23+01:00	docs: record g04.076 closeout PR url
+989745732b9b6efb5add72f2499554aa7afd6d28	bf8f16269f149af6b4a6f9238e1af46d4ff66f13	2026-08-26T20:21:41+01:00	docs: stop g04.076 after cursor sandbox evidence
+bf8f16269f149af6b4a6f9238e1af46d4ff66f13	9afc07eede0ab175a3c8fc4b834448043c356f9b	2026-08-26T20:07:44+01:00	docs: hand off g04.076 cursor headless provider sandbox
+9afc07eede0ab175a3c8fc4b834448043c356f9b	b841c947568c5d6308ae5fb0c5f7451be7d1b8d6	2026-08-26T20:05:20+01:00	docs: compile g04.076 cursor headless provider sandbox
+b841c947568c5d6308ae5fb0c5f7451be7d1b8d6	d92b79e5729e07ce31c3b9c39af25080e2a44188	2026-08-26T19:24:41+01:00	fix(qwen): fail closed Plan binding on the Qwen package axis
+d92b79e5729e07ce31c3b9c39af25080e2a44188	fd750c5aa3797ffa75a5955a875c327d20319ff4	2026-08-26T18:48:19+01:00	docs: record g04.075 closeout PR url
+fd750c5aa3797ffa75a5955a875c327d20319ff4	1a213b5cc4ce7938fa4b39c66899d9da81ababd3	2026-08-26T18:47:39+01:00	feat(qwen): bind headless HarnessMode::Plan as canonical --approval-mode plan
+1a213b5cc4ce7938fa4b39c66899d9da81ababd3	92eb372ace84a5bd85741a4de2f673f4bbe8af69	2026-08-26T18:13:27+01:00	docs: retarget g04.075 handoff to main
+92eb372ace84a5bd85741a4de2f673f4bbe8af69	c51c3c80722cc3e3fbbd1d9a3f938ae7af7bba96	2026-08-26T17:36:44+01:00	docs: hand off g04.075 qwen headless plan mode
+c51c3c80722cc3e3fbbd1d9a3f938ae7af7bba96	f22f2f9c41c3a4b8d67f4f0e46d5431b61f77560	2026-08-26T17:26:21+01:00	docs: compile g04.075 qwen headless plan mode
+f22f2f9c41c3a4b8d67f4f0e46d5431b61f77560	dabc1dc264988ce6cfb8e0148166773bccb92760	2026-08-26T17:07:04+01:00	fix(cline): correct run_result.model fixture truth and reconcile readiness surfaces
+dabc1dc264988ce6cfb8e0148166773bccb92760	f688475bda1818715a46db69fcb597ffc3c0f79d	2026-08-26T16:43:19+01:00	docs: record g04.074 closeout PR url
+f688475bda1818715a46db69fcb597ffc3c0f79d	60cc3ec7e50568ee56fe3575eb53f8d4835bed7b	2026-08-26T16:42:37+01:00	docs: stop g04.074 cline headless model selection after card 204
+60cc3ec7e50568ee56fe3575eb53f8d4835bed7b	279a53c0f8ddf5896e457dd57eb3b639ae07d272	2026-08-26T16:23:49+01:00	docs: hand off g04.074 cline headless model selection
+279a53c0f8ddf5896e457dd57eb3b639ae07d272	35cd1411e7579a1c8ab4216c6446b471e019e70c	2026-08-26T16:21:41+01:00	docs: compile g04.074 cline headless model selection
+35cd1411e7579a1c8ab4216c6446b471e019e70c	704739bf844352e5f37f68e88a8ef71172bcbadf	2026-08-26T15:53:09+01:00	fix(cline): omit Plan from operation requirements unless selected
+704739bf844352e5f37f68e88a8ef71172bcbadf	585ce7011258232e1bb71422d5e9cd3a9ca0f1a5	2026-08-26T15:39:33+01:00	docs: close g04.073 cline headless plan mode
+585ce7011258232e1bb71422d5e9cd3a9ca0f1a5	11eb81bb851225163f72c44ad620ca85c7f37cee	2026-08-26T15:39:26+01:00	feat(cline): bind headless HarnessMode::Plan as canonical --plan
+11eb81bb851225163f72c44ad620ca85c7f37cee	f4314e8f56f25f6a4cae6c514719002260290c53	2026-08-26T15:39:19+01:00	docs: promote Research 220 cline headless plan-mode evidence
+f4314e8f56f25f6a4cae6c514719002260290c53	8c65d976e4832ed948830ec2c84a77fd635a7610	2026-08-26T15:12:54+01:00	docs: hand off g04.073 cline headless plan mode
+8c65d976e4832ed948830ec2c84a77fd635a7610	6232bf572d2b405f89977c2e107dbf69fb39a1da	2026-08-26T15:10:51+01:00	docs: compile g04.073 cline headless plan mode
+6232bf572d2b405f89977c2e107dbf69fb39a1da	813344eb8831a7abdb4c5d1bd9a573d2772a7ee7	2026-08-26T14:45:12+01:00	docs: record g04.072 PR 71 in the closeout
+813344eb8831a7abdb4c5d1bd9a573d2772a7ee7	d8481fdc444c9c0e5069a265cea64839492f3a9c	2026-08-26T14:44:11+01:00	docs: stop g04.072 after empty Grok subagents-disabled evidence
+d8481fdc444c9c0e5069a265cea64839492f3a9c	4d8c6db6ac29ce470bf77e0307051ffd572154f9	2026-08-26T13:45:44+01:00	docs: hand off g04.072 grok subagent restriction
+4d8c6db6ac29ce470bf77e0307051ffd572154f9	b320c0395e370f03a720f3e5064e4c3621760519	2026-08-26T13:43:19+01:00	docs: compile g04.072 grok subagent restriction
+b320c0395e370f03a720f3e5064e4c3621760519	641e68f0c8fc5c7bf592bfe08676a005823c2c63	2026-08-26T13:18:15+01:00	docs: reword g04.071 allowlist goal to match the empty set
+641e68f0c8fc5c7bf592bfe08676a005823c2c63	574cf02d68df9677f2c7f83216c0db82c4e199ff	2026-08-26T13:10:46+01:00	docs: record g04.071 PR 70 in the closeout
+574cf02d68df9677f2c7f83216c0db82c4e199ff	a971f30ed025459dbec463a136fdfcdc6f672569	2026-08-26T13:09:46+01:00	docs: stop g04.071 after empty Copilot tool-allowlist evidence
+a971f30ed025459dbec463a136fdfcdc6f672569	08d24df25dc242b50be75d0c7ebd97bf63fbb182	2026-08-26T12:49:57+01:00	docs: hand off g04.071 Copilot tool allowlist
+08d24df25dc242b50be75d0c7ebd97bf63fbb182	b08fc291ae850091c5a687e3db8580d2c91f90d0	2026-08-26T12:47:40+01:00	docs: compile g04.071 Copilot tool allowlist lane
+b08fc291ae850091c5a687e3db8580d2c91f90d0	f945c65b85e9316e6a2a30bc957f3b93fecab2a9	2026-08-26T10:34:14Z	Record Oh My Pi 18 restack validation.
+f945c65b85e9316e6a2a30bc957f3b93fecab2a9	619fd209fbe894c27f55e5428a94ac42794260f0	2026-08-26T10:33:10Z	Restack Oh My Pi 18 identity onto PR68 as a this-run stop.
+619fd209fbe894c27f55e5428a94ac42794260f0	54258d29742e03ae926d0859cdcc1abd82b587cd	2026-08-26T10:28:14Z	Record Qwen 0.22.1 restack validation
+54258d29742e03ae926d0859cdcc1abd82b587cd	d1c35f9e738a98f1e1ecd85018cdd0e83728575e	2026-08-26T10:26:06Z	Index Qwen 0.22.1 currentness in g04
+d1c35f9e738a98f1e1ecd85018cdd0e83728575e	0b753ecf59f32711b76ca5d8c1570f0eb61bae4e	2026-08-26T10:24:57Z	Address Qwen 0.22.1 currentness review
+0b753ecf59f32711b76ca5d8c1570f0eb61bae4e	88dc3b5e5d89bd75934bb039d0c8b13f0503348a	2026-08-26T09:41:11Z	Record Qwen 0.22.1 focused validation in the claim log
+88dc3b5e5d89bd75934bb039d0c8b13f0503348a	5d29d58a177ad343eee8cbc9842c55406541e74d	2026-08-26T09:40:19Z	Qualify Qwen headless through official 0.22.1
+5d29d58a177ad343eee8cbc9842c55406541e74d	9354e65ffc47c846fa839088e08cc2aaee58d27e	2026-08-26T10:36:47+01:00	docs: record g04.067 PR 67 in the closeout
+9354e65ffc47c846fa839088e08cc2aaee58d27e	9324441a6a8226fc970fa8c118869f1258eea54b	2026-08-26T10:35:09+01:00	docs: stop g04.067 after empty OpenCode web-search evidence
+9324441a6a8226fc970fa8c118869f1258eea54b	6f82a932da91549c6d6d121cc7edc90fe13fc573	2026-08-26T09:48:17Z	Authorize Pi RPC architecture ceiling refresh in g04.068
+6f82a932da91549c6d6d121cc7edc90fe13fc573	dc525cd1424a21fe1c47d3a594a88d13c97d2c2b	2026-08-26T09:37:31Z	Index Pi 0.84.3 currentness as g04.068
+dc525cd1424a21fe1c47d3a594a88d13c97d2c2b	04ef89cf082026eaf87e6bab100f1e3412060eca	2026-08-26T09:36:09Z	Renumber Pi currentness to g04.068 / Research 215
+04ef89cf082026eaf87e6bab100f1e3412060eca	6ac48cafd9461ceb61913c2e2044af7098f9e076	2026-08-26T08:38:46Z	Record Pi RPC 0.84.3 claim validation
+6ac48cafd9461ceb61913c2e2044af7098f9e076	9f003d9aa17b09ad188080fa2b37203aee00dda5	2026-08-26T08:35:17Z	Qualify Pi RPC through official 0.84.3
+9f003d9aa17b09ad188080fa2b37203aee00dda5	6409af0c472595a2dcd02a25fff2ddb933da562c	2026-08-26T10:21:06+01:00	docs: add g04.067 worker handoff
+6409af0c472595a2dcd02a25fff2ddb933da562c	0166a492c73d7fb4f07c8b62699a5d932f5cb0e5	2026-08-26T10:18:44+01:00	docs: compile g04.067 OpenCode web search
+0166a492c73d7fb4f07c8b62699a5d932f5cb0e5	46070dfda1fe5340ea9ae051ef40db63087bad44	2026-08-26T09:09:36+01:00	docs(northstar): reconcile PR 65 merge
+46070dfda1fe5340ea9ae051ef40db63087bad44	97d991c4b0f233b3fac1d3bfc5cc0f2233846c3e	2026-08-26T09:02:35+01:00	Fix exact Codex verbosity release admission
+97d991c4b0f233b3fac1d3bfc5cc0f2233846c3e	9d74e8045b509eac0d2c3c36a6b9a32fdc5e919a	2026-08-25T23:44:23+01:00	Record g04.066 PR 65 in the reserved closeout.
+9d74e8045b509eac0d2c3c36a6b9a32fdc5e919a	b19a913834bc45f5f8fad95fa1ac40cd842545cd	2026-08-25T23:43:54+01:00	Bind Codex Exec model verbosity from Research 213.
+b19a913834bc45f5f8fad95fa1ac40cd842545cd	b967ee8a6e84eb6642e3c634f8950dbcf6b2ab8b	2026-08-25T23:11:04+01:00	docs: add g04.066 worker handoff
+b967ee8a6e84eb6642e3c634f8950dbcf6b2ab8b	5f5dcb36a05ae3d075ab7b0571099739fc718c4a	2026-08-25T23:08:46+01:00	docs: compile g04.066 Codex Exec verbosity
+5f5dcb36a05ae3d075ab7b0571099739fc718c4a	ebe12dea5e5b1fa9668d89126e3011d26a9307dc	2026-08-25T22:30:48+01:00	Address PR 64 review: fix evidence-record accuracy.
+ebe12dea5e5b1fa9668d89126e3011d26a9307dc	7687ea8e1d972925122f3753734bb53bc0ad2d5b	2026-08-25T22:17:55+01:00	Stop g04.065 after Ultracode evidence shows no deliver-now row.
+7687ea8e1d972925122f3753734bb53bc0ad2d5b	9d26ec9c8b42e65f27310ae2c62d60e28a0d8fb9	2026-08-25T21:55:36+01:00	docs: hand off g04.065 Claude Code Ultracode
+9d26ec9c8b42e65f27310ae2c62d60e28a0d8fb9	d48eac90afc8acf241405d63c3f26e205b31f4d8	2026-08-25T21:53:14+01:00	docs: compile g04.065 Claude Code Ultracode
+d48eac90afc8acf241405d63c3f26e205b31f4d8	f58eb5f0c0e755c886ecd90b7d0d66fe9df56f1c	2026-08-25T21:43:14+01:00	docs(northstar): reconcile PR 63 merge
+f58eb5f0c0e755c886ecd90b7d0d66fe9df56f1c	b1f18e24fbd65a8c15e345ad914fb3c026be65fc	2026-08-25T21:24:17+01:00	test(kimi-headless): split v2 protocol guard proofs for doctor baseline
+b1f18e24fbd65a8c15e345ad914fb3c026be65fc	564f55d4a1874abf953d425a60b295478bbf07ff	2026-08-25T21:07:28+01:00	fix(kimi-headless): gate v2 preamble first and bind provider-failure corpus
+564f55d4a1874abf953d425a60b295478bbf07ff	5f796146a32a16f5ca5727fa4b4bfc474eaf97f2	2026-08-25T20:37:35+01:00	fix(kimi-headless): enforce v2 preamble without new public facade
+5f796146a32a16f5ca5727fa4b4bfc474eaf97f2	099ad012564d6498e5d3ac8e7f26f0f3f5332fd8	2026-08-25T20:19:09+01:00	Qualify Kimi headless 0.38.0 under agent-core-v2 stream-json v2.
+099ad012564d6498e5d3ac8e7f26f0f3f5332fd8	3a65457c2724ca24a51c23cb0f9848a0769a1712	2026-08-25T20:05:22+01:00	docs: hand off g04.064 Kimi headless v2
+3a65457c2724ca24a51c23cb0f9848a0769a1712	5f37ff6bf8ef920bb22d87c2e7c3918fa7102301	2026-08-25T20:03:05+01:00	docs: compile g04.064 Kimi headless v2
+5f37ff6bf8ef920bb22d87c2e7c3918fa7102301	b10c0e089b5ebbdb415a6241823431291be7f170	2026-08-25T19:42:50+01:00	docs: clean up Kimi 0.38.0 headless authority after retraction
+b10c0e089b5ebbdb415a6241823431291be7f170	419151e3ed14820f2ce8f811679048d91568ee2f	2026-08-25T19:29:46+01:00	fix: retract Kimi headless 0.38.0 qualification after v2 dispatch evidence
+419151e3ed14820f2ce8f811679048d91568ee2f	44b3074bbddf69bb1488fd25c1cb8eb09a1f8080	2026-08-25T18:46:03+01:00	docs: fix Research 210 headless engine routing and v2 effort audit
+44b3074bbddf69bb1488fd25c1cb8eb09a1f8080	43583a5dc7f732bfc36262108bf274c11fae7384	2026-08-25T18:26:25+01:00	docs: stop g04.063 Kimi headless reasoning effort at empty evidence
+43583a5dc7f732bfc36262108bf274c11fae7384	a00d92409565f5dfa32ef0a0275529c91d83a7c5	2026-08-25T18:12:34+01:00	docs: hand off g04.063 Kimi headless reasoning effort
+a00d92409565f5dfa32ef0a0275529c91d83a7c5	d7c16adb532889e5fa8b3de00fdc80cc2bf3c11f	2026-08-25T18:10:59+01:00	docs: compile g04.063 Kimi headless reasoning effort
+d7c16adb532889e5fa8b3de00fdc80cc2bf3c11f	4ef5c5e95a892c9e4a11fad9b5887cc705184f17	2026-08-25T18:06:06+01:00	docs: close out g04.062 merge
+4ef5c5e95a892c9e4a11fad9b5887cc705184f17	9ea1cff758b0e4d683f464639caa3f9067d0a4fd	2026-08-25T17:54:15+01:00	fix(anthropic): keep replay encoding and curl upload zeroizing
+9ea1cff758b0e4d683f464639caa3f9067d0a4fd	88bfc0a1c00cb433f9c0f457a2d127c925e205f4	2026-08-25T17:39:41+01:00	fix(anthropic): zeroize private request bodies and parse failures
+88bfc0a1c00cb433f9c0f457a2d127c925e205f4	05386dd426545cf8392f55a16228119d456cd670	2026-08-25T16:47:56+01:00	fix(anthropic): redact SSE frames and reject late thinking
+05386dd426545cf8392f55a16228119d456cd670	fb8e8cab0f5a7a855cbb2877e05b9f550ed6d4de	2026-08-25T16:24:31+01:00	docs: record g04.062 review PR 61
+fb8e8cab0f5a7a855cbb2877e05b9f550ed6d4de	a69b3546eea09c7cf15edea0733a8301dec1e662	2026-08-25T16:23:45+01:00	feat(anthropic): bind exact opus 4.7 adaptive omitted thinking
+a69b3546eea09c7cf15edea0733a8301dec1e662	19c3250556f17daed5679b2034204f0363e7b449	2026-08-25T15:27:42+01:00	docs: hand off g04.062 anthropic adaptive thinking
+19c3250556f17daed5679b2034204f0363e7b449	da7b6982e884b861fca38bfa6d2acdc366a7bc8e	2026-08-25T15:25:17+01:00	docs: compile g04.062 anthropic adaptive thinking
+da7b6982e884b861fca38bfa6d2acdc366a7bc8e	f21220cdb57b5108bd0c1f7ee81de4d48149fd8e	2026-08-25T15:15:44+01:00	docs: close out g04.061 merge
+f21220cdb57b5108bd0c1f7ee81de4d48149fd8e	9f7d143155e015b9e734b56e9377b3032a6bd4c8	2026-08-25T15:04:08+01:00	fix(kimi-acp): gate plan mode on the current config snapshot
+9f7d143155e015b9e734b56e9377b3032a6bd4c8	049b73894dfebb2ec15c21b0f3a7d3511a58c81a	2026-08-25T14:37:14+01:00	feat(kimi-acp): bind HarnessMode::Plan on qualified ACP sessions
+049b73894dfebb2ec15c21b0f3a7d3511a58c81a	1a7e9f5d1702834db4cdc97cbc4da0720fb65ac2	2026-08-25T14:37:05+01:00	docs: promote Research 208 kimi acp plan-mode evidence
+1a7e9f5d1702834db4cdc97cbc4da0720fb65ac2	492e57faac552ea1caa9f801a72a59e7f404019b	2026-08-25T14:03:09+01:00	docs: hand off g04.061 kimi acp plan mode
+492e57faac552ea1caa9f801a72a59e7f404019b	dc191750ca46673504194cbad367663430a4ea94	2026-08-25T14:00:44+01:00	docs: compile g04.061 kimi acp plan mode
+dc191750ca46673504194cbad367663430a4ea94	ed3bed9ccf3bb4c8f1901e9f0256e6f126b8958f	2026-08-25T13:34:53+01:00	fix(kimi-acp): gate xhigh/max on declared-effort behavior
+ed3bed9ccf3bb4c8f1901e9f0256e6f126b8958f	5edcb32e75d754cca06eca89fd8a2d9af887add4	2026-08-25T12:49:01+01:00	feat(kimi-acp): admit catalogue-declared xhigh and max effort
+5edcb32e75d754cca06eca89fd8a2d9af887add4	cbc5ae7d518d12c37904cea792094c1fc178ccc5	2026-08-25T11:36:07+01:00	docs: hand off g04.060 kimi acp extended effort
+cbc5ae7d518d12c37904cea792094c1fc178ccc5	333776418071813c5b2ae660187f54ac93a52555	2026-08-25T11:33:51+01:00	docs: compile g04.060 kimi acp extended effort
+333776418071813c5b2ae660187f54ac93a52555	87876f0069c94979e8183679e68776284b4454fe	2026-08-25T11:17:32+01:00	docs: close out g04.059 merge
+87876f0069c94979e8183679e68776284b4454fe	c0f803aa458a14bbec1382c4c68faa5ac5a19227	2026-08-25T00:10:46+01:00	docs(g04.059): record PR 58 on model-selection closeout
+c0f803aa458a14bbec1382c4c68faa5ac5a19227	b60ba0df44da66e821f8eacad9f041486a04f705	2026-08-25T00:10:28+01:00	docs(g04.059): promote Research 206 empty model-selection stop
+b60ba0df44da66e821f8eacad9f041486a04f705	386027e78915f26f3c2020e0c0d6bb639f8eace6	2026-08-24T23:58:29+01:00	docs: hand off g04.059 deepagents model selection
+386027e78915f26f3c2020e0c0d6bb639f8eace6	a5d51cf8863fb18c7bf9db90c02f011d47416e41	2026-08-24T23:56:32+01:00	docs: compile g04.059 deepagents model selection
+a5d51cf8863fb18c7bf9db90c02f011d47416e41	8796be65ee8dc38dc4a708b6390742b6a2c91a7a	2026-08-24T23:38:31+01:00	docs: close g04.058 merge
+8796be65ee8dc38dc4a708b6390742b6a2c91a7a	2e5a9a6ae9ae9d297576d89ddeeb1e6fe63fe13a	2026-08-24T23:32:14+01:00	docs(g04.058): align papercut with Research 205 incident truth
+2e5a9a6ae9ae9d297576d89ddeeb1e6fe63fe13a	a4a84cdf0e899aefec7fb4cf964bc207c333be0a	2026-08-24T23:14:55+01:00	docs(g04.058): point closeout at substantive review commit
+a4a84cdf0e899aefec7fb4cf964bc207c333be0a	2d6a3ffe8774811e93cd800402d9783788d3a46b	2026-08-24T23:14:30+01:00	docs(g04.058): align closeout stamp to tip
+2d6a3ffe8774811e93cd800402d9783788d3a46b	1639021217e4a538fb9f77b05e044fc8ecbf95b8	2026-08-24T23:14:13+01:00	docs(g04.058): point closeout at final review head
+1639021217e4a538fb9f77b05e044fc8ecbf95b8	e8b58088fc00f6e54aee7415e9c8c5f3d2b29ff4	2026-08-24T23:14:11+01:00	docs(g04.058): stamp review-correction head on closeout
+e8b58088fc00f6e54aee7415e9c8c5f3d2b29ff4	8f87b1d22cb2498f3f3709ad97db5d406f5a40b9	2026-08-24T23:13:53+01:00	docs(g04.058): correct Research 205 stop authority and scope
+8f87b1d22cb2498f3f3709ad97db5d406f5a40b9	8a9e17171ed7a138a2fed451d7290456d1ebf731	2026-08-24T23:03:26+01:00	docs(g04.058): record PR 57 URL on closeout
+8a9e17171ed7a138a2fed451d7290456d1ebf731	a4f102f3e64c577b01b26ecc591f9a7704b5d81e	2026-08-24T23:02:58+01:00	docs(g04.058): promote Research 205 empty agent-profile set
+a4f102f3e64c577b01b26ecc591f9a7704b5d81e	4ef1cc875ce30fbb3890f2f68d631083497c3238	2026-08-24T22:51:13+01:00	docs: add g04.058 worker handoff
+4ef1cc875ce30fbb3890f2f68d631083497c3238	612ec352ffefef0a926cff4410c8fc88b1b95fcb	2026-08-24T22:49:24+01:00	docs: compile g04.058 Antigravity agent profiles
+612ec352ffefef0a926cff4410c8fc88b1b95fcb	0b8639a712601be58921c05d7f1c84c76072dd61	2026-08-24T22:19:52+01:00	docs: close g04.057 merge
+0b8639a712601be58921c05d7f1c84c76072dd61	3dff924831c4b9a03e3d67fa5873bc6d0b7decb4	2026-08-24T21:56:00+01:00	docs(g04.057): classify exact x.ai/sessionConfig channel
+3dff924831c4b9a03e3d67fa5873bc6d0b7decb4	56dd8dd24834f9bf1f9c23c07e793bb42fffa126	2026-08-24T21:43:53+01:00	docs(g04.057): split 1.0.4/1.0.5 reasoning hint evidence
+56dd8dd24834f9bf1f9c23c07e793bb42fffa126	47e1d8fee35d072082e0d3501922a864d7c1133e	2026-08-24T21:15:21+01:00	docs(g04.057): record PR 56 on the evidence-stop closeout
+47e1d8fee35d072082e0d3501922a864d7c1133e	8d904f4c7309075800698f63bbac3fc131b72d19	2026-08-24T21:14:42+01:00	docs(g04.057): promote Research 204 empty reasoning set
+8d904f4c7309075800698f63bbac3fc131b72d19	a40cefd510b6131ec867637ff80157544a4d6e7e	2026-08-24T21:02:33+01:00	docs: add g04.057 worker handoff
+a40cefd510b6131ec867637ff80157544a4d6e7e	aee0a9874951e678c3d4e915155264b0947d4c85	2026-08-24T21:00:29+01:00	docs: compile g04.057 Grok ACP reasoning
+aee0a9874951e678c3d4e915155264b0947d4c85	54d021e4e90ee6b77af76d662be208835e2e95a6	2026-08-24T18:56:54+01:00	docs: close g04.056 merge
+54d021e4e90ee6b77af76d662be208835e2e95a6	b404458e5f7162eff72d46221f2ec8dac92930c9	2026-08-24T18:44:17+01:00	docs(g04.056): record PR 55 and worker head
+b404458e5f7162eff72d46221f2ec8dac92930c9	c487eab968e5f68d776183131436e6d3fb7b694d	2026-08-24T18:43:41+01:00	feat(llama-cpp): dispatch owned b10069 --ctx-size
+c487eab968e5f68d776183131436e6d3fb7b694d	522c15816618efe04fb3c50280c651280fb621f0	2026-08-24T18:27:16+01:00	docs: add g04.056 worker handoff
+522c15816618efe04fb3c50280c651280fb621f0	170bc3cbf5eaa1b77274391d350e3bb57428920a	2026-08-24T18:25:22+01:00	docs: compile g04.056 llama.cpp context size
+170bc3cbf5eaa1b77274391d350e3bb57428920a	aaf753b7360906fc7240f9fbc12ab914b7bb0601	2026-08-24T18:10:47+01:00	docs: close PR 54 merge
+aaf753b7360906fc7240f9fbc12ab914b7bb0601	fa44ca8e6a0da38e60a48f3cbb73a02782256ac4	2026-08-24T11:43:33+01:00	docs(g04.053): reconcile Qoder max-turns claims to factory 1000
+fa44ca8e6a0da38e60a48f3cbb73a02782256ac4	d3ed48a9bc43d8a4b435bdda4e87f6e2dc03441e	2026-08-24T10:30:28+01:00	docs(g04.053): reconcile Research 200 with qualified-route claims
+d3ed48a9bc43d8a4b435bdda4e87f6e2dc03441e	8ccf983522db471387cea981568d8f519a7dc7d1	2026-08-24T09:39:24+01:00	docs(g04.053): record evidence PR 54 on closeout
+8ccf983522db471387cea981568d8f519a7dc7d1	a2ebf148c7f5270836e4ba1f09f1b20457ff09a2	2026-08-24T09:38:52+01:00	docs(g04.053): stop Qoder max-turns after empty Research 200
+a2ebf148c7f5270836e4ba1f09f1b20457ff09a2	b1798f50eefa7bfc66cd67fd247c67309df0b02d	2026-08-24T09:48:49+01:00	docs(claude-code): complete 2.1.241 currentness closeout
+b1798f50eefa7bfc66cd67fd247c67309df0b02d	f48089309766c89dbf50cb9dac1ea6dd8f43bfd3	2026-08-24T08:34:34Z	docs: record Claude Code 2.1.241 claim validation
+f48089309766c89dbf50cb9dac1ea6dd8f43bfd3	ee58b7a903046d44d3c0099a1b029f685f304150	2026-08-24T08:29:33Z	Qualify Claude Code headless and response-only through 2.1.241
+ee58b7a903046d44d3c0099a1b029f685f304150	4589790bfa2e4e7a73984debc4cd941cadcf073f	2026-08-24T09:44:30+01:00	docs(codex): complete 0.149.1 currentness closeout
+4589790bfa2e4e7a73984debc4cd941cadcf073f	cd49b4649ef7e2e18f0ceab95fdac37f1ed322ca	2026-08-24T05:27:10Z	docs(codex): record 0.149.1 claim validation
+cd49b4649ef7e2e18f0ceab95fdac37f1ed322ca	af82f44160923ea4576e6a3b9527dc00077e7ea5	2026-08-24T05:25:20Z	fix(codex): restore for-loop bodies after 0.149.1 claim edit
+af82f44160923ea4576e6a3b9527dc00077e7ea5	8a5415fd684246204c9d8ef2a537499bee2a705d	2026-08-24T05:22:26Z	feat(codex): qualify official CLI 0.149.1
+8a5415fd684246204c9d8ef2a537499bee2a705d	f7593490ccf6f7f1f3cf741c04eb20b8112c09e5	2026-08-24T00:08:48+01:00	docs: dispatch g04.053 qoder max turns
+f7593490ccf6f7f1f3cf741c04eb20b8112c09e5	2fb24536e1a17c9bc36132c9ffd94938da653ac0	2026-08-24T00:06:57+01:00	docs: close g04.052 and compile qoder max turns
+2fb24536e1a17c9bc36132c9ffd94938da653ac0	5709e97a500597a2bd8f3ac6460a53b7c383ec8c	2026-08-23T23:43:03+01:00	test(mistral-vibe): split max-turn proofs below god-file error
+5709e97a500597a2bd8f3ac6460a53b7c383ec8c	cb04d1e24d8c5a5e334711e573c3539b0205d21c	2026-08-23T23:27:14+01:00	docs: record g04.052 worker PR 51
+cb04d1e24d8c5a5e334711e573c3539b0205d21c	de1ef813f878fbed4bc436fb90e656121bba477d	2026-08-23T23:26:34+01:00	feat(mistral-vibe): bind caller-decreasing headless max turns
+de1ef813f878fbed4bc436fb90e656121bba477d	ae0c300b0c4be4d6cc90a553fc15ca68bd783ed3	2026-08-23T22:53:54+01:00	docs: add g04.052 worker handoff
+ae0c300b0c4be4d6cc90a553fc15ca68bd783ed3	43902285c07bf2e397f863d9e80cd28046e7fa77	2026-08-23T22:51:50+01:00	docs: compile g04.052 mistral vibe max turns
+43902285c07bf2e397f863d9e80cd28046e7fa77	9807e322eb86aad453e03c3b4de4059ec11b9364	2026-08-23T22:40:26+01:00	docs: close qwen budget feature lane
+9807e322eb86aad453e03c3b4de4059ec11b9364	3dabc0039c1fbaf1dde1318698b256894cb3eb27	2026-08-23T22:22:16+01:00	test(qwen): split headless budget proofs below god-file limits
+3dabc0039c1fbaf1dde1318698b256894cb3eb27	5e03e9033d51e8a0f449f30edfe5b0875c190607	2026-08-23T22:11:23+01:00	docs(qwen): record g04.051 worker PR 50
+5e03e9033d51e8a0f449f30edfe5b0875c190607	f6f3bec5da0b2028733c7a992c5da1235fc5df3a	2026-08-23T22:10:57+01:00	feat(qwen): bind caller-decreasing headless turn and tool budgets
+f6f3bec5da0b2028733c7a992c5da1235fc5df3a	8ac42636cbb6d6bce89de48ffd5c252a19629ee6	2026-08-23T22:18:37+01:00	docs: record qwen budget proof papercut
+8ac42636cbb6d6bce89de48ffd5c252a19629ee6	68f34ab06550b3029d494a128c1676474dfe0cef	2026-08-23T21:05:28+01:00	docs: hand off g04.051 qwen budgets
+68f34ab06550b3029d494a128c1676474dfe0cef	e044c3a43213af14cd3ff1f5408c5e0b8d594fe8	2026-08-23T21:03:18+01:00	docs: compile g04.051 qwen budgets
+e044c3a43213af14cd3ff1f5408c5e0b8d594fe8	f1c3db10edbfef756094534d2000557d9ab7faa7	2026-08-23T20:51:21+01:00	docs: recommend qwen headless budget controls
+f1c3db10edbfef756094534d2000557d9ab7faa7	c369871a16b7e6b9415a689415bee3a749a5ddc5	2026-08-23T20:43:08+01:00	docs: keep g04 active after PR 49
+c369871a16b7e6b9415a689415bee3a749a5ddc5	52413da0bcee940d006e800fa36fb111b156b8af	2026-08-23T20:34:48+01:00	docs: close g04 after PR 49
+52413da0bcee940d006e800fa36fb111b156b8af	ac0378d6d5ce7f1a2cae4463d6606362a6a1e4a6	2026-08-23T20:01:50+01:00	docs(deepseek): record g04.050 review handoff
+ac0378d6d5ce7f1a2cae4463d6606362a6a1e4a6	414a6bfbe41e443e7853fb93fb48c888e365f25f	2026-08-23T20:00:48+01:00	feat(deepseek): bind disabled structured thinking mode
+414a6bfbe41e443e7853fb93fb48c888e365f25f	61f18efe86474c55fdb69fc8e04e40ec250cebbd	2026-08-23T19:12:18+01:00	docs: dispatch g04.050 thinking mode
+61f18efe86474c55fdb69fc8e04e40ec250cebbd	4878385d10da1a828d9fc2c281cc5d32d300652b	2026-08-23T19:09:49+01:00	docs: compile g04.050 thinking mode
+4878385d10da1a828d9fc2c281cc5d32d300652b	06c00e6c402472aa31d9ebdc246317d96c6fef19	2026-08-23T18:58:30+01:00	docs: close g04.049 after merge
+06c00e6c402472aa31d9ebdc246317d96c6fef19	12269e40f820355a92c89dda19e09ceb887080fb	2026-08-23T18:37:49+01:00	docs: record g04.049 selected-tier checkpoint rejection head
+12269e40f820355a92c89dda19e09ceb887080fb	3aa4f11929eb52b164cae302d6fcdd7631a75b86	2026-08-23T18:37:41+01:00	fix(openai): reject selected-tier checkpoints before reconciliation
+3aa4f11929eb52b164cae302d6fcdd7631a75b86	efa1e5eba5f34fbf37384349f9bce53552acfb75	2026-08-23T17:18:43+01:00	docs: record g04.049 dispatch-only default review-fix head
+efa1e5eba5f34fbf37384349f9bce53552acfb75	67295954e877b9b2b24baa8a393ed6e7176ae029	2026-08-23T17:18:12+01:00	feat(openai): bind dispatch-only background service-tier default
+67295954e877b9b2b24baa8a393ed6e7176ae029	fe5e327b7f20edc595e19f1d05bf45fcbc215782	2026-08-23T16:45:52+01:00	docs: record g04.049 evidence-stop PR 48
+fe5e327b7f20edc595e19f1d05bf45fcbc215782	8d49f7049e4372fc304580a5f75ce7d77983ca45	2026-08-23T16:45:06+01:00	docs: stop g04.049 after empty service-tier deliver-now set
+8d49f7049e4372fc304580a5f75ce7d77983ca45	e6960758999d45423518179773350589150f0fdb	2026-08-23T16:28:18+01:00	docs: dispatch g04.049 service tier
+e6960758999d45423518179773350589150f0fdb	c54b9a3bfa56808f7c2c8cd821236dc061446411	2026-08-23T16:26:16+01:00	docs: compile g04.049 service tier
+c54b9a3bfa56808f7c2c8cd821236dc061446411	4784805632e79f16f4ef314abe4c0cfb9df3e11f	2026-08-23T16:10:37+01:00	docs: close g04.048 after merge
+4784805632e79f16f4ef314abe4c0cfb9df3e11f	86cc8c5fb03abe46d0978b76194584c3ade3fbf9	2026-08-23T15:55:49+01:00	fix(gemini): canonicalize live setup bytes
+86cc8c5fb03abe46d0978b76194584c3ade3fbf9	35b1b282950bfb0391e9df7c3d46c21a2cdfb8ce	2026-08-23T14:30:30+01:00	docs(gemini): record context compression closeout
+35b1b282950bfb0391e9df7c3d46c21a2cdfb8ce	6ca26a19aee32d13b45eaae766063f6205a3b3a6	2026-08-23T14:29:42+01:00	feat(gemini): bind live context compression
+6ca26a19aee32d13b45eaae766063f6205a3b3a6	5a7d951e621211caf1d188e5018f986b68a43fd1	2026-08-23T13:41:04+01:00	docs: add g04.048 worker handoff
+5a7d951e621211caf1d188e5018f986b68a43fd1	1ab9942a218d07b837a196b20c25c22adde3c37b	2026-08-23T13:39:03+01:00	docs: compile g04.048 context compression
+1ab9942a218d07b837a196b20c25c22adde3c37b	c2878262c8d1bdc34810c5edc8f84e6235938a43	2026-08-23T12:56:22+01:00	docs: close g04.047 after merge
+c2878262c8d1bdc34810c5edc8f84e6235938a43	ab850d3fc9070aadf66ce7417ed21184765b151c	2026-08-23T12:28:33+01:00	fix(g04.047): address PR 46 orchestrator review
+ab850d3fc9070aadf66ce7417ed21184765b151c	dc6037b259aeffea327452e588c27d82b13a44b1	2026-08-23T12:17:06+01:00	docs(g04.047): record PR 46 on output-maximum closeout
+dc6037b259aeffea327452e588c27d82b13a44b1	8d3717a010ea496c7f231fd6f4e576dfd4d05c9f	2026-08-23T12:16:41+01:00	feat(gemini-live): bind output-token maximum 1..=65536
+8d3717a010ea496c7f231fd6f4e576dfd4d05c9f	277c982d216001839a7a3ef8be1988a3e9de0bf5	2026-08-23T12:09:36+01:00	docs(g04.047): promote Research 194 Gemini Live output-token maximum
+277c982d216001839a7a3ef8be1988a3e9de0bf5	c51e3e9898c6ea08e217d0d981d2b982e0a5590b	2026-08-23T12:00:10+01:00	docs: hand off g04.047 Gemini Live output maximum
+c51e3e9898c6ea08e217d0d981d2b982e0a5590b	78df1d27178ce07f4d9179087b9a738e01764b74	2026-08-23T11:58:21+01:00	docs: compile g04.047 Gemini Live output maximum
+78df1d27178ce07f4d9179087b9a738e01764b74	04cc22f2f7e455d47a14b23d16528b93e4e96acb	2026-08-23T11:45:25+01:00	docs: close g04.046 after merge
+04cc22f2f7e455d47a14b23d16528b93e4e96acb	95af1dccee6e6debcfca78070be4c28ec54a10cf	2026-08-23T11:35:00+01:00	docs(g04): record green CI on the g04.046 review head
+95af1dccee6e6debcfca78070be4c28ec54a10cf	86d6178d798c61d81bf1dc4993da0d2cd183d245	2026-08-23T11:27:57+01:00	fix(gemini): mint an exact facade point for Gemini Live thinking levels
+86d6178d798c61d81bf1dc4993da0d2cd183d245	cfdf8ece2007aa5a3dd4e5b33071c5aab4c6f3be	2026-08-23T10:58:46+01:00	docs(g04): record g04.046 PR and card 129 validation truth
+cfdf8ece2007aa5a3dd4e5b33071c5aab4c6f3be	0fbb2b38fe9b48210e3e06ecc7b677bd8f0c0e36	2026-08-23T10:58:02+01:00	test(gemini): prove Gemini Live thinking-level dispatch and continuity
+0fbb2b38fe9b48210e3e06ecc7b677bd8f0c0e36	d5ccae3e22d00bb70571c8b9914903f5cf1665dc	2026-08-23T10:44:48+01:00	feat(gemini): bind Gemini Live thinking-level selection
+d5ccae3e22d00bb70571c8b9914903f5cf1665dc	382ab3863046bbb6bb4e3dbe048fd3369aeee0c9	2026-08-23T10:38:24+01:00	docs(g04): freeze Gemini Live thinking-level evidence
+382ab3863046bbb6bb4e3dbe048fd3369aeee0c9	c8335e5e44c94b3e43d57b4bbfd45dce74aad477	2026-08-23T10:26:59+01:00	docs: add g04.046 worker handoff
+c8335e5e44c94b3e43d57b4bbfd45dce74aad477	7314dd601aa3cd6aaa6353e57c1491a7ba707695	2026-08-23T10:25:04+01:00	docs: normalize g04.046 file endings
+7314dd601aa3cd6aaa6353e57c1491a7ba707695	0f82a08915fde352aa5198ae77a45da9c5f9f446	2026-08-23T10:24:35+01:00	docs: compile g04.046 Gemini Live thinking
+0f82a08915fde352aa5198ae77a45da9c5f9f446	8a2640ea4543430efa4766eeae9f2b0e4eee54eb	2026-08-23T02:59:48+01:00	docs: close g04.045 after evidence stop
+8a2640ea4543430efa4766eeae9f2b0e4eee54eb	fec7537b739fefc0a971515ca49de86326a0de72	2026-08-23T02:25:05+01:00	docs: reconcile Claude schema draft evidence
+fec7537b739fefc0a971515ca49de86326a0de72	9c81b327371d9efdbb8b33178a1ca050f4bd208c	2026-08-23T02:11:50+01:00	docs: record Claude headless evidence PR
+9c81b327371d9efdbb8b33178a1ca050f4bd208c	1fe9066676a1568b1910a80656879dc395c9a50e	2026-08-23T02:10:55+01:00	docs: close Claude headless structured output evidence stop
+1fe9066676a1568b1910a80656879dc395c9a50e	2fa3e761c531f20af4415a5297b209b41732532a	2026-08-23T01:41:46+01:00	docs: hand off g04.045 worker lane
+2fa3e761c531f20af4415a5297b209b41732532a	c245d4e9fed6522077a90079bf8047ba5e1aa7d9	2026-08-23T01:40:05+01:00	docs: compile g04.045 Claude structured output
+c245d4e9fed6522077a90079bf8047ba5e1aa7d9	bdb7ea88d850ef6610ade2d581a58fc076f980f2	2026-08-23T01:25:43+01:00	docs: close g04.044 after merge
+bdb7ea88d850ef6610ade2d581a58fc076f980f2	455536c86a962088cdb7cb03f1123be823781b7a	2026-08-23T01:06:59+01:00	g04.044: close roadmap acceptance records
+455536c86a962088cdb7cb03f1123be823781b7a	3c47ae9fdff5006b3f036663de7aa2391c6b1fc7	2026-08-23T01:01:35+01:00	g04.044: cover direct OpenAI minimal rejection
+3c47ae9fdff5006b3f036663de7aa2391c6b1fc7	5c96468e87f04dfae0918c467c254e75616eb880	2026-08-23T00:46:41+01:00	g04.044: record correction PR closeout
+5c96468e87f04dfae0918c467c254e75616eb880	a8cad66d2ab6599d24cab194a07a2ed9b4db37ad	2026-08-23T00:45:37+01:00	g04.044: close OpenAI reasoning correction
+a8cad66d2ab6599d24cab194a07a2ed9b4db37ad	72d536830bd0c5b2e5a2a62a5409562270a866e3	2026-08-23T00:39:07+01:00	g04.044: correct OpenAI background reasoning facade
+72d536830bd0c5b2e5a2a62a5409562270a866e3	1b3b5bb243a14eeacc9475cc9efa595f4e009321	2026-08-23T00:24:37+01:00	docs: add g04.044 worker handoff
+1b3b5bb243a14eeacc9475cc9efa595f4e009321	685dbf1abf16ebc6f261343f472b6620b33e99d2	2026-08-23T00:22:50+01:00	docs: compile g04.044 reasoning correction
+685dbf1abf16ebc6f261343f472b6620b33e99d2	f21ff281748acacd41f893f35dd6f4aad2d1189e	2026-08-23T00:11:41+01:00	docs: address OpenAI search review feedback
+f21ff281748acacd41f893f35dd6f4aad2d1189e	a21b469fa83b4159a11d805ca2a0e5d9cc470d2d	2026-08-22T23:42:27+01:00	docs: record OpenAI search evidence PR
+a21b469fa83b4159a11d805ca2a0e5d9cc470d2d	4179bff8a618007214f09bd99c765e65474eba03	2026-08-22T23:41:51+01:00	docs: close OpenAI background search evidence lane
+4179bff8a618007214f09bd99c765e65474eba03	2d969cbb79d3f660b2e9f97657a01c487d4d3dc4	2026-08-22T23:15:37+01:00	docs: add g04.043 worker handoff
+2d969cbb79d3f660b2e9f97657a01c487d4d3dc4	38c4a53baede01742654684dc121389f32006e61	2026-08-22T23:14:00+01:00	docs: compile OpenAI background search lane
+38c4a53baede01742654684dc121389f32006e61	27b34c7daac175621893c41935579a82cec472da	2026-08-22T23:03:34+01:00	docs: close out Cline thinking controls
+27b34c7daac175621893c41935579a82cec472da	c329309070d2942b10d9882c056d08f999a7e12b	2026-08-22T22:37:08+01:00	docs: record g04.042 corrected head and review state
+c329309070d2942b10d9882c056d08f999a7e12b	4d2ca7eccddfbdbf01dc9c2838bea92b781bc261	2026-08-22T22:37:01+01:00	docs(g04.042): correct headless acknowledgement truth to the selected argv
+4d2ca7eccddfbdbf01dc9c2838bea92b781bc261	c4ff220f0248a0e82beacea845b085c01856ea2f	2026-08-22T22:27:51+01:00	docs: record g04.042 evidence PR truth
+c4ff220f0248a0e82beacea845b085c01856ea2f	019b2c94c362bdda3675afad5ae579a8ef5add2c	2026-08-22T22:27:13+01:00	docs(g04.042): stop Cline thinking controls on exact 3.0.55 evidence
+019b2c94c362bdda3675afad5ae579a8ef5add2c	c07a184e3ec212d9e5ab78142ed4eac7ee45e97d	2026-08-22T22:02:13+01:00	docs: dispatch g04.042 Cline thinking worker
+c07a184e3ec212d9e5ab78142ed4eac7ee45e97d	cc56ee9edfbb70ca81a5b7a1587d670ec789c9de	2026-08-22T22:00:22+01:00	docs: compile g04.042 Cline thinking controls
+cc56ee9edfbb70ca81a5b7a1587d670ec789c9de	709d197cd59fdb42a9dea5fe5b0156610b093a3d	2026-08-22T21:47:08+01:00	docs(g04): close Qwen reasoning delivery
+709d197cd59fdb42a9dea5fe5b0156610b093a3d	09cbd50bba9b15d5b3b9ee22b9eb02d619e040c4	2026-08-22T21:28:31+01:00	docs: record qwen review-fix truth
+09cbd50bba9b15d5b3b9ee22b9eb02d619e040c4	22113db18f0d73d1b69a42769a702789857b7466	2026-08-22T21:28:14+01:00	fix: address qwen reasoning review feedback
+22113db18f0d73d1b69a42769a702789857b7466	df29bb9f9dbb1e875c45c81f6c5989ad0655f83b	2026-08-22T20:44:49+01:00	docs(qwen): clarify PR closeout head
+df29bb9f9dbb1e875c45c81f6c5989ad0655f83b	b20c5e84dd77c61df0521ad8ccb6e5bcc931267c	2026-08-22T20:43:32+01:00	docs(qwen): record reasoning effort PR closeout
+b20c5e84dd77c61df0521ad8ccb6e5bcc931267c	a4440b4f917aa065bcc1e946deabecad87841acf	2026-08-22T20:42:38+01:00	feat(qwen): bind headless reasoning effort
+a4440b4f917aa065bcc1e946deabecad87841acf	ba1418f81e9878ac411540cae1f4fa5744ae5699	2026-08-22T17:53:21+01:00	docs(handoff): dispatch g04.041 Qwen effort
+ba1418f81e9878ac411540cae1f4fa5744ae5699	d8084738f81bafdcc9db4a26f0b7e0b58f686a2f	2026-08-22T17:51:41+01:00	docs(g04): compile Qwen reasoning effort
+d8084738f81bafdcc9db4a26f0b7e0b58f686a2f	da0871d5241a85460cc0f98f89eace5244785752	2026-08-22T17:29:15+01:00	docs(g04): close Copilot effort evidence stop
+da0871d5241a85460cc0f98f89eace5244785752	17392ac69c08727a64087a0a9c05ba3a8a0e4c8b	2026-08-22T17:15:31+01:00	docs(g04): record Copilot ACP effort stop PR
+17392ac69c08727a64087a0a9c05ba3a8a0e4c8b	7347d425f69269679dfb09893679023f3abe829f	2026-08-22T17:14:39+01:00	docs(g04): stop Copilot ACP effort after 1.0.80 evidence
+7347d425f69269679dfb09893679023f3abe829f	cb6810e8df6ab4642a8a1338c2f8c424bfb7cb04	2026-08-22T17:00:19+01:00	docs(handoff): dispatch g04.040 Copilot effort
+cb6810e8df6ab4642a8a1338c2f8c424bfb7cb04	6434f8f0ae9563be06487968e68c811bf9ae5dfb	2026-08-22T16:58:24+01:00	docs(g04): compile Copilot ACP effort
+6434f8f0ae9563be06487968e68c811bf9ae5dfb	e9ae1a49a90a32c9242eaec0b64d80c3050d2e40	2026-08-22T16:07:14+01:00	docs(g04): close xAI controls
+e9ae1a49a90a32c9242eaec0b64d80c3050d2e40	a3742e8418af965581f31d9bcf6d5bdbd61186ba	2026-08-22T15:52:20+01:00	docs(g04): record API gate limitation
+a3742e8418af965581f31d9bcf6d5bdbd61186ba	0605abf8c53977b8ed6f894fdca7185420d7a362	2026-08-22T15:50:06+01:00	fix(xai): address Responses controls review
+0605abf8c53977b8ed6f894fdca7185420d7a362	6ad12932509f3cb026bf5763f5faddf1cd98aea6	2026-08-22T14:16:26+01:00	docs(g04): record xAI controls PR
+6ad12932509f3cb026bf5763f5faddf1cd98aea6	537ca5671a0d51ea9a1e9b5cd85cde2044d0d210	2026-08-22T14:15:13+01:00	docs(g04): close xAI responses controls
+537ca5671a0d51ea9a1e9b5cd85cde2044d0d210	75c8941fdf739554e89d96e8231bc2a4e150734c	2026-08-22T14:01:18+01:00	feat(xai): bind Responses reasoning and output controls
+75c8941fdf739554e89d96e8231bc2a4e150734c	906e776d957b02b25b0d69fce71b28d6543af40f	2026-08-22T13:51:05+01:00	docs(g04): qualify xAI responses controls
+906e776d957b02b25b0d69fce71b28d6543af40f	834476f4fa504badad9d6fce8920a315cde98f19	2026-08-22T13:34:03+01:00	docs(g04): dispatch xAI responses controls
+834476f4fa504badad9d6fce8920a315cde98f19	badb400a69dfd9ba2562117daef5c9bdc520c088	2026-08-22T13:32:03+01:00	docs(g04): close feature wave and compile xAI controls
+badb400a69dfd9ba2562117daef5c9bdc520c088	34b42da6734dd1dfdd8af89f40e248d775a2cae2	2026-08-22T13:03:36+01:00	docs(deepseek): refresh restacked evidence head
+34b42da6734dd1dfdd8af89f40e248d775a2cae2	4cb679d00776282642982550ddbc75ae7c145d13	2026-08-22T12:29:55+01:00	docs(deepseek): point closeout at final fix
+4cb679d00776282642982550ddbc75ae7c145d13	cc588aca132f090f6980404b22ae6692232595c5	2026-08-22T12:29:43+01:00	fix(deepseek): preserve broad route reasoning support
+cc588aca132f090f6980404b22ae6692232595c5	f150de9be0b8a725aa70c6623085c12325f78405	2026-08-22T12:27:54+01:00	docs(deepseek): record exact plan binding review
+f150de9be0b8a725aa70c6623085c12325f78405	d0b14fe86adbca5bf2e830ba5a28348d772c1c21	2026-08-22T12:27:03+01:00	fix(deepseek): bind prepared reasoning selection exactly
+d0b14fe86adbca5bf2e830ba5a28348d772c1c21	a61803d90fb036de85223f1d00dad928b2560c7f	2026-08-22T11:43:47+01:00	docs(deepseek): record reasoning control review
+a61803d90fb036de85223f1d00dad928b2560c7f	1141123c91e2985809a2ee3bc3d6e8be3926876e	2026-08-22T11:41:33+01:00	feat(deepseek): close reasoning control acceptance
+1141123c91e2985809a2ee3bc3d6e8be3926876e	807696d2130746994258c5e6cb3f808a4891cc70	2026-08-22T11:28:42+01:00	feat(deepseek): bind exact reasoning effort controls
+807696d2130746994258c5e6cb3f808a4891cc70	56a7b87b50ae30ffed56f299121df7aa9adeacb1	2026-08-22T11:21:06+01:00	docs(deepseek): promote reasoning control evidence
+56a7b87b50ae30ffed56f299121df7aa9adeacb1	283fe50d2fd9aa714b60d9bed84ec67767588b57	2026-08-22T13:03:12+01:00	docs(anthropic): refresh restacked implementation head
+283fe50d2fd9aa714b60d9bed84ec67767588b57	146892239a6cb5cf2b8252d47c8c05c3a97dbf38	2026-08-22T12:18:34+01:00	fix(anthropic): stabilize Messages JSON ordering
+146892239a6cb5cf2b8252d47c8c05c3a97dbf38	c40032d53c2ecd7b99af2562728fce02e6764796	2026-08-22T11:48:28+01:00	docs(anthropic): record messages effort PR
+c40032d53c2ecd7b99af2562728fce02e6764796	74d21c6f97b5970691a6a1be8bfa76cf0475a982	2026-08-22T11:45:55+01:00	test(anthropic): close messages effort acceptance
+74d21c6f97b5970691a6a1be8bfa76cf0475a982	efa31ad0f98b430fec6903678785ab2334739b91	2026-08-22T11:34:17+01:00	feat(anthropic): bind messages effort selection
+efa31ad0f98b430fec6903678785ab2334739b91	227fefad3e1c9d254bcc53483910a0ec87ed05e4	2026-08-22T11:25:14+01:00	docs(research): promote anthropic effort evidence
+227fefad3e1c9d254bcc53483910a0ec87ed05e4	ab8983fe9c96d547818da2d7fae8e2f992132463	2026-08-22T12:55:49+01:00	style(ollama): format prepared context tests
+ab8983fe9c96d547818da2d7fae8e2f992132463	dacc71e5ea4f0a873a393737d29c43a5bfabe837	2026-08-22T12:39:08+01:00	fix(ollama): scope num_ctx binding to prepared dispatch path
+dacc71e5ea4f0a873a393737d29c43a5bfabe837	f6ddb44d5de5850814de9b913239e9b9101a890c	2026-08-22T12:26:10+01:00	fix(ollama): bind context dispatch to prepared request identity
+f6ddb44d5de5850814de9b913239e9b9101a890c	515efd8fb569173ef070e84dd7b58930600ff019	2026-08-22T12:12:31+01:00	fix(ollama): keep num_ctx binding adapter-local per g04.036
+515efd8fb569173ef070e84dd7b58930600ff019	00f64b629ea14f76e20edb48d292a63ee5fd9000	2026-08-22T11:47:33+01:00	fix(ollama): close second g04.036 review blockers
+00f64b629ea14f76e20edb48d292a63ee5fd9000	ef812cf5e1fd3e0638574ba1e044d1ef467dc8b1 6ca15697809a99ee86135ea00b662c4229e85887	2026-08-22T11:22:47+01:00	fix(ollama): address g04.036 review feedback and restack on main
+6ca15697809a99ee86135ea00b662c4229e85887	ad03d7d1371342bc1610479a843b4821a7824e24	2026-08-22T10:59:38+01:00	docs(handoff): dispatch parallel feature workers
+ef812cf5e1fd3e0638574ba1e044d1ef467dc8b1	544432f4462ee34b2afdcc09f90b50a6cddbd3fb	2026-08-22T10:59:22+01:00	feat(ollama): add adapter-local num_ctx dispatch for g04.036
+ad03d7d1371342bc1610479a843b4821a7824e24	3742fb4c890a46d11b941eb8c0a1eca0d7cec52e	2026-08-22T10:56:44+01:00	docs(g04): isolate parallel feature closeouts
+3742fb4c890a46d11b941eb8c0a1eca0d7cec52e	544432f4462ee34b2afdcc09f90b50a6cddbd3fb	2026-08-22T10:53:01+01:00	docs(g04): compile parallel route feature wave
+544432f4462ee34b2afdcc09f90b50a6cddbd3fb	a62c343bce9f013b1bb18d1b7412cac2bb186f33	2026-08-22T10:35:46+01:00	docs(handoff): dispatch Ollama num_ctx worker
+a62c343bce9f013b1bb18d1b7412cac2bb186f33	a3ed073b6fd047e852f52683ae143224059f3f00	2026-08-22T10:33:53+01:00	docs(g04): compile Ollama context window milestone
+a3ed073b6fd047e852f52683ae143224059f3f00	db6b8e29be6f9b3fb04049641bf4ae8541de95eb	2026-08-22T10:15:51+01:00	style(cursor): apply cargo fmt for headless model parameters
+db6b8e29be6f9b3fb04049641bf4ae8541de95eb	ce294d47fe1d873bdd9396758a257797b12feab1	2026-08-22T09:37:08+01:00	fix(cursor): close headless model-id validation bypass in review
+ce294d47fe1d873bdd9396758a257797b12feab1	cec71275e7c183d2af67246163681de68b4b3bfd	2026-08-22T09:18:32+01:00	feat(cursor): add headless model parameter typed binding
+cec71275e7c183d2af67246163681de68b4b3bfd	2f6afaa6ee37d68dd873408370dce8e60d336c19	2026-08-22T08:55:35+01:00	docs(handoff): dispatch Cursor model parameters worker
+2f6afaa6ee37d68dd873408370dce8e60d336c19	76a7b2e85f97a8bc227d4836e975ea816fd61265	2026-08-22T08:52:57+01:00	docs(g04): compile Cursor model parameters milestone
+76a7b2e85f97a8bc227d4836e975ea816fd61265	2d5c0f14ad5bfe4728be157467e70c553d2be6d1	2026-08-22T08:20:29+01:00	fix: address Gemini currentness review
+2d5c0f14ad5bfe4728be157467e70c553d2be6d1	c2186c971d80a5a2cc1489939e7c7c7e2db2c1d1	2026-08-22T00:59:30+01:00	feat: qualify Gemini CLI 0.56
+c2186c971d80a5a2cc1489939e7c7c7e2db2c1d1	686acb359e8478ae98dc9c5c24242de53af16f3f	2026-08-22T00:51:28+01:00	docs: freeze Gemini CLI 0.56 identity
+686acb359e8478ae98dc9c5c24242de53af16f3f	eb3445284431c975c41ea61c7570ee9e9f9f44b3	2026-08-22T00:20:43+01:00	docs(g04): dispatch Gemini CLI 0.56.0 currentness
+eb3445284431c975c41ea61c7570ee9e9f9f44b3	c9ff0a4b142327548aa20cb7df588034a76f9a5d	2026-08-22T00:18:59+01:00	docs(g04): compile Gemini CLI 0.56.0 currentness
+c9ff0a4b142327548aa20cb7df588034a76f9a5d	9aac2dd17e9d4a53040ab8ebd7d697175c404947	2026-08-22T00:08:42+01:00	Close out g04.033 after merge
+9aac2dd17e9d4a53040ab8ebd7d697175c404947	344294b9b4470d217e223096234472b47d954fab	2026-08-22T00:03:51+01:00	Fix Pi sidecar session and cleanup boundaries
+344294b9b4470d217e223096234472b47d954fab	5e8a0ec83155797a703b45745d9afcd3f40803b9	2026-08-21T23:26:36+01:00	Admit the Pi SDK sidecar route and close g04.033
+5e8a0ec83155797a703b45745d9afcd3f40803b9	c81168d2b5e7d11c9cce0334c10a4ef3b654347e	2026-08-21T22:43:13+01:00	Realize Pi SDK sidecar persistent sessions
+c81168d2b5e7d11c9cce0334c10a4ef3b654347e	b32f9a477fc3f09d245b089889a76a28fa3584b8	2026-08-21T21:40:15+01:00	Add the fresh Pi SDK sidecar driver
+b32f9a477fc3f09d245b089889a76a28fa3584b8	0ce07a74eecd3d7e96922776f35c11d8d41cc7cd	2026-08-21T17:07:04+01:00	Freeze the Pi SDK sidecar asset and private wire corpus
+0ce07a74eecd3d7e96922776f35c11d8d41cc7cd	e9e5be10760858e9696dc7b2a6dbb5287fe7593a	2026-08-21T15:57:31+01:00	docs(handoff): dispatch g04.033 Pi SDK sidecar
+e9e5be10760858e9696dc7b2a6dbb5287fe7593a	4d0da403e7900da6fd6e687c3aed4d49ccdf8881	2026-08-21T15:54:45+01:00	docs(g04): compile Pi SDK sidecar route
+4d0da403e7900da6fd6e687c3aed4d49ccdf8881	a08c89a1f754c804d8f97cd2c0a2f0f9891bc0a7	2026-08-21T15:13:54+01:00	Close out g04.024 after merge
+a08c89a1f754c804d8f97cd2c0a2f0f9891bc0a7	373a54a54bf52706fe82c3751ca85d042232bd25	2026-08-21T15:05:31+01:00	Format the Kimi lifecycle proof
+373a54a54bf52706fe82c3751ca85d042232bd25	bd43ef7857b74192d19f32ea959f55e1659e68f3	2026-08-21T14:49:00+01:00	Complete the Kimi Platform Chat connection lifecycle
+bd43ef7857b74192d19f32ea959f55e1659e68f3	74a3574716bcde425f1e5d8433374287bbb2e025	2026-08-21T14:38:17+01:00	Admit Kimi Platform Chat and hand off to preparation
+74a3574716bcde425f1e5d8433374287bbb2e025	accab5d0ee8ba95e6b6aa03d41058d65b012b3c8	2026-08-21T14:34:35+01:00	Expose the hosted Kimi Platform Chat addable descriptor
+accab5d0ee8ba95e6b6aa03d41058d65b012b3c8	72fc9bba12b009e3352d199118c3716028796360	2026-08-21T14:41:27+01:00	docs: reset post-Kimi priorities
+72fc9bba12b009e3352d199118c3716028796360	2ab2203efd931935383a27762af6538c745f6fdd	2026-08-21T14:16:56+01:00	docs: hand off g04.024 Kimi Platform Chat
+2ab2203efd931935383a27762af6538c745f6fdd	7889cc63b242473d9d3864211f9ec7557c8bbbb7	2026-08-21T12:31:33+01:00	Assess research triage and close currentness stack
+7889cc63b242473d9d3864211f9ec7557c8bbbb7	1b1aa7b924ac3eeb85a8fed74aa5f7783c0a151b	2026-08-21T10:45:21Z	docs: record Kimi 0.38.0 claim validation
+1b1aa7b924ac3eeb85a8fed74aa5f7783c0a151b	6d86feb68de72c728e149958ab23bd0a740c740f	2026-08-21T10:43:05Z	Qualify official Kimi Code 0.38.0 as compatible-extension
+6d86feb68de72c728e149958ab23bd0a740c740f	7f9eb52d3f907767bb4976676d9e27894b57085a	2026-08-21T10:31:25Z	Record Oh My Pi 17.4.0 focused proof and package verify.
+7f9eb52d3f907767bb4976676d9e27894b57085a	a8317ac4c7815a12383fbbbde538ed3ac31e66ee	2026-08-21T10:28:14Z	Qualify official Oh My Pi 17.4.0 as compatible-extension.
+a8317ac4c7815a12383fbbbde538ed3ac31e66ee	ae988df704ebbea3f6ccb628d7d23d3232996d3e	2026-08-21T10:21:34Z	Restack Antigravity 1.1.17 currentness
+ae988df704ebbea3f6ccb628d7d23d3232996d3e	0db37e1517d177f1b771b0fb6202ed7d78fd4f8a	2026-08-21T10:18:26Z	Qualify Antigravity catalogue and headless through 1.1.17
+0db37e1517d177f1b771b0fb6202ed7d78fd4f8a	3dd72fcf23abce75e771bdb8846e3fbeef5b4651	2026-08-21T10:17:12Z	Freeze Antigravity 1.1.17 identity as compatible-extension
+3dd72fcf23abce75e771bdb8846e3fbeef5b4651	0cd5735df52b51773e5935748576db54ab955782	2026-08-21T10:04:23Z	Qualify official OpenCode HTTP 1.18.20 as compatible-extension
+0cd5735df52b51773e5935748576db54ab955782	33f21a4c4ca5067c2a2ec9eb934521277cc1382a	2026-08-21T09:53:40Z	Qualify official Claude Code 2.1.238 as compatible-extension
+33f21a4c4ca5067c2a2ec9eb934521277cc1382a	51c6f2a79aabc3df16003d2e5e2670ee9653ff12	2026-08-21T10:39:51Z	docs: triage new route candidates (2026-08-21)
+51c6f2a79aabc3df16003d2e5e2670ee9653ff12	635a1d23d031736ba71c54b37a262724b711a703	2026-08-21T10:38:17Z	docs: triage advanced route features (2026-08-21)
+635a1d23d031736ba71c54b37a262724b711a703	1c8fa6c3641c0325363124a06d405b2cf535a86b	2026-08-21T11:53:26+01:00	docs: record currentness numbering papercut
+1c8fa6c3641c0325363124a06d405b2cf535a86b	0c528209dc7a08053ecd5faff6b943f61a1081fb	2026-08-21T11:41:04+01:00	docs(g04): close stack and compile Kimi cards
+0c528209dc7a08053ecd5faff6b943f61a1081fb	0d7e0157b0cdc6bdd219b084265ff1ea30bbf37d	2026-08-21T11:13:03+01:00	style: rustfmt Ollama adapter after restack
+0d7e0157b0cdc6bdd219b084265ff1ea30bbf37d	d1942d73f5120c80c75fb1d51ae51921e10d572f	2026-08-21T09:49:44Z	docs: restore Ollama architecture ceiling; leave g04 front door
+d1942d73f5120c80c75fb1d51ae51921e10d572f	2b65294c2e846fd57a7156a9673df9d27cb9b711	2026-08-21T09:48:28Z	docs: keep Ollama 0.32.15 extracurricular to the g04 loop
+2b65294c2e846fd57a7156a9673df9d27cb9b711	521c7b2463244ece81eae5b02951cf3171f50d74	2026-08-21T09:46:13Z	docs: restack Ollama 0.32.15 to Research 174 / g04.027
+521c7b2463244ece81eae5b02951cf3171f50d74	ea27dcd2c4872a3fc8360829304872fe7978cea1	2026-08-21T09:43:55Z	docs: record Ollama 0.32.15 claim validation
+ea27dcd2c4872a3fc8360829304872fe7978cea1	550ba112ffab92009aee90c37cbf1574d97aec16	2026-08-21T09:41:24Z	Qualify official Ollama 0.32.15 as compatible-extension
+550ba112ffab92009aee90c37cbf1574d97aec16	2f78d004f4b07be063086d9eea3b201352ceea05	2026-08-21T09:40:44Z	Renumber Qwen 0.21.15 currentness to research 173 and g04.026.
+2f78d004f4b07be063086d9eea3b201352ceea05	79e8937d8dbc3da54aa06df2b8e77239f514254a	2026-08-21T09:35:23Z	Record Qwen 0.21.15 claim-card validation results.
+79e8937d8dbc3da54aa06df2b8e77239f514254a	deedc3e458b3ef0e6120e863ea2de950a4f20013	2026-08-21T09:33:38Z	Qualify official Qwen headless 0.21.15 as compatible-extension.
+deedc3e458b3ef0e6120e863ea2de950a4f20013	1333ffa0ba748426704c3acb2fbcfa173b99c29f	2026-08-21T11:07:42+01:00	docs(g04): keep Next Task on 023 after restack
+1333ffa0ba748426704c3acb2fbcfa173b99c29f	0f8869596631d52b9c619f9094241807d2d03dc0	2026-08-21T10:46:21+01:00	docs: record 047 metadata review
+0f8869596631d52b9c619f9094241807d2d03dc0	5a64372df807e18bd03b94e1a42b28eda11daa0e	2026-08-21T10:44:54+01:00	feat: project 057 instance labels into 047
+5a64372df807e18bd03b94e1a42b28eda11daa0e	9890f4cd28fa1f3c75681ca7d9f401d8490f0f7d	2026-08-21T10:40:01+01:00	docs: amend 047 presentation contract
+9890f4cd28fa1f3c75681ca7d9f401d8490f0f7d	041a1f38e6c41ccc5e1cdb22b69657710785e116	2026-08-21T10:38:12+01:00	docs: classify 047 presentation field
+041a1f38e6c41ccc5e1cdb22b69657710785e116	d8e3471a8b5aefc2a7d170d18feeedc1f3c1d344	2026-08-21T11:16:22+01:00	docs(g04): handoff orchestrator continuation for merge stack
+d8e3471a8b5aefc2a7d170d18feeedc1f3c1d344	25fc3e350da55d141d0108d308ae15aad565c821	2026-08-21T10:51:20+01:00	docs(g04): record merged Codex 0.149.0 currentness
+25fc3e350da55d141d0108d308ae15aad565c821	db25b005bebceded769ed3f60e977be87e0aeb62	2026-08-21T09:06:26Z	feat: qualify Codex CLI 0.149.0 as compatible-extension
+db25b005bebceded769ed3f60e977be87e0aeb62	281244db2ec88bfe4768027382d8a67f300b45dc	2026-08-21T10:30:41+01:00	docs(g04): close merged addable inventory and dispatch 047 metadata
+281244db2ec88bfe4768027382d8a67f300b45dc	dec4aae5b780da6123f6cb146fb764743d71fdae	2026-08-21T10:07:45+01:00	docs(g04): record addable inventory PR
+dec4aae5b780da6123f6cb146fb764743d71fdae	16d16bee659214d042ba4962c08e0dc8cebddfe5	2026-08-21T10:06:48+01:00	docs(g04): inventory remaining addable routes
+16d16bee659214d042ba4962c08e0dc8cebddfe5	f6ee139021404435330847356a2dde8b34d7d5f8	2026-08-21T09:46:33+01:00	docs(g04): close merged unmarked overlay and dispatch inventory
+f6ee139021404435330847356a2dde8b34d7d5f8	1ddde4f819be9e26c3e3d8e08e27d786e17a70cc	2026-08-21T09:21:35+01:00	docs(g04): record unmarked overlay PR 18 for review
+1ddde4f819be9e26c3e3d8e08e27d786e17a70cc	c1e655880e9e86df97ac8b8c08e697f84574196e	2026-08-21T09:20:25+01:00	feat: key overlay by instance and model when provider id is absent
+c1e655880e9e86df97ac8b8c08e697f84574196e	3d7616555a94233b8d03a5f3f20382b6a62a084c	2026-08-21T08:55:37+01:00	docs(g04): close merged config-ref handoff and dispatch overlay lane
+3d7616555a94233b8d03a5f3f20382b6a62a084c	dedc8e7991e6b51a9322e55b5c2278fcd0c0eb88	2026-08-20T23:29:54+01:00	fix: satisfy literal version axis checks
+dedc8e7991e6b51a9322e55b5c2278fcd0c0eb88	a0f2bcc2ad4bc874d0bac19f6401541473e73db4	2026-08-20T22:37:30+01:00	feat: hand admitted config refs to addable preparation
+a0f2bcc2ad4bc874d0bac19f6401541473e73db4	db9adef90c3a3af61f1bdff5926de8c78036841c	2026-08-20T21:54:58+01:00	docs(g04): dispatch config-ref prepare handoff worker
+db9adef90c3a3af61f1bdff5926de8c78036841c	b2267388ea0c4d8ccf75dda25108136c3d65c07c	2026-08-20T21:53:01+01:00	docs(g04): queue config-ref, overlay, addable, and 047 lanes
+b2267388ea0c4d8ccf75dda25108136c3d65c07c	789e07b6886833d522c443ea47e8a7898b9b0090	2026-08-20T21:46:10+01:00	docs(g04): keep the generation open toward 30-50
+789e07b6886833d522c443ea47e8a7898b9b0090	fe854b18f3fc52b93dc283271dedf96b65ad4dec	2026-08-20T21:38:50+01:00	docs: record standing currentness in AGENTS.md
+fe854b18f3fc52b93dc283271dedf96b65ad4dec	f23ee79748c60e4b3e1ac4d203dd80c4305067f9	2026-08-20T21:38:33+01:00	docs: make Contract 029 currentness a standing lane
+f23ee79748c60e4b3e1ac4d203dd80c4305067f9	4e7dabf0240a910ee94bfab017637f489e54335d	2026-08-20T21:29:42+01:00	docs(g04): park hosted OAuth until a named route needs it
+4e7dabf0240a910ee94bfab017637f489e54335d	576184e94378bc0db435b8f449c5f207a69ecd44	2026-08-20T21:25:40+01:00	docs(g04): close merged llama.cpp attached proof
+576184e94378bc0db435b8f449c5f207a69ecd44	b04ddcaf5ed3665495f4989c53dc6a67bbe9a432	2026-08-20T21:09:58+01:00	docs(g04): record llama.cpp attached PR 16 for review
+b04ddcaf5ed3665495f4989c53dc6a67bbe9a432	bccd0432dce2b5ca6d8d0e77eb038b781214cb94	2026-08-20T21:09:11+01:00	docs(g04): record executed llama.cpp attached cards awaiting review
+bccd0432dce2b5ca6d8d0e77eb038b781214cb94	4914e8542b6d1882cd0797ca09b6f17a6cf58c22	2026-08-20T21:09:05+01:00	feat(adapter-llama-cpp): add local-runtime attached addable-route descriptor
+4914e8542b6d1882cd0797ca09b6f17a6cf58c22	349c6eba075b09be51229b83149dfd82d774f7f5	2026-08-20T20:55:38+01:00	docs(g04): close merged Claude Agent ACP and dispatch llama.cpp attached
+349c6eba075b09be51229b83149dfd82d774f7f5	ceba1c449de5ff3876e5aa8d4b2e6be570b6eb3a	2026-08-20T20:39:40+01:00	docs(g04): record Claude Agent ACP PR 15 for review
+ceba1c449de5ff3876e5aa8d4b2e6be570b6eb3a	6e5929001f4be4e1ba2cdd5d1ceba8947618ec7f	2026-08-20T20:38:24+01:00	docs(g04): record executed Claude Agent ACP cards awaiting review
+6e5929001f4be4e1ba2cdd5d1ceba8947618ec7f	844f67813868a51bebb9afe00c42c2dbf7999ef9	2026-08-20T20:38:19+01:00	feat(adapter-claude-agent): add installed ACP addable-route descriptor
+844f67813868a51bebb9afe00c42c2dbf7999ef9	fa33de150339ee203eff676b29f855e26f3fcfa6	2026-08-20T20:23:15+01:00	docs(g04): close merged DeepSeek proof and dispatch Claude Agent ACP
+fa33de150339ee203eff676b29f855e26f3fcfa6	0b9fa51e406ba4c93aaad95345a952a21af2725c	2026-08-20T18:36:06+01:00	docs(g04): record DeepSeek continuation PR 13 for review
+0b9fa51e406ba4c93aaad95345a952a21af2725c	075be81164b38689c31171bef5923fee7395549b	2026-08-20T18:35:16+01:00	docs(g04): record executed DeepSeek continuation cards awaiting review
+075be81164b38689c31171bef5923fee7395549b	00bd25dda16888632c50f49093c8a37c4ac38c94	2026-08-20T18:35:07+01:00	chore(release): track adapter-deepseek additive API in unreleased baseline
+00bd25dda16888632c50f49093c8a37c4ac38c94	0e4dbd37a628285ff56d233a77d9d5e9898ff08f	2026-08-20T18:35:04+01:00	test(adapter-deepseek): prove 057 refresh, subject, and overlay
+0e4dbd37a628285ff56d233a77d9d5e9898ff08f	46b2267a40960e9b43cc0bdd9d7a6f6302741226	2026-08-20T18:29:30+01:00	test(adapter-deepseek): prove 057 admission and API-key prepare reuse
+46b2267a40960e9b43cc0bdd9d7a6f6302741226	ada7529bc3a43bfcd68223dd5495970a81d69fb1	2026-08-20T18:28:39+01:00	feat(adapter-deepseek): add hosted continuation addable-route descriptor
+ada7529bc3a43bfcd68223dd5495970a81d69fb1	47b94efc707476a90752d8e9cc5ba8a48a3efec4	2026-08-20T19:56:13+01:00	docs(g04): close merged Cline clippy papercut
+47b94efc707476a90752d8e9cc5ba8a48a3efec4	8999894ef3be4e93b15719ef16c8b326942edd41	2026-08-20T19:38:38+01:00	fix(acp): replace chunks_exact(2) for Clippy 1.98.0
+8999894ef3be4e93b15719ef16c8b326942edd41	63166204b59e325c840ddaa29c924a01df019f00	2026-08-20T19:28:56+01:00	fix(acp): box remaining start_session Err pairs for Stable clippy
+63166204b59e325c840ddaa29c924a01df019f00	8c42375b72fb314f2be795c2ebeff294e639fc15	2026-08-20T19:17:32+01:00	docs(g04): record PR 14 for Cline clippy closeout
+8c42375b72fb314f2be795c2ebeff294e639fc15	c779cc4b726bebbd4ee648c2da8e3ba13b71a9fe	2026-08-20T19:16:57+01:00	fix(cline): box start_session Err for Stable clippy
+c779cc4b726bebbd4ee648c2da8e3ba13b71a9fe	c9fb1e7ad015f2655a0efa70d48325602fa40fc3	2026-08-20T19:22:34+01:00	docs(g04): widen Cline clippy papercut to every ACP start_session
+c9fb1e7ad015f2655a0efa70d48325602fa40fc3	1574f27a6b42470c05fd2f8550e39c022df9e0f5	2026-08-20T19:05:33+01:00	docs(g04): dispatch Cline Stable clippy papercut
+1574f27a6b42470c05fd2f8550e39c022df9e0f5	1ba74dd5336a5e17523695a64e64cf44cd053161	2026-08-20T18:18:46+01:00	docs(g04): inventory second-proof routes and dispatch DeepSeek
+1ba74dd5336a5e17523695a64e64cf44cd053161	e0dc6690117517fcced4a272438e3f2b2bf28d30	2026-08-20T18:11:26+01:00	docs(g04): hold hosted OAuth gate after first-proof closeout
+e0dc6690117517fcced4a272438e3f2b2bf28d30	7810453f0171a7ef76e0046f6224b022811332f0	2026-08-20T18:07:44+01:00	docs(g04): close merged connection-lifecycle consumer path
+7810453f0171a7ef76e0046f6224b022811332f0	0ff68bf75b6bad2dd64c339df8dcc0ba0d568810	2026-08-20T17:55:19+01:00	docs(g04): record consumer-path PR 12 for review
+0ff68bf75b6bad2dd64c339df8dcc0ba0d568810	d4d14892643a51c0a8584fc97d2e9f88342a201a	2026-08-20T17:54:30+01:00	docs(g04): record executed consumer-path cards awaiting review
+d4d14892643a51c0a8584fc97d2e9f88342a201a	2c912750ba7152b226ef53eae7d1b880a080f6d8	2026-08-20T17:53:23+01:00	docs(g04): ship 057 examples and complete the connection-lifecycle family
+2c912750ba7152b226ef53eae7d1b880a080f6d8	8506e5586c8b659d0b98f9865af2c3f9ee7bc43d	2026-08-20T17:49:55+01:00	docs(guides): document 057 admission on the three first-proof routes
+8506e5586c8b659d0b98f9865af2c3f9ee7bc43d	402bcd1de7a1910a6291f3e4ee73c835e3217c76	2026-08-20T17:49:24+01:00	docs(guides): publish Contract 057 connection-lifecycle feature guide
+402bcd1de7a1910a6291f3e4ee73c835e3217c76	e23e795f9039991212f8249a25d3f307cd293fd3	2026-08-20T17:41:19+01:00	docs(g04): close merged Ollama attach and dispatch consumer path
+e23e795f9039991212f8249a25d3f307cd293fd3	179a8157217a184d76bf552af121b9eef3f1634a	2026-08-20T17:19:36+01:00	chore(release): track adapter-ollama additive API in unreleased baseline
+179a8157217a184d76bf552af121b9eef3f1634a	12a10f943a1c6878189dd11169f023b4a54e56a9	2026-08-20T17:17:23+01:00	test(adapter-ollama): prove 057 refresh, update observation, and subject
+12a10f943a1c6878189dd11169f023b4a54e56a9	381fd46f13eb4058305cb73374824298ff9ba774	2026-08-20T16:53:44+01:00	test(adapter-ollama): prove 057 admission and attach prepare reuse
+381fd46f13eb4058305cb73374824298ff9ba774	738fc84ea642ab4bb357793859b270f2bb62c11a	2026-08-20T16:48:49+01:00	feat(adapter-ollama): add local-runtime attach addable-route descriptor
+738fc84ea642ab4bb357793859b270f2bb62c11a	33a3574906bb5385df429de00e219e80411a5e46	2026-08-20T16:18:22+01:00	docs(g04): close merged Codex proof and dispatch Ollama attach
+33a3574906bb5385df429de00e219e80411a5e46	c2a4e7122b731950b8fcee5e5d7338b60300c821	2026-08-20T16:06:09+01:00	chore(adapter-codex): lock host-local dev-dependency for 057 tests
+c2a4e7122b731950b8fcee5e5d7338b60300c821	454273e8e5e1e7933718d51ebebc017e5a5b4833	2026-08-20T16:05:49+01:00	chore(release): track adapter-codex additive API in unreleased baseline
+454273e8e5e1e7933718d51ebebc017e5a5b4833	79771560ad9bd83738c8d2492401f39f02897eac	2026-08-20T16:03:30+01:00	test(adapter-codex): prove 057 refresh, update observation, and subject
+79771560ad9bd83738c8d2492401f39f02897eac	b7e4171d406c5200b2870b75c98ff22fa26a60ac	2026-08-20T15:57:10+01:00	test(adapter-codex): prove 057 admission and ChatGPT prepare reuse
+b7e4171d406c5200b2870b75c98ff22fa26a60ac	34541c2a8bc48c0b3b20979af0445dfd229fcc27	2026-08-20T15:53:30+01:00	feat(adapter-codex): add installed app-server addable-route descriptor
+34541c2a8bc48c0b3b20979af0445dfd229fcc27	b5d6a0766bf99853fa485e028f789c32f8001076	2026-08-20T15:27:59+01:00	docs(g04): close merged Anthropic Messages and dispatch Codex proof
+b5d6a0766bf99853fa485e028f789c32f8001076	2d1b4e33748aece84fe7ccde9f73efe66d0d781b	2026-08-20T15:19:37+01:00	style(adapter-anthropic): cargo fmt on card 030-032 surfaces
+2d1b4e33748aece84fe7ccde9f73efe66d0d781b	c17ef371e6f172d2cc9b530a9e9207c045651bc3	2026-08-20T15:00:49+01:00	chore(release): track adapter-anthropic additive API in unreleased baseline
+c17ef371e6f172d2cc9b530a9e9207c045651bc3	191ea27f53ed4212e6db1a29672b9179d022508b	2026-08-20T14:58:26+01:00	test(adapter-anthropic): prove 057 refresh, subject, and 047 overlay path
+191ea27f53ed4212e6db1a29672b9179d022508b	278b17538f53925fe412fe7802b72269d7dbaf39	2026-08-20T14:50:58+01:00	test(adapter-anthropic): prove 057 admission and API-key collection
+278b17538f53925fe412fe7802b72269d7dbaf39	d4768b1d8eb1453e3b2441a29c1878c3784d4681	2026-08-20T14:49:49+01:00	feat(adapter-anthropic): add hosted Messages addable-route descriptor
+d4768b1d8eb1453e3b2441a29c1878c3784d4681	98fc43de535a36febb2e95e604be081a0cbfd0c9	2026-08-20T14:31:39+01:00	docs(g04): close first-proof inventory and dispatch Anthropic Messages
+98fc43de535a36febb2e95e604be081a0cbfd0c9	84f6aa5db503c05b200848880aed097d6da2251a	2026-08-20T14:07:51+01:00	docs(g04): close merged overlay and compile first-proof inventory
+84f6aa5db503c05b200848880aed097d6da2251a	4bedf9c268a075d2f049566c8209dd049b5cb0c2	2026-08-20T12:11:39+01:00	fix(runtime): scope stored overlay apply and cover testkit gaps
+4bedf9c268a075d2f049566c8209dd049b5cb0c2	0902df26e7fb4b638cb054379df1e125a1a7a25a	2026-08-20T11:35:33+01:00	docs(g04): record the overlay PR URL
+0902df26e7fb4b638cb054379df1e125a1a7a25a	40310055481a8a9068f7a8823e4b6506fe303ef2	2026-08-20T11:34:41+01:00	docs(g04): close model-presentation overlay projection and refusals
+40310055481a8a9068f7a8823e4b6506fe303ef2	f2827bdb0b21ab251db3bcd3d865383ee7463f5c	2026-08-20T11:34:36+01:00	feat(runtime): project model-presentation overlay onto a bound catalogue
+f2827bdb0b21ab251db3bcd3d865383ee7463f5c	8f4e3884c66c2c0cd732f4b916c24af8ad5336e4	2026-08-20T11:19:51+01:00	docs(g04): close merged refresh and dispatch g04.009 worker
+8f4e3884c66c2c0cd732f4b916c24af8ad5336e4	6ee3d55a932e53bbb32355648eceaada837cf2e7	2026-08-20T10:49:24+01:00	docs(g04): record the refresh PR URL
+6ee3d55a932e53bbb32355648eceaada837cf2e7	02f701f46dd65c48292422201ad590b56d670731	2026-08-20T10:47:44+01:00	docs(g04): close readiness refresh, subject, and updates
+02f701f46dd65c48292422201ad590b56d670731	eb8083822db0c16cbeabd373345fb6ee20d931b7	2026-08-20T10:47:35+01:00	feat(runtime): add readiness refresh, subject observation, and update observation
+eb8083822db0c16cbeabd373345fb6ee20d931b7	91e14e3d69cf7697b06b5de3dc73b773e7171a7b	2026-08-20T10:30:41+01:00	docs(g04): close merged sign-in and dispatch g04.008 worker
+91e14e3d69cf7697b06b5de3dc73b773e7171a7b	45e62a7b50eda0b9ddd54558ac3c407531e9b0de	2026-08-20T10:21:55+01:00	docs(g04): record the sign-in loop PR URL
+45e62a7b50eda0b9ddd54558ac3c407531e9b0de	161b0efd40dfde97128c9122671f49f73d3d02c8	2026-08-20T10:21:18+01:00	docs(g04): close sign-in loop and host ports
+161b0efd40dfde97128c9122671f49f73d3d02c8	6d8983b78731833e55df41a976cf8a8f86618beb	2026-08-20T10:21:12+01:00	feat(runtime): add interactive sign-in host ports and library-owned loop
+6d8983b78731833e55df41a976cf8a8f86618beb	5cdffebbbb66c9f7247d2343b56a9008874be956	2026-08-20T09:54:45+01:00	docs(g04): close merged catalog and dispatch g04.007 worker
+5cdffebbbb66c9f7247d2343b56a9008874be956	af8e070d82fb0e8c370e21148b0e5e54dfc954b4	2026-08-20T01:25:15+01:00	docs(g04): record the catalog admission PR URL
+af8e070d82fb0e8c370e21148b0e5e54dfc954b4	7a0c3bfd8c4c8adadd8972b650ab6b29b6cb876f	2026-08-20T01:24:29+01:00	docs(g04): close addable catalog, admission, and config fields
+7a0c3bfd8c4c8adadd8972b650ab6b29b6cb876f	35d8263f2d6c96bf9b05e4da60c8ba98dbccfb59	2026-08-20T01:24:22+01:00	feat(runtime): add addable-route catalog and instance admission
+35d8263f2d6c96bf9b05e4da60c8ba98dbccfb59	c64bd64d31fa0bcfd34ea68a2c42aaeb9f0ba320	2026-08-20T01:05:43+01:00	docs(g04): close merged kernel and dispatch g04.006 worker
+c64bd64d31fa0bcfd34ea68a2c42aaeb9f0ba320	3db7cdcd3d32f0383ec52388a791a5caf91f1ad1	2026-08-20T00:28:36+01:00	docs(g04): record the kernel PR URL
+3db7cdcd3d32f0383ec52388a791a5caf91f1ad1	faf81f58d3fb28be7e0904e1cf7c0312aaa12b3c	2026-08-20T00:27:31+01:00	docs(g04): close the connection-lifecycle kernel
+faf81f58d3fb28be7e0904e1cf7c0312aaa12b3c	25e135d65e2ed261cd43e8ee1aa70fc5a3dc5f37	2026-08-20T00:27:31+01:00	feat(host-local): add connection-lifecycle store adapters
+25e135d65e2ed261cd43e8ee1aa70fc5a3dc5f37	fac06834662be37820cdd1ab638b711e87bce1e9	2026-08-20T00:21:15+01:00	feat(runtime): add connection-lifecycle store port
+fac06834662be37820cdd1ab638b711e87bce1e9	2ccf8ad89af0c6c14fa2223308d0eb12985c5d15	2026-08-20T00:19:32+01:00	feat(core): add connection-lifecycle records
+2ccf8ad89af0c6c14fa2223308d0eb12985c5d15	2ca191252a275dee177da54b4a88454c39facf61	2026-08-20T00:10:25+01:00	docs(handoff): dispatch g04.005 connection-lifecycle kernel worker
+2ca191252a275dee177da54b4a88454c39facf61	09ce234c24976319c41606aa7ab852e11165edef	2026-08-20T00:03:51+01:00	docs(g04): compile the first 057 implementation runway
+09ce234c24976319c41606aa7ab852e11165edef	f20379ba27fb3f88abe1abc748f7ea764c698474	2026-08-19T23:57:08+01:00	docs(g04): promote Spec 011 into Contract 057
+f20379ba27fb3f88abe1abc748f7ea764c698474	eb6ef1247bf7560b4742c47d51745a5356f0840a	2026-08-19T23:49:35+01:00	docs(g04): close card 009 on tagged v0.3.3 and compile 004
+eb6ef1247bf7560b4742c47d51745a5356f0840a	51d186208e75dca4c04f077dd7179ec3c2fafae9	2026-08-19T23:28:57+01:00	docs(g04): close card 008 on the v0.3.3 CI-green candidate

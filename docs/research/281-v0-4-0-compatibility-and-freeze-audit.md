@@ -14,7 +14,7 @@ Background `minimal` value, and the shared interactive close seam is now a
 breaking public API and cleanup-boundary change.
 
 This record is an audit, not candidate preparation. It changes no Cargo
-version or requirement, changelog release state, release baseline, code,
+version or requirement, changelog release state, release baseline, runtime code,
 claim, fixture, workflow, tag, provider state, or consumer repository. The
 temporary semantic API output was generated independently and is not retained
 in source. The current unreleased API evidence was only used as a comparison

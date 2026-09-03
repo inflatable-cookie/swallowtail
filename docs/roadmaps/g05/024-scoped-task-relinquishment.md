@@ -1,6 +1,6 @@
 # g05.024 Scoped Task Relinquishment
 
-Status: completed; provider-neutral ownership transfer and host-local autonomous reap
+Status: completed; provider-neutral ownership transfer and host-owned supervised reap
 Owner: Tom
 Created: 2026-09-03
 Depends on: g05.023; Contracts 010 and 019; PR 188 exact-head review
@@ -19,9 +19,11 @@ takes back an unfinished task only under the exact execution-host and
 `ScopeId` binding and accepts responsibility for eventual reap. The result says
 only `AcceptedForReap`; it never says joined or cleanup complete.
 
-The local host uses a per-transfer autonomous reaper. It adds no adapter-global
-registry, parking lot, follow-up call, or weakened `LocalJoinedTask` drop/join
-rule. Rejection leaves the caller's handle intact.
+The local host uses a per-transfer reaper whose handle is retained by the
+concrete selected-host task service. The final service owner joins all retained
+reapers. This adds no adapter-global registry, parking lot, follow-up call, or
+weakened `LocalJoinedTask` drop/join rule. Rejection leaves the caller's handle
+intact.
 
 ## Batch Card
 
@@ -31,6 +33,7 @@ rule. Rejection leaves the caller's handle intact.
 
 - relinquishment returns before an unfinished task completes
 - the selected host reaps the task after later completion without another call
+- final selected-host service drop joins its reaper and accepted work
 - wrong-host, wrong-scope, unsupported, finished, and repeated transfer fail closed
 - ordinary joined tasks still join explicitly or on drop
 - accepted-for-reap cannot be used as joined or cleanup-completion evidence

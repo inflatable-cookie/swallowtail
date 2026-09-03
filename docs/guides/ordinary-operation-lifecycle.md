@@ -113,7 +113,9 @@ host's `ScopedTaskService::relinquish` operation with the exact operation
 scope, then call bounded session close directly. `AcceptedForReap` means only
 that host ownership transferred; it is not a join or cleanup-success result.
 Do not wait on a separate unbounded turn close first and do not park the handle
-in adapter-global state.
+in adapter-global state. The selected-host service owns the accepted work
+through its supervised reaper; final service shutdown joins that infrastructure
+and may wait for accepted work even though caller relinquishment does not.
 
 Closing a session does not generally archive or delete provider state.
 Provider-native close, archive, restore, delete, owned remote cleanup, and

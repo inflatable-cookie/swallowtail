@@ -42,9 +42,11 @@ case. It accepts only an unfinished task created under the same exact
 the host has accepted autonomous ownership and returns
 `TaskRelinquishOutcome::AcceptedForReap`. The outcome means neither finished
 nor joined. The host must reap the task after it finishes without a second
-adapter call or adapter-global parking. Wrong-host, wrong-scope, unsupported,
-already-finished, and repeated transfers fail closed and leave ordinary task
-ownership with the caller.
+adapter call or adapter-global parking. Its concrete selected-host service or
+lifecycle retains and supervises the reaper, then joins that infrastructure on
+shutdown; discarding a reaper handle is detached execution, not host ownership.
+Wrong-host, wrong-scope, unsupported, already-finished, and repeated transfers
+fail closed and leave ordinary task ownership with the caller.
 
 Relinquishment preserves the caller deadline; it is never cleanup-completion
 evidence. An adapter may use it only to record that the selected host took

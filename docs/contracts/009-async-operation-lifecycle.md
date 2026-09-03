@@ -122,8 +122,10 @@ resource cleanup. No task detaches beyond its owner.
 Contract 010's task relinquishment does not create a detached task class. It
 transfers an unfinished joined-task handle from a deadline-bound caller back
 to the exact selected host and operation scope. The host then owns eventual
-reap without another adapter call. Acceptance for reap is not task completion,
-join evidence, or successful cleanup.
+reap without another adapter call. The host retains and supervises its reaper
+through the selected-host service lifecycle; dropping the reaper handle is not
+ownership. Acceptance for reap is not task completion, join evidence, or
+successful cleanup.
 
 Contract 059 watcher work belongs to one active turn. It may run concurrently
 inside that turn, but it does not create a detached task class. Turn terminal,

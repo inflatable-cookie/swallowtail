@@ -1,12 +1,15 @@
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock, Weak};
 use std::task::Waker;
 use std::thread::{self, JoinHandle};
 use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
     BoxFuture, JoinedTask, RuntimeFailure, ScopeId, ScopedTaskService, TaskRelinquishOutcome,
 };
+
+mod reaper;
+
+use reaper::ReaperSupervisor;
 
 /// Per-host task service whose returned handles always own their worker thread.
 ///
@@ -16,23 +19,33 @@ use swallowtail_runtime::{
 /// its dropper indefinitely; consumers that need a bounded shutdown must
 /// bound the task itself (for example through the host deadline service) or
 /// transfer an unfinished handle through [`ScopedTaskService::relinquish`]
-/// before dropping it. Acceptance for reap is not join evidence.
+/// before dropping it. Service clones share ownership of every accepted
+/// task's reaper; dropping the final clone joins all retained reapers.
+/// Acceptance for reap is not join evidence.
 #[derive(Clone)]
 pub struct LocalScopedTaskService {
     execution_host_id: ExecutionHostId,
+    reaper: SharedReaper,
 }
 
 impl LocalScopedTaskService {
     /// Creates a scoped task service for one exact execution host.
     #[must_use]
     pub const fn new(execution_host_id: ExecutionHostId) -> Self {
-        Self { execution_host_id }
+        Self {
+            execution_host_id,
+            reaper: SharedReaper::new(),
+        }
     }
 
     /// Returns the execution host identity bound to spawned tasks.
     #[must_use]
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
+    }
+
+    fn reaper(&self) -> &Arc<ReaperSupervisor> {
+        self.reaper.get()
     }
 
     fn spawn_task(
@@ -60,7 +73,26 @@ impl LocalScopedTaskService {
             worker: Some(worker),
             signal,
             reaped: Arc::new(AtomicBool::new(false)),
+            reaper: Arc::downgrade(self.reaper()),
         })
+    }
+}
+
+struct SharedReaper(OnceLock<Arc<ReaperSupervisor>>);
+
+impl SharedReaper {
+    const fn new() -> Self {
+        Self(OnceLock::new())
+    }
+
+    fn get(&self) -> &Arc<ReaperSupervisor> {
+        self.0.get_or_init(|| Arc::new(ReaperSupervisor::default()))
+    }
+}
+
+impl Clone for SharedReaper {
+    fn clone(&self) -> Self {
+        Self(OnceLock::from(Arc::clone(self.get())))
     }
 }
 
@@ -97,6 +129,7 @@ struct LocalJoinedTask {
     worker: Option<JoinHandle<()>>,
     signal: Arc<JoinSignal>,
     reaped: Arc<AtomicBool>,
+    reaper: Weak<ReaperSupervisor>,
 }
 
 impl JoinedTask for LocalJoinedTask {
@@ -146,35 +179,22 @@ impl JoinedTask for LocalJoinedTask {
             ));
         }
 
-        let (sender, receiver) = mpsc::sync_channel(1);
-        let reaped = Arc::clone(&self.reaped);
-        let reaper = thread::Builder::new()
-            .name("swallowtail-local-task-reaper".to_owned())
-            .spawn(move || {
-                if let Ok(worker) = receiver.recv() {
-                    let _ = reap_worker(Some(worker), &reaped);
-                }
-            })
-            .map_err(|_| {
-                task_failure(
-                    "swallowtail.local_task.reaper_spawn_failed",
-                    "Local task reaper could not be started",
-                )
-            })?;
+        let reaper = self.reaper.upgrade().ok_or_else(|| {
+            task_failure(
+                "swallowtail.local_task.reaper_unavailable",
+                "Owning local task service is no longer available",
+            )
+        })?;
         let worker = self.worker.take().ok_or_else(|| {
             task_failure(
                 "swallowtail.local_task.already_relinquished",
                 "Local task ownership was already transferred",
             )
         })?;
-        if let Err(mpsc::SendError(worker)) = sender.send(worker) {
+        if let Err((error, worker)) = reaper.accept(worker, Arc::clone(&self.reaped)) {
             self.worker = Some(worker);
-            return Err(task_failure(
-                "swallowtail.local_task.reaper_handoff_failed",
-                "Local task reaper did not accept task ownership",
-            ));
+            return Err(error);
         }
-        drop(reaper);
         Ok(())
     }
 }

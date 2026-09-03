@@ -550,9 +550,11 @@ Crate status:
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
   credential approvals remain scope- and audience-bound and redacted; per-host
   scoped task handles join explicitly or on drop. Exact-host/scope
-  relinquishment can move an unfinished worker to a per-transfer autonomous
-  host reaper without adapter-global state, while ordinary join/drop ownership
-  stays unchanged. `LocalHostServices` composes the exact supported ports under
+  relinquishment can move an unfinished worker to a per-transfer reaper whose
+  handle the selected-host service retains without adapter-global state; the
+  final service owner joins all reapers while ordinary join/drop ownership
+  stays unchanged.
+  `LocalHostServices` composes the exact supported ports under
   one host identity, the local watcher service
   owns approved process work through terminal and joined state, installed
   executable approval returns only an opaque target, and the local watcher

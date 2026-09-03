@@ -1,8 +1,9 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: complete; restored on card 061 reservations with one enclosing cleanup guardian; pending independent exact-head review
+Status: complete; restored on card 061 reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 Owner: Tom
 Created: 2026-09-02
+Updated: 2026-09-03
 Milestone: `../022-claude-agent-dual-route-parity.md`
 Depends on: completed cards 053-054 and 060; reviewed and merged g05.025 card 061;
   Research 278-279; Contracts 009, 010, 017, 019, 029, and 047
@@ -72,7 +73,8 @@ honest descendant-completion truth.
 9. Update route inventory, matrices, guide, architecture, changelog, milestone,
    card, and log only for behavior actually delivered. Hold public API and
    god-file baselines unless the card's exact facade requires a reviewed
-   additive surface.
+   additive surface. That restoration passed independent exact-head review and
+   merged through PR 196 at `493f8194`.
 
 ## Out Of Scope
 
@@ -146,9 +148,8 @@ joined cleanup.
 
 ## Auto-Continuation
 
-No. Exact-head frontier review before merge. Release readiness remains frozen
-after this card until the operator separately accepts the reviewed route and
-authorizes a fresh g05.021 audit.
+No. Exact-head frontier review accepted in PR 196. Release readiness is
+unpaused with card 050 ready as the sole Next Task for a fresh g05.021 audit.
 
 ## Containment And Restoration
 
@@ -185,7 +186,6 @@ head:
   provider-free fixture also retains every worker handle, joins on drop, and
   reaps only through an outer owner.
 
-`AcceptedForReap` remains transfer only, never join or cleanup success. The
-`v0.4.0` release lane and g05.021/cards 050-052 remain frozen until this
-restoration passes independent exact-head review and the operator separately
-authorizes a fresh audit.
+`AcceptedForReap` remains transfer only, never join or cleanup success. PR 196
+merged at `493f8194` after independent exact-head review, unpausing the `v0.4.0`
+release lane and g05.021/card 050 for a fresh audit.

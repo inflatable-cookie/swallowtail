@@ -1,6 +1,6 @@
 # 2026-09-03 g05.025 Card 061 Reserved Reapable Task Runtime
 
-Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
+Status: complete; merged at `53153af1`
 Owner: Tom
 
 ## Result
@@ -74,11 +74,12 @@ or process behavior changes. `swallowtail-testkit` required no source change.
 
 ## Boundary
 
-`claude-agent.sdk` stays withdrawn. Card 055 is the sole next task but remains
-frozen until this PR passes independent exact-head review and merges. Its later
-work starts from fresh canonical main. The `v0.4.0` release lane remains frozen;
-this card did not merge, tag, publish, run a provider session, or resume release
-readiness.
+At card 061 closeout, `claude-agent.sdk` stayed withdrawn, card 055 remained
+frozen until independent exact-head review and merge, and the `v0.4.0` release
+lane remained frozen without tag, publish, provider session, or release
+readiness. Card 061 merged at `53153af1`. Card 055 then restored
+`claude-agent.sdk` and merged through PR 196 at `493f8194`, completing g05.022
+and unpausing g05.021 with card 050 ready.
 
 ## Authority
 

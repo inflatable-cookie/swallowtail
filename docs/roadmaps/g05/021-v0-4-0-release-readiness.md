@@ -1,9 +1,9 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; paused for g05.022 Claude dual-route work
+Status: planned; card 050 ready as sole Next Task; cards 051-052 planned
 Owner: Tom
 Created: 2026-09-02
-Updated: 2026-09-02
+Updated: 2026-09-03
 Depends on: Contract 036; Research 276; immutable `v0.3.3`
 Vision tags: source release, compatibility, release readiness
 
@@ -47,15 +47,16 @@ mutation.
   lock. That partial run is not release evidence. All 11 configured local gates
   must rerun on the final frozen candidate.
 
-## Paused Freeze
+## Freeze Reactivation
 
 The operator broke the feature freeze on 2026-09-02 for g05.022's native Claude
-Agent SDK route and independent Claude Agent ACP expansion. Card 050's partial
-semantic API generation is retained as non-accepted audit evidence. Cards
-050-052 are planned and paused. No release mutation, candidate preparation,
-tag, or push is authorized. When the Claude work reaches a reviewed boundary,
-card 050 must restart against the new exact source head before cards 051-052
-can advance.
+Agent SDK route and independent Claude Agent ACP expansion. Following the
+acceptance and merge of PR 196 at `493f8194` completing g05.022, release
+readiness is unpaused. Card 050's partial prior semantic API generation is
+retained as non-accepted audit evidence. Card 050 is ready to restart its fresh
+exact-head audit against canonical `main` `493f8194`. Cards 051-052 remain
+planned and dependent. No release mutation, candidate preparation, tag, or push
+is authorized.
 
 ## Runway
 
@@ -105,7 +106,7 @@ different SHA is accepted.
 
 ## Batch Cards
 
-- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — planned; paused until g05.022 reaches a release boundary
+- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready; unpaused after PR 196 merged at `493f8194`; sole Next Task
 - [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050; mutating prepare requires separate operator authorization
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 
@@ -117,9 +118,8 @@ different SHA is accepted.
 - immutable prior release baselines remain byte-for-byte unchanged; a distinct
   40-package `v0.4.0` semantic baseline and route candidate inventory are
   created only during candidate preparation; the candidate route inventory
-  grows past 47 only for routes the audit accepts, and card 055's restored
-  `claude-agent.sdk` counts only once its exact-head review is accepted and it
-  merges before the audit
+  grows past 47 only for routes the audit accepts; PR 196 merged at `493f8194`
+  with `claude-agent.sdk` restored before the audit
 - all 11 local gates pass together on the frozen candidate, followed by
   canonical exact-SHA CI on that same source
 - the clean candidate contains no generated cache, build output, host path,

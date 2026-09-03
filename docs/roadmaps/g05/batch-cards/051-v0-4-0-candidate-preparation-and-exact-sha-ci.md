@@ -11,6 +11,25 @@ Depends on: completed card 050 with accepted exact-head audit and freeze census;
 Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
 11 local gates, land it on canonical `main`, and require CI at that exact SHA.
 
+## Progress 2026-09-03
+
+The first explicit one-shot prepare authorization was consumed. Effigy applied
+the workspace-version and changelog mutations, then rolled both back when
+`lint` could not resolve internal `^0.4.0` requirements against workspace
+packages still recorded as `0.3.3` in `Cargo.lock`. No prepared state, release
+commit, or tag was created.
+
+The supported repair is `release.sync-files = ["Cargo.lock"]` plus the
+package-identity hardening accepted in Effigy PR 89 exact head `7182e753`,
+merged as `4c554135`. That Effigy applies the version, changelog, and lockfile
+mutations before gates; lock sync uses `cargo update --workspace --quiet`,
+obtains the post-mutation workspace-member name and version map from Cargo
+metadata, and rejects and restores any change outside those exact package
+identities and versions. This Swallowtail repair must receive exact-head review
+and merge before the preserved candidate edits are replayed. A fresh operator
+authorization is required for the later mutating prepare; the consumed
+authorization does not carry forward.
+
 ## Scope
 
 1. Start from the accepted card 050 head in a clean candidate worktree. Fetch
@@ -24,13 +43,14 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    v0.12.1 infers the pre-1.0 minor only from the `Breaking` category, while
    `Removed` alone resolves to patch. Do not rename `[Unreleased]`, create its
    dated `0.4.0` heading, edit release comparison links, or change
-   `workspace.package.version`; Effigy owns those preparation mutations.
+   `workspace.package.version`, or change coordinated internal requirements;
+   Effigy owns those preparation mutations.
 3. Complete the candidate edits outside Effigy's preparation ownership. Set
-   every normal/build internal compatible requirement to coordinated `0.4.0`,
    write audited release notes and upgrade/rollback prose, and preserve
    `publish = false`, Rust `1.95.0`, Apple Silicon macOS support, and the
-   source-only distribution boundary. Do not manually apply either
-   Effigy-owned mutation and then run prepare over it.
+   source-only distribution boundary. Do not manually apply any Effigy-owned
+   mutation and then run prepare over it. The version-file mutation owns both
+   `workspace.package.version` and all coordinated internal requirements.
 4. Create distinct `v0.4.0` package, dependency, 49-route, and semantic API
    baselines from the accepted card 050 census. The 49-route candidate
    includes `pi.sdk-sidecar` and `claude-agent.sdk`; this is frozen audit input,
@@ -60,13 +80,17 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    `v0.4.0`. Status has no version override, so this is an independent
    structural check. Then run the read-only
    `effigy release prepare --plan --version 0.4.0` and review the exact planned
-   workspace-version and changelog-promotion mutations. The explicit version
-   is mandatory even though status now infers the same result.
+   Cargo.toml coordinated-version, changelog-promotion, and Cargo.lock sync
+   mutations. The first mutation must include the workspace package version and
+   all eight internal compatible requirements. The explicit version is
+   mandatory even though status now infers the same result.
 9. Stop and request separate explicit operator authorization for the single
    mutating preparation command. Only after that authorization, run exactly
    `effigy release prepare --yes --check-gates --version 0.4.0` once. Effigy is
-   the sole mutation owner for `workspace.package.version` and `[Unreleased]`
-   promotion into the dated `0.4.0` section. Require all configured gates
+   the sole mutation owner for `workspace.package.version`, coordinated
+   internal requirements, `[Unreleased]` promotion into the dated `0.4.0`
+   section, and synchronization of workspace member versions in `Cargo.lock`.
+   Require all configured gates
    together on the resulting complete candidate: `fmt`, `lint`,
    `lint:no-features`, `test`, `qa`, `docs`, `metadata`, `api`, `security`,
    `floor`, and `source`. The earlier 2,825-test exploratory run and any partial
@@ -89,11 +113,12 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
 Tag creation or push, release execution, crates.io, GitHub Release, binary or
 sidecar publication, installer, provider call, live probe, consumer-repo
 mutation, working-application smoke, feature/currentness work, claims beyond
-the accepted audit, CI workflow edits, or papercut repair.
+the accepted audit, CI workflow edits, or unrelated papercut repair.
 
 ## Acceptance Criteria
 
-- all 40 packages and internal requirements use coordinated `0.4.0`
+- all 40 packages and internal requirements use coordinated `0.4.0`, applied
+  together by Effigy's version-file mutation
 - the frozen 49-route candidate includes both `pi.sdk-sidecar` and
   `claude-agent.sdk`; Pi release-note, consumer, and rollback treatment is a
   required Card051 action, not an unresolved inclusion choice
@@ -102,9 +127,10 @@ the accepted audit, CI workflow edits, or papercut repair.
 - `[Unreleased]` is deduplicated before promotion, its structural `Breaking`
   section names the `minimal` guaranteed-value removal, and read-only release
   status selects minor `0.4.0`
-- Effigy alone applies the workspace-version and changelog-promotion mutations
-  after separate explicit operator authorization; no manual replay or fallback
-  substitutes for that path
+- Effigy alone applies the Cargo.toml coordinated-version,
+  changelog-promotion, and package-identity-checked Cargo.lock workspace-member
+  sync mutations after separate explicit operator authorization; no manual
+  replay or fallback substitutes for that path
 - the frozen exact `0.4.0` changelog extraction, release notes, source
   inventory, upgrade, rollback, route count, known limits, and actual source
   agree
@@ -131,7 +157,10 @@ the accepted audit, CI workflow edits, or papercut repair.
 Invariant: the reviewed candidate tree is the tree that passed every local gate
 and canonical CI, and all release copy describes that exact tree.
 
-Smallest counterexample: one dependency still requires `^0.3.3`, the
+Smallest counterexample: one dependency still requires `^0.3.3`, an internal
+requirement is pre-applied outside Effigy's version-file mutation, Cargo.lock
+is not a planned sync mutation, lock sync admits a package not identified by
+post-mutation Cargo metadata as a workspace member at its own version, the
 `minimal` removal lacks a structural `### Breaking` entry or sits only in a
 non-breaking category, duplicate headings enter the promoted section, a person
 pre-applies an Effigy-owned mutation, one prior baseline changes, a gate
@@ -139,7 +168,8 @@ passes before the last edit, CI points at another commit, or release notes
 omit one audit-ledger break.
 
 Required proof: pre-mutation status and explicit-version plan, separate
-operator authorization, the single mutating prepare transcript,
+operator authorization, the single mutating prepare transcript, exact
+three-mutation plan, workspace-only lockfile diff,
 metadata/dependency diff, frozen changelog extraction and digest, old-baseline
 checksums, new baseline generation record, complete source inventory, 11 named
 gate results, accepted PR head, canonical candidate SHA, exact-SHA CI run,
@@ -154,8 +184,12 @@ for its authenticated working-application path.
 ## Stop Conditions
 
 Stop if read-only status does not infer minor `0.4.0`, if the explicit-version
-plan does not own the intended workspace-version and changelog mutations, or if
-prepare cannot operate on the intended tree. Return to planning; do not apply a
+plan does not own the intended coordinated Cargo.toml version, changelog, and
+Cargo.lock sync mutations, if the active Effigy lacks accepted merge
+`4c554135`, if lock sync would move any package or metadata outside exact
+post-mutation workspace identity and version authority, or if prepare cannot
+operate on the intended tree.
+Return to planning; do not apply a
 manual fallback, bypass, or second mutation path. Also stop on missing operator
 authorization, candidate drift, any failing or skipped gate, a modified
 historical baseline, source contamination, overlapping mergeable

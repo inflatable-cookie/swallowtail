@@ -3,9 +3,10 @@
 version-file = "Cargo.toml"
 version-path = "workspace.package.version"
 changelog = "CHANGELOG.md"
-# Cargo.lock is intentionally not a sync file. Dependency selection is updated
-# and validated before release preparation; regenerating it after the gates
-# would introduce untested dependency changes.
+sync-files = ["Cargo.lock"]
+# Effigy v0.12.1 merge 4c554135 applies version, changelog, and lock sync
+# before the `--locked` gates. It admits version movement only for packages
+# identified by Cargo metadata as workspace members at their own versions.
 tag-format = "v{version}"
 initial-tag-current-version = true
 

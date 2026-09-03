@@ -430,6 +430,23 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Closed
 
+### [x] Pre-1.0 minor prepare cannot satisfy `--locked` lint with a stale workspace lock — 2026-09-03
+- Friction: the first authorized `effigy release prepare --yes --check-gates
+  --version 0.4.0` applied the version and changelog mutations, then failed
+  `lint` because internal `^0.4.0` requirements could not select workspace
+  packages still recorded as `0.3.3` in `Cargo.lock`. Effigy rolled its two
+  mutations back and wrote no prepared state.
+- Impact: a coordinated pre-1.0 minor cannot pass locked gates unless manifest
+  and lockfile versions move in the same preparation transaction.
+- Fix: configure `release.sync-files = ["Cargo.lock"]` and require Effigy PR 89
+  exact head `7182e753`, merged as `4c554135`. It applies version, changelog,
+  and lock sync before gates, uses `cargo update --workspace --quiet`, and
+  rejects and restores any package or metadata movement not authorized by the
+  post-mutation Cargo workspace-member identity/version map. Locked gates
+  remain mandatory.
+- Surface: Card 051 `v0.4.0` prepare; `config/release.toml`; `Cargo.lock`.
+- Closed: 2026-09-03 Effigy PR 89 plus Swallowtail release-sync prerequisite.
+
 ### [x] OpenAI adapter test target name does not match its suite file — 2026-08-31
 - Friction: `crates/swallowtail-adapter-openai/Cargo.toml` binds the test target
   `prepared_facade` to `tests/direct_suite.rs`, so

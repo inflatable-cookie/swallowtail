@@ -102,3 +102,25 @@ route inventory requires for any new route row.
 
 No shared vocabulary was named, no release artifact changed, and no tag or
 merge was performed.
+
+## Stopped On Scoped-Work Relinquish
+
+The open guard now owns the whole ordered cleanup — terminate, wait, join the
+pump, release the resource lease, release the credential lease — inside one
+host task, and reports completion through its own signal rather than through a
+join of its handle. Process exit no longer permits a lease release or a
+cleanup-complete result while the pump task is still alive.
+
+What remains is ownership of a join handle whose task is still running when the
+caller's deadline expires. `ScopedTaskService` offers only `spawn`, and the
+local host's handle joins on drop, so the three available moves are all wrong:
+dropping blocks the caller past its deadline, waiting breaks the deadline, and
+holding the handle in adapter process state is the detached global work
+Contract 019 forbids. The placeholder is marked as the recorded gap in
+`sdk/guardian/joins.rs` and no cleanup evidence depends on it.
+
+The smallest shared prerequisite is a way for the selected execution host to
+take unfinished scoped work back under its own scope authority and reap it,
+with an outcome that reads relinquished rather than joined. That is a shared
+runtime and contract decision, so card 055 stops here rather than inventing it
+route-locally.

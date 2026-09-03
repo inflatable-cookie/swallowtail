@@ -11,15 +11,28 @@
 //! [`JoinedTask::is_finished`] with [`JoinedTask::register_waker`]. `join` is
 //! called only once the task reports finished, where it cannot block on task
 //! work. The handle itself is held in a slot the bounded wait only borrows, so
-//! expiry never drops it — dropping is the blocking join this exists to avoid.
-//! A task still running at the deadline is retained, which keeps host
-//! ownership: nothing is detached, and a retained handle is released as soon as
-//! a later retention observes it finished.
+//! expiry never drops it.
 //!
 //! A host that implements neither observation reports `is_finished` as `false`
-//! forever, so every join here retains and reports unjoined. That is the
-//! fail-closed reading: without the observation there is no evidence the task
-//! ended, and this route never reports cleanup truth the host cannot support.
+//! forever, so every join here reports unjoined. That is the fail-closed
+//! reading: without the observation there is no evidence the task ended, and
+//! this route never reports cleanup truth the host cannot support.
+//!
+//! # Unresolved: no seam for relinquishing unfinished scoped work
+//!
+//! A handle that is still unfinished when the caller's deadline expires has
+//! nowhere correct to go. Dropping it is the blocking join the bound exists to
+//! avoid; waiting on it breaks the bound. `ScopedTaskService` offers only
+//! `spawn`, and `JoinedTask` offers no way to hand ownership back, so the host
+//! cannot take the work back and reap it.
+//!
+//! [`park_unjoined`] is the placeholder for that missing seam and **is not**
+//! host ownership: it is adapter-process state with no autonomous reaper, and
+//! it only releases finished handles when some later expiry parks another one.
+//! Contract 019 forbids exactly this shape. It is recorded as the blocking
+//! prerequisite for card 055 rather than presented as a solution, and no
+//! cleanup evidence depends on it — the guard's ordered cleanup reports itself
+//! through its own completion signal, not through a join of this handle.
 
 use crate::sdk::bounded::HostBound;
 use std::future::Future;
@@ -67,46 +80,35 @@ pub(crate) async fn bounded_join(bounded: &HostBound, task: Box<dyn JoinedTask>)
         return false;
     };
     if waited.is_none() {
-        retain(task);
+        park_unjoined(task);
         return false;
     }
     task.join().await.is_ok()
 }
 
-/// Joins `task` only if it has already finished, and otherwise retains it.
-/// Used where there is no bound left to spend but a handle must still not be
-/// dropped on the calling thread.
-pub(crate) async fn join_if_finished(task: Box<dyn JoinedTask>) -> bool {
-    if !task.is_finished() {
-        retain(task);
-        return false;
-    }
-    task.join().await.is_ok()
+/// Handles that outlived a caller deadline, held only because there is nowhere
+/// correct to put them. See the module note: this is the recorded gap, not a
+/// host-ownership mechanism.
+fn parked() -> &'static Mutex<Vec<Box<dyn JoinedTask>>> {
+    static PARKED: OnceLock<Mutex<Vec<Box<dyn JoinedTask>>>> = OnceLock::new();
+    PARKED.get_or_init(|| Mutex::new(Vec::new()))
 }
 
-/// Handles that outlived a caller deadline. They are held, not detached: the
-/// host still owns the task, and each retention releases whichever retained
-/// handles have since finished, which cannot block.
-fn retained() -> &'static Mutex<Vec<Box<dyn JoinedTask>>> {
-    static RETAINED: OnceLock<Mutex<Vec<Box<dyn JoinedTask>>>> = OnceLock::new();
-    RETAINED.get_or_init(|| Mutex::new(Vec::new()))
-}
-
-fn retain(task: Box<dyn JoinedTask>) {
+fn park_unjoined(task: Box<dyn JoinedTask>) {
     let finished = {
-        let mut retained = retained()
+        let mut parked = parked()
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         let mut finished = Vec::new();
         let mut index = 0;
-        while index < retained.len() {
-            if retained[index].is_finished() {
-                finished.push(retained.remove(index));
+        while index < parked.len() {
+            if parked[index].is_finished() {
+                finished.push(parked.remove(index));
             } else {
                 index += 1;
             }
         }
-        retained.push(task);
+        parked.push(task);
         finished
     };
     // Released outside the lock: a handle drop is a join, and no join should

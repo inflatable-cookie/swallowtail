@@ -75,7 +75,18 @@ pub(super) fn spawn_turn_deadline(
         )
 }
 
-pub(super) async fn reap_finished(active: &ActiveSlot) {
+pub(super) async fn reap_finished(
+    active: &ActiveSlot,
+    services: &HostServices,
+    deadline: Deadline,
+) {
+    let bounded = crate::sdk::bounded::HostBound::new(
+        services
+            .time()
+            .cloned()
+            .expect("validated sidecar time service"),
+        deadline,
+    );
     let finished = {
         let mut active = active.lock().expect("SDK sidecar active lock poisoned");
         if active
@@ -90,8 +101,9 @@ pub(super) async fn reap_finished(active: &ActiveSlot) {
     if let Some(mut active) = finished
         && let Some(task) = active.deadline_task.take()
     {
-        // Joining a task that has not finished would block this thread inside
-        // the join itself on hosts whose handles own their worker.
-        let _ = crate::sdk::guardian::join_if_finished(task).await;
+        // Bounded by the incoming turn's own deadline: joining a task that has
+        // not finished would otherwise block this thread inside the join on
+        // hosts whose handles own their worker.
+        let _ = crate::sdk::guardian::bounded_join(&bounded, task).await;
     }
 }

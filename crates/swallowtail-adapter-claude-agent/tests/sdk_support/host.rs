@@ -85,6 +85,9 @@ pub enum Stall {
     ProcessStart,
     ProcessWrite,
     ForceStop,
+    /// The pump's own read never ends, so the pump task outlives process exit
+    /// until the test releases it.
+    PumpRead,
 }
 
 #[derive(Clone)]
@@ -120,6 +123,7 @@ pub(super) struct ProcessState {
     pub(super) opened: bool,
     pub(super) holding: bool,
     pub(super) stalling_writes: bool,
+    pub(super) pump_released: bool,
 }
 
 impl SdkFixtureHost {
@@ -222,6 +226,17 @@ impl SdkFixtureHost {
             .environment()
             .map(|value| value.as_host_value().to_owned())
             .collect()
+    }
+
+    /// Lets a `PumpRead`-stalled pump task finish, so the guard's ordered
+    /// cleanup can proceed without any further call from the route.
+    pub fn release_pump(&self) {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .pump_released = true;
+        self.shared.changed.notify_all();
     }
 
     pub fn inputs(&self) -> Vec<Value> {

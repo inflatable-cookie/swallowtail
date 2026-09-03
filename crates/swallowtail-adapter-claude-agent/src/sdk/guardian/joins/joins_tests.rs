@@ -4,7 +4,7 @@
 //! joining it blocks, and so does dropping it. A stalled task is therefore the
 //! exact shape that can overrun a caller deadline, so the regression uses one.
 
-use super::{bounded_join, join_if_finished};
+use super::bounded_join;
 use crate::sdk::bounded::HostBound;
 use futures_executor::block_on;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -94,26 +94,6 @@ fn a_stalled_local_task_cannot_hold_a_bounded_join() {
     assert!(
         elapsed < Duration::from_secs(5),
         "the bounded join returned only after {elapsed:?}, so it blocked on the task"
-    );
-
-    // Retention is not detachment: the handle is still owned, and the task
-    // still ends when its own work does.
-    gate.open();
-}
-
-#[test]
-fn an_unfinished_local_task_is_retained_rather_than_dropped() {
-    let gate = Arc::new(Gate::default());
-    let task = stalled_task(&gate);
-
-    let started = Instant::now();
-    let joined = block_on(join_if_finished(task));
-    let elapsed = started.elapsed();
-
-    assert!(!joined, "an unfinished task is never reported as joined");
-    assert!(
-        elapsed < Duration::from_secs(5),
-        "releasing an unfinished handle blocked for {elapsed:?}"
     );
     gate.open();
 }

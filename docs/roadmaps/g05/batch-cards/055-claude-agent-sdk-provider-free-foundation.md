@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: complete; caller-bounded lifecycle, accepted root-only degraded cleanup, and the selected 0.3.259 identity refresh delivered on PR 188
+Status: blocked; route, lifecycle, and 0.3.259 identity delivered on PR 188, blocked on a shared seam for relinquishing unfinished scoped work to the host
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -155,6 +155,25 @@ source-tag axes, every claim id, the `claude-agent.sdk-v1` behavior revision,
 and the QualifiedOnly posture are unchanged, and `0.3.258` becomes unqualified
 rather than a second supported point.
 
+## Stop
+
+One shared prerequisite blocks merge. A caller-bounded operation that must
+return while host-owned scoped work is still running has nowhere correct to put
+that work's join handle. `ScopedTaskService` offers only `spawn`, `JoinedTask`
+offers `join`, `is_finished`, and `register_waker`, and the local host's handle
+joins on drop. Dropping an unfinished handle therefore blocks the caller past
+its own deadline; waiting on it breaks the deadline; and holding it in adapter
+process state is the detached global work Contract 019 forbids.
+
+Nothing in this route's cleanup *evidence* depends on that handle: the open
+guard reports its ordered cleanup through its own completion signal, and close
+reports `RootUnconfirmed` when the pump was not joined. The gap is ownership of
+the handle itself, and it needs a shared decision rather than a route-local
+invention: a way for the selected execution host to take back unfinished scoped
+work under its own scope authority and reap it, with an explicit outcome that
+says relinquished rather than joined. `sdk/guardian/joins.rs` marks the
+placeholder as the recorded gap.
+
 ## Closeout
 
 Delivered as `claude-agent.sdk` in `swallowtail-adapter-claude-agent` on the
@@ -198,11 +217,19 @@ request the sidecar had already written when the turn ended is denied on the
 wire instead, so the interrupt and close that follow still have a usable
 connection.
 
+The open guard owns the whole ordered cleanup: terminate, wait, join the pump,
+then release the resource and credential leases, in that Contract 019 order and
+inside one host-owned task. Process exit is not evidence that the pump task
+ended, so neither lease is released and no cleanup completion is reported until
+the pump is actually joined. If the caller's deadline expires first, open
+reports `open_cleanup_unconfirmed` and the same guard keeps owning the rest of
+the sequence, finishing it without any further call from the route.
+
 Host task joins go through the task seam, not the join. A `JoinedTask::join`
 may block the thread it is polled on, and dropping an unfinished handle joins
 as well, so the route waits on `is_finished`/`register_waker` and joins only a
-task that reports finished. A task still running at the deadline is retained
-under host ownership rather than dropped.
+task that reports finished. A task still running at the deadline cannot be
+released at all, which is the recorded Stop above.
 
 Adversarial proofs cover a stalled credential acquisition, resource resolution,
 process start, open cleanup, close response, accepted turn with no interrupt

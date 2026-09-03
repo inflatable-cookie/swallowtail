@@ -5,6 +5,7 @@
 //! deadline. A repair that reintroduces an unbounded await fails here rather
 //! than in production.
 
+use crate::claude_agent_sdk_driver::lifecycle::assert_ordered;
 use crate::host_id;
 use crate::sdk_support::{
     CleanupEvent, SdkFixtureHost, SdkScenario, Stall, cleanup_request, prepared_session,
@@ -250,5 +251,53 @@ fn a_stalled_open_returns_on_the_deadline_against_the_real_local_task_host() {
     assert!(
         elapsed < std::time::Duration::from_secs(5),
         "open returned only after {elapsed:?}, so a real local join blocked it"
+    );
+}
+
+#[test]
+fn a_pump_that_outlives_process_exit_holds_both_lease_releases() {
+    // Process exit wakes the pump but is not evidence that its host task has
+    // run to completion. Contract 019 orders the scoped-work join before either
+    // release, so neither lease may be released, and open may not report the
+    // guard's cleanup as done, while the pump task is still alive.
+    let host = host_id("claude-agent-sdk.fixture.pump-outlives");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete).stalling(Stall::PumpRead);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    fixture.fire_deadlines();
+
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("a pump that never drains must fail open on the host deadline");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
+        "an unjoined pump cannot be reported as a completed cleanup"
+    );
+
+    // The guard has terminated and waited; the join is where it now sits.
+    fixture.wait_for_cleanup(CleanupEvent::ProcessWait);
+    let cleanup = fixture.cleanup_events();
+    assert!(
+        !cleanup.contains(&CleanupEvent::ResourceRelease),
+        "the resource lease was released before the pump was joined: {cleanup:?}"
+    );
+    assert!(
+        !cleanup.contains(&CleanupEvent::CredentialRelease),
+        "the credential lease was released before the pump was joined: {cleanup:?}"
+    );
+
+    // The guard still owns the whole ordered cleanup. Letting the pump end is
+    // enough: no second call from the route, no later retention pass.
+    fixture.release_pump();
+    fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
+    assert_ordered(
+        &fixture.cleanup_events(),
+        &[
+            CleanupEvent::ProcessForceStop,
+            CleanupEvent::ProcessWait,
+            CleanupEvent::ResourceRelease,
+            CleanupEvent::CredentialRelease,
+        ],
     );
 }

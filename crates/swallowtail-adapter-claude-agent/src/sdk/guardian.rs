@@ -14,7 +14,7 @@
 //! [`ledger`] for why three separate pieces of state cannot express it.
 
 use crate::sdk::failure::failure;
-pub(crate) use joins::{bounded_join, join_if_finished};
+pub(crate) use joins::bounded_join;
 pub(crate) use ledger::Acquisitions;
 pub(crate) use ledger::RecordingLease;
 use ledger::{DeadlineFlag, GuardLedger};
@@ -80,6 +80,12 @@ pub(crate) struct OpenGuard {
     ledger: Arc<GuardLedger>,
     signal: Arc<Signal>,
     deadline: Arc<DeadlineFlag>,
+    /// Completion of the guard's *ordered* cleanup, which is the evidence the
+    /// caller reports. It is deliberately separate from the guard task's join
+    /// handle: what matters is that termination, the scoped-work join, and both
+    /// lease releases happened in order, not that this future observed the task
+    /// end.
+    cleaned: Arc<Signal>,
     // Behind a mutex so the guard stays `Sync`: the open future holds a
     // reference to it across awaits.
     task: Mutex<Option<Box<dyn JoinedTask>>>,
@@ -113,6 +119,8 @@ impl OpenGuard {
         let task_ledger = Arc::clone(&ledger);
         let task_signal = Arc::clone(&signal);
         let task_fired = Arc::clone(&fired);
+        let cleaned = Arc::new(Signal::default());
+        let task_cleaned = Arc::clone(&cleaned);
         let task = services
             .task()
             .expect("validated sidecar task service")
@@ -135,10 +143,12 @@ impl OpenGuard {
                     // One atomic choice: either open already owns what it
                     // acquired, or this guard does.
                     if !task_ledger.begin_cleanup() {
+                        task_cleaned.trigger();
                         return;
                     }
                     let acquired = task_ledger.take_for_cleanup().await;
                     release(acquired, &task_services).await;
+                    task_cleaned.trigger();
                 }),
             )?;
         Ok((
@@ -146,6 +156,7 @@ impl OpenGuard {
                 ledger,
                 signal,
                 deadline: fired,
+                cleaned,
                 task: Mutex::new(Some(task)),
             },
             lease,
@@ -173,20 +184,22 @@ impl OpenGuard {
         acquired
     }
 
-    /// Releases the guard on a failure path and joins its task while the
-    /// caller's bound allows. Returns whether cleanup completed inside the
-    /// bound; an unjoined guard keeps running under host ownership.
+    /// Releases the guard on a failure path and waits, inside the caller's
+    /// bound, for its ordered cleanup to finish. Returns whether that cleanup
+    /// completed; `false` means unconfirmed, and the guard still owns the whole
+    /// ordered sequence.
     pub(crate) async fn fire(&self, bounded: &super::bounded::HostBound) -> bool {
         self.signal.trigger();
+        let cleaned = bounded.run(self.cleaned.future()).await.is_some();
         let task = self
             .task
             .lock()
             .expect("SDK open-guard task lock poisoned")
             .take();
-        match task {
-            Some(task) => bounded_join(bounded, task).await,
-            None => true,
+        if let Some(task) = task {
+            bounded_join(bounded, task).await;
         }
+        cleaned
     }
 }
 
@@ -196,11 +209,13 @@ async fn release(mut acquired: Acquisitions, services: &HostServices) {
         let _ = process.force_stop().await;
         let _ = process.wait().await;
     }
-    // The pump is joined only if it already finished. A pump still blocked on a
-    // stopped sidecar's transport must not hold the leases below hostage, and
-    // its handle stays owned rather than dropped.
+    // Contract 019 order, kept whole inside this host-owned task: the scoped
+    // work is joined before either lease is released. Waiting here is not a
+    // caller-visible stall - the public future is bounded separately and
+    // reports the cleanup as unconfirmed - and it is what makes a lease release
+    // evidence that the pump had already stopped using what it releases.
     if let Some(pump) = acquired.pump.take() {
-        let _ = join_if_finished(pump).await;
+        let _ = pump.join().await;
     }
     if let (Some(lease), Some(service)) = (acquired.resource.take(), services.working_resource()) {
         let _ = service.release(lease).await;

@@ -84,12 +84,26 @@ impl ProcessHandle for SdkFixtureProcess {
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        let held = self.stall == Some(super::super::host::Stall::PumpRead);
         Box::pin(async move {
             let mut state = self
                 .shared
                 .process
                 .lock()
                 .expect("SDK fixture state lock poisoned");
+            if held {
+                // The pump task outlives process exit until the test releases
+                // it, which is what a real sidecar transport that has not yet
+                // drained looks like.
+                while !state.pump_released {
+                    state = self
+                        .shared
+                        .changed
+                        .wait(state)
+                        .expect("SDK fixture wait lock poisoned");
+                }
+                return Ok(None);
+            }
             while state.output.is_empty() && !state.stopped {
                 state = self
                     .shared

@@ -78,7 +78,8 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
         Box::pin(async move {
             services.require_execution_host(&self.execution_host_id)?;
             validate_turn(&request)?;
-            reap_finished(&self.active).await;
+            let turn_deadline = request.deadline().expect("validated turn deadline");
+            reap_finished(&self.active, &services, turn_deadline).await;
             if self
                 .active
                 .lock()
@@ -90,7 +91,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                     "Claude Agent SDK sidecar session already has an active turn",
                 ));
             }
-            let deadline = request.deadline().expect("validated turn deadline");
+            let deadline = turn_deadline;
             let (turn, events, callbacks, terminal) = SdkActiveTurn::new(
                 request.turn_id().clone(),
                 Arc::downgrade(&self.connection),

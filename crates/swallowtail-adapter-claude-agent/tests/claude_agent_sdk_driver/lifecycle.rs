@@ -221,7 +221,7 @@ fn close_with(
     (outcome, fixture.cleanup_events())
 }
 
-fn assert_ordered(events: &[CleanupEvent], expected: &[CleanupEvent]) {
+pub(crate) fn assert_ordered(events: &[CleanupEvent], expected: &[CleanupEvent]) {
     let positions: Vec<usize> = expected
         .iter()
         .map(|event| {

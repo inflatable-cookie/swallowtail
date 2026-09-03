@@ -1,7 +1,7 @@
 use crate::host_id;
 use crate::sdk_support::{
-    CleanupEvent, SdkFixtureHost, SdkScenario, prepared_session, prepared_session_with,
-    turn_request,
+    CleanupEvent, SdkFixtureHost, SdkScenario, cleanup_request, prepared_session,
+    prepared_session_with, turn_request,
 };
 use futures_executor::block_on;
 use swallowtail_runtime::SessionOptions;
@@ -63,6 +63,7 @@ fn an_interrupt_receipt_requires_a_runtime_advertised_capability() {
     let fixture = SdkFixtureHost::new(SdkScenario::UnadvertisedInterruptReceipt);
     let prepared = prepared_session(host.clone());
     let services = fixture.services(host);
+    let services_for_cleanup = services.clone();
     let mut session =
         block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
     let turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
@@ -73,7 +74,7 @@ fn an_interrupt_receipt_requires_a_runtime_advertised_capability() {
         error.diagnostic().code(),
         "swallowtail.claude-agent.sdk.interrupt_receipt_unadvertised"
     );
-    let _ = block_on(session.close());
+    let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
 
 #[test]
@@ -106,6 +107,7 @@ fn the_selected_model_crosses_the_wire_on_open() {
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);
     let prepared = prepared_session(host.clone());
     let services = fixture.services(host);
+    let services_for_cleanup = services.clone();
     let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
     let open = fixture
         .inputs()
@@ -114,7 +116,7 @@ fn the_selected_model_crosses_the_wire_on_open() {
         .expect("open command is sent");
     assert_eq!(open["params"]["model"], "claude-sonnet-5");
     assert_eq!(open["params"].as_object().expect("params").len(), 2);
-    let _ = block_on(session.close());
+    let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
 
 #[test]
@@ -127,16 +129,19 @@ fn an_open_that_never_reaches_readiness_expires_on_the_host_deadline() {
     let Err(error) = block_on(prepared.open_session(services)) else {
         panic!("an unbounded open must fail on the host deadline");
     };
-    assert_eq!(
-        error.diagnostic().code(),
-        "swallowtail.claude-agent.sdk.open_deadline_elapsed"
-    );
-    // Expiry hands the tree to host termination rather than resolving.
+    // Expiry makes the descendant termination request, then races its own
+    // cleanup against the same caller bound and reports which happened.
     assert!(
-        fixture
-            .cleanup_events()
-            .contains(&crate::sdk_support::CleanupEvent::ProcessForceStop)
+        [
+            "swallowtail.claude-agent.sdk.open_deadline_elapsed",
+            "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
+        ]
+        .contains(&error.diagnostic().code()),
+        "unexpected open expiry diagnostic {}",
+        error.diagnostic().code()
     );
+    let cleanup = fixture.cleanup_events();
+    assert!(cleanup.contains(&CleanupEvent::ProcessForceStop));
 }
 
 #[cfg(windows)]
@@ -147,6 +152,7 @@ fn windows_is_an_unsupported_platform_for_this_route() {
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);
     let prepared = prepared_session(host.clone());
     let services = fixture.services(host);
+    let services_for_cleanup = services.clone();
     assert_eq!(
         claude_agent_sdk_addable_route_descriptor(&services).availability(),
         swallowtail_core::AddableRouteAvailability::Unsupported

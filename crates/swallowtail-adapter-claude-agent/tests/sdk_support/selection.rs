@@ -10,8 +10,8 @@ use swallowtail_core::{
     InstanceTargetRef, ModelId, ModelRouteId, ModelRouteRevision,
 };
 use swallowtail_runtime::{
-    Deadline, EnvironmentRef, MonotonicInstant, OperationContent, RequestId, SessionOptions,
-    TurnRequest, WorkingResourceRef,
+    Deadline, EnvironmentRef, MonotonicInstant, OperationContent, RequestId, SessionCleanupRequest,
+    SessionOptions, TurnRequest, WorkingResourceRef,
 };
 
 pub fn prepared_session(host: ExecutionHostId) -> ClaudeAgentSdkPreparedSession {
@@ -40,6 +40,17 @@ pub fn prepared_session_with(
         Deadline::at(MonotonicInstant::from_ticks(10_000)),
     );
     prepare_claude_agent_sdk_session(input, options)
+}
+
+/// One caller-selected cleanup deadline, far enough ahead that a healthy close
+/// completes inside it.
+pub fn cleanup_request() -> SessionCleanupRequest {
+    SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(10_000)))
+}
+
+/// A cleanup deadline the host clock has already passed.
+pub fn expired_cleanup_request() -> SessionCleanupRequest {
+    SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1)))
 }
 
 pub fn turn_request(id: &str, text: &str) -> TurnRequest {

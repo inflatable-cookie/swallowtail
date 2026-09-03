@@ -82,6 +82,10 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
 }
 
 fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+    if matches!(scenario, SdkScenario::QueryHold) {
+        // No response and no exit: only the caller's turn deadline ends this.
+        return;
+    }
     push(
         state,
         json!({"type": "response", "id": id, "command": "query", "success": true,
@@ -160,7 +164,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
 }
 
 fn interrupt(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
-    let receipt = !matches!(scenario, SdkScenario::CloseUnconfirmed);
+    let receipt = !matches!(scenario, SdkScenario::NativeChildSurvives);
     push(
         state,
         json!({"type": "response", "id": id, "command": "interrupt", "success": true,
@@ -169,17 +173,18 @@ fn interrupt(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
 }
 
 fn close(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
-    let (close_state, observed) = match scenario {
-        SdkScenario::CloseUnconfirmed => ("unconfirmed", false),
-        // A claimed graceful join with no observation is inadmissible: the
-        // nearest-child story must be backed by an observed native exit.
-        SdkScenario::CloseGracefulWithoutObservation => ("graceful", false),
-        _ => ("graceful", true),
+    let (native_join, observed) = match scenario {
+        // The retained handle still shows a live child: a positive survivor
+        // observation, not an absence of news.
+        SdkScenario::NativeChildSurvives => ("survivor", false),
+        // A claimed exit with no observation behind it is inadmissible.
+        SdkScenario::NativeJoinWithoutObservation => ("exited", false),
+        _ => ("exited", true),
     };
     push(
         state,
         json!({"type": "response", "id": id, "command": "close", "success": true,
-               "data": {"closeState": close_state, "joinBoundMs": 2000,
+               "data": {"nativeJoin": native_join, "joinBoundMs": 2000,
                         "nativeExitObserved": observed}}),
     );
     state.stopped = true;

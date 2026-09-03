@@ -115,7 +115,7 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
 }
 
 #[test]
-fn close_joins_the_retained_native_child_before_reporting() {
+fn close_reports_the_native_exit_it_actually_observed() {
     let mut sidecar = SidecarProcess::start();
     sidecar.command(
         "open-1",
@@ -126,13 +126,13 @@ fn close_joins_the_retained_native_child_before_reporting() {
     // The fake native child exits on its own well inside the declared bound.
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2000}));
     assert_eq!(close["success"], true, "close response: {close}");
-    assert_eq!(close["data"]["closeState"], "graceful");
+    assert_eq!(close["data"]["nativeJoin"], "exited");
     assert_eq!(close["data"]["nativeExitObserved"], true);
     assert_eq!(close["data"]["joinBoundMs"], 2000);
 }
 
 #[test]
-fn an_unjoinable_native_child_is_reported_unconfirmed_not_graceful() {
+fn a_native_child_alive_at_the_bound_is_reported_as_a_survivor() {
     let mut sidecar = SidecarProcess::start_with_surviving_native_child();
     sidecar.command(
         "open-1",
@@ -140,9 +140,10 @@ fn an_unjoinable_native_child_is_reported_unconfirmed_not_graceful() {
         json!({"cwd": sidecar.cwd(), "model": "m-1"}),
     );
 
-    // The child outlives the declared bound, so the sidecar reports what it
-    // actually observed: nothing.
+    // The child outlives the declared bound. The retained handle still shows it
+    // running, which is a positive survivor observation the host turns into
+    // cleanup failure, never an absence of news.
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 300}));
-    assert_eq!(close["data"]["closeState"], "unconfirmed");
+    assert_eq!(close["data"]["nativeJoin"], "survivor");
     assert_eq!(close["data"]["nativeExitObserved"], false);
 }

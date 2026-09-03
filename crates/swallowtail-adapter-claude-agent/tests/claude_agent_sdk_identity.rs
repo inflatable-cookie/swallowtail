@@ -121,26 +121,34 @@ fn the_sidecar_asset_can_never_reach_a_credential_bearing_surface() {
 #[test]
 fn the_sidecar_holds_an_independently_joinable_native_handle() {
     // The SDK supplies a discarded bounded wait, not a join, so the sidecar
-    // must retain its own handle and report a three-valued close state.
+    // must retain its own handle and report only what it observed of it.
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("spawnClaudeCodeProcess"));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("class NativeChild"));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("detached: false"));
-    for state in ["graceful", "unconfirmed"] {
-        assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(state));
+    for observation in ["exited", "survivor"] {
+        assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(observation));
     }
-    // The sidecar may never report host escalation: that is Rust's decision.
+    // The sidecar owns no cleanup vocabulary: it cannot escalate, speak for
+    // the owned tree, or call anything clean.
+    for reserved in ["OwnedTreeEmpty", "CleanupOutcome", "escalated"] {
+        assert!(
+            !CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(reserved),
+            "the sidecar must not carry the host's {reserved} vocabulary"
+        );
+    }
     let protocol = protocol();
     assert_eq!(
-        protocol["sidecar_reportable_close_states"]
+        protocol["sidecar_native_join_observations"]
             .as_array()
-            .expect("reportable close states are listed")
+            .expect("native join observations are listed")
             .len(),
         2
     );
+    // Route cleanup outcomes stay Rust-side and evidence-keyed.
     assert_eq!(
-        protocol["close_states"]
+        protocol["route_cleanup_outcomes"]
             .as_array()
-            .expect("close states are listed")
+            .expect("route cleanup outcomes are listed")
             .len(),
         3
     );

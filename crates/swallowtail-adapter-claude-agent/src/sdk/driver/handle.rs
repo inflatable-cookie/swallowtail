@@ -1,4 +1,5 @@
 use super::session::ActiveSlot;
+use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use crate::sdk::turn::SdkActiveTurn;
@@ -20,6 +21,7 @@ pub(super) struct TurnCancellation {
     connection: Arc<SdkConnection>,
     turn: Arc<SdkActiveTurn>,
     receipts_advertised: bool,
+    bounded: HostBound,
     requested: AtomicBool,
 }
 
@@ -28,11 +30,13 @@ impl TurnCancellation {
         connection: Arc<SdkConnection>,
         turn: Arc<SdkActiveTurn>,
         receipts_advertised: bool,
+        bounded: HostBound,
     ) -> Self {
         Self {
             connection,
             turn,
             receipts_advertised,
+            bounded,
             requested: AtomicBool::new(false),
         }
     }
@@ -51,10 +55,17 @@ impl CancellationControl for TurnCancellation {
             }
             self.turn.mark_cancelled();
             let id = format!("interrupt:{}", self.turn.runtime_id().as_str());
-            let response = self
+            // Cancellation is a request, never a claim of provider truth. The
+            // wire write is issued either way; only the receipt is awaited, and
+            // only while the caller's turn bound remains.
+            let pending = self
                 .connection
-                .command(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
+                .send(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
                 .await?;
+            let Some(response) = self.bounded.run(pending).await else {
+                return Ok(CancellationAcknowledgement::Requested);
+            };
+            let response = response?;
             if !response.success {
                 return Err(failure(
                     "swallowtail.claude-agent.sdk.interrupt_rejected",
@@ -127,6 +138,7 @@ pub(super) struct TurnBinding {
     pub(super) turn: Arc<SdkActiveTurn>,
     pub(super) active: ActiveSlot,
     pub(super) receipts_advertised: bool,
+    pub(super) bounded: HostBound,
 }
 
 impl ClaudeAgentSdkTurnHandle {
@@ -146,6 +158,7 @@ impl ClaudeAgentSdkTurnHandle {
                 Arc::clone(&binding.connection),
                 Arc::clone(&binding.turn),
                 binding.receipts_advertised,
+                binding.bounded.clone(),
             ),
             turn: binding.turn,
             connection: binding.connection,

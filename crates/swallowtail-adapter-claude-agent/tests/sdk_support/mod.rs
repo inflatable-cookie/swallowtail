@@ -8,4 +8,6 @@ mod selection;
 #[allow(unused_imports)]
 pub use host::{CleanupEvent, SdkFixtureHost, SdkScenario};
 #[allow(unused_imports)]
-pub use selection::{prepared_session, prepared_session_with, turn_request};
+pub use selection::{
+    cleanup_request, expired_cleanup_request, prepared_session, prepared_session_with, turn_request,
+};

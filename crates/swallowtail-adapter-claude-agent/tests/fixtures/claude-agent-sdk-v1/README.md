@@ -9,7 +9,7 @@ no provider session, login, or downloaded binary was ever run.
   mechanically checked forbidden-specifier list for credential non-custody.
 - `commands.jsonl` — every outbound command plus both callback decisions.
 - `responses.jsonl` — open readiness, query acceptance, interrupt receipt, both
-  sidecar-reportable close states, and one rejected open.
+  sidecar-observable native joins, and one rejected open.
 - `events.jsonl`, `callbacks.jsonl`, `terminal.jsonl`, `diagnostics.jsonl` —
   qualified inbound records.
 - `unknown.jsonl`, `malformed.jsonl`, `disconnect.jsonl` — fail-closed

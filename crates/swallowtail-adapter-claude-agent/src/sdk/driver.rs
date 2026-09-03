@@ -62,30 +62,37 @@ pub(super) struct PendingSession {
 }
 
 impl PendingSession {
-    /// Closes the sidecar through host authority and releases leases in
-    /// contract order. Used when readiness fails or the open deadline expires.
+    /// Terminates the sidecar through host authority and releases leases in
+    /// contract order, entirely inside the caller's open deadline.
     ///
-    /// LIMIT, stated rather than hidden: escalation runs first, but the join
-    /// that follows is not itself bounded by the caller's deadline. That
-    /// deadline has already expired by the time abort runs, and no fresh
-    /// host-observed bound can be derived without a timing seam, so this path
-    /// depends on host termination completing. The caller's deadline therefore
-    /// bounds *detection* of a stuck open, not the return of every cleanup
-    /// await after it.
-    pub(in crate::sdk::driver) async fn abort(mut self) {
-        self.connection.begin_close().await;
-        let _ = self.connection.escalate().await;
-        if let Some(task) = self.pump_task.take() {
-            let _ = task.join().await;
-        }
+    /// The declared descendant termination attempt is a request, so it runs
+    /// first and unconditionally. Every await after it is raced against the
+    /// same caller bound, and once that bound is spent nothing is awaited at
+    /// all. Returns whether every cleanup stage completed inside the bound, so
+    /// the caller can report unconfirmed cleanup instead of implying success.
+    pub(in crate::sdk::driver) async fn abort(mut self, bounded: &HostBound) -> bool {
+        let _ = bounded.run(self.connection.begin_close()).await;
+        let escalated = bounded
+            .run(self.connection.escalate())
+            .await
+            .is_some_and(|result| result.is_ok());
+        let joined = match self.pump_task.take() {
+            Some(task) => bounded
+                .run(task.join())
+                .await
+                .is_some_and(|joined| joined.is_ok()),
+            None => true,
+        };
+        let mut released = true;
         if let (Some(lease), Some(service)) =
             (self.resource.take(), self.services.working_resource())
         {
-            let _ = service.release(lease).await;
+            released &= bounded.run(service.release(lease)).await.is_some();
         }
         if let (Some(lease), Some(service)) = (self.credential.take(), self.services.credential()) {
-            let _ = service.release(lease).await;
+            released &= bounded.run(service.release(lease)).await.is_some();
         }
+        escalated && joined && released
     }
 
     pub(in crate::sdk::driver) fn into_handle(
@@ -158,12 +165,19 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                 Some(Ok(readiness)) => Ok(Box::new(pending.into_handle(&plan, readiness))
                     as Box<dyn InteractiveSessionHandle>),
                 Some(Err(error)) => {
-                    pending.abort().await;
-                    Err(error)
+                    if pending.abort(&bounded).await {
+                        Err(error)
+                    } else {
+                        Err(open_cleanup_unconfirmed())
+                    }
                 }
                 None => {
-                    pending.abort().await;
-                    Err(open_deadline_elapsed())
+                    let cleaned = pending.abort(&bounded).await;
+                    Err(if cleaned {
+                        open_deadline_elapsed()
+                    } else {
+                        open_cleanup_unconfirmed()
+                    })
                 }
             }
         })
@@ -192,6 +206,17 @@ fn open_deadline_elapsed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.open_deadline_elapsed",
         "Claude Agent SDK sidecar session reached its host deadline before readiness",
+    )
+}
+
+/// The open failed and its cleanup could not finish inside the same caller
+/// bound. Termination was requested; completion is unconfirmed, and saying so
+/// is the honest report.
+fn open_cleanup_unconfirmed() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
+        "Claude Agent SDK sidecar termination was requested, but cleanup did not complete inside \
+         the caller's open deadline",
     )
 }
 

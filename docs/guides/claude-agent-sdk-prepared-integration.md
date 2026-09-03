@@ -69,17 +69,21 @@ parent environment and would silently switch the access profile if
 
 ## Supported Platforms
 
-Contract 019 requires the launch recipe to prove descendant enrollment or
-containment on every supported platform, and makes a platform where that
-cannot be proved unsupported rather than best-effort.
+Contract 019 requires the launch recipe to state exactly whether the host can
+attest tree emptiness or only root completion, and permits the latter only as an
+explicit platform-qualified degraded boundary.
 
-The execution host retains a process-group owner on Unix, so the tree stays
-owned for as long as the session does. Windows terminates a tree by request
-without retaining ownership of it, so a native descendant that outlives the
-Node root cannot be proved gone. This route therefore declares Windows
-unsupported: the addable row reports `Unsupported` and `open_session` refuses
-before any process starts. That is deliberate — an unprovable lifecycle is
-worse than an absent route.
+The execution host retains a process-group owner on Unix, so the declared
+descendant termination attempt reaches the tree for as long as the session
+lives. Windows terminates a tree by request without retaining ownership of it,
+so once the Node root exits there is no owner left to make that attempt
+through. This route therefore declares Windows unsupported: the addable row
+reports `Unsupported` and `open_session` refuses before any process starts.
+
+Unix is supported under the accepted root-only degraded posture: the host can
+make the termination attempt and observe root completion, but cannot attest
+owned-tree emptiness, so close reports `Degraded` rather than `Clean`. Neither
+posture is inferred from a successful close; both are stated up front.
 
 ## Explicit Inputs
 
@@ -149,15 +153,21 @@ runtime's own `system/init` evidence. A session that silently ran Claude's
 ambient default instead of the plan's model is a substitution, not a
 convenience, and fails closed.
 
-Open, startup, and each turn are raced against their caller-supplied host
-deadlines through the host `TimeService`. Expiry interrupts provider work,
-hands the tree to host termination, and reports the deadline; it never resolves
-as if the work had finished.
+Every public operation is bounded by a caller-supplied host deadline, and the
+bound covers the return, not merely the noticing.
 
-One limit is stated rather than implied: that deadline bounds *detection* of
-stuck work, not the return of the cleanup that follows it. The post-expiry join
-depends on host termination completing, and close has no caller deadline at
-all. See [Close And The Descendant Tree](#close-and-the-descendant-tree). Ambient behavior is suppressed by
+- `open_session` races startup against the open deadline. On expiry it makes
+  the descendant termination request first, then races each cleanup stage
+  against the same bound, and reports `open_cleanup_unconfirmed` rather than
+  implying cleanup finished.
+- `start_turn` races the correlated query response against the turn deadline,
+  so a sidecar that stops answering cannot hold the public future open.
+- Cancellation always writes the interrupt; only the receipt is bounded, and an
+  unanswered receipt still returns `Requested`, which never claims provider
+  truth.
+- `close` takes the caller's `SessionCleanupRequest`. One deadline covers turn
+  resolution, interruption, the close command, host escalation, the pump join,
+  and both lease releases. No stage restarts it, and expiry returns failure. Ambient behavior is suppressed by
 construction rather than by omission: setting sources are empty, skills are an
 explicit empty list (omission is documented *not* to mean "skills off"),
 session persistence is disabled, and MCP servers, plugins, hooks, subagents,
@@ -202,7 +212,7 @@ races a bounded timer inside a swallowed `catch` and discards the outcome, and
 its own escalation timers are unreferenced and reach only the direct child.
 None of that may be read as evidence that a process exited.
 
-Close therefore runs in this order and reports one explicit outcome:
+Close runs in this order, entirely inside the caller's one cleanup deadline:
 
 1. resolve any live turn, then join its host-deadline task
 2. interrupt a live turn
@@ -210,36 +220,36 @@ Close therefore runs in this order and reports one explicit outcome:
 4. the sidecar joins its own independently retained native child handle to the
    declared 2000 ms bound, which it starts before any other close await so no
    SDK-side drain can consume the bound
-5. the host terminates the descendant tree it owns
-6. re-join, then release resource and credential leases in contract order
+5. make the declared descendant termination attempt through host authority
+6. re-join the root, then release resource and credential leases in contract
+   order
 
-Close itself carries no host-observed bound today. `close` takes no caller
-deadline on the shared session seam, and monotonic tick units are host-defined,
-so deriving one would mean inventing a conversion. Open and each turn are
-bounded through their existing caller `Deadline`s; close relies on the
-sidecar's declared join bound plus host termination. Closing that gap needs a
-timing seam decision, and this route reports it rather than guessing.
+The outcome comes from evidence, never from hope:
 
-| Close state | `CleanupOutcome` | Meaning |
+| Evidence | `CleanupOutcome` | Meaning |
 | --- | --- | --- |
-| `graceful` | `Clean` | the owned tree was attested empty without host termination |
-| `escalated` | `Degraded` | exits were observed, and host termination was part of getting there |
-| `unconfirmed` | `Failed` | no exit was observed; cleanup failed |
+| host attests `OwnedTreeEmpty` | `Clean` | no member of the owned tree remains |
+| host attests root completion only, root exit confirmed | `Degraded` | the root exited after the declared termination attempt; descendants stay unconfirmed |
+| sidecar observed its native child still running | `Failed` | a descendant survived |
+| root exit never observed | `Failed` | cleanup could not be established |
 
-Two limits are deliberate and load-bearing.
+Three rules hold this together.
 
-The sidecar can observe only its own direct native child, so its report is
-about that child, never the tree. A graceful claim that carries no observation
-is rejected outright.
+The sidecar reports only what it observed of its own direct native child. A
+claimed exit that carries no observation is discarded, and a handle still
+showing a live child is a positive survivor observation, not an absence of
+news. A survivor outranks even an emptiness claim: the two cannot both be true.
 
-`graceful` is currently unreachable, and that is the honest state rather than a
-gap to paper over. The execution host terminates the tree it owns during
-cleanup but does not report whether anything remained, so an observed root exit
-does not prove every descendant exited. Until the host process API attests
-tree-emptiness, this route reports `escalated` with a diagnostic naming which
-cause applied — host owned-tree cleanup, or host termination after an unproved
-join — and never upgrades that to `Clean`. Treat `Degraded` as the normal
-close signal for this route today.
+Only `ProcessTreeCompletion::OwnedTreeEmpty` from the execution host may support
+`Clean`. Root exit is not tree completion, and this route never promotes one to
+the other, caches root-only evidence as tree-empty, or widens it to another
+route or platform.
+
+**On ordinary macOS, `Degraded` is the normal successful close.** No host in
+this repository can observe owned-tree emptiness (card 059), so the operator
+accepted this bounded root-only posture on 2026-09-03. Applications that cannot
+accept it should reject the route at selection rather than treat `Degraded` as
+noise.
 
 ## Failure Diagnostics
 

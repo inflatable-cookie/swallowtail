@@ -1,6 +1,6 @@
 # g05.022 Claude Agent Dual-Route Parity
 
-Status: planned; card 055 ready on preserved PR 188 under accepted macOS degraded cleanup
+Status: planned; card 055 implemented on PR 188, stopped on artifact currentness (`0.3.259` is now official stable)
 Owner: Tom
 Created: 2026-09-02
 Depends on: Research 277; Contracts 010, 015, 017, 023, 029, 038, 041, 047
@@ -53,7 +53,7 @@ or production implementation before the two evidence gates close.
 
 - [053 Claude Agent SDK Route Evidence And Contract Gate](batch-cards/053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278
 - [054 Claude Agent ACP Parity Census And Delivery Gate](batch-cards/054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — in review; PR 188 restacked on the accepted macOS root-only degraded posture
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — implemented; caller-bounded lifecycle and root-only degraded cleanup on PR 188; stopped on artifact currentness
 - [056 Claude Agent ACP Negotiated Model-Options Observation](batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded ACP observation on projected open
 
 ## Acceptance

@@ -1,6 +1,6 @@
 {"type":"response","id":"open-1","command":"open","success":true,"data":{"wire":"swallowtail-claude-agent-sdk-jsonl-v1","behavior":"claude-agent.sdk-v1","sdkPackage":"@anthropic-ai/claude-agent-sdk","sdkVersion":"0.3.258","nativeVersion":"2.1.258","nodeVersion":"22.23.2","cwd":"/fixture/claude-agent-sdk-workspace","capabilities":["interrupt_receipt_v1"],"account":{"apiProvider":"firstParty","apiKeySource":"oauth","subscriptionPresent":true},"tools":["Read","Glob","Grep"]}}
 {"type":"response","id":"query:turn-1","command":"query","success":true,"data":{"accepted":true}}
 {"type":"response","id":"interrupt:turn-1","command":"interrupt","success":true,"data":{"interrupted":true,"receipt":true}}
-{"type":"response","id":"close:request-1","command":"close","success":true,"data":{"closeState":"graceful","joinBoundMs":2000,"nativeExitObserved":true}}
-{"type":"response","id":"close:request-2","command":"close","success":true,"data":{"closeState":"unconfirmed","joinBoundMs":2000,"nativeExitObserved":false}}
+{"type":"response","id":"close:request-1","command":"close","success":true,"data":{"nativeJoin":"exited","joinBoundMs":2000,"nativeExitObserved":true}}
+{"type":"response","id":"close:request-2","command":"close","success":true,"data":{"nativeJoin":"survivor","joinBoundMs":2000,"nativeExitObserved":false}}
 {"type":"response","id":"open-1","command":"open","success":false,"failure":{"code":"account_not_first_party","message":"sidecar command failed: account_not_first_party"}}

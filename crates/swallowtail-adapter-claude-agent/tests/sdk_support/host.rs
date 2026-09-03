@@ -32,10 +32,10 @@ pub enum CleanupEvent {
 pub enum SdkScenario {
     /// Open, one streamed turn, and a sidecar-joined graceful close.
     Complete,
-    /// The sidecar cannot prove its native child exited.
-    CloseUnconfirmed,
-    /// The sidecar claims a graceful join it never observed.
-    CloseGracefulWithoutObservation,
+    /// The sidecar observes its native child still running at close.
+    NativeChildSurvives,
+    /// The sidecar claims an exit it never observed.
+    NativeJoinWithoutObservation,
     /// One `canUseTool` admission request during the turn.
     ToolAdmission,
     /// An admission request for a tool outside the read-only set.
@@ -58,6 +58,8 @@ pub enum SdkScenario {
     ModelMismatch,
     /// The sidecar accepts open and never answers it.
     OpenHold,
+    /// The sidecar accepts the query and never answers it.
+    QueryHold,
     /// Open advertises tools beyond the read-only set.
     ToolsWidened,
     /// The stream carries an unqualified event name.
@@ -77,6 +79,7 @@ pub struct SdkFixtureHost {
     shared: Arc<Shared>,
     scenario: SdkScenario,
     exit_observable: bool,
+    attests_empty_owned_tree: bool,
 }
 
 pub(super) struct Shared {
@@ -101,6 +104,7 @@ pub(super) struct ProcessState {
     pub(super) output: VecDeque<ProcessOutputChunk>,
     pub(super) stopped: bool,
     pub(super) opened: bool,
+    pub(super) holding: bool,
 }
 
 impl SdkFixtureHost {
@@ -120,6 +124,7 @@ impl SdkFixtureHost {
             }),
             scenario,
             exit_observable: true,
+            attests_empty_owned_tree: false,
         }
     }
 
@@ -127,6 +132,24 @@ impl SdkFixtureHost {
     pub fn without_observable_exit(mut self) -> Self {
         self.exit_observable = false;
         self
+    }
+
+    /// Models a hypothetical execution host whose concrete mechanism attests
+    /// that its owned tree is empty. No host in this repository can do this
+    /// today; the fixture exists so the only path to `Clean` stays proved.
+    pub fn attesting_empty_owned_tree(mut self) -> Self {
+        self.attests_empty_owned_tree = true;
+        self
+    }
+
+    /// Stops answering further commands, modelling a sidecar that goes quiet
+    /// while staying alive.
+    pub fn hold_responses(&self) {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .holding = true;
     }
 
     /// Fires every host deadline as soon as it is awaited.

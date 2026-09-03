@@ -22,6 +22,7 @@ impl ProcessService for SdkFixtureHost {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
             exit_observable: self.exit_observable,
+            attests_empty_owned_tree: self.attests_empty_owned_tree,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -31,6 +32,7 @@ struct SdkFixtureProcess {
     shared: Arc<Shared>,
     scenario: super::super::host::SdkScenario,
     exit_observable: bool,
+    attests_empty_owned_tree: bool,
 }
 
 impl ProcessHandle for SdkFixtureProcess {
@@ -47,7 +49,9 @@ impl ProcessHandle for SdkFixtureProcess {
                 .lock()
                 .expect("SDK fixture state lock poisoned");
             state.input.push(value.clone());
-            respond(self.scenario, &value, &mut state)?;
+            if !state.holding {
+                respond(self.scenario, &value, &mut state)?;
+            }
             self.shared.changed.notify_all();
             Ok(())
         })();
@@ -90,11 +94,14 @@ impl ProcessHandle for SdkFixtureProcess {
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.record(CleanupEvent::ProcessWait);
         let observable = self.exit_observable;
+        let attests = self.attests_empty_owned_tree;
         Box::pin(async move {
-            if observable {
-                Ok(ProcessExit::new(true, Some(0)))
-            } else {
-                Err(fixture_failure())
+            match (observable, attests) {
+                // Only a host with a concrete owned-tree observation may
+                // construct the attesting exit.
+                (true, true) => Ok(ProcessExit::attesting_empty_owned_tree(true, Some(0))),
+                (true, false) => Ok(ProcessExit::new(true, Some(0))),
+                (false, _) => Err(fixture_failure()),
             }
         })
     }

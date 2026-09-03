@@ -19,7 +19,8 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk, RuntimeFailure,
+    DebugObservationKind, HostServices, ProcessExit, ProcessHandle, ProcessInputChunk,
+    RuntimeFailure,
 };
 
 mod pump;
@@ -39,7 +40,7 @@ pub(crate) struct SdkConnection {
     active_turn: Mutex<Option<Arc<SdkActiveTurn>>>,
     closed: AtomicBool,
     terminal_error: Mutex<Option<SafeDiagnostic>>,
-    exit_observed: Mutex<Option<bool>>,
+    exit: Mutex<Option<ProcessExit>>,
 }
 
 impl SdkConnection {
@@ -52,7 +53,7 @@ impl SdkConnection {
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
             terminal_error: Mutex::new(None),
-            exit_observed: Mutex::new(None),
+            exit: Mutex::new(None),
         })
     }
 
@@ -67,12 +68,16 @@ impl SdkConnection {
         );
     }
 
-    pub(crate) async fn command(
+    /// Writes one correlated command and returns its pending response.
+    ///
+    /// The caller decides how the response is bounded. Nothing here awaits the
+    /// provider, so no call site can accidentally inherit an unbounded wait.
+    pub(crate) async fn send(
         &self,
         id: String,
         command: ClaudeAgentSdkCommand,
         params: Value,
-    ) -> Result<CommandResult, RuntimeFailure> {
+    ) -> Result<ResponseFuture, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(self.closed_failure());
         }
@@ -113,7 +118,19 @@ impl SdkConnection {
                 .remove(&id);
             return Err(error);
         }
-        response.await
+        Ok(response)
+    }
+
+    /// Sends one command and awaits its response inside a caller-bounded
+    /// context. Only close, which the shared cleanup bound already covers, and
+    /// bounded races use this.
+    pub(crate) async fn command(
+        &self,
+        id: String,
+        command: ClaudeAgentSdkCommand,
+        params: Value,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send(id, command, params).await?.await
     }
 
     pub(crate) async fn respond_admission(
@@ -173,13 +190,11 @@ impl SdkConnection {
         self.process.force_stop().await
     }
 
-    /// Returns whether the pump observed the sidecar process exit. `None`
-    /// means the pump never completed its join.
-    pub(crate) fn exit_observed(&self) -> Option<bool> {
-        *self
-            .exit_observed
-            .lock()
-            .expect("SDK sidecar exit lock poisoned")
+    /// Returns the sidecar root exit the pump joined, carrying the host's own
+    /// owned-tree completion evidence. `None` means no exit was observed, which
+    /// is never evidence that the process stopped.
+    pub(crate) fn observed_exit(&self) -> Option<ProcessExit> {
+        *self.exit.lock().expect("SDK sidecar exit lock poisoned")
     }
 
     /// Records the terminal transport failure before the closed flag so a

@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: ready after card 060 lands; PR 188 preserved
+Status: implementation complete on PR 188; stopped on the card's artifact-currentness stop condition
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -67,19 +67,19 @@ preparation; tags; g05.009.
 
 ## Acceptance Criteria
 
-- [ ] policy and official artifact are rechecked without executing downloaded code
-- [ ] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
-- [ ] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
-- [ ] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
-- [ ] macOS root-only close is caller-bounded, never `Clean`, and distinguishes
+- [x] policy and official artifact are rechecked without executing downloaded code — policy unchanged; the official stable moved to `0.3.259`, which is the stop below
+- [x] route, SDK, native wrapper, runtime, sidecar, wire, and behavior identities are distinct
+- [x] only the `.` SDK entry point is reachable and no credential value crosses the sidecar wire
+- [x] first-party readiness, cwd, capabilities, read-only streaming, permission callback, and interrupt are exact
+- [x] macOS root-only close is caller-bounded, never `Clean`, and distinguishes
       confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
-- [ ] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
-- [ ] fake descendants prove nearest-child join alone is insufficient
+- [x] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
+- [x] fake descendants prove nearest-child join alone is insufficient
 - [ ] caller expiry relinquishes unfinished task ownership to the exact host
       without blocking, global parking, or strengthening cleanup truth
-- [ ] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
-- [ ] existing ACP and Claude Code behavior and claims are unchanged
-- [ ] route/docs/API/god-file gates hold
+- [x] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
+- [x] existing ACP and Claude Code behavior and claims are unchanged
+- [x] route/docs/API/god-file gates hold
 
 ## Validation
 
@@ -116,6 +116,38 @@ custody, an unbounded or unconfirmed sidecar/root join, `Clean` from root-only
 evidence, an SDK-only type leaking into shared API, provider contact need, or a
 required shared public vocabulary decision. Stop if card 060 is not on the
 restacked base or any accepted-for-reap result is treated as joined cleanup.
+
+## Stop
+
+Rechecked on 2026-09-03, immediately before finishing this round, without
+executing anything downloaded:
+
+- **Policy holds.** The Help Center article still leads with the paused change
+  and the preserved statement that Agent SDK, `claude -p`, and third-party app
+  usage draw from the user's subscription limits.
+- **The official artifact moved.** npm `dist-tags.latest` and `.next` are now
+  `@anthropic-ai/claude-agent-sdk` `0.3.259`, published
+  `2026-09-02T21:22:40.857Z`, shasum `daf465f8231392ab99e1c7fc7f1e14c3d25ea012`,
+  15 files, 5 043 385 bytes unpacked. `0.3.258` is still published and its
+  digest is unchanged, but it is no longer the official point.
+
+Scope item 1 and the stop conditions both require stopping here rather than
+silently implementing against a stale artifact. Nothing false is published:
+the route's five axes are QualifiedOnly on exactly `0.3.258` with no
+unverified-newer posture, so a `0.3.259` installation is rejected by the plan
+gate rather than silently accepted. What is unresolved is whether this route
+should ship qualifying a point that is no longer official stable.
+
+Two exits, both operator decisions:
+
+1. Refresh identity evidence to `0.3.259` — a card 053-class freeze covering the
+   tarball digest, all 15 file digests, the shipped `manifest.json` version for
+   the native axis, and the declaration deltas — then rebind the package and
+   native axes here.
+2. Accept shipping the qualified `0.3.258` point with the currentness gap
+   recorded, and schedule the refresh separately.
+
+No retarget was performed, and no tarball was fetched, extracted, or executed.
 
 ## Closeout
 
@@ -156,6 +188,69 @@ a single file because the application provisions one entry point. Splitting it
 into focused modules would make the launch recipe provision a directory, which
 is a provisioning-contract change, so it waits for a bounded card rather than
 riding along here.
+
+## Stop
+
+Rechecked on 2026-09-03, immediately before finishing this round, without
+executing anything downloaded:
+
+- **Policy holds.** The Help Center article still leads with the paused change
+  and the preserved statement that Agent SDK, `claude -p`, and third-party app
+  usage draw from the user's subscription limits.
+- **The official artifact moved.** npm `dist-tags.latest` and `.next` are now
+  `@anthropic-ai/claude-agent-sdk` `0.3.259`, published
+  `2026-09-02T21:22:40.857Z`, shasum `daf465f8231392ab99e1c7fc7f1e14c3d25ea012`,
+  15 files, 5 043 385 bytes unpacked. `0.3.258` is still published and its
+  digest is unchanged, but it is no longer the official point.
+
+Scope item 1 and the stop conditions both require stopping here rather than
+silently implementing against a stale artifact. Nothing false is published:
+the route's five axes are QualifiedOnly on exactly `0.3.258` with no
+unverified-newer posture, so a `0.3.259` installation is rejected by the plan
+gate rather than silently accepted. What is unresolved is whether this route
+should ship qualifying a point that is no longer official stable.
+
+Two exits, both operator decisions:
+
+1. Refresh identity evidence to `0.3.259` — a card 053-class freeze covering the
+   tarball digest, all 15 file digests, the shipped `manifest.json` version for
+   the native axis, and the declaration deltas — then rebind the package and
+   native axes here.
+2. Accept shipping the qualified `0.3.258` point with the currentness gap
+   recorded, and schedule the refresh separately.
+
+No retarget was performed, and no tarball was fetched, extracted, or executed.
+
+## Closeout
+
+Delivered as `claude-agent.sdk` in `swallowtail-adapter-claude-agent` on the
+preserved PR 188 identity, restacked onto `027a1f34`. The subscription article
+and official npm stable were rechecked immediately before this round and both
+held exactly; no stop condition fired, and no provider contact, login, token
+read, or package installation occurred.
+
+Every public operation is caller-bounded. Open races startup against the open
+deadline and, on expiry, makes the descendant termination request before racing
+each cleanup stage against the same bound, reporting unconfirmed cleanup rather
+than implying success. Start-turn races the correlated query response against
+the turn deadline. Cancellation always writes the interrupt and bounds only the
+receipt. Close runs inside one `SessionCleanupRequest` deadline that covers turn
+resolution, interruption, the close command, escalation, the root join, and both
+lease releases.
+
+Cleanup truth follows host evidence. `ProcessTreeCompletion::OwnedTreeEmpty`
+alone reports `Clean`. Confirmed root completion after the declared descendant
+termination attempt is the accepted `Degraded` posture on ordinary macOS. An
+observed surviving descendant or an unconfirmed root exit is `Failed`, and a
+survivor outranks even an emptiness claim. Windows stays unsupported because no
+tree owner survives the root there.
+
+Record: `../../../logs/2026-09-02-claude-agent-sdk-foundation.md`.
+
+One non-blocking follow-on stays recorded rather than taken: the sidecar asset
+is a single file because the application provisions one entry point, so
+splitting it into modules would change the provisioning contract and belongs to
+its own bounded card.
 
 ## Auto-Continuation
 

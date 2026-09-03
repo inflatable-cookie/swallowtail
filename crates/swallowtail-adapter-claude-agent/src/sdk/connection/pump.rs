@@ -53,13 +53,11 @@ impl SdkConnection {
         if transport_failure.is_some() {
             let _ = self.escalate().await;
         }
-        // An observed exit is the only evidence of exit. A wait failure is
-        // recorded as "not observed", never as a clean stop.
-        let observed = self.process.wait().await.is_ok();
-        *self
-            .exit_observed
-            .lock()
-            .expect("SDK sidecar exit lock poisoned") = Some(observed);
+        // An observed exit is the only evidence of exit, and it carries the
+        // host's own owned-tree completion evidence. A wait failure records no
+        // exit at all, never a clean stop.
+        let observed = self.process.wait().await.ok();
+        *self.exit.lock().expect("SDK sidecar exit lock poisoned") = observed;
         let error = transport_failure.unwrap_or_else(|| {
             failure(
                 "swallowtail.claude-agent.sdk.connection_ended",

@@ -695,8 +695,11 @@ async function handleClose(id, command, params) {
   state.callbacks.clear();
   const joined = await joinPromise;
   bound.cancel();
+  // Report what was observed, not what is hoped. The retained handle still
+  // showing an unexited child is a positive survivor observation; the host
+  // treats that as cleanup failure rather than an absence of news.
   await respond(id, command, true, {
-    closeState: joined ? "graceful" : "unconfirmed",
+    nativeJoin: joined ? "exited" : "survivor",
     joinBoundMs: boundMs,
     nativeExitObserved: joined,
   });

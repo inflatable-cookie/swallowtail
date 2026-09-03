@@ -7,7 +7,14 @@ behavior revision `claude-agent.sdk-v1`. No provider session, login, package
 installation, or downloaded binary execution was part of this work.
 
 Policy and artifact were rechecked immediately before implementation, as the
-card requires. The Help Center article still leads with the paused change and
+card requires, and again on 2026-09-03 before finishing the lifecycle repair.
+The second recheck fired the card's artifact-currentness stop: npm
+`dist-tags.latest` and `.next` moved to `0.3.259`, published
+`2026-09-02T21:22:40.857Z` with shasum
+`daf465f8231392ab99e1c7fc7f1e14c3d25ea012`. Policy is unchanged. The route was
+not retargeted, because a new point needs its own frozen identity evidence, and
+its QualifiedOnly claim means `0.3.259` is rejected rather than silently
+accepted. The exact stop is recorded on the card. The Help Center article still leads with the paused change and
 the preserved statement that Agent SDK, `claude -p`, and third-party app usage
 draw from the user's subscription limits. Official npm still carries `0.3.258`
 on both `latest` and `next`, with the Research 278 shasum, integrity, file
@@ -59,14 +66,24 @@ join.
 tree it owns during cleanup but does not report whether anything remained, so
 an observed root exit does not prove every descendant exited, and claiming
 otherwise would be the Review Oracle counterexample wearing a success label.
-Contract 019 foundation acceptance is therefore not met, and the card is not
-marked complete. Two shared prerequisites are reported rather than
-approximated. Close and post-expiry cleanup have no observable bound, because
-`close` carries no caller deadline and tick units are host-defined; inventing a
-conversion would fake a guarantee. And whole-tree completion evidence does not
-exist in the host process API, so an observed root exit cannot be upgraded to
-`Clean`. Both are shared runtime expansions and belong to an orchestrator
-decision.
+Both shared prerequisites landed on 2026-09-03 and the route was completed
+against them. Card 058's `SessionCleanupRequest` gives close one caller-selected
+deadline, and card 057's `ProcessTreeCompletion` separates root exit from owned
+-tree emptiness. Every public operation is now caller-bounded through the
+return, not merely to the point of noticing expiry: open races startup and then
+its own cleanup stages, start-turn races the correlated query response,
+cancellation bounds only the receipt after always writing the interrupt, and
+close runs wholly inside the caller's cleanup deadline across turn resolution,
+interruption, escalation, the root join, and both lease releases.
+
+Cleanup truth now follows host evidence exactly. `OwnedTreeEmpty` alone reports
+`Clean`. Confirmed root completion after the declared descendant termination
+attempt is the operator-accepted `Degraded` posture for ordinary macOS, where
+card 059 proved no owned-tree observation exists under current host authority.
+An observed surviving descendant or an unconfirmed root exit is `Failed`, and a
+survivor outranks even an emptiness claim, because the two cannot both be true.
+Windows remains unsupported: no tree owner survives the root there, so the
+declared termination attempt cannot be made.
 
 Descendant enrollment is proved, not asserted. Two new `swallowtail-host-local`
 cases run one portable sidecar-plus-native-descendant topology on whichever

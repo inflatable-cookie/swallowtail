@@ -17,9 +17,11 @@
 //!
 //! Close is the interesting part. The upstream SDK offers no joined stop, so
 //! the sidecar joins its own retained native handle to a declared bound and
-//! the host escalates through descendant-tree termination on expiry. Close
-//! reports `Clean` only for an observed graceful exit, `Degraded` when the
-//! tree exited after escalation, and `Failed` when no exit was ever observed.
+//! the host makes the declared descendant termination attempt. Every stage sits
+//! inside the caller's single `SessionCleanupRequest` deadline. Close reports
+//! `Clean` only where the host attests `OwnedTreeEmpty`; on ordinary macOS a
+//! confirmed root-only completion is the accepted `Degraded` posture, and an
+//! observed surviving descendant or unconfirmed root exit is `Failed`.
 
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation,
@@ -27,7 +29,8 @@ use swallowtail_adapter_claude_agent::sdk::{
 };
 use swallowtail_runtime::{
     CallbackResponse, CleanupOutcome, HostServices, OperationContent, PreparationFailure,
-    RuntimeFailure, RuntimeTurnId, SessionOptions, TerminalOutcome, TurnRequest,
+    RuntimeFailure, RuntimeTurnId, SessionCleanupRequest, SessionOptions, TerminalOutcome,
+    TurnRequest,
 };
 
 fn prepare_session(
@@ -43,7 +46,9 @@ async fn open_and_prompt(
     services: HostServices,
     turn_id: RuntimeTurnId,
     content: OperationContent,
+    cleanup: SessionCleanupRequest,
 ) -> Result<(TerminalOutcome, CleanupOutcome), RuntimeFailure> {
+    let services_for_cleanup = services.clone();
     let mut session = prepared.open_session(services.clone()).await?;
     let mut turn = session
         .start_turn(TurnRequest::new(turn_id, content), services)
@@ -56,7 +61,7 @@ async fn open_and_prompt(
         .expect("sidecar turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    Ok((outcome, session.close().await))
+    Ok((outcome, session.close(cleanup, services_for_cleanup).await))
 }
 
 async fn admit_tool_use(

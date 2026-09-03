@@ -9,14 +9,29 @@
   "sidecar_source_tag_prefix": "swallowtail-claude-agent-sdk-sidecar@",
   "compatibility_claim": "qualified_only_one_point",
   "sdk_entry_point": ".",
-  "commands": ["open", "query", "interrupt", "close"],
-  "open_params": ["cwd"],
-  "close_params": ["joinBoundMs"],
-  "close_states": ["graceful", "escalated", "unconfirmed"],
-  "sidecar_reportable_close_states": ["graceful", "unconfirmed"],
+  "commands": [
+    "open",
+    "query",
+    "interrupt",
+    "close"
+  ],
+  "open_params": [
+    "cwd"
+  ],
+  "close_params": [
+    "joinBoundMs"
+  ],
   "join_bound_ms": 2000,
-  "tools": ["Read", "Glob", "Grep"],
-  "account_fields": ["apiProvider", "apiKeySource", "subscriptionPresent"],
+  "tools": [
+    "Read",
+    "Glob",
+    "Grep"
+  ],
+  "account_fields": [
+    "apiProvider",
+    "apiKeySource",
+    "subscriptionPresent"
+  ],
   "required_api_provider": "firstParty",
   "required_api_key_source": "oauth",
   "environment": {
@@ -45,5 +60,14 @@
     "awsAuthRefresh",
     "gcpAuthRefresh",
     "ANTHROPIC_API_KEY"
+  ],
+  "sidecar_native_join_observations": [
+    "exited",
+    "survivor"
+  ],
+  "route_cleanup_outcomes": [
+    "clean_on_owned_tree_empty",
+    "degraded_on_confirmed_root_only",
+    "failed_on_survivor_or_unconfirmed_root"
   ]
 }

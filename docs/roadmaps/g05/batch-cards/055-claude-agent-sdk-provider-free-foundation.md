@@ -1,10 +1,10 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: blocked; adapter re-entry awaits accepted g05.025 card 061
+Status: blocked; next after card 061, but frozen until its PR passes independent exact-head review and merges
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
-Depends on: completed cards 053-054 and 060; accepted g05.025 card 061;
+Depends on: completed cards 053-054 and 060; reviewed and merged g05.025 card 061;
   Research 278-279; Contracts 009, 010, 017, 019, 029, and 047
 
 ## Goal
@@ -158,7 +158,9 @@ The containment change forward-reverts PR 188's tree delta and withdraws
 `claude-agent.sdk`. PR 192/card 060 remains intact: `AcceptedForReap` is still
 transfer only, never join or cleanup success. Card 055 cannot resume until
 g05.025 card 061 establishes non-fallible reservation/reapable-task authority
-before provider work. Re-entry then uses a fresh branch from canonical main and
+before provider work. Card 061 is implemented on an unmerged branch, so this
+card remains frozen pending independent exact-head review and merge. Re-entry
+then uses a fresh branch from canonical main and
 retains the whole ordered guardian cleanup continuation through terminal lease
 release. The `v0.4.0` release lane remains frozen through that later SDK
 implementation's independent exact-head acceptance.

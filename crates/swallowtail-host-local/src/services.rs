@@ -28,8 +28,10 @@ impl LocalHostServices {
         process_host: LocalProcessHost,
     ) -> Self {
         let process_host = Arc::new(process_host);
-        let (task_service, task_reaper_owner) =
-            LocalScopedTaskService::with_reaper_owner(execution_host_id.clone());
+        let (task_service, task_reaper_owner) = LocalScopedTaskService::with_reaper_owner(
+            execution_host_id.clone(),
+            process_host.task_reap_capacity,
+        );
         let task_service = Arc::new(task_service);
         let watcher = Arc::new(LocalWatcherHostService::new(
             process_host.clone(),
@@ -82,11 +84,11 @@ impl LocalHostServices {
         &self.task_service
     }
 
-    /// Stops task relinquishment and joins every retained task reaper.
+    /// Stops reap reservations, settles accepted tasks, and joins their reapers.
     ///
     /// The outer selected-host lifecycle must call this after operation work
-    /// and outside the task tree. It does not cancel accepted tasks and may
-    /// wait for them to finish. Calling it again is harmless.
+    /// and outside the task tree. It does not cancel issued or accepted work
+    /// and may wait for it to settle. Calling it again is harmless.
     pub fn shutdown_task_reapers(&self) -> Result<(), swallowtail_runtime::RuntimeFailure> {
         self.task_reaper_owner.shutdown()
     }

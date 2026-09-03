@@ -8,6 +8,7 @@ use crate::{
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
 };
+use std::any::Any;
 use std::task::Waker;
 use swallowtail_core::{
     CatalogTimestamp, Diagnostic, EndpointAudience, ExecutionHostId, SafeDiagnostic,
@@ -21,6 +22,17 @@ pub enum TaskRelinquishOutcome {
     /// This is ownership-transfer evidence only. It does not mean the task
     /// finished, joined, or completed cleanup successfully.
     AcceptedForReap,
+}
+
+/// Opaque host-issued authority for starting one task that may later be reaped.
+///
+/// The grant is bound to the exact execution host and operation scope selected
+/// when [`ScopedTaskService::reserve_reap`] issued it. Dropping an unused grant
+/// releases its reserved capacity without starting work.
+pub trait TaskReapReservation: Send + std::fmt::Debug {
+    /// Converts the opaque grant for validation by its issuing host.
+    #[doc(hidden)]
+    fn into_any(self: Box<Self>) -> Box<dyn Any + Send>;
 }
 
 /// Join handle for one task created inside a runtime operation scope.
@@ -71,7 +83,40 @@ pub trait ScopedTaskService: Send + Sync {
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure>;
 
+    /// Reserves authority to start and later relinquish one task under `scope`.
+    ///
+    /// Unsupported, closing, or capacity-exhausted hosts fail here, before the
+    /// operation acquires credentials, resources, processes, tasks, or provider
+    /// work. The returned grant is ownership, not a boolean support probe.
+    fn reserve_reap(
+        &self,
+        _scope: ScopeId,
+    ) -> Result<Box<dyn TaskReapReservation>, RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.task.reap_reservation_unsupported",
+            "Runtime host cannot reserve autonomous task reaping",
+        )))
+    }
+
+    /// Starts `task` only after binding its host-issued reap reservation.
+    ///
+    /// The reservation supplies the exact operation scope. A foreign, released,
+    /// or otherwise invalid grant fails closed before `task` is polled.
+    fn spawn_reapable(
+        &self,
+        _reservation: Box<dyn TaskReapReservation>,
+        _task: BoxFuture<'static, ()>,
+    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.task.reap_reservation_unsupported",
+            "Runtime host cannot start a reservation-backed task",
+        )))
+    }
+
     /// Takes back an unfinished task for autonomous host-side reaping.
+    ///
+    /// The task must have consumed this host's exact-scope reservation through
+    /// [`Self::spawn_reapable`] before its work began.
     ///
     /// On success, the task slot is cleared and the result says only that the
     /// host accepted ownership. It is not join or cleanup-completion evidence.

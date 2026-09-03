@@ -95,6 +95,7 @@ pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_watcher_operatio
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_task_reap_capacity(self, usize) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_watcher_capacity(self, usize) -> Self
 impl swallowtail_host_local::LocalProcessHostBuilder
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_delegated_credential(self, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> Self
@@ -126,7 +127,9 @@ pub const fn swallowtail_host_local::LocalScopedTaskService::execution_host_id(&
 pub const fn swallowtail_host_local::LocalScopedTaskService::new(swallowtail_core::runtime_identity::ExecutionHostId) -> Self
 impl swallowtail_runtime::host_traits::ScopedTaskService for swallowtail_host_local::LocalScopedTaskService
 pub fn swallowtail_host_local::LocalScopedTaskService::relinquish(&self, &swallowtail_runtime::identity::ScopeId, &mut core::option::Option<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>>) -> core::result::Result<swallowtail_runtime::host_traits::TaskRelinquishOutcome, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::LocalScopedTaskService::reserve_reap(&self, swallowtail_runtime::identity::ScopeId) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::TaskReapReservation>, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_host_local::LocalScopedTaskService::spawn(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::async_types::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::LocalScopedTaskService::spawn_reapable(&self, alloc::boxed::Box<dyn swallowtail_runtime::host_traits::TaskReapReservation>, swallowtail_runtime::async_types::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>, swallowtail_runtime::failure::RuntimeFailure>
 pub struct swallowtail_host_local::LocalSignInPorts
 impl swallowtail_host_local::LocalSignInPorts
 pub fn swallowtail_host_local::LocalSignInPorts::calls(&self) -> alloc::vec::Vec<swallowtail_host_local::LocalSignInCall>

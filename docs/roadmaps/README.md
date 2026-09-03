@@ -15,15 +15,15 @@ shape.
 
 ## Next Task
 
-Execute [g05.025 card 061](g05/batch-cards/061-reserved-reapable-task-runtime.md):
-add the provider-neutral operation-scoped reap reservation and real local-host
-shutdown-race proof before restoring any adapter work. Unsupported hosts must
-reject before credentials, resources, processes, tasks, or provider work; a
-held exact-host/exact-scope reservation must make later handoff non-fallible for
-capacity and lifecycle reasons. Ordinary spawn/join/drop stays unchanged.
-`claude-agent.sdk` remains withdrawn and g05.021/cards 050-052 remain frozen.
-Stop after card 061 for independent exact-head review; do not implement card
-055, merge, tag, publish, or resume release readiness.
+After card 061's PR passes independent exact-head review and merges, execute
+[g05.022 card 055](g05/batch-cards/055-claude-agent-sdk-provider-free-foundation.md)
+from fresh canonical main. Card 055 is the sole next task but remains frozen
+until both gates complete. Its later `claude-agent.sdk` re-entry must reserve
+exact-host/exact-scope reap authority before effects and keep the enclosing
+guardian's pump, process, resource, and credential ownership through ordered
+cleanup. Until then the route stays withdrawn and g05.021/cards 050-052 stay
+frozen. Do not merge this PR, implement card 055, tag, publish, or resume
+release readiness in this turn.
 
 ## Standing Lanes
 

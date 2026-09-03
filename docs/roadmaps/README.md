@@ -21,7 +21,9 @@ at the exact audited head `b7f804b5`: independently review the complete
 guaranteed-behavior audit before candidate mutation. The audit freezes 40
 packages, the immutable 47-route release inventory, and 49 current
 integration/route rows due exactly to `pi.sdk-sidecar` and
-`claude-agent.sdk`. Cards 051-052 stay planned until this PR is accepted;
+`claude-agent.sdk`; Card 051's candidate route boundary is fixed at 49 and
+includes both, with Pi's release-note, consumer, and rollback treatment fixed
+as a required Card 051 action. Cards 051-052 stay planned until this PR is accepted;
 card 051 has a separate operator gate before Effigy's sole mutating prepare
 path, and card 052 still requires the complete authenticated working-
 application smoke authority packet. No card authorizes tag creation or push.

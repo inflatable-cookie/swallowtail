@@ -61,7 +61,10 @@ this is not an internal package-topology or public compatibility break.
   tag had 39 solution rows and 47 route IDs. The current activity matrix is
   also reconciled by the route gate.
 - No candidate route baseline was created. Card 051 owns creation of a
-  distinct candidate inventory from this accepted current census.
+  distinct candidate inventory from this accepted current census, but its
+  existing 49-route requirement fixes inclusion of both current-only rows,
+  `pi.sdk-sidecar` and `claude-agent.sdk`; inclusion is not a later Card 051
+  policy choice.
 
 The complete current row, lifecycle posture, feature delta, compatibility,
 consumer-effect, release-note, and rollback ledger is
@@ -142,8 +145,9 @@ negative proofs. The material compatibility result is:
   on the reserved-reap seam with provider-free delegated subscription
   authentication, Unix-only/root-only degraded cleanup, and no session
   persistence. Pi is an exact `0.84.2` sidecar route with app-owned durable
-  session state, bounded load replay, and resume. Neither route is in the
-  immutable 47-row release inventory.
+  session state, bounded load replay, and resume. Both are included in the
+  frozen 49-route v0.4.0 candidate boundary; neither is in the immutable
+  47-row release inventory.
 - reserved reaping and process-tree evidence are additive and stricter. The
   host-local implementation remains root-only under ordinary macOS authority;
   only attested `OwnedTreeEmpty` supports `Clean`.
@@ -156,8 +160,22 @@ The current `[Unreleased]` changelog already contains concept-level coverage
 for the close break, minimal removal, reserved reaping, tree evidence, Claude
 SDK, currentness, and route-local feature changes. Pi SDK sidecar has a guide
 and historical evidence but no dedicated current `[Unreleased]` route-add
-entry. Card 051 must consolidate the exact package/route upgrade and rollback
-wording and decide its candidate release-note coverage; this audit does not
+entry. Because Card 051's existing candidate boundary is explicitly 49 routes,
+Pi inclusion is frozen and Card 051 must add this required `Added` entry before
+promotion:
+
+> add `pi.sdk-sidecar` as a qualified exact `0.84.2` route through the
+> application-provisioned Node `22.23.2` runtime, source-tagged sidecar, and
+> `swallowtail-pi-sdk-jsonl-v1` wire; new, load, and resume use the exact
+> host-leased cwd with bounded typed replay on load, durable app-owned session
+> state, no archive/restore/delete, and no substitution for `pi.rpc`.
+
+The same entry must state the consumer treatment: new consumers provision
+those exact runtime, sidecar, wire, SDK, and session-directory axes; existing
+v0.3.3 consumers have no action unless opting into the new route. Its rollback
+treatment is exact: revert to `v0.3.3`, omit the route and sidecar calls, and do
+not mix workspace versions or alias `pi.rpc`. This is a required Card 051
+release-note action, not a candidate-inclusion choice. Card 050 does not
 promote or edit the changelog.
 
 ## Release posture
@@ -182,9 +200,12 @@ Kimi ACP remains capped at `0.38.0`, and the Contract 061 projection remains
 249 of 767 rows proved with 518 remaining.
 
 No Card050 product-policy choice remains open for version, package set,
-immutable route set, target, MSRV, or compatibility classification. The two
-current integration-only routes are recorded as current source truth; Card 051
-must create any distinct candidate route inventory after exact-head review.
+immutable route set, target, MSRV, or compatibility classification. Card 051's
+existing 49-route candidate requirement fixes the two current integration-only
+routes as candidate additions, including Pi; it must create that distinct
+candidate inventory after exact-head review and carry the required Pi
+release-note, consumer, and rollback wording above. The candidate 49 remains
+distinct from the immutable 47-row release inventory.
 
 ## Authenticated working-application smoke: operator question
 
@@ -220,8 +241,11 @@ The only release-baseline path changes in the full range are under
 Card 050 is locally complete only if the exact Card050 validation list passes
 on this tree and the final pre-push identity still equals `b7f804b5…`.
 Cards 051-052 remain planned. Card 051 must not become ready until an
-independent exact-head review accepts this audit, and it still requires its
-separate operator authorization before Effigy's mutating prepare path.
+independent exact-head review accepts this audit. It consumes the frozen
+49-route candidate boundary, including `pi.sdk-sidecar` and
+`claude-agent.sdk`, and must perform the fixed Pi release-note action above; it
+still requires separate operator authorization before Effigy's mutating
+prepare path.
 
 The exact listed validation tier passed on this tree:
 

@@ -153,7 +153,9 @@ post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is planned; prior partial card-050 output is not accepted release
 evidence, while Research 281 freezes the fresh exact `b7f804b5` audit pending
-independent review. Milestone 022
+independent review. Its 49-route candidate boundary includes both current-only
+routes, and Pi's exact release-note, consumer, and rollback treatment is fixed
+Card 051 input. Milestone 022
 is completed: card 055 restored the `claude-agent.sdk` route on card 061's
 pre-effect reap reservations with one enclosing cleanup guardian and merged
 through PR 196 at `493f8194`. Milestone 023 is completed: card 057 landed the

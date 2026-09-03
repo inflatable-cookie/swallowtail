@@ -345,10 +345,12 @@ deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
 
 g05.021 owns the unpaused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
 is 40 packages and 47 routes, and current source is still 40 packages against
-that same 47-route release inventory. The wider integration and route gates
-prove 49, because current source carries two post-release routes beyond the
-release inventory: the non-release `pi.sdk-sidecar` integration and card 055's
-restored `claude-agent.sdk`. The fresh audit records 826 commits and 2,694
+that same immutable 47-route release inventory. The wider integration and
+route gates prove 49, because current source carries two post-release routes
+beyond the immutable inventory: `pi.sdk-sidecar` and card 055's restored
+`claude-agent.sdk`. Card 051's candidate boundary is fixed at 49 and includes
+both; Pi's exact release-note, consumer, and rollback treatment is a required
+Card 051 action, not an inclusion choice. The fresh audit records 826 commits and 2,694
 changed files, so card 050 requires a complete semantic API and guaranteed-
 behavior audit rather than treating the known OpenAI Background `minimal`
 removal as the whole compatibility result. Card 050 is complete locally at

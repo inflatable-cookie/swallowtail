@@ -26,9 +26,11 @@ mutation.
 - Current source remains 40 packages. The immutable `v0.3.3` release inventory
   is 47 routes and the consumer front door still proves exactly that number.
   The wider integration and route gates prove 49, because current source
-  carries two post-release routes beyond the release inventory:
-  `pi.sdk-sidecar` and the restored `claude-agent.sdk`. Neither is in the
-  release inventory. Historical package, dependency, route, API, and
+  carries two post-release routes beyond the immutable release inventory:
+  `pi.sdk-sidecar` and the restored `claude-agent.sdk`. Card 051's existing
+  49-route candidate boundary includes both; Pi's exact release-note,
+  consumer, and rollback treatment is a required Card 051 action, not an
+  inclusion choice. Historical package, dependency, route, API, and
   release-note baselines stay immutable.
 - The audited head is 826 commits and 2,694 changed files beyond `v0.3.3`.
   Card 050's complete ledger audits the full semantic delta, rather than
@@ -68,7 +70,8 @@ or push is authorized.
    explicit-version preparation plan. After separate operator authorization,
    one Effigy prepare mutation owns workspace-version and changelog promotion,
    reruns all 11 local gates, and freezes the exact extracted `0.4.0`
-   changelog. The accepted candidate then lands on canonical `main` and requires
+   changelog, including the fixed Pi route-add entry and its exact consumer and
+   rollback treatment from Research 281. The accepted candidate then lands on canonical `main` and requires
    CI for that exact SHA.
 3. Card 052 reruns the current external source consumer against that exact
    candidate, performs one operator-authorized current authenticated normal
@@ -107,7 +110,7 @@ different SHA is accepted.
 ## Batch Cards
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — complete at exact `b7f804b5`; independent exact-head review required before card 051
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050; mutating prepare requires separate operator authorization
+- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; consumes card 050's frozen 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; Pi release-note, consumer, and rollback wording is fixed audit input; mutating prepare requires separate operator authorization
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 
 ## Acceptance
@@ -116,9 +119,10 @@ different SHA is accepted.
   and classified across all 40 packages and every release route at the resumed
   reviewed head; the immutable release count is 47
 - immutable prior release baselines remain byte-for-byte unchanged; a distinct
-  40-package `v0.4.0` semantic baseline and route candidate inventory are
-  created only during candidate preparation; the candidate route inventory
-  grows past 47 only for routes the audit accepts; PR 196 merged at `493f8194`
+  40-package `v0.4.0` semantic baseline and 49-route candidate inventory are
+  created only during candidate preparation; the candidate includes the
+  audited `pi.sdk-sidecar` and `claude-agent.sdk` additions while the immutable
+  release inventory remains 47; PR 196 merged at `493f8194`
   with `claude-agent.sdk` restored before the audit
 - all 11 local gates pass together on the frozen candidate, followed by
   canonical exact-SHA CI on that same source

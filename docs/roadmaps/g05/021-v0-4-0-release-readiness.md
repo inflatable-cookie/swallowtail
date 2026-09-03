@@ -58,7 +58,14 @@ retained as non-accepted audit evidence.
 The exact-head review accepted card 050's audit: PR 198 exact head `2f4923b8`
 merged as `835fe9ff` on canonical `main`. Card 051 is ready from that accepted
 freeze and stops at its read-only preparation plan for separate explicit
-operator authorization. Card 052 remains planned and dependent. The single
+operator authorization. The first authorization was consumed by a failed
+prepare that rolled back cleanly after the stale workspace lock blocked the
+first `--locked` gate. The supported `Cargo.lock` sync repair must merge before
+candidate work resumes, and the later prepare requires fresh authorization.
+The sync depends on Effigy PR 89 exact head `7182e753`, merged as `4c554135`,
+which validates every changed lock entry against post-mutation Cargo workspace
+package identity and each member's own version before the locked gates.
+Card 052 remains planned and dependent. The single
 mutating Effigy prepare path, release mutation, tag, and push stay unauthorized
 without that separate operator decision.
 
@@ -70,8 +77,10 @@ without that separate operator decision.
 2. Card 051 first restructures release prose and completes non-Effigy candidate
    edits, then requires read-only release status to infer minor `0.4.0` and an
    explicit-version preparation plan. After separate operator authorization,
-   one Effigy prepare mutation owns workspace-version and changelog promotion,
-   reruns all 11 local gates, and freezes the exact extracted `0.4.0`
+   one Effigy prepare transaction owns coordinated Cargo.toml versions and
+   requirements, changelog promotion, and workspace-only Cargo.lock
+   synchronization before it reruns all 11 local gates and freezes the exact
+   extracted `0.4.0`
    changelog, including the fixed Pi route-add entry and its exact consumer and
    rollback treatment from Research 281. The accepted candidate then lands on canonical `main` and requires
    CI for that exact SHA.
@@ -132,10 +141,11 @@ different SHA is accepted.
   secret, auth state, private endpoint, or unreviewed live capture
 - no mergeable feature/currentness PR remains open inside the freeze
 - read-only release status selects minor `0.4.0`; Effigy alone applies the
-  authorized workspace-version and changelog-promotion mutations; the promoted
-  changelog has deduplicated headings and a structural `Breaking` entry for the
-  OpenAI Background `minimal` removal and the caller-bounded interactive-close
-  signature
+  authorized coordinated Cargo.toml version, changelog-promotion, and
+  package-identity-checked workspace-only Cargo.lock sync mutations before the
+  promoted changelog has deduplicated headings and a structural `Breaking`
+  entry for the OpenAI Background `minimal` removal and the caller-bounded
+  interactive-close signature
 - current external source-consumer and one operator-authorized working
   application pass against the exact candidate through a current normal
   authenticated product path; provider-free substitutes do not count
@@ -154,7 +164,7 @@ the candidate.
 Required proof: complete semantic and behavior ledgers keyed to the
 `v0.3.3` peel and candidate SHA; immutable-baseline diff; 40-package and exact
 reviewed-head release-route inventories; release-status and explicit-version
-prepare-plan output;
+three-mutation prepare-plan output;
 separate prepare authorization; frozen exact changelog extraction; all 11 local
 gate results; exact-SHA CI identity; clean source inventory; exact-revision
 source consumer; selected authenticated application smoke; and an operator

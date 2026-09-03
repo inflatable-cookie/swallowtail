@@ -1,6 +1,6 @@
 use super::{driver, make_host_id};
 use crate::support::{
-    FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, reasoning_options,
+    FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, close_session, reasoning_options,
     sidecar_open_request, sidecar_reasoning_selection, sidecar_selection,
 };
 use futures_executor::block_on;
@@ -91,9 +91,12 @@ fn admitted_modes_prepare_bootstrap_and_confirm_effective_state() {
 
         let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
         let services = fixture.services(host_id);
-        let session = block_on(prepared.open_session(services))
+        let session = block_on(prepared.open_session(services.clone()))
             .unwrap_or_else(|error| panic!("{mode} reasoning session opens: {error:?}"));
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
 
         let bootstrap = &fixture.inputs()[0];
         assert_eq!(bootstrap["params"]["thinkingLevel"], mode);
@@ -120,10 +123,13 @@ fn omission_retains_exact_bootstrap_without_thinking_level() {
     let session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
         sidecar_open_request("sidecar-reasoning-omit", selected.resource),
-        services,
+        services.clone(),
     ))
     .expect("omission session opens");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     let bootstrap = &fixture.inputs()[0];
     assert!(bootstrap["params"].get("thinkingLevel").is_none());
 }
@@ -139,12 +145,13 @@ fn load_transports_reasoning_through_switch_replay_and_state() {
     )
     .expect("reasoning session prepares");
     let binding = reasoning_binding(prepared.plan());
+    let services = fixture.services(host_id);
     let loaded = block_on(
         prepared
             .load_session(
                 RequestId::new("sidecar-reasoning-load-op").expect("valid request"),
                 binding,
-                fixture.services(host_id),
+                services.clone(),
             )
             .expect("load request builds"),
     )
@@ -160,7 +167,10 @@ fn load_transports_reasoning_through_switch_replay_and_state() {
             SessionReplayKind::ToolCallUpdate,
         ]
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 
     let bootstrap = &fixture.inputs()[0];
     assert_eq!(bootstrap["params"]["thinkingLevel"], mode);
@@ -192,17 +202,21 @@ fn resume_attaches_reasoning_without_replay() {
     )
     .expect("reasoning session prepares");
     let binding = reasoning_binding(prepared.plan());
+    let services = fixture.services(host_id);
     let session = block_on(
         prepared
             .resume_session(
                 RequestId::new("sidecar-reasoning-resume-op").expect("valid request"),
                 binding,
-                fixture.services(host_id),
+                services.clone(),
             )
             .expect("resume request builds"),
     )
     .expect("reasoning session resumes");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 
     let inputs = fixture.inputs();
     let commands: Vec<&str> = inputs

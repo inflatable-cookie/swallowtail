@@ -177,6 +177,7 @@ impl OpenCodePreparedSession {
         let management_instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(&management_instance, &access)?;
             let handle = driver.open_session(plan, request.clone(), services).await?;
             wrap_management_handle(
                 handle,
@@ -228,6 +229,7 @@ impl OpenCodePreparedSession {
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Box::pin(async move {
+            validate_management_context(&instance, &access)?;
             let loaded = driver.load_session(plan, request.clone(), services).await?;
             let (replay, handle) = loaded.into_parts();
             let handle = wrap_management_handle(
@@ -278,6 +280,7 @@ impl OpenCodePreparedSession {
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
         Ok(Box::pin(async move {
+            validate_management_context(&instance, &access)?;
             let handle = driver
                 .resume_session(plan, request.clone(), services)
                 .await?;

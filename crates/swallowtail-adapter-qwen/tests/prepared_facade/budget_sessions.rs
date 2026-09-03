@@ -109,7 +109,10 @@ fn selected_qwen_budgets_compose_with_reasoning_and_session_children() {
         );
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
     }
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services.clone())),
+        CleanupOutcome::Clean
+    );
 
     let interrupted = RuntimeTurnId::new("qwen-budget-interrupted").expect("valid turn");
     let restoration = profile.prepare_working_state_restoration(interrupted);

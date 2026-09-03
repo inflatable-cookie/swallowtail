@@ -77,7 +77,10 @@ fn restoration_repeats_thinking_selection_without_private_recovery() {
     }
     assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(restored_session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(restored_session.close(fixture.cleanup_request(), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let requests = fixture.server.requests();
     assert_eq!(requests.len(), 2);

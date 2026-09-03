@@ -248,8 +248,14 @@ fn session_effort_stays_fixed_across_attempts_turns_and_restoration() {
             panic!("fresh session replacement expected");
         };
         let (_, restored_session) = replacement.into_parts();
-        assert_eq!(block_on(restored_session.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(restored_session.close(fixture.cleanup_request(), fixture.services())),
+            CleanupOutcome::Clean
+        );
+        assert_eq!(
+            block_on(session.close(fixture.cleanup_request(), fixture.services())),
+            CleanupOutcome::Clean
+        );
 
         let requests = fixture.server.requests();
         assert_eq!(requests.len(), 3);

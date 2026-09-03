@@ -148,6 +148,7 @@ fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
         let binding = session_resume_binding(&plan, "thread-provider-existing");
         let driver = CodexAppServerDriver::new(EnvironmentRef::new("codex.fixture").unwrap());
         let (process, _) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+        let load_services = host_services(process);
         let loaded = block_on(driver.load_session(
             plan.clone(),
             LoadSessionRequest::new(
@@ -157,7 +158,7 @@ fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
                 None,
                 app_server_session_agreement(SessionAccessPolicy::read_only()),
             ),
-            host_services(process),
+            load_services.clone(),
         ))
         .expect("session loads");
         assert_eq!(
@@ -169,9 +170,13 @@ fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
         );
         let (_, handle) = loaded.into_parts();
         assert_eq!(handle.resume_binding(), Some(&binding));
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(handle, load_services)),
+            CleanupOutcome::Clean
+        );
 
         let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+        let resume_services = host_services(process);
         let resumed = block_on(driver.resume_session(
             plan,
             ResumeSessionRequest::new(
@@ -181,7 +186,7 @@ fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
                 None,
                 app_server_session_agreement(SessionAccessPolicy::read_only()),
             ),
-            host_services(process),
+            resume_services.clone(),
         ))
         .expect("session resumes");
         let request = state
@@ -195,6 +200,9 @@ fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
                 .and_then(serde_json::Value::as_bool),
             (Version::parse(version).unwrap() >= Version::new(0, 129, 0)).then_some(true)
         );
-        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(resumed, resume_services)),
+            CleanupOutcome::Clean
+        );
     }
 }

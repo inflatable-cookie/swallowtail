@@ -1,5 +1,5 @@
 use crate::support::{
-    CleanupEvent, FixtureHost, Scenario, allow_user_input_result, open_request,
+    CleanupEvent, FixtureHost, Scenario, allow_user_input_result, close_session, open_request,
     selection_for_topology, turn_request,
 };
 use futures_executor::block_on;
@@ -54,7 +54,7 @@ fn production_scheduling_and_ui_preserve_both_host_topologies() {
         .expect("Pi topology session opens");
         let mut turn = block_on(session.start_turn(
             turn_request(&format!("topology-turn-{index}"), deadline(100_000)),
-            services,
+            services.clone(),
         ))
         .expect("Pi topology turn starts");
 
@@ -108,7 +108,10 @@ fn production_scheduling_and_ui_preserve_both_host_topologies() {
         }));
         assert_eq!(terminal.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
 
         assert_eq!(
             fixture.process_executable(),
@@ -159,7 +162,7 @@ fn callback_timeout_cancels_once_and_rejects_the_late_answer() {
     .expect("Pi session opens");
     let mut turn = block_on(session.start_turn(
         turn_request("callback-timeout-turn", deadline(100_000)),
-        services,
+        services.clone(),
     ))
     .expect("Pi turn starts");
     block_on(turn.schedule_harness_message(scheduled(
@@ -202,7 +205,10 @@ fn callback_timeout_cancels_once_and_rejects_the_late_answer() {
     let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 fn driver(credential: swallowtail_core::CredentialRef) -> PiRpcDriver {

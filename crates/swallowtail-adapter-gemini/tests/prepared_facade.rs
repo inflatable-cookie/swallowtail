@@ -5,7 +5,7 @@ use crate::{discovery_support, support};
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario};
+use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_gemini::{
     GEMINI_CLI_ACP_AXIS, GeminiCliPreparationInput, GeminiCliPreparationProbe,
     GeminiCliPreparedDriver, GeminiCliPreparedIntegration, GeminiPreparationInput,
@@ -141,8 +141,8 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
         );
         let activity_profile = profile.evidence().operation().observable_activity().clone();
 
-        let mut session =
-            block_on(profile.open_session(operation_services)).expect("prepared session opens");
+        let mut session = block_on(profile.open_session(operation_services.clone()))
+            .expect("prepared session opens");
         let mut turn = block_on(session.start_turn(
             TurnRequest::new(
                 RuntimeTurnId::new("gemini-prepared-turn").expect("valid turn"),
@@ -163,7 +163,10 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
         });
         assert_observable_activity_trace(&activity_profile, &events);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, operation_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(operation_host.releases(), 1);
     }
 }
@@ -253,12 +256,16 @@ fn bounded_write_profile_derives_exact_capability_policy_and_invocation() {
     );
     assert_prepared_operation_evidence_matches_plan(profile.evidence().operation(), profile.plan());
 
-    let session = block_on(profile.open_session(operation_services)).expect("write profile opens");
+    let session =
+        block_on(profile.open_session(operation_services.clone())).expect("write profile opens");
     assert_eq!(
         operation_host.observed_process().arguments,
         ["--acp", "--approval-mode", "auto_edit"]
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, operation_services)),
+        CleanupOutcome::Clean
+    );
 }
 
 fn preparation_input(host: ExecutionHostId) -> GeminiPreparationInput {

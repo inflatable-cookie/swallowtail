@@ -86,7 +86,7 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
             .resume_binding()
             .expect("prepared session returns a continuity binding")
             .clone();
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(fixture.close_session(handle)), CleanupOutcome::Clean);
         assert_eq!(fixture.releases.load(Ordering::SeqCst), 3);
 
         let loaded = block_on(
@@ -119,7 +119,10 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
                 .origin(),
             swallowtail_core::ProviderSessionBindingOrigin::Loaded
         );
-        assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(loaded_handle)),
+            CleanupOutcome::Clean
+        );
 
         let resumed = block_on(
             session
@@ -138,7 +141,7 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
                 .origin(),
             swallowtail_core::ProviderSessionBindingOrigin::Resumed
         );
-        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(fixture.close_session(resumed)), CleanupOutcome::Clean);
         assert_eq!(fixture.releases.load(Ordering::SeqCst), 5);
 
         let requests = fixture.server.requests();

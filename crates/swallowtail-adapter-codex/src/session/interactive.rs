@@ -164,8 +164,17 @@ impl InteractiveSessionHandle for CodexSessionHandle {
         &self.cancellation
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.resume_binding.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
             let close = self.connection.close_input().await;
             let join = self.task.join().await;
             let process_cleanup = if close.is_err() || join.is_err() {
@@ -177,8 +186,9 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 self.connection.cleanup_outcome()
             };
             let resource_cleanup = self.access.release().await;
-            merge_cleanup(process_cleanup, resource_cleanup)
-        })
+                merge_cleanup(process_cleanup, resource_cleanup)
+            }),
+        )
     }
 }
 

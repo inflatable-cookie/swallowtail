@@ -5,6 +5,16 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Breaking
+
+- require `InteractiveSessionHandle::close` callers to provide exact
+  `HostServices` and a `SessionCleanupRequest` with one caller-selected
+  absolute deadline. The boundary now covers active-turn interruption,
+  escalation, task and pump joins, credential release, and resource release;
+  expiry reports failed cleanup rather than allowing an unbounded or falsely
+  clean close. The prior zero-argument close has no compatibility shim. This
+  coordinated public API break targets `v0.4.0`. g05.023 card 058.
+
 ### Added
 
 - separate root process exit from owned descendant-tree completion in runtime

@@ -31,7 +31,7 @@ fn timeout_aborts_and_joins_without_becoming_cancellation() {
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(
@@ -72,7 +72,7 @@ fn explicit_cancellation_stays_cancelled_and_uses_abort() {
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
     assert!(
@@ -131,7 +131,7 @@ fn admitted_detachment_closes_only_the_local_attachment_without_aborting_provide
         swallowtail_runtime::CleanupOutcome::Clean
     );
     assert_eq!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     );
     let shutdown_requests = server.requests();
@@ -217,7 +217,10 @@ fn ordinary_session_plan_does_not_expose_detachment() {
     .expect("turn starts");
     assert!(turn.detachment().is_none());
     assert_eq!(block_on(turn.close()), swallowtail_runtime::CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), swallowtail_runtime::CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, &fixture)),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -253,7 +256,10 @@ fn cancellation_wins_before_detachment_and_still_aborts_provider_work() {
     let outcome = block_on(turn.take_terminal_outcome().unwrap());
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), swallowtail_runtime::CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), swallowtail_runtime::CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, &fixture)),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
     assert!(server.requests().iter().any(|request| request.contains("/abort?")));
 }
 
@@ -289,7 +295,10 @@ fn completed_turn_rejects_detachment_without_new_provider_work() {
         "swallowtail.opencode.detachment_terminal"
     );
     assert_eq!(block_on(turn.close()), swallowtail_runtime::CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), swallowtail_runtime::CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, &fixture)),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
     assert!(!server.requests().iter().any(|request| request.contains("/abort?")));
 }
 

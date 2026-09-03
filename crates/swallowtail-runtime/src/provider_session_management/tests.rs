@@ -106,6 +106,30 @@ mod tests {
     }
 
     #[test]
+    fn management_context_can_be_rejected_before_provider_session_work() {
+        let driver = fixture_driver();
+        let access = fixture_access("fixture.access");
+
+        ProviderSessionManagementBinding::validate_bound_session_context(
+            &driver,
+            &fixture_instance("fixture.driver", "fixture.access"),
+            &access,
+        )
+        .expect("matching context is valid");
+        let failure = ProviderSessionManagementBinding::validate_bound_session_context(
+            &driver,
+            &fixture_instance("another.driver", "fixture.access"),
+            &access,
+        )
+        .expect_err("driver mismatch fails before provider work");
+
+        assert_eq!(
+            failure.kind(),
+            InvalidProviderSessionManagementBindingKind::DriverMismatch
+        );
+    }
+
+    #[test]
     fn binding_rejects_driver_and_access_mismatch_without_provider_detail() {
         let session = SessionRef::new("provider/private/session").expect("session ref is valid");
         let driver_failure = ProviderSessionManagementBinding::from_bound_session(

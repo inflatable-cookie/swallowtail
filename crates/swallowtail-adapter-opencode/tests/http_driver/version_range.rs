@@ -96,7 +96,7 @@ fn latest_qualified_session_uses_the_same_exact_version() {
             .any(|request| request.contains("/session?directory="))
     );
     assert!(matches!(
-        block_on(session.close()),
+        block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
 }
@@ -124,7 +124,7 @@ fn unverified_newer_catalogue_and_session_use_the_latest_qualified_surface() {
         ))
         .expect("unverified newer session is attempted");
         assert!(matches!(
-            block_on(session.close()),
+            block_on(close_session(session, &fixture)),
             swallowtail_runtime::CleanupOutcome::Clean
         ));
     }

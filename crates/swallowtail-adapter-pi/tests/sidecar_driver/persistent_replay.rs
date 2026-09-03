@@ -1,6 +1,7 @@
 use super::{driver, make_host_id};
 use crate::support::{
-    CleanupEvent, FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, sidecar_selection,
+    CleanupEvent, FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, close_session,
+    sidecar_selection,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::{PiSdkSidecarSessionPreparation, prepare_pi_sdk_sidecar_session};
@@ -68,12 +69,13 @@ fn load_transports_bounded_ordered_replay_before_readiness() {
             .clone(),
         ambient_read(),
     );
+    let services = fixture.services(host_id);
     let loaded = block_on(
         prepared
             .load_session(
                 RequestId::new("sidecar-load-op").expect("valid request"),
                 binding,
-                fixture.services(host_id),
+                services.clone(),
             )
             .expect("load request builds"),
     )
@@ -116,7 +118,10 @@ fn load_transports_bounded_ordered_replay_before_readiness() {
             .map(|reference| reference.as_provider_value()),
         Some(FIXTURE_SESSION_REF)
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         fixture.cleanup_events(),
         [
@@ -158,17 +163,21 @@ fn resume_attaches_without_any_replay_phase() {
     )
     .expect("sidecar session prepares");
     let binding = fixture_binding(prepared.plan());
+    let services = fixture.services(host_id);
     let session = block_on(
         prepared
             .resume_session(
                 RequestId::new("sidecar-resume-op").expect("valid request"),
                 binding,
-                fixture.services(host_id),
+                services.clone(),
             )
             .expect("resume request builds"),
     )
     .expect("sidecar session resumes");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     let inputs = fixture.inputs();
     let commands: Vec<&str> = inputs
         .iter()

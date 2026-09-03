@@ -2,7 +2,7 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{DriverFixture, ServerScenario};
+use support::{DriverFixture, ServerScenario, cleanup_request};
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
 use swallowtail_core::{ConfiguredInstanceId, SessionProviderStatePolicy, SessionRef};
 use swallowtail_runtime::{
@@ -56,7 +56,10 @@ fn retained_open_exposes_exact_bindings_and_preserves_on_close() {
     });
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
 
     let requests = fixture.requests();
     assert_eq!(requests.len(), 2);
@@ -112,7 +115,10 @@ fn retained_load_retrieves_complete_ordered_replay_before_continuation() {
         assert_eq!(terminal.await.status(), &TerminalStatus::Completed);
     });
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Clean
+    );
     let requests = fixture.requests();
     assert_eq!(requests[0].method, "GET");
     assert_eq!(

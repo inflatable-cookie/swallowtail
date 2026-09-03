@@ -5,7 +5,7 @@
 mod support;
 
 use std::sync::Arc;
-use support::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario};
+use support::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, close_session};
 use swallowtail_adapter_pi::{
     PI_SDK_SIDECAR_ADDABLE_ROUTE_ID, PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID,
     PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID, PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID,
@@ -174,7 +174,8 @@ fn admission_prepares_and_opens_through_the_fixture_sidecar() {
     );
 
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let session = futures_executor::block_on(prepared.open_session(fixture.services(host_id())))
+    let services = fixture.services(host_id());
+    let session = futures_executor::block_on(prepared.open_session(services.clone()))
         .expect("sidecar session opens through the admitted handoff");
     assert_eq!(
         session
@@ -184,7 +185,7 @@ fn admission_prepares_and_opens_through_the_fixture_sidecar() {
     );
     assert!(session.resume_binding().is_some());
     assert_eq!(
-        futures_executor::block_on(session.close()),
+        futures_executor::block_on(close_session(session, services)),
         swallowtail_runtime::CleanupOutcome::Clean
     );
 }

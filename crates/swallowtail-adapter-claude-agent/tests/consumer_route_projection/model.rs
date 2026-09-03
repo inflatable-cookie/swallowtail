@@ -17,6 +17,7 @@ fn matching_model_survives_open_and_publishes_only_the_projected_active_row() {
     let outcome = block_on(agent_session(None, false).open_session_with_projection(
         source(PREPARED),
         source(ACTIVE),
+        fixture.cleanup_request(),
         fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
     ))
     .map_err(|failure| failure.failure().diagnostic().code())
@@ -58,7 +59,13 @@ fn matching_model_survives_open_and_publishes_only_the_projected_active_row() {
         swallowtail_runtime::ConsumerRouteOmissionSemantics::NotSelectable
     );
     let (session, _) = outcome.into_parts();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            fixture.cleanup_request(),
+            fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.credential_releases(), 1);
     assert_eq!(fixture.resource_releases(), 1);
 }
@@ -86,7 +93,13 @@ fn invalid_model_is_ignored_by_preserved_open_and_closes_projected_open() {
         ))
         .expect("preserved open stays compatible");
         assert!(handle.negotiated_model_options().is_none());
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(handle.close(
+                preserved.cleanup_request(),
+                preserved.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+            )),
+            CleanupOutcome::Clean
+        );
         assert_eq!(preserved.credential_releases(), 1);
         assert_eq!(preserved.resource_releases(), 1);
 
@@ -94,6 +107,7 @@ fn invalid_model_is_ignored_by_preserved_open_and_closes_projected_open() {
         let failure = block_on(agent_session(None, false).open_session_with_projection(
             source(PREPARED),
             source(ACTIVE),
+            projected.cleanup_request(),
             projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ))
         .err()
@@ -126,6 +140,7 @@ fn missing_model_entry_fails_both_opens_through_confirmation() {
     let projected_failure = match block_on(agent_session(None, false).open_session_with_projection(
         source(PREPARED),
         source(ACTIVE),
+        projected.cleanup_request(),
         projected.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
     )) {
         Ok(_) => panic!("projected open should reject a missing model entry"),
@@ -160,6 +175,7 @@ fn rejected_reasoning_omits_the_observation_row() {
         agent_session(Some("low"), false).open_session_with_projection(
             source(PREPARED),
             source(ACTIVE),
+            fixture.cleanup_request(),
             fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     )
@@ -189,7 +205,10 @@ fn load_and_resume_omit_negotiated_model_options() {
         .expect("open session returns resume binding")
         .clone();
     assert!(handle.negotiated_model_options().is_some());
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(handle.close(opened.cleanup_request(), opened.services(host_id.clone()))),
+        CleanupOutcome::Clean
+    );
 
     let load_host = FixtureHost::new(Scenario::Success, "0.61.0");
     let loaded = block_on(
@@ -204,7 +223,13 @@ fn load_and_resume_omit_negotiated_model_options() {
     .expect("session loads");
     let (_, loaded_handle) = loaded.into_parts();
     assert!(loaded_handle.negotiated_model_options().is_none());
-    assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(loaded_handle.close(
+            load_host.cleanup_request(),
+            load_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
 
     let resume_host = FixtureHost::new(Scenario::Success, "0.61.0");
     let resumed = block_on(
@@ -212,11 +237,14 @@ fn load_and_resume_omit_negotiated_model_options() {
             .resume_session(
                 RequestId::new("claude-agent.projection.resume").expect("request is valid"),
                 binding,
-                resume_host.services(host_id),
+                resume_host.services(host_id.clone()),
             )
             .expect("resume prepares"),
     )
     .expect("session resumes");
     assert!(resumed.negotiated_model_options().is_none());
-    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(resumed.close(resume_host.cleanup_request(), resume_host.services(host_id))),
+        CleanupOutcome::Clean
+    );
 }

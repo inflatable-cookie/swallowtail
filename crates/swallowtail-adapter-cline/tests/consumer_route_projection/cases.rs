@@ -4,7 +4,8 @@ fn maximal_open_retains_exact_model_and_nine_exact_rows() {
     let outcome = block_on(prepared.open_session_with_projection(
         source("cline.prepared.maximal"),
         source("cline.active.maximal"),
-        services,
+        host.cleanup_request(),
+        services.clone(),
     ))
     .unwrap_or_else(|failure| panic!("projected open failed: {}", failure.failure()));
     let options = outcome.negotiated_model_options().expect("exact model options survive");
@@ -43,7 +44,10 @@ fn maximal_open_retains_exact_model_and_nine_exact_rows() {
     let value = model.control_value().expect("observation descriptor");
     assert_eq!(value.kind(), swallowtail_runtime::ConsumerRouteValueKind::Observation);
     assert_eq!(value.omission(), swallowtail_runtime::ConsumerRouteOmissionSemantics::NotSelectable);
-    assert_eq!(block_on(outcome.into_parts().0.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(outcome.into_parts().0.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 
@@ -59,7 +63,7 @@ fn projection_rows(
 #[test]
 fn omission_has_no_active_rows_or_unused_active_source() {
     let (prepared, host, services) = session(Scenario::Success, false, "omitted");
-    let outcome = block_on(prepared.open_session_with_projection(source("cline.prepared.omitted"), source("cline.active.omitted"), services)).unwrap_or_else(|failure| panic!("projected open failed: {}", failure.failure()));
+    let outcome = block_on(prepared.open_session_with_projection(source("cline.prepared.omitted"), source("cline.active.omitted"), host.cleanup_request(), services.clone())).unwrap_or_else(|failure| panic!("projected open failed: {}", failure.failure()));
     let rows = semantic_ids(outcome.contribution());
     assert_eq!(rows.len(), 6);
     assert!(!rows.contains("control.harness-mode"));
@@ -67,14 +71,17 @@ fn omission_has_no_active_rows_or_unused_active_source() {
     assert!(!rows.contains("feature.negotiated-model-options-observation"));
     assert_eq!(outcome.contribution().sources().len(), 1);
     assert!(outcome.negotiated_model_options().is_none());
-    assert_eq!(block_on(outcome.into_parts().0.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(outcome.into_parts().0.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 
 #[test]
 fn exact_act_is_rejected_without_session_or_model_row() {
     let (prepared, host, services) = session(Scenario::ModelExactPlanDrift, true, "rejected");
-    let failure = block_on(prepared.open_session_with_projection(source("cline.prepared.rejected"), source("cline.active.rejected"), services)).err().expect("Act rejects Plan");
+    let failure = block_on(prepared.open_session_with_projection(source("cline.prepared.rejected"), source("cline.active.rejected"), host.cleanup_request(), services)).err().expect("Act rejects Plan");
     assert_eq!(failure.failure().diagnostic().code(), "swallowtail.cline.acp.harness_mode_mismatch");
     let ClineProjectionOpenFailure::Rejected { contribution, .. } = failure else { panic!("exact admitted Act must be typed Rejected"); };
     let rows = semantic_ids(&contribution);
@@ -117,7 +124,7 @@ fn exact_act_is_rejected_without_session_or_model_row() {
 fn malformed_plan_confirmation_is_runtime_with_legacy_parity() {
     for scenario in [Scenario::PlanConfirmationMissing, Scenario::PlanConfirmationMalformed, Scenario::PlanConfirmationAmbiguous, Scenario::PlanDisconnect] {
         let (projected, projected_host, services) = session(scenario, true, "projected-plan");
-        let projected_failure = block_on(projected.open_session_with_projection(source("cline.prepared.plan-failure"), source("cline.active.plan-failure"), services)).err().expect("projected open fails");
+        let projected_failure = block_on(projected.open_session_with_projection(source("cline.prepared.plan-failure"), source("cline.active.plan-failure"), projected_host.cleanup_request(), services)).err().expect("projected open fails");
         assert!(matches!(projected_failure, ClineProjectionOpenFailure::Runtime(_)));
         let (legacy, legacy_host, services) = session(scenario, true, "legacy-plan");
         let legacy_failure = block_on(legacy.open_session(services)).err().expect("legacy fails");
@@ -131,12 +138,15 @@ fn malformed_plan_confirmation_is_runtime_with_legacy_parity() {
 fn invalid_model_is_ignored_by_legacy_and_closes_projected_open() {
     for scenario in [Scenario::ModelMalformed, Scenario::ModelDuplicate, Scenario::ModelUnadvertised, Scenario::ModelUnbounded] {
         let (legacy, legacy_host, services) = session(scenario, false, "legacy-model");
-        let handle = block_on(legacy.open_session(services)).expect("legacy open is preserved");
+        let handle = block_on(legacy.open_session(services.clone())).expect("legacy open is preserved");
         assert!(handle.negotiated_model_options().is_none());
-        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(handle.close(legacy_host.cleanup_request(), services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(legacy_host.releases(), 1);
         let (projected, projected_host, services) = session(scenario, false, "projected-model");
-        let failure = block_on(projected.open_session_with_projection(source("cline.prepared.model-invalid"), source("cline.active.model-invalid"), services)).err().expect("projected open rejects invalid model evidence");
+        let failure = block_on(projected.open_session_with_projection(source("cline.prepared.model-invalid"), source("cline.active.model-invalid"), projected_host.cleanup_request(), services)).err().expect("projected open rejects invalid model evidence");
         assert!(matches!(failure, ClineProjectionOpenFailure::Runtime(_)));
         assert_eq!(failure.failure().diagnostic().code(), "swallowtail.negotiated_model_options.invalid");
         assert!(failure.rejected_contribution().is_none());
@@ -147,7 +157,7 @@ fn invalid_model_is_ignored_by_legacy_and_closes_projected_open() {
 #[test]
 fn equal_sources_fail_before_provider_or_resource_work() {
     let (prepared, host, services) = session(Scenario::Success, false, "equal-source");
-    let failure = block_on(prepared.open_session_with_projection(source("cline.same-source"), source("cline.same-source"), services)).err().expect("equal sources fail");
+    let failure = block_on(prepared.open_session_with_projection(source("cline.same-source"), source("cline.same-source"), host.cleanup_request(), services)).err().expect("equal sources fail");
     assert_eq!(failure.failure().diagnostic().code(), "swallowtail.cline.projection_source_identity_invalid");
     assert!(!host.process_started());
     assert_eq!(host.releases(), 0);

@@ -141,8 +141,17 @@ impl InteractiveSessionHandle for KimiSessionHandle {
         &self.cancellation
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.execution_host_id.clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
             let active = self
                 .active
                 .lock()
@@ -175,8 +184,9 @@ impl InteractiveSessionHandle for KimiSessionHandle {
             };
             let resource = release_resource(self.resource.take(), &self.services).await;
             let credential = release_credential(self.credential.take(), &self.services).await;
-            merge_cleanup(merge_cleanup(task, resource), credential)
-        })
+                merge_cleanup(merge_cleanup(task, resource), credential)
+            }),
+        )
     }
 }
 

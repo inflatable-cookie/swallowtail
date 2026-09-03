@@ -112,7 +112,10 @@ fn serial_session_streams_two_private_continuation_turns() {
     assert_turn_evidence(&second_events, 175_000, "turn-2");
     assert_eq!(block_on(second.close()), CleanupOutcome::Clean);
     assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 0);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 
     let frames = fixture.server.frames();
     assert_eq!(frames.len(), 2);
@@ -159,7 +162,10 @@ fn active_turn_rejects_parallel_work_and_cancellation_closes_session_chain() {
         .err()
         .expect("closed continuation rejects later turns");
     assert_eq!(error.diagnostic().code(), "swallowtail.xai.session_closed");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -175,7 +181,10 @@ fn disconnect_fails_once_and_invalidates_private_continuation() {
         .expect("invalid continuation is rejected");
     assert_eq!(error.diagnostic().code(), "swallowtail.xai.session_closed");
     assert_eq!(fixture.server.frames().len(), 1);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -200,7 +209,10 @@ fn provider_continuation_and_connection_limit_failures_remain_distinct() {
         assert!(!format!("{outcome:?}").contains("raw provider"));
         assert!(!format!("{outcome:?}").contains("raw response id"));
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -222,7 +234,10 @@ fn deadline_closes_the_connection_and_reports_timeout_after_join() {
             .err()
             .expect("timed-out continuation rejects later turns");
     assert_eq!(error.diagnostic().code(), "swallowtail.xai.session_closed");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.calls.count(DriverCall::TaskJoin), 1);
 }
 

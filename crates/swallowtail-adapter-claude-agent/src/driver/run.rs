@@ -13,9 +13,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
     CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, OpenSessionRequest,
-    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionOptions,
-    SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TurnHandle,
-    TurnRequest, terminal_outcome_channel,
+    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionCleanupRequest,
+    SessionOptions, SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest,
+    TerminalOutcome, TurnHandle, TurnRequest, terminal_outcome_channel,
 };
 
 impl StructuredRunDriver for ClaudeAgentAcpDriver {
@@ -29,6 +29,12 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             let selected = validate_plan(&plan, self.credential.as_ref())?;
             validate_run(&plan, &request, &services)?;
             let owned_session_cleanup = super::validation::run_owns_session_cleanup(&plan)?;
+            let cleanup_boundary = request
+                .deadline()
+                .map(|deadline| RunSessionCleanupBoundary {
+                    request: SessionCleanupRequest::new(deadline),
+                    services: services.clone(),
+                });
             let permission_handling = permission_handling(&plan)?;
             let reasoning = request.policy().reasoning_mode().cloned();
             if reasoning.is_some() && !selected.behavior().supports_config_options() {
@@ -88,19 +94,25 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = Box::new(session)
-                        .close_with_owned_cleanup(owned_session_cleanup)
-                        .await;
+                    let _ = close_run_session(
+                        Box::new(session),
+                        owned_session_cleanup,
+                        cleanup_boundary.clone(),
+                    )
+                    .await;
                     return Err(error);
                 }
             };
             let events = match turn.take_events() {
                 Some(events) => events,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session)
-                        .close_with_owned_cleanup(owned_session_cleanup)
-                        .await;
+                    drop(turn);
+                    let _ = close_run_session(
+                        Box::new(session),
+                        owned_session_cleanup,
+                        cleanup_boundary.clone(),
+                    )
+                    .await;
                     return Err(failure(
                         "swallowtail.claude_agent.acp.run_events_missing",
                         "Claude Agent structured run did not expose its event stream",
@@ -111,10 +123,13 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             let turn_terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session)
-                        .close_with_owned_cleanup(owned_session_cleanup)
-                        .await;
+                    drop(turn);
+                    let _ = close_run_session(
+                        Box::new(session),
+                        owned_session_cleanup,
+                        cleanup_boundary.clone(),
+                    )
+                    .await;
                     return Err(failure(
                         "swallowtail.claude_agent.acp.run_terminal_missing",
                         "Claude Agent structured run did not expose its terminal outcome",
@@ -131,10 +146,13 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             let active = match active {
                 Some(active) => active,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session)
-                        .close_with_owned_cleanup(owned_session_cleanup)
-                        .await;
+                    drop(turn);
+                    let _ = close_run_session(
+                        Box::new(session),
+                        owned_session_cleanup,
+                        cleanup_boundary.clone(),
+                    )
+                    .await;
                     return Err(failure(
                         "swallowtail.claude_agent.acp.run_active_missing",
                         "Claude Agent structured run lost its active turn",
@@ -159,6 +177,7 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             ))
             .map_err(|_| malformed())?;
             let task_pending = Arc::clone(&pending);
+            let task_cleanup_boundary = cleanup_boundary.clone();
             let task = services.task().expect("validated task").spawn(
                 task_scope,
                 Box::pin(async move {
@@ -168,14 +187,14 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                         .take()
                         .expect("Claude Agent pending run exists");
                     let outcome = resources.terminal.await;
-                    let turn_cleanup = resources.turn.close().await;
-                    let (session_cleanup, deletion) = Box::new(resources.session)
-                        .close_with_owned_cleanup(owned_session_cleanup)
-                        .await;
-                    let cleanup = merge_cleanup(
-                        outcome.cleanup().clone(),
-                        merge_cleanup(turn_cleanup, session_cleanup),
-                    );
+                    drop(resources.turn);
+                    let (session_cleanup, deletion) = close_run_session(
+                        Box::new(resources.session),
+                        owned_session_cleanup,
+                        task_cleanup_boundary,
+                    )
+                    .await;
+                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
                     let mut finished = TerminalOutcome::new(outcome.status().clone(), cleanup);
                     if let Some(output) = outcome.output().cloned() {
                         finished = finished.with_output(output);
@@ -192,16 +211,18 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
             let task = match task {
                 Ok(task) => task,
                 Err(error) => {
-                    let _ = cancellation.request().await;
                     let resources = pending
                         .lock()
                         .expect("Claude Agent pending run lock poisoned")
                         .take();
                     if let Some(resources) = resources {
-                        let _ = resources.turn.close().await;
-                        let _ = Box::new(resources.session)
-                            .close_with_owned_cleanup(owned_session_cleanup)
-                            .await;
+                        drop(resources.turn);
+                        let _ = close_run_session(
+                            Box::new(resources.session),
+                            owned_session_cleanup,
+                            cleanup_boundary,
+                        )
+                        .await;
                     }
                     return Err(error);
                 }
@@ -223,6 +244,46 @@ struct ClaudeAgentRunResources {
     turn: Box<dyn TurnHandle>,
     session: super::session::ClaudeAgentSessionHandle,
     terminal: BoxFuture<'static, TerminalOutcome>,
+}
+
+#[derive(Clone)]
+struct RunSessionCleanupBoundary {
+    request: SessionCleanupRequest,
+    services: HostServices,
+}
+
+async fn close_run_session(
+    session: Box<super::session::ClaudeAgentSessionHandle>,
+    owned_cleanup: bool,
+    boundary: Option<RunSessionCleanupBoundary>,
+) -> (
+    CleanupOutcome,
+    Option<swallowtail_runtime::RemoteResourceDeletionOutcome>,
+) {
+    let Some(boundary) = boundary else {
+        return session.close_with_owned_cleanup(owned_cleanup).await;
+    };
+    let expected_execution_host_id = session.execution_host_id.clone();
+    let deletion = Arc::new(Mutex::new(None));
+    let captured_deletion = Arc::clone(&deletion);
+    let cleanup = swallowtail_runtime::bound_session_cleanup(
+        expected_execution_host_id,
+        boundary.request,
+        boundary.services,
+        Box::pin(async move {
+            let (cleanup, result) = session.close_with_owned_cleanup(owned_cleanup).await;
+            *captured_deletion
+                .lock()
+                .expect("Claude Agent run deletion lock poisoned") = result;
+            cleanup
+        }),
+    )
+    .await;
+    let deletion = deletion
+        .lock()
+        .expect("Claude Agent run deletion lock poisoned")
+        .take();
+    (cleanup, deletion)
 }
 
 struct ClaudeAgentRunCancellation {

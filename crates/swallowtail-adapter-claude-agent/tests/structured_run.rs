@@ -301,7 +301,13 @@ fn cancellation_and_deadline_stop_the_turn_then_join_operation_cleanup() {
     .expect("deadline run starts");
     let (_, outcome) = complete(&mut run);
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
-    assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+    assert_eq!(
+        outcome
+            .cleanup()
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.session_cleanup.deadline_expired")
+    );
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
 }
 

@@ -2382,6 +2382,7 @@ pub const fn swallowtail_runtime::ProviderSessionManagementBinding::protocol_fac
 pub const fn swallowtail_runtime::ProviderSessionManagementBinding::provider_session_ref(&self) -> &swallowtail_core::provider_reference::SessionRef
 pub fn swallowtail_runtime::ProviderSessionManagementBinding::supports(&self, swallowtail_core::capability::Capability) -> bool
 pub const fn swallowtail_runtime::ProviderSessionManagementBinding::transport_family(&self) -> &swallowtail_core::runtime_identity::TransportFamilyId
+pub fn swallowtail_runtime::ProviderSessionManagementBinding::validate_bound_session_context(&swallowtail_core::registration::DriverDescriptor, &swallowtail_core::instance::ConfiguredInstance, &swallowtail_runtime::PreparedAccessEvidence) -> core::result::Result<(), swallowtail_runtime::InvalidProviderSessionManagementBinding>
 pub const fn swallowtail_runtime::ProviderSessionManagementBinding::working_resource(&self) -> core::option::Option<&swallowtail_runtime::WorkingResourceRef>
 pub struct swallowtail_runtime::ProviderSessionManagementOutcome
 impl swallowtail_runtime::ProviderSessionManagementOutcome
@@ -2649,6 +2650,10 @@ pub fn swallowtail_runtime::ServingInstanceId::as_str(&self) -> &str
 pub fn swallowtail_runtime::ServingInstanceId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RuntimeIdentityRequired>
 impl core::fmt::Debug for swallowtail_runtime::ServingInstanceId
 pub fn swallowtail_runtime::ServingInstanceId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SessionCleanupRequest
+impl swallowtail_runtime::SessionCleanupRequest
+pub const fn swallowtail_runtime::SessionCleanupRequest::deadline(self) -> swallowtail_runtime::Deadline
+pub const fn swallowtail_runtime::SessionCleanupRequest::new(swallowtail_runtime::Deadline) -> Self
 pub struct swallowtail_runtime::SessionOptions
 impl swallowtail_runtime::SessionOptions
 pub const fn swallowtail_runtime::SessionOptions::developer_instructions(&self) -> core::option::Option<&swallowtail_runtime::OperationContent>
@@ -3179,7 +3184,7 @@ pub fn swallowtail_runtime::InteractiveSessionDriver::recover_session_attachment
 pub fn swallowtail_runtime::InteractiveSessionDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::ResumeSessionRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::InteractiveSessionHandle>, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::InteractiveSessionHandle: core::marker::Send
 pub fn swallowtail_runtime::InteractiveSessionHandle::cancellation(&self) -> &dyn swallowtail_runtime::CancellationControl
-pub fn swallowtail_runtime::InteractiveSessionHandle::close(alloc::boxed::Box<Self>) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
+pub fn swallowtail_runtime::InteractiveSessionHandle::close(alloc::boxed::Box<Self>, swallowtail_runtime::SessionCleanupRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub fn swallowtail_runtime::InteractiveSessionHandle::management_binding(&self) -> core::option::Option<&swallowtail_runtime::ProviderSessionManagementBinding>
 pub fn swallowtail_runtime::InteractiveSessionHandle::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::NegotiatedSessionModelOptions>
 pub fn swallowtail_runtime::InteractiveSessionHandle::provider_session_ref(&self) -> core::option::Option<&swallowtail_core::provider_reference::SessionRef>
@@ -3357,6 +3362,7 @@ pub fn swallowtail_runtime::apply_model_presentation_overlay(&swallowtail_runtim
 pub fn swallowtail_runtime::apply_stored_model_presentation_overlay(&dyn swallowtail_runtime::ConnectionLifecycleStore, &swallowtail_runtime::ConfiguredProviderInstanceRecord) -> core::result::Result<swallowtail_runtime::ModelPresentationOverlay, swallowtail_runtime::ModelPresentationOverlayFailure>
 pub fn swallowtail_runtime::base_requirements(swallowtail_core::runtime_identity::ExecutionLayer, swallowtail_core::runtime_identity::OperationShape, swallowtail_core::runtime_identity::DriverRole, &swallowtail_core::instance::ConfiguredInstance, &swallowtail_core::access::AccessProfile, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::access::CredentialState>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
 pub fn swallowtail_runtime::bound_provider_session_replay_tail(alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionReconciliationBounds) -> (alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, bool)
+pub fn swallowtail_runtime::bound_session_cleanup(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::SessionCleanupRequest, swallowtail_runtime::HostServices, swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub fn swallowtail_runtime::build_plan(&swallowtail_core::registration::DriverDescriptor, &swallowtail_core::instance::ConfiguredInstance, core::option::Option<&swallowtail_core::instance::ModelRoute>, &swallowtail_core::requirement::operation::OperationRequirements, &swallowtail_core::access::AccessProfile, &swallowtail_core::access::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::runtime_identity::HostServiceKind>) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::PreparationFailure>
 pub fn swallowtail_runtime::cancel_sign_in(swallowtail_runtime::SignInSession, &swallowtail_runtime::HostServices) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::cleanup_result(core::result::Result<(), swallowtail_runtime::RuntimeFailure>) -> swallowtail_runtime::CleanupOutcome

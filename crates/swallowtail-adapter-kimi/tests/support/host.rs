@@ -28,6 +28,7 @@ impl FixtureHost {
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
+            .with_time(Arc::new(FixtureTime))
             .with_task(Arc::new(ThreadTaskService))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))

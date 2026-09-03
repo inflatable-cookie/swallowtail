@@ -18,8 +18,9 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    CredentialService, EndpointRef, HostServices, NetworkPolicyService, PreparedAccessEvidence,
-    RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
+    CredentialService, Deadline, EndpointRef, HostServices, InteractiveSessionHandle,
+    MonotonicInstant, NetworkPolicyService, PreparedAccessEvidence, RuntimeFailure, ScopeId,
+    ScopedTaskService, SessionCleanupRequest, TimeService,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -101,6 +102,16 @@ impl Fixture {
                 blocking: self.thread.clone(),
                 release_after_blocking: Arc::clone(&self.release_after_blocking),
             }) as Arc<dyn CredentialService>)
+    }
+
+    pub fn close_session(
+        &self,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(
+            self.thread.now().ticks() + 10_000,
+        ));
+        session.close(SessionCleanupRequest::new(deadline), self.services())
     }
 
     pub fn releases(&self) -> usize {

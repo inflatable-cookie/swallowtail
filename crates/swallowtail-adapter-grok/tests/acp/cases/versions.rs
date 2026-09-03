@@ -7,7 +7,7 @@ fn qualified_behavior_segments_execute() {
         let host = FixtureHost::with_version(Scenario::Success, candidate);
         let host_id = ExecutionHostId::new(format!("fixture.host.grok.{candidate}"))
             .expect("host");
-        let mut run = start_run(host_id, &host, candidate, None);
+        let mut run = start_run(host_id, &host, candidate, Some(run_deadline()));
         let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
@@ -27,7 +27,7 @@ fn unverified_newer_executes_without_becoming_guaranteed_support() {
     ));
     let host = FixtureHost::with_version(Scenario::Success, "1.0.6");
     let host_id = ExecutionHostId::new("fixture.host.grok.unverified").expect("host");
-    let mut run = start_run(host_id, &host, "1.0.6", None);
+    let mut run = start_run(host_id, &host, "1.0.6", Some(run_deadline()));
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);

@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-28
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -34,11 +34,11 @@ enforcement.
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation paused after review found shared close-bound and tree-attestation gaps | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
-| Supply the shared lifecycle evidence required by the Claude SDK route. | ready; card 057 landed tree-completion vocabulary; card 058 ready for bounded close; card 059 evidence stop, no sound mechanism found within current host-local authority on macOS | Contracts 010 and 019; PR 188 review; 2026-09-02 operator decision | `g05.023`, cards 057-059 |
+| Supply the shared lifecycle evidence required by the Claude SDK route. | stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; the remaining route posture is an operator decision | Contracts 010 and 019; PR 188 review; 2026-09-02 operator decision | `g05.023`, cards 057-059 |
 
 ## Planned Next Roadmaps
 
-- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 is the remaining prerequisite; card 059 found no sound owned-tree mechanism within current host-local authority on macOS
+- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; operator posture decision required
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
@@ -66,13 +66,13 @@ enforcement.
 g05 has twenty-three numbered roadmaps: 15 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, and contract promotion at 008 and 010, honest
-evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
+evidence stops at 002, 003, 007, 011, and 023. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
-planned after the card 055 review stop. Milestone 023 delivered card 057's
-tree-completion vocabulary; the operator then authorized card 058's breaking
-close seam and card 059's narrow unsafe/dependency boundary. Card 058 is ready.
-Card 059 attacked the boundary and stopped: four native counterexamples falsify
+planned after the card 055 review stop. Milestone 023 is stopped after
+delivering card 057's tree-completion vocabulary and card 058's caller-bounded
+close seam. Card 059 attacked the remaining boundary and stopped: four native
+counterexamples falsify
 the candidate primitives (setsid escape, descriptor EOF with a live child,
 released-group identity, and reparenting to launchd), and no sound owned-tree
 observation was found within the current ordinary host-local authority on macOS,
@@ -349,7 +349,7 @@ an approximation hidden behind the SDK identity.
 
 ## Milestones
 
-- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — ready; card 058 implements bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS
+- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — stopped; card 058 completed caller-bounded close; card 059 found no sound owned-tree mechanism within current host-local authority on macOS; operator posture decision required
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and PR 188 wait on g05.023
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`

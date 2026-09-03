@@ -1,6 +1,7 @@
 #[test]
 fn gate_fixture_accepts_stable_session_without_experimental_fields() {
     let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
+    let services = host_services(process);
     let result = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
         read_only_open_request(
@@ -8,7 +9,7 @@ fn gate_fixture_accepts_stable_session_without_experimental_fields() {
             working_resource(),
             None,
         ),
-        host_services(process),
+        services.clone(),
     ));
 
     let session = result.expect("stable session opens without experimental negotiation");
@@ -32,7 +33,10 @@ fn gate_fixture_accepts_stable_session_without_experimental_fields() {
             .get("allowProviderModelFallback")
             .is_none()
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.waited());
 }
 
@@ -62,7 +66,7 @@ fn undeclared_dynamic_tool_never_reaches_the_consumer() {
             RuntimeTurnId::new("turn-unknown-tool").expect("turn id is valid"),
             OperationContent::new("try a tool").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let mut callbacks = turn.take_callbacks().expect("callback exchange exists");
@@ -83,7 +87,10 @@ fn undeclared_dynamic_tool_never_reaches_the_consumer() {
             && message.get("error").is_some()
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -138,7 +145,7 @@ fn resumed_turn_uses_native_interruption_without_stopping_session() {
             RuntimeTurnId::new("turn-runtime-cancel").expect("turn id is valid"),
             OperationContent::new("keep working").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let resumed_turn = state
@@ -160,7 +167,10 @@ fn resumed_turn_uses_native_interruption_without_stopping_session() {
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     assert!(!state.forced());
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.methods().contains(&"turn/interrupt".to_owned()));
 }
 
@@ -190,7 +200,7 @@ fn cancellation_abandons_pending_callback_and_rejects_late_response() {
             RuntimeTurnId::new("turn-cancel-tool").expect("turn id is valid"),
             OperationContent::new("wait for tool").expect("content is valid"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let mut callbacks = turn.take_callbacks().expect("callback exchange exists");
@@ -224,6 +234,8 @@ fn cancellation_abandons_pending_callback_and_rejects_late_response() {
             && message.get("error").is_some()
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
-

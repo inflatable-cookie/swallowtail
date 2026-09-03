@@ -51,6 +51,43 @@ impl ThreadServices {
             calls,
         }
     }
+
+    pub fn deadline_after(&self, duration: Duration) -> Deadline {
+        Deadline::at(MonotonicInstant::from_ticks(
+            self.origin.elapsed().as_millis() as u64 + duration.as_millis() as u64,
+        ))
+    }
+
+    pub fn cleanup_time(&self) -> Arc<dyn TimeService> {
+        Arc::new(CleanupTime {
+            origin: self.origin,
+        })
+    }
+}
+
+struct CleanupTime {
+    origin: Instant,
+}
+
+impl TimeService for CleanupTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(self.origin.elapsed().as_millis() as u64)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let elapsed = self.origin.elapsed().as_millis() as u64;
+        let remaining = deadline.instant().ticks().saturating_sub(elapsed);
+        let (sender, receiver) = oneshot::channel();
+        thread::spawn(move || {
+            thread::sleep(Duration::from_millis(remaining));
+            let _ = sender.send(DeadlineObservation::new(deadline, deadline.instant()));
+        });
+        Box::pin(async move {
+            receiver
+                .await
+                .expect("cleanup deadline sender remains live")
+        })
+    }
 }
 
 struct ThreadTask {

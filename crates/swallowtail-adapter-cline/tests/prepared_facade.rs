@@ -106,7 +106,7 @@ fn prepared_session_names_cline_acp_and_package_then_drains_one_prompt() {
             RuntimeTurnId::new("cline-prepared-turn").expect("turn"),
             OperationContent::new("private fixture prompt").expect("prompt"),
         ),
-        operation_services,
+        operation_services.clone(),
     ))
     .expect("turn starts");
     let events = block_on(turn.take_events().expect("events").collect::<Vec<_>>())
@@ -131,7 +131,10 @@ fn prepared_session_names_cline_acp_and_package_then_drains_one_prompt() {
             .any(|argument| argument == "--json" || argument == "--auto-approve")
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(handle.close(operation.cleanup_request(), operation_services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(operation.releases(), 1);
 }
 

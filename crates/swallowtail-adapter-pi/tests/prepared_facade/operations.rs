@@ -64,9 +64,13 @@ fn prepared_sessions_preserve_pi_rpc_policy_in_both_host_topologies() {
         );
 
         let operation = FixtureHost::new(Scenario::Complete);
-        let session = block_on(profile.open_session(operation.services(host_id)))
+        let operation_services = operation.services(host_id);
+        let session = block_on(profile.open_session(operation_services.clone()))
             .expect("prepared Pi session opens");
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, operation_services)),
+            CleanupOutcome::Clean
+        );
     }
 }
 
@@ -172,7 +176,7 @@ fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100_000)))
             .with_attachments([image("pi.image.session")]),
-            services,
+            services.clone(),
         ),
     )
     .expect("image turn starts");
@@ -181,7 +185,7 @@ fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
         .expect("terminal outcome is available");
     assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
     assert_prompt_image(&session_host);
     assert_eq!(
         session_host

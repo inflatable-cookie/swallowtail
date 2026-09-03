@@ -16,9 +16,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
     CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, OpenSessionRequest,
-    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionOptions,
-    SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TurnHandle,
-    TurnRequest, terminal_outcome_channel,
+    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionCleanupRequest,
+    SessionOptions, SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest,
+    TerminalOutcome, TurnHandle, TurnRequest, terminal_outcome_channel,
 };
 
 impl StructuredRunDriver for super::KimiLocalServerDriver {
@@ -30,6 +30,8 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validation::validate(self, &plan, &request, &services)?;
+            let cleanup =
+                SessionCleanupRequest::new(request.deadline().expect("validated caller deadline"));
             let configuration = self
                 .configuration()
                 .expect("validated session configuration")
@@ -67,15 +69,15 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = Box::new(session).close().await;
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(error);
                 }
             };
             let events = match turn.take_events() {
                 Some(events) => events,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.kimi.local_server.run_events_missing",
                         "Kimi local-server structured run did not expose its event stream",
@@ -86,8 +88,8 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
             let terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
-                    let _ = turn.close().await;
-                    let _ = Box::new(session).close().await;
+                    drop(turn);
+                    let _ = Box::new(session).close(cleanup, services).await;
                     return Err(failure(
                         "swallowtail.kimi.local_server.run_terminal_missing",
                         "Kimi local-server structured run did not expose its terminal outcome",
@@ -104,8 +106,8 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
                 })
             };
             let Some((active_cancellation, terminal_flag)) = active else {
-                let _ = turn.close().await;
-                let _ = Box::new(session).close().await;
+                drop(turn);
+                let _ = Box::new(session).close(cleanup, services).await;
                 return Err(failure(
                     "swallowtail.kimi.local_server.run_active_missing",
                     "Kimi local-server structured run lost its active prompt",
@@ -128,6 +130,7 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
             ))
             .map_err(|_| invalid_identity())?;
             let task_pending = Arc::clone(&pending);
+            let task_services = services.clone();
             let task = services.task().expect("validated task service").spawn(
                 task_scope,
                 Box::pin(async move {
@@ -137,12 +140,11 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
                         .take()
                         .expect("pending run exists");
                     let outcome = resources.terminal.await;
-                    let turn_cleanup = resources.turn.close().await;
-                    let session_cleanup = Box::new(resources.session).close().await;
-                    let cleanup = merge_cleanup(
-                        outcome.cleanup().clone(),
-                        merge_cleanup(turn_cleanup, session_cleanup),
-                    );
+                    drop(resources.turn);
+                    let session_cleanup = Box::new(resources.session)
+                        .close(cleanup, task_services)
+                        .await;
+                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
                     let finished = copy_terminal_outcome(outcome, cleanup);
                     let _ = terminal_sender.complete(finished);
                 }),
@@ -150,11 +152,10 @@ impl StructuredRunDriver for super::KimiLocalServerDriver {
             let task = match task {
                 Ok(task) => task,
                 Err(error) => {
-                    let _ = cancellation.request().await;
                     let resources = pending.lock().expect("pending run lock poisoned").take();
                     if let Some(resources) = resources {
-                        let _ = resources.turn.close().await;
-                        let _ = Box::new(resources.session).close().await;
+                        drop(resources.turn);
+                        let _ = Box::new(resources.session).close(cleanup, services).await;
                     }
                     return Err(error);
                 }

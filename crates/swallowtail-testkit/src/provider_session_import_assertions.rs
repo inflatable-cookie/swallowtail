@@ -1,6 +1,6 @@
 use crate::{
-    ProviderSessionImportFixture, RecordingHostServices, RecordingOutcome, poll_immediate,
-    provider_session_catalogue_bounds,
+    ProviderSessionImportFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
+    poll_immediate, provider_session_catalogue_bounds,
 };
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
@@ -9,14 +9,15 @@ use swallowtail_core::{
     SessionRef,
 };
 use swallowtail_runtime::{
-    BoxFuture, CancellationControl, CleanupOutcome, HostServices, ImmediateCancellation,
+    BoxFuture, CancellationControl, CleanupOutcome, Deadline, HostServices, ImmediateCancellation,
     InteractiveSessionDriver, InteractiveSessionHandle, LoadSessionRequest, LoadedSession,
-    OpenSessionRequest, OperationContent, ProviderSessionCatalogueOutcome,
+    MonotonicInstant, OpenSessionRequest, OperationContent, ProviderSessionCatalogueOutcome,
     ProviderSessionCatalogueRequest, ProviderSessionImportOutcome, ProviderSessionImportRequest,
     ProviderSessionImportRevalidation, ProviderSessionOperationFailure,
     ProviderSessionOperationFailureStage, RequestId, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, SessionReplayItem, SessionReplayKind, TurnHandle, TurnRequest,
-    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
+    RuntimeSessionId, SessionCleanupRequest, SessionReplayItem, SessionReplayKind, TurnHandle,
+    TurnRequest, validate_provider_session_catalogue_execution,
+    validate_provider_session_import_execution,
 };
 
 /// Runs the provider-neutral catalogue/import conformance pack.

@@ -183,21 +183,31 @@ impl InteractiveSessionHandle for SessionHandle {
         self.cancellation.as_ref()
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            self.usable.store(false, Ordering::SeqCst);
-            self.state
-                .lock()
-                .expect("continuation state lock poisoned")
-                .invalidate();
-            let active = close_active(&self.active).await;
-            self.history.lock().expect("history lock poisoned").clear();
-            let credential = match self.access.as_mut() {
-                Some(access) => access.release(&self.services).await,
-                None => CleanupOutcome::NotApplicable,
-            };
-            super::merge_cleanup(active, credential)
-        })
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.services.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                self.usable.store(false, Ordering::SeqCst);
+                self.state
+                    .lock()
+                    .expect("continuation state lock poisoned")
+                    .invalidate();
+                let active = close_active(&self.active).await;
+                self.history.lock().expect("history lock poisoned").clear();
+                let credential = match self.access.as_mut() {
+                    Some(access) => access.release(&self.services).await,
+                    None => CleanupOutcome::NotApplicable,
+                };
+                super::merge_cleanup(active, credential)
+            }),
+        )
     }
 }
 

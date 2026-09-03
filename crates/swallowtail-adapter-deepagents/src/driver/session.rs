@@ -135,8 +135,17 @@ impl InteractiveSessionHandle for DeepAgentsSessionHandle {
         &self.cancellation
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.execution_host_id.clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
             let active = self
                 .active
                 .lock()
@@ -178,8 +187,9 @@ impl InteractiveSessionHandle for DeepAgentsSessionHandle {
                 None => CleanupOutcome::NotApplicable,
             };
             // Credential lease is absent: LocalUnauthenticated, host-owned state.
-            merge_cleanup(task_cleanup, resource_cleanup)
-        })
+                merge_cleanup(task_cleanup, resource_cleanup)
+            }),
+        )
     }
 }
 

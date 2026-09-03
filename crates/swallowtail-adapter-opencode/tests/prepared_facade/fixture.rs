@@ -20,9 +20,10 @@ use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentRef, AttachmentRole, AttachmentService,
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline,
-    DeadlineObservation, DiscoveryCancellation, EndpointRef, HostServices, MonotonicInstant,
-    NetworkPolicyService, PreparedAccessEvidence, RuntimeFailure, ScopeId, ScopedTaskService,
-    TimeService, WorkingResourceRef, WorkingResourceService,
+    DeadlineObservation, DiscoveryCancellation, EndpointRef, HostServices,
+    InteractiveSessionHandle, MonotonicInstant, NetworkPolicyService, PreparedAccessEvidence,
+    RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
+    WorkingResourceRef, WorkingResourceService,
 };
 
 pub(super) struct PreparedFixture {
@@ -143,6 +144,16 @@ impl PreparedFixture {
 
     pub(super) fn services(&self) -> HostServices {
         self.services_with_release_failure(false)
+    }
+
+    pub(super) fn close_session(
+        &self,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        session.close(
+            SessionCleanupRequest::new(self.deadline_after(Duration::from_secs(1))),
+            self.services(),
+        )
     }
 
     pub(super) fn services_with_release_failure(&self, fail_release: bool) -> HostServices {

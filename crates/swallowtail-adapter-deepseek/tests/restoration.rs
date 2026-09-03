@@ -78,7 +78,10 @@ fn direct_session_restoration_preserves_each_exact_reasoning_selection() {
         assert_eq!(body["reasoning_effort"], mode);
         assert_eq!(body["thinking"]["type"], "enabled");
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(replacement)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(fixture.server.attempts(), 1);
     }
 }

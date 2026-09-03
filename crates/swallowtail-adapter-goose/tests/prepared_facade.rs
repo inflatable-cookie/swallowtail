@@ -8,7 +8,7 @@ mod discovery_support;
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario};
+use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_goose::{
     GOOSE_EXECUTABLE_NAME, GOOSE_LOCAL_ACCOUNT_AUDIENCE, GOOSE_RELEASE_AXIS, GOOSE_RELEASE_VERSION,
     GoosePreparationInput, GoosePreparationProbe, GooseSessionProfileInput,
@@ -106,7 +106,7 @@ fn prepared_session_names_goose_acp_and_release_then_drains_one_prompt() {
             RuntimeTurnId::new("goose-prepared-turn").expect("turn"),
             OperationContent::new("private fixture prompt").expect("prompt"),
         ),
-        operation_services,
+        operation_services.clone(),
     ))
     .expect("turn starts");
     let events = block_on(turn.take_events().expect("events").collect::<Vec<_>>())
@@ -131,7 +131,10 @@ fn prepared_session_names_goose_acp_and_release_then_drains_one_prompt() {
             .any(|argument| argument == "serve" || argument == "--with-builtin")
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(handle, operation_services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(operation.releases(), 1);
 }
 

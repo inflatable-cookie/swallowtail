@@ -72,7 +72,13 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
         assert!(binding.supports(Capability::ProviderNativeSessionClose));
         assert!(binding.supports(Capability::ProviderSessionDelete));
         assert!(session.resume_binding().is_some());
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(session.close(
+                operation_host.cleanup_request(),
+                operation_host.services(host_id.clone()),
+            )),
+            CleanupOutcome::Clean
+        );
         let writes = operation_host.writes();
         let config = writes
             .iter()
@@ -170,7 +176,13 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
         .resume_binding()
         .expect("prepared session returns resume binding")
         .clone();
-    assert_eq!(block_on(opened.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(opened.close(
+            open_host.cleanup_request(),
+            open_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
 
     let load_host = FixtureHost::new(Scenario::Success, "0.61.0");
     let loaded = block_on(
@@ -198,7 +210,13 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
             .origin(),
         swallowtail_core::ProviderSessionBindingOrigin::Loaded
     );
-    assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(loaded_handle.close(
+            load_host.cleanup_request(),
+            load_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
 
     let recovery_host = FixtureHost::new(Scenario::Success, "0.61.0");
     let restoration = profile
@@ -237,7 +255,13 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
             .origin(),
         swallowtail_core::ProviderSessionBindingOrigin::Loaded
     );
-    assert_eq!(block_on(recovered_handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(recovered_handle.close(
+            recovery_host.cleanup_request(),
+            recovery_host.services(host_id.clone()),
+        )),
+        CleanupOutcome::Clean
+    );
     assert!(recovery_host.writes().iter().any(|message| {
         message.get("method").and_then(serde_json::Value::as_str) == Some("session/load")
     }));
@@ -248,7 +272,7 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
             .resume_session(
                 RequestId::new("claude-agent-continuity-resume").expect("valid request"),
                 binding,
-                resume_host.services(host_id),
+                resume_host.services(host_id.clone()),
             )
             .expect("prepared resume operation derives"),
     )
@@ -260,7 +284,10 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
             .origin(),
         swallowtail_core::ProviderSessionBindingOrigin::Resumed
     );
-    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(resumed.close(resume_host.cleanup_request(), resume_host.services(host_id))),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

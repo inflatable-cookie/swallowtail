@@ -103,12 +103,15 @@ fn prepared_catalogue_and_read_only_session_execute_through_bound_operations() {
                 OperationContent::new("bounded turn").unwrap(),
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(200))),
-            services,
+            services.clone(),
         ),
     )
     .expect("prepared session starts a deadline-bound turn");
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
     assert!(state.methods().contains(&"thread/start".to_owned()));
     assert!(state.waited());
 }
@@ -263,7 +266,7 @@ fn idioms_session_option_binds_into_the_plan_and_folds_into_developer_instructio
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
     let services = host_services(process).with_idiom_source(Arc::new(source));
     let handle = block_on(session.open_session(services.clone())).expect("prepared session opens");
-    let _ = block_on(handle.close());
+    let _ = block_on(support::close_session(handle, services));
 
     let start = state
         .messages()

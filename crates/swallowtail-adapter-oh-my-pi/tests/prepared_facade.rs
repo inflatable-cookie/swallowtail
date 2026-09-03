@@ -4,7 +4,7 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario};
+use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_oh_my_pi::{
     OH_MY_PI_PACKAGE_AXIS, OhMyPiCatalogueProfileInput, OhMyPiModelSelection,
     OhMyPiPreparationInput, OhMyPiPreparationProbe, OhMyPiRunProfileInput,

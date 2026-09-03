@@ -177,6 +177,17 @@ fn start_run(
     try_start_run(host_id, host, version, deadline).expect("run starts")
 }
 
+fn run_deadline() -> swallowtail_runtime::Deadline {
+    swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(10_000))
+}
+
+fn close_session(
+    session: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+) -> BoxFuture<'static, CleanupOutcome> {
+    session.close(SessionCleanupRequest::new(run_deadline()), services)
+}
+
 fn try_start_run(
     host_id: ExecutionHostId,
     host: &FixtureHost,

@@ -29,10 +29,20 @@ use swallowtail_runtime::{
     ProviderSessionReconciliationAgreement, ProviderSessionReconciliationBounds,
     ProviderSessionReconciliationDriver, ProviderSessionReconciliationPlan,
     ProviderSessionReconciliationRequest, RequestId, ResumeSessionRequest, RuntimeEventKind,
-    RuntimeTurnId, ScopedTaskService, SessionPlanAgreement, SessionResumeBinding,
-    SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService, TurnRequest,
-    WorkingResourceRef, WorkingResourceService,
+    RuntimeTurnId, ScopedTaskService, SessionCleanupRequest, SessionPlanAgreement,
+    SessionResumeBinding, SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService,
+    TurnRequest, WorkingResourceRef, WorkingResourceService,
 };
+
+fn close_session(
+    session: Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+    fixture: &Fixture,
+) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome> {
+    session.close(
+        SessionCleanupRequest::new(fixture.thread.deadline_after(Duration::from_secs(1))),
+        fixture.services(),
+    )
+}
 
 fn open_session_request(id: impl Into<String>, resource: WorkingResourceRef) -> OpenSessionRequest {
     OpenSessionRequest::new(

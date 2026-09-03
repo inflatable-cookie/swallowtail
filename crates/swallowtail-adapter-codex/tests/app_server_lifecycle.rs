@@ -33,7 +33,7 @@ fn callback_wait_cancellation_and_close_join_in_both_topologies() {
                         .expect("turn id is valid"),
                     OperationContent::new("wait for callback").expect("content is valid"),
                 ),
-                services,
+                services.clone(),
             ),
         )
         .expect("turn starts");
@@ -58,7 +58,10 @@ fn callback_wait_cancellation_and_close_join_in_both_topologies() {
         assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
         assert!(block_on(requests.next()).is_none());
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert!(state.waited());
         assert!(state.messages().iter().any(|message| {
             message.get("id").and_then(serde_json::Value::as_str) == Some("callback-900")
@@ -92,7 +95,7 @@ fn session_close_abandons_active_callbacks_and_joins_in_both_topologies() {
                     .expect("turn id is valid"),
                     OperationContent::new("wait while closing").expect("content is valid"),
                 ),
-                services,
+                services.clone(),
             ),
         )
         .expect("turn starts");
@@ -102,7 +105,10 @@ fn session_close_abandons_active_callbacks_and_joins_in_both_topologies() {
             .expect("callback arrives")
             .expect("callback is valid");
 
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         let terminal = block_on(
             turn.take_terminal_outcome()
                 .expect("terminal outcome is available"),
@@ -134,7 +140,7 @@ fn foreign_session_events_and_unexpected_disconnects_fail_without_recovery_guess
                 RuntimeTurnId::new(format!("turn-{expected_status}")).expect("turn id is valid"),
                 OperationContent::new("observe failure").expect("content is valid"),
             ),
-            services,
+            services.clone(),
         ))
         .expect("turn handle is returned");
         let terminal = block_on(
@@ -155,7 +161,10 @@ fn foreign_session_events_and_unexpected_disconnects_fail_without_recovery_guess
         }
         assert_eq!(state.forced(), forced);
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert!(state.waited());
     }
 }

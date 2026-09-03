@@ -188,44 +188,54 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
         &self.cancellation
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            let active = self
-                .active
-                .lock()
-                .expect("sidecar active-task lock poisoned")
-                .take();
-            if let Some(active) = &active
-                && !active.turn.is_finished()
-            {
-                active.turn.mark_cancelled();
-            }
-            let id = format!("close:{}", self.request_id.as_str());
-            let _ = self
-                .connection
-                .command(id, PiSdkSidecarCommand::Close, json!({}))
-                .await;
-            self.connection.begin_close().await;
-            if let Some(mut active) = active {
-                if let Some(task) = active.deadline_task.take() {
-                    let _ = task.join().await;
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.execution_host_id.clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                let active = self
+                    .active
+                    .lock()
+                    .expect("sidecar active-task lock poisoned")
+                    .take();
+                if let Some(active) = &active
+                    && !active.turn.is_finished()
+                {
+                    active.turn.mark_cancelled();
                 }
-                let _ = active.attachment.release().await;
-            }
-            let process = match self.pump_task.take() {
-                Some(task) => match task.join().await {
-                    Ok(()) => self.connection.cleanup_outcome(),
-                    Err(_) => cleanup_failure(
-                        "pump_join_failed",
-                        "Pi SDK sidecar protocol task did not join cleanly",
-                    ),
-                },
-                None => CleanupOutcome::NotApplicable,
-            };
-            let resource = release_resource(self.resource.take(), &self.services).await;
-            let credential = release_credential(self.credential.take(), &self.services).await;
-            merge_cleanup(merge_cleanup(process, resource), credential)
-        })
+                let id = format!("close:{}", self.request_id.as_str());
+                let _ = self
+                    .connection
+                    .command(id, PiSdkSidecarCommand::Close, json!({}))
+                    .await;
+                self.connection.begin_close().await;
+                if let Some(mut active) = active {
+                    if let Some(task) = active.deadline_task.take() {
+                        let _ = task.join().await;
+                    }
+                    let _ = active.attachment.release().await;
+                }
+                let process = match self.pump_task.take() {
+                    Some(task) => match task.join().await {
+                        Ok(()) => self.connection.cleanup_outcome(),
+                        Err(_) => cleanup_failure(
+                            "pump_join_failed",
+                            "Pi SDK sidecar protocol task did not join cleanly",
+                        ),
+                    },
+                    None => CleanupOutcome::NotApplicable,
+                };
+                let resource = release_resource(self.resource.take(), &self.services).await;
+                let credential = release_credential(self.credential.take(), &self.services).await;
+                merge_cleanup(merge_cleanup(process, resource), credential)
+            }),
+        )
     }
 }
 

@@ -1,5 +1,5 @@
 use super::fixtures::{joined_cleanup, prepared, profile_input};
-use crate::support::{FixtureHost, Scenario};
+use crate::support::{FixtureHost, Scenario, close_session};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_core::{
@@ -68,7 +68,7 @@ fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authorit
                 RuntimeTurnId::new("prepared-prompt").unwrap(),
                 OperationContent::new("private prepared prompt").unwrap(),
             ),
-            services,
+            services.clone(),
         ))
         .expect("prepared prompt starts");
         let outcome = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
@@ -90,7 +90,10 @@ fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authorit
             )]
         );
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(host.cleanup_events(), joined_cleanup());
     }
 
@@ -108,14 +111,17 @@ fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authorit
             RuntimeTurnId::new("prepared-interrupt").unwrap(),
             OperationContent::new("interrupt this prompt").unwrap(),
         ),
-        services,
+        services.clone(),
     ))
     .expect("prepared prompt starts");
     block_on(turn.cancellation().request()).expect("turn interruption is relayed");
     let outcome = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.cleanup_events(), joined_cleanup());
 }
 
@@ -126,25 +132,30 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
         ExecutionHostId::new("fixture.prepared.load.remote").unwrap(),
     ] {
         let opening_host = FixtureHost::new(Scenario::Complete);
+        let opening_services = opening_host.services(host_id.clone());
         let prepared = prepared(&opening_host, host_id.clone(), "0.28.1");
         let profile = prepared
             .prepare_session(profile_input("binding-source", SessionOptions::default()))
             .expect("Kimi session prepares");
-        let session = block_on(profile.open_session(opening_host.services(host_id.clone())))
-            .expect("source session opens");
+        let session =
+            block_on(profile.open_session(opening_services.clone())).expect("source session opens");
         let binding = session
             .resume_binding()
             .expect("source session supplies a binding")
             .clone();
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(session, opening_services)),
+            CleanupOutcome::Clean
+        );
 
         let load_host = FixtureHost::new(Scenario::Complete);
+        let load_services = load_host.services(host_id.clone());
         let loaded = block_on(
             profile
                 .load_session(
                     RequestId::new("prepared-load").unwrap(),
                     binding.clone(),
-                    load_host.services(host_id.clone()),
+                    load_services.clone(),
                 )
                 .expect("load request derives from the plan"),
         )
@@ -155,10 +166,14 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
             replay[1].content().expect("agent replay").as_str(),
             "Previous answer."
         );
-        assert_eq!(block_on(loaded_session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(loaded_session, load_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(load_host.cleanup_events(), joined_cleanup());
 
         let recovery_host = FixtureHost::new(Scenario::Complete);
+        let recovery_services = recovery_host.services(host_id.clone());
         let restoration = profile
             .prepare_working_state_restoration(
                 RequestId::new("prepared-recovery").unwrap(),
@@ -170,7 +185,7 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
             restoration.method(),
             WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
         );
-        let recovered = block_on(restoration.restore(recovery_host.services(host_id.clone())))
+        let recovered = block_on(restoration.restore(recovery_services.clone()))
             .expect("working-state restoration loads the exact session");
         let WorkingStateRestorationOutcome::SessionRecovered(recovered) = recovered else {
             panic!("Kimi ACP must report continuation recovery");
@@ -182,7 +197,10 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
         let (_, loaded) = recovered.into_parts();
         let (replay, recovered_session) = loaded.into_parts();
         assert_eq!(replay.len(), 2);
-        assert_eq!(block_on(recovered_session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(recovered_session, recovery_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(recovery_host.cleanup_events(), joined_cleanup());
         assert!(
             recovery_host
@@ -191,17 +209,21 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
         );
 
         let resume_host = FixtureHost::new(Scenario::Complete);
+        let resume_services = resume_host.services(host_id);
         let resumed = block_on(
             profile
                 .resume_session(
                     RequestId::new("prepared-resume").unwrap(),
                     binding,
-                    resume_host.services(host_id),
+                    resume_services.clone(),
                 )
                 .expect("resume request derives from the plan"),
         )
         .expect("session resumes without replay");
-        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(close_session(resumed, resume_services)),
+            CleanupOutcome::Clean
+        );
         assert_eq!(resume_host.cleanup_events(), joined_cleanup());
         assert!(
             resume_host

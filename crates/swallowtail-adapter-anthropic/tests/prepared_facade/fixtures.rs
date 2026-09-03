@@ -14,8 +14,9 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     AttachmentRef, AttachmentService, BlockingWorkService, CleanupOutcome, CredentialLease,
-    CredentialService, EndpointRef, HostServices, NetworkPolicyService, OperationContent,
-    PreparedAccessEvidence, RequestId, ScopedTaskService, TimeService,
+    CredentialService, Deadline, EndpointRef, HostServices, MonotonicInstant, NetworkPolicyService,
+    OperationContent, PreparedAccessEvidence, RequestId, ScopedTaskService, SessionCleanupRequest,
+    TimeService,
 };
 
 pub struct PreparedFixture {
@@ -125,6 +126,12 @@ impl PreparedFixture {
                 inner: self.host.clone(),
                 releases: Arc::clone(&self.releases),
             }) as Arc<dyn CredentialService>)
+    }
+
+    pub fn cleanup_request(&self) -> SessionCleanupRequest {
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(
+            self.thread.now().ticks().saturating_add(30_000),
+        )))
     }
 
     pub fn attempt_input(&self, id: &str) -> AnthropicInferenceAttemptInput {

@@ -1,5 +1,5 @@
 use super::make_host_id;
-use crate::support::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario};
+use crate::support::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, close_session};
 use futures_executor::block_on;
 use swallowtail_adapter_pi::{PiSdkSidecarSessionPreparation, prepare_pi_sdk_sidecar_session};
 use swallowtail_core::{
@@ -43,8 +43,8 @@ fn new_session_returns_the_opaque_identity_and_exact_restart_binding() {
         SessionOptions::default(),
     )
     .expect("sidecar session prepares");
-    let session =
-        block_on(prepared.open_session(fixture.services(host_id))).expect("sidecar session opens");
+    let services = fixture.services(host_id);
+    let session = block_on(prepared.open_session(services.clone())).expect("sidecar session opens");
 
     assert_eq!(
         session
@@ -66,7 +66,10 @@ fn new_session_returns_the_opaque_identity_and_exact_restart_binding() {
     );
     let debug = format!("{binding:?}");
     assert!(!debug.contains(FIXTURE_SESSION_REF));
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -78,15 +81,18 @@ fn persisted_bindings_round_trip_only_under_exact_dimensions() {
         SessionOptions::default(),
     )
     .expect("sidecar session prepares");
-    let session =
-        block_on(prepared.open_session(fixture.services(host_id))).expect("sidecar session opens");
+    let services = fixture.services(host_id);
+    let session = block_on(prepared.open_session(services.clone())).expect("sidecar session opens");
     let binding = session.resume_binding().expect("binding exists").clone();
     let resource = prepared
         .request()
         .working_resource()
         .expect("resource")
         .clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 
     let record = binding
         .export_persisted(prepared.plan())
@@ -165,22 +171,30 @@ fn close_preserves_durable_provider_state_for_later_attachment() {
     )
     .expect("sidecar session prepares");
     let first = SidecarFixtureHost::new(SidecarScenario::Complete);
-    let session = block_on(prepared.open_session(first.services(host_id.clone())))
-        .expect("first session opens");
+    let first_services = first.services(host_id.clone());
+    let session =
+        block_on(prepared.open_session(first_services.clone())).expect("first session opens");
     let binding = session.resume_binding().expect("binding exists").clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, first_services)),
+        CleanupOutcome::Clean
+    );
 
     let second = SidecarFixtureHost::new(SidecarScenario::Complete);
+    let second_services = second.services(host_id);
     let loaded = block_on(
         prepared
             .load_session(
                 RequestId::new("sidecar-preserve-load").expect("valid request"),
                 binding,
-                second.services(host_id),
+                second_services.clone(),
             )
             .expect("load request builds"),
     )
     .expect("closed provider session loads again");
     let (_, session) = loaded.into_parts();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, second_services)),
+        CleanupOutcome::Clean
+    );
 }

@@ -8,7 +8,10 @@ use super::{
 use crate::{CleanupOutcome, InterruptedTurnState};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
-use support::{AttachmentBehavior, ReconciliationBehavior, fixture_sequence, resolve, services};
+use support::{
+    AttachmentBehavior, ReconciliationBehavior, cleanup_request, fixture_sequence, resolve,
+    services,
+};
 
 #[test]
 fn only_settled_or_inactive_state_dispatches_attachment() {
@@ -132,7 +135,10 @@ fn loaded_and_resumed_success_preserve_order_and_distinct_truth() {
             }
             SettledSessionAttachment::Resumed(session) => session,
         };
-        assert_eq!(resolve(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            resolve(session.close(cleanup_request(), services())),
+            CleanupOutcome::Clean
+        );
     }
 }
 

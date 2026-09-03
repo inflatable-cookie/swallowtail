@@ -77,7 +77,10 @@ fn same_session_second_turn_does_not_reselect_mode() {
             .count(),
         2
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -91,7 +94,10 @@ fn plan_mode_fresh_replacement_renegotiates_immutable_selection() {
         block_on(driver().open_session(selected.plan.clone(), request.clone(), services.clone()))
             .expect("first plan session opens");
     assert_eq!(config_sets(&host).len(), 1);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services.clone())),
+        CleanupOutcome::Clean
+    );
 
     let restoration =
         swallowtail_runtime::PreparedWorkingStateRestoration::fresh_session_replacement(
@@ -104,12 +110,15 @@ fn plan_mode_fresh_replacement_renegotiates_immutable_selection() {
         restoration.method(),
         WorkingStateRestorationMethod::FreshSessionReplacement
     );
-    let outcome = block_on(restoration.restore(services)).expect("replacement restores");
+    let outcome = block_on(restoration.restore(services.clone())).expect("replacement restores");
     match outcome {
         WorkingStateRestorationOutcome::SessionReplaced(replaced) => {
             let (interrupted, session) = replaced.into_parts();
             assert_eq!(interrupted.as_str(), "cline-plan-interrupted");
-            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(
+                block_on(session.close(host.cleanup_request(), services)),
+                CleanupOutcome::Clean
+            );
         }
         _ => panic!("expected SessionReplaced"),
     }
@@ -139,7 +148,7 @@ fn plan_mode_does_not_select_allow_always_on_permission() {
             RuntimeTurnId::new("cline-plan-permission-turn").expect("valid turn"),
             OperationContent::new("private fixture prompt").expect("valid prompt"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let outcome = block_on(turn.take_terminal_outcome().expect("terminal"));
@@ -154,5 +163,8 @@ fn plan_mode_does_not_select_allow_always_on_permission() {
                 != Some(&serde_json::json!("allow_always"))
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }

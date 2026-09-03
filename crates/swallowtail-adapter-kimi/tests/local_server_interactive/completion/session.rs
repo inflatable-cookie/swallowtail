@@ -60,11 +60,14 @@ fn attached_prepared_session_streams_and_preserves_exact_bindings() {
             })
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services.clone())),
+        CleanupOutcome::Clean
+    );
 
     let resumed = block_on(
         profile
-            .resume_session(id(RequestId::new, "resume-request"), resume, services)
+            .resume_session(id(RequestId::new, "resume-request"), resume, services.clone())
             .expect("resume prepares"),
     )
     .expect("session resumes");
@@ -79,7 +82,7 @@ fn attached_prepared_session_streams_and_preserves_exact_bindings() {
         .management_binding()
         .expect("management binding remains available")
         .clone();
-    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(resumed, services)), CleanupOutcome::Clean);
     let archive = prepared
         .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
             id(RequestId::new, "archive-after-close"),
@@ -111,4 +114,3 @@ fn attached_prepared_session_streams_and_preserves_exact_bindings() {
         .expect("explicit archive was observed");
     assert!(resume_index < archive_index);
 }
-

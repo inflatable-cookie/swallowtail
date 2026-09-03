@@ -18,8 +18,8 @@ fn prepared_sessions_return_inactive_management_authority_after_close() {
         ))
         .expect("session prepares");
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
-    let handle = block_on(profile.open_session(crate::support::host_services(process)))
-        .expect("session opens");
+    let services = crate::support::host_services(process);
+    let handle = block_on(profile.open_session(services.clone())).expect("session opens");
     let binding = handle
         .management_binding()
         .expect("prepared session returns management authority")
@@ -28,7 +28,10 @@ fn prepared_sessions_return_inactive_management_authority_after_close() {
     assert!(binding.supports(Capability::ProviderSessionArchive));
     assert!(binding.supports(Capability::ProviderSessionRestore));
     assert!(binding.supports(Capability::ProviderSessionDelete));
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(crate::support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         binding.provider_session_ref().as_provider_value(),
         "thread-provider-new"

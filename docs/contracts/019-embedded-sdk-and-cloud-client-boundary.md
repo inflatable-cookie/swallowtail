@@ -111,6 +111,26 @@ join the scoped work, then release credentials. A provider request may have
 reached the service even when local cancellation succeeds; drivers state that
 limit honestly.
 
+Interactive-session close is additionally governed by Contract 010's one
+caller-selected cleanup deadline. The same observable boundary covers SDK or
+sidecar interruption, transport disposal, escalation, task and process joins,
+provider cleanup, credential release, and host-resource release. No stage may
+restart the timeout or extend the public close future. Once host time observes
+expiry, cleanup returns `Failed` or an exact route-qualified degraded outcome;
+it cannot return `Clean`.
+
+After a turn deadline, session cleanup owns interruption of any still-active
+turn. A structured projection must relinquish its turn handle before entering
+bounded session close, so an unresponsive turn join cannot strand the public
+operation outside the session boundary. An open path either validates every
+fallible projection or management binding before provider work, or receives
+the caller's cleanup request and closes an already-open session on abort.
+Neither path may drop a live session as its cleanup mechanism.
+
+Adapters do not retain the removed zero-argument close signature, synthesize a
+route timeout, convert a duration into guessed ticks, or offer a compatibility
+shim that reaches an unbounded cleanup path.
+
 ## Explicit SDK Configuration
 
 Preflight fixes the configured instance, adapter driver, execution host,

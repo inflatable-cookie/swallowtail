@@ -2,11 +2,12 @@
 fn every_maximal_cline_row_keeps_exact_posture_and_source() {
     let prepared_source = source("cline.posture.prepared");
     let active_source = source("cline.posture.active");
-    let (prepared, _, services) = session(Scenario::ModelExact, true, "posture");
+    let (prepared, host, services) = session(Scenario::ModelExact, true, "posture");
     let outcome = block_on(prepared.open_session_with_projection(
         prepared_source.clone(),
         active_source.clone(),
-        services,
+        host.cleanup_request(),
+        services.clone(),
     ))
     .unwrap_or_else(|failure| panic!("open failed: {}", failure.failure()));
     let contribution = outcome.contribution();
@@ -20,7 +21,10 @@ fn every_maximal_cline_row_keeps_exact_posture_and_source() {
     for row in contribution.active_session_rows() {
         assert_cline_row(row, "active-session", &prepared_source, &active_source);
     }
-    assert_eq!(block_on(outcome.into_parts().0.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(outcome.into_parts().0.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 fn assert_cline_row(

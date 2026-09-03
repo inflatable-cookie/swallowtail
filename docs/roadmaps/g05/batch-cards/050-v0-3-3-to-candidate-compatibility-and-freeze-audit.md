@@ -29,7 +29,8 @@ guaranteed-behavior delta from `v0.3.3` to one reviewed current-source head.
    removal, signature change, range shrink, route-identity change, verified-
    target change, MSRV change, lifecycle/cleanup/access/isolation/evidence
    weakening, and additive compatible surface. Do not limit the audit to the
-   known OpenAI Background `minimal` removal.
+   known OpenAI Background `minimal` removal or the caller-bounded interactive
+   session close signature.
 6. Produce a package-by-package semantic API ledger and route/guaranteed-
    behavior ledger. Each changed item names evidence, compatibility class,
    consumer effect, changelog/release-note coverage, and required upgrade or
@@ -59,6 +60,11 @@ mutation, application smoke, feature/currentness work, or papercut repair.
   inference substitutes for semantic or behavioral evidence
 - the known `minimal` removal is classified as breaking and no other break is
   silently assumed away
+- the caller-bounded `InteractiveSessionHandle::close` signature and cleanup
+  guarantee are classified as a coordinated `v0.4.0` API and behavior break
+- unreleased semantic API evidence names the removed zero-argument close
+  exactly; the guard still rejects every removal not present in that approved
+  `v0.4.0` evidence and no immutable tagged baseline changes
 - immutable `v0.1.x`, `v0.2.0`, `v0.3.0`, `v0.3.2`, and `v0.3.3` baselines are
   unchanged
 - feature/currentness freeze and deferred limits match Research 276 and current

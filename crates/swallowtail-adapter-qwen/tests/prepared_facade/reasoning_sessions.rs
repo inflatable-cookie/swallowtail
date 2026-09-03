@@ -117,7 +117,10 @@ fn qwen_reasoning_session_repeats_exact_setup_across_resume_and_replacement() {
             .find(|pair| pair[0] == "--resume"),
         Some(["--resume".to_owned(), "reasoning-session-1".to_owned()].as_slice())
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services.clone())),
+        CleanupOutcome::Clean
+    );
 
     let restored = block_on(restoration.restore(services.clone())).expect("replacement opens");
     let WorkingStateRestorationOutcome::SessionReplaced(replaced) = restored else {
@@ -180,5 +183,8 @@ fn qwen_reasoning_session_repeats_exact_setup_across_resume_and_replacement() {
             .and_then(|value| value.as_str()),
         Some("fixture-control-session-replacement")
     );
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(replacement, services)),
+        CleanupOutcome::Clean
+    );
 }

@@ -1,0 +1,1 @@
+pub fn swallowtail_runtime::InteractiveSessionHandle::close(alloc::boxed::Box<Self>) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>

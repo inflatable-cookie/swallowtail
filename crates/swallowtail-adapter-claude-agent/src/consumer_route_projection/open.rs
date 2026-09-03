@@ -6,7 +6,7 @@ use crate::driver::{
 use crate::failure::failure;
 use swallowtail_runtime::{
     BoxFuture, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId, HostServices,
-    InteractiveSessionHandle, RuntimeFailure,
+    InteractiveSessionHandle, RuntimeFailure, SessionCleanupRequest,
 };
 
 /// Future returned by the additive prepared Claude Agent open path.
@@ -96,6 +96,7 @@ impl ClaudeAgentPreparedSession {
         &self,
         prepared_source_id: ConsumerRouteProjectionSourceId,
         active_session_source_id: ConsumerRouteProjectionSourceId,
+        cleanup: SessionCleanupRequest,
         services: HostServices,
     ) -> ClaudeAgentProjectionOpenFuture {
         if prepared_source_id == active_session_source_id {
@@ -107,7 +108,7 @@ impl ClaudeAgentPreparedSession {
             });
         }
         let prepared = self.clone();
-        let lifecycle = self.open_lifecycle(services);
+        let lifecycle = self.open_lifecycle(services.clone());
         Box::pin(async move {
             match lifecycle.await {
                 Ok((session, observation)) => {
@@ -120,7 +121,7 @@ impl ClaudeAgentPreparedSession {
                     let has_model = match observation.model {
                         ClaudeAgentModelObservation::Exact(_) => true,
                         ClaudeAgentModelObservation::Invalid(error) => {
-                            let _ = session.close().await;
+                            let _ = session.close(cleanup, services).await;
                             return Err(ClaudeAgentProjectionOpenFailure::Runtime(error));
                         }
                     };
@@ -133,7 +134,7 @@ impl ClaudeAgentPreparedSession {
                     ) {
                         Ok(contribution) => contribution,
                         Err(rejection) => {
-                            let _ = session.close().await;
+                            let _ = session.close(cleanup, services).await;
                             return Err(ClaudeAgentProjectionOpenFailure::Runtime(
                                 RuntimeFailure::new(rejection.diagnostic().clone()),
                             ));

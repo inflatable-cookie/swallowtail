@@ -41,7 +41,7 @@ fn prepared_session_exchanges_typed_user_input_without_enabling_approvals() {
             RuntimeTurnId::new("user-input-turn").unwrap(),
             OperationContent::new("ask me").unwrap(),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let mut callbacks = turn.take_callbacks().expect("callback exchange is exposed");
@@ -123,7 +123,10 @@ fn prepared_session_exchanges_typed_user_input_without_enabling_approvals() {
         serde_json::json!(["Tests"])
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -156,7 +159,7 @@ fn numeric_provider_request_id_resumes_and_completes_the_same_activity() {
             RuntimeTurnId::new("numeric-user-input-turn").unwrap(),
             OperationContent::new("ask me").unwrap(),
         ),
-        services,
+        services.clone(),
     ))
     .expect("numeric user-input turn starts");
     let mut events = turn.take_events().expect("turn events are exposed");
@@ -256,6 +259,8 @@ fn numeric_provider_request_id_resumes_and_completes_the_same_activity() {
         serde_json::json!(["Tests"])
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
-

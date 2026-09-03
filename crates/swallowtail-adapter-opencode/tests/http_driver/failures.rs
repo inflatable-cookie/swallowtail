@@ -49,7 +49,7 @@ fn provider_disconnect_and_unknown_event_remain_distinct_and_redacted() {
         assert_eq!(diagnostic.code(), expected);
         assert!(!format!("{diagnostic:?}").contains("raw-secret-error-sentinel"));
         let _ = block_on(turn.close());
-        let _ = block_on(session.close());
+        let _ = block_on(close_session(session, &fixture));
     }
 }
 

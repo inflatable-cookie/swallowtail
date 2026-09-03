@@ -1,4 +1,6 @@
-use crate::support::{CleanupEvent, FixtureHost, Scenario, open_request, selection, turn_request};
+use crate::support::{
+    CleanupEvent, FixtureHost, Scenario, close_session, open_request, selection, turn_request,
+};
 use futures_executor::block_on;
 use swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver;
 use swallowtail_core::ExecutionHostId;
@@ -19,8 +21,9 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
         services.clone(),
     ))
     .expect("OhMyPi session opens");
-    let mut turn = block_on(session.start_turn(turn_request("turn-cancel", deadline()), services))
-        .expect("OhMyPi turn starts");
+    let mut turn =
+        block_on(session.start_turn(turn_request("turn-cancel", deadline()), services.clone()))
+            .expect("OhMyPi turn starts");
 
     assert_eq!(
         block_on(turn.cancellation().request()).expect("abort request succeeds"),
@@ -36,7 +39,10 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
     );
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -51,8 +57,9 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
         services.clone(),
     ))
     .expect("OhMyPi session opens");
-    let mut turn = block_on(session.start_turn(turn_request("turn-timeout", deadline()), services))
-        .expect("OhMyPi turn starts");
+    let mut turn =
+        block_on(session.start_turn(turn_request("turn-timeout", deadline()), services.clone()))
+            .expect("OhMyPi turn starts");
 
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -66,7 +73,10 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
             .any(|value| value["type"] == "abort")
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

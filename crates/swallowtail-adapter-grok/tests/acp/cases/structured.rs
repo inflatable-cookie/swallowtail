@@ -2,7 +2,7 @@
 fn structured_projection_preserves_events_output_and_durable_provider_state() {
     let host = FixtureHost::new(Scenario::Success);
     let host_id = ExecutionHostId::new("fixture.host.grok.structured").expect("host");
-    let mut run = start_run(host_id, &host, "0.2.114", None);
+    let mut run = start_run(host_id, &host, "0.2.114", Some(run_deadline()));
     assert_eq!(
         run.cancellation().scope(),
         swallowtail_core::CancellationScope::StructuredRun
@@ -37,13 +37,13 @@ fn structured_projection_preserves_events_output_and_durable_provider_state() {
 #[test]
 fn structured_cancellation_deadline_and_provider_request_remain_distinct() {
     for (scenario, expected, deadline) in [
-        (Scenario::Cancellation, "cancelled", None),
+        (Scenario::Cancellation, "cancelled", Some(run_deadline())),
         (
             Scenario::Deadline,
             "timed-out",
             Some(Deadline::at(MonotonicInstant::from_ticks(10))),
         ),
-        (Scenario::Permission, "provider-request", None),
+        (Scenario::Permission, "provider-request", Some(run_deadline())),
     ] {
         let host = FixtureHost::new(scenario);
         let host_id = ExecutionHostId::new(format!("fixture.host.grok.{expected}")).expect("host");
@@ -74,7 +74,7 @@ fn exact_structured_projection_runs_on_both_authoritative_host_topologies() {
     ] {
         let host = ExecutionHostId::new(host).expect("host");
         let fixture = FixtureHost::new(Scenario::Success);
-        let mut run = start_run(host.clone(), &fixture, "0.2.114", None);
+        let mut run = start_run(host.clone(), &fixture, "0.2.114", Some(run_deadline()));
         let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
@@ -83,4 +83,3 @@ fn exact_structured_projection_runs_on_both_authoritative_host_topologies() {
         assert_eq!(selected.plan.execution_host_id(), &host);
     }
 }
-

@@ -33,6 +33,11 @@ mutation.
 - The current `[Unreleased]` changelog records a large public and guaranteed-
   behavior delta. It is input to the audit, not proof that every change is
   classified or release-ready.
+- Card 058 adds a second known coordinated `v0.4.0` break: interactive-session
+  close now requires exact host services and a caller-selected absolute cleanup
+  deadline, with one hard boundary over post-expiry cleanup. Card 050 must
+  classify its package and consumer effects separately from the OpenAI
+  Background `minimal` removal.
 - An exploratory run passed formatting, both configured Clippy shapes, and
   2,825 tests, then stopped only because `qa:docs` found the checkpoint-held
   lock. That partial run is not release evidence. All 11 configured local gates
@@ -115,7 +120,8 @@ different SHA is accepted.
 - read-only release status selects minor `0.4.0`; Effigy alone applies the
   authorized workspace-version and changelog-promotion mutations; the promoted
   changelog has deduplicated headings and a structural `Breaking` entry for the
-  OpenAI Background `minimal` removal
+  OpenAI Background `minimal` removal and the caller-bounded interactive-close
+  signature
 - current external source-consumer and one operator-authorized working
   application pass against the exact candidate through a current normal
   authenticated product path; provider-free substitutes do not count

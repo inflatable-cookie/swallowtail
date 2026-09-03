@@ -1,6 +1,6 @@
 # 058 Caller-Bounded Interactive Session Cleanup
 
-Status: ready; operator accepted the v0.4 breaking close seam
+Status: complete; caller-bounded close migrated across all 22 interactive adapter packages
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../023-claude-sdk-shared-lifecycle-prerequisites.md`
@@ -43,19 +43,41 @@ release preparation; compatibility shims; guessed duration-to-tick conversion.
 
 ## Acceptance Criteria
 
-- [ ] the public interactive-session close seam requires caller-supplied host
+- [x] the public interactive-session close seam requires caller-supplied host
       services and one caller-selected cleanup deadline
-- [ ] no old unbounded close path, default timeout, compatibility shim, or
+- [x] no old unbounded close path, default timeout, compatibility shim, or
       guessed duration-to-tick conversion remains callable
-- [ ] close, open-abort, turn-expiry interrupt, escalation, pump/task join,
+- [x] close, open-abort, turn-expiry interrupt, escalation, pump/task join,
       credential release, and resource release return by the same observable
       hard cleanup boundary
-- [ ] deadline expiry produces an honest failed or degraded cleanup result and
+- [x] deadline expiry produces an honest failed or degraded cleanup result and
       cannot be reported as clean
-- [ ] every production implementation and consumer fixture migrates in one
+- [x] every production implementation and consumer fixture migrates in one
       coordinated public-API change
-- [ ] API evidence, guides, examples, matrices, changelog, and release audit
+- [x] API evidence, guides, examples, matrices, changelog, and release audit
       inputs state the v0.4 break exactly
+
+## Outcome
+
+`SessionCleanupRequest` carries one absolute caller-selected deadline.
+`InteractiveSessionHandle::close` now consumes that request and the session's
+exact `HostServices`; the zero-argument signature is absent. Runtime host and
+time validation wraps the complete cleanup future, observes time before work
+and before accepting success, drops stalled work at expiry, and returns the
+exact failed diagnostic instead of `Clean`.
+
+All 28 production implementations across 22 adapter packages and both shared
+fixture implementations migrated. Structured projections relinquish turn
+handles before bounded session cleanup. Fallible projected-open paths receive
+the cleanup request, while management facades validate fallible bindings before
+provider work. Deterministic runtime tests stall interruption, escalation, task
+join, credential release, and resource release behind the same deadline.
+
+Unreleased semantic evidence records the new runtime type, helper, trait
+signature, management prevalidation, and the Claude Agent and Cline projected-
+open signatures. One exact approved `v0.4.0` removal records the old runtime
+close signature; every other immutable-baseline removal still fails the API
+gate.
 
 ## Validation
 

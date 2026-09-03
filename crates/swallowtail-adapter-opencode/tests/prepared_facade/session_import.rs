@@ -177,7 +177,7 @@ fn catalogue_import_and_existing_load_share_one_exact_continuation_path() {
         assert_eq!(loaded.replay().count(), 4);
         let (_, handle) = loaded.into_parts();
         assert!(matches!(
-            block_on(handle.close()),
+            block_on(fixture.close_session(handle)),
             swallowtail_runtime::CleanupOutcome::Clean
         ));
     }

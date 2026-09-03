@@ -5,6 +5,18 @@ use swallowtail_runtime::{
     RuntimeFailure, SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
+pub(super) fn validate_management_context(
+    instance: &swallowtail_core::ConfiguredInstance,
+    access: &PreparedAccessEvidence,
+) -> Result<(), RuntimeFailure> {
+    ProviderSessionManagementBinding::validate_bound_session_context(
+        &crate::claude_agent_acp_descriptor(),
+        instance,
+        access,
+    )
+    .map_err(|error| RuntimeFailure::new(error.diagnostic().clone()))
+}
+
 pub(super) async fn wrap_management_handle(
     handle: Box<dyn InteractiveSessionHandle>,
     instance: swallowtail_core::ConfiguredInstance,
@@ -15,23 +27,19 @@ pub(super) async fn wrap_management_handle(
     let Some(provider_ref) = handle.provider_session_ref().cloned() else {
         return Ok(handle);
     };
-    match ProviderSessionManagementBinding::from_bound_session(
+    let binding = ProviderSessionManagementBinding::from_bound_session(
         provider_ref,
         &crate::claude_agent_acp_descriptor(),
         &instance,
         access,
         working_resource,
         origin,
-    ) {
-        Ok(binding) => Ok(Box::new(ManagedClaudeAgentSessionHandle {
-            inner: handle,
-            binding,
-        })),
-        Err(error) => {
-            let _ = handle.close().await;
-            Err(RuntimeFailure::new(error.diagnostic().clone()))
-        }
-    }
+    )
+    .expect("management context was validated before provider session work");
+    Ok(Box::new(ManagedClaudeAgentSessionHandle {
+        inner: handle,
+        binding,
+    }))
 }
 
 struct ManagedClaudeAgentSessionHandle {
@@ -86,7 +94,11 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
         self.inner.cancellation()
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        self.inner.close()
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        self.inner.close(request, services)
     }
 }

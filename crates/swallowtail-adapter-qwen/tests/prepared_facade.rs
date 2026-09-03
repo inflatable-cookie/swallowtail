@@ -20,11 +20,12 @@ use swallowtail_core::{
     ObservableActivityAvailability, ProviderId, ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, OperationPolicy,
-    PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, RuntimeTurnId, ScopeId,
-    StructuredRunDriver, StructuredRunRequest, TerminalStatus, TurnRequest, WorkingResourceRef,
-    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    BoxFuture, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
+    HostServices, InstalledExecutableTarget, InteractiveSessionHandle, MonotonicInstant,
+    OperationContent, OperationPolicy, PreparedAccessEvidence, ProviderRetentionPolicy, RequestId,
+    RuntimeTurnId, ScopeId, SessionCleanupRequest, StructuredRunDriver, StructuredRunRequest,
+    TerminalStatus, TurnRequest, WorkingResourceRef, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -39,3 +40,13 @@ include!("prepared_facade/budget_runs.rs");
 include!("prepared_facade/budget_sessions.rs");
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/support.rs");
+
+fn close_session(
+    session: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+) -> BoxFuture<'static, CleanupOutcome> {
+    session.close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1_000))),
+        services,
+    )
+}

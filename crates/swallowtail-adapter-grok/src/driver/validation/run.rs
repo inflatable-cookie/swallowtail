@@ -28,9 +28,13 @@ fn validate_run(
         ));
     }
     validate_run_policy(plan, request.policy())?;
-    if let Some(deadline) = request.deadline()
-        && services.time().expect("validated time").now() >= deadline.instant()
-    {
+    let deadline = request.deadline().ok_or_else(|| {
+        failure(
+            "swallowtail.grok.acp.run_deadline_missing",
+            "Grok structured run requires a caller-supplied deadline",
+        )
+    })?;
+    if services.time().expect("validated time").now() >= deadline.instant() {
         return Err(failure(
             "swallowtail.grok.acp.deadline_elapsed",
             "Grok run deadline elapsed before provider work",

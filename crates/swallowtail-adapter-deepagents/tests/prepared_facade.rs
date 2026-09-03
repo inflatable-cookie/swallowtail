@@ -8,7 +8,7 @@ mod discovery_support;
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario};
+use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_deepagents::{
     DEEPAGENTS_ACP_EXECUTABLE_NAME, DEEPAGENTS_ACP_PACKAGE_AXIS, DEEPAGENTS_ACP_PACKAGE_VERSION,
     DEEPAGENTS_PROVIDER_API_KEY_AUDIENCE, DeepAgentsPreparationInput, DeepAgentsPreparationProbe,
@@ -107,7 +107,7 @@ fn prepared_session_names_deepagents_acp_and_release_then_drains_one_prompt() {
             RuntimeTurnId::new("deepagents-prepared-turn").expect("turn"),
             OperationContent::new("private fixture prompt").expect("prompt"),
         ),
-        operation_services,
+        operation_services.clone(),
     ))
     .expect("turn starts");
     let events = block_on(turn.take_events().expect("events").collect::<Vec<_>>())
@@ -140,7 +140,10 @@ fn prepared_session_names_deepagents_acp_and_release_then_drains_one_prompt() {
             && message["params"].get("content").is_none()
     }));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(close_session(handle, operation_services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(operation.releases(), 1);
 }
 

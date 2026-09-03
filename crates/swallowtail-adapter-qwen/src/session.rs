@@ -133,14 +133,24 @@ impl InteractiveSessionHandle for QwenSessionHandle {
         self.cancellation.as_ref()
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            self.state
-                .lock()
-                .expect("Qwen session lock poisoned")
-                .usable = false;
-            close_active(&self.active).await
-        })
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.services.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                self.state
+                    .lock()
+                    .expect("Qwen session lock poisoned")
+                    .usable = false;
+                close_active(&self.active).await
+            }),
+        )
     }
 }
 

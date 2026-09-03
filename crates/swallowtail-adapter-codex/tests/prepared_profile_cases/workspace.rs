@@ -34,13 +34,12 @@ fn bounded_workspace_is_separate_version_gated_and_plan_derived() {
     );
 
     let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
-    let handle = block_on(profile.open_session(host_services_with(
-        process,
-        &recording,
-        [HostServiceKind::WorkingResource],
-    )))
-    .expect("bounded workspace opens");
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let handle = block_on(profile.open_session(services.clone())).expect("bounded workspace opens");
+    assert_eq!(
+        block_on(support::close_session(handle, services)),
+        CleanupOutcome::Clean
+    );
     let start = state
         .messages()
         .into_iter()

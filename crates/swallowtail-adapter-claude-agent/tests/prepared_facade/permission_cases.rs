@@ -22,7 +22,7 @@ fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_inpu
         .expect("session prepares");
 
     let operation_host = FixtureHost::new(Scenario::Elicitation, "0.61.0");
-    let services = operation_host.services(host_id);
+    let services = operation_host.services(host_id.clone());
     let mut session =
         block_on(profile.open_session(services.clone())).expect("prepared session opens");
     let mut turn = block_on(session.start_turn(
@@ -30,7 +30,7 @@ fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_inpu
             RuntimeTurnId::new("claude-agent-session-elicitation-turn").expect("valid turn"),
             OperationContent::new("ask which component to use").expect("valid prompt"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("session turn starts");
     let mut callbacks = turn.take_callbacks().expect("user-input callbacks exist");
@@ -94,7 +94,10 @@ fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_inpu
     }));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(operation_host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 
     let writes = operation_host.writes();
     let initialize = writes
@@ -160,7 +163,7 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
     );
 
     let operation_host = FixtureHost::new(Scenario::Permission, "0.61.0");
-    let services = operation_host.services(host_id);
+    let services = operation_host.services(host_id.clone());
     let mut session =
         block_on(profile.open_session(services.clone())).expect("prepared session opens");
     let binding = session
@@ -172,7 +175,7 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
             RuntimeTurnId::new("claude-agent-session-permission-turn").expect("valid turn"),
             OperationContent::new("request one provider permission").expect("valid prompt"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("session turn starts");
     let mut callbacks = turn.take_callbacks().expect("permission callbacks exist");
@@ -221,7 +224,10 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
     }));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(operation_host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(
         profile
             .load_request(

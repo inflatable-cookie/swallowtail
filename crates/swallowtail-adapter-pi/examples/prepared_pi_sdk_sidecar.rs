@@ -14,8 +14,8 @@ use swallowtail_adapter_pi::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, LoadedSession, OperationContent, PreparationFailure, RequestId,
-    RuntimeFailure, RuntimeTurnId, SessionOptions, SessionResumeBinding, TerminalOutcome,
-    TurnRequest,
+    RuntimeFailure, RuntimeTurnId, SessionCleanupRequest, SessionOptions, SessionResumeBinding,
+    TerminalOutcome, TurnRequest,
 };
 
 fn prepare_session(
@@ -27,19 +27,20 @@ fn prepare_session(
 async fn open_and_prompt(
     prepared: &PiSdkSidecarPreparedSession,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
     turn_id: RuntimeTurnId,
     content: OperationContent,
 ) -> Result<(TerminalOutcome, CleanupOutcome), RuntimeFailure> {
     let mut session = prepared.open_session(services.clone()).await?;
     let mut turn = session
-        .start_turn(TurnRequest::new(turn_id, content), services)
+        .start_turn(TurnRequest::new(turn_id, content), services.clone())
         .await?;
     let outcome = turn
         .take_terminal_outcome()
         .expect("sidecar turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    Ok((outcome, session.close().await))
+    Ok((outcome, session.close(cleanup, services).await))
 }
 
 async fn load_with_replay(

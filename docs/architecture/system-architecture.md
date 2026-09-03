@@ -178,6 +178,11 @@ OpenHands adds a package without a production route.
   conversation deletion, and joined cleanup remain adapter-owned; a separate
   international control-plane driver lists bounded base and custom deployable
   model candidates without claiming Conversations compatibility
+- every provider-neutral interactive session consumes exact host services and
+  one caller-selected absolute cleanup deadline at close. The runtime guards
+  the whole adapter-owned interruption, escalation, join, credential-release,
+  and resource-release future with host time; expiry is failed cleanup and no
+  zero-argument compatibility close remains
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports

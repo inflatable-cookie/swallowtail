@@ -19,7 +19,8 @@ fn later_releases_ignore_unsolicited_global_events_from_other_sessions() {
         );
         let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
         let mut turn =
-            block_on(session.start_turn(turn("global-noise-turn"), services)).expect("turn starts");
+            block_on(session.start_turn(turn("global-noise-turn"), services.clone()))
+                .expect("turn starts");
         let outcome = block_on(
             turn.take_terminal_outcome()
                 .expect("terminal outcome exists"),
@@ -30,6 +31,6 @@ fn later_releases_ignore_unsolicited_global_events_from_other_sessions() {
             "fixture result"
         );
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
     }
 }

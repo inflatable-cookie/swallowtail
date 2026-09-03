@@ -8,6 +8,21 @@ use swallowtail_runtime::{
     RuntimeFailure, SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
+pub(super) fn validate_management_context(
+    instance: Option<&swallowtail_core::ConfiguredInstance>,
+    access: &PreparedAccessEvidence,
+) -> Result<(), RuntimeFailure> {
+    let Some(instance) = instance else {
+        return Ok(());
+    };
+    ProviderSessionManagementBinding::validate_bound_session_context(
+        &codex_app_server_descriptor(),
+        instance,
+        access,
+    )
+    .map_err(|error| RuntimeFailure::new(error.diagnostic().clone()))
+}
+
 pub(super) fn lifecycle_management_instance(
     prepared: &CodexPreparedIntegration,
 ) -> Option<swallowtail_core::ConfiguredInstance> {
@@ -44,16 +59,11 @@ pub(super) async fn wrap_management_handle(
         working_resource,
         origin,
     );
-    match binding {
-        Ok(binding) => Ok(Box::new(ManagedCodexSessionHandle {
-            inner: handle,
-            binding,
-        })),
-        Err(error) => {
-            let _ = handle.close().await;
-            Err(RuntimeFailure::new(error.diagnostic().clone()))
-        }
-    }
+    let binding = binding.expect("management context was validated before provider session work");
+    Ok(Box::new(ManagedCodexSessionHandle {
+        inner: handle,
+        binding,
+    }))
 }
 
 struct ManagedCodexSessionHandle {
@@ -102,7 +112,11 @@ impl InteractiveSessionHandle for ManagedCodexSessionHandle {
         self.inner.cancellation()
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        self.inner.close()
+    fn close(
+        self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        self.inner.close(request, services)
     }
 }

@@ -3,10 +3,11 @@ use super::super::{
     SettledSessionAttachmentOperation, SettledSessionReconciliationOperation,
 };
 use crate::{
-    BoxFuture, CancellationControl, CleanupOutcome, HostServices, ImmediateCancellation,
-    InteractiveSessionHandle, InterruptedTurnState, LoadedSession,
-    ProviderSessionReconciliationOutcome, RequestId, RuntimeFailure, RuntimeSessionId, TurnHandle,
-    TurnRequest,
+    BoxFuture, CancellationControl, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
+    ImmediateCancellation, InteractiveSessionHandle, InterruptedTurnState, LoadedSession,
+    MonotonicInstant, ProviderSessionReconciliationOutcome, RequestId, RuntimeFailure,
+    RuntimeSessionId, SessionCleanupRequest, TimeService, TurnHandle, TurnRequest,
+    bound_session_cleanup,
 };
 use std::future::Future;
 use std::pin::Pin;
@@ -114,7 +115,27 @@ pub(super) fn fixture_sequence(
 }
 
 pub(super) fn services() -> HostServices {
-    HostServices::new(ExecutionHostId::new("fixture.host").expect("host id is valid"))
+    HostServices::new(fixture_host_id()).with_time(Arc::new(NeverTime))
+}
+
+pub(super) fn cleanup_request() -> SessionCleanupRequest {
+    SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(100)))
+}
+
+fn fixture_host_id() -> ExecutionHostId {
+    ExecutionHostId::new("fixture.host").expect("host id is valid")
+}
+
+struct NeverTime;
+
+impl TimeService for NeverTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(std::future::pending())
+    }
 }
 
 pub(super) fn failure(code: &'static str) -> RuntimeFailure {
@@ -132,6 +153,7 @@ pub(super) fn resolve<T>(mut future: Pin<Box<dyn Future<Output = T> + Send + '_>
 struct FixtureSession {
     request_id: RequestId,
     session_id: RuntimeSessionId,
+    execution_host_id: ExecutionHostId,
     cancellation: ImmediateCancellation,
 }
 
@@ -140,6 +162,7 @@ impl FixtureSession {
         Self {
             request_id: RequestId::new("fixture-request").expect("request id is valid"),
             session_id: RuntimeSessionId::new("fixture-session").expect("session id is valid"),
+            execution_host_id: fixture_host_id(),
             cancellation: ImmediateCancellation::new(CancellationScope::InteractiveSession),
         }
     }
@@ -174,7 +197,16 @@ impl InteractiveSessionHandle for FixtureSession {
         &self.cancellation
     }
 
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async { CleanupOutcome::Clean })
+    fn close(
+        self: Box<Self>,
+        request: SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        bound_session_cleanup(
+            self.execution_host_id.clone(),
+            request,
+            services,
+            Box::pin(async { CleanupOutcome::Clean }),
+        )
     }
 }

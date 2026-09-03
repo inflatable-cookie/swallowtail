@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 23 roadmaps: 15 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 023. Milestone 009 is planned
+g05 has 23 roadmaps: 15 completed milestones and honest evidence stops at 002,
+003, 007, 011, and 023. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
@@ -153,20 +153,19 @@ post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 and cards 050-052 are planned and paused; partial card-050 output
 is not accepted release evidence. Milestone 022 is planned after card 055's
-exact-head lifecycle stop. Milestone 023 is ready: card 057 landed the
-provider-neutral root-exit versus owned-tree-empty distinction, and the
-operator authorized cards 058-059 for the breaking bounded-close seam and a
-narrowly contained Unix attestation mechanism. Card 059 then stopped at an
-evidence stop: four native counterexamples falsify the candidate primitives
-(setsid escape, descriptor EOF with a live child, released-group identity, and
-reparenting to launchd), and no sound owned-tree observation was found within
-the current ordinary host-local authority on macOS, so the host stays root-only
-and adds no unsafe; entitlement or system-extension mechanisms are out of scope,
-not proved nonexistent. PR 188 stays paused until the bounded-close seam lands
-and the macOS tree gate is resolved.
+exact-head lifecycle stop. Milestone 023 is stopped: card 057 landed the
+provider-neutral root-exit versus owned-tree-empty distinction, card 058
+completed the breaking caller-bounded close seam, and card 059 stopped at an
+evidence stop after four native counterexamples falsified the candidate
+primitives (setsid escape, descriptor EOF with a live child, released-group
+identity, and reparenting to launchd), and no sound owned-tree observation was
+found within the current ordinary host-local authority on macOS, so the host
+stays root-only and adds no unsafe; entitlement or system-extension mechanisms
+are out of scope, not proved nonexistent. PR 188 stays paused until the operator
+resolves the macOS tree gate.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
-promoted. Card 056 is complete. Card 058 is ready; card 059 is an evidence stop;
-card 055/PR 188 remain paused behind the bounded-close prerequisite. No card
+promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
+card 055/PR 188 remain paused behind the macOS owned-tree posture decision. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

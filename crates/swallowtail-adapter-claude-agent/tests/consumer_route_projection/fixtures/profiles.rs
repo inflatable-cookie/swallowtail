@@ -18,6 +18,7 @@ pub(crate) fn profile_contributions() -> BTreeMap<&'static str, ConsumerRoutePro
         agent_session(Some("low"), true).open_session_with_projection(
             source("projection.agent.observed.prepared"),
             source("projection.agent.observed.active"),
+            observed_fixture.cleanup_request(),
             observed_fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
         ),
     ) {
@@ -28,7 +29,13 @@ pub(crate) fn profile_contributions() -> BTreeMap<&'static str, ConsumerRoutePro
         ),
     };
     let (session, observed_contribution) = observed.into_parts();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(
+            observed_fixture.cleanup_request(),
+            observed_fixture.services(ExecutionHostId::new(AGENT_HOST).expect("host is valid")),
+        )),
+        CleanupOutcome::Clean
+    );
 
     BTreeMap::from([
         (

@@ -22,10 +22,11 @@ use swallowtail_core::{
     RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, HostServices, JoinedTask, ProcessExit, ProcessHandle,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
+    InteractiveSessionHandle, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle,
     ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
-    ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, WorkingResourceRef,
-    WorkingResourceService,
+    ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
+    WorkingResourceRef, WorkingResourceService,
 };
 
 include!("agent.rs");
@@ -62,6 +63,7 @@ impl FixtureHost {
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
+            .with_time(Arc::new(FixtureTime))
             .with_task(Arc::new(ThreadTaskService))
             .with_process(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -93,6 +95,28 @@ impl FixtureHost {
             .expect("fixture agent lock poisoned")
             .writes
             .clone()
+    }
+}
+
+pub fn close_session(
+    session: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+) -> BoxFuture<'static, CleanupOutcome> {
+    session.close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(10_000))),
+        services,
+    )
+}
+
+struct FixtureTime;
+
+impl TimeService for FixtureTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(std::future::pending())
     }
 }
 

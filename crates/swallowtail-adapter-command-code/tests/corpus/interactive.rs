@@ -103,7 +103,10 @@ fn prepared_session_uses_exact_resume_on_later_turns_without_ambient_selectors()
     assert!(!second.iter().any(|argument| argument == "--no-session"));
     assert!(!second.iter().any(|argument| argument == "--continue"));
     assert!(!second.iter().any(|argument| argument == "--fork-session"));
-    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(handle.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

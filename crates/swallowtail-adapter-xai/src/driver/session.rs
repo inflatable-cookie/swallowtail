@@ -142,27 +142,37 @@ impl InteractiveSessionHandle for XaiSessionHandle {
         self.cancellation.as_ref()
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            let active = close_active(&self.active).await;
-            let connection = self.connection.clone();
-            let connection_cleanup = match self.services.blocking_work() {
-                Some(blocking) => {
-                    let work =
-                        blocking.run(self.scope.clone(), Box::new(move || connection.close()));
-                    super::lifecycle::cleanup_from_result(work.await)
-                }
-                None => CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
-                    "swallowtail.xai.blocking_service_missing",
-                    "xAI blocking-work service disappeared during cleanup",
-                )),
-            };
-            let credential = match self.access.as_mut() {
-                Some(access) => access.release(&self.services).await,
-                None => CleanupOutcome::NotApplicable,
-            };
-            merge_cleanup(merge_cleanup(active, connection_cleanup), credential)
-        })
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.services.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                let active = close_active(&self.active).await;
+                let connection = self.connection.clone();
+                let connection_cleanup = match self.services.blocking_work() {
+                    Some(blocking) => {
+                        let work =
+                            blocking.run(self.scope.clone(), Box::new(move || connection.close()));
+                        super::lifecycle::cleanup_from_result(work.await)
+                    }
+                    None => CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.xai.blocking_service_missing",
+                        "xAI blocking-work service disappeared during cleanup",
+                    )),
+                };
+                let credential = match self.access.as_mut() {
+                    Some(access) => access.release(&self.services).await,
+                    None => CleanupOutcome::NotApplicable,
+                };
+                merge_cleanup(merge_cleanup(active, connection_cleanup), credential)
+            }),
+        )
     }
 }
 

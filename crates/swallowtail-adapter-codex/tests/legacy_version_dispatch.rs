@@ -134,6 +134,7 @@ fn legacy_app_server_runs_only_the_stable_read_only_subset() {
     let instance = ConfiguredInstanceId::new("codex.app-server.local").unwrap();
     let target = InstanceTargetRef::new("codex-app-server-executable").unwrap();
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services(process);
     let session = block_on(app_driver().open_session(
         app_server_plan_for_version(
             DriverRole::InteractiveSession,
@@ -150,10 +151,13 @@ fn legacy_app_server_runs_only_the_stable_read_only_subset() {
             None,
             app_server_session_agreement(SessionAccessPolicy::read_only()),
         ),
-        host_services(process),
+        services.clone(),
     ))
     .expect("legacy read-only session opens");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(state.request().arguments, ["app-server"]);
     let messages = state.messages();
     let initialize = messages

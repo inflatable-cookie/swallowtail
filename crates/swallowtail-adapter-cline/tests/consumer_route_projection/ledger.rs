@@ -76,9 +76,9 @@ fn exact_nineteen_row_ledger_reconciles_to_the_reviewed_census() {
     assert_eq!(LEDGER.iter().filter(|row| row.0 == "cline.headless" && row.3).count(), 7);
     assert_eq!(LEDGER.iter().filter(|row| row.0 == "cline.headless" && !row.3).count(), 1);
 
-    let (prepared, _, services) = session(Scenario::ModelExact, true, "ledger-maximal");
+    let (prepared, host, services) = session(Scenario::ModelExact, true, "ledger-maximal");
     let outcome = block_on(prepared.open_session_with_projection(
-        source("cline.ledger.prepared"), source("cline.ledger.active"), services,
+        source("cline.ledger.prepared"), source("cline.ledger.active"), host.cleanup_request(), services.clone(),
     )).unwrap_or_else(|failure| panic!("maximal open failed: {:?}", failure.failure()));
     let mut observed = semantic_ids(outcome.contribution()).into_iter().map(|semantic| {
         ("cline.acp".to_owned(), cline_shape("cline.acp", &semantic).to_owned(), semantic)
@@ -92,5 +92,10 @@ fn exact_nineteen_row_ledger_reconciles_to_the_reviewed_census() {
         (row.0.to_owned(), row.1.to_owned(), row.2.to_owned())
     }).collect::<BTreeSet<_>>();
     assert_eq!(observed, emitted);
-    let _ = block_on(outcome.into_parts().0.close());
+    let _ = block_on(
+        outcome
+            .into_parts()
+            .0
+            .close(host.cleanup_request(), services),
+    );
 }

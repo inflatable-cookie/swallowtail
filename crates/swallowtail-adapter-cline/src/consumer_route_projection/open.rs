@@ -4,7 +4,7 @@ use crate::driver::{ClineModelObservation, ClineOpenRejection, ClinePlanAcknowle
 use crate::failure::failure;
 use swallowtail_runtime::{
     BoxFuture, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId, HostServices,
-    InteractiveSessionHandle, NegotiatedSessionModelOptions, RuntimeFailure,
+    InteractiveSessionHandle, NegotiatedSessionModelOptions, RuntimeFailure, SessionCleanupRequest,
 };
 
 /// Future returned by the additive prepared Cline open path.
@@ -99,6 +99,7 @@ impl ClinePreparedSession {
         &self,
         prepared_source_id: ConsumerRouteProjectionSourceId,
         active_session_source_id: ConsumerRouteProjectionSourceId,
+        cleanup: SessionCleanupRequest,
         services: HostServices,
     ) -> ClineProjectionOpenFuture {
         if prepared_source_id == active_session_source_id {
@@ -110,7 +111,7 @@ impl ClinePreparedSession {
             });
         }
         let prepared = self.clone();
-        let lifecycle = self.open_lifecycle(services);
+        let lifecycle = self.open_lifecycle(services.clone());
         Box::pin(async move {
             match lifecycle.await {
                 Ok((session, observation)) => {
@@ -122,7 +123,7 @@ impl ClinePreparedSession {
                         ClineModelObservation::Absent => false,
                         ClineModelObservation::Exact(_) => true,
                         ClineModelObservation::Invalid(error) => {
-                            let _ = session.close().await;
+                            let _ = session.close(cleanup, services).await;
                             return Err(ClineProjectionOpenFailure::Runtime(error));
                         }
                     };
@@ -135,7 +136,7 @@ impl ClinePreparedSession {
                     ) {
                         Ok(contribution) => contribution,
                         Err(rejection) => {
-                            let _ = session.close().await;
+                            let _ = session.close(cleanup, services).await;
                             return Err(ClineProjectionOpenFailure::Runtime(RuntimeFailure::new(
                                 rejection.diagnostic().clone(),
                             )));

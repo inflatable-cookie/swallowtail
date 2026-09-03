@@ -177,35 +177,45 @@ impl InteractiveSessionHandle for AlibabaSessionHandle {
         self.cancellation.as_ref()
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            let active = close_active(&self.active).await;
-            let remote = match (
-                self.retention,
-                self.access.as_ref().map(CleanupAccess::acquire),
-            ) {
-                (ConversationRetention::DeleteOnClose, Some(Ok(access))) => {
-                    cleanup_conversation(
-                        &self.transport,
-                        &self.scope,
-                        &self.services,
-                        &access,
-                        &self.conversation,
-                        self.remote_uncertain.load(Ordering::SeqCst),
-                    )
-                    .await
-                }
-                (ConversationRetention::DeleteOnClose, Some(Err(error))) => {
-                    CleanupOutcome::Failed(error.diagnostic().clone())
-                }
-                _ => CleanupOutcome::NotApplicable,
-            };
-            let credential = match self.access.as_mut() {
-                Some(access) => access.release(&self.services).await,
-                None => CleanupOutcome::NotApplicable,
-            };
-            merge_cleanup(merge_cleanup(active, remote), credential)
-        })
+    fn close(
+        mut self: Box<Self>,
+        request: swallowtail_runtime::SessionCleanupRequest,
+        services: HostServices,
+    ) -> BoxFuture<'static, CleanupOutcome> {
+        let execution_host_id = self.services.execution_host_id().clone();
+        swallowtail_runtime::bound_session_cleanup(
+            execution_host_id,
+            request,
+            services,
+            Box::pin(async move {
+                let active = close_active(&self.active).await;
+                let remote = match (
+                    self.retention,
+                    self.access.as_ref().map(CleanupAccess::acquire),
+                ) {
+                    (ConversationRetention::DeleteOnClose, Some(Ok(access))) => {
+                        cleanup_conversation(
+                            &self.transport,
+                            &self.scope,
+                            &self.services,
+                            &access,
+                            &self.conversation,
+                            self.remote_uncertain.load(Ordering::SeqCst),
+                        )
+                        .await
+                    }
+                    (ConversationRetention::DeleteOnClose, Some(Err(error))) => {
+                        CleanupOutcome::Failed(error.diagnostic().clone())
+                    }
+                    _ => CleanupOutcome::NotApplicable,
+                };
+                let credential = match self.access.as_mut() {
+                    Some(access) => access.release(&self.services).await,
+                    None => CleanupOutcome::NotApplicable,
+                };
+                merge_cleanup(merge_cleanup(active, remote), credential)
+            }),
+        )
     }
 }
 

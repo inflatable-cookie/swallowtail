@@ -4,7 +4,7 @@ use futures_util::StreamExt;
 use swallowtail_adapter_kimi::{KimiLocalServerPreparedIntegration, KimiLocalServerSessionInput};
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, OperationContent, ProviderSessionManagementBinding, RuntimeEvent,
-    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnRequest,
+    RuntimeFailure, RuntimeTurnId, SessionCleanupRequest, TerminalOutcome, TurnRequest,
 };
 
 async fn run_interactive_turn(
@@ -13,6 +13,7 @@ async fn run_interactive_turn(
     turn_id: RuntimeTurnId,
     content: OperationContent,
     services: HostServices,
+    cleanup: SessionCleanupRequest,
 ) -> Result<
     (
         Vec<RuntimeEvent>,
@@ -28,7 +29,7 @@ async fn run_interactive_turn(
     let mut session = profile.open_session(services.clone()).await?;
     let management = session.management_binding().cloned();
     let mut turn = session
-        .start_turn(TurnRequest::new(turn_id, content), services)
+        .start_turn(TurnRequest::new(turn_id, content), services.clone())
         .await?;
     let mut events = turn
         .take_events()
@@ -42,8 +43,8 @@ async fn run_interactive_turn(
         .expect("Kimi local-server turns expose one terminal outcome")
         .await;
     let _ = turn.close().await;
-    let cleanup = session.close().await;
-    Ok((collected, outcome, cleanup, management))
+    let outcome_cleanup = session.close(cleanup, services).await;
+    Ok((collected, outcome, outcome_cleanup, management))
 }
 
 fn main() {}

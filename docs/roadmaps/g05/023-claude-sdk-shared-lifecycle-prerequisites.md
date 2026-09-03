@@ -1,6 +1,6 @@
 # g05.023 Claude SDK Shared Lifecycle Prerequisites
 
-Status: ready; cards 058 and 059 form the parallel prerequisite frontier
+Status: stopped; caller-bounded close complete; macOS owned-tree gate unresolved under current authority
 Owner: Tom
 Created: 2026-09-02
 Depends on: g05.022 cards 053-056; Contracts 010 and 019; PR 188 review
@@ -23,8 +23,9 @@ finish card 055.
    every platform and constructs no tree claim.
 2. On 2026-09-02 the operator authorized the narrow unsafe/dependency posture
    needed for a sound Unix tree observation and the v0.4 breaking close seam.
-3. Cards 058 and 059 ran in parallel. Card 058 makes every public post-expiry
-   cleanup path caller-bounded. Card 059 attacked exact Unix owned-tree
+3. Cards 058 and 059 ran in parallel. Card 058 made every public interactive
+   close and post-expiry session cleanup path caller-bounded across all 22
+   interactive adapter packages. Card 059 attacked exact Unix owned-tree
    attestation and stopped: four native counterexamples falsify the candidate
    primitives (`setsid` escape, descriptor EOF with a live child, released-group
    identity, and reparenting to `launchd`), and no sound owned-tree observation
@@ -61,9 +62,9 @@ stays unconfirmed, so card 055 cannot restack on the first decision alone.
 ## Batch Cards
 
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
-- [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — ready; operator accepted the v0.4 breaking close seam
+- [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on 058-059; preserve PR 188 for restack
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked on the unresolved macOS owned-tree posture decision; preserve PR 188
 
 ## Acceptance
 
@@ -73,9 +74,21 @@ stays unconfirmed, so card 055 cannot restack on the first decision alone.
   fails closed on unsupported platforms — met vacuously: no host in this
   repository can make the claim, so every host fails closed
 - session close and post-expiry cleanup have a caller-selected host deadline
-  before the SDK route becomes available
+  before the SDK route becomes available — met
 - PR 188 is restacked only after both shared prerequisites merge
 - release readiness remains paused and restarts from a later exact head
+
+## Outcome
+
+The caller-bounded half is complete. Card 058 removed the public unbounded
+interactive close seam, migrated every implementation and fixture, and proved
+one deadline over interruption, escalation, joins, credential release, and
+resource release. Card 059's independent evidence stop remains decisive: no
+sound macOS owned-tree observation exists within current ordinary host-local
+authority. This milestone therefore stops without making `claude-agent.sdk`
+available. The preserved PR 188 cannot advance until the operator selects and
+authorizes a new tree-attestation posture or accepts the route's unavailability
+on macOS.
 
 ## Review Oracle
 

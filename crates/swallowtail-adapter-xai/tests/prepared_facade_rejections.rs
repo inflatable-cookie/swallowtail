@@ -235,7 +235,10 @@ fn prepared_xai_controls_reach_failed_turns_before_chain_invalidation() {
             TerminalStatus::ProviderFailed(_) | TerminalStatus::RuntimeFailed(_)
         ));
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
         let frame = fixture.server.frames().pop().expect("failed turn frame");
         assert_wire_controls(&frame, Some("high"), Some(512), false);
     }

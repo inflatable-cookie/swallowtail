@@ -15,11 +15,12 @@ fn matching_source_cross_operation_mixtures_fail_closed_both_directions() {
 #[test]
 fn matching_source_active_row_cannot_attach_to_headless_applicability() {
     let shared = source("cline.mixture.active");
-    let (acp, _, services) = session(Scenario::ModelExact, true, "mixture-active");
+    let (acp, host, services) = session(Scenario::ModelExact, true, "mixture-active");
     let outcome = block_on(acp.open_session_with_projection(
         source("cline.mixture.active.prepared"),
         shared.clone(),
-        services,
+        host.cleanup_request(),
+        services.clone(),
     ))
     .unwrap_or_else(|failure| panic!("ACP open failed: {}", failure.failure()));
     let headless = headless_run(true)
@@ -33,7 +34,10 @@ fn matching_source_active_row_cannot_attach_to_headless_applicability() {
         })
         .expect("active Plan acknowledgement");
     assert_mixture_rejected(&headless, active.clone());
-    assert_eq!(block_on(outcome.into_parts().0.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(outcome.into_parts().0.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

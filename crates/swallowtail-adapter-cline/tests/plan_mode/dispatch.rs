@@ -34,7 +34,7 @@ fn plan_mode_dispatches_one_set_config_before_prompt() {
             RuntimeTurnId::new("cline-plan-turn").expect("valid turn"),
             OperationContent::new("private fixture prompt").expect("valid prompt"),
         ),
-        services,
+        services.clone(),
     ))
     .expect("turn starts");
     let outcome = block_on(
@@ -52,7 +52,10 @@ fn plan_mode_dispatches_one_set_config_before_prompt() {
         ]
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(host.releases(), 1);
 }
 
@@ -61,6 +64,7 @@ fn omitted_plan_mode_keeps_initialize_and_session_new_only() {
     let host_id = ExecutionHostId::new("fixture.host.plan.omit").expect("valid host id");
     let selected = selection(host_id.clone());
     let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
     let session = block_on(driver().open_session(
         selected.plan,
         OpenSessionRequest::new(
@@ -73,12 +77,15 @@ fn omitted_plan_mode_keeps_initialize_and_session_new_only() {
                 Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
             ),
         ),
-        host.services(host_id),
+        services.clone(),
     ))
     .expect("omitted plan mode opens");
     assert_eq!(wire_methods(&host), ["initialize", "session/new"]);
     assert!(config_sets(&host).is_empty());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]

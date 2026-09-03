@@ -169,7 +169,10 @@ fn prepared_session_replays_only_cleanly_committed_history() {
         ))
         .expect("second fixture request is JSON")
     );
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert!(fixture.server.is_reachable());
 }
 
@@ -192,7 +195,10 @@ fn prepared_session_restoration_opens_an_empty_replacement() {
     assert_eq!(replacement.interrupted_turn_id(), &interrupted);
     let (_, replacement) = replacement.into_parts();
     assert!(replacement.provider_session_ref().is_none());
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(replacement)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.server.inference_attempts(), 0);
 }
 
@@ -246,7 +252,10 @@ fn failed_ollama_turn_does_not_mutate_the_private_transcript() {
     assert_eq!(messages[1]["content"], "First answer");
     assert_eq!(messages[2]["content"], "retry fixture turn");
     assert!(!retry.to_string().contains("partial must not commit"));
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 }
 
 #[test]
@@ -374,7 +383,10 @@ fn prepared_session_context_window_replays_fixed_value_across_turns_and_restorat
     assert_eq!(messages.len(), 3);
     assert_eq!(messages[0]["content"], "First fixture turn");
     assert_eq!(messages[2]["content"], "retry fixture turn");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
 
     let restoration = profile.prepare_working_state_restoration(
         RuntimeTurnId::new("ollama-context-interrupted").expect("turn id"),
@@ -398,7 +410,10 @@ fn prepared_session_context_window_replays_fixed_value_across_turns_and_restorat
     );
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(replacement)),
+        CleanupOutcome::Clean
+    );
 
     let restored_body: serde_json::Value = serde_json::from_slice(
         fixture
@@ -524,7 +539,10 @@ fn prepared_session_context_window_dispatches_exact_value_for_shared_request_id(
             serde_json::from_slice(body).expect("request body is JSON");
         assert_eq!(request["options"]["num_ctx"], value, "session {label}");
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert_eq!(
+            block_on(fixture.close_session(session)),
+            CleanupOutcome::Clean
+        );
     }
 }
 

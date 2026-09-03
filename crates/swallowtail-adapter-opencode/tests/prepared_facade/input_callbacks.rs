@@ -134,7 +134,10 @@ fn prepared_session_dispatches_one_image_and_correlated_permission_and_question_
     );
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.attachment_releases.load(Ordering::SeqCst), 1);
 
     let requests = fixture.server.requests();
@@ -306,7 +309,10 @@ fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
         "swallowtail.opencode.callback_closed"
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(fixture.attachment_releases.load(Ordering::SeqCst), 1);
     assert!(
         !fixture
@@ -383,7 +389,10 @@ fn cancelled_session_rejects_before_attachment_materialization() {
         "swallowtail.opencode.session_cancelled"
     );
     assert_eq!(fixture.attachment_releases.load(Ordering::SeqCst), 0);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        block_on(fixture.close_session(session)),
+        CleanupOutcome::Clean
+    );
     assert!(
         !fixture
             .server

@@ -87,7 +87,7 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
     assert!(!second.iter().any(|argument| argument == "--continue"));
     assert_eq!(states[0].stdin(), b"first prompt");
     assert_eq!(states[1].stdin(), b"second prompt");
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }
 
 #[test]
@@ -159,7 +159,7 @@ fn qwen_session_mismatch_fails_closed_without_starting_another_child() {
                 OperationContent::new("must not start").expect("valid content"),
             )
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
-            services,
+            services.clone(),
         ),
     ) {
         Ok(_) => panic!("mismatched provider session must invalidate the handle"),
@@ -170,5 +170,5 @@ fn qwen_session_mismatch_fails_closed_without_starting_another_child() {
         "swallowtail.qwen.headless.session_unusable"
     );
     assert_eq!(states.len(), 2);
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
 }

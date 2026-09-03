@@ -88,6 +88,15 @@ pub struct ProviderSessionManagementBinding {
 }
 
 impl ProviderSessionManagementBinding {
+    /// Validates the route and access context before provider session work starts.
+    pub fn validate_bound_session_context(
+        driver: &DriverDescriptor,
+        instance: &ConfiguredInstance,
+        access: &PreparedAccessEvidence,
+    ) -> Result<(), InvalidProviderSessionManagementBinding> {
+        validated_binding_components(driver, instance, access).map(|_| ())
+    }
+
     /// Admits management authority for one exact bound provider session.
     ///
     /// The binding contains only lifecycle capabilities proven by the observed
@@ -100,63 +109,8 @@ impl ProviderSessionManagementBinding {
         working_resource: Option<WorkingResourceRef>,
         origin: ProviderSessionBindingOrigin,
     ) -> Result<Self, InvalidProviderSessionManagementBinding> {
-        if driver.identity().id() != instance.driver_id() {
-            return Err(InvalidProviderSessionManagementBinding::new(
-                InvalidProviderSessionManagementBindingKind::DriverMismatch,
-                "Provider-session driver does not match its configured instance",
-            ));
-        }
-        if access.status().profile_id() != instance.access_profile_id() {
-            return Err(InvalidProviderSessionManagementBinding::new(
-                InvalidProviderSessionManagementBindingKind::AccessProfileMismatch,
-                "Provider-session access evidence does not match its configured instance",
-            ));
-        }
-
-        let interface_compatibility: Vec<_> = instance
-            .interface_versions()
-            .cloned()
-            .map(|binding| {
-                let assessment = driver.assess_interface_version(&binding);
-                ProviderSessionInterfaceCompatibility::new(binding, assessment)
-            })
-            .collect();
-        if interface_compatibility.is_empty() {
-            return Err(InvalidProviderSessionManagementBinding::new(
-                InvalidProviderSessionManagementBindingKind::MissingInterfaceVersion,
-                "Provider-session management requires an exact interface version",
-            ));
-        }
-        if interface_compatibility
-            .iter()
-            .any(|evidence| !evidence.assessment().is_permitted())
-        {
-            return Err(InvalidProviderSessionManagementBinding::new(
-                InvalidProviderSessionManagementBindingKind::IncompatibleInterfaceVersion,
-                "Provider-session interface version is incompatible",
-            ));
-        }
-
-        let capabilities = CapabilityManifest::new(
-            instance
-                .capabilities()
-                .iter()
-                .map(|(capability, _)| capability)
-                .filter(|capability| is_session_lifecycle_capability(*capability)),
-        );
-        if ![
-            Capability::ProviderSessionArchive,
-            Capability::ProviderSessionRestore,
-            Capability::ProviderSessionDelete,
-        ]
-        .into_iter()
-        .any(|capability| capabilities.supports(capability))
-        {
-            return Err(InvalidProviderSessionManagementBinding::new(
-                InvalidProviderSessionManagementBindingKind::MissingManagementCapability,
-                "Provider-session route does not advertise a management action",
-            ));
-        }
+        let (interface_compatibility, capabilities) =
+            validated_binding_components(driver, instance, &access)?;
 
         Ok(Self {
             provider_session_ref,
@@ -288,6 +242,78 @@ impl ProviderSessionManagementBinding {
                     })
                     .collect::<Vec<_>>()
     }
+}
+
+fn validated_binding_components(
+    driver: &DriverDescriptor,
+    instance: &ConfiguredInstance,
+    access: &PreparedAccessEvidence,
+) -> Result<
+    (
+        Vec<ProviderSessionInterfaceCompatibility>,
+        CapabilityManifest,
+    ),
+    InvalidProviderSessionManagementBinding,
+> {
+    if driver.identity().id() != instance.driver_id() {
+        return Err(InvalidProviderSessionManagementBinding::new(
+            InvalidProviderSessionManagementBindingKind::DriverMismatch,
+            "Provider-session driver does not match its configured instance",
+        ));
+    }
+    if access.status().profile_id() != instance.access_profile_id() {
+        return Err(InvalidProviderSessionManagementBinding::new(
+            InvalidProviderSessionManagementBindingKind::AccessProfileMismatch,
+            "Provider-session access evidence does not match its configured instance",
+        ));
+    }
+
+    let interface_compatibility: Vec<_> = instance
+        .interface_versions()
+        .cloned()
+        .map(|binding| {
+            let assessment = driver.assess_interface_version(&binding);
+            ProviderSessionInterfaceCompatibility::new(binding, assessment)
+        })
+        .collect();
+    if interface_compatibility.is_empty() {
+        return Err(InvalidProviderSessionManagementBinding::new(
+            InvalidProviderSessionManagementBindingKind::MissingInterfaceVersion,
+            "Provider-session management requires an exact interface version",
+        ));
+    }
+    if interface_compatibility
+        .iter()
+        .any(|evidence| !evidence.assessment().is_permitted())
+    {
+        return Err(InvalidProviderSessionManagementBinding::new(
+            InvalidProviderSessionManagementBindingKind::IncompatibleInterfaceVersion,
+            "Provider-session interface version is incompatible",
+        ));
+    }
+
+    let capabilities = CapabilityManifest::new(
+        instance
+            .capabilities()
+            .iter()
+            .map(|(capability, _)| capability)
+            .filter(|capability| is_session_lifecycle_capability(*capability)),
+    );
+    if ![
+        Capability::ProviderSessionArchive,
+        Capability::ProviderSessionRestore,
+        Capability::ProviderSessionDelete,
+    ]
+    .into_iter()
+    .any(|capability| capabilities.supports(capability))
+    {
+        return Err(InvalidProviderSessionManagementBinding::new(
+            InvalidProviderSessionManagementBindingKind::MissingManagementCapability,
+            "Provider-session route does not advertise a management action",
+        ));
+    }
+
+    Ok((interface_compatibility, capabilities))
 }
 
 const fn is_session_lifecycle_capability(capability: Capability) -> bool {

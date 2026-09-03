@@ -10,10 +10,12 @@
 
 ## Ready
 
-- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready; unpaused after PR 196 merged at `493f8194`; sole Next Task
+No card is ready. Card 050 is complete at exact audited head `b7f804b5` and
+awaits independent exact-head review before card 051 can become ready.
 
 ## Completed
 
+- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — complete; 40-package API ledger, 49-row route/behavior ledger, immutable-baseline proof, and exact `b7f804b5` freeze; stop for independent exact-head review
 - [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 - [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; pre-effect exact-host/scope reservation, cancellation-safe join, non-fallible later handoff, and real local-host shutdown-race proof
 - [060-scoped-task-relinquishment-and-host-reap.md](./060-scoped-task-relinquishment-and-host-reap.md) — complete; exact-host/scope acceptance for autonomous local reap without changing ordinary join/drop ownership

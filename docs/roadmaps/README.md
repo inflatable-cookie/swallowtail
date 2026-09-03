@@ -15,20 +15,16 @@ shape.
 
 ## Next Task
 
-Map [g05.021 card 050](g05/batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md):
-freeze the exact `v0.3.3` to reviewed-current-source package, dependency,
-route, semantic API, and guaranteed-behavior delta before any candidate
-mutation. Audit the complete public and behavior delta from fresh exact main
-`493f8194` and check for open mergeable feature/currentness PRs. Immutable
-release inventory remains 47; wider current integration/route gates are 49 due
-to `pi.sdk-sidecar` and `claude-agent.sdk`. Change no Cargo version or
-requirement, release baseline, code, claim, fixture, or workflow. Keep
-feature/currentness implementation frozen; Kimi local server `0.40.1` and
-closed PR 182 remain parked post-release. Cards 051-052 stay planned. Card 051
-has a separate operator gate before Effigy's sole mutating prepare path; card
-052 remains blocked until the operator supplies a complete authenticated
-working-application smoke authority packet. No card authorizes tag creation or
-push.
+Validate [g05.021 card 050](g05/batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md)
+at the exact audited head `b7f804b5`: independently review the complete
+`v0.3.3` to current-source package, dependency, route, semantic API, and
+guaranteed-behavior audit before candidate mutation. The audit freezes 40
+packages, the immutable 47-route release inventory, and 49 current
+integration/route rows due exactly to `pi.sdk-sidecar` and
+`claude-agent.sdk`. Cards 051-052 stay planned until this PR is accepted;
+card 051 has a separate operator gate before Effigy's sole mutating prepare
+path, and card 052 still requires the complete authenticated working-
+application smoke authority packet. No card authorizes tag creation or push.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; card 050 ready as sole Next Task; cards 051-052 planned
+Status: planned; card 050 complete at `b7f804b5` pending exact-head review; cards 051-052 planned
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-03
@@ -30,10 +30,9 @@ mutation.
   `pi.sdk-sidecar` and the restored `claude-agent.sdk`. Neither is in the
   release inventory. Historical package, dependency, route, API, and
   release-note baselines stay immutable.
-- Current `main` is 773 commits and 2,405 changed files beyond `v0.3.3` at
-  milestone compilation. Card 050 must recount at its reviewed head and audit
-  the complete semantic delta, not assume the known `minimal` removal is the
-  only break.
+- The audited head is 826 commits and 2,694 changed files beyond `v0.3.3`.
+  Card 050's complete ledger audits the full semantic delta, rather than
+  assuming the known `minimal` removal is the only break.
 - The current `[Unreleased]` changelog records a large public and guaranteed-
   behavior delta. It is input to the audit, not proof that every change is
   classified or release-ready.
@@ -54,9 +53,10 @@ Agent SDK route and independent Claude Agent ACP expansion. Following the
 acceptance and merge of PR 196 at `493f8194` completing g05.022, release
 readiness is unpaused. Card 050's partial prior semantic API generation is
 retained as non-accepted audit evidence. Card 050 is ready to restart its fresh
-exact-head audit against canonical `main` `493f8194`. Cards 051-052 remain
-planned and dependent. No release mutation, candidate preparation, tag, or push
-is authorized.
+exact-head audit against canonical `main` `b7f804b5`. Card 050 is now locally
+complete at that exact head and stops for independent review. Cards 051-052
+remain planned and dependent. No release mutation, candidate preparation, tag,
+or push is authorized.
 
 ## Runway
 
@@ -106,7 +106,7 @@ different SHA is accepted.
 
 ## Batch Cards
 
-- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — ready; unpaused after PR 196 merged at `493f8194`; sole Next Task
+- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — complete at exact `b7f804b5`; independent exact-head review required before card 051
 - [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; depends on completed card 050; mutating prepare requires separate operator authorization
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 

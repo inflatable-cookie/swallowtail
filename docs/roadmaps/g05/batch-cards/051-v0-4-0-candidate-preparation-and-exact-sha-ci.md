@@ -31,7 +31,7 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    `publish = false`, Rust `1.95.0`, Apple Silicon macOS support, and the
    source-only distribution boundary. Do not manually apply either
    Effigy-owned mutation and then run prepare over it.
-4. Create distinct `v0.4.0` package, dependency, 48-route, and semantic API
+4. Create distinct `v0.4.0` package, dependency, 49-route, and semantic API
    baselines from the accepted card 050 census. Never edit or regenerate a
    prior release baseline.
 5. Ensure the unpromoted changelog and release notes match the audited source.
@@ -39,7 +39,7 @@ Prepare, review, and freeze one coordinated `v0.4.0` source candidate, pass all
    `minimal` value, corrected opaque facade point, fail-before-effects
    behavior, consumer impact, coordinated upgrade, and exact rollback to
    immutable `v0.3.3`.
-6. Record the 40-package source inventory, 48 production routes, release package
+6. Record the 40-package source inventory, 49 current integration/route rows, release package
    order, dependency graph, API baseline, target/floor, source contents, and the
    required known limits from the milestone.
 7. Prove the source tree contains no build output, generated cache, local

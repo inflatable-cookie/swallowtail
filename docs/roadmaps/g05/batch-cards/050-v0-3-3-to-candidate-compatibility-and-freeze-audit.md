@@ -66,6 +66,9 @@ mutation, application smoke, feature/currentness work, or papercut repair.
   in the frozen census; immutable release inventory remains 47, while the
   current integration/route gates and Card051 candidate boundary are 49 due to
   `pi.sdk-sidecar` and `claude-agent.sdk`; Pi inclusion is fixed
+- route-behavior ledger membership is 47 historical `yes` rows and exactly
+  two `no` rows, `pi.sdk-sidecar` and `claude-agent.sdk`; `effigy qa:routes`
+  asserts the immutable/current set and both frozen candidate additions
 - every API and guaranteed-behavior break is explicit; no `changelog-only`
   inference substitutes for semantic or behavioral evidence
 - the known `minimal` removal is classified as breaking and no other break is

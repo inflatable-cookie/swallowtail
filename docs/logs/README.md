@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-03 g05.025 Reap Reservation Prerequisite Compilation](./2026-09-03-g05-025-reap-reservation-prerequisite-compilation.md) — card 061 ready; pre-effect operation-scoped reservation, shutdown-race guarantee, real `LocalHostServices` proof, unchanged ordinary task ownership, later enclosing-guardian adapter dependency, and frozen `v0.4.0`
 - [2026-09-03 PR 188 SDK Route Containment](./2026-09-03-pr188-sdk-route-containment.md) — forward-revert of merge `ff7ec3d8`; rejected exact-head lifecycle review recorded; `claude-agent.sdk` withdrawn pending shared-runtime reservation/reapable-task authority; PR 192 preserved; `v0.4.0` frozen
 - [2026-09-03 g05.024 Card 060 Scoped Task Relinquishment](./2026-09-03-g05-024-card-060-scoped-task-relinquishment.md) — exact-host/scope transfer of an unfinished joined task to an autonomous host reaper; caller deadlines preserved; accepted-for-reap is not joined or cleanup success; ordinary local join/drop ownership unchanged; independent prerequisite for preserved PR 188
 - [2026-09-03 Claude SDK macOS degraded cleanup posture](./2026-09-03-claude-sdk-macos-degraded-cleanup-posture.md) — operator accepts ordinary macOS SDK-route availability with caller-bounded root/process cleanup; root-only confirmation is `Degraded`, unconfirmed root or observed survivor is `Failed`, and only `OwnedTreeEmpty` may support `Clean`; g05.023 complete and preserved PR 188 ready

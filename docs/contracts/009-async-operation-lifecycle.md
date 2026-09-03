@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-04
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -119,15 +119,25 @@ Every spawned or blocking task belongs to a discovery probe, run, session,
 turn, or owned serving-instance scope. Close joins the scope after child
 resource cleanup. No task detaches beyond its owner.
 
-Contract 010's task relinquishment does not create a detached task class. It
-transfers an unfinished joined-task handle from a deadline-bound caller back
-to the exact selected host and operation scope. The host then owns eventual
-reap without another adapter call. The host retains and supervises its reaper
-through an outer selected-host lifecycle owner. Task-service clones carry only
-weak handoff authority; they never join reapers on drop. Explicit host shutdown
-runs outside the task tree and joins the retained reapers. Dropping a reaper
+Contract 010's task relinquishment does not create a detached task class. A
+route that may return at its deadline while joined work continues first obtains
+an operation-scoped reap reservation from the exact selected host. It obtains
+that reservation before provider work or acquisition of credentials, resources,
+processes, or tasks. The reservation guarantees that one later exact-host and
+exact-scope transfer cannot be refused because shutdown started or reaper
+capacity changed while the operation was live. Static service registration or
+a boolean capability probe is not that guarantee.
+
+Relinquishment transfers the unfinished joined-task handle back to the exact
+selected host and operation scope. The host then owns eventual reap without
+another adapter call. The host retains and supervises its reaper through an
+outer selected-host lifecycle owner. Task-service clones carry only weak
+handoff authority; they never join reapers on drop. Explicit host shutdown
+closes reservation admission, accounts for issued reservations and accepted
+tasks, then joins the retained reapers outside the task tree. Dropping a reaper
 handle is not ownership. Acceptance for reap is not task completion, join
-evidence, or successful cleanup.
+evidence, or successful cleanup. Ordinary spawn, explicit join, and join-on-drop
+ownership remain unchanged for tasks not using this reserved path.
 
 Contract 059 watcher work belongs to one active turn. It may run concurrently
 inside that turn, but it does not create a detached task class. Turn terminal,
@@ -243,5 +253,9 @@ remain implementation-card decisions within this boundary.
 - prompt and output bodies are transportable but redacted from default
   formatting and diagnostics
 - cancellation and deadline paths join cleanup
+- a caller-bounded early-return path holds a pre-effect exact-host/scope reap
+  reservation rather than relying on a raceable capability probe
+- selected-host shutdown settles reservations and accepted work before joining
+  reapers outside the task tree
 - attached services are not stopped
 - no provider-specific runtime type leaks into core or runtime public APIs

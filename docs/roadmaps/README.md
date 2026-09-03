@@ -15,13 +15,15 @@ shape.
 
 ## Next Task
 
-Review the PR 188 containment revert at its exact head. PR 188 merged at
-`ff7ec3d8` despite rejected exact-head review. Its `claude-agent.sdk` route is
-withdrawn pending a provider-neutral shared-runtime reservation/reapable-task
-prerequisite that owns the complete ordered cleanup continuation. Card 060 and
-PR 192 remain complete and unchanged. g05.021 and cards 050-052 remain planned
-and frozen; do not resume release readiness before this containment is accepted
-and a later SDK implementation passes independent exact-head review.
+Execute [g05.025 card 061](g05/batch-cards/061-reserved-reapable-task-runtime.md):
+add the provider-neutral operation-scoped reap reservation and real local-host
+shutdown-race proof before restoring any adapter work. Unsupported hosts must
+reject before credentials, resources, processes, tasks, or provider work; a
+held exact-host/exact-scope reservation must make later handoff non-fallible for
+capacity and lifecycle reasons. Ordinary spawn/join/drop stays unchanged.
+`claude-agent.sdk` remains withdrawn and g05.021/cards 050-052 remain frozen.
+Stop after card 061 for independent exact-head review; do not implement card
+055, merge, tag, publish, or resume release readiness.
 
 ## Standing Lanes
 

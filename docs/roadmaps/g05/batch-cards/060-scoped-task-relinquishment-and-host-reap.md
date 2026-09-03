@@ -100,5 +100,6 @@ the task tree joins every retained reaper. The one public outcome is
 ## Auto-Continuation
 
 No. This independent prerequisite remains complete after PR 188 containment.
-Do not restack the withdrawn SDK route until the separate shared-runtime
-reservation/reapable-task prerequisite is compiled and accepted.
+Do not restore the withdrawn SDK route until g05.025/card 061's separate
+shared-runtime reservation/reapable-task prerequisite is implemented, merged,
+and accepted at its exact head.

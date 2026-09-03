@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 24 roadmaps: 17 completed milestones and honest evidence stops at 002,
-003, 007, and 011. Milestone 009 is planned
+g05 has 25 roadmaps: 17 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 025. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
@@ -169,10 +169,14 @@ exact-head ownership gap: an unfinished joined task can transfer back to its
 exact selected host and scope for autonomous reap without blocking the caller
 or implying joined cleanup. PR 188 nevertheless merged despite rejected
 exact-head review. Its route is withdrawn pending provider-neutral
-shared-runtime reservation/reapable-task authority.
+shared-runtime reservation/reapable-task authority. Milestone 025/card 061 is
+ready to grant that authority before operation effects, make later valid
+exact-host/scope handoff immune to shutdown and capacity races, and prove the
+real local-host lifecycle without changing ordinary task ownership.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 060 is complete; card 055 is blocked after PR 188 containment. The
+card 060 is complete; card 061 is ready; card 055 is blocked after PR 188
+containment until 061 is accepted. The
 `v0.4.0` release lane remains frozen. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is

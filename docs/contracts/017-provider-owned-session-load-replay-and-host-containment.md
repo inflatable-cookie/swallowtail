@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -284,6 +284,9 @@ silently substitute OAuth, API keys, cloud identity, or another provider.
 
 ## Cancellation, Disconnect, And Cleanup
 
+- a route that may return before its cleanup task completes obtains Contract
+  010's exact-host and exact-scope reap reservation before credential, resource,
+  process, task, or provider work; static capability evidence is insufficient
 - active-turn cancellation uses the provider method when available
 - cancelling load stops replay, closes the owned attachment, and returns no
   session handle
@@ -294,7 +297,8 @@ silently substitute OAuth, API keys, cloud identity, or another provider.
   provider state
 - pending replay, callbacks, turns, readers, process work, containment leases,
   resource leases, and delegated credentials are joined or released in owner
-  order
+  order; a deadline transfers their enclosing cleanup owner under the held reap
+  reservation rather than releasing leases around unfinished inner work
 - provider completion never hides cleanup degradation or failure
 
 Retention, export, history compaction, and garbage collection of provider
@@ -354,3 +358,5 @@ identity branch enters the common contract.
 - enforced isolation never degrades silently to ambient execution
 - delegated login cannot expose or mutate credential state implicitly
 - disconnect and close preserve provider state while joining runtime work
+- unsupported hosts reject the reap reservation before attachment effects, and
+  accepted-for-reap never substitutes for joined or successful cleanup

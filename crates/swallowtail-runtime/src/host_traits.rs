@@ -9,7 +9,19 @@ use crate::{
     ScopeId, WorkingResourceRef,
 };
 use std::task::Waker;
-use swallowtail_core::{CatalogTimestamp, Diagnostic, EndpointAudience, SafeDiagnostic};
+use swallowtail_core::{
+    CatalogTimestamp, Diagnostic, EndpointAudience, ExecutionHostId, SafeDiagnostic,
+};
+
+/// Outcome of transferring an unfinished joined task back to its owning host.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum TaskRelinquishOutcome {
+    /// The owning host accepted the task and will reap it after it finishes.
+    ///
+    /// This is ownership-transfer evidence only. It does not mean the task
+    /// finished, joined, or completed cleanup successfully.
+    AcceptedForReap,
+}
 
 /// Join handle for one task created inside a runtime operation scope.
 pub trait JoinedTask: Send {
@@ -30,6 +42,24 @@ pub trait JoinedTask: Send {
     /// Hosts that cannot provide a notification leave the default no-op in
     /// place; callers must then use their host-specific polling policy.
     fn register_waker(&self, _waker: &Waker) {}
+
+    /// Transfers this task's worker to its exact owning host for later reaping.
+    ///
+    /// This is the handle-side half of [`ScopedTaskService::relinquish`].
+    /// Runtime and adapter code must use the service operation so the selected
+    /// execution host remains the authority. The default fails closed without
+    /// changing task ownership.
+    #[doc(hidden)]
+    fn relinquish_to_host(
+        &mut self,
+        _execution_host_id: &ExecutionHostId,
+        _scope: &ScopeId,
+    ) -> Result<(), RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.task.relinquish_unsupported",
+            "Runtime host cannot accept this task for autonomous reaping",
+        )))
+    }
 }
 
 /// Host boundary for spawning tasks that must be joined before scope cleanup.
@@ -40,6 +70,22 @@ pub trait ScopedTaskService: Send + Sync {
         scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure>;
+
+    /// Takes back an unfinished task for autonomous host-side reaping.
+    ///
+    /// On success, the task slot is cleared and the result says only that the
+    /// host accepted ownership. It is not join or cleanup-completion evidence.
+    /// On failure, the slot retains the task and ordinary join/drop ownership.
+    fn relinquish(
+        &self,
+        _scope: &ScopeId,
+        _task: &mut Option<Box<dyn JoinedTask>>,
+    ) -> Result<TaskRelinquishOutcome, RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.task.relinquish_unsupported",
+            "Runtime host cannot accept this task for autonomous reaping",
+        )))
+    }
 }
 
 /// Blocking unit of host work with a redacted runtime failure boundary.

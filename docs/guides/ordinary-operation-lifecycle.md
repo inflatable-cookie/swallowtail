@@ -108,8 +108,16 @@ turn interruption, escalation, pumps and task joins, credentials, and
 resources. Select it with the execution host's time service; do not derive
 ticks from a duration in consumer code. Missing or mismatched host time, a
 pre-elapsed deadline, or expiry during cleanup is `Failed`, never `Clean`.
-After a turn timeout, relinquish the turn handle and call bounded session close
-directly; do not wait on a separate unbounded turn close first.
+After a turn timeout, pass any unfinished joined-task slot to the selected
+host's `ScopedTaskService::relinquish` operation with the exact operation
+scope, then call bounded session close directly. `AcceptedForReap` means only
+that host ownership transferred; it is not a join or cleanup-success result.
+Do not wait on a separate unbounded turn close first and do not park the handle
+in adapter-global state. The outer selected-host lifecycle owns the accepted
+work through its supervised reaper. After operation work, explicit host
+shutdown outside the task tree joins that infrastructure and may wait for
+accepted work even though caller relinquishment does not. Task-service clones
+hold weak handoff authority only and never join reapers on drop.
 
 Closing a session does not generally archive or delete provider state.
 Provider-native close, archive, restore, delete, owned remote cleanup, and

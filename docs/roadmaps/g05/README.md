@@ -33,13 +33,15 @@ enforcement.
 | Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-mutation gate. | planned; paused until Claude parity reaches a reviewed release boundary | Contract 036; v0.3.3 precedent; current CHANGELOG; Research 276 | `g05.021`, cards 050-052 |
-| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation ready on preserved PR 188 under the accepted macOS degraded cleanup posture | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
+| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK foundation ready on preserved PR 188 after card 060 lands | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
+| Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 
 ## Planned Next Roadmaps
 
+- [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
-- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready
+- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready after card 060 lands
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
@@ -63,9 +65,10 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-three numbered roadmaps: 15 completed milestones including
+g05 has twenty-four numbered roadmaps: 17 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
-020, the A2 ACP cap at 017, and contract promotion at 008 and 010, honest
+020, the A2 ACP cap at 017, contract promotion at 008 and 010, and shared
+lifecycle closure at 023-024; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
@@ -80,7 +83,10 @@ so the host stays root-only and adds no unsafe; entitlement or system-extension
 mechanisms are out of scope. The operator accepted bounded root-only degraded
 cleanup on ordinary macOS: only `OwnedTreeEmpty` supports `Clean`; confirmed
 root completion is `Degraded`; unconfirmed root or observed survivor is
-`Failed`. PR 188 is ready to continue on its preserved identity.
+`Failed`. Exact-head review then found the task-handle ownership gap. Milestone
+024/card 060 returns unfinished task ownership to the exact host reaper without
+blocking the caller or claiming a join. PR 188 is ready to continue on its
+preserved identity after card 060 lands.
 
 ## Current Boundary
 
@@ -344,15 +350,18 @@ Research 277-279 and g05.022 split Claude parity into two routes. Cards 053-054
 closed the SDK and ACP evidence gates. Contract 019 now requires joined
 descendant-tree cleanup, and Contract 029 records artifact-only authority when
 public source cannot corroborate a package. Card 056's ACP observation is
-complete. Card 055 now restacks onto current `main` and applies the accepted
-macOS degraded cleanup posture. Native SDK delivery is the priority. ACP
+complete. g05.024/card 060 closes the later exact-head task ownership gap.
+Card 055 now restacks onto the card 060 merge commit, uses exact-host/scope
+relinquishment only for unfinished work at caller expiry, and applies the
+accepted macOS degraded cleanup posture. Native SDK delivery is the priority. ACP
 remains an independently useful portable route rather than an approximation
 hidden behind the SDK identity.
 
 ## Milestones
 
+- [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
-- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready after card 060 lands
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 

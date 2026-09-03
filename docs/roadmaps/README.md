@@ -15,15 +15,14 @@ shape.
 
 ## Next Task
 
-Continue card 055 on its preserved PR 188 identity. The 2026-09-03 operator
-decision accepts ordinary macOS availability only with caller-bounded
-root/process cleanup and an exact `Degraded` result while descendant-tree
-emptiness remains unconfirmed. `OwnedTreeEmpty` remains the sole basis for
-`Clean`; unconfirmed root exit or an observed survivor is `Failed`. Restack PR
-188 onto current `main`, preserve its accepted SDK identity, model, tool,
-credential, and wire work, and repair the lifecycle paths against Contracts 010
-and 019. g05.021 and cards 050-052 remain planned and paused; release evidence
-must restart against the later exact source head.
+After g05.024 card 060 lands, restack preserved PR 188 onto that exact `main`
+merge commit. Keep its accepted SDK identity, model, tool, credential, and wire
+work. Replace the caller-deadline task parking/drop path with the exact selected
+host's scoped-task relinquishment; `AcceptedForReap` is not joined or cleanup
+success. Preserve the accepted macOS root-only `Degraded` posture and
+`OwnedTreeEmpty` as the sole basis for `Clean`. g05.021 and cards 050-052 remain
+planned and paused; release evidence must restart against the later exact
+source head.
 
 ## Standing Lanes
 

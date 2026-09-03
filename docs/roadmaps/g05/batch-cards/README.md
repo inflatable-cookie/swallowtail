@@ -11,10 +11,11 @@
 
 ## Ready
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready; operator accepted bounded root-only degraded cleanup on ordinary macOS; continue preserved PR 188
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — ready after card 060 lands; preserve PR 188, restack onto the prerequisite merge commit, and use exact-host/scope relinquishment only at the caller deadline
 
 ## Completed
 
+- [060-scoped-task-relinquishment-and-host-reap.md](./060-scoped-task-relinquishment-and-host-reap.md) — complete; exact-host/scope acceptance for autonomous local reap without changing ordinary join/drop ownership
 - [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline now bound every interactive close and post-expiry session cleanup path across 22 adapter packages
 - [059-unix-owned-tree-attestation.md](./059-unix-owned-tree-attestation.md) — evidence stop; four native counterexamples falsify the candidate primitives; no sound owned-tree observation was found within current ordinary host-local authority on macOS, so the host stays root-only and adds no unsafe; entitlement/system-extension mechanisms are out of scope
 - [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — evidence stop; additive provider-neutral tree-completion vocabulary landed; the local Unix owner proves enrollment and termination but cannot observe emptiness, so every local exit stays root-only

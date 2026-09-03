@@ -119,6 +119,16 @@ Every spawned or blocking task belongs to a discovery probe, run, session,
 turn, or owned serving-instance scope. Close joins the scope after child
 resource cleanup. No task detaches beyond its owner.
 
+Contract 010's task relinquishment does not create a detached task class. It
+transfers an unfinished joined-task handle from a deadline-bound caller back
+to the exact selected host and operation scope. The host then owns eventual
+reap without another adapter call. The host retains and supervises its reaper
+through an outer selected-host lifecycle owner. Task-service clones carry only
+weak handoff authority; they never join reapers on drop. Explicit host shutdown
+runs outside the task tree and joins the retained reapers. Dropping a reaper
+handle is not ownership. Acceptance for reap is not task completion, join
+evidence, or successful cleanup.
+
 Contract 059 watcher work belongs to one active turn. It may run concurrently
 inside that turn, but it does not create a detached task class. Turn terminal,
 close, cancellation, and deadline paths stop and join every owned watcher.

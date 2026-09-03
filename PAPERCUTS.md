@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Rust everyday closeout collides after same-path content revision — 2026-09-03
+- Friction: `northstar-rust-quality closeout` reused snapshot
+  `6a3ace2581a207e4f7541ab74ae7dbe0a68e36eceb97a419c975d83c5cc8614b`
+  and refused a second record after the implementation changed but the changed
+  path set stayed the same.
+- Impact: an exact-head repair can leave compact evidence bound to superseded
+  file contents even after all repository-owned gates are rerun.
+- Fix: include changed-file content or diff digests in the everyday closeout
+  identity, or permit a new immutable record when those digests differ.
+- Surface: Northstar Rust quality everyday closeout snapshot identity.
+
 ### [ ] `effigy release gates` does not return the documented gate inventory — 2026-09-02
 - Friction: the read-only command stayed silent for more than 90 seconds and
   required interruption instead of listing the configured release gates.

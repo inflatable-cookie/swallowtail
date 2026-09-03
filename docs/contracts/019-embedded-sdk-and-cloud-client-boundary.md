@@ -131,10 +131,24 @@ restart the timeout or extend the public close future. Once host time observes
 expiry, cleanup returns `Failed` or an exact route-qualified degraded outcome;
 it cannot return `Clean`.
 
+If the caller-bound operation still owns an unfinished `JoinedTask` at that
+boundary, it transfers the handle only through the selected execution host's
+`ScopedTaskService::relinquish` operation with the exact operation scope. The
+host accepts autonomous reap ownership before the caller returns. Acceptance
+is `AcceptedForReap`, not joined or cleanup-complete; the adapter cannot use it
+to strengthen the session's cleanup result. An outer selected-host lifecycle
+owner keeps the reaper and explicitly joins it outside the task tree; a
+task-service clone has only weak handoff authority and never joins a reaper on
+drop. Rejection leaves the task with the caller and fails closed.
+Adapter-global parking, a discarded reaper handle, and a later adapter cleanup
+call are not substitutes.
+
 After a turn deadline, session cleanup owns interruption of any still-active
-turn. A structured projection must relinquish its turn handle before entering
-bounded session close, so an unresponsive turn join cannot strand the public
-operation outside the session boundary. An open path either validates every
+turn. A structured projection must return any unfinished task to the selected
+host before entering bounded session close, so an unresponsive task join
+cannot strand the public operation outside the session boundary. It retains
+the exact failed or degraded cleanup truth because accepted-for-reap is not
+joined cleanup. An open path either validates every
 fallible projection or management binding before provider work, or receives
 the caller's cleanup request and closes an already-open session on abort.
 Neither path may drop a live session as its cleanup mechanism.
@@ -271,6 +285,8 @@ own public API credential or subscription does not authorize its Bedrock route.
 
 Deterministic SDK fixtures must prove:
 
+- caller expiry returns unfinished scoped-task ownership to the exact host
+  reaper without blocking or treating acceptance as joined cleanup
 - exact SDK version and typed event variants
 - no SDK or credential work before successful preflight
 - exact endpoint, audience, region, credential-provider, route, model, and host

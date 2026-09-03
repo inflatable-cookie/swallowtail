@@ -30,6 +30,31 @@ The time service provides monotonic time and deadline observation. A
 cancellation or choose a terminal outcome. Wall-clock time may annotate safe
 records but never controls timeout correctness.
 
+Ordinary scoped-task ownership remains joined: `spawn` returns a `JoinedTask`,
+explicit `join` observes its completion, and a concrete host may retain
+join-on-drop ownership. A caller-bound operation that reaches its deadline
+while such a task is unfinished must not drop or synchronously join the handle
+on the caller path.
+
+`ScopedTaskService::relinquish` is the narrow ownership-transfer seam for that
+case. It accepts only an unfinished task created under the same exact
+`ScopeId` and execution host. Success clears the caller's task slot only after
+the host has accepted autonomous ownership and returns
+`TaskRelinquishOutcome::AcceptedForReap`. The outcome means neither finished
+nor joined. The host must reap the task after it finishes without a second
+adapter call or adapter-global parking. Its concrete selected-host composition
+retains and supervises the reaper through an outer lifecycle owner, then
+explicitly joins that infrastructure outside the task tree on shutdown.
+Task-service clones carry only weak handoff authority and never join reapers on
+drop; discarding a reaper handle is detached execution, not host ownership.
+Wrong-host, wrong-scope, unsupported, already-finished, and repeated transfers
+fail closed and leave ordinary task ownership with the caller.
+
+Relinquishment preserves the caller deadline; it is never cleanup-completion
+evidence. An adapter may use it only to record that the selected host took
+back ownership. It cannot derive `CleanupOutcome::Clean`, a joined task, or a
+completed provider/session cleanup stage from acceptance for reap.
+
 A concrete host composition may derive a deadline from its monotonic clock and
 one caller-supplied duration. The caller still decides whether a deadline
 exists and selects the duration. The host owns conversion into its monotonic
@@ -347,6 +372,12 @@ billing, support authority, privacy posture, ownership, or topology.
 
 ## Acceptance
 
+- caller-bounded relinquishment returns after exact-host/scope acceptance,
+  without waiting for unfinished task completion
+- wrong-host, wrong-scope, unsupported, finished, and repeated relinquishment
+  retain ordinary caller ownership; accepted-for-reap never means joined
+- selected-host shutdown runs outside the task tree and accounts for every
+  retained reaper even when a worker captures a task-service clone
 - a hosted API driver executes without process service
 - a one-shot CLI fails preflight without process service
 - delegated harness authentication does not require secret extraction

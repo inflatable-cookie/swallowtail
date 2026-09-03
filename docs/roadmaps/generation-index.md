@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 ## Generations
 
@@ -144,7 +144,7 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 23 roadmaps: 16 completed milestones and honest evidence stops at 002,
+g05 has 24 roadmaps: 17 completed milestones and honest evidence stops at 002,
 003, 007, and 011. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
@@ -164,11 +164,15 @@ stays root-only and adds no unsafe; entitlement or system-extension mechanisms
 are out of scope, not proved nonexistent. The operator accepted bounded
 root-only degraded cleanup on ordinary macOS: only `OwnedTreeEmpty` supports
 `Clean`; confirmed root completion is `Degraded`; unconfirmed root or an
-observed survivor is `Failed`. PR 188 is ready to continue on its preserved
-identity.
+observed survivor is `Failed`. Milestone 024/card 060 then closes the narrower
+exact-head ownership gap: an unfinished joined task can transfer back to its
+exact selected host and scope for autonomous reap without blocking the caller
+or implying joined cleanup. PR 188 is ready to continue on its preserved
+identity after card 060 lands.
 Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 055/PR 188 continue under the accepted macOS degraded posture. No card
+card 060 is complete; card 055/PR 188 continue under the accepted macOS
+degraded posture and exact task-relinquishment rule. No card
 authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed

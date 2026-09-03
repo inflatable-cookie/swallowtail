@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; card 050 complete at `b7f804b5` pending exact-head review; cards 051-052 planned
+Status: planned; card 050 accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`; card 051 ready; card 052 planned
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-03
@@ -54,11 +54,13 @@ The operator broke the feature freeze on 2026-09-02 for g05.022's native Claude
 Agent SDK route and independent Claude Agent ACP expansion. Following the
 acceptance and merge of PR 196 at `493f8194` completing g05.022, release
 readiness is unpaused. Card 050's partial prior semantic API generation is
-retained as non-accepted audit evidence. Card 050 is ready to restart its fresh
-exact-head audit against canonical `main` `b7f804b5`. Card 050 is now locally
-complete at that exact head and stops for independent review. Cards 051-052
-remain planned and dependent. No release mutation, candidate preparation, tag,
-or push is authorized.
+retained as non-accepted audit evidence.
+The exact-head review accepted card 050's audit: PR 198 exact head `2f4923b8`
+merged as `835fe9ff` on canonical `main`. Card 051 is ready from that accepted
+freeze and stops at its read-only preparation plan for separate explicit
+operator authorization. Card 052 remains planned and dependent. The single
+mutating Effigy prepare path, release mutation, tag, and push stay unauthorized
+without that separate operator decision.
 
 ## Runway
 
@@ -109,8 +111,8 @@ different SHA is accepted.
 
 ## Batch Cards
 
-- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — complete at exact `b7f804b5`; independent exact-head review required before card 051
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; consumes card 050's frozen 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; Pi release-note, consumer, and rollback wording is fixed audit input; mutating prepare requires separate operator authorization
+- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
+- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; consumes card 050's frozen 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; Pi release-note, consumer, and rollback wording is fixed audit input; mutating prepare requires separate operator authorization
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 
 ## Acceptance

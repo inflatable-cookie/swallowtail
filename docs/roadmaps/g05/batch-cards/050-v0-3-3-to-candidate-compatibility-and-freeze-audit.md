@@ -1,6 +1,6 @@
 # 050 v0.3.3 To Candidate Compatibility And Freeze Audit
 
-Status: complete; audit frozen at `b7f804b5`; 49-route candidate includes `pi.sdk-sidecar` and `claude-agent.sdk`; stop for independent exact-head review
+Status: completed; audit frozen at `b7f804b5` and accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`; 49-route candidate includes `pi.sdk-sidecar` and `claude-agent.sdk`
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-03
@@ -120,8 +120,8 @@ changed item.
 
 ## Auto-Continuation
 
-No. Exact-head review must accept the audit and freeze census before card 051
-can become ready.
+No. The independent exact-head review accepted the audit and freeze census:
+PR 198 exact head `2f4923b8` merged as `835fe9ff`; card 051 is ready.
 
 ## Stop Conditions
 

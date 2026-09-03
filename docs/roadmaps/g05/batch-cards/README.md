@@ -3,19 +3,17 @@
 ## Planned
 
 - [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits card 051's frozen candidate and the full operator-authorized authenticated application-smoke packet
-- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — planned; consumes the frozen 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; Pi release-note, consumer, and rollback wording is fixed audit input; mutating Effigy prepare requires separate operator authorization
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Ready
 
-No card is ready. Card 050 is complete at exact audited head `b7f804b5` and
-awaits independent exact-head review before card 051 can become ready.
+- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready on the accepted card 050 freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`); consumes the fixed 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; stops at the read-only preparation plan for separate explicit operator authorization
 
 ## Completed
 
-- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — complete; 40-package API ledger, 49-row route/behavior ledger, immutable-baseline proof, exact `b7f804b5` freeze, and fixed 49-route candidate inclusion for Pi and Claude; stop for independent exact-head review
+- [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed; 40-package API ledger, 49-row route/behavior ledger, immutable-baseline proof, exact `b7f804b5` freeze, and fixed 49-route candidate inclusion for Pi and Claude; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 - [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 - [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; pre-effect exact-host/scope reservation, cancellation-safe join, non-fallible later handoff, and real local-host shutdown-race proof
 - [060-scoped-task-relinquishment-and-host-reap.md](./060-scoped-task-relinquishment-and-host-reap.md) — complete; exact-host/scope acceptance for autonomous local reap without changing ordinary join/drop ownership

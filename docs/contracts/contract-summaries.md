@@ -25,8 +25,10 @@ contract file owns the exact rules.
     cancellation, terminal outcomes, and cleanup.
   - **010** scopes execution-host authority: executable launch, credentials,
     resources, attachments, schemas, diagnostics, and the optional diagnostic
-    observer sink clarified by Contract 053. Contract 054 adds newest-first
-    history pages as a separate read role.
+    observer sink clarified by Contract 053. It also distinguishes ordinary
+    joined tasks from exact-host/scope acceptance for autonomous reap, which
+    is ownership transfer rather than cleanup-completion evidence. Contract
+    054 adds newest-first history pages as a separate read role.
   - **011** defines deterministic cross-shape runtime conformance profiles.
   - **012** covers session instructions, reasoning selection, tool
     declarations, and correlated callback lifecycle.
@@ -52,7 +54,9 @@ contract file owns the exact rules.
   proof.
 - **019** governs in-process SDK drivers, foreign-language SDK sidecars,
   explicit client configuration, delegated SDK credentials, and cleanup truth
-  across attested-tree and explicit root-only degraded platform postures.
+  across attested-tree and explicit root-only degraded platform postures. A
+  caller-bound SDK operation may return an unfinished task only to its exact
+  host reaper; accepted-for-reap never means joined.
 - **020** keeps mutable catalogue observations separate from entitlement,
   runtime capability, and route selection. It distinguishes standalone sources
   from session-negotiated options and records that the current common

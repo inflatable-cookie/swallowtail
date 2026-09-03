@@ -68,7 +68,7 @@ route or platform.
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready; restack and repair preserved PR 188 under the accepted macOS root-only degraded posture
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready after later g05.024/card 060 lands; preserve PR 188 and the accepted macOS root-only degraded posture
 
 ## Acceptance
 
@@ -81,7 +81,7 @@ route or platform.
   before the SDK route becomes available — met
 - root-only macOS support never reports `Clean`; confirmed root completion is
   `Degraded`, while unconfirmed root or observed survivor is `Failed` — accepted
-- PR 188 is restacked only after both shared prerequisites merge
+- PR 188 is restacked only after this milestone and later g05.024/card 060 land
 - release readiness remains paused and restarts from a later exact head
 
 ## Outcome
@@ -92,8 +92,14 @@ one deadline over interruption, escalation, joins, credential release, and
 resource release. Card 059's independent evidence stop remains decisive: no
 sound macOS owned-tree observation exists within current ordinary host-local
 authority. The operator accepted explicit macOS availability with bounded
-root-only `Degraded` cleanup, never `Clean`. PR 188 can now advance on its
-preserved identity; card 055 owns the route-specific repair and proof.
+root-only `Degraded` cleanup, never `Clean`. That made PR 188 eligible to
+advance until later exact-head review found the narrower task ownership gap;
+g05.024/card 060 now owns that prerequisite before card 055 resumes.
+
+Subsequent exact-head review found one narrower shared ownership gap: an
+unfinished `JoinedTask` still blocks when its handle is dropped at the caller
+deadline. g05.024/card 060 owns that later prerequisite without reopening this
+milestone or changing its process-tree decision.
 
 ## Review Oracle
 
@@ -114,4 +120,5 @@ transition on the SDK route.
 Stop on a descriptor that can close or disappear while a descendant survives
 being treated as tree-empty evidence, `Clean` from `RootOnly`, a design that
 requires guessed tick units, a compatibility shim that leaves unbounded close
-callable, or any attempt to merge PR 188 before both prerequisites land.
+callable, or any attempt to merge PR 188 before every shared prerequisite,
+including g05.024/card 060, lands.

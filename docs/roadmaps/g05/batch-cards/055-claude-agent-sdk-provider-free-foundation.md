@@ -1,10 +1,10 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: ready; operator selected bounded root-only degraded cleanup on macOS; PR 188 preserved
+Status: ready after card 060 lands; PR 188 preserved
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
-Depends on: completed cards 053-054; Research 278-279; Contracts 019 and 029
+Depends on: completed cards 053-054 and 060; Research 278-279; Contracts 010, 019, and 029
 
 ## Goal
 
@@ -42,6 +42,9 @@ honest descendant-completion truth.
    `RootOnly` plus confirmed sidecar/root exit after the descendant termination
    attempt is an exact `Degraded` cleanup; unconfirmed root exit or an observed
    survivor is `Failed`. Do not claim descendant-tree completion there.
+   If the caller deadline arrives while a scoped task is unfinished, transfer
+   it through the exact selected host and scope using card 060's
+   relinquishment seam. `AcceptedForReap` is never join or cleanup evidence.
 7. Preserve cwd and first-party account binding through the session. Resume,
    fork, model/effort/thinking mutation, commands, checkpoints, usage detail,
    and broader permissions remain later layers.
@@ -72,6 +75,8 @@ preparation; tags; g05.009.
       confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
 - [ ] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
 - [ ] fake descendants prove nearest-child join alone is insufficient
+- [ ] caller expiry relinquishes unfinished task ownership to the exact host
+      without blocking, global parking, or strengthening cleanup truth
 - [ ] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
 - [ ] existing ACP and Claude Code behavior and claims are unchanged
 - [ ] route/docs/API/god-file gates hold
@@ -109,7 +114,8 @@ silently selects API-key authentication.
 Stop on changed subscription policy, moved official stable, required token
 custody, an unbounded or unconfirmed sidecar/root join, `Clean` from root-only
 evidence, an SDK-only type leaking into shared API, provider contact need, or a
-required shared public vocabulary decision.
+required shared public vocabulary decision. Stop if card 060 is not on the
+restacked base or any accepted-for-reap result is treated as joined cleanup.
 
 ## Auto-Continuation
 

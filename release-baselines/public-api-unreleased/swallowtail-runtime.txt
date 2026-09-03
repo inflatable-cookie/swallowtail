@@ -701,6 +701,8 @@ pub enum swallowtail_runtime::TaskListItemStatus
 pub swallowtail_runtime::TaskListItemStatus::Completed
 pub swallowtail_runtime::TaskListItemStatus::InProgress
 pub swallowtail_runtime::TaskListItemStatus::Pending
+pub enum swallowtail_runtime::TaskRelinquishOutcome
+pub swallowtail_runtime::TaskRelinquishOutcome::AcceptedForReap
 #[non_exhaustive] pub enum swallowtail_runtime::TerminalFailureSource
 pub swallowtail_runtime::TerminalFailureSource::Host
 pub swallowtail_runtime::TerminalFailureSource::Provider
@@ -3299,6 +3301,7 @@ pub trait swallowtail_runtime::SchemaService: core::marker::Send + core::marker:
 pub fn swallowtail_runtime::SchemaService::materialize_file(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::SchemaDocument) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::SchemaFileLease, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::SchemaService::release_file(&self, swallowtail_runtime::SchemaFileLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub trait swallowtail_runtime::ScopedTaskService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::ScopedTaskService::relinquish(&self, &swallowtail_runtime::ScopeId, &mut core::option::Option<alloc::boxed::Box<dyn swallowtail_runtime::JoinedTask>>) -> core::result::Result<swallowtail_runtime::TaskRelinquishOutcome, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::ScopedTaskService::spawn(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::JoinedTask>, swallowtail_runtime::RuntimeFailure>
 pub trait swallowtail_runtime::ServingEndpointService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ServingEndpointService::publish(&self, swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_runtime::ObservedServingEndpoint) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::ServingEndpointLease, swallowtail_runtime::RuntimeFailure>>

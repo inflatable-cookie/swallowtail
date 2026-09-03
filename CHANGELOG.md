@@ -17,6 +17,15 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add provider-neutral scoped-task relinquishment for caller-bounded
+  operations. The selected `ScopedTaskService` accepts an unfinished
+  `JoinedTask` only under its exact execution host and `ScopeId`, clears caller
+  ownership only after a host reaper accepts it, and returns
+  `TaskRelinquishOutcome::AcceptedForReap`. The result is not joined or cleanup
+  completion. Host-local reaps autonomously without adapter-global parking;
+  wrong authority, finished tasks, and repeat transfer fail closed while
+  ordinary join/drop ownership stays unchanged. Contracts 010 and 019,
+  g05.024 card 060.
 - separate root process exit from owned descendant-tree completion in runtime
   process evidence: `ProcessTreeCompletion::{RootOnly, OwnedTreeEmpty}`,
   `ProcessExit::attesting_empty_owned_tree`, and

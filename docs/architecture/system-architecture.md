@@ -148,9 +148,9 @@ OpenHands adds a package without a production route.
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports; it also
-  provides per-host joined scoped tasks, inspectable exact service
-  composition, and explicit executable approval returning one opaque discovery
-  target
+  provides per-host joined scoped tasks, exact-host/scope acceptance of
+  unfinished tasks for autonomous reap, inspectable exact service composition,
+  and explicit executable approval returning one opaque discovery target
 - `swallowtail-protocol-acp` is the provider-neutral ACP wire boundary; it owns
   bounded v1 NDJSON framing, message classification, and typed bounded
   session-update decoding. The decoder preserves message and thought deltas,
@@ -182,7 +182,9 @@ OpenHands adds a package without a production route.
   one caller-selected absolute cleanup deadline at close. The runtime guards
   the whole adapter-owned interruption, escalation, join, credential-release,
   and resource-release future with host time; expiry is failed cleanup and no
-  zero-argument compatibility close remains
+  zero-argument compatibility close remains. An unfinished task may transfer
+  back to the exact host reaper without extending the caller deadline, but
+  accepted-for-reap is never joined or cleanup-completion evidence
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
@@ -547,8 +549,11 @@ Crate status:
   operation-scoped temporary working resources, explicit lease release, and
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
   credential approvals remain scope- and audience-bound and redacted; per-host
-  scoped task handles join explicitly or on drop, `LocalHostServices` composes
-  the exact supported ports under one host identity, the local watcher service
+  scoped task handles join explicitly or on drop. Exact-host/scope
+  relinquishment can move an unfinished worker to a per-transfer autonomous
+  host reaper without adapter-global state, while ordinary join/drop ownership
+  stays unchanged. `LocalHostServices` composes the exact supported ports under
+  one host identity, the local watcher service
   owns approved process work through terminal and joined state, installed
   executable approval returns only an opaque target, and the local watcher
   HTTP bridge binds an ephemeral loopback lease only after open, then freezes
@@ -1410,8 +1415,10 @@ retains exact identity, optional instance label, route, capability, model,
 provider, and readiness posture for presentation. It has no driver handle,
 provider probe, router, default, fallback, refresh loop, or persistence policy.
 
-Host-local owns joined scoped tasks, exact service composition, and opaque
-executable target approval. The Codex adapter owns an exact-target factory that
+Host-local owns joined scoped tasks, exact-scope task relinquishment with
+autonomous host-side reap, exact service composition, and opaque executable
+target approval. Relinquishment preserves caller deadlines but supplies no
+join or cleanup-completion evidence. The Codex adapter owns an exact-target factory that
 derives its discovery request, retains exact qualified, deprecated, or
 unverified-newer evidence, preserves access provenance, and builds one
 immutable configured-instance base from the same opaque target. It also owns

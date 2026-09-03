@@ -1,6 +1,6 @@
 # Research 281: v0.3.3 To Candidate Compatibility And Freeze Audit
 
-Status: complete locally; exact-head review pending
+Status: complete; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 Date: 2026-09-03
 Task: g05.021 Card 050
 Audited head: `b7f804b5940d666d81f7b43fb562be5797c59575`
@@ -8,7 +8,8 @@ Audited head: `b7f804b5940d666d81f7b43fb562be5797c59575`
 ## Result
 
 The frozen source is suitable for coordinated pre-1.0 `0.4.0` candidate
-preparation after independent exact-head review. Contract 036 fixes the minor:
+preparation; the independent exact-head review accepted this audit through PR 198
+head `2f4923b8`, merged as `835fe9ff`. Contract 036 fixes the minor:
 the current source removes the previously guaranteed, unqualified OpenAI
 Background `minimal` value, and the shared interactive close seam is now a
 breaking public API and cleanup-boundary change.
@@ -243,14 +244,15 @@ The only release-baseline path changes in the full range are under
 
 ## Review state
 
-Card 050 is locally complete only if the exact Card050 validation list passes
-on this tree and the final pre-push identity still equals `b7f804b5…`.
-Cards 051-052 remain planned. Card 051 must not become ready until an
-independent exact-head review accepts this audit. It consumes the frozen
-49-route candidate boundary, including `pi.sdk-sidecar` and
-`claude-agent.sdk`, and must perform the fixed Pi release-note action above; it
-still requires separate operator authorization before Effigy's mutating
-prepare path.
+The independent exact-head review accepted this audit and the Card050 freeze
+census: PR 198 exact head `2f4923b87be91a9b18be88ded5cbfae760709f30` merged as
+`835fe9ff239f4d33c86276af50f229977f0a429c` on canonical `main`. Card 050 is
+completed and accepted. Card 051 is ready from this accepted freeze: it
+consumes the frozen 49-route candidate boundary, including `pi.sdk-sidecar` and
+`claude-agent.sdk`, performs the fixed Pi release-note action above, and still
+requires separate explicit operator authorization before Effigy's mutating
+prepare path. Card 052 remains planned, blocked on completed card 051 plus the
+complete operator authority packet.
 
 The exact listed validation tier passed on this tree:
 

@@ -1,6 +1,6 @@
 # 051 v0.4.0 Candidate Preparation And Exact-SHA CI
 
-Status: planned; depends on accepted card 050 audit; mutating prepare requires separate operator authorization
+Status: ready; card 050 audit accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`; stops before the mutating prepare path for separate explicit operator authorization
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`

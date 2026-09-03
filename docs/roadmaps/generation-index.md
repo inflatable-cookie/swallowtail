@@ -152,8 +152,9 @@ currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is planned; prior partial card-050 output is not accepted release
-evidence, while Research 281 freezes the fresh exact `b7f804b5` audit pending
-independent review. Its 49-route candidate boundary includes both current-only
+evidence, while Research 281's fresh exact `b7f804b5` audit was accepted
+through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route candidate
+boundary includes both current-only
 routes, and Pi's exact release-note, consumer, and rollback treatment is fixed
 Card 051 input. Milestone 022
 is completed: card 055 restored the `claude-agent.sdk` route on card 061's
@@ -187,9 +188,10 @@ Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
 card 060 is complete; card 061 is complete and merged; card 055 is complete and
 merged through PR 196 at `493f8194`. The
-`v0.4.0` release lane is unpaused; card 050 is frozen at exact `b7f804b5` and
-awaits independent exact-head review. No card authorizes a provider turn,
-release mutation, tag creation, or push.
+`v0.4.0` release lane is unpaused; card 051 is ready on the accepted card 050
+freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`) and stops at its
+read-only preparation plan for separate explicit operator authorization. No
+card authorizes a provider turn, release mutation, tag creation, or push.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
@@ -377,8 +379,9 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). The active next action is
-independent exact-head review of card 050 at `b7f804b5`; cards 051-052 remain planned,
+[roadmaps front door](README.md#next-task). The active next action is card 051
+candidate preparation behind its separate operator prepare gate; card 052
+remains gated on completed card 051 plus the operator smoke-authority packet,
 feature/currentness implementation remains frozen, and the g05.009/card 034
 249/518 stop remains intact. This index records generation status; the
 canonical actionable pointer stays in the front door.

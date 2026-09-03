@@ -7,7 +7,6 @@ use crate::sdk::bounded::HostBound;
 use crate::sdk::close::SidecarNativeJoin;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
-use crate::sdk::guardian::bounded_join;
 use crate::sdk::turn::SdkActiveTurn;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::{Value, json};
@@ -15,13 +14,12 @@ use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, HostServices,
     InteractiveSessionHandle, JoinedTask, RequestId, ResourceLease, RuntimeFailure,
-    RuntimeSessionId, TurnHandle, TurnRequest,
+    RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
 };
 
 mod close;
 mod deadline;
 
-pub(super) use close::merge_cleanup;
 use deadline::{reap_finished, spawn_turn_deadline};
 
 /// Bound the sidecar states, and honours, when joining its own retained
@@ -37,6 +35,9 @@ pub(super) type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
 pub(super) struct ActiveTurn {
     pub(super) turn: Arc<SdkActiveTurn>,
     pub(super) deadline_task: Option<Box<dyn JoinedTask>>,
+    /// The exact scope that task was spawned under, so an unfinished one can
+    /// be handed back to the host that owns it.
+    pub(super) deadline_scope: ScopeId,
 }
 
 pub(super) struct ClaudeAgentSdkSessionHandle {
@@ -46,6 +47,8 @@ pub(super) struct ClaudeAgentSdkSessionHandle {
     pub(super) connection: Arc<SdkConnection>,
     pub(super) cancellation: SessionCancellation,
     pub(super) pump_task: Option<Box<dyn JoinedTask>>,
+    /// The exact scope the pump task was spawned under.
+    pub(super) session_scope: ScopeId,
     pub(super) services: HostServices,
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
@@ -79,7 +82,13 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             services.require_execution_host(&self.execution_host_id)?;
             validate_turn(&request)?;
             let turn_deadline = request.deadline().expect("validated turn deadline");
-            reap_finished(&self.active, &services, turn_deadline).await;
+            reap_finished(
+                &self.active,
+                &services,
+                &self.execution_host_id,
+                turn_deadline,
+            )
+            .await;
             if self
                 .active
                 .lock()
@@ -101,7 +110,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             // The host deadline races real completion. On expiry it interrupts
             // provider work and resolves the turn as timed out rather than
             // letting an unbounded provider turn hold the session.
-            let deadline_task = match spawn_turn_deadline(
+            let (deadline_task, deadline_scope) = match spawn_turn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
@@ -119,6 +128,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 .expect("SDK sidecar active lock poisoned") = Some(ActiveTurn {
                 turn: Arc::clone(&turn),
                 deadline_task: Some(deadline_task),
+                deadline_scope,
             });
             // The public start is raced against the caller's turn deadline, so
             // a sidecar that stops answering cannot hold this future open.
@@ -188,65 +198,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             execution_host_id,
             request,
             services,
-            Box::pin(async move {
-                let active = self
-                    .active
-                    .lock()
-                    .expect("SDK sidecar active lock poisoned")
-                    .take();
-                // Closing the session ends any live turn first. The turn must
-                // reach its terminal outcome before its host-deadline task can be
-                // joined: that task waits on completion or expiry, so joining it
-                // while the turn is still open would wait for an event that close
-                // itself just prevented.
-                if self.cancellation.was_requested()
-                    && let Some(active) = &active
-                {
-                    // The consumer already asked the session to cancel; close
-                    // is where that request actually reaches the tree.
-                    active.turn.mark_cancelled();
-                }
-                if let Some(active) = &active
-                    && !active.turn.is_finished()
-                {
-                    active.turn.mark_cancelled();
-                    active
-                        .turn
-                        .fail_connection(swallowtail_core::SafeDiagnostic::new(
-                            "swallowtail.claude-agent.sdk.session_closing",
-                            "Claude Agent SDK sidecar session closed while a turn was active",
-                        ));
-                }
-                let turn_active = active.is_some();
-                let bounded = HostBound::new(
-                    self.services
-                        .time()
-                        .cloned()
-                        .expect("validated sidecar time service"),
-                    deadline,
-                );
-                if let Some(mut active) = active
-                    && let Some(task) = active.deadline_task.take()
-                {
-                    let _ = bounded_join(&bounded, task).await;
-                }
-                let state = close::close_tree(
-                    &self.connection,
-                    &self.services,
-                    &self.request_id,
-                    turn_active,
-                    self.pump_task.take(),
-                    &bounded,
-                    deadline,
-                )
-                .await;
-                let resource =
-                    close::release_resource(self.resource.take(), &self.services, &bounded).await;
-                let credential =
-                    close::release_credential(self.credential.take(), &self.services, &bounded)
-                        .await;
-                merge_cleanup(merge_cleanup(state.cleanup_outcome(), resource), credential)
-            }),
+            Box::pin(async move { close::close_session(&mut self, deadline).await }),
         )
     }
 }

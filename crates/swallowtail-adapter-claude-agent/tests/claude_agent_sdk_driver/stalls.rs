@@ -301,3 +301,38 @@ fn a_pump_that_outlives_process_exit_holds_both_lease_releases() {
         ],
     );
 }
+
+#[test]
+fn an_unfinished_pump_is_relinquished_to_the_host_and_close_stays_failed() {
+    // At the caller's deadline the pump task is handed to the exact host and
+    // scope that own it. Acceptance is ownership transfer, never a join, so
+    // close still has no root evidence and reports failure.
+    let host = host_id("claude-agent-sdk.fixture.relinquish");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let services_for_cleanup = services.clone();
+    let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
+    // The pump only stops draining after the session is open, so the close
+    // deadline is what it outlives.
+    fixture.hold_pump();
+    fixture.fire_deadlines();
+
+    let outcome = block_on(session.close(cleanup_request(), services_for_cleanup));
+    let CleanupOutcome::Failed(diagnostic) = &outcome else {
+        panic!("a pump that was transferred, not joined, cannot close clean: {outcome:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_root_unconfirmed"
+    );
+
+    let scopes = fixture.relinquished_scopes();
+    assert!(
+        scopes
+            .iter()
+            .any(|scope| scope.starts_with("claude-agent-sdk:session:")),
+        "the unfinished pump was not transferred to its owning host: {scopes:?}"
+    );
+    fixture.release_pump();
+}

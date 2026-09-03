@@ -14,7 +14,7 @@
 //! [`ledger`] for why three separate pieces of state cannot express it.
 
 use crate::sdk::failure::failure;
-pub(crate) use joins::bounded_join;
+pub(crate) use joins::{TaskOwner, bounded_join};
 pub(crate) use ledger::Acquisitions;
 pub(crate) use ledger::RecordingLease;
 use ledger::{DeadlineFlag, GuardLedger};
@@ -77,6 +77,10 @@ impl Future for SignalFuture {
 /// failure signal, it terminates whatever the open path had acquired and
 /// releases the leases in contract order.
 pub(crate) struct OpenGuard {
+    /// The exact scope this guard's task was spawned under, kept so an
+    /// unfinished guard can be handed back to the host that owns it.
+    scope: ScopeId,
+    execution_host_id: swallowtail_core::ExecutionHostId,
     ledger: Arc<GuardLedger>,
     signal: Arc<Signal>,
     deadline: Arc<DeadlineFlag>,
@@ -125,7 +129,7 @@ impl OpenGuard {
             .task()
             .expect("validated sidecar task service")
             .spawn(
-                scope,
+                scope.clone(),
                 Box::pin(async move {
                     let mut expiry = time.wait_until(deadline);
                     let mut signalled = Box::pin(task_signal.future());
@@ -153,6 +157,8 @@ impl OpenGuard {
             )?;
         Ok((
             Self {
+                scope,
+                execution_host_id: services.execution_host_id().clone(),
                 ledger,
                 signal,
                 deadline: fired,
@@ -188,7 +194,15 @@ impl OpenGuard {
     /// bound, for its ordered cleanup to finish. Returns whether that cleanup
     /// completed; `false` means unconfirmed, and the guard still owns the whole
     /// ordered sequence.
-    pub(crate) async fn fire(&self, bounded: &super::bounded::HostBound) -> bool {
+    ///
+    /// The handle is joined or, at expiry, handed to its owning host. Neither
+    /// outcome changes the answer: only the ordered cleanup's own completion
+    /// signal is cleanup evidence.
+    pub(crate) async fn fire(
+        &self,
+        bounded: &super::bounded::HostBound,
+        services: &HostServices,
+    ) -> bool {
         self.signal.trigger();
         let cleaned = bounded.run(self.cleaned.future()).await.is_some();
         let task = self
@@ -197,7 +211,8 @@ impl OpenGuard {
             .expect("SDK open-guard task lock poisoned")
             .take();
         if let Some(task) = task {
-            bounded_join(bounded, task).await;
+            let owner = TaskOwner::new(services, &self.execution_host_id, &self.scope);
+            bounded_join(bounded, &owner, task).await;
         }
         cleaned
     }

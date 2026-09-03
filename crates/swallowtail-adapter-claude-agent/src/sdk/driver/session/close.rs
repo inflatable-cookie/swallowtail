@@ -16,7 +16,7 @@ use super::{CLOSE_JOIN_BOUND_MS, native_join};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::close::ClaudeAgentSdkCloseState;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::guardian::{EscalationWatchdog, bounded_join};
+use crate::sdk::guardian::{EscalationWatchdog, TaskOwner, bounded_join};
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::json;
 use std::sync::Arc;
@@ -26,15 +26,103 @@ use swallowtail_runtime::{
     ResourceLease,
 };
 
+/// The exact session identity close acts on: its transport, its host services,
+/// and the host and scope that own its scoped work.
+pub(super) struct CloseTarget<'a> {
+    pub(super) connection: &'a Arc<SdkConnection>,
+    pub(super) services: &'a HostServices,
+    pub(super) execution_host_id: &'a swallowtail_core::ExecutionHostId,
+    pub(super) request_id: &'a RequestId,
+    pub(super) session_scope: &'a swallowtail_runtime::ScopeId,
+}
+
+/// The full ordered close for one session, inside the caller's one deadline.
+pub(super) async fn close_session(
+    session: &mut super::ClaudeAgentSdkSessionHandle,
+    deadline: Deadline,
+) -> CleanupOutcome {
+    let self_ = session;
+    let active = self_
+        .active
+        .lock()
+        .expect("SDK sidecar active lock poisoned")
+        .take();
+    // Closing the session ends any live turn first. The turn must
+    // reach its terminal outcome before its host-deadline task can be
+    // joined: that task waits on completion or expiry, so joining it
+    // while the turn is still open would wait for an event that close
+    // itself just prevented.
+    if self_.cancellation.was_requested()
+        && let Some(active) = &active
+    {
+        // The consumer already asked the session to cancel; close
+        // is where that request actually reaches the tree.
+        active.turn.mark_cancelled();
+    }
+    if let Some(active) = &active
+        && !active.turn.is_finished()
+    {
+        active.turn.mark_cancelled();
+        active
+            .turn
+            .fail_connection(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.claude-agent.sdk.session_closing",
+                "Claude Agent SDK sidecar session closed while a turn was active",
+            ));
+    }
+    let turn_active = active.is_some();
+    let bounded = HostBound::new(
+        self_
+            .services
+            .time()
+            .cloned()
+            .expect("validated sidecar time service"),
+        deadline,
+    );
+    if let Some(mut active) = active
+        && let Some(task) = active.deadline_task.take()
+    {
+        let owner = crate::sdk::guardian::TaskOwner::new(
+            &self_.services,
+            &self_.execution_host_id,
+            &active.deadline_scope,
+        );
+        let _ = bounded_join(&bounded, &owner, task).await;
+    }
+    let target = CloseTarget {
+        connection: &self_.connection,
+        services: &self_.services,
+        execution_host_id: &self_.execution_host_id,
+        request_id: &self_.request_id,
+        session_scope: &self_.session_scope,
+    };
+    let state = close_tree(
+        &target,
+        turn_active,
+        self_.pump_task.take(),
+        &bounded,
+        deadline,
+    )
+    .await;
+    let resource = release_resource(self_.resource.take(), &self_.services, &bounded).await;
+    let credential = release_credential(self_.credential.take(), &self_.services, &bounded).await;
+    merge_cleanup(merge_cleanup(state.cleanup_outcome(), resource), credential)
+}
+
 pub(super) async fn close_tree(
-    connection: &Arc<SdkConnection>,
-    services: &HostServices,
-    request_id: &RequestId,
+    target: &CloseTarget<'_>,
     turn_active: bool,
     pump_task: Option<Box<dyn JoinedTask>>,
     bounded: &HostBound,
     deadline: Deadline,
 ) -> ClaudeAgentSdkCloseState {
+    let CloseTarget {
+        connection,
+        services,
+        execution_host_id,
+        request_id,
+        session_scope,
+    } = target;
     // Armed before any cooperative stage. From here the declared descendant
     // termination request happens on the caller's deadline even if the sidecar
     // accepts input and never answers, because the watchdog is a host task, not
@@ -72,15 +160,21 @@ pub(super) async fn close_tree(
     // Either way the request is made: the guard owns it.
     match watchdog {
         Some(watchdog) => {
-            let _ = watchdog.terminate(bounded).await;
+            let _ = watchdog.terminate(bounded, services).await;
         }
         None => {
             let _ = bounded.run(connection.escalate()).await;
         }
     }
 
+    // Only an actual join is join evidence. A pump handed to the host for
+    // reaping at the deadline is ownership transfer, not completion, so it
+    // still yields an unconfirmed root below.
     let joined = match pump_task {
-        Some(task) => bounded_join(bounded, task).await,
+        Some(task) => {
+            let owner = TaskOwner::new(services, execution_host_id, session_scope);
+            bounded_join(bounded, &owner, task).await.joined()
+        }
         None => false,
     };
     // Re-join, then let the host's own evidence decide. Root exit is not tree

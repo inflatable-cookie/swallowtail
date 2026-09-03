@@ -103,24 +103,21 @@ route inventory requires for any new route row.
 No shared vocabulary was named, no release artifact changed, and no tag or
 merge was performed.
 
-## Stopped On Scoped-Work Relinquish
+## Scoped-Work Relinquishment
 
-The open guard now owns the whole ordered cleanup — terminate, wait, join the
-pump, release the resource lease, release the credential lease — inside one
-host task, and reports completion through its own signal rather than through a
-join of its handle. Process exit no longer permits a lease release or a
-cleanup-complete result while the pump task is still alive.
+The open guard owns the whole ordered cleanup — terminate, wait, join the pump,
+release the resource lease, release the credential lease — inside one host task,
+and reports completion through its own signal rather than through a join of its
+handle. Process exit alone never permits a lease release or a cleanup-complete
+result while the pump task is still alive.
 
-What remains is ownership of a join handle whose task is still running when the
-caller's deadline expires. `ScopedTaskService` offers only `spawn`, and the
-local host's handle joins on drop, so the three available moves are all wrong:
-dropping blocks the caller past its deadline, waiting breaks the deadline, and
-holding the handle in adapter process state is the detached global work
-Contract 019 forbids. The placeholder is marked as the recorded gap in
-`sdk/guardian/joins.rs` and no cleanup evidence depends on it.
-
-The smallest shared prerequisite is a way for the selected execution host to
-take unfinished scoped work back under its own scope authority and reap it,
-with an outcome that reads relinquished rather than joined. That is a shared
-runtime and contract decision, so card 055 stops here rather than inventing it
-route-locally.
+Ownership of a handle whose task is still running at the caller's deadline was
+the card's recorded stop. Card 060 closed it. The route now transfers such a
+handle through `ScopedTaskService::relinquish`, naming the exact selected
+execution host and the exact scope the task was spawned under, and requires
+`AcceptedForReap`. That outcome is ownership transfer only: it is never
+reported as a join and never strengthens a cleanup outcome, so a transferred
+pump still closes `Failed` on an unconfirmed root. A refused transfer leaves
+ordinary join-and-drop ownership exactly where it was. The host's own outer
+reaper shutdown belongs to the execution-host lifecycle outside the task tree;
+this route neither calls nor claims it.

@@ -14,6 +14,9 @@ use swallowtail_runtime::{HostServices, ProcessOutputChunk, ProcessRequest};
 use task_time::ThreadTaskService;
 
 mod authority;
+mod scenario;
+
+pub use scenario::{SdkScenario, Stall};
 mod process;
 mod script;
 mod task_time;
@@ -26,68 +29,6 @@ pub enum CleanupEvent {
     ProcessWait,
     ResourceRelease,
     CredentialRelease,
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum SdkScenario {
-    /// Open, one streamed turn, and a sidecar-joined graceful close.
-    Complete,
-    /// The sidecar observes its native child still running at close.
-    NativeChildSurvives,
-    /// The sidecar claims an exit it never observed.
-    NativeJoinWithoutObservation,
-    /// One `canUseTool` admission request during the turn.
-    ToolAdmission,
-    /// An admission request for a tool outside the read-only set.
-    UnadmittedToolAdmission,
-    /// More admission requests than the bounded exchange accepts.
-    ToolAdmissionOverflow,
-    /// Interrupt reports a receipt the runtime never advertised.
-    UnadvertisedInterruptReceipt,
-    /// Open reports a non-subscription access profile.
-    AccountApiKeySource,
-    /// Open reports a delegated cloud provider rather than first party.
-    AccountNotFirstParty,
-    /// Open leaks an account identity field.
-    AccountIdentityLeak,
-    /// Open reports a version outside the bound one-point claim.
-    IdentityMismatch,
-    /// Open reports a cwd other than the leased resource root.
-    CwdMismatch,
-    /// Open reports an effective model other than the selected one.
-    ModelMismatch,
-    /// The sidecar accepts open and never answers it.
-    OpenHold,
-    /// The sidecar accepts the query and never answers it.
-    QueryHold,
-    /// Open advertises tools beyond the read-only set.
-    ToolsWidened,
-    /// The stream carries an unqualified event name.
-    UnknownEvent,
-    /// The stream carries invalid JSON.
-    Malformed,
-    /// The stream ends mid-record.
-    Disconnect,
-    /// The sidecar reports a terminal failure.
-    TerminalRecord,
-    /// A tool ends without ever starting.
-    ToolOrderingDrift,
-    /// The sidecar writes an admission request that the turn's own end raced.
-    AdmissionAfterResult,
-}
-
-/// One host service that never answers, so a caller bound is the only thing
-/// that can end the wait.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum Stall {
-    CredentialAcquire,
-    ResourceResolve,
-    ProcessStart,
-    ProcessWrite,
-    ForceStop,
-    /// The pump's own read never ends, so the pump task outlives process exit
-    /// until the test releases it.
-    PumpRead,
 }
 
 #[derive(Clone)]
@@ -106,6 +47,9 @@ pub(super) struct Shared {
     pub(super) credential_acquisitions: AtomicUsize,
     pub(super) cleanup: Mutex<Vec<CleanupEvent>>,
     pub(super) time: Mutex<TimeState>,
+    /// Scopes the fixture host accepted for its own reaping, recorded so tests
+    /// can tell ownership transfer from a join.
+    pub(super) relinquished: Mutex<Option<Arc<Mutex<Vec<String>>>>>,
 }
 
 #[derive(Default)]
@@ -124,6 +68,7 @@ pub(super) struct ProcessState {
     pub(super) holding: bool,
     pub(super) stalling_writes: bool,
     pub(super) pump_released: bool,
+    pub(super) holding_pump: bool,
 }
 
 impl SdkFixtureHost {
@@ -140,6 +85,7 @@ impl SdkFixtureHost {
                     fire_through: None,
                     waiters: Vec::new(),
                 }),
+                relinquished: Mutex::new(None),
             }),
             scenario,
             exit_observable: true,
@@ -208,8 +154,14 @@ impl SdkFixtureHost {
     }
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
+        let (task_service, relinquished) = ThreadTaskService::new(host.clone());
+        *self
+            .shared
+            .relinquished
+            .lock()
+            .expect("SDK fixture relinquish lock poisoned") = Some(relinquished);
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(task_service))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -228,7 +180,35 @@ impl SdkFixtureHost {
             .collect()
     }
 
-    /// Lets a `PumpRead`-stalled pump task finish, so the guard's ordered
+    /// Scopes this host accepted for reaping. Acceptance is ownership
+    /// transfer, never join or cleanup evidence.
+    pub fn relinquished_scopes(&self) -> Vec<String> {
+        self.shared
+            .relinquished
+            .lock()
+            .expect("SDK fixture relinquish lock poisoned")
+            .as_ref()
+            .map(|scopes| {
+                scopes
+                    .lock()
+                    .expect("SDK fixture relinquish lock poisoned")
+                    .clone()
+            })
+            .unwrap_or_default()
+    }
+
+    /// Holds the pump task open from this point on, so it outlives process
+    /// exit until released.
+    pub fn hold_pump(&self) {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .holding_pump = true;
+        self.shared.changed.notify_all();
+    }
+
+    /// Lets a held pump task finish, so the guard's ordered
     /// cleanup can proceed without any further call from the route.
     pub fn release_pump(&self) {
         self.shared

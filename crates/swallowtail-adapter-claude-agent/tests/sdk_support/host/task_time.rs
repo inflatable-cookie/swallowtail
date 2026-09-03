@@ -1,8 +1,9 @@
 use super::super::host::{SdkFixtureHost, Shared};
 use std::sync::{Arc, Mutex};
+use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     BoxFuture, Deadline, DeadlineObservation, JoinedTask, MonotonicInstant, RuntimeFailure,
-    ScopeId, ScopedTaskService, TimeService,
+    ScopeId, ScopedTaskService, TaskRelinquishOutcome, TimeService,
 };
 
 impl TimeService for SdkFixtureHost {
@@ -145,7 +146,26 @@ impl std::future::Future for DeadlineFuture {
     }
 }
 
-pub(super) struct ThreadTaskService;
+/// The fixture's scoped-task authority. It models the real host: an unfinished
+/// handle can only leave the route through exact-host and exact-scope
+/// relinquishment, and acceptance is ownership transfer, never a join.
+pub(super) struct ThreadTaskService {
+    execution_host_id: ExecutionHostId,
+    relinquished: Arc<Mutex<Vec<String>>>,
+}
+
+impl ThreadTaskService {
+    pub(super) fn new(execution_host_id: ExecutionHostId) -> (Self, Arc<Mutex<Vec<String>>>) {
+        let relinquished = Arc::new(Mutex::new(Vec::new()));
+        (
+            Self {
+                execution_host_id,
+                relinquished: Arc::clone(&relinquished),
+            },
+            relinquished,
+        )
+    }
+}
 
 /// Completion state for one fixture task.
 ///
@@ -160,12 +180,17 @@ struct TaskState {
     waiter: Option<std::task::Waker>,
 }
 
-struct ThreadTask(Arc<Mutex<TaskState>>);
+struct ThreadTask {
+    state: Arc<Mutex<TaskState>>,
+    execution_host_id: ExecutionHostId,
+    scope: ScopeId,
+    relinquished: Arc<Mutex<Vec<String>>>,
+}
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
         &self,
-        _scope: ScopeId,
+        scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
         let state = Arc::new(Mutex::new(TaskState::default()));
@@ -178,8 +203,31 @@ impl ScopedTaskService for ThreadTaskService {
                 waiter.wake();
             }
         });
-        Ok(Box::new(ThreadTask(state)))
+        Ok(Box::new(ThreadTask {
+            state,
+            execution_host_id: self.execution_host_id.clone(),
+            scope,
+            relinquished: Arc::clone(&self.relinquished),
+        }))
     }
+
+    fn relinquish(
+        &self,
+        scope: &ScopeId,
+        task: &mut Option<Box<dyn JoinedTask>>,
+    ) -> Result<TaskRelinquishOutcome, RuntimeFailure> {
+        let held = task.as_deref_mut().ok_or_else(fixture_task_failure)?;
+        held.relinquish_to_host(&self.execution_host_id, scope)?;
+        drop(task.take());
+        Ok(TaskRelinquishOutcome::AcceptedForReap)
+    }
+}
+
+fn fixture_task_failure() -> RuntimeFailure {
+    RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+        "swallowtail.fixture_task.unavailable",
+        "Fixture task ownership was already transferred",
+    ))
 }
 
 impl JoinedTask for ThreadTask {
@@ -200,18 +248,38 @@ impl JoinedTask for ThreadTask {
     }
 
     fn is_finished(&self) -> bool {
-        self.0
+        self.state
             .lock()
             .expect("SDK fixture task lock poisoned")
             .finished
     }
 
     fn register_waker(&self, waker: &std::task::Waker) {
-        let mut state = self.0.lock().expect("SDK fixture task lock poisoned");
+        let mut state = self.state.lock().expect("SDK fixture task lock poisoned");
         if state.finished {
             waker.wake_by_ref();
         } else {
             state.waiter = Some(waker.clone());
         }
+    }
+
+    fn relinquish_to_host(
+        &mut self,
+        execution_host_id: &ExecutionHostId,
+        scope: &ScopeId,
+    ) -> Result<(), RuntimeFailure> {
+        // Exact host and exact scope, like the local host. Anything else keeps
+        // ordinary ownership rather than transferring it.
+        if &self.execution_host_id != execution_host_id || &self.scope != scope {
+            return Err(fixture_task_failure());
+        }
+        if self.is_finished() {
+            return Err(fixture_task_failure());
+        }
+        self.relinquished
+            .lock()
+            .expect("SDK fixture relinquish lock poisoned")
+            .push(self.scope.as_str().to_owned());
+        Ok(())
     }
 }

@@ -1,7 +1,7 @@
 //! The close guard: a host task that makes the declared descendant
 //! termination request even when a cooperative close stage never answers.
 
-use super::{Signal, bounded_join};
+use super::{Signal, TaskOwner, bounded_join};
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use std::sync::{Arc, Mutex};
@@ -11,6 +11,8 @@ use swallowtail_runtime::{Deadline, HostServices, JoinedTask, RuntimeFailure, Sc
 /// Guards close: the host termination request happens on the caller's deadline
 /// even if a cooperative stage never answers.
 pub(crate) struct EscalationWatchdog {
+    scope: ScopeId,
+    execution_host_id: swallowtail_core::ExecutionHostId,
     signal: Arc<Signal>,
     task: Mutex<Option<Box<dyn JoinedTask>>>,
 }
@@ -41,7 +43,7 @@ impl EscalationWatchdog {
             .task()
             .expect("validated sidecar task service")
             .spawn(
-                scope,
+                scope.clone(),
                 Box::pin(async move {
                     let mut expiry = time.wait_until(deadline);
                     let mut fired = Box::pin(task_signal.future());
@@ -61,6 +63,8 @@ impl EscalationWatchdog {
                 }),
             )?;
         Ok(Self {
+            scope,
+            execution_host_id: services.execution_host_id().clone(),
             signal,
             task: Mutex::new(Some(task)),
         })
@@ -68,7 +72,11 @@ impl EscalationWatchdog {
 
     /// Asks for the termination request now, then joins the guard task while
     /// the caller's bound allows.
-    pub(crate) async fn terminate(&self, bounded: &crate::sdk::bounded::HostBound) -> bool {
+    pub(crate) async fn terminate(
+        &self,
+        bounded: &crate::sdk::bounded::HostBound,
+        services: &HostServices,
+    ) -> bool {
         self.signal.trigger();
         let task = self
             .task
@@ -76,7 +84,10 @@ impl EscalationWatchdog {
             .expect("SDK close-guard task lock poisoned")
             .take();
         match task {
-            Some(task) => bounded_join(bounded, task).await,
+            Some(task) => {
+                let owner = TaskOwner::new(services, &self.execution_host_id, &self.scope);
+                bounded_join(bounded, &owner, task).await.joined()
+            }
             None => false,
         }
     }

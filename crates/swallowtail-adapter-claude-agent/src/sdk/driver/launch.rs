@@ -96,7 +96,7 @@ impl ClaudeAgentSdkDriver {
         let pump_task = services
             .task()
             .expect("validated sidecar task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))?;
+            .spawn(scope.clone(), Box::pin(async move { pump.pump().await }))?;
         guard.ledger().record_pump(pump_task);
 
         Ok(PendingSession {
@@ -104,6 +104,7 @@ impl ClaudeAgentSdkDriver {
             connection,
             services,
             leased_cwd,
+            session_scope: scope,
         })
     }
 }

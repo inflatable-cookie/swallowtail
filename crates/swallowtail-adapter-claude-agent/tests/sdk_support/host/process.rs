@@ -91,20 +91,17 @@ impl ProcessHandle for SdkFixtureProcess {
                 .process
                 .lock()
                 .expect("SDK fixture state lock poisoned");
-            if held {
-                // The pump task outlives process exit until the test releases
-                // it, which is what a real sidecar transport that has not yet
+            loop {
+                // A held pump outlives process exit until the test releases it,
+                // which is what a real sidecar transport that has not yet
                 // drained looks like.
-                while !state.pump_released {
-                    state = self
-                        .shared
-                        .changed
-                        .wait(state)
-                        .expect("SDK fixture wait lock poisoned");
+                if held || state.holding_pump {
+                    if state.pump_released {
+                        return Ok(None);
+                    }
+                } else if !state.output.is_empty() || state.stopped {
+                    break;
                 }
-                return Ok(None);
-            }
-            while state.output.is_empty() && !state.stopped {
                 state = self
                     .shared
                     .changed

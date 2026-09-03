@@ -41,7 +41,7 @@ enforcement.
 
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
-- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready after card 060 lands
+- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 delivered on PR 188 over the card 060 relinquishment seam
 - [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-052 paused until g05.022 reaches a release boundary
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
@@ -72,7 +72,8 @@ lifecycle closure at 023-024; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision. Milestone 021 is planned and paused. Milestone 022 is
-planned after the card 055 review stop. Milestone 023 is complete after
+planned; card 055 is delivered on the card 060 relinquishment seam and awaits
+review on PR 188. Milestone 023 is complete after
 delivering card 057's tree-completion vocabulary and card 058's caller-bounded
 close seam. Card 059 attacked the remaining boundary and stopped: four native
 counterexamples falsify
@@ -351,7 +352,7 @@ closed the SDK and ACP evidence gates. Contract 019 now requires joined
 descendant-tree cleanup, and Contract 029 records artifact-only authority when
 public source cannot corroborate a package. Card 056's ACP observation is
 complete. g05.024/card 060 closes the later exact-head task ownership gap.
-Card 055 now restacks onto the card 060 merge commit, uses exact-host/scope
+Card 055 is restacked onto the card 060 merge commit, uses exact-host/scope
 relinquishment only for unfinished work at caller expiry, and applies the
 accepted macOS degraded cleanup posture. Native SDK delivery is the priority. ACP
 remains an independently useful portable route rather than an approximation
@@ -361,7 +362,7 @@ hidden behind the SDK identity.
 
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
-- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 and preserved PR 188 are ready after card 060 lands
+- [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 delivered on PR 188 over the card 060 relinquishment seam
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; paused cards 050-052; no tag authority
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 

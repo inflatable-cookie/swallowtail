@@ -1,6 +1,6 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: blocked; route, lifecycle, and 0.3.259 identity delivered on PR 188, blocked on a shared seam for relinquishing unfinished scoped work to the host
+Status: complete; caller-bounded lifecycle on card 060 relinquishment, accepted root-only degraded cleanup, and the `0.3.259` identity on PR 188
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
@@ -77,7 +77,7 @@ preparation; tags; g05.009.
       confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
 - [x] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
 - [x] fake descendants prove nearest-child join alone is insufficient
-- [ ] caller expiry relinquishes unfinished task ownership to the exact host
+- [x] caller expiry relinquishes unfinished task ownership to the exact host
       without blocking, global parking, or strengthening cleanup truth
 - [x] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
 - [x] existing ACP and Claude Code behavior and claims are unchanged
@@ -155,29 +155,11 @@ source-tag axes, every claim id, the `claude-agent.sdk-v1` behavior revision,
 and the QualifiedOnly posture are unchanged, and `0.3.258` becomes unqualified
 rather than a second supported point.
 
-## Stop
-
-One shared prerequisite blocks merge. A caller-bounded operation that must
-return while host-owned scoped work is still running has nowhere correct to put
-that work's join handle. `ScopedTaskService` offers only `spawn`, `JoinedTask`
-offers `join`, `is_finished`, and `register_waker`, and the local host's handle
-joins on drop. Dropping an unfinished handle therefore blocks the caller past
-its own deadline; waiting on it breaks the deadline; and holding it in adapter
-process state is the detached global work Contract 019 forbids.
-
-Nothing in this route's cleanup *evidence* depends on that handle: the open
-guard reports its ordered cleanup through its own completion signal, and close
-reports `RootUnconfirmed` when the pump was not joined. The gap is ownership of
-the handle itself, and it needs a shared decision rather than a route-local
-invention: a way for the selected execution host to take back unfinished scoped
-work under its own scope authority and reap it, with an explicit outcome that
-says relinquished rather than joined. `sdk/guardian/joins.rs` marks the
-placeholder as the recorded gap.
-
 ## Closeout
 
 Delivered as `claude-agent.sdk` in `swallowtail-adapter-claude-agent` on the
-preserved PR 188 identity, restacked onto `027a1f34`, with the exact identity
+preserved PR 188 identity, restacked onto the g05.024 card 060 merge commit
+`6543c905`, with the exact identity
 refreshed to official `0.3.259` and native `2.1.259` under the operator's
 selected exit. No provider contact, login, token read, package installation,
 live turn, release mutation, or tag occurred.
@@ -228,15 +210,23 @@ the sequence, finishing it without any further call from the route.
 Host task joins go through the task seam, not the join. A `JoinedTask::join`
 may block the thread it is polled on, and dropping an unfinished handle joins
 as well, so the route waits on `is_finished`/`register_waker` and joins only a
-task that reports finished. A task still running at the deadline cannot be
-released at all, which is the recorded Stop above.
+task that reports finished. A task still running at the caller's deadline is
+transferred through card 060's `ScopedTaskService::relinquish`, using the exact
+selected execution host and the exact spawn scope. `AcceptedForReap` is
+ownership transfer only: it is never a join and never strengthens cleanup, so a
+transferred pump still closes `Failed` on an unconfirmed root. A refused
+transfer leaves ordinary join-and-drop ownership unchanged. The host's outer
+reaper shutdown stays with the execution-host lifecycle; this route neither
+calls nor claims it.
 
 Adversarial proofs cover a stalled credential acquisition, resource resolution,
 process start, open cleanup, close response, accepted turn with no interrupt
 response, stalled wire write, stalled escalation, and an admission request the
 turn's own end raced, plus barrier tests for both open-guard interleavings and
-real `LocalScopedTaskService` regressions where a stalled host task crosses the
-caller deadline. Records:
+real local-host regressions where a stalled host task crosses the caller
+deadline: exact-host and exact-scope transfer, both mismatch refusals, a
+finished task that still joins, and a public close whose transferred pump keeps
+the exact `Failed` root-unconfirmed truth. Records:
 `../../../logs/2026-09-02-claude-agent-sdk-foundation.md` and
 `../../../logs/2026-09-03-claude-agent-sdk-0-3-259-identity.md`.
 

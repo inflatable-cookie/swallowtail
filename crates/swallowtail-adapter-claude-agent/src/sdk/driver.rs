@@ -61,6 +61,9 @@ pub(super) struct PendingSession {
     pub(super) connection: Arc<SdkConnection>,
     pub(super) services: HostServices,
     pub(super) leased_cwd: String,
+    /// The exact scope the pump task was spawned under, carried so close can
+    /// hand an unfinished pump back to the host that owns it.
+    pub(super) session_scope: swallowtail_runtime::ScopeId,
 }
 
 impl PendingSession {
@@ -81,6 +84,7 @@ impl PendingSession {
             connection: Arc::clone(&self.connection),
             cancellation: handle::SessionCancellation::new(Arc::clone(&active)),
             pump_task: acquired.pump,
+            session_scope: self.session_scope,
             services: self.services,
             resource: acquired.resource,
             credential: acquired.credential,
@@ -130,7 +134,7 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                     // atomic transition. What this open acquired is already
                     // being terminated, so reporting success would be a lie.
                     None => {
-                        let cleaned = guard.fire(&bounded).await;
+                        let cleaned = guard.fire(&bounded, &services).await;
                         Err(if cleaned {
                             open_deadline_elapsed()
                         } else {
@@ -143,7 +147,7 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                     // terminated at the deadline is reported as the deadline,
                     // not as whatever the collapsing connection said next.
                     let expired = bounded.expired() || guard.deadline_fired();
-                    let cleaned = guard.fire(&bounded).await;
+                    let cleaned = guard.fire(&bounded, &services).await;
                     Err(match (expired, cleaned) {
                         (_, false) => open_cleanup_unconfirmed(),
                         (true, true) => open_deadline_elapsed(),
@@ -154,7 +158,7 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                     // The bound expired inside acquisition or startup. The
                     // guard still terminates and releases under host ownership;
                     // this future returns now either way.
-                    let cleaned = guard.fire(&bounded).await;
+                    let cleaned = guard.fire(&bounded, &services).await;
                     Err(if cleaned {
                         open_deadline_elapsed()
                     } else {

@@ -13,35 +13,97 @@
 //! work. The handle itself is held in a slot the bounded wait only borrows, so
 //! expiry never drops it.
 //!
-//! A host that implements neither observation reports `is_finished` as `false`
-//! forever, so every join here reports unjoined. That is the fail-closed
-//! reading: without the observation there is no evidence the task ended, and
-//! this route never reports cleanup truth the host cannot support.
+//! A task still running when the caller's deadline expires is handed back to
+//! the host through [`ScopedTaskService::relinquish`], with the exact execution
+//! host the operation selected and the exact `ScopeId` the task was spawned
+//! under. The host reaps it autonomously. `AcceptedForReap` is
+//! ownership-transfer evidence only: it is never reported as a join and never
+//! strengthens a cleanup outcome. The route makes no claim about, and never
+//! invokes, the host's own outer reaper shutdown — that lifecycle belongs to
+//! the execution host, outside this task tree.
 //!
-//! # Unresolved: no seam for relinquishing unfinished scoped work
-//!
-//! A handle that is still unfinished when the caller's deadline expires has
-//! nowhere correct to go. Dropping it is the blocking join the bound exists to
-//! avoid; waiting on it breaks the bound. `ScopedTaskService` offers only
-//! `spawn`, and `JoinedTask` offers no way to hand ownership back, so the host
-//! cannot take the work back and reap it.
-//!
-//! [`park_unjoined`] is the placeholder for that missing seam and **is not**
-//! host ownership: it is adapter-process state with no autonomous reaper, and
-//! it only releases finished handles when some later expiry parks another one.
-//! Contract 019 forbids exactly this shape. It is recorded as the blocking
-//! prerequisite for card 055 rather than presented as a solution, and no
-//! cleanup evidence depends on it — the guard's ordered cleanup reports itself
-//! through its own completion signal, not through a join of this handle.
+//! A host that offers neither the finished observation nor relinquishment
+//! leaves ordinary join-and-drop ownership in place, and the result is reported
+//! as neither joined nor transferred. That is the fail-closed reading: without
+//! the observation there is no evidence the task ended, and this route never
+//! reports cleanup truth the host cannot support.
 
 use crate::sdk::bounded::HostBound;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll};
-use swallowtail_runtime::JoinedTask;
+use swallowtail_core::ExecutionHostId;
+use swallowtail_runtime::{
+    HostServices, JoinedTask, ScopeId, ScopedTaskService, TaskRelinquishOutcome,
+};
 
 type Slot = Arc<Mutex<Option<Box<dyn JoinedTask>>>>;
+
+/// What actually happened to one scoped task, kept distinct on purpose.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum TaskEvidence {
+    /// The task finished and was joined. The only join evidence here.
+    Joined,
+    /// The owning host accepted the unfinished task for its own reaping. Not a
+    /// join, and never a stronger cleanup outcome.
+    Relinquished,
+    /// Neither happened: ordinary join-and-drop ownership stayed in place.
+    Unresolved,
+}
+
+impl TaskEvidence {
+    /// True only for an actual join.
+    pub(crate) const fn joined(self) -> bool {
+        matches!(self, Self::Joined)
+    }
+}
+
+/// The exact host authority one scoped task was created under.
+pub(crate) struct TaskOwner<'a> {
+    services: &'a HostServices,
+    expected_host: &'a ExecutionHostId,
+    scope: &'a ScopeId,
+}
+
+impl<'a> TaskOwner<'a> {
+    pub(crate) const fn new(
+        services: &'a HostServices,
+        expected_host: &'a ExecutionHostId,
+        scope: &'a ScopeId,
+    ) -> Self {
+        Self {
+            services,
+            expected_host,
+            scope,
+        }
+    }
+
+    /// Transfers an unfinished task to its owning host, through the exact
+    /// selected host and the exact scope it was spawned under. A refusal hands
+    /// the task back: ownership is unchanged, and ordinary join-and-drop rules
+    /// still apply to it.
+    pub(crate) fn transfer(
+        &self,
+        task: Box<dyn JoinedTask>,
+    ) -> Result<TaskRelinquishOutcome, Box<dyn JoinedTask>> {
+        let mut held = Some(task);
+        if self
+            .services
+            .require_execution_host(self.expected_host)
+            .is_err()
+        {
+            return Err(held.take().expect("task was not transferred"));
+        }
+        let Some(service) = self.services.task() else {
+            return Err(held.take().expect("task was not transferred"));
+        };
+        match ScopedTaskService::relinquish(service.as_ref(), self.scope, &mut held) {
+            Ok(outcome) => Ok(outcome),
+            Err(_) => Err(held.take().expect("a refused transfer returns the task")),
+        }
+    }
+}
 
 /// Resolves when the task in the slot reports finished, using only the trait's
 /// non-blocking observation. Dropping this future leaves the handle in the
@@ -70,50 +132,36 @@ impl Future for TaskFinished {
     }
 }
 
-/// Joins `task` inside `bounded`. Reports whether the task was observed
-/// finished and joined cleanly; a task still running at the deadline is
-/// retained under host ownership and reported as unjoined.
-pub(crate) async fn bounded_join(bounded: &HostBound, task: Box<dyn JoinedTask>) -> bool {
+/// Joins `task` inside `bounded`, or hands it to its owning host when the
+/// caller's deadline arrives first.
+pub(crate) async fn bounded_join(
+    bounded: &HostBound,
+    owner: &TaskOwner<'_>,
+    task: Box<dyn JoinedTask>,
+) -> TaskEvidence {
     let slot: Slot = Arc::new(Mutex::new(Some(task)));
     let waited = bounded.run(TaskFinished(Arc::clone(&slot))).await;
-    let Some(task) = slot.lock().expect("SDK task join slot poisoned").take() else {
-        return false;
-    };
+    let held = slot.lock().expect("SDK task join slot poisoned").take();
     if waited.is_none() {
-        park_unjoined(task);
-        return false;
+        let Some(task) = held else {
+            return TaskEvidence::Unresolved;
+        };
+        return match owner.transfer(task) {
+            Ok(TaskRelinquishOutcome::AcceptedForReap) => TaskEvidence::Relinquished,
+            // The host kept ownership where it was. Ordinary join-and-drop
+            // rules apply to the handle, and nothing here is join evidence.
+            Err(_) => TaskEvidence::Unresolved,
+        };
     }
-    task.join().await.is_ok()
-}
-
-/// Handles that outlived a caller deadline, held only because there is nowhere
-/// correct to put them. See the module note: this is the recorded gap, not a
-/// host-ownership mechanism.
-fn parked() -> &'static Mutex<Vec<Box<dyn JoinedTask>>> {
-    static PARKED: OnceLock<Mutex<Vec<Box<dyn JoinedTask>>>> = OnceLock::new();
-    PARKED.get_or_init(|| Mutex::new(Vec::new()))
-}
-
-fn park_unjoined(task: Box<dyn JoinedTask>) {
-    let finished = {
-        let mut parked = parked()
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let mut finished = Vec::new();
-        let mut index = 0;
-        while index < parked.len() {
-            if parked[index].is_finished() {
-                finished.push(parked.remove(index));
-            } else {
-                index += 1;
-            }
-        }
-        parked.push(task);
-        finished
+    // Finished: this join cannot block on task work.
+    let Some(task) = held else {
+        return TaskEvidence::Unresolved;
     };
-    // Released outside the lock: a handle drop is a join, and no join should
-    // ever run while this lock is held.
-    drop(finished);
+    if task.join().await.is_ok() {
+        TaskEvidence::Joined
+    } else {
+        TaskEvidence::Unresolved
+    }
 }
 
 #[cfg(test)]

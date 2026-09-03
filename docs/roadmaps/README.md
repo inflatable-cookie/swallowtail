@@ -15,14 +15,14 @@ shape.
 
 ## Next Task
 
-After g05.024 card 060 lands, restack preserved PR 188 onto that exact `main`
-merge commit. Keep its accepted SDK identity, model, tool, credential, and wire
-work. Replace the caller-deadline task parking/drop path with the exact selected
-host's scoped-task relinquishment; `AcceptedForReap` is not joined or cleanup
-success. Preserve the accepted macOS root-only `Degraded` posture and
-`OwnedTreeEmpty` as the sole basis for `Clean`. g05.021 and cards 050-052 remain
-planned and paused; release evidence must restart against the later exact
-source head.
+Review PR 188 at its exact head. Card 055 is restacked onto the g05.024 card
+060 merge commit and now transfers an unfinished scoped task through the exact
+selected host and spawn scope at caller expiry; `AcceptedForReap` is neither a
+join nor cleanup success, and the outer reaper shutdown stays with the
+execution-host lifecycle. The accepted macOS root-only `Degraded` posture holds,
+with `OwnedTreeEmpty` still the sole basis for `Clean`. g05.021 and cards
+050-052 remain planned and paused; release evidence must restart against the
+later exact source head.
 
 ## Standing Lanes
 

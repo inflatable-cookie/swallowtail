@@ -189,9 +189,14 @@ through the join. `JoinedTask::join` may be a blocking observation — the local
 host's handle owns its worker thread, and dropping an unfinished handle joins
 too — so racing a join future against a deadline is not a bound. The route
 waits on `is_finished`/`register_waker` instead and calls `join` only once the
-task reports finished. A task still running at the deadline is retained rather
-than dropped: retention keeps host ownership, where dropping would be the
-blocking join the bound exists to avoid.
+task reports finished. A task still running at the deadline is handed back to
+the host through `ScopedTaskService::relinquish`, with the exact selected
+execution host and the exact scope it was spawned under. `AcceptedForReap` is
+ownership-transfer evidence only: it is never reported as a join and never
+strengthens a cleanup outcome, so a transferred pump still leaves close with an
+unconfirmed root. A refused transfer leaves ordinary join-and-drop ownership
+where it was. The host's own reaper shutdown belongs to the execution-host
+lifecycle outside this task tree; the route neither calls nor claims it.
 
 Ambient behavior is suppressed by construction rather than by omission:
 setting sources are empty, skills are an explicit empty list (omission is

@@ -22,7 +22,7 @@ pub(super) fn spawn_turn_deadline(
     connection: Arc<SdkConnection>,
     turn: Arc<SdkActiveTurn>,
     deadline: Deadline,
-) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+) -> Result<(Box<dyn JoinedTask>, ScopeId), RuntimeFailure> {
     let mut wait = services
         .time()
         .cloned()
@@ -39,11 +39,12 @@ pub(super) fn spawn_turn_deadline(
             "Claude Agent SDK sidecar turn scope was invalid",
         )
     })?;
+    let spawn_scope = scope.clone();
     services
         .task()
         .expect("validated sidecar task service")
         .spawn(
-            scope,
+            spawn_scope,
             Box::pin(async move {
                 let timed_out = poll_fn(|context| {
                     if finished.as_mut().poll(context).is_ready() {
@@ -73,11 +74,13 @@ pub(super) fn spawn_turn_deadline(
                 }
             }),
         )
+        .map(|task| (task, scope))
 }
 
 pub(super) async fn reap_finished(
     active: &ActiveSlot,
     services: &HostServices,
+    execution_host_id: &swallowtail_core::ExecutionHostId,
     deadline: Deadline,
 ) {
     let bounded = crate::sdk::bounded::HostBound::new(
@@ -104,6 +107,11 @@ pub(super) async fn reap_finished(
         // Bounded by the incoming turn's own deadline: joining a task that has
         // not finished would otherwise block this thread inside the join on
         // hosts whose handles own their worker.
-        let _ = crate::sdk::guardian::bounded_join(&bounded, task).await;
+        let owner = crate::sdk::guardian::TaskOwner::new(
+            services,
+            execution_host_id,
+            &active.deadline_scope,
+        );
+        let _ = crate::sdk::guardian::bounded_join(&bounded, &owner, task).await;
     }
 }

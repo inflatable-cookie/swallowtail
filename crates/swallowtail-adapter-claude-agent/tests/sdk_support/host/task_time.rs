@@ -149,9 +149,11 @@ pub(super) struct ThreadTaskService;
 
 /// Completion state for one fixture task.
 ///
-/// The join must be a real future: a guard task that hangs on a stalled host
-/// service has to be race-able against the caller's deadline, and a blocking
-/// `JoinHandle::join` inside `poll` would deadlock the very bound under test.
+/// `join` here is deliberately blocking, exactly like the local host's own
+/// handle: the only non-blocking observation a fixture task offers is
+/// `is_finished`/`register_waker`. A route that polls a join before the task
+/// reports finished fails loudly here instead of passing against a friendlier
+/// fake than production.
 #[derive(Default)]
 struct TaskState {
     finished: bool,
@@ -159,25 +161,6 @@ struct TaskState {
 }
 
 struct ThreadTask(Arc<Mutex<TaskState>>);
-
-struct ThreadTaskJoin(Arc<Mutex<TaskState>>);
-
-impl std::future::Future for ThreadTaskJoin {
-    type Output = Result<(), RuntimeFailure>;
-
-    fn poll(
-        self: std::pin::Pin<&mut Self>,
-        context: &mut std::task::Context<'_>,
-    ) -> std::task::Poll<Self::Output> {
-        let mut state = self.0.lock().expect("SDK fixture task lock poisoned");
-        if state.finished {
-            std::task::Poll::Ready(Ok(()))
-        } else {
-            state.waiter = Some(context.waker().clone());
-            std::task::Poll::Pending
-        }
-    }
-}
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
@@ -201,6 +184,34 @@ impl ScopedTaskService for ThreadTaskService {
 
 impl JoinedTask for ThreadTask {
     fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
-        Box::pin(ThreadTaskJoin(self.0))
+        Box::pin(async move {
+            // Blocking on purpose. The bound must be spent on the finished
+            // observation, never on this.
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+            while !self.is_finished() {
+                assert!(
+                    std::time::Instant::now() < deadline,
+                    "a fixture task join blocked: the route polled join before the task finished"
+                );
+                std::thread::yield_now();
+            }
+            Ok(())
+        })
+    }
+
+    fn is_finished(&self) -> bool {
+        self.0
+            .lock()
+            .expect("SDK fixture task lock poisoned")
+            .finished
+    }
+
+    fn register_waker(&self, waker: &std::task::Waker) {
+        let mut state = self.0.lock().expect("SDK fixture task lock poisoned");
+        if state.finished {
+            waker.wake_by_ref();
+        } else {
+            state.waiter = Some(waker.clone());
+        }
     }
 }

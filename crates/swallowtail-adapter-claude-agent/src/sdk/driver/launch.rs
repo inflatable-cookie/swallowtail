@@ -43,11 +43,14 @@ impl ClaudeAgentSdkDriver {
                 plan.endpoint_audience().clone(),
             )
             .await?;
-        guard.record_credential(credential);
+        guard.ledger().record_credential(credential);
 
         // Only a delegated lease is admissible: this route never receives,
         // stores, or forwards a subscription credential value.
-        if !guard.credential_matches(&scope, &self.credential, plan.endpoint_audience()) {
+        if !guard
+            .ledger()
+            .credential_matches(&scope, &self.credential, plan.endpoint_audience())
+        {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.credential_lease_rejected",
                 "Claude Agent SDK sidecar requires a matching delegated credential lease",
@@ -72,7 +75,7 @@ impl ClaudeAgentSdkDriver {
             .as_driver_value()
             .to_owned();
         validate_session_resource_lease(access_policy, &working_resource, &resource)?;
-        guard.record_resource(resource);
+        guard.ledger().record_resource(resource);
 
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
@@ -86,7 +89,7 @@ impl ClaudeAgentSdkDriver {
                 .start(scope.clone(), process_request)
                 .await?,
         );
-        guard.record_process(Arc::clone(&process));
+        guard.ledger().record_process(Arc::clone(&process));
 
         let connection = SdkConnection::new(Arc::clone(&process), services.clone());
         let pump = Arc::clone(&connection);
@@ -94,7 +97,7 @@ impl ClaudeAgentSdkDriver {
             .task()
             .expect("validated sidecar task service")
             .spawn(scope, Box::pin(async move { pump.pump().await }))?;
-        guard.record_pump(pump_task);
+        guard.ledger().record_pump(pump_task);
 
         Ok(PendingSession {
             request_id,

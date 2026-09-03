@@ -1,7 +1,7 @@
 //! The close guard: a host task that makes the declared descendant
 //! termination request even when a cooperative close stage never answers.
 
-use super::Signal;
+use super::{Signal, bounded_join};
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use std::sync::{Arc, Mutex};
@@ -76,10 +76,7 @@ impl EscalationWatchdog {
             .expect("SDK close-guard task lock poisoned")
             .take();
         match task {
-            Some(task) => bounded
-                .run(task.join())
-                .await
-                .is_some_and(|joined| joined.is_ok()),
+            Some(task) => bounded_join(bounded, task).await,
             None => false,
         }
     }

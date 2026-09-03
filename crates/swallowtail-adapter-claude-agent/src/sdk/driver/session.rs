@@ -7,6 +7,7 @@ use crate::sdk::bounded::HostBound;
 use crate::sdk::close::SidecarNativeJoin;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
+use crate::sdk::guardian::bounded_join;
 use crate::sdk::turn::SdkActiveTurn;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::{Value, json};
@@ -226,7 +227,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 if let Some(mut active) = active
                     && let Some(task) = active.deadline_task.take()
                 {
-                    let _ = bounded.run(task.join()).await;
+                    let _ = bounded_join(&bounded, task).await;
                 }
                 let state = close::close_tree(
                     &self.connection,

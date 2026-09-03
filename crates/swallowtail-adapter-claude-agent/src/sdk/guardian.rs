@@ -9,21 +9,26 @@
 //! explicit signal or the caller's deadline, and does nothing at all once the
 //! success path has claimed what it guards. Nothing here invents a duration:
 //! the deadline is the caller's own, observed through the host `TimeService`.
+//!
+//! Claim and cleanup are one atomic choice made under a single lock; see
+//! [`ledger`] for why three separate pieces of state cannot express it.
 
 use crate::sdk::failure::failure;
+pub(crate) use joins::{bounded_join, join_if_finished};
+pub(crate) use ledger::Acquisitions;
+pub(crate) use ledger::RecordingLease;
+use ledger::{DeadlineFlag, GuardLedger};
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 pub(crate) use watchdog::EscalationWatchdog;
 
+mod joins;
+mod ledger;
 mod watchdog;
 
-use swallowtail_runtime::{
-    CredentialLease, Deadline, HostServices, JoinedTask, ProcessHandle, ResourceLease,
-    RuntimeFailure, ScopeId,
-};
+use swallowtail_runtime::{Deadline, HostServices, JoinedTask, RuntimeFailure, ScopeId};
 
 #[derive(Default)]
 struct SignalState {
@@ -68,40 +73,13 @@ impl Future for SignalFuture {
     }
 }
 
-/// Everything the open path has acquired so far.
-///
-/// Recorded as each acquisition succeeds, so cleanup covers a partial open, not
-/// only a complete one.
-#[derive(Default)]
-pub(crate) struct Acquisitions {
-    pub(crate) credential: Option<CredentialLease>,
-    pub(crate) resource: Option<ResourceLease>,
-    pub(crate) process: Option<Arc<dyn ProcessHandle>>,
-    pub(crate) pump: Option<Box<dyn JoinedTask>>,
-}
-
-impl Acquisitions {
-    fn take(&mut self) -> Self {
-        Self {
-            credential: self.credential.take(),
-            resource: self.resource.take(),
-            process: self.process.take(),
-            pump: self.pump.take(),
-        }
-    }
-}
-
 /// Guards one open attempt: on the caller's deadline, or on an explicit
 /// failure signal, it terminates whatever the open path had acquired and
 /// releases the leases in contract order.
 pub(crate) struct OpenGuard {
-    ledger: Arc<Mutex<Acquisitions>>,
+    ledger: Arc<GuardLedger>,
     signal: Arc<Signal>,
-    claimed: Arc<AtomicBool>,
-    /// Set when the guard woke on the caller's deadline rather than on the
-    /// failure signal, so the open path can report the deadline as the cause
-    /// instead of whatever the collapsing connection said next.
-    deadline_fired: Arc<AtomicBool>,
+    deadline: Arc<DeadlineFlag>,
     // Behind a mutex so the guard stays `Sync`: the open future holds a
     // reference to it across awaits.
     task: Mutex<Option<Box<dyn JoinedTask>>>,
@@ -109,16 +87,17 @@ pub(crate) struct OpenGuard {
 
 impl OpenGuard {
     /// Arms the guard before the first acquisition, so nothing can be acquired
-    /// outside its reach.
+    /// outside its reach. The returned lease must be held by the open future
+    /// itself: dropping it is what tells cleanup that no further acquisition
+    /// can arrive.
     pub(crate) fn arm(
         services: &HostServices,
         request_id: &str,
         deadline: Deadline,
-    ) -> Result<Self, RuntimeFailure> {
-        let ledger: Arc<Mutex<Acquisitions>> = Arc::new(Mutex::new(Acquisitions::default()));
+    ) -> Result<(Self, RecordingLease), RuntimeFailure> {
+        let (ledger, lease) = GuardLedger::new();
         let signal = Arc::new(Signal::default());
-        let claimed = Arc::new(AtomicBool::new(false));
-        let deadline_fired = Arc::new(AtomicBool::new(false));
+        let fired = Arc::new(DeadlineFlag::default());
         let scope =
             ScopeId::new(format!("claude-agent-sdk:open-guard:{request_id}")).map_err(|_| {
                 failure(
@@ -133,8 +112,7 @@ impl OpenGuard {
         let task_services = services.clone();
         let task_ledger = Arc::clone(&ledger);
         let task_signal = Arc::clone(&signal);
-        let task_claimed = Arc::clone(&claimed);
-        let task_deadline_fired = Arc::clone(&deadline_fired);
+        let task_fired = Arc::clone(&fired);
         let task = services
             .task()
             .expect("validated sidecar task service")
@@ -142,81 +120,56 @@ impl OpenGuard {
                 scope,
                 Box::pin(async move {
                     let mut expiry = time.wait_until(deadline);
-                    let mut fired = Box::pin(task_signal.future());
+                    let mut signalled = Box::pin(task_signal.future());
                     std::future::poll_fn(|context| {
-                        if fired.as_mut().poll(context).is_ready() {
+                        if signalled.as_mut().poll(context).is_ready() {
                             Poll::Ready(())
                         } else if expiry.as_mut().poll(context).is_ready() {
-                            task_deadline_fired.store(true, Ordering::SeqCst);
+                            task_fired.set();
                             Poll::Ready(())
                         } else {
                             Poll::Pending
                         }
                     })
                     .await;
-                    if task_claimed.load(Ordering::SeqCst) {
+                    // One atomic choice: either open already owns what it
+                    // acquired, or this guard does.
+                    if !task_ledger.begin_cleanup() {
                         return;
                     }
-                    let acquired = task_ledger
-                        .lock()
-                        .expect("SDK open-guard ledger lock poisoned")
-                        .take();
+                    let acquired = task_ledger.take_for_cleanup().await;
                     release(acquired, &task_services).await;
                 }),
             )?;
-        Ok(Self {
-            ledger,
-            signal,
-            claimed,
-            deadline_fired,
-            task: Mutex::new(Some(task)),
-        })
+        Ok((
+            Self {
+                ledger,
+                signal,
+                deadline: fired,
+                task: Mutex::new(Some(task)),
+            },
+            lease,
+        ))
     }
 
-    pub(crate) fn record_credential(&self, lease: CredentialLease) {
-        self.ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned")
-            .credential = Some(lease);
-    }
-
-    pub(crate) fn record_resource(&self, lease: ResourceLease) {
-        self.ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned")
-            .resource = Some(lease);
-    }
-
-    pub(crate) fn record_process(&self, process: Arc<dyn ProcessHandle>) {
-        self.ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned")
-            .process = Some(process);
-    }
-
-    pub(crate) fn record_pump(&self, pump: Box<dyn JoinedTask>) {
-        self.ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned")
-            .pump = Some(pump);
+    pub(crate) fn ledger(&self) -> &Arc<GuardLedger> {
+        &self.ledger
     }
 
     /// Reports whether the caller's deadline, rather than a failure, released
     /// this guard.
     pub(crate) fn deadline_fired(&self) -> bool {
-        self.deadline_fired.load(Ordering::SeqCst)
+        self.deadline.fired()
     }
 
-    /// Takes ownership back on the success path. The guard task then exits
-    /// without touching anything.
-    pub(crate) fn claim(&self) -> Acquisitions {
-        self.claimed.store(true, Ordering::SeqCst);
-        let acquired = self
-            .ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned")
-            .take();
-        self.signal.trigger();
+    /// Takes ownership back on the success path. `None` means cleanup won the
+    /// transition, so open must not report success. The guard task then exits
+    /// without touching anything when a claim succeeds.
+    pub(crate) fn claim(&self) -> Option<Acquisitions> {
+        let acquired = self.ledger.claim();
+        if acquired.is_some() {
+            self.signal.trigger();
+        }
         acquired
     }
 
@@ -231,32 +184,9 @@ impl OpenGuard {
             .expect("SDK open-guard task lock poisoned")
             .take();
         match task {
-            Some(task) => bounded
-                .run(task.join())
-                .await
-                .is_some_and(|joined| joined.is_ok()),
+            Some(task) => bounded_join(bounded, task).await,
             None => true,
         }
-    }
-
-    /// Validates the recorded credential lease without removing it, so a
-    /// rejected lease is still released by the guard rather than by the caller.
-    pub(crate) fn credential_matches(
-        &self,
-        scope: &ScopeId,
-        reference: &swallowtail_core::CredentialRef,
-        audience: &swallowtail_core::EndpointAudience,
-    ) -> bool {
-        let ledger = self
-            .ledger
-            .lock()
-            .expect("SDK open-guard ledger lock poisoned");
-        matches!(ledger.credential, Some(CredentialLease::Delegated(_)))
-            && ledger.credential.as_ref().is_some_and(|lease| {
-                lease.scope() == scope
-                    && lease.reference() == reference
-                    && lease.audience() == audience
-            })
     }
 }
 
@@ -266,8 +196,11 @@ async fn release(mut acquired: Acquisitions, services: &HostServices) {
         let _ = process.force_stop().await;
         let _ = process.wait().await;
     }
+    // The pump is joined only if it already finished. A pump still blocked on a
+    // stopped sidecar's transport must not hold the leases below hostage, and
+    // its handle stays owned rather than dropped.
     if let Some(pump) = acquired.pump.take() {
-        let _ = pump.join().await;
+        let _ = join_if_finished(pump).await;
     }
     if let (Some(lease), Some(service)) = (acquired.resource.take(), services.working_resource()) {
         let _ = service.release(lease).await;

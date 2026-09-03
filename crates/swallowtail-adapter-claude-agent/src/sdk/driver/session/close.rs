@@ -16,7 +16,7 @@ use super::{CLOSE_JOIN_BOUND_MS, native_join};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::close::ClaudeAgentSdkCloseState;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::guardian::EscalationWatchdog;
+use crate::sdk::guardian::{EscalationWatchdog, bounded_join};
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::json;
 use std::sync::Arc;
@@ -80,10 +80,7 @@ pub(super) async fn close_tree(
     }
 
     let joined = match pump_task {
-        Some(task) => bounded
-            .run(task.join())
-            .await
-            .is_some_and(|joined| joined.is_ok()),
+        Some(task) => bounded_join(bounded, task).await,
         None => false,
     };
     // Re-join, then let the host's own evidence decide. Root exit is not tree

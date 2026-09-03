@@ -218,3 +218,37 @@ fn an_admission_request_the_turn_end_raced_is_denied_rather_than_fatal() {
         "a raced admission must not turn close into a failure, got {outcome:?}"
     );
 }
+
+#[test]
+fn a_stalled_open_returns_on_the_deadline_against_the_real_local_task_host() {
+    // The same adversarial open, but the guard runs on `LocalScopedTaskService`
+    // rather than the fixture's cooperative task seam. That host's handle owns
+    // its worker thread: joining it blocks, and so does dropping it. If the
+    // route ever waits on a join instead of the finished observation, this
+    // public operation stops returning inside its deadline.
+    let host = host_id("claude-agent-sdk.fixture.local-tasks");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete).stalling(Stall::ProcessStart);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services_with_local_tasks(host);
+    fixture.fire_deadlines();
+
+    let started = std::time::Instant::now();
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("a stalled process start must fail on the host deadline");
+    };
+    let elapsed = started.elapsed();
+
+    assert!(
+        [
+            "swallowtail.claude-agent.sdk.open_deadline_elapsed",
+            "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
+        ]
+        .contains(&error.diagnostic().code()),
+        "unexpected open expiry diagnostic {}",
+        error.diagnostic().code()
+    );
+    assert!(
+        elapsed < std::time::Duration::from_secs(5),
+        "open returned only after {elapsed:?}, so a real local join blocked it"
+    );
+}

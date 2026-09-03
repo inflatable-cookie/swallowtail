@@ -166,7 +166,10 @@ bound covers the return, not merely the noticing.
   guard the instant it is acquired, so expiry can drop the public future without
   stranding a partial open: the guard still terminates and releases, and the
   caller sees `open_deadline_elapsed`, or `open_cleanup_unconfirmed` when
-  cleanup could not be confirmed inside the same bound.
+  cleanup could not be confirmed inside the same bound. Claim and cleanup are
+  one atomic transition under a single lock, and cleanup takes the ledger only
+  after the open future can no longer record, so a recording cannot land on the
+  far side of the take and open cannot report success once cleanup has won.
 - `start_turn` races the correlated query response against the turn deadline,
   so a sidecar that stops answering cannot hold the public future open.
 - Turn cancellation bounds both halves against the turn deadline: the wire
@@ -180,6 +183,15 @@ bound covers the return, not merely the noticing.
 - `close` takes the caller's `SessionCleanupRequest`. One deadline covers turn
   resolution, interruption, the close command, host escalation, the pump join,
   and both lease releases. No stage restarts it, and expiry returns failure.
+
+Joining a host task is itself bounded through the task seam rather than
+through the join. `JoinedTask::join` may be a blocking observation — the local
+host's handle owns its worker thread, and dropping an unfinished handle joins
+too — so racing a join future against a deadline is not a bound. The route
+waits on `is_finished`/`register_waker` instead and calls `join` only once the
+task reports finished. A task still running at the deadline is retained rather
+than dropped: retention keeps host ownership, where dropping would be the
+blocking join the bound exists to avoid.
 
 Ambient behavior is suppressed by construction rather than by omission:
 setting sources are empty, skills are an explicit empty list (omission is

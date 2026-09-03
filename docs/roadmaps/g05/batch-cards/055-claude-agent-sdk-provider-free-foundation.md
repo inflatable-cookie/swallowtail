@@ -171,7 +171,10 @@ open deadline. A host-owned guard is armed before the first acquisition and
 records every lease, process, and task as it is taken, so expiry can drop the
 public future without stranding a partial open: the guard still terminates and
 releases, and the caller sees the deadline rather than the collapsing
-connection's next error. Start-turn races the correlated query response against
+connection's next error. Claim and cleanup are a single atomic transition, and
+cleanup takes the ledger only once the open future can no longer record, so
+neither a late recording nor a boundary-time readiness can leave an acquisition
+orphaned or let open report success over a terminated process. Start-turn races the correlated query response against
 the turn deadline. Turn cancellation bounds both the wire write and the receipt;
 session cancellation performs no host call at all, because that seam carries no
 caller deadline, and bounded close owns the termination instead. An accepted
@@ -195,10 +198,18 @@ request the sidecar had already written when the turn ended is denied on the
 wire instead, so the interrupt and close that follow still have a usable
 connection.
 
+Host task joins go through the task seam, not the join. A `JoinedTask::join`
+may block the thread it is polled on, and dropping an unfinished handle joins
+as well, so the route waits on `is_finished`/`register_waker` and joins only a
+task that reports finished. A task still running at the deadline is retained
+under host ownership rather than dropped.
+
 Adversarial proofs cover a stalled credential acquisition, resource resolution,
 process start, open cleanup, close response, accepted turn with no interrupt
 response, stalled wire write, stalled escalation, and an admission request the
-turn's own end raced. Records:
+turn's own end raced, plus barrier tests for both open-guard interleavings and
+real `LocalScopedTaskService` regressions where a stalled host task crosses the
+caller deadline. Records:
 `../../../logs/2026-09-02-claude-agent-sdk-foundation.md` and
 `../../../logs/2026-09-03-claude-agent-sdk-0-3-259-identity.md`.
 

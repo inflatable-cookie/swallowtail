@@ -114,16 +114,30 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
             // process, and task the open path takes is recorded in the guard,
             // so the caller's deadline can drop this future at any point
             // without stranding what was already acquired.
-            let guard = OpenGuard::arm(&services, request.request_id().as_str(), deadline)?;
+            // The lease travels inside the bounded future: dropping that
+            // future, however it ends, is what tells cleanup that no further
+            // acquisition can arrive.
+            let (guard, lease) =
+                OpenGuard::arm(&services, request.request_id().as_str(), deadline)?;
             let opened = bounded
-                .run(self.acquire_and_start(&plan, &request, services.clone(), &guard))
+                .run(self.acquire_and_start(&plan, &request, services.clone(), &guard, lease))
                 .await;
             match opened {
-                Some(Ok((pending, readiness))) => {
-                    let acquired = guard.claim();
-                    Ok(Box::new(pending.into_handle(&plan, readiness, acquired))
-                        as Box<dyn InteractiveSessionHandle>)
-                }
+                Some(Ok((pending, readiness))) => match guard.claim() {
+                    Some(acquired) => Ok(Box::new(pending.into_handle(&plan, readiness, acquired))
+                        as Box<dyn InteractiveSessionHandle>),
+                    // Readiness landed on the boundary and cleanup won the one
+                    // atomic transition. What this open acquired is already
+                    // being terminated, so reporting success would be a lie.
+                    None => {
+                        let cleaned = guard.fire(&bounded).await;
+                        Err(if cleaned {
+                            open_deadline_elapsed()
+                        } else {
+                            open_cleanup_unconfirmed()
+                        })
+                    }
+                },
                 Some(Err(error)) => {
                     // A failure that only happened because the guard already
                     // terminated at the deadline is reported as the deadline,
@@ -181,7 +195,11 @@ impl ClaudeAgentSdkDriver {
         request: &OpenSessionRequest,
         services: HostServices,
         guard: &OpenGuard,
+        lease: crate::sdk::guardian::RecordingLease,
     ) -> Result<(PendingSession, startup::SessionReadiness), RuntimeFailure> {
+        // Held for exactly this future's lifetime, including an early return or
+        // a drop at the caller's deadline.
+        let _recording = lease;
         let pending = self
             .spawn_session(
                 plan,

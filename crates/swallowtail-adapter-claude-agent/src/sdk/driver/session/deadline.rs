@@ -90,6 +90,8 @@ pub(super) async fn reap_finished(active: &ActiveSlot) {
     if let Some(mut active) = finished
         && let Some(task) = active.deadline_task.take()
     {
-        let _ = task.join().await;
+        // Joining a task that has not finished would block this thread inside
+        // the join itself on hosts whose handles own their worker.
+        let _ = crate::sdk::guardian::join_if_finished(task).await;
     }
 }

@@ -196,6 +196,13 @@ impl SdkFixtureHost {
         self
     }
 
+    /// Services whose task seam is the real local host's, so a guard task runs
+    /// behind a handle that owns its worker thread and joins on drop.
+    pub fn services_with_local_tasks(&self, host: ExecutionHostId) -> HostServices {
+        let task = swallowtail_host_local::LocalScopedTaskService::new(host.clone());
+        self.services(host).with_task(Arc::new(task))
+    }
+
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService))

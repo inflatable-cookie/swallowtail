@@ -158,8 +158,9 @@ The containment change forward-reverts PR 188's tree delta and withdraws
 `claude-agent.sdk`. PR 192/card 060 remains intact: `AcceptedForReap` is still
 transfer only, never join or cleanup success. Card 055 cannot resume until
 g05.025 card 061 establishes non-fallible reservation/reapable-task authority
-before provider work. Card 061 is implemented on an unmerged branch, so this
-card remains frozen pending independent exact-head review and merge. Re-entry
+before provider work. PR 195 is repaired after rejected exact-head review and
+awaits independent exact-head re-review and merge, so this card remains frozen.
+Re-entry
 then uses a fresh branch from canonical main and
 retains the whole ordered guardian cleanup continuation through terminal lease
 release. The `v0.4.0` release lane remains frozen through that later SDK

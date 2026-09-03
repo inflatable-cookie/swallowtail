@@ -558,8 +558,10 @@ Crate status:
   selected-host lifecycle owns every lane without adapter-global state.
   Task-service clones retain only weak authority. Explicit host shutdown
   outside the task tree closes admission, waits issued reservations and bound
-  tasks to settle, then joins all reapers while ordinary join/drop ownership
-  stays unchanged.
+  tasks to settle, then joins all reapers. A reserved join transfers the worker
+  to its lane before returning a cancellable observation future, so dropping an
+  unpolled or pending future cannot detach the worker or clear shutdown.
+  Ordinary unreserved join/drop ownership stays unchanged.
   `LocalHostServices` composes the exact supported ports under
   one host identity, the local watcher service
   owns approved process work through terminal and joined state, installed

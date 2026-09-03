@@ -92,12 +92,25 @@ impl JoinedTask for LocalJoinedTask {
     fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
         let worker = self.worker.take();
         let reaped = Arc::clone(&self.reaped);
-        let reap_permit = self.reap_permit.take();
-        Box::pin(async move {
-            let outcome = reap_worker(worker, &reaped);
+        let Some(reap_permit) = self.reap_permit.take() else {
+            return Box::pin(async move { reap_worker(worker, &reaped) });
+        };
+        let Some(worker) = worker else {
             drop(reap_permit);
-            outcome
-        })
+            return Box::pin(async move { reap_worker(None, &reaped) });
+        };
+        match reap_permit.accept_for_join(worker, Arc::clone(&reaped)) {
+            Ok(join) => join.into_future(),
+            Err((_handoff_error, worker, reap_permit)) => {
+                // A completed task may settle its reservation just before join.
+                // Join it before returning so even an unpolled future cannot
+                // discard a live worker. A failed reserved lane uses the same
+                // ownership-preserving fallback.
+                let outcome = reap_worker(Some(worker), &reaped);
+                drop(reap_permit);
+                Box::pin(async move { outcome })
+            }
+        }
     }
 
     fn is_finished(&self) -> bool {

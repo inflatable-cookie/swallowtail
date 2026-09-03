@@ -101,7 +101,9 @@ pub trait ScopedTaskService: Send + Sync {
     /// Starts `task` only after binding its host-issued reap reservation.
     ///
     /// The reservation supplies the exact operation scope. A foreign, released,
-    /// or otherwise invalid grant fails closed before `task` is polled.
+    /// or otherwise invalid grant fails closed before `task` is polled. Once
+    /// bound, cancelling a later join future must not discard the live task or
+    /// release its host shutdown barrier.
     fn spawn_reapable(
         &self,
         _reservation: Box<dyn TaskReapReservation>,

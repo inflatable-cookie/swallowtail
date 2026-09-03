@@ -4,120 +4,11 @@ use std::sync::{Arc, Condvar, Mutex, mpsc};
 use std::thread::{self, JoinHandle};
 use swallowtail_runtime::RuntimeFailure;
 
-enum ReapCommand {
-    Release,
-    Reap {
-        worker: JoinHandle<()>,
-        reaped: Arc<AtomicBool>,
-    },
-}
+mod join;
+mod permit;
 
-pub(super) struct ReapPermit {
-    supervisor: Arc<ReaperSupervisor>,
-    state: Arc<Mutex<ReapPermitState>>,
-}
-
-pub(super) struct ReapCompletion {
-    state: Arc<Mutex<ReapPermitState>>,
-}
-
-enum ReapPermitState {
-    Live(mpsc::Sender<ReapCommand>),
-    Completed,
-    HandedOff,
-}
-
-impl ReapPermit {
-    pub(super) fn completion(&self) -> ReapCompletion {
-        ReapCompletion {
-            state: Arc::clone(&self.state),
-        }
-    }
-
-    pub(super) fn belongs_to(&self, supervisor: &Arc<ReaperSupervisor>) -> bool {
-        Arc::ptr_eq(&self.supervisor, supervisor)
-    }
-
-    pub(super) fn accept(
-        self,
-        worker: JoinHandle<()>,
-        reaped: Arc<AtomicBool>,
-    ) -> Result<(), (RuntimeFailure, JoinHandle<()>, Self)> {
-        let sender = {
-            let mut state = self
-                .state
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner);
-            match std::mem::replace(&mut *state, ReapPermitState::HandedOff) {
-                ReapPermitState::Live(sender) => sender,
-                ReapPermitState::Completed => {
-                    *state = ReapPermitState::Completed;
-                    drop(state);
-                    return Err((
-                        task_failure(
-                            "swallowtail.local_task.already_finished",
-                            "Finished local tasks must use ordinary join",
-                        ),
-                        worker,
-                        self,
-                    ));
-                }
-                ReapPermitState::HandedOff => {
-                    unreachable!("reap permit cannot be accepted twice")
-                }
-            }
-        };
-        match sender.send(ReapCommand::Reap { worker, reaped }) {
-            Ok(()) => Ok(()),
-            Err(mpsc::SendError(ReapCommand::Reap { worker, .. })) => {
-                *self
-                    .state
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                    ReapPermitState::Completed;
-                Err((
-                    task_failure(
-                        "swallowtail.local_task.reaper_handoff_failed",
-                        "Reserved local task reaper did not accept task ownership",
-                    ),
-                    worker,
-                    self,
-                ))
-            }
-            Err(mpsc::SendError(ReapCommand::Release)) => {
-                unreachable!("reap handoff sends only a reap command")
-            }
-        }
-    }
-}
-
-impl Drop for ReapCompletion {
-    fn drop(&mut self) {
-        let mut state = self
-            .state
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        if let ReapPermitState::Live(sender) =
-            std::mem::replace(&mut *state, ReapPermitState::Completed)
-        {
-            let _ = sender.send(ReapCommand::Release);
-        }
-    }
-}
-
-impl Drop for ReapPermit {
-    fn drop(&mut self) {
-        let mut state = self
-            .state
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        if let ReapPermitState::Live(sender) =
-            std::mem::replace(&mut *state, ReapPermitState::Completed)
-        {
-            let _ = sender.send(ReapCommand::Release);
-        }
-    }
-}
+use permit::ReapCommand;
+pub(super) use permit::ReapPermit;
 
 pub(super) struct ReaperSupervisor {
     shutdown: Mutex<()>,
@@ -179,10 +70,7 @@ impl ReaperSupervisor {
             })?;
         state.issued_reservations += 1;
         state.reapers.push(reaper);
-        Ok(ReapPermit {
-            supervisor: Arc::clone(self),
-            state: Arc::new(Mutex::new(ReapPermitState::Live(sender))),
-        })
+        Ok(ReapPermit::new(Arc::clone(self), sender))
     }
 
     pub(super) fn shutdown(&self) -> Result<(), RuntimeFailure> {
@@ -246,8 +134,16 @@ impl ReservationSettlement {
 }
 
 fn reap_worker_from(receiver: mpsc::Receiver<ReapCommand>, settlement: Arc<ReservationSettlement>) {
-    if let Ok(ReapCommand::Reap { worker, reaped }) = receiver.recv() {
-        let _ = reap_worker(Some(worker), &reaped);
+    if let Ok(ReapCommand::Reap {
+        worker,
+        reaped,
+        join_completion,
+    }) = receiver.recv()
+    {
+        let outcome = reap_worker(Some(worker), &reaped);
+        if let Some(completion) = join_completion {
+            completion.complete(outcome);
+        }
     }
     settlement.settle();
 }

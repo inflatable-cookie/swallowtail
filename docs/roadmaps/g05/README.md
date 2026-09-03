@@ -36,11 +36,11 @@ enforcement.
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | ACP tranche complete; SDK card 055 blocked and route withdrawn pending accepted g05.025 card 061 | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
-| Reserve guaranteed host reap before effects and close the shutdown race. | complete on an unmerged branch; card 061 adds pre-effect exact-host/scope reservation, non-fallible later handoff, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
+| Reserve guaranteed host reap before effects and close the shutdown race. | PR 195 repaired after rejected exact-head review; card 061 adds pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 
 ## Planned Next Roadmaps
 
-- [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — complete on an unmerged branch; card 061 shared-runtime reservation and shutdown-race proof; card 055 frozen pending review and merge
+- [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — PR 195 repaired pending independent exact-head re-review; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof; card 055 frozen pending review and merge
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 awaits accepted g05.025 card 061
@@ -340,9 +340,11 @@ deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
 249 proved / 518 remaining.
 
 g05.021 owns the paused `v0.4.0` release-readiness runway. Current source
-is 40 packages and 48 production routes; immutable `v0.3.3` remains 40 packages
-and 47 routes. At compilation the source delta is 773 commits and 2,405 changed
-files, so card 050 requires a complete semantic API and guaranteed-behavior
+is 40 packages and 47 production release routes; immutable `v0.3.3` is also 40
+packages and 47 routes. The wider integration guide covers 48 routes, including
+the non-release `pi.sdk-sidecar` integration. At compilation the source delta
+is 773 commits and 2,405 changed files, so card 050 requires a complete
+semantic API and guaranteed-behavior
 audit rather than treating the known OpenAI Background `minimal` removal as the
 whole compatibility result. Card 051 stays planned behind the accepted audit
 and a separate authorization gate for Effigy's sole mutating prepare path.
@@ -368,7 +370,7 @@ identity.
 
 ## Milestones
 
-- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — complete on an unmerged branch; card 061; pre-effect reservation, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
+- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — PR 195 repaired pending independent exact-head re-review; card 061; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — planned; ACP card 056 delivered; SDK card 055 awaits accepted g05.025 card 061

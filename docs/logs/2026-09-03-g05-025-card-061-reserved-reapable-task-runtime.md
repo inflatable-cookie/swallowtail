@@ -1,6 +1,6 @@
 # 2026-09-03 g05.025 Card 061 Reserved Reapable Task Runtime
 
-Status: complete; unmerged PR pending independent exact-head review
+Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
 Owner: Tom
 
 ## Result
@@ -28,6 +28,19 @@ existing path. An unreserved task cannot be upgraded through a late support
 check. `AcceptedForReap` remains ownership transfer only, not join or cleanup
 completion.
 
+## Exact-Head Repair
+
+Independent review rejected PR 195 at `dc8b0a25`: reserved `join` moved both the
+worker handle and reap permit into a lazy future. Dropping that future unpolled
+detached live work and released the reservation, allowing outer shutdown to
+return early.
+
+The repaired reserved path hands the worker to its already-admitted reaper
+before returning the join observation future. The reaper records and wakes the
+join result, but future cancellation discards observation only. Host ownership
+and the shutdown barrier remain until the worker is joined and the reservation
+settles. Ordinary unreserved join remains lazy and otherwise unchanged.
+
 ## Proof
 
 Deterministic real-`LocalHostServices` cases cover unsupported, closing, and
@@ -36,7 +49,11 @@ provider effects; binding before poll; exact host, local lifecycle, and scope;
 forged authority; unused release; the issued-reservation/shutdown race; caller
 return followed by eventual reap; outer-owner shutdown; a captured service
 clone; finished-task ordinary join; and the blocking join-on-drop mutation that
-a boolean probe would restore.
+a boolean probe would restore. Added exact-head regression tests drop a reserved
+join future on another thread both before polling and after one pending poll,
+hold shutdown blocked while the task remains stalled, then release the task and
+observe task completion, host join/reap, and shutdown. A separate case observes
+successful active reserved join through the new cancellation-safe future.
 
 ## Public Surface
 
@@ -48,7 +65,7 @@ or process behavior changes. `swallowtail-testkit` required no source change.
 
 ## Validation
 
-- focused runtime, host-local, and testkit validation: 464 tests passed; clippy passed
+- focused runtime, host-local, and testkit validation: 467 tests passed; clippy passed
 - affected-package source proof: runtime, host-local, and testkit passed
 - semantic API: 40-package v0.3.3 gate passed; only the intended additive surfaces
 - docs and Northstar gates: passed

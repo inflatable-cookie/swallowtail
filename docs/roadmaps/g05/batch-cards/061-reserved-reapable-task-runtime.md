@@ -1,6 +1,6 @@
 # 061 Reserved Reapable Task Runtime
 
-Status: complete; implemented on an unmerged branch pending independent exact-head review
+Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
 Owner: Tom
 Created: 2026-09-03
 Milestone: `../025-reserved-reapable-task-lifecycle.md`
@@ -66,6 +66,8 @@ timeouts; release preparation; merge; tag; publish; version currentness.
       worker handle, or adapter-global parking
 - [x] shutdown stops admission, settles all live reservations and accepted
       tasks, then joins retained reapers outside the task tree
+- [x] cancelling an unpolled or pending reserved join future cannot detach its
+      worker or falsely settle the outer shutdown barrier
 - [x] wrong host, wrong scope, released or forged reservation, repeated
       transfer, and finished task retain honest ordinary ownership/failure
 - [x] `AcceptedForReap` remains distinct from joined task and cleanup success
@@ -99,7 +101,7 @@ Do not run provider/live probes, release commands, broad workspace tests, or
 adapter validation. Add another shared package only if the runtime boundary
 necessarily changes it and record why.
 
-Result: focused validation passed 464 tests plus clippy; affected-package proof
+Result: focused validation passed 467 tests plus clippy; affected-package proof
 passed for all three named packages; semantic API passed all 40 v0.3.3 packages;
 docs, Northstar, and diff checks passed; the inherited god-file census remained
 386 findings with no new entry.
@@ -113,12 +115,15 @@ while preserving host-owned eventual reap and ordinary task semantics.
 Smallest counterexample: real `LocalHostServices` reports support, shutdown
 closes handoff admission, a stalled local task reaches its caller deadline, and
 relinquishment returns the handle; the error arm drops it and synchronously
-joins forever.
+joins forever. A second counterexample calls reserved `join`, drops its lazy
+unpolled future, and releases both worker ownership and reservation while work
+continues detached.
 
 Required proof: the real blocking local handle, an issued-reservation/shutdown
 barrier, an accepted task released after caller return, explicit outer-owner
-reaper join, pre-effect rejection counters, and mutation that removes the held
-reservation or permits late refusal.
+reaper join, cancellation of reserved join before and after a pending poll,
+pre-effect rejection counters, and mutation that removes the held reservation
+or permits late refusal.
 
 ## Auto-Continuation
 

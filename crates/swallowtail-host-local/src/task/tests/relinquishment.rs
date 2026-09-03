@@ -12,6 +12,7 @@ use swallowtail_runtime::{
 };
 
 mod admission;
+mod join_cancellation;
 mod lifecycle;
 mod ordinary;
 

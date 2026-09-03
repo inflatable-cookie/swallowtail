@@ -1,6 +1,6 @@
 # g05.025 Reserved Reapable Task Lifecycle
 
-Status: complete; card 061 implemented on an unmerged branch pending independent exact-head review
+Status: complete; PR 195 repaired after rejected dc8b0a25 review, pending independent exact-head re-review
 Owner: Tom
 Created: 2026-09-03
 Depends on: g05.024 card 060; Contracts 009, 010, 017, 019, and 047;
@@ -57,7 +57,7 @@ caller deadline can never fall back to blocking task drop.
 
 ## Batch Card
 
-- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — complete on an unmerged branch; provider-neutral reservation, real local-host lifecycle, and shutdown-race proof
+- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — PR 195 repaired pending independent exact-head re-review; provider-neutral reservation, cancellation-safe join, real local-host lifecycle, and shutdown-race proof
 
 ## Adapter Re-entry Dependency
 
@@ -84,6 +84,8 @@ and transfer the enclosing guardian rather than the pump at the caller deadline.
 - [x] mutation from reserved handoff to boolean-probe-plus-late-relinquishment
       reproduces the blocking-drop counterexample
 - [x] ordinary task spawn/join/drop tests remain unchanged and green
+- [x] dropping a reservation-backed join future before polling or after one
+      pending poll leaves worker and shutdown-barrier ownership with the host
 - [x] card 055 names the enclosing-guardian ownership and ordered cleanup
       dependency without restoring adapter code
 - [x] the roadmap front door names only frozen card 055 after card 061 review and

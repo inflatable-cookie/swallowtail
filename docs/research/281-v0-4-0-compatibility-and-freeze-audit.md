@@ -18,7 +18,9 @@ version or requirement, changelog release state, release baseline, code,
 claim, fixture, workflow, tag, provider state, or consumer repository. The
 temporary semantic API output was generated independently and is not retained
 in source. The current unreleased API evidence was only used as a comparison
-reference; it was not rewritten.
+reference; it was not rewritten. The repair strengthens the existing route QA
+gate with a deterministic audit-ledger assertion; it changes no runtime or
+release behavior.
 
 ## Canonical freeze proof
 
@@ -57,6 +59,9 @@ this is not an internal package-topology or public compatibility break.
 - The current integration/route and lifecycle inventories each contain exactly
   49 rows. The only rows absent from the immutable 47-row release inventory are
   `pi.sdk-sidecar` and `claude-agent.sdk`.
+- The route-behavior ledger now records 47 historical `yes` rows and exactly
+  two historical `no` rows, `pi.sdk-sidecar` and `claude-agent.sdk`; the
+  `effigy qa:routes` gate asserts that set and the current 49-route boundary.
 - The current feature matrix has 41 solution rows and 49 unique route IDs; the
   tag had 39 solution rows and 47 route IDs. The current activity matrix is
   also reconciled by the route gate.
@@ -253,7 +258,8 @@ The exact listed validation tier passed on this tree:
   `1.95`, immutable `v0.3.2` package baseline retained;
 - `effigy package:api` — 40 packages, approved removals only;
 - `effigy qa:routes` — 87 activity operations, 57 available, 30
-  not-applicable, 49 production routes, 4 auxiliary catalogues;
+  not-applicable, 49 production routes, 4 auxiliary catalogues, and the
+  exact 47-historical/2-current-only route-ledger membership assertion;
 - all five requested roadmap index/status/next-action checks passed;
 - `effigy qa:docs:links` — 15 front-door and 1,163 research/log Markdown
   files checked;

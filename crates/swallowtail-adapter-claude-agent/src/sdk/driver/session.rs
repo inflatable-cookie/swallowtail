@@ -13,7 +13,7 @@ use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, HostServices,
     InteractiveSessionHandle, JoinedTask, RequestId, ResourceLease, RuntimeFailure,
-    RuntimeSessionId, ScopeId, TaskReapReservation, TurnHandle, TurnRequest,
+    RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
 };
 
 mod close;
@@ -43,14 +43,11 @@ pub(super) struct ClaudeAgentSdkSessionHandle {
     pub(super) connection: Arc<SdkConnection>,
     pub(super) cancellation: SessionCancellation,
     pub(super) pump_task: Option<Box<dyn JoinedTask>>,
-    /// Host authority for the enclosing close guardian, granted before this
-    /// session acquired a credential, a resource, a process, or a task. Holding
-    /// it is what makes the later guardian transfer non-fallible.
-    pub(super) close_reservation: Option<Box<dyn TaskReapReservation>>,
-    /// The exact scope that reservation was issued for.
-    pub(super) close_scope: ScopeId,
-    /// The exact scope the pump task was spawned under.
-    pub(super) session_scope: ScopeId,
+    /// The enclosing cleanup guardian, already started under a reservation
+    /// taken before this session acquired a credential, a resource, a process,
+    /// or a task. Activating it later is infallible, and dropping it is a host
+    /// handoff rather than a synchronous join.
+    pub(super) close_guardian: Option<crate::sdk::guardian::SessionGuardian>,
     pub(super) services: HostServices,
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
@@ -195,33 +192,45 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
     ) -> BoxFuture<'static, CleanupOutcome> {
         let execution_host_id = self.execution_host_id.clone();
         let deadline = request.deadline();
+        // Ownership moves first. The guardian takes the connection, process,
+        // pump, remaining turn-deadline task, and both leases here, before the
+        // public cleanup future exists at all, so the runtime refusing that
+        // future or the caller dropping it cannot strand any of them.
+        let guardian = close::activate(&mut self, deadline, true);
+        let settle_services = services.clone();
         // One deadline, applied by the shared cleanup bound and again inside
         // every stage so no single stage can consume the whole budget.
         swallowtail_runtime::bound_session_cleanup(
             execution_host_id,
             request,
             services,
-            Box::pin(async move { close::close_session(&mut self, deadline).await }),
+            Box::pin(async move { close::settle(guardian, &settle_services, deadline).await }),
         )
     }
 }
 
-/// A session dropped without close still must not join a running pump on the
-/// dropping thread. The pump was started under this session's own reservation,
-/// so the owning host takes it back here; a pump that already finished is
-/// refused and joined by ordinary drop, which cannot block.
+/// A session dropped without close still hands its whole state to the enclosing
+/// guardian rather than dropping a live process, pump, and two leases outside
+/// any ordered continuation.
+///
+/// There is no caller deadline on this path, so the guardian skips the
+/// cooperative stages and goes straight to the host termination request and the
+/// ordered release. Its own drop then transfers the guardian to the owning host
+/// instead of joining it on the dropping thread.
 impl Drop for ClaudeAgentSdkSessionHandle {
     fn drop(&mut self) {
-        if self.pump_task.is_none() {
+        if self.close_guardian.is_none() {
             return;
         }
-        if let Some(service) = self.services.task() {
-            let _ = swallowtail_runtime::ScopedTaskService::relinquish(
-                service.as_ref(),
-                &self.session_scope,
-                &mut self.pump_task,
-            );
-        }
+        let now = self.services.time().map_or_else(
+            || swallowtail_runtime::MonotonicInstant::from_ticks(0),
+            |time| time.now(),
+        );
+        drop(close::activate(
+            self,
+            swallowtail_runtime::Deadline::at(now),
+            false,
+        ));
     }
 }
 

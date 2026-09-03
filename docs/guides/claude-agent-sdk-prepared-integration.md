@@ -161,14 +161,21 @@ convenience, and fails closed.
 Every public operation is bounded by a caller-supplied host deadline, and the
 bound covers the return, not merely the noticing.
 
-Before any of it, `open_session` reserves reap authority. It asks the exact
+Before any of it, `open_session` takes its cleanup authority. It asks the exact
 selected `ScopedTaskService` for three operation-scoped grants — the open
-guardian's, the pump's, and the close guardian's — and does so before it
-acquires a credential, resolves a working resource, starts the sidecar, spawns
-a task, or contacts the provider. A host that cannot commit those lanes refuses
-the whole operation there, with no effect taken. The grant is opaque owned
+guardian's, the pump's, and the close guardian's — and then *starts* both
+guardian tasks, all before it acquires a credential, resolves a working
+resource, starts the sidecar, or contacts the provider. A host that cannot
+commit those lanes, or cannot create those workers, refuses the whole operation
+there, with no effect taken.
+
+Both halves matter and they fail in different ways. The grant is opaque owned
 authority, not a boolean support probe, and holding it is what makes the later
-handoff non-fallible while the work is still unfinished.
+handoff non-fallible while the work is still unfinished. Starting the worker is
+separately fallible — an operating system can refuse a thread — and a
+reservation does not change that, so worker creation happens while the
+operation still owns nothing to lose. After open returns, activating the
+cleanup guardian is a slot write and a signal: it cannot fail.
 
 - `open_session` runs acquisition, launch, and readiness as one future inside
   the open deadline. Every lease, process, and task is recorded in a host-owned
@@ -191,10 +198,14 @@ handoff non-fallible while the work is still unfinished.
   and the descendant termination is owned by bounded `close`.
 - `close` takes the caller's `SessionCleanupRequest` and hands the connection,
   the sidecar process, the pump, any remaining turn-deadline task, and both
-  leases to one enclosing guardian task. One deadline covers turn resolution,
-  interruption, the close command, host escalation, root observation, the pump
-  join, and both lease releases. No stage restarts it, and expiry returns
-  `close_cleanup_unconfirmed` rather than extending the public future.
+  leases to the enclosing guardian **before it returns a future at all**. The
+  runtime may refuse an already-elapsed deadline, a missing time service, or
+  the wrong host without ever polling that future, and a caller may drop it;
+  ownership has already moved by then, so none of those paths can strand live
+  state. One deadline covers turn resolution, interruption, the close command,
+  host escalation, root observation, the pump join, and both lease releases. No
+  stage restarts it, and expiry returns `close_cleanup_unconfirmed` rather than
+  extending the public future.
 
 Joining a host task is itself bounded through the task seam rather than
 through the join. `JoinedTask::join` may be a blocking observation — the local
@@ -203,17 +214,21 @@ too — so racing a join future against a deadline is not a bound. The route
 waits on `is_finished`/`register_waker` instead and calls `join` only once the
 task reports finished.
 
-The guardian still running at the deadline is handed back to the host through
-`ScopedTaskService::relinquish`, with the exact selected execution host and the
-exact scope its reservation named. What transfers is always the enclosing
+The guardian still running at the deadline — or when the caller cancels, or
+when the runtime rejects the cleanup future — is handed back to the host
+through `ScopedTaskService::relinquish`, with the exact selected execution host
+and the exact scope its reservation named. That handoff is what dropping a
+guard or a guardian does: their `Drop` transfers, because the alternative on a
+real local host is a synchronous join of live work on the dropping thread. What transfers is always the enclosing
 guardian, never the pump on its own, so the process and both leases stay with
 the work until its ordered cleanup finishes. `AcceptedForReap` is
 ownership-transfer evidence only: it is never reported as a join and never
 strengthens a cleanup outcome, so a transferred guardian leaves close reporting
 unconfirmed cleanup. The host's own reaper shutdown belongs to the
 execution-host lifecycle outside this task tree; the route neither calls nor
-claims it. A session dropped without close hands its pump to the owning host
-through the same reservation instead of joining it on the dropping thread.
+claims it. A session dropped without close hands its whole state — process,
+pump, and both leases — to the same guardian, which skips the cooperative
+stages because no caller deadline exists there.
 
 Ambient behavior is suppressed by construction rather than by omission:
 setting sources are empty, skills are an explicit empty list (omission is
@@ -265,8 +280,8 @@ its own escalation timers are unreferenced and reach only the direct child.
 None of that may be read as evidence that a process exited.
 
 Close resolves any live turn, then hands everything the session still owns to
-one enclosing guardian task started under the reservation open pre-admitted.
-That guardian runs this order:
+the enclosing guardian task that open already started. That guardian runs this
+order:
 
 1. interrupt a live turn
 2. end sidecar input through the explicit `close` command

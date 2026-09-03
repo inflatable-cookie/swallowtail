@@ -1,18 +1,23 @@
 //! Descendant-tree close for one Claude Agent SDK sidecar session.
 //!
-//! Close owns nothing itself. It hands the session's whole remaining set — the
-//! connection, the sidecar process, the pump, any live turn's host-deadline
-//! task, the working-resource lease, and the credential lease — to one
-//! enclosing guardian task, started under the reap reservation this session
-//! pre-admitted at open. That guardian runs the single ordered continuation:
-//! interrupt a live turn, end sidecar input through the explicit close command,
-//! await the sidecar's own bounded join of its retained native handle, make the
-//! declared descendant termination attempt through host authority, observe the
-//! root, join the pump, release the resource, then release the credential.
+//! Close owns nothing itself and starts nothing fallible. The enclosing
+//! guardian task was started before this session took any effect, so closing is
+//! two infallible steps: resolve any live turn, then hand the guardian the
+//! connection, the sidecar process, the pump, any remaining turn-deadline task,
+//! and both leases at once.
 //!
-//! The caller waits for that continuation inside its own cleanup deadline. On
-//! expiry it transfers the guardian, not the pump, and reports unconfirmed
-//! cleanup. No lease is released around work that is still live.
+//! That handover happens **before** the public cleanup future exists. The
+//! runtime may refuse an already-elapsed deadline, a missing time service, or
+//! the wrong host without ever polling that future, and a caller may drop it
+//! after one pending poll; in both cases the guardian already owns the whole
+//! continuation and is transferred to its owning host by its own drop rather
+//! than joined on the dropping thread.
+//!
+//! The guardian then runs the single ordered continuation: interrupt a live
+//! turn, end sidecar input through the explicit close command, await the
+//! sidecar's own bounded join of its retained native handle, make the declared
+//! descendant termination attempt through host authority, observe the root,
+//! join the pump, release the resource, then release the credential.
 //!
 //! The sidecar's join covers its direct native child only; owned-tree
 //! completion is the host's evidence, and only `OwnedTreeEmpty` may support
@@ -22,17 +27,23 @@
 
 use crate::sdk::bounded::HostBound;
 use crate::sdk::close::ClaudeAgentSdkCloseState;
-use crate::sdk::guardian::{CleanupReport, Owned, SessionGuardian};
+use crate::sdk::guardian::{CleanupReport, Cooperative, Owned, SessionGuardian};
 use swallowtail_core::SafeDiagnostic;
-use swallowtail_runtime::{CleanupOutcome, Deadline};
+use swallowtail_runtime::{CleanupOutcome, Deadline, HostServices};
 
-/// The full ordered close for one session, inside the caller's one deadline.
-pub(super) async fn close_session(
+/// Takes everything the session still owns and hands it to the guardian.
+///
+/// Synchronous and infallible: the guardian task already exists, so this cannot
+/// fail after the session holds live state. Returns the guardian so the caller
+/// can wait for its ordered continuation; dropping the returned guardian is a
+/// host handoff, not a join.
+pub(super) fn activate(
     session: &mut super::ClaudeAgentSdkSessionHandle,
     deadline: Deadline,
-) -> CleanupOutcome {
-    let self_ = session;
-    let active = self_
+    cooperative_close: bool,
+) -> Option<SessionGuardian> {
+    let guardian = session.close_guardian.take()?;
+    let active = session
         .active
         .lock()
         .expect("SDK sidecar active lock poisoned")
@@ -42,7 +53,7 @@ pub(super) async fn close_session(
     // joined: that task waits on completion or expiry, so joining it
     // while the turn is still open would wait for an event that close
     // itself just prevented.
-    if self_.cancellation.was_requested()
+    if session.cancellation.was_requested()
         && let Some(active) = &active
     {
         // The consumer already asked the session to cancel; close
@@ -59,46 +70,50 @@ pub(super) async fn close_session(
         ));
     }
     let turn_active = active.is_some();
-    let bounded = HostBound::new(
-        self_
-            .services
-            .time()
-            .cloned()
-            .expect("validated sidecar time service"),
-        deadline,
-    );
     let mut owned = Owned {
-        connection: Some(self_.connection.clone()),
-        process: Some(self_.connection.process()),
-        pump: self_.pump_task.take(),
+        connection: Some(session.connection.clone()),
+        process: Some(session.connection.process()),
+        pump: session.pump_task.take(),
         scoped: Vec::new(),
-        resource: self_.resource.take(),
-        credential: self_.credential.take(),
+        resource: session.resource.take(),
+        credential: session.credential.take(),
     };
     if let Some(mut active) = active
         && let Some(task) = active.deadline_task.take()
     {
         owned.scoped.push(task);
     }
-    let Some(reservation) = self_.close_reservation.take() else {
+    let cooperative = if cooperative_close {
+        Cooperative::Session { turn_active }
+    } else {
+        // A session dropped without close carries no caller deadline, so there
+        // is no bound to spend on cooperative stages. The guardian goes
+        // straight to the host termination request and the ordered release.
+        Cooperative::None
+    };
+    guardian.activate(owned, cooperative, deadline);
+    Some(guardian)
+}
+
+/// Waits for the activated guardian inside the caller's one cleanup deadline.
+pub(super) async fn settle(
+    guardian: Option<SessionGuardian>,
+    services: &HostServices,
+    deadline: Deadline,
+) -> CleanupOutcome {
+    let Some(guardian) = guardian else {
         // Unreachable after open: the session cannot exist without its
-        // pre-admitted reservation. Reporting unconfirmed cleanup is the
-        // fail-closed reading, and nothing is released around live work.
+        // pre-started guardian, and close consumes it exactly once.
         return guardian_unavailable();
     };
-    let guardian = SessionGuardian::arm(
-        &self_.services,
-        reservation,
-        self_.close_scope.clone(),
-        self_.request_id.as_str(),
+    let bounded = HostBound::new(
+        services
+            .time()
+            .cloned()
+            .expect("validated sidecar time service"),
         deadline,
-        owned,
-        turn_active,
     );
-    let Ok(guardian) = guardian else {
-        return guardian_unavailable();
-    };
-    match guardian.settle(&bounded, &self_.services).await {
+    match guardian.settle(&bounded).await {
         Some(report) => decide(&report),
         // The guardian was accepted for reaping and still owns the process,
         // the pump, and both leases. Ownership transfer is not cleanup.

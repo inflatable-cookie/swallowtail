@@ -7,6 +7,7 @@
 mod sdk_support;
 
 mod claude_agent_sdk_driver {
+    pub mod cancellation;
     pub mod framing;
     pub mod guardian;
     pub mod lifecycle;

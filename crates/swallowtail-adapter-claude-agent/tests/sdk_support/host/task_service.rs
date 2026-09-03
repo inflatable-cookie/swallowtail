@@ -23,6 +23,12 @@ pub(super) struct ThreadTaskService {
 #[derive(Default)]
 pub struct FixtureReaper {
     accepting: Mutex<bool>,
+    /// Reservation-backed spawns still to succeed before worker creation fails.
+    ///
+    /// A reservation guarantees the later handoff of a worker that was created;
+    /// it does not make creating one infallible. This models the real local
+    /// host's OS thread-creation failure.
+    spawns_before_failure: Mutex<Option<usize>>,
     relinquished: Arc<Mutex<Vec<String>>>,
     retained: Mutex<Vec<std::thread::JoinHandle<()>>>,
 }
@@ -37,6 +43,29 @@ impl FixtureReaper {
             return Err(fixture_task_failure());
         }
         Ok(())
+    }
+
+    /// Fails reservation-backed worker creation after `successes` more spawns.
+    pub fn fail_spawn_after(&self, successes: usize) {
+        *self
+            .spawns_before_failure
+            .lock()
+            .expect("SDK fixture reaper lock poisoned") = Some(successes);
+    }
+
+    fn admit_spawn(&self) -> Result<(), RuntimeFailure> {
+        let mut remaining = self
+            .spawns_before_failure
+            .lock()
+            .expect("SDK fixture reaper lock poisoned");
+        match remaining.as_mut() {
+            None => Ok(()),
+            Some(0) => Err(fixture_task_failure()),
+            Some(left) => {
+                *left -= 1;
+                Ok(())
+            }
+        }
     }
 
     fn retain(&self, scope: &ScopeId, worker: std::thread::JoinHandle<()>) {
@@ -84,6 +113,7 @@ impl ThreadTaskService {
     ) -> (Self, Arc<Mutex<Vec<String>>>, Arc<FixtureReaper>) {
         let reaper = Arc::new(FixtureReaper {
             accepting: Mutex::new(true),
+            spawns_before_failure: Mutex::new(None),
             relinquished: Arc::new(Mutex::new(Vec::new())),
             retained: Mutex::new(Vec::new()),
         });
@@ -185,6 +215,8 @@ impl ScopedTaskService for ThreadTaskService {
         if reservation.execution_host_id != self.execution_host_id {
             return Err(fixture_task_failure());
         }
+        // Worker creation, not reservation admission, is what can still fail.
+        self.reaper.admit_spawn()?;
         Ok(self.start(reservation.scope.clone(), task, true))
     }
 

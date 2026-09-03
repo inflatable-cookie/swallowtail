@@ -84,6 +84,9 @@ pub(crate) struct OpenGuard {
     /// unfinished guard can be handed back to the host that owns it.
     scope: ScopeId,
     execution_host_id: swallowtail_core::ExecutionHostId,
+    /// Kept so dropping this guard can hand its task back to the owning host
+    /// instead of joining it on the dropping thread.
+    services: HostServices,
     ledger: Arc<GuardLedger>,
     signal: Arc<Signal>,
     deadline: Arc<DeadlineFlag>,
@@ -168,6 +171,7 @@ impl OpenGuard {
             Self {
                 scope,
                 execution_host_id: services.execution_host_id().clone(),
+                services: services.clone(),
                 ledger,
                 signal,
                 deadline: fired,
@@ -224,5 +228,28 @@ impl OpenGuard {
             bounded_join(bounded, &owner, task).await;
         }
         cleaned
+    }
+}
+
+/// Dropping the guard is a handoff, never a synchronous join.
+///
+/// A caller that cancels `open_session` after one pending acquisition poll
+/// drops this guard while its task is still armed and still owns the ordered
+/// cleanup. The task was started under the reservation open pre-admitted, so
+/// the owning host takes it back here. A guard task that already finished is
+/// refused and joined by ordinary drop, which cannot block.
+impl Drop for OpenGuard {
+    fn drop(&mut self) {
+        let mut task = self.task.lock().expect("SDK open-guard task lock poisoned");
+        if task.is_none() {
+            return;
+        }
+        if let Some(service) = self.services.task() {
+            let _ = swallowtail_runtime::ScopedTaskService::relinquish(
+                service.as_ref(),
+                &self.scope,
+                &mut task,
+            );
+        }
     }
 }

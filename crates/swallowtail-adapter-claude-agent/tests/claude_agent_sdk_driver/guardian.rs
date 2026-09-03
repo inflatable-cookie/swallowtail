@@ -141,6 +141,9 @@ fn the_real_local_host_retains_transfers_and_reaps_the_close_guardian() {
         diagnostic.code(),
         "swallowtail.claude-agent.sdk.close_cleanup_unconfirmed"
     );
+    // Synchronise on the guardian's own root observation, so the lease
+    // assertion below is about ordering rather than about winning a race.
+    fixture.wait_for_cleanup(CleanupEvent::ProcessWait);
     let during = fixture.cleanup_events();
     assert!(
         !during.contains(&CleanupEvent::ResourceRelease)
@@ -164,4 +167,37 @@ fn the_real_local_host_retains_transfers_and_reaps_the_close_guardian() {
             CleanupEvent::CredentialRelease,
         ],
     );
+}
+
+#[test]
+fn a_close_guardian_that_cannot_start_refuses_before_any_effect() {
+    // A reservation guarantees the later handoff of a worker that exists; it
+    // does not make creating one infallible. So the close guardian's worker is
+    // created before any effect: if the host cannot start it, the operation
+    // refuses while it still owns nothing to lose.
+    let host = host_id("claude-agent-sdk.fixture.guardian-spawn-failure");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    // The open guard starts; the close guardian's worker creation fails.
+    fixture.reaper().fail_spawn_after(1);
+
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("a host that cannot start the cleanup guardian must not open a session");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.fixture_task.unavailable",
+        "the refusal must be the host's own worker-creation failure"
+    );
+    assert_eq!(
+        fixture.credential_acquisitions(),
+        0,
+        "a credential was acquired before the cleanup guardian existed"
+    );
+    assert!(
+        fixture.cleanup_events().is_empty() && fixture.inputs().is_empty(),
+        "the sidecar was contacted before the cleanup guardian existed"
+    );
+    fixture.reaper().shutdown();
 }

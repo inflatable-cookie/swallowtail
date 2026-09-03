@@ -163,17 +163,21 @@ This restoration re-enters from canonical main after g05.025 card 061 merged at
 `53153af1`, and repairs all three findings rather than reinstating the reverted
 head:
 
-- Reap authority is taken first. `open_session` reserves the open-guardian,
-  pump, and close-guardian lanes from the exact selected task service before any
-  credential, resource, process, task, or provider effect. The later transfer is
-  therefore non-fallible while the work is unfinished, so no refusal path can
-  drop a live handle and block the caller.
+- Cleanup authority is taken first. `open_session` reserves the open-guardian,
+  pump, and close-guardian lanes from the exact selected task service *and
+  starts both guardian tasks* before any credential, resource, process, or
+  provider effect. The later transfer is therefore non-fallible while the work
+  is unfinished, and the later activation cannot fail at all, so no refusal path
+  can drop a live handle and block the caller.
 - One enclosing guardian owns the whole ordered continuation. Close hands the
-  connection, process, pump, remaining turn-deadline task, and both leases to a
-  single reservation-backed guardian task that runs interrupt, native close,
-  force-stop, root observation, pump join, resource release, and credential
-  release in that order. Caller expiry transfers that guardian, never the pump
-  alone, and no lease is released around still-live transferred work.
+  connection, process, pump, remaining turn-deadline task, and both leases to
+  that guardian *before the public cleanup future exists*, so a runtime that
+  refuses the future without polling it cannot strand live state. The guardian
+  runs interrupt, native close, force-stop, root observation, pump join,
+  resource release, and credential release in that order. Caller expiry, caller
+  cancellation, and a dropped or rejected cleanup future all transfer that
+  guardian — never the pump alone — through its `Drop`, and no lease is released
+  around still-live transferred work.
 - The integrated deadline proof runs on real `LocalHostServices`. The
   provider-free fixture also retains every worker handle, joins on drop, and
   reaps only through an outer owner.

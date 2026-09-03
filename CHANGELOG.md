@@ -105,16 +105,21 @@ annotated Git tags from the canonical repository.
   classified unmapped, the credential-bearing subpath declarations are
   byte-identical, and `sdkCompat.harnessSchema` is unchanged, so the behavior
   revision, wire, Node, and sidecar source-tag axes all stay put.
-  Every effect is preceded by reap authority: open reserves the open-guardian,
-  pump, and close-guardian lanes from the exact selected task service before it
-  acquires a credential, resolves a resource, starts the sidecar, spawns a task,
-  or contacts the provider, and an unsupported, closing, or capacity-exhausted
-  host refuses the whole operation there. One enclosing guardian then owns the
-  connection, process, pump, remaining turn-deadline task, and both leases, and
-  runs the ordered continuation whole: interrupt, native close, host termination
-  request, root observation, pump join, working-resource release, credential
-  release. At the caller's deadline that guardian — never the pump alone — is
-  transferred under the held exact-host, exact-scope reservation, so no lease is
+  Every effect is preceded by cleanup authority: open reserves the
+  open-guardian, pump, and close-guardian lanes from the exact selected task
+  service and starts both guardian tasks before it acquires a credential,
+  resolves a resource, starts the sidecar, or contacts the provider. A host that
+  cannot commit those lanes, or cannot create those workers, refuses the whole
+  operation there; after open returns, activating the cleanup guardian cannot
+  fail. One enclosing guardian owns the connection, process, pump, remaining
+  turn-deadline task, and both leases, and runs the ordered continuation whole:
+  interrupt, native close, host termination request, root observation, pump
+  join, working-resource release, credential release. Close hands that set over
+  before it returns a future, so a runtime that refuses an elapsed deadline,
+  missing time service, or wrong host without polling cannot strand live state.
+  Caller expiry, caller cancellation, and a dropped cleanup future all transfer
+  the guardian — never the pump alone — under the held exact-host, exact-scope
+  reservation rather than joining it on the dropping thread, so no lease is
   released around still-live work and the caller reports unconfirmed cleanup
   without waiting. `AcceptedForReap` stays ownership transfer only and never
   becomes join or cleanup evidence. Research 278 and 280, Contracts 009, 010,

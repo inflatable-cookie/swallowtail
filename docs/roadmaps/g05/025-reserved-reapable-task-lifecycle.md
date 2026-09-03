@@ -25,7 +25,7 @@ caller deadline can never fall back to blocking task drop.
 - [x] make shutdown close reservation admission, settle existing reservations
       and accepted tasks, then join reapers outside the task tree
 - [x] keep ordinary spawn, explicit join, and join-on-drop ownership unchanged
-- [x] leave the withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
+- [x] leave the then-withdrawn `claude-agent.sdk` route and frozen `v0.4.0` release
       lane untouched during the shared-runtime batch
 
 ## Execution Plan

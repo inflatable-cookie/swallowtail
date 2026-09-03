@@ -36,8 +36,7 @@ impl ClaudeAgentSdkDriver {
         let Reservations {
             pump: pump_reservation,
             pump_scope: scope,
-            close: close_reservation,
-            close_scope,
+            close_guardian,
         } = reservations;
         let credential_service = services
             .credential()
@@ -118,9 +117,7 @@ impl ClaudeAgentSdkDriver {
             connection,
             services,
             leased_cwd,
-            close_reservation: Some(close_reservation),
-            close_scope,
-            session_scope: scope,
+            close_guardian: Some(close_guardian),
         })
     }
 }

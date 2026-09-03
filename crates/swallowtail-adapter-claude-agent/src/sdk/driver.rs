@@ -60,8 +60,8 @@ impl ClaudeAgentSdkDriver {
 pub(super) struct Reservations {
     pub(super) pump: Box<dyn swallowtail_runtime::TaskReapReservation>,
     pub(super) pump_scope: swallowtail_runtime::ScopeId,
-    pub(super) close: Box<dyn swallowtail_runtime::TaskReapReservation>,
-    pub(super) close_scope: swallowtail_runtime::ScopeId,
+    /// The enclosing cleanup guardian, already started before any effect.
+    pub(super) close_guardian: crate::sdk::guardian::SessionGuardian,
 }
 
 /// Everything one launch needs from the admitted open request.
@@ -82,15 +82,9 @@ pub(super) struct PendingSession {
     pub(super) connection: Arc<SdkConnection>,
     pub(super) services: HostServices,
     pub(super) leased_cwd: String,
-    /// Host authority for the enclosing close guardian, granted before the
-    /// first acquisition and carried to the session so its later transfer
-    /// cannot be refused.
-    pub(super) close_reservation: Option<Box<dyn swallowtail_runtime::TaskReapReservation>>,
-    /// The exact scope that reservation was issued for.
-    pub(super) close_scope: swallowtail_runtime::ScopeId,
-    /// The exact scope the pump task was spawned under, so a session dropped
-    /// without close hands its pump back instead of joining it synchronously.
-    pub(super) session_scope: swallowtail_runtime::ScopeId,
+    /// The enclosing cleanup guardian, started before the first acquisition so
+    /// activating it at close cannot fail while the session holds live state.
+    pub(super) close_guardian: Option<crate::sdk::guardian::SessionGuardian>,
 }
 
 impl PendingSession {
@@ -111,9 +105,7 @@ impl PendingSession {
             connection: Arc::clone(&self.connection),
             cancellation: handle::SessionCancellation::new(Arc::clone(&active)),
             pump_task: acquired.pump,
-            close_reservation: self.close_reservation,
-            close_scope: self.close_scope,
-            session_scope: self.session_scope,
+            close_guardian: self.close_guardian,
             services: self.services,
             resource: acquired.resource,
             credential: acquired.credential,
@@ -155,6 +147,16 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
             let open_reservation = crate::sdk::guardian::reserve_reap(&services, &open_scope)?;
             let close_reservation = crate::sdk::guardian::reserve_reap(&services, &close_scope)?;
             let pump_reservation = crate::sdk::guardian::reserve_reap(&services, &session_scope)?;
+            // Starting a host worker is the fallible half, and it is done here
+            // as well: the enclosing cleanup guardian exists before the first
+            // acquisition, so activating it at close can never fail while a
+            // live process, pump, and two leases are already owned.
+            let close_guardian = crate::sdk::guardian::SessionGuardian::arm(
+                &services,
+                close_reservation,
+                close_scope,
+                request.request_id().as_str(),
+            )?;
             // Armed before the first acquisition. From here on, every lease,
             // process, and task the open path takes is recorded in the guard,
             // so the caller's deadline can drop this future at any point
@@ -179,8 +181,7 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                     Reservations {
                         pump: pump_reservation,
                         pump_scope: session_scope,
-                        close: close_reservation,
-                        close_scope,
+                        close_guardian,
                     },
                 ))
                 .await;

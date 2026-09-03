@@ -50,7 +50,8 @@ Keep this card planned and blocked until the complete packet is supplied.
    authorized provider evidence without secrets, prompts, private payloads,
    account data, or host paths.
 5. Compile final release evidence: exact candidate SHA; 40-package `v0.4.0`
-   baseline; 48 routes versus `v0.3.3`'s 47; Rust `1.95.0`; Apple Silicon
+   baseline; the candidate route inventory versus `v0.3.3`'s 47, counting only
+   routes the audit accepts; Rust `1.95.0`; Apple Silicon
    macOS; compatibility ledger; changelog/release notes; all 11 local gates;
    exact-SHA CI; clean source; external source consumer; application smoke;
    upgrade/rollback; known limits; freeze state; and tag absence.

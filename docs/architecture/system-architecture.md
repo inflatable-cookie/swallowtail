@@ -219,11 +219,13 @@ OpenHands adds a package without a production route.
   `Degraded` on confirmed root-only completion, and `Failed` on an observed
   survivor or unconfirmed root exit. Windows is unsupported because no tree
   owner survives the root there. Open reserves its guardian, pump, and
-  close-guardian reap lanes from the exact selected task service before any
-  credential, resource, process, task, or provider effect, and one enclosing
-  guardian task then owns the connection, process, pump, and both leases through
-  the whole ordered cleanup continuation; the caller deadline transfers that
-  guardian, never the pump alone
+  close-guardian reap lanes from the exact selected task service and starts both
+  guardian tasks before any credential, resource, process, or provider effect,
+  so later activation is infallible. One enclosing guardian then owns the
+  connection, process, pump, and both leases through the whole ordered cleanup
+  continuation; caller expiry, caller cancellation, and a runtime-rejected
+  cleanup future all transfer that guardian, never the pump alone, and never
+  join it on the dropping thread
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, exact portable

@@ -23,9 +23,12 @@ mutation.
 
 - Immutable `v0.3.3` is 40 packages, 47 production routes, Rust `1.95.0`, and
   Apple Silicon macOS as the verified target.
-- Current source remains 40 packages and has 47 production release routes. The
-  wider integration guide covers 48 routes, including the non-release
-  `pi.sdk-sidecar` integration. Historical package, dependency, route, API, and
+- Current source remains 40 packages. The immutable `v0.3.3` release inventory
+  is 47 routes and the consumer front door still proves exactly that number.
+  The wider integration and route gates prove 49, because current source
+  carries two post-release routes beyond the release inventory:
+  `pi.sdk-sidecar` and the restored `claude-agent.sdk`. Neither is in the
+  release inventory. Historical package, dependency, route, API, and
   release-note baselines stay immutable.
 - Current `main` is 773 commits and 2,405 changed files beyond `v0.3.3` at
   milestone compilation. Card 050 must recount at its reviewed head and audit
@@ -110,11 +113,13 @@ different SHA is accepted.
 
 - every semantic API and guaranteed-behavior delta from `v0.3.3` is inventoried
   and classified across all 40 packages and every release route at the resumed
-  reviewed head; the current pre-card-055 count is 47
+  reviewed head; the immutable release count is 47
 - immutable prior release baselines remain byte-for-byte unchanged; a distinct
   40-package `v0.4.0` semantic baseline and route candidate inventory are
-  created only during candidate preparation; 48 routes remains a future
-  expectation only if reviewed card 055 re-entry merges before the audit
+  created only during candidate preparation; the candidate route inventory
+  grows past 47 only for routes the audit accepts, and card 055's restored
+  `claude-agent.sdk` counts only once its exact-head review is accepted and it
+  merges before the audit
 - all 11 local gates pass together on the frozen candidate, followed by
   canonical exact-SHA CI on that same source
 - the clean candidate contains no generated cache, build output, host path,

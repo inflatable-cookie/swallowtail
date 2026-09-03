@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -65,7 +65,7 @@ stored provider state cannot replace the host-leased binding.
 
 Cancellation and close abort SDK work, dispose SDK/session state, drain the
 bounded wire, join the sidecar process, then release provider state,
-credentials, and host resources in contract order. Process isolation does not
+host resources, and credentials in contract order. Process isolation does not
 by itself prove filesystem or network containment.
 
 Where an upstream SDK launches further provider-owned processes, the nearest
@@ -118,6 +118,14 @@ cannot install or depend on a global executor, detach background work, or let
 an SDK refresh, retry, reader, timer, or connection task survive operation
 close.
 
+A route whose caller may return before that work completes must acquire
+Contract 010's operation-scoped reap reservation from the exact selected task
+service before provider work and before acquiring credentials, resources,
+processes, or tasks. Missing support, closed admission, or unavailable reserved
+capacity makes the host unsupported for that operation and rejects at this
+boundary. Static service presence and a boolean capability probe do not qualify
+the route because shutdown can race a later handoff.
+
 Cancellation and deadline stop local SDK work, close owned transport state,
 join the scoped work, then release credentials. A provider request may have
 reached the service even when local cancellation succeeds; drivers state that
@@ -131,17 +139,28 @@ restart the timeout or extend the public close future. Once host time observes
 expiry, cleanup returns `Failed` or an exact route-qualified degraded outcome;
 it cannot return `Clean`.
 
-If the caller-bound operation still owns an unfinished `JoinedTask` at that
-boundary, it transfers the handle only through the selected execution host's
-`ScopedTaskService::relinquish` operation with the exact operation scope. The
-host accepts autonomous reap ownership before the caller returns. Acceptance
-is `AcceptedForReap`, not joined or cleanup-complete; the adapter cannot use it
-to strengthen the session's cleanup result. An outer selected-host lifecycle
-owner keeps the reaper and explicitly joins it outside the task tree; a
-task-service clone has only weak handoff authority and never joins a reaper on
-drop. Rejection leaves the task with the caller and fails closed.
-Adapter-global parking, a discarded reaper handle, and a later adapter cleanup
-call are not substitutes.
+For a foreign-language sidecar, one enclosing guardian owns the pump task,
+process handle, resource lease, and credential lease. Its cleanup order is:
+interrupt, provider-native close, force-stop when needed, root/process
+observation, pump completion and join, resource release, then credential
+release. Earlier stages may be not applicable, but later ownership cannot move
+ahead of unfinished earlier work.
+
+If the caller deadline arrives before that sequence completes, the caller
+transfers the enclosing guardian task—not the pump—through the selected
+execution host's `ScopedTaskService::relinquish` operation as the reservation-
+backed task under its exact operation scope. The reservation makes a valid
+exact-host/exact-scope transfer non-fallible for capacity and lifecycle reasons.
+The host accepts autonomous reap ownership before the caller returns.
+Acceptance is `AcceptedForReap`, not joined or cleanup-complete; the adapter
+cannot use it to strengthen the session's cleanup result. The guardian keeps
+the process and both leases until their ordered terminal cleanup. An outer
+selected-host lifecycle owner keeps the reaper and explicitly joins it outside
+the task tree after reservation admission closes and existing reservations and
+accepted tasks settle. A task-service clone has only weak authority and never
+joins a reaper on drop. Adapter-global parking, a discarded reaper handle, a
+later adapter cleanup call, and release of leases around a transferred pump are
+not substitutes.
 
 After a turn deadline, session cleanup owns interruption of any still-active
 turn. A structured projection must return any unfinished task to the selected
@@ -285,8 +304,14 @@ own public API credential or subscription does not authorize its Bedrock route.
 
 Deterministic SDK fixtures must prove:
 
-- caller expiry returns unfinished scoped-task ownership to the exact host
-  reaper without blocking or treating acceptance as joined cleanup
+- unsupported host or reservation refusal rejects before credential, resource,
+  process, provider, or task work
+- a real selected-host reservation survives a shutdown race and lets caller
+  expiry return the enclosing cleanup guardian to the exact host reaper without
+  blocking or treating acceptance as joined cleanup
+- guardian cleanup preserves interrupt, native close, force-stop,
+  root/process observation, pump join, resource release, and credential release
+  order after transfer
 - exact SDK version and typed event variants
 - no SDK or credential work before successful preflight
 - exact endpoint, audience, region, credential-provider, route, model, and host
@@ -323,3 +348,5 @@ Foreign-language sidecar fixtures additionally prove:
 - runtime inference and cloud control-plane catalogues remain separate drivers
 - no provider, model, region, credential, billing, or topology fallback is
   implicit
+- a boolean reap-capability probe is insufficient; the operation holds the
+  actual reservation before effects

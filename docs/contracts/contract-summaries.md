@@ -22,13 +22,16 @@ contract file owns the exact rules.
   - **008** governs driver roles, configured instances, access state, and
     side-effect-free preflight.
   - **009** defines the async operation lifecycle: scoped handles, events,
-    cancellation, terminal outcomes, and cleanup.
+    cancellation, terminal outcomes, cleanup, and the reserved host-reap path
+    for caller-bounded work.
   - **010** scopes execution-host authority: executable launch, credentials,
     resources, attachments, schemas, diagnostics, and the optional diagnostic
     observer sink clarified by Contract 053. It also distinguishes ordinary
-    joined tasks from exact-host/scope acceptance for autonomous reap, which
-    is ownership transfer rather than cleanup-completion evidence. Contract
-    054 adds newest-first history pages as a separate read role.
+    joined tasks from exact-host/scope acceptance for autonomous reap. Routes
+    that may return first hold a real operation-scoped reservation; a boolean
+    probe cannot prevent a shutdown race. The transfer remains ownership, not
+    cleanup-completion evidence. Contract 054 adds newest-first history pages
+    as a separate read role.
   - **011** defines deterministic cross-shape runtime conformance profiles.
   - **012** covers session instructions, reasoning selection, tool
     declarations, and correlated callback lifecycle.
@@ -48,15 +51,18 @@ contract file owns the exact rules.
   optional process containment. Its restart record is attachment-bound
   authority input, not a consumer database or provider-session management
   binding; exact deployed-runtime qualification applies only to an enforced
-  isolation claim. Newest-first history browsing is Contract 054, not load
-  readiness.
+  isolation claim. Any deadline-transferred cleanup retains the enclosing
+  lease owner under a pre-effect reap reservation. Newest-first history
+  browsing is Contract 054, not load readiness.
 - **018** governs owned ephemeral serving, now realized by the llama.cpp
   proof.
 - **019** governs in-process SDK drivers, foreign-language SDK sidecars,
   explicit client configuration, delegated SDK credentials, and cleanup truth
   across attested-tree and explicit root-only degraded platform postures. A
-  caller-bound SDK operation may return an unfinished task only to its exact
-  host reaper; accepted-for-reap never means joined.
+  caller-bound SDK operation may return its enclosing cleanup guardian only
+  through a pre-effect exact-host/scope reap reservation; the guardian retains
+  process, pump, resource, and credential ownership in order, and
+  accepted-for-reap never means joined.
 - **020** keeps mutable catalogue observations separate from entitlement,
   runtime capability, and route selection. It distinguishes standalone sources
   from session-negotiated options and records that the current common
@@ -201,8 +207,10 @@ contract file owns the exact rules.
   and model-catalogue evidence into one immutable projection while excluding
   credential and target authority. Strict derived selection readiness keeps
   unknown, unavailable, failed, unsupported, and empty instances visible but
-  non-selectable; provider, model, route, default, fallback, refresh, and
-  persistence policy remain downstream.
+  non-selectable. A projected reap-reservation requirement remains evidence,
+  not a live grant or boolean substitute for per-operation host admission;
+  provider, model, route, default, fallback, refresh, and persistence policy
+  remain downstream.
 - **048** adds read-only cross-process reconciliation for consumer turns or
   structured runs whose runtime handles were lost. Session reconciliation
   binds an exact durable session and runtime turn; run reconciliation binds an

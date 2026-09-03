@@ -8,10 +8,11 @@ Vision tags: Claude Agent SDK, process trees, cleanup deadlines, lifecycle
 
 ## Purpose
 
-Close the two provider-neutral lifecycle gaps that prevented the
+Close the two provider-neutral lifecycle gaps that first prevented the
 `claude-agent.sdk` route from satisfying Contract 019, then record the exact
 macOS posture after tree-empty attestation stopped under ordinary authority.
-Preserve PR 188 for restack and finish card 055 on that existing identity.
+Later rejected review and PR 193 containment supersede the original PR 188
+restack plan; g05.025 now owns the remaining shared-runtime prerequisite.
 
 ## Runway
 
@@ -42,11 +43,12 @@ Preserve PR 188 for restack and finish card 055 on that existing identity.
    unconfirmed root or observed survivor is `Failed`.
 5. Card 055 was expected to restack onto both shared prerequisites and this
    accepted posture. Later rejected exact-head review proved those prerequisites
-   insufficient; PR 188's route is now withdrawn.
+   insufficient; PR 188's route is withdrawn and any re-entry starts later from
+   canonical main after g05.025/card 061.
 
-The implementation lanes are parallel, but same-repository merge ordering is
-serial: merge card 059 first if both touch runtime/API evidence, then restack
-card 058. PR 188 cannot merge ahead of either card.
+The original implementation lanes were parallel, with serial same-repository
+merge ordering for cards 059 and 058. That historical order is complete and no
+longer authorizes PR 188 or adapter re-entry.
 
 Contract 019 permits an explicitly qualified root-only platform only through
 the bounded degraded rule. It does not infer tree emptiness or widen any other
@@ -58,8 +60,9 @@ route or platform.
   for host-defined monotonic ticks.
 - Do not expose `claude-agent.sdk` when sidecar/root join is unbounded or
   unconfirmed; macOS support must surface the accepted degraded cleanup truth.
-- Do not replace or recreate PR 188. Preserve its valid model, tool,
-  credential, identity, sidecar, and provider-free test work.
+- Do not restore PR 188's route from this completed milestone. Its valid model,
+  tool, credential, identity, sidecar, and provider-free test work remains
+  historical evidence for card 055 after g05.025.
 - No provider contact, Claude login, token read, package install, release
   preparation, tag, or push is authorized.
 
@@ -68,7 +71,7 @@ route or platform.
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked after PR 188 containment; route withdrawn pending shared-runtime reservation/reapable-task authority
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — blocked after PR 188 containment; re-entry awaits accepted g05.025 card 061
 
 ## Acceptance
 
@@ -102,9 +105,9 @@ Subsequent exact-head review first found one narrower shared ownership gap: an
 unfinished `JoinedTask` still blocks when its handle is dropped at the caller
 deadline. g05.024/card 060 closed the successful-transfer case. Later rejected
 review proved refusal, cleanup-continuation lease ownership, and the integrated
-reaper proof still unsafe. Those findings require a new provider-neutral
-shared-runtime prerequisite without reopening this milestone's process-tree
-decision.
+  reaper proof still unsafe. g05.025/card 061 owns the new provider-neutral
+  shared-runtime reservation prerequisite without reopening this milestone's
+  process-tree decision.
 
 ## Review Oracle
 
@@ -125,5 +128,5 @@ transition on the SDK route.
 Stop on a descriptor that can close or disappear while a descendant survives
 being treated as tree-empty evidence, `Clean` from `RootOnly`, a design that
 requires guessed tick units, a compatibility shim that leaves unbounded close
-callable, or any attempt to merge PR 188 before every shared prerequisite,
-including g05.024/card 060, lands.
+callable, or any adapter re-entry before g05.025/card 061 lands and passes
+exact-head review.

@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-04
-Updated: 2026-08-21
+Updated: 2026-09-03
 
 ## Purpose
 
@@ -100,6 +100,16 @@ projection. A route record is evidence, not executable authority. It does not
 provide a generic prompt operation or collapse catalogue, structured-run,
 interactive-session, realtime, serving, or provider-session roles.
 
+A route may project that its operation profile requires Contract 010's
+operation-scoped reap reservation. That safe requirement is selection evidence,
+not a live grant. Catalogue assembly does not reserve host capacity, hold the
+host lifecycle open, or prove that reservation admission remains open. A
+boolean available/supported value is insufficient because host shutdown can
+race the interval between snapshot construction and execution. After selection,
+the exact task service must grant the reservation before any credential,
+resource, process, task, or provider effect; refusal makes that operation
+unavailable without changing the immutable catalogue snapshot.
+
 ## Model Catalogue Binding
 
 A model-catalogue result is either:
@@ -178,3 +188,5 @@ new ready snapshot.
   evidence is rejected
 - model and provider ids remain separate
 - catalogue construction adds no router, default, fallback, or provider effect
+- reap-reservation requirements may be projected, but readiness and a boolean
+  capability value never substitute for per-operation reservation admission

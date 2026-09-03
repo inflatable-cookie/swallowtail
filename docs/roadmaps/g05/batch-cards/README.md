@@ -11,11 +11,11 @@
 
 ## Ready
 
-_None._
+- [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — ready; pre-effect exact-host/scope reservation, non-fallible later handoff, and real local-host shutdown-race proof
 
 ## Blocked
 
-- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked; PR 188 route withdrawn pending shared-runtime reservation/reapable-task authority
+- [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — blocked on accepted g05.025 card 061; later enclosing-guardian re-entry only
 
 ## Completed
 
@@ -23,7 +23,7 @@ _None._
 - [058-caller-bounded-interactive-session-cleanup.md](./058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline now bound every interactive close and post-expiry session cleanup path across 22 adapter packages
 - [059-unix-owned-tree-attestation.md](./059-unix-owned-tree-attestation.md) — evidence stop; four native counterexamples falsify the candidate primitives; no sound owned-tree observation was found within current ordinary host-local authority on macOS, so the host stays root-only and adds no unsafe; entitlement/system-extension mechanisms are out of scope
 - [057-owned-process-tree-completion-evidence.md](./057-owned-process-tree-completion-evidence.md) — evidence stop; additive provider-neutral tree-completion vocabulary landed; the local Unix owner proves enrollment and termination but cannot observe emptiness, so every local exit stays root-only
-- [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded adapter-only ACP observation on projected open; lands before card 055 restack
+- [056-claude-agent-acp-negotiated-model-options-observation.md](./056-claude-agent-acp-negotiated-model-options-observation.md) — complete; bounded adapter-only ACP observation on projected open; remains valid after SDK containment
 - [053-claude-agent-sdk-route-evidence-and-contract-gate.md](./053-claude-agent-sdk-route-evidence-and-contract-gate.md) — complete; Research 278; official `0.3.258` frozen; credential non-custody and route gate proved
 - [054-claude-agent-acp-parity-census-and-delivery-gate.md](./054-claude-agent-acp-parity-census-and-delivery-gate.md) — complete; Research 279 and ACP delivery gate; negotiated model-options observation selected as the only adapter-only next tranche
 - [049-codex-0-152-1-claim.md](./049-codex-0-152-1-claim.md) — complete; Codex exec and app-server qualified through official `0.152.1`; unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay gaps; unpublished `0.152.2` stays UnverifiedNewer

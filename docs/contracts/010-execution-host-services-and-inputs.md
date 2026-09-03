@@ -36,24 +36,58 @@ join-on-drop ownership. A caller-bound operation that reaches its deadline
 while such a task is unfinished must not drop or synchronously join the handle
 on the caller path.
 
-`ScopedTaskService::relinquish` is the narrow ownership-transfer seam for that
-case. It accepts only an unfinished task created under the same exact
-`ScopeId` and execution host. Success clears the caller's task slot only after
-the host has accepted autonomous ownership and returns
+Before a route starts work that may need that return path, the exact selected
+task service grants one operation-scoped reap reservation, or an equivalent
+atomic capability with the same guarantees. The grant is bound to one exact
+execution host and `ScopeId` and reserves the capacity and lifecycle authority
+needed to accept one later unfinished task. It is acquired before provider
+work and before credentials, working resources, processes, or tasks are
+acquired or started. Unsupported hosts, closed reservation admission, and
+unavailable capacity reject at this point with no such effect.
+
+Before its work is polled, the grant is bound atomically to one new task by an
+additive reapable-task start operation, or by an equivalent combined reserve-
+and-start operation. Once bound, reserved capacity cannot be released
+independently from that task. Ordinary completion and join release it; accepted
+relinquishment transfers it with the task. A reservation that was never bound
+may be released without starting work.
+
+A service-kind check or boolean `supports_reap`-style probe is explicitly
+insufficient. Host shutdown or capacity exhaustion can race the gap between a
+probe and a later transfer. Only the held reservation, or an atomic
+reserve-and-start operation with equivalent ownership, authorizes a route whose
+caller may return before task completion.
+
+`ScopedTaskService::relinquish` is the narrow ownership-transfer seam for the
+reserved case. It accepts only an unfinished reservation-backed task created
+under the same exact `ScopeId` and execution host. Success clears the caller's
+task slot only after the host has accepted autonomous ownership and returns
 `TaskRelinquishOutcome::AcceptedForReap`. The outcome means neither finished
 nor joined. The host must reap the task after it finishes without a second
-adapter call or adapter-global parking. Its concrete selected-host composition
-retains and supervises the reaper through an outer lifecycle owner, then
-explicitly joins that infrastructure outside the task tree on shutdown.
-Task-service clones carry only weak handoff authority and never join reapers on
-drop; discarding a reaper handle is detached execution, not host ownership.
-Wrong-host, wrong-scope, unsupported, already-finished, and repeated transfers
-fail closed and leave ordinary task ownership with the caller.
+adapter call or adapter-global parking. A valid reserved exact-host/exact-scope
+transfer cannot fail because shutdown began, capacity was consumed elsewhere,
+or the host lifecycle advanced after the grant. Wrong-host, wrong-scope,
+already-finished, repeated, forged, or released reservations fail closed and
+leave ordinary task ownership with the caller.
+
+The concrete selected-host composition retains and supervises accepted work and
+its reapers through an outer lifecycle owner. Shutdown first stops new
+reservations, then waits for every issued reservation to be released unused or
+settled and for every accepted task to finish, then joins all retained reapers
+outside the task tree. Task-service clones carry only weak reservation and
+handoff authority and never join reapers on drop; discarding a reaper handle is
+detached execution, not host ownership.
 
 Relinquishment preserves the caller deadline; it is never cleanup-completion
 evidence. An adapter may use it only to record that the selected host took
 back ownership. It cannot derive `CleanupOutcome::Clean`, a joined task, or a
 completed provider/session cleanup stage from acceptance for reap.
+
+An unused reservation that was never bound to a task is released explicitly or
+by its non-blocking drop path. Release does not join a task. A bound reservation
+cannot be dropped away from its task. Ordinary `spawn`, explicit `join`, and
+concrete join-on-drop behavior remain unchanged; the reserved path is additive
+and cannot silently make every task detachable.
 
 A concrete host composition may derive a deadline from its monotonic clock and
 one caller-supplied duration. The caller still decides whether a deadline
@@ -77,7 +111,7 @@ duration, default timeout, provider setting, or ambient-clock authority.
 
 The close boundary covers the whole remaining session lifecycle: active-turn
 interruption, provider-native close, required escalation, pump and task joins,
-credential release, and resource release. A stage cannot select a later
+resource release, and credential release. A stage cannot select a later
 deadline or keep the public close future pending after the shared boundary.
 Post-open abort and cleanup after turn expiry use the same rule.
 
@@ -374,10 +408,19 @@ billing, support authority, privacy posture, ownership, or topology.
 
 - caller-bounded relinquishment returns after exact-host/scope acceptance,
   without waiting for unfinished task completion
-- wrong-host, wrong-scope, unsupported, finished, and repeated relinquishment
-  retain ordinary caller ownership; accepted-for-reap never means joined
-- selected-host shutdown runs outside the task tree and accounts for every
-  retained reaper even when a worker captures a task-service clone
+- unsupported or closing hosts reject the reservation before credential,
+  resource, process, provider, or task work
+- a held reservation makes later exact-host/scope relinquishment immune to
+  shutdown and capacity races; a boolean capability probe does not
+- the reservation binds to one task before its work is polled and cannot be
+  released independently while that task remains live
+- wrong-host, wrong-scope, finished, repeated, forged, and released-reservation
+  relinquishment retain ordinary caller ownership; accepted-for-reap never
+  means joined
+- selected-host shutdown stops reservation admission, waits existing
+  reservations and accepted tasks, then joins every retained reaper outside
+  the task tree even when a worker captures a task-service clone
+- ordinary spawn, explicit join, and join-on-drop behavior remain unchanged
 - a hosted API driver executes without process service
 - a one-shot CLI fails preflight without process service
 - delegated harness authentication does not require secret extraction

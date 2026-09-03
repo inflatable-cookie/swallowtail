@@ -1,26 +1,28 @@
 # 055 Claude Agent SDK Provider-Free Foundation
 
-Status: blocked; PR 188 route withdrawn pending shared-runtime reservation/reapable-task authority
+Status: blocked; adapter re-entry awaits accepted g05.025 card 061
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../022-claude-agent-dual-route-parity.md`
-Depends on: completed cards 053-054 and 060; Research 278-279; Contracts 010, 019, and 029
+Depends on: completed cards 053-054 and 060; accepted g05.025 card 061;
+  Research 278-279; Contracts 009, 010, 017, 019, 029, and 047
 
 ## Goal
 
-Implement the first provider-free `claude-agent.sdk` route foundation through
+Restore the withdrawn provider-free `claude-agent.sdk` route foundation through
 a bounded Node sidecar, exact official SDK identity, subscription credential
 non-custody, read-only streaming, and a caller-bounded process lifecycle with
 honest descendant-completion truth.
 
 ## Scope
 
-1. Recheck the Anthropic subscription-use article and official npm stable
-   immediately before implementation. Stop if the policy changed or
-   `0.3.258` is no longer the official point; refresh identity evidence rather
-   than silently implementing a stale artifact.
-2. Add the distinct `claude-agent.sdk` route. Bind exact SDK `0.3.258`, native
-   wrapper `2.1.258`, Node runtime, source-tagged sidecar, private wire, and
+1. Start from canonical main only after card 061 merges and passes independent
+   exact-head review. Recheck the Anthropic subscription-use article and
+   official npm stable immediately before implementation. Refresh the frozen
+   identity evidence rather than copying PR 188's now-historical version point
+   or bulk-bumping from `latest`.
+2. Add the distinct `claude-agent.sdk` route. Bind the newly frozen exact SDK,
+   native wrapper, Node runtime, source-tagged sidecar, private wire, and
    behavior revision independently. Start with one exact QualifiedOnly point;
    do not inherit ACP or Claude Code claims.
 3. Ship a small source-tagged JavaScript sidecar asset. The application
@@ -35,24 +37,35 @@ honest descendant-completion truth.
    system/output/activity, runtime capabilities, first-party account readiness,
    `canUseTool`, interrupt, close, and terminal failure. Keep raw SDK values,
    credentials, paths, and payloads out of public records and diagnostics.
-6. Launch the sidecar through the host's declared process authority. Sidecar
-   close holds an independently joinable native-process handle, joins within
-   the caller cleanup deadline, escalates through host authority, and rejoins.
+6. Before any credential, resource, process, task, or provider work, obtain
+   card 061's operation-scoped reap reservation from the exact selected task
+   service. A boolean capability probe is insufficient. Launch one enclosing
+   guardian task through the host's declared task authority. The guardian owns
+   the pump, native-process handle, working-resource lease, and credential lease
+   and preserves this cleanup order: interrupt → native close → force-stop →
+   root/process observation → pump completion/join → resource release →
+   credential release. At the caller deadline, transfer the enclosing guardian,
+   not the pump, through the held exact-host/exact-scope reservation. Sidecar
+   close joins within the caller cleanup deadline, escalates through host
+   authority, and rejoins.
    `OwnedTreeEmpty` is the only basis for `Clean`. On ordinary macOS,
    `RootOnly` plus confirmed sidecar/root exit after the descendant termination
    attempt is an exact `Degraded` cleanup; unconfirmed root exit or an observed
    survivor is `Failed`. Do not claim descendant-tree completion there.
-   If the caller deadline arrives while a scoped task is unfinished, transfer
-   it through the exact selected host and scope using card 060's
-   relinquishment seam. `AcceptedForReap` is never join or cleanup evidence.
+   `AcceptedForReap` is never join or cleanup evidence. The transferred
+   guardian keeps process and leases until eventual ordered cleanup; the caller
+   reports honest unresolved/failed or route-qualified degraded cleanup without
+   waiting past its deadline.
 7. Preserve cwd and first-party account binding through the session. Resume,
    fork, model/effort/thinking mutation, commands, checkpoints, usage detail,
    and broader permissions remain later layers.
 8. Add provider-free fake-sidecar and fake-native-child fixtures proving exact
    identity, framing, backpressure, ordering, readiness, capability negatives,
    interruption, crash/disconnect, redaction, descendant survival
-   counterexamples, escalation, rejoin, and cleanup ordering. No login or
-   provider turn.
+   counterexamples, escalation, rejoin, and cleanup ordering. The integrated
+   deadline proof must use real `LocalHostServices` so the worker is retained,
+   transferred, reaped, and joined by the outer host owner. No fixture may
+   discard its worker handle. No login or provider turn.
 9. Update route inventory, matrices, guide, architecture, changelog, milestone,
    card, and log only for behavior actually delivered. Hold public API and
    god-file baselines unless the card's exact facade requires a reviewed
@@ -75,8 +88,14 @@ preparation; tags; g05.009.
       confirmed-root `Degraded` from unconfirmed-root or observed-survivor `Failed`
 - [ ] any platform reporting `Clean` supplies positive `OwnedTreeEmpty` evidence
 - [ ] fake descendants prove nearest-child join alone is insufficient
-- [ ] caller expiry relinquishes unfinished task ownership to the exact host
-      without blocking, global parking, or strengthening cleanup truth
+- [ ] unsupported or closing selected hosts reject the reap reservation before
+      credential, resource, process, task, or provider work
+- [ ] caller expiry transfers the enclosing guardian to the exact host and
+      scope without blocking, global parking, lease release around unfinished
+      work, or strengthened cleanup truth
+- [ ] a shutdown race after reservation grant cannot refuse the valid handoff
+- [ ] real `LocalHostServices` proves retained worker transfer, eventual reap,
+      outer reaper join, and the synchronous-drop counterexample
 - [ ] provider-free fixtures cover bounds, ordering, failure, redaction, cancellation, and cleanup
 - [ ] existing ACP and Claude Code behavior and claims are unchanged
 - [ ] route/docs/API/god-file gates hold
@@ -101,26 +120,32 @@ and report why.
 
 ## Review Oracle
 
-Invariant: Rust bounds the sidecar/native lifecycle and never reports stronger
-cleanup truth than the host observes, while never possessing the user's
-subscription credential.
+Invariant: Rust obtains guaranteed host-reap authority before effects, keeps the
+whole sidecar lifecycle and both leases inside one enclosing guardian, and never
+reports stronger cleanup truth than the host observes while never possessing
+the user's subscription credential.
 
-Smallest counterexample: Node exits cleanly while native Claude or one tool
-descendant survives and the route reports `Clean`, or an inherited environment
-silently selects API-key authentication.
+Smallest counterexample: shutdown starts after a boolean support probe and late
+guardian transfer is refused, so dropping the real local handle blocks past the
+caller deadline; or the pump transfers while resource and credential leases are
+released around the still-live process.
 
 ## Stop Conditions
 
-Stop on changed subscription policy, moved official stable, required token
-custody, an unbounded or unconfirmed sidecar/root join, `Clean` from root-only
-evidence, an SDK-only type leaking into shared API, provider contact need, or a
-required shared public vocabulary decision. Stop if card 060 is not on the
-restacked base or any accepted-for-reap result is treated as joined cleanup.
+Stop on changed subscription policy, unavailable fresh identity evidence,
+required token custody, an unbounded or unconfirmed sidecar/root join, `Clean`
+from root-only evidence, an SDK-only type leaking into shared API, provider
+contact need, or a required shared public vocabulary decision. Stop if card 061
+is not on canonical main; reservation occurs after effects; deadline transfers
+only the pump; leases release before guardian terminal cleanup; the integrated
+proof does not use real `LocalHostServices`; or accepted-for-reap is treated as
+joined cleanup.
 
 ## Auto-Continuation
 
-No. Exact-head frontier review before merge. Later SDK layers compile only
-after this lifecycle foundation lands.
+No. Exact-head frontier review before merge. Release readiness remains frozen
+after this card until the operator separately accepts the reviewed route and
+authorizes a fresh g05.021 audit.
 
 ## Containment
 
@@ -131,9 +156,9 @@ still runs, and the integrated fixture does not retain or reap its worker.
 
 The containment change forward-reverts PR 188's tree delta and withdraws
 `claude-agent.sdk`. PR 192/card 060 remains intact: `AcceptedForReap` is still
-transfer only, never join or cleanup success. Card 055 cannot resume until a
-provider-neutral shared-runtime prerequisite establishes non-fallible
-reservation/reapable-task authority before provider work and retains the whole
-ordered cleanup continuation through terminal lease release. That prerequisite
-is not implemented here. The `v0.4.0` release lane remains frozen through a
-later SDK implementation's independent exact-head acceptance.
+transfer only, never join or cleanup success. Card 055 cannot resume until
+g05.025 card 061 establishes non-fallible reservation/reapable-task authority
+before provider work. Re-entry then uses a fresh branch from canonical main and
+retains the whole ordered guardian cleanup continuation through terminal lease
+release. The `v0.4.0` release lane remains frozen through that later SDK
+implementation's independent exact-head acceptance.

@@ -1,20 +1,26 @@
 //! Sidecar launch: leases, host-owned process tree, and protocol pump.
+//!
+//! Every acquisition is recorded in the open guard the instant it succeeds, so
+//! a caller deadline that drops this future mid-flight still leaves the guard
+//! holding what was acquired. Failure paths return the error and let the guard
+//! release; they never release behind its back, because a partially acquired
+//! open and a fully acquired one must clean up the same way.
 
 use super::{ClaudeAgentSdkDriver, PendingSession, scope_invalid};
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
+use crate::sdk::guardian::OpenGuard;
 use std::sync::Arc;
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
-    CredentialLease, ExecutableRef, HostServices, ProcessHandle, ProcessRequest, ResourceAccess,
+    ExecutableRef, HostServices, ProcessHandle, ProcessRequest, ResourceAccess,
     ResourceRepresentation, RuntimeFailure, ScopeId, WorkingResourceRef,
     validate_session_resource_lease,
 };
 
 impl ClaudeAgentSdkDriver {
     /// Acquires the credential and resource leases, starts the sidecar inside
-    /// the host's descendant-tree authority, and starts the protocol pump,
-    /// releasing leases in order on any failure.
+    /// the host's descendant-tree authority, and starts the protocol pump.
     pub(super) async fn spawn_session(
         &self,
         plan: &PreflightPlan,
@@ -22,6 +28,7 @@ impl ClaudeAgentSdkDriver {
         working_resource: WorkingResourceRef,
         access_policy: &swallowtail_core::SessionAccessPolicy,
         services: HostServices,
+        guard: &OpenGuard,
     ) -> Result<PendingSession, RuntimeFailure> {
         let scope = ScopeId::new(format!("claude-agent-sdk:session:{}", request_id.as_str()))
             .map_err(|_| scope_invalid())?;
@@ -29,122 +36,70 @@ impl ClaudeAgentSdkDriver {
             .credential()
             .cloned()
             .expect("validated sidecar credential service");
-        let mut credential = Some(
-            credential_service
-                .acquire(
-                    scope.clone(),
-                    self.credential.clone(),
-                    plan.endpoint_audience().clone(),
-                )
-                .await?,
-        );
+        let credential = credential_service
+            .acquire(
+                scope.clone(),
+                self.credential.clone(),
+                plan.endpoint_audience().clone(),
+            )
+            .await?;
+        guard.record_credential(credential);
+
         // Only a delegated lease is admissible: this route never receives,
         // stores, or forwards a subscription credential value.
-        if !matches!(credential.as_ref(), Some(CredentialLease::Delegated(_)))
-            || credential.as_ref().is_some_and(|lease| {
-                lease.scope() != &scope
-                    || lease.reference() != &self.credential
-                    || lease.audience() != plan.endpoint_audience()
-            })
-        {
-            let _ = credential_service
-                .release(credential.take().expect("sidecar credential was acquired"))
-                .await;
+        if !guard.credential_matches(&scope, &self.credential, plan.endpoint_audience()) {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.credential_lease_rejected",
                 "Claude Agent SDK sidecar requires a matching delegated credential lease",
             ));
         }
+
         let resource_service = services
             .working_resource()
             .cloned()
             .expect("validated sidecar working-resource service");
-        let mut resource = match resource_service
+        let resource = resource_service
             .resolve(
                 scope.clone(),
                 working_resource.clone(),
                 ResourceAccess::Read,
                 ResourceRepresentation::Filesystem,
             )
-            .await
-        {
-            Ok(resource) => Some(resource),
-            Err(error) => {
-                let _ = credential_service
-                    .release(credential.take().expect("sidecar credential was acquired"))
-                    .await;
-                return Err(error);
-            }
-        };
-        if let Err(error) = validate_session_resource_lease(
-            access_policy,
-            &working_resource,
-            resource.as_ref().expect("sidecar resource was resolved"),
-        ) {
-            let _ = resource_service
-                .release(resource.take().expect("sidecar resource was resolved"))
-                .await;
-            let _ = credential_service
-                .release(credential.take().expect("sidecar credential was acquired"))
-                .await;
-            return Err(error);
-        }
+            .await?;
         let leased_cwd = resource
-            .as_ref()
-            .expect("sidecar resource was resolved")
             .filesystem()
             .expect("validated sidecar filesystem lease exposes a root")
             .as_driver_value()
             .to_owned();
+        validate_session_resource_lease(access_policy, &working_resource, &resource)?;
+        guard.record_resource(resource);
+
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated sidecar process service")
-            .start(scope.clone(), process_request)
-            .await
-        {
-            Ok(process) => Arc::from(process),
-            Err(error) => {
-                let _ = resource_service
-                    .release(resource.take().expect("sidecar resource was resolved"))
-                    .await;
-                let _ = credential_service
-                    .release(credential.take().expect("sidecar credential was acquired"))
-                    .await;
-                return Err(error);
-            }
-        };
+        let process: Arc<dyn ProcessHandle> = Arc::from(
+            services
+                .process()
+                .expect("validated sidecar process service")
+                .start(scope.clone(), process_request)
+                .await?,
+        );
+        guard.record_process(Arc::clone(&process));
+
         let connection = SdkConnection::new(Arc::clone(&process), services.clone());
         let pump = Arc::clone(&connection);
-        let pump_task = match services
+        let pump_task = services
             .task()
             .expect("validated sidecar task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))
-        {
-            Ok(task) => task,
-            Err(error) => {
-                let _ = process.force_stop().await;
-                let _ = process.wait().await;
-                let _ = resource_service
-                    .release(resource.take().expect("sidecar resource was resolved"))
-                    .await;
-                let _ = credential_service
-                    .release(credential.take().expect("sidecar credential was acquired"))
-                    .await;
-                return Err(error);
-            }
-        };
+            .spawn(scope, Box::pin(async move { pump.pump().await }))?;
+        guard.record_pump(pump_task);
+
         Ok(PendingSession {
             request_id,
             connection,
-            pump_task: Some(pump_task),
             services,
-            resource,
-            credential,
             leased_cwd,
         })
     }

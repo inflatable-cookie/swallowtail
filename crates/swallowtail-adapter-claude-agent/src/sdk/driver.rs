@@ -12,12 +12,13 @@ use self::validation::validate_open;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
+use crate::sdk::guardian::OpenGuard;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
-    BoxFuture, CredentialLease, EnvironmentRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
-    ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId,
+    BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
+    LoadSessionRequest, LoadedSession, OpenSessionRequest, ResumeSessionRequest, RuntimeFailure,
+    RuntimeSessionId,
 };
 
 mod descriptor;
@@ -50,71 +51,41 @@ impl ClaudeAgentSdkDriver {
     }
 }
 
-/// One spawned, verified sidecar attachment before readiness.
+/// One spawned sidecar attachment before readiness.
+///
+/// The leases, process, and pump task are not held here: the open guard holds
+/// them until the success path claims them, so a dropped open future cannot
+/// strand a partial acquisition.
 pub(super) struct PendingSession {
     pub(super) request_id: swallowtail_runtime::RequestId,
     pub(super) connection: Arc<SdkConnection>,
-    pub(super) pump_task: Option<Box<dyn JoinedTask>>,
     pub(super) services: HostServices,
-    pub(super) resource: Option<ResourceLease>,
-    pub(super) credential: Option<CredentialLease>,
     pub(super) leased_cwd: String,
 }
 
 impl PendingSession {
-    /// Terminates the sidecar through host authority and releases leases in
-    /// contract order, entirely inside the caller's open deadline.
-    ///
-    /// The declared descendant termination attempt is a request, so it runs
-    /// first and unconditionally. Every await after it is raced against the
-    /// same caller bound, and once that bound is spent nothing is awaited at
-    /// all. Returns whether every cleanup stage completed inside the bound, so
-    /// the caller can report unconfirmed cleanup instead of implying success.
-    pub(in crate::sdk::driver) async fn abort(mut self, bounded: &HostBound) -> bool {
-        let _ = bounded.run(self.connection.begin_close()).await;
-        let escalated = bounded
-            .run(self.connection.escalate())
-            .await
-            .is_some_and(|result| result.is_ok());
-        let joined = match self.pump_task.take() {
-            Some(task) => bounded
-                .run(task.join())
-                .await
-                .is_some_and(|joined| joined.is_ok()),
-            None => true,
-        };
-        let mut released = true;
-        if let (Some(lease), Some(service)) =
-            (self.resource.take(), self.services.working_resource())
-        {
-            released &= bounded.run(service.release(lease)).await.is_some();
-        }
-        if let (Some(lease), Some(service)) = (self.credential.take(), self.services.credential()) {
-            released &= bounded.run(service.release(lease)).await.is_some();
-        }
-        escalated && joined && released
-    }
-
     pub(in crate::sdk::driver) fn into_handle(
         self,
         plan: &PreflightPlan,
         readiness: startup::SessionReadiness,
+        acquired: crate::sdk::guardian::Acquisitions,
     ) -> ClaudeAgentSdkSessionHandle {
         let runtime_id =
             RuntimeSessionId::new(format!("claude-agent-sdk:{}", self.request_id.as_str()))
                 .expect("validated request id produces a valid sidecar runtime session id");
+        let active: crate::sdk::driver::session::ActiveSlot = Arc::new(Mutex::new(None));
         ClaudeAgentSdkSessionHandle {
             request_id: self.request_id,
             runtime_id,
             execution_host_id: plan.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
-            cancellation: handle::SessionCancellation::new(Arc::clone(&self.connection)),
-            pump_task: self.pump_task,
+            cancellation: handle::SessionCancellation::new(Arc::clone(&active)),
+            pump_task: acquired.pump,
             services: self.services,
-            resource: self.resource,
-            credential: self.credential,
+            resource: acquired.resource,
+            credential: acquired.credential,
             readiness,
-            active: Arc::new(Mutex::new(None)),
+            active,
         }
     }
 }
@@ -128,51 +99,48 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_open(&plan, &request, &services, &self.credential)?;
+            let deadline = request.deadline().expect("validated open deadline");
             let bounded = HostBound::new(
                 services
                     .time()
                     .cloned()
                     .expect("validated sidecar time service"),
-                request.deadline().expect("validated open deadline"),
+                deadline,
             );
             if bounded.expired() {
                 return Err(open_deadline_elapsed());
             }
-            let pending = self
-                .spawn_session(
-                    &plan,
-                    request.request_id().clone(),
-                    request
-                        .working_resource()
-                        .expect("validated sidecar working resource")
-                        .clone(),
-                    request.access_policy(),
-                    services,
-                )
-                .await?;
-            // Startup is raced against the caller's host deadline: an SDK that
-            // never initializes must not hold the open await, and expiry hands
-            // the tree to the host's termination authority. See `abort` for the
-            // exact limit of that guarantee.
-            match bounded
-                .run(startup::open(
-                    &pending.connection,
-                    &plan,
-                    &pending.leased_cwd,
-                ))
-                .await
-            {
-                Some(Ok(readiness)) => Ok(Box::new(pending.into_handle(&plan, readiness))
-                    as Box<dyn InteractiveSessionHandle>),
+            // Armed before the first acquisition. From here on, every lease,
+            // process, and task the open path takes is recorded in the guard,
+            // so the caller's deadline can drop this future at any point
+            // without stranding what was already acquired.
+            let guard = OpenGuard::arm(&services, request.request_id().as_str(), deadline)?;
+            let opened = bounded
+                .run(self.acquire_and_start(&plan, &request, services.clone(), &guard))
+                .await;
+            match opened {
+                Some(Ok((pending, readiness))) => {
+                    let acquired = guard.claim();
+                    Ok(Box::new(pending.into_handle(&plan, readiness, acquired))
+                        as Box<dyn InteractiveSessionHandle>)
+                }
                 Some(Err(error)) => {
-                    if pending.abort(&bounded).await {
-                        Err(error)
-                    } else {
-                        Err(open_cleanup_unconfirmed())
-                    }
+                    // A failure that only happened because the guard already
+                    // terminated at the deadline is reported as the deadline,
+                    // not as whatever the collapsing connection said next.
+                    let expired = bounded.expired() || guard.deadline_fired();
+                    let cleaned = guard.fire(&bounded).await;
+                    Err(match (expired, cleaned) {
+                        (_, false) => open_cleanup_unconfirmed(),
+                        (true, true) => open_deadline_elapsed(),
+                        (false, true) => error,
+                    })
                 }
                 None => {
-                    let cleaned = pending.abort(&bounded).await;
+                    // The bound expired inside acquisition or startup. The
+                    // guard still terminates and releases under host ownership;
+                    // this future returns now either way.
+                    let cleaned = guard.fire(&bounded).await;
                     Err(if cleaned {
                         open_deadline_elapsed()
                     } else {
@@ -199,6 +167,36 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
         _services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async { Err(crate::sdk::failure::unsupported("session resume")) })
+    }
+}
+
+impl ClaudeAgentSdkDriver {
+    /// The whole provider-facing open: acquisition, launch, and readiness.
+    ///
+    /// It is one future so the caller's deadline covers all of it, and every
+    /// acquisition inside is recorded in the guard before the next await.
+    async fn acquire_and_start(
+        &self,
+        plan: &PreflightPlan,
+        request: &OpenSessionRequest,
+        services: HostServices,
+        guard: &OpenGuard,
+    ) -> Result<(PendingSession, startup::SessionReadiness), RuntimeFailure> {
+        let pending = self
+            .spawn_session(
+                plan,
+                request.request_id().clone(),
+                request
+                    .working_resource()
+                    .expect("validated sidecar working resource")
+                    .clone(),
+                request.access_policy(),
+                services,
+                guard,
+            )
+            .await?;
+        let readiness = startup::open(&pending.connection, plan, &pending.leased_cwd).await?;
+        Ok((pending, readiness))
     }
 }
 

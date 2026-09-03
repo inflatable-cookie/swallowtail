@@ -7,9 +7,9 @@
 //! on the request, and expiry is observed through the host's `TimeService`,
 //! never a local timer.
 //!
-//! Close is deliberately absent here: `InteractiveSessionHandle::close` takes
-//! no caller deadline, and monotonic tick units are host-defined, so there is
-//! no honest way to derive a fresh close bound without a new timing seam.
+//! Close uses the same primitive: `InteractiveSessionHandle::close` now carries
+//! the caller's `SessionCleanupRequest`, so its deadline bounds every close
+//! stage here as well as the public future the shared cleanup bound wraps.
 
 use std::future::Future;
 use std::pin::pin;

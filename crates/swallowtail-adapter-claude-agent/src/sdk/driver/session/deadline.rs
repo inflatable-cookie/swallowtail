@@ -56,15 +56,20 @@ pub(super) fn spawn_turn_deadline(
                 })
                 .await;
                 if timed_out {
+                    // The terminal outcome is completed first and never waits
+                    // on a receipt. An accepted turn whose sidecar stops
+                    // answering still resolves at its deadline; the interrupt
+                    // stays a request, and bounded session close owns the
+                    // descendant termination.
                     turn.mark_timed_out();
-                    let id = format!("deadline-interrupt:{}", turn.runtime_id().as_str());
-                    let _ = connection
-                        .command(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
-                        .await;
                     turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
                         "Claude Agent SDK sidecar turn reached its host deadline",
                     ));
+                    let id = format!("deadline-interrupt:{}", turn.runtime_id().as_str());
+                    let _ = connection
+                        .send(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
+                        .await;
                 }
             }),
         )

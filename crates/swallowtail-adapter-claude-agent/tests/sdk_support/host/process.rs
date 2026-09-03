@@ -23,8 +23,15 @@ impl ProcessService for SdkFixtureHost {
             scenario: self.scenario,
             exit_observable: self.exit_observable,
             attests_empty_owned_tree: self.attests_empty_owned_tree,
+            stall: self.stall,
         };
-        Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
+        let stalled = self.stall == Some(super::super::host::Stall::ProcessStart);
+        Box::pin(async move {
+            if stalled {
+                std::future::pending::<()>().await;
+            }
+            Ok(Box::new(handle) as Box<dyn ProcessHandle>)
+        })
     }
 }
 
@@ -33,10 +40,23 @@ struct SdkFixtureProcess {
     scenario: super::super::host::SdkScenario,
     exit_observable: bool,
     attests_empty_owned_tree: bool,
+    stall: Option<super::super::host::Stall>,
 }
 
 impl ProcessHandle for SdkFixtureProcess {
     fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        let stalling_writes = self
+            .shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .stalling_writes;
+        if stalling_writes || self.stall == Some(super::super::host::Stall::ProcessWrite) {
+            return Box::pin(async move {
+                std::future::pending::<()>().await;
+                Ok(())
+            });
+        }
         let result = (|| {
             let line = chunk
                 .bytes()
@@ -87,7 +107,15 @@ impl ProcessHandle for SdkFixtureProcess {
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        // The request is always recorded before any stall: a stalled
+        // termination still proves the request was made.
         self.record(CleanupEvent::ProcessForceStop);
+        if self.stall == Some(super::super::host::Stall::ForceStop) {
+            return Box::pin(async move {
+                std::future::pending::<()>().await;
+                Ok(())
+            });
+        }
         self.stop()
     }
 

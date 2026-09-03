@@ -13,47 +13,77 @@
 //! an observed survivor or unconfirmed root exit is failure.
 
 use super::{CLOSE_JOIN_BOUND_MS, native_join};
+use crate::sdk::bounded::HostBound;
 use crate::sdk::close::ClaudeAgentSdkCloseState;
 use crate::sdk::connection::SdkConnection;
+use crate::sdk::guardian::EscalationWatchdog;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::json;
+use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CleanupOutcome, CredentialLease, HostServices, JoinedTask, ProcessExit, RequestId,
+    CleanupOutcome, CredentialLease, Deadline, HostServices, JoinedTask, ProcessExit, RequestId,
     ResourceLease,
 };
 
 pub(super) async fn close_tree(
-    connection: &SdkConnection,
+    connection: &Arc<SdkConnection>,
+    services: &HostServices,
     request_id: &RequestId,
     turn_active: bool,
     pump_task: Option<Box<dyn JoinedTask>>,
+    bounded: &HostBound,
+    deadline: Deadline,
 ) -> ClaudeAgentSdkCloseState {
+    // Armed before any cooperative stage. From here the declared descendant
+    // termination request happens on the caller's deadline even if the sidecar
+    // accepts input and never answers, because the watchdog is a host task, not
+    // part of this future.
+    let watchdog = EscalationWatchdog::arm(
+        services,
+        Arc::clone(connection),
+        request_id.as_str(),
+        deadline,
+    )
+    .ok();
+
     if turn_active {
         let id = format!("close-interrupt:{}", request_id.as_str());
-        let _ = connection
-            .command(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
+        let _ = bounded
+            .run(connection.command(id, ClaudeAgentSdkCommand::Interrupt, json!({})))
             .await;
     }
-    // Every await below sits inside the caller's cleanup deadline, which the
-    // public close seam applies once and no stage may restart.
+    // The sidecar's own bounded native join. Raced here as well, so a silent
+    // sidecar cannot consume the caller's deadline inside this stage.
     let id = format!("close:{}", request_id.as_str());
-    let reported = connection
-        .command(
+    let reported = bounded
+        .run(connection.command(
             id,
             ClaudeAgentSdkCommand::Close,
             json!({"joinBoundMs": CLOSE_JOIN_BOUND_MS}),
-        )
+        ))
         .await
-        .ok()
+        .and_then(Result::ok)
         .filter(|response| response.success)
         .and_then(|response| native_join(response.data.as_ref()));
-    connection.begin_close().await;
-    // The declared descendant termination attempt always runs, whatever the
-    // sidecar reported. Degraded truth is only admissible after it.
-    let _ = connection.escalate().await;
+    let _ = bounded.run(connection.begin_close()).await;
+
+    // Ask for the termination now rather than at expiry, then join the guard.
+    // Either way the request is made: the guard owns it.
+    match watchdog {
+        Some(watchdog) => {
+            let _ = watchdog.terminate(bounded).await;
+        }
+        None => {
+            let _ = bounded.run(connection.escalate()).await;
+        }
+    }
+
     let joined = match pump_task {
-        Some(task) => task.join().await.is_ok(),
+        Some(task) => bounded
+            .run(task.join())
+            .await
+            .is_some_and(|joined| joined.is_ok()),
         None => false,
     };
     // Re-join, then let the host's own evidence decide. Root exit is not tree
@@ -69,9 +99,21 @@ pub(super) async fn close_tree(
 pub(super) async fn release_resource(
     lease: Option<ResourceLease>,
     services: &HostServices,
+    bounded: &HostBound,
 ) -> CleanupOutcome {
     match (lease, services.working_resource()) {
-        (Some(lease), Some(service)) => service.release(lease).await,
+        (Some(lease), Some(service)) => {
+            bounded
+                .run(service.release(lease))
+                .await
+                .unwrap_or_else(|| {
+                    cleanup_failure(
+                        "swallowtail.claude-agent.sdk.resource_release_unconfirmed",
+                        "Claude Agent SDK sidecar working-resource release did not complete inside \
+                     the caller cleanup deadline",
+                    )
+                })
+        }
         (Some(_), None) => cleanup_failure(
             "swallowtail.claude-agent.sdk.resource_release_failed",
             "Claude Agent SDK sidecar working-resource service disappeared during cleanup",
@@ -83,9 +125,21 @@ pub(super) async fn release_resource(
 pub(super) async fn release_credential(
     lease: Option<CredentialLease>,
     services: &HostServices,
+    bounded: &HostBound,
 ) -> CleanupOutcome {
     match (lease, services.credential()) {
-        (Some(lease), Some(service)) => service.release(lease).await,
+        (Some(lease), Some(service)) => {
+            bounded
+                .run(service.release(lease))
+                .await
+                .unwrap_or_else(|| {
+                    cleanup_failure(
+                        "swallowtail.claude-agent.sdk.credential_release_unconfirmed",
+                        "Claude Agent SDK sidecar credential release did not complete inside the \
+                     caller cleanup deadline",
+                    )
+                })
+        }
         (Some(_), None) => cleanup_failure(
             "swallowtail.claude-agent.sdk.credential_release_failed",
             "Claude Agent SDK sidecar credential service disappeared during cleanup",

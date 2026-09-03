@@ -132,6 +132,21 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                                    "message": "sidecar terminated: unknown_message"}}),
             );
         }
+        // The turn ends first, then an admission request the sidecar had
+        // already written arrives. The wire order is what a real interrupt or
+        // deadline race produces.
+        SdkScenario::AdmissionAfterResult => {
+            push(
+                state,
+                json!({"type": "event", "event": "turn_ended", "stopReason": "success",
+                       "isError": false}),
+            );
+            push(
+                state,
+                json!({"type": "callback", "id": "cb-late", "callback": "can_use_tool",
+                       "toolName": "Read"}),
+            );
+        }
         SdkScenario::ToolOrderingDrift => {
             push(
                 state,

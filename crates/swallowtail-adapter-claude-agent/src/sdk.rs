@@ -19,6 +19,7 @@ mod close;
 mod connection;
 mod driver;
 mod failure;
+mod guardian;
 mod permission;
 mod prepared;
 /// Bounded public decoder for qualified sidecar wire record shapes.

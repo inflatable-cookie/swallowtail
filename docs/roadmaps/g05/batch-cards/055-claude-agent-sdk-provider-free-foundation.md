@@ -19,9 +19,11 @@ honest descendant-completion truth.
    immediately before implementation. Stop if the policy changed or
    `0.3.258` is no longer the official point; refresh identity evidence rather
    than silently implementing a stale artifact.
-2. Add the distinct `claude-agent.sdk` route. Bind exact SDK `0.3.258`, native
-   wrapper `2.1.258`, Node runtime, source-tagged sidecar, private wire, and
-   behavior revision independently. Start with one exact QualifiedOnly point;
+2. Add the distinct `claude-agent.sdk` route. Bind exact SDK `0.3.259`, native
+   wrapper `2.1.259`, Node runtime, source-tagged sidecar, private wire, and
+   behavior revision independently. The points were `0.3.258`/`2.1.258` when
+   this card was written; scope item 1 fired and the operator selected the
+   refresh, recorded under Artifact Refresh. Start with one exact QualifiedOnly point;
    do not inherit ACP or Claude Code claims.
 3. Ship a small source-tagged JavaScript sidecar asset. The application
    provisions Node, the `.` SDK entry point, and platform package. Swallowtail
@@ -155,92 +157,30 @@ rather than a second supported point.
 
 ## Closeout
 
-Implemented as `claude-agent.sdk` in `swallowtail-adapter-claude-agent`, with
-the descendant-tree enrollment proof in `swallowtail-host-local` and a
-sidecar-level falsification that runs the shipped asset under Node against a
-fake SDK. The Help Center subscription article and official npm stable were
-rechecked immediately before implementation and both held exactly; no stop
-condition fired. Record:
-`../../../logs/2026-09-02-claude-agent-sdk-foundation.md`.
-
-**Contract 019 foundation acceptance is not met.** Two requirements cannot be
-satisfied from inside this route, and are stopped rather than approximated. The
-work that does hold is listed above and is independently green; what follows is
-what is missing, exactly.
-
-1. **Bounded close and bounded post-expiry cleanup.**
-   `InteractiveSessionHandle::close` carries no caller deadline, and
-   `MonotonicInstant` ticks are host-defined, so no fresh host-observed bound
-   can be derived. `close_tree` still awaits the correlated close response and
-   the pump join without an observable bound, and the open-expiry `abort` path
-   joins the pump after escalation the same way. Open and turn expiry are
-   detected on the caller's `Deadline`; the cleanup that follows expiry is not
-   bounded by it. Smallest prerequisite: a caller-provided cleanup deadline on
-   the shared session seam, or a host-published way to derive a fresh
-   `Deadline` from the current instant.
-2. **Whole-tree completion evidence.** The host process API reports a root
-   exit, not that the owned tree is empty, so `graceful`/`Clean` is unreachable
-   and observed exits are reported as `escalated`. Smallest prerequisite: the
-   host process API attests that the tree it owns is empty after termination,
-   so close can distinguish "nothing remained" from "something was killed".
-
-Both are shared runtime API/contract expansions and belong to an orchestrator
-decision, not to this worker.
-
-One non-blocking follow-on is recorded rather than taken: the sidecar asset is
-a single file because the application provisions one entry point. Splitting it
-into focused modules would make the launch recipe provision a directory, which
-is a provisioning-contract change, so it waits for a bounded card rather than
-riding along here.
-
-## Stop
-
-Rechecked on 2026-09-03, immediately before finishing this round, without
-executing anything downloaded:
-
-- **Policy holds.** The Help Center article still leads with the paused change
-  and the preserved statement that Agent SDK, `claude -p`, and third-party app
-  usage draw from the user's subscription limits.
-- **The official artifact moved.** npm `dist-tags.latest` and `.next` are now
-  `@anthropic-ai/claude-agent-sdk` `0.3.259`, published
-  `2026-09-02T21:22:40.857Z`, shasum `daf465f8231392ab99e1c7fc7f1e14c3d25ea012`,
-  15 files, 5 043 385 bytes unpacked. `0.3.258` is still published and its
-  digest is unchanged, but it is no longer the official point.
-
-Scope item 1 and the stop conditions both require stopping here rather than
-silently implementing against a stale artifact. Nothing false is published:
-the route's five axes are QualifiedOnly on exactly `0.3.258` with no
-unverified-newer posture, so a `0.3.259` installation is rejected by the plan
-gate rather than silently accepted. What is unresolved is whether this route
-should ship qualifying a point that is no longer official stable.
-
-Two exits, both operator decisions:
-
-1. Refresh identity evidence to `0.3.259` — a card 053-class freeze covering the
-   tarball digest, all 15 file digests, the shipped `manifest.json` version for
-   the native axis, and the declaration deltas — then rebind the package and
-   native axes here.
-2. Accept shipping the qualified `0.3.258` point with the currentness gap
-   recorded, and schedule the refresh separately.
-
-No retarget was performed, and no tarball was fetched, extracted, or executed.
-
-## Closeout
-
 Delivered as `claude-agent.sdk` in `swallowtail-adapter-claude-agent` on the
 preserved PR 188 identity, restacked onto `027a1f34`, with the exact identity
 refreshed to official `0.3.259` and native `2.1.259` under the operator's
 selected exit. No provider contact, login, token read, package installation,
 live turn, release mutation, or tag occurred.
 
-Every public operation is caller-bounded. Open races startup against the open
-deadline and, on expiry, makes the descendant termination request before racing
-each cleanup stage against the same bound, reporting unconfirmed cleanup rather
-than implying success. Start-turn races the correlated query response against
-the turn deadline. Cancellation always writes the interrupt and bounds only the
-receipt. Close runs inside one `SessionCleanupRequest` deadline that covers turn
-resolution, interruption, the close command, escalation, the root join, and both
-lease releases.
+Every public operation is caller-bounded through its return, and the host
+termination request cannot be skipped by a stalled stage.
+
+Open runs acquisition, launch, and readiness as one future inside the caller's
+open deadline. A host-owned guard is armed before the first acquisition and
+records every lease, process, and task as it is taken, so expiry can drop the
+public future without stranding a partial open: the guard still terminates and
+releases, and the caller sees the deadline rather than the collapsing
+connection's next error. Start-turn races the correlated query response against
+the turn deadline. Turn cancellation bounds both the wire write and the receipt;
+session cancellation performs no host call at all, because that seam carries no
+caller deadline, and bounded close owns the termination instead. An accepted
+turn reaches its terminal outcome at its deadline without waiting on an
+interrupt receipt. Close runs inside one `SessionCleanupRequest` deadline that
+covers turn resolution, interruption, the close command, the termination
+request, the root join, and both lease releases, with a close guard that makes
+the termination request on the deadline even if the sidecar accepts input and
+never answers.
 
 Cleanup truth follows host evidence. `ProcessTreeCompletion::OwnedTreeEmpty`
 alone reports `Clean`. Confirmed root completion after the declared descendant
@@ -249,7 +189,18 @@ observed surviving descendant or an unconfirmed root exit is `Failed`, and a
 survivor outranks even an emptiness claim. Windows stays unsupported because no
 tree owner survives the root there.
 
-Record: `../../../logs/2026-09-02-claude-agent-sdk-foundation.md`.
+Tool admission stays fail-closed on both sides without letting a race poison
+the transport. An out-of-set tool is still a transport failure. An in-set
+request the sidecar had already written when the turn ended is denied on the
+wire instead, so the interrupt and close that follow still have a usable
+connection.
+
+Adversarial proofs cover a stalled credential acquisition, resource resolution,
+process start, open cleanup, close response, accepted turn with no interrupt
+response, stalled wire write, stalled escalation, and an admission request the
+turn's own end raced. Records:
+`../../../logs/2026-09-02-claude-agent-sdk-foundation.md` and
+`../../../logs/2026-09-03-claude-agent-sdk-0-3-259-identity.md`.
 
 One non-blocking follow-on stays recorded rather than taken: the sidecar asset
 is a single file because the application provisions one entry point, so

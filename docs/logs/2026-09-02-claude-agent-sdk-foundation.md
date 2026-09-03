@@ -6,21 +6,15 @@ sidecar over the private `swallowtail-claude-agent-sdk-jsonl-v1` wire at
 behavior revision `claude-agent.sdk-v1`. No provider session, login, package
 installation, or downloaded binary execution was part of this work.
 
-Policy and artifact were rechecked immediately before implementation, as the
-card requires, and again on 2026-09-03 before finishing the lifecycle repair.
-The second recheck fired the card's artifact-currentness stop: npm
-`dist-tags.latest` and `.next` moved to `0.3.259`. Policy is unchanged. The
-operator selected the refresh exit, so Research 280 froze the new point from
-official artifacts and the exact package and native axes were rebound to
-`0.3.259` and `2.1.259` with no behavior revision. The Help Center article still leads with the paused change and
-the preserved statement that Agent SDK, `claude -p`, and third-party app usage
-draw from the user's subscription limits. Official npm still carries `0.3.258`
-on both `latest` and `next`, with the Research 278 shasum, integrity, file
-count, unpacked size, and publish time unchanged. Neither stop condition
-fired, and nothing was retargeted.
+Policy and artifact were rechecked immediately before implementation and again
+before each later round. The 2026-09-03 recheck found official npm stable had
+moved, the operator selected the refresh exit, and Research 280 rebound the
+exact package and native points to `0.3.259` and `2.1.259`. Policy has been
+unchanged throughout: the article still leads with the paused change and the
+preserved subscription-draw statement.
 
 Five identities bind independently, each a qualified-only one-point claim: SDK
-wrapper `0.3.258`, native binary `2.1.258` from the shipped manifest, Node
+wrapper `0.3.259`, native binary `2.1.259` from the shipped manifest, Node
 `22.23.2`, the private wire, and the source-tagged sidecar revision. The
 wrapper and native axes are coupled but never equal, so no Claude Code or ACP
 qualification transfers in either direction. The route inherits no existing

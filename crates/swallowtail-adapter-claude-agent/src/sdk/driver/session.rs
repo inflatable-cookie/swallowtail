@@ -179,6 +179,9 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
         services: HostServices,
     ) -> BoxFuture<'static, CleanupOutcome> {
         let execution_host_id = self.execution_host_id.clone();
+        let deadline = request.deadline();
+        // One deadline, applied by the shared cleanup bound and again inside
+        // every stage so no single stage can consume the whole budget.
         swallowtail_runtime::bound_session_cleanup(
             execution_host_id,
             request,
@@ -194,6 +197,13 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 // joined: that task waits on completion or expiry, so joining it
                 // while the turn is still open would wait for an event that close
                 // itself just prevented.
+                if self.cancellation.was_requested()
+                    && let Some(active) = &active
+                {
+                    // The consumer already asked the session to cancel; close
+                    // is where that request actually reaches the tree.
+                    active.turn.mark_cancelled();
+                }
                 if let Some(active) = &active
                     && !active.turn.is_finished()
                 {
@@ -206,21 +216,33 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                         ));
                 }
                 let turn_active = active.is_some();
+                let bounded = HostBound::new(
+                    self.services
+                        .time()
+                        .cloned()
+                        .expect("validated sidecar time service"),
+                    deadline,
+                );
                 if let Some(mut active) = active
                     && let Some(task) = active.deadline_task.take()
                 {
-                    let _ = task.join().await;
+                    let _ = bounded.run(task.join()).await;
                 }
                 let state = close::close_tree(
                     &self.connection,
+                    &self.services,
                     &self.request_id,
                     turn_active,
                     self.pump_task.take(),
+                    &bounded,
+                    deadline,
                 )
                 .await;
-                let resource = close::release_resource(self.resource.take(), &self.services).await;
+                let resource =
+                    close::release_resource(self.resource.take(), &self.services, &bounded).await;
                 let credential =
-                    close::release_credential(self.credential.take(), &self.services).await;
+                    close::release_credential(self.credential.take(), &self.services, &bounded)
+                        .await;
                 merge_cleanup(merge_cleanup(state.cleanup_outcome(), resource), credential)
             }),
         )

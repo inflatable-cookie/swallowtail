@@ -20,7 +20,11 @@ impl CredentialService for SdkFixtureHost {
         self.shared
             .credential_acquisitions
             .fetch_add(1, Ordering::SeqCst);
+        let stalled = self.stall == Some(super::super::host::Stall::CredentialAcquire);
         Box::pin(async move {
+            if stalled {
+                std::future::pending::<()>().await;
+            }
             Ok(CredentialLease::Delegated(DelegatedCredential::new(
                 scope, reference, audience,
             )))
@@ -45,7 +49,11 @@ impl WorkingResourceService for SdkFixtureHost {
         access: ResourceAccess,
         representation: ResourceRepresentation,
     ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        let stalled = self.stall == Some(super::super::host::Stall::ResourceResolve);
         Box::pin(async move {
+            if stalled {
+                std::future::pending::<()>().await;
+            }
             Ok(
                 ResourceLease::consumer_owned(scope, reference, access, representation)
                     .with_filesystem(

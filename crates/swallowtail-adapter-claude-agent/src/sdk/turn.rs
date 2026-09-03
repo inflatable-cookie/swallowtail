@@ -24,6 +24,16 @@ use swallowtail_runtime::{
 const EVENT_CAPACITY: usize = 256;
 const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 
+/// What one admission request from the sidecar turned into.
+pub(crate) enum AdmissionDisposition {
+    /// Delegated to the consumer as a bounded correlated callback.
+    Delegated,
+    /// The turn ended before the request was read. The sidecar had already
+    /// written it, so this is a race rather than a protocol violation, and it
+    /// is denied on the wire.
+    RacedTurnEnd,
+}
+
 pub(crate) struct SdkActiveTurn {
     runtime_id: RuntimeTurnId,
     events: swallowtail_runtime::RuntimeEventSender,
@@ -107,34 +117,37 @@ impl SdkActiveTurn {
         &self,
         sidecar_id: &str,
         tool_name: &str,
-    ) -> Result<(), RuntimeFailure> {
-        if self.is_finished() {
-            return Err(failure(
-                "swallowtail.claude-agent.sdk.admission_after_terminal",
-                "Claude Agent SDK sidecar requested admission after the turn terminated",
-            ));
-        }
+    ) -> Result<AdmissionDisposition, RuntimeFailure> {
         // The read-only set is an allow-list on both sides of the wire. A tool
         // outside it never reaches the consumer, and its arrival is itself a
-        // transport failure rather than a decision to delegate.
+        // transport failure rather than a decision to delegate. This is checked
+        // first, so an out-of-set request stays fatal even when it races the
+        // turn's end.
         if !crate::sdk::driver::EXPECTED_TOOLS.contains(&tool_name) {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.admission_tool_unadmitted",
                 "Claude Agent SDK sidecar requested admission for a tool outside the read-only set",
             ));
         }
+        if self.is_finished() {
+            return Ok(AdmissionDisposition::RacedTurnEnd);
+        }
         let sequence = self.next_sequence();
-        let callback_id = self.admission.enqueue(
+        let Some(callback_id) = self.admission.enqueue(
             &self.runtime_id,
             sequence,
             self.deadline,
             sidecar_id,
             tool_name,
-        )?;
+        )?
+        else {
+            return Ok(AdmissionDisposition::RacedTurnEnd);
+        };
         self.events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id),
-        ))
+        ))?;
+        Ok(AdmissionDisposition::Delegated)
     }
 
     pub(crate) fn fail_connection(&self, diagnostic: SafeDiagnostic) {

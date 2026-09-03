@@ -140,8 +140,9 @@ fn an_open_that_never_reaches_readiness_expires_on_the_host_deadline() {
         "unexpected open expiry diagnostic {}",
         error.diagnostic().code()
     );
-    let cleanup = fixture.cleanup_events();
-    assert!(cleanup.contains(&CleanupEvent::ProcessForceStop));
+    // The guard terminates on its own host task, so this waits for the request
+    // rather than racing it.
+    fixture.wait_for_cleanup(CleanupEvent::ProcessForceStop);
 }
 
 #[cfg(windows)]

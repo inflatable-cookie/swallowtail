@@ -72,6 +72,19 @@ pub enum SdkScenario {
     TerminalRecord,
     /// A tool ends without ever starting.
     ToolOrderingDrift,
+    /// The sidecar writes an admission request that the turn's own end raced.
+    AdmissionAfterResult,
+}
+
+/// One host service that never answers, so a caller bound is the only thing
+/// that can end the wait.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum Stall {
+    CredentialAcquire,
+    ResourceResolve,
+    ProcessStart,
+    ProcessWrite,
+    ForceStop,
 }
 
 #[derive(Clone)]
@@ -80,6 +93,7 @@ pub struct SdkFixtureHost {
     scenario: SdkScenario,
     exit_observable: bool,
     attests_empty_owned_tree: bool,
+    pub(super) stall: Option<Stall>,
 }
 
 pub(super) struct Shared {
@@ -105,6 +119,7 @@ pub(super) struct ProcessState {
     pub(super) stopped: bool,
     pub(super) opened: bool,
     pub(super) holding: bool,
+    pub(super) stalling_writes: bool,
 }
 
 impl SdkFixtureHost {
@@ -125,7 +140,14 @@ impl SdkFixtureHost {
             scenario,
             exit_observable: true,
             attests_empty_owned_tree: false,
+            stall: None,
         }
+    }
+
+    /// Makes one host service hang forever.
+    pub fn stalling(mut self, stall: Stall) -> Self {
+        self.stall = Some(stall);
+        self
     }
 
     /// Makes the sidecar process unjoinable, so no exit is ever observed.
@@ -140,6 +162,16 @@ impl SdkFixtureHost {
     pub fn attesting_empty_owned_tree(mut self) -> Self {
         self.attests_empty_owned_tree = true;
         self
+    }
+
+    /// Makes every later wire write hang, modelling a process whose stdin
+    /// stops draining while the sidecar stays alive.
+    pub fn stall_writes(&self) {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .stalling_writes = true;
     }
 
     /// Stops answering further commands, modelling a sidecar that goes quiet
@@ -196,6 +228,25 @@ impl SdkFixtureHost {
 
     pub fn credential_acquisitions(&self) -> usize {
         self.shared.credential_acquisitions.load(Ordering::SeqCst)
+    }
+
+    /// Waits until `event` has been recorded, bounded so a missing effect
+    /// fails the test instead of hanging it.
+    ///
+    /// The guards do their work in host tasks, so an assertion made the instant
+    /// the public future returns can race them.
+    pub fn wait_for_cleanup(&self, event: CleanupEvent) {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        loop {
+            if self.cleanup_events().contains(&event) {
+                return;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "host cleanup never recorded {event:?}"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
     }
 
     pub fn cleanup_events(&self) -> Vec<CleanupEvent> {

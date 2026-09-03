@@ -55,13 +55,21 @@ impl CancellationControl for TurnCancellation {
             }
             self.turn.mark_cancelled();
             let id = format!("interrupt:{}", self.turn.runtime_id().as_str());
-            // Cancellation is a request, never a claim of provider truth. The
-            // wire write is issued either way; only the receipt is awaited, and
-            // only while the caller's turn bound remains.
-            let pending = self
-                .connection
-                .send(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
-                .await?;
+            // Cancellation is a request, never a claim of provider truth. Both
+            // halves are bounded by the caller's turn deadline: the wire write
+            // itself, because a stalled process write would otherwise hold this
+            // public control forever, and then the receipt.
+            let Some(sent) = self
+                .bounded
+                .run(
+                    self.connection
+                        .send(id, ClaudeAgentSdkCommand::Interrupt, json!({})),
+                )
+                .await
+            else {
+                return Ok(CancellationAcknowledgement::Requested);
+            };
+            let pending = sent?;
             let Some(response) = self.bounded.run(pending).await else {
                 return Ok(CancellationAcknowledgement::Requested);
             };
@@ -89,19 +97,31 @@ impl CancellationControl for TurnCancellation {
     }
 }
 
-/// Session-scoped cancellation escalates through host authority: the SDK's
-/// own stop paths are not joins and never prove that a process exited.
+/// Session-scoped cancellation is a local request, and deliberately performs
+/// no host call.
+///
+/// `CancellationControl::request` carries no caller deadline, so any host await
+/// here would be an unbounded public control. Instead the request is recorded
+/// and the live turn is marked cancelled; the descendant termination itself is
+/// owned by `close`, which runs inside the caller's cleanup deadline. This
+/// never claims the provider stopped, which cancellation may not claim anyway.
 pub(super) struct SessionCancellation {
-    connection: Arc<SdkConnection>,
+    active: ActiveSlot,
     requested: AtomicBool,
 }
 
 impl SessionCancellation {
-    pub(super) fn new(connection: Arc<SdkConnection>) -> Self {
+    pub(super) fn new(active: ActiveSlot) -> Self {
         Self {
-            connection,
+            active,
             requested: AtomicBool::new(false),
         }
+    }
+
+    /// Reports whether the consumer asked the session to cancel, so close can
+    /// treat the session as already cancelled.
+    pub(super) fn was_requested(&self) -> bool {
+        self.requested.load(Ordering::SeqCst)
     }
 }
 
@@ -112,12 +132,21 @@ impl CancellationControl for SessionCancellation {
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
         let already = self.requested.swap(true, Ordering::SeqCst);
+        // No awaits at all: this returns inside any caller bound by construction.
+        if let Some(active) = self
+            .active
+            .lock()
+            .expect("SDK sidecar active lock poisoned")
+            .as_ref()
+        {
+            active.turn.mark_cancelled();
+        }
         Box::pin(async move {
             if already {
-                return Ok(CancellationAcknowledgement::AlreadyRequested);
+                Ok(CancellationAcknowledgement::AlreadyRequested)
+            } else {
+                Ok(CancellationAcknowledgement::Requested)
             }
-            self.connection.escalate().await?;
-            Ok(CancellationAcknowledgement::Requested)
         })
     }
 }

@@ -4,9 +4,7 @@ use crate::sdk_support::{
     prepared_session, turn_request,
 };
 use futures_executor::block_on;
-use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, RuntimeEventKind, TerminalStatus,
-};
+use swallowtail_runtime::{CleanupOutcome, RuntimeEventKind, TerminalStatus};
 
 fn drain(events: &mut swallowtail_runtime::BoxEventStream) -> Vec<RuntimeEventKind> {
     use futures_util::StreamExt;
@@ -190,30 +188,6 @@ fn an_expired_cleanup_deadline_returns_bounded_failure() {
         diagnostic.code(),
         "swallowtail.session_cleanup.deadline_expired"
     );
-}
-
-#[test]
-fn session_cancellation_terminates_the_descendant_tree() {
-    let host = host_id("claude-agent-sdk.fixture.cancel");
-    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
-    let prepared = prepared_session(host.clone());
-    let services = fixture.services(host);
-    let services_for_cleanup = services.clone();
-    let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
-    assert_eq!(
-        block_on(session.cancellation().request()).expect("session cancellation succeeds"),
-        CancellationAcknowledgement::Requested
-    );
-    assert_eq!(
-        block_on(session.cancellation().request()).expect("repeat cancellation is classified"),
-        CancellationAcknowledgement::AlreadyRequested
-    );
-    assert!(
-        fixture
-            .cleanup_events()
-            .contains(&CleanupEvent::ProcessForceStop)
-    );
-    let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
 
 /// How far the fixture execution host can prove completion behind the root.

@@ -10,6 +10,7 @@ mod claude_agent_sdk_driver {
     pub mod framing;
     pub mod lifecycle;
     pub mod readiness;
+    pub mod stalls;
 }
 
 use swallowtail_core::ExecutionHostId;

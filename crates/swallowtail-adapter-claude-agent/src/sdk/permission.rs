@@ -77,7 +77,9 @@ impl AdmissionHub {
         )
     }
 
-    /// Enqueues one bounded admission request for the active turn.
+    /// Enqueues one bounded admission request for the active turn. `None`
+    /// reports a closed exchange, which is a race with the turn's own end
+    /// rather than a protocol failure.
     pub(crate) fn enqueue(
         &self,
         turn_id: &RuntimeTurnId,
@@ -85,7 +87,7 @@ impl AdmissionHub {
         deadline: Option<Deadline>,
         sidecar_id: &str,
         tool_name: &str,
-    ) -> Result<CallbackId, RuntimeFailure> {
+    ) -> Result<Option<CallbackId>, RuntimeFailure> {
         let payload = serde_json::to_vec(&json!({"toolName": tool_name}))
             .map_err(|_| admission_failure("payload was invalid"))?;
         let callback_id = CallbackId::new(format!(
@@ -108,7 +110,7 @@ impl AdmissionHub {
 
         let mut state = self.state.lock().expect("SDK admission lock poisoned");
         if state.closed {
-            return Err(closed());
+            return Ok(None);
         }
         if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
             return Err(admission_failure("capacity was exceeded"));
@@ -129,7 +131,7 @@ impl AdmissionHub {
         );
         state.requests.push_back(request);
         wake(&mut state);
-        Ok(callback_id)
+        Ok(Some(callback_id))
     }
 
     /// Abandons every outstanding admission request. Outstanding requests are

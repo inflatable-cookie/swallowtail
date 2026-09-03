@@ -68,7 +68,7 @@ route or platform.
 - [057 Owned Process-Tree Completion Evidence](batch-cards/057-owned-process-tree-completion-evidence.md) — complete; evidence stop; additive runtime vocabulary landed; no local positive attestation
 - [058 Caller-Bounded Interactive Session Cleanup](batch-cards/058-caller-bounded-interactive-session-cleanup.md) — complete; exact host services and one caller-selected deadline bound every interactive close and post-expiry session cleanup path
 - [059 Unix Owned-Tree Attestation](batch-cards/059-unix-owned-tree-attestation.md) — complete; evidence stop; four native counterexamples falsify the candidate primitives; no sound mechanism found within current host-local authority on macOS, so the host stays root-only and adds no unsafe
-- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — ready after later g05.024/card 060 lands; preserve PR 188 and the accepted macOS root-only degraded posture
+- [055 Claude Agent SDK Provider-Free Foundation](batch-cards/055-claude-agent-sdk-provider-free-foundation.md) — complete; preserved PR 188 restacked and repaired under the accepted macOS root-only degraded posture
 
 ## Acceptance
 

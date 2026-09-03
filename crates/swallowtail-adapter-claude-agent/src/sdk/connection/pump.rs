@@ -1,6 +1,7 @@
 use super::{CommandResult, SdkConnection};
 use crate::sdk::failure::{failure, protocol_failure};
-use crate::sdk::wire::{ClaudeAgentSdkDecoder, ClaudeAgentSdkRecord};
+use crate::sdk::turn::AdmissionDisposition;
+use crate::sdk::wire::{ClaudeAgentSdkDecoder, ClaudeAgentSdkRecord, ClaudeAgentSdkToolDecision};
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use swallowtail_runtime::{ProcessOutputStream, RuntimeFailure};
@@ -17,7 +18,7 @@ impl SdkConnection {
                     match decoder.push(chunk.bytes()) {
                         Ok(records) => {
                             for record in records {
-                                if let Err(error) = self.dispatch(record) {
+                                if let Err(error) = self.dispatch(record).await {
                                     self.emit_protocol_debug(&error, "sdk.pump.dispatch");
                                     transport_failure = Some(error);
                                     break;
@@ -78,7 +79,10 @@ impl SdkConnection {
         self.fail_pending(error);
     }
 
-    fn dispatch(self: &Arc<Self>, record: ClaudeAgentSdkRecord) -> Result<(), RuntimeFailure> {
+    async fn dispatch(
+        self: &Arc<Self>,
+        record: ClaudeAgentSdkRecord,
+    ) -> Result<(), RuntimeFailure> {
         match record {
             ClaudeAgentSdkRecord::Response(response) => {
                 let mut pending_commands = self
@@ -128,11 +132,29 @@ impl SdkConnection {
                     .expect("SDK sidecar active lock poisoned")
                     .clone();
                 match active {
-                    Some(turn) => turn.handle_admission(&callback.id, &callback.tool_name),
-                    None => Err(failure(
-                        "swallowtail.claude-agent.sdk.admission_without_turn",
-                        "Claude Agent SDK sidecar requested tool admission outside an active turn",
-                    )),
+                    Some(turn) => match turn.handle_admission(&callback.id, &callback.tool_name)? {
+                        AdmissionDisposition::Delegated => Ok(()),
+                        // The turn ended before this request was read. The
+                        // sidecar had already written it, so it is denied on
+                        // the wire - the same fail-closed answer - and the
+                        // transport stays usable for the interrupt and close
+                        // that follow.
+                        AdmissionDisposition::RacedTurnEnd => {
+                            let _ = self
+                                .respond_admission(&callback.id, ClaudeAgentSdkToolDecision::Deny)
+                                .await;
+                            Ok(())
+                        }
+                    },
+                    // No turn at all is the same race one step later: the turn
+                    // the request belonged to has already been closed. There is
+                    // nothing to admit against, so it is denied.
+                    None => {
+                        let _ = self
+                            .respond_admission(&callback.id, ClaudeAgentSdkToolDecision::Deny)
+                            .await;
+                        Ok(())
+                    }
                 }
             }
             ClaudeAgentSdkRecord::Terminal(_) => Err(failure(

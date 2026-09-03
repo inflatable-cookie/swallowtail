@@ -210,19 +210,15 @@ fn a_turn_that_never_ends_resolves_on_the_host_deadline() {
     let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
         .expect("SDK sidecar turn starts");
     // The open bound already passed; only the turn's own deadline fires here.
-    fixture.advance_time();
+    fixture.fire_deadlines();
     let terminal = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),
     );
     assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
-    // Expiry interrupts provider work through the SDK's own control surface.
-    assert!(
-        fixture
-            .inputs()
-            .iter()
-            .any(|value| value["command"] == "interrupt")
-    );
+    // The terminal outcome never waits on the receipt, but the interrupt is
+    // still requested afterwards.
+    fixture.wait_for_command("interrupt");
     let _ = block_on(turn.close());
     let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
@@ -238,7 +234,7 @@ fn a_query_that_is_never_answered_returns_on_the_turn_deadline() {
     let services_for_cleanup = services.clone();
     let mut session =
         block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
-    fixture.advance_time();
+    fixture.fire_deadlines();
     let Err(error) = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
     else {
         panic!("an unanswered query must return on the turn deadline");
@@ -264,7 +260,7 @@ fn an_interrupt_receipt_that_never_arrives_still_returns_requested() {
     let turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
         .expect("SDK sidecar turn starts");
     fixture.hold_responses();
-    fixture.advance_time();
+    fixture.fire_deadlines();
     assert_eq!(
         block_on(turn.cancellation().request()).expect("cancellation is a bounded request"),
         swallowtail_runtime::CancellationAcknowledgement::Requested

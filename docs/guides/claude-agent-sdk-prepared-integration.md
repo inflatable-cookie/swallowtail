@@ -161,22 +161,31 @@ convenience, and fails closed.
 Every public operation is bounded by a caller-supplied host deadline, and the
 bound covers the return, not merely the noticing.
 
-- `open_session` races startup against the open deadline. On expiry it makes
-  the descendant termination request first, then races each cleanup stage
-  against the same bound, and reports `open_cleanup_unconfirmed` rather than
-  implying cleanup finished.
+- `open_session` runs acquisition, launch, and readiness as one future inside
+  the open deadline. Every lease, process, and task is recorded in a host-owned
+  guard the instant it is acquired, so expiry can drop the public future without
+  stranding a partial open: the guard still terminates and releases, and the
+  caller sees `open_deadline_elapsed`, or `open_cleanup_unconfirmed` when
+  cleanup could not be confirmed inside the same bound.
 - `start_turn` races the correlated query response against the turn deadline,
   so a sidecar that stops answering cannot hold the public future open.
-- Cancellation always writes the interrupt; only the receipt is bounded, and an
-  unanswered receipt still returns `Requested`, which never claims provider
-  truth.
+- Turn cancellation bounds both halves against the turn deadline: the wire
+  write, because a stalled write would otherwise hold a public control forever,
+  and then the receipt. An unanswered receipt still returns `Requested`, which
+  never claims provider truth.
+- Session-scope cancellation performs no host call at all. `CancellationControl`
+  carries no caller deadline, so an await there would be an unbounded public
+  control; instead the request is recorded, the live turn is marked cancelled,
+  and the descendant termination is owned by bounded `close`.
 - `close` takes the caller's `SessionCleanupRequest`. One deadline covers turn
   resolution, interruption, the close command, host escalation, the pump join,
-  and both lease releases. No stage restarts it, and expiry returns failure. Ambient behavior is suppressed by
-construction rather than by omission: setting sources are empty, skills are an
-explicit empty list (omission is documented *not* to mean "skills off"),
-session persistence is disabled, and MCP servers, plugins, hooks, subagents,
-and system prompts are all set explicitly.
+  and both lease releases. No stage restarts it, and expiry returns failure.
+
+Ambient behavior is suppressed by construction rather than by omission:
+setting sources are empty, skills are an explicit empty list (omission is
+documented *not* to mean "skills off"), session persistence is disabled, and
+MCP servers, plugins, hooks, subagents, and system prompts are all set
+explicitly.
 
 Runtime-advertised capabilities are recorded and then enforced. An interrupt
 receipt is admissible only where the runtime advertised
@@ -200,9 +209,13 @@ and nothing else. The tool's own input never crosses the wire: the sidecar
 retains it privately and returns it unchanged as `updatedInput` on allow,
 because `updatedInput` replaces what the provider would otherwise use — an
 empty object would silently destroy the path or pattern the tool needs. A
-consumer failure, an abandoned turn, or a closed exchange all deny. The namespace is deliberately route-local: shared
-permission vocabulary is orchestrator work once a second provider proves the
-same semantics.
+consumer failure, an abandoned turn, or a closed exchange all deny. A request
+the sidecar had already written when the turn ended is denied on the wire
+rather than treated as a protocol violation: the answer is the same fail-closed
+one, and the transport stays usable for the interrupt and close that follow.
+
+The namespace is deliberately route-local: shared permission vocabulary is
+orchestrator work once a second provider proves the same semantics.
 
 Bash, terminal, write tools, and every non-read tool are outside this route.
 A capability advertisement is not admission; those need their own Contract 023
@@ -219,15 +232,22 @@ None of that may be read as evidence that a process exited.
 
 Close runs in this order, entirely inside the caller's one cleanup deadline:
 
-1. resolve any live turn, then join its host-deadline task
-2. interrupt a live turn
-3. end sidecar input through the explicit `close` command
-4. the sidecar joins its own independently retained native child handle to the
+1. arm the host termination guard, so the request happens on the caller's
+   deadline even if a cooperative stage never answers
+2. resolve any live turn, then join its host-deadline task
+3. interrupt a live turn
+4. end sidecar input through the explicit `close` command
+5. the sidecar joins its own independently retained native child handle to the
    declared 2000 ms bound, which it starts before any other close await so no
    SDK-side drain can consume the bound
-5. make the declared descendant termination attempt through host authority
-6. re-join the root, then release resource and credential leases in contract
+6. ask the guard to make the declared descendant termination attempt now
+7. re-join the root, then release resource and credential leases in contract
    order
+
+Every stage is raced against the caller's cleanup deadline, so no single stage
+can consume the whole budget, and the guard is a host task rather than part of
+this future: a sidecar that accepts input and never answers still gets the
+termination request.
 
 The outcome comes from evidence, never from hope:
 

@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: complete; cards 050-052 passed against immutable candidate `56f3913a`; tag authority remains ungranted
+Status: complete; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-04
@@ -87,9 +87,11 @@ as immutable candidate `56f3913a`. Canonical workflow-dispatch run 33853812785
 used that exact `headSha` and passed all six jobs. Card 051 is complete. Card
 052 reran the exact source consumer and passed one operator-authorized
 authenticated Nucleus Agent Chat smoke on attempt one against the same
-candidate. The milestone is complete. Release execution, tag creation, tag
-push, publication, and further provider or consumer mutation remain
-unauthorized.
+candidate. The milestone is complete. On 2026-09-04 the operator authorized
+both local annotated-tag creation and tag push with the frozen Card 052
+message; `v0.4.0` peels to `56f3913a` and
+tag-push CI run 33870017023 passed all six jobs. Publication and further
+provider or consumer mutation remain unauthorized.
 
 ## Runway
 
@@ -144,7 +146,7 @@ different SHA is accepted.
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 - [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch CI run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
-- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; tag authority remains ungranted
+- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; operator tagged `v0.4.0` on 2026-09-04
 
 ## Acceptance
 

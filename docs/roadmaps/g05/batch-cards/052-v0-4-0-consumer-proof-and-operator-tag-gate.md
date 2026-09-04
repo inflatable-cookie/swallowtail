@@ -1,6 +1,6 @@
 # 052 v0.4.0 Consumer Proof And Operator Tag Gate
 
-Status: complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; tag authority remains ungranted
+Status: complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; operator tagged `v0.4.0` on 2026-09-04
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
@@ -166,3 +166,13 @@ source identity, a credential/provider call or repository mutation is not
 explicitly authorized, evidence cannot be redacted safely, cleanup fails, the
 candidate changes, CI is no longer exact and green, or any release mutation is
 requested without the final exact operator authorization.
+
+## Tag Result
+
+The operator granted both mutations on 2026-09-04. Annotated `v0.4.0` was
+created locally with the exact frozen message and pushed to
+`git@github.com:inflatable-cookie/swallowtail.git`. Remote tag object
+`6f398b9f0fedae4215ea7f58fdf04f888871e540` peels to
+`56f3913ac99af44b6ff45384cfc53a0adea587ba`. Tag-push CI run 33870017023
+passed all six jobs at that SHA. See
+[2026-09-04 v0.4.0 annotated tag](../../../logs/2026-09-04-v0-4-0-annotated-tag.md).

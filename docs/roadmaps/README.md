@@ -15,16 +15,15 @@ shape.
 
 ## Next Task
 
-Validate the final [g05.021 card 052](g05/batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md)
-evidence and decide whether to authorize an annotated `v0.4.0` tag on exact
-candidate `56f3913ac99af44b6ff45384cfc53a0adea587ba`, canonical branch `main`,
-and remote `git@github.com:inflatable-cookie/swallowtail.git`, using the exact
-message frozen in the Card 052 closeout log. The source consumer and the
-operator-authorized authenticated Nucleus Agent Chat smoke both passed against
-that SHA. Local annotated-tag creation and tag push are separate release
-mutations and remain unauthorized until the operator grants both. The release
-contains no crates.io publication, GitHub Release object, binary, sidecar, or
-installer artifact.
+Implement [g05.026 card 062](g05/batch-cards/062-kimi-code-local-server-0-40-1-identity.md):
+freeze exact official `@moonshot-ai/kimi-code` `0.40.1` identity for the
+separate `kimi-code.local-server` family, compare its selected REST/WebSocket
+v2 surfaces against the frozen `0.38.0` corpus through `0.39.0`, `0.39.1`,
+and `0.40.0`, and trace the `0.40.0` Bash tool `cwd` restriction removal as a
+Contract 017/023 authority question before naming a segment shape. Change no
+claim in that commit. Card 063 continues only for an admitted segment. The
+dispatch manifest lives in the g05.026 roadmap. `v0.4.0` is tagged; the
+feature/currentness freeze is lifted.
 
 ## Standing Lanes
 

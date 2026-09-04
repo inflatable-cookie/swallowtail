@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-23
+Updated: 2026-09-04
 
 ## Purpose
 
@@ -147,7 +147,7 @@ Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
 
-The immutable tagged release is `v0.3.3`. Current source after that tag removes
+Immutable `v0.3.3` was the prior tagged release. Source after that tag removed
 the previously guaranteed but unqualified `minimal` reasoning value from exact
 GPT-5.6 `openai.background` preparation. That guaranteed-behavior shrink is
 breaking under this contract: the next source release from current `main` must
@@ -331,8 +331,9 @@ mutation.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.3.3` at
-`51d186208e75dca4c04f077dd7179ec3c2fafae9`. Later candidates require a
+Current tagged identity is `v0.4.0` at
+`56f3913ac99af44b6ff45384cfc53a0adea587ba`, tagged 2026-09-04. Immutable
+`v0.3.3` remains at `51d186208e75dca4c04f077dd7179ec3c2fafae9`. Later candidates require a
 strictly greater version, an absent matching tag, and explicit operator
 authorization of:
 

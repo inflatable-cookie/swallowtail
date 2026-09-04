@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-03
+Updated: 2026-09-04
 
 ## Generations
 
@@ -144,12 +144,13 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 25 roadmaps: 20 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and no ready milestones. Milestone 009 is planned
+g05 has 26 roadmaps: 20 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 026. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
-post-release standing candidate; no family work has started from the checkpoint.
+post-release standing candidate; g05.026 compiles that family and card 062 is
+ready; card 063 is gated behind an admitted segment.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
 accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route
@@ -191,8 +192,9 @@ merged through PR 196 at `493f8194`. The
 head `10d9b7a0` merged as immutable candidate `56f3913a`, and canonical
 workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
 052's source consumer and authenticated Nucleus Agent Chat smoke passed against
-that SHA. No card authorizes release execution, tag creation, tag push, or
-publication.
+that SHA. The operator authorized and executed the annotated `v0.4.0` tag and
+push on 2026-09-04; tag-push CI run 33870017023 passed at the same SHA. The
+feature/currentness freeze is lifted. Publication stays unauthorized.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.

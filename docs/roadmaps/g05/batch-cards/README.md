@@ -1,14 +1,19 @@
 # g05 Batch Cards
 
+## Ready
+
+- [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — ready; freeze official `0.40.1` identity and trace the `0.40.0` Bash `cwd` authority change before any claim
+
 ## Planned
 
+- [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; gated behind card 062 admitting a Contract 029 segment
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
 
-- [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; tag authority remains ungranted
+- [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; operator tagged `v0.4.0` on 2026-09-04
 - [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
 - [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed; 40-package API ledger, 49-row route/behavior ledger, immutable-baseline proof, exact `b7f804b5` freeze, and fixed 49-route candidate inclusion for Pi and Claude; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 - [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`

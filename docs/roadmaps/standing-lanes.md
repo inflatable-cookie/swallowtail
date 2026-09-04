@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-02
+Updated: 2026-09-04
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -155,17 +155,21 @@ qualification. Codex remains closed at qualified `0.152.1`; watcher stays exact
 `2.1.251`; Gemini remains deferred. The checkpoint changes no claim and opens
 no roadmap or batch card.
 
-### v0.4.0 Freeze
+### Post-v0.4.0 Queue
 
-g05.021 completed the bounded release-readiness runway through exact source
-consumer and authenticated Nucleus Agent Chat evidence. Keep the
-feature/currentness freeze through the explicit `v0.4.0` tag decision. Kimi Code
-local server `0.40.1` remains the first post-release candidate. Closed PR 182
-and its Antigravity branch/evidence remain parked and are not qualification.
+g05.021 completed the bounded release-readiness runway and the operator
+tagged annotated `v0.4.0` at `56f3913a` on 2026-09-04. The
+feature/currentness freeze is lifted. Kimi Code local server `0.40.1` is the
+active family through g05.026 cards 062-063; card 062 treats the `0.40.0`
+Bash `cwd` restriction removal as a Contract 017/023 authority question before
+any segment shape, so a stop is an acceptable outcome. Antigravity `1.1.24`
+(closed PR 182 branch and evidence) is the next queued family after Kimi
+resolves; it is not merged qualification and needs a fresh identity run on
+post-release `main`.
 Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer
 observations stay recorded without implementation. Gemini stays deferred,
 watcher stays exact `2.1.251`, and `kimi-code.acp` stays QualifiedOnly at the
-A2 `0.38.0` cap. The freeze changes no current claim.
+A2 `0.38.0` cap.
 
 ### Earlier Completed Family
 

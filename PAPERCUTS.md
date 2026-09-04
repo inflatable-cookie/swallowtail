@@ -3,6 +3,20 @@
 Small, actionable friction found during agent work. Agents append entries when
 they hit a solvable hurdle; they do not stop the current task to fix one.
 
+### [ ] Compound acknowledgement rows need per-half generic state association — 2026-09-04
+- Friction: Contract 061's existing row-level state flags cannot associate the
+  exact provider token and state for the reasoning and Plan halves of Kimi's
+  compound acknowledgement row.
+- Impact: a generic consumer would need an adapter downcast, while marking a
+  Plan half pending after terminal reasoning rejection would claim an
+  acknowledgement that was never dispatched.
+- Fix: add the accepted runtime-owned compound acknowledgement value with
+  `reasoning()` and `plan()` accessors and a distinct `RequestedNotDispatched`
+  state; promote the Contract 061 amendment and shared runtime/testkit
+  baseline before Card 034.
+- Surface: Contract 061 active-session acknowledgement projection; Kimi ACP
+  reasoning-first/Plan-second driver order.
+
 ## Open
 
 ### [ ] Review or validation command wrappers rely on unavailable host `timeout` — 2026-09-04

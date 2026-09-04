@@ -15,14 +15,12 @@ shape.
 
 ## Next Task
 
-Implement [g05.009 card 070](g05/batch-cards/070-contract-061-provider-operation-observation-gate.md):
-complete the planning-only provider-operation observation gate from the
-manifest in that roadmap. Audit 065 continues. In parallel the coordinator
-launches [g05.027 card 071](g05/batch-cards/071-antigravity-1-1-26-identity.md),
-the Antigravity `1.1.26` identity lane, from the manifest in that roadmap.
+Await Chatterbox to promote the accepted Card 070 provider-operation
+observation gate into canonical Contract 061/runtime planning. Audit 065
+continues. Card 071 is the concurrent Antigravity `1.1.26` identity lane.
 Cards 068 and 069 are merged. Card 062 stopped: Kimi local server `0.41.0`
 identity is frozen and the ceiling stays `0.38.0`; card 063 stays gated.
-Card 034 remains planned behind card 070.
+Card 034 remains planned behind the promoted baseline.
 `v0.4.0` is tagged; the feature/currentness freeze is lifted.
 
 ## Standing Lanes

@@ -1,6 +1,6 @@
 # 070 Contract 061 Provider-Operation Observation Public-Baseline Gate
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04

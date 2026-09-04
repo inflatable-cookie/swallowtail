@@ -3,7 +3,6 @@
 ## Ready
 
 - [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — ready; freeze every hop `1.1.18..=1.1.26` from official artifacts; recompute PR 182 evidence; no claim edit
-- [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — ready; planning-only public-baseline gate for provider-operation observation; two proving consumers
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 
 ## Planned
@@ -16,6 +15,7 @@
 
 ## Completed
 
+- [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; no runtime or Contract 061 promotion by Coordinator
 - [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — complete; candidate J; 35 rows; 32 emitted and 3 withheld; PR 208 merged as `c5cca28d`
 - [069-contract-061-antigravity-bedrock-cursor-package-completion.md](./069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows; 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — complete; evidence stop; official `0.41.0` identity frozen; ceiling remains `0.38.0`; PR 210 merged as `e79f8d07`

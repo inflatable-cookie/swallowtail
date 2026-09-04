@@ -1,6 +1,6 @@
 # 076 Contract 061 Kimi Compound Acknowledgement Gate
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -86,6 +86,9 @@ any required contract/runtime baseline is merged.
 - [retained Kimi gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
 - [card 034](034-contract-061-kimi-package-completion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
+
+Merged through PR 218 at `602e466f`; the accepted planning design is now the
+authority for Card 079 and the downstream Card 034 sequence.
 
 ## Result
 

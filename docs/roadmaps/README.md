@@ -17,8 +17,8 @@ shape.
 
 Implement [g05.009 card 074](g05/batch-cards/074-contract-061-deepseek-package-completion.md)
 as the lead of the approved concurrent frontier. Card 075 completes the
-Gemini/Grok tranche; card 076's planning PR records the accepted compound
-acknowledgement design and card 079 realizes it in runtime and testkit; and
+Gemini/Grok tranche; card 076's merged planning result records the accepted
+compound acknowledgement design and card 079 realizes it in runtime and testkit; and
 [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
 makes `claude-agent.sdk` read-write with permission policy as the `v0.4.1`
 carrier. g05.028 is complete: OpenCode qualified through `1.18.28`. Card 034

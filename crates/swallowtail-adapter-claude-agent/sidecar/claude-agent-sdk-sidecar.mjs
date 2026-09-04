@@ -27,8 +27,15 @@
 //
 // Ambient behavior is suppressed by construction: empty setting sources, an
 // explicit empty skill list, no MCP servers, no plugins, no hooks, no
-// subagents, no system prompt, no session persistence, and a read-only tool
-// set. Unknown semantics fail closed.
+// subagents, no system prompt, no session persistence, and an explicitly
+// admitted tool set. Unknown semantics fail closed.
+//
+// The admitted tool set and the permission mode are decided by the host and
+// arrive on `open`. This process never widens either: an unadmitted tool is
+// denied without asking, an unknown tool name is refused before the SDK is
+// constructed, and `bypassPermissions` — along with every other
+// auto-approving upstream mode — is refused the same way and can never reach
+// the SDK.
 //
 // The SDK supplies no joined stop: its cleanup races a bounded timer and
 // discards the outcome, and its own escalation is unref'd and reaches only
@@ -60,31 +67,39 @@ const MAXIMUM_PROMPT_BYTES = 256 * 1024;
 const MINIMUM_JOIN_BOUND_MS = 100;
 const MAXIMUM_JOIN_BOUND_MS = 60_000;
 
-// Read-only tools only. Bash, terminal, and every write tool stay outside
-// this route until Contract 023 process authority and Contract 041 mediation
-// evidence admit them.
+// Every tool this route can admit, in the exact order the host sends them.
+// Bash, terminal, notebook, and network tools stay outside this route until
+// Contract 023 process authority and Contract 041 mediation evidence admit
+// them.
 //
-// This list is passed as `tools`, which restricts availability. It is never
-// passed as `allowedTools`, which auto-allows a tool without prompting and
-// would bypass the host's per-use admission decision.
-const ALLOWED_TOOLS = ["Read", "Glob", "Grep"];
-const DISALLOWED_TOOLS = [
+// The admitted subset is passed as `tools`, which restricts availability. It
+// is never passed as `allowedTools`, which auto-allows a tool without
+// prompting and would bypass the host's per-use admission decision.
+const ADMISSIBLE_TOOLS = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"];
+const DEFAULT_TOOLS = ["Read", "Glob", "Grep"];
+// Never available on this route, whatever the host admits. Anything
+// admissible but not admitted is added to this list at open.
+const NEVER_AVAILABLE_TOOLS = [
   "Bash",
   "BashOutput",
   "KillShell",
-  "Edit",
-  "Write",
   "NotebookEdit",
   "WebFetch",
   "WebSearch",
   "Task",
 ];
 
+// The only three modes this route represents. `bypassPermissions`, `auto`,
+// and `dontAsk` auto-approve tool use, so they are refused by name rather
+// than merely omitted, and the refusal happens before the SDK is loaded.
+const PERMISSION_MODES = ["default", "plan", "acceptEdits"];
+const REJECTED_PERMISSION_MODES = ["bypassPermissions", "auto", "dontAsk"];
+
 const ENV_SDK_MODULE = "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE";
 const ENV_NATIVE_BINARY = "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY";
 const ENV_MANIFEST = "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST";
 
-const COMMANDS = new Set(["open", "query", "interrupt", "close"]);
+const COMMANDS = new Set(["open", "query", "interrupt", "set_permission_mode", "close"]);
 
 // Keep the stdout wire exclusive: SDK or dependency console output must never
 // corrupt framing. Diagnostics belong on stderr, which the host bounds.
@@ -104,6 +119,8 @@ const state = {
   sdk: null,
   query: null,
   cwd: null,
+  tools: DEFAULT_TOOLS,
+  permissionMode: "default",
   capabilities: [],
   native: null,
   reader: null,
@@ -201,6 +218,43 @@ function requireString(params, field) {
   const value = params[field];
   if (typeof value !== "string" || value.length === 0) {
     throw new SidecarFailure("invalid_command");
+  }
+  return value;
+}
+
+/// Parses the host's admitted tool set. An unknown name, a repeat, an empty
+/// set, or a non-array fails closed before the SDK exists.
+function admittedTools(values) {
+  if (values === undefined) {
+    return DEFAULT_TOOLS;
+  }
+  if (!Array.isArray(values) || values.length === 0) {
+    throw new SidecarFailure("tools_invalid");
+  }
+  const admitted = [];
+  for (const value of values) {
+    if (typeof value !== "string" || !ADMISSIBLE_TOOLS.includes(value) || admitted.includes(value)) {
+      throw new SidecarFailure("tools_invalid");
+    }
+    admitted.push(value);
+  }
+  return admitted;
+}
+
+/// Parses the host's permission mode. An auto-approving upstream mode is
+/// refused by name, so it can never reach the SDK.
+function admittedPermissionMode(value) {
+  if (value === undefined) {
+    return "default";
+  }
+  if (typeof value !== "string") {
+    throw new SidecarFailure("permission_mode_invalid");
+  }
+  if (REJECTED_PERMISSION_MODES.includes(value)) {
+    throw new SidecarFailure("permission_mode_rejected");
+  }
+  if (!PERMISSION_MODES.includes(value)) {
+    throw new SidecarFailure("permission_mode_invalid");
   }
   return value;
 }
@@ -349,16 +403,16 @@ function callbackRecord(toolName, callbackId) {
 /// Bridges one SDK `canUseTool` request onto the private wire and blocks on
 /// the correlated host decision.
 ///
-/// Three rules hold together. The exact read-only allow-list is enforced here
-/// first, so an unknown tool is denied without ever reaching the consumer.
+/// Three rules hold together. The host's admitted set is enforced here
+/// first, so an unadmitted tool is denied without ever reaching the consumer.
 /// The tool's input never crosses the wire: it is retained privately and
 /// returned unchanged on allow, because `updatedInput` replaces the input the
 /// provider would otherwise use. And admission is never inferred locally: an
 /// allowed tool always waits for the host's decision.
 function canUseTool(toolName, input) {
   const name = String(toolName ?? "");
-  if (!ALLOWED_TOOLS.includes(name)) {
-    return Promise.resolve({ behavior: "deny", message: "tool is outside the read-only set" });
+  if (!state.tools.includes(name)) {
+    return Promise.resolve({ behavior: "deny", message: "tool is outside the admitted set" });
   }
   if (state.callbacks.size >= MAXIMUM_PENDING_CALLBACKS) {
     return Promise.resolve({ behavior: "deny", message: "callback capacity exceeded" });
@@ -465,9 +519,17 @@ async function handleOpen(params) {
   if (state.query) {
     throw new SidecarFailure("already_open");
   }
-  requireExactParams(params, ["cwd", "model"]);
+  requireExactParams(params, ["cwd", "model", "tools", "permissionMode"]);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
+  const tools = admittedTools(params.tools);
+  const permissionMode = admittedPermissionMode(params.permissionMode);
+  const disallowed = [
+    ...NEVER_AVAILABLE_TOOLS,
+    ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),
+  ];
+  state.tools = tools;
+  state.permissionMode = permissionMode;
   if (!checkNodeFloor()) {
     throw new SidecarFailure("node_runtime_unsupported");
   }
@@ -499,9 +561,9 @@ async function handleOpen(params) {
         includePartialMessages: false,
         // `tools` restricts availability; `allowedTools` is deliberately
         // never set, because it auto-allows without prompting.
-        tools: ALLOWED_TOOLS,
-        disallowedTools: DISALLOWED_TOOLS,
-        permissionMode: "default",
+        tools,
+        disallowedTools: disallowed,
+        permissionMode,
         canUseTool: (toolName, input) => canUseTool(toolName, input),
         spawnClaudeCodeProcess: (command, args, options) => spawnNative(command, args, options),
       },
@@ -557,7 +619,8 @@ async function handleOpen(params) {
     model: system.model,
     capabilities,
     account: readiness,
-    tools: ALLOWED_TOOLS,
+    tools,
+    permissionMode,
   };
 }
 
@@ -635,6 +698,35 @@ async function handleInterrupt(params) {
     interrupted: true,
     receipt: state.capabilities.includes("interrupt_receipt_v1") && receipt !== undefined,
   };
+}
+
+/// Changes the permission mode of the live session.
+///
+/// The SDK's own mode change resolves without returning a value, so the
+/// confirmation this reports is that the SDK accepted the change, not an
+/// independent observation of provider-effective policy. A missing method, a
+/// throw, or a differently-valued resolution all fail rather than report a
+/// silent success, and the admitted tool set never changes here.
+async function handleSetPermissionMode(params) {
+  if (!state.query) {
+    throw new SidecarFailure("not_open");
+  }
+  requireExactParams(params, ["mode"]);
+  const mode = admittedPermissionMode(requireString(params, "mode"));
+  if (typeof state.query.setPermissionMode !== "function") {
+    throw new SidecarFailure("permission_mode_unsupported");
+  }
+  let confirmed;
+  try {
+    confirmed = await state.query.setPermissionMode(mode);
+  } catch {
+    throw new SidecarFailure("permission_mode_failed");
+  }
+  if (confirmed !== undefined && confirmed !== mode) {
+    throw new SidecarFailure("permission_mode_unconfirmed");
+  }
+  state.permissionMode = mode;
+  return { permissionMode: mode };
 }
 
 /// Closes in contract order: interrupt a live turn, end input, dispose SDK
@@ -725,6 +817,9 @@ async function dispatch(record) {
         break;
       case "interrupt":
         data = await handleInterrupt(params);
+        break;
+      case "set_permission_mode":
+        data = await handleSetPermissionMode(params);
         break;
       default:
         throw new SidecarFailure("unknown_command");

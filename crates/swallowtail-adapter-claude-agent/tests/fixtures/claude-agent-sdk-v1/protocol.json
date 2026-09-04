@@ -13,10 +13,14 @@
     "open",
     "query",
     "interrupt",
+    "set_permission_mode",
     "close"
   ],
   "open_params": [
-    "cwd"
+    "cwd",
+    "model",
+    "tools",
+    "permissionMode"
   ],
   "close_params": [
     "joinBoundMs"
@@ -69,5 +73,31 @@
     "clean_on_owned_tree_empty",
     "degraded_on_confirmed_root_only",
     "failed_on_survivor_or_unconfirmed_root"
+  ],
+  "set_permission_mode_params": [
+    "mode"
+  ],
+  "admissible_tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Edit",
+    "Write",
+    "MultiEdit"
+  ],
+  "default_tools": [
+    "Read",
+    "Glob",
+    "Grep"
+  ],
+  "permission_modes": [
+    "default",
+    "plan",
+    "acceptEdits"
+  ],
+  "rejected_permission_modes": [
+    "bypassPermissions",
+    "auto",
+    "dontAsk"
   ]
 }

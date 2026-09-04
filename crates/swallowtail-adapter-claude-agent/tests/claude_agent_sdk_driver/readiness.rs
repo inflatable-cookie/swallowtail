@@ -115,7 +115,14 @@ fn the_selected_model_crosses_the_wire_on_open() {
         .find(|value| value["command"] == "open")
         .expect("open command is sent");
     assert_eq!(open["params"]["model"], "claude-sonnet-5");
-    assert_eq!(open["params"].as_object().expect("params").len(), 2);
+    // Open carries exactly the cwd, model, admitted tool set, and permission
+    // mode. The default profile is the unchanged read-only one.
+    assert_eq!(open["params"].as_object().expect("params").len(), 4);
+    assert_eq!(
+        open["params"]["tools"],
+        serde_json::json!(["Read", "Glob", "Grep"])
+    );
+    assert_eq!(open["params"]["permissionMode"], "default");
     let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
 

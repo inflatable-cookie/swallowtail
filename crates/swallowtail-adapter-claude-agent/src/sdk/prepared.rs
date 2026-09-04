@@ -8,16 +8,17 @@
 
 mod build;
 
-use super::driver::ClaudeAgentSdkDriver;
+use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
+use super::profile::ClaudeAgentSdkSessionProfile;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
     ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
     ModelRouteRevision, PreflightPlan,
 };
 use swallowtail_runtime::{
-    BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, OpenSessionRequest, PreparationFailure, PreparationStage, RequestId,
-    RuntimeFailure, SessionOptions, WorkingResourceRef,
+    BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionHandle,
+    OpenSessionRequest, PreparationFailure, PreparationStage, RequestId, RuntimeFailure,
+    SessionOptions, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one fresh Claude Agent SDK sidecar session.
@@ -40,6 +41,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) working_resource: WorkingResourceRef,
     pub(crate) request_id: RequestId,
     pub(crate) deadline: Deadline,
+    pub(crate) profile: ClaudeAgentSdkSessionProfile,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -76,7 +78,21 @@ impl ClaudeAgentSdkSessionPreparation {
             working_resource,
             request_id,
             deadline,
+            profile: ClaudeAgentSdkSessionProfile::read_only(),
         }
+    }
+
+    /// Replaces the admitted tool set and opening permission mode.
+    ///
+    /// Omitting this keeps the unchanged read-only profile, so an existing
+    /// caller's prepared plan, request, and sidecar options are identical to
+    /// `v0.4.0`. A profile admitting a write tool binds a read-write
+    /// working-resource lease into the plan, and the host's own lease must
+    /// match it before the sidecar starts.
+    #[must_use]
+    pub const fn with_session_profile(mut self, profile: ClaudeAgentSdkSessionProfile) -> Self {
+        self.profile = profile;
+        self
     }
 
     /// Builds session preparation input from one admitted SDK sidecar route
@@ -151,12 +167,15 @@ impl ClaudeAgentSdkSessionPreparation {
 type OpenSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
 
+type RouteSessionFuture = BoxFuture<'static, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>>;
+
 /// A prepared fresh sidecar session: validated plan plus bound request.
 pub struct ClaudeAgentSdkPreparedSession {
     plan: PreflightPlan,
     request: OpenSessionRequest,
     environment: EnvironmentRef,
     credential: CredentialRef,
+    profile: ClaudeAgentSdkSessionProfile,
 }
 
 impl ClaudeAgentSdkPreparedSession {
@@ -172,18 +191,44 @@ impl ClaudeAgentSdkPreparedSession {
         &self.request
     }
 
+    /// Returns the admitted tool set and opening permission mode this session
+    /// was prepared with.
+    ///
+    /// This is prepared evidence: it is exactly what the sidecar receives as
+    /// `tools` and `permissionMode`, and what open re-verifies from the
+    /// sidecar's own echo.
+    #[must_use]
+    pub const fn session_profile(&self) -> ClaudeAgentSdkSessionProfile {
+        self.profile
+    }
+
     /// Creates the low-level sidecar driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentSdkDriver {
         ClaudeAgentSdkDriver::new(self.environment.clone(), self.credential.clone())
+            .with_session_profile(self.profile)
     }
 
     /// Opens a fresh provider session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> OpenSessionFuture {
+        let opened = self.open_route_session(services);
+        Box::pin(async move {
+            opened
+                .await
+                .map(|handle| Box::new(handle) as Box<dyn InteractiveSessionHandle>)
+        })
+    }
+
+    /// Opens the same fresh session and returns the route-local handle.
+    ///
+    /// The shared trait object carries the ordinary session surface. This
+    /// concrete handle adds the route-local mid-session permission-mode
+    /// control, which no provider-neutral trait declares.
+    pub fn open_route_session(&self, services: HostServices) -> RouteSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan.clone();
         let request = self.request.clone();
-        Box::pin(async move { driver.open_session(plan, request, services).await })
+        Box::pin(async move { driver.open_route_session(plan, request, services).await })
     }
 }
 
@@ -207,12 +252,14 @@ pub(super) fn build_prepared(
     request: OpenSessionRequest,
     environment: EnvironmentRef,
     credential: CredentialRef,
+    profile: ClaudeAgentSdkSessionProfile,
 ) -> ClaudeAgentSdkPreparedSession {
     ClaudeAgentSdkPreparedSession {
         plan,
         request,
         environment,
         credential,
+        profile,
     }
 }
 

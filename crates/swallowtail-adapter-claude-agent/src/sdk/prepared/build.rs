@@ -36,6 +36,23 @@ pub(super) fn prepare(
             "Claude Agent SDK preparation admits no session options in this layer",
         ));
     }
+    // Blocked at the shared guard, not withheld by taste. Contract 013 keys
+    // the consumer-tool exclusion on a bounded profile's claimed filesystem
+    // boundary, and this route claims none, so its ambient read-write profile
+    // with consumer-mediated tool calls is admissible. Preflight still refuses
+    // any interactive session pairing `ResourceAccess::ReadWrite` with
+    // `Capability::ToolCalls`. Admitting a write tool here would mean dropping
+    // the capability this route requires, so it fails with an exact code until
+    // that guard is narrowed.
+    if input.profile.admits_writes() {
+        return Err(preparation_failure(
+            swallowtail_runtime::PreparationStage::Preflight,
+            "swallowtail.claude-agent.sdk.preparation.write_admission_unavailable",
+            "Claude Agent SDK preparation cannot yet bind an ambient read-write interactive \
+             session that also declares consumer tool exchange",
+        ));
+    }
+    let resource_access = input.profile.resource_access();
     let capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
@@ -49,7 +66,7 @@ pub(super) fn prepare(
         CapabilityRequirement::new(
             Capability::WorkingResource,
             [
-                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceAccess(resource_access),
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
@@ -80,7 +97,7 @@ pub(super) fn prepare(
         input.access_profile_id.clone(),
         SupportAuthority::IntegrationMaintainerSupported,
         ProtocolFacadeId::new("claude-agent-sdk-jsonl-v1").expect("static facade is valid"),
-        InstancePolicyId::new("claude-agent-sdk-ambient-read").expect("static policy is valid"),
+        InstancePolicyId::new(instance_policy_id(resource_access)).expect("static policy is valid"),
         capabilities.clone(),
     )
     .with_interface_versions(versions.clone())
@@ -137,7 +154,7 @@ pub(super) fn prepare(
     .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
     .with_interface_versions(versions)
     .with_harness_rpc_policy(rpc_policy)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_access_policy(SessionAccessPolicy::ambient_harness(resource_access))
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .require_model_route();
     let plan = swallowtail_runtime::build_plan(
@@ -161,5 +178,15 @@ pub(super) fn prepare(
         request,
         input.environment,
         input.credential,
+        input.profile,
     ))
+}
+
+/// The instance policy the admitted tool set implies. A read-only profile
+/// keeps the exact `v0.4.0` identifier, so the default plan is unchanged.
+const fn instance_policy_id(resource_access: ResourceAccess) -> &'static str {
+    match resource_access {
+        ResourceAccess::ReadWrite => "claude-agent-sdk-ambient-read-write",
+        _ => "claude-agent-sdk-ambient-read",
+    }
 }

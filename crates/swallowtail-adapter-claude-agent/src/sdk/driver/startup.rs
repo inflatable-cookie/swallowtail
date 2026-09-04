@@ -1,5 +1,6 @@
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
+use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_WIRE_AXIS,
@@ -10,10 +11,6 @@ use serde_json::{Value, json};
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::RuntimeFailure;
 
-/// Read-only tool set. Bash, terminal, and every write tool stay outside this
-/// route until Contract 023 process authority and Contract 041 mediation
-/// evidence admit them; a capability advertisement is not admission.
-pub(crate) const EXPECTED_TOOLS: [&str; 3] = ["Read", "Glob", "Grep"];
 const MAXIMUM_CAPABILITIES: usize = 64;
 const MAXIMUM_CAPABILITY_BYTES: usize = 96;
 
@@ -24,32 +21,54 @@ const MAXIMUM_CAPABILITY_BYTES: usize = 96;
 pub(crate) struct SessionReadiness {
     capabilities: Vec<String>,
     cwd: String,
+    profile: ClaudeAgentSdkSessionProfile,
+    permission_mode: ClaudeAgentSdkPermissionMode,
 }
 
 impl SessionReadiness {
     pub(crate) fn advertises(&self, capability: &str) -> bool {
         self.capabilities.iter().any(|value| value == capability)
     }
+
+    /// The admitted tool set the sidecar echoed at open.
+    pub(crate) const fn profile(&self) -> ClaudeAgentSdkSessionProfile {
+        self.profile
+    }
+
+    /// The effective permission mode the sidecar confirmed at open.
+    pub(crate) const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
+        self.permission_mode
+    }
 }
 
 /// Opens the session, verifying the bound runtime, wire, package, native
-/// binary, resource, read-only tool set, and first-party subscription
-/// readiness before any provider work.
+/// binary, resource, admitted tool set, permission mode, and first-party
+/// subscription readiness before any provider work.
 pub(crate) async fn open(
     connection: &SdkConnection,
     plan: &PreflightPlan,
     leased_cwd: &str,
+    profile: ClaudeAgentSdkSessionProfile,
 ) -> Result<SessionReadiness, RuntimeFailure> {
     let model = plan
         .model_id()
         .expect("validated sidecar model route")
         .as_str()
         .to_owned();
+    let tools: Vec<&str> = profile
+        .tools()
+        .map(crate::sdk::profile::ClaudeAgentSdkTool::as_str)
+        .collect();
     let response = connection
         .command(
             "open-1".to_owned(),
             ClaudeAgentSdkCommand::Open,
-            json!({"cwd": leased_cwd, "model": model}),
+            json!({
+                "cwd": leased_cwd,
+                "model": model,
+                "tools": tools,
+                "permissionMode": profile.permission_mode().as_str(),
+            }),
         )
         .await?;
     if !response.success {
@@ -61,6 +80,7 @@ pub(crate) async fn open(
     let expected = Expectation {
         cwd: leased_cwd,
         model: &model,
+        profile,
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
@@ -81,6 +101,7 @@ fn bound_version(plan: &PreflightPlan, axis: &str) -> String {
 struct Expectation<'a> {
     cwd: &'a str,
     model: &'a str,
+    profile: ClaudeAgentSdkSessionProfile,
     sdk_version: &'a str,
     native_version: &'a str,
     node_version: &'a str,
@@ -103,12 +124,13 @@ fn readiness(
             // The effective model is confirmed from the runtime's own init
             // evidence; a session that silently ran an ambient default fails.
             && text(data, "model") == Some(expected.model)
-            && tools_match(data)
+            && tools_match(data, expected.profile)
+            && text(data, "permissionMode") == Some(expected.profile.permission_mode().as_str())
     });
     if !identity_matches {
         return Err(failure(
             "swallowtail.claude-agent.sdk.open_mismatch",
-            "Claude Agent SDK sidecar identity did not match the preflight-bound runtime, wire, package, native binary, resource, model, or tool set",
+            "Claude Agent SDK sidecar identity did not match the preflight-bound runtime, wire, package, native binary, resource, model, tool set, or permission mode",
         ));
     }
     let data = data.expect("validated sidecar open identity carries data");
@@ -116,6 +138,8 @@ fn readiness(
     Ok(SessionReadiness {
         capabilities: capabilities(data)?,
         cwd: expected.cwd.to_owned(),
+        profile: expected.profile,
+        permission_mode: expected.profile.permission_mode(),
     })
 }
 
@@ -180,15 +204,17 @@ fn capabilities(data: &Value) -> Result<Vec<String>, RuntimeFailure> {
     Ok(capabilities)
 }
 
-fn tools_match(data: &Value) -> bool {
+/// The sidecar's echo must be the admitted set exactly: same tools, same
+/// order, no additions. A widened echo is a substitution, not a convenience.
+fn tools_match(data: &Value, profile: ClaudeAgentSdkSessionProfile) -> bool {
     data.get("tools")
         .and_then(Value::as_array)
         .is_some_and(|tools| {
-            tools.len() == EXPECTED_TOOLS.len()
+            tools.len() == profile.tools().count()
                 && tools
                     .iter()
-                    .zip(EXPECTED_TOOLS)
-                    .all(|(tool, expected)| tool.as_str() == Some(expected))
+                    .zip(profile.tools())
+                    .all(|(tool, expected)| tool.as_str() == Some(expected.as_str()))
         })
 }
 

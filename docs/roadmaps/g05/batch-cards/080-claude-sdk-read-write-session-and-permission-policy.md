@@ -94,3 +94,57 @@ compiles the `v0.4.1` release roadmap.
 The SDK cannot change permission mode without reopening the session; a write
 path bypasses `canUseTool`; a Contract 017 or 023 reinterpretation becomes
 necessary; scope widens into a later card.
+
+## Result
+
+Permission policy landed; read-write tool admission waits on card 089
+narrowing the shared preflight guard, and is refused with an exact code rather
+than forced.
+
+Delivered:
+
+- `ClaudeAgentSdkSessionProfile`, `ClaudeAgentSdkTool`, and
+  `ClaudeAgentSdkPermissionMode` as additive prepared inputs, bound through
+  `ClaudeAgentSdkSessionPreparation::with_session_profile`. `from_names`
+  rejects an unknown tool, a repeat, and an empty set with exact codes.
+- `bypassPermissions`, `auto`, and `dontAsk` are unrepresentable in Rust and
+  are refused by name inside the sidecar before the SDK module is imported.
+- Sidecar: the admitted set crosses as `tools`, `allowedTools` is never set,
+  every withheld admissible tool joins `disallowedTools`, `permissionMode` is
+  passed at open and echoed back, and `set_permission_mode` calls the SDK's own
+  mid-session change and returns the confirmed mode.
+- `ClaudeAgentSdkPreparedSession::open_route_session` returns the route-local
+  `ClaudeAgentSdkSessionHandle`, whose additive `set_permission_mode` returns
+  the confirmed mode or fails typed (`permission_mode_rejected`,
+  `permission_mode_unconfirmed`). `permission_mode()` reports only a confirmed
+  value.
+- Open verifies the exact admitted set and the selected mode from the
+  sidecar's own echo; a widened set or a drifted mode fails `open_mismatch`.
+- Fake-SDK proofs: a two-turn editing session writes only what the host
+  admitted and a denied write never touches disk; `acceptEdits` skips
+  admission for edits and nothing else; `plan`/`default` round-trip; bypass and
+  an unadmitted tool name are refused before the SDK is constructed.
+- The default profile is byte-identical in behaviour: the same read-only set,
+  the same `default` mode, the same access policy, the same instance policy id.
+
+Blocked, as a named stop condition:
+
+Admitting `Edit`, `Write`, or `MultiEdit` requires
+`ResourceAccess::ReadWrite` on the working-resource lease, and
+`swallowtail-core` preflight still refuses a writable interactive session that
+also declares `Capability::ToolCalls`
+(`crates/swallowtail-core/src/preflight/session_access.rs:101`). The operator
+ruling of 2026-09-04 keys that exclusion on a bounded profile's claimed
+filesystem boundary rather than on `ReadWrite`, so this route's ambient
+profile with consumer-mediated tool calls is admissible under Contract 013;
+the shared guard has not caught up. Narrowing it belongs to card 089 and to
+`swallowtail-core`, a path this card forbids.
+
+Preparation therefore refuses a write profile with
+`swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`, and
+the write path is proved at the sidecar layer so only the guard is missing.
+The refusal is correct until card 089 lands and is removed in card 080's
+second PR.
+
+The `Status:` line and the batch-card index are reserved shared closeout
+surfaces, so this card still reads `ready`; the coordinator owns both.

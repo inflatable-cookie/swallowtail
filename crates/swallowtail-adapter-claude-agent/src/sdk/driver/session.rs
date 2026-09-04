@@ -6,6 +6,7 @@ use super::validation::validate_turn;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
+use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::turn::SdkActiveTurn;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::json;
@@ -36,7 +37,12 @@ pub(super) struct ActiveTurn {
     pub(super) deadline_scope: ScopeId,
 }
 
-pub(super) struct ClaudeAgentSdkSessionHandle {
+/// One open Claude Agent SDK sidecar session.
+///
+/// This is the route-local handle. It carries the whole shared
+/// `InteractiveSessionHandle` surface and adds mid-session permission-mode
+/// control, which no provider-neutral trait declares.
+pub struct ClaudeAgentSdkSessionHandle {
     pub(super) request_id: RequestId,
     pub(super) runtime_id: RuntimeSessionId,
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
@@ -53,6 +59,11 @@ pub(super) struct ClaudeAgentSdkSessionHandle {
     pub(super) credential: Option<CredentialLease>,
     pub(super) readiness: SessionReadiness,
     pub(super) active: ActiveSlot,
+    /// The last mode the sidecar confirmed, starting at the one it echoed at
+    /// open.
+    pub(super) permission_mode: ClaudeAgentSdkPermissionMode,
+    /// Correlation counter, so each change carries its own single-use id.
+    pub(super) permission_mode_changes: u32,
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
@@ -104,6 +115,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 request.turn_id().clone(),
                 Arc::downgrade(&self.connection),
                 Some(deadline),
+                self.readiness.profile(),
             )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             // The host deadline races real completion. On expiry it interrupts
@@ -235,6 +247,86 @@ impl Drop for ClaudeAgentSdkSessionHandle {
 }
 
 impl ClaudeAgentSdkSessionHandle {
+    /// Returns the admitted tool set and current effective permission mode.
+    #[must_use]
+    pub const fn session_profile(&self) -> ClaudeAgentSdkSessionProfile {
+        self.readiness
+            .profile()
+            .with_permission_mode(self.permission_mode)
+    }
+
+    /// Returns the effective permission mode this session is running under.
+    ///
+    /// At open this is the confirmed value the sidecar echoed. After a
+    /// successful change it is the value the sidecar confirmed for that
+    /// change. It is never a value this side merely requested.
+    #[must_use]
+    pub const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
+        self.permission_mode
+    }
+
+    /// Changes the permission mode of this live session and returns the mode
+    /// the sidecar confirmed.
+    ///
+    /// The admitted tool set never widens here: only the three modes this
+    /// route represents are reachable, and an auto-approving upstream mode is
+    /// unrepresentable. The whole exchange is raced against the caller's
+    /// deadline, and a rejected, unanswered, or differently-answered change is
+    /// a typed failure — this never reports success on an unconfirmed change.
+    pub fn set_permission_mode<'a>(
+        &'a mut self,
+        mode: ClaudeAgentSdkPermissionMode,
+        services: HostServices,
+        deadline: swallowtail_runtime::Deadline,
+    ) -> BoxFuture<'a, Result<ClaudeAgentSdkPermissionMode, RuntimeFailure>> {
+        Box::pin(async move {
+            services.require_execution_host(&self.execution_host_id)?;
+            let bounded = HostBound::new(
+                services
+                    .time()
+                    .cloned()
+                    .expect("validated sidecar time service"),
+                deadline,
+            );
+            self.permission_mode_changes += 1;
+            let id = format!(
+                "set-permission-mode:{}:{}",
+                self.request_id.as_str(),
+                self.permission_mode_changes
+            );
+            let Some(response) = bounded
+                .run(self.connection.command(
+                    id,
+                    ClaudeAgentSdkCommand::SetPermissionMode,
+                    json!({"mode": mode.as_str()}),
+                ))
+                .await
+            else {
+                return Err(permission_mode_unconfirmed());
+            };
+            let response = response?;
+            if !response.success {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.permission_mode_rejected",
+                    "Claude Agent SDK sidecar rejected the permission-mode change",
+                ));
+            }
+            // The confirmation is the sidecar's own echo of the mode it
+            // applied. A missing or different echo is an unconfirmed change,
+            // never a silent success.
+            let confirmed = response
+                .data
+                .as_ref()
+                .and_then(|data| data.get("permissionMode"))
+                .and_then(serde_json::Value::as_str);
+            if confirmed != Some(mode.as_str()) {
+                return Err(permission_mode_unconfirmed());
+            }
+            self.permission_mode = mode;
+            Ok(mode)
+        })
+    }
+
     fn reject_turn(&self, turn: &Arc<SdkActiveTurn>, error: RuntimeFailure) -> RuntimeFailure {
         turn.fail_connection(error.diagnostic().clone());
         self.connection.clear_active_turn(turn);
@@ -250,6 +342,13 @@ fn turn_deadline_elapsed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
         "Claude Agent SDK sidecar turn reached its host deadline",
+    )
+}
+
+fn permission_mode_unconfirmed() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.permission_mode_unconfirmed",
+        "Claude Agent SDK sidecar did not confirm the requested permission mode",
     )
 }
 

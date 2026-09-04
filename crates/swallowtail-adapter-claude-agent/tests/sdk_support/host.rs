@@ -38,6 +38,9 @@ pub struct SdkFixtureHost {
     scenario: SdkScenario,
     exit_observable: bool,
     attests_empty_owned_tree: bool,
+    /// Models a host that will only ever grant read access to the working
+    /// resource, whatever the session asked for.
+    pub(super) read_only_resource: bool,
     pub(super) stall: Option<Stall>,
 }
 
@@ -95,6 +98,7 @@ impl SdkFixtureHost {
             scenario,
             exit_observable: true,
             attests_empty_owned_tree: false,
+            read_only_resource: false,
             stall: None,
         }
     }
@@ -102,6 +106,13 @@ impl SdkFixtureHost {
     /// Makes one host service hang forever.
     pub fn stalling(mut self, stall: Stall) -> Self {
         self.stall = Some(stall);
+        self
+    }
+
+    /// Models a host that grants read access only, so a session admitting a
+    /// write tool cannot obtain the lease its plan requires.
+    pub fn granting_read_only_resource(mut self) -> Self {
+        self.read_only_resource = true;
         self
     }
 

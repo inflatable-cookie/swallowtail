@@ -15,8 +15,9 @@ The route is `claude-agent.sdk` in `swallowtail-adapter-claude-agent`, with
 driver ID `swallowtail.claude-agent.sdk`. It is Unix-only: see
 [Supported Platforms](#supported-platforms). Choose it for one fresh read-only
 interactive session on the user's own Claude subscription, with streamed
-output, identity-and-lifecycle activity, consumer-mediated tool admission,
-interrupt, and a host-owned descendant-tree close. Reject it when the
+output, identity-and-lifecycle activity, consumer-mediated tool admission, a
+permission mode selected at open and changeable mid-session, interrupt, and a
+host-owned descendant-tree close. Reject it when the
 application cannot provision the Node runtime, sidecar asset, SDK package, and
 platform binary, or needs a model catalogue, structured runs, resume, fork,
 session management, usage detail, model/effort/thinking control, MCP, hooks,
@@ -150,8 +151,8 @@ artifact identity, not as "current".
 
 Open runs before any provider work and fails closed on any mismatch: wire,
 behavior revision, SDK package and version, native version, Node version, the
-host-leased working directory, the effective model, the read-only
-`Read`/`Glob`/`Grep` tool set, and first-party subscription readiness.
+host-leased working directory, the effective model, the exact admitted tool
+set, the selected permission mode, and first-party subscription readiness.
 
 The selected model is sent as `options.model` and then confirmed from the
 runtime's own `system/init` evidence. A session that silently ran Claude's
@@ -248,16 +249,80 @@ receipt is admissible only where the runtime advertised
 `interrupt_receipt_v1`; a receipt without that advertisement is a failure, not
 a bonus.
 
-## Tool Admission
+## Tool Admission And Permission Mode
 
-Read-only tool use is admitted by the consumer, never inferred by the sidecar.
+Tool use is admitted by the consumer, never inferred by the sidecar.
 
-Availability is restricted with `Options.tools`. `Options.allowedTools` is
-never set: it auto-allows without prompting, which would bypass per-use
-admission entirely. The exact read-only allow-list is enforced inside the
-sidecar before any consumer round trip, so an unknown tool is denied without
-ever being offered, and the Rust side rejects an out-of-set request as a
-transport failure rather than delegating it.
+`ClaudeAgentSdkSessionProfile` fixes two things before preparation: the exact
+admitted tool set and the opening permission mode.
+`ClaudeAgentSdkSessionPreparation::with_session_profile` binds it; omitting it
+keeps the unchanged `v0.4.0` profile — `Read`, `Glob`, `Grep` under `default`
+mode on a read-only lease — so an existing caller's plan, request, and sidecar
+options are identical to `v0.4.0`.
+
+`ClaudeAgentSdkSessionProfile::from_names` is the surface a consumer
+configuration reaches. An unknown tool name fails there with
+`profile.tool_unknown`, a repeat with `profile.tool_repeated`, and an empty set
+with `profile.tool_set_empty` — all before a plan, lease, process, or provider
+contact exists.
+
+Availability is restricted with `Options.tools`, which carries exactly the
+admitted set. `Options.allowedTools` is never set: it auto-allows without
+prompting, which would bypass per-use admission entirely. Every admissible tool
+the consumer did not admit is added to `Options.disallowedTools` alongside
+Bash, terminal, notebook, and network tools, which are never available on this
+route at all. The admitted set is enforced inside the sidecar before any
+consumer round trip, so an unadmitted tool is denied without ever being
+offered, and the Rust side rejects an out-of-set request as a transport failure
+rather than delegating it.
+
+### Permission Modes
+
+Three modes are representable: `default`, `plan`, and `acceptEdits`. Upstream
+also declares `bypassPermissions`, `auto`, and `dontAsk`; all three
+auto-approve tool use, so none of them is representable in
+`ClaudeAgentSdkPermissionMode`, and the sidecar refuses each by name with
+`permission_mode_rejected` before the SDK is loaded. A rejection this exact is
+what makes "the SDK never sees an auto-approving mode" checkable rather than
+reviewable.
+
+The selected mode crosses the wire as `Options.permissionMode` at open and is
+confirmed from the sidecar's own echo; a different echo fails open closed.
+`ClaudeAgentSdkPreparedSession::open_route_session` returns the route-local
+`ClaudeAgentSdkSessionHandle`, which adds `set_permission_mode` to the ordinary
+session surface. The change is raced against a caller-supplied deadline, and a
+refused, unanswered, or differently-answered change is a typed failure —
+`permission_mode_rejected` or `permission_mode_unconfirmed` — never a silent
+success. `permission_mode()` reports the last mode that was actually confirmed.
+
+Read the confirmation for exactly what it is. Upstream `Query.setPermissionMode`
+resolves without a value, so the sidecar's confirmation means the SDK accepted
+the change. It is not an independent observation of provider-effective policy,
+and this route does not claim one.
+
+**The `acceptEdits` caveat.** `acceptEdits` auto-approves edits to the working
+directory, so edits run without a per-call consumer decision while every other
+admitted tool still goes through `canUseTool`. That is a consumer-chosen
+narrowing of mediation, not a default: under `default` mode every admitted call
+is offered first. Choose `acceptEdits` only when the consumer accepts that it
+will not see each edit before it runs.
+
+### Write Tools Are Not Yet Bindable
+
+`Edit`, `Write`, and `MultiEdit` are expressible in the profile and are
+enforced end to end by the sidecar asset, but preparation refuses them today
+with
+`swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`.
+
+The reason is a shared guard, not a missing implementation. Contract 013 keys
+the consumer-tool exclusion on a bounded profile's claimed filesystem
+boundary: an ambient profile claims no boundary, so it may combine `ReadWrite`
+with consumer-mediated tool calls, which is exactly what this route does.
+Shared preflight has not caught up — it still refuses any interactive session
+pairing `ResourceAccess::ReadWrite` with `Capability::ToolCalls`. Preparation
+says so exactly rather than dropping the capability the route requires.
+g05.029 card 089 narrows that guard; the write half then lands in card 080's
+second PR.
 
 Each admitted request crosses the wire as a bounded correlated callback in the
 route-local `claude-agent-sdk/can-use-tool` namespace carrying the tool name
@@ -273,9 +338,9 @@ one, and the transport stays usable for the interrupt and close that follow.
 The namespace is deliberately route-local: shared permission vocabulary is
 orchestrator work once a second provider proves the same semantics.
 
-Bash, terminal, write tools, and every non-read tool are outside this route.
-A capability advertisement is not admission; those need their own Contract 023
-process authority and Contract 041 mediation evidence.
+Bash, terminal, and every remaining tool are outside this route. A capability
+advertisement is not admission; those need their own Contract 023 process
+authority and Contract 041 mediation evidence.
 
 ## Close And The Descendant Tree
 

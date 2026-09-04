@@ -2,7 +2,7 @@
 //! facade, so every driver case also exercises the exact preparation surface.
 
 use swallowtail_adapter_claude_agent::sdk::{
-    ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation,
+    ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
     prepare_claude_agent_sdk_session,
 };
 use swallowtail_core::{
@@ -19,11 +19,27 @@ pub fn prepared_session(host: ExecutionHostId) -> ClaudeAgentSdkPreparedSession 
         .expect("fixture preparation succeeds with no options")
 }
 
+/// A prepared session admitting an explicit tool set and permission mode.
+pub fn prepared_session_for(
+    host: ExecutionHostId,
+    profile: ClaudeAgentSdkSessionProfile,
+) -> ClaudeAgentSdkPreparedSession {
+    prepare_claude_agent_sdk_session(
+        preparation(host).with_session_profile(profile),
+        SessionOptions::default(),
+    )
+    .expect("fixture preparation succeeds for an explicit profile")
+}
+
 pub fn prepared_session_with(
     host: ExecutionHostId,
     options: SessionOptions,
 ) -> Result<ClaudeAgentSdkPreparedSession, swallowtail_runtime::PreparationFailure> {
-    let input = ClaudeAgentSdkSessionPreparation::new(
+    prepare_claude_agent_sdk_session(preparation(host), options)
+}
+
+pub fn preparation(host: ExecutionHostId) -> ClaudeAgentSdkSessionPreparation {
+    ClaudeAgentSdkSessionPreparation::new(
         ConfiguredInstanceId::new("claude-agent-sdk.fixture").expect("valid instance"),
         InstanceRevision::new("fixture-revision").expect("valid revision"),
         host,
@@ -38,8 +54,7 @@ pub fn prepared_session_with(
         WorkingResourceRef::new("claude-agent-sdk.fixture.workspace").expect("valid resource"),
         RequestId::new("request-1").expect("valid request"),
         Deadline::at(MonotonicInstant::from_ticks(10_000)),
-    );
-    prepare_claude_agent_sdk_session(input, options)
+    )
 }
 
 /// One caller-selected cleanup deadline, far enough ahead that a healthy close

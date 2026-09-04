@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Review or validation command wrappers rely on unavailable host `timeout` — 2026-09-04
+- Friction: review or verification pipelines wrapping commands with `timeout <duration> <cmd>`
+  fail silently on macOS hosts because `timeout` is a GNU Coreutils binary absent from
+  default Darwin environments.
+- Impact: review or verification pipelines can mask command execution, exit with false positive
+  status, or fail unexpectedly.
+- Fix: avoid wrapping verification commands in `timeout` without checking binary availability,
+  or use portable shell-level timeouts.
+- Surface: verification / review shell snippets and automation on Darwin hosts.
+
 ### [ ] Public API baseline gate flags expected adapter consumer route projection methods — 2026-09-04
 - Friction: `effigy package:api` (`scripts/check-public-api.sh`) enforces an
   exact zero-diff comparison against `release-baselines/public-api-0.4.0/`,

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.009 Card 074 DeepSeek Candidate I Closeout](./2026-09-04-g05-009-card-074-deepseek-closeout.md) — exact Candidate I tranche accepted and merged through PR 217 as `8cb811f2`; Contract 061 coverage is now 425 proved rows
 - [2026-09-04 g05.009 Card 076 Kimi Compound Acknowledgement Closeout](./2026-09-04-g05-009-card-076-kimi-compound-acknowledgement-closeout.md) — accepted planning design merged through PR 218 as `602e466f`; card 079 is the shared runtime/testkit realization before card 034
 - [2026-09-04 Claude SDK Parity Roadmap And Compound Acknowledgement Accepted](./2026-09-04-claude-sdk-parity-and-compound-acknowledgement.md) — operator accepted the Bovine Claude requirement as g05.029 with card 080 ready as the `v0.4.1` carrier, and card 076's compound acknowledgement design as a Contract 061 amendment with runtime baseline card 079
 - [2026-09-04 g05.028 Card 078 OpenCode HTTP Claim](./2026-09-04-g05-028-card-078-opencode-http-claim.md) — qualified `opencode.server` through official `1.18.28`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; PR 219 merged as `751ed27d`

@@ -1,6 +1,6 @@
 # 074 Contract 061 DeepSeek And DeepSeek Harness Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -109,3 +109,6 @@ Corrected only the accepted census source references: imported shared types,
 `ActivityObservation`, the direct `ModelRoute` construction site, and the
 retained fork/archive outcome source. Provider execution, paging, cleanup,
 continuation, failure, and contact behavior are unchanged.
+
+Merged through PR 217 at `8cb811f2`; the exact 41/6/47 Candidate I tranche is
+now part of the realized Contract 061 coverage.

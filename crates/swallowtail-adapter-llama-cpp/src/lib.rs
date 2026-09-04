@@ -9,6 +9,7 @@
 
 mod activity;
 mod addable;
+mod consumer_route_projection;
 mod context_size;
 mod driver;
 mod failure;

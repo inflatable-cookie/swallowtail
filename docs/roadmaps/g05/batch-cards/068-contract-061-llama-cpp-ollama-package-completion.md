@@ -143,3 +143,15 @@ No. Stop after one reviewable PR for exact-head review.
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [completed card 024](024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md)
+
+## Result
+
+Implemented the exact 35-row candidate J tranche. Three independent ledgers
+reconcile to 10 `llama-cpp.attached`, 6 `llama-cpp.owned`, and 19
+`ollama.attached` with 32 emitted and 3 construction-time withheld.
+`llama-cpp.attached` cancellation, `llama-cpp.owned` activity, and Ollama
+interactive-session reasoning stay out of the emitted sets. Ollama twins are
+keyed by operation shape. Optional reasoning and structured-output rows
+appear only on the maximal inference attempt. Owned serving controls stay
+off the attached route. Current `v0.4.0` adapter API snapshots record only
+the six additive contribution methods.

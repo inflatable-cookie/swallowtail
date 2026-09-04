@@ -5,6 +5,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Roadmap status-drift checker treats any status word in an annotation as its primary — 2026-09-04
+- Friction: `scripts/check-roadmap-status-drift.py` scans the whole index
+  annotation for status tokens in a fixed priority order, so a `ready`
+  milestone whose annotation mentions "candidate I stopped on ..." fails as
+  primary `stopped`. The failure message does not name the offending line.
+- Impact: honest annotation detail must avoid ordinary words like "stopped"
+  or "blocked"; a planning commit failed docs QA on wording alone.
+- Fix: read the primary as the first token before the first `;`, matching
+  the documented grammar, and print the file and line that failed.
+- Surface: `scripts/check-roadmap-status-drift.py`; `docs/roadmaps/status-grammar.md`.
+
 ### [ ] Rust everyday closeout collides after same-path content revision — 2026-09-03
 - Friction: `northstar-rust-quality closeout` reused snapshot
   `6a3ace2581a207e4f7541ab74ae7dbe0a68e36eceb97a419c975d83c5cc8614b`

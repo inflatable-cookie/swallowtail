@@ -5,7 +5,6 @@
 - [064-contract-061-candidate-c-breadth-audit.md](./064-contract-061-candidate-c-breadth-audit.md) — ready; planning-only; Antigravity, Bedrock, Cursor; 94 rows; carries the observation reopen trigger
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 - [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — ready; planning-only; DeepSeek, DeepSeek Harness; 47 rows
-- [067-contract-061-candidate-j-breadth-audit.md](./067-contract-061-candidate-j-breadth-audit.md) — ready; planning-only; llama.cpp, Ollama; 35 rows
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — ready; freeze official `0.40.1` identity and trace the `0.40.0` Bash `cwd` authority change before any claim
 
 ## Planned
@@ -16,6 +15,8 @@
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
+
+- [067-contract-061-candidate-j-breadth-audit.md](./067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 merged as `8cbf6064`
 
 - [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; operator tagged `v0.4.0` on 2026-09-04
 - [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority

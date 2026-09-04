@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; planning audits 064-067 for candidates C, E, I, and J are ready; no implementation card is ready
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J audit 067 is closed and promotable; audits 064-066 remain active; no implementation card is ready
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -363,8 +363,11 @@ provider-operation observation public-baseline decision, and coverage stays
 - [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — ready; Antigravity, Bedrock, Cursor; 94 rows; carries the provider-operation observation reopen trigger
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
 - [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — ready; DeepSeek, DeepSeek Harness; 47 rows
-- [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — ready; llama.cpp, Ollama; 35 rows
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; decision deferred behind card 064
+
+## Batch Cards Completed
+
+- [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 exact head `0030b846` merged as `8cbf6064`
 
 ## Dispatch Manifest
 

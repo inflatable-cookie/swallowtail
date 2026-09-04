@@ -15,19 +15,13 @@ shape.
 
 ## Next Task
 
-Implement [g05.026 card 062](g05/batch-cards/062-kimi-code-local-server-0-40-1-identity.md):
-freeze exact official `@moonshot-ai/kimi-code` `0.40.1` identity for the
-separate `kimi-code.local-server` family, compare its selected REST/WebSocket
-v2 surfaces against the frozen `0.38.0` corpus through `0.39.0`, `0.39.1`,
-and `0.40.0`, and trace the `0.40.0` Bash tool `cwd` restriction removal as a
-Contract 017/023 authority question before naming a segment shape. Change no
-claim in that commit. Card 063 continues only for an admitted segment. The
-dispatch manifest lives in the g05.026 roadmap. In parallel, the coordinator
-launches g05.009 planning-only audits 064-067 for Contract 061 breadth
-candidates C, E, I, and J from the manifest in that roadmap; card 064 also
-reports whether provider-operation observation recurs on the catalogue routes,
-which is the reopen trigger for the deferred Kimi decision. `v0.4.0` is
-tagged; the feature/currentness freeze is lifted.
+Continue the approved g05.009 planning-only breadth audits 064-066 for Contract
+061 candidates C, E, and I. Candidate J audit 067 is complete and promotable;
+Chatterbox reconciles the audit notes and may promote at most one implementation
+card per passing candidate. Card 062 is paused because official Kimi Code
+latest moved to `0.41.0` during its assigned `0.40.1` identity run; do not
+invent a retarget. Card 063 remains gated and card 034 remains planned.
+`v0.4.0` is tagged; the feature/currentness freeze is lifted.
 
 ## Standing Lanes
 

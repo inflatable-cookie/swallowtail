@@ -1,6 +1,6 @@
 # 075 Contract 061 Gemini And Grok Package Completion
 
-Status: complete
+Status: ready
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -102,15 +102,15 @@ No. Stop for exact-head review.
 
 ## Result
 
-Complete. Gemini and Grok now emit their exact prepared Contract 061
+Implementation result. Gemini and Grok now emit their exact prepared Contract 061
 contributions, retaining the 39 emitted / 17 withheld / 56 reconciled Path A
 ledger. Gemini ACP and Grok ACP add adapter-local projected-open outcomes that
 publish negotiated model options only after successful open confirms retained
 validated options; existing open entry points remain unchanged. No version
 claim or shared surface changed.
 
-Validation: focused and affected-package checks passed for both packages;
-package API and documentation/Northstar checks passed. The initial focused run
-was blocked by the sandbox denying the Gemini Live fixture listener; the same
-check passed outside the sandbox. `scan god-files` records the new projection
-modules as high-size follow-up work.
+Validation: focused and affected-package checks passed for both packages. The
+initial focused run was blocked by the sandbox denying the Gemini Live fixture
+listener; the same check passed outside the sandbox. `scan god-files` records
+the new projection modules as high-size follow-up work. Completion remains
+reserved for coordinator-owned batch-index and frozen API-baseline reconciliation.

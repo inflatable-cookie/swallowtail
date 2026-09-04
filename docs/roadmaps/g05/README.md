@@ -43,7 +43,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 read-write session and permission policy is ready as the `v0.4.1` carrier; cards 081-088 queued in consumer priority order
+- [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 remains the `v0.4.1` carrier, card 089's bounded-profile preflight exclusion landed, and cards 081-088 are queued in consumer priority order
 - [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
 - [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
 - [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated

@@ -1,11 +1,120 @@
 use super::discovery_support::{FakeProcessService, services as discovery_services};
 use super::*;
+use std::collections::BTreeSet;
 use swallowtail_adapter_grok::{
     GROK_BUILD_ACP_AXIS, GrokModelSelection, GrokPreparationInput, GrokPreparationProbe,
-    GrokSessionProfileInput, grok_build_subscription_access_profile, prepare_grok_build,
+    GrokRunProfileInput, GrokSessionProfileInput, grok_build_subscription_access_profile,
+    prepare_grok_build,
 };
 use swallowtail_core::InterfaceVersionAxis;
 use swallowtail_runtime::{ConsumerRouteProjectionSourceId, ExecutableRef};
+
+#[test]
+fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
+    let prepared = prepared_integration("grok.projection.reconcile");
+    let session = prepared
+        .prepare_session(GrokSessionProfileInput::new(
+            RequestId::new("grok.projection.reconcile.session").expect("request"),
+            GrokModelSelection::new(
+                ModelRouteId::new("grok.fixture.route").expect("route"),
+                ModelRouteRevision::new("grok.fixture.route-r1").expect("revision"),
+                ModelId::new("grok-4.5").expect("model"),
+            ),
+            WorkingResourceRef::new("grok.fixture.workspace").expect("resource"),
+            swallowtail_runtime::SessionOptions::default(),
+        ))
+        .expect("session prepares");
+    let run = prepared
+        .prepare_run(GrokRunProfileInput::new(
+            RequestId::new("grok.projection.reconcile.run").expect("request"),
+            GrokModelSelection::new(
+                ModelRouteId::new("grok.fixture.run-route").expect("route"),
+                ModelRouteRevision::new("grok.fixture.run-route-r1").expect("revision"),
+                ModelId::new("grok-4.5").expect("model"),
+            ),
+            OperationContent::new("projection proof").expect("content"),
+            WorkingResourceRef::new("grok.fixture.workspace").expect("resource"),
+            None,
+        ))
+        .expect("run prepares");
+    let source = |value| ConsumerRouteProjectionSourceId::new(value).expect("source");
+    let session = session
+        .consumer_route_projection_contribution(source("grok.projection.reconcile.session"))
+        .expect("session projection");
+    let run = run
+        .consumer_route_projection_contribution(source("grok.projection.reconcile.run"))
+        .expect("run projection");
+    let emitted = rows(&session).chain(rows(&run)).collect::<BTreeSet<_>>();
+    assert_eq!(emitted.len(), 10);
+    for withheld in [
+        "ModelCatalogue",
+        "persistent-session-posture",
+        "negotiated-model-options-observation",
+    ] {
+        assert!(
+            !emitted
+                .iter()
+                .any(|(_, identity)| identity.contains(withheld)),
+            "Grok must withhold {withheld}"
+        );
+    }
+}
+
+fn rows(
+    contribution: &swallowtail_runtime::ConsumerRouteProjectionContribution,
+) -> impl Iterator<Item = (String, String)> + '_ {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(move |row| {
+            let identity = format!("{:?}", row.identity());
+            let route_specific = if identity.starts_with("Control") {
+                format!("{:?}", contribution.applicability())
+            } else {
+                String::new()
+            };
+            (route_specific, identity)
+        })
+}
+
+fn prepared_integration(prefix: &str) -> swallowtail_adapter_grok::GrokPreparedIntegration {
+    let host = ExecutionHostId::new(format!("{prefix}.host")).expect("host");
+    let credential = CredentialRef::new(format!("{prefix}.credential")).expect("credential");
+    let access = grok_build_subscription_access_profile(credential);
+    let status = AccessStatus::new(
+        access.id().clone(),
+        CredentialState::Ready,
+        EntitlementState::Available,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::ProviderSupported,
+    );
+    let target = swallowtail_runtime::InstalledExecutableTarget::new(
+        ExecutableRef::new(format!("{prefix}.executable")).expect("target"),
+        InterfaceVersionAxis::new(GROK_BUILD_ACP_AXIS).expect("axis"),
+    );
+    let (process, _) = FakeProcessService::completed("grok 0.2.114 (0c785038798) [stable]\n");
+    block_on(prepare_grok_build(
+        GrokPreparationInput::new(
+            ConfiguredInstanceId::new(format!("{prefix}.instance")).expect("instance"),
+            InstanceRevision::new("1").expect("revision"),
+            host.clone(),
+            target,
+            EnvironmentRef::new(format!("{prefix}.environment")).expect("environment"),
+            access,
+            swallowtail_runtime::PreparedAccessEvidence::caller_asserted(status),
+        ),
+        GrokPreparationProbe::new(
+            RequestId::new(format!("{prefix}.probe")).expect("request"),
+            ScopeId::new(format!("{prefix}.scope")).expect("scope"),
+            Deadline::at(MonotonicInstant::from_ticks(100)),
+            swallowtail_runtime::DiscoveryCancellation::new(),
+        ),
+        discovery_services(host, process),
+    ))
+    .expect("prepares")
+}
 
 #[test]
 fn projected_open_publishes_grok_model_options_only_after_successful_open() {

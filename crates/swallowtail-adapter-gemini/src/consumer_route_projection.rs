@@ -274,6 +274,26 @@ impl<'a> Projection<'a> {
                 self.selection.push(row);
             }
         }
+        if matches!(self.route, Route::Live)
+            && !self.active.iter().any(|row| {
+                row.identity()
+                    == &ConsumerRouteRowIdentity::Feature(
+                        ConsumerRouteFeatureId::ActivityObservation,
+                    )
+            })
+        {
+            self.active.push(
+                self.row(
+                    ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::ActivityObservation),
+                    &self.prepared_source,
+                    ConsumerRouteSourceClass::CapabilityProfile,
+                    ConsumerRouteEvidenceStrength::PreparedOperation,
+                    ConsumerRouteLifecycle::PostOpenObservationOnly,
+                )
+                .with_actor_posture(ConsumerRouteActorPosture::ObservationOnly)
+                .with_state_support(ConsumerRouteStateSupport::descriptor_only()),
+            );
+        }
         self
     }
     fn harness_mode(mut self) -> Self {

@@ -49,7 +49,7 @@ fn classify_health(health: &Value) -> Result<InterfaceCompatibilityAssessment, &
 fn current_qualified_server_health_is_accepted() {
     let assessment = classify_health(&serde_json::json!({
         "healthy": true,
-        "version": "1.18.20"
+        "version": "1.18.28"
     }))
     .expect("current qualified health is accepted");
     assert!(matches!(
@@ -62,14 +62,14 @@ fn current_qualified_server_health_is_accepted() {
 fn later_stable_server_health_is_visibly_unverified() {
     let assessment = classify_health(&serde_json::json!({
         "healthy": true,
-        "version": "1.18.21"
+        "version": "1.18.29"
     }))
     .expect("later stable health is permitted");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) = assessment else {
         panic!("later stable server must remain visibly unverified");
     };
-    assert_eq!(unverified.version().as_str(), "1.18.21");
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.20");
+    assert_eq!(unverified.version().as_str(), "1.18.29");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.18.28");
 }
 
 #[test]

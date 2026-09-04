@@ -506,6 +506,10 @@ annotated Git tags from the canonical repository.
   headless, and local-server protocol blobs byte-identical; `acp --region`,
   WaitFor, advertised close/delete, and watch-fs `runtime_id` stay
   unmapped. Research 179, g04.032.
+- Raised qualified OpenCode HTTP ceiling from `1.18.20` to official npm
+  `opencode-ai` `1.18.28` on the `opencode.server` axis. Compatible-extension:
+  all eight published patch hops keep `surface-19`; baseline, historical gaps,
+  claim id, and `AllowUnverified` stay unchanged. Research 285, g05.028.
 - Raised qualified OpenCode HTTP ceiling from `1.18.18` to official npm
   `opencode-ai` `1.18.20` on the `opencode.server` axis. Compatible-extension:
   tagged OpenAPI byte-identical through `1.18.19`; selected execution, delete,

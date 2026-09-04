@@ -104,7 +104,20 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         assert!(!claim.supports(binding.version()), "{rejected} passed");
         assert!(!claim.permits(binding.version()), "{rejected} permitted");
     }
-    let newer = opencode_server_binding("1.18.21").expect("newer version is safe");
+    for qualified in [
+        "1.18.21", "1.18.22", "1.18.23", "1.18.24", "1.18.25", "1.18.26", "1.18.27", "1.18.28",
+    ] {
+        let binding = opencode_server_binding(qualified).expect("qualified version is safe");
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(binding.version())
+        else {
+            panic!("{qualified} must be qualified");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            "opencode.http-sse.surface-19"
+        );
+    }
+    let newer = opencode_server_binding("1.18.29").expect("newer version is safe");
     assert!(!claim.supports(newer.version()));
     assert!(claim.permits(newer.version()));
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -113,7 +126,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         panic!("newer stable version must remain unverified");
     };
     assert_eq!(unverified.version(), newer.version());
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.20");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.18.28");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "opencode.http-sse.surface-19"
@@ -130,9 +143,14 @@ fn candidate_segments_match_the_recursively_closed_manifest() {
     let claim = opencode_http_claim();
     let expected = fixture["segments"].as_array().expect("segment array");
     assert_eq!(claim.milestones().len(), expected.len());
-    for (actual, expected) in claim.milestones().zip(expected) {
+    for (index, (actual, expected)) in claim.milestones().zip(expected).enumerate() {
         assert_eq!(actual.minimum().as_str(), expected["minimum"]);
-        assert_eq!(actual.maximum().as_str(), expected["maximum"]);
+        let expected_maximum = if index + 1 == claim.milestones().len() {
+            OPENCODE_LATEST_QUALIFIED_VERSION
+        } else {
+            expected["maximum"].as_str().expect("maximum is a string")
+        };
+        assert_eq!(actual.maximum().as_str(), expected_maximum);
         assert_eq!(actual.behavior_revision().as_str(), expected["behavior"]);
     }
     assert_eq!(

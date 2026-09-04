@@ -40,9 +40,9 @@ fn every_frozen_behavior_surface_executes_from_an_exact_plan() {
 fn range_boundaries_match_health_under_both_host_authorities() {
     for (host, version) in [
         ("host.local", "1.14.48"),
-        ("host.local", "1.18.20"),
+        ("host.local", "1.18.28"),
         ("host.remote-authoritative", "1.14.48"),
-        ("host.remote-authoritative", "1.18.20"),
+        ("host.remote-authoritative", "1.18.28"),
     ] {
         let server = FixtureServer::start_with_version(StreamFixture::Success, version);
         let fixture = Fixture::new_with_version(server.endpoint(), host, version);
@@ -81,8 +81,8 @@ fn health_drift_fails_before_catalogue_or_session_work() {
 
 #[test]
 fn latest_qualified_session_uses_the_same_exact_version() {
-    let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.20");
-    let fixture = Fixture::new_with_version(server.endpoint(), "host.latest", "1.18.20");
+    let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.28");
+    let fixture = Fixture::new_with_version(server.endpoint(), "host.latest", "1.18.28");
     let session = block_on(OpenCodeHttpDriver::new().open_session(
         fixture.plan(DriverRole::InteractiveSession),
         open_session_request("latest-session", fixture.resource.clone()),
@@ -104,8 +104,8 @@ fn latest_qualified_session_uses_the_same_exact_version() {
 #[test]
 fn unverified_newer_catalogue_and_session_use_the_latest_qualified_surface() {
     for host in ["host.local", "host.remote-authoritative"] {
-        let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.21");
-        let fixture = Fixture::new_with_version(server.endpoint(), host, "1.18.21");
+        let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.29");
+        let fixture = Fixture::new_with_version(server.endpoint(), host, "1.18.29");
         let models = block_on(OpenCodeHttpDriver::new().list_models(
             fixture.plan(DriverRole::ModelCatalog),
             ModelCatalogRequest::new(

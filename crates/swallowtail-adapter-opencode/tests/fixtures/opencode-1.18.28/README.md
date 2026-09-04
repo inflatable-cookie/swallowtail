@@ -24,3 +24,7 @@ Host observation: `opencode 1.18.18`, SHA-256
 
 Decision: compatible extension through `1.18.28`. Production claims remain at
 `1.18.20` until serial Card 078. First unpublished later patch: `1.18.29`.
+
+`claim.json` freezes Card 078's admitted after-state: the same claim id,
+baseline, historical gaps, `surface-19`, and `AllowUnverified`, with all eight
+published hops qualified through `1.18.28` and `1.18.29` left unverified newer.

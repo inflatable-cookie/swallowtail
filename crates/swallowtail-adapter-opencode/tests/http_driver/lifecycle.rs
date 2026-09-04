@@ -304,11 +304,11 @@ fn completed_turn_rejects_detachment_without_new_provider_work() {
 
 #[test]
 fn low_level_unverified_newer_plan_cannot_inherit_detachment() {
-    let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.21");
+    let server = FixtureServer::start_with_version(StreamFixture::Success, "1.18.29");
     let fixture = Fixture::new_with_version(
         server.endpoint(),
         "host.detachment-newer",
-        "1.18.21",
+        "1.18.29",
     );
     let failure = block_on(OpenCodeHttpDriver::new().open_session(
         fixture.detachable_session_plan(),

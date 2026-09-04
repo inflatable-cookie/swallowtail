@@ -142,9 +142,8 @@ fn deletion_segments_preserve_gaps_and_unverified_newer_posture() {
         );
     }
 
-    let newer = deletion["unverified_newer_example"]
-        .as_str()
-        .expect("newer example");
+    assert_eq!(deletion["unverified_newer_example"], "1.18.21");
+    let newer = "1.18.29";
     let binding = opencode_server_binding(newer).expect("newer example is safe");
     assert!(matches!(
         opencode_http_claim().assess(binding.version()),

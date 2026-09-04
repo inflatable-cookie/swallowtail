@@ -1,6 +1,6 @@
 #[test]
 fn preparation_preserves_unverified_newer_and_rejects_binding_drift() {
-    let fixture = PreparedFixture::new("opencode.prepared.newer", "1.18.21");
+    let fixture = PreparedFixture::new("opencode.prepared.newer", "1.18.29");
     let prepared = fixture.prepared();
     assert!(matches!(
         prepared.server().compatibility(),
@@ -161,7 +161,7 @@ fn prepared_delete_rejects_route_drift_and_unverified_newer_by_default() {
             .any(|request| request.starts_with("DELETE "))
     );
 
-    let newer = PreparedFixture::new("opencode.prepared.delete.newer", "1.18.21");
+    let newer = PreparedFixture::new("opencode.prepared.delete.newer", "1.18.29");
     let newer_prepared = newer.prepared();
     let session = newer_prepared
         .prepare_session(OpenCodeSessionProfileInput::new(

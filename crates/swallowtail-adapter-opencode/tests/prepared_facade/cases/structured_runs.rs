@@ -91,7 +91,7 @@ fn prepared_structured_run_is_private_and_deletes_its_session_on_both_host_topol
 fn prepared_generation_controls_use_exact_catalogue_evidence_and_zero_retry_dispatch() {
     for (host_id, version) in [
         ("opencode.controls.local", "1.18.10"),
-        ("opencode.controls.remote-authoritative", "1.18.20"),
+        ("opencode.controls.remote-authoritative", "1.18.28"),
     ] {
         let fixture = PreparedFixture::new(host_id, version);
         let prepared = fixture.prepared();
@@ -162,4 +162,3 @@ fn prepared_generation_controls_use_exact_catalogue_evidence_and_zero_retry_disp
         assert_eq!(fixture.server.requests().len(), request_count);
     }
 }
-

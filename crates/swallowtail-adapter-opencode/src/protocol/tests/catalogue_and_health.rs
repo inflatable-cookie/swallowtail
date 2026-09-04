@@ -75,15 +75,19 @@
 
     #[test]
     fn newer_stable_health_is_permitted_but_unverified() {
-        let observation =
-            observe_health(&fixture_response("health-above.json")).expect("newer version permits");
+        let observation = observe_health(&Response {
+            status: 200,
+            body: br#"{"healthy":true,"version":"1.18.29"}"#.to_vec(),
+            next_cursor: None,
+        })
+        .expect("newer version permits");
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
             observation.assessment()
         else {
             panic!("newer stable version must remain unverified");
         };
-        assert_eq!(unverified.version().as_str(), "1.18.21");
-        assert_eq!(unverified.latest_qualified().as_str(), "1.18.20");
+        assert_eq!(unverified.version().as_str(), "1.18.29");
+        assert_eq!(unverified.latest_qualified().as_str(), "1.18.28");
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "opencode.http-sse.surface-19"
@@ -142,4 +146,3 @@
             "swallowtail.opencode.session_invalid"
         );
     }
-

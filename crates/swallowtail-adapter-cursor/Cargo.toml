@@ -51,3 +51,7 @@ path = "tests/prepared_suite.rs"
 [[test]]
 name = "compatibility_corpus"
 path = "tests/compatibility_corpus.rs"
+
+[[test]]
+name = "consumer_route_projection"
+path = "tests/consumer_route_projection.rs"

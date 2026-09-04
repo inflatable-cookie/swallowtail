@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- complete Contract 061 candidate C consumer route projections across
+  `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and
+  `swallowtail-adapter-cursor`. Prepared catalogue, headless, continuation,
+  runtime, and ACP operation facades emit exact route and capability truth
+  with deterministic per-route ledgers proving 51 emitted and 43 withheld rows
+  across 94 census tuples, while keeping four no-control audits as negative
+  coverage and withholding catalogue activity observation. g05.009 card 069.
 - publish Contract 061 consumer-route projection for candidate J: exact 10
   `llama-cpp.attached`, 6 `llama-cpp.owned`, and 19 `ollama.attached` rows
   with 32 emitted and 3 construction-time withheld. g05.009 card 068.

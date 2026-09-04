@@ -77,19 +77,19 @@ ledger fixed by the
 
 ## Acceptance Criteria
 
-- [ ] seven independent ledgers reconcile exactly to 14, 18, 9, 10, 13, 13,
+- [x] seven independent ledgers reconcile exactly to 14, 18, 9, 10, 13, 13,
       and 17 rows with 51 emitted and 43 withheld in total
-- [ ] every emitted row comes from its exact prepared operation and retains
+- [x] every emitted row comes from its exact prepared operation and retains
       source, route, operation shape, lifecycle, value, omission,
       applicability, and evidence truth
-- [ ] the four no-control audits remain negative coverage and produce no
+- [x] the four no-control audits remain negative coverage and produce no
       public control descriptor
-- [ ] catalogue operations emit no activity row; headless, continuation,
+- [x] catalogue operations emit no activity row; headless, continuation,
       runtime, and ACP operations emit it descriptor-only
-- [ ] conditional features appear only when requested or configured
-- [ ] no runtime/testkit/core public API, contract, active observation,
+- [x] conditional features appear only when requested or configured
+- [x] no runtime/testkit/core public API, contract, active observation,
       acknowledgement, execution, or mutation authority is added
-- [ ] touched source stays below god-file thresholds and the repository
+- [x] touched source stays below god-file thresholds and the repository
       scan does not exceed its accepted baseline
 
 ## Review Oracle
@@ -136,6 +136,29 @@ No. Stop after one reviewable PR for exact-head review.
   descriptor-only
 - scope widens beyond the three named adapter packages or contacts a
   provider
+
+## Result
+
+Candidate C Contract 061 projection completion delivered across `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and `swallowtail-adapter-cursor`.
+
+### Seven Deterministic Route Ledgers
+
+All 94 census rows reconcile exactly across seven per-route ledgers with 51 emitted and 43 withheld:
+- `antigravity.catalogue`: 14 rows (2 emitted, 12 withheld; no activity observation; negative no-control audit withheld)
+- `antigravity.headless`: 18 rows (16 emitted across run and continuation profiles, 2 withheld; activity descriptor-only; conditional reasoning-selection, structured-output, resource-access, and isolation bound to exact request/plan)
+- `bedrock.catalogue`: 9 rows (2 emitted, 7 withheld; negative no-control audit withheld)
+- `bedrock.runtime`: 10 rows (8 emitted, 2 withheld; conditional maximum-output-tokens bound to exact request)
+- `cursor-agent.acp`: 13 rows (7 emitted, 6 withheld; negative no-control audit withheld; activity descriptor-only)
+- `cursor-agent.catalogue`: 13 rows (2 emitted, 11 withheld; negative no-control audit withheld)
+- `cursor-agent.headless`: 17 rows (14 emitted, 3 withheld; activity descriptor-only; conditional fast, context-window, reasoning-effort, and read-mode bound to exact plan and read authority)
+
+### Invariants Held
+
+- The four no-control audits stay negative coverage and produce no public control descriptor.
+- Catalogue operations emit no activity observation row; headless, continuation, runtime, and ACP emit it descriptor-only with `ObservationOnly` posture.
+- All controls prove `PreparedSessionStart` mutation authority under `AdapterContribution` source identity.
+- No public core, runtime, or testkit types or contracts modified.
+- No provider credentials or live probes contacted.
 
 ## Evidence
 

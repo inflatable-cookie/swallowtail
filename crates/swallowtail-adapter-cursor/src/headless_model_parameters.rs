@@ -83,6 +83,14 @@ impl CursorHeadlessModelParameters {
     pub(crate) const fn effort(&self) -> Option<&ReasoningMode> {
         self.effort.as_ref()
     }
+
+    pub(crate) const fn fast(&self) -> Option<CursorHeadlessFast> {
+        self.fast
+    }
+
+    pub(crate) const fn context(&self) -> Option<CursorHeadlessContext> {
+        self.context
+    }
 }
 
 /// Returns whether the model id contains caller-assembled bracket parameter grammar.

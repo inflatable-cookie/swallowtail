@@ -55,6 +55,8 @@ impl swallowtail_adapter_antigravity::AntigravityPreparationProbe
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_antigravity::AntigravityPreparedCatalogue
 impl swallowtail_adapter_antigravity::AntigravityPreparedCatalogue
+pub fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_antigravity::AntigravityPreparedCatalogue
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -70,6 +72,8 @@ pub const fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogueIntegr
 impl swallowtail_adapter_antigravity::AntigravityPreparedCatalogueIntegration
 pub fn swallowtail_adapter_antigravity::AntigravityPreparedCatalogueIntegration::prepare_catalogue(&self, swallowtail_adapter_antigravity::AntigravityCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_antigravity::AntigravityPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_antigravity::AntigravityPreparedContinuation
+impl swallowtail_adapter_antigravity::AntigravityPreparedContinuation
+pub fn swallowtail_adapter_antigravity::AntigravityPreparedContinuation::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_antigravity::AntigravityPreparedContinuation
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparedContinuation::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_antigravity::AntigravityPreparedContinuation::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -97,6 +101,8 @@ pub const fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessIntegra
 impl swallowtail_adapter_antigravity::AntigravityPreparedHeadlessIntegration
 pub fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessIntegration::prepare_run(&self, swallowtail_adapter_antigravity::AntigravityHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun
+impl swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun
+pub fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

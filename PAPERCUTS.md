@@ -5,6 +5,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Public API baseline gate flags expected adapter consumer route projection methods — 2026-09-04
+- Friction: `effigy package:api` (`scripts/check-public-api.sh`) enforces an
+  exact zero-diff comparison against `release-baselines/public-api-0.4.0/`,
+  failing when new `pub fn consumer_route_projection_contribution` methods
+  are added to adapter prepared operation structs, while worker manifests
+  strictly forbid worker mutations to `release-baselines/`.
+- Impact: worker PRs implementing planned projection contributions report
+  failed `effigy package:api` semantic diff checks that can only be reconciled
+  at the coordinator/release gate level.
+- Fix: permit unreleased additions to adapter packages via an unreleased delta
+  directory or allow worker cards that introduce planned inherent methods to
+  update package-scoped public-api baseline manifests.
+- Surface: `scripts/check-public-api.sh`; `release-baselines/public-api-0.4.0/`.
+
 ### [ ] Roadmap status-drift checker treats any status word in an annotation as its primary — 2026-09-04
 - Friction: `scripts/check-roadmap-status-drift.py` scans the whole index
   annotation for status tokens in a fixed priority order, so a `ready`

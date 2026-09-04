@@ -95,3 +95,17 @@ No. Stop for exact-head review.
 - [card 066](066-contract-061-candidate-i-breadth-audit.md)
 - [card 073](073-contract-061-provider-operation-observation-baseline.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
+
+## Result
+
+Completed Candidate I across both DeepSeek adapter packages. Exact prepared
+facades now publish 39 route-local rows. Six matrix-only rows remain withheld
+at construction. Completed local-server catalogue and history outcomes admit
+the final two rows only through provider-operation observation, with distinct
+prepared and outcome source identities. The ledger remains exact: 41 emitted,
+6 withheld, 47 reconciled.
+
+Corrected only the accepted census source references: imported shared types,
+`ActivityObservation`, the direct `ModelRoute` construction site, and the
+retained fork/archive outcome source. Provider execution, paging, cleanup,
+continuation, failure, and contact behavior are unchanged.

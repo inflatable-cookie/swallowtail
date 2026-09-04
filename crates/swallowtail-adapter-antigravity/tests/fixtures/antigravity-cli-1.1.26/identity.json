@@ -1,0 +1,228 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-09-04",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "official_latest": "1.1.26",
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "host": {
+    "installed": true,
+    "version": "1.1.19",
+    "version_authority": "byte-identical-to-official-1.1.19-mac-arm64",
+    "executable_sha256": "96fae3fccfb444c7fb2c6d8d70426e5c978e4f21cfc4507a541f612a8b8ffeef",
+    "executable_size": 178046224,
+    "official_tarball_sha256": "ad72daf6b255d96e4864fe6bd2f3fa4070fb4c554845ceaf1d6399d8f1092e45",
+    "github_commit": "ee5766c17fce8f27ea85185f97183575058218ec",
+    "signature_authority": "Developer ID Application: Google LLC (EQHXZ8M8AV)",
+    "team_identifier": "EQHXZ8M8AV",
+    "cdhash_sha256": "5e9ba595793950a65a42fd49a532d5c133f88104",
+    "executed_during_probe": false
+  },
+  "official": {
+    "version": "1.1.26",
+    "published_at": "2026-09-04T03:28:48Z",
+    "github_commit": "3bc5795ff561c9d71bf1ce272f185aec6013e5e4",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "c47c0726266b3513660b7094bceceecbd03d8ae907786aa269c507ceb7e4ee54",
+    "tarball_size": 56691683,
+    "extracted_cli_name": "antigravity",
+    "extracted_cli_sha256": "a0a6a8044d01accd39e6f5926d29648d212a2e519ff14102f09e1c061e6171dd",
+    "extracted_cli_size": 210247936,
+    "elf_build_id": "ffbd3e994b91095d2d1ff46e3b54b6c4",
+    "version_literal_in_binary": "1.1.26"
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.1.18",
+    "1.1.19",
+    "1.1.20",
+    "1.1.21",
+    "1.1.22",
+    "1.1.23",
+    "1.1.24",
+    "1.1.25",
+    "1.1.26"
+  ],
+  "artifacts": {
+    "1.1.17": {
+      "published_at": "2026-08-20T22:13:58Z",
+      "github_commit": "efa16f096dc02fb654b7e86958d268195284d014",
+      "tarball_sha256": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+      "tarball_size": 55607296,
+      "extracted_cli_sha256": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+      "extracted_cli_size": 205574400,
+      "elf_build_id": "de253ec6ade81ddac11b45a8558af46a",
+      "version_literal_in_binary": "1.1.17"
+    },
+    "1.1.18": {
+      "published_at": "2026-08-22T01:46:57Z",
+      "github_commit": "f09d6b583d0f902d3f0f63736af23d34f0a5ddbe",
+      "tarball_sha256": "1aa7e3c1f5ba02372d24ba2f99ed015c7135016becc7dcbb18bf8332f513a818",
+      "tarball_size": 55721724,
+      "extracted_cli_sha256": "60eb243a68bfbc1bffa3823c7fb90df27a72502550b333c6248fc55f20d02564",
+      "extracted_cli_size": 206024960,
+      "elf_build_id": "dd44555625e546bec8bd0befba77123a",
+      "version_literal_in_binary": "1.1.18"
+    },
+    "1.1.19": {
+      "published_at": "2026-08-22T23:30:26Z",
+      "github_commit": "ee5766c17fce8f27ea85185f97183575058218ec",
+      "tarball_sha256": "a02132a7c6c647ef0ad483ecbe767619adf6b660a5589cba5c937b0c83909b97",
+      "tarball_size": 55763391,
+      "extracted_cli_sha256": "68d229d37aeabde76d15af0003d4c1ce07b211414e7452fb0309be9714ae7dd4",
+      "extracted_cli_size": 206188800,
+      "elf_build_id": "708bc379032a11dfc939a59a9b461991",
+      "version_literal_in_binary": "1.1.19"
+    },
+    "1.1.20": {
+      "published_at": "2026-08-25T02:58:27Z",
+      "github_commit": "ade702a5439c2bc67de2f9cfcb83c5370768f0c6",
+      "tarball_sha256": "6ceeb0ac91df6dca60a4fa02856807ed2e2fc6d3d70bb734d1ad61a9e44ef4da",
+      "tarball_size": 56295623,
+      "extracted_cli_sha256": "d743ebe97c822b07d010a5a836804528119f926de9b136c9f5b2c0925fe710cb",
+      "extracted_cli_size": 208085248,
+      "elf_build_id": "917b0a8cc7c33aec77e9e26374c01659",
+      "version_literal_in_binary": "1.1.20"
+    },
+    "1.1.21": {
+      "published_at": "2026-08-26T02:21:06Z",
+      "github_commit": "7cc1925c8cbe021699038606ada488618dbda5a2",
+      "tarball_sha256": "4806a347119d36be6d8ab5cc3f03319bc6aa8407a8d9203de7976a42954cabde",
+      "tarball_size": 56329878,
+      "extracted_cli_sha256": "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
+      "extracted_cli_size": 208183552,
+      "elf_build_id": "54865ceacda7fc2f3ff8071b1b8180fb",
+      "version_literal_in_binary": "1.1.21"
+    },
+    "1.1.22": {
+      "published_at": "2026-08-27T04:03:21Z",
+      "github_commit": "556846a4bb94117222f53846896c7eb0d645307e",
+      "tarball_sha256": "1e1a219a86e75d7c6351f96d182ca2105302d5c34d8fa9c31265dc0adf24145f",
+      "tarball_size": 56399106,
+      "extracted_cli_sha256": "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
+      "extracted_cli_size": 208429312,
+      "elf_build_id": "a9f978445e9528435a7fcaa6983687aa",
+      "version_literal_in_binary": "1.1.22"
+    },
+    "1.1.23": {
+      "published_at": "2026-09-01T04:47:50Z",
+      "github_commit": "4c150a22f7f68061e8af35412b05b9f8974e4c56",
+      "tarball_sha256": "379693509ca4d68d74f75def6c95996739aa6c1dc38b120c399035c108f1a39a",
+      "tarball_size": 56593215,
+      "extracted_cli_sha256": "caf4a5f9ae0f02e0ac3db01600a7dd4a9697354e3f4dc3f0a08b2de30d3aefbc",
+      "extracted_cli_size": 208986368,
+      "elf_build_id": "7d25d7790a3dc495ec30cb513b299199",
+      "version_literal_in_binary": "1.1.23"
+    },
+    "1.1.24": {
+      "published_at": "2026-09-02T02:38:18Z",
+      "github_commit": "bf27ce1134b4ead2f7bfa0a4fb3cb5fcbebcaa5a",
+      "tarball_sha256": "cff1fb7ed735da72c35658645a4f916cf74f020d4cd30ab95ebe8c2a49a4d569",
+      "tarball_size": 56692103,
+      "extracted_cli_sha256": "22c6ddeb06d2da6049ff861e44954bf232b77bd791986104326e9500f5327193",
+      "extracted_cli_size": 209273088,
+      "elf_build_id": "0d87e8b60bfaf0d76a8d5e6f838dddae",
+      "version_literal_in_binary": "1.1.24"
+    },
+    "1.1.25": {
+      "published_at": "2026-09-03T02:30:18Z",
+      "github_commit": "7e1316ca775dc3805aac13b2db5cd37d89d5aae8",
+      "tarball_sha256": "45ab4a99884de17af76565a4ff8d9762d6e960067bd008fde9b050ec8fc9e421",
+      "tarball_size": 56770237,
+      "extracted_cli_sha256": "e552463e7cd479e342cfec3487f7b2de048b89548df74c610e3a58d1c2c9735b",
+      "extracted_cli_size": 210436352,
+      "elf_build_id": "64216c04e5d62b5257e3e40bc500defd",
+      "version_literal_in_binary": "1.1.25"
+    },
+    "1.1.26": {
+      "published_at": "2026-09-04T03:28:48Z",
+      "github_commit": "3bc5795ff561c9d71bf1ce272f185aec6013e5e4",
+      "tarball_sha256": "c47c0726266b3513660b7094bceceecbd03d8ae907786aa269c507ceb7e4ee54",
+      "tarball_size": 56691683,
+      "extracted_cli_sha256": "a0a6a8044d01accd39e6f5926d29648d212a2e519ff14102f09e1c061e6171dd",
+      "extracted_cli_size": 210247936,
+      "elf_build_id": "ffbd3e994b91095d2d1ff46e3b54b6c4",
+      "version_literal_in_binary": "1.1.26"
+    }
+  },
+  "frozen_1_1_17_recomputation": {
+    "1.1.16_linux_x64_tarball_sha256": "7742953b7835b457e9102f1357a493913657dfd147435584f609d58356ec085a",
+    "1.1.16_linux_x64_binary_sha256": "b233e6a4f38564a06a0d3220aa79f6a7c8f11da2b85fc8f0957f8a14d46e6cc9",
+    "1.1.16_linux_x64_binary_size": 205545512,
+    "1.1.17_linux_x64_tarball_sha256": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+    "1.1.17_linux_x64_binary_sha256": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+    "1.1.17_linux_x64_binary_size": 205574400,
+    "1.1.17_mac_arm64_tarball_sha256": "60fe89d3aef472ddf6c7048032f7585fae732d879f3700fc3188c68c46b35cdd",
+    "matches_frozen_identity": true
+  },
+  "parked_pr_182_cross_check": {
+    "branch": "cursor/antigravity-1-1-24-useful-newer-29a5",
+    "head": "562225db6e2a77986e5f1504a70f767ccb3fe82d",
+    "compared_versions": [
+      "1.1.17",
+      "1.1.18",
+      "1.1.19",
+      "1.1.20",
+      "1.1.21",
+      "1.1.22",
+      "1.1.23",
+      "1.1.24"
+    ],
+    "recorded_hashes": {
+      "tarball": {
+        "1.1.17": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+        "1.1.18": "1aa7e3c1f5ba02372d24ba2f99ed015c7135016becc7dcbb18bf8332f513a818",
+        "1.1.19": "a02132a7c6c647ef0ad483ecbe767619adf6b660a5589cba5c937b0c83909b97",
+        "1.1.20": "6ceeb0ac91df6dca60a4fa02856807ed2e2fc6d3d70bb734d1ad61a9e44ef4da",
+        "1.1.21": "4806a347119d36be6d8ab5cc3f03319bc6aa8407a8d9203de7976a42954cabde",
+        "1.1.22": "1e1a219a86e75d7c6351f96d182ca2105302d5c34d8fa9c31265dc0adf24145f",
+        "1.1.23": "379693509ca4d68d74f75def6c95996739aa6c1dc38b120c399035c108f1a39a",
+        "1.1.24": "cff1fb7ed735da72c35658645a4f916cf74f020d4cd30ab95ebe8c2a49a4d569"
+      },
+      "antigravity": {
+        "1.1.17": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+        "1.1.18": "60eb243a68bfbc1bffa3823c7fb90df27a72502550b333c6248fc55f20d02564",
+        "1.1.19": "68d229d37aeabde76d15af0003d4c1ce07b211414e7452fb0309be9714ae7dd4",
+        "1.1.20": "d743ebe97c822b07d010a5a836804528119f926de9b136c9f5b2c0925fe710cb",
+        "1.1.21": "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
+        "1.1.22": "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
+        "1.1.23": "caf4a5f9ae0f02e0ac3db01600a7dd4a9697354e3f4dc3f0a08b2de30d3aefbc",
+        "1.1.24": "22c6ddeb06d2da6049ff861e44954bf232b77bd791986104326e9500f5327193"
+      }
+    },
+    "1.1.24_mac_arm64_tarball_sha256": "189af288ed9527f567ab3a53b35a6da2fc0c3812c6245f266c75a2a3604bdec3",
+    "every_recorded_digest_recomputed": true,
+    "digest_disagreement": false,
+    "branch_merged_or_replayed": false
+  },
+  "public_git_hops": "CHANGELOG.md-only",
+  "first_unpublished_later_stable": "1.1.27",
+  "first_unpublished_release_absent": true,
+  "first_unpublished_tag_absent": true,
+  "keep_1_1_8_incompatible": true,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "latest_qualified": "1.1.17",
+    "posture": "allow_unverified",
+    "classification_of_1_1_18": "unverified_newer",
+    "classification_of_1_1_26": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "stop",
+    "blocking_hop": "1.1.22",
+    "reason": "provider-managed HTTP 502 retry entered the selected headless lifecycle without a published bound, disable control, or separate operator acceptance required by Contract 023",
+    "admitted_segment": false,
+    "claim_card_072_admitted": false,
+    "keep_latest_qualified": "1.1.17",
+    "keep_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "keep_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+    "new_public_operation": false,
+    "new_private_milestone": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false,
+    "official_latest_moved_during_run": false
+  }
+}

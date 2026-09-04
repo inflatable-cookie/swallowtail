@@ -28,6 +28,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Docs link check skips roadmap batch cards — 2026-09-04
+- Friction: `scripts/check-docs-links.py` covers front doors plus research
+  and log files, so cards under `docs/roadmaps/*/batch-cards/` can link to a
+  deleted triage note and `effigy qa:docs` still passes.
+- Impact: a triage prune left two dangling card links on `main` until a
+  manual grep caught them.
+- Fix: include `docs/roadmaps/**` and `docs/triage/**` in the link sweep, or
+  add a roadmap-scoped link policy.
+- Surface: `scripts/check-docs-links.py`; `qa:docs:links`.
+
 ### [ ] Review or validation command wrappers rely on unavailable host `timeout` — 2026-09-04
 - Friction: review or verification pipelines wrapping commands with `timeout <duration> <cmd>`
   fail silently on macOS hosts because `timeout` is a GNU Coreutils binary absent from

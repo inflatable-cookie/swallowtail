@@ -1,5 +1,14 @@
 # Papercuts
 
+### [ ] Candidate E projection modules exceed the god-file high threshold — 2026-09-04
+- Friction: Card 075's two adapter-local Contract 061 projection modules are
+  548 and 403 code lines, respectively, and `effigy scan god-files` marks both
+  high.
+- Impact: the exact ledger and projected-open seams are reviewable but need a
+  focused split before adjacent projection work accumulates.
+- Surface: `swallowtail-adapter-gemini` and `swallowtail-adapter-grok`
+  consumer-route projection modules.
+
 Small, actionable friction found during agent work. Agents append entries when
 they hit a solvable hurdle; they do not stop the current task to fix one.
 

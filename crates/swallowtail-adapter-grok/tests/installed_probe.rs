@@ -216,6 +216,27 @@ fn prepared_discovery_binds_exact_instance_access_and_ambient_posture() {
                 SessionOptions::default(),
             ))
             .expect("prepared session succeeds");
+        let contribution = session
+            .consumer_route_projection_contribution(
+                swallowtail_runtime::ConsumerRouteProjectionSourceId::new(
+                    "grok.projection.prepared",
+                )
+                .expect("source"),
+            )
+            .expect("prepared contribution");
+        assert_eq!(
+            contribution.selection_rows().count()
+                + contribution.session_start_rows().count()
+                + contribution.active_session_rows().count(),
+            8
+        );
+        assert!(!contribution.active_session_rows().any(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| {
+                    extension.semantic_id() == "feature.negotiated-model-options-observation"
+                })
+        }));
         assert_eq!(
             session.plan().model_id().expect("model").as_str(),
             "grok-4.5"

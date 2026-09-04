@@ -35,3 +35,8 @@ include!("agent.rs");
 include!("host.rs");
 include!("selection.rs");
 include!("cases.rs");
+#[path = "consumer_route_projection.rs"]
+mod consumer_route_projection;
+#[path = "../installed_discovery/support.rs"]
+#[allow(dead_code)]
+mod discovery_support;

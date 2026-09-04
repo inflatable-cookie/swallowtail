@@ -19,10 +19,10 @@ use swallowtail_core::{
     InterfaceVersionAxis, ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
-    RequestId, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
-    WorkingResourceRef, WorkingStateRestorationMethod,
+    CleanupOutcome, ConsumerRouteFeatureId, ConsumerRouteProjectionSourceId, Deadline,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, RequestId, RuntimeTurnId, ScopeId,
+    SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef, WorkingStateRestorationMethod,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -46,6 +46,78 @@ fn solution_facade_keeps_acp_selection_typed() {
     assert_eq!(
         prepared.observation().version().version().as_str(),
         "0.51.0"
+    );
+}
+
+#[test]
+fn projected_open_keeps_prepared_and_observed_model_option_truth_separate() {
+    let host_id = ExecutionHostId::new("fixture.projection.gemini").expect("host");
+    let operation_host = FixtureHost::new(Scenario::Success);
+    let operation_services = operation_host.services(host_id.clone());
+    let discovery = DiscoveryHost::new("0.51.0");
+    let preparation_services = discovery
+        .services(host_id.clone())
+        .with_working_resource(
+            operation_services
+                .working_resource()
+                .expect("resource")
+                .clone(),
+        )
+        .with_working_resource_io(
+            operation_services
+                .working_resource_io()
+                .expect("io")
+                .clone(),
+        );
+    let integration = block_on(prepare_gemini_acp(
+        preparation_input(host_id),
+        probe(),
+        preparation_services,
+    ))
+    .expect("Gemini prepares");
+    let prepared = integration
+        .prepare_session(GeminiSessionProfileInput::new(
+            RequestId::new("gemini-projection").expect("request"),
+            WorkingResourceRef::new("gemini.projection.workspace").expect("resource"),
+            SessionOptions::default().with_harness_mode(HarnessMode::Plan),
+        ))
+        .expect("session prepares");
+    let source = |value| ConsumerRouteProjectionSourceId::new(value).expect("source");
+    let prepared_only = prepared
+        .consumer_route_projection_contribution(source("gemini.projection.prepared"))
+        .expect("prepared contribution");
+    assert_eq!(
+        prepared_only.selection_rows().count()
+            + prepared_only.session_start_rows().count()
+            + prepared_only.active_session_rows().count(),
+        7
+    );
+    assert!(!prepared_only.active_session_rows().any(|row| matches!(row.identity(), swallowtail_runtime::ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::Namespaced(extension)) if extension.semantic_id() == "feature.negotiated-model-options-observation")));
+    let outcome = block_on(prepared.open_session_with_projection(
+        source("gemini.projection.prepared.open"),
+        source("gemini.projection.active"),
+        swallowtail_runtime::SessionCleanupRequest::new(Deadline::at(
+            MonotonicInstant::from_ticks(10_000),
+        )),
+        operation_services.clone(),
+    ))
+    .unwrap_or_else(|failure| panic!("projected open failed: {}", failure.failure()));
+    assert!(outcome.negotiated_model_options().is_some());
+    assert!(outcome.contribution().active_session_rows().any(|row| {
+        row.identity()
+            .namespaced_extension()
+            .is_some_and(|extension| {
+                extension.semantic_id() == "feature.negotiated-model-options-observation"
+            })
+    }));
+    assert_eq!(
+        block_on(outcome.into_parts().0.close(
+            swallowtail_runtime::SessionCleanupRequest::new(Deadline::at(
+                MonotonicInstant::from_ticks(10_000)
+            )),
+            operation_services
+        )),
+        CleanupOutcome::Clean
     );
 }
 

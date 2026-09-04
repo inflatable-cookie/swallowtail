@@ -10,6 +10,10 @@ pub const fn swallowtail_adapter_gemini::GeminiCliPreparedIntegration::driver(&s
 pub enum swallowtail_adapter_gemini::GeminiHeadlessRunRetention
 pub swallowtail_adapter_gemini::GeminiHeadlessRunRetention::Durable
 pub swallowtail_adapter_gemini::GeminiHeadlessRunRetention::TemporaryWithOwnedTranscriptCleanup
+pub enum swallowtail_adapter_gemini::GeminiProjectionOpenFailure
+pub swallowtail_adapter_gemini::GeminiProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_gemini::GeminiProjectionOpenFailure
+pub const fn swallowtail_adapter_gemini::GeminiProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
 pub struct swallowtail_adapter_gemini::GeminiAcpDriver
 impl swallowtail_adapter_gemini::GeminiAcpDriver
 pub const fn swallowtail_adapter_gemini::GeminiAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
@@ -64,6 +68,8 @@ pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::validate_e
 impl swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration
 pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparedRun
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparedRun
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_gemini::GeminiHeadlessPreparedRun
 pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::evidence(&self) -> &swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence
 pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::into_parts(self) -> (swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
@@ -155,6 +161,8 @@ impl swallowtail_adapter_gemini::GeminiPreparedIntegration
 pub fn swallowtail_adapter_gemini::GeminiPreparedIntegration::prepare_session(&self, swallowtail_adapter_gemini::GeminiSessionProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_gemini::GeminiPreparedLiveSession
 impl swallowtail_adapter_gemini::GeminiPreparedLiveSession
+pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_gemini::GeminiPreparedLiveSession
 pub const fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::evidence(&self) -> &swallowtail_adapter_gemini::GeminiLivePreparedEvidence
 pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::into_parts(self) -> (swallowtail_adapter_gemini::GeminiLivePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest)
 pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiLiveDriver
@@ -170,6 +178,9 @@ pub const fn swallowtail_adapter_gemini::GeminiPreparedModels::plan(&self) -> &s
 pub const fn swallowtail_adapter_gemini::GeminiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_gemini::GeminiPreparedSession
 impl swallowtail_adapter_gemini::GeminiPreparedSession
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::session_cleanup::SessionCleanupRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_gemini::GeminiProjectionOpenFuture
+impl swallowtail_adapter_gemini::GeminiPreparedSession
 pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::evidence(&self) -> &swallowtail_adapter_gemini::GeminiPreparedEvidence
 pub fn swallowtail_adapter_gemini::GeminiPreparedSession::into_parts(self) -> (swallowtail_adapter_gemini::GeminiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
 pub fn swallowtail_adapter_gemini::GeminiPreparedSession::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiAcpDriver
@@ -177,6 +188,12 @@ pub fn swallowtail_adapter_gemini::GeminiPreparedSession::open_session(&self, sw
 pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_gemini::GeminiPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
 pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_gemini::GeminiProjectionOpenOutcome
+impl swallowtail_adapter_gemini::GeminiProjectionOpenOutcome
+pub const fn swallowtail_adapter_gemini::GeminiProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_gemini::GeminiProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_gemini::GeminiProjectionOpenOutcome::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>
+pub fn swallowtail_adapter_gemini::GeminiProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::InteractiveSessionHandle
 pub struct swallowtail_adapter_gemini::GeminiSessionProfileInput
 impl swallowtail_adapter_gemini::GeminiSessionProfileInput
 pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::bounded_write(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
@@ -230,3 +247,4 @@ pub async fn swallowtail_adapter_gemini::prepare_gemini_headless(swallowtail_ada
 pub fn swallowtail_adapter_gemini::prepare_gemini_live(swallowtail_adapter_gemini::GeminiLivePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiLivePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_gemini::prepare_gemini_models(swallowtail_adapter_gemini::GeminiModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub type swallowtail_adapter_gemini::GeminiPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_gemini::GeminiProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_gemini::GeminiProjectionOpenOutcome, swallowtail_adapter_gemini::GeminiProjectionOpenFailure>>

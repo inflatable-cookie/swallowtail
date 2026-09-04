@@ -10,6 +10,7 @@
 mod acp_activity;
 mod catalogue;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
@@ -35,6 +36,9 @@ mod prepared_profile;
 mod selection;
 mod turn;
 
+pub use consumer_route_projection::{
+    GeminiProjectionOpenFailure, GeminiProjectionOpenFuture, GeminiProjectionOpenOutcome,
+};
 pub use driver::{GeminiAcpDriver, gemini_acp_descriptor};
 pub use headless::{GeminiHeadlessDriver, gemini_headless_descriptor};
 pub use live::{GeminiLiveDriver, gemini_live_descriptor};

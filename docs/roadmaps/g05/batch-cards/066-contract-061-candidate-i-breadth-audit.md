@@ -68,3 +68,35 @@ code reference, or a rubric item closed by omission.
 ## Auto-Continuation
 
 No. Stop after the note for coordinator closeout and Chatterbox reconciliation.
+
+## Result
+
+Stopped. Candidate I is not promotable on current `main` (`bab21839`).
+The audit note is
+[`docs/triage/20260904-140002-contract-061-candidate-i-audit.md`](../../../triage/20260904-140002-contract-061-candidate-i-audit.md).
+
+- Rows reconcile to exactly 47 (19 `deepseek.continuation`, 11
+  `deepseek-harness.jsonrpc`, 17 `deepseek-harness.local-server`) with no
+  filter or exception list; candidate I owns zero of the nine no-control
+  audit rows.
+- Facade map: every census-cited prepared facade is named on current `main`
+  with caller-supplied source identity (five on `deepseek.continuation`
+  including `DeepSeekPreparedCatalogue`, two on `deepseek-harness.jsonrpc`,
+  seven on `deepseek-harness.local-server`); neither adapter emits any
+  `AdapterContribution` today.
+- Ledger: 39 rows named against exact prepared or observed sources, 6
+  matrix-posture rows construction-time withheld (01, 07, 08, 11, 19, 20),
+  2 rows blocked.
+- Blocker: census rows 44 `control.provider-session-catalogue` and 45
+  `control.provider-session-history` are `post-open-observation-only` with
+  observed state, but their sources are prepared provider-operation queries
+  that open no session (`web/driver.rs:385-555`, `:558-676`). Publishing
+  them needs `ActiveSessionObservation`, `PostOpenObservationOnly`, or
+  `ConsumerRouteActiveSessionState` to widen from session-scoped semantics —
+  the same stop-and-record gap as the Kimi gate, which pre-adjudicates the
+  substitution. Rubric items 2 and 3 fail; no shared public type, fixed
+  maximum, or composer rule is designed here.
+- Census-source corrections (adapter lib.rs export claims, `ActivityEvent`,
+  `ModelRoute` location, rows 46/47 effective outcomes) are recorded in the
+  note as evidence only; the census CSV is untouched.
+- Zero Rust changes. Changed files: this card and the one new triage note.

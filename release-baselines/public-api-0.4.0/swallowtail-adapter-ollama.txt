@@ -99,6 +99,8 @@ pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::plan(&self) -> 
 pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::runtime(&self) -> &swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation
 pub struct swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt
 impl swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt
+pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt
 pub const fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
 pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
@@ -123,6 +125,8 @@ impl swallowtail_adapter_ollama::OllamaPreparedIntegration
 pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::prepare_session(&self, swallowtail_adapter_ollama::OllamaSessionProfileInput) -> core::result::Result<swallowtail_adapter_ollama::OllamaPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_ollama::OllamaPreparedInventory
 impl swallowtail_adapter_ollama::OllamaPreparedInventory
+pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_ollama::OllamaPreparedInventory
 pub const fn swallowtail_adapter_ollama::OllamaPreparedInventory::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
 pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
@@ -139,6 +143,8 @@ pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_ca
 pub const fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_detail(&self) -> &swallowtail_core::attached_runtime::AttachedModelObservation
 pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_model_supports(&self, swallowtail_adapter_ollama::OllamaModelCapability) -> bool
 pub struct swallowtail_adapter_ollama::OllamaPreparedSession
+impl swallowtail_adapter_ollama::OllamaPreparedSession
+pub fn swallowtail_adapter_ollama::OllamaPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_ollama::OllamaPreparedSession
 pub const fn swallowtail_adapter_ollama::OllamaPreparedSession::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
 pub fn swallowtail_adapter_ollama::OllamaPreparedSession::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)

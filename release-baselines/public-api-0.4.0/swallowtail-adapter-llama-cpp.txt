@@ -98,6 +98,8 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_reasoning(self, swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection) -> Self
 pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 impl swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
 pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
@@ -105,12 +107,16 @@ pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::plan(&sel
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt
 impl swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
 pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart
 pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
 pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver

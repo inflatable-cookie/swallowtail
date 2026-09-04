@@ -37,11 +37,11 @@ enforcement.
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
-| Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | ready; card 062 identity is ready; card 063 claim is gated behind an admitted segment | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
+| Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
 
 ## Planned Next Roadmaps
 
-- [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; retargeted to `0.41.0`; card 062 resumes on the same worker; card 063 claim is gated behind an admitted segment
+- [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated
 - [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
@@ -75,7 +75,8 @@ standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 at 022, and shared
 lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
-qualifies official `0.152.1`. Milestone 026 is ready: card 062 freezes Kimi
+qualifies official `0.152.1`. Milestone 026 is complete as an evidence stop:
+card 062 froze Kimi
 Code local server identity first, retargeted to official `0.41.0` after latest
 moved during its first run. Milestone 009 is ready with four
 planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
@@ -398,7 +399,7 @@ identity.
 
 ## Milestones
 
-- [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; retargeted to `0.41.0`; card 062 resumes; card 063 claim gated behind an admitted segment
+- [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; retargeted to `0.41.0`; card 063 claim gated behind an admitted segment
 - [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture

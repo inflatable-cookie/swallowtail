@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.026 Card 062 Kimi Code 0.41.0 Identity Stop](./2026-09-04-g05-026-card-062-kimi-0-41-0-identity-stop.md) — exact identity accepted through PR 210 at head `f306d327`, merged as `e79f8d07`; ceiling remains `0.38.0` because Bash `cwd` authority is uncontained
 - [2026-09-04 g05.009 Card 069 Candidate C Package Completion](./2026-09-04-g05-009-card-069-candidate-c-package-completion.md) — exact 94-row Antigravity, Bedrock, and Cursor implementation accepted through PR 209 at head `f2edd558`, merged as `d2d8ae8b`; 51 rows emitted and 43 withheld
 - [2026-09-04 Observation Gate Chosen; Card 062 Retargeted To 0.41.0](./2026-09-04-observation-gate-chosen-and-card-062-retargeted.md) — operator chose the shared provider-operation observation gate (card 070, two proving consumers) and retargeted the Kimi local-server family to official `0.41.0`, resuming the same worker
 - [2026-09-04 g05.009 Card 068 Candidate J Package Completion](./2026-09-04-g05-009-card-068-candidate-j-package-completion.md) — exact 35-row llama.cpp/Ollama implementation accepted through PR 208 at head `b92b13d0`, merged as `c5cca28d`; 32 emitted and 3 withheld

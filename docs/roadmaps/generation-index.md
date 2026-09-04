@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 26 roadmaps: 20 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 009, 026. Milestone 009 is ready
+g05 has 26 roadmaps: 21 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 009. Milestone 009 is ready
 with planning-only breadth audits: cards 064 and 067 are complete and
 promotable, card 066 stopped on the shared observation decision, cards 068 and
 069 are merged, and card 065 remains
@@ -154,7 +154,7 @@ active. No Kimi gate reopened. Milestones
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on
 2026-09-04 to official `0.41.0` after latest moved mid-run, and card 062 is
-under exact-head review; card 063 is gated behind an admitted segment.
+complete as an evidence stop; card 063 is gated behind an admitted segment.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
 accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route

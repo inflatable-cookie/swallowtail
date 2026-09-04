@@ -1,6 +1,6 @@
 # g05.026 Kimi Code Local Server 0.41.0 Useful Newer (retargeted from 0.40.1)
 
-Status: ready; retargeted to official latest `0.41.0` on 2026-09-04; card 062 identity resumes on the same worker; card 063 claim is gated behind an admitted segment
+Status: complete; evidence stop; official `0.41.0` identity froze but Bash `cwd` authority remained uncontained; card 063 claim is gated
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -52,7 +52,7 @@ hashed and never executed.
 
 ## Batch Cards
 
-- [062 Kimi Code Local Server 0.41.0 Identity](batch-cards/062-kimi-code-local-server-0-40-1-identity.md) — ready; retargeted from `0.40.1`; resume the same worker
+- [062 Kimi Code Local Server 0.41.0 Identity](batch-cards/062-kimi-code-local-server-0-40-1-identity.md) — complete; evidence stop; ceiling remains `0.38.0`
 - [063 Kimi Code Local Server 0.41.0 Claim](batch-cards/063-kimi-code-local-server-0-40-1-claim.md) — planned; gated behind card 062
 
 ## Retarget

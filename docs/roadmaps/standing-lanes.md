@@ -159,9 +159,9 @@ no roadmap or batch card.
 
 g05.021 completed the bounded release-readiness runway and the operator
 tagged annotated `v0.4.0` at `56f3913a` on 2026-09-04. The
-feature/currentness freeze is lifted. Kimi Code local server is the active
-family through g05.026 cards 062-063, retargeted on 2026-09-04 from `0.40.1`
-to official latest `0.41.0` after latest moved mid-run; card 062 treats the `0.40.0`
+feature/currentness freeze is lifted. Kimi Code local server ran through
+g05.026 card 062, retargeted on 2026-09-04 from `0.40.1` to official latest
+`0.41.0` after latest moved mid-run; card 062 stopped with the `0.38.0`
 Bash `cwd` restriction removal as a Contract 017/023 authority question before
 any segment shape, so a stop is an acceptable outcome. Antigravity `1.1.24`
 (closed PR 182 branch and evidence) is the next queued family after Kimi

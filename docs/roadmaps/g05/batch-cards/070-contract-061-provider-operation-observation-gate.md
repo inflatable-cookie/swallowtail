@@ -100,3 +100,38 @@ prepared plan admitted as observation.
 
 No. Stop after the note for coordinator closeout and Chatterbox promotion
 into Contract 061 and the runtime baseline card.
+
+## Result
+
+Complete. The strict-ready planning gate is
+[`docs/triage/20260904-161224-contract-061-provider-operation-observation-gate.md`](../../../triage/20260904-161224-contract-061-provider-operation-observation-gate.md),
+resolved against current `main` at
+`13df1599c96a455689ddea564c45d5a4ffbd4e9a`.
+
+- Additive vocabulary: source kind `ProviderOperationObservation`, lifecycle
+  `PostOperationObservationOnly`, fourth view
+  `ConsumerRouteProviderOperationState`, typed successful-outcome reference,
+  and separate `ConsumerRouteProviderOperationObservation` input.
+- Admission accepts completed `ProviderSessionCatalogueOutcome` and
+  `ProviderSessionHistoryPage` only. Prepared-only, session-shaped,
+  mismatched, failed, and authority-widening evidence fails closed through
+  `ProviderOperationObservationInvalid`.
+- `MAX_CONSUMER_ROUTE_PROVIDER_OPERATION_ROWS = 4`: carrier high-water 2 plus
+  two rows / 100% headroom. Existing source, extension-count, and text maxima
+  remain sufficient.
+- Composition keeps prepared and provider-operation contributions in separate
+  row collections and source identities under exact applicability and
+  cross-access agreement. Equal rows with a new outcome source ID replace the
+  snapshot.
+- Proving anchors: DeepSeek Harness local-server rows 44/45 at
+  `web_prepared.rs:301-437`, `:840-897`, `:1082-1140`, and
+  `web/driver.rs:384-674`; Kimi ACP catalogue at
+  `prepared_profile/provider_session_catalogue.rs:22-74` and
+  `driver/session_catalogue.rs:49-115`.
+- OpenCode HTTP is recorded only as the third catalogue carrier at
+  `provider_sessions/catalogue.rs:16-65` and
+  `driver/provider_session_import.rs:29-69`; candidate L is not audited.
+- Draft Contract 061 replacement/addition text and six exact runtime/testkit
+  assertions are included. All six readiness categories pass. Open decisions:
+  none.
+- Zero Rust and no edits outside this card and the one new triage note.

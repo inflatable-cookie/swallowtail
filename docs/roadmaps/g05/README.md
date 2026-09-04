@@ -27,7 +27,7 @@ enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 249 rows proved; candidate J card 068 merged; candidate C card 069 ready; candidate I held by the shared observation gap, which now recurs across Kimi, DeepSeek harness, and OpenCode and awaits the operator; audit 065 active | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-067 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 284 rows proved and 483 remain after card 068;  candidate C card 069 ready; candidate I held by the shared observation gap, which now recurs across Kimi, DeepSeek harness, and OpenCode and awaits the operator; audit 065 active | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-067 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | completed standing currentness through Codex official `0.152.1`; Research 276 selects Kimi Code local server `0.40.1` as the first post-release family, now compiled as g05.026 | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; `g05.026` cards 062-063; PR 182 queued behind it |
@@ -352,8 +352,8 @@ compatible extension or qualification. Codex `0.152.1` remains closed through
 g05.020 cards 048-049. PR 182 is closed/unmerged and its Antigravity branch and
 evidence remain parked post-release, not a merged qualification. The installed
 Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini remains
-deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains
-249 proved / 518 remaining.
+deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains;
+coverage is 284 proved / 483 remaining after card 068.
 
 g05.021 owns the unpaused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
 is 40 packages and 47 routes, and current source is still 40 packages against

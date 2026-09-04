@@ -11,8 +11,9 @@ Depends on: completed card 067; the candidate J audit note; Contract 061; comple
 
 Complete candidate J's Contract 061 census dispositions: all 10
 `llama-cpp.attached`, 6 `llama-cpp.owned`, and 19 `ollama.attached` rows,
-as the exact 32 emitted / 3 withheld ledger fixed by the
-[candidate J audit](../../../triage/20260904-134914-contract-061-candidate-j-audit.md).
+as the exact 32 emitted / 3 withheld ledger fixed by the candidate J audit
+(card 067; note `docs/triage/20260904-134914-contract-061-candidate-j-audit.md`,
+pruned after this card closed and preserved in Git history).
 
 ## Scope
 
@@ -138,7 +139,7 @@ No. Stop after one reviewable PR for exact-head review.
 
 ## Evidence
 
-- [candidate J audit](../../../triage/20260904-134914-contract-061-candidate-j-audit.md)
+- candidate J audit note, pruned at card close; see card 067 and Git history
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)

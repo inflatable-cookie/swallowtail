@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J card 068 merged; candidate C card 069 is ready; candidate I stopped on the shared observation gap; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, H, and J merged; 284 rows proved; candidate C card 069 is ready; candidate I held by the shared observation gap; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -48,7 +48,8 @@ The operator then approved the narrow Cline route-local public baseline for
 exact Plan acknowledgement and bounded negotiated model-option observation.
 The gate fixes one additive adapter-owned projected-open seam while preserving
 the existing open method. Card 032 completed candidate G through PR 144 at
-`18a6907e`. Contract 061 now covers 249 rows; 518 remain. Card 033 then
+`18a6907e`. Contract 061 then covered 249 rows with 518 remaining; card 068
+later raised that to 284 proved and 483 remaining. Card 033 then
 reassessed candidate F against current `main` and stopped: 86 of its 89 rows
 rest on proved prepared patterns, but three `kimi-code.acp` post-open rows —
 compound reasoning-and-plan acknowledgement, negotiated model options, and

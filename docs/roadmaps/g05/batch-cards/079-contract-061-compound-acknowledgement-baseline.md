@@ -1,6 +1,6 @@
 # 079 Contract 061 Compound Acknowledgement Runtime Baseline
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -99,3 +99,6 @@ source requirements, one-row composition, and source-identity replacement.
 The runtime and testkit public API baselines contain additions only. Card 034
 remains separate and no adapter, core, contract, or reserved closeout surface
 changed.
+
+Merged through PR 220 at `4258f526`; the shared baseline prerequisite for Card
+034 is now landed.

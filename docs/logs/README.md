@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.009 Card 079 Compound Acknowledgement Closeout](./2026-09-04-g05-009-card-079-compound-ack-closeout.md) — accepted runtime/testkit baseline merged through PR 220 as `4258f526`; Card 034 may now be reconsidered
 - [2026-09-04 g05.009 Card 075 Gemini/Grok Closeout](./2026-09-04-g05-009-card-075-gemini-grok-closeout.md) — exact Candidate E tranche accepted and merged through PR 215 as `9978f9fd`; Contract 061 coverage is now 481 proved rows
 - [2026-09-04 g05.009 Card 074 DeepSeek Candidate I Closeout](./2026-09-04-g05-009-card-074-deepseek-closeout.md) — exact Candidate I tranche accepted and merged through PR 217 as `8cb811f2`; Contract 061 coverage is now 425 proved rows
 - [2026-09-04 g05.009 Card 076 Kimi Compound Acknowledgement Closeout](./2026-09-04-g05-009-card-076-kimi-compound-acknowledgement-closeout.md) — accepted planning design merged through PR 218 as `602e466f`; card 079 is the shared runtime/testkit realization before card 034

@@ -150,9 +150,8 @@ g05 has 29 roadmaps: 23 completed milestones, honest evidence stops at 002,
 card 080 is ready as the `v0.4.1` carrier and cards 081-088 are planned. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
-has 481 proved rows; cards 074 and 075 are complete, card 076's
-compound-acknowledgement gate is complete, and card 079 is the shared baseline
-before card 034. Milestone 028 is complete: card 077 admitted compatible
+has 481 proved rows; cards 074, 075, 076, and 079 are complete, and Card 034
+awaits downstream readiness. Milestone 028 is complete: card 077 admitted compatible
 OpenCode HTTP `surface-19` and card 078 qualified that segment through
 `1.18.28`; `1.18.29` remains `UnverifiedNewer`. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
@@ -393,8 +392,7 @@ carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
 Chatterbox promoted it into Contract 061 on 2026-09-04, and runtime baseline
 card 073 is merged. Candidate I is promoted as card 074 and Candidate E Path A
-as card 075. Cards 074 and 075 are complete at 481 proved rows. Card 076 settled the Kimi compound acknowledgement design; card 079
-realizes it before card 034. Research 284 is compiled as g05.028 card 077 for OpenCode HTTP
+as card 075. Cards 074 and 075 are complete at 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; Card 034 awaits readiness. Research 284 is compiled as g05.028 card 077 for OpenCode HTTP
 `1.18.28` identity-first currentness.
 
 ## Rollover Rule

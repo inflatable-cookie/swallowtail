@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 481 rows proved; cards 074 and 075 are complete, card 076 is complete; card 079 is the shared baseline before card 034
+Status: ready; 481 rows proved; cards 074, 075, 076, and 079 are complete; Card 034 awaits downstream readiness
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -300,10 +300,10 @@ card 079 is the shared runtime/testkit baseline before card 034.
   076's Kimi acknowledgement gate is complete
 - completed shared baseline: Contract 061 provider-operation observation plus
   card 073 runtime/testkit support
-- later runway: 286 rows remain; card 079 realizes the accepted Kimi design
-  before card 034
-- next strategy checkpoint: card 079 realizes card 076's exact compound
-  half-state representation before card 034
+- later runway: 286 rows remain; Card 034 is the next package realization
+  after the landed shared baseline
+- next strategy checkpoint: Chatterbox reopens Card 034 from the accepted Card
+  076 design and landed Card 079 baseline
 
 ## Batch Cards
 
@@ -353,7 +353,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
-- [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — ready; runtime and testkit only; realizes card 076's accepted design; card 034 follows its merge
+- [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
 - [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
 - [076 Contract 061 Kimi Compound Acknowledgement Gate](batch-cards/076-contract-061-kimi-compound-acknowledgement-gate.md) — complete; planning-only; PR 218 merged at `602e466f`; card 079 is serial before card 034
@@ -361,7 +361,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 - [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; promoted into Contract 061 and card 073
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — complete; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation baseline complete; blocked only on card 079's shared runtime/testkit baseline
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation and compound-acknowledgement baselines are landed; awaits Chatterbox readiness promotion
 
 ## Batch Cards Completed
 

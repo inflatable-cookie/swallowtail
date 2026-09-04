@@ -3,7 +3,6 @@
 ## Ready
 
 - [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — ready; Edit/Write/MultiEdit under per-call admission on a read-write lease; permission mode at open and mid-session; `v0.4.1` carrier
-- [079-contract-061-compound-acknowledgement-baseline.md](./079-contract-061-compound-acknowledgement-baseline.md) — ready; runtime and testkit realization of card 076's accepted compound acknowledgement design
 
 ## Planned
 
@@ -28,6 +27,7 @@
 - [076-contract-061-kimi-compound-acknowledgement-gate.md](./076-contract-061-kimi-compound-acknowledgement-gate.md) — complete; planning-only gate merged through PR 218 at `602e466f`
 - [074-contract-061-deepseek-package-completion.md](./074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
 - [075-contract-061-gemini-grok-package-completion.md](./075-contract-061-gemini-grok-package-completion.md) — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
+- [079-contract-061-compound-acknowledgement-baseline.md](./079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit realization merged through PR 220 as `4258f526`; Card 034 may now be reconsidered
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
 - [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; cards 074 and 076 consume it
 - [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; unbounded provider-managed retry is unaccepted; ceiling remains `1.1.17`; PR 212 merged as `333618ca`

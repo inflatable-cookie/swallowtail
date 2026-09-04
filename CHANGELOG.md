@@ -33,15 +33,17 @@ annotated Git tags from the canonical repository.
   new `ClaudeAgentSdkPreparedSession::open_route_session` handle returns or
   fails typed. `bypassPermissions`, `auto`, and `dontAsk` are unrepresentable
   and are refused by name before the SDK is loaded. The default profile is the
-  unchanged read-only `Read`/`Glob`/`Grep` set under `default` mode. `Edit`,
-  `Write`, and `MultiEdit` are expressible and proved end to end against the
-  fake-SDK sidecar fixture, but preparation refuses them with
-  `swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`
-  while shared preflight still keys its consumer-tool exclusion on
-  `ResourceAccess::ReadWrite` rather than on the claimed filesystem boundary.
-  Contract 013 now admits an ambient `ReadWrite` profile with
-  consumer-mediated tool calls; g05.029 card 089 narrows the guard, and the
-  write half follows in card 080's second PR. g05.029 card 080.
+  unchanged read-only `Read`/`Glob`/`Grep` set under `default` mode.
+- run a multi-turn `claude-agent.sdk` editing session. Admitting `Edit`,
+  `Write`, or `MultiEdit` binds `ResourceAccess::ReadWrite` on the
+  working-resource lease into the plan, the session access policy, and the
+  `claude-agent-sdk-ambient-read-write` instance policy; a host that resolves
+  a read-only lease fails the agreement before the sidecar starts. The lease
+  is a location scope under `AmbientHost` and makes no bounded-filesystem
+  claim. Every write is offered to the consumer through `canUseTool` with its
+  tool input intact unless the consumer chose `acceptEdits`, and the
+  provider-free fake-SDK proofs show a two-turn session writing only what the
+  host admitted. g05.029 card 080.
 - complete Contract 061 candidate C consumer route projections across
   `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and
   `swallowtail-adapter-cursor`. Prepared catalogue, headless, continuation,

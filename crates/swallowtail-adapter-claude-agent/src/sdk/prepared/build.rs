@@ -36,22 +36,9 @@ pub(super) fn prepare(
             "Claude Agent SDK preparation admits no session options in this layer",
         ));
     }
-    // Blocked at the shared guard, not withheld by taste. Contract 013 keys
-    // the consumer-tool exclusion on a bounded profile's claimed filesystem
-    // boundary, and this route claims none, so its ambient read-write profile
-    // with consumer-mediated tool calls is admissible. Preflight still refuses
-    // any interactive session pairing `ResourceAccess::ReadWrite` with
-    // `Capability::ToolCalls`. Admitting a write tool here would mean dropping
-    // the capability this route requires, so it fails with an exact code until
-    // that guard is narrowed.
-    if input.profile.admits_writes() {
-        return Err(preparation_failure(
-            swallowtail_runtime::PreparationStage::Preflight,
-            "swallowtail.claude-agent.sdk.preparation.write_admission_unavailable",
-            "Claude Agent SDK preparation cannot yet bind an ambient read-write interactive \
-             session that also declares consumer tool exchange",
-        ));
-    }
+    // The admitted tool set decides the lease this plan asks for. A write tool
+    // binds `ResourceAccess::ReadWrite` here, and the host's own lease must
+    // agree at open, so no write reaches a read-only working resource.
     let resource_access = input.profile.resource_access();
     let capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),

@@ -11,16 +11,12 @@
 //! rejected while parsing, before a plan exists, and unknown tool names are
 //! rejected the same way. Neither can reach the SDK.
 //!
-//! The write set is expressible here and is enforced end to end by the
-//! sidecar, but preparation still refuses it. Contract 013 keys its
-//! consumer-tool exclusion on a bounded profile's claimed filesystem
-//! boundary, and this route claims none, so an ambient read-write session
-//! with consumer-mediated tool calls is admissible. Shared preflight has not
-//! caught up: it still refuses any interactive session pairing
-//! `ResourceAccess::ReadWrite` with `Capability::ToolCalls`. Until that guard
-//! is narrowed, `prepare_claude_agent_sdk_session` fails with
-//! `swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`
-//! rather than dropping a capability this route requires.
+//! The write set is admitted end to end. Contract 013 keys its consumer-tool
+//! exclusion on a bounded profile's claimed filesystem boundary, and this
+//! route claims none, so an ambient read-write session with consumer-mediated
+//! tool calls is admissible. A write tool binds `ResourceAccess::ReadWrite`
+//! into the plan, and a host that grants less fails the lease agreement at
+//! open, so no write ever reaches a read-only working resource.
 
 use super::prepared::preparation_failure;
 use swallowtail_core::ResourceAccess;
@@ -176,9 +172,6 @@ impl ClaudeAgentSdkSessionProfile {
 
     /// The read set plus `Edit`, `Write`, and `MultiEdit`, which requires a
     /// read-write working-resource lease.
-    ///
-    /// Preparation refuses this profile today; see the module documentation
-    /// for the exact shared boundary and failure code.
     #[must_use]
     pub const fn read_write(permission_mode: ClaudeAgentSdkPermissionMode) -> Self {
         Self {

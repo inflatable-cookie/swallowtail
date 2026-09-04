@@ -109,6 +109,10 @@ publish negotiated model options only after successful open confirms retained
 validated options; existing open entry points remain unchanged. No version
 claim or shared surface changed.
 
+Proof reconciliation: Gemini proves 29 emitted / 14 withheld / 43 total;
+Grok proves 10 emitted / 3 withheld / 13 total. The package-independent
+universes sum to 39 emitted / 17 withheld / 56 reconciled exactly.
+
 Validation: focused and affected-package checks passed for both packages. The
 initial focused run was blocked by the sandbox denying the Gemini Live fixture
 listener; the same check passed outside the sandbox. `scan god-files` records

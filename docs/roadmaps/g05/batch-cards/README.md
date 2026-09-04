@@ -2,24 +2,30 @@
 
 ## Ready
 
+- [074-contract-061-deepseek-package-completion.md](./074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled across DeepSeek and DeepSeek Harness
+- [075-contract-061-gemini-grok-package-completion.md](./075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled across Gemini and Grok
+- [076-contract-061-kimi-compound-acknowledgement-gate.md](./076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only gate for Kimi reasoning/Plan half-state representation
+- [077-opencode-http-1-18-28-identity.md](./077-opencode-http-1-18-28-identity.md) — ready; identity-first OpenCode HTTP `1.18.28` currentness evidence
+
 ## Planned
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 073 merges
+- [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — planned; gated behind card 077 admitting a Contract 029 segment
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation baseline landed; waits on card 076 and any baseline it admits
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
 
-- [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; 39 emitted and 17 withheld; PR 205 merged as `1b9fae10`; evidence note awaits Chatterbox reconciliation
-- [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; candidate I and card 034 await Chatterbox reconciliation
+- [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
+- [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; cards 074 and 076 consume it
 - [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; unbounded provider-managed retry is unaccepted; ceiling remains `1.1.17`; PR 212 merged as `333618ca`
-- [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; no runtime or Contract 061 promotion by Coordinator
+- [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — complete; promoted into Contract 061 and runtime/testkit card 073
 - [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — complete; candidate J; 35 rows; 32 emitted and 3 withheld; PR 208 merged as `c5cca28d`
 - [069-contract-061-antigravity-bedrock-cursor-package-completion.md](./069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows; 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — complete; evidence stop; official `0.41.0` identity frozen; ceiling remains `0.38.0`; PR 210 merged as `e79f8d07`
-- [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 merged as `85221307`
+- [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; shared observation blocker resolved by card 073; promoted as card 074
 - [064-contract-061-candidate-c-breadth-audit.md](./064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 merged as `1903f715`; catalogue routes did not reopen the Kimi gate
 - [067-contract-061-candidate-j-breadth-audit.md](./067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 merged as `8cbf6064`
 

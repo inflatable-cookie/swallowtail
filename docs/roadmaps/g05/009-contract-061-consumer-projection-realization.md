@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 merged as `e39e0aa8`; audit 065 complete; Candidate E evidence, candidate I, and card 034 await reconciliation
+Status: ready; 378 rows proved; cards 074 and 075 ready for Candidates I and E; card 076 is the remaining Kimi acknowledgement gate; card 034 stays planned behind it
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -237,29 +237,15 @@ rows, and reassessed candidate F. F stops. Its 89 rows partition as 60
 selection-summary, 22 session-start-only, and 7 post-open, of which four are
 descriptor-only activity. The remaining three sit on `kimi-code.acp` alone.
 `driver.rs` discards both the reasoning and Plan confirmations;
-`driver/mode.rs` freezes the Plan domain but `driver/reasoning.rs` admits
-foreign catalogue rows and normalizes requested-`"on"` effort, so neither an
-exact rejected nor an exact effective reasoning value survives. Negotiated
-model options are already retained on `KimiSessionHandle`, so that family
-blocks only on publication. The post-open provider-session catalogue observes
-through a separate prepared operation and needs a different seam shape. Card
-033 names one `kimi-code.acp`-only gate with five operator decisions and
-compiles nothing. The
+`driver/mode.rs` freezes the Plan domain while the reasoning path confirms
+first. Negotiated model options are already retained on `KimiSessionHandle`.
+Card 033 named the original Kimi gate. The
 [Kimi gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-retains the adapter-owned names, bounded provider value, projected-open outcome
-and failure, source identities, preservation boundary, and provider-free
-oracle as first-round evidence, then stops. It cannot fix the projected
-catalogue seam: `list_sessions` opens no session, while
-`ActiveSessionObservation`, `PostOpenObservationOnly`, and
-`ConsumerRouteActiveSessionState` are each defined as post-open session
-semantics, so publishing that row would widen shared Contract 061 vocabulary
-from an adapter document. The compound acknowledgement item retains its
-unresolved generic half-to-state and terminal not-observed corrections; it is
-not an accepted public baseline. The corrected four route ledgers total 74
-emitted, 14 withheld, and 1 undecided across 89 rows as reassessment evidence only. Candidate
-F is not promoted, card 034 is planned; not ready; blocked by the
-provider-operation observation public-baseline decision, and coverage stays
-249/518.
+retains the adapter-owned projected-open evidence and the unresolved generic
+half-to-state problem. Cards 070 and 073 closed the separate provider-operation
+catalogue seam. The four route ledgers now target 75 emitted and 14 withheld
+across 89 rows. Card 076 is the remaining planning-only acknowledgement gate;
+card 034 stays planned behind it and any shared baseline it admits.
 
 ### Batch 9.5 — All-Route Census Audit
 
@@ -309,19 +295,13 @@ provider-operation observation public-baseline decision, and coverage stays
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: cards 022-024 and 030-033 are complete through PRs 131,
-  133, 138, 141, and 144 plus two planning stops; card 034 is planned, not
-  ready, and blocked by the provider-operation observation public-baseline
-  decision; no implementation card is ready
-- completed tranches: runtime/testkit kernel plus sixteen exact route proofs in
-  five reviewed implementation cards, covering 249 census rows
-- active checkpoint: none; the Kimi `kimi-code.acp` gate stopped and returned
-  the provider-operation observation public-baseline decision
-- later runway: 518 rows remain in candidates B, C, E, F, and I-L
-- next strategy checkpoint: the operator chooses whether to compile a shared
-  provider-operation observation public-baseline gate with honest
-  source/lifecycle/view vocabulary, or leave
-  `control.provider-session-catalogue` withheld and candidate F unpromoted
+- immediate state: 378 rows proved; cards 074 and 075 are ready for Candidates
+  I and E; card 076 owns the remaining Kimi acknowledgement gate
+- completed shared baseline: Contract 061 provider-operation observation plus
+  card 073 runtime/testkit support
+- later runway: 389 rows remain; cards 074 and 075 reconcile 103 of them
+- next strategy checkpoint: card 076 returns one exact compound half-state
+  representation or an honest stop before card 034
 
 ## Batch Cards
 
@@ -349,10 +329,9 @@ provider-operation observation public-baseline decision, and coverage stays
   reconciled to 249/518, and candidate F left unpromoted behind a named
   `kimi-code.acp` gate; no Rust changed
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md)
-  — planned; not ready; blocked by the provider-operation observation
-  public-baseline decision; corrected 25/20/31/13-row evidence retains 74
-  emitted, 14 withheld, and 1 undecided row only as reassessment evidence; no
-  rows counted as proved
+  — planned; not ready; blocked on card 076 and any shared baseline it admits;
+  corrected 25/20/31/13-row evidence targets 75 emitted and 14 withheld; no
+  rows counted as proved yet
 
 ## References
 
@@ -372,11 +351,14 @@ provider-operation observation public-baseline decision, and coverage stays
 
 ## Batch Cards In Flight
 
-- [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — ready; runtime and testkit only; unblocks candidate I completion and card 034
-- [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; Chatterbox promotion required before candidate I or card 034
+- [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled
+- [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled
+- [076 Contract 061 Kimi Compound Acknowledgement Gate](batch-cards/076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only; card 034 remains serial behind it
+- [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — complete; PR 214 merged as `e39e0aa8`
+- [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; promoted into Contract 061 and card 073
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
-- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — complete; 56 rows; 39 emitted and 17 withheld; PR 205 merged as `1b9fae10`; evidence note awaits reconciliation
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 073 merges
+- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — complete; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation baseline complete; blocked only on card 076 and any baseline it admits
 
 ## Batch Cards Completed
 
@@ -492,3 +474,31 @@ Card 073 is approved concurrent with audit 065 and g05.027 card 071.
 | Review oracle | the card's counterexample list; smallest counterexample is one reinterpreted existing name or one prepared plan admitted as observation |
 | Stop conditions | the card's stop list; any deviation from the gate's exact names returns to Chatterbox |
 | Escalation owner | operator (Tom) via Chatterbox for vocabulary questions; coordinator for mechanical blockers |
+
+### Cards 074-076 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Cards 074, 075, and 076 are approved concurrent with one another and with
+g05.028 card 077.
+
+| Field | Card 074 | Card 075 | Card 076 |
+| --- | --- | --- | --- |
+| Readiness | ready | ready | ready |
+| Outcome | complete Candidate I across DeepSeek and DeepSeek Harness | complete Candidate E Path A across Gemini and Grok | settle Kimi compound acknowledgement generically |
+| Prerequisites | cards 066 and 073 complete; accepted Candidate I note | card 065/PR 205 complete; card 032 precedent | cards 033, 070, and 073 complete; retained Kimi gate |
+| Completion conditions | exact 41 emitted / 6 withheld / 47 ledger; two outcome-backed operation observations; census-source corrections; one PR | exact 39 emitted / 17 withheld / 56 ledger; additive Gemini/Grok projected-open seams; one PR | one exact additive generic half-state design; contract/runtime impact named; zero Rust; one planning PR |
+| Owned mutable paths | `crates/swallowtail-adapter-deepseek/**`; `crates/swallowtail-adapter-deepseek-harness/**`; `docs/triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv` source-reference corrections only; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-gemini/**`; `crates/swallowtail-adapter-grok/**`; card result; `PAPERCUTS.md` append only | card 076 result; retained Kimi gate note; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `CHANGELOG.md` `[Unreleased]`; `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, batch-card index, generation index, logs index | same | same |
+| Forbidden paths | shared runtime/core/testkit; other adapters; contracts; architecture; other triage notes; version claims | shared runtime/core/testkit; other adapters; contracts; architecture; Gemini version claims; other triage notes | every `crates/**`; contracts and architecture; card 034 implementation; provider-operation redesign; other triage notes |
+| Approved concurrent siblings | 075, 076, g05.028 card 077 | 074, 076, g05.028 card 077 | 074, 075, g05.028 card 077 |
+| Serial edges | none | none | Chatterbox promotion, any required shared baseline, then card 034 |
+| Worker capability class | Rust implementation worker with outcome-admission discipline; no provider credentials | Rust implementation worker with active-session lifecycle discipline; no provider credentials | planning-only public-API designer with strong Rust reading; frontier tier; no Rust writing |
+| Acceptance evidence | exact route ledgers; operation outcome/source separation; focused and affected-package validation; API unchanged | exact route ledgers; old/new open parity; retained-option observation; applicability proof; focused and affected-package validation | reachability matrix; verbatim public shape; bounds/admission/composition/testkit proposal; docs/Northstar gates |
+| Review oracle | no prepared evidence masquerades as completed operation | no configured value masquerades as post-open observation | no row-level ambiguity or invented pending state |
+| Stop conditions | new shared vocabulary, changed provider work, or ledger mismatch | shared baseline need, changed open lifecycle, or ledger mismatch | multiple material shapes, non-additive design, or operator policy gap |
+| Escalation owner | operator via Chatterbox for semantics; coordinator for mechanics | operator via Chatterbox for semantics; coordinator for mechanics | operator via Chatterbox; coordinator for mechanics |
+
+Candidate I and Candidate E audit notes remain live evidence until cards 074
+and 075 close, then Chatterbox prunes them. The provider-operation gate note
+remains until its two proving consumers close. Card 034 is not part of this
+frontier.

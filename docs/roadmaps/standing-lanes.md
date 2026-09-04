@@ -138,11 +138,11 @@ family alone and changed no claim.
 
 Research 284 revalidated all 41 production solution rows on 2026-09-04. The
 partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
-material candidate. OpenCode HTTP `1.18.28` is ranked next: the host is
+material candidate. OpenCode HTTP `1.18.28` ranked first: the host is
 `1.18.18`, inside the qualified `1.14.48..=1.18.20` range, and eight published
-hops are available. No claim changed; Chatterbox must compile the family lane
-before any identity or claim work begins. The Contract 029 In-Run Latest
-Movement rule applies to that lane.
+hops are available. Chatterbox compiled g05.028; card 077 is the active
+identity-first family lane and card 078 remains serially gated. The Contract
+029 In-Run Latest Movement rule applies.
 
 Research 276 previously revalidated all 40 production families on 2026-09-02.
 Kimi Code npm and GitHub stable moved to `0.40.1`; the
@@ -331,7 +331,7 @@ changed no claim.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). Currentness implementation remains
-frozen through the milestone; Kimi local server `0.40.1` stays first after the
-release and PR 182 stays closed/parked evidence. This file records standing
-lanes; the sole actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). g05.028 card 077 is the current
+one-family currentness lane and is approved concurrent with the Contract 061
+frontier. This file records standing lanes; the sole actionable pointer stays
+in the front door.

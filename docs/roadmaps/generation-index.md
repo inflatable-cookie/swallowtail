@@ -144,14 +144,14 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 27 roadmaps: 22 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 009. Milestone 027 completed
+g05 has 28 roadmaps: 22 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 009, 028. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
-card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009 is ready
-with planning-only breadth audits: cards 064 and 067 are complete and
-promotable, card 066 stopped on the shared observation decision, cards 068 and
-069 are merged, and card 065 remains
-active. No Kimi gate reopened. Milestones
+card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
+has 378 proved rows; cards 074 and 075 are ready for Candidates I and E, while
+card 076 owns Kimi's remaining compound-acknowledgement gate and card 034 stays
+planned behind it. Milestone 028 is ready with OpenCode HTTP `1.18.28` identity
+card 077 and serial claim card 078. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on
@@ -388,9 +388,11 @@ Bedrock, and Cursor tranche (PR 209 merged as `d2d8ae8b`). Card 066 stopped cand
 `85221307`) on the same provider-operation observation gap as Kimi. With three
 carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
-Chatterbox promoted it into Contract 061 on 2026-09-04, runtime baseline card
-073 is merged, audit 065 is complete, and Candidate E evidence plus candidate I
-and card 034 await reconciliation.
+Chatterbox promoted it into Contract 061 on 2026-09-04, and runtime baseline
+card 073 is merged. Candidate I is promoted as card 074 and Candidate E Path A
+as card 075. Card 076 settles the remaining Kimi compound acknowledgement
+before card 034. Research 284 is compiled as g05.028 card 077 for OpenCode HTTP
+`1.18.28` identity-first currentness.
 
 ## Rollover Rule
 
@@ -403,10 +405,7 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). The active next action is to
-reconcile accepted Card 065 evidence through Chatterbox; do not compile its
-implementation here. Card 073's provider-operation observation baseline is
-merged; Candidate E evidence plus candidate I and card 034 await reconciliation.
-Research 284 is complete and Card 071 is closed as an evidence stop at
-`1.1.22`, with ceiling `1.1.17`. This index records generation status; the canonical
-actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). Card 074 is the lead of the approved
+concurrent frontier with cards 075, 076, and g05.028 card 077. Card 034 and
+card 078 remain serially gated. This index records generation status; the
+canonical actionable pointer stays in the front door.

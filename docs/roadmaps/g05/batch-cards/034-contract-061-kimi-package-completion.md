@@ -1,45 +1,33 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; the observation gate is promoted into Contract 061 and card 073 owns the runtime baseline; this card reopens after card 073 merges
+Status: planned; not ready; provider-operation observation is complete; blocked on card 076 settling the compound acknowledgement shape and any baseline it admits
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04
 Milestone: `../009-contract-061-consumer-projection-realization.md`
-Depends on: completed card 033; provider-operation observation public-baseline
-decision; an accepted compound-acknowledgement representation if candidate F
-continues
+Depends on: completed cards 033, 070, and 073; completed card 076 and any
+accepted compound-acknowledgement public baseline it admits
 
 ## Why This Card Is Blocked
 
-The Kimi gate is stopped. Publishing
-`control.provider-session-catalogue` needs
-`ConsumerRouteProjectionSourceKind::ActiveSessionObservation`,
-`ConsumerRouteLifecycle::PostOpenObservationOnly`, and
-`ConsumerRouteActiveSessionState`. Current `swallowtail-runtime` defines all
-three as post-open **session** semantics, while
-`KimiPreparedSessionCatalogue::list_sessions` opens no session. The completed
-query therefore cannot be published honestly through those names. Do not
-broaden or reinterpret the shared vocabulary here.
+The shared provider-operation question is closed. Contract 061 and card 073 now
+provide an additive provider-operation source, lifecycle, outcome class,
+evidence strength, fourth view, fixed maximum, admission, and composer pass.
+`KimiPreparedSessionCatalogue::list_sessions` may publish the observed
+`control.provider-session-catalogue` row only after a matching successful
+completed outcome, without pretending a session opened.
 
-On 2026-09-04 the operator deferred the decision: the row stays withheld until
-the candidate C audit (card 064) shows whether the vocabulary gap recurs on
-the catalogue routes. The open operator decision is whether to compile a shared
-provider-operation observation public-baseline gate with honest
-source/lifecycle/view vocabulary, or to leave
-`control.provider-session-catalogue` withheld and candidate F unpromoted. Both
-directions are recorded in the
-[stopped gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md).
+One independent blocker remains. The compound
+`feature.active-session-reasoning-and-plan-ack` row must associate the exact
+reasoning and Plan tokens with their own effective/rejected/not-dispatched
+states generically. Row-level union flags lose that association, and a Plan
+request skipped after terminal reasoning rejection is not pending. Card 076 is
+the approved planning-only gate for that shape.
 
-This card is retained as planned, not-ready evidence. If candidate F continues,
-the compound acknowledgement shape must still be settled in planning before
-this card can become ready. It authorizes no Rust,
-and none of its 89 rows count toward coverage. Coverage stays at 249 proved and
-518 remaining. The compound acknowledgement, attachment-control, and
-platform-catalogue corrections below remain route-local evidence requirements;
-they do not select a replacement design or create another Next Task.
-
-Do not implement this card. Do not compile a replacement card. Do not choose
-the shared runtime direction inside a batch card.
+This card remains planned and authorizes no Rust until card 076 and any shared
+baseline it admits are complete. None of its 89 rows count toward coverage yet.
+The retained ledgers, attachment-control rules, and platform-catalogue
+corrections remain evidence requirements.
 
 ## Intended Goal, Once Unblocked
 
@@ -79,15 +67,13 @@ that public shape.
    `load_request`, `load_session`, `resume_request`, `resume_session`,
    `prepare_working_state_restoration`, and `into_parts` exactly as they are on
    `main`, including the `DeclaredEffort` requested-`"on"` normalization.
-4. **Blocked by the provider-operation observation decision.** No projected
-   catalogue seam is authorized.
-   `KimiPreparedSessionCatalogue::consumer_route_projection_contribution` emits
-   the prepared `feature.provider-session-catalogue` row and must not emit
-   `control.provider-session-catalogue` in any state, because that control is
-   `post-open-observation-only` with `observed` support and prepared evidence
-   would backdate observed truth. `list_sessions`, `list_page`,
-   `next_page_request`, continuation paging, cursor semantics, failure stages,
-   and cleanup stay unchanged and unprojected.
+4. Add an outcome-backed projected catalogue seam using card 073's
+   provider-operation observation vocabulary. The prepared contribution emits
+   `feature.provider-session-catalogue`; the observed
+   `control.provider-session-catalogue` row appears only after a matching
+   successful completed catalogue outcome, with distinct prepared and outcome
+   source IDs. `list_sessions`, `list_page`, `next_page_request`, continuation
+   paging, cursor semantics, failure stages, and cleanup stay unchanged.
 5. Add one adapter-private `MAXIMUM_KIMI_PROVIDER_VALUE_BYTES = 128` constant
    and one adapter-private admission function. Do not import, re-export, or
    alias `swallowtail-core`'s `ProviderCatalogValue` bound and do not add a
@@ -133,10 +119,9 @@ that public shape.
     `kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, and
     13 `kimi-platform.chat`. Name each tuple once with an emitted or
     construction-time-withheld reason matching the ledgers below.
-11. Preserve the corrected interim four-ledger arithmetic as reassessment
-    evidence: 89 rows, 74 emitted, 14 withheld, and 1 undecided. These totals
-    are not proved coverage or implementation authority while the
-    provider-operation observation decision is open.
+11. Preserve the corrected four-ledger arithmetic as implementation target:
+    89 rows, 75 emitted, and 14 construction-time withheld. These totals are
+    not proved coverage until this card merges.
 12. Emit `feature.persistent-session-posture` on `kimi-code.acp` only from
     `KimiPreparedSessionImport`. `KimiPreparedSession` must not emit it; its
     plan is `SessionProviderStatePolicy::Prohibited`.
@@ -185,11 +170,11 @@ these rows counts toward Contract 061 coverage while this card is blocked.
 | 21 | `interactive-session` | `control.session-options` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 22 | `session-management` | `control.load-session` | emitted — attachment-compatible profiles only — `load_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
 | 23 | `session-management` | `control.resume-session` | emitted — attachment-compatible profiles only — `resume_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
-| 24 | `session-management` | `control.provider-session-catalogue` | **undecided** — emitted only if a provider-operation observation baseline is authorized; withheld otherwise |
+| 24 | `session-management` | `control.provider-session-catalogue` | emitted only from a matching successful completed provider-operation outcome |
 | 25 | `session-management` | `control.provider-session-import` | emitted — `KimiPreparedSessionImport` |
 
-25 distinct tuples; 21 emitted; 3 withheld; 1 undecided. These dispositions
-are evidence only while the gate is stopped.
+25 distinct tuples; 22 emitted; 3 withheld. These dispositions remain evidence
+only while card 076 is open.
 
 ### `kimi-code.headless` — 20 Rows, 10 Emitted, 10 Withheld
 
@@ -275,14 +260,14 @@ are evidence only while the gate is stopped.
 | 13 | `structured-run` | `control.reasoning-and-output-required` | emitted — `KimiPlatformPreparedInferenceAttempt` |
 
 13 distinct tuples; 12 emitted; 1 withheld.
-The four ledgers total 89 distinct tuples: 74 emitted, 14 withheld, and 1
-undecided in the corrected reassessment arithmetic. Owning packages split 76
+The four ledgers total 89 distinct tuples: 75 emitted and 14 withheld. Owning packages split 76
 `swallowtail-adapter-kimi` and 13 `swallowtail-adapter-kimi-platform` rows.
 `ConsumerRouteEvidenceStrength` has no documentation or QA-matrix variant, so
 every withheld row is unprojectable by construction. These totals are evidence
-only, not proved coverage or implementation authority. The undecided
-`kimi-code.acp` `control.provider-session-catalogue` row remains governed by
-the provider-operation observation decision; no implementation may pick a direction.
+only, not proved coverage or implementation authority until card 034 merges.
+The observed `kimi-code.acp` `control.provider-session-catalogue` row uses card
+073's completed provider-operation observation path; prepared evidence alone
+must still withhold it.
 
 ## Required Proofs
 
@@ -458,17 +443,13 @@ but its option missing or malformed takes case 2 and publishes nothing.
 
 ## Acceptance Criteria
 
-None may be checked. This card is planned, not ready, and no implementation
-acceptance has been earned.
-
-- [ ] the provider-operation observation public-baseline decision is answered
-      before any of the following is attempted
+- [ ] card 076 and any shared baseline it admits are complete before
+      implementation begins
 - [ ] four independent ledgers reconcile exactly to 25, 20, 31, and 13 rows,
       with each `(route_id, operation_shape, semantic_id)` named once and no
       exception list
-- [ ] the corrected interim 89-row arithmetic of 74 emitted, 14 withheld, and
-      1 undecided is re-derived as evidence only; it is not counted as proved
-      coverage or implementation authority, and minimal and maximal profiles prove every
+- [ ] the 89-row arithmetic of 75 emitted and 14 withheld is re-derived, and
+      minimal and maximal profiles prove every
       optional row is genuinely absent or present
 - [ ] every emitted row retains exact source, route, operation, lifecycle,
       value, omission, applicability, access, evidence, support, availability,
@@ -613,17 +594,15 @@ No live probe or provider contact belongs to this card.
 
 ## Auto-Continuation
 
-No. This card is planned but not ready pending the provider-operation
-observation public-baseline decision. Do not dispatch an implementation worker
-and do not compile a replacement card.
+No. This card is planned but not ready pending card 076 and any shared baseline
+it admits. Do not dispatch an implementation worker or compile a replacement.
 
 ## Stop Conditions
 
-- Stop while the provider-operation observation public-baseline decision is
-  open; that is the current state.
+- Stop while card 076 or any public baseline it admits remains open.
 - Stop if the card needs a runtime/testkit/core public type, source kind,
   composer rule, fixed maximum, failure kind, or contract amendment beyond
-  whatever the provider-operation observation decision authorizes.
+  cards 073 and 076.
 - Stop if exact reasoning or Plan rejection requires accepting an unadvertised,
   ambiguous, foreign, or unbounded value, or a raw ACP payload.
 - Stop if the preserved `open_session`, `load_session`, `resume_session`,

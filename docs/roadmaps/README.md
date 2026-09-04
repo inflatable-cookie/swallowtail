@@ -15,19 +15,15 @@ shape.
 
 ## Next Task
 
-Reconcile accepted [g05.009 audit 065](g05/batch-cards/065-contract-061-candidate-e-breadth-audit.md)
-through Chatterbox; do not compile Candidate E implementation here. Card 073's
-provider-operation observation runtime/testkit baseline is merged; candidate I
-completion and card 034 await Chatterbox reconciliation. Card 071 is closed as an evidence stop at
-Antigravity `1.1.22`. The all-route currentness checkpoint
-lane in `standing-lanes.md` completed as Research 284 without changing claims;
-it ranks OpenCode HTTP `1.18.28` for a future Chatterbox-compiled family lane.
-Cards 068 and 069 are merged. Card 071 is closed as an evidence stop at
-Antigravity `1.1.22`; its ceiling remains `1.1.17` and card 072 stays gated.
-Card 062 stopped: Kimi local server `0.41.0`
-identity is frozen and the ceiling stays `0.38.0`; card 063 stays gated.
-Card 034 remains planned behind the promoted baseline.
-`v0.4.0` is tagged; the feature/currentness freeze is lifted.
+Implement [g05.009 card 074](g05/batch-cards/074-contract-061-deepseek-package-completion.md)
+as the lead of the approved concurrent frontier. Card 075 completes the
+Gemini/Grok tranche; card 076 settles Kimi's remaining compound-
+acknowledgement design; and g05.028 card 077 freezes OpenCode HTTP `1.18.28`
+identity before any claim. Card 078 follows only from an admitted OpenCode
+segment. Card 034 remains planned behind card 076 and any baseline it admits.
+Current Contract 061 coverage is 378 proved / 389 remaining; cards 074 and 075
+can reconcile 103 rows without a new shared baseline. `v0.4.0` is tagged and
+the feature/currentness freeze is lifted.
 
 ## Standing Lanes
 

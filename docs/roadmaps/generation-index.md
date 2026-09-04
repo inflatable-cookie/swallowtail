@@ -147,7 +147,7 @@ goal and does not keep g04 or any later generation open. See
 g05 has 29 roadmaps: 24 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 029. Milestone 029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;
-card 080 is ready as the `v0.4.1` carrier and cards 081-088 are planned. Milestone 027 completed
+card 080 delivered the `v0.4.1` carrier and cards 081-088 are planned. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
 has 570 proved rows; cards 034, 074, 075, 076, and 079 are complete. Milestone 028 is complete: card 077 admitted compatible

@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; card 080 (permission policy landed in PR 221, write half pending card 089) and card 089 core guard are ready; cards 081-088 queued in priority order
+Status: ready; card 080 permission policy and ambient read-write editing delivered through PRs 221 and 224; cards 081-088 queued in priority order
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -66,7 +66,7 @@ forces a minor.
 
 ## Batch Cards
 
-- [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — ready; two PRs: PR 221 (permission policy, typed write refusal) then the write half after card 089
+- [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
 - [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — planned; after 080
 - [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — planned; after 080

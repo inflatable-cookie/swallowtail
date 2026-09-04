@@ -1,6 +1,6 @@
 # 080 Claude SDK Read-Write Session And Permission Policy
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -145,5 +145,5 @@ Second PR, after card 089 merged:
   admitted write path and the ambient posture. The bounded-workspace cell
   stays `No`: this route claims no filesystem boundary.
 
-The `Status:` line and the batch-card index are reserved shared closeout
-surfaces, so this card still reads `ready`; the coordinator owns both.
+Merged through PR 221 at `80d69dc6596b93fe5c1cabd4efd384d1f751a20d` and PR 224
+at `23d3cd8d931df390836dd0c68134768c807c81e3`.

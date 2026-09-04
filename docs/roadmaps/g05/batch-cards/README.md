@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — ready; Edit/Write/MultiEdit under per-call admission on a read-write lease; permission mode at open and mid-session; `v0.4.1` carrier
 
 ## Planned
 
@@ -21,6 +20,7 @@
 
 ## Completed
 
+- [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — complete; permission policy and ambient read-write editing merged through PRs 221 and 224
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — complete; Candidate F; 75 emitted / 14 withheld across 89 Kimi rows; PR 222 merged as `404fa068`
 - [089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md](./089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — complete; bounded-profile exclusion retained and ambient mediated tools admitted; PR 223 merged as `e4399790`
 

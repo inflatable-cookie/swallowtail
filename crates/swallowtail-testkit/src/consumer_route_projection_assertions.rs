@@ -6,6 +6,7 @@
 mod counterexamples;
 mod failures;
 mod maxima;
+mod provider_operation;
 mod replacement;
 mod separation;
 mod support;
@@ -22,4 +23,7 @@ pub fn assert_consumer_route_projection_contract() {
     replacement::assert_identical_row_source_replacement();
     replacement::assert_unknown_and_absent_truth_survives();
     replacement::assert_no_raw_or_presentation_data();
+    assert_consumer_route_provider_operation_observation_contract();
 }
+
+pub use provider_operation::assert_consumer_route_provider_operation_observation_contract;

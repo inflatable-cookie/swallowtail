@@ -109,3 +109,25 @@ No. Stop after one reviewable PR for exact-head review.
 - [accepted gate](../../../triage/20260904-161224-contract-061-provider-operation-observation-gate.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [card 022](022-contract-061-composer-and-two-route-vertical.md)
+
+## Result
+
+Implemented the accepted provider-operation observation baseline in
+`swallowtail-runtime` and `swallowtail-testkit`. The runtime now admits only
+matching completed catalogue or history outcomes, retains their source plans
+privately, projects admitted rows through a separate fourth view, composes
+prepared and outcome sources without merging, enforces the fixed maximum of
+four, and emits the five fixed diagnostics. Existing contribution and outcome
+constructor signatures remain unchanged.
+
+The portable Contract 061 suite now calls the six fixed provider-operation
+assertions. They cover admitted shapes, prepared-only and failed-outcome
+rejection, the fixed maximum, descriptor-only observation state, fourth-view
+separation and replacement, exact applicability, cross-access disagreement,
+duplicate sources, and catalogue/history mismatch.
+
+Validation passed: runtime/testkit formatting, focused validation (338 tests),
+affected-package verification, semantic API comparison, docs, Northstar, and
+diff checks. The semantic API change is additive only. The god-file scan stays
+at the accepted 392 findings: 7 critical, 43 high, and 342 warnings, with no
+new finding from this card.

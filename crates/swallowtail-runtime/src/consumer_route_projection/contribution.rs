@@ -2,7 +2,7 @@ use super::MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS;
 use super::admission::{admit_sources, admit_view};
 use super::applicability::ConsumerRouteApplicability;
 use super::failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind, failure};
-use super::identity::ConsumerRouteProjectionSourceIdentity;
+use super::identity::{ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind};
 use super::row::ConsumerRouteProjectionRow;
 use super::view::ConsumerRouteView;
 
@@ -32,6 +32,15 @@ impl ConsumerRouteProjectionContribution {
         let selection_rows = selection_rows.into_iter().collect::<Vec<_>>();
         let session_start_rows = session_start_rows.into_iter().collect::<Vec<_>>();
         let active_session_rows = active_session_rows.into_iter().collect::<Vec<_>>();
+        if sources.iter().any(|source| {
+            source.kind() == ConsumerRouteProjectionSourceKind::ProviderOperationObservation
+        }) {
+            return Err(failure(
+                ConsumerRouteProjectionFailureKind::ProviderOperationObservationInvalid,
+                "swallowtail.consumer_route_projection.provider_operation_source_rejected",
+                "Prepared contribution cannot publish provider-operation observation",
+            ));
+        }
         let source_identities = admit_sources(&sources)?;
         admit_view(
             ConsumerRouteView::SelectionSummary,

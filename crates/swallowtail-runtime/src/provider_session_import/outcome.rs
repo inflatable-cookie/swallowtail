@@ -13,8 +13,9 @@ use swallowtail_core::{
 };
 
 /// One bounded provider-session catalogue page and its continuation evidence.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone)]
 pub struct ProviderSessionCatalogueOutcome {
+    source_plan: ProviderSessionCataloguePlan,
     candidates: Vec<ProviderSessionCandidate>,
     next_cursor: Option<ProviderSessionCursor>,
     cleanup: CleanupOutcome,
@@ -102,6 +103,7 @@ impl ProviderSessionCatalogueOutcome {
             })?;
 
         Ok(Self {
+            source_plan: plan.clone(),
             candidates,
             next_cursor,
             cleanup,
@@ -124,7 +126,32 @@ impl ProviderSessionCatalogueOutcome {
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }
+
+    pub(crate) const fn source_plan(&self) -> &ProviderSessionCataloguePlan {
+        &self.source_plan
+    }
 }
+
+impl fmt::Debug for ProviderSessionCatalogueOutcome {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("ProviderSessionCatalogueOutcome")
+            .field("candidates", &self.candidates)
+            .field("next_cursor", &self.next_cursor)
+            .field("cleanup", &self.cleanup)
+            .finish()
+    }
+}
+
+impl PartialEq for ProviderSessionCatalogueOutcome {
+    fn eq(&self, other: &Self) -> bool {
+        self.candidates == other.candidates
+            && self.next_cursor == other.next_cursor
+            && self.cleanup == other.cleanup
+    }
+}
+
+impl Eq for ProviderSessionCatalogueOutcome {}
 
 /// Exact read-only evidence observed while revalidating an import candidate.
 #[derive(Clone, Eq, PartialEq)]

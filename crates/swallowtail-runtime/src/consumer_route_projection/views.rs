@@ -35,6 +35,10 @@ projection_view!(
     ConsumerRouteActiveSessionState,
     "Immutable post-open observation and exact negotiated state."
 );
+projection_view!(
+    ConsumerRouteProviderOperationState,
+    "Immutable observations produced by completed provider operations."
+);
 
 /// Exact identity one immutable projection snapshot binds.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -76,6 +80,7 @@ pub struct ConsumerRouteProjection {
     selection_summary: ConsumerRouteSelectionSummary,
     session_start_controls: ConsumerRouteSessionStartControls,
     active_session_state: ConsumerRouteActiveSessionState,
+    provider_operation_state: ConsumerRouteProviderOperationState,
 }
 
 impl ConsumerRouteProjection {
@@ -84,12 +89,14 @@ impl ConsumerRouteProjection {
         selection_summary: ConsumerRouteSelectionSummary,
         session_start_controls: ConsumerRouteSessionStartControls,
         active_session_state: ConsumerRouteActiveSessionState,
+        provider_operation_state: ConsumerRouteProviderOperationState,
     ) -> Self {
         Self {
             identity,
             selection_summary,
             session_start_controls,
             active_session_state,
+            provider_operation_state,
         }
     }
 
@@ -115,6 +122,12 @@ impl ConsumerRouteProjection {
     /// Returns the immutable active-session state view.
     pub const fn active_session_state(&self) -> &ConsumerRouteActiveSessionState {
         &self.active_session_state
+    }
+
+    #[must_use]
+    /// Returns the immutable provider-operation observation view.
+    pub const fn provider_operation_state(&self) -> &ConsumerRouteProviderOperationState {
+        &self.provider_operation_state
     }
 
     /// Iterates every source evidence identity used to assemble the snapshot.

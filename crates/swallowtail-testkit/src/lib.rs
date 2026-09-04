@@ -77,7 +77,10 @@ pub use assertions::{
     assert_extension_isolation, assert_extension_policies, assert_reference_opacity,
 };
 pub use callback_fixture::{CallbackExchangeFixture, successful_callback_response};
-pub use consumer_route_projection_assertions::assert_consumer_route_projection_contract;
+pub use consumer_route_projection_assertions::{
+    assert_consumer_route_projection_contract,
+    assert_consumer_route_provider_operation_observation_contract,
+};
 pub use consumer_route_projection_fixture::{
     CONSUMER_ROUTE_PRIVATE_CREDENTIAL, CONSUMER_ROUTE_PRIVATE_TARGET,
     ConsumerRouteProjectionFixture, consumer_route_projection_source,

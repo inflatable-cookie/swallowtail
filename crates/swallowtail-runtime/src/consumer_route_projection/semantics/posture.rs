@@ -13,6 +13,8 @@ pub enum ConsumerRouteLifecycle {
     QualifiedMidTurnNegotiable,
     /// Observed only after the session opens.
     PostOpenObservationOnly,
+    /// Observed only after a provider operation completes without opening a session.
+    PostOperationObservationOnly,
 }
 
 /// Who may act on one projected row.

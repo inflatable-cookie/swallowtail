@@ -15,6 +15,8 @@ pub enum ConsumerRouteProjectionSourceKind {
     AdapterContribution,
     /// One exact post-open active-session observation.
     ActiveSessionObservation,
+    /// One exact observation from a completed provider operation that opened no session.
+    ProviderOperationObservation,
 }
 
 /// Bounded identity of one independently replaceable projection source.

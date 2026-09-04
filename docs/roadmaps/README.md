@@ -15,18 +15,15 @@ shape.
 
 ## Next Task
 
-Review the prepared [g05.021 card 051](g05/batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md)
-source candidate on PR 201. One operator-authorized Effigy transaction owns
-the coordinated manifest, changelog, and workspace-only lockfile mutations and
-passes all 11 local gates before the tree is frozen. The accepted card 050
-facts stay fixed: 40 packages, immutable 47-route `v0.3.3`, the 49-route
-`v0.4.0` candidate including `pi.sdk-sidecar` and `claude-agent.sdk`, Rust
-`1.95`, Apple Silicon macOS, and source-only distribution. Accept only an exact
-head whose release copy, prepared state, three-file mutation proof, and frozen
-changelog extraction agree. After review, merge only that head and require
-canonical CI whose `headSha` equals the merged candidate. Card 052 stays
-planned and gated on completed card 051 plus the full authenticated
-application-smoke authority packet. Release execution, tag creation, tag push,
+Define the complete operator authority packet required by
+[g05.021 card 052](g05/batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md).
+Card 051 is complete: PR 201 exact head `10d9b7a0` merged as immutable candidate
+`56f3913a`, and canonical workflow-dispatch run 33853812785 passed all six jobs
+at that exact SHA. Card 052 remains planned and blocked until the operator names
+the working application and repository, normal route and command, exact
+candidate consumption, credential and provider authority, permitted mutations,
+retained and redacted evidence, cleanup, retry budget, and stop behavior. Do not
+select or run a smoke by inference. Release execution, tag creation, tag push,
 publication, provider work, and consumer mutation remain unauthorized.
 
 ## Standing Lanes

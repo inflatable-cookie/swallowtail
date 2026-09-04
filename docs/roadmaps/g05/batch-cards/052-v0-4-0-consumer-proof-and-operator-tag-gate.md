@@ -1,10 +1,10 @@
 # 052 v0.4.0 Consumer Proof And Operator Tag Gate
 
-Status: planned; blocked on exact candidate and operator-authenticated application authority
+Status: planned; exact candidate and canonical exact-SHA CI accepted; blocked only on the complete operator-authenticated application authority packet
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
-Depends on: completed card 051; explicit operator-authorized authenticated working application
+Depends on: completed card 051 at candidate merge `56f3913a`; explicit operator-authorized authenticated working application
 
 ## Goal
 
@@ -34,8 +34,11 @@ Keep this card planned and blocked until the complete packet is supplied.
 
 ## Scope
 
-1. Reconfirm the candidate SHA equals canonical `origin/main`, remains clean,
-   retains green exact-SHA CI, and has no later commit or tag.
+1. Reconfirm immutable candidate SHA
+   `56f3913ac99af44b6ff45384cfc53a0adea587ba` is the accepted canonical
+   Card 051 merge, remains in canonical `main` history, retains green exact-SHA
+   workflow-dispatch CI run 33853812785, and has no tag. Later accepted
+   planning-only closeout commits do not replace the candidate identity.
 2. Rerun `effigy package:source-consumer` on the clean exact candidate. Record
    the external temporary Cargo consumer's exact revision resolution and normal
    prepared Codex path.

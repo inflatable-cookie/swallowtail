@@ -1,0 +1,205 @@
+{
+  "method": "in-binary literal scan plus complete one-file distribution inventory and hop changelog classification; downloaded binaries were not executed",
+  "selected_surfaces": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation",
+    "models"
+  ],
+  "selected_values": [
+    "stream-json",
+    "plan",
+    "request-review"
+  ],
+  "literal_presence_versions": {
+    "--print": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--output-format": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--model": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--mode": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--sandbox": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--effort": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--json-schema": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "--conversation": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"],
+    "models": ["1.1.17", "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26"]
+  },
+  "material_unmapped_literals": [
+    "--agent",
+    "--continue",
+    "--dangerously-skip-permissions",
+    "--input-format",
+    "--remote-control",
+    "GEMINI_API_KEY",
+    "mcp",
+    "mic-serve"
+  ],
+  "retry_control_literals_absent": [
+    "--disable-retry",
+    "--max-attempts",
+    "--max-retries",
+    "--retry",
+    "--retry-backoff",
+    "--retry-count"
+  ],
+  "retry_control_literals_absent_in": ["1.1.21", "1.1.22", "1.1.26"],
+  "hop_classification": {
+    "from_1_1_17_to_1_1_18": {
+      "mapped_changes": [
+        "print-dropped-stream-now-surfaces-error-and-exits-nonzero",
+        "valueless-print-argument-now-rejects-instead-of-consuming-the-next-flag"
+      ],
+      "material_unmapped_changes": [
+        "project-name-widening",
+        "conversation-picker-rename-delete-keybindings",
+        "audio-attachment-format-expansion"
+      ],
+      "classification": "compatible-extension-repair"
+    },
+    "from_1_1_18_to_1_1_19": {
+      "mapped_changes": [],
+      "material_unmapped_changes": [
+        "remote-control-selects-a-free-operating-system-port",
+        "logo-and-renderer-environment-controls"
+      ],
+      "classification": "unmapped-only"
+    },
+    "from_1_1_19_to_1_1_20": {
+      "mapped_changes": [
+        "review-mode-autoapproves-workspace-scoped-read-within-the-selected-read-profile",
+        "print-benign-tool-errors-and-permission-denials-no-longer-become-cascade-level-failure"
+      ],
+      "material_unmapped_changes": [
+        "skill-icons",
+        "customization-listing-views",
+        "settings-file-preservation"
+      ],
+      "classification": "compatible-extension-repair"
+    },
+    "from_1_1_20_to_1_1_21": {
+      "mapped_changes": [
+        "invalid-utf8-tool-results-no-longer-stall-the-selected-stream",
+        "readwrite-file-repairs-remain-under-the-selected-resource-authority",
+        "embedded-ripgrep-removes-reliance-on-an-ambient-ripgrep-child"
+      ],
+      "material_unmapped_changes": [
+        "voice-and-mic-serve",
+        "always-proceed-autoapproval-for-mcp-and-page-reads",
+        "cost-status-line",
+        "mcp-google-credential-diagnostic"
+      ],
+      "classification": "compatible-extension-repair"
+    },
+    "from_1_1_21_to_1_1_22": {
+      "mapped_changes": [
+        "http-502-now-retries-instead-of-ending-the-run",
+        "self-subagent-setup-now-preserves-parent-configuration",
+        "transient-http-502-no-longer-has-the-previous-terminal-failure-shape"
+      ],
+      "material_unmapped_changes": [
+        "interactive-model-name-selection",
+        "gemini-api-key-effort-repair",
+        "headless-daemon-banner-removal"
+      ],
+      "classification": "authority-stop"
+    },
+    "from_1_1_22_to_1_1_23": {
+      "mapped_changes": [
+        "models-subcommand-no-longer-hangs-on-inherited-stdin",
+        "gemini-history-reconstruction-retains-tool-call-identities",
+        "cancelled-subagent-status-no-longer-remains-running"
+      ],
+      "material_unmapped_changes": [
+        "mcp-subagent-dispatcher-repair",
+        "google-cloud-onboarding-and-token-refresh-repairs"
+      ],
+      "classification": "compatible-extension-repair-after-blocking-hop"
+    },
+    "from_1_1_23_to_1_1_24": {
+      "mapped_changes": [
+        "headless-piped-stdio-now-closes-on-exit-with-fd-cloexec",
+        "startup-from-inaccessible-working-directory-now-uses-absolute-schema-uris"
+      ],
+      "material_unmapped_changes": [
+        "mcp-config-json5-parsing",
+        "conversation-delete-cleans-annotation-files",
+        "interactive-goal-side-question-repair"
+      ],
+      "classification": "compatible-extension-repair-after-blocking-hop"
+    },
+    "from_1_1_24_to_1_1_25": {
+      "mapped_changes": [
+        "duplicate-permission-grants-no-longer-accumulate-across-session-reloads-and-subagents",
+        "background-summary-update-no-longer-panics-after-trajectory-closure"
+      ],
+      "material_unmapped_changes": [
+        "resume-picker-workspace-grouping",
+        "gemini-api-key-model-catalogue-addition",
+        "markdown-custom-agent-ambient-skill-rule-and-subagent-inheritance",
+        "mcp-oauth-code-length-repair",
+        "remote-control-reverse-tunnel-hardening"
+      ],
+      "classification": "compatible-extension-repair-after-blocking-hop"
+    },
+    "from_1_1_25_to_1_1_26": {
+      "mapped_changes": [
+        "sqlite-wal-checkpoint-on-exit-flushes-trailing-session-metadata"
+      ],
+      "material_unmapped_changes": [
+        "interactive-picker-effort-default",
+        "always-proceed-subagent-approval-repair",
+        "subagent-kill-and-conversation-delete-worktree-cleanup",
+        "logout-storage-shortcut",
+        "customization-discovery-log-suppression"
+      ],
+      "classification": "compatible-extension-repair-after-blocking-hop"
+    }
+  },
+  "authority_trace": {
+    "contract_017": {
+      "private_exact_conversation_id_is_not_public_load_or_resume": true,
+      "provider_permission_observation_grants_no_write_authority": true,
+      "ambient_route_claims_no_filesystem_or_descendant_containment": true
+    },
+    "contract_023": {
+      "ambient_host_keeps_process_and_descendant_authority_ambient": true,
+      "provider_permission_modes_do_not_prove_containment": true,
+      "host_deadline_does_not_replace_provider_native_retry_policy": true,
+      "provider_managed_retry_requires_separate_acceptance": true
+    },
+    "hop_1_1_20_workspace_read": {
+      "within_selected_resource_access_read": true,
+      "changes_isolation_claim": false,
+      "widening_beyond_selected_root_proved": false
+    },
+    "hop_1_1_22_http_502_retry": {
+      "applies_to_selected_headless_model_request": true,
+      "separate_operator_acceptance_present": false,
+      "published_retry_bound_present": false,
+      "public_disable_control_present": false,
+      "deterministic_provider_neutral_mapping_present": false,
+      "stop": true
+    },
+    "hop_1_1_25_custom_agents": {
+      "adapter_selects_agent_flag": false,
+      "default_agents_already_inherited_ambient_capabilities": true,
+      "selected_authority_widening": false
+    },
+    "hop_1_1_26_worktree_cleanup": {
+      "adapter_selects_subagent_kill_or_conversation_delete": false,
+      "grants_swallowtail_delete_authority": false,
+      "proves_descendant_containment": false
+    }
+  },
+  "selected_literal_set_unchanged": true,
+  "selected_semantics_unchanged": false,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

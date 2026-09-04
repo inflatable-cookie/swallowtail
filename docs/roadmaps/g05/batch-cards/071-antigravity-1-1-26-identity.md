@@ -1,6 +1,6 @@
 # 071 Antigravity 1.1.26 Identity
 
-Status: ready
+Status: complete; stop. Official `1.1.26` identity frozen; `1.1.22` provider-managed retry is unbounded and unaccepted; ceiling stays `1.1.17`; card 072 not admitted
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -88,3 +88,19 @@ Official latest moves during the run (stop and escalate); identity or digest
 disagreement with recomputation; a selected surface or process authority
 changes without deterministic mapping; a new driver or facade revision is
 required.
+
+## Result
+
+Stop. Official `1.1.17..=1.1.26` release, tag, linux-x64 tarball, extracted
+binary, Build ID, and in-binary version identity is frozen. Fresh downloads
+match every frozen `1.1.17` corpus digest and every parked PR 182 digest.
+Selected literals hold at every hop. `1.1.22` changes selected headless
+failure lifecycle by retrying model-endpoint HTTP 502 responses, but official
+evidence publishes no finite bound or disable control. Contract 023 requires
+separate acceptance for provider-managed retry; none exists. The host deadline
+does not substitute for that policy. Production claims remain unchanged, the
+ceiling stays `1.1.17`, and card 072 is not admitted. Reopen when official
+evidence exposes a deterministic retry policy and control, or the operator
+accepts the exact retry behavior. Evidence: [Research
+283](../../../research/283-antigravity-1-1-26-identity.md) and
+`crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.1.26/`.

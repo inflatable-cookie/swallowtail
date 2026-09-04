@@ -1,0 +1,70 @@
+{
+  "compared": [
+    "1.1.17",
+    "1.1.18",
+    "1.1.19",
+    "1.1.20",
+    "1.1.21",
+    "1.1.22",
+    "1.1.23",
+    "1.1.24",
+    "1.1.25",
+    "1.1.26"
+  ],
+  "asset": "agy_cli_linux_x64.tar.gz",
+  "extracted_cli_name": "antigravity",
+  "package_file_counts": {
+    "1.1.17": 1,
+    "1.1.18": 1,
+    "1.1.19": 1,
+    "1.1.20": 1,
+    "1.1.21": 1,
+    "1.1.22": 1,
+    "1.1.23": 1,
+    "1.1.24": 1,
+    "1.1.25": 1,
+    "1.1.26": 1
+  },
+  "identical_through_1_1_17_to_1_1_26": [],
+  "from_1_1_17_to_1_1_18": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_18_to_1_1_19": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_19_to_1_1_20": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_20_to_1_1_21": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_21_to_1_1_22": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_22_to_1_1_23": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_23_to_1_1_24": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_24_to_1_1_25": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "from_1_1_25_to_1_1_26": {"added": [], "removed": [], "changed": ["antigravity"], "identical": []},
+  "hashes": {
+    "tarball": {
+      "1.1.17": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+      "1.1.18": "1aa7e3c1f5ba02372d24ba2f99ed015c7135016becc7dcbb18bf8332f513a818",
+      "1.1.19": "a02132a7c6c647ef0ad483ecbe767619adf6b660a5589cba5c937b0c83909b97",
+      "1.1.20": "6ceeb0ac91df6dca60a4fa02856807ed2e2fc6d3d70bb734d1ad61a9e44ef4da",
+      "1.1.21": "4806a347119d36be6d8ab5cc3f03319bc6aa8407a8d9203de7976a42954cabde",
+      "1.1.22": "1e1a219a86e75d7c6351f96d182ca2105302d5c34d8fa9c31265dc0adf24145f",
+      "1.1.23": "379693509ca4d68d74f75def6c95996739aa6c1dc38b120c399035c108f1a39a",
+      "1.1.24": "cff1fb7ed735da72c35658645a4f916cf74f020d4cd30ab95ebe8c2a49a4d569",
+      "1.1.25": "45ab4a99884de17af76565a4ff8d9762d6e960067bd008fde9b050ec8fc9e421",
+      "1.1.26": "c47c0726266b3513660b7094bceceecbd03d8ae907786aa269c507ceb7e4ee54"
+    },
+    "antigravity": {
+      "1.1.17": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+      "1.1.18": "60eb243a68bfbc1bffa3823c7fb90df27a72502550b333c6248fc55f20d02564",
+      "1.1.19": "68d229d37aeabde76d15af0003d4c1ce07b211414e7452fb0309be9714ae7dd4",
+      "1.1.20": "d743ebe97c822b07d010a5a836804528119f926de9b136c9f5b2c0925fe710cb",
+      "1.1.21": "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
+      "1.1.22": "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
+      "1.1.23": "caf4a5f9ae0f02e0ac3db01600a7dd4a9697354e3f4dc3f0a08b2de30d3aefbc",
+      "1.1.24": "22c6ddeb06d2da6049ff861e44954bf232b77bd791986104326e9500f5327193",
+      "1.1.25": "e552463e7cd479e342cfec3487f7b2de048b89548df74c610e3a58d1c2c9735b",
+      "1.1.26": "a0a6a8044d01accd39e6f5926d29648d212a2e519ff14102f09e1c061e6171dd"
+    }
+  },
+  "named_closed_binary_boundary": {
+    "path": "antigravity",
+    "classification": "provider-compiled-binary",
+    "public_git_hops": "CHANGELOG.md-only",
+    "reason": "the public repository contains no executable source, so each distinct shipped binary is support authority and changelog text is discovery only"
+  }
+}

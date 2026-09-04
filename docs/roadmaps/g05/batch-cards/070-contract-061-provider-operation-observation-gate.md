@@ -104,7 +104,7 @@ into Contract 061 and the runtime baseline card.
 ## Result
 
 Complete. The strict-ready planning gate is
-[`docs/triage/20260904-161224-contract-061-provider-operation-observation-gate.md`](../../../triage/20260904-161224-contract-061-provider-operation-observation-gate.md),
+`docs/triage/20260904-161224-contract-061-provider-operation-observation-gate.md` (pruned after card 073 closed; preserved in Git history),
 resolved against current `main` at
 `13df1599c96a455689ddea564c45d5a4ffbd4e9a`.
 

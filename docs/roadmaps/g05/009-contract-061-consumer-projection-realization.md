@@ -50,7 +50,8 @@ The gate fixes one additive adapter-owned projected-open seam while preserving
 the existing open method. Card 032 completed candidate G through PR 144 at
 `18a6907e`. Contract 061 then covered 249 rows with 518 remaining; card 068
 later raised that to 284 proved and 483 remaining, and card 069 to 378 proved
-and 389 remaining. Card 033 then
+and 389 remaining; cards 074 and 075 later raised it to 481 proved and 286
+remaining. Card 033 then
 reassessed candidate F against current `main` and stopped: 86 of its 89 rows
 rest on proved prepared patterns, but three `kimi-code.acp` post-open rows —
 compound reasoning-and-plan acknowledgement, negotiated model options, and

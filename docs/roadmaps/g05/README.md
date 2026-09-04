@@ -365,7 +365,7 @@ g05.020 cards 048-049. PR 182 is closed/unmerged and its Antigravity branch and
 evidence remain parked post-release, not a merged qualification. The installed
 Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini remains
 deferred, watcher remains exact `2.1.251`, and the g05.009 card 034 stop remains;
-coverage is 378 proved / 389 remaining after cards 068 and 069.
+coverage is 481 proved / 286 remaining after cards 068, 069, 074, and 075.
 
 g05.021 owns the unpaused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
 is 40 packages and 47 routes, and current source is still 40 packages against

@@ -12,7 +12,7 @@ Depends on: Contract 061 as amended 2026-09-04; the accepted card 070 gate note;
 Realize the provider-operation observation vocabulary, admission, fourth
 view, composer pass, fixed maximum, failure kind, and portable assertions
 exactly as the
-[accepted gate](../../../triage/20260904-161224-contract-061-provider-operation-observation-gate.md)
+accepted gate (card 070; note `docs/triage/20260904-161224-contract-061-provider-operation-observation-gate.md`, pruned after this card closed and preserved in Git history)
 fixes them, in `swallowtail-runtime` and `swallowtail-testkit` only, without
 touching any adapter.
 
@@ -106,7 +106,7 @@ No. Stop after one reviewable PR for exact-head review.
 
 ## Evidence
 
-- [accepted gate](../../../triage/20260904-161224-contract-061-provider-operation-observation-gate.md)
+- accepted gate note `docs/triage/20260904-161224-contract-061-provider-operation-observation-gate.md`, pruned at card close; see card 070 and Git history
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [card 022](022-contract-061-composer-and-two-route-vertical.md)
 

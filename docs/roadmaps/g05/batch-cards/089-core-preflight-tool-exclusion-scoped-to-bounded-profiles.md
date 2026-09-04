@@ -70,3 +70,17 @@ fails.
 
 No. Stop after one reviewable PR; the coordinator then resumes card 080's
 worker for its second PR.
+
+## Result
+
+Implementation complete. Shared preflight now rejects read-write consumer
+tools only when the session policy claims a filesystem boundary. Both ambient
+read-write constructors and read-only access admit `ToolCalls`; bounded
+read-write keeps the existing rejection and diagnostic.
+
+The portable testkit assertion covers that exact split. Focused validation
+passes 182 core/testkit tests, affected-package verification passes, and the
+semantic API baseline is additive only: core is unchanged; testkit adds the
+four explicit fixture cases and named assertion. Docs, Northstar, formatting,
+diff, and API gates pass. The god-file scan remains at the inherited 396
+findings, with no Card 089 path added.

@@ -98,7 +98,8 @@ fn validate_resource_access(
         )),
     }?;
 
-    if policy.resource_access() == Some(ResourceAccess::ReadWrite)
+    if policy.filesystem_boundary().is_some()
+        && policy.resource_access() == Some(ResourceAccess::ReadWrite)
         && capability_requirement(requirements, Capability::ToolCalls).is_some()
     {
         return Err(failure(

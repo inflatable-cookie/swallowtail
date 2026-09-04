@@ -196,10 +196,14 @@ pub enum swallowtail_testkit::RecordingOutcome
 pub swallowtail_testkit::RecordingOutcome::Fail(swallowtail_core::diagnostic::SafeDiagnostic)
 pub swallowtail_testkit::RecordingOutcome::Succeed
 pub enum swallowtail_testkit::SessionAccessFixtureCase
+pub swallowtail_testkit::SessionAccessFixtureCase::AmbientMediatedReadWriteWithToolCalls
+pub swallowtail_testkit::SessionAccessFixtureCase::AmbientReadWriteWithToolCalls
 pub swallowtail_testkit::SessionAccessFixtureCase::BoundedWorkspace
+pub swallowtail_testkit::SessionAccessFixtureCase::BoundedWorkspaceWithToolCalls
 pub swallowtail_testkit::SessionAccessFixtureCase::MissingWorkingResourceService
 pub swallowtail_testkit::SessionAccessFixtureCase::MissingWriteCapability
 pub swallowtail_testkit::SessionAccessFixtureCase::ReadOnly
+pub swallowtail_testkit::SessionAccessFixtureCase::ReadOnlyWithToolCalls
 pub swallowtail_testkit::SessionAccessFixtureCase::ResourceFree
 pub swallowtail_testkit::SessionAccessFixtureCase::UnboundProviderRequest
 pub enum swallowtail_testkit::SyntheticProfile
@@ -374,6 +378,7 @@ pub fn swallowtail_testkit::assert_compound_acknowledgement_requires_observation
 pub fn swallowtail_testkit::assert_compound_acknowledgement_terminal_not_dispatched_is_distinct()
 pub fn swallowtail_testkit::assert_consumer_route_projection_contract()
 pub fn swallowtail_testkit::assert_consumer_route_provider_operation_observation_contract()
+pub fn swallowtail_testkit::assert_consumer_tool_exclusion_keys_on_boundary_claim()
 pub fn swallowtail_testkit::assert_contract_kernel(&swallowtail_testkit::ContractKernelFixture)
 pub fn swallowtail_testkit::assert_diagnostic_redaction(&swallowtail_core::diagnostic::Diagnostic)
 pub fn swallowtail_testkit::assert_dynamic_role_registration_and_calls()

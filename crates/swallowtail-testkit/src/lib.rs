@@ -61,6 +61,7 @@ mod realtime_media_fixture;
 mod recording_host;
 mod remote_acp_fixture;
 mod runtime_assertions;
+mod session_access_assertions;
 mod session_access_fixture;
 mod topology_fixture;
 mod watcher_assertions;
@@ -163,6 +164,7 @@ pub use runtime_assertions::{
     assert_cleanup_states_remain_distinct, assert_dynamic_role_registration_and_calls,
     assert_missing_roles_are_explicit,
 };
+pub use session_access_assertions::assert_consumer_tool_exclusion_keys_on_boundary_claim;
 pub use session_access_fixture::{SessionAccessFixtureCase, SessionAccessPreflightFixture};
 pub use topology_fixture::ExecutionTopologyFixture;
 pub use watcher_assertions::{

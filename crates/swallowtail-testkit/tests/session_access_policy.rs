@@ -5,11 +5,17 @@ use swallowtail_runtime::{
 };
 use swallowtail_testkit::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, SessionAccessFixtureCase,
-    SessionAccessPreflightFixture, poll_immediate,
+    SessionAccessPreflightFixture, assert_consumer_tool_exclusion_keys_on_boundary_claim,
+    poll_immediate,
 };
 
 fn host_id(value: &str) -> ExecutionHostId {
     ExecutionHostId::new(value).expect("fixture host id is valid")
+}
+
+#[test]
+fn consumer_tool_exclusion_keys_on_boundary_claim() {
+    assert_consumer_tool_exclusion_keys_on_boundary_claim();
 }
 
 #[test]

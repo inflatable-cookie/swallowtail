@@ -5,6 +5,11 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+- scope shared preflight consumer-tool exclusion to bounded writable session
+  profiles, admitting tool calls for ambient read-write harnesses while
+  preserving the existing bounded rejection. g05.029 card 089.
+
 ### Added
 - add provider-neutral compound acknowledgement truth for independently
   state-associated reasoning and Plan halves. Exact provider values attach

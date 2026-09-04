@@ -27,8 +27,16 @@ pub enum SessionAccessFixtureCase {
     ResourceFree,
     /// Session receives read-only working-resource access.
     ReadOnly,
+    /// Read-only session declares consumer tool calls.
+    ReadOnlyWithToolCalls,
+    /// Ambient read/write session declares consumer tool calls.
+    AmbientReadWriteWithToolCalls,
+    /// Ambient read/write session mediates provider requests and declares consumer tool calls.
+    AmbientMediatedReadWriteWithToolCalls,
     /// Session receives bounded read/write workspace access.
     BoundedWorkspace,
+    /// Bounded read/write workspace declares consumer tool calls.
+    BoundedWorkspaceWithToolCalls,
     /// Instance omits the bounded-workspace write capability.
     MissingWriteCapability,
     /// Host omits the working-resource service.
@@ -59,9 +67,32 @@ impl SessionAccessPreflightFixture {
         let extension =
             ExtensionNamespace::new(OBSERVED_EXTENSION).expect("fixture extension is valid");
         let resource_free = case == SessionAccessFixtureCase::ResourceFree;
-        let bounded = !resource_free && case != SessionAccessFixtureCase::ReadOnly;
+        let read_only = matches!(
+            case,
+            SessionAccessFixtureCase::ReadOnly | SessionAccessFixtureCase::ReadOnlyWithToolCalls
+        );
+        let consumer_mediated =
+            case == SessionAccessFixtureCase::AmbientMediatedReadWriteWithToolCalls;
+        let ambient_read_write =
+            case == SessionAccessFixtureCase::AmbientReadWriteWithToolCalls || consumer_mediated;
+        let bounded = !resource_free && !read_only && !ambient_read_write;
+        let read_write = bounded || ambient_read_write;
+        let tool_calls = matches!(
+            case,
+            SessionAccessFixtureCase::ReadOnlyWithToolCalls
+                | SessionAccessFixtureCase::AmbientReadWriteWithToolCalls
+                | SessionAccessFixtureCase::AmbientMediatedReadWriteWithToolCalls
+                | SessionAccessFixtureCase::BoundedWorkspaceWithToolCalls
+        );
         let policy = if resource_free {
             SessionAccessPolicy::resource_free()
+        } else if consumer_mediated {
+            SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::ReadWrite,
+                [extension.clone()],
+            )
+        } else if ambient_read_write {
+            SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
         } else if bounded {
             SessionAccessPolicy::bounded_workspace([extension.clone()])
         } else {
@@ -72,7 +103,7 @@ impl SessionAccessPreflightFixture {
             Capability::InteractiveSession,
             [],
         )];
-        if bounded && case != SessionAccessFixtureCase::MissingWriteCapability {
+        if read_write && case != SessionAccessFixtureCase::MissingWriteCapability {
             capabilities.push(CapabilityRequirement::new(
                 Capability::WorkingResource,
                 [
@@ -82,6 +113,9 @@ impl SessionAccessPreflightFixture {
                     ),
                 ],
             ));
+        }
+        if tool_calls {
+            capabilities.push(CapabilityRequirement::new(Capability::ToolCalls, []));
         }
         let capability_profile = CapabilityProfile::new(capabilities.clone());
         let descriptor = DriverDescriptor::new(
@@ -146,7 +180,7 @@ impl SessionAccessPreflightFixture {
             .with_runtime_readiness([RuntimeReadiness::Ready])
             .with_support_authorities([SupportAuthority::ProviderSupported]);
         let mut required_services = vec![HostServiceKind::Task, HostServiceKind::Process];
-        if bounded && case != SessionAccessFixtureCase::MissingWorkingResourceService {
+        if read_write && case != SessionAccessFixtureCase::MissingWorkingResourceService {
             required_services.push(HostServiceKind::WorkingResource);
         }
         let mut requirements = OperationRequirements::new(
@@ -162,7 +196,9 @@ impl SessionAccessPreflightFixture {
         .with_session_access_policy(policy.clone())
         .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .require_model_route();
-        if bounded && case != SessionAccessFixtureCase::UnboundProviderRequest {
+        if (bounded || consumer_mediated)
+            && case != SessionAccessFixtureCase::UnboundProviderRequest
+        {
             requirements = requirements.with_extension_namespaces([extension]);
         }
 

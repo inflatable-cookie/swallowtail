@@ -1,6 +1,7 @@
 use std::collections::BTreeSet;
 
 use super::MAX_CONSUMER_ROUTE_SOURCE_IDENTITIES;
+use super::acknowledgement::admit_compound_acknowledgement;
 use super::applicability::ConsumerRouteApplicability;
 use super::failure::{ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind, failure};
 use super::identity::{ConsumerRouteProjectionSourceId, ConsumerRouteProjectionSourceIdentity};
@@ -103,6 +104,7 @@ fn admit_row(
             "A projected row names a source the contribution did not supply",
         ));
     }
+    admit_compound_acknowledgement(row)?;
     admit_value(row)?;
     admit_reason(row, sources)?;
     admit_authority(row, sources)

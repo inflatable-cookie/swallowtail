@@ -3,6 +3,7 @@
 //! Every assertion uses runtime and testkit types only. No adapter, provider,
 //! transport, or live evidence takes part.
 
+mod compound_acknowledgement;
 mod counterexamples;
 mod failures;
 mod maxima;
@@ -13,6 +14,12 @@ mod support;
 
 /// Runs the complete portable Contract 061 projection conformance suite.
 pub fn assert_consumer_route_projection_contract() {
+    assert_compound_acknowledgement_associates_each_half_state();
+    assert_compound_acknowledgement_preserves_exact_provider_values();
+    assert_compound_acknowledgement_terminal_not_dispatched_is_distinct();
+    assert_compound_acknowledgement_rejects_impossible_half_combinations();
+    assert_compound_acknowledgement_preserves_reasoning_first_order();
+    assert_compound_acknowledgement_requires_observation_source();
     maxima::assert_fixed_maxima();
     failures::assert_failure_kinds();
     counterexamples::assert_named_counterexamples();
@@ -26,4 +33,12 @@ pub fn assert_consumer_route_projection_contract() {
     assert_consumer_route_provider_operation_observation_contract();
 }
 
+pub use compound_acknowledgement::{
+    assert_compound_acknowledgement_associates_each_half_state,
+    assert_compound_acknowledgement_preserves_exact_provider_values,
+    assert_compound_acknowledgement_preserves_reasoning_first_order,
+    assert_compound_acknowledgement_rejects_impossible_half_combinations,
+    assert_compound_acknowledgement_requires_observation_source,
+    assert_compound_acknowledgement_terminal_not_dispatched_is_distinct,
+};
 pub use provider_operation::assert_consumer_route_provider_operation_observation_contract;

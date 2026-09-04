@@ -81,3 +81,21 @@ No. Stop after one reviewable PR for exact-head review.
 - [card 076](076-contract-061-kimi-compound-acknowledgement-gate.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Kimi active-observation gate](../../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+
+## Result
+
+Complete. `swallowtail-runtime` now carries the accepted independently
+state-associated reasoning and Plan acknowledgement value, its exact
+reasoning-first admission rules, and the additive row attachment. Compound
+truth admits only on the existing active-session reasoning-acknowledgement row
+under completed wire observation and exact acknowledgement authority.
+Terminal Plan non-dispatch remains distinct from pending and grants no new
+operation authority.
+
+`swallowtail-testkit` exports and runs all six named assertions. They prove
+per-half association, exact provider values, absent halves, terminal
+non-dispatch, impossible-state rejection, reasoning-first order, observation
+source requirements, one-row composition, and source-identity replacement.
+The runtime and testkit public API baselines contain additions only. Card 034
+remains separate and no adapter, core, contract, or reserved closeout surface
+changed.

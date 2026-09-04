@@ -144,14 +144,15 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 28 roadmaps: 22 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 009, 028. Milestone 027 completed
+g05 has 28 roadmaps: 23 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and one ready milestone at 009. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
 has 378 proved rows; cards 074 and 075 are ready for Candidates I and E, while
 card 076 owns Kimi's remaining compound-acknowledgement gate and card 034 stays
-planned behind it. Milestone 028 is ready with OpenCode HTTP `1.18.28` identity
-card 077 and serial claim card 078. Milestones
+planned behind it. Milestone 028 is complete: card 077 admitted compatible
+OpenCode HTTP `surface-19` through `1.18.28`; card 078 is ready for the serial
+claim. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on

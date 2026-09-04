@@ -1,6 +1,6 @@
 # 078 OpenCode HTTP 1.18.28 Claim
 
-Status: planned; gated behind card 077 admitting a Contract 029 segment
+Status: ready; serially unblocked after card 077 admitted compatible `surface-19`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -61,4 +61,3 @@ Another family; new route operations; provider contact; host update; Contract
 ## Auto-Continuation
 
 No. Stop for exact-head review.
-

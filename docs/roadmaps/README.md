@@ -19,8 +19,9 @@ Implement [g05.009 card 074](g05/batch-cards/074-contract-061-deepseek-package-c
 as the lead of the approved concurrent frontier. Card 075 completes the
 Gemini/Grok tranche; card 076 settles Kimi's remaining compound-
 acknowledgement design; and g05.028 card 077 freezes OpenCode HTTP `1.18.28`
-identity before any claim. Card 078 follows only from an admitted OpenCode
-segment. Card 034 remains planned behind card 076 and any baseline it admits.
+identity before any claim. Card 077 admitted OpenCode `surface-19`; card 078 is
+now ready for the serial claim. Card 034 remains planned behind card 076 and
+any baseline it admits.
 Current Contract 061 coverage is 378 proved / 389 remaining; cards 074 and 075
 can reconcile 103 rows without a new shared baseline. `v0.4.0` is tagged and
 the feature/currentness freeze is lifted.

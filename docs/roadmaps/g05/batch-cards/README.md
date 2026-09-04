@@ -5,19 +5,19 @@
 - [074-contract-061-deepseek-package-completion.md](./074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled across DeepSeek and DeepSeek Harness
 - [075-contract-061-gemini-grok-package-completion.md](./075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled across Gemini and Grok
 - [076-contract-061-kimi-compound-acknowledgement-gate.md](./076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only gate for Kimi reasoning/Plan half-state representation
-- [077-opencode-http-1-18-28-identity.md](./077-opencode-http-1-18-28-identity.md) — ready; identity-first OpenCode HTTP `1.18.28` currentness evidence
+- [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — ready; card 077 admitted compatible `surface-19`
 
 ## Planned
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
-- [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — planned; gated behind card 077 admitting a Contract 029 segment
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation baseline landed; waits on card 076 and any baseline it admits
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
 
+- [077-opencode-http-1-18-28-identity.md](./077-opencode-http-1-18-28-identity.md) — complete; compatible `surface-19` admitted through OpenCode HTTP `1.18.28`; PR 216 merged as `99e91aa8`
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
 - [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; cards 074 and 076 consume it
 - [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; unbounded provider-managed retry is unaccepted; ceiling remains `1.1.17`; PR 212 merged as `333618ca`

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.028 Card 077 OpenCode HTTP Identity Closeout](./2026-09-04-g05-028-card-077-opencode-http-identity-closeout.md) — exact head `a5400dde` accepted and merged through PR 216 as `99e91aa8`; compatible `surface-19` admitted; card 078 unblocked
 - [2026-09-04 Contract 061 And OpenCode Frontier Promoted](./2026-09-04-contract-061-and-opencode-frontier-promoted.md) — cards 074-076 plus g05.028 card 077 approved concurrently; Candidate I and E implementation, Kimi acknowledgement planning, and OpenCode `1.18.28` identity-first currentness
 - [2026-09-04 g05.009 Card 065 Candidate E Breadth Audit](./2026-09-04-g05-009-card-065-candidate-e-breadth-audit.md) — exact 56-row Gemini/Grok audit accepted at `daa46dfd` and merged through PR 205 as `1b9fae10`; promoted as card 075 Path A
 - [2026-09-04 g05.009 Card 073 Provider-Operation Observation Runtime Baseline](./2026-09-04-g05-009-card-073-provider-operation-observation-runtime-baseline.md) — exact runtime/testkit baseline accepted through PR 214 at `5e32cf4a`, merged as `e39e0aa8`; consumed by cards 074 and 076

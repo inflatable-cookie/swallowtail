@@ -1,6 +1,6 @@
 # g05.028 OpenCode HTTP 1.18.28 Useful Newer
 
-Status: ready; card 077 identity is ready; card 078 claim is serially gated
+Status: complete; card 077 admitted compatible `surface-19`; card 078 is ready
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -42,8 +42,8 @@ Candidate L projection, Gemini deferral lift, or release work.
 
 ## Batch Cards
 
-- [077 OpenCode HTTP 1.18.28 Identity](batch-cards/077-opencode-http-1-18-28-identity.md) — ready
-- [078 OpenCode HTTP 1.18.28 Claim](batch-cards/078-opencode-http-1-18-28-claim.md) — planned; gated behind card 077
+- [077 OpenCode HTTP 1.18.28 Identity](batch-cards/077-opencode-http-1-18-28-identity.md) — complete; compatible `surface-19` admitted
+- [078 OpenCode HTTP 1.18.28 Claim](batch-cards/078-opencode-http-1-18-28-claim.md) — ready; serially unblocked by card 077
 
 ## Dispatch Manifest
 
@@ -65,7 +65,8 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Stop conditions | channel disagreement; major-line reset; mapped surface/capability/authority change without deterministic mapping; identity disagreement; live evidence becomes necessary |
 | Escalation owner | operator via Chatterbox for policy/authority; coordinator for mechanical blockers |
 
-Card 078 enters the manifest only after card 077 records an admitted segment.
+Card 078 may enter the next manifest now that card 077 recorded the admitted
+`surface-19` segment.
 Its owned paths then add OpenCode selection source/tests, claim fixtures, prepared
 guide, route and feature matrices, architecture ceilings, `CHANGELOG.md`
 `[Unreleased]`, standing-lane claim text, and one closeout log.
@@ -77,4 +78,3 @@ guide, route and feature matrices, architecture ceilings, `CHANGELOG.md`
 - [ ] identity evidence lands before any claim edit
 - [ ] historical segments, gaps, claim IDs, and unrelated OpenCode work survive
 - [ ] only an admitted segment reaches card 078
-

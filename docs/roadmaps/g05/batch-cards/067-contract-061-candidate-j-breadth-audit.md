@@ -68,3 +68,32 @@ code reference, or a rubric item closed by omission.
 ## Auto-Continuation
 
 No. Stop after the note for coordinator closeout and Chatterbox reconciliation.
+
+## Result
+
+Candidate J (llama.cpp, Ollama) is promotable as one exact two-package
+tranche. The audit reconciles all 35 census rows — `llama-cpp.attached` 10,
+`llama-cpp.owned` 6, `ollama.attached` 19 — as 32 emitted and 3 withheld
+construction-time negative-coverage rows, with every facade named and every
+withholding absence code-proved on current `main` at `bab2183932`. No
+blocker, no public-baseline gate, and no stop: no new shared public type,
+fixed maximum, composer rule, or contract amendment is needed. The three
+withheld rows are `llama-cpp.attached` `feature.cancellation-or-interruption`
+(docs-only; no attached plan requires `Capability::Interruption`),
+`llama-cpp.owned` `feature.activity-observation` (absence-proved; owned
+prepared evidence retains no activity profile), and `ollama.attached`
+interactive-session `control.reasoning-selection` (docs-only; no current
+public session input exposes reasoning selection). The audit note records the
+ledgers, facade map, withholding rules, shape-scope findings, and rubric
+verdicts 1-6 all passing.
+
+- Triage note: `docs/triage/20260904-134914-contract-061-candidate-j-audit.md`
+- Validation: `effigy qa:docs` and `effigy qa:northstar` pass; `git diff
+  --check` clean
+- Changed files: exactly the triage note and this card's Result
+- Zero Rust changes
+
+This card's Status line and the batch-card index stay coordinator-owned
+closeout surfaces; the coordinator re-buckets them after review and merge.
+Chatterbox reconciles the note and may promote at most one implementation
+card for the exact 35-row llama.cpp/Ollama tranche.

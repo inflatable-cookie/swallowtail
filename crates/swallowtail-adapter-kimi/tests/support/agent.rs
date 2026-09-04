@@ -26,6 +26,8 @@ pub enum Scenario {
     ReasoningEffort311Success,
     ReasoningEffortExtended,
     ReasoningEffortNarrow,
+    ReasoningForeign,
+    ReasoningUnbounded,
     ReasoningMissing,
     ReasoningAmbiguous,
     ReasoningMalformed,

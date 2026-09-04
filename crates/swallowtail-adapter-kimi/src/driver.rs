@@ -21,6 +21,8 @@ use swallowtail_runtime::{
     validate_session_plan_agreement, validate_session_resource_lease,
 };
 
+include!("driver/open.rs");
+
 impl InteractiveSessionDriver for KimiAcpDriver {
     fn open_session(
         &self,
@@ -29,89 +31,10 @@ impl InteractiveSessionDriver for KimiAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_session_plan_agreement(&plan, request.plan_agreement())?;
-            let selected = self.validate_plan(&plan)?;
-            let reasoning = prepare_negotiated_reasoning_setup(
-                &plan,
-                SessionLifecycleOperation::Open,
-                request.options(),
-            )?;
-            validate_request(
-                &plan,
-                request.access_policy(),
-                request.deadline(),
-                request.options(),
-                &services,
-            )?;
-            let plan_mode = mode::requested_plan_mode(request.options());
-            let request_id = request.request_id().clone();
-            let working_resource = request
-                .working_resource()
-                .ok_or_else(|| unsupported("resource-free session"))?
-                .clone();
-            let access_policy = request.access_policy().clone();
-            let mut attachment = self
-                .start_attachment(&plan, &request_id, working_resource.clone(), &services)
-                .await?;
-            let opened = async {
-                let initialize = attachment.connection.initialize().await?;
-                validate_initialize(&initialize, selected.version().as_str())?;
-                let response = attachment
-                    .connection
-                    .new_session(attachment.cwd.clone())
-                    .await?;
-                let (provider_id, model_options) =
-                    parse_session(&response, plan.model_id().expect("validated model"))?;
-                attachment.connection.set_session_id(provider_id.clone())?;
-                let mut snapshot = response;
-                if let Some(reasoning) = reasoning {
-                    let selection = reasoning::prepare_reasoning_selection(
-                        &snapshot,
-                        selected.behavior(),
-                        reasoning,
-                    )?;
-                    let confirmation = attachment
-                        .connection
-                        .set_config_option(&provider_id, "thinking", selection.provider_value())
-                        .await?;
-                    let _ = selection.confirm(&confirmation, selected.behavior())?;
-                    snapshot = confirmation;
-                }
-                if plan_mode {
-                    mode::prepare_plan_mode(&snapshot)?;
-                    let confirmation = attachment
-                        .connection
-                        .set_config_option(&provider_id, "mode", "plan")
-                        .await?;
-                    mode::confirm_plan_mode(&confirmation)?;
-                }
-                let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
-                let binding = SessionResumeBinding::new(
-                    provider_ref.clone(),
-                    plan.instance_id().clone(),
-                    plan.execution_host_id().clone(),
-                    plan.model_route_id().expect("validated route").clone(),
-                    plan.model_id().expect("validated model").clone(),
-                    working_resource,
-                    access_policy,
-                );
-                attachment.take_session(
-                    request_id,
-                    provider_ref,
-                    provider_id,
-                    binding,
-                    model_options,
-                    &services,
-                )
-            }
-            .await;
-            match opened {
-                Ok(session) => Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>),
-                Err(error) => {
-                    let _ = attachment.abort(&services).await;
-                    Err(error)
-                }
-            }
+            self.open_session_lifecycle(plan, request, services)
+                .await
+                .map(|(session, _)| session)
+                .map_err(KimiOpenRejection::into_failure)
         })
     }
 
@@ -271,6 +194,148 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 }
             }
         })
+    }
+}
+
+impl KimiAcpDriver {
+    pub(crate) async fn open_session_lifecycle(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+    ) -> KimiOpenLifecycleResult {
+        validate_session_plan_agreement(&plan, request.plan_agreement())?;
+        let selected = self.validate_plan(&plan)?;
+        let reasoning = prepare_negotiated_reasoning_setup(
+            &plan,
+            SessionLifecycleOperation::Open,
+            request.options(),
+        )?;
+        validate_request(
+            &plan,
+            request.access_policy(),
+            request.deadline(),
+            request.options(),
+            &services,
+        )?;
+        let plan_mode = mode::requested_plan_mode(request.options());
+        let request_id = request.request_id().clone();
+        let working_resource = request
+            .working_resource()
+            .ok_or_else(|| unsupported("resource-free session"))?
+            .clone();
+        let access_policy = request.access_policy().clone();
+        let mut attachment = self
+            .start_attachment(&plan, &request_id, working_resource.clone(), &services)
+            .await?;
+        let opened = async {
+            let initialize = attachment.connection.initialize().await?;
+            validate_initialize(&initialize, selected.version().as_str())?;
+            let response = attachment
+                .connection
+                .new_session(attachment.cwd.clone())
+                .await?;
+            let (provider_id, model_options) =
+                parse_session(&response, plan.model_id().expect("validated model"))?;
+            attachment.connection.set_session_id(provider_id.clone())?;
+            let mut snapshot = response;
+            let mut reasoning_acknowledgement = KimiAcknowledgement::Absent;
+            if let Some(reasoning) = reasoning {
+                let selection = reasoning::prepare_reasoning_selection(
+                    &snapshot,
+                    selected.behavior(),
+                    reasoning,
+                )?;
+                let confirmation = attachment
+                    .connection
+                    .set_config_option(&provider_id, "thinking", selection.provider_value())
+                    .await?;
+                match selection.confirm(&confirmation, selected.behavior()) {
+                    Ok(observed) => {
+                        let _ = observed.effective;
+                        reasoning_acknowledgement =
+                            KimiAcknowledgement::Effective(observed.provider_value);
+                    }
+                    Err(rejection) => {
+                        let reasoning = rejection
+                            .provider_value
+                            .map_or(KimiAcknowledgement::Absent, KimiAcknowledgement::Rejected);
+                        let plan = if plan_mode {
+                            KimiAcknowledgement::RequestedNotDispatched
+                        } else {
+                            KimiAcknowledgement::Absent
+                        };
+                        return Err(KimiOpenRejection::observed(
+                            rejection.failure,
+                            reasoning,
+                            plan,
+                            selected.behavior(),
+                        ));
+                    }
+                }
+                snapshot = confirmation;
+            }
+            let plan_acknowledgement = if plan_mode {
+                mode::prepare_plan_mode(&snapshot)?;
+                let confirmation = attachment
+                    .connection
+                    .set_config_option(&provider_id, "mode", "plan")
+                    .await?;
+                match mode::confirm_plan_mode(&confirmation) {
+                    Ok(value) => KimiAcknowledgement::Effective(value),
+                    Err(rejection) => {
+                        let plan = rejection
+                            .provider_value
+                            .map_or(KimiAcknowledgement::Absent, KimiAcknowledgement::Rejected);
+                        return Err(KimiOpenRejection::observed(
+                            rejection.failure,
+                            reasoning_acknowledgement,
+                            plan,
+                            selected.behavior(),
+                        ));
+                    }
+                }
+            } else {
+                KimiAcknowledgement::Absent
+            };
+            let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
+            let binding = SessionResumeBinding::new(
+                provider_ref.clone(),
+                plan.instance_id().clone(),
+                plan.execution_host_id().clone(),
+                plan.model_route_id().expect("validated route").clone(),
+                plan.model_id().expect("validated model").clone(),
+                working_resource,
+                access_policy,
+            );
+            let session = attachment.take_session(
+                request_id,
+                provider_ref,
+                provider_id,
+                binding,
+                model_options,
+                &services,
+            )?;
+            Ok((
+                session,
+                KimiOpenObservation {
+                    behavior: selected.behavior(),
+                    reasoning: reasoning_acknowledgement,
+                    plan: plan_acknowledgement,
+                },
+            ))
+        }
+        .await;
+        match opened {
+            Ok((session, observation)) => Ok((
+                Box::new(session) as Box<dyn InteractiveSessionHandle>,
+                observation,
+            )),
+            Err(error) => {
+                let _ = attachment.abort(&services).await;
+                Err(error)
+            }
+        }
     }
 }
 

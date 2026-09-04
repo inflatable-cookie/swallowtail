@@ -17,6 +17,9 @@ use swallowtail_core::{
     ReasoningMode,
 };
 use swallowtail_runtime::{CleanupOutcome, OperationContent, RequestId, TerminalStatus};
+use swallowtail_runtime::{
+    ConsumerRouteControlId, ConsumerRouteProjectionSourceId, ConsumerRouteRowIdentity,
+};
 use swallowtail_testkit::{
     ExecutionTopologyFixture, assert_observable_activity_not_applicable,
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -52,6 +55,13 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
             catalogue.plan(),
         );
         assert_observable_activity_not_applicable(catalogue.evidence().operation());
+        let catalogue_projection = catalogue
+            .consumer_route_projection_contribution(source("kimi-platform.catalogue"))
+            .expect("catalogue projection is admitted");
+        assert!(!catalogue_projection.session_start_rows().any(|row| {
+            row.identity()
+                == &ConsumerRouteRowIdentity::Control(ConsumerRouteControlId::ModelSelection)
+        }));
         let models =
             block_on(catalogue.list_models(fixture.services())).expect("catalogue succeeds");
         assert_eq!(models.len(), 1);
@@ -89,6 +99,13 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
             attempt.evidence().operation(),
             attempt.plan(),
         );
+        let inference_projection = attempt
+            .consumer_route_projection_contribution(source("kimi-platform.inference"))
+            .expect("inference projection is admitted");
+        assert!(inference_projection.session_start_rows().any(|row| {
+            row.identity()
+                == &ConsumerRouteRowIdentity::Control(ConsumerRouteControlId::ModelSelection)
+        }));
 
         let mut run =
             block_on(attempt.start_run(fixture.services())).expect("prepared attempt starts");
@@ -108,6 +125,10 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
         assert_eq!(fixture.release_after_blocking(), [1, 2]);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
     }
+}
+
+fn source(value: &str) -> ConsumerRouteProjectionSourceId {
+    ConsumerRouteProjectionSourceId::new(value).expect("projection source")
 }
 
 #[test]

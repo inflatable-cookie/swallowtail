@@ -129,7 +129,7 @@ impl KimiLocalServerSessionConfiguration {
         self.managed_recovery
     }
 
-    pub(in crate::local_server) const fn maximum_reattachments(&self) -> u32 {
+    pub(crate) const fn maximum_reattachments(&self) -> u32 {
         self.maximum_reattachments
     }
 
@@ -141,7 +141,7 @@ impl KimiLocalServerSessionConfiguration {
         self
     }
 
-    pub(in crate::local_server) const fn active_turn_detachment(&self) -> bool {
+    pub(crate) const fn active_turn_detachment(&self) -> bool {
         self.active_turn_detachment
     }
 }

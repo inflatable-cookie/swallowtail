@@ -21,7 +21,7 @@ impl SharedAgent {
             Scenario::ReasoningDrift => confirmation(
                 id,
                 &["off", "low", "medium", "high", "xhigh", "max"],
-                "low",
+                "medium",
             ),
             Scenario::ReasoningLegacySuccess => {
                 confirmation(id, &["off", "on"], requested_value(message)?)
@@ -63,6 +63,16 @@ impl SharedAgent {
                 let requested = requested_value(message)?;
                 confirmation(id, &["off", "low", "medium", "high"], requested)
             }
+            Scenario::ReasoningForeign => confirmation(
+                id,
+                &["off", "low", "medium", "high", "xhigh", "max", "ultra"],
+                "ultra",
+            ),
+            Scenario::ReasoningUnbounded => confirmation(
+                id,
+                &["off", "low", "medium", "high", "xhigh", "max", long_value()],
+                long_value(),
+            ),
             Scenario::ReasoningMissing
             | Scenario::ReasoningAmbiguous
             | Scenario::ReasoningMalformed

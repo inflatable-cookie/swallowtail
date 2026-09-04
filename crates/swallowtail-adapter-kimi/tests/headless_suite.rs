@@ -4,6 +4,8 @@ mod discovery_support;
 #[path = "headless_structured_run/support.rs"]
 mod support;
 
+#[path = "headless_projection.rs"]
+mod headless_projection;
 #[path = "headless_structured_run.rs"]
 mod headless_structured_run;
 

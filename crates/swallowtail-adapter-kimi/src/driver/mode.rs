@@ -13,15 +13,18 @@ pub(super) fn prepare_plan_mode(snapshot: &Value) -> Result<(), RuntimeFailure> 
     parse_option(snapshot, OptionPhase::Snapshot).map(|_| ())
 }
 
-pub(super) fn confirm_plan_mode(response: &Value) -> Result<(), RuntimeFailure> {
+pub(super) fn confirm_plan_mode(response: &Value) -> Result<String, super::KimiConfirmationRejection> {
     let option = parse_option(response, OptionPhase::Confirmation)?;
     if option.current == PLAN_VALUE {
-        Ok(())
+        Ok(option.current.to_owned())
     } else {
-        Err(failure(
-            "swallowtail.kimi.acp.harness_mode_mismatch",
-            "Kimi Code harness-mode confirmation does not match the requested mode",
-        ))
+        Err(super::KimiConfirmationRejection {
+            failure: failure(
+                "swallowtail.kimi.acp.harness_mode_mismatch",
+                "Kimi Code harness-mode confirmation does not match the requested mode",
+            ),
+            provider_value: Some(option.current.to_owned()),
+        })
     }
 }
 

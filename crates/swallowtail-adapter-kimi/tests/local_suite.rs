@@ -21,5 +21,7 @@ mod local_server_corpus;
 mod local_server_interactive;
 #[path = "local_server_lifecycle.rs"]
 mod local_server_lifecycle;
+#[path = "local_server_projection.rs"]
+mod local_server_projection;
 #[path = "local_server_structured_run.rs"]
 mod local_server_structured_run;

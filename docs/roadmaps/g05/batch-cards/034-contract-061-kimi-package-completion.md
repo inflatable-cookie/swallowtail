@@ -585,6 +585,22 @@ No live probe or provider contact belongs to this card.
 No. This card is planned but not ready pending card 076 and any shared baseline
 it admits. Do not dispatch an implementation worker or compile a replacement.
 
+## Result
+
+Complete. Candidate F now projects the exact 25/20/31/13 route ledgers: 75
+emitted and 14 construction-time withheld rows across 89 tuples. All thirteen
+prepared facades expose the bounded contribution seam. ACP catalogue control
+truth enters only through Card 073's completed provider-operation observation.
+
+The additive projected open shares one private lifecycle with the preserved
+open. It keeps distinct prepared and active sources, exact bounded reasoning
+and Plan tokens, Card 079's compound acknowledgement, terminal
+`RequestedNotDispatched` Plan state after reasoning rejection, and bounded
+model-options observation. Concrete foreign or unretainable confirmations keep
+the preserved mismatch failure; requested `"on"` projection-only failures
+close the opened session and use the two Kimi-local diagnostics. No provider
+credentials or live probes were used.
+
 ## Stop Conditions
 
 - Stop while card 076 or any public baseline it admits remains open.

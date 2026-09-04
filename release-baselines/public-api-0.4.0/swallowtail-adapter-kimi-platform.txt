@@ -23,6 +23,8 @@ pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::from_adm
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
 impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
 pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -36,6 +38,8 @@ pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::ob
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt
 pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
 pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)

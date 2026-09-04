@@ -1,7 +1,9 @@
 use serde_json::Value;
 use std::collections::BTreeSet;
 use swallowtail_core::ReasoningMode;
-use swallowtail_runtime::{EffectiveReasoningSetup, NegotiatedReasoningSetup, RuntimeFailure};
+use swallowtail_runtime::{NegotiatedReasoningSetup, RuntimeFailure};
+
+use super::{KimiConfirmationRejection, KimiReasoningConfirmation};
 
 use crate::failure::{failure, malformed};
 use crate::selection::KimiAcpBehavior;
@@ -23,22 +25,36 @@ impl KimiReasoningSelection {
         self,
         response: &Value,
         behavior: KimiAcpBehavior,
-    ) -> Result<EffectiveReasoningSetup, RuntimeFailure> {
-        let option = parse_option(response, OptionPhase::Confirmation)?;
-        validate_behavior_shape(&option, behavior)?;
-        let current = option.current;
+    ) -> Result<KimiReasoningConfirmation, KimiConfirmationRejection> {
+        let option = parse_option(response, OptionPhase::Confirmation)
+            .map_err(KimiConfirmationRejection::from)?;
+        validate_behavior_shape(&option, behavior).map_err(KimiConfirmationRejection::from)?;
+        let current = option.current.to_owned();
         let projected = match behavior {
-            KimiAcpBehavior::LegacyReasoning => current,
+            KimiAcpBehavior::LegacyReasoning => current.as_str(),
             KimiAcpBehavior::DeclaredEffort if self.setup.requested().as_str() == "on" => {
                 if current == "off" {
-                    return Err(effective_mismatch());
+                    return Err(KimiConfirmationRejection {
+                        failure: effective_mismatch(),
+                        provider_value: Some(current),
+                    });
                 }
                 "on"
             }
-            KimiAcpBehavior::DeclaredEffort => current,
+            KimiAcpBehavior::DeclaredEffort => current.as_str(),
         };
-        self.setup
-            .confirm(ReasoningMode::new(projected).map_err(|_| malformed())?)
+        let mode = ReasoningMode::new(projected).map_err(|_| KimiConfirmationRejection {
+            failure: malformed(),
+            provider_value: Some(current.clone()),
+        })?;
+        let effective = self.setup.confirm(mode).map_err(|failure| KimiConfirmationRejection {
+            failure,
+            provider_value: Some(current.clone()),
+        })?;
+        Ok(KimiReasoningConfirmation {
+            effective,
+            provider_value: current,
+        })
     }
 }
 

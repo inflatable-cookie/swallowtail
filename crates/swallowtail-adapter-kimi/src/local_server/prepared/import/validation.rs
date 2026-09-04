@@ -5,7 +5,11 @@ use crate::local_server::prepared::{
     runtime_preparation_failure,
 };
 use crate::local_server::transport::session_path;
-use swallowtail_core::Capability;
+use swallowtail_core::{
+    AccessRequirement, Capability, CredentialState, DriverRole, EndpointAuthorization,
+    EntitlementState, ExecutionLayer, OperationRequirements, OperationShape, PreflightContext,
+    RuntimeReadiness, preflight,
+};
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
 impl KimiLocalServerPreparedIntegration {
@@ -72,7 +76,43 @@ impl KimiLocalServerPreparedIntegration {
         }
         session_path(input.source.provider_session_ref.as_provider_value())
             .map_err(|error| runtime_preparation_failure(PreparationStage::Preflight, error))?;
+        let requirements = OperationRequirements::new(
+            ExecutionLayer::HarnessInteraction,
+            OperationShape::ProviderSessionManagement,
+            DriverRole::ProviderSessionManagement,
+            self.instance().execution_host_id().clone(),
+            AccessRequirement::new(self.access_profile().id().clone())
+                .with_credential_states([CredentialState::Ready])
+                .with_entitlement_states([EntitlementState::Available])
+                .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+                .with_runtime_readiness([RuntimeReadiness::Ready])
+                .with_support_authorities([self.access_profile().support_authority()]),
+        )
+        .with_ownership_modes([self.instance().ownership()])
+        .with_host_services(
+            crate::kimi_local_server_descriptor()
+                .required_host_services(DriverRole::ProviderSessionManagement),
+        )
+        .with_interface_versions([self.server().binding().clone()]);
+        let descriptor = crate::kimi_local_server_descriptor();
+        let plan = preflight(
+            &PreflightContext::new(
+                &descriptor,
+                self.instance(),
+                self.access_profile(),
+                self.access_evidence().status(),
+                self.available_host_services(),
+            ),
+            &requirements,
+        )
+        .map_err(|error| {
+            PreparationFailure::new(
+                PreparationStage::Preflight,
+                swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
+            )
+        })?;
         Ok(KimiLocalServerPreparedBindingImport {
+            plan,
             request_id: input.request_id,
             target: input.target,
             provider_session_ref: input.source.provider_session_ref,

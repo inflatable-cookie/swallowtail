@@ -186,7 +186,7 @@ Zero Rust changes.
 
 ## Evidence
 
-- [triage note](../../../triage/20260904-134500-contract-061-candidate-c-audit.md)
+- triage note `docs/triage/20260904-134500-contract-061-candidate-c-audit.md`, pruned after card 069 closed; preserved in Git history
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)

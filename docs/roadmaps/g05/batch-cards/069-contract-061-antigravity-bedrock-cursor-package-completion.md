@@ -13,8 +13,9 @@ Complete candidate C's Contract 061 census dispositions: all 14
 `antigravity.catalogue`, 18 `antigravity.headless`, 9 `bedrock.catalogue`,
 10 `bedrock.runtime`, 13 `cursor-agent.acp`, 13 `cursor-agent.catalogue`,
 and 17 `cursor-agent.headless` rows, as the exact 51 emitted / 43 withheld
-ledger fixed by the
-[candidate C audit](../../../triage/20260904-134500-contract-061-candidate-c-audit.md).
+ledger fixed by the candidate C audit (card 064; note
+`docs/triage/20260904-134500-contract-061-candidate-c-audit.md`, pruned after
+this card closed and preserved in Git history).
 
 ## Scope
 
@@ -162,7 +163,7 @@ All 94 census rows reconcile exactly across seven per-route ledgers with 51 emit
 
 ## Evidence
 
-- [candidate C audit](../../../triage/20260904-134500-contract-061-candidate-c-audit.md)
+- candidate C audit note, pruned at card close; see card 064 and Git history
 - [Batch 9.4 package expansion](../../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)

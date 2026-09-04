@@ -56,6 +56,7 @@ fn candidate_e_gemini_routes_reconcile_executable_projection_truth() {
     assert_eq!(rows("gemini-cli.headless", &headless).count(), 8);
     assert_eq!(rows("gemini.live", &live).count(), 14);
     assert_eq!(emitted.len(), 29);
+    assert_eq!(emitted, expected_emitted());
 
     // The 14 Gemini omissions are checked against the executable projections,
     // not counted from an audit ledger. Grok's companion proof supplies 10/3.
@@ -100,7 +101,49 @@ fn rows<'a>(
         .selection_rows()
         .chain(contribution.session_start_rows())
         .chain(contribution.active_session_rows())
-        .map(move |row| (route.to_owned(), format!("{:?}", row.identity())))
+        .map(move |row| (route.to_owned(), semantic(row)))
+}
+fn semantic(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> String {
+    row.identity().namespaced_extension().map_or_else(
+        || format!("{:?}", row.identity()),
+        |extension| extension.semantic_id().to_owned(),
+    )
+}
+fn expected_emitted() -> BTreeSet<(String, String)> {
+    [
+        ("gemini-cli.acp", "Feature(PreparedFacade)"),
+        ("gemini-cli.acp", "Feature(InteractiveSession)"),
+        ("gemini-cli.acp", "Feature(StreamingEvents)"),
+        ("gemini-cli.acp", "Feature(CancellationOrInterruption)"),
+        ("gemini-cli.acp", "Feature(WorkingResource)"),
+        ("gemini-cli.acp", "Feature(ActivityObservation)"),
+        ("gemini-cli.acp", "control.harness-mode"),
+        ("gemini-cli.headless", "Feature(PreparedFacade)"),
+        ("gemini-cli.headless", "Feature(StructuredRun)"),
+        ("gemini-cli.headless", "Feature(StreamingEvents)"),
+        ("gemini-cli.headless", "Feature(UsageEvidence)"),
+        ("gemini-cli.headless", "Feature(CancellationOrInterruption)"),
+        ("gemini-cli.headless", "Feature(WorkingResource)"),
+        ("gemini-cli.headless", "Feature(ActivityObservation)"),
+        ("gemini-cli.headless", "Control(ModelSelection)"),
+        ("gemini.live", "Feature(PreparedFacade)"),
+        ("gemini.live", "Feature(RealtimeMediaSession)"),
+        ("gemini.live", "Feature(StreamingEvents)"),
+        ("gemini.live", "Feature(UsageEvidence)"),
+        ("gemini.live", "Feature(OutputTokenLimit)"),
+        ("gemini.live", "Feature(ReasoningSelection)"),
+        ("gemini.live", "Feature(CancellationOrInterruption)"),
+        ("gemini.live", "feature.planned-connection-rollover"),
+        ("gemini.live", "Feature(ActivityObservation)"),
+        ("gemini.live", "Control(ReasoningSelection)"),
+        ("gemini.live", "Control(MaximumOutputTokens)"),
+        ("gemini.live", "Control(RealtimeMediaConfig)"),
+        ("gemini.live", "control.context-window-compression"),
+        ("gemini.live", "Control(PlannedConnectionRollover)"),
+    ]
+    .into_iter()
+    .map(|(route, identity)| (route.to_owned(), identity.to_owned()))
+    .collect()
 }
 fn source(value: &str) -> ConsumerRouteProjectionSourceId {
     ConsumerRouteProjectionSourceId::new(value).expect("source")

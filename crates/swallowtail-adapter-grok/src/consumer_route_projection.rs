@@ -234,6 +234,21 @@ impl<'a> Projection<'a> {
                 self.selection.push(row);
             }
         }
+        if !self.selection.iter().any(|row| {
+            row.identity()
+                == &ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::UsageEvidence)
+        }) {
+            self.selection.push(
+                self.row(
+                    ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::UsageEvidence),
+                    &self.prepared_source,
+                    ConsumerRouteSourceClass::CapabilityProfile,
+                    ConsumerRouteEvidenceStrength::PreparedOperation,
+                    ConsumerRouteLifecycle::SelectionSummary,
+                )
+                .with_actor_posture(ConsumerRouteActorPosture::Informational),
+            );
+        }
         self
     }
     fn model_selection(mut self) -> Self {
@@ -373,7 +388,7 @@ const fn feature_for(capability: Capability, session: bool) -> Option<ConsumerRo
         Capability::StructuredRun if !session => ConsumerRouteFeatureId::StructuredRun,
         Capability::StreamingEvents => ConsumerRouteFeatureId::StreamingEvents,
         Capability::UsageReporting => ConsumerRouteFeatureId::UsageEvidence,
-        Capability::Interruption => ConsumerRouteFeatureId::CancellationOrInterruption,
+        Capability::Interruption => return None,
         Capability::WorkingResource => ConsumerRouteFeatureId::WorkingResource,
         Capability::ObservableActivity => ConsumerRouteFeatureId::ActivityObservation,
         _ => return None,

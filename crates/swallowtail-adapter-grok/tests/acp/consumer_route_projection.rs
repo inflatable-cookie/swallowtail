@@ -46,6 +46,7 @@ fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
         .expect("run projection");
     let emitted = rows(&session).chain(rows(&run)).collect::<BTreeSet<_>>();
     assert_eq!(emitted.len(), 10);
+    assert_eq!(emitted, expected_emitted());
     for withheld in [
         "ModelCatalogue",
         "persistent-session-posture",
@@ -68,14 +69,34 @@ fn rows(
         .chain(contribution.session_start_rows())
         .chain(contribution.active_session_rows())
         .map(move |row| {
-            let identity = format!("{:?}", row.identity());
+            let identity = row.identity().namespaced_extension().map_or_else(
+                || format!("{:?}", row.identity()),
+                |extension| extension.semantic_id().to_owned(),
+            );
             let route_specific = if identity.starts_with("Control") {
-                format!("{:?}", contribution.applicability())
+                format!("{:?}", contribution.applicability().operation_shape())
             } else {
                 String::new()
             };
             (route_specific, identity)
         })
+}
+fn expected_emitted() -> BTreeSet<(String, String)> {
+    [
+        ("", "Feature(PreparedFacade)"),
+        ("", "Feature(StructuredRun)"),
+        ("", "Feature(InteractiveSession)"),
+        ("", "Feature(StreamingEvents)"),
+        ("", "Feature(UsageEvidence)"),
+        ("", "Feature(WorkingResource)"),
+        ("", "Feature(ActivityObservation)"),
+        ("InteractiveSession", "Control(ModelSelection)"),
+        ("InteractiveSession", "Control(SessionOptions)"),
+        ("StructuredRun", "Control(ModelSelection)"),
+    ]
+    .into_iter()
+    .map(|(shape, identity)| (shape.to_owned(), identity.to_owned()))
+    .collect()
 }
 
 fn prepared_integration(prefix: &str) -> swallowtail_adapter_grok::GrokPreparedIntegration {

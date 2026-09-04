@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-31
-Updated: 2026-08-31
+Updated: 2026-09-04
 Spec: archived 012
 Evidence: reviewed consumer route-feature and option census
 
@@ -50,9 +50,9 @@ model applicability, current availability, or provider-effective state.
 
 In:
 
-- one public projection family with selection-summary, session-start, and
-  active-session views
-- stable semantic feature and control identity shared by all three views
+- one public projection family with selection-summary, session-start,
+  active-session, and provider-operation views
+- stable semantic feature and control identity shared by all four views
 - exact configured-instance id and revision, route, model where applicable,
   operation shape, access, resource, and evidence applicability
 - typed value kind, admitted values or an explicit unenumerated bound,
@@ -80,7 +80,7 @@ Out:
 
 ## Projection Views
 
-The three views share one semantic vocabulary and one snapshot identity. They
+The four views share one semantic vocabulary and one snapshot identity. They
 remain separate surfaces because their evidence and lifecycle differ. A row
 admitted to one view gains no standing in another.
 
@@ -115,6 +115,18 @@ or mid-turn mutation exists only where an exact route mechanism is separately
 qualified, and the census proves no general mid-turn row. A successful local
 setter or prepared builder call is not provider acknowledgement.
 
+### Provider-Operation State
+
+Project only observations returned by a completed provider operation that
+opens no session. This view admits provider-session catalogue and
+provider-session history outcomes only. A prepared plan, successful
+preparation, open session, failed operation, or documentation row is not a
+completed provider-operation observation.
+
+Provider-operation state is descriptor-only and observation-only. It carries
+no candidate, history item, cursor, provider-session reference, request,
+execution, resume, import, mutation, or acknowledgement authority.
+
 ## Descriptor Semantics
 
 A feature or control descriptor must retain:
@@ -128,8 +140,8 @@ A feature or control descriptor must retain:
 - value kind, admitted domain or explicit unenumerated bound, and omission
   semantics for controls
 - lifecycle: selection-summary, session-start-only, per-turn,
-  between-turn-negotiable, separately qualified mid-turn-negotiable, or
-  post-open-observation-only
+  between-turn-negotiable, separately qualified mid-turn-negotiable,
+  post-open-observation-only, or post-operation-observation-only
 - actor posture: informational, consumer-selectable, host-controlled,
   operator-controlled, provider-selected, or observation-only
 - state support: descriptor-only, or the exact subset of requested, pending,
@@ -167,6 +179,11 @@ The projection inherits the bounds of the records it composes and introduces no
 new numeric cap of its own. A separate projection-specific bound is a later
 planning decision, not a claim of this contract.
 
+A provider-operation observation names its completed outcome as an
+independently replaceable source. It remains distinct from the prepared
+operation that admitted dispatch. A changed outcome source identity creates
+a replacement snapshot even when its descriptor rows are equal.
+
 ## Availability Dimensions And Bounded Safe Reasons
 
 The projection preserves the existing authoritative source dimensions:
@@ -191,7 +208,7 @@ cross-revision, cross-route, cross-model, cross-operation, cross-access, and
 stale-source assembly fail closed. Absence remains absence rather than an
 unsupported claim.
 
-Four named points make the review oracle directly testable:
+Five named points make the review oracle directly testable:
 
 | Counterexample | Named point | Required behavior |
 | --- | --- | --- |
@@ -199,10 +216,17 @@ Four named points make the review oracle directly testable:
 | Valid descriptor combined with a stale configured-instance revision or superseded source record | snapshot identity disagreement | reject the mixed assembly; never publish it as current |
 | Post-open option list presented as selectable or acknowledged | absent mutation authority | hold the row at observation-only unless an exact route mutation and acknowledgement source is supplied |
 | Missing source truth replaced by an exhaustive availability reason | unbounded reason claim | retain unknown or absent source state plus at most a bounded safe reason the source supplied |
+| Prepared plan, session-shaped source, or mismatched operation outcome presented as a completed provider-operation observation | provider-operation observation disagreement | reject the observation before publication; only a matching completed provider-session catalogue or provider-session history outcome may enter the provider-operation view |
 
 The first point may withhold one row. The second rejects the whole assembly,
 because snapshot identity is not per-row truth. The third and fourth constrain
-what a published row may claim.
+what a published row may claim. The fifth rejects one observation.
+
+Prepared contributions and provider-operation observations may co-compose
+under exact snapshot agreement, but they never merge into one source or row.
+Cross-operation, cross-access, or repeated-source assembly rejects the whole
+snapshot. Absence of a successful outcome remains absence, never prepared or
+observed truth.
 
 ## Authority Boundary
 
@@ -240,7 +264,7 @@ Portable fixtures must prove:
 - one snapshot binds exact instance, revision, route, model, operation shape,
   and source evidence identities, and is replaced rather than mutated
 - selection-summary, session-start, per-turn, post-open observation, and exact
-  negotiated state stay distinct across the three views
+  negotiated state stay distinct across the four views
 - route-wide, matrix, catalogue, prepared, and negotiated evidence cannot
   silently widen one another
 - a route-wide capability with an incompatible model or prepared operation
@@ -260,6 +284,15 @@ Portable fixtures must prove:
   provider payloads are absent from every projected row
 - projection creates no request, mutation, acknowledgement, watcher, or
   preflight bypass
+- provider-operation rows appear only in the provider-operation view with a
+  completed provider-session catalogue or history outcome
+- interactive-session, structured-run, active-session, and prepared-only
+  evidence cannot enter the provider-operation source kind or lifecycle
+- provider-operation rows obey the fixed row maximum, remain
+  descriptor-only and observation-only, and carry no mutation authority or
+  provider payload
+- prepared and provider-operation sources remain distinct under replacement,
+  duplicate-source, exact applicability, and cross-access composition
 
 Live provider work and route claims remain separately authorized evidence. They
 are not part of ordinary projection conformance.
@@ -286,3 +319,6 @@ architecture.
 - every review-oracle counterexample has a named rejection or withholding point
 - projection adds no execution, mutation, acknowledgement, routing, default,
   fallback, or provider effect
+- completed provider-session catalogue and history observations remain
+  distinct from preparation and active-session state, and a failed or absent
+  outcome publishes no provider-operation row

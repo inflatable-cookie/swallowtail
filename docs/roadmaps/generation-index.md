@@ -388,8 +388,8 @@ Bedrock, and Cursor tranche (PR 209 merged as `d2d8ae8b`). Card 066 stopped cand
 `85221307`) on the same provider-operation observation gap as Kimi. With three
 carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
-and candidate I
-plus card 034 follow its promotion.
+Chatterbox promoted it into Contract 061 on 2026-09-04, runtime baseline card
+073 is ready, and candidate I plus card 034 follow card 073.
 
 ## Rollover Rule
 

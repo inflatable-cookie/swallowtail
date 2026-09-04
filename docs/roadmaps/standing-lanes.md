@@ -165,11 +165,39 @@ g05.026 card 062, retargeted on 2026-09-04 from `0.40.1` to official latest
 Bash `cwd` restriction removal as a Contract 017/023 authority question before
 any segment shape, and it stopped: Research 282 froze `0.41.0` identity and
 found the Bash `cwd` change uncontained, so the ceiling stays `0.38.0`.
-Antigravity is now the active family through g05.027 cards 071-072,
-targeting official `1.1.26`; the closed PR 182 branch is recomputed evidence
-input, not merged qualification. Antigravity ships roughly daily; under
-Contract 029's In-Run Latest Movement rule (accepted 2026-09-04) a stable
-published before the identity commit is a recomputed extra hop, not a stop.
+Antigravity ran through g05.027 card 071 targeting official `1.1.26`; the
+closed PR 182 branch was recomputed as evidence input. Card 071 stopped:
+every hop `1.1.17..=1.1.26` is frozen, but `1.1.22` retries model-endpoint
+HTTP 502 with no published bound or disable control, and Contract 023 keeps
+provider-managed retry disabled unless separately accepted. The ceiling stays
+`1.1.17` and card 072 is not admitted; Chatterbox recommends keeping that
+ceiling until Antigravity exposes a bound. Contract 029's In-Run Latest
+Movement rule (accepted 2026-09-04) applies to future lanes.
+
+With both post-release families stopped and Research 276 two days old, the
+next currentness step is the all-route checkpoint below.
+
+### Checkpoint Manifest: Research 284
+
+Promoted planning commit: the `main` commit that introduces this section.
+This is a standing-lane checkpoint, not a numbered card; it opens no
+roadmap and changes no claim.
+
+| Field | Research 284 checkpoint |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | Research 276, 282, and 283 on `main`; the `version-currentness` skill in checkpoint mode |
+| Completion conditions | Research 284 records current official and host observations for all 40 production families, partitions them (unchanged, visible unverified-newer, record-only, material candidate), ranks the next one-family candidate with reasons, and changes no claim; research index line added; docs and Northstar gates green |
+| Owned mutable paths | `docs/research/284-*.md`; `docs/research/README.md` (one index line); `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | this file's Latest Checkpoint paragraph, `docs/roadmaps/README.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | every `crates/**` path; every `selection.rs`; matrices; guides; `CHANGELOG.md`; contracts; roadmaps |
+| Approved concurrent siblings | g05.009 cards 073 and 065 |
+| Serial edges | the ranked candidate becomes a family lane only after Chatterbox compiles it |
+| Worker capability class | evidence-first observation worker; registry and release-stream probing; no downloads executed; no provider credentials |
+| Acceptance evidence | one observation row per family with source URL and timestamp; host observation without install or update; explicit rank rationale |
+| Review oracle | no claim edit; no family treated as qualified from `latest`; Gemini stays deferred; Kimi ACP and local-server and Antigravity stops restated with their reopen conditions |
+| Stop conditions | an official channel is unreachable for a family (record the gap, do not guess); a host binary would need execution to observe |
+| Escalation owner | operator (Tom) via Chatterbox; coordinator for mechanical blockers |
 Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer
 observations stay recorded without implementation. Gemini stays deferred,
 watcher stays exact `2.1.251`, and `kimi-code.acp` stays QualifiedOnly at the

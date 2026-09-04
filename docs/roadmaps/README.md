@@ -15,9 +15,13 @@ shape.
 
 ## Next Task
 
-Await Chatterbox to promote the accepted Card 070 provider-operation
-observation gate into canonical Contract 061/runtime planning. Audit 065
-continues. Card 071 is the concurrent Antigravity `1.1.26` identity lane.
+Implement [g05.009 card 073](g05/batch-cards/073-contract-061-provider-operation-observation-baseline.md):
+realize the promoted provider-operation observation vocabulary, fourth view,
+and six testkit assertions in runtime and testkit only, from the manifest in
+that roadmap. Audit 065 continues. Card 071 is under exact-head review as an
+evidence stop at Antigravity `1.1.22`. The all-route currentness checkpoint
+lane in `standing-lanes.md` is approved to run concurrently and writes
+Research 284 without changing claims.
 Cards 068 and 069 are merged. Card 062 stopped: Kimi local server `0.41.0`
 identity is frozen and the ceiling stays `0.38.0`; card 063 stays gated.
 Card 034 remains planned behind the promoted baseline.

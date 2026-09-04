@@ -1,6 +1,6 @@
 # Contract 061 Provider-Operation Observation Public-Baseline Gate
 
-Status: complete; strict-ready for Chatterbox promotion; no runtime authority
+Status: promoted 2026-09-04; Contract 061 amended and ready card 073 owns the runtime baseline; retained as the exact names, admission, and assertion evidence that card owns; pruned when card 073 closes
 Owner: Tom
 Date: 2026-09-04
 Source: Contract 061, the Kimi active-observation gate, the candidate I audit,

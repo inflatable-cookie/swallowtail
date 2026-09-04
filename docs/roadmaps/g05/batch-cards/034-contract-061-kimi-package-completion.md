@@ -1,6 +1,6 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; the operator chose the shared provider-operation observation gate on 2026-09-04 (card 070); this card reopens after that gate is promoted and the runtime baseline lands
+Status: planned; not ready; the observation gate is promoted into Contract 061 and card 073 owns the runtime baseline; this card reopens after card 073 merges
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04

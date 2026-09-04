@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Provider-Operation Observation Promoted; Checkpoint 284 Queued](./2026-09-04-provider-operation-observation-promoted.md) — Contract 061 amended with the fourth view from the accepted card 070 gate; runtime baseline card 073 ready; Antigravity card 071 stop recorded with the ceiling kept at `1.1.17`; all-route checkpoint Research 284 approved as a standing lane
 - [2026-09-04 Contract 029 In-Run Latest Movement Rule](./2026-09-04-contract-029-in-run-latest-movement.md) — operator-promoted workflow rule treats a stable published before identity commit as an extra recomputed hop unless selected surface, capability, authority, major-line, or channel disagreement stops the lane
 - [2026-09-04 g05.009 Card 070 Provider-Operation Observation Gate](./2026-09-04-g05-009-card-070-provider-operation-observation-gate.md) — planning-only gate accepted at exact head `39db42d9`, merged through PR 211 as `dba7d8c2`; promotion into Contract 061/runtime planning remains with Chatterbox
 - [2026-09-04 g05.027 Antigravity 1.1.26 Compiled](./2026-09-04-g05-027-antigravity-1-1-26-compiled.md) — after the Kimi local-server stop, Antigravity `1.1.26` is the next currentness family; card 071 identity ready with PR 182 evidence recomputed as input; card 072 gated

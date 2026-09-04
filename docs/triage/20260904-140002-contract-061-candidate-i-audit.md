@@ -2,9 +2,9 @@
 
 Status: stopped; retained as open evidence; the two local-server post-open
 control rows have no honest shared representation; the operator chose the shared
-provider-operation observation gate on 2026-09-04 (card 070); candidate I's
-45 representable rows and 2 blocked rows wait on that gate's promotion and
-the runtime baseline card; census-source corrections
+provider-operation observation gate on 2026-09-04 (card 070); the gate is
+promoted into Contract 061 and ready card 073 owns the runtime baseline;
+candidate I's completion card compiles after card 073 merges; census-source corrections
 below are pending Chatterbox reconciliation into the census
 Owner: Tom
 Date: 2026-09-04

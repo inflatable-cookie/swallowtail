@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; gate card 070 is ready to settle the provider-operation observation vocabulary; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 is ready; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -187,8 +187,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [x] settle the provider-operation observation vocabulary once for the
       recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
       `opencode.http` through gate card 070 (operator chose the gate on
-      2026-09-04); the runtime baseline card, candidate I completion, and the
-      reopened card 034 follow its promotion
+      2026-09-04); Contract 061 is amended and runtime baseline card 073 is
+      ready; candidate I completion and the reopened card 034 follow its merge
 - [ ] report from the candidate C audit whether provider-operation
       observation recurs on the three catalogue routes; that report is the
       reopen trigger for the deferred Kimi decision
@@ -372,10 +372,11 @@ provider-operation observation public-baseline decision, and coverage stays
 
 ## Batch Cards In Flight
 
+- [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — ready; runtime and testkit only; unblocks candidate I completion and card 034
 - [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; Chatterbox promotion required before candidate I or card 034
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after gate card 070 is promoted and the runtime baseline lands
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 073 merges
 
 ## Batch Cards Completed
 
@@ -470,3 +471,24 @@ Card 070 is approved concurrent with card 069, audit 065, and g05.026 card
 | Review oracle | the card's invariant; smallest counterexample is a reinterpreted existing name or a prepared plan admitted as observation |
 | Stop conditions | a proposal cannot stay additive; the two consumers need different vocabularies; the operator must choose between materially different shapes (record the fork, do not pick) |
 | Escalation owner | operator (Tom) via Chatterbox; coordinator for mechanical blockers |
+
+### Card 073 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 073 is approved concurrent with audit 065 and g05.027 card 071.
+
+| Field | Card 073 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | Contract 061 amended on `main`; the accepted gate note; card 022's composer and testkit suite on `main` |
+| Completion conditions | all gate names, admission, composer pass, maximum, diagnostics, and six assertions realized verbatim; semantic API diff additive only; named validation green; god-file scan within the accepted baseline; one reviewable PR |
+| Owned mutable paths | `crates/swallowtail-runtime/**`; `crates/swallowtail-testkit/**`; `CHANGELOG.md` `[Unreleased]`; runtime and testkit public API baseline evidence; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | every `crates/swallowtail-adapter-*/**`; `crates/swallowtail-core/**`; `docs/contracts/**`; `docs/architecture/**`; the gate note; the census |
+| Approved concurrent siblings | audit 065; g05.027 card 071 (under review) |
+| Serial edges | candidate I completion and card 034 compile only after card 073 merges |
+| Worker capability class | Rust implementation worker with strong public-API discipline; frontier-tier preferred because it changes shared runtime vocabulary; no provider credentials |
+| Acceptance evidence | the six assertions; semantic API baseline diff; focused and package-affected validation |
+| Review oracle | the card's counterexample list; smallest counterexample is one reinterpreted existing name or one prepared plan admitted as observation |
+| Stop conditions | the card's stop list; any deviation from the gate's exact names returns to Chatterbox |
+| Escalation owner | operator (Tom) via Chatterbox for vocabulary questions; coordinator for mechanical blockers |

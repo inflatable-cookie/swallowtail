@@ -333,7 +333,7 @@ fn failure(
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::{
         DeepSeekHarnessPreparationInput, DeepSeekHarnessPreparedIntegration, configured_instance,
         validate_input,
@@ -402,7 +402,7 @@ mod tests {
         );
     }
 
-    fn prepared_integration() -> DeepSeekHarnessPreparedIntegration {
+    pub(crate) fn prepared_integration() -> DeepSeekHarnessPreparedIntegration {
         let input = input();
         let observation = InstalledExecutableObservation::classify(
             input.execution_host_id.clone(),

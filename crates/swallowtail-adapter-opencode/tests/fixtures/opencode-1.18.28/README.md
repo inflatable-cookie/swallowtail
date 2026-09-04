@@ -24,4 +24,3 @@ Host observation: `opencode 1.18.18`, SHA-256
 
 Decision: compatible extension through `1.18.28`. Production claims remain at
 `1.18.20` until serial Card 078. First unpublished later patch: `1.18.29`.
-

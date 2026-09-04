@@ -139,4 +139,3 @@ remains serial and outside this PR.
 - GitHub releases: `https://github.com/anomalyco/opencode/releases`
 - GitHub tag archives and refs: `v1.18.20..=v1.18.28`
 - Frozen corpus: `crates/swallowtail-adapter-opencode/tests/fixtures/opencode-1.18.28/`
-

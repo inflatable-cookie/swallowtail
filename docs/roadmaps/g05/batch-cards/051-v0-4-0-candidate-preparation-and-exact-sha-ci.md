@@ -1,6 +1,6 @@
 # 051 v0.4.0 Candidate Preparation And Exact-SHA CI
 
-Status: ready; coordinated `0.4.0` candidate prepared after fresh one-shot authorization; awaiting exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
+Status: complete; PR 201 exact head `10d9b7a0` accepted and merged as candidate `56f3913a`; canonical workflow-dispatch CI run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
@@ -66,6 +66,23 @@ promoted changelog was extracted immediately and the source tree was frozen
 without a later candidate edit. Exact fingerprints, gate timings, and the
 extraction digest belong to the candidate PR evidence so recording them does
 not change the gated tree.
+
+## Acceptance 2026-09-04
+
+Independent review accepted PR 201 exact head
+`10d9b7a0083a36bd07c3acfdc6050fda34601fb1`, tree
+`249f28f8f40928567431cc588f802c01471feb53`. It merged to canonical `main`
+as `56f3913ac99af44b6ff45384cfc53a0adea587ba`.
+
+Canonical workflow-dispatch run
+[33853812785](https://github.com/inflatable-cookie/swallowtail/actions/runs/33853812785)
+used `headSha` `56f3913ac99af44b6ff45384cfc53a0adea587ba` and passed all
+six jobs: Stable format, lint, test, and guides; Documentation and semantic
+API; Pinned MSRV floor; Dependency security, licenses, and sources; External
+Git-source consumer; and Roadmap number uniqueness. This completes Card 051.
+No local or remote `v0.4.0` tag was created. Release execution, tag creation or
+push, publication, provider work, consumer mutation, and Card 052 smoke remain
+unauthorized.
 
 ## Scope
 
@@ -219,9 +236,9 @@ clean-tree output, and tag-absence proof.
 
 ## Auto-Continuation
 
-No. The prepared candidate stops for independent exact-head review, canonical
-merge, and exact-SHA CI. After card 051 completion, card 052 also requires
-explicit operator authority for its authenticated working-application path.
+No. Card 051 is complete. Card 052 remains planned and blocked until the
+operator supplies its complete authenticated working-application authority
+packet.
 
 ## Stop Conditions
 

@@ -83,5 +83,9 @@ not a post-gate source edit.
 
 This prerequisite does not refresh Cargo.lock manually, weaken `--locked`,
 execute a release, tag, publish, contact a provider, or mutate a consumer.
-Card 051 still requires exact-head review, canonical merge, and exact-SHA CI.
-Card 052 and every release-execution or tag action remain separately gated.
+Independent review later accepted PR 201 exact head `10d9b7a0`; it merged as
+immutable candidate `56f3913a`. Canonical workflow-dispatch run 33853812785
+used that exact `headSha` and passed all six jobs, completing Card 051. Card 052
+remains planned and blocked on its complete operator-authenticated application
+authority packet. Every release-execution or tag action remains separately
+gated.

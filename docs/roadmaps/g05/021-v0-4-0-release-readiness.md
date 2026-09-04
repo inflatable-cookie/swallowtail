@@ -1,9 +1,9 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; card 050 accepted; card 051 candidate prepared and awaiting exact-head review, canonical merge, and exact-SHA CI; card 052 planned
+Status: planned; cards 050-051 complete; immutable candidate `56f3913a` has green canonical exact-SHA CI; card 052 planned and blocked on the complete operator-authenticated application authority packet
 Owner: Tom
 Created: 2026-09-02
-Updated: 2026-09-03
+Updated: 2026-09-04
 Depends on: Contract 036; Research 276; immutable `v0.3.3`
 Vision tags: source release, compatibility, release readiness
 
@@ -36,7 +36,7 @@ mutation.
   Card 050's complete ledger audits the full semantic delta, rather than
   assuming the known `minimal` removal is the only break.
 - Card 050 audited the large `[Unreleased]` public and guaranteed-behavior
-  delta. Card 051 promotes that reviewed input into the dated `0.4.0` section
+  delta. Card 051 promoted that reviewed input into the dated `0.4.0` section
   in the prepared candidate; the changelog alone is not compatibility proof.
 - Card 058 adds a second known coordinated `v0.4.0` break: interactive-session
   close now requires exact host services and a caller-selected absolute cleanup
@@ -82,10 +82,12 @@ Every candidate-state authority surface was authored before a fresh
 operator-authorized prepare. The single transaction then prepared the
 coordinated manifest, changelog, and workspace-only lockfile and passed all 11
 local gates; the promoted changelog was extracted before the source tree was
-frozen. Card 051 now awaits exact-head review, canonical merge, and exact-SHA
-CI. Card 052 remains planned and dependent. Release execution, tag creation,
-tag push, publication, provider work, and consumer mutation remain
-unauthorized.
+frozen. Independent review accepted PR 201 exact head `10d9b7a0`, which merged
+as immutable candidate `56f3913a`. Canonical workflow-dispatch run 33853812785
+used that exact `headSha` and passed all six jobs. Card 051 is complete. Card
+052 remains planned and blocked only on the complete operator-authenticated
+application authority packet. Release execution, tag creation, tag push,
+publication, provider work, and consumer mutation remain unauthorized.
 
 ## Runway
 
@@ -139,8 +141,8 @@ different SHA is accepted.
 ## Batch Cards
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; coordinated candidate prepared with the fixed 49-route boundary including `pi.sdk-sidecar` and `claude-agent.sdk`; awaits exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
-- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
+- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch CI run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
+- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; candidate and exact-SHA CI accepted; blocked only on the complete operator-authenticated application authority packet
 
 ## Acceptance
 

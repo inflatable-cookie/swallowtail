@@ -188,10 +188,12 @@ Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
 card 060 is complete; card 061 is complete and merged; card 055 is complete and
 merged through PR 196 at `493f8194`. The
-`v0.4.0` release lane is unpaused; card 051 candidate is prepared from the
-accepted card 050 freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`) and
-awaits exact-head review, canonical merge, and exact-SHA CI. No card authorizes
-a provider turn, release execution, tag creation, tag push, or publication.
+`v0.4.0` release lane is unpaused; cards 050-051 are complete. PR 201 exact
+head `10d9b7a0` merged as immutable candidate `56f3913a`, and canonical
+workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
+052 is planned and blocked only on the complete operator-authenticated
+application authority packet. No card authorizes a provider turn, release
+execution, tag creation, tag push, or publication.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
@@ -379,10 +381,12 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). The active next action is exact-head
-review of the prepared card 051 candidate, followed only after acceptance by
-canonical merge and exact-SHA CI. Card 052 remains gated on completed card 051
-plus the operator smoke-authority packet, feature/currentness implementation
-remains frozen, and the g05.009/card 034 249/518 stop remains intact. This index
-records generation status; the canonical actionable pointer stays in the front
-door.
+[roadmaps front door](README.md#next-task). The active next action is to define
+the complete operator authority packet for planned Card 052. Card 051 is
+complete at immutable candidate `56f3913a` with green canonical exact-SHA CI;
+Card 052 remains blocked until the operator supplies the authenticated
+application, route, source-consumption, credential/provider, mutation,
+evidence, cleanup, retry, and stop boundaries. Feature/currentness
+implementation remains frozen, and the g05.009/card 034 249/518 stop remains
+intact. This index records generation status; the canonical actionable pointer
+stays in the front door.

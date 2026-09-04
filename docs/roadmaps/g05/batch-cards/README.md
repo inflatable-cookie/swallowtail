@@ -2,17 +2,14 @@
 
 ## Planned
 
-- [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits card 051's frozen candidate and the full operator-authorized authenticated application-smoke packet
+- [052-v0-4-0-consumer-proof-and-operator-tag-gate.md](./052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; immutable candidate `56f3913a` and canonical exact-SHA CI accepted; awaits only the full operator-authorized authenticated application-smoke packet
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; awaiting provider-operation observation public-baseline decision
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
-## Ready
-
-- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; coordinated candidate prepared from the accepted card 050 freeze with 49 routes including `pi.sdk-sidecar` and `claude-agent.sdk`; awaits exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
-
 ## Completed
 
+- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
 - [050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md](./050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed; 40-package API ledger, 49-row route/behavior ledger, immutable-baseline proof, exact `b7f804b5` freeze, and fixed 49-route candidate inclusion for Pi and Claude; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 - [055-claude-agent-sdk-provider-free-foundation.md](./055-claude-agent-sdk-provider-free-foundation.md) — complete; `claude-agent.sdk` restored on pre-effect reap reservations with one enclosing cleanup guardian and merged through PR 196 at `493f8194`
 - [061-reserved-reapable-task-runtime.md](./061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; pre-effect exact-host/scope reservation, cancellation-safe join, non-fallible later handoff, and real local-host shutdown-race proof

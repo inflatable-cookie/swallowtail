@@ -5,6 +5,7 @@
 
 mod activity;
 mod connection;
+mod consumer_route_projection;
 mod descriptor;
 mod discovery;
 mod driver;
@@ -14,6 +15,9 @@ mod prepared_profile;
 mod selection;
 mod turn;
 
+pub use consumer_route_projection::{
+    GrokProjectionOpenFailure, GrokProjectionOpenFuture, GrokProjectionOpenOutcome,
+};
 pub use descriptor::grok_build_acp_descriptor;
 pub use discovery::GrokAcpDriver;
 pub use prepared::{

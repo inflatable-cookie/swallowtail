@@ -1,35 +1,28 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; card 073 merged; the compound acknowledgement design is accepted and card 079 owns its runtime baseline; this card reopens after card 079 merges
+Status: ready; both shared baselines merged (card 073 provider-operation observation, card 079 compound acknowledgement); exact 89-row Kimi and Kimi Platform tranche
 Owner: Tom
 Created: 2026-09-01
-Updated: 2026-09-04
+Updated: 2026-09-04 (made ready)
 Milestone: `../009-contract-061-consumer-projection-realization.md`
-Depends on: completed cards 033, 070, and 073; completed card 076 and any
-accepted compound-acknowledgement public baseline it admits
+Depends on: completed cards 033, 070, 073, 076, and 079; Contract 061 as amended 2026-09-04
 
-## Why This Card Is Blocked
+## Readiness
 
-The shared provider-operation question is closed. Contract 061 and card 073 now
-provide an additive provider-operation source, lifecycle, outcome class,
-evidence strength, fourth view, fixed maximum, admission, and composer pass.
-`KimiPreparedSessionCatalogue::list_sessions` may publish the observed
-`control.provider-session-catalogue` row only after a matching successful
-completed outcome, without pretending a session opened.
+Both shared blockers are closed on `main`. Card 073 provides the
+provider-operation observation source, lifecycle, fourth view, fixed maximum,
+admission, and composer pass, so `KimiPreparedSessionCatalogue::list_sessions`
+publishes the observed `control.provider-session-catalogue` row only from a
+matching successful completed outcome. Card 079 provides
+`ConsumerRouteAcknowledgementState`, `ConsumerRouteCompoundAcknowledgement`,
+the row methods `with_compound_acknowledgement` and
+`compound_acknowledgement`, and the diagnostic
+`swallowtail.consumer_route_projection.acknowledgement_state_invalid`, so the
+compound `feature.active-session-reasoning-and-plan-ack` row associates each
+half with its own state generically. This card now authorizes the Kimi
+adapter work and nothing in shared runtime, testkit, core, or contracts.
 
-One independent blocker remains. The compound
-`feature.active-session-reasoning-and-plan-ack` row must associate the exact
-reasoning and Plan tokens with their own effective/rejected/not-dispatched
-states generically. Row-level union flags lose that association, and a Plan
-request skipped after terminal reasoning rejection is not pending. Card 076 is
-the approved planning-only gate for that shape.
-
-This card remains planned and authorizes no Rust until card 076 and any shared
-baseline it admits are complete. None of its 89 rows count toward coverage yet.
-The retained ledgers, attachment-control rules, and platform-catalogue
-corrections remain evidence requirements.
-
-## Intended Goal, Once Unblocked
+## Goal
 
 Complete candidate F's exact 89-row Contract 061 package remainder across
 `swallowtail-adapter-kimi` and `swallowtail-adapter-kimi-platform`, exposing
@@ -38,10 +31,8 @@ through the accepted additive adapter-owned open seam.
 
 ## Retained Scope
 
-Every item below is contingent on the provider-operation observation decision.
-Items 6 and 7 cannot be written exactly until an acknowledgement representation
-is accepted; the notes retain unresolved route-local evidence and do not select
-that public shape.
+Items 6 and 7 use card 079's shared compound acknowledgement value; the
+route-local evidence below fixes exactly how Kimi populates it.
 
 1. Add the established
    `consumer_route_projection_contribution(source_id)` method to
@@ -79,12 +70,12 @@ that public shape.
    alias `swallowtail-core`'s `ProviderCatalogValue` bound and do not add a
    shared constant. Retain a confirmation token only when it is non-blank,
    trimmed-equal, control-free, and within the bound.
-6. Preserve the first-round acknowledgement evidence without selecting a
-   public shape. The generic compound row must associate each reasoning/Plan
-   half with its exact effective, rejected, or not-observed state without an
-   adapter downcast. A requested-but-never-dispatched Plan half must not be
-   mapped to `with_pending()` because no acknowledgement was dispatched and
-   the reasoning failure is terminal. Under `DeclaredEffort` with requested
+6. Populate `ConsumerRouteCompoundAcknowledgement` on the compound row: each
+   reasoning/Plan half is `Absent`, `Effective(exact token)`, or
+   `Rejected(exact token)`, and a Plan half skipped after terminal reasoning
+   rejection is `RequestedNotDispatched`, never `with_pending()`. Apply the
+   adapter-local 128-byte bound and exact admitted sets before constructing
+   the shared value; never expose the ACP payload. Under `DeclaredEffort` with requested
    `"on"`, retain the exact provider-confirmed effort rather than `"on"`.
    Keep the two disjoint foreign/unretainable branches the gate fixes separate:
    - **pre-lifecycle (case 2)** — the lifecycle already aborted, so return its
@@ -98,12 +89,10 @@ that public shape.
      `open_session` still succeeds on the identical fixture.
 7. Preserve `driver.rs`'s reasoning-then-Plan confirmation order and control
    flow exactly. A maximal request whose reasoning rejects never dispatches the
-   Plan request, so any eventual design must represent that Plan half as
-   requested but not observed, without extra provider work, without mapping it
-   to pending acknowledgement state, and without requiring an adapter downcast
-   to read it. `KimiReasoningAcknowledgement::RequestedNotObserved` is
-   speculative and unreachable under the fixed order and is not an accepted
-   public baseline. Because reasoning is confirmed first, no exposed outcome
+   Plan request, so that Plan half is `RequestedNotDispatched`, with no extra
+   provider work and no adapter downcast to read it. A not-dispatched
+   reasoning half is unreachable under the fixed order and card 079 rejects
+   it at construction. Because reasoning is confirmed first, no exposed outcome
    can carry an unobserved reasoning half; every earlier failure takes case 2.
 8. Publish `feature.negotiated-model-options-observation` only when
    `parse_model_options` returned `Some`. Change neither `parse_model_options`
@@ -140,8 +129,8 @@ roles, capability profiles, extension namespaces, ownership modes, attachment
 option rejection, and provider-state policies — not from the provider feature
 matrix and not from card 033's provisional 86/3 split.
 
-These ledgers are retained evidence. They are not authorization, and none of
-these rows counts toward Contract 061 coverage while this card is blocked.
+These ledgers are the implementation target. None of these rows counts toward
+Contract 061 coverage until this card merges.
 
 ### `kimi-code.acp` — 25 Rows, 21 Emitted, 3 Withheld, 1 Undecided
 
@@ -163,18 +152,17 @@ these rows counts toward Contract 061 coverage while this card is blocked.
 | 14 | `session-lifecycle` | `feature.persistent-session-posture` | emitted — `KimiPreparedSessionImport` only — the session plan is `Prohibited` |
 | 15 | `route-capability` | `feature.prepared-facade` | emitted — `KimiPreparedSession`; `KimiPreparedSessionCatalogue`; `KimiPreparedSessionImport`; `open_session_with_projection` |
 | 16 | `route-observation` | `feature.activity-observation` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
-| 17 | `interactive-session` | `feature.active-session-reasoning-and-plan-ack` | emitted — `open_session_with_projection` only — **shape unresolved**, see the gate's open route-local item |
+| 17 | `interactive-session` | `feature.active-session-reasoning-and-plan-ack` | emitted — `open_session_with_projection` only — carries card 079's compound acknowledgement value |
 | 18 | `interactive-session` | `feature.negotiated-model-options-observation` | emitted — `open_session_with_projection` only |
 | 19 | `interactive-session` | `control.model-selection` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 20 | `interactive-session` | `control.reasoning-selection` | emitted — `KimiPreparedSession` (maximal); `open_session_with_projection` (maximal) |
 | 21 | `interactive-session` | `control.session-options` | emitted — `KimiPreparedSession`; `open_session_with_projection` |
 | 22 | `session-management` | `control.load-session` | emitted — attachment-compatible profiles only — `load_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
 | 23 | `session-management` | `control.resume-session` | emitted — attachment-compatible profiles only — `resume_request` calls `reject_attachment_options`, so maximal reasoning/Plan profiles omit it |
-| 24 | `session-management` | `control.provider-session-catalogue` | emitted only from a matching successful completed provider-operation outcome |
+| 24 | `session-management` | `control.provider-session-catalogue` | emitted — provider-operation view only, from a matching successful completed catalogue outcome (card 073) |
 | 25 | `session-management` | `control.provider-session-import` | emitted — `KimiPreparedSessionImport` |
 
-25 distinct tuples; 22 emitted; 3 withheld. These dispositions remain evidence
-only while card 076 is open.
+25 distinct tuples; 22 emitted; 3 withheld.
 
 ### `kimi-code.headless` — 20 Rows, 10 Emitted, 10 Withheld
 

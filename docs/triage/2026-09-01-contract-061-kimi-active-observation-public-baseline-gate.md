@@ -1,6 +1,6 @@
 # Contract 061 Kimi Active-Observation Public-Baseline Gate
 
-Status: stopped; shared provider-operation observation decision required; card 034 not ready
+Status: promoted 2026-09-04; both shared baselines (cards 073 and 079) merged and card 034 is ready; retained as the route-local evidence card 034 owns; pruned when card 034 closes
 Owner: Tom
 Date: 2026-09-01
 Source: operator decision, Card 033 evidence stop, Contract 061, and `main` at

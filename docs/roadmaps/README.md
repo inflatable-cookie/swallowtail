@@ -15,16 +15,16 @@ shape.
 
 ## Next Task
 
-Implement [g05.009 card 079](g05/batch-cards/079-contract-061-compound-acknowledgement-baseline.md)
-as the lead of the approved concurrent frontier. Cards 074 and 075 complete the
-Gemini/Grok tranche; card 076's merged planning result records the accepted
-compound acknowledgement design and card 079 realizes it in runtime and testkit; and
+Implement [g05.009 card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md)
+as the lead of the approved concurrent frontier: the exact 89-row Kimi and
+Kimi Platform Contract 061 tranche, unblocked by the merged cards 073 and 079
+baselines, from the manifest in that roadmap.
 [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
-makes `claude-agent.sdk` read-write with permission policy as the `v0.4.1`
-carrier. g05.028 is complete: OpenCode qualified through `1.18.28`. Card 034
-remains planned behind card 079.
-Current Contract 061 coverage is 481 proved / 286 remaining; cards 074 and 075
-can reconcile 103 rows without a new shared baseline. `v0.4.0` is tagged and
+runs concurrently as the `v0.4.1` carrier; its PR 221 is held on the core
+preflight guard decision. Cards 074, 075, 076, and 079 are merged. g05.028 is
+complete: OpenCode qualified through `1.18.28`.
+Current Contract 061 coverage is 481 proved / 286 remaining; card 034 can
+reconcile 89 rows without a new shared baseline. `v0.4.0` is tagged and
 the feature/currentness freeze is lifted.
 
 ## Standing Lanes

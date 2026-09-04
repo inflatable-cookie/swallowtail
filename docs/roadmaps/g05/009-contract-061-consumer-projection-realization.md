@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 481 rows proved; cards 074, 075, 076, and 079 are complete; Card 034 awaits downstream readiness
+Status: ready; 481 rows proved; cards 074, 075, 076, and 079 are complete; card 034 (candidate F, 89 rows) is ready
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -353,6 +353,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged
 - [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
 - [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
@@ -528,3 +529,25 @@ cards 074, 075, and 076's planning PR, and with g05.029 card 080.
 | Review oracle | the card's invariant |
 | Stop conditions | any deviation from card 076's exact names returns to Chatterbox |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 034 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 034 became ready when card 079 merged at `4258f526`; card 073 had
+already merged the provider-operation baseline.
+
+| Field | Card 034 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | cards 073 and 079 on `main`; the retained Kimi gate note; card 076's accepted design; the reviewed census |
+| Completion conditions | exact 25/20/31/13 ledgers prove 75 emitted and 14 withheld across 89 tuples; `open_session_with_projection`, the outcome-backed catalogue seam, and the compound acknowledgement value land as the retained scope fixes; named validation green; one reviewable PR |
+| Owned mutable paths | `crates/swallowtail-adapter-kimi/**`; `crates/swallowtail-adapter-kimi-platform/**`; `release-baselines/public-api-0.4.0/swallowtail-adapter-kimi.txt` and `swallowtail-adapter-kimi-platform.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | shared runtime, testkit, and core; every other adapter; contracts; architecture; the Kimi gate note; the census; Kimi version claims and `selection.rs` ranges |
+| Approved concurrent siblings | g05.029 card 080 and its successor lanes |
+| Serial edges | none |
+| Worker capability class | Rust implementation worker with acknowledgement and outcome-admission discipline; frontier-tier; no provider credentials |
+| Acceptance evidence | four per-route ledger fixtures; compound half-state fixtures for effective/rejected/not-dispatched pairings; outcome-backed catalogue proof; case 2 and case 4 failure proofs; focused and package-affected validation; additive API diff |
+| Review oracle | no prepared evidence masquerades as completed operation, no pending half is invented, no adapter downcast is needed to read a half state, and `open_session` is byte-identical in behaviour |
+| Stop conditions | the card's Stop Conditions; any need for a shared type or contract change returns to Chatterbox |
+| Escalation owner | operator via Chatterbox for semantics; coordinator for mechanical blockers |

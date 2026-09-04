@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — ready; candidate F; 25 `kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, 13 `kimi-platform.chat` rows; 75 emitted, 14 withheld
 - [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — ready; Edit/Write/MultiEdit under per-call admission on a read-write lease; permission mode at open and mid-session; `v0.4.1` carrier
 
 ## Planned
@@ -16,7 +17,6 @@
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — planned; g05.029 priority 9
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 079 merges
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 

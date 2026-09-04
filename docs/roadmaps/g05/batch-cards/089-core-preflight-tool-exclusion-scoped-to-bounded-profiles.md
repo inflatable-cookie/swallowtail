@@ -1,6 +1,6 @@
 # 089 Core Preflight Tool Exclusion Scoped To Bounded Profiles
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -84,3 +84,5 @@ semantic API baseline is additive only: core is unchanged; testkit adds the
 four explicit fixture cases and named assertion. Docs, Northstar, formatting,
 diff, and API gates pass. The god-file scan remains at the inherited 396
 findings, with no Card 089 path added.
+
+Merged through PR 223 at `e4399790dc7ee8ea6b0b2105cac686866527f9c5`.

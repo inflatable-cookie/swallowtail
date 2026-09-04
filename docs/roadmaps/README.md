@@ -20,9 +20,9 @@ as the lead of the approved concurrent frontier: the exact 89-row Kimi and
 Kimi Platform Contract 061 tranche, unblocked by the merged cards 073 and 079
 baselines, from the manifest in that roadmap.
 [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
-runs concurrently as the `v0.4.1` carrier: PR 221 merges as it stands and
-[card 089](g05/batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md)
-narrows the core preflight guard so the write half can follow. Cards 074, 075, 076, and 079 are merged. g05.028 is
+runs concurrently as the `v0.4.1` carrier; card 089's bounded-profile
+preflight guard is merged, so its second PR can follow. Cards 074, 075, 076,
+079, and 089 are merged. g05.028 is
 complete: OpenCode qualified through `1.18.28`.
 Current Contract 061 coverage is 481 proved / 286 remaining; card 034 can
 reconcile 89 rows without a new shared baseline. `v0.4.0` is tagged and

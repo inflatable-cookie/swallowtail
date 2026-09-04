@@ -1,0 +1,136 @@
+{
+  "executing_path": {
+    "npm_bin": "dist/main.mjs",
+    "github_archive_member": "kimi",
+    "archive_format": "node-single-executable-application",
+    "owned_argv": [
+      "web",
+      "--no-open",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<port>",
+      "--log-level",
+      "info"
+    ],
+    "process_request_sets_cwd": false,
+    "legacy_env_not_set_by_swallowtail": "KIMI_CODE_LEGACY_FLAG",
+    "never_passes_allow_remote_terminals": true,
+    "never_passes_dangerous_bypass_auth": true,
+    "never_passes_remote_control": true
+  },
+  "selected_local_server_source": {
+    "comment": "git blob SHAs at the named commits; 0.39.0..=0.41.0 hold after a comment-only 0.38.0 hop",
+    "auth_ts": {
+      "0.38.0": "9fedc57a6b98ea3b59a6b0eed959fb6bc1883092",
+      "0.39.0..=0.41.0": "0bb9ea42f8437c6a45deafe8cb84529d8005525c",
+      "0.38.0_to_0.39.0": "comment-only"
+    },
+    "rest_model_catalog_ts": {
+      "0.38.0": "f3f7105b5b85903f4fe215b86614c08f5d7beb01",
+      "0.39.0..=0.41.0": "ad58d6be8d26b89da757ee6a0d83732a1d978d0b",
+      "0.38.0_to_0.39.0": "comment-only"
+    },
+    "ws_control_ts": {
+      "0.38.0": "1245774552dd363ab166ed549fb58b6abe95da9d",
+      "0.39.0..=0.41.0": "546984d23ab3340d396eadb1570b804fc6494333",
+      "0.38.0_to_0.39.0": "comment-only"
+    },
+    "rest_session_ts": {
+      "0.38.0": "f1cc7d5132e813598b423b5366030e193fa450cd",
+      "0.39.0..=0.41.0": "1abc32e6b9fadf365ae7250573895af4aadcaf65",
+      "0.38.0_to_0.39.0": "comment-only"
+    },
+    "rest_approval_ts_unchanged_0_38_0_through_0_41_0": "bb7e354bce8eb15bf4634f0785abf4c2a63d7d01",
+    "rest_question_ts_unchanged_0_38_0_through_0_41_0": "3584025ac68ccf3478e0fa216fee62a626368330",
+    "terminals_ts_unchanged_0_38_0_through_0_41_0": "251ad90cac3d8334120f8bcadd53c4d5a6e8ef66",
+    "web_index_ts": {
+      "0.38.0": "8cf8406716485e793395a1b8b618df1786bc175d",
+      "0.39.0..=0.41.0": "c7bb5d836e0c13d4c6114475d56ff192645eb21f"
+    },
+    "web_run_ts": {
+      "0.38.0": "2792937440b5292dec1d7277c8326d8af47719d9",
+      "0.39.0..=0.41.0": "261623444fa2199ce369dceae8425eae126badf0"
+    },
+    "web_shared_ts": {
+      "0.38.0": "a416d7e887260f714ac810ef59e028a9affd390c",
+      "0.39.0..=0.41.0": "91fede6c07bbdacea36243865beeaea5cdd8a5e0"
+    },
+    "mapped_wire_schemas_comment_only_at_0_39_0": true,
+    "mapped_wire_blobs_byte_identical_0_39_0_through_0_41_0": true,
+    "heartbeat_ping_schema_unchanged": true,
+    "archive_restore_schema_comment_only_at_0_39_0": true
+  },
+  "web_cli_deltas": {
+    "removed_at_0_39_0": "--allow-remote-terminals",
+    "pty_terminals_loopback_only_from_0_39_0": true,
+    "added_unmapped_remote_control": [
+      "apps/kimi-code/src/cli/sub/web/remote-control.ts",
+      "apps/kimi-code/src/cli/sub/web/remote-control-lock.ts"
+    ],
+    "swallowtail_never_selected_allow_remote_terminals": true,
+    "swallowtail_owned_bind_is_loopback": true,
+    "classification": "unmapped"
+  },
+  "bash_cwd_authority": {
+    "commit": "b4ae7f875dddcc40878c8d48d29bce02727dd87c",
+    "first_published": "0.40.0",
+    "holds_through": "0.41.0",
+    "bash_tool_call": "view.resolve(args.cwd ?? view.workDir)",
+    "runtime_workspace_view_ts": {
+      "0.38.0": "06ccea0050af00057e45b5a128ca7a679878524a",
+      "0.40.0..=0.41.0": "01db1bbf8f51cc1b16178d3d4e07817d4b63d372"
+    },
+    "terminal_service_ts": {
+      "0.38.0..=0.39.0": "048f29c6c0951ca84ba5e3dec1f942f5518c4324",
+      "0.40.0..=0.41.0": "7d778229ffa63bce440aa8a2f97e79d203279e60"
+    },
+    "before": {
+      "resolve": "maps then assertAllowed; FS_PATH_ESCAPES if outside workspace roots",
+      "bash_cwd_outside_workspace": "throws"
+    },
+    "after": {
+      "resolve": "pure path mapping; no workspace assertion",
+      "bash_cwd_outside_workspace": "accepted; test covers cd '/outside/workspace' && pwd",
+      "pty_create_still_assertAllowed": true
+    }
+  },
+  "containment_trace": {
+    "question": "does any Swallowtail control, server profile, or remaining provider boundary contain Bash cwd escape for a local-server client",
+    "harness_isolation_declared": "AmbientHost",
+    "harness_configuration_posture": "Ambient",
+    "contract_023_clause": "the harness process and descendants execute with the ambient authority of the selected execution host",
+    "contract_023_tool_clause": "provider approval modes, tool allowlists or denylists, plan modes, safe modes, and disabled extensions limit harness behavior; they do not contain the harness process, its descendants, or unmediated filesystem and network access",
+    "contract_017_ambient_clause": "under AmbientHost the working-resource lease remains a location and callback scope only",
+    "contract_017_cwd_clause": "setting a working directory, passing a resource path, denying an approval, advertising ACP filesystem capabilities, or trusting provider convention does not prove containment",
+    "process_request_sets_cwd": false,
+    "adapter_control_found": false,
+    "runtime_control_found": false,
+    "loopback_bind_contains_network_not_process_cwd": true,
+    "pty_assertAllowed_is_not_the_bash_tool_path": true,
+    "provider_boundary_remaining_for_bash_cwd": false,
+    "same_risk_class_as_acp_a2": true,
+    "same_conclusion_as_acp_a2": true,
+    "mechanism_differs_from_acp_a2": "ACP lost a Swallowtail-advertised terminal:false fail-closed; local-server lost a provider-internal resolve() workspace assertion the client never claimed as isolation",
+    "conclusion": "containment is absent; the 0.40.0 Bash cwd change widens local process authority for this transport"
+  },
+  "decoder_corpus": "kimi-local-server-0.28.1-0.29.0",
+  "unmapped_deltas": [
+    "kimi web --allow-remote-terminals removal; PTY routes stay loopback-only",
+    "experimental Remote Control (kimi rc / --remote-control) behind KIMI_CODE_EXPERIMENTAL_REMOTE_CONTROL",
+    "0.41.0 auto-permission-mode drop of the dangerous-command and unanalyzable-command guard",
+    "web UI plugins panel, tower mode, session rating, file-history always-on",
+    "ACP KIMI_CODE_LEGACY_FLAG ignored on kimi acp (installed-harness observation only)",
+    "secondary_model pool default-on"
+  ],
+  "other_family_observations_not_acted_on": {
+    "kimi_code_acp": "0.41.0 kimi acp ignores KIMI_CODE_LEGACY_FLAG; ACP remains QualifiedOnly at 0.38.0; this record edits no ACP claim",
+    "kimi_code_headless": "headless claims, corpora, and conclusions untouched"
+  },
+  "provider_prompt_sent": false,
+  "authentication_performed": false,
+  "live_probe_run": false,
+  "local_server_started": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

@@ -1,9 +1,9 @@
 # 062 Kimi Code Local Server 0.41.0 Identity (retargeted from 0.40.1)
 
-Status: ready; retargeted 2026-09-04 to official latest `0.41.0` after the stop; resume the same worker with its collected `0.40.1` evidence as published adjacency
+Status: complete; stop. Official `0.41.0` identity corroborated; Bash `cwd` uncontained; ceiling stays `0.38.0`; card 063 not admitted
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-04 (retarget)
+Updated: 2026-09-04
 Milestone: `../026-kimi-code-local-server-0-40-1-useful-newer.md`
 Depends on: Contract 029; Contracts 017 and 023; Research 270 and 276; tagged `v0.4.0`; official stable `0.41.0`
 
@@ -105,3 +105,19 @@ Official latest moves again during the run; npm and GitHub identity disagree; th
 `cwd` change widens local process authority with no contained boundary; a
 selected surface changed without a deterministic provider-neutral mapping; a
 new driver/facade revision is required.
+
+## Result
+
+Stop. Official `@moonshot-ai/kimi-code` `0.41.0` identity is corroborated from
+npm and GitHub. Frozen `0.38.0` local-server corpus digests recompute.
+Selected REST/WebSocket v2 protocol files are comment-only at `0.39.0` and
+byte-identical through `0.41.0`. The `0.40.0` Bash `cwd` restriction removal
+is uncontained for this transport: `RuntimeWorkspaceView.resolve` no longer
+asserts workspace membership, Swallowtail launches `kimi web` under
+`AmbientHost` with no process cwd, and Contracts 017 and 023 name no
+containing control. Same conclusion as ACP A2, different mechanism.
+Production claims are unchanged. Ceiling stays `0.38.0`. Reopen when a named
+Swallowtail or provider containing boundary exists for Bash `cwd` on the
+local-server client. Card 063 is not admitted. Evidence:
+[Research 282](../../../research/282-kimi-code-local-server-0-41-0-identity.md)
+and `crates/swallowtail-adapter-kimi/tests/fixtures/kimi-local-server-0.41.0/`.

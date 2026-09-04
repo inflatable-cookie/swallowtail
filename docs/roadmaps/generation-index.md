@@ -389,7 +389,7 @@ Bedrock, and Cursor tranche (PR 209 merged as `d2d8ae8b`). Card 066 stopped cand
 carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
 Chatterbox promoted it into Contract 061 on 2026-09-04, runtime baseline card
-073 is ready, and candidate I plus card 034 follow card 073.
+073 is merged, and candidate I plus card 034 await reconciliation.
 
 ## Rollover Rule
 
@@ -403,8 +403,8 @@ rollover still requires explicit operator authority.
 
 Implement the active task named by the
 [roadmaps front door](README.md#next-task). The active next action is to
-implement Card 073's provider-operation observation baseline in runtime and
-testkit only. Research 284 is concurrently under exact-head review and Card
-065 remains active. Card 071 is closed as an evidence stop at `1.1.22`, with
-ceiling `1.1.17`. This index records generation status; the canonical
+continue Card 065's Gemini/Grok breadth audit. Card 073's provider-operation
+observation baseline is merged; candidate I and card 034 await reconciliation.
+Research 284 is complete and Card 071 is closed as an evidence stop at
+`1.1.22`, with ceiling `1.1.17`. This index records generation status; the canonical
 actionable pointer stays in the front door.

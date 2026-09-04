@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 is ready; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 merged as `e39e0aa8`; audit 065 remains active and candidate I/card 034 await reconciliation
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04

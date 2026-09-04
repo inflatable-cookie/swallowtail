@@ -2,8 +2,6 @@
 
 ## Ready
 
-- [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
-
 ## Planned
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
@@ -14,6 +12,7 @@
 
 ## Completed
 
+- [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; 39 emitted and 17 withheld; PR 205 merged as `1b9fae10`; evidence note awaits Chatterbox reconciliation
 - [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; candidate I and card 034 await Chatterbox reconciliation
 - [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; unbounded provider-managed retry is unaccepted; ceiling remains `1.1.17`; PR 212 merged as `333618ca`
 - [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; no runtime or Contract 061 promotion by Coordinator

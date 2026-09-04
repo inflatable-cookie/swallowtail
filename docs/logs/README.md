@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.009 Card 065 Candidate E Breadth Audit](./2026-09-04-g05-009-card-065-candidate-e-breadth-audit.md) — exact 56-row Gemini/Grok audit accepted at `daa46dfd` and merged through PR 205 as `1b9fae10`; 39 emitted and 17 withheld; evidence note awaits Chatterbox reconciliation
 - [2026-09-04 g05.009 Card 073 Provider-Operation Observation Runtime Baseline](./2026-09-04-g05-009-card-073-provider-operation-observation-runtime-baseline.md) — exact runtime/testkit baseline accepted through PR 214 at `5e32cf4a`, merged as `e39e0aa8`; candidate I and card 034 await reconciliation
 - [2026-09-04 Research 284 All-Route Currentness Checkpoint](./2026-09-04-research-284-all-route-currentness-checkpoint.md) — exact 41-row checkpoint accepted through PR 213 at `c35824cc`, merged as `8fdea82f`; OpenCode HTTP `1.18.28` ranked as the next material candidate with no claim changes
 - [2026-09-04 g05.027 Card 071 Antigravity 1.1.26 Identity Stop](./2026-09-04-g05-027-card-071-antigravity-1-1-26-identity-stop.md) — exact identity accepted through PR 212 at `93657624`, merged as `333618ca`; stopped at `1.1.22` on unbounded provider-managed retry; ceiling remains `1.1.17`

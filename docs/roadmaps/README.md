@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Continue [g05.009 audit 065](g05/batch-cards/065-contract-061-candidate-e-breadth-audit.md):
-complete the Gemini/Grok breadth audit from the promoted manifest. Card 073's
+Reconcile accepted [g05.009 audit 065](g05/batch-cards/065-contract-061-candidate-e-breadth-audit.md)
+through Chatterbox; do not compile Candidate E implementation here. Card 073's
 provider-operation observation runtime/testkit baseline is merged; candidate I
-completion and card 034 now await Chatterbox reconciliation. Card 071 is closed as an evidence stop at
+completion and card 034 await Chatterbox reconciliation. Card 071 is closed as an evidence stop at
 Antigravity `1.1.22`. The all-route currentness checkpoint
 lane in `standing-lanes.md` completed as Research 284 without changing claims;
 it ranks OpenCode HTTP `1.18.28` for a future Chatterbox-compiled family lane.

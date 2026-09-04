@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 merged as `e39e0aa8`; audit 065 remains active and candidate I/card 034 await reconciliation
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; Contract 061 amended for provider-operation observation and runtime baseline card 073 merged as `e39e0aa8`; audit 065 complete; Candidate E evidence, candidate I, and card 034 await reconciliation
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -375,7 +375,7 @@ provider-operation observation public-baseline decision, and coverage stays
 - [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — ready; runtime and testkit only; unblocks candidate I completion and card 034
 - [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; planning evidence accepted in PR 211 at `39db42d9`, merged as `dba7d8c2`; Chatterbox promotion required before candidate I or card 034
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
-- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
+- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — complete; 56 rows; 39 emitted and 17 withheld; PR 205 merged as `1b9fae10`; evidence note awaits reconciliation
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 073 merges
 
 ## Batch Cards Completed

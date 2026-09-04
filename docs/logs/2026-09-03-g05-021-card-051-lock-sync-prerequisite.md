@@ -1,7 +1,7 @@
 # g05.021 Card 051 Lock Sync Prerequisite
 
 Date: 2026-09-03
-Status: review required
+Status: accepted
 
 ## Failure
 
@@ -45,7 +45,43 @@ confirmed failure plus restoration of `Cargo.toml`, `CHANGELOG.md`, and
 
 ## Boundary
 
-This prerequisite does not run prepare, refresh Cargo.lock manually, weaken
-`--locked`, tag, publish, or contact a provider. The preserved candidate edits
-resume only after exact-head review and merge. A new explicit operator
-authorization is required before one later mutating prepare attempt.
+Swallowtail PR 200 exact head `e55021d2` passed independent review and merged
+as `20b937ee`. The candidate then resumed from that canonical base without the
+obsolete manual manifest or papercut edits. Every source authority surface was
+written before preparation to describe the eventual frozen state.
+
+A second fresh operator authorization covered exactly one Effigy prepare. The
+first nine gates passed, then `floor` failed in
+`no_compared_isolation_candidate_satisfies_the_review_oracle` because a
+parallel watcher test reused another local host's released temporary path.
+Effigy rolled back `Cargo.toml`, `CHANGELOG.md`, and `Cargo.lock` and wrote no
+prepared state. That authorization is consumed. The watcher fixture now gives
+each local host a process-and-sequence-unique temporary root and keeps the
+path-removal assertion behind a deterministic reuse regression. The floor
+selector's obsolete in-gate `cargo update --workspace` and value-only lock
+validator are removed; accepted Effigy merge `4c554135` is the sole lock-sync
+owner before the floor's pinned-Rust Clippy and tests.
+
+A third fresh operator authorization covered exactly one Effigy prepare.
+`fmt`, `lint`, and `lint:no-features` passed, then `test` failed
+`deadline_after_dispatch_is_joined_unconfirmed_and_releases_access`: the
+OpenCode fixture's independent 20-millisecond deadline and 100-millisecond
+response timers let the response win under scheduler delay and produced
+`Applied` instead of `UnconfirmedAfterEffect`. Effigy rolled back all three
+owned mutations and wrote no prepared state. That authorization is consumed.
+The repaired fixture holds the response after observed DELETE dispatch,
+explicitly fires and observes the deadline, and only then releases the response
+for joined cleanup. The exact test held 100 default-toolchain runs and 25 Rust
+`1.95` runs; the focused OpenCode suite and Clippy passed.
+
+One later final operator authorization covered exactly one Effigy prepare. The
+transaction owned `Cargo.toml`, `CHANGELOG.md`, and `Cargo.lock`, passed all 11
+configured gates, and was followed immediately by read-only changelog
+extraction. The source then froze for exact-head review. Exact fingerprints,
+gate timings, and extraction digest are recorded in the candidate PR evidence,
+not a post-gate source edit.
+
+This prerequisite does not refresh Cargo.lock manually, weaken `--locked`,
+execute a release, tag, publish, contact a provider, or mutate a consumer.
+Card 051 still requires exact-head review, canonical merge, and exact-SHA CI.
+Card 052 and every release-execution or tag action remain separately gated.

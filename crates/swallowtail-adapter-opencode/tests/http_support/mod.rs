@@ -21,6 +21,9 @@ const DUPLICATE_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/duplica
 const MISSING_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/missing-usage.sse");
 const COMPACTION: &str = include_str!("../fixtures/opencode-v1.14.48-v1.18.10/compaction.sse");
 
+mod delete_gate;
+use delete_gate::DeleteResponseGate;
+
 #[derive(Clone, Copy, Eq, PartialEq)]
 #[allow(dead_code)]
 pub enum StreamFixture {
@@ -39,6 +42,7 @@ pub enum StreamFixture {
     DeleteMalformedSuccess,
     DeleteDisconnect,
     DeleteDelayed,
+    DeleteGated,
     DeleteHealthDrift,
     ImportTitleDrift,
     ImportDelayed,
@@ -50,6 +54,7 @@ pub struct FixtureServer {
     endpoint: String,
     requests: Arc<Mutex<Vec<String>>>,
     stop: Arc<AtomicBool>,
+    delete_gate: DeleteResponseGate,
     thread: Option<JoinHandle<()>>,
 }
 
@@ -58,6 +63,7 @@ struct HandleState {
     aborted: Arc<AtomicBool>,
     callback_replies: Arc<AtomicUsize>,
     health_requests: Arc<AtomicUsize>,
+    delete_gate: DeleteResponseGate,
     stop: Arc<AtomicBool>,
 }
 
@@ -75,8 +81,10 @@ impl FixtureServer {
         let endpoint = format!("http://{address}");
         let requests = Arc::new(Mutex::new(Vec::new()));
         let stop = Arc::new(AtomicBool::new(false));
+        let delete_gate = DeleteResponseGate::default();
         let server_requests = Arc::clone(&requests);
         let server_stop = Arc::clone(&stop);
+        let server_delete_gate = delete_gate.clone();
         let server_version = Arc::new(server_version.to_owned());
         let thread = thread::spawn(move || {
             let aborted = Arc::new(AtomicBool::new(false));
@@ -96,6 +104,7 @@ impl FixtureServer {
                             let health_requests = Arc::clone(&health_requests);
                             let callback_replies = Arc::clone(&callback_replies);
                             let server_version = Arc::clone(&server_version);
+                            let delete_gate = server_delete_gate.clone();
                             handlers.push(thread::spawn(move || {
                                 handle(
                                     stream,
@@ -105,6 +114,7 @@ impl FixtureServer {
                                         aborted,
                                         callback_replies,
                                         health_requests,
+                                        delete_gate,
                                         stop,
                                     },
                                     &server_version,
@@ -119,6 +129,7 @@ impl FixtureServer {
                                     aborted: Arc::clone(&aborted),
                                     callback_replies: Arc::clone(&callback_replies),
                                     health_requests: Arc::clone(&health_requests),
+                                    delete_gate: server_delete_gate.clone(),
                                     stop: Arc::clone(&server_stop),
                                 },
                                 &server_version,
@@ -139,6 +150,7 @@ impl FixtureServer {
             endpoint,
             requests,
             stop,
+            delete_gate,
             thread: Some(thread),
         }
     }
@@ -158,11 +170,16 @@ impl FixtureServer {
     pub fn request_log(&self) -> Arc<Mutex<Vec<String>>> {
         Arc::clone(&self.requests)
     }
+
+    pub(crate) fn delete_response_gate(&self) -> DeleteResponseGate {
+        self.delete_gate.clone()
+    }
 }
 
 impl Drop for FixtureServer {
     fn drop(&mut self) {
         self.stop.store(true, Ordering::SeqCst);
+        self.delete_gate.release();
         let _ = TcpStream::connect(self.endpoint.trim_start_matches("http://"));
         if let Some(thread) = self.thread.take() {
             join_fixture_thread(thread);

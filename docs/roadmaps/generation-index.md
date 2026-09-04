@@ -188,10 +188,10 @@ Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
 card 060 is complete; card 061 is complete and merged; card 055 is complete and
 merged through PR 196 at `493f8194`. The
-`v0.4.0` release lane is unpaused; card 051 is ready on the accepted card 050
-freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`) and stops at its
-read-only preparation plan for separate explicit operator authorization. No
-card authorizes a provider turn, release mutation, tag creation, or push.
+`v0.4.0` release lane is unpaused; card 051 candidate is prepared from the
+accepted card 050 freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`) and
+awaits exact-head review, canonical merge, and exact-SHA CI. No card authorizes
+a provider turn, release execution, tag creation, tag push, or publication.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
@@ -379,9 +379,10 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). The active next action is card 051
-candidate preparation behind its separate operator prepare gate; card 052
-remains gated on completed card 051 plus the operator smoke-authority packet,
-feature/currentness implementation remains frozen, and the g05.009/card 034
-249/518 stop remains intact. This index records generation status; the
-canonical actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). The active next action is exact-head
+review of the prepared card 051 candidate, followed only after acceptance by
+canonical merge and exact-SHA CI. Card 052 remains gated on completed card 051
+plus the operator smoke-authority packet, feature/currentness implementation
+remains frozen, and the g05.009/card 034 249/518 stop remains intact. This index
+records generation status; the canonical actionable pointer stays in the front
+door.

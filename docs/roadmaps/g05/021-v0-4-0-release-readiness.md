@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; card 050 accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`; card 051 ready; card 052 planned
+Status: planned; card 050 accepted; card 051 candidate prepared and awaiting exact-head review, canonical merge, and exact-SHA CI; card 052 planned
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-03
@@ -35,9 +35,9 @@ mutation.
 - The audited head is 826 commits and 2,694 changed files beyond `v0.3.3`.
   Card 050's complete ledger audits the full semantic delta, rather than
   assuming the known `minimal` removal is the only break.
-- The current `[Unreleased]` changelog records a large public and guaranteed-
-  behavior delta. It is input to the audit, not proof that every change is
-  classified or release-ready.
+- Card 050 audited the large `[Unreleased]` public and guaranteed-behavior
+  delta. Card 051 promotes that reviewed input into the dated `0.4.0` section
+  in the prepared candidate; the changelog alone is not compatibility proof.
 - Card 058 adds a second known coordinated `v0.4.0` break: interactive-session
   close now requires exact host services and a caller-selected absolute cleanup
   deadline, with one hard boundary over post-expiry cleanup. Card 050 must
@@ -56,18 +56,36 @@ acceptance and merge of PR 196 at `493f8194` completing g05.022, release
 readiness is unpaused. Card 050's partial prior semantic API generation is
 retained as non-accepted audit evidence.
 The exact-head review accepted card 050's audit: PR 198 exact head `2f4923b8`
-merged as `835fe9ff` on canonical `main`. Card 051 is ready from that accepted
-freeze and stops at its read-only preparation plan for separate explicit
-operator authorization. The first authorization was consumed by a failed
+merged as `835fe9ff` on canonical `main`. The first Card 051 authorization was
+consumed by a failed
 prepare that rolled back cleanly after the stale workspace lock blocked the
-first `--locked` gate. The supported `Cargo.lock` sync repair must merge before
-candidate work resumes, and the later prepare requires fresh authorization.
+first `--locked` gate. Swallowtail PR 200 exact head `e55021d2` repaired the
+`Cargo.lock` sync path and merged as `20b937ee`; candidate work resumed from
+that canonical base.
 The sync depends on Effigy PR 89 exact head `7182e753`, merged as `4c554135`,
 which validates every changed lock entry against post-mutation Cargo workspace
 package identity and each member's own version before the locked gates.
-Card 052 remains planned and dependent. The single
-mutating Effigy prepare path, release mutation, tag, and push stay unauthorized
-without that separate operator decision.
+A second authorized prepare passed the first nine gates, then `floor` exposed a
+parallel Claude Code watcher-fixture path-reuse race and rolled the three owned
+mutations back. That authorization is consumed. Each watcher fixture host now
+has a unique temporary root, and the floor selector leaves lock synchronization
+to accepted Effigy merge `4c554135` before running pinned-Rust Clippy and tests.
+A third authorized prepare passed the first three gates, then `test` exposed an
+OpenCode deadline-fixture race: an independently scheduled 20-millisecond
+deadline could lose to the nominally 100-millisecond delayed response and
+misclassify the joined result as `Applied`. That authorization is consumed and
+the three owned mutations were rolled back. The repaired fixture holds the
+response until dispatch, explicitly fires and observes the deadline, then
+releases the response only for joined cleanup; the exact case held 100 default
+runs and 25 Rust `1.95` runs.
+Every candidate-state authority surface was authored before a fresh
+operator-authorized prepare. The single transaction then prepared the
+coordinated manifest, changelog, and workspace-only lockfile and passed all 11
+local gates; the promoted changelog was extracted before the source tree was
+frozen. Card 051 now awaits exact-head review, canonical merge, and exact-SHA
+CI. Card 052 remains planned and dependent. Release execution, tag creation,
+tag push, publication, provider work, and consumer mutation remain
+unauthorized.
 
 ## Runway
 
@@ -121,7 +139,7 @@ different SHA is accepted.
 ## Batch Cards
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; consumes card 050's frozen 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; Pi release-note, consumer, and rollback wording is fixed audit input; mutating prepare requires separate operator authorization
+- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; coordinated candidate prepared with the fixed 49-route boundary including `pi.sdk-sidecar` and `claude-agent.sdk`; awaits exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
 - [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; awaits completed card 051 and complete operator authority for an authenticated application smoke
 
 ## Acceptance

@@ -1,0 +1,99 @@
+pub mod swallowtail_adapter_deepseek
+pub struct swallowtail_adapter_deepseek::DeepSeekCatalogueProfileInput
+impl swallowtail_adapter_deepseek::DeepSeekCatalogueProfileInput
+pub const fn swallowtail_adapter_deepseek::DeepSeekCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_deepseek::DeepSeekCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekDirectDriver
+impl swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::open_direct_continuation_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekDirectDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_deepseek::DeepSeekModelSelection
+impl swallowtail_adapter_deepseek::DeepSeekModelSelection
+pub const fn swallowtail_adapter_deepseek::DeepSeekModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparationInput
+impl swallowtail_adapter_deepseek::DeepSeekPreparationInput
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue
+impl swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
+impl swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedEvidence::thinking_mode(&self) -> core::option::Option<swallowtail_adapter_deepseek::DeepSeekThinkingMode>
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
+impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_deepseek::DeepSeekCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::prepare_run(&self, swallowtail_adapter_deepseek::DeepSeekRunProfileInput) -> core::result::Result<swallowtail_adapter_deepseek::DeepSeekPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::prepare_session(&self, swallowtail_adapter_deepseek::DeepSeekSessionProfileInput) -> core::result::Result<swallowtail_adapter_deepseek::DeepSeekPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparedRun
+impl swallowtail_adapter_deepseek::DeepSeekPreparedRun
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::low_level_driver(&self) -> swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_deepseek::DeepSeekPreparedSession
+impl swallowtail_adapter_deepseek::DeepSeekPreparedSession
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest)
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::low_level_driver(&self) -> swallowtail_adapter_deepseek::DeepSeekDirectDriver
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::request(&self) -> &swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest
+impl swallowtail_adapter_deepseek::DeepSeekPreparedSession
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub struct swallowtail_adapter_deepseek::DeepSeekRunProfileInput
+impl swallowtail_adapter_deepseek::DeepSeekRunProfileInput
+pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_core::model::ReasoningMode, core::num::nonzero::NonZeroU64, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
+pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::new_with_thinking_mode(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_adapter_deepseek::DeepSeekThinkingMode, core::num::nonzero::NonZeroU64, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
+pub const fn swallowtail_adapter_deepseek::DeepSeekRunProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekSessionProfileInput
+impl swallowtail_adapter_deepseek::DeepSeekSessionProfileInput
+pub fn swallowtail_adapter_deepseek::DeepSeekSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek::DeepSeekModelSelection, swallowtail_core::model::ReasoningMode, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>, swallowtail_core::direct_continuation::ProviderInferenceCachePolicy) -> Self
+pub struct swallowtail_adapter_deepseek::DeepSeekThinkingMode
+impl swallowtail_adapter_deepseek::DeepSeekThinkingMode
+pub const fn swallowtail_adapter_deepseek::DeepSeekThinkingMode::as_str(self) -> &'static str
+pub const fn swallowtail_adapter_deepseek::DeepSeekThinkingMode::disabled() -> Self
+pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_ENDPOINT: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_FACADE_REVISION: &str
+pub const swallowtail_adapter_deepseek::DEEPSEEK_MODEL_ID: &str
+pub fn swallowtail_adapter_deepseek::deepseek_continuation_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_adapter_deepseek::deepseek_direct_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_deepseek::deepseek_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_deepseek::deepseek_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_deepseek::deepseek_v4_config() -> swallowtail_core::direct_continuation::DirectContinuationConfig
+pub fn swallowtail_adapter_deepseek::deepseek_v4_requirements(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_deepseek::deepseek_v4_run_requirements(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_deepseek::prepare_deepseek_direct(swallowtail_adapter_deepseek::DeepSeekPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_deepseek::DeepSeekPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_deepseek::validate_deepseek_request_plan(&swallowtail_core::preflight::PreflightPlan, &swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>

@@ -1,0 +1,144 @@
+pub mod swallowtail_adapter_llama_cpp
+#[non_exhaustive] pub enum swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection
+pub swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection::Disabled
+impl swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection::as_argument_value(self) -> &'static str
+pub struct swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+impl swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver::new() -> Self
+impl core::default::Default for swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver::default() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparationInput
+impl swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparationInput
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
+impl swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence::expected_build(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence::expected_commit(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration
+impl swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::expected_build(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::expected_commit(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration::prepare_inference_attempt(&self, swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput
+impl swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppContextSize(_)
+impl swallowtail_adapter_llama_cpp::LlamaCppContextSize
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::as_u32(self) -> u32
+pub fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::from_u64(u64) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_llama_cpp::LlamaCppContextSize::new(core::num::nonzero::NonZeroU32) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput
+impl swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_llama_cpp::LlamaCppModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppInferenceProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppModelSelection
+impl swallowtail_adapter_llama_cpp::LlamaCppModelSelection
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+impl swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::new() -> Self
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::with_reasoning(self, swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection) -> Self
+impl core::default::Default for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::default() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ServingInstanceDriver for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::attach(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::AttachServingRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::AttachedServingHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::start(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StartServingRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::OwnedServingHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparationInput
+impl swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparationInput
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
+impl swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::artifact(&self) -> &swallowtail_core::model_artifact::ModelArtifactBinding
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expected_build(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::expected_commit(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration
+impl swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::artifact(&self) -> &swallowtail_core::model_artifact::ModelArtifactBinding
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::expected_build(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::expected_commit(&self) -> &'static str
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::prepare_serving_start(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::identity::ServingInstanceId, swallowtail_runtime::time::Deadline) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
+impl swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::context_size(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppContextSize>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::new(swallowtail_core::model_artifact::ModelArtifactBinding, swallowtail_adapter_llama_cpp::LlamaCppModelSelection) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::reasoning(&self) -> core::option::Option<swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection>
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_context_size(self, swallowtail_adapter_llama_cpp::LlamaCppContextSize) -> Self
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppOwnedServingSelection::with_reasoning(self, swallowtail_adapter_llama_cpp::LlamaCppReasoningSelection) -> Self
+pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedEvidence
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppAttachedDriver
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart
+impl swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::evidence(&self) -> &swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedEvidence
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::low_level_driver(&self) -> swallowtail_adapter_llama_cpp::LlamaCppOwnedDriver
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::request(&self) -> &swallowtail_runtime::roles::StartServingRequest
+pub fn swallowtail_adapter_llama_cpp::LlamaCppPreparedServingStart::start(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::OwnedServingHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_BUILD: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_COMMIT: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_ENDPOINT_FIELD_ID: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_ATTACHED_RUNTIME_REVISION: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_BUILD: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_COMMIT: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_llama_cpp::LLAMA_CPP_OWNED_RUNTIME_REVISION: &str
+pub const swallowtail_adapter_llama_cpp::MAXIMUM: u32
+pub const swallowtail_adapter_llama_cpp::MINIMUM: u32
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_access_profile() -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_runtime_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_attached_runtime_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_owned_access_profile() -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_owned_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_owned_runtime_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_llama_cpp::llama_cpp_owned_runtime_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_llama_cpp::prepare_llama_cpp_attached(swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppAttachedPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_llama_cpp::prepare_llama_cpp_owned(swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_llama_cpp::LlamaCppOwnedPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

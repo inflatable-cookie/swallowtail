@@ -9,6 +9,7 @@ pub use task::{FailingTaskService, TaskState, ThreadTaskService};
 pub use time::{ControllableTimeService, ImmediateTimeService, PendingTimeService};
 
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use swallowtail_adapter_claude_agent::{
     CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_RESPONSE_ONLY_AXIS, ClaudeCodePreparationInput,
     ClaudeCodePreparationProbe, ClaudeCodeResponsePreparationInput,
@@ -42,6 +43,13 @@ pub fn host_services(
 
 #[allow(dead_code)]
 pub fn local_watcher_host(host: ExecutionHostId) -> LocalHostServices {
+    static TEMPORARY_ROOT_SEQUENCE: AtomicU64 = AtomicU64::new(0);
+
+    let temporary_root_sequence = TEMPORARY_ROOT_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let temporary_root = std::env::temp_dir().join(format!(
+        "swallowtail-claude-code-watcher-fixture-{}-{temporary_root_sequence}",
+        std::process::id()
+    ));
     let sleep = ExecutableRef::new("watcher.sleep").expect("executable is valid");
     let complete = ExecutableRef::new("watcher.complete").expect("executable is valid");
     let sleep_operation =
@@ -49,6 +57,7 @@ pub fn local_watcher_host(host: ExecutionHostId) -> LocalHostServices {
     let complete_operation = swallowtail_core::WatcherOperationData::new("exit-zero-operation")
         .expect("operation is valid");
     LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_temporary_root(temporary_root)
         .approve_executable(sleep.clone(), "/bin/sleep")
         .approve_executable(complete.clone(), "/usr/bin/true")
         .approve_watcher_operation(

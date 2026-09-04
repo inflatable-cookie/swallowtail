@@ -4,6 +4,7 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         aborted,
         callback_replies,
         health_requests,
+        delete_gate,
         stop,
     } = state;
     stream
@@ -128,6 +129,10 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             StreamFixture::DeleteDisconnect => {}
             StreamFixture::DeleteDelayed => {
                 thread::sleep(Duration::from_millis(100));
+                respond_json(&mut stream, 200, "true");
+            }
+            StreamFixture::DeleteGated => {
+                delete_gate.mark_dispatched_and_wait_for_release();
                 respond_json(&mut stream, 200, "true");
             }
             StreamFixture::DeleteHealthDrift => respond_json(&mut stream, 200, "true"),

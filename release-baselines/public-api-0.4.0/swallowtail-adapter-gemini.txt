@@ -1,0 +1,232 @@
+pub mod swallowtail_adapter_gemini
+pub enum swallowtail_adapter_gemini::GeminiCliPreparedDriver
+pub swallowtail_adapter_gemini::GeminiCliPreparedDriver::Acp
+pub swallowtail_adapter_gemini::GeminiCliPreparedDriver::Headless
+pub enum swallowtail_adapter_gemini::GeminiCliPreparedIntegration
+pub swallowtail_adapter_gemini::GeminiCliPreparedIntegration::Acp(swallowtail_adapter_gemini::GeminiPreparedIntegration)
+pub swallowtail_adapter_gemini::GeminiCliPreparedIntegration::Headless(swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration)
+impl swallowtail_adapter_gemini::GeminiCliPreparedIntegration
+pub const fn swallowtail_adapter_gemini::GeminiCliPreparedIntegration::driver(&self) -> swallowtail_adapter_gemini::GeminiCliPreparedDriver
+pub enum swallowtail_adapter_gemini::GeminiHeadlessRunRetention
+pub swallowtail_adapter_gemini::GeminiHeadlessRunRetention::Durable
+pub swallowtail_adapter_gemini::GeminiHeadlessRunRetention::TemporaryWithOwnedTranscriptCleanup
+pub struct swallowtail_adapter_gemini::GeminiAcpDriver
+impl swallowtail_adapter_gemini::GeminiAcpDriver
+pub const fn swallowtail_adapter_gemini::GeminiAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_gemini::GeminiAcpDriver
+pub fn swallowtail_adapter_gemini::GeminiAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_gemini::GeminiAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_gemini::GeminiAcpDriver
+pub fn swallowtail_adapter_gemini::GeminiAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_gemini::GeminiAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_gemini::GeminiCliPreparationInput
+impl swallowtail_adapter_gemini::GeminiCliPreparationInput
+pub const fn swallowtail_adapter_gemini::GeminiCliPreparationInput::driver(&self) -> swallowtail_adapter_gemini::GeminiCliPreparedDriver
+pub const fn swallowtail_adapter_gemini::GeminiCliPreparationInput::new(swallowtail_adapter_gemini::GeminiCliPreparedDriver, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_gemini::GeminiCliPreparationProbe
+impl swallowtail_adapter_gemini::GeminiCliPreparationProbe
+pub const fn swallowtail_adapter_gemini::GeminiCliPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_gemini::GeminiHeadlessDriver
+impl swallowtail_adapter_gemini::GeminiHeadlessDriver
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_gemini::GeminiHeadlessDriver
+pub fn swallowtail_adapter_gemini::GeminiHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_gemini::GeminiHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_gemini::GeminiHeadlessDriver
+pub fn swallowtail_adapter_gemini::GeminiHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_gemini::GeminiHeadlessModelSelection
+impl swallowtail_adapter_gemini::GeminiHeadlessModelSelection
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparationInput
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparationInput
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparationProbe
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparationProbe
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiHeadlessDriver
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_gemini::GeminiHeadlessPreparedRun
+impl swallowtail_adapter_gemini::GeminiHeadlessPreparedRun
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::evidence(&self) -> &swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::into_parts(self) -> (swallowtail_adapter_gemini::GeminiHeadlessPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiHeadlessDriver
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_gemini::GeminiHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput
+impl swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_gemini::GeminiHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiHeadlessRunProfileInput::with_owned_transcript_cleanup(self) -> Self
+pub struct swallowtail_adapter_gemini::GeminiLiveContextWindowCompression
+impl swallowtail_adapter_gemini::GeminiLiveContextWindowCompression
+pub const fn swallowtail_adapter_gemini::GeminiLiveContextWindowCompression::sliding_window() -> Self
+pub struct swallowtail_adapter_gemini::GeminiLiveDriver
+impl swallowtail_adapter_gemini::GeminiLiveDriver
+pub fn swallowtail_adapter_gemini::GeminiLiveDriver::new() -> Self
+impl swallowtail_runtime::roles::RealtimeMediaSessionDriver for swallowtail_adapter_gemini::GeminiLiveDriver
+pub fn swallowtail_adapter_gemini::GeminiLiveDriver::open_realtime_media_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_gemini::GeminiLivePreparationInput
+impl swallowtail_adapter_gemini::GeminiLivePreparationInput
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_gemini::GeminiLivePreparedEvidence
+impl swallowtail_adapter_gemini::GeminiLivePreparedEvidence
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::context_window_compression(&self) -> core::option::Option<swallowtail_adapter_gemini::GeminiLiveContextWindowCompression>
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_gemini::GeminiLivePreparedIntegration
+impl swallowtail_adapter_gemini::GeminiLivePreparedIntegration
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiLiveDriver
+pub fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_gemini::GeminiLivePreparedIntegration
+pub fn swallowtail_adapter_gemini::GeminiLivePreparedIntegration::prepare_live_session(&self, swallowtail_adapter_gemini::GeminiLiveSessionProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiPreparedLiveSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
+impl swallowtail_adapter_gemini::GeminiLiveSessionProfileInput
+pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_context_window_compression(self, swallowtail_adapter_gemini::GeminiLiveContextWindowCompression) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
+pub fn swallowtail_adapter_gemini::GeminiLiveSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub struct swallowtail_adapter_gemini::GeminiModelsDriver
+impl swallowtail_adapter_gemini::GeminiModelsDriver
+pub fn swallowtail_adapter_gemini::GeminiModelsDriver::new() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_gemini::GeminiModelsDriver
+pub fn swallowtail_adapter_gemini::GeminiModelsDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_gemini::GeminiModelsPreparationInput
+impl swallowtail_adapter_gemini::GeminiModelsPreparationInput
+pub const fn swallowtail_adapter_gemini::GeminiModelsPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_gemini::GeminiModelsPreparedIntegration
+impl swallowtail_adapter_gemini::GeminiModelsPreparedIntegration
+pub const fn swallowtail_adapter_gemini::GeminiModelsPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiModelsPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_gemini::GeminiModelsPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_gemini::GeminiModelsPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_gemini::GeminiModelsPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_gemini::GeminiModelsProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiPreparedModels, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_gemini::GeminiModelsProfileInput
+impl swallowtail_adapter_gemini::GeminiModelsProfileInput
+pub const fn swallowtail_adapter_gemini::GeminiModelsProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiModelsProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_gemini::GeminiPreparationInput
+impl swallowtail_adapter_gemini::GeminiPreparationInput
+pub const fn swallowtail_adapter_gemini::GeminiPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_gemini::GeminiPreparationProbe
+impl swallowtail_adapter_gemini::GeminiPreparationProbe
+pub const fn swallowtail_adapter_gemini::GeminiPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_gemini::GeminiPreparedEvidence
+impl swallowtail_adapter_gemini::GeminiPreparedEvidence
+pub const fn swallowtail_adapter_gemini::GeminiPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_gemini::GeminiPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_gemini::GeminiPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_gemini::GeminiPreparedIntegration
+impl swallowtail_adapter_gemini::GeminiPreparedIntegration
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_gemini::GeminiPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_gemini::GeminiPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiAcpDriver
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_gemini::GeminiPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_gemini::GeminiPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_gemini::GeminiPreparedIntegration
+pub fn swallowtail_adapter_gemini::GeminiPreparedIntegration::prepare_session(&self, swallowtail_adapter_gemini::GeminiSessionProfileInput) -> core::result::Result<swallowtail_adapter_gemini::GeminiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_gemini::GeminiPreparedLiveSession
+impl swallowtail_adapter_gemini::GeminiPreparedLiveSession
+pub const fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::evidence(&self) -> &swallowtail_adapter_gemini::GeminiLivePreparedEvidence
+pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::into_parts(self) -> (swallowtail_adapter_gemini::GeminiLivePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest)
+pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiLiveDriver
+pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_gemini::GeminiPreparedLiveSession::request(&self) -> &swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest
+pub struct swallowtail_adapter_gemini::GeminiPreparedModels
+impl swallowtail_adapter_gemini::GeminiPreparedModels
+pub const fn swallowtail_adapter_gemini::GeminiPreparedModels::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_gemini::GeminiPreparedModels::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_gemini::GeminiPreparedModels::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_gemini::GeminiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_gemini::GeminiPreparedSession
+impl swallowtail_adapter_gemini::GeminiPreparedSession
+pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::evidence(&self) -> &swallowtail_adapter_gemini::GeminiPreparedEvidence
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::into_parts(self) -> (swallowtail_adapter_gemini::GeminiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::low_level_driver(&self) -> swallowtail_adapter_gemini::GeminiAcpDriver
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_gemini::GeminiPreparedSessionFuture
+pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_gemini::GeminiPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_gemini::GeminiPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_gemini::GeminiSessionProfileInput
+impl swallowtail_adapter_gemini::GeminiSessionProfileInput
+pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::bounded_write(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
+pub const swallowtail_adapter_gemini::GEMINI_CLI_ACP_AXIS: &str
+pub const swallowtail_adapter_gemini::GEMINI_CLI_ACP_BASELINE_VERSION: &str
+pub const swallowtail_adapter_gemini::GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_gemini::GEMINI_CLI_HEADLESS_AXIS: &str
+pub const swallowtail_adapter_gemini::GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str
+pub const swallowtail_adapter_gemini::GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_ENDPOINT: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_MAX_OUTPUT_TOKENS: u64
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_OUTPUT_MAXIMUM_SUPERSEDED_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_SUPERSEDED_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_LIVE_THINKING_SUPERSEDED_FACADE_REVISION: &str
+pub const swallowtail_adapter_gemini::GEMINI_MODELS_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_MODELS_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_gemini::GEMINI_MODELS_ENDPOINT: &str
+pub const swallowtail_adapter_gemini::GEMINI_MODELS_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_gemini::GEMINI_MODELS_FACADE_REVISION: &str
+pub fn swallowtail_adapter_gemini::gemini_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_gemini::gemini_cli_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_gemini::gemini_cli_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_gemini::gemini_cli_headless_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_gemini::gemini_cli_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_gemini::gemini_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_gemini::gemini_live_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_gemini::gemini_live_base_capabilities() -> alloc::vec::Vec<swallowtail_core::requirement::CapabilityRequirement>
+pub fn swallowtail_adapter_gemini::gemini_live_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_gemini::gemini_live_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_gemini::gemini_live_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_gemini::gemini_live_instance(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_gemini::gemini_live_media_config() -> swallowtail_core::realtime_media::RealtimeMediaConfig
+pub fn swallowtail_adapter_gemini::gemini_live_model_route(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::ModelRouteRevision) -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_gemini::gemini_live_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_gemini::gemini_live_requirements_with_capabilities(swallowtail_core::runtime_identity::ExecutionHostId, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_gemini::gemini_live_rollover_policy() -> swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy
+pub fn swallowtail_adapter_gemini::gemini_models_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_gemini::gemini_models_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_gemini::gemini_models_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub async fn swallowtail_adapter_gemini::prepare_gemini_acp(swallowtail_adapter_gemini::GeminiPreparationInput, swallowtail_adapter_gemini::GeminiPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_gemini::prepare_gemini_cli(swallowtail_adapter_gemini::GeminiCliPreparationInput, swallowtail_adapter_gemini::GeminiCliPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiCliPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_gemini::prepare_gemini_headless(swallowtail_adapter_gemini::GeminiHeadlessPreparationInput, swallowtail_adapter_gemini::GeminiHeadlessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiHeadlessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_gemini::prepare_gemini_live(swallowtail_adapter_gemini::GeminiLivePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiLivePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_gemini::prepare_gemini_models(swallowtail_adapter_gemini::GeminiModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_gemini::GeminiModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_gemini::GeminiPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>

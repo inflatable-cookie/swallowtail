@@ -1,0 +1,51 @@
+pub mod swallowtail_adapter_copilot_cli
+pub struct swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
+impl swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparationInput
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparationInput
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparationProbe
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparationProbe
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration::prepare_session(&self, swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput) -> core::result::Result<swallowtail_adapter_copilot_cli::CopilotCliPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_copilot_cli::CopilotCliPreparedSession
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput
+impl swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_ACP_MATURITY: &str
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_HOST_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_PACKAGE_VERSION: &str
+pub fn swallowtail_adapter_copilot_cli::copilot_cli_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_copilot_cli::copilot_cli_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_copilot_cli::copilot_cli_host_account_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_copilot_cli::copilot_cli_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_copilot_cli::prepare_copilot_cli_acp(swallowtail_adapter_copilot_cli::CopilotCliPreparationInput, swallowtail_adapter_copilot_cli::CopilotCliPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

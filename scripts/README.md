@@ -55,17 +55,17 @@ Release-preparation scripts:
 
 - `check-package-metadata.sh` — Contract 036 metadata, package set, MSRV, and
   dependency topology
-- `check-release-floor.sh` — warnings-denied Clippy and full tests for the
-  unified Rust 1.95 package floor
+- `check-release-floor.sh` — lockfile-read-only, warnings-denied Clippy and full
+  tests for the unified Rust 1.95 package floor; accepted Effigy release sync
+  owns package-aware workspace-member lock updates before gates
 - `verify-source-consumer.sh` — isolated external Cargo consumer against exact
   repository `HEAD` when the worktree is clean; dirty pre-commit simulations
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare the 40-package `v0.3.3` API plus any
-  reviewed current-source overrides listed in
-  `release-baselines/public-api-unreleased/packages.txt`, while forbidding
-  removals from immutable `v0.3.0`. Historical `v0.3.2` files stay immutable
+- `check-public-api.sh` — compare the 40-package `v0.4.0` API baseline, while
+  forbidding removals from immutable `v0.3.0` except the approved `v0.4.0`
+  close-signature evidence. Historical `v0.3.3` and earlier files stay immutable
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
 Archived registry-candidate scripts:

@@ -101,6 +101,7 @@ fn respond_sse(
         | StreamFixture::DeleteMalformedSuccess
         | StreamFixture::DeleteDisconnect
         | StreamFixture::DeleteDelayed
+        | StreamFixture::DeleteGated
         | StreamFixture::DeleteHealthDrift
         | StreamFixture::ImportTitleDrift
         | StreamFixture::ImportDelayed => write_fixture(stream, SUCCESS.as_bytes()),

@@ -1,0 +1,187 @@
+pub mod swallowtail_adapter_opencode
+pub struct swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput
+impl swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput
+pub const fn swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeHttpDriver
+impl swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionCatalogueDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::list_provider_sessions(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+impl swallowtail_runtime::roles::ProviderSessionHistoryDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::page_provider_session_history(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionImportDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::import_provider_session(&self, swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan, swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+impl swallowtail_runtime::roles::ProviderSessionManagementDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::archive_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::delete_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::DeleteProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::restore_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionReconciliationDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::reconcile_provider_session(&self, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodeHttpDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_opencode::OpenCodeModelSelection
+impl swallowtail_adapter_opencode::OpenCodeModelSelection
+pub const fn swallowtail_adapter_opencode::OpenCodeModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeModelSelection::with_catalogue_entry(self, swallowtail_core::model::ModelCatalogEntry) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodePreparationInput
+impl swallowtail_adapter_opencode::OpenCodePreparationInput
+pub const fn swallowtail_adapter_opencode::OpenCodePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodePreparationProbe
+impl swallowtail_adapter_opencode::OpenCodePreparationProbe
+pub const fn swallowtail_adapter_opencode::OpenCodePreparationProbe::new(swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodePreparedCatalogue
+impl swallowtail_adapter_opencode::OpenCodePreparedCatalogue
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::evidence(&self) -> &swallowtail_adapter_opencode::OpenCodePreparedEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::into_parts(self) -> (swallowtail_adapter_opencode::OpenCodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_opencode::OpenCodePreparedDelete
+impl swallowtail_adapter_opencode::OpenCodePreparedDelete
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedDelete::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedDelete::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedDelete::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedDelete::request(&self) -> &swallowtail_runtime::provider_session_operation::DeleteProviderSessionRequest
+pub struct swallowtail_adapter_opencode::OpenCodePreparedEvidence
+impl swallowtail_adapter_opencode::OpenCodePreparedEvidence
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedEvidence::server(&self) -> &swallowtail_adapter_opencode::OpenCodePreparedServerObservation
+pub struct swallowtail_adapter_opencode::OpenCodePreparedIntegration
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::server(&self) -> &swallowtail_adapter_opencode::OpenCodePreparedServerObservation
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_delete_session(&self, swallowtail_adapter_opencode::OpenCodeSessionManagementInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedDelete, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_run(&self, swallowtail_adapter_opencode::OpenCodeRunProfileInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_session(&self, swallowtail_adapter_opencode::OpenCodeSessionProfileInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_session_catalogue(&self, swallowtail_adapter_opencode::OpenCodeSessionCatalogueInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_session_history(&self, swallowtail_adapter_opencode::OpenCodeSessionHistoryInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionHistory, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_session_import(&self, &swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCandidate, swallowtail_adapter_opencode::OpenCodeSessionProfileInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionImport, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_session_reconciliation(&self, swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_opencode::OpenCodePreparedIntegration
+pub fn swallowtail_adapter_opencode::OpenCodePreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_opencode::OpenCodePreparedRun
+impl swallowtail_adapter_opencode::OpenCodePreparedRun
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedRun::evidence(&self) -> &swallowtail_adapter_opencode::OpenCodePreparedEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedRun::into_parts(self) -> (swallowtail_adapter_opencode::OpenCodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_opencode::OpenCodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_opencode::OpenCodePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_opencode::OpenCodePreparedRunFuture
+pub struct swallowtail_adapter_opencode::OpenCodePreparedServerObservation
+impl swallowtail_adapter_opencode::OpenCodePreparedServerObservation
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedServerObservation::binding(&self) -> &swallowtail_core::interface_version::InterfaceVersionBinding
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedServerObservation::compatibility(&self) -> &swallowtail_core::interface_version::assessment::InterfaceCompatibilityAssessment
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedServerObservation::is_qualified(&self) -> bool
+pub struct swallowtail_adapter_opencode::OpenCodePreparedSession
+impl swallowtail_adapter_opencode::OpenCodePreparedSession
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSession::evidence(&self) -> &swallowtail_adapter_opencode::OpenCodePreparedEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::into_parts(self) -> (swallowtail_adapter_opencode::OpenCodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::load_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionLoadFuture, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_opencode::OpenCodePreparedSessionFuture
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue
+impl swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionCatalogueEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::list_page(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::list_sessions(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::next_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCursor) -> core::result::Result<swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::plan(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
+pub struct swallowtail_adapter_opencode::OpenCodePreparedSessionHistory
+impl swallowtail_adapter_opencode::OpenCodePreparedSessionHistory
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::evidence(&self) -> &swallowtail_runtime::provider_session_history::PreparedProviderSessionHistoryEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::older_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_history::ProviderSessionHistoryCursor) -> core::result::Result<swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::page(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::page_history(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::plan(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionHistory::request(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest
+pub struct swallowtail_adapter_opencode::OpenCodePreparedSessionImport
+impl swallowtail_adapter_opencode::OpenCodePreparedSessionImport
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionImport::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionImportEvidence
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionImport::import_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionImport::low_level_driver(&self) -> swallowtail_adapter_opencode::OpenCodeHttpDriver
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionImport::plan(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionImport::request(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest
+pub struct swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation
+impl swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::evidence(&self) -> &swallowtail_runtime::provider_session_reconciliation::PreparedProviderSessionReconciliationEvidence
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::plan(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::prepare_settled_session_restoration(self, swallowtail_adapter_opencode::OpenCodePreparedSession, swallowtail_runtime::identity::RequestId) -> core::result::Result<swallowtail_runtime::settled_session_restoration::PreparedSettledSessionRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::reconcile(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::request(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest
+impl swallowtail_runtime::settled_session_restoration::SettledSessionReconciliationOperation for swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::reconcile(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
+pub fn swallowtail_adapter_opencode::OpenCodePreparedSessionReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_opencode::OpenCodeRunProfileInput
+impl swallowtail_adapter_opencode::OpenCodeRunProfileInput
+pub const fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_opencode::OpenCodeModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::with_provider_callbacks(self) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeRunProfileInput::with_structured_output(self, swallowtail_runtime::schema::StructuredOutputDescriptor) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeSessionCatalogueInput
+impl swallowtail_adapter_opencode::OpenCodeSessionCatalogueInput
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionCatalogueInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionCatalogueId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionCatalogueInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeSessionHistoryInput
+impl swallowtail_adapter_opencode::OpenCodeSessionHistoryInput
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionHistoryInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionHistoryId, swallowtail_adapter_opencode::OpenCodeModelSelection, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::provider_session_history::ProviderSessionHistoryBounds) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionHistoryInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeSessionManagementInput
+impl swallowtail_adapter_opencode::OpenCodeSessionManagementInput
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionManagementInput::allow_unverified_newer(self) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionManagementInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionManagementInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeSessionProfileInput
+impl swallowtail_adapter_opencode::OpenCodeSessionProfileInput
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_opencode::OpenCodeModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionProfileInput::with_active_turn_detachment(self) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionProfileInput::with_image_attachments(self) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionProfileInput::with_provider_callbacks(self) -> Self
+pub struct swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput
+impl swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_opencode::OpenCodeModelSelection, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationBounds) -> Self
+pub const fn swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeSessionReconciliationInput::with_provider_turn_ref(self, swallowtail_core::provider_reference::TurnRef) -> Self
+pub const swallowtail_adapter_opencode::OPENCODE_BASELINE_VERSION: &str
+pub const swallowtail_adapter_opencode::OPENCODE_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_opencode::OPENCODE_SERVER_AXIS: &str
+pub fn swallowtail_adapter_opencode::opencode_http_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_opencode::opencode_http_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_opencode::opencode_server_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_opencode::prepare_opencode_attached(swallowtail_adapter_opencode::OpenCodePreparationInput, swallowtail_adapter_opencode::OpenCodePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_opencode::OpenCodePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_opencode::OpenCodePreparedRunFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_opencode::OpenCodePreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_opencode::OpenCodePreparedSessionLoadFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>

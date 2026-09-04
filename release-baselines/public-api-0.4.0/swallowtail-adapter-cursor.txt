@@ -1,0 +1,150 @@
+pub mod swallowtail_adapter_cursor
+pub enum swallowtail_adapter_cursor::CursorHeadlessContext
+pub swallowtail_adapter_cursor::CursorHeadlessContext::OneMillion
+pub swallowtail_adapter_cursor::CursorHeadlessContext::ThreeHundredK
+pub enum swallowtail_adapter_cursor::CursorHeadlessFast
+pub swallowtail_adapter_cursor::CursorHeadlessFast::Standard
+pub enum swallowtail_adapter_cursor::CursorHeadlessReadMode
+pub swallowtail_adapter_cursor::CursorHeadlessReadMode::Ask
+pub swallowtail_adapter_cursor::CursorHeadlessReadMode::Plan
+pub enum swallowtail_adapter_cursor::CursorPreparedDriver
+pub swallowtail_adapter_cursor::CursorPreparedDriver::Acp
+pub swallowtail_adapter_cursor::CursorPreparedDriver::Catalogue
+pub swallowtail_adapter_cursor::CursorPreparedDriver::Headless
+pub enum swallowtail_adapter_cursor::CursorPreparedIntegration
+pub swallowtail_adapter_cursor::CursorPreparedIntegration::Acp(swallowtail_adapter_cursor::CursorPreparedAcpIntegration)
+pub swallowtail_adapter_cursor::CursorPreparedIntegration::Catalogue(swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration)
+pub swallowtail_adapter_cursor::CursorPreparedIntegration::Headless(swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration)
+impl swallowtail_adapter_cursor::CursorPreparedIntegration
+pub const fn swallowtail_adapter_cursor::CursorPreparedIntegration::driver(&self) -> swallowtail_adapter_cursor::CursorPreparedDriver
+pub struct swallowtail_adapter_cursor::CursorAcpDriver
+impl swallowtail_adapter_cursor::CursorAcpDriver
+pub const fn swallowtail_adapter_cursor::CursorAcpDriver::ambient_environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cursor::CursorAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cursor::CursorAcpDriver
+pub fn swallowtail_adapter_cursor::CursorAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_cursor::CursorAcpDriver
+pub fn swallowtail_adapter_cursor::CursorAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorAcpDriver::recover_session_attachment(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cursor::CursorAcpSessionProfileInput
+impl swallowtail_adapter_cursor::CursorAcpSessionProfileInput
+pub const fn swallowtail_adapter_cursor::CursorAcpSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub struct swallowtail_adapter_cursor::CursorCatalogueDriver
+impl swallowtail_adapter_cursor::CursorCatalogueDriver
+pub const fn swallowtail_adapter_cursor::CursorCatalogueDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cursor::CursorCatalogueDriver
+pub fn swallowtail_adapter_cursor::CursorCatalogueDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorCatalogueDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_cursor::CursorCatalogueDriver
+pub fn swallowtail_adapter_cursor::CursorCatalogueDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cursor::CursorCatalogueProfileInput
+impl swallowtail_adapter_cursor::CursorCatalogueProfileInput
+pub const fn swallowtail_adapter_cursor::CursorCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_cursor::CursorCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_cursor::CursorHeadlessDriver
+impl swallowtail_adapter_cursor::CursorHeadlessDriver
+pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub const fn swallowtail_adapter_cursor::CursorHeadlessDriver::read_mode(&self) -> core::option::Option<swallowtail_adapter_cursor::CursorHeadlessReadMode>
+pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::with_read_mode(self, swallowtail_adapter_cursor::CursorHeadlessReadMode) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cursor::CursorHeadlessDriver
+pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_cursor::CursorHeadlessDriver
+pub fn swallowtail_adapter_cursor::CursorHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cursor::CursorHeadlessModelSelection
+impl swallowtail_adapter_cursor::CursorHeadlessModelSelection
+pub const fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_context(self, swallowtail_adapter_cursor::CursorHeadlessContext) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_effort(self, swallowtail_core::model::ReasoningMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_cursor::CursorHeadlessModelSelection::with_fast(self, swallowtail_adapter_cursor::CursorHeadlessFast) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
+impl swallowtail_adapter_cursor::CursorHeadlessRunProfileInput
+pub const fn swallowtail_adapter_cursor::CursorHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_cursor::CursorHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::session_access::ResourceAccess, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_cursor::CursorHeadlessRunProfileInput::with_read_mode(self, swallowtail_adapter_cursor::CursorHeadlessReadMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cursor::CursorPreparationInput
+impl swallowtail_adapter_cursor::CursorPreparationInput
+pub const fn swallowtail_adapter_cursor::CursorPreparationInput::driver(&self) -> swallowtail_adapter_cursor::CursorPreparedDriver
+pub const fn swallowtail_adapter_cursor::CursorPreparationInput::new(swallowtail_adapter_cursor::CursorPreparedDriver, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_cursor::CursorPreparationProbe
+impl swallowtail_adapter_cursor::CursorPreparationProbe
+pub const fn swallowtail_adapter_cursor::CursorPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_cursor::CursorPreparedAcpIntegration(_)
+impl swallowtail_adapter_cursor::CursorPreparedAcpIntegration
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+impl swallowtail_adapter_cursor::CursorPreparedAcpIntegration
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpIntegration::prepare_session(&self, swallowtail_adapter_cursor::CursorAcpSessionProfileInput) -> core::result::Result<swallowtail_adapter_cursor::CursorPreparedAcpSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cursor::CursorPreparedAcpSession
+impl swallowtail_adapter_cursor::CursorPreparedAcpSession
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::attachment_recovery_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::low_level_driver(&self) -> swallowtail_adapter_cursor::CursorAcpDriver
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_cursor::CursorPreparedAcpSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_cursor::CursorPreparedCatalogue
+impl swallowtail_adapter_cursor::CursorPreparedCatalogue
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_cursor::CursorPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cursor::CursorPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_cursor::CursorCatalogueDriver
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration(_)
+impl swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+impl swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration
+pub fn swallowtail_adapter_cursor::CursorPreparedCatalogueIntegration::prepare_catalogue(&self, swallowtail_adapter_cursor::CursorCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_cursor::CursorPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration(_)
+impl swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+impl swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration
+pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::prepare_run(&self, swallowtail_adapter_cursor::CursorHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_cursor::CursorPreparedHeadlessRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cursor::CursorPreparedHeadlessRun
+impl swallowtail_adapter_cursor::CursorPreparedHeadlessRun
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::low_level_driver(&self) -> swallowtail_adapter_cursor::CursorHeadlessDriver
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::read_mode(&self) -> core::option::Option<swallowtail_adapter_cursor::CursorHeadlessReadMode>
+pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_AUGUST_04_VERSION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_AUTOMATIC_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_BASELINE_BUILD_REVISION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_BASELINE_VERSION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_JULY_23_BUILD_REVISION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_JULY_23_VERSION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_cursor::CURSOR_AGENT_RELEASE_AXIS: &str
+pub const swallowtail_adapter_cursor::CURSOR_SUBSCRIPTION_AUDIENCE: &str
+pub fn swallowtail_adapter_cursor::cursor_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_cursor::cursor_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_cursor::cursor_agent_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_cursor::cursor_catalogue_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_cursor::cursor_catalogue_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_cursor::cursor_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_cursor::cursor_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_cursor::cursor_subscription_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub async fn swallowtail_adapter_cursor::prepare_cursor(swallowtail_adapter_cursor::CursorPreparationInput, swallowtail_adapter_cursor::CursorPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_cursor::CursorPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

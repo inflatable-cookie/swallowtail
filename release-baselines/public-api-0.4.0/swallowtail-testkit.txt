@@ -1,0 +1,443 @@
+pub mod swallowtail_testkit
+pub enum swallowtail_testkit::ConformanceAssertion
+pub swallowtail_testkit::ConformanceAssertion::AmbientHarnessAuthority
+pub swallowtail_testkit::ConformanceAssertion::AttachedNetworkHarnessLifecycle
+pub swallowtail_testkit::ConformanceAssertion::AttachedRuntimeBinding
+pub swallowtail_testkit::ConformanceAssertion::AttachedServiceNeverStopped
+pub swallowtail_testkit::ConformanceAssertion::BilledCostTurnScoped
+pub swallowtail_testkit::ConformanceAssertion::BoundSelection
+pub swallowtail_testkit::ConformanceAssertion::CallbackExchange
+pub swallowtail_testkit::ConformanceAssertion::CancellationAndTimeoutDistinct
+pub swallowtail_testkit::ConformanceAssertion::CleanupRemainsVisible
+pub swallowtail_testkit::ConformanceAssertion::ClosedCompatibilityWindow
+pub swallowtail_testkit::ConformanceAssertion::CommandAcknowledgement
+pub swallowtail_testkit::ConformanceAssertion::ConnectionScopedLeaseLifecycle
+pub swallowtail_testkit::ConformanceAssertion::ConsumerToolExchange
+pub swallowtail_testkit::ConformanceAssertion::DelegatedAuthentication
+pub swallowtail_testkit::ConformanceAssertion::DirectRunNoResource
+pub swallowtail_testkit::ConformanceAssertion::DirectRunOutputBound
+pub swallowtail_testkit::ConformanceAssertion::DirectSessionNoResource
+pub swallowtail_testkit::ConformanceAssertion::DurableRetentionExplicit
+pub swallowtail_testkit::ConformanceAssertion::ExplicitAttemptAuthorization
+pub swallowtail_testkit::ConformanceAssertion::ExtensionPolicyExplicit
+pub swallowtail_testkit::ConformanceAssertion::ExternalOwnershipPreserved
+pub swallowtail_testkit::ConformanceAssertion::HarnessConfigurationExact
+pub swallowtail_testkit::ConformanceAssertion::HarnessPolicyExact
+pub swallowtail_testkit::ConformanceAssertion::HarnessScheduling
+pub swallowtail_testkit::ConformanceAssertion::HarnessUiRelay
+pub swallowtail_testkit::ConformanceAssertion::HostTopologyPreserved
+pub swallowtail_testkit::ConformanceAssertion::HostedApiNeedsNoProcess
+pub swallowtail_testkit::ConformanceAssertion::HostedEndpointCredentialBinding
+pub swallowtail_testkit::ConformanceAssertion::InterfaceVersionQualified
+pub swallowtail_testkit::ConformanceAssertion::ManagedRecoveryExplicit
+pub swallowtail_testkit::ConformanceAssertion::NativeBudgetIndependent
+pub swallowtail_testkit::ConformanceAssertion::NoImplicitFallback
+pub swallowtail_testkit::ConformanceAssertion::NoImplicitSessionRecovery
+pub swallowtail_testkit::ConformanceAssertion::NoTranscriptDeletionClaim
+pub swallowtail_testkit::ConformanceAssertion::OrderedEvents
+pub swallowtail_testkit::ConformanceAssertion::OwnedArtifactLease
+pub swallowtail_testkit::ConformanceAssertion::OwnedCleanupOrdered
+pub swallowtail_testkit::ConformanceAssertion::OwnedEndpointBinding
+pub swallowtail_testkit::ConformanceAssertion::OwnedRemoteDeletionTruth
+pub swallowtail_testkit::ConformanceAssertion::OwnedServiceStops
+pub swallowtail_testkit::ConformanceAssertion::PersistentSessionLifecycle
+pub swallowtail_testkit::ConformanceAssertion::PlannedConnectionRollover
+pub swallowtail_testkit::ConformanceAssertion::PreflightBeforeSideEffects
+pub swallowtail_testkit::ConformanceAssertion::PrivateContinuationBounded
+pub swallowtail_testkit::ConformanceAssertion::ProcessLifecycle
+pub swallowtail_testkit::ConformanceAssertion::ProviderCachePosture
+pub swallowtail_testkit::ConformanceAssertion::ProviderEvidenceSeparated
+pub swallowtail_testkit::ConformanceAssertion::ProviderManagedHarnessLifecycle
+pub swallowtail_testkit::ConformanceAssertion::RealtimeMediaBoundary
+pub swallowtail_testkit::ConformanceAssertion::RealtimeMediaInterruptionEndsSession
+pub swallowtail_testkit::ConformanceAssertion::RealtimeMediaOrdering
+pub swallowtail_testkit::ConformanceAssertion::Redaction
+pub swallowtail_testkit::ConformanceAssertion::RemoteAcpAffinityScoped
+pub swallowtail_testkit::ConformanceAssertion::RemoteAcpConnectionLifecycle
+pub swallowtail_testkit::ConformanceAssertion::RemoteAcpNoRecovery
+pub swallowtail_testkit::ConformanceAssertion::RemoteAcpVersionAxesSeparate
+pub swallowtail_testkit::ConformanceAssertion::ReplayPhase
+pub swallowtail_testkit::ConformanceAssertion::RequestScopedLeaseLifecycle
+pub swallowtail_testkit::ConformanceAssertion::RolloverCleanupOrdered
+pub swallowtail_testkit::ConformanceAssertion::RolloverNoReplay
+pub swallowtail_testkit::ConformanceAssertion::RuntimeManagedResidency
+pub swallowtail_testkit::ConformanceAssertion::SchemaTransportOnly
+pub swallowtail_testkit::ConformanceAssertion::ScopedInputs
+pub swallowtail_testkit::ConformanceAssertion::SemanticOverflowFails
+pub swallowtail_testkit::ConformanceAssertion::SessionLifecycle
+pub swallowtail_testkit::ConformanceAssertion::SingleTerminalOutcome
+pub swallowtail_testkit::ConformanceAssertion::StalePlanRejected
+pub swallowtail_testkit::ConformanceAssertion::WorkingResourceCallback
+pub swallowtail_testkit::ConformanceAssertion::WorkingResourceWriteCallback
+pub enum swallowtail_testkit::ManagedHarnessPreflightCase
+pub swallowtail_testkit::ManagedHarnessPreflightCase::Canonical
+pub swallowtail_testkit::ManagedHarnessPreflightCase::MissingDurableRetention
+pub swallowtail_testkit::ManagedHarnessPreflightCase::MissingManagedRecovery
+pub swallowtail_testkit::ManagedHarnessPreflightCase::MissingOwnedEnvironment
+pub swallowtail_testkit::ManagedHarnessPreflightCase::MissingOwnedSession
+pub enum swallowtail_testkit::ObservableActivityFixtureCase
+pub swallowtail_testkit::ObservableActivityFixtureCase::CallbackCorrelation
+pub swallowtail_testkit::ObservableActivityFixtureCase::CompleteLifecycle
+pub swallowtail_testkit::ObservableActivityFixtureCase::CompletionOnly
+pub swallowtail_testkit::ObservableActivityFixtureCase::DirectToolCorrelation
+pub swallowtail_testkit::ObservableActivityFixtureCase::FinalAssistant
+pub swallowtail_testkit::ObservableActivityFixtureCase::IntermediateAssistant
+pub swallowtail_testkit::ObservableActivityFixtureCase::ReasoningSummary
+pub swallowtail_testkit::ObservableActivityFixtureCase::Unavailable
+pub swallowtail_testkit::ObservableActivityFixtureCase::UnknownSemantic
+pub swallowtail_testkit::ObservableActivityFixtureCase::UpdateAndCompletion
+pub enum swallowtail_testkit::PreflightFixtureCase
+pub swallowtail_testkit::PreflightFixtureCase::Canonical
+pub swallowtail_testkit::PreflightFixtureCase::DirectInferenceHarnessConfiguration
+pub swallowtail_testkit::PreflightFixtureCase::DirectInferenceHarnessIsolation
+pub swallowtail_testkit::PreflightFixtureCase::HarnessConfigurationAmbient
+pub swallowtail_testkit::PreflightFixtureCase::HarnessConfigurationMismatch
+pub swallowtail_testkit::PreflightFixtureCase::HarnessIsolationAmbient
+pub swallowtail_testkit::PreflightFixtureCase::HostScopedHarnessConfiguration
+pub swallowtail_testkit::PreflightFixtureCase::MissingCapability
+pub swallowtail_testkit::PreflightFixtureCase::MissingConstraint
+pub swallowtail_testkit::PreflightFixtureCase::MissingExtension
+pub swallowtail_testkit::PreflightFixtureCase::MissingExternalSearch
+pub swallowtail_testkit::PreflightFixtureCase::MissingHostService
+pub swallowtail_testkit::PreflightFixtureCase::MissingModelRoute
+pub swallowtail_testkit::PreflightFixtureCase::MissingReasoningMode
+pub swallowtail_testkit::PreflightFixtureCase::MissingRole
+pub swallowtail_testkit::PreflightFixtureCase::MissingSchemaService
+pub swallowtail_testkit::PreflightFixtureCase::ProviderSuppressedWithoutVersionEvidence
+pub swallowtail_testkit::PreflightFixtureCase::RejectedAccess
+pub swallowtail_testkit::PreflightFixtureCase::RejectedOwnership
+pub swallowtail_testkit::PreflightFixtureCase::RejectedSupportAuthority
+pub swallowtail_testkit::PreflightFixtureCase::WrongExecutionHost
+pub enum swallowtail_testkit::ProviderConversationPreflightCase
+pub swallowtail_testkit::ProviderConversationPreflightCase::AdvertisedMissingConversationDeletion
+pub swallowtail_testkit::ProviderConversationPreflightCase::AdvertisedMissingDurable
+pub swallowtail_testkit::ProviderConversationPreflightCase::AdvertisedMissingItemDeletion
+pub swallowtail_testkit::ProviderConversationPreflightCase::Canonical
+pub swallowtail_testkit::ProviderConversationPreflightCase::CanonicalRetained
+pub swallowtail_testkit::ProviderConversationPreflightCase::MissingConversationDeletionRequirement
+pub swallowtail_testkit::ProviderConversationPreflightCase::MissingDurableRequirement
+pub swallowtail_testkit::ProviderConversationPreflightCase::MissingItemDeletionRequirement
+pub swallowtail_testkit::ProviderConversationPreflightCase::PolicyProhibited
+pub enum swallowtail_testkit::ProviderSessionManagementBindingDrift
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::AccessProfile
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::Capabilities
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::ConfiguredInstance
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::DriverIdentity
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::ExecutionHost
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::InstanceRevision
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::InstanceTarget
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::IntegrationFamily
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::InterfaceVersion
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::Origin
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::ProtocolFacade
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::ProviderSessionReference
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::TransportFamily
+pub swallowtail_testkit::ProviderSessionManagementBindingDrift::WorkingResource
+pub enum swallowtail_testkit::ProviderSessionManagementFixtureCase
+pub swallowtail_testkit::ProviderSessionManagementFixtureCase::Incompatible
+pub swallowtail_testkit::ProviderSessionManagementFixtureCase::Qualified
+pub swallowtail_testkit::ProviderSessionManagementFixtureCase::Unsupported
+pub swallowtail_testkit::ProviderSessionManagementFixtureCase::UnverifiedNewer
+pub enum swallowtail_testkit::RealtimeMediaPreflightCase
+pub swallowtail_testkit::RealtimeMediaPreflightCase::Canonical
+pub swallowtail_testkit::RealtimeMediaPreflightCase::MissingFormat
+pub swallowtail_testkit::RealtimeMediaPreflightCase::MissingHostService
+pub swallowtail_testkit::RealtimeMediaPreflightCase::MissingRoute
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RejectedAccess
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverCanonical
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverCapabilityWhileDisabled
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverInstanceMissing
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverMismatchedBound
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverMissingCapability
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverRouteWrongBound
+pub swallowtail_testkit::RealtimeMediaPreflightCase::RolloverZeroBound
+pub swallowtail_testkit::RealtimeMediaPreflightCase::WrongChunkBound
+pub swallowtail_testkit::RealtimeMediaPreflightCase::WrongLayer
+pub swallowtail_testkit::RealtimeMediaPreflightCase::WrongModel
+pub swallowtail_testkit::RealtimeMediaPreflightCase::WrongRole
+pub swallowtail_testkit::RealtimeMediaPreflightCase::WrongShape
+pub enum swallowtail_testkit::RecordedHostCall
+pub swallowtail_testkit::RecordedHostCall::AttachmentFileRelease
+pub swallowtail_testkit::RecordedHostCall::AttachmentMaterializeFile
+pub swallowtail_testkit::RecordedHostCall::BlockingWork
+pub swallowtail_testkit::RecordedHostCall::CredentialAcquire
+pub swallowtail_testkit::RecordedHostCall::CredentialRelease
+pub swallowtail_testkit::RecordedHostCall::DebugObserve
+pub swallowtail_testkit::RecordedHostCall::DeviceCodeDisplay
+pub swallowtail_testkit::RecordedHostCall::DeviceMaterialize
+pub swallowtail_testkit::RecordedHostCall::DevicePoll
+pub swallowtail_testkit::RecordedHostCall::DiagnosticObserve
+pub swallowtail_testkit::RecordedHostCall::LoopbackBind
+pub swallowtail_testkit::RecordedHostCall::LoopbackMaterialize
+pub swallowtail_testkit::RecordedHostCall::LoopbackPoll
+pub swallowtail_testkit::RecordedHostCall::LoopbackRelease
+pub swallowtail_testkit::RecordedHostCall::ModelArtifactAcquire
+pub swallowtail_testkit::RecordedHostCall::ModelArtifactRelease
+pub swallowtail_testkit::RecordedHostCall::NetworkAuthorize
+pub swallowtail_testkit::RecordedHostCall::ProcessForceStop
+pub swallowtail_testkit::RecordedHostCall::ProcessGracefulStop
+pub swallowtail_testkit::RecordedHostCall::ProcessStart
+pub swallowtail_testkit::RecordedHostCall::ProcessWait
+pub swallowtail_testkit::RecordedHostCall::SchemaFileRelease
+pub swallowtail_testkit::RecordedHostCall::SchemaMaterializeFile
+pub swallowtail_testkit::RecordedHostCall::ServingEndpointPublish
+pub swallowtail_testkit::RecordedHostCall::ServingEndpointRelease
+pub swallowtail_testkit::RecordedHostCall::TaskJoin
+pub swallowtail_testkit::RecordedHostCall::TaskSpawn
+pub swallowtail_testkit::RecordedHostCall::TimeNow
+pub swallowtail_testkit::RecordedHostCall::TimeWaitUntil
+pub swallowtail_testkit::RecordedHostCall::UrlOpen
+pub swallowtail_testkit::RecordedHostCall::WorkingResourceCreateTemporary
+pub swallowtail_testkit::RecordedHostCall::WorkingResourceReadText
+pub swallowtail_testkit::RecordedHostCall::WorkingResourceRelease
+pub swallowtail_testkit::RecordedHostCall::WorkingResourceResolve
+pub swallowtail_testkit::RecordedHostCall::WorkingResourceWriteText
+pub enum swallowtail_testkit::RecordingOutcome
+pub swallowtail_testkit::RecordingOutcome::Fail(swallowtail_core::diagnostic::SafeDiagnostic)
+pub swallowtail_testkit::RecordingOutcome::Succeed
+pub enum swallowtail_testkit::SessionAccessFixtureCase
+pub swallowtail_testkit::SessionAccessFixtureCase::BoundedWorkspace
+pub swallowtail_testkit::SessionAccessFixtureCase::MissingWorkingResourceService
+pub swallowtail_testkit::SessionAccessFixtureCase::MissingWriteCapability
+pub swallowtail_testkit::SessionAccessFixtureCase::ReadOnly
+pub swallowtail_testkit::SessionAccessFixtureCase::ResourceFree
+pub swallowtail_testkit::SessionAccessFixtureCase::UnboundProviderRequest
+pub enum swallowtail_testkit::SyntheticProfile
+pub swallowtail_testkit::SyntheticProfile::AttachedNetworkHarness
+pub swallowtail_testkit::SyntheticProfile::AttachedSelfHosted
+pub swallowtail_testkit::SyntheticProfile::ConnectionScopedDirectSession
+pub swallowtail_testkit::SyntheticProfile::HostedDirectApi
+pub swallowtail_testkit::SyntheticProfile::LocallyContinuedDirectSession
+pub swallowtail_testkit::SyntheticProfile::LongLivedAcpHarness
+pub swallowtail_testkit::SyntheticProfile::LongLivedRpcHarness
+pub swallowtail_testkit::SyntheticProfile::OneShotStructuredCli
+pub swallowtail_testkit::SyntheticProfile::OwnedSelfHosted
+pub swallowtail_testkit::SyntheticProfile::PersistentAcpHarness
+pub swallowtail_testkit::SyntheticProfile::ProviderManagedRemoteHarness
+pub swallowtail_testkit::SyntheticProfile::RealtimeMediaDirectSession
+pub swallowtail_testkit::SyntheticProfile::RemoteAcpHarness
+pub struct swallowtail_testkit::CallbackExchangeFixture
+impl swallowtail_testkit::CallbackExchangeFixture
+pub fn swallowtail_testkit::CallbackExchangeFixture::abandon(&mut self, swallowtail_runtime::callback::CallbackAbandonment) -> core::result::Result<(), swallowtail_core::diagnostic::SafeDiagnostic>
+pub const fn swallowtail_testkit::CallbackExchangeFixture::deadline(&self) -> core::option::Option<swallowtail_runtime::time::Deadline>
+pub const fn swallowtail_testkit::CallbackExchangeFixture::event(&self) -> &swallowtail_runtime::event::RuntimeEvent
+pub fn swallowtail_testkit::CallbackExchangeFixture::new(swallowtail_runtime::callback::CallbackRequest) -> Self
+pub const fn swallowtail_testkit::CallbackExchangeFixture::request(&self) -> &swallowtail_runtime::callback::CallbackRequest
+pub fn swallowtail_testkit::CallbackExchangeFixture::respond(&mut self, swallowtail_runtime::callback::CallbackResponse) -> core::result::Result<(), swallowtail_core::diagnostic::SafeDiagnostic>
+pub const fn swallowtail_testkit::CallbackExchangeFixture::state(&self) -> swallowtail_runtime::callback::CallbackWaitState
+pub struct swallowtail_testkit::ClosedSemanticWindowCase
+impl swallowtail_testkit::ClosedSemanticWindowCase
+pub fn swallowtail_testkit::ClosedSemanticWindowCase::new(swallowtail_core::interface_version::InterfaceVersion, swallowtail_core::interface_version::InterfaceVersion) -> Self
+pub fn swallowtail_testkit::ClosedSemanticWindowCase::with_accepted(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::interface_version::InterfaceVersion>) -> Self
+pub fn swallowtail_testkit::ClosedSemanticWindowCase::with_rejected(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::interface_version::InterfaceVersion>) -> Self
+pub struct swallowtail_testkit::ConformanceReport
+impl swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::ConformanceReport::covers(&self, swallowtail_testkit::ConformanceAssertion) -> bool
+pub fn swallowtail_testkit::ConformanceReport::passed(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_testkit::ConformanceAssertion> + '_
+pub const fn swallowtail_testkit::ConformanceReport::profile(&self) -> swallowtail_testkit::SyntheticProfile
+pub struct swallowtail_testkit::ConsumerRouteProjectionFixture
+impl swallowtail_testkit::ConsumerRouteProjectionFixture
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::applicability(&self) -> swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::canonical() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::degraded_runtime_readiness() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::exhausted_entitlement() -> Self
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::plan(&self) -> swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::prepared(&self) -> swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::record(&self) -> swallowtail_runtime::provider_instance_catalogue::instance::ConfiguredProviderInstanceRecord
+pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::superseded() -> Self
+pub struct swallowtail_testkit::ContractKernelFixture
+impl swallowtail_testkit::ContractKernelFixture
+pub fn swallowtail_testkit::ContractKernelFixture::canonical() -> Self
+pub const fn swallowtail_testkit::ContractKernelFixture::capabilities(&self) -> &swallowtail_core::capability::CapabilityManifest
+pub const fn swallowtail_testkit::ContractKernelFixture::diagnostic(&self) -> &swallowtail_core::diagnostic::Diagnostic
+pub const fn swallowtail_testkit::ContractKernelFixture::event_with_extension(&self) -> &swallowtail_core::event::EventEnvelope
+pub const fn swallowtail_testkit::ContractKernelFixture::run_ref(&self) -> &swallowtail_core::provider_reference::RunRef
+pub const fn swallowtail_testkit::ContractKernelFixture::session_ref(&self) -> &swallowtail_core::provider_reference::SessionRef
+pub const fn swallowtail_testkit::ContractKernelFixture::supported_capability(&self) -> swallowtail_core::capability::Capability
+pub const fn swallowtail_testkit::ContractKernelFixture::unsupported_capability(&self) -> swallowtail_core::capability::Capability
+impl core::default::Default for swallowtail_testkit::ContractKernelFixture
+pub fn swallowtail_testkit::ContractKernelFixture::default() -> Self
+pub struct swallowtail_testkit::ExecutionTopologyFixture
+impl swallowtail_testkit::ExecutionTopologyFixture
+pub const fn swallowtail_testkit::ExecutionTopologyFixture::configured_instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub const fn swallowtail_testkit::ExecutionTopologyFixture::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
+pub const fn swallowtail_testkit::ExecutionTopologyFixture::instance_target(&self) -> &swallowtail_core::runtime_identity::InstanceTargetRef
+pub fn swallowtail_testkit::ExecutionTopologyFixture::local() -> Self
+pub fn swallowtail_testkit::ExecutionTopologyFixture::remote_authoritative() -> Self
+pub const fn swallowtail_testkit::ExecutionTopologyFixture::working_resource(&self) -> &swallowtail_runtime::host_reference::WorkingResourceRef
+pub struct swallowtail_testkit::ManagedHarnessPreflightFixture
+impl swallowtail_testkit::ManagedHarnessPreflightFixture
+pub fn swallowtail_testkit::ManagedHarnessPreflightFixture::context(&self) -> swallowtail_core::preflight::PreflightContext<'_>
+pub fn swallowtail_testkit::ManagedHarnessPreflightFixture::for_case(swallowtail_testkit::ManagedHarnessPreflightCase) -> Self
+pub fn swallowtail_testkit::ManagedHarnessPreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::ManagedHarnessPreflightFixture::provider_side_effect_count(&self) -> usize
+pub fn swallowtail_testkit::ManagedHarnessPreflightFixture::record_provider_side_effect(&self)
+pub struct swallowtail_testkit::ObservableActivityTraceFixture
+impl swallowtail_testkit::ObservableActivityTraceFixture
+pub fn swallowtail_testkit::ObservableActivityTraceFixture::events(&self) -> &[swallowtail_runtime::event::RuntimeEvent]
+pub fn swallowtail_testkit::ObservableActivityTraceFixture::for_case(swallowtail_testkit::ObservableActivityFixtureCase) -> Self
+pub const fn swallowtail_testkit::ObservableActivityTraceFixture::profile(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub struct swallowtail_testkit::ProviderConversationPreflightFixture
+impl swallowtail_testkit::ProviderConversationPreflightFixture
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::for_case(swallowtail_testkit::ProviderConversationPreflightCase) -> Self
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::open_request(&self) -> swallowtail_runtime::roles::OpenSessionRequest
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::provider_side_effect_count(&self) -> usize
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::record_provider_side_effect(&self)
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::retained_binding(&self) -> swallowtail_runtime::session_binding::SessionResumeBinding
+pub fn swallowtail_testkit::ProviderConversationPreflightFixture::retained_load_request(&self) -> swallowtail_runtime::roles::LoadSessionRequest
+pub struct swallowtail_testkit::ProviderSessionImportFixture
+impl swallowtail_testkit::ProviderSessionImportFixture
+pub fn swallowtail_testkit::ProviderSessionImportFixture::access_policy(&self) -> swallowtail_core::session_access::SessionAccessPolicy
+pub fn swallowtail_testkit::ProviderSessionImportFixture::candidate(&self, &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan, &str, &str, swallowtail_core::provider_session_catalogue::ProviderSessionImportAvailability) -> core::result::Result<swallowtail_runtime::provider_session_import::candidate::ProviderSessionCandidate, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_testkit::ProviderSessionImportFixture::catalogue_plan(&self, &str, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
+pub const fn swallowtail_testkit::ProviderSessionImportFixture::driver(&self) -> &swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_testkit::ProviderSessionImportFixture::for_topology(swallowtail_testkit::ExecutionTopologyFixture) -> Self
+pub fn swallowtail_testkit::ProviderSessionImportFixture::import_plan(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCandidate) -> core::result::Result<swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_testkit::ProviderSessionImportFixture::local() -> Self
+pub fn swallowtail_testkit::ProviderSessionImportFixture::prepared_catalogue(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan) -> swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionCatalogueEvidence
+pub fn swallowtail_testkit::ProviderSessionImportFixture::prepared_import(&self, swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan) -> swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionImportEvidence
+pub fn swallowtail_testkit::ProviderSessionImportFixture::remote_authoritative() -> Self
+pub const fn swallowtail_testkit::ProviderSessionImportFixture::topology(&self) -> &swallowtail_testkit::ExecutionTopologyFixture
+pub struct swallowtail_testkit::ProviderSessionManagementFixture
+impl swallowtail_testkit::ProviderSessionManagementFixture
+pub const fn swallowtail_testkit::ProviderSessionManagementFixture::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub const fn swallowtail_testkit::ProviderSessionManagementFixture::access_status(&self) -> &swallowtail_core::access::AccessStatus
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::binding(&self) -> core::result::Result<swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding, swallowtail_runtime::provider_session_management::InvalidProviderSessionManagementBinding>
+pub const fn swallowtail_testkit::ProviderSessionManagementFixture::driver(&self) -> &swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::for_topology(swallowtail_testkit::ExecutionTopologyFixture, swallowtail_testkit::ProviderSessionManagementFixtureCase, swallowtail_core::provider_session_management::ProviderSessionManagementAction) -> Self
+pub const fn swallowtail_testkit::ProviderSessionManagementFixture::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::local(swallowtail_testkit::ProviderSessionManagementFixtureCase, swallowtail_core::provider_session_management::ProviderSessionManagementAction) -> Self
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::plan(&self, core::option::Option<swallowtail_runtime::time::Deadline>) -> core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::remote_authoritative(swallowtail_testkit::ProviderSessionManagementFixtureCase, swallowtail_core::provider_session_management::ProviderSessionManagementAction) -> Self
+pub const fn swallowtail_testkit::ProviderSessionManagementFixture::requirements(&self) -> &swallowtail_core::requirement::operation::OperationRequirements
+impl swallowtail_testkit::ProviderSessionManagementFixture
+pub fn swallowtail_testkit::ProviderSessionManagementFixture::drifted_binding(&self, swallowtail_testkit::ProviderSessionManagementBindingDrift) -> core::result::Result<swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding, swallowtail_runtime::provider_session_management::InvalidProviderSessionManagementBinding>
+pub struct swallowtail_testkit::RealtimeMediaPreflightFixture
+impl swallowtail_testkit::RealtimeMediaPreflightFixture
+pub fn swallowtail_testkit::RealtimeMediaPreflightFixture::for_case(swallowtail_testkit::RealtimeMediaPreflightCase) -> Self
+pub fn swallowtail_testkit::RealtimeMediaPreflightFixture::open_request(&self) -> swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest
+pub fn swallowtail_testkit::RealtimeMediaPreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::RealtimeMediaPreflightFixture::provider_side_effect_count(&self) -> usize
+pub struct swallowtail_testkit::RecordingHostServices
+impl swallowtail_testkit::RecordingHostServices
+pub fn swallowtail_testkit::RecordingHostServices::calls(&self) -> alloc::vec::Vec<swallowtail_testkit::RecordedHostCall>
+pub fn swallowtail_testkit::RecordingHostServices::count(&self, swallowtail_testkit::RecordedHostCall) -> usize
+pub fn swallowtail_testkit::RecordingHostServices::for_host(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_testkit::RecordingOutcome) -> Self
+pub fn swallowtail_testkit::RecordingHostServices::new(swallowtail_testkit::RecordingOutcome) -> Self
+pub const fn swallowtail_testkit::RecordingHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
+pub fn swallowtail_testkit::RecordingHostServices::with_sign_in_ports(self) -> Self
+impl core::default::Default for swallowtail_testkit::RecordingHostServices
+pub fn swallowtail_testkit::RecordingHostServices::default() -> Self
+pub struct swallowtail_testkit::RemoteAcpPreflightFixture
+impl swallowtail_testkit::RemoteAcpPreflightFixture
+pub fn swallowtail_testkit::RemoteAcpPreflightFixture::new(swallowtail_core::remote_acp::RemoteAcpTransport, swallowtail_core::runtime_identity::ExecutionHostId) -> Self
+pub fn swallowtail_testkit::RemoteAcpPreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub struct swallowtail_testkit::RuntimePreflightFixture
+impl swallowtail_testkit::RuntimePreflightFixture
+pub fn swallowtail_testkit::RuntimePreflightFixture::canonical() -> Self
+pub fn swallowtail_testkit::RuntimePreflightFixture::context(&self) -> swallowtail_core::preflight::PreflightContext<'_>
+pub const fn swallowtail_testkit::RuntimePreflightFixture::driver_descriptor(&self) -> &swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_testkit::RuntimePreflightFixture::for_case(swallowtail_testkit::PreflightFixtureCase) -> Self
+pub fn swallowtail_testkit::RuntimePreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::RuntimePreflightFixture::provider_side_effect_count(&self) -> usize
+pub fn swallowtail_testkit::RuntimePreflightFixture::record_provider_side_effect(&self)
+pub fn swallowtail_testkit::RuntimePreflightFixture::with_instance_revision(self, &str) -> Self
+impl swallowtail_testkit::RuntimePreflightFixture
+pub fn swallowtail_testkit::RuntimePreflightFixture::with_instance_harness_configuration_posture(self, swallowtail_core::harness_configuration::HarnessConfigurationPosture) -> Self
+impl core::default::Default for swallowtail_testkit::RuntimePreflightFixture
+pub fn swallowtail_testkit::RuntimePreflightFixture::default() -> Self
+pub struct swallowtail_testkit::SessionAccessPreflightFixture
+impl swallowtail_testkit::SessionAccessPreflightFixture
+pub fn swallowtail_testkit::SessionAccessPreflightFixture::for_case(swallowtail_testkit::SessionAccessFixtureCase, swallowtail_core::runtime_identity::ExecutionHostId) -> Self
+pub const fn swallowtail_testkit::SessionAccessPreflightFixture::policy(&self) -> &swallowtail_core::session_access::SessionAccessPolicy
+pub fn swallowtail_testkit::SessionAccessPreflightFixture::preflight(&self) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_core::preflight::PreflightFailure>
+pub fn swallowtail_testkit::SessionAccessPreflightFixture::provider_side_effect_count(&self) -> usize
+pub fn swallowtail_testkit::SessionAccessPreflightFixture::record_provider_side_effect(&self)
+pub fn swallowtail_testkit::SessionAccessPreflightFixture::with_session_plan_echoes(self, swallowtail_core::session_provider_state::SessionProviderStatePolicy, swallowtail_core::harness_configuration::HarnessConfigurationPosture) -> Self
+pub const fn swallowtail_testkit::SessionAccessPreflightFixture::working_resource(&self) -> &swallowtail_runtime::host_reference::WorkingResourceRef
+pub const swallowtail_testkit::CONSUMER_ROUTE_PRIVATE_CREDENTIAL: &str
+pub const swallowtail_testkit::CONSUMER_ROUTE_PRIVATE_TARGET: &str
+pub const swallowtail_testkit::REMOTE_ACP_CORE_SDK_VERSION: &str
+pub const swallowtail_testkit::REMOTE_ACP_RFD_REVISION: &str
+pub const swallowtail_testkit::REMOTE_ACP_TRANSPORT_SDK_VERSION: &str
+pub fn swallowtail_testkit::assert_capability_rejection(&swallowtail_core::capability::CapabilityManifest, swallowtail_core::capability::Capability, swallowtail_core::capability::Capability)
+pub fn swallowtail_testkit::assert_changed_revision_invalidates_plan()
+pub fn swallowtail_testkit::assert_cleanup_states_remain_distinct()
+pub fn swallowtail_testkit::assert_closed_semantic_compatibility_window(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, &swallowtail_testkit::ClosedSemanticWindowCase)
+pub fn swallowtail_testkit::assert_consumer_route_projection_contract()
+pub fn swallowtail_testkit::assert_contract_kernel(&swallowtail_testkit::ContractKernelFixture)
+pub fn swallowtail_testkit::assert_diagnostic_redaction(&swallowtail_core::diagnostic::Diagnostic)
+pub fn swallowtail_testkit::assert_dynamic_role_registration_and_calls()
+pub fn swallowtail_testkit::assert_extension_isolation(&swallowtail_core::event::EventEnvelope)
+pub fn swallowtail_testkit::assert_extension_policies(&swallowtail_core::event::EventEnvelope)
+pub fn swallowtail_testkit::assert_idiom_engine_contract()
+pub fn swallowtail_testkit::assert_idiom_static_rules_delivery_contract()
+pub fn swallowtail_testkit::assert_idioms_route_opt_in_contract()
+pub fn swallowtail_testkit::assert_installed_executable_observation_contract()
+pub fn swallowtail_testkit::assert_missing_roles_are_explicit()
+pub fn swallowtail_testkit::assert_negotiated_reasoning_setup_contract(&swallowtail_core::preflight::PreflightPlan, swallowtail_core::model::ReasoningMode, swallowtail_core::model::ReasoningMode)
+pub fn swallowtail_testkit::assert_observable_activity_contract()
+pub fn swallowtail_testkit::assert_observable_activity_not_applicable(&swallowtail_runtime::prepared_operation::PreparedOperationEvidence)
+pub fn swallowtail_testkit::assert_observable_activity_trace(&swallowtail_core::observable_activity::route_profile::ObservableActivityProfile, &[swallowtail_runtime::event::RuntimeEvent])
+pub fn swallowtail_testkit::assert_portable_failure_classification_contract()
+pub fn swallowtail_testkit::assert_portable_watcher_bridge_contract()
+pub fn swallowtail_testkit::assert_portable_watcher_lifecycle_contract()
+pub fn swallowtail_testkit::assert_preflight_rejection_without_side_effects(swallowtail_testkit::PreflightFixtureCase, swallowtail_core::preflight::PreflightDimension)
+pub fn swallowtail_testkit::assert_prepared_failure_before_effects<T>(&core::result::Result<T, swallowtail_runtime::preparation::PreparationFailure>, usize, swallowtail_runtime::preparation::PreparationStage)
+pub fn swallowtail_testkit::assert_prepared_integration_primitives()
+pub fn swallowtail_testkit::assert_prepared_operation_evidence_matches_plan(&swallowtail_runtime::prepared_operation::PreparedOperationEvidence, &swallowtail_core::preflight::PreflightPlan)
+pub fn swallowtail_testkit::assert_provider_session_import_contract()
+pub fn swallowtail_testkit::assert_provider_session_management_contract()
+pub fn swallowtail_testkit::assert_reference_opacity(&swallowtail_core::provider_reference::SessionRef, &swallowtail_core::provider_reference::RunRef)
+pub fn swallowtail_testkit::assert_successful_preflight_binding()
+pub fn swallowtail_testkit::assert_unverified_newer_execution(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, &swallowtail_core::interface_version::InterfaceVersion)
+pub fn swallowtail_testkit::assert_watcher_activity_projection()
+pub fn swallowtail_testkit::assert_watcher_bridge_closed_protocol_surface()
+pub fn swallowtail_testkit::assert_watcher_bridge_secret_redaction()
+pub fn swallowtail_testkit::assert_watcher_byte_bounds()
+pub fn swallowtail_testkit::assert_watcher_capacity_bound(swallowtail_runtime::watcher::registry::WatcherRegistry)
+pub fn swallowtail_testkit::assert_watcher_cleanup_rejects_completed()
+pub fn swallowtail_testkit::assert_watcher_completion_stop_race()
+pub fn swallowtail_testkit::assert_watcher_identity_redaction(&swallowtail_core::watcher::identity::WatcherId, &swallowtail_core::watcher::summary::WatcherSummary)
+pub fn swallowtail_testkit::assert_watcher_lifecycle_transitions()
+pub fn swallowtail_testkit::assert_watcher_model_operator_roles()
+pub fn swallowtail_testkit::assert_watcher_namespace_isolation()
+pub fn swallowtail_testkit::assert_watcher_operation_data_redaction()
+pub fn swallowtail_testkit::assert_watcher_ownership_rejection(&swallowtail_runtime::watcher::registry::WatcherRegistry)
+pub fn swallowtail_testkit::assert_watcher_stale_id_fails_closed()
+pub fn swallowtail_testkit::assert_watcher_wait_representation()
+pub fn swallowtail_testkit::consumer_route_projection_source(&str, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceKind) -> swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceIdentity
+pub fn swallowtail_testkit::fixture_hosted_available_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_hosted_missing_host_service_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_available_with_config_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_missing_install_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_unsupported_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_local_runtime_missing_runtime_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::poll_immediate<T>(impl core::future::future::Future<Output = T>) -> T
+pub fn swallowtail_testkit::provider_session_catalogue_bounds(u32, u32, u32, u32, u32) -> swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds
+pub fn swallowtail_testkit::remote_acp_requirements(swallowtail_core::remote_acp::RemoteAcpTransport) -> swallowtail_core::remote_acp::RemoteAcpRequirements
+pub fn swallowtail_testkit::run_acp_single_turn_projection_assertions() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_all_synthetic_profiles() -> alloc::vec::Vec<swallowtail_testkit::ConformanceReport>
+pub fn swallowtail_testkit::run_attached_network_harness_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_attached_runtime_boundary_assertions() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_attached_self_hosted_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_connection_scoped_direct_session_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_harness_configuration_boundary_assertions() -> alloc::vec::Vec<swallowtail_testkit::ConformanceReport>
+pub fn swallowtail_testkit::run_harness_rpc_contract_assertions() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_hosted_direct_api_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_locally_continued_direct_session_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_long_lived_acp_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_long_lived_rpc_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_one_shot_structured_cli_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_owned_self_hosted_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_persistent_acp_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_provider_conversation_boundary_assertions()
+pub fn swallowtail_testkit::run_provider_managed_harness_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_realtime_media_direct_session_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_realtime_rollover_boundary_assertions() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_remote_acp_harness_profile() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::run_retained_provider_conversation_boundary_assertions()
+pub fn swallowtail_testkit::run_structured_harness_native_boundary_assertions() -> swallowtail_testkit::ConformanceReport
+pub fn swallowtail_testkit::successful_callback_response(&swallowtail_runtime::callback::CallbackRequest) -> swallowtail_runtime::callback::CallbackResponse

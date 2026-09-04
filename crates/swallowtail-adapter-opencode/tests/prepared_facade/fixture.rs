@@ -2,8 +2,8 @@ use crate::http_support::{FixtureServer, StreamFixture, ThreadServices};
 use futures_channel::oneshot;
 use futures_executor::block_on;
 use std::path::PathBuf;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 use swallowtail_adapter_opencode::{
@@ -200,6 +200,10 @@ impl PreparedFixture {
         self.clock.deadline_after(duration)
     }
 
+    pub(super) fn arm_manual_deadline(&self) -> ManualDeadlineTrigger {
+        self.clock.arm_manual_deadline()
+    }
+
     pub(super) fn model(&self) -> OpenCodeModelSelection {
         OpenCodeModelSelection::new(
             ModelRouteId::new("opencode.prepared.route").unwrap(),
@@ -223,13 +227,83 @@ impl Drop for PreparedFixture {
 #[derive(Clone)]
 struct TestClock {
     origin: Instant,
+    manual_deadline: Arc<Mutex<Option<Arc<ManualDeadlineState>>>>,
+}
+
+pub(super) struct ManualDeadlineTrigger {
+    state: Arc<ManualDeadlineState>,
+}
+
+#[derive(Default)]
+struct ManualDeadlineState {
+    inner: Mutex<ManualDeadlineInner>,
+    observed: Condvar,
+}
+
+#[derive(Default)]
+struct ManualDeadlineInner {
+    fired: bool,
+    observed: bool,
+    waiters: Vec<oneshot::Sender<()>>,
+}
+
+impl ManualDeadlineTrigger {
+    pub(super) fn fire_and_wait_for_observation(self) {
+        let waiters = {
+            let mut inner = self
+                .state
+                .inner
+                .lock()
+                .expect("manual deadline lock poisoned");
+            assert!(!inner.fired, "manual deadline fired twice");
+            inner.fired = true;
+            std::mem::take(&mut inner.waiters)
+        };
+        assert!(
+            !waiters.is_empty(),
+            "manual deadline had no registered waiter"
+        );
+        for waiter in waiters {
+            let _ = waiter.send(());
+        }
+        let inner = self
+            .state
+            .inner
+            .lock()
+            .expect("manual deadline lock poisoned");
+        let (inner, timeout) = self
+            .state
+            .observed
+            .wait_timeout_while(inner, Duration::from_secs(2), |inner| !inner.observed)
+            .expect("manual deadline lock poisoned");
+        assert!(
+            inner.observed,
+            "manual deadline was not observed before timeout"
+        );
+        assert!(
+            !timeout.timed_out(),
+            "manual deadline observation wait timed out"
+        );
+    }
 }
 
 impl TestClock {
     fn new() -> Self {
         Self {
             origin: Instant::now(),
+            manual_deadline: Arc::new(Mutex::new(None)),
         }
+    }
+
+    fn arm_manual_deadline(&self) -> ManualDeadlineTrigger {
+        let state = Arc::new(ManualDeadlineState::default());
+        let mut slot = self
+            .manual_deadline
+            .lock()
+            .expect("manual deadline slot lock poisoned");
+        assert!(slot.is_none(), "manual deadline already armed");
+        *slot = Some(Arc::clone(&state));
+        ManualDeadlineTrigger { state }
     }
 
     fn deadline_after(&self, duration: Duration) -> Deadline {
@@ -245,6 +319,32 @@ impl TimeService for TestClock {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        if let Some(state) = self
+            .manual_deadline
+            .lock()
+            .expect("manual deadline slot lock poisoned")
+            .clone()
+        {
+            let (sender, receiver) = oneshot::channel();
+            let fired = {
+                let mut inner = state.inner.lock().expect("manual deadline lock poisoned");
+                if inner.fired {
+                    true
+                } else {
+                    inner.waiters.push(sender);
+                    false
+                }
+            };
+            return Box::pin(async move {
+                if !fired {
+                    let _ = receiver.await;
+                }
+                let mut inner = state.inner.lock().expect("manual deadline lock poisoned");
+                inner.observed = true;
+                state.observed.notify_all();
+                DeadlineObservation::new(deadline, deadline.instant())
+            });
+        }
         let wait = deadline
             .instant()
             .ticks()

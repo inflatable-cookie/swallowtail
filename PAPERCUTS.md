@@ -430,6 +430,39 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Closed
 
+### [x] OpenCode post-dispatch deadline proof races its delayed response — 2026-09-04
+- Friction: the third authorized `v0.4.0` prepare passed three gates, then the
+  workspace `test` gate observed `Applied` where
+  `deadline_after_dispatch_is_joined_unconfirmed_and_releases_access` requires
+  `UnconfirmedAfterEffect`.
+- Impact: the proof used independent wall-clock sleeps for a 20-millisecond
+  deadline and 100-millisecond response delay. Scheduler starvation could
+  reverse that intended ordering without a product defect.
+- Fix: gate the DELETE response, wait for observed dispatch, explicitly fire
+  and observe the deadline, then release the response only for joined cleanup.
+  The exact case held 100 default-toolchain runs and 25 Rust `1.95` runs; the
+  focused OpenCode suite and Clippy passed. The three Effigy-owned mutations
+  rolled back and no prepared state was written.
+- Surface: OpenCode prepared-facade deletion fixture; Card 051 `v0.4.0`
+  preparation.
+- Closed: 2026-09-04 before a fresh one-shot prepare authorization.
+
+### [x] Parallel Claude watcher fixtures can reuse a released temporary path — 2026-09-04
+- Friction: the second authorized `v0.4.0` prepare passed nine gates, then the
+  Rust `1.95` floor failed
+  `no_compared_isolation_candidate_satisfies_the_review_oracle` because its
+  retained MCP path existed after clean run closure.
+- Impact: independent fixture hosts started materialization sequence zero under
+  the same process-wide temporary root. Parallel tests could reuse a released
+  path and make a correct cleanup look leaked.
+- Fix: give every `local_watcher_host` a process-and-sequence-unique temporary
+  root and freeze the released-path non-reuse counterexample. Remove the floor
+  selector's obsolete local lock sync and value-only validator; accepted Effigy
+  merge `4c554135` owns package-aware lock synchronization before all gates.
+- Surface: Claude Code watcher fixtures; `scripts/check-release-floor.sh`;
+  Card 051 `v0.4.0` preparation.
+- Closed: 2026-09-04 before the final one-shot prepare authorization.
+
 ### [x] Pre-1.0 minor prepare cannot satisfy `--locked` lint with a stale workspace lock — 2026-09-03
 - Friction: the first authorized `effigy release prepare --yes --check-gates
   --version 0.4.0` applied the version and changelog mutations, then failed

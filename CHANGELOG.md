@@ -5,8 +5,9 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Breaking
+## [0.4.0] - 2026-09-04
 
+### Breaking
 - require `InteractiveSessionHandle::close` callers to provide exact
   `HostServices` and a `SessionCleanupRequest` with one caller-selected
   absolute deadline. The boundary now covers active-turn interruption,
@@ -14,9 +15,24 @@ annotated Git tags from the canonical repository.
   expiry reports failed cleanup rather than allowing an unbounded or falsely
   clean close. The prior zero-argument close has no compatibility shim. This
   coordinated public API break targets `v0.4.0`. g05.023 card 058.
+- remove the previously guaranteed but unqualified OpenAI Background `minimal`
+  reasoning value from exact GPT-5.6 `openai.background` preparation. Admitted
+  values are `none`, `low`, `medium`, `high`, `xhigh`, and `max`; `minimal` now
+  fails before endpoint, credential, request, or provider work. The corrected
+  opaque facade point is `openai-responses-background-2026-08-23` with private
+  behavior revision `openai.responses-background-v2`. This guaranteed-behavior
+  shrink requires coordinated pre-1.0 minor `v0.4.0`. g04.044.
+- reject selected-tier OpenAI Background checkpoint restart reconciliation
+  before network work. Explicit default-tier dispatch remains ordinary attached
+  and one-reattachment only; selected-tier checkpoints cannot be restarted.
+  Research 196, g04.049.
+- cap `kimi-code.acp` at `0.38.0` under `QualifiedOnly`. Exact `0.39.0` and
+  `0.39.1`, unpublished `0.38.1`/`0.39.2`, and farther `0.40.x` fail closed
+  because the newer terminal path creates an uncontained local process. This
+  shrinks the previously permitted unverified-newer posture above the maintained
+  range. g05.017, card 043.
 
 ### Added
-
 - add provider-neutral, operation-scoped task-reap reservations. The exact
   selected `ScopedTaskService` must grant owned reap authority before
   credential, resource, process, task, or provider effects, then binds that
@@ -126,6 +142,16 @@ annotated Git tags from the canonical repository.
   are released immediately instead of at the abandoned open deadline. `AcceptedForReap` stays ownership transfer only and never
   becomes join or cleanup evidence. Research 278 and 280, Contracts 009, 010,
   017, 019, 029, and 047, g05.022 card 055.
+- add `pi.sdk-sidecar` as a qualified exact `0.84.2` route through the
+  application-provisioned Node `22.23.2` runtime, source-tagged sidecar, and
+  private `swallowtail-pi-sdk-jsonl-v1` wire. New, load, and resume use the
+  exact host-leased cwd with bounded typed replay on load, durable app-owned
+  session state, no archive/restore/delete, and no substitution for `pi.rpc`.
+  New consumers provision those exact runtime, sidecar, wire, SDK, and session
+  directory axes; existing v0.3.3 consumers have no action unless opting into
+  the new route. Rollback reverts to `v0.3.3`, omits the route and sidecar
+  calls, and does not mix workspace versions or alias `pi.rpc`. Research 181
+  and 228, g04.033/card 092 and g04.081.
 - bind Cline ACP portable `HarnessMode::Plan` on exact `3.0.55`: optional
   `ClineSessionProfileInput::with_harness_mode(Plan)` advertises
   `HarnessModeSelection(Plan)`, requires unique `session/new` plan membership,
@@ -142,9 +168,153 @@ annotated Git tags from the canonical repository.
   `session.update.session.reasoning.effort`, require matching
   `session.updated` acknowledgement, preserve omission bytes, and retain
   superseded `openai-realtime-2026-07-22` proof. Research 236, g04.084.
+- add closed adapter-local `ClaudeCodeMaximumTurns` on `claude-code.headless`:
+  `ClaudeCodeRunProfileInput::with_maximum_turns` dispatches one canonical
+  `--max-turns <n>` appended to the existing command on the exact versions
+  Research 226 probed. The type admits positive 32-bit integers only: exact
+  artifacts show the native parser coerces with `Number` and rejects only
+  `NaN`, so zero, negatives, fractions, `Infinity`, exponent, hexadecimal,
+  grouped-digit, and empty inputs all parse, while the loop guard is a
+  truthiness test under which a resolved `0` disables enforcement outright.
+  The version gate is the exact probed set, not the qualified window: both
+  `UnverifiedNewer` points and the never-published in-range `2.1.230` reject
+  before process work. `ClaudeCodePreparedRun::start_run` is the only surface
+  that dispatches a bound: `low_level_driver` returns an unbound driver and no
+  public seam attaches one to a hand-built `ClaudeCodeHeadlessDriver`, so a
+  bound can never be paired with another run's plan or with a run that omitted
+  the selection. Omission
+  preserves the exact prior argv and the approved environment, and is not a
+  claim of unlimited execution because an ambient `CLAUDE_CODE_MAX_TURNS` stays
+  authoritative when the flag is absent; explicit argv overrides it
+  unconditionally with no environment inspection or mutation. A counted turn is
+  one tool-use round trip only, never output tokens, tool calls, provider
+  requests, retries, cost, or wall time. Reaching the native bound stays a
+  provider failure with no output and unchanged joined cleanup.
+  Research 226, g04.079
+- add closed adapter-local `LlamaCppReasoningSelection` on `llama-cpp.owned`:
+  `Disabled` dispatches canonical `--reasoning off` on exact
+  `b10069-178a6c449` through `LlamaCppOwnedServingSelection::with_reasoning`
+  and `LlamaCppOwnedDriver::with_reasoning`; omission preserves the current
+  no-reasoning-argument launch and every `--ctx-size` row is unchanged.
+  `--reasoning on` and `auto` are withheld as an unobservable per-request
+  distinction and an exact synonym for the default; `--reasoning-budget` is
+  withheld entirely because exact source discards it without a template
+  thinking end tag. This is owned-serving dispatch and applied server state
+  only: effective and observed reasoning behavior, model reasoning
+  capability, and attached-route reasoning support stay unclaimed.
+  Research 225, g04.078
+- add closed Cursor-local `CursorHeadlessReadMode` on `cursor-agent.headless`:
+  `Ask` dispatches canonical `--mode ask` on exact `2026.07.01-41b2de7`,
+  `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and `2026.08.11-e8db854` with
+  `ResourceAccess::Read` only; omission keeps `Read` on `--mode plan` and
+  `ReadWrite` on no mode; read-write authority and newer unverified releases
+  reject before process work; Ask is qualified dispatch and application only,
+  claims no locally enforced read-only boundary, and adds no portable
+  `HarnessMode`, isolation, permission, tool, approval, or network authority;
+  Research 224, g04.077
+- add optional portable `HarnessMode::Plan` on `qwen.headless` exact
+  `0.21.15`, `0.22.0`, and `0.22.1` as canonical `--approval-mode plan`;
+  omission keeps `--approval-mode default`; applied `session_start.permission_mode`
+  is observed; `auto-edit|auto|yolo` stay unselected; Research 222, g04.075
+- add typed exact-Codex-Exec model verbosity: `CodexModelVerbosity` admits
+  `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
+  `0.149.1` for seven frozen slugs
+  through prepared evidence and `--config model_verbosity="<value>"`; omission
+  preserves the prior argv; live-catalog acceptance and effective length stay
+  unclaimed; Research 213, g04.066
+- add typed exact-llama.cpp-owned-`b10069` context-size selection:
+  `LlamaCppContextSize` admits `1..=2147483647` and dispatches exact
+  `--ctx-size N` through immutable prepared serving evidence; omission
+  preserves the prior eleven-argument launch, while runtime acceptance,
+  effective context, model fit, allocation, and observation remain unclaimed;
+  Research 203, g04.056
+- add typed exact-Mistral-Vibe-`2.24.2` caller-decreasing maximum turns:
+  `MistralVibeMaxTurns` admits `1..=8` for one headless print child; omission
+  preserves `--max-turns 8`, native limit remains provider-failed, and the
+  fixed plan agent, trust, working-resource, deadline, cancellation, and
+  cleanup boundaries remain unchanged; Research 199, g04.052
+- add typed exact-Qwen-Code-`0.21.15` caller-decreasing headless budgets:
+  `QwenSessionTurnBudget` admits `1..=24` and `QwenToolCallBudget` admits
+  `0..=16` across structured runs, first and resumed turns, and fresh
+  replacement children; omission preserves `--max-session-turns 24` and
+  `--max-tool-calls 16`, the fixed 60-second wall bound and tool policy remain
+  unchanged, and the process-local counters reset for every child; Research
+  198, g04.051
+- add typed DeepSeek V4 Pro adapter-local non-thinking selection for one-request
+  structured runs: `DeepSeekThinkingMode::disabled()` dispatches exact
+  `thinking.type=disabled`, omits `reasoning_effort`, and carries no portable
+  `ReasoningSelection`; ordinary responses remain available while unexpected
+  private `reasoning_content` fails closed, and every direct-continuation path
+  remains enabled-only; Research 197, g04.050
+- add typed OpenAI Background adapter-local standard service-tier selection:
+  `OpenAiBackgroundServiceTier::standard()` dispatches exact Responses
+  `service_tier: "default"` on ordinary attached runs and one in-process
+  reattachment; omission preserves prior create bytes, active-run detachment
+  rejects before effects, selected-tier checkpoints reject restart
+  reconciliation before network work, and returned tier, price, latency,
+  capacity, entitlement, and provider acceptance remain unclaimed; the exact
+  facade advances to
+  `openai-responses-background-2026-08-23-service-tier`; Research 196,
+  g04.049
+- add typed Gemini Live adapter-local default-only context-window compression
+  for `gemini-3.1-flash-live-preview`: selected
+  `GeminiLiveContextWindowCompression::sliding_window()` dispatches exact
+  `contextWindowCompression.slidingWindow = {}` on initial setup, one planned
+  rollover, and fresh restoration; omission preserves prior setup bytes,
+  explicit trigger and target token forms remain withheld, no portable
+  capability or shared request field is added, and dispatch does not claim
+  provider acceptance or effective compression; Research 195, g04.048
+- add exact Gemini Live caller-selected output-token maximum for
+  `gemini-3.1-flash-live-preview`: positive values through `65_536` dispatch as
+  `generationConfig.maxOutputTokens` on initial setup, one planned rollover,
+  and fresh restoration; omission preserves the existing setup bytes, the
+  maximum composes with every admitted thinking level, unsupported values fail
+  before effects, and dispatch does not claim provider acceptance or effective
+  generated length; Research 194, g04.047
+- add exact Gemini Live reasoning selection for
+  `gemini-3.1-flash-live-preview` through portable `minimal`, `low`, `medium`,
+  and `high` values on initial setup, one planned rollover, and fresh
+  restoration; omission keeps the existing `MINIMAL` bytes without claiming a
+  caller selection, unsupported values and sibling OpenAI Realtime use fail
+  before effects, and dispatch does not claim provider acceptance or effective
+  reasoning depth; Research 193, g04.046
+- add exact Qwen Code `0.21.15` reasoning selection for `qwen3.8-max` and
+  `qwen3.8-max-preview` through portable `low`, `medium`, `high`, `xhigh`, and
+  `max` values on structured runs, first and resumed turns, and fresh
+  replacement; a bounded private stream-JSON control exchange rejects ambient
+  override or substitution before the user message without claiming provider-
+  effective reasoning depth; Research 189, g04.041
+- add exact xAI Responses WebSocket reasoning selection for `grok-4.5`
+  (`low`, `medium`, `high`) and `grok-4.6` (`low`, `medium`, `high`,
+  `xhigh`), plus positive `max_output_tokens` through `2_147_483_647`, on
+  structured runs and serial connection-local sessions; controls remain fixed
+  through continuation and fresh replacement, and dispatch does not claim
+  provider acceptance, effective reasoning depth, or exact generated length;
+  Research 187, g04.039
+- add exact Anthropic Messages effort selection for `claude-opus-4-7` through
+  portable `ReasoningSelection` values `low`, `medium`, `high`, `xhigh`, and
+  `max` on structured runs and fixed direct-continuation sessions; dispatches
+  `output_config.effort` without adding Messages thinking or claiming effective
+  effort; Research 185, g04.037
+- add exact DeepSeek V4 Pro reasoning selection for `low`, `high`, and `max`
+  across structured runs, tool continuation, later turns, and fresh local
+  restoration; the reasoning-selected path and all direct continuation remain
+  fixed to `thinking.type=enabled`, private reasoning replay remains adapter-
+  held, and dispatch does not claim provider acceptance or effective depth;
+  Research 186, g04.038
+- add typed Ollama adapter-local context-window selection (`OllamaContextWindow`,
+  `with_context_window`) on structured inference and interactive session
+  profiles, with Research 184 positive-domain dispatch of `options.num_ctx`
+  beside `num_predict`; dispatch does not prove provider acceptance or
+  effective allocation; g04.036
+- add typed Cursor headless model parameters (`CursorHeadlessFast`,
+  `CursorHeadlessContext`, `with_fast`, `with_context`, `with_effort`) with
+  Research 183 deliver-now tuples, canonical single-argument `--model`
+  dispatch, and qualified `ReasoningSelection` for high effort on
+  `claude-opus-4-8` and `claude-opus-5` only; dispatch does not prove provider
+  acceptance; g04.035
 
 ### Changed
-
 - raise the Codex CLI qualified ceiling from `0.152.0` to official npm
   `@openai/codex` `0.152.1` on the shared `codex.cli` exec and app-server
   axes. Compatible extension of the existing JSONL and workspace-roots
@@ -300,157 +470,6 @@ annotated Git tags from the canonical repository.
   Exact `0.38.0` headless remains visible `UnverifiedNewer` until v2
   stream-json is independently qualified. ACP and local-server `0.38.0`
   qualifications stand. Research 210, g04.063.
-
-### Added
-
-- add closed adapter-local `ClaudeCodeMaximumTurns` on `claude-code.headless`:
-  `ClaudeCodeRunProfileInput::with_maximum_turns` dispatches one canonical
-  `--max-turns <n>` appended to the existing command on the exact versions
-  Research 226 probed. The type admits positive 32-bit integers only: exact
-  artifacts show the native parser coerces with `Number` and rejects only
-  `NaN`, so zero, negatives, fractions, `Infinity`, exponent, hexadecimal,
-  grouped-digit, and empty inputs all parse, while the loop guard is a
-  truthiness test under which a resolved `0` disables enforcement outright.
-  The version gate is the exact probed set, not the qualified window: both
-  `UnverifiedNewer` points and the never-published in-range `2.1.230` reject
-  before process work. `ClaudeCodePreparedRun::start_run` is the only surface
-  that dispatches a bound: `low_level_driver` returns an unbound driver and no
-  public seam attaches one to a hand-built `ClaudeCodeHeadlessDriver`, so a
-  bound can never be paired with another run's plan or with a run that omitted
-  the selection. Omission
-  preserves the exact prior argv and the approved environment, and is not a
-  claim of unlimited execution because an ambient `CLAUDE_CODE_MAX_TURNS` stays
-  authoritative when the flag is absent; explicit argv overrides it
-  unconditionally with no environment inspection or mutation. A counted turn is
-  one tool-use round trip only, never output tokens, tool calls, provider
-  requests, retries, cost, or wall time. Reaching the native bound stays a
-  provider failure with no output and unchanged joined cleanup.
-  Research 226, g04.079
-- add closed adapter-local `LlamaCppReasoningSelection` on `llama-cpp.owned`:
-  `Disabled` dispatches canonical `--reasoning off` on exact
-  `b10069-178a6c449` through `LlamaCppOwnedServingSelection::with_reasoning`
-  and `LlamaCppOwnedDriver::with_reasoning`; omission preserves the current
-  no-reasoning-argument launch and every `--ctx-size` row is unchanged.
-  `--reasoning on` and `auto` are withheld as an unobservable per-request
-  distinction and an exact synonym for the default; `--reasoning-budget` is
-  withheld entirely because exact source discards it without a template
-  thinking end tag. This is owned-serving dispatch and applied server state
-  only: effective and observed reasoning behavior, model reasoning
-  capability, and attached-route reasoning support stay unclaimed.
-  Research 225, g04.078
-- add closed Cursor-local `CursorHeadlessReadMode` on `cursor-agent.headless`:
-  `Ask` dispatches canonical `--mode ask` on exact `2026.07.01-41b2de7`,
-  `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and `2026.08.11-e8db854` with
-  `ResourceAccess::Read` only; omission keeps `Read` on `--mode plan` and
-  `ReadWrite` on no mode; read-write authority and newer unverified releases
-  reject before process work; Ask is qualified dispatch and application only,
-  claims no locally enforced read-only boundary, and adds no portable
-  `HarnessMode`, isolation, permission, tool, approval, or network authority;
-  Research 224, g04.077
-- add optional portable `HarnessMode::Plan` on `qwen.headless` exact
-  `0.21.15`, `0.22.0`, and `0.22.1` as canonical `--approval-mode plan`;
-  omission keeps `--approval-mode default`; applied `session_start.permission_mode`
-  is observed; `auto-edit|auto|yolo` stay unselected; Research 222, g04.075
-- add typed exact-Codex-Exec model verbosity: `CodexModelVerbosity` admits
-  `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
-  `0.149.1` for seven frozen slugs
-  through prepared evidence and `--config model_verbosity="<value>"`; omission
-  preserves the prior argv; live-catalog acceptance and effective length stay
-  unclaimed; Research 213, g04.066
-- add typed exact-llama.cpp-owned-`b10069` context-size selection:
-  `LlamaCppContextSize` admits `1..=2147483647` and dispatches exact
-  `--ctx-size N` through immutable prepared serving evidence; omission
-  preserves the prior eleven-argument launch, while runtime acceptance,
-  effective context, model fit, allocation, and observation remain unclaimed;
-  Research 203, g04.056
-- add typed exact-Mistral-Vibe-`2.24.2` caller-decreasing maximum turns:
-  `MistralVibeMaxTurns` admits `1..=8` for one headless print child; omission
-  preserves `--max-turns 8`, native limit remains provider-failed, and the
-  fixed plan agent, trust, working-resource, deadline, cancellation, and
-  cleanup boundaries remain unchanged; Research 199, g04.052
-- add typed exact-Qwen-Code-`0.21.15` caller-decreasing headless budgets:
-  `QwenSessionTurnBudget` admits `1..=24` and `QwenToolCallBudget` admits
-  `0..=16` across structured runs, first and resumed turns, and fresh
-  replacement children; omission preserves `--max-session-turns 24` and
-  `--max-tool-calls 16`, the fixed 60-second wall bound and tool policy remain
-  unchanged, and the process-local counters reset for every child; Research
-  198, g04.051
-- add typed DeepSeek V4 Pro adapter-local non-thinking selection for one-request
-  structured runs: `DeepSeekThinkingMode::disabled()` dispatches exact
-  `thinking.type=disabled`, omits `reasoning_effort`, and carries no portable
-  `ReasoningSelection`; ordinary responses remain available while unexpected
-  private `reasoning_content` fails closed, and every direct-continuation path
-  remains enabled-only; Research 197, g04.050
-- add typed OpenAI Background adapter-local standard service-tier selection:
-  `OpenAiBackgroundServiceTier::standard()` dispatches exact Responses
-  `service_tier: "default"` on ordinary attached runs and one in-process
-  reattachment; omission preserves prior create bytes, active-run detachment
-  rejects before effects, selected-tier checkpoints reject restart
-  reconciliation before network work, and returned tier, price, latency,
-  capacity, entitlement, and provider acceptance remain unclaimed; the exact
-  facade advances to
-  `openai-responses-background-2026-08-23-service-tier`; Research 196,
-  g04.049
-- add typed Gemini Live adapter-local default-only context-window compression
-  for `gemini-3.1-flash-live-preview`: selected
-  `GeminiLiveContextWindowCompression::sliding_window()` dispatches exact
-  `contextWindowCompression.slidingWindow = {}` on initial setup, one planned
-  rollover, and fresh restoration; omission preserves prior setup bytes,
-  explicit trigger and target token forms remain withheld, no portable
-  capability or shared request field is added, and dispatch does not claim
-  provider acceptance or effective compression; Research 195, g04.048
-- add exact Gemini Live caller-selected output-token maximum for
-  `gemini-3.1-flash-live-preview`: positive values through `65_536` dispatch as
-  `generationConfig.maxOutputTokens` on initial setup, one planned rollover,
-  and fresh restoration; omission preserves the existing setup bytes, the
-  maximum composes with every admitted thinking level, unsupported values fail
-  before effects, and dispatch does not claim provider acceptance or effective
-  generated length; Research 194, g04.047
-- add exact Gemini Live reasoning selection for
-  `gemini-3.1-flash-live-preview` through portable `minimal`, `low`, `medium`,
-  and `high` values on initial setup, one planned rollover, and fresh
-  restoration; omission keeps the existing `MINIMAL` bytes without claiming a
-  caller selection, unsupported values and sibling OpenAI Realtime use fail
-  before effects, and dispatch does not claim provider acceptance or effective
-  reasoning depth; Research 193, g04.046
-- add exact Qwen Code `0.21.15` reasoning selection for `qwen3.8-max` and
-  `qwen3.8-max-preview` through portable `low`, `medium`, `high`, `xhigh`, and
-  `max` values on structured runs, first and resumed turns, and fresh
-  replacement; a bounded private stream-JSON control exchange rejects ambient
-  override or substitution before the user message without claiming provider-
-  effective reasoning depth; Research 189, g04.041
-- add exact xAI Responses WebSocket reasoning selection for `grok-4.5`
-  (`low`, `medium`, `high`) and `grok-4.6` (`low`, `medium`, `high`,
-  `xhigh`), plus positive `max_output_tokens` through `2_147_483_647`, on
-  structured runs and serial connection-local sessions; controls remain fixed
-  through continuation and fresh replacement, and dispatch does not claim
-  provider acceptance, effective reasoning depth, or exact generated length;
-  Research 187, g04.039
-- add exact Anthropic Messages effort selection for `claude-opus-4-7` through
-  portable `ReasoningSelection` values `low`, `medium`, `high`, `xhigh`, and
-  `max` on structured runs and fixed direct-continuation sessions; dispatches
-  `output_config.effort` without adding Messages thinking or claiming effective
-  effort; Research 185, g04.037
-- add exact DeepSeek V4 Pro reasoning selection for `low`, `high`, and `max`
-  across structured runs, tool continuation, later turns, and fresh local
-  restoration; the reasoning-selected path and all direct continuation remain
-  fixed to `thinking.type=enabled`, private reasoning replay remains adapter-
-  held, and dispatch does not claim provider acceptance or effective depth;
-  Research 186, g04.038
-- add typed Ollama adapter-local context-window selection (`OllamaContextWindow`,
-  `with_context_window`) on structured inference and interactive session
-  profiles, with Research 184 positive-domain dispatch of `options.num_ctx`
-  beside `num_predict`; dispatch does not prove provider acceptance or
-  effective allocation; g04.036
-- add typed Cursor headless model parameters (`CursorHeadlessFast`,
-  `CursorHeadlessContext`, `with_fast`, `with_context`, `with_effort`) with
-  Research 183 deliver-now tuples, canonical single-argument `--model`
-  dispatch, and qualified `ReasoningSelection` for high effort on
-  `claude-opus-4-8` and `claude-opus-5` only; dispatch does not prove provider
-  acceptance; g04.035
-
-### Changed
-
 - Raised qualified Claude Code headless and response-only ceilings from
   `2.1.238` to official npm `@anthropic-ai/claude-code` `2.1.241`.
   Compatible-extension: official extracted `--help` is byte-identical to
@@ -462,13 +481,6 @@ annotated Git tags from the canonical repository.
   Compatible-extension: selected mapped flags unchanged, schema bundles
   byte-identical, ModelListParams unchanged. Exec help differs only by
   unmapped `--thread-source`. Research 201, g04.054.
-- Correct the exact GPT-5.6 `openai.background` reasoning vocabulary to
-  `none`, `low`, `medium`, `high`, `xhigh`, and `max`; the previously
-  guaranteed but unqualified `minimal` value now fails before endpoint,
-  credential, request, or provider work. The corrected mapping uses opaque
-  facade point `openai-responses-background-2026-08-23` and private behavior
-  revision `openai.responses-background-v2`. This guaranteed-behavior shrink
-  requires the next source release to advance the pre-1.0 minor; g04.044.
 - Raised qualified Gemini CLI ACP and headless ceilings from their previous
   `0.51.0` and `0.51.0..=0.52.0` bounds to maintained
   `0.51.0..=0.56.0` on their separate version axes. Official published
@@ -519,6 +531,12 @@ annotated Git tags from the canonical repository.
   and mapping unchanged. Unpublished `17.3.6` stays. Tokenizer JS API,
   `omp ps`, `/cleanse`, and extended-context stay unmapped. Research 178,
   g04.031.
+- advance current source to 40 packages and 49 production routes, including
+  `pi.sdk-sidecar` and `claude-agent.sdk`, while preserving the immutable
+  `v0.3.3` 40-package, 47-route baseline; publish
+  [v0.4.0 candidate release notes](docs/releases/0.4.0.md) with every classified
+  break, upgrade, rollback, package, route, known limit, and source-only
+  distribution truth
 
 ## [0.3.3] - 2026-08-19
 

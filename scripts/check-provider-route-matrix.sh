@@ -43,6 +43,7 @@ from pathlib import Path
 root = Path(sys.argv[1])
 current_route_file = Path(sys.argv[2])
 immutable_route_file = root / "release-baselines/production-routes-0.3.3.txt"
+candidate_route_file = root / "release-baselines/production-routes-0.4.0.txt"
 ledger_file = root / (
     "docs/research/281-v0-4-0-compatibility-and-freeze-audit/"
     "route-behavior-ledger.tsv"
@@ -75,6 +76,18 @@ if current_routes != immutable_routes | additions:
         "current route inventory must equal immutable v0.3.3 plus exactly "
         f"{sorted(additions)}: added={sorted(current_routes - immutable_routes)}, "
         f"missing={sorted(immutable_routes - current_routes)}"
+    )
+
+candidate_routes = {
+    line.strip()
+    for line in candidate_route_file.read_text().splitlines()
+    if line.strip()
+}
+if candidate_routes != current_routes:
+    fail(
+        "v0.4.0 candidate route baseline must equal the current 49-route set: "
+        f"added={sorted(candidate_routes - current_routes)}, "
+        f"missing={sorted(current_routes - candidate_routes)}"
     )
 
 with ledger_file.open(newline="") as stream:

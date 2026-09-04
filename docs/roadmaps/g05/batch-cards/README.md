@@ -9,7 +9,7 @@
 
 ## Ready
 
-- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready on the accepted card 050 freeze (PR 198 head `2f4923b8`, merged as `835fe9ff`); consumes the fixed 49-route candidate including `pi.sdk-sidecar` and `claude-agent.sdk`; stops at the read-only preparation plan for separate explicit operator authorization
+- [051-v0-4-0-candidate-preparation-and-exact-sha-ci.md](./051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — ready; coordinated candidate prepared from the accepted card 050 freeze with 49 routes including `pi.sdk-sidecar` and `claude-agent.sdk`; awaits exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
 
 ## Completed
 

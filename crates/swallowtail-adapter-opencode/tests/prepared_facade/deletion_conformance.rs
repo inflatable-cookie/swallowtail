@@ -214,7 +214,7 @@ fn deadline_after_dispatch_is_joined_unconfirmed_and_releases_access() {
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.delete.deadline",
         "1.18.4",
-        StreamFixture::DeleteDelayed,
+        StreamFixture::DeleteGated,
     );
     let prepared = fixture.prepared();
     let binding = opened_binding(&fixture, &prepared, "deadline");
@@ -224,10 +224,18 @@ fn deadline_after_dispatch_is_joined_unconfirmed_and_releases_access() {
                 RequestId::new("delete-deadline").expect("request id"),
                 binding,
             )
-            .with_deadline(fixture.deadline_after(Duration::from_millis(20))),
+            .with_deadline(fixture.deadline_after(Duration::from_secs(1))),
         )
         .expect("delete prepares");
+    let deadline = fixture.arm_manual_deadline();
+    let response_gate = fixture.server.delete_response_gate();
+    let controller = std::thread::spawn(move || {
+        response_gate.wait_for_dispatch();
+        deadline.fire_and_wait_for_observation();
+        response_gate.release();
+    });
     let outcome = block_on(delete.execute(fixture.services())).expect("deadline attempt resolves");
+    controller.join().expect("deadline controller joins");
     assert_eq!(
         outcome.effect().truth(),
         ProviderSessionEffectTruth::UnconfirmedAfterEffect

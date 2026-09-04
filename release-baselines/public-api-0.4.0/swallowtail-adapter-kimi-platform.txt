@@ -1,0 +1,70 @@
+pub mod swallowtail_adapter_kimi_platform
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformCatalogueProfileInput
+impl swallowtail_adapter_kimi_platform::KimiPlatformCatalogueProfileInput
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+impl swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver::new() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformInferenceAttemptInput
+impl swallowtail_adapter_kimi_platform::KimiPlatformInferenceAttemptInput
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformInferenceAttemptInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi_platform::KimiPlatformModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_core::model::ReasoningMode, core::num::nonzero::NonZeroU64) -> Self
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformInferenceAttemptInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformModelSelection
+impl swallowtail_adapter_kimi_platform::KimiPlatformModelSelection
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_kimi_platform::KimiPlatformPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_kimi_platform::KimiPlatformDirectDriver
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_kimi_platform::KimiPlatformCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_kimi_platform::KimiPlatformPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration
+pub fn swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration::prepare_inference_attempt(&self, swallowtail_adapter_kimi_platform::KimiPlatformInferenceAttemptInput) -> core::result::Result<swallowtail_adapter_kimi_platform::KimiPlatformPreparedInferenceAttempt, swallowtail_runtime::preparation::PreparationFailure>
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_CHAT_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_CHAT_API_KEY_FIELD_ID: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_CHAT_ENDPOINT_FIELD_ID: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_ENDPOINT: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_FACADE_REVISION: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_MODEL_ID: &str
+pub const swallowtail_adapter_kimi_platform::KIMI_PLATFORM_PROVIDER_ID: &str
+pub fn swallowtail_adapter_kimi_platform::kimi_platform_chat_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_adapter_kimi_platform::kimi_platform_direct_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_kimi_platform::kimi_platform_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_kimi_platform::kimi_platform_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_kimi_platform::prepare_kimi_platform_direct(swallowtail_adapter_kimi_platform::KimiPlatformPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi_platform::KimiPlatformPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

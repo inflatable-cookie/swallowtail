@@ -15,20 +15,19 @@ shape.
 
 ## Next Task
 
-Implement [g05.021 card 051](g05/batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md)
-from the accepted card 050 freeze: restructure release prose, complete the
-scoped candidate edits and new-baseline inputs, then run read-only
-`effigy --json release status` and `effigy release prepare --plan --version
-0.4.0`. Card 051 must stop before the single mutating
-`effigy release prepare --yes` and request separate explicit operator
-authorization. The exact-head review accepted card 050: PR 198 exact head
-`2f4923b8` merged as `835fe9ff`. The frozen facts stay fixed: 40 packages, the
-immutable 47-route `v0.3.3` release inventory, the 49-route `v0.4.0` candidate
-including `pi.sdk-sidecar` and `claude-agent.sdk`, coordinated minor `0.4.0`,
-Rust `1.95`, Apple Silicon macOS, source-only annotated-tag intent, and no tag
-authority. Card 052 stays planned and gated on completed card 051 plus the full
-authenticated application-smoke authority packet. No card authorizes tag
-creation or push.
+Review the prepared [g05.021 card 051](g05/batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md)
+source candidate on PR 201. One operator-authorized Effigy transaction owns
+the coordinated manifest, changelog, and workspace-only lockfile mutations and
+passes all 11 local gates before the tree is frozen. The accepted card 050
+facts stay fixed: 40 packages, immutable 47-route `v0.3.3`, the 49-route
+`v0.4.0` candidate including `pi.sdk-sidecar` and `claude-agent.sdk`, Rust
+`1.95`, Apple Silicon macOS, and source-only distribution. Accept only an exact
+head whose release copy, prepared state, three-file mutation proof, and frozen
+changelog extraction agree. After review, merge only that head and require
+canonical CI whose `headSha` equals the merged candidate. Card 052 stays
+planned and gated on completed card 051 plus the full authenticated
+application-smoke authority packet. Release execution, tag creation, tag push,
+publication, provider work, and consumer mutation remain unauthorized.
 
 ## Standing Lanes
 

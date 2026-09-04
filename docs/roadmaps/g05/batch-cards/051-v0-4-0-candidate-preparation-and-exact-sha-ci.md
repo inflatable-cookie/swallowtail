@@ -1,6 +1,6 @@
 # 051 v0.4.0 Candidate Preparation And Exact-SHA CI
 
-Status: ready; card 050 audit accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`; stops before the mutating prepare path for separate explicit operator authorization
+Status: ready; coordinated `0.4.0` candidate prepared after fresh one-shot authorization; awaiting exact-head review, canonical merge, and exact-SHA CI; no release execution or tag authority
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
@@ -25,10 +25,47 @@ merged as `4c554135`. That Effigy applies the version, changelog, and lockfile
 mutations before gates; lock sync uses `cargo update --workspace --quiet`,
 obtains the post-mutation workspace-member name and version map from Cargo
 metadata, and rejects and restores any change outside those exact package
-identities and versions. This Swallowtail repair must receive exact-head review
-and merge before the preserved candidate edits are replayed. A fresh operator
-authorization is required for the later mutating prepare; the consumed
-authorization does not carry forward.
+identities and versions. Swallowtail PR 200 exact head `e55021d2` passed
+independent review and merged as `20b937ee`. The preserved non-Effigy candidate
+edits were replayed from that canonical base.
+
+A second explicitly authorized one-shot prepare reached the `floor` gate after
+nine earlier gates passed, then rolled all three owned mutations back when the
+Rust `1.95` full test run exposed a Claude Code watcher fixture race. Independent
+local watcher hosts each started their materialization sequence at zero under
+the same process-wide temporary root, so one parallel test could reuse a path
+after another test released it. The retained path-absence assertion could then
+observe the other test's resource. That authorization is also consumed. The
+fixture now gives every local watcher host a process-and-sequence-unique
+temporary root, with a deterministic released-path-reuse regression. The floor
+selector no longer runs its obsolete local `cargo update --workspace` or
+value-only lock validator; accepted Effigy merge `4c554135` owns the
+package-identity-checked lock synchronization before every gate.
+
+A third explicitly authorized one-shot prepare passed `fmt`, `lint`, and
+`lint:no-features`, then the workspace `test` gate exposed an OpenCode fixture
+race in
+`deadline_after_dispatch_is_joined_unconfirmed_and_releases_access`. Its
+20-millisecond deadline and 100-millisecond delayed response ran on independent
+threads, so scheduler delay could let the response win and report `Applied`
+instead of the required `UnconfirmedAfterEffect`. Effigy again restored all
+three owned mutations and wrote no prepared state. That authorization is
+consumed. The fixture now gates the DELETE response, fires the deadline only
+after dispatch, waits until the driver observes it, and releases the response
+only so joined cleanup can finish. The exact case held 100 runs on the default
+toolchain and 25 on Rust `1.95`; the focused OpenCode suite and Clippy passed.
+
+Before the fresh prepare, every candidate-state authority surface was authored
+to describe the post-prepare freeze: a coordinated prepared candidate awaiting
+exact-head review, canonical merge, and exact-SHA CI, with release execution,
+tagging, publication, and Card 052 still unauthorized. After the deterministic
+OpenCode repair, the operator then granted one final fresh execution of the
+exact Card 051 prepare command. That single transaction prepared all three
+owned files and passed all 11 gates. The
+promoted changelog was extracted immediately and the source tree was frozen
+without a later candidate edit. Exact fingerprints, gate timings, and the
+extraction digest belong to the candidate PR evidence so recording them does
+not change the gated tree.
 
 ## Scope
 
@@ -84,7 +121,12 @@ authorization does not carry forward.
    mutations. The first mutation must include the workspace package version and
    all eight internal compatible requirements. The explicit version is
    mandatory even though status now infers the same result.
-9. Stop and request separate explicit operator authorization for the single
+9. Before preparation, author every release, roadmap, card, index, and log
+   surface that will ship in the frozen candidate so it truthfully describes
+   the post-prepare state: candidate prepared; exact-head review, canonical
+   merge, and exact-SHA CI pending; release execution, tag creation, tag push,
+   publication, and Card 052 unauthorized. Then stop and request separate
+   explicit operator authorization for the single
    mutating preparation command. Only after that authorization, run exactly
    `effigy release prepare --yes --check-gates --version 0.4.0` once. Effigy is
    the sole mutation owner for `workspace.package.version`, coordinated
@@ -97,9 +139,9 @@ authorization does not carry forward.
    rerun are not evidence.
 10. Immediately extract the promoted release with
     `effigy changelog extract CHANGELOG.md --version 0.4.0`. Freeze the exact
-    output and its digest in candidate evidence. Prove the extracted section
-    has the single deduplicated headings and the structural `Breaking` entry,
-    then make no further candidate edit.
+    output and its digest in candidate PR evidence outside the source tree.
+    Prove the extracted section has the single deduplicated headings and the
+    structural `Breaking` entry, then make no further candidate edit.
 11. Open one candidate PR, receive exact-head review, and land only the accepted
    head on canonical `main`. Record the resulting candidate SHA; no later
    closeout commit may be presented as that candidate.
@@ -177,9 +219,9 @@ clean-tree output, and tag-absence proof.
 
 ## Auto-Continuation
 
-No. Stop at the read-only preparation plan for separate operator authorization.
-After candidate completion, card 052 also requires explicit operator authority
-for its authenticated working-application path.
+No. The prepared candidate stops for independent exact-head review, canonical
+merge, and exact-SHA CI. After card 051 completion, card 052 also requires
+explicit operator authority for its authenticated working-application path.
 
 ## Stop Conditions
 
@@ -191,7 +233,8 @@ post-mutation workspace identity and version authority, or if prepare cannot
 operate on the intended tree.
 Return to planning; do not apply a
 manual fallback, bypass, or second mutation path. Also stop on missing operator
-authorization, candidate drift, any failing or skipped gate, a modified
+authorization, candidate-state prose not authored before prepare, candidate
+drift, any failing or skipped gate, a modified
 historical baseline, source contamination, overlapping mergeable
 feature/currentness PR, review mismatch, non-canonical base/remote, CI from
 another SHA, tag presence, or a required workflow edit.

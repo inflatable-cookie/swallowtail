@@ -373,7 +373,9 @@ qualify both Claude Code axes through official `2.1.257` while keeping watcher
 exact `2.1.251`. Coverage stays 249/518. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
-or parked Bedrock work is authorized.
+or parked Bedrock work is authorized. Card 067 closed candidate J as promotable on 2026-09-04
+(PR 206 merged as `8cbf6064`); card 068 is ready to complete its exact 35-row
+llama.cpp and Ollama tranche.
 
 ## Rollover Rule
 

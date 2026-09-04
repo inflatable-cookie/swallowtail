@@ -1,8 +1,8 @@
 # Contract 061 Candidate J Breadth Audit
 
-Status: planning evidence; candidate J promotable as one exact two-package
-tranche (llama.cpp and Ollama, 35 rows); no blocker and no public-baseline
-decision required
+Status: promoted 2026-09-04 into ready card 068; retained as the ledger and
+anchor evidence that card owns; no blocker and no public-baseline decision
+required
 Owner: Tom
 Date: 2026-09-04
 Source: card 067, Batch 9.4 checkpoint, Contract 061, reviewed census, and

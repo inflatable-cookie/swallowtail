@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J audit 067 is closed and promotable; audits 064-066 remain active; no implementation card is ready
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J promoted as ready card 068; audits 064-066 remain active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -176,7 +176,10 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       vocabulary
 - [ ] audit breadth candidates C, E, I, and J against current `main` under
       the promotion rubric as four independent planning-only cards 064-067,
-      each returning one triage gate note and no Rust
+      each returning one triage gate note and no Rust; card 067 closed
+      candidate J as promotable
+- [ ] complete candidate J as the exact 10-row `llama-cpp.attached`, 6-row
+      `llama-cpp.owned`, and 19-row `ollama.attached` tranche (card 068)
 - [ ] report from the candidate C audit whether provider-operation
       observation recurs on the three catalogue routes; that report is the
       reopen trigger for the deferred Kimi decision
@@ -360,6 +363,7 @@ provider-operation observation public-baseline decision, and coverage stays
 
 ## Batch Cards In Flight
 
+- [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 35 rows, 32 emitted and 3 withheld; two packages
 - [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — ready; Antigravity, Bedrock, Cursor; 94 rows; carries the provider-operation observation reopen trigger
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
 - [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — ready; DeepSeek, DeepSeek Harness; 47 rows
@@ -390,3 +394,24 @@ concurrent with g05.026 card 062.
 | Review oracle | the note is evidence, not authority; the smallest counterexample is a row counted as proved, a facade asserted without a code reference, or a rubric item marked closed by omission |
 | Stop conditions | census total does not reconcile; a candidate needs a new shared public type or contract amendment (record it, do not design it); current `main` moves under the audit in the owned adapter packages |
 | Escalation owner | operator (Tom) via Chatterbox for any public-baseline or vocabulary question; coordinator for mechanical blockers |
+
+### Card 068 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 068 is approved concurrent with audits 064-066 and g05.026 card 062.
+
+| Field | Card 068 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 067 merged at `8cbf6064`; the candidate J audit note; current `main` |
+| Completion conditions | three per-route ledgers prove 32 emitted / 3 withheld across exactly 35 tuples; named validation green; god-file scan within the accepted baseline; one reviewable PR; no public baseline or contract change |
+| Owned mutable paths | `crates/swallowtail-adapter-llama-cpp/**`; `crates/swallowtail-adapter-ollama/**`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | `crates/swallowtail-core/**`, `crates/swallowtail-runtime/**`, `crates/swallowtail-testkit/**`, every other adapter crate, `docs/contracts/**`, `docs/architecture/**`, the census CSV, the audit note |
+| Approved concurrent siblings | 064, 065, 066, and g05.026 card 062 |
+| Serial edges | none; later candidates enter only through their own audits |
+| Worker capability class | Rust implementation worker with fixture authoring; no provider credentials |
+| Acceptance evidence | ledger fixtures per route and per Ollama shape; withheld-row assertions; focused and package-affected validation; semantic API unchanged |
+| Review oracle | the card's counterexample list; smallest counterexample is one row emitted from the wrong shape, from documentation, or from an unretained profile |
+| Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
+| Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |

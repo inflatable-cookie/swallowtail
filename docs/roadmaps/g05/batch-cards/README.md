@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 10 `llama-cpp.attached`, 6 `llama-cpp.owned`, 19 `ollama.attached` rows; 32 emitted, 3 withheld
 - [064-contract-061-candidate-c-breadth-audit.md](./064-contract-061-candidate-c-breadth-audit.md) — ready; planning-only; Antigravity, Bedrock, Cursor; 94 rows; carries the observation reopen trigger
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 - [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — ready; planning-only; DeepSeek, DeepSeek Harness; 47 rows

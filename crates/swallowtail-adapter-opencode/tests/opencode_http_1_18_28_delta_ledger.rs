@@ -17,13 +17,6 @@ fn json(input: &str) -> Value {
     serde_json::from_str(input).expect("fixture is valid JSON")
 }
 
-fn assert_nonempty_string(value: &Value, key: &str) {
-    assert!(
-        value[key].as_str().is_some_and(|text| !text.is_empty()),
-        "missing {key}"
-    );
-}
-
 fn assert_exact_strings(actual: &Value, expected: &[&str]) {
     let actual = actual.as_array().expect("string array");
     assert_eq!(actual.len(), expected.len());

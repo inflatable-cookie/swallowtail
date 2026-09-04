@@ -1,6 +1,6 @@
 # 078 OpenCode HTTP 1.18.28 Claim
 
-Status: ready; serially unblocked after card 077 admitted compatible `surface-19`
+Status: implemented; awaiting exact-head review
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -61,3 +61,10 @@ Another family; new route operations; provider contact; host update; Contract
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Raised only the existing `surface-19` ceiling from `1.18.20` through
+`1.18.28`. Baseline `1.14.48`, all historical gaps and segment boundaries,
+claim id, behavior revisions, and `AllowUnverified` remain unchanged. Exact
+`1.18.29` is the synthetic later-stable point.

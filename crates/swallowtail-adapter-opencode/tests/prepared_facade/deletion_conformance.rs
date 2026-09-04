@@ -77,7 +77,7 @@ fn local_remote_and_explicit_unverified_newer_execution_preserve_truth() {
             "1.18.10",
             false,
         ),
-        ("opencode.delete.host.newer", "1.18.21", true),
+        ("opencode.delete.host.newer", "1.18.29", true),
     ];
     let fixtures: Vec<_> = cases
         .iter()

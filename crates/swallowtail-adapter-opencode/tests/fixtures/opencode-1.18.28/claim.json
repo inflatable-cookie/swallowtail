@@ -1,0 +1,15 @@
+{
+  "claim_id": "opencode.http.server-window-1",
+  "baseline": "1.14.48",
+  "latest_qualified": "1.18.28",
+  "behavior_revision": "opencode.http-sse.surface-19",
+  "newly_qualified": [
+    "1.18.21", "1.18.22", "1.18.23", "1.18.24",
+    "1.18.25", "1.18.26", "1.18.27", "1.18.28"
+  ],
+  "unverified_newer": "1.18.29",
+  "newer_version_posture": "allow_unverified",
+  "historical_gaps_preserved": [
+    "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21"
+  ]
+}

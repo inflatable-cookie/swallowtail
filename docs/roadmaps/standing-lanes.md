@@ -139,10 +139,10 @@ family alone and changed no claim.
 Research 284 revalidated all 41 production solution rows on 2026-09-04. The
 partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
 material candidate. OpenCode HTTP `1.18.28` ranked first: the host is
-`1.18.18`, inside the qualified `1.14.48..=1.18.20` range, and eight published
-hops are available. Chatterbox compiled g05.028; card 077 is the active
-identity-first family lane and card 078 remains serially gated. The Contract
-029 In-Run Latest Movement rule applies.
+`1.18.18`, inside the previously qualified `1.14.48..=1.18.20` range. Card 077
+admitted all eight published hops as compatible `surface-19`; card 078 raises
+the qualified ceiling through `1.18.28`, keeps every historical gap, and leaves
+later stable points `UnverifiedNewer` under Contract 029.
 
 Research 276 previously revalidated all 40 production families on 2026-09-02.
 Kimi Code npm and GitHub stable moved to `0.40.1`; the

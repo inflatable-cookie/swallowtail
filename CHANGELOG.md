@@ -11,6 +11,13 @@ annotated Git tags from the canonical repository.
   preserving the existing bounded rejection. g05.029 card 089.
 
 ### Added
+- complete Contract 061 candidate F across Kimi ACP, headless, local-server,
+  and Kimi Platform routes. Prepared facades now publish exact bounded route
+  contributions; Kimi ACP adds outcome-backed catalogue observation and a
+  projected-open seam that preserves exact reasoning/Plan acknowledgement and
+  negotiated-model evidence without changing the existing open path. The four
+  ledgers prove 75 emitted and 14 construction-time withheld rows across 89
+  tuples. g05.009 card 034.
 - add provider-neutral compound acknowledgement truth for independently
   state-associated reasoning and Plan halves. Exact provider values attach
   only to effective or rejected halves; reasoning-first rejection may mark a

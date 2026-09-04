@@ -11,6 +11,15 @@ pub enum swallowtail_adapter_kimi::KimiLocalServerPermissionMode
 pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Auto
 pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Manual
 pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Yolo
+pub enum swallowtail_adapter_kimi::KimiProjectionOpenFailure
+pub swallowtail_adapter_kimi::KimiProjectionOpenFailure::Rejected
+pub swallowtail_adapter_kimi::KimiProjectionOpenFailure::Rejected::contribution: swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub swallowtail_adapter_kimi::KimiProjectionOpenFailure::Rejected::failure: swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_adapter_kimi::KimiProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_kimi::KimiProjectionOpenFailure
+pub const fn swallowtail_adapter_kimi::KimiProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_kimi::KimiProjectionOpenFailure::into_parts(self) -> (swallowtail_runtime::failure::RuntimeFailure, core::option::Option<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>)
+pub const fn swallowtail_adapter_kimi::KimiProjectionOpenFailure::rejected_contribution(&self) -> core::option::Option<&swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>
 pub struct swallowtail_adapter_kimi::KimiAcpDriver
 impl swallowtail_adapter_kimi::KimiAcpDriver
 pub const fn swallowtail_adapter_kimi::KimiAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
@@ -70,6 +79,8 @@ impl swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration
 pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_kimi::KimiHeadlessRunInput) -> core::result::Result<swallowtail_adapter_kimi::KimiHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_kimi::KimiHeadlessPreparedRun
 impl swallowtail_adapter_kimi::KimiHeadlessPreparedRun
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiHeadlessPreparedRun
 pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::evidence(&self) -> &swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence
 pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiHeadlessDriver
 pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -126,15 +137,21 @@ impl swallowtail_adapter_kimi::KimiLocalServerPreparationProbe
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparationProbe::new(swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedArchive
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedArchive
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedArchive
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::request(&self) -> &swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding, swallowtail_runtime::preparation::PreparationFailure>>
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport::request_id(&self) -> &swallowtail_runtime::identity::RequestId
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -170,6 +187,8 @@ impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_kimi::KimiLocalServerReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::evidence(&self) -> &swallowtail_runtime::provider_session_reconciliation::PreparedProviderSessionReconciliationEvidence
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::plan(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan
@@ -181,6 +200,8 @@ impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOper
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedRestore
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedRestore
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedRestore
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -194,6 +215,8 @@ pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::low_level_driver(&s
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedRun
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedSession
 impl swallowtail_adapter_kimi::KimiLocalServerPreparedSession
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::configuration(&self) -> &swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration
@@ -204,6 +227,8 @@ pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::plan(&sel
 pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedSession
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_kimi::KimiLocalServerReconciliationInput
 impl swallowtail_adapter_kimi::KimiLocalServerReconciliationInput
 pub const fn swallowtail_adapter_kimi::KimiLocalServerReconciliationInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::provider_operation_checkpoint::PersistedProviderOperationCheckpoint, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationBounds) -> Self
@@ -273,6 +298,8 @@ pub struct swallowtail_adapter_kimi::KimiPreparedSession
 impl swallowtail_adapter_kimi::KimiPreparedSession
 pub fn swallowtail_adapter_kimi::KimiPreparedSession::authorize_local_server_import(&self, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_adapter_kimi::KimiAcpSessionImportAuthority, swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_kimi::KimiPreparedSession
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiPreparedSession
 pub const fn swallowtail_adapter_kimi::KimiPreparedSession::evidence(&self) -> &swallowtail_adapter_kimi::KimiPreparedEvidence
 pub fn swallowtail_adapter_kimi::KimiPreparedSession::into_parts(self) -> (swallowtail_adapter_kimi::KimiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
 pub fn swallowtail_adapter_kimi::KimiPreparedSession::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
@@ -284,7 +311,12 @@ pub fn swallowtail_adapter_kimi::KimiPreparedSession::prepare_working_state_rest
 pub const fn swallowtail_adapter_kimi::KimiPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 pub fn swallowtail_adapter_kimi::KimiPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_kimi::KimiPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiPreparedSession
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_kimi::KimiProjectionOpenFuture
 pub struct swallowtail_adapter_kimi::KimiPreparedSessionCatalogue
+impl swallowtail_adapter_kimi::KimiPreparedSessionCatalogue
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::consumer_route_provider_operation_observation(&self, &swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::provider_operation_observation::ConsumerRouteProviderOperationObservation, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_kimi::KimiPreparedSessionCatalogue
 pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionCatalogueEvidence
 pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::list_page(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
@@ -295,11 +327,22 @@ pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::plan(&self)
 pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
 pub struct swallowtail_adapter_kimi::KimiPreparedSessionImport
 impl swallowtail_adapter_kimi::KimiPreparedSessionImport
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionImport::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kimi::KimiPreparedSessionImport
 pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionImportEvidence
 pub fn swallowtail_adapter_kimi::KimiPreparedSessionImport::import_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
 pub fn swallowtail_adapter_kimi::KimiPreparedSessionImport::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiAcpDriver
 pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::plan(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan
 pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::request(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest
+pub struct swallowtail_adapter_kimi::KimiProjectionOpenOutcome
+impl swallowtail_adapter_kimi::KimiProjectionOpenOutcome
+pub const fn swallowtail_adapter_kimi::KimiProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_kimi::KimiProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_kimi::KimiProjectionOpenOutcome::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>
+pub fn swallowtail_adapter_kimi::KimiProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::InteractiveSessionHandle
+pub struct swallowtail_adapter_kimi::KimiProviderValue(_)
+impl swallowtail_adapter_kimi::KimiProviderValue
+pub fn swallowtail_adapter_kimi::KimiProviderValue::as_str(&self) -> &str
 pub struct swallowtail_adapter_kimi::KimiSessionCatalogueInput
 impl swallowtail_adapter_kimi::KimiSessionCatalogueInput
 pub const fn swallowtail_adapter_kimi::KimiSessionCatalogueInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionCatalogueId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> Self
@@ -329,3 +372,4 @@ pub async fn swallowtail_adapter_kimi::start_kimi_local_server_owned(swallowtail
 pub type swallowtail_adapter_kimi::KimiLocalServerPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub type swallowtail_adapter_kimi::KimiPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub type swallowtail_adapter_kimi::KimiPreparedSessionLoadFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_kimi::KimiProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_kimi::KimiProjectionOpenOutcome, swallowtail_adapter_kimi::KimiProjectionOpenFailure>>

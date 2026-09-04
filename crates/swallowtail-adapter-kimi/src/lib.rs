@@ -5,6 +5,7 @@
 
 mod acp_activity;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
@@ -23,6 +24,10 @@ mod prepared_profile;
 mod selection;
 mod turn;
 
+pub use consumer_route_projection::{
+    KimiProjectionOpenFailure, KimiProjectionOpenFuture, KimiProjectionOpenOutcome,
+    KimiProviderValue,
+};
 pub use driver::{KimiAcpDriver, kimi_acp_descriptor};
 pub use headless::{KimiHeadlessDriver, kimi_headless_descriptor};
 pub use local_server::{

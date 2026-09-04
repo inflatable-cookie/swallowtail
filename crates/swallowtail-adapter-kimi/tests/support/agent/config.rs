@@ -34,6 +34,18 @@ impl SharedAgent {
                     "off",
                 ));
             }
+            Scenario::ReasoningForeign => {
+                options.push(reasoning_option(
+                    &["off", "low", "medium", "high", "xhigh", "max", "ultra"],
+                    "off",
+                ));
+            }
+            Scenario::ReasoningUnbounded => {
+                options.push(reasoning_option(
+                    &["off", "low", "medium", "high", "xhigh", "max", long_value()],
+                    "off",
+                ));
+            }
             Scenario::ReasoningEffortNarrow => {
                 options.push(reasoning_option(&["off", "low", "medium", "high"], "off"));
             }
@@ -107,4 +119,8 @@ impl SharedAgent {
         }
         json!({"configOptions": options})
     }
+}
+
+fn long_value() -> &'static str {
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }

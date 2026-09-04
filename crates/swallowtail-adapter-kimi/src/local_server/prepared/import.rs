@@ -12,6 +12,7 @@ use swallowtail_runtime::{
 #[derive(Clone, Debug)]
 /// Prepared cross-transport import of Kimi ACP session authority.
 pub struct KimiLocalServerPreparedBindingImport {
+    pub(crate) plan: swallowtail_core::PreflightPlan,
     pub(super) request_id: swallowtail_runtime::RequestId,
     pub(super) target: KimiLocalServerBindingImportTarget,
     pub(super) provider_session_ref: swallowtail_core::SessionRef,
@@ -19,6 +20,9 @@ pub struct KimiLocalServerPreparedBindingImport {
 }
 
 impl KimiLocalServerPreparedBindingImport {
+    pub(crate) const fn projection_plan(&self) -> &swallowtail_core::PreflightPlan {
+        &self.plan
+    }
     /// Returns the request identity bound to this import.
     #[must_use]
     pub const fn request_id(&self) -> &swallowtail_runtime::RequestId {

@@ -12,6 +12,8 @@ mod acp_driver;
 mod activity_corpus;
 #[path = "conformance.rs"]
 mod conformance;
+#[path = "consumer_route_projection.rs"]
+mod consumer_route_projection;
 #[path = "installed_probe.rs"]
 mod installed_probe;
 #[path = "plan_mode_dispatch.rs"]

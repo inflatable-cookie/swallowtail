@@ -59,7 +59,7 @@ enforcement.
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; cards 022-024 and 031-032 merged; candidate J promoted as ready card 068; audits 064-066 active; Kimi observation decision deferred behind card 064
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; candidate C audit 064 closed and promotable; candidate J promoted as ready card 068; audits 065-066 active; no Kimi gate reopen
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -77,9 +77,9 @@ lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 026 is ready: card 062 freezes Kimi
 Code local server `0.40.1` identity first. Milestone 009 is ready with four
-planning-only breadth audits (cards 064-067); card 067 closed candidate J and
-card 068 is ready to implement its 35-row tranche; its Kimi observation
-decision is deferred behind card 064.
+planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
+C and J as promotable; card 068 is ready to implement its 35-row tranche; audits
+065-066 remain active; no Kimi gate reopened.
 Milestone 021 is complete; the exact-head review accepted Research 281 through
 PR 198 head `2f4923b8`, merged as `835fe9ff`; card 051 is complete after PR
 201 exact head `10d9b7a0` merged as candidate `56f3913a` and canonical
@@ -414,7 +414,7 @@ identity.
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; card 068 llama.cpp and Ollama tranche ready; audits 064-066 active; Kimi observation decision deferred behind card 064
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; card 068 llama.cpp and Ollama tranche ready; candidate C audit 064 closed and promotable; audits 065-066 active; no Kimi gate reopen
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

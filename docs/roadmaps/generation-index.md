@@ -322,8 +322,9 @@ emitted, 14 withheld, and 1 undecided as reassessment evidence only. Candidate F
 card 034 is planned; not ready; blocked by the provider-operation observation
 public-baseline decision. On 2026-09-04 the operator deferred that decision
 behind the candidate C audit and compiled planning-only audits 064-067 for
-breadth candidates C, E, I, and J; card 067 is complete and promotable, cards
-064-066 remain active, and g05.009 has no ready implementation card.
+breadth candidates C, E, I, and J; cards 064 and 067 are complete and
+promotable, card 068 is ready for candidate J implementation, cards 065-066
+remain active, and no Kimi gate reopened.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;

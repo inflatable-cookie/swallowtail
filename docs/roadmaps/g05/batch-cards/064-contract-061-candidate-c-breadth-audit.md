@@ -1,6 +1,6 @@
 # 064 Contract 061 Candidate C Breadth Audit
 
-Status: ready; candidate C audit complete; promotable as one exact package tranche; no Rust change
+Status: complete; candidate C audit complete; promotable as one exact package tranche; no Rust change
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04

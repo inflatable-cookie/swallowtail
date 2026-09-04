@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-09-04
 
 ## Purpose
 
@@ -86,6 +86,13 @@ The first task-execution profile expands to:
 Observing an approval or user-input request does not grant authority, answer
 the provider, or keep a provider session resumable. The consumer may persist a
 waiting record after Swallowtail closes and joins the provider scope.
+
+The consumer-tool exclusion is a property of the claimed filesystem boundary,
+not of `ReadWrite` access. A bounded profile excludes consumer tools because
+they could bypass its one writable root. An ambient profile claims no
+boundary, so it may combine `ReadWrite` with consumer-mediated tool calls;
+the consumer sees each call before it runs and owns the decision. Shared
+preflight must key that exclusion on the boundary claim.
 
 ## Resource And Host Binding
 

@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; card 080 read-write session and permission policy is ready; cards 081-088 are planned in priority order
+Status: ready; card 080 (permission policy landed in PR 221, write half pending card 089) and card 089 core guard are ready; cards 081-088 queued in priority order
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -66,7 +66,8 @@ forces a minor.
 
 ## Batch Cards
 
-- [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — ready
+- [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — ready; two PRs: PR 221 (permission policy, typed write refusal) then the write half after card 089
+- [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
 - [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — planned; after 080
 - [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — planned; after 080
 - [083 Claude SDK Resume And Session Listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — planned; after 080
@@ -105,3 +106,34 @@ Card 080 is approved concurrent with g05.009 cards 074, 075, 076, and 079.
 - [ ] the read-only default and `v0.4.0` behaviour are unchanged
 - [ ] later cards land in priority order without reopening card 080's seam
 - [ ] `v0.4.1` carries card 080's items on the Contract 036 gates
+
+## Card 080 Stop And Ruling
+
+Card 080's first PR (221) hit the card's stop: shared preflight refused
+`ReadWrite` with `Capability::ToolCalls` for every policy, although Contract
+013 excludes consumer tools only in the bounded profile. On 2026-09-04 the
+operator ruled to narrow the guard to the boundary claim. Contract 013 now
+says so explicitly. Card 089 changes core and testkit; card 080 completes in
+two PRs: PR 221 merges as it stands (permission modes, typed write refusal,
+proved write mediation), then the same worker lifts the refusal after card
+089 merges. Both ride `v0.4.1`.
+
+### Card 089 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 089 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | Contract 013 clarified on `main`; PR 221's stop record |
+| Completion conditions | guard keyed on the boundary claim; new portable assertion; all existing plans preflight unchanged; named validation green; one PR |
+| Owned mutable paths | `crates/swallowtail-core/src/preflight/**`; `crates/swallowtail-testkit/**`; core and testkit API baseline files if changed; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every adapter crate; runtime; contracts; the session policy public type (no new dimension) |
+| Approved concurrent siblings | g05.009 card 034; card 080's PR 221 review and merge |
+| Serial edges | card 080's second PR follows card 089's merge |
+| Worker capability class | Rust core worker with preflight discipline; no provider credentials |
+| Acceptance evidence | the new assertion; unchanged adapter fixture results; focused and package-affected validation |
+| Review oracle | the card's invariant |
+| Stop conditions | any adapter plan changes outcome; a new policy dimension seems needed (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

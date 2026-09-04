@@ -1,0 +1,206 @@
+use super::{
+    CURSOR_HEADLESS_ROUTE, LedgerEntry, PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL,
+    RowTuple,
+};
+
+pub const CURSOR_HEADLESS_CENSUS_TUPLES: [RowTuple; 17] = [
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "model-catalogue",
+        "feature.model-catalogue",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "structured-run",
+        "feature.structured-run",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "interactive-session",
+        "feature.interactive-session",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-observation",
+        "feature.streaming-events",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-observation",
+        "feature.usage-evidence",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-capability",
+        "feature.reasoning-selection",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-capability",
+        "feature.cancellation-or-interruption",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-capability",
+        "feature.working-resource",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-capability",
+        "feature.bounded-workspace-text-write",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "session-lifecycle",
+        "feature.persistent-session-posture",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-capability",
+        "feature.prepared-facade",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "route-observation",
+        "feature.activity-observation",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "structured-run",
+        "control.model-selection",
+    ),
+    (CURSOR_HEADLESS_ROUTE, "structured-run", "control.fast"),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "structured-run",
+        "control.context-window",
+    ),
+    (
+        CURSOR_HEADLESS_ROUTE,
+        "structured-run",
+        "control.reasoning-effort",
+    ),
+    (CURSOR_HEADLESS_ROUTE, "structured-run", "control.read-mode"),
+];
+
+pub const CURSOR_HEADLESS_TRANCHE: [LedgerEntry; 17] = [
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "model-catalogue",
+        semantic_id: "feature.model-catalogue",
+        emitted_by: &[],
+        withheld_because: "headless run carries no model catalogue capability",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "feature.structured-run",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "interactive-session",
+        semantic_id: "feature.interactive-session",
+        emitted_by: &[],
+        withheld_because: "operation shape is StructuredRun, not interactive session",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-observation",
+        semantic_id: "feature.streaming-events",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-observation",
+        semantic_id: "feature.usage-evidence",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-capability",
+        semantic_id: "feature.reasoning-selection",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-capability",
+        semantic_id: "feature.cancellation-or-interruption",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-capability",
+        semantic_id: "feature.working-resource",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-capability",
+        semantic_id: "feature.bounded-workspace-text-write",
+        emitted_by: &[],
+        withheld_because: "matrix posture is documentation only; no capability in preflight plan",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "session-lifecycle",
+        semantic_id: "feature.persistent-session-posture",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-capability",
+        semantic_id: "feature.prepared-facade",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "route-observation",
+        semantic_id: "feature.activity-observation",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "control.model-selection",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL, PROFILE_HEADLESS_MINIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "control.fast",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "control.context-window",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "control.reasoning-effort",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL],
+        withheld_because: "",
+    },
+    LedgerEntry {
+        route_id: CURSOR_HEADLESS_ROUTE,
+        operation_shape: "structured-run",
+        semantic_id: "control.read-mode",
+        emitted_by: &[PROFILE_HEADLESS_MAXIMAL],
+        withheld_because: "",
+    },
+];

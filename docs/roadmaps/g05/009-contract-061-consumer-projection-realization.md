@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, H, and J merged; 284 rows proved; candidate C card 069 is ready; gate card 070 is ready to settle the provider-operation observation vocabulary; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, C, D, G, H, and J merged; 378 rows proved; gate card 070 is ready to settle the provider-operation observation vocabulary; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -181,8 +181,8 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       candidate J as promotable
 - [ ] complete candidate J as the exact 10-row `llama-cpp.attached`, 6-row
       `llama-cpp.owned`, and 19-row `ollama.attached` tranche (card 068)
-- [ ] complete candidate C as the exact 94-row Antigravity, Bedrock, and
-      Cursor tranche across seven routes (card 069)
+- [x] complete candidate C as the exact 94-row Antigravity, Bedrock, and
+      Cursor tranche across seven routes (card 069; PR 209 merged as `d2d8ae8b`)
 - [ ] settle the provider-operation observation vocabulary once for the
       recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
       `opencode.http` through gate card 070 (operator chose the gate on
@@ -372,7 +372,7 @@ provider-operation observation public-baseline decision, and coverage stays
 ## Batch Cards In Flight
 
 - [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — ready; planning-only; two proving consumers; unblocks candidate I and reopens card 034
-- [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows, 51 emitted and 43 withheld; three packages
+- [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after gate card 070 is promoted and the runtime baseline lands
 

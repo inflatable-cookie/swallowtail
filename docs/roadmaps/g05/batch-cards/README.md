@@ -3,7 +3,6 @@
 ## Ready
 
 - [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — ready; planning-only public-baseline gate for provider-operation observation; two proving consumers
-- [069-contract-061-antigravity-bedrock-cursor-package-completion.md](./069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows across seven routes; 51 emitted, 43 withheld; three packages
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — ready; retargeted to official `0.41.0`; freeze identity and trace the `0.40.0` Bash `cwd` authority change before any claim
 
@@ -17,6 +16,7 @@
 ## Completed
 
 - [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — complete; candidate J; 35 rows; 32 emitted and 3 withheld; PR 208 merged as `c5cca28d`
+- [069-contract-061-antigravity-bedrock-cursor-package-completion.md](./069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows; 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
 - [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 merged as `85221307`
 - [064-contract-061-candidate-c-breadth-audit.md](./064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 merged as `1903f715`; catalogue routes did not reopen the Kimi gate
 - [067-contract-061-candidate-j-breadth-audit.md](./067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 merged as `8cbf6064`

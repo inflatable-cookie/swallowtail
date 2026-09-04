@@ -147,14 +147,14 @@ goal and does not keep g04 or any later generation open. See
 g05 has 26 roadmaps: 20 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 009, 026. Milestone 009 is ready
 with planning-only breadth audits: cards 064 and 067 are complete and
-promotable, card 066 stopped on the shared observation decision, card 068 is
-merged, card 069 is ready for candidate C implementation, and card 065 remains
+promotable, card 066 stopped on the shared observation decision, cards 068 and
+069 are merged, and card 065 remains
 active. No Kimi gate reopened. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on
 2026-09-04 to official `0.41.0` after latest moved mid-run, and card 062 is
-ready; card 063 is gated behind an admitted segment.
+under exact-head review; card 063 is gated behind an admitted segment.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
 accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route
@@ -325,8 +325,8 @@ card 034 is planned; not ready; blocked by the provider-operation observation
 public-baseline decision. On 2026-09-04 the operator deferred that decision
 behind the candidate C audit and compiled planning-only audits 064-067 for
 breadth candidates C, E, I, and J; cards 064 and 067 are complete and
-promotable, card 066 stopped on the shared observation decision, card 068 is
-merged, card 069 is ready for candidate C implementation, and card 065 remains
+promotable, card 066 stopped on the shared observation decision, cards 068 and
+069 are merged, and card 065 remains
 active. No Kimi gate reopened.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
@@ -381,8 +381,8 @@ or parked Bedrock work is authorized. Card 067 closed candidate J as promotable 
 (PR 206 merged as `8cbf6064`); card 068 completed its exact 35-row llama.cpp
 and Ollama tranche (PR 208 merged as `c5cca28d`). Card 064 closed candidate C as promotable (PR
 204 merged as `1903f715`) and found no catalogue route needs provider-operation
-observation; card 069 is ready to complete its exact 94-row Antigravity,
-Bedrock, and Cursor tranche. Card 066 stopped candidate I (PR 207 merged as
+observation; card 069 completed its exact 94-row Antigravity,
+Bedrock, and Cursor tranche (PR 209 merged as `d2d8ae8b`). Card 066 stopped candidate I (PR 207 merged as
 `85221307`) on the same provider-operation observation gap as Kimi. With three
 carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is ready for it, and candidate I

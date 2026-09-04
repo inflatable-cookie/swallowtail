@@ -15,14 +15,12 @@ shape.
 
 ## Next Task
 
-Implement [g05.009 card 069](g05/batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md):
-complete candidate C's exact 94-row Antigravity, Bedrock, and Cursor Contract
-061 tranche from the manifest in that roadmap. Audit 065 for candidate E runs
-concurrently, as does planning-only gate card 070, which settles the
-provider-operation observation vocabulary for candidate I, Kimi card 034, and
-OpenCode. Card 068's candidate J tranche is merged. Card 062 resumes on its
-existing worker, retargeted to official Kimi Code `0.41.0` with `0.40.1` as
-published adjacency. Card 063 remains gated and card 034 remains planned.
+Implement [g05.009 card 070](g05/batch-cards/070-contract-061-provider-operation-observation-gate.md):
+complete the planning-only provider-operation observation gate from the
+manifest in that roadmap. Card 069's candidate C tranche is merged; audit 065
+continues; Card 062 is under exact-head review after its retarget to official
+Kimi Code `0.41.0` with `0.40.1` as published adjacency. Card 068's candidate
+J tranche is merged. Card 063 remains gated and card 034 remains planned.
 `v0.4.0` is tagged; the feature/currentness freeze is lifted.
 
 ## Standing Lanes

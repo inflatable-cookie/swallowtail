@@ -6,6 +6,7 @@
 //! operation, chooses no route or model, invents no default, mutates no
 //! session, and owns no consumer layout, localization, or routing policy.
 
+mod acknowledgement;
 mod admission;
 mod agreement;
 mod applicability;
@@ -22,6 +23,9 @@ mod value;
 mod view;
 mod views;
 
+pub use acknowledgement::{
+    ConsumerRouteAcknowledgementState, ConsumerRouteCompoundAcknowledgement,
+};
 pub use applicability::ConsumerRouteApplicability;
 pub use compose::{ConsumerRouteProjectionInput, compose_consumer_route_projection};
 pub use contribution::ConsumerRouteProjectionContribution;

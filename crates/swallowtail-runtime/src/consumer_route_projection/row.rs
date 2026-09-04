@@ -1,3 +1,4 @@
+use super::acknowledgement::ConsumerRouteCompoundAcknowledgement;
 use super::applicability::ConsumerRouteApplicability;
 use super::identity::ConsumerRouteProjectionSourceIdentity;
 use super::semantics::{
@@ -25,6 +26,7 @@ pub struct ConsumerRouteProjectionRow {
     state_support: ConsumerRouteStateSupport,
     mutation_authority: ConsumerRouteMutationAuthority,
     value: Option<ConsumerRouteControlValue>,
+    compound_acknowledgement: Option<ConsumerRouteCompoundAcknowledgement>,
     reason: Option<ConsumerRouteSafeReason>,
 }
 
@@ -52,6 +54,7 @@ impl ConsumerRouteProjectionRow {
             state_support: ConsumerRouteStateSupport::descriptor_only(),
             mutation_authority: ConsumerRouteMutationAuthority::Absent,
             value: None,
+            compound_acknowledgement: None,
             reason: None,
         }
     }
@@ -95,6 +98,16 @@ impl ConsumerRouteProjectionRow {
     /// Adds the control value kind, admitted domain, and omission truth.
     pub fn with_control_value(mut self, value: ConsumerRouteControlValue) -> Self {
         self.value = Some(value);
+        self
+    }
+
+    #[must_use]
+    /// Adds independently state-associated reasoning and Plan acknowledgement truth.
+    pub fn with_compound_acknowledgement(
+        mut self,
+        acknowledgement: ConsumerRouteCompoundAcknowledgement,
+    ) -> Self {
+        self.compound_acknowledgement = Some(acknowledgement);
         self
     }
 
@@ -175,6 +188,12 @@ impl ConsumerRouteProjectionRow {
     /// Returns the control value when the row is a control.
     pub const fn control_value(&self) -> Option<&ConsumerRouteControlValue> {
         self.value.as_ref()
+    }
+
+    #[must_use]
+    /// Returns the compound acknowledgement when this row carries one.
+    pub const fn compound_acknowledgement(&self) -> Option<&ConsumerRouteCompoundAcknowledgement> {
+        self.compound_acknowledgement.as_ref()
     }
 
     #[must_use]

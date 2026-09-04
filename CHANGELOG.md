@@ -6,6 +6,12 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- add provider-neutral compound acknowledgement truth for independently
+  state-associated reasoning and Plan halves. Exact provider values attach
+  only to effective or rejected halves; reasoning-first rejection may mark a
+  requested Plan half terminally not dispatched without claiming pending
+  work. The value remains post-open, observation-only evidence and adds no
+  request, mutation, routing, or acknowledgement authority. g05.009 card 079.
 - complete Contract 061 candidate C consumer route projections across
   `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and
   `swallowtail-adapter-cursor`. Prepared catalogue, headless, continuation,

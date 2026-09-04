@@ -181,6 +181,16 @@ pub swallowtail_runtime::ConfiguredProviderInstanceSelectionReadiness::Ready
 pub enum swallowtail_runtime::ConfiguredProviderModelCatalogueState
 pub swallowtail_runtime::ConfiguredProviderModelCatalogueState::Available
 pub swallowtail_runtime::ConfiguredProviderModelCatalogueState::Unavailable
+pub enum swallowtail_runtime::ConsumerRouteAcknowledgementState
+pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Absent
+pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Effective(swallowtail_runtime::ConsumerRouteEnumerableValue)
+pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Rejected(swallowtail_runtime::ConsumerRouteEnumerableValue)
+pub swallowtail_runtime::ConsumerRouteAcknowledgementState::RequestedNotDispatched
+impl swallowtail_runtime::ConsumerRouteAcknowledgementState
+pub const fn swallowtail_runtime::ConsumerRouteAcknowledgementState::absent() -> Self
+pub fn swallowtail_runtime::ConsumerRouteAcknowledgementState::effective(swallowtail_runtime::ConsumerRouteEnumerableValue) -> Self
+pub fn swallowtail_runtime::ConsumerRouteAcknowledgementState::rejected(swallowtail_runtime::ConsumerRouteEnumerableValue) -> Self
+pub const fn swallowtail_runtime::ConsumerRouteAcknowledgementState::requested_not_dispatched() -> Self
 pub enum swallowtail_runtime::ConsumerRouteActorPosture
 pub swallowtail_runtime::ConsumerRouteActorPosture::ConsumerSelectable
 pub swallowtail_runtime::ConsumerRouteActorPosture::HostControlled
@@ -1099,6 +1109,11 @@ pub const fn swallowtail_runtime::ConsumerRouteApplicability::protocol_facade_id
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::resource_access(&self) -> core::option::Option<swallowtail_core::session_access::ResourceAccess>
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::runtime_readiness(&self) -> swallowtail_core::access::RuntimeReadiness
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::support_authority(&self) -> swallowtail_core::access::SupportAuthority
+pub struct swallowtail_runtime::ConsumerRouteCompoundAcknowledgement
+impl swallowtail_runtime::ConsumerRouteCompoundAcknowledgement
+pub fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::new(swallowtail_runtime::ConsumerRouteAcknowledgementState, swallowtail_runtime::ConsumerRouteAcknowledgementState) -> core::result::Result<Self, swallowtail_runtime::ConsumerRouteProjectionFailure>
+pub const fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::plan(&self) -> &swallowtail_runtime::ConsumerRouteAcknowledgementState
+pub const fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::reasoning(&self) -> &swallowtail_runtime::ConsumerRouteAcknowledgementState
 pub struct swallowtail_runtime::ConsumerRouteControlValue
 impl swallowtail_runtime::ConsumerRouteControlValue
 pub const fn swallowtail_runtime::ConsumerRouteControlValue::domain(&self) -> &swallowtail_runtime::ConsumerRouteValueDomain
@@ -1165,6 +1180,7 @@ impl swallowtail_runtime::ConsumerRouteProjectionRow
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::actor_posture(&self) -> swallowtail_runtime::ConsumerRouteActorPosture
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::applicability(&self) -> &swallowtail_runtime::ConsumerRouteApplicability
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::availability(&self) -> swallowtail_runtime::ConsumerRouteAvailability
+pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::compound_acknowledgement(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteCompoundAcknowledgement>
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::control_value(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteControlValue>
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::evidence_strength(&self) -> swallowtail_runtime::ConsumerRouteEvidenceStrength
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::identity(&self) -> &swallowtail_runtime::ConsumerRouteRowIdentity
@@ -1178,6 +1194,7 @@ pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::state_support(&sel
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::support(&self) -> swallowtail_runtime::ConsumerRouteSupportPosture
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::with_actor_posture(self, swallowtail_runtime::ConsumerRouteActorPosture) -> Self
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::with_availability(self, swallowtail_runtime::ConsumerRouteAvailability) -> Self
+pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_compound_acknowledgement(self, swallowtail_runtime::ConsumerRouteCompoundAcknowledgement) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_control_value(self, swallowtail_runtime::ConsumerRouteControlValue) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_mutation_authority(self, swallowtail_runtime::ConsumerRouteMutationAuthority) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_safe_reason(self, swallowtail_runtime::ConsumerRouteSafeReason) -> Self

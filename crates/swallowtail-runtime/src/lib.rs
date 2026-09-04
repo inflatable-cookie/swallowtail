@@ -116,11 +116,12 @@ pub use connection_lifecycle::{
     refresh_readiness, start_sign_in, submit_sign_in_credential_field,
 };
 pub use consumer_route_projection::{
-    ConsumerRouteActiveSessionState, ConsumerRouteActorPosture, ConsumerRouteApplicability,
-    ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension, ConsumerRouteControlId,
-    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
-    ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
-    ConsumerRouteModelBinding, ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
+    ConsumerRouteAcknowledgementState, ConsumerRouteActiveSessionState, ConsumerRouteActorPosture,
+    ConsumerRouteApplicability, ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension,
+    ConsumerRouteCompoundAcknowledgement, ConsumerRouteControlId, ConsumerRouteControlValue,
+    ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues, ConsumerRouteEvidenceStrength,
+    ConsumerRouteFeatureId, ConsumerRouteLifecycle, ConsumerRouteModelBinding,
+    ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
     ConsumerRouteOmissionSemantics, ConsumerRouteProjection, ConsumerRouteProjectionContribution,
     ConsumerRouteProjectionFailure, ConsumerRouteProjectionFailureKind,
     ConsumerRouteProjectionIdentity, ConsumerRouteProjectionInput, ConsumerRouteProjectionRow,

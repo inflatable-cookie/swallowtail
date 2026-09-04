@@ -1,0 +1,54 @@
+{
+  "axis": "opencode.server",
+  "version": "1.18.28",
+  "observed_at": "2026-09-04",
+  "npm_package": "opencode-ai",
+  "npm_latest": true,
+  "github_latest_tag": "v1.18.28",
+  "official_channels_agree": true,
+  "host": {
+    "version": "1.18.18",
+    "sha256": "4f5979c2dadb06fbff1335335afaaea274e58f92e79aa43cf2ed98618d555422",
+    "size": 143182562,
+    "signature": "adhoc-linker-signed",
+    "publisher": null
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.18.21", "1.18.22", "1.18.23", "1.18.24",
+    "1.18.25", "1.18.26", "1.18.27", "1.18.28"
+  ],
+  "unpublished_gap_in_1_18_21_through_1_18_28": false,
+  "unpublished_next": "1.18.29",
+  "official_hops": [
+    {"version":"1.18.20","npm_published_at":"2026-08-21T08:09:54.390Z","npm_integrity":"sha512-8c2yJ/Oe1qFi9KYE0KS9WCyy6O1QtI9odzBmBWGOeyOgXTn/hGOwCp/fgcHY2qVQ2TVgkQXze7jXjJ6AFyeU0Q==","npm_shasum":"79ace165fba034da1599fb3411691611228c409a","npm_tarball_sha256":"d7af626824cab417d9c5c12e5c0187e506f1c903ea93bd8e4b1615be16305d2a","github_tag_commit":"7248bc1964b13fa67e601733f89ee9dc6dfa0563","github_release_published_at":"2026-08-21T08:09:31Z","source_archive_sha256":"10129b7a233d8ea227fe8a65c158d3df4adc3d1296e3af5a136d94080b25a630"},
+    {"version":"1.18.21","npm_published_at":"2026-08-21T14:51:28.536Z","npm_integrity":"sha512-BxQyxpD0y2X0sXJUKLOooXVmi9QIoeKPtdH68r7QRiqXJ/YulK1MQvSe8KyA8183zoPV0G6JAtgz1OqmE3OGUw==","npm_shasum":"26cf454879fd325fc43bce0ce82ee75a24cdd112","npm_tarball_sha256":"62eae64938cfc9ae1ee74222c6967ab081a2b5037bce947b0a3ba0b35694cd38","github_tag_commit":"826d9ad46a22bef0294998e08daa3c4904fea28f","github_release_published_at":"2026-08-21T14:51:11Z","source_archive_sha256":"387ad0d4ef4364c00100fafaf90f80cff6858d7055bddd920aeacbab9b34a49d"},
+    {"version":"1.18.22","npm_published_at":"2026-08-24T14:37:31.515Z","npm_integrity":"sha512-cSIGgB6tX3P+8k4X2ZzuJ9ojClfo01ou0ck2ocRDNXLfhVJy4XVLk/WCsK/m+Venbz3p2qCNxpAFNb47Gj4tLQ==","npm_shasum":"13386b2af20e062d07b1500853e43e4681d2ddf8","npm_tarball_sha256":"920ce17f8d9f24865d161e26d7e3e5121aa386b5a221374109cc118d52cce4e7","github_tag_commit":"47b6b6f5f4f9b42d2bce7af1c4e5bf6efaf22ba7","github_release_published_at":"2026-08-24T14:37:19Z","source_archive_sha256":"b777d4f92268168b9386b79eca0faa72a92367773fb6d81197cccf886901a3b9"},
+    {"version":"1.18.23","npm_published_at":"2026-08-25T06:33:58.860Z","npm_integrity":"sha512-3NkT0XINL7d0HYkTyGV1SPChHXhvRgKqNaTgKRTGb0TXUWszXA7MW/y3zMZw29y1AQuUDAzRvVYmQ9KGRQhroA==","npm_shasum":"312261b7162ce58f69d4a0073a63856f7b967f5a","npm_tarball_sha256":"4ba5929a9bf726bde96c9566b6902a58dcb2b338503a7b380c2fbf503cb1f0fe","github_tag_commit":"ef2880f379129aa048be9e9353e30aa168d42c17","github_release_published_at":"2026-08-25T06:30:49Z","source_archive_sha256":"7b621e56e9e9162464f2524d88810f8e0e0036cf29cdadb35c574384eba3e6cf"},
+    {"version":"1.18.24","npm_published_at":"2026-08-28T04:09:47.526Z","npm_integrity":"sha512-PIV4ud2cqFQw6Lm+onvxQrQo+wCFYnA+6TDryeDJ6PF38t2ujzeeKPzlxZ1vCmZ6p7AixtfgJu4iUovDVt4GZQ==","npm_shasum":"74f0fedc34c5c78d856399249b3530944f297187","npm_tarball_sha256":"b2adda2c2ba0bb7cf5e6a12cc090c56c969613acc9a464e75691cc5b316fa166","github_tag_commit":"57e80556975fca613a116447ddecc8dcbc1f33b2","github_release_published_at":"2026-08-28T04:10:14Z","source_archive_sha256":"5acb57c53b39221ea8b8c8f55acd82c0a402a556a5da164c94b4d879756bb0ac"},
+    {"version":"1.18.25","npm_published_at":"2026-08-28T05:57:34.071Z","npm_integrity":"sha512-pS4RKJ9eKwU7Dp5G5pdj1rhMnpG5APixXzfTKNoFqv9aFVI36Rnza2jESvKifxyPZlsA65MQB03WCArY0EK6mg==","npm_shasum":"0649bb7833e3db91ab1435e9c8a8da75f8eae162","npm_tarball_sha256":"9be29b0858b3c9bb1214569f1d8e48a783956c8f5093cc6dcd86717e2cd8c5a3","github_tag_commit":"cb7d8b2f5e44876ef98b661dc10590c915af3a9f","github_release_published_at":"2026-08-28T05:58:20Z","source_archive_sha256":"44e9530d7be172005c7d60aef317440eecb85d557d94cce7fa35c5a7b9d9da0b"},
+    {"version":"1.18.26","npm_published_at":"2026-09-01T21:51:32.962Z","npm_integrity":"sha512-XFPIj/yJZN8eBi4+uTjsnYAd/QezCM+/OUa3JbtL7tKQF4fGHR4onZx2d6oUGqbVs4CNONQ8QFKejeW+qVJIEA==","npm_shasum":"ffdac376880c2a6b8a58fcbbc1445dbb1f79aa09","npm_tarball_sha256":"d3eabbc23b5ef7e9383697c689b3b919f504d2cba36dcabe1ccc8de67380acb5","github_tag_commit":"774cc7c1914e4329eefde5a669f938b0cf566661","github_release_published_at":"2026-09-01T21:52:15Z","source_archive_sha256":"a2ff47601072064f04263a97cce014c5b8d0692f7beaa7c7427ac02362d6c3d0"},
+    {"version":"1.18.27","npm_published_at":"2026-09-02T21:39:46.111Z","npm_integrity":"sha512-5xrG2gQEwV2sLus30SZX9GyLbPX3z57BCxddedDM0wx1bgnwlHVLOS/FD2uve7fEZlmkr7KYFbvs65ySz1rwzA==","npm_shasum":"4c3c54227e0d3496b0914d19c98e70fd9c088108","npm_tarball_sha256":"d1746d5dab3997f971fa643c0e1e5e553e9e18be9530f27a2a562bc19f610300","github_tag_commit":"4b7e19e315cca414121ba1d61523fef74bb3ae8b","github_release_published_at":"2026-09-02T21:41:01Z","source_archive_sha256":"3d3851762d41da2dafe3be39d3b17a222426747e9b49e5e87d2a88b46b0866f1"},
+    {"version":"1.18.28","npm_published_at":"2026-09-04T15:40:40.661Z","npm_integrity":"sha512-T7FvoXv0gT0fKuEdiomQuke2KbIFb8B8xj9L/4ZFnMIt70GnU1uUj0y/OkhDZ2dCgterQLdRXrdhrLLZ4lyv6Q==","npm_shasum":"32b51b0e9e5054d2ea62b7c9983904234d3dcf5e","npm_tarball_sha256":"ae46e3653cb85edb4eab36127f289ba71833d70c0efb56992f99eca2940117c4","github_tag_commit":"22006d97652839999596a34a48ff6be7dbb40c6e","github_release_published_at":"2026-09-04T15:38:23Z","source_archive_sha256":"8eea501a6a00cbebe524af7c3248c0bfc56290f444671903e32aa6b799ee6616"}
+  ],
+  "claim_at_observation": {
+    "baseline": "1.14.48",
+    "latest_qualified": "1.18.20",
+    "posture": "allow_unverified",
+    "classification_of_1_18_21_through_1_18_28": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_surface_19": true,
+    "add_private_surface": null,
+    "raise_latest_qualified_to": "1.18.28",
+    "keep_baseline": "1.14.48",
+    "keep_historical_segments_and_gaps": true,
+    "new_public_operation": false,
+    "provider_prompt_sent": false,
+    "live_server_started": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "claim_changed_in_identity_card": false,
+    "claim_card": "g05 batch card 078"
+  }
+}

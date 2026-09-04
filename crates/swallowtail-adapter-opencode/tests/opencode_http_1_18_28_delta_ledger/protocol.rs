@@ -1,0 +1,69 @@
+use super::{PROTOCOL, assert_exact_strings, json};
+
+#[test]
+fn mapped_and_unmapped_protocol_deltas_are_exact() {
+    let protocol = json(PROTOCOL);
+    assert_exact_strings(
+        &protocol["selected_routes"],
+        &[
+            "global.health",
+            "provider.list",
+            "session.create",
+            "session.prompt_async",
+            "event.subscribe",
+            "session.abort",
+            "session.delete",
+            "session.list",
+            "session.status",
+            "session.get",
+            "session.messages",
+        ],
+    );
+    assert_eq!(
+        protocol["selected_route_and_handler_files_byte_identical"],
+        true
+    );
+    assert_exact_strings(
+        &protocol["mapped_stable_files"],
+        &[
+            "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts",
+            "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts",
+            "packages/opencode/src/session/compaction.ts",
+            "packages/opencode/src/session/message-v2.ts",
+            "packages/opencode/src/session/session.ts",
+            "packages/opencode/src/session/status.ts",
+        ],
+    );
+    assert_eq!(
+        protocol["openapi_deltas"]["selected_operation_objects_changed"],
+        false
+    );
+    assert_eq!(
+        protocol["classified_mapped_internal_deltas"]
+            .as_array()
+            .unwrap()
+            .len(),
+        5
+    );
+    assert_exact_strings(
+        &protocol["bounded_unmapped_delta_categories"],
+        &[
+            "account-device-login-url-validation",
+            "azure-plugin-and-resource-selection",
+            "cloudflare-provider-routing",
+            "config-v2-lowering",
+            "global-upgrade-request",
+            "github-cli-and-copilot-plugin",
+            "model-provider-transforms",
+            "provider-upsell-copy",
+            "tool-apply-patch-optional-move-path",
+        ],
+    );
+    assert_eq!(protocol["downloaded_artifact_executed"], false);
+    assert_eq!(protocol["live_server_started"], false);
+}

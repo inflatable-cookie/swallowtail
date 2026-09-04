@@ -1,0 +1,32 @@
+{
+  "compared": ["1.18.20","1.18.21","1.18.22","1.18.23","1.18.24","1.18.25","1.18.26","1.18.27","1.18.28"],
+  "npm_package_file_counts": {"1.18.20":4,"1.18.21":4,"1.18.22":4,"1.18.23":4,"1.18.24":4,"1.18.25":4,"1.18.26":4,"1.18.27":4,"1.18.28":4},
+  "implementation_source_file_counts": {"1.18.20":406,"1.18.21":406,"1.18.22":406,"1.18.23":406,"1.18.24":407,"1.18.25":407,"1.18.26":407,"1.18.27":407,"1.18.28":407},
+  "npm_identical_through_1.18.20_to_1.18.28": ["LICENSE","bin/opencode.exe","postinstall.mjs"],
+  "source_deltas": {
+    "1.18.20_to_1.18.21":{"added":[],"removed":[],"changed":["packages/opencode/src/provider/provider.ts","packages/opencode/src/session/prompt.ts"]},
+    "1.18.21_to_1.18.22":{"added":[],"removed":[],"changed":["packages/opencode/src/account/account.ts","packages/opencode/src/provider/transform.ts","packages/opencode/src/server/routes/instance/httpapi/groups/global.ts","packages/opencode/src/server/routes/instance/httpapi/handlers/global.ts","packages/opencode/src/session/retry.ts"]},
+    "1.18.22_to_1.18.23":{"added":[],"removed":[],"changed":["packages/opencode/src/cli/cmd/github.handler.ts","packages/opencode/src/provider/provider.ts","packages/opencode/src/session/llm/request.ts"]},
+    "1.18.23_to_1.18.24":{"added":["packages/opencode/src/config/v2-compat.ts"],"removed":[],"changed":["packages/opencode/src/config/config.ts","packages/opencode/src/plugin/azure.ts","packages/opencode/src/provider/provider.ts","packages/opencode/src/provider/transform.ts"]},
+    "1.18.24_to_1.18.25":{"added":[],"removed":[],"changed":["packages/opencode/src/plugin/azure.ts"]},
+    "1.18.25_to_1.18.26":{"added":[],"removed":[],"changed":["packages/opencode/src/plugin/azure.ts","packages/opencode/src/provider/transform.ts","packages/opencode/src/session/processor.ts","packages/opencode/src/session/tools.ts","packages/opencode/src/tool/apply_patch.ts"]},
+    "1.18.26_to_1.18.27":{"added":[],"removed":[],"changed":["packages/opencode/src/provider/provider.ts","packages/opencode/src/provider/transform.ts"]},
+    "1.18.27_to_1.18.28":{"added":[],"removed":[],"changed":["packages/opencode/src/plugin/github-copilot/copilot.ts"]}
+  },
+  "openapi_sha256": {
+    "1.18.20":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1",
+    "1.18.21":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1",
+    "1.18.22":"c0af493bae06c8f50ae05474921570eb05f301c92a5f68f6a6365f530b719ad7",
+    "1.18.23":"c0af493bae06c8f50ae05474921570eb05f301c92a5f68f6a6365f530b719ad7",
+    "1.18.24":"c0af493bae06c8f50ae05474921570eb05f301c92a5f68f6a6365f530b719ad7",
+    "1.18.25":"c0af493bae06c8f50ae05474921570eb05f301c92a5f68f6a6365f530b719ad7",
+    "1.18.26":"c0af493bae06c8f50ae05474921570eb05f301c92a5f68f6a6365f530b719ad7",
+    "1.18.27":"00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+    "1.18.28":"00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3"
+  },
+  "npm_invariant_hashes": {
+    "LICENSE":"625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+    "bin/opencode.exe":"21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+    "postinstall.mjs":"5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+  }
+}

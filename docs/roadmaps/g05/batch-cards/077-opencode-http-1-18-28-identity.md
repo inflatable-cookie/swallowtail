@@ -1,6 +1,6 @@
 # 077 OpenCode HTTP 1.18.28 Identity
 
-Status: ready
+Status: complete; compatible extension admitted through `1.18.28`; production claims unchanged; card 078 remains serial
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -74,3 +74,14 @@ Channel disagreement; major-line reset; identity disagreement; mapped
 surface/capability/authority change without deterministic mapping; new public
 operation or facade required; provider contact needed.
 
+## Result
+
+Compatible extension admitted. Research 285 and the secret-free
+`opencode-1.18.28` corpus freeze official npm/GitHub identity for every
+published hop `1.18.21..=1.18.28`, exact npm and implementation-source tree
+deltas, two bounded unselected OpenAPI changes, and mapped run-internal changes.
+Selected route declarations and handlers remain byte-identical. The finite
+300-second upstream response/chunk timeout default at `1.18.27` closes through
+existing mapped failure and detachment handling and requires no new adapter
+operation or authority. Production claims and historical fixtures are
+unchanged. Serial card 078 may apply the proved `surface-19` extension.

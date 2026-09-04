@@ -17,6 +17,17 @@ use swallowtail_runtime::HostServices;
 
 const PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-v1/protocol.json");
 
+/// Reports whether one line names an option key, ignoring a longer key that
+/// merely contains it: `disallowedTools` is not `allowedTools`.
+fn names_option(line: &str, key: &str) -> bool {
+    line.match_indices(key).any(|(index, _)| {
+        line[..index]
+            .chars()
+            .next_back()
+            .is_none_or(|character| !character.is_alphanumeric())
+    })
+}
+
 fn protocol() -> serde_json::Value {
     serde_json::from_str(PROTOCOL).expect("frozen corpus identity is valid JSON")
 }
@@ -181,6 +192,50 @@ fn the_addable_route_exposes_references_and_no_sign_in_action() {
         .collect();
     assert_eq!(credentials, ["delegated_subscription"]);
     assert_eq!(unavailable.sign_in_actions().count(), 0);
+}
+
+#[test]
+fn the_asset_can_never_auto_allow_or_bypass_admission() {
+    // `allowedTools` auto-allows without prompting, and every auto-approving
+    // upstream permission mode skips `canUseTool` entirely. Neither may be
+    // reachable from the shipped asset.
+    for reserved in [
+        "allowedTools",
+        "permissionPrompts",
+        "permissionPromptToolName",
+    ] {
+        assert!(
+            !CLAUDE_AGENT_SDK_SIDECAR_SOURCE
+                .lines()
+                .filter(|line| !line.trim_start().starts_with("//"))
+                .any(|line| names_option(line, reserved)),
+            "the sidecar must never set {reserved}"
+        );
+    }
+    let protocol = protocol();
+    for mode in protocol["rejected_permission_modes"]
+        .as_array()
+        .expect("rejected permission modes are listed")
+    {
+        let mode = mode.as_str().expect("mode is text");
+        assert!(
+            CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(mode),
+            "{mode} must be refused by name, not merely omitted"
+        );
+    }
+    assert_eq!(
+        protocol["permission_modes"],
+        serde_json::json!(["default", "plan", "acceptEdits"])
+    );
+    assert_eq!(
+        protocol["commands"],
+        serde_json::json!(["open", "query", "interrupt", "set_permission_mode", "close"])
+    );
+    assert_eq!(
+        protocol["default_tools"],
+        serde_json::json!(["Read", "Glob", "Grep"]),
+        "the default admitted set is unchanged"
+    );
 }
 
 #[test]

@@ -30,16 +30,17 @@ pub(super) fn respond(
     }
     let id = command["id"].as_str().unwrap_or_default().to_owned();
     match command["command"].as_str().unwrap_or_default() {
-        "open" => open(scenario, state, &id),
+        "open" => open(scenario, state, &id, &command["params"]),
         "query" => query(scenario, state, &id),
         "interrupt" => interrupt(scenario, state, &id),
+        "set_permission_mode" => set_permission_mode(scenario, state, &id, &command["params"]),
         "close" => close(scenario, state, &id),
         _ => return Err(super::super::host::fixture_failure()),
     }
     Ok(())
 }
 
-fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {
     state.opened = true;
     if matches!(scenario, SdkScenario::OpenHold) {
         // No response and no exit: only the host deadline can end this.
@@ -60,7 +61,11 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
             "apiKeySource": "oauth",
             "subscriptionPresent": true
         },
-        "tools": ["Read", "Glob", "Grep"]
+        // The fixture sidecar echoes exactly what the driver admitted, so a
+        // widened or reordered echo is a deliberate scenario rather than an
+        // accident of the fixture.
+        "tools": params["tools"].clone(),
+        "permissionMode": params["permissionMode"].clone()
     });
     match scenario {
         SdkScenario::AccountApiKeySource => data["account"]["apiKeySource"] = json!("apiKeyHelper"),
@@ -72,6 +77,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         SdkScenario::CwdMismatch => data["cwd"] = json!("/fixture/elsewhere"),
         SdkScenario::ModelMismatch => data["model"] = json!("claude-opus-5"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
+        SdkScenario::PermissionModeDrift => data["permissionMode"] = json!("plan"),
         SdkScenario::UnadvertisedInterruptReceipt => data["capabilities"] = json!([]),
         _ => {}
     }
@@ -175,6 +181,29 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                        "isError": false}),
             );
         }
+    }
+}
+
+fn set_permission_mode(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {
+    match scenario {
+        SdkScenario::PermissionModeRejected => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_permission_mode",
+                   "success": false,
+                   "failure": {"code": "permission_mode_failed",
+                               "message": "sidecar command failed: permission_mode_failed"}}),
+        ),
+        // A confirmation that names a different mode is not a confirmation.
+        SdkScenario::PermissionModeUnconfirmed => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_permission_mode",
+                   "success": true, "data": {"permissionMode": "default"}}),
+        ),
+        _ => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_permission_mode",
+                   "success": true, "data": {"permissionMode": params["mode"].clone()}}),
+        ),
     }
 }
 

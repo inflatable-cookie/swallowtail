@@ -7,7 +7,7 @@
 //! sidecar starts inside the host's descendant-tree authority, so the native
 //! binary and everything it spawns stay enrolled in one host-owned tree.
 
-use self::session::ClaudeAgentSdkSessionHandle;
+pub use self::session::ClaudeAgentSdkSessionHandle;
 use self::validation::validate_open;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
@@ -34,6 +34,7 @@ pub(super) const SDK_DRIVER_ID: &str = "swallowtail.claude-agent.sdk";
 pub struct ClaudeAgentSdkDriver {
     environment: EnvironmentRef,
     credential: swallowtail_core::CredentialRef,
+    profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
 }
 
 impl ClaudeAgentSdkDriver {
@@ -47,7 +48,29 @@ impl ClaudeAgentSdkDriver {
         Self {
             environment,
             credential,
+            profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile::read_only(),
         }
+    }
+
+    /// Binds the admitted tool set and opening permission mode.
+    ///
+    /// Omitting this keeps the unchanged read-only profile. The profile must
+    /// agree with the plan the caller opens against: a write profile against a
+    /// read-only plan is refused before any lease, process, or provider
+    /// contact exists.
+    #[must_use]
+    pub const fn with_session_profile(
+        mut self,
+        profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
+    ) -> Self {
+        self.profile = profile;
+        self
+    }
+
+    /// Returns the admitted tool set and opening permission mode.
+    #[must_use]
+    pub const fn session_profile(&self) -> crate::sdk::profile::ClaudeAgentSdkSessionProfile {
+        self.profile
     }
 }
 
@@ -98,6 +121,7 @@ impl PendingSession {
             RuntimeSessionId::new(format!("claude-agent-sdk:{}", self.request_id.as_str()))
                 .expect("validated request id produces a valid sidecar runtime session id");
         let active: crate::sdk::driver::session::ActiveSlot = Arc::new(Mutex::new(None));
+        let permission_mode = readiness.permission_mode();
         ClaudeAgentSdkSessionHandle {
             request_id: self.request_id,
             runtime_id,
@@ -111,6 +135,8 @@ impl PendingSession {
             credential: acquired.credential,
             readiness,
             active,
+            permission_mode,
+            permission_mode_changes: 0,
         }
     }
 }
@@ -123,7 +149,42 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_open(&plan, &request, &services, &self.credential)?;
+            self.open_route_session(plan, request, services)
+                .await
+                .map(|handle| Box::new(handle) as Box<dyn InteractiveSessionHandle>)
+        })
+    }
+
+    fn load_session(
+        &self,
+        _plan: PreflightPlan,
+        _request: LoadSessionRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
+        Box::pin(async { Err(crate::sdk::failure::unsupported("session load")) })
+    }
+
+    fn resume_session(
+        &self,
+        _plan: PreflightPlan,
+        _request: ResumeSessionRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        Box::pin(async { Err(crate::sdk::failure::unsupported("session resume")) })
+    }
+}
+
+impl ClaudeAgentSdkDriver {
+    /// Opens one fresh session and returns the route-local handle, which adds
+    /// mid-session permission-mode control to the shared session surface.
+    pub fn open_route_session(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_open(&plan, &request, &services, &self.credential, self.profile)?;
             let deadline = request.deadline().expect("validated open deadline");
             let bounded = HostBound::new(
                 services
@@ -187,8 +248,7 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
                 .await;
             match opened {
                 Some(Ok((pending, readiness))) => match guard.claim() {
-                    Some(acquired) => Ok(Box::new(pending.into_handle(&plan, readiness, acquired))
-                        as Box<dyn InteractiveSessionHandle>),
+                    Some(acquired) => Ok(pending.into_handle(&plan, readiness, acquired)),
                     // Readiness landed on the boundary and cleanup won the one
                     // atomic transition. What this open acquired is already
                     // being terminated, so reporting success would be a lie.
@@ -228,26 +288,6 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
         })
     }
 
-    fn load_session(
-        &self,
-        _plan: PreflightPlan,
-        _request: LoadSessionRequest,
-        _services: HostServices,
-    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
-        Box::pin(async { Err(crate::sdk::failure::unsupported("session load")) })
-    }
-
-    fn resume_session(
-        &self,
-        _plan: PreflightPlan,
-        _request: ResumeSessionRequest,
-        _services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async { Err(crate::sdk::failure::unsupported("session resume")) })
-    }
-}
-
-impl ClaudeAgentSdkDriver {
     /// The whole provider-facing open: acquisition, launch, and readiness.
     ///
     /// It is one future so the caller's deadline covers all of it, and every
@@ -280,7 +320,8 @@ impl ClaudeAgentSdkDriver {
                 guard,
             )
             .await?;
-        let readiness = startup::open(&pending.connection, plan, &pending.leased_cwd).await?;
+        let readiness =
+            startup::open(&pending.connection, plan, &pending.leased_cwd, self.profile).await?;
         Ok((pending, readiness))
     }
 }
@@ -322,5 +363,4 @@ fn scope_invalid() -> RuntimeFailure {
 
 pub use descriptor::claude_agent_sdk_descriptor;
 
-pub(crate) use startup::EXPECTED_TOOLS;
 pub(crate) use validation::{ACCESS_NAMESPACE, ENDPOINT_AUDIENCE};

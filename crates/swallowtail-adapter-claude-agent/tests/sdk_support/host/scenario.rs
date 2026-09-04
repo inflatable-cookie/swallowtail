@@ -33,8 +33,14 @@ pub enum SdkScenario {
     OpenHold,
     /// The sidecar accepts the query and never answers it.
     QueryHold,
-    /// Open advertises tools beyond the read-only set.
+    /// Open advertises tools beyond the admitted set.
     ToolsWidened,
+    /// Open confirms a permission mode other than the one requested.
+    PermissionModeDrift,
+    /// The sidecar refuses a mid-session permission-mode change.
+    PermissionModeRejected,
+    /// The sidecar answers a mode change with a different mode.
+    PermissionModeUnconfirmed,
     /// The stream carries an unqualified event name.
     UnknownEvent,
     /// The stream carries invalid JSON.

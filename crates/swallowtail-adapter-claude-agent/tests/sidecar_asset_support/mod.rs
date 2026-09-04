@@ -13,6 +13,21 @@ use swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE;
 
 const WIRE_BOUND: Duration = Duration::from_secs(20);
 
+/// How one sidecar-asset process is started.
+struct Fixture {
+    native_lifetime_ms: &'static str,
+    scenario: &'static str,
+}
+
+impl Default for Fixture {
+    fn default() -> Self {
+        Self {
+            native_lifetime_ms: "50",
+            scenario: "read-only",
+        }
+    }
+}
+
 pub struct SidecarProcess {
     child: Child,
     stdin: ChildStdin,
@@ -25,16 +40,30 @@ pub struct SidecarProcess {
 impl SidecarProcess {
     /// Starts the asset with a fake native child that exits promptly.
     pub fn start() -> Self {
-        Self::start_with_native_lifetime("50")
+        Self::start_with(&Fixture::default())
     }
 
     /// Starts the asset with a fake native child that outlives any bound the
     /// test declares.
     pub fn start_with_surviving_native_child() -> Self {
-        Self::start_with_native_lifetime("30000")
+        Self::start_with(&Fixture {
+            native_lifetime_ms: "30000",
+            ..Fixture::default()
+        })
     }
 
-    fn start_with_native_lifetime(lifetime_ms: &str) -> Self {
+    /// Starts the asset against the multi-turn editing fake SDK, which writes
+    /// real files under the leased cwd for every admitted write.
+    pub fn start_editing() -> Self {
+        Self::start_with(&Fixture {
+            scenario: "editing",
+            ..Fixture::default()
+        })
+    }
+
+    fn start_with(fixture: &Fixture) -> Self {
+        let lifetime_ms = fixture.native_lifetime_ms;
+        let scenario = fixture.scenario;
         let directory = temporary_directory();
         let entry = directory.join("claude-agent-sdk-sidecar.mjs");
         std::fs::write(&entry, CLAUDE_AGENT_SDK_SIDECAR_SOURCE).expect("asset is written");
@@ -66,6 +95,7 @@ impl SidecarProcess {
             )
             .env("FAKE_SDK_OBSERVATIONS", directory.join("observations.json"))
             .env("FAKE_SDK_NATIVE_LIFETIME_MS", lifetime_ms)
+            .env("FAKE_SDK_SCENARIO", scenario)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
@@ -101,6 +131,45 @@ impl SidecarProcess {
         self.directory.to_string_lossy().into_owned()
     }
 
+    /// Reads one file under the leased cwd, or `None` when it was never
+    /// written. A denied write must leave nothing behind.
+    pub fn file_under_cwd(&self, name: &str) -> Option<String> {
+        std::fs::read_to_string(self.directory.join(name)).ok()
+    }
+
+    /// Reports whether the fake SDK was ever constructed. A rejection before
+    /// launch leaves no observations at all.
+    pub fn sdk_was_constructed(&self) -> bool {
+        self.directory.join("observations.json").exists()
+    }
+
+    /// Every permission mode the fake SDK was asked to apply, in order.
+    pub fn observed_permission_modes(&self) -> Vec<String> {
+        let Ok(text) = std::fs::read_to_string(self.directory.join("observations.json")) else {
+            return Vec::new();
+        };
+        serde_json::from_str::<Value>(&text)
+            .ok()
+            .and_then(|value| value["permissionModes"].as_array().cloned())
+            .unwrap_or_default()
+            .iter()
+            .filter_map(|value| value.as_str().map(str::to_owned))
+            .collect()
+    }
+
+    /// Per-turn write outcomes the fake SDK recorded, waited for until the
+    /// named number of turns has been decided.
+    pub fn writes(&self, turns: usize) -> Vec<Value> {
+        self.await_observations(|value| {
+            value["writes"]
+                .as_array()
+                .is_some_and(|writes| writes.len() >= turns)
+        })["writes"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+    }
+
     /// Sends one command and returns its correlated response, collecting any
     /// callbacks that arrive first.
     pub fn command(&mut self, id: &str, command: &str, params: Value) -> Value {
@@ -126,6 +195,20 @@ impl SidecarProcess {
             if record["type"] == "callback" {
                 self.hold_callback(record);
                 return self.pending.remove(0);
+            }
+        }
+    }
+
+    /// Waits for the live turn to end, holding any callback that arrives
+    /// first. A new query before the turn ends is refused by the sidecar.
+    pub fn wait_for_turn_end(&mut self) {
+        loop {
+            let record = self.next_record();
+            match record["type"].as_str() {
+                Some("callback") => self.hold_callback(record),
+                Some("terminal") => panic!("sidecar terminated: {record}"),
+                Some("event") if record["event"] == "turn_ended" => return,
+                _ => {}
             }
         }
     }

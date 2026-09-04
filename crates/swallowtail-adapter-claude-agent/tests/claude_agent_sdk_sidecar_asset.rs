@@ -114,6 +114,192 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     assert_eq!(options["executable"], "node");
 }
 
+const WRITE_TOOLS: [&str; 6] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"];
+
+fn open_editing(sidecar: &mut SidecarProcess, permission_mode: &str) -> serde_json::Value {
+    let cwd = sidecar.cwd();
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": cwd, "model": "m-1", "tools": WRITE_TOOLS,
+               "permissionMode": permission_mode}),
+    )
+}
+
+/// Answers the read the editing fixture always makes, then returns the write
+/// request the host must decide.
+fn next_write_request(sidecar: &mut SidecarProcess) -> serde_json::Value {
+    let read = sidecar.next_callback();
+    assert_eq!(read["toolName"], "Read");
+    sidecar.respond_callback(read["id"].as_str().expect("callback id"), "allow");
+    let write = sidecar.next_callback();
+    assert_eq!(write["toolName"], "Write");
+    write
+}
+
+#[test]
+fn a_two_turn_editing_session_writes_only_what_the_host_admitted() {
+    let mut sidecar = SidecarProcess::start_editing();
+    let open = open_editing(&mut sidecar, "default");
+    assert_eq!(open["success"], true, "open response: {open}");
+    assert_eq!(open["data"]["tools"], json!(WRITE_TOOLS));
+    assert_eq!(open["data"]["permissionMode"], "default");
+
+    sidecar.command("query-1", "query", json!({"text": "edit it"}));
+    let first = next_write_request(&mut sidecar);
+    sidecar.respond_callback(first["id"].as_str().expect("callback id"), "allow");
+    sidecar.wait_for_turn_end();
+
+    sidecar.command("query-2", "query", json!({"text": "edit it again"}));
+    let second = next_write_request(&mut sidecar);
+    sidecar.respond_callback(second["id"].as_str().expect("callback id"), "deny");
+
+    let writes = sidecar.writes(2);
+    assert_eq!(writes[0]["admitted"], "allowed");
+    assert_eq!(writes[1]["admitted"], "denied");
+    // The filesystem is the evidence: the admitted write landed, the denied
+    // one never touched disk.
+    assert_eq!(
+        sidecar.file_under_cwd("turn-1.txt").as_deref(),
+        Some("turn 1\n")
+    );
+    assert_eq!(sidecar.file_under_cwd("turn-2.txt"), None);
+    // Every write crossed the consumer boundary first, in both turns.
+    assert_eq!(
+        sidecar.callback_tool_names(),
+        vec![
+            "Read".to_owned(),
+            "Write".to_owned(),
+            "Read".to_owned(),
+            "Write".to_owned()
+        ]
+    );
+}
+
+#[test]
+fn accept_edits_skips_admission_for_edits_and_nothing_else() {
+    let mut sidecar = SidecarProcess::start_editing();
+    let open = open_editing(&mut sidecar, "acceptEdits");
+    assert_eq!(open["data"]["permissionMode"], "acceptEdits");
+
+    sidecar.command("query-1", "query", json!({"text": "edit it"}));
+    // The read is still mediated; the edit is not offered at all.
+    let read = sidecar.next_callback();
+    assert_eq!(read["toolName"], "Read");
+    sidecar.respond_callback(read["id"].as_str().expect("callback id"), "allow");
+
+    let writes = sidecar.writes(1);
+    assert_eq!(writes[0]["admitted"], "skipped");
+    assert_eq!(
+        sidecar.file_under_cwd("turn-1.txt").as_deref(),
+        Some("turn 1\n")
+    );
+    assert_eq!(sidecar.callback_tool_names(), vec!["Read".to_owned()]);
+}
+
+#[test]
+fn a_mid_session_permission_mode_change_round_trips_the_confirmed_mode() {
+    let mut sidecar = SidecarProcess::start_editing();
+    open_editing(&mut sidecar, "default");
+
+    let planned = sidecar.command("mode-1", "set_permission_mode", json!({"mode": "plan"}));
+    assert_eq!(planned["success"], true, "mode response: {planned}");
+    assert_eq!(planned["data"]["permissionMode"], "plan");
+
+    let restored = sidecar.command("mode-2", "set_permission_mode", json!({"mode": "default"}));
+    assert_eq!(restored["data"]["permissionMode"], "default");
+    assert_eq!(
+        sidecar.observed_permission_modes(),
+        vec!["plan".to_owned(), "default".to_owned()],
+        "the SDK saw exactly the two requested changes"
+    );
+}
+
+#[test]
+fn an_auto_approving_mode_never_reaches_the_sdk() {
+    for mode in ["bypassPermissions", "auto", "dontAsk"] {
+        let mut sidecar = SidecarProcess::start_editing();
+        let cwd = sidecar.cwd();
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": cwd, "model": "m-1", "tools": WRITE_TOOLS, "permissionMode": mode}),
+        );
+        assert_eq!(open["success"], false, "{mode} must be refused: {open}");
+        assert_eq!(open["failure"]["code"], "permission_mode_rejected");
+        // Refused before construction: the SDK was never even loaded.
+        assert!(
+            !sidecar.sdk_was_constructed(),
+            "{mode} must be refused before the SDK is constructed"
+        );
+    }
+}
+
+#[test]
+fn an_unadmitted_tool_name_is_refused_before_the_sdk_is_constructed() {
+    let mut sidecar = SidecarProcess::start_editing();
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": cwd, "model": "m-1", "tools": ["Read", "Bash"],
+               "permissionMode": "default"}),
+    );
+    assert_eq!(open["success"], false, "open response: {open}");
+    assert_eq!(open["failure"]["code"], "tools_invalid");
+    assert!(!sidecar.sdk_was_constructed());
+}
+
+#[test]
+fn a_write_profile_restricts_availability_without_auto_allowing_anything() {
+    let mut sidecar = SidecarProcess::start_editing();
+    open_editing(&mut sidecar, "acceptEdits");
+    let options = sidecar.observed_options();
+
+    // Even with writes admitted, `allowedTools` stays unset: the consumer's
+    // decision is the only thing that can allow a call.
+    assert_eq!(options["tools"], json!(WRITE_TOOLS));
+    assert!(
+        options.get("allowedTools").is_none(),
+        "allowedTools bypasses per-use admission: {options}"
+    );
+    assert_eq!(options["permissionMode"], "acceptEdits");
+    // Bash and terminal stay disallowed whatever the host admitted.
+    for forbidden in ["Bash", "BashOutput", "KillShell", "NotebookEdit", "Task"] {
+        assert!(
+            options["disallowedTools"]
+                .as_array()
+                .expect("disallowed tools are listed")
+                .iter()
+                .any(|tool| tool == forbidden),
+            "{forbidden} must stay disallowed: {options}"
+        );
+    }
+}
+
+#[test]
+fn an_admissible_tool_the_host_withheld_is_disallowed() {
+    let mut sidecar = SidecarProcess::start();
+    let cwd = sidecar.cwd();
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": cwd, "model": "m-1", "tools": ["Read", "Glob", "Grep"],
+               "permissionMode": "default"}),
+    );
+    let options = sidecar.observed_options();
+    for withheld in ["Edit", "Write", "MultiEdit"] {
+        assert!(
+            options["disallowedTools"]
+                .as_array()
+                .expect("disallowed tools are listed")
+                .iter()
+                .any(|tool| tool == withheld),
+            "{withheld} was not admitted, so it must be disallowed: {options}"
+        );
+    }
+}
+
 #[test]
 fn close_reports_the_native_exit_it_actually_observed() {
     let mut sidecar = SidecarProcess::start();

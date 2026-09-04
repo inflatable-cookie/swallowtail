@@ -50,12 +50,17 @@ impl WorkingResourceService for SdkFixtureHost {
         representation: ResourceRepresentation,
     ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
         let stalled = self.stall == Some(super::super::host::Stall::ResourceResolve);
+        let granted = if self.read_only_resource {
+            ResourceAccess::Read
+        } else {
+            access
+        };
         Box::pin(async move {
             if stalled {
                 std::future::pending::<()>().await;
             }
             Ok(
-                ResourceLease::consumer_owned(scope, reference, access, representation)
+                ResourceLease::consumer_owned(scope, reference, granted, representation)
                     .with_filesystem(
                         MaterializedResourceRef::new(FIXTURE_CWD).expect("valid path"),
                     ),

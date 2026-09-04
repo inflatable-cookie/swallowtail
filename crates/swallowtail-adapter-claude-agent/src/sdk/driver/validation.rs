@@ -3,8 +3,8 @@ use crate::sdk::failure::{failure, unsupported};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism, DriverRole,
     HarnessBackgroundAction, HarnessConfigurationPosture, HarnessConfigurationSource,
-    HarnessIsolation, HostServiceKind, InstanceOwnership, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
+    HarnessIsolation, HostServiceKind, InstanceOwnership, PreflightPlan, ResourceRepresentation,
+    SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
     HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_plan_agreement,
@@ -18,6 +18,7 @@ pub(super) fn validate_open(
     request: &OpenSessionRequest,
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
+    profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
 ) -> Result<(), RuntimeFailure> {
     // A platform that cannot prove descendant-tree ownership is unsupported
     // for this route, not best-effort.
@@ -69,10 +70,14 @@ pub(super) fn validate_open(
         return Err(plan_mismatch("model route"));
     }
     validate_session_plan_agreement(plan, request.plan_agreement())?;
-    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+    // The driver's admitted tool set and the plan's resource access are one
+    // decision. A write profile opened against a read-only plan is refused
+    // here, before a credential, a lease, a process, or the sidecar exists.
+    let resource_access = profile.resource_access();
+    if request.access_policy() != &SessionAccessPolicy::ambient_harness(resource_access)
         || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
     {
-        return Err(plan_mismatch("ambient read access"));
+        return Err(plan_mismatch("ambient resource access"));
     }
     if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
         return Err(plan_mismatch("provider-state policy"));
@@ -98,7 +103,7 @@ pub(super) fn validate_open(
     require_constraint(
         plan,
         Capability::WorkingResource,
-        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+        CapabilityConstraint::ResourceAccess(resource_access),
     )?;
     require_constraint(
         plan,

@@ -13,8 +13,8 @@ use crate::sdk::guardian::OpenGuard;
 use std::sync::Arc;
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
-    ExecutableRef, HostServices, ProcessHandle, ProcessRequest, ResourceAccess,
-    ResourceRepresentation, RuntimeFailure, validate_session_resource_lease,
+    ExecutableRef, HostServices, ProcessHandle, ProcessRequest, ResourceRepresentation,
+    RuntimeFailure, validate_session_resource_lease,
 };
 
 impl ClaudeAgentSdkDriver {
@@ -67,11 +67,14 @@ impl ClaudeAgentSdkDriver {
             .working_resource()
             .cloned()
             .expect("validated sidecar working-resource service");
+        // The admitted tool set decides the access this session asks for. A
+        // host that grants less fails the lease agreement below, so no write
+        // tool can reach a read-only working resource.
         let resource = resource_service
             .resolve(
                 scope.clone(),
                 working_resource.clone(),
-                ResourceAccess::Read,
+                self.profile.resource_access(),
                 ResourceRepresentation::Filesystem,
             )
             .await?;

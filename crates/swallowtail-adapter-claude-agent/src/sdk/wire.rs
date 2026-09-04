@@ -131,6 +131,7 @@ pub(crate) enum ClaudeAgentSdkCommand {
     Open,
     Query,
     Interrupt,
+    SetPermissionMode,
     Close,
 }
 
@@ -140,6 +141,7 @@ impl ClaudeAgentSdkCommand {
             Self::Open => "open",
             Self::Query => "query",
             Self::Interrupt => "interrupt",
+            Self::SetPermissionMode => "set_permission_mode",
             Self::Close => "close",
         }
     }
@@ -149,6 +151,7 @@ impl ClaudeAgentSdkCommand {
             "open" => Self::Open,
             "query" => Self::Query,
             "interrupt" => Self::Interrupt,
+            "set_permission_mode" => Self::SetPermissionMode,
             "close" => Self::Close,
             _ => return None,
         })

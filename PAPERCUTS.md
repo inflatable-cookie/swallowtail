@@ -771,6 +771,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   checks. Swallowtail's unchanged roadmap policy and all release gates pass.
 - Surface: Effigy roadmap index and next-action docs policies.
 
+### [ ] Preflight keys the consumer-tool exclusion on access, not the boundary — 2026-09-04
+- Friction: `swallowtail-core` preflight refuses any interactive session that
+  pairs `ResourceAccess::ReadWrite` with `Capability::ToolCalls`, while
+  Contract 013 keys that exclusion on a bounded profile's claimed filesystem
+  boundary.
+- Impact: an ambient route whose writes are admitted per call through a
+  namespaced provider extension claims no boundary and is admissible under the
+  contract, but cannot bind a read-write lease; `claude-agent.sdk` card 080
+  stopped at exactly this line and refuses write profiles with
+  `swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`.
+- Fix: card 089 narrows the shared guard to key on the boundary claim; card
+  080's second PR then drops the typed refusal.
+- Surface: shared preflight in `swallowtail-core`.
+
 ### [x] Release prepare omits coordinated workspace dependency versions — 2026-08-08
 - Friction: Effigy updated `workspace.package.version` before gates but left
   versioned path entries under `workspace.dependencies` at the previous release.

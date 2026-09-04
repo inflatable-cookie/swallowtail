@@ -12,6 +12,24 @@ annotated Git tags from the canonical repository.
   requested Plan half terminally not dispatched without claiming pending
   work. The value remains post-open, observation-only evidence and adds no
   request, mutation, routing, or acknowledgement authority. g05.009 card 079.
+- select the `claude-agent.sdk` permission mode at open and change it
+  mid-session. `ClaudeAgentSdkSessionProfile` binds an explicit admitted tool
+  set and one of `default`, `plan`, or `acceptEdits` as an additive prepared
+  input; the sidecar passes the admitted set as `tools`, never sets
+  `allowedTools`, adds every withheld admissible tool to `disallowedTools`,
+  and exposes a `set_permission_mode` wire command whose confirmed mode the
+  new `ClaudeAgentSdkPreparedSession::open_route_session` handle returns or
+  fails typed. `bypassPermissions`, `auto`, and `dontAsk` are unrepresentable
+  and are refused by name before the SDK is loaded. The default profile is the
+  unchanged read-only `Read`/`Glob`/`Grep` set under `default` mode. `Edit`,
+  `Write`, and `MultiEdit` are expressible and proved end to end against the
+  fake-SDK sidecar fixture, but preparation refuses them with
+  `swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`
+  while shared preflight still keys its consumer-tool exclusion on
+  `ResourceAccess::ReadWrite` rather than on the claimed filesystem boundary.
+  Contract 013 now admits an ambient `ReadWrite` profile with
+  consumer-mediated tool calls; g05.029 card 089 narrows the guard, and the
+  write half follows in card 080's second PR. g05.029 card 080.
 - complete Contract 061 candidate C consumer route projections across
   `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and
   `swallowtail-adapter-cursor`. Prepared catalogue, headless, continuation,

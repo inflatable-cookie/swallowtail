@@ -22,6 +22,7 @@ mod failure;
 mod guardian;
 mod permission;
 mod prepared;
+mod profile;
 /// Bounded public decoder for qualified sidecar wire record shapes.
 pub mod protocol;
 mod selection;
@@ -37,12 +38,13 @@ pub use asset::{
     CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG,
 };
-pub use driver::{ClaudeAgentSdkDriver, claude_agent_sdk_descriptor};
+pub use driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle, claude_agent_sdk_descriptor};
 pub use permission::claude_agent_sdk_tool_admission_namespace;
 pub use prepared::{
     ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation,
     prepare_claude_agent_sdk_session,
 };
+pub use profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool};
 pub use selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_SIDECAR_AXIS, CLAUDE_AGENT_SDK_WIRE_AXIS, claude_agent_sdk_native_binding,

@@ -47,6 +47,8 @@ pub(crate) struct SdkActiveTurn {
     timed_out: AtomicBool,
     finished: AtomicBool,
     finish_signal: Arc<Mutex<FinishedState>>,
+    /// The session's admitted tool set. Admission never widens per turn.
+    profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
 }
 
 impl SdkActiveTurn {
@@ -54,6 +56,7 @@ impl SdkActiveTurn {
         runtime_id: RuntimeTurnId,
         connection: Weak<super::connection::SdkConnection>,
         deadline: Option<Deadline>,
+        profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
     ) -> Result<
         (
             Arc<Self>,
@@ -81,6 +84,7 @@ impl SdkActiveTurn {
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
+                profile,
             }),
             Box::pin(stream),
             exchange,
@@ -118,15 +122,17 @@ impl SdkActiveTurn {
         sidecar_id: &str,
         tool_name: &str,
     ) -> Result<AdmissionDisposition, RuntimeFailure> {
-        // The read-only set is an allow-list on both sides of the wire. A tool
-        // outside it never reaches the consumer, and its arrival is itself a
-        // transport failure rather than a decision to delegate. This is checked
-        // first, so an out-of-set request stays fatal even when it races the
-        // turn's end.
-        if !crate::sdk::driver::EXPECTED_TOOLS.contains(&tool_name) {
+        // The session's admitted set is an allow-list on both sides of the
+        // wire. A tool outside it never reaches the consumer, and its arrival
+        // is itself a transport failure rather than a decision to delegate.
+        // This is checked first, so an out-of-set request stays fatal even
+        // when it races the turn's end.
+        if !crate::sdk::profile::ClaudeAgentSdkTool::parse(tool_name)
+            .is_some_and(|tool| self.profile.admits(tool))
+        {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.admission_tool_unadmitted",
-                "Claude Agent SDK sidecar requested admission for a tool outside the read-only set",
+                "Claude Agent SDK sidecar requested admission for a tool outside the admitted set",
             ));
         }
         if self.is_finished() {

@@ -6,18 +6,27 @@
 
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import path from "node:path";
 import process from "node:process";
 
 const OBSERVATIONS = process.env.FAKE_SDK_OBSERVATIONS;
 const NATIVE_LIFETIME_MS = Number(process.env.FAKE_SDK_NATIVE_LIFETIME_MS ?? "50");
+// "read-only" reproduces the layer-1 shape exactly. "editing" drives a
+// multi-turn write session so the host's admission decision can be checked
+// against the filesystem itself.
+const SCENARIO = process.env.FAKE_SDK_SCENARIO ?? "read-only";
 
-const observed = { options: null, admissions: {} };
+const observed = { options: null, admissions: {}, permissionModes: [], writes: [] };
 
 function record() {
   writeFileSync(OBSERVATIONS, JSON.stringify(observed));
 }
 
+// The live session mode, which the fixture's own admission modelling reads.
+const state = { permissionMode: "default" };
+
 export function query({ prompt, options }) {
+  state.permissionMode = options.permissionMode ?? "default";
   // Only serialisable option keys are recorded; callbacks are noted by name so
   // the test can assert what was and was not passed.
   observed.options = JSON.parse(
@@ -29,6 +38,10 @@ export function query({ prompt, options }) {
     "-e",
     `setTimeout(() => {}, ${NATIVE_LIFETIME_MS})`,
   ]);
+
+  if (SCENARIO === "editing") {
+    return editingSession(prompt, options, child);
+  }
 
   let settled = false;
   const messages = [
@@ -77,6 +90,13 @@ export function query({ prompt, options }) {
     async interrupt() {
       return { received: true };
     },
+    async setPermissionMode(mode) {
+      // Upstream `Query.setPermissionMode` resolves without a value, so the
+      // sidecar's confirmation is that the change was accepted.
+      state.permissionMode = mode;
+      observed.permissionModes.push(mode);
+      record();
+    },
     close() {
       // Deliberately inert. The real SDK's cleanup races a timer, swallows the
       // outcome, and its escalation is unreferenced, so a fixture that killed
@@ -85,5 +105,76 @@ export function query({ prompt, options }) {
     },
   };
   void prompt;
+  return iterator;
+}
+
+/// A multi-turn editing session.
+///
+/// Each prompt message produces one write attempt against the leased cwd. The
+/// file is created only when the write was admitted, so the filesystem itself
+/// is the evidence that nothing ran unadmitted.
+///
+/// `acceptEdits` models the documented upstream behaviour: edits run without a
+/// per-call decision while every other tool still goes through `canUseTool`.
+/// That is upstream's stated contract, not a runtime observation made here.
+function editingSession(prompt, options, child) {
+  async function admit(name, input) {
+    const decision = await options.canUseTool(name, input);
+    observed.admissions[name] = decision;
+    record();
+    return decision.behavior === "allow" ? decision.updatedInput : null;
+  }
+
+  async function attemptWrite(index) {
+    const input = {
+      file_path: path.join(options.cwd, `turn-${index}.txt`),
+      content: `turn ${index}\n`,
+    };
+    let admitted = input;
+    if (state.permissionMode === "acceptEdits") {
+      observed.writes.push({ turn: index, admitted: "skipped" });
+    } else {
+      admitted = await admit("Write", input);
+      observed.writes.push({ turn: index, admitted: admitted === null ? "denied" : "allowed" });
+    }
+    record();
+    if (admitted !== null) {
+      writeFileSync(admitted.file_path, admitted.content);
+    }
+  }
+
+  async function* messages() {
+    yield {
+      type: "system",
+      subtype: "init",
+      cwd: options.cwd,
+      model: options.model,
+      apiKeySource: "oauth",
+      capabilities: ["interrupt_receipt_v1"],
+    };
+    let index = 0;
+    for await (const message of prompt) {
+      index += 1;
+      void message;
+      // A read is always mediated, whatever the mode, so the acceptEdits
+      // narrowing is visible: edits skip admission, reads never do.
+      await admit("Read", { file_path: path.join(options.cwd, "read-me.txt") });
+      await attemptWrite(index);
+      yield { type: "result", subtype: "success", is_error: false };
+    }
+  }
+
+  const iterator = messages();
+  iterator.accountInfo = async () => ({ apiProvider: "firstParty", subscriptionType: "max" });
+  iterator.interrupt = async () => ({ received: true });
+  iterator.setPermissionMode = async (mode) => {
+    state.permissionMode = mode;
+    observed.permissionModes.push(mode);
+    record();
+  };
+  iterator.close = () => {
+    // Deliberately inert, exactly like the read-only path.
+    void child;
+  };
   return iterator;
 }

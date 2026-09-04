@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Observation Gate Chosen; Card 062 Retargeted To 0.41.0](./2026-09-04-observation-gate-chosen-and-card-062-retargeted.md) — operator chose the shared provider-operation observation gate (card 070, two proving consumers) and retargeted the Kimi local-server family to official `0.41.0`, resuming the same worker
 - [2026-09-04 g05.009 Card 068 Candidate J Package Completion](./2026-09-04-g05-009-card-068-candidate-j-package-completion.md) — exact 35-row llama.cpp/Ollama implementation accepted through PR 208 at head `b92b13d0`, merged as `c5cca28d`; 32 emitted and 3 withheld
 - [2026-09-04 Candidate C Promoted To Card 069; Observation Gap Recurs](./2026-09-04-contract-061-candidate-c-promoted-observation-gap-recurs.md) — audit 064 passed all six rubric items and card 069 is ready for the 94-row tranche; audit 066 stopped candidate I on the Kimi observation gap, now carried by three routes, returning that decision to the operator
 - [2026-09-04 g05.009 Card 066 Candidate I Audit](./2026-09-04-g05-009-card-066-candidate-i-audit.md) — exact 47-row audit stopped on two provider-operation rows requiring the deferred shared observation decision; accepted PR 207 at head `21ba9396` merged as `85221307`

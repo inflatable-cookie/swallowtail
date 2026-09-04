@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, H, and J merged; 284 rows proved; candidate C card 069 is ready; candidate I held by the shared observation gap; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, H, and J merged; 284 rows proved; candidate C card 069 is ready; gate card 070 is ready to settle the provider-operation observation vocabulary; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -185,7 +185,9 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       Cursor tranche across seven routes (card 069)
 - [ ] settle the provider-operation observation vocabulary once for the
       recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
-      `opencode.http`, or record the withheld answer for all three
+      `opencode.http` through gate card 070 (operator chose the gate on
+      2026-09-04); the runtime baseline card, candidate I completion, and the
+      reopened card 034 follow its promotion
 - [ ] report from the candidate C audit whether provider-operation
       observation recurs on the three catalogue routes; that report is the
       reopen trigger for the deferred Kimi decision
@@ -369,9 +371,10 @@ provider-operation observation public-baseline decision, and coverage stays
 
 ## Batch Cards In Flight
 
+- [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — ready; planning-only; two proving consumers; unblocks candidate I and reopens card 034
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows, 51 emitted and 43 withheld; three packages
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; the observation gap recurred on candidate I and the decision is with the operator
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after gate card 070 is promoted and the runtime baseline lands
 
 ## Batch Cards Completed
 
@@ -444,3 +447,25 @@ Card 069 is approved concurrent with card 068, audit 065, and g05.026 card
 | Review oracle | the card's counterexample list; smallest counterexample is one row emitted from a catalogue operation, from documentation, or from an unrequested profile |
 | Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
 | Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |
+
+### Card 070 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 070 is approved concurrent with card 069, audit 065, and g05.026 card
+062.
+
+| Field | Card 070 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | the Kimi active-observation gate note and the candidate I audit note on `main`; current `main` |
+| Completion conditions | one new triage gate note with exact additive names, admission, composition, maxima, both consumer anchors, drafted Contract 061 amendment and testkit assertions, and a rubric verdict; card `## Result` filled; docs QA and Northstar gates green; zero Rust |
+| Owned mutable paths | this card's file; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-provider-operation-observation-gate.md`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | every `crates/**` path; `docs/contracts/**`; `docs/architecture/**`; the Kimi gate note; the candidate I note; the census CSV; other triage notes |
+| Approved concurrent siblings | 069, 065, and g05.026 card 062 |
+| Serial edges | Chatterbox promotes the note into a Contract 061 amendment and one runtime baseline card; candidate I completion and card 034 reopen only after that baseline merges |
+| Worker capability class | planning-only public-API designer with strong Rust reading; no Rust writing; no provider credentials; prefer a frontier-tier model for this card |
+| Acceptance evidence | the note's proposals resolve to exact current-`main` code references; the rubric verdict lists every open decision |
+| Review oracle | the card's invariant; smallest counterexample is a reinterpreted existing name or a prepared plan admitted as observation |
+| Stop conditions | a proposal cannot stay additive; the two consumers need different vocabularies; the operator must choose between materially different shapes (record the fork, do not pick) |
+| Escalation owner | operator (Tom) via Chatterbox; coordinator for mechanical blockers |

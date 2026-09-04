@@ -152,7 +152,8 @@ merged, card 069 is ready for candidate C implementation, and card 065 remains
 active. No Kimi gate reopened. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
-post-release standing candidate; g05.026 compiles that family and card 062 is
+post-release standing candidate; g05.026 compiles that family, retargeted on
+2026-09-04 to official `0.41.0` after latest moved mid-run, and card 062 is
 ready; card 063 is gated behind an admitted segment.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
 Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
@@ -382,8 +383,10 @@ and Ollama tranche (PR 208 merged as `c5cca28d`). Card 064 closed candidate C as
 204 merged as `1903f715`) and found no catalogue route needs provider-operation
 observation; card 069 is ready to complete its exact 94-row Antigravity,
 Bedrock, and Cursor tranche. Card 066 stopped candidate I (PR 207 merged as
-`85221307`) on the same provider-operation observation gap as Kimi, so that
-decision has returned to the operator with three carrier routes.
+`85221307`) on the same provider-operation observation gap as Kimi. With three
+carrier routes, the operator chose on 2026-09-04 to compile one shared
+provider-operation observation gate; card 070 is ready for it, and candidate I
+plus card 034 follow its promotion.
 
 ## Rollover Rule
 

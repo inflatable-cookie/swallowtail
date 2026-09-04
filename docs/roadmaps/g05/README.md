@@ -27,7 +27,7 @@ enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 284 rows proved and 483 remain after card 068;  candidate C card 069 ready; candidate I held by the shared observation gap, which now recurs across Kimi, DeepSeek harness, and OpenCode and awaits the operator; audit 065 active | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-067 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, D, G, and H complete through cards 022-024 and 031-032; 284 rows proved and 483 remain after card 068;  candidate C card 069 ready; gate card 070 ready to settle the provider-operation observation vocabulary the operator chose on 2026-09-04; candidate I and card 034 follow it; audit 065 active | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-067 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | completed standing currentness through Codex official `0.152.1`; Research 276 selects Kimi Code local server `0.40.1` as the first post-release family, now compiled as g05.026 | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; `g05.026` cards 062-063; PR 182 queued behind it |
@@ -37,11 +37,11 @@ enforcement.
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
-| Qualify or stop Kimi Code local server `0.40.1` as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | ready; card 062 identity is ready; card 063 claim is gated behind an admitted segment | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
+| Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | ready; card 062 identity is ready; card 063 claim is gated behind an admitted segment | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
 
 ## Planned Next Roadmaps
 
-- [g05.026 Kimi Code Local Server 0.40.1 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; card 062 identity is ready; card 063 claim is gated behind an admitted segment
+- [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; retargeted to `0.41.0`; card 062 resumes on the same worker; card 063 claim is gated behind an admitted segment
 - [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
@@ -59,7 +59,7 @@ enforcement.
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; card 068 merged; card 069 ready for candidate C; candidate I held by the shared observation gap; audit 065 active; observation decision with the operator
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; card 069 ready for candidate C; gate card 070 ready for provider-operation observation; candidate I and card 034 follow the gate; audit 065 active
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -76,7 +76,8 @@ at 022, and shared
 lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 026 is ready: card 062 freezes Kimi
-Code local server `0.40.1` identity first. Milestone 009 is ready with four
+Code local server identity first, retargeted to official `0.41.0` after latest
+moved during its first run. Milestone 009 is ready with four
 planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
 C and J as promotable, while card 066 stopped on the shared observation decision;
 card 068 is merged; card 069 is ready to implement its 94-row tranche; audit
@@ -397,7 +398,7 @@ identity.
 
 ## Milestones
 
-- [026 Kimi Code Local Server 0.40.1 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; card 062 identity ready; card 063 claim gated behind an admitted segment
+- [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — ready; retargeted to `0.41.0`; card 062 resumes; card 063 claim gated behind an admitted segment
 - [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
@@ -415,7 +416,7 @@ identity.
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; card 068 merged; card 069 ready; candidate I held by the shared observation gap; audit 065 active
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; cards 069 and 070 ready; candidate I and card 034 follow the observation gate; audit 065 active
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

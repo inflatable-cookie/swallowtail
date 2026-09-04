@@ -1,6 +1,6 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; the provider-operation observation gap recurred on candidate I (card 066) and the decision has returned to the operator
+Status: planned; not ready; the operator chose the shared provider-operation observation gate on 2026-09-04 (card 070); this card reopens after that gate is promoted and the runtime baseline lands
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04

@@ -507,10 +507,13 @@ on the identical gap: `deepseek-harness.local-server`
 `control.provider-session-catalogue` and `control.provider-session-history`
 are completed provider-operation queries with no session. The census places
 the same row on `opencode.http` (candidate L). The gap therefore recurs
-across three routes in three candidates, and the question returns to the
-operator. Card 034 stays planned and not ready.
+across three routes in three candidates. On 2026-09-04 the operator chose the
+first direction: compile one shared provider-operation observation
+public-baseline gate with DeepSeek harness local-server and Kimi ACP as the
+proving consumers. g05.009 card 070 owns that gate. Card 034 stays planned
+and not ready until the gate is promoted and the runtime baseline lands.
 
-The two directions, retained for that reopen:
+The two directions as they stood before that choice:
 
 - compile a shared provider-operation observation public-baseline gate with
   honest source/lifecycle/view vocabulary; or

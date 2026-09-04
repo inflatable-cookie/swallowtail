@@ -1,6 +1,6 @@
-# g05.026 Kimi Code Local Server 0.40.1 Useful Newer
+# g05.026 Kimi Code Local Server 0.41.0 Useful Newer (retargeted from 0.40.1)
 
-Status: ready; card 062 identity is ready; card 063 claim is gated behind an admitted segment
+Status: ready; retargeted to official latest `0.41.0` on 2026-09-04; card 062 identity resumes on the same worker; card 063 claim is gated behind an admitted segment
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -9,7 +9,7 @@ Vision tags: route currentness, Kimi Code, compatibility, process authority
 
 ## Purpose
 
-Qualify or stop official stable `@moonshot-ai/kimi-code` `0.40.1` as the one
+Qualify or stop official stable `@moonshot-ai/kimi-code` `0.41.0` as the one
 Contract 029 family `kimi-code.local-server`. Research 276 selected this
 family alone as the first post-release candidate and changed no claim. The
 family shares the npm package with the installed harness but is a separate
@@ -27,8 +27,9 @@ shape. A stop that keeps `0.38.0` as the ceiling is an acceptable outcome.
 
 ## Runway
 
-1. Card 062 freezes exact npm/GitHub/tarball/archive identity for `0.40.1`
-   plus publication adjacency through `0.39.0`, `0.39.1`, and `0.40.0`,
+1. Card 062 freezes exact npm/GitHub/tarball/archive identity for `0.41.0`
+   plus publication adjacency through `0.39.0`, `0.39.1`, `0.40.0`, and
+   `0.40.1`,
    revalidates the frozen `0.38.0` local-server corpus, compares the selected
    REST/WebSocket v2 surfaces, traces the Bash `cwd` change and the `0.39.0`
    web/server deltas as Contract 017/023 authority questions, and names one
@@ -51,17 +52,26 @@ hashed and never executed.
 
 ## Batch Cards
 
-- [062 Kimi Code Local Server 0.40.1 Identity](batch-cards/062-kimi-code-local-server-0-40-1-identity.md) — ready
-- [063 Kimi Code Local Server 0.40.1 Claim](batch-cards/063-kimi-code-local-server-0-40-1-claim.md) — planned; gated behind card 062
+- [062 Kimi Code Local Server 0.41.0 Identity](batch-cards/062-kimi-code-local-server-0-40-1-identity.md) — ready; retargeted from `0.40.1`; resume the same worker
+- [063 Kimi Code Local Server 0.41.0 Claim](batch-cards/063-kimi-code-local-server-0-40-1-claim.md) — planned; gated behind card 062
+
+## Retarget
+
+The first card 062 run stopped when official latest moved from `0.40.1` to
+`0.41.0` during the run. The operator chose on 2026-09-04 to retarget the
+family to `0.41.0`; `0.40.1` becomes published adjacency and the collected
+evidence is retained. The `0.40.0` Bash `cwd` authority question is unchanged.
+A second latest move before push stops the lane and returns a policy question
+(freeze the target at dispatch versus chase latest) to the operator.
 
 ## Dispatch Manifest
 
-Promoted planning commit: the `main` commit that introduces this file.
+Promoted planning commit: the `main` commit that records the retarget.
 
 | Field | Card 062 |
 | --- | --- |
 | Readiness | ready |
-| Prerequisites | tagged `v0.4.0` at `56f3913a`; Research 276; frozen `0.38.0` local-server corpus present on `main` |
+| Prerequisites | tagged `v0.4.0` at `56f3913a`; Research 276; frozen `0.38.0` local-server corpus present on `main`; the retarget to `0.41.0` recorded on `main`; the existing worker on branch `worker/g05-card062-kimi-local-server-0401-identity` resumes rather than a fresh launch |
 | Completion conditions | Research 282 committed with exact identity, adjacency, corpus revalidation, surface delta ledger, authority trace, and one named outcome; production claims byte-identical in that commit; card `## Result` filled; focused and Northstar gates green |
 | Owned mutable paths | `docs/research/282-*.md`; `docs/research/README.md` (one index line); `crates/swallowtail-adapter-kimi/**` test fixtures and corpus modules for local server only; `docs/roadmaps/g05/batch-cards/062-*.md` result and status; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, `docs/roadmaps/g05/026-*.md`, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/roadmaps/standing-lanes.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
@@ -71,7 +81,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Worker capability class | evidence-first identity worker; artifact download and hashing; Rust fixture authoring; no provider credentials |
 | Acceptance evidence | independent official channels agree on identity; recomputed corpus digests; mutation-sensitive delta ledger; explicit authority trace naming the containing control or its absence |
 | Review oracle | one commit contains identity evidence and zero claim edits; the smallest counterexample is a changed selection constant, a widened range, or an authority conclusion without a traced control |
-| Stop conditions | official latest moves during the run; identity disagreement; `cwd` authority change with no contained boundary; selected surface changed without deterministic mapping; new revision required |
+| Stop conditions | official latest moves again during the run (return the freeze-at-dispatch policy question); identity disagreement; `cwd` authority change with no contained boundary; selected surface changed without deterministic mapping; new revision required |
 | Escalation owner | operator (Tom) via Chatterbox for product-policy or authority decisions; coordinator for mechanical blockers |
 
 Card 063 enters the manifest only after the coordinator records card 062's

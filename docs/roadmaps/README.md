@@ -18,11 +18,11 @@ shape.
 Implement [g05.009 card 069](g05/batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md):
 complete candidate C's exact 94-row Antigravity, Bedrock, and Cursor Contract
 061 tranche from the manifest in that roadmap. Audit 065 for candidate E runs
-concurrently. Card 068's candidate J tranche is merged; candidate I is stopped
-on the shared provider-operation observation gap, which is with the operator.
-Card 062 is paused because official Kimi Code
-latest moved to `0.41.0` during its assigned `0.40.1` identity run; do not
-invent a retarget. Card 063 remains gated and card 034 remains planned.
+concurrently, as does planning-only gate card 070, which settles the
+provider-operation observation vocabulary for candidate I, Kimi card 034, and
+OpenCode. Card 068's candidate J tranche is merged. Card 062 resumes on its
+existing worker, retargeted to official Kimi Code `0.41.0` with `0.40.1` as
+published adjacency. Card 063 remains gated and card 034 remains planned.
 `v0.4.0` is tagged; the feature/currentness freeze is lifted.
 
 ## Standing Lanes

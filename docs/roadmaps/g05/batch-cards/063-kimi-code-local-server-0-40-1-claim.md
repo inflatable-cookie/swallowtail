@@ -1,4 +1,4 @@
-# 063 Kimi Code Local Server 0.40.1 Claim
+# 063 Kimi Code Local Server 0.41.0 Claim (retargeted from 0.40.1)
 
 Status: planned; gated behind card 062 admitting a Contract 029 segment
 Owner: Tom

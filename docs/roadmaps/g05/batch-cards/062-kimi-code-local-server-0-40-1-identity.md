@@ -1,15 +1,15 @@
-# 062 Kimi Code Local Server 0.40.1 Identity
+# 062 Kimi Code Local Server 0.41.0 Identity (retargeted from 0.40.1)
 
-Status: ready
+Status: ready; retargeted 2026-09-04 to official latest `0.41.0` after the stop; resume the same worker with its collected `0.40.1` evidence as published adjacency
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-04
+Updated: 2026-09-04 (retarget)
 Milestone: `../026-kimi-code-local-server-0-40-1-useful-newer.md`
-Depends on: Contract 029; Contracts 017 and 023; Research 270 and 276; tagged `v0.4.0`; official stable `0.40.1`
+Depends on: Contract 029; Contracts 017 and 023; Research 270 and 276; tagged `v0.4.0`; official stable `0.41.0`
 
 ## Goal
 
-Freeze exact official `@moonshot-ai/kimi-code` `0.40.1` identity for the
+Freeze exact official `@moonshot-ai/kimi-code` `0.41.0` identity for the
 `kimi-code.local-server` family, classify its selected REST/WebSocket v2
 surfaces against the frozen `0.38.0` corpus, and answer the process-authority
 question raised by the `0.40.0` Bash `cwd` change, without changing a claim or
@@ -18,10 +18,11 @@ executing a downloaded binary.
 ## Scope
 
 1. Recheck npm, GitHub tag/commit, tarball integrity, platform archives and
-   sidecars, extracted artifacts, and selected git blobs for `0.40.1`. Do not
+   sidecars, extracted artifacts, and selected git blobs for `0.41.0`. Do not
    infer identity from registry `latest` alone.
-2. Record publication adjacency through `0.39.0`, `0.39.1`, and `0.40.0`, and
-   the first unpublished later stable.
+2. Record publication adjacency through `0.39.0`, `0.39.1`, `0.40.0`, and
+   `0.40.1`, and the first unpublished later stable. The `0.40.1` identity
+   already collected in this lane is retained as adjacency evidence.
 3. Keep host `0.34.0` observation-only. Do not install, update, replace, or
    run it.
 4. Recompute rather than trust the frozen `0.38.0` local-server corpus
@@ -40,7 +41,7 @@ executing a downloaded binary.
 7. Keep `kimi-code.acp` and `kimi-code.headless` claims, corpora, and
    conclusions untouched; record any installed-harness delta as an
    observation only.
-8. Add Research 282 and one secret-free `0.40.1` local-server identity corpus
+8. Add Research 282 and one secret-free `0.41.0` local-server identity corpus
    with a delta-ledger test.
 9. Commit identity evidence before any selection, matrix, guide, changelog,
    or standing-lane claim edit.
@@ -88,9 +89,19 @@ boundary.
 Yes, to card 063 only after an admitted segment is recorded. A stop ends the
 milestone at this card and returns to the coordinator for closeout.
 
+## Retarget Record
+
+The first run froze `0.40.1` identity cleanly, then found official latest
+had moved to `0.41.0` (published 2026-09-04T11:01:04.740Z) and stopped on
+the named condition without committing. On 2026-09-04 the operator chose to
+retarget this card to `0.41.0` rather than qualify a point behind official
+latest or stop at the `0.38.0` ceiling. If latest moves again before push,
+stop and ask; a second move raises the freeze-at-dispatch policy question to
+the operator instead of another retarget.
+
 ## Stop Conditions
 
-Official latest moves during the run; npm and GitHub identity disagree; the
+Official latest moves again during the run; npm and GitHub identity disagree; the
 `cwd` change widens local process authority with no contained boundary; a
 selected surface changed without a deterministic provider-neutral mapping; a
 new driver/facade revision is required.

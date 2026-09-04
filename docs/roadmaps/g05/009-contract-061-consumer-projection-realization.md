@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidates J and C promoted as ready cards 068 and 069; candidate I stopped on the shared observation gap; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J card 068 merged; candidate C card 069 is ready; candidate I stopped on the shared observation gap; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -369,12 +369,12 @@ provider-operation observation public-baseline decision, and coverage stays
 ## Batch Cards In Flight
 
 - [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows, 51 emitted and 43 withheld; three packages
-- [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 35 rows, 32 emitted and 3 withheld; two packages
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; the observation gap recurred on candidate I and the decision is with the operator
 
 ## Batch Cards Completed
 
+- [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — complete; 35 rows; 32 emitted and 3 withheld; PR 208 exact head `b92b13d0` merged as `c5cca28d`
 - [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 exact head `21ba9396` merged as `85221307`
 - [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 exact head `ee5e76ab` merged as `1903f715`; catalogue routes did not reopen the Kimi gate
 - [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 exact head `0030b846` merged as `8cbf6064`

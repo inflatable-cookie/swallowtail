@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.009 Card 068 Candidate J Package Completion](./2026-09-04-g05-009-card-068-candidate-j-package-completion.md) — exact 35-row llama.cpp/Ollama implementation accepted through PR 208 at head `b92b13d0`, merged as `c5cca28d`; 32 emitted and 3 withheld
 - [2026-09-04 Candidate C Promoted To Card 069; Observation Gap Recurs](./2026-09-04-contract-061-candidate-c-promoted-observation-gap-recurs.md) — audit 064 passed all six rubric items and card 069 is ready for the 94-row tranche; audit 066 stopped candidate I on the Kimi observation gap, now carried by three routes, returning that decision to the operator
 - [2026-09-04 g05.009 Card 066 Candidate I Audit](./2026-09-04-g05-009-card-066-candidate-i-audit.md) — exact 47-row audit stopped on two provider-operation rows requiring the deferred shared observation decision; accepted PR 207 at head `21ba9396` merged as `85221307`
 - [2026-09-04 g05.009 Card 064 Candidate C Audit](./2026-09-04-g05-009-card-064-candidate-c-audit.md) — exact 94-row audit accepted through PR 204 at head `ee5e76ab`, merged as `1903f715`; 51 rows emitted, 43 withheld; candidate C is promotable and catalogue routes did not reopen the Kimi gate

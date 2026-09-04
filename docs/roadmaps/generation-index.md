@@ -148,8 +148,8 @@ g05 has 26 roadmaps: 20 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 009, 026. Milestone 009 is ready
 with planning-only breadth audits: cards 064 and 067 are complete and
 promotable, card 066 stopped on the shared observation decision, card 068 is
-ready for candidate J implementation, and card 065 remains active. No Kimi gate
-reopened. Milestones
+merged, card 069 is ready for candidate C implementation, and card 065 remains
+active. No Kimi gate reopened. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family and card 062 is
@@ -325,8 +325,8 @@ public-baseline decision. On 2026-09-04 the operator deferred that decision
 behind the candidate C audit and compiled planning-only audits 064-067 for
 breadth candidates C, E, I, and J; cards 064 and 067 are complete and
 promotable, card 066 stopped on the shared observation decision, card 068 is
-ready for candidate J implementation, and card 065 remains active. No Kimi gate
-reopened.
+merged, card 069 is ready for candidate C implementation, and card 065 remains
+active. No Kimi gate reopened.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;
@@ -377,8 +377,8 @@ exact `2.1.251`. Coverage stays 249/518. PR 130 merged exact reviewed head `6332
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized. Card 067 closed candidate J as promotable on 2026-09-04
-(PR 206 merged as `8cbf6064`); card 068 is ready to complete its exact 35-row
-llama.cpp and Ollama tranche. Card 064 closed candidate C as promotable (PR
+(PR 206 merged as `8cbf6064`); card 068 completed its exact 35-row llama.cpp
+and Ollama tranche (PR 208 merged as `c5cca28d`). Card 064 closed candidate C as promotable (PR
 204 merged as `1903f715`) and found no catalogue route needs provider-operation
 observation; card 069 is ready to complete its exact 94-row Antigravity,
 Bedrock, and Cursor tranche. Card 066 stopped candidate I (PR 207 merged as

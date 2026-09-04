@@ -10,6 +10,7 @@ mod access;
 mod activity;
 mod catalogue;
 mod connection;
+mod consumer_route_projection;
 mod descriptor;
 mod discovery;
 mod driver;

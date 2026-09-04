@@ -96,6 +96,8 @@ impl swallowtail_adapter_bedrock::BedrockModelSelection
 pub const fn swallowtail_adapter_bedrock::BedrockModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_core::model::ProviderId) -> Self
 pub struct swallowtail_adapter_bedrock::BedrockPreparedCatalogue
 impl swallowtail_adapter_bedrock::BedrockPreparedCatalogue
+pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_bedrock::BedrockPreparedCatalogue
 pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence
 pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_adapter_bedrock::BedrockCatalogueDriver)
 pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -103,6 +105,8 @@ pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::low_level_driver(&
 pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
+impl swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
+pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
 pub const fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence
 pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_adapter_bedrock::BedrockDirectDriver)

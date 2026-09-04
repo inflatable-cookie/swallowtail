@@ -91,7 +91,11 @@ pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::open_session(&self,
 pub const fn swallowtail_adapter_cursor::CursorPreparedAcpSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_cursor::CursorPreparedAcpSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+impl swallowtail_adapter_cursor::CursorPreparedAcpSession
+pub fn swallowtail_adapter_cursor::CursorPreparedAcpSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub struct swallowtail_adapter_cursor::CursorPreparedCatalogue
+impl swallowtail_adapter_cursor::CursorPreparedCatalogue
+pub fn swallowtail_adapter_cursor::CursorPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_cursor::CursorPreparedCatalogue
 pub const fn swallowtail_adapter_cursor::CursorPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_cursor::CursorPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -121,6 +125,8 @@ pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::targ
 impl swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration
 pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessIntegration::prepare_run(&self, swallowtail_adapter_cursor::CursorHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_cursor::CursorPreparedHeadlessRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_cursor::CursorPreparedHeadlessRun
+impl swallowtail_adapter_cursor::CursorPreparedHeadlessRun
+pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_cursor::CursorPreparedHeadlessRun
 pub const fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_cursor::CursorPreparedHeadlessRun::low_level_driver(&self) -> swallowtail_adapter_cursor::CursorHeadlessDriver

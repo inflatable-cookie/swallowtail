@@ -70,8 +70,7 @@
     "from_1_1_19_to_1_1_20": {
       "mapped_changes": [
         "review-mode-autoapproves-workspace-scoped-read-within-the-selected-read-profile",
-        "print-benign-tool-errors-and-permission-denials-no-longer-become-cascade-level-failure",
-        "embedded-ripgrep-removes-reliance-on-an-ambient-ripgrep-child"
+        "print-benign-tool-errors-and-permission-denials-no-longer-become-cascade-level-failure"
       ],
       "material_unmapped_changes": [
         "skill-icons",
@@ -83,7 +82,8 @@
     "from_1_1_20_to_1_1_21": {
       "mapped_changes": [
         "invalid-utf8-tool-results-no-longer-stall-the-selected-stream",
-        "readwrite-file-repairs-remain-under-the-selected-resource-authority"
+        "readwrite-file-repairs-remain-under-the-selected-resource-authority",
+        "embedded-ripgrep-removes-reliance-on-an-ambient-ripgrep-child"
       ],
       "material_unmapped_changes": [
         "voice-and-mic-serve",

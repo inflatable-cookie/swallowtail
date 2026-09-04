@@ -189,7 +189,6 @@ const HOP_EXPECTATIONS: &[Hop] = &[
         mapped: &[
             "review-mode-autoapproves-workspace-scoped-read-within-the-selected-read-profile",
             "print-benign-tool-errors-and-permission-denials-no-longer-become-cascade-level-failure",
-            "embedded-ripgrep-removes-reliance-on-an-ambient-ripgrep-child",
         ],
         unmapped: &[
             "skill-icons",
@@ -203,6 +202,7 @@ const HOP_EXPECTATIONS: &[Hop] = &[
         mapped: &[
             "invalid-utf8-tool-results-no-longer-stall-the-selected-stream",
             "readwrite-file-repairs-remain-under-the-selected-resource-authority",
+            "embedded-ripgrep-removes-reliance-on-an-ambient-ripgrep-child",
         ],
         unmapped: &[
             "voice-and-mic-serve",

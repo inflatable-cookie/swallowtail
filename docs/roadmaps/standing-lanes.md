@@ -157,8 +157,9 @@ no roadmap or batch card.
 
 ### v0.4.0 Freeze
 
-g05.021 now owns the bounded release-readiness runway. Do not start or merge a
-Contract 029 identity/claim family until that milestone completes. Kimi Code
+g05.021 completed the bounded release-readiness runway through exact source
+consumer and authenticated Nucleus Agent Chat evidence. Keep the
+feature/currentness freeze through the explicit `v0.4.0` tag decision. Kimi Code
 local server `0.40.1` remains the first post-release candidate. Closed PR 182
 and its Antigravity branch/evidence remain parked and are not qualification.
 Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer

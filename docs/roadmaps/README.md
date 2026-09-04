@@ -15,16 +15,16 @@ shape.
 
 ## Next Task
 
-Define the complete operator authority packet required by
-[g05.021 card 052](g05/batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md).
-Card 051 is complete: PR 201 exact head `10d9b7a0` merged as immutable candidate
-`56f3913a`, and canonical workflow-dispatch run 33853812785 passed all six jobs
-at that exact SHA. Card 052 remains planned and blocked until the operator names
-the working application and repository, normal route and command, exact
-candidate consumption, credential and provider authority, permitted mutations,
-retained and redacted evidence, cleanup, retry budget, and stop behavior. Do not
-select or run a smoke by inference. Release execution, tag creation, tag push,
-publication, provider work, and consumer mutation remain unauthorized.
+Validate the final [g05.021 card 052](g05/batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md)
+evidence and decide whether to authorize an annotated `v0.4.0` tag on exact
+candidate `56f3913ac99af44b6ff45384cfc53a0adea587ba`, canonical branch `main`,
+and remote `git@github.com:inflatable-cookie/swallowtail.git`, using the exact
+message frozen in the Card 052 closeout log. The source consumer and the
+operator-authorized authenticated Nucleus Agent Chat smoke both passed against
+that SHA. Local annotated-tag creation and tag push are separate release
+mutations and remain unauthorized until the operator grants both. The release
+contains no crates.io publication, GitHub Release object, binary, sidecar, or
+installer artifact.
 
 ## Standing Lanes
 

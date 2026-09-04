@@ -144,19 +144,18 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 25 roadmaps: 19 completed milestones, honest evidence stops at 002,
+g05 has 25 roadmaps: 20 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and no ready milestones. Milestone 009 is planned
 and strict-paused on its operator decision. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; no family work has started from the checkpoint.
 Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
-Milestone 021 is planned; prior partial card-050 output is not accepted release
-evidence, while Research 281's fresh exact `b7f804b5` audit was accepted
-through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route candidate
-boundary includes both current-only
-routes, and Pi's exact release-note, consumer, and rollback treatment is fixed
-Card 051 input. Milestone 022
+Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
+accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route
+candidate boundary includes both current-only routes. Candidate `56f3913a`
+passed exact-SHA CI, the external source consumer, and one operator-authorized
+authenticated Nucleus Agent Chat smoke on attempt one. Milestone 022
 is completed: card 055 restored the `claude-agent.sdk` route on card 061's
 pre-effect reap reservations with one enclosing cleanup guardian and merged
 through PR 196 at `493f8194`. Milestone 023 is completed: card 057 landed the
@@ -188,12 +187,12 @@ Contract 019 descendant-tree join and Contract 029 artifact-only authority are
 promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
 card 060 is complete; card 061 is complete and merged; card 055 is complete and
 merged through PR 196 at `493f8194`. The
-`v0.4.0` release lane is unpaused; cards 050-051 are complete. PR 201 exact
+`v0.4.0` release lane completed cards 050-052. PR 201 exact
 head `10d9b7a0` merged as immutable candidate `56f3913a`, and canonical
 workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
-052 is planned and blocked only on the complete operator-authenticated
-application authority packet. No card authorizes a provider turn, release
-execution, tag creation, tag push, or publication.
+052's source consumer and authenticated Nucleus Agent Chat smoke passed against
+that SHA. No card authorizes release execution, tag creation, tag push, or
+publication.
 Milestone 017 is
 completed operator A2 with card 043. Milestone 006 is completed
 credential-free repair. Milestone 008 is completed contract promotion.
@@ -381,12 +380,10 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). The active next action is to define
-the complete operator authority packet for planned Card 052. Card 051 is
-complete at immutable candidate `56f3913a` with green canonical exact-SHA CI;
-Card 052 remains blocked until the operator supplies the authenticated
-application, route, source-consumption, credential/provider, mutation,
-evidence, cleanup, retry, and stop boundaries. Feature/currentness
-implementation remains frozen, and the g05.009/card 034 249/518 stop remains
+[roadmaps front door](README.md#next-task). The active next action is to validate
+Card 052's completed source-consumer and authenticated Nucleus Agent Chat
+evidence, then decide whether to authorize local annotated-tag creation and tag
+push for exact candidate `56f3913a`. Feature/currentness implementation remains
+frozen through that decision, and the g05.009/card 034 249/518 stop remains
 intact. This index records generation status; the canonical actionable pointer
 stays in the front door.

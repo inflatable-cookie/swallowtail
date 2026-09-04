@@ -1,6 +1,6 @@
 # 052 v0.4.0 Consumer Proof And Operator Tag Gate
 
-Status: planned; exact candidate and canonical exact-SHA CI accepted; blocked only on the complete operator-authenticated application authority packet
+Status: complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; tag authority remains ungranted
 Owner: Tom
 Created: 2026-09-02
 Milestone: `../021-v0-4-0-release-readiness.md`
@@ -12,9 +12,9 @@ Prove the frozen candidate through the current external source consumer and one
 current normal authenticated working application, compile final release
 evidence, and stop for the operator's exact tag decision.
 
-## Operator Decision Required Before Ready
+## Operator Authority Packet
 
-The operator must supply one complete Contract 036 application-smoke authority
+The operator supplied one complete Contract 036 application-smoke authority
 packet naming:
 
 - the working application and exact repository/checkout identity
@@ -27,10 +27,21 @@ packet naming:
 - expected success, retained evidence, redaction rules, cleanup, stop
   conditions, and the exact retry budget
 
-Do not infer Nucleus, Soundcheck, Monkey, or another application from precedent.
-No credential-free rebuild, provider-free smoke, deterministic fixture, or
-source-consumer result substitutes for the authenticated application path.
-Keep this card planned and blocked until the complete packet is supplied.
+- application: Nucleus canonical repository, merged source
+  `e8de352c3b39a28ec97b425eeed674ecacccac1f`
+- route: normal Agent Chat local Codex through `codex.app-server` and protocol
+  facade `codex-app-server-v2`
+- source consumption: all five Swallowtail dependencies pinned to exact
+  candidate `56f3913ac99af44b6ff45384cfc53a0adea587ba`, with no patch override
+- credential and provider authority: provider-managed ChatGPT login, no API-key
+  environment variable, one benign provider turn
+- permitted mutation: disposable temporary state and shared build cache only;
+  no product or repository mutation
+- retained evidence: command identity, counts, terminal class, assertions, and
+  cleanup only; no prompt, response, credential, account, private payload, or
+  host-path data
+- retry budget: one retry after a retryable infrastructure failure; attempt one
+  passed, so the retry was unused
 
 ## Scope
 
@@ -118,10 +129,34 @@ authority packet, application dependency/source evidence, authenticated route,
 command, attempts and outcome, clean cleanup, redacted final packet,
 candidate/CI identity equality, and local/remote tag absence.
 
+## Completion Evidence
+
+- Candidate identity: `56f3913ac99af44b6ff45384cfc53a0adea587ba`,
+  still in canonical `main`, with canonical exact-SHA CI run 33853812785 green
+  and no local or remote `v0.4.0` tag.
+- Source consumer: `effigy package:source-consumer` passed from a clean detached
+  candidate checkout and resolved the normal prepared Codex path at the exact
+  candidate revision. Its temporary worktree was removed.
+- Application adoption: Nucleus PR 6 exact head `0fa06e4b` was independently
+  accepted and merged as `e8de352c`; every selected Swallowtail dependency
+  resolves to the candidate revision.
+- Authenticated smoke: exactly
+  `local_codex_chat::tests::live_smoke_tests::live_chat_receives_active_task_context_without_polluting_history`
+  ran through the normal Nucleus Agent Chat local Codex route. Attempt one
+  passed; 1 test passed and 2,158 were filtered out.
+- Product assertions: active-task context reached the provider; stored operator
+  history remained verbatim and contained no injected context marker; no tool,
+  question, cancellation, or timeout path fired.
+- Cleanup: the test-owned temporary directory was removed, no run-owned
+  process remained, the Nucleus tree stayed clean, and the only mutation was
+  shared build cache.
+- Evidence is deliberately sanitized: no prompt text, response content,
+  credential, account data, private payload, or host path is retained.
+
 ## Auto-Continuation
 
-No. Stop for explicit operator authority. No roadmap card authorizes tag
-creation or push.
+No. The card is complete. Stop for independent review and explicit operator
+tag authority. No roadmap card authorizes tag creation or push.
 
 ## Stop Conditions
 

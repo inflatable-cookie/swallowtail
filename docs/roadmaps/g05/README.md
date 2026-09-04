@@ -32,7 +32,7 @@ enforcement.
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
 | Keep production route versions current one family at a time. | completed standing currentness; Research 276 records Kimi Code local server `0.40.1` as the sole first post-release candidate after Codex through official `0.152.1`; no claim changes | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; Kimi and PR 182 parked until post-release |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
-| Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | planned; cards 050-051 accepted; immutable candidate `56f3913a` has green canonical exact-SHA CI; card 052 awaits operator application-smoke authority | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
+| Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; tag authority remains ungranted | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
@@ -44,7 +44,7 @@ enforcement.
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
 - [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
 - [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — completed; ACP card 056 delivered; SDK card 055 restored on card 061 reservations and merged through PR 196 at `493f8194`
-- [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — planned; cards 050-051 accepted; PR 201 exact head `10d9b7a0` merged as immutable candidate `56f3913a` and canonical workflow-dispatch CI passed all six jobs at that exact SHA; card 052 awaits the operator smoke packet; no release execution or tag authority
+- [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — completed; cards 050-052 passed against immutable candidate `56f3913a`; exact-SHA CI, source consumer, and one-attempt authenticated Nucleus Agent Chat smoke passed; tag authority remains ungranted
 - [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
 
 - [g05.019 Claude Code 2.1.257 Useful Newer](019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official npm `2.1.257`
@@ -67,7 +67,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-five numbered roadmaps: 19 completed milestones including
+g05 has twenty-five numbered roadmaps: 20 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -75,11 +75,13 @@ lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 009 is planned and strict-paused on
 its operator decision.
-Milestone 021 is planned; the exact-head review accepted Research 281 through
+Milestone 021 is complete; the exact-head review accepted Research 281 through
 PR 198 head `2f4923b8`, merged as `835fe9ff`; card 051 is complete after PR
 201 exact head `10d9b7a0` merged as candidate `56f3913a` and canonical
 workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
-052 remains planned and blocked on operator authority. Milestone 022 is
+052 passed the exact source consumer and one-attempt authenticated Nucleus
+Agent Chat smoke against that candidate; tag authority remains ungranted.
+Milestone 022 is
 completed: card 055 restored the SDK route on card 061 reservations and merged
 through PR 196 at `493f8194`. Milestone 023 is complete after
 delivering card 057's tree-completion vocabulary and card 058's caller-bounded
@@ -361,9 +363,9 @@ accepted that audit: PR 198 exact head `2f4923b8` merged as `835fe9ff` on
 canonical `main`. Card 051's coordinated candidate is complete: PR 201 exact
 head `10d9b7a0` merged as immutable candidate `56f3913a`, and canonical
 workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
-052 is planned and blocked only on the complete authenticated
-working-application authority packet. No card authorizes release execution,
-tag creation, tag push, or publication. Card 050's partial pre-freeze semantic API output remains
+052 is complete after the exact source consumer and one-attempt authenticated
+Nucleus Agent Chat smoke passed against the candidate. No card authorizes
+release execution, tag creation, tag push, or publication. Card 050's partial pre-freeze semantic API output remains
 non-accepted evidence; Research 281 at `b7f804b5`, accepted through PR 198,
 is the frozen audit.
 
@@ -391,7 +393,7 @@ identity.
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
 - [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — completed; ACP card 056 delivered; SDK card 055 restored and merged through PR 196 at `493f8194`
-- [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — planned; cards 050-051 accepted; PR 201 exact head `10d9b7a0` merged as immutable candidate `56f3913a` with green canonical exact-SHA CI run 33853812785; card 052 awaits the operator smoke packet; no release execution or tag authority
+- [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — completed; cards 050-052 passed against immutable candidate `56f3913a`; exact-SHA CI, source consumer, and one-attempt authenticated Nucleus Agent Chat smoke passed; tag authority remains ungranted
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
 
 - [019 Claude Code 2.1.257 Useful Newer](./019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official `2.1.257`

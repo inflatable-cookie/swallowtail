@@ -1,6 +1,6 @@
 # g05.021 v0.4.0 Release Readiness
 
-Status: planned; cards 050-051 complete; immutable candidate `56f3913a` has green canonical exact-SHA CI; card 052 planned and blocked on the complete operator-authenticated application authority packet
+Status: complete; cards 050-052 passed against immutable candidate `56f3913a`; tag authority remains ungranted
 Owner: Tom
 Created: 2026-09-02
 Updated: 2026-09-04
@@ -85,9 +85,11 @@ local gates; the promoted changelog was extracted before the source tree was
 frozen. Independent review accepted PR 201 exact head `10d9b7a0`, which merged
 as immutable candidate `56f3913a`. Canonical workflow-dispatch run 33853812785
 used that exact `headSha` and passed all six jobs. Card 051 is complete. Card
-052 remains planned and blocked only on the complete operator-authenticated
-application authority packet. Release execution, tag creation, tag push,
-publication, provider work, and consumer mutation remain unauthorized.
+052 reran the exact source consumer and passed one operator-authorized
+authenticated Nucleus Agent Chat smoke on attempt one against the same
+candidate. The milestone is complete. Release execution, tag creation, tag
+push, publication, and further provider or consumer mutation remain
+unauthorized.
 
 ## Runway
 
@@ -142,7 +144,7 @@ different SHA is accepted.
 
 - [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
 - [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch CI run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
-- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — planned; candidate and exact-SHA CI accepted; blocked only on the complete operator-authenticated application authority packet
+- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; tag authority remains ungranted
 
 ## Acceptance
 

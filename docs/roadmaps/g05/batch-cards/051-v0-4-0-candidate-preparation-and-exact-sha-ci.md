@@ -236,9 +236,9 @@ clean-tree output, and tag-absence proof.
 
 ## Auto-Continuation
 
-No. Card 051 is complete. Card 052 remains planned and blocked until the
-operator supplies its complete authenticated working-application authority
-packet.
+No. Card 051 is complete. Card 052 subsequently passed its exact source
+consumer and authenticated Nucleus Agent Chat smoke; tag authority remains
+ungranted.
 
 ## Stop Conditions
 

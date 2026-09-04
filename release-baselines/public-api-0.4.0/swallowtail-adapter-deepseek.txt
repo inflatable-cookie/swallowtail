@@ -23,6 +23,8 @@ pub fn swallowtail_adapter_deepseek::DeepSeekPreparationInput::from_admitted(&sw
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue
 impl swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -53,6 +55,8 @@ impl swallowtail_adapter_deepseek::DeepSeekPreparedIntegration
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedIntegration::prepare_session(&self, swallowtail_adapter_deepseek::DeepSeekSessionProfileInput) -> core::result::Result<swallowtail_adapter_deepseek::DeepSeekPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_deepseek::DeepSeekPreparedRun
 impl swallowtail_adapter_deepseek::DeepSeekPreparedRun
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepseek::DeepSeekPreparedRun
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::low_level_driver(&self) -> swallowtail_adapter_deepseek::DeepSeekDirectDriver
@@ -60,6 +64,8 @@ pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::plan(&self) -> &
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_deepseek::DeepSeekPreparedSession
+impl swallowtail_adapter_deepseek::DeepSeekPreparedSession
+pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_deepseek::DeepSeekPreparedSession
 pub const fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::evidence(&self) -> &swallowtail_adapter_deepseek::DeepSeekPreparedEvidence
 pub fn swallowtail_adapter_deepseek::DeepSeekPreparedSession::into_parts(self) -> (swallowtail_adapter_deepseek::DeepSeekPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest)

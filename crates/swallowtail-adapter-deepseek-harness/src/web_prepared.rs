@@ -1381,7 +1381,7 @@ fn preparation_failure(
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use crate::{deepseek_harness_access_profile, deepseek_harness_web_claim};
     use std::num::{NonZeroU32, NonZeroU64};
@@ -1392,17 +1392,23 @@ mod tests {
     };
     use swallowtail_runtime::MonotonicInstant;
 
-    fn prepared() -> DeepSeekHarnessWebPreparedIntegration {
-        let access_id = AccessProfileId::new("deepseek-harness.web.fixture.access").unwrap();
+    pub(crate) fn prepared() -> DeepSeekHarnessWebPreparedIntegration {
+        prepared_with_suffix("default")
+    }
+
+    pub(crate) fn prepared_with_suffix(suffix: &str) -> DeepSeekHarnessWebPreparedIntegration {
+        let access_id =
+            AccessProfileId::new(format!("deepseek-harness.web.fixture.access-{suffix}")).unwrap();
         let input = DeepSeekHarnessWebPreparationInput::new(
-            ConfiguredInstanceId::new("deepseek-harness.web.fixture.instance").unwrap(),
+            ConfiguredInstanceId::new(format!("deepseek-harness.web.fixture.instance-{suffix}"))
+                .unwrap(),
             InstanceRevision::new("rc6").unwrap(),
             ExecutionHostId::new("deepseek-harness.web.fixture.host").unwrap(),
             InstalledExecutableTarget::new(
                 swallowtail_runtime::ExecutableRef::new("/fixture/bin/dsh").unwrap(),
                 InterfaceVersionAxis::new(crate::web::DEEPSEEK_HARNESS_WEB_RELEASE_AXIS).unwrap(),
             ),
-            EnvironmentRef::new("deepseek-harness.web.fixture.cordis").unwrap(),
+            EnvironmentRef::new(format!("deepseek-harness.web.fixture.cordis-{suffix}")).unwrap(),
             deepseek_harness_access_profile(access_id.clone()),
             PreparedAccessEvidence::caller_asserted(AccessStatus::new(
                 access_id,
@@ -1447,7 +1453,7 @@ mod tests {
         }
     }
 
-    fn catalogue_bounds() -> ProviderSessionCatalogueBounds {
+    pub(crate) fn catalogue_bounds() -> ProviderSessionCatalogueBounds {
         ProviderSessionCatalogueBounds::new(
             NonZeroU32::new(8).unwrap(),
             NonZeroU32::new(32).unwrap(),
@@ -1458,7 +1464,7 @@ mod tests {
         .unwrap()
     }
 
-    fn history_bounds() -> ProviderSessionHistoryBounds {
+    pub(crate) fn history_bounds() -> ProviderSessionHistoryBounds {
         ProviderSessionHistoryBounds::new(
             NonZeroU32::new(8).unwrap(),
             NonZeroU64::new(8_192).unwrap(),

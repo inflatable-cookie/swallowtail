@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 g05.009 Card 034 Closeout](./2026-09-04-g05-009-card-034-closeout.md) — Candidate F merged through PR 222 as `404fa068`; Contract 061 coverage is now 570 proved rows
 - [2026-09-04 g05.029 Card 089 Closeout](./2026-09-04-g05-029-card-089-closeout.md) — bounded-profile preflight exclusion merged through PR 223 as `e4399790`; Card 080's second PR is unblocked
 - [2026-09-04 Preflight Tool Exclusion Keyed On Boundary Claim](./2026-09-04-preflight-tool-exclusion-ruling.md) — operator ruled that the consumer-tool exclusion belongs to the bounded profile's boundary claim, not to read-write access; Contract 013 clarified; card 089 ready; card 080 completes in two PRs
 - [2026-09-04 Card 034 Ready After Both Shared Baselines](./2026-09-04-card-034-ready.md) — cards 073 and 079 merged; Kimi candidate F is ready as an 89-row tranche with card 079's compound acknowledgement value and card 073's outcome-backed catalogue seam

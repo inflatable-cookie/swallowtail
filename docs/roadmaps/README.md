@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Implement [g05.009 card 034](g05/batch-cards/034-contract-061-kimi-package-completion.md)
-as the lead of the approved concurrent frontier: the exact 89-row Kimi and
-Kimi Platform Contract 061 tranche, unblocked by the merged cards 073 and 079
-baselines, from the manifest in that roadmap.
+Continue [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
+with its second PR: remove the typed write refusal now that Card 089's bounded
+profile guard is merged. Card 034's exact 89-row Kimi and Kimi Platform tranche
+is merged through PR 222.
 [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
 runs concurrently as the `v0.4.1` carrier; card 089's bounded-profile
 preflight guard is merged, so its second PR can follow. Cards 074, 075, 076,

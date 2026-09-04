@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 481 rows proved; cards 074, 075, 076, and 079 are complete; card 034 (candidate F, 89 rows) is ready
+Status: complete; 570 rows proved; cards 034, 074, 075, 076, and 079 are complete
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04

@@ -1,6 +1,6 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: ready; both shared baselines merged (card 073 provider-operation observation, card 079 compound acknowledgement); exact 89-row Kimi and Kimi Platform tranche
+Status: complete; exact 89-row Kimi and Kimi Platform tranche merged through PR 222
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04 (made ready)
@@ -633,3 +633,5 @@ credentials or live probes were used.
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](../../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+
+Merged through PR 222 at `404fa068bacd4f5f71ac8fb2c031fa8339e42acb`.

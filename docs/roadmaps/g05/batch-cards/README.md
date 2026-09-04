@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — ready; candidate F; 25 `kimi-code.acp`, 20 `kimi-code.headless`, 31 `kimi-code.local-server`, 13 `kimi-platform.chat` rows; 75 emitted, 14 withheld
 - [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — ready; Edit/Write/MultiEdit under per-call admission on a read-write lease; permission mode at open and mid-session; `v0.4.1` carrier
 
 ## Planned
@@ -22,6 +21,7 @@
 
 ## Completed
 
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — complete; Candidate F; 75 emitted / 14 withheld across 89 Kimi rows; PR 222 merged as `404fa068`
 - [089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md](./089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — complete; bounded-profile exclusion retained and ambient mediated tools admitted; PR 223 merged as `e4399790`
 
 - [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.28`; PR 219 merged as `751ed27d`

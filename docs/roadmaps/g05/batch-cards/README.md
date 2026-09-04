@@ -2,11 +2,13 @@
 
 ## Ready
 
+- [071-antigravity-1-1-26-identity.md](./071-antigravity-1-1-26-identity.md) — ready; freeze every hop `1.1.18..=1.1.26` from official artifacts; recompute PR 182 evidence; no claim edit
 - [070-contract-061-provider-operation-observation-gate.md](./070-contract-061-provider-operation-observation-gate.md) — ready; planning-only public-baseline gate for provider-operation observation; two proving consumers
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 
 ## Planned
 
+- [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after gate card 070 is promoted and the runtime baseline lands
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005

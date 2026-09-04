@@ -163,10 +163,13 @@ feature/currentness freeze is lifted. Kimi Code local server ran through
 g05.026 card 062, retargeted on 2026-09-04 from `0.40.1` to official latest
 `0.41.0` after latest moved mid-run; card 062 stopped with the `0.38.0`
 Bash `cwd` restriction removal as a Contract 017/023 authority question before
-any segment shape, so a stop is an acceptable outcome. Antigravity `1.1.24`
-(closed PR 182 branch and evidence) is the next queued family after Kimi
-resolves; it is not merged qualification and needs a fresh identity run on
-post-release `main`.
+any segment shape, and it stopped: Research 282 froze `0.41.0` identity and
+found the Bash `cwd` change uncontained, so the ceiling stays `0.38.0`.
+Antigravity is now the active family through g05.027 cards 071-072,
+targeting official `1.1.26`; the closed PR 182 branch is recomputed evidence
+input, not merged qualification. Antigravity ships roughly daily, so the
+latest-moved stop may fire; the operator is deciding whether daily shippers
+get a bounded in-run hop extension under Contract 029.
 Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer
 observations stay recorded without implementation. Gemini stays deferred,
 watcher stays exact `2.1.251`, and `kimi-code.acp` stays QualifiedOnly at the

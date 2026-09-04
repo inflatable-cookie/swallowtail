@@ -144,8 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 26 roadmaps: 21 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and one ready milestone at 009. Milestone 009 is ready
+g05 has 27 roadmaps: 21 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 009, 027. Milestone 027 compiles
+Antigravity `1.1.26` as the next currentness family after the Kimi stop; card
+071 is ready and card 072 is gated behind an admitted segment. Milestone 009 is ready
 with planning-only breadth audits: cards 064 and 067 are complete and
 promotable, card 066 stopped on the shared observation decision, cards 068 and
 069 are merged, and card 065 remains

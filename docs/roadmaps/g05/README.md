@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active; candidates A, C, D, G, H, and J complete through cards 022-024, 031-032, 068, and 069; 378 rows proved and 389 remain; gate card 070 ready to settle the provider-operation observation vocabulary the operator chose on 2026-09-04; audit 065 active; candidate I and card 034 follow it | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-070 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | completed standing currentness through Codex official `0.152.1`; Research 276 selects Kimi Code local server `0.40.1` as the first post-release family, now compiled as g05.026 | Contract 029 identity-before-claim; Research 274-276; current-main validation | `g05.020` cards 048-049; `g05.026` cards 062-063; PR 182 queued behind it |
+| Keep production route versions current one family at a time. | completed standing currentness through Codex official `0.152.1`; Kimi local server stopped at g05.026 with the `0.38.0` ceiling; Antigravity `1.1.26` is the active family through g05.027 | Contract 029 identity-before-claim; Research 274-276 and 282; current-main validation | `g05.020` cards 048-049; `g05.026` cards 062-063; `g05.027` cards 071-072 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
@@ -38,9 +38,11 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
+| Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | ready; card 071 identity is ready; card 072 claim is gated behind an admitted segment | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
 
 ## Planned Next Roadmaps
 
+- [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — ready; card 071 identity is ready; card 072 claim is gated behind an admitted segment
 - [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated
 - [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
@@ -69,7 +71,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-six numbered roadmaps: 20 completed milestones including
+g05 has twenty-seven numbered roadmaps: 21 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -78,7 +80,8 @@ evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 026 is complete as an evidence stop:
 card 062 froze Kimi
 Code local server identity first, retargeted to official `0.41.0` after latest
-moved during its first run. Milestone 009 is ready with four
+moved during its first run. Milestone 027 is ready: card 071 freezes
+Antigravity identity through official `1.1.26`. Milestone 009 is ready with four
 planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
 C and J as promotable, while card 066 stopped on the shared observation decision;
 card 068 and card 069 are merged; audit
@@ -399,6 +402,7 @@ identity.
 
 ## Milestones
 
+- [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — ready; card 071 identity ready; card 072 claim gated behind an admitted segment
 - [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; retargeted to `0.41.0`; card 063 claim gated behind an admitted segment
 - [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping

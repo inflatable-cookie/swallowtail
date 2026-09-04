@@ -73,7 +73,7 @@ No. Stop after the note for coordinator closeout and Chatterbox reconciliation.
 
 Stopped. Candidate I is not promotable on current `main` (`bab21839`).
 The audit note is
-[`docs/triage/20260904-140002-contract-061-candidate-i-audit.md`](../../../triage/20260904-140002-contract-061-candidate-i-audit.md).
+`docs/triage/20260904-140002-contract-061-candidate-i-audit.md` (pruned after card 074 closed; preserved in Git history).
 
 - Rows reconcile to exactly 47 (19 `deepseek.continuation`, 11
   `deepseek-harness.jsonrpc`, 17 `deepseek-harness.local-server`) with no

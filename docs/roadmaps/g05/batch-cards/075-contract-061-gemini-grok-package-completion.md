@@ -95,7 +95,7 @@ No. Stop for exact-head review.
 
 ## Evidence
 
-- [Candidate E audit](../../../triage/20260904-134659-contract-061-candidate-e-audit.md)
+- Candidate E audit note `docs/triage/20260904-134659-contract-061-candidate-e-audit.md`, pruned after this card closed; preserved in Git history
 - [card 065](065-contract-061-candidate-e-breadth-audit.md)
 - [card 032](032-contract-061-cline-command-code-copilot-goose-package-completion.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)

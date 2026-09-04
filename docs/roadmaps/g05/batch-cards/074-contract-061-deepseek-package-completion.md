@@ -91,7 +91,7 @@ No. Stop for exact-head review.
 
 ## Evidence
 
-- [Candidate I audit](../../../triage/20260904-140002-contract-061-candidate-i-audit.md)
+- Candidate I audit note `docs/triage/20260904-140002-contract-061-candidate-i-audit.md`, pruned after this card closed; preserved in Git history
 - [card 066](066-contract-061-candidate-i-breadth-audit.md)
 - [card 073](073-contract-061-provider-operation-observation-baseline.md)
 - [Contract 061](../../../contracts/061-consumer-route-feature-and-control-projection.md)

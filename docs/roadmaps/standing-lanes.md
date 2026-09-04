@@ -136,9 +136,16 @@ family alone and changed no claim.
 
 ### Latest Checkpoint
 
-Research 276 revalidated all 40 production families on 2026-09-02. The
-partition is 13 unchanged, 6 visible unverified-newer, 20 record-only, and 1
-material candidate. Kimi Code npm and GitHub stable moved to `0.40.1`; the
+Research 284 revalidated all 41 production solution rows on 2026-09-04. The
+partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
+material candidate. OpenCode HTTP `1.18.28` is ranked next: the host is
+`1.18.18`, inside the qualified `1.14.48..=1.18.20` range, and eight published
+hops are available. No claim changed; Chatterbox must compile the family lane
+before any identity or claim work begins. The Contract 029 In-Run Latest
+Movement rule applies to that lane.
+
+Research 276 previously revalidated all 40 production families on 2026-09-02.
+Kimi Code npm and GitHub stable moved to `0.40.1`; the
 separate `kimi-code.local-server` family is the first post-release candidate,
 not an active implementation task, because its AllowUnverified boundary ends
 at `0.38.0`, the installed host is qualified at `0.34.0`, and Research 270

@@ -20,8 +20,8 @@ realize the promoted provider-operation observation vocabulary, fourth view,
 and six testkit assertions in runtime and testkit only, from the manifest in
 that roadmap. Audit 065 continues. Card 071 is closed as an evidence stop at
 Antigravity `1.1.22`. The all-route currentness checkpoint
-lane in `standing-lanes.md` is approved to run concurrently and writes
-Research 284 without changing claims.
+lane in `standing-lanes.md` completed as Research 284 without changing claims;
+it ranks OpenCode HTTP `1.18.28` for a future Chatterbox-compiled family lane.
 Cards 068 and 069 are merged. Card 071 is closed as an evidence stop at
 Antigravity `1.1.22`; its ceiling remains `1.1.17` and card 072 stays gated.
 Card 062 stopped: Kimi local server `0.41.0`

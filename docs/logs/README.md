@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Research 284 All-Route Currentness Checkpoint](./2026-09-04-research-284-all-route-currentness-checkpoint.md) — exact 41-row checkpoint accepted through PR 213 at `c35824cc`, merged as `8fdea82f`; OpenCode HTTP `1.18.28` ranked as the next material candidate with no claim changes
 - [2026-09-04 g05.027 Card 071 Antigravity 1.1.26 Identity Stop](./2026-09-04-g05-027-card-071-antigravity-1-1-26-identity-stop.md) — exact identity accepted through PR 212 at `93657624`, merged as `333618ca`; stopped at `1.1.22` on unbounded provider-managed retry; ceiling remains `1.1.17`
 - [2026-09-04 Provider-Operation Observation Promoted; Checkpoint 284 Queued](./2026-09-04-provider-operation-observation-promoted.md) — Contract 061 amended with the fourth view from the accepted card 070 gate; runtime baseline card 073 ready; Antigravity card 071 stop recorded with the ceiling kept at `1.1.17`; all-route checkpoint Research 284 approved as a standing lane
 - [2026-09-04 Contract 029 In-Run Latest Movement Rule](./2026-09-04-contract-029-in-run-latest-movement.md) — operator-promoted workflow rule treats a stable published before identity commit as an extra recomputed hop unless selected surface, capability, authority, major-line, or channel disagreement stops the lane

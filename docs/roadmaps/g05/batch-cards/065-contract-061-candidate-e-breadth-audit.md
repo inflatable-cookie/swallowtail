@@ -69,3 +69,24 @@ code reference, or a rubric item closed by omission.
 ## Auto-Continuation
 
 No. Stop after the note for coordinator closeout and Chatterbox reconciliation.
+
+## Result
+
+Audit complete. Candidate E reconciles to exactly 56 rows across 4 route IDs
+and 2 adapter packages (`swallowtail-adapter-gemini` and `swallowtail-adapter-grok`)
+with zero filters or exceptions. All 5 prepared facades (`GeminiPreparedSession`,
+`GeminiHeadlessPreparedRun`, `GeminiPreparedLiveSession`, `GrokPreparedSession`,
+`GrokPreparedRun`) are verified with exact code references on current `main`.
+Active-observation facades are proved absent on current `main`. Applicability
+separation across ACP, headless, and live families is proved on driver role,
+ownership, facade revision, and access. Both ACP drivers already retain
+`NegotiatedSessionModelOptions` on their session handles without discarding
+confirmations. Rubric items 1, 3, 4, 5, and 6 pass with evidence; item 2 is a
+qualified pass for prepared facades and blocked on publication for active session
+observation (retained model options require an additive adapter-owned
+`open_session_with_projection` seam to be published, following Card 032, or must
+remain withheld at construction). Recommended disposition: promotable as one
+exact package tranche with adapter-owned projected-open seams following Card 032
+(qualified on publication of active session observation).
+
+Triage note: `docs/triage/20260904-134659-contract-061-candidate-e-audit.md`.

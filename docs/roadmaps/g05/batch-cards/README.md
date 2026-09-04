@@ -4,7 +4,6 @@
 
 - [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 10 `llama-cpp.attached`, 6 `llama-cpp.owned`, 19 `ollama.attached` rows; 32 emitted, 3 withheld
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
-- [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — ready; planning-only; DeepSeek, DeepSeek Harness; 47 rows
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — ready; freeze official `0.40.1` identity and trace the `0.40.0` Bash `cwd` authority change before any claim
 
 ## Planned
@@ -16,6 +15,7 @@
 
 ## Completed
 
+- [066-contract-061-candidate-i-breadth-audit.md](./066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 merged as `85221307`
 - [064-contract-061-candidate-c-breadth-audit.md](./064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 merged as `1903f715`; catalogue routes did not reopen the Kimi gate
 - [067-contract-061-candidate-j-breadth-audit.md](./067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 merged as `8cbf6064`
 

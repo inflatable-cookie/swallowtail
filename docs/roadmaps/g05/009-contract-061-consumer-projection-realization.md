@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J promoted as ready card 068; audits 064-066 remain active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J promoted as ready card 068; audits 064 and 066 closed; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -365,11 +365,11 @@ provider-operation observation public-baseline decision, and coverage stays
 
 - [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 35 rows, 32 emitted and 3 withheld; two packages
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
-- [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — ready; DeepSeek, DeepSeek Harness; 47 rows
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; decision deferred behind card 064
 
 ## Batch Cards Completed
 
+- [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 exact head `21ba9396` merged as `85221307`
 - [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 exact head `ee5e76ab` merged as `1903f715`; catalogue routes did not reopen the Kimi gate
 - [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 exact head `0030b846` merged as `8cbf6064`
 

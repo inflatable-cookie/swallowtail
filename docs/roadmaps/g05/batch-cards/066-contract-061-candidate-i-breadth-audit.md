@@ -1,6 +1,6 @@
 # 066 Contract 061 Candidate I Breadth Audit
 
-Status: ready
+Status: complete; evidence stop; two provider-operation rows require the deferred shared observation decision
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04

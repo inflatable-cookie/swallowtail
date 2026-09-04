@@ -146,9 +146,10 @@ goal and does not keep g04 or any later generation open. See
 
 g05 has 26 roadmaps: 20 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 009, 026. Milestone 009 is ready
-with planning-only breadth audits: card 067 is complete and promotable, cards
-064-066 remain active for candidates C, E, and I; its Kimi observation decision
-is deferred behind card 064. Milestones
+with planning-only breadth audits: cards 064 and 067 are complete and
+promotable, card 066 stopped on the shared observation decision, card 068 is
+ready for candidate J implementation, and card 065 remains active. No Kimi gate
+reopened. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family and card 062 is
@@ -323,8 +324,9 @@ card 034 is planned; not ready; blocked by the provider-operation observation
 public-baseline decision. On 2026-09-04 the operator deferred that decision
 behind the candidate C audit and compiled planning-only audits 064-067 for
 breadth candidates C, E, I, and J; cards 064 and 067 are complete and
-promotable, card 068 is ready for candidate J implementation, cards 065-066
-remain active, and no Kimi gate reopened.
+promotable, card 066 stopped on the shared observation decision, card 068 is
+ready for candidate J implementation, and card 065 remains active. No Kimi gate
+reopened.
 Contract 062 and
 completed g05.010 add the missing bounded global/project/harness
 skill-inventory contract without weakening Contract 058 effective truth;

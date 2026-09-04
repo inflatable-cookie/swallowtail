@@ -23,10 +23,12 @@ qualification: recompute it rather than trust it, then extend through
 `1.1.25` and `1.1.26`. Its research number `276` collides with the canonical
 checkpoint; this lane writes Research 283.
 
-Antigravity ships roughly daily. Under the current Contract 029 workflow the
-lane stops if official latest moves before push; that stop returns to the
-operator, who is separately deciding whether daily shippers get a bounded
-in-run hop extension.
+Antigravity ships roughly daily. Under Contract 029's In-Run Latest Movement
+rule (operator-accepted 2026-09-04), a stable published before card 071's
+identity commit lands is added as a further hop and recomputed, not a stop.
+The lane stops only if an added hop changes a selected surface, capability,
+or authority, or latest moves after the identity commit, in which case the
+later stable stays `UnverifiedNewer`.
 
 ## Runway
 
@@ -72,7 +74,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Worker capability class | evidence-first identity worker; artifact download and hashing; Rust fixture authoring; no provider credentials |
 | Acceptance evidence | GitHub release, tag commit, tarball, and extracted-binary digests per hop; recomputed `1.1.17` corpus; in-binary version literals; selected-flag presence per hop; mutation-sensitive delta ledger |
 | Review oracle | one commit contains identity evidence and zero claim edits; the smallest counterexample is a changed selection constant, a hop taken from PR 182 without recomputation, or a surface verdict without an artifact anchor |
-| Stop conditions | official latest moves during the run (stop and escalate; the operator is deciding the daily-shipper policy); identity disagreement; a selected surface or authority change without deterministic mapping; new revision required |
+| Stop conditions | an added hop changes a selected surface, capability, or authority (latest moving before the identity commit is a hop extension, not a stop); identity disagreement; a selected surface or authority change without deterministic mapping; new revision required |
 | Escalation owner | operator (Tom) via Chatterbox for policy or authority questions; coordinator for mechanical blockers |
 
 Card 072 enters the manifest only after the coordinator records card 071's

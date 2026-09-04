@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Contract 029 In-Run Latest Movement](./2026-09-04-contract-029-in-run-latest-movement.md) — operator accepted a bounded hop-extension rule for stables published mid-run before the identity commit; strict stops remain for surface, authority, reset, or channel disagreement; skill, guide, and g05.027 updated
 - [2026-09-04 g05.027 Antigravity 1.1.26 Compiled](./2026-09-04-g05-027-antigravity-1-1-26-compiled.md) — after the Kimi local-server stop, Antigravity `1.1.26` is the next currentness family; card 071 identity ready with PR 182 evidence recomputed as input; card 072 gated
 - [2026-09-04 g05.026 Card 062 Kimi Code 0.41.0 Identity Stop](./2026-09-04-g05-026-card-062-kimi-0-41-0-identity-stop.md) — exact identity accepted through PR 210 at head `f306d327`, merged as `e79f8d07`; ceiling remains `0.38.0` because Bash `cwd` authority is uncontained
 - [2026-09-04 g05.009 Card 069 Candidate C Package Completion](./2026-09-04-g05-009-card-069-candidate-c-package-completion.md) — exact 94-row Antigravity, Bedrock, and Cursor implementation accepted through PR 209 at head `f2edd558`, merged as `d2d8ae8b`; 51 rows emitted and 43 withheld

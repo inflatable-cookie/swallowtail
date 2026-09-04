@@ -95,6 +95,11 @@ internal/unmapped changes vs wire/lifecycle changes.
 
 Pre-push official latest recheck:
 
+If the recheck shows a new stable and the identity commit has not landed,
+do not stop: add the hop, recompute its identity from official artifacts,
+extend the ledger, and re-run the recheck. Stop only under the bounded
+conditions in Contract 029's In-Run Latest Movement rule.
+
 ```sh
 npm view <package> version
 # or gh api repos/<owner>/<repo>/releases/latest

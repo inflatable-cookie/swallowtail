@@ -63,8 +63,13 @@ rediscover them.
 - **Gemini stays deferred** until the operator lifts that gate. Completing
   every other family does not lift it.
 - **Recheck official latest before final push.** Re-probe official latest
-  after evidence repairs and immediately before push; if it moved, stop
-  and ask.
+  after evidence repairs and immediately before push. If it moved before
+  the identity commit landed, extend the hop set under Contract 029's
+  In-Run Latest Movement rule and recompute identity for each added hop;
+  stop and ask only when an added hop changes a selected surface,
+  capability, or authority, is a major-line reset, or disagrees across
+  channels. If it moved after the identity commit landed, record the later
+  stable as `UnverifiedNewer` and do not reopen the claim.
 - **Number from canonical pushed main.** Authority is
   `https://github.com/inflatable-cookie/swallowtail.git` `main`, not
   `origin/main`. Refresh it immediately before allocating ids and again

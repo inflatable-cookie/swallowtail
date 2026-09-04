@@ -167,9 +167,9 @@ any segment shape, and it stopped: Research 282 froze `0.41.0` identity and
 found the Bash `cwd` change uncontained, so the ceiling stays `0.38.0`.
 Antigravity is now the active family through g05.027 cards 071-072,
 targeting official `1.1.26`; the closed PR 182 branch is recomputed evidence
-input, not merged qualification. Antigravity ships roughly daily, so the
-latest-moved stop may fire; the operator is deciding whether daily shippers
-get a bounded in-run hop extension under Contract 029.
+input, not merged qualification. Antigravity ships roughly daily; under
+Contract 029's In-Run Latest Movement rule (accepted 2026-09-04) a stable
+published before the identity commit is a recomputed extra hop, not a stop.
 Claude Code `2.1.258`, Cursor, OpenCode, Ollama, Grok, and other visible newer
 observations stay recorded without implementation. Gemini stays deferred,
 watcher stays exact `2.1.251`, and `kimi-code.acp` stays QualifiedOnly at the

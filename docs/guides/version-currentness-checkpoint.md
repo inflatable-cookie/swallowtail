@@ -79,7 +79,10 @@ Compile one-family range work using Contract 029's Upgrade Workflow:
    when adapter-private mapping changes, or create a new driver/facade
    revision when the public lifecycle changed materially
 
-One family per card. Exact-pin and qualified-only claims stay rejected
+One family per card. When official latest moves during a run and before
+the identity commit lands, extend the hop set under Contract 029's In-Run
+Latest Movement rule instead of stopping; stop only on a changed selected
+surface, authority change, major-line reset, or channel disagreement. Exact-pin and qualified-only claims stay rejected
 above the pin until that family has its own corpus. A major-line reset on
 the same package is an identity investigation, not an unverified-newer
 default.

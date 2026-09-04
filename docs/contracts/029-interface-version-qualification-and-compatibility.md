@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-02
+Updated: 2026-09-04
 
 ## Purpose
 
@@ -155,6 +155,30 @@ unverified newer attempts. This keeps routine qualification small while
 retaining old installed harnesses deliberately. It also prevents compatibility
 shims from accumulating in core. Provider-specific decoding and migration stay
 inside the owning driver unless two adapters prove a shared protocol boundary.
+
+### In-Run Latest Movement
+
+A one-family run targets the official stable that was latest when the lane
+was promoted. When official latest moves again before the identity commit
+lands, the worker does not stop by default. It re-probes official latest,
+adds every newly published stable as a further hop, recomputes identity for
+each added hop from official artifacts, and extends the same hop-by-hop
+selected-surface ledger. The run stays identity-before-claim: no claim edit
+happens until every hop in the extended set is classified.
+
+The extension is bounded. The worker stops and escalates to the operator
+when:
+
+- an added hop changes a selected mapped surface, a capability, or process
+  authority, or requires a new driver or facade revision;
+- an added hop is a major-line reset;
+- identity for any hop disagrees across official channels;
+- latest moves again after the identity commit has landed, in which case the
+  later stable remains `UnverifiedNewer` until the next checkpoint or family
+  run rather than reopening the claim.
+
+The pre-push recheck remains mandatory. A move found at that recheck follows
+this same rule: extend before the identity commit, record after it.
 
 ### Artifact Authority Without Public Source
 

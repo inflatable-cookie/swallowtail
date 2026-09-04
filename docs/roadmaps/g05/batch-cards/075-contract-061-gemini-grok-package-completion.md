@@ -1,6 +1,6 @@
 # 075 Contract 061 Gemini And Grok Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -116,5 +116,9 @@ universes sum to 39 emitted / 17 withheld / 56 reconciled exactly.
 Validation: focused and affected-package checks passed for both packages. The
 initial focused run was blocked by the sandbox denying the Gemini Live fixture
 listener; the same check passed outside the sandbox. `scan god-files` records
-the new projection modules as high-size follow-up work. Completion remains
-reserved for coordinator-owned batch-index and frozen API-baseline reconciliation.
+the new projection modules as high-size follow-up work. Coordinator-owned
+closeout is complete; the exact package baselines are included in the merged
+PR.
+
+Merged through PR 215 at `9978f9fd`; Contract 061 coverage now includes the
+full 39/17/56 Candidate E tranche.

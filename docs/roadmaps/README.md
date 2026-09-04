@@ -15,15 +15,15 @@ shape.
 
 ## Next Task
 
-Implement [g05.009 card 075](g05/batch-cards/075-contract-061-gemini-grok-package-completion.md)
-as the lead of the approved concurrent frontier. Card 074 completes the
+Implement [g05.009 card 079](g05/batch-cards/079-contract-061-compound-acknowledgement-baseline.md)
+as the lead of the approved concurrent frontier. Cards 074 and 075 complete the
 Gemini/Grok tranche; card 076's merged planning result records the accepted
 compound acknowledgement design and card 079 realizes it in runtime and testkit; and
 [g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
 makes `claude-agent.sdk` read-write with permission policy as the `v0.4.1`
 carrier. g05.028 is complete: OpenCode qualified through `1.18.28`. Card 034
 remains planned behind card 079.
-Current Contract 061 coverage is 378 proved / 389 remaining; cards 074 and 075
+Current Contract 061 coverage is 481 proved / 286 remaining; cards 074 and 075
 can reconcile 103 rows without a new shared baseline. `v0.4.0` is tagged and
 the feature/currentness freeze is lifted.
 

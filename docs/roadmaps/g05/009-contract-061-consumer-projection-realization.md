@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 425 rows proved; card 074 is complete, card 075 remains active, card 076 is complete; card 079 is the shared baseline before card 034
+Status: ready; 481 rows proved; cards 074 and 075 are complete, card 076 is complete; card 079 is the shared baseline before card 034
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -295,12 +295,12 @@ card 079 is the shared runtime/testkit baseline before card 034.
 ## Lane Runway
 
 - generation goal advanced: cohesive route-feature and control truth
-- immediate state: 425 rows proved; card 074 is complete, card 075 remains
-  active, and card 076's Kimi acknowledgement gate is complete
+- immediate state: 481 rows proved; cards 074 and 075 are complete, and card
+  076's Kimi acknowledgement gate is complete
 - completed shared baseline: Contract 061 provider-operation observation plus
   card 073 runtime/testkit support
-- later runway: 342 rows remain; card 075 reconciles the remaining 56 rows in
-  this approved package frontier
+- later runway: 286 rows remain; card 079 realizes the accepted Kimi design
+  before card 034
 - next strategy checkpoint: card 079 realizes card 076's exact compound
   half-state representation before card 034
 
@@ -354,7 +354,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 - [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — ready; runtime and testkit only; realizes card 076's accepted design; card 034 follows its merge
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
-- [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled
+- [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
 - [076 Contract 061 Kimi Compound Acknowledgement Gate](batch-cards/076-contract-061-kimi-compound-acknowledgement-gate.md) — complete; planning-only; PR 218 merged at `602e466f`; card 079 is serial before card 034
 - [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — complete; PR 214 merged as `e39e0aa8`
 - [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; promoted into Contract 061 and card 073

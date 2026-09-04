@@ -1,7 +1,7 @@
 use swallowtail_runtime::{
     ConsumerRouteAcknowledgementState, ConsumerRouteCompoundAcknowledgement,
     ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailureKind,
-    ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceKind,
+    ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceKind, ConsumerRouteStateSupport,
 };
 
 use crate::{ConsumerRouteProjectionFixture, consumer_route_projection_source};
@@ -75,6 +75,24 @@ pub fn assert_compound_acknowledgement_terminal_not_dispatched_is_distinct() {
     ));
     assert!(!row.state_support().pending());
     assert_eq!(projection.active_session_state().rows().len(), 1);
+
+    let pending_row = acknowledgement_row(&applicability, observation_source(), terminal_plan())
+        .with_state_support(
+            ConsumerRouteStateSupport::descriptor_only()
+                .with_requested()
+                .with_rejected()
+                .with_pending(),
+        );
+    let failure = contribution(&applicability, Vec::new(), Vec::new(), vec![pending_row])
+        .expect_err("terminally undispatched Plan truth cannot be pending");
+    assert_kind(
+        &failure,
+        ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
+    );
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.consumer_route_projection.acknowledgement_state_invalid"
+    );
 
     let replacement_source = consumer_route_projection_source(
         "fixture.source.active-session-replacement",

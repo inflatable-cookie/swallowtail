@@ -95,8 +95,19 @@ impl ConsumerRouteCompoundAcknowledgement {
 pub(super) fn admit_compound_acknowledgement(
     row: &ConsumerRouteProjectionRow,
 ) -> Result<(), ConsumerRouteProjectionFailure> {
-    if row.compound_acknowledgement().is_none() {
+    let Some(acknowledgement) = row.compound_acknowledgement() else {
         return Ok(());
+    };
+    if matches!(
+        acknowledgement.plan(),
+        ConsumerRouteAcknowledgementState::RequestedNotDispatched
+    ) && row.state_support().pending()
+    {
+        return Err(failure(
+            ConsumerRouteProjectionFailureKind::ValueDomainInvalid,
+            "swallowtail.consumer_route_projection.acknowledgement_state_invalid",
+            "Terminally undispatched Plan acknowledgement cannot be pending",
+        ));
     }
     if !matches!(
         row.identity(),

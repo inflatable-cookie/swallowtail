@@ -115,6 +115,16 @@ or mid-turn mutation exists only where an exact route mechanism is separately
 qualified, and the census proves no general mid-turn row. A successful local
 setter or prepared builder call is not provider acknowledgement.
 
+A compound acknowledgement row may carry independently state-associated
+halves. Each half is absent, effective with the exact provider token,
+rejected with the exact provider token, or terminally not dispatched. An
+exact provider token attaches only to an effective or rejected half. Terminal
+not-dispatched is distinct from absent, rejected, and pending: it records
+that an earlier half's rejection ended the lifecycle before the later half
+was dispatched, and it never implies a future acknowledgement. Half order is
+route truth and is preserved, never inferred. The compound value changes no
+row identity, applicability, source, lifecycle, or observation-only posture.
+
 ### Provider-Operation State
 
 Project only observations returned by a completed provider operation that
@@ -286,6 +296,10 @@ Portable fixtures must prove:
   preflight bypass
 - provider-operation rows appear only in the provider-operation view with a
   completed provider-session catalogue or history outcome
+- a compound acknowledgement associates each half with its own state, attaches
+  exact provider tokens only to effective or rejected halves, keeps terminal
+  not-dispatched distinct from absent, rejected, and pending, and rejects
+  impossible half combinations
 - interactive-session, structured-run, active-session, and prepared-only
   evidence cannot enter the provider-operation source kind or lifecycle
 - provider-operation rows obey the fixed row maximum, remain

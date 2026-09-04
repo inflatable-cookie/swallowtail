@@ -351,6 +351,7 @@ card 034 stays planned behind it and any shared baseline it admits.
 
 ## Batch Cards In Flight
 
+- [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — ready; runtime and testkit only; realizes card 076's accepted design; card 034 follows its merge
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled
 - [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled
 - [076 Contract 061 Kimi Compound Acknowledgement Gate](batch-cards/076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only; card 034 remains serial behind it
@@ -502,3 +503,26 @@ Candidate I and Candidate E audit notes remain live evidence until cards 074
 and 075 close, then Chatterbox prunes them. The provider-operation gate note
 remains until its two proving consumers close. Card 034 is not part of this
 frontier.
+
+### Card 079 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+The operator accepted card 076's compound acknowledgement design on
+2026-09-04 and Contract 061 is amended. Card 079 is approved concurrent with
+cards 074, 075, and 076's planning PR, and with g05.029 card 080.
+
+| Field | Card 079 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | Contract 061 amended on `main`; card 076's result (its planning PR may still be in review; the design text is the operator-accepted authority) |
+| Completion conditions | names, constructors, diagnostic, admission, and six assertions realized verbatim; API baseline regenerated additively; named validation green; one reviewable PR |
+| Owned mutable paths | `crates/swallowtail-runtime/**`; `crates/swallowtail-testkit/**`; `release-baselines/public-api-0.4.0/swallowtail-runtime.txt` and `swallowtail-testkit.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every adapter crate; `crates/swallowtail-core/**`; `docs/contracts/**`; card 034 |
+| Approved concurrent siblings | 074, 075, 076, g05.029 card 080 |
+| Serial edges | card 034 compiles only after card 079 merges |
+| Worker capability class | Rust implementation worker with public-API discipline; frontier-tier preferred |
+| Acceptance evidence | the six assertions; additive semantic API diff; focused and package-affected validation |
+| Review oracle | the card's invariant |
+| Stop conditions | any deviation from card 076's exact names returns to Chatterbox |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

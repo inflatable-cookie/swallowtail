@@ -2,15 +2,25 @@
 
 ## Ready
 
+- [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — ready; Edit/Write/MultiEdit under per-call admission on a read-write lease; permission mode at open and mid-session; `v0.4.1` carrier
+- [079-contract-061-compound-acknowledgement-baseline.md](./079-contract-061-compound-acknowledgement-baseline.md) — ready; runtime and testkit realization of card 076's accepted compound acknowledgement design
 - [074-contract-061-deepseek-package-completion.md](./074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled across DeepSeek and DeepSeek Harness
 - [075-contract-061-gemini-grok-package-completion.md](./075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled across Gemini and Grok
 - [076-contract-061-kimi-compound-acknowledgement-gate.md](./076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only gate for Kimi reasoning/Plan half-state representation
 
 ## Planned
 
+- [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — planned; g05.029 priority 2
+- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
+- [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
+- [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5
+- [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — planned; g05.029 priority 6
+- [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — planned; g05.029 priority 7
+- [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; g05.029 priority 8
+- [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — planned; g05.029 priority 9
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation baseline landed; waits on card 076 and any baseline it admits
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; reopens after card 079 merges
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 

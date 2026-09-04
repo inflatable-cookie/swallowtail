@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Claude SDK Parity Roadmap And Compound Acknowledgement Accepted](./2026-09-04-claude-sdk-parity-and-compound-acknowledgement.md) — operator accepted the Bovine Claude requirement as g05.029 with card 080 ready as the `v0.4.1` carrier, and card 076's compound acknowledgement design as a Contract 061 amendment with runtime baseline card 079
 - [2026-09-04 g05.028 Card 078 OpenCode HTTP Claim](./2026-09-04-g05-028-card-078-opencode-http-claim.md) — qualified `opencode.server` through official `1.18.28`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; PR 219 merged as `751ed27d`
 - [2026-09-04 g05.028 Card 077 OpenCode HTTP Identity Closeout](./2026-09-04-g05-028-card-077-opencode-http-identity-closeout.md) — exact head `a5400dde` accepted and merged through PR 216 as `99e91aa8`; compatible `surface-19` admitted; card 078 unblocked
 - [2026-09-04 Contract 061 And OpenCode Frontier Promoted](./2026-09-04-contract-061-and-opencode-frontier-promoted.md) — cards 074-076 plus g05.028 card 077 approved concurrently; Candidate I and E implementation, Kimi acknowledgement planning, and OpenCode `1.18.28` identity-first currentness

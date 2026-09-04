@@ -1,6 +1,6 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; provider-operation observation is complete; blocked on card 076 settling the compound acknowledgement shape and any baseline it admits
+Status: planned; not ready; card 073 merged; the compound acknowledgement design is accepted and card 079 owns its runtime baseline; this card reopens after card 079 merges
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04

@@ -40,6 +40,8 @@ impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::prepare_run(&self, swallowtail_adapter_deepseek_harness::DeepSeekHarnessRunProfileInput) -> core::result::Result<swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun
 pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::evidence(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::into_parts(self) -> (swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
@@ -93,6 +95,8 @@ impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparationProbe
 pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedArchive::integration(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedIntegration
@@ -108,6 +112,8 @@ pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedEvidence:
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_core::provider_reference::SessionRef, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedFork::plan(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
@@ -135,12 +141,17 @@ pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedInt
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::evidence(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::low_level_driver(&self) -> swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebDriver
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::consumer_route_provider_operation_observation(&self, &swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::provider_operation_observation::ConsumerRouteProviderOperationObservation, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionCatalogueEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::integration(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedIntegration
@@ -154,6 +165,9 @@ pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCa
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionCatalogue::search_sessions(&self, &str, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<(swallowtail_core::provider_reference::SessionRef, alloc::string::String)>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory::consumer_route_provider_operation_observation(&self, &swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::provider_operation_observation::ConsumerRouteProviderOperationObservation, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory::evidence(&self) -> &swallowtail_runtime::provider_session_history::PreparedProviderSessionHistoryEvidence
 pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedSessionHistory::integration(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessWebPreparedIntegration

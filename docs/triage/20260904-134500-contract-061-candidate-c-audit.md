@@ -7,21 +7,16 @@ Source: Card 064, Contract 061, Batch 9.4 package expansion, and `main` at `bab2
 
 ## Purpose
 
-Audit Batch 9.4 candidate C (`swallowtail-adapter-antigravity`,
-`swallowtail-adapter-bedrock`, `swallowtail-adapter-cursor`) against current
-`main` under the promotion rubric and return one honest disposition. This is
-planning evidence: it authorizes no Rust changes, no provider contact or
-credentials, and no direct coverage claims.
+Audit Batch 9.4 candidate C (`swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-cursor`) against current `main` under the promotion rubric and return one honest disposition. This is planning evidence: it authorizes no Rust changes, no provider contact or credentials, and no direct coverage claims.
 
 ## Candidate Summary
 
-Candidate C owns three complete adapter-package remainders across seven route
-shapes and exactly 94 census rows:
+Candidate C owns three complete adapter-package remainders across seven route shapes and exactly 94 census rows:
 
 | Route ID | Owning package | Census rows | Route shape | Audit role |
 | --- | --- | ---: | --- | --- |
 | `antigravity.catalogue` | `swallowtail-adapter-antigravity` | 14 | Model catalogue | Explicit no-control audit |
-| `antigravity.headless` | `swallowtail-adapter-antigravity` | 18 | Stream-JSON structured run | 5 prepared controls |
+| `antigravity.headless` | `swallowtail-adapter-antigravity` | 18 | Stream-JSON structured run & continuation | 5 prepared controls |
 | `bedrock.catalogue` | `swallowtail-adapter-bedrock` | 9 | Control-plane catalogue | Explicit no-control audit |
 | `bedrock.runtime` | `swallowtail-adapter-bedrock` | 10 | Direct runtime inference | 2 prepared controls |
 | `cursor-agent.acp` | `swallowtail-adapter-cursor` | 13 | Interactive ACP session | Explicit no-control audit |
@@ -29,272 +24,115 @@ shapes and exactly 94 census rows:
 | `cursor-agent.headless` | `swallowtail-adapter-cursor` | 17 | Stream-JSON structured run | 5 prepared controls |
 | **Total** | **3 packages** | **94** | **7 routes** | **4 no-control audits; 12 controls** |
 
-The four explicit no-control route audits (`antigravity.catalogue`,
-`bedrock.catalogue`, `cursor-agent.acp`, `cursor-agent.catalogue`) carry
-`audit.no-public-route-specific-selectable-control` as negative coverage.
-No route in Candidate C carries mid-turn, per-turn, or active-session
-observation rows.
+The four explicit no-control route audits (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.acp`, `cursor-agent.catalogue`) carry `audit.no-public-route-specific-selectable-control` as negative coverage. Candidate C carries zero mid-turn, per-turn, or active post-open observation rows.
 
-## Census Reconciliation (94 Rows)
+## Facade Map And Source-Identity Truth On Current `main`
 
-The 94 rows reconcile exactly from the reviewed Contract 061 census CSV with
-zero filters, exemptions, or duplicated rows.
+### Prepared Facades On Current `main`
 
-### Row Breakdown By Route And Kind
+Current `main` contains exactly eight prepared facades across the three packages. On `antigravity.headless`, two distinct prepared facades share the same underlying driver descriptor (`antigravity_headless_descriptor()`):
 
-| Route | Features | Controls | Route Audits | Total |
-| --- | ---: | ---: | ---: | ---: |
-| `antigravity.catalogue` | 13 | 0 | 1 | 14 |
-| `antigravity.headless` | 13 | 5 | 0 | 18 |
-| `bedrock.catalogue` | 8 | 0 | 1 | 9 |
-| `bedrock.runtime` | 8 | 2 | 0 | 10 |
-| `cursor-agent.acp` | 12 | 0 | 1 | 13 |
-| `cursor-agent.catalogue` | 12 | 0 | 1 | 13 |
-| `cursor-agent.headless` | 12 | 5 | 0 | 17 |
-| **Total** | **78** | **12** | **4** | **94** |
-
-### Complete Census Ledger
-
-| Route ID | Operation Shape | Semantic ID | Kind | Lifecycle | State Support |
+| Package | Route ID | Prepared Facade | Operation Shape | Driver Role | Preflight Code Reference |
 | --- | --- | --- | --- | --- | --- |
-| `antigravity.catalogue` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `interactive-session` | `feature.interactive-session` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.reasoning-selection` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.structured-output` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.working-resource` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.bounded-workspace-text-write` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `session-lifecycle` | `feature.persistent-session-posture` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.catalogue` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `antigravity.catalogue` | `route-selection` | `audit.no-public-route-specific-selectable-control` | route-audit | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `interactive-session` | `feature.interactive-session` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.reasoning-selection` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.structured-output` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.working-resource` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.bounded-workspace-text-write` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `session-lifecycle` | `feature.persistent-session-posture` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `antigravity.headless` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `antigravity.headless` | `structured-run` | `control.model-selection` | control | `selection-summary` | `requested;prepared;provider-effective-unobserved` |
-| `antigravity.headless` | `structured-run` | `control.reasoning-selection` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `antigravity.headless` | `structured-run` | `control.structured-output` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `antigravity.headless` | `structured-run` | `control.resource-access` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `antigravity.headless` | `structured-run` | `control.isolation` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `bedrock.catalogue` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-capability` | `feature.output-token-limit` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.catalogue` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `bedrock.catalogue` | `route-selection` | `audit.no-public-route-specific-selectable-control` | route-audit | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-capability` | `feature.output-token-limit` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `bedrock.runtime` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `bedrock.runtime` | `structured-run` | `control.model-selection` | control | `selection-summary` | `requested;prepared;provider-effective-unobserved` |
-| `bedrock.runtime` | `structured-run` | `control.maximum-output-tokens` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `cursor-agent.acp` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `interactive-session` | `feature.interactive-session` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-capability` | `feature.reasoning-selection` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-capability` | `feature.working-resource` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-capability` | `feature.bounded-workspace-text-write` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `session-lifecycle` | `feature.persistent-session-posture` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.acp` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `cursor-agent.acp` | `route-selection` | `audit.no-public-route-specific-selectable-control` | route-audit | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `interactive-session` | `feature.interactive-session` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-capability` | `feature.reasoning-selection` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-capability` | `feature.working-resource` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-capability` | `feature.bounded-workspace-text-write` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `session-lifecycle` | `feature.persistent-session-posture` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `cursor-agent.catalogue` | `route-selection` | `audit.no-public-route-specific-selectable-control` | route-audit | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `model-catalogue` | `feature.model-catalogue` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `structured-run` | `feature.structured-run` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `interactive-session` | `feature.interactive-session` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-observation` | `feature.streaming-events` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-observation` | `feature.usage-evidence` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-capability` | `feature.reasoning-selection` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-capability` | `feature.cancellation-or-interruption` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-capability` | `feature.working-resource` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-capability` | `feature.bounded-workspace-text-write` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `session-lifecycle` | `feature.persistent-session-posture` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-capability` | `feature.prepared-facade` | feature | `selection-summary` | `descriptor-only` |
-| `cursor-agent.headless` | `route-observation` | `feature.activity-observation` | feature | `post-open-observation-only` | `descriptor-only` |
-| `cursor-agent.headless` | `structured-run` | `control.model-selection` | control | `selection-summary` | `requested;prepared;provider-effective-unobserved` |
-| `cursor-agent.headless` | `structured-run` | `control.fast` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `cursor-agent.headless` | `structured-run` | `control.context-window` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `cursor-agent.headless` | `structured-run` | `control.reasoning-effort` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
-| `cursor-agent.headless` | `structured-run` | `control.read-mode` | control | `session-start-only` | `requested;prepared;effective-unobserved` |
+| `swallowtail-adapter-antigravity` | `antigravity.catalogue` | `AntigravityPreparedCatalogue` | `StructuredRun` | `ModelCatalog` | `crates/swallowtail-adapter-antigravity/src/prepared/catalogue.rs:37-43` |
+| `swallowtail-adapter-antigravity` | `antigravity.headless` | `AntigravityPreparedHeadlessRun` | `StructuredRun` | `StructuredRun` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:98-104` |
+| `swallowtail-adapter-antigravity` | `antigravity.headless` | `AntigravityPreparedContinuation` | `InteractiveSession` | `InteractiveSession` | `crates/swallowtail-adapter-antigravity/src/prepared/session.rs:48-52` |
+| `swallowtail-adapter-bedrock` | `bedrock.catalogue` | `BedrockPreparedCatalogue` | `StructuredRun` | `ModelCatalog` | `crates/swallowtail-adapter-bedrock/src/prepared/catalogue.rs:186-192` |
+| `swallowtail-adapter-bedrock` | `bedrock.runtime` | `BedrockPreparedInferenceAttempt` | `StructuredRun` | `StructuredRun` | `crates/swallowtail-adapter-bedrock/src/prepared/runtime.rs:234-240` |
+| `swallowtail-adapter-cursor` | `cursor-agent.acp` | `CursorPreparedAcpSession` | `InteractiveSession` | `InteractiveSession` | `crates/swallowtail-adapter-cursor/src/prepared/acp.rs:33-38` |
+| `swallowtail-adapter-cursor` | `cursor-agent.catalogue` | `CursorPreparedCatalogue` | `StructuredRun` | `ModelCatalog` | `crates/swallowtail-adapter-cursor/src/prepared/catalogue.rs:38-44` |
+| `swallowtail-adapter-cursor` | `cursor-agent.headless` | `CursorPreparedHeadlessRun` | `StructuredRun` | `StructuredRun` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:144-151` |
 
-## Facade And Source Identity Map On Current `main`
+Dual-facade contributor on `antigravity.headless`: `AntigravityPreparedHeadlessRun` prepares one-shot stream-JSON structured execution (`prepare_run` / `start_run`), while `AntigravityPreparedContinuation` prepares durable interactive session continuation (`prepare_session` / `open_session`). `continuation_capabilities()` binds `InteractiveSession`, `StreamingEvents`, `ObservableActivity`, `UsageReporting`, `Interruption`, `WorkingResource(Read)`, and `ProviderDurableRetention`. Both facades contribute to the route's census truth without cross-route leakage.
 
-Every prepared facade exists on current `main`. Active observation facades do
-not exist and are not required by Candidate C.
+### Actual Source-Identity Truth On Current `main`
 
-### Prepared Facades
+Exact code search over the three adapter crates confirms that no projection contribution surface exists today:
 
-| Route | Prepared Facade | Source Kind | Current `main` Code Reference |
-| --- | --- | --- | --- |
-| `antigravity.catalogue` | `AntigravityPreparedCatalogue` | `AdapterContribution` | `crates/swallowtail-adapter-antigravity/src/prepared/catalogue.rs:37-43` |
-| `antigravity.headless` | `AntigravityPreparedHeadlessRun` | `AdapterContribution` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:98-104` |
-| `bedrock.catalogue` | `BedrockPreparedCatalogue` | `AdapterContribution` | `crates/swallowtail-adapter-bedrock/src/prepared/catalogue.rs:186-192` |
-| `bedrock.runtime` | `BedrockPreparedInferenceAttempt` | `AdapterContribution` | `crates/swallowtail-adapter-bedrock/src/prepared/runtime.rs:234-240` |
-| `cursor-agent.acp` | `CursorPreparedAcpSession` | `AdapterContribution` | `crates/swallowtail-adapter-cursor/src/prepared/acp.rs:33-38` |
-| `cursor-agent.catalogue` | `CursorPreparedCatalogue` | `AdapterContribution` | `crates/swallowtail-adapter-cursor/src/prepared/catalogue.rs:38-44` |
-| `cursor-agent.headless` | `CursorPreparedHeadlessRun` | `AdapterContribution` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:144-151` |
+- Running `rg "consumer_route_projection_contribution"` yields zero matches in `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, and `swallowtail-adapter-cursor`.
+- Running `rg "ConsumerRouteProjectionSourceKind"` yields zero matches in those same three crates.
+- Running `rg "AdapterContribution"` yields zero matches in those same three crates.
 
-All seven prepared facades use caller-supplied
-`ConsumerRouteProjectionSourceKind::AdapterContribution`.
+**Actual current-main truth:** None of the three crates implements `consumer_route_projection_contribution` on current `main`. The cited line ranges in the prepared facade table locate the immutable prepared struct definitions, not active source-identity constructors.
 
-### Active-Observation Facades: Exact Absence Proof
+**Intended established source-identity kind:** When implemented in a promoted implementation card, all eight prepared facades will expose `pub fn consumer_route_projection_contribution(&self, source_id: ConsumerRouteProjectionSourceId) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure>`, emitting contributions under the established `ConsumerRouteProjectionSourceKind::AdapterContribution`. This directly mirrors completed packages `swallowtail-adapter-qoder` (`crates/swallowtail-adapter-qoder/src/consumer_route_projection.rs:32-48`), `swallowtail-adapter-deepagents` (`crates/swallowtail-adapter-deepagents/src/consumer_route_projection.rs:32-48`), `swallowtail-adapter-kiro` (`crates/swallowtail-adapter-kiro/src/consumer_route_projection.rs:32-48`), and `swallowtail-adapter-zcode` (`crates/swallowtail-adapter-zcode/src/consumer_route_projection.rs:37-55`).
 
-Active-observation facades on current `main` are absent on all seven routes:
+### Active-Observation Absence Proof (Resolving Code References)
 
-- `antigravity.catalogue`: executes unary installed CLI discovery via
-  `AntigravityCatalogueDriver::list_models` (`prepared/catalogue.rs:110-119`).
-  It returns a list of models, opens no session, and carries no post-open
-  observation method or state.
-- `antigravity.headless`: executes one-shot stream-JSON structured execution via
-  `StructuredRunDriver::start_run` (`prepared/run.rs:194-203`). It returns a
-  `RunHandle`, not an interactive session handle. No active-observation facade
-  exists.
-- `bedrock.catalogue`: executes control-plane `ListFoundationModels` via
-  `BedrockCatalogueDriver::list_models` (`prepared/catalogue.rs:220-229`). It
-  opens no session and carries no active observation facade.
-- `bedrock.runtime`: executes direct SDK inference via
-  `BedrockDirectDriver::start_run` (`prepared/runtime.rs:268-276`). It returns
-  a `RunHandle` without an active-session observation outcome.
-- `cursor-agent.acp`: opens an interactive session via
-  `CursorAcpDriver::open_session` returning a standard
-  `InteractiveSessionHandle` (`prepared/acp.rs:135-144`). It retains no
-  provider-effective or rejected confirmation state; no adapter-owned
-  projected-open outcome or active-observation facade exists.
-- `cursor-agent.catalogue`: executes installed CLI discovery via
-  `CursorCatalogueDriver::list_models` (`prepared/catalogue.rs:114-122`). No
-  active observation facade exists.
-- `cursor-agent.headless`: executes one-shot stream-JSON structured execution via
-  `StructuredRunDriver::start_run` (`prepared/headless.rs:234-243`). No active
-  observation facade exists.
+Active-observation facades are absent across all seven routes on current `main`. The following code references prove exact absence:
+- `antigravity.catalogue`: `AntigravityPreparedCatalogue::list_models` (`crates/swallowtail-adapter-antigravity/src/prepared/catalogue.rs:110-118`) executes unary model discovery via `AntigravityCatalogueDriver::list_models` and returns `BoxFuture<'static, Result<Vec<ModelCatalogEntry>, RuntimeFailure>>`. It opens no session, returns no handle, and exposes no active-session observation seam.
+- `antigravity.headless`:
+  - `AntigravityPreparedHeadlessRun::start_run` (`crates/swallowtail-adapter-antigravity/src/prepared/run.rs:226-234`) returns `BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>>`, executing a one-shot run handle without active-session observation.
+  - `AntigravityPreparedContinuation::open_session` (`crates/swallowtail-adapter-antigravity/src/prepared/session.rs:147-156`) returns `BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>`, opening a standard session; it retains no provider-effective or rejected confirmation tokens and provides no projected-open seam.
+- `bedrock.catalogue`: `BedrockPreparedCatalogue::list_models` (`crates/swallowtail-adapter-bedrock/src/prepared/catalogue.rs:220-228`) executes control-plane `ListFoundationModels` via `BedrockCatalogueDriver::list_models` and returns a model list. It opens no session and exposes no active observation facade.
+- `bedrock.runtime`: `BedrockPreparedInferenceAttempt::start_run` (`crates/swallowtail-adapter-bedrock/src/prepared/runtime.rs:268-276`) returns `BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>>`, executing direct SDK inference without active-session observation.
+- `cursor-agent.acp`: `CursorPreparedAcpSession::open_session` (`crates/swallowtail-adapter-cursor/src/prepared/acp.rs:123-132`) returns `BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>`. It discards protocol confirmation without retaining effective or rejected values; no projected-open seam or active-observation facade exists.
+- `cursor-agent.catalogue`: `CursorPreparedCatalogue::list_models` (`crates/swallowtail-adapter-cursor/src/prepared/catalogue.rs:114-122`) executes unary CLI discovery via `CursorCatalogueDriver::list_models` and returns a model list. It opens no session and carries no active observation facade.
+- `cursor-agent.headless`: `CursorPreparedHeadlessRun::start_run` (`crates/swallowtail-adapter-cursor/src/prepared/headless.rs:282-290`) returns `BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>>`, executing a stream-JSON structured run without an active-session observation facade.
 
-Absence is verified and compliant: no census row in Candidate C requires an
-active observation facade. All 12 controls are prepared-only controls
-(`requested;prepared;provider-effective-unobserved` or
-`requested;prepared;effective-unobserved`), and all 78 features and 4 route
-audits are `descriptor-only`.
+Active observation is neither supported nor claimed: all 12 controls are prepared-only controls (`requested;prepared;provider-effective-unobserved` or `requested;prepared;effective-unobserved`), and all 78 feature rows and 4 route audits are `descriptor-only`.
+
+## Non-Uniform Control Disposition Dimensions
+
+Candidate C carries 12 control rows across three routes. Unlike simple flags, these controls have distinct value domains, omission semantics, applicability scopes, and evidence sources:
+
+| Route ID | Semantic ID | Value Kind | Value Domain | Omission Semantics | Applicability | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `antigravity.headless` | `control.model-selection` | `exact-model-route` | `ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default` | `required in the route selection constructor; no implicit model or fallback` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;provider-effective-unobserved` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:22-40; crates/swallowtail-adapter-antigravity/src/prepared/session.rs:15-20` | `runtime-public-type+route-validation` |
+| `antigravity.headless` | `control.reasoning-selection` | `bounded-enum` | `low\|medium\|high` | `optional unless the route constructor requires it; omission preserves route behavior; no Swallowtail default inferred` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:88-93` | `runtime-public-type+route-validation` |
+| `antigravity.headless` | `control.structured-output` | `structured-declaration` | `schema dialect and bounded schema document accepted by exact route` | `optional; omission leaves structured output unrequested` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:95-100` | `runtime-public-type+route-validation` |
+| `antigravity.headless` | `control.resource-access` | `access-policy` | `read-only filesystem resource access; exact representation required` | `required by prepared run` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:65-72` | `runtime-public-type+route-validation` |
+| `antigravity.headless` | `control.isolation` | `isolation-policy` | `qualified isolation posture; no dangerous-skip option` | `adapter selects qualified posture` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-antigravity/src/prepared/run.rs:66-73` | `runtime-public-type+route-validation` |
+| `bedrock.runtime` | `control.model-selection` | `exact-model-route` | `ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default` | `required in the route selection constructor; no implicit model or fallback` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;provider-effective-unobserved` | `crates/swallowtail-adapter-bedrock/src/prepared/runtime/input.rs:20-35` | `runtime-public-type+route-validation` |
+| `bedrock.runtime` | `control.maximum-output-tokens` | `bounded-integer` | `integer ceiling bounded to 1..=i32::MAX` | `required by route preparation; no default inferred` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-bedrock/src/prepared/runtime.rs:118-124` | `runtime-public-type+route-validation` |
+| `cursor-agent.headless` | `control.model-selection` | `exact-model-route` | `ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default` | `required in the route selection constructor; no implicit model or fallback` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;provider-effective-unobserved` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:32-44` | `runtime-public-type+route-validation` |
+| `cursor-agent.headless` | `control.fast` | `bounded-enum` | `Standard only; wire fast=false` | `optional; omission preserves standard dispatch` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:47-53` | `runtime-public-type+route-validation` |
+| `cursor-agent.headless` | `control.context-window` | `bounded-enum` | `ThreeHundredK\|OneMillion; exact model-qualified combinations` | `optional; omission preserves qualified default` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:56-62` | `runtime-public-type+route-validation` |
+| `cursor-agent.headless` | `control.reasoning-effort` | `bounded-enum` | `high only for exact qualified model tuples` | `optional; omission preserves qualified behavior` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:65-71` | `runtime-public-type+route-validation` |
+| `cursor-agent.headless` | `control.read-mode` | `bounded-enum` | `Plan\|Ask; read access only; read/write ignores mode` | `optional; omission leaves default read behavior` | `exact route; configured instance and prepared operation; model/access/resource constraints remain separate` | `requested;prepared;effective-unobserved` | `crates/swallowtail-adapter-cursor/src/prepared/headless.rs:135-141` | `runtime-public-type+route-validation` |
+
+Control classification:
+- Standard controls mapping directly to `ConsumerRouteControlId`: `control.model-selection` (`ConsumerRouteControlId::ModelSelection`), `control.reasoning-selection` (`ConsumerRouteControlId::ReasoningSelection`), and `control.maximum-output-tokens` (`ConsumerRouteControlId::MaximumOutputTokens`).
+- Namespaced controls mapping to `ConsumerRouteControlId::Namespaced`: `control.structured-output`, `control.resource-access`, `control.isolation` on `antigravity.headless`, and `control.fast`, `control.context-window`, `control.reasoning-effort`, `control.read-mode` on `cursor-agent.headless`.
 
 ## Construction-Time Withholding Rules
 
-To preserve pure fail-closed composition without post-hoc filtering:
+To ensure deterministic, fail-closed contribution assembly without runtime filtering:
 
 1. **Incompatible Operation Shape Withholding**:
-   - Catalogue operations (`OperationShape::StructuredRun` with
-     `DriverRole::ModelCatalog`) withhold `feature.structured-run` (consumer
-     execution), `feature.interactive-session`, and all execution controls at
-     construction.
-   - Headless structured runs withhold `feature.model-catalogue` and
-     `feature.interactive-session` at construction.
-   - ACP interactive sessions withhold `feature.model-catalogue` and
-     `feature.structured-run` at construction.
-
+   - Model catalogue operations (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.catalogue`) carry `OperationShape::StructuredRun` and `DriverRole::ModelCatalog`. They withhold `feature.structured-run` (general execution), `feature.interactive-session`, and all execution controls at construction.
+   - Headless structured runs withhold `feature.model-catalogue` and `feature.interactive-session` at construction.
+   - Continuation / ACP interactive sessions withhold `feature.model-catalogue` and `feature.structured-run` at construction.
 2. **Documentation-Only Matrix Feature Withholding**:
-   - Rows documented in `docs/guides/provider-solution-feature-matrix.csv` but
-     not preflight-bound on the prepared operation (such as
-     `feature.streaming-events` on Bedrock catalogue, `feature.usage-evidence`
-     on Cursor ACP, `feature.cancellation-or-interruption` on Bedrock
-     catalogue and Bedrock runtime, and `feature.bounded-workspace-text-write`
-     on Cursor ACP/headless and Antigravity catalogue/headless) are withheld
-     at construction.
-
+   - Matrix features from `docs/guides/provider-solution-feature-matrix.csv` that are not preflight-bound in the prepared operation plan are withheld at construction.
+   - Examples: `feature.streaming-events` on `bedrock.catalogue`; `feature.usage-evidence` on `bedrock.catalogue` and `cursor-agent.acp`; `feature.cancellation-or-interruption` on `bedrock.catalogue` and `bedrock.runtime`; `feature.bounded-workspace-text-write` on `antigravity.catalogue`, `antigravity.headless`, `cursor-agent.acp`, `cursor-agent.catalogue`, and `cursor-agent.headless`.
 3. **Negative-Coverage Route-Audit Withholding**:
-   - `audit.no-public-route-specific-selectable-control` on the four no-control
-     routes (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.acp`,
-     `cursor-agent.catalogue`) records the explicit absence of route-specific
-     controls. It must be withheld at construction from public control
-     descriptors. Emitting a selectable control from any of these routes would
-     falsify the audit.
-
+   - `audit.no-public-route-specific-selectable-control` on the four no-control routes (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.acp`, `cursor-agent.catalogue`) records the explicit absence of route-specific selectable controls. It must be withheld from public control descriptors at construction to preserve negative coverage.
 4. **Activity Observation Withholding On Catalogue Routes**:
-   - `feature.activity-observation` is descriptor-only with lifecycle
-     `post-open-observation-only`. It is emitted from operations carrying an
-     observable activity profile (`antigravity.headless`, `bedrock.runtime`,
-     `cursor-agent.acp`, `cursor-agent.headless`).
-   - On catalogue operations (`antigravity.catalogue`, `bedrock.catalogue`,
-     `cursor-agent.catalogue`), the preflight plan carries no
-     `ObservableActivityProfile`; `feature.activity-observation` is withheld
-     at construction.
-
+   - `feature.activity-observation` is emitted only from operations carrying an attached `ObservableActivityProfile` in their preflight plan (`antigravity.headless` run & continuation, `bedrock.runtime`, `cursor-agent.acp`, `cursor-agent.headless`).
+   - Catalogue operations (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.catalogue`) attach no activity profile to their preflight plans; `feature.activity-observation` is withheld at construction.
 5. **Conditional Feature Withholding**:
-   - `feature.reasoning-selection` on `antigravity.headless` and
-     `cursor-agent.headless` is emitted only when reasoning effort is
-     explicitly configured in the preparation input; otherwise withheld.
-   - `feature.structured-output` on `antigravity.headless` is emitted only
-     when a schema is supplied; otherwise withheld.
+   - `feature.reasoning-selection` and `feature.structured-output` on `antigravity.headless` are emitted only when explicitly requested in profile input; otherwise withheld.
+   - `feature.reasoning-selection` on `cursor-agent.headless` is emitted only when effort is configured in model parameters; otherwise withheld.
 
 ## Section 6a: Catalogue-Route Provider-Operation Observation Audit (Kimi Reopen Trigger)
 
-Card 064 explicitly asks:
-> Report explicitly whether any row on `antigravity.catalogue`,
-> `bedrock.catalogue`, or `cursor-agent.catalogue` needs a provider-operation
-> observation source kind, lifecycle band, or view that current
-> `swallowtail-runtime` defines only as post-open session semantics. This
-> finding is the reopen trigger for the deferred Kimi decision recorded in the
-> Kimi active-observation gate note; state it in its own section.
+Card 064 requires:
+
+> Report explicitly whether any row on `antigravity.catalogue`, `bedrock.catalogue`, or `cursor-agent.catalogue` needs a provider-operation observation source kind, lifecycle band, or view that current `swallowtail-runtime` defines only as post-open session semantics. This finding is the reopen trigger for the deferred Kimi decision recorded in the Kimi active-observation gate note; state it in its own section.
 
 ### Finding: NO Catalogue Route Needs Provider-Operation Observation
 
-A complete audit of all rows on `antigravity.catalogue` (14 rows),
-`bedrock.catalogue` (9 rows), and `cursor-agent.catalogue` (13 rows) confirms:
-
-1. **No `control.provider-session-catalogue` Row**: None of the three
-   catalogue routes has a `control.provider-session-catalogue` row. In the
-   global 767-row census, that row appears only on `opencode.http`,
-   `deepseek-harness.local-server`, and `kimi-code.acp`.
-2. **Model Catalogue Is Discovery, Not Session State**: The catalogue feature
-   on these routes is `feature.model-catalogue`, which carries lifecycle
-   `selection-summary` and state `descriptor-only`. It represents foundation
-   model enumeration via `ModelCatalogDriver`, not post-operation observation
-   of provider session state.
-3. **No Active Observation Posture**: Every feature row on these three
-   catalogue routes is `descriptor-only`. None carries `state_support: observed`
-   or post-open session state.
-4. **Activity Observation Is Descriptor-Only**: `feature.activity-observation`
-   on these catalogue routes has lifecycle `post-open-observation-only` but state
-   `descriptor-only`; moreover, because none of the three catalogue preflight
-   plans attaches an activity profile, the row is withheld at construction.
+A comprehensive audit of all rows across `antigravity.catalogue` (14 rows), `bedrock.catalogue` (9 rows), and `cursor-agent.catalogue` (13 rows) confirms:
+1. **No `control.provider-session-catalogue` Row**: Across the entire 767-row census, `control.provider-session-catalogue` appears only on `opencode.http`, `deepseek-harness.local-server`, and `kimi-code.acp`. None of the Candidate C catalogue routes carries this row.
+2. **Model Catalogue Is Discovery, Not Session State**: The catalogue feature on these routes is `feature.model-catalogue`, which carries lifecycle `selection-summary` and state support `descriptor-only`. It represents foundation-model enumeration via `ModelCatalogDriver`, not post-open session observation.
+3. **Descriptor-Only State**: Every feature row on these three catalogue routes is `descriptor-only`. None carries `state_support: observed` or post-open session state.
+4. **Activity Observation Is Withheld**: `feature.activity-observation` on these catalogue routes has lifecycle `post-open-observation-only` with state support `descriptor-only`. Because none of the three catalogue preflight plans attaches an activity profile, the row is withheld at construction.
 
 ### Decision Consequence
 
-The reopen condition recorded in
-`docs/logs/2026-09-04-contract-061-observation-deferral-and-breadth-audits.md`
-is **not** triggered:
-- Candidate C's catalogue routes do not need a provider-operation observation
-  source kind, lifecycle band, or view.
+The reopen condition recorded in `docs/logs/2026-09-04-contract-061-observation-deferral-and-breadth-audits.md` is **NOT** triggered:
+- Candidate C catalogue routes do not need a provider-operation observation source kind, lifecycle band, or view.
 - The deferred provider-operation observation decision remains deferred.
 - Candidate F remains unpromoted.
 - Card 034 remains planned and not ready.
@@ -303,85 +141,213 @@ is **not** triggered:
 
 ### Rubric Item 1: Exact Census Reconciliation And No-Control Negative Coverage
 
-- Exact census rows: 94 rows across 7 routes (14 + 18 + 9 + 10 + 13 + 13 + 17).
-- Four explicit no-control route audits (`antigravity.catalogue`,
-  `bedrock.catalogue`, `cursor-agent.acp`, `cursor-agent.catalogue`) carry
-  `audit.no-public-route-specific-selectable-control` as negative coverage.
-- Reconciles without an exception or filter list.
+- Reconciles to exactly 94 census rows across 7 route shapes without filters or exception lists:
+  - `antigravity.catalogue`: 14 rows
+  - `antigravity.headless`: 18 rows
+  - `bedrock.catalogue`: 9 rows
+  - `bedrock.runtime`: 10 rows
+  - `cursor-agent.acp`: 13 rows
+  - `cursor-agent.catalogue`: 13 rows
+  - `cursor-agent.headless`: 17 rows
+- Four explicit no-control route audits (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.acp`, `cursor-agent.catalogue`) carry `audit.no-public-route-specific-selectable-control` as negative coverage.
 - **Verdict: PASS**.
 
-### Rubric Item 2: Facade Map, Source Identity, And Construction Withholding
+### Rubric Item 2: Facade Map, Source Identity Truth, And Withholding Rules
 
-- Every contributing prepared facade is named on current `main`:
-  `AntigravityPreparedCatalogue`, `AntigravityPreparedHeadlessRun`,
-  `BedrockPreparedCatalogue`, `BedrockPreparedInferenceAttempt`,
-  `CursorPreparedAcpSession`, `CursorPreparedCatalogue`, and
-  `CursorPreparedHeadlessRun`.
-- Source identity kind: `ConsumerRouteProjectionSourceKind::AdapterContribution`
-  on all seven routes.
-- Active-observation facades: proven absent on current `main`; none of the 94
-  rows claims or requires active post-open provider observation.
-- Explicit construction-time withholding rules are defined for
-  incompatible-operation, documentation-only, catalogue-only, unobserved, and
-  negative-coverage rows.
+- All eight contributing prepared facades are identified on current `main` (including `AntigravityPreparedContinuation`).
+- Actual source-identity truth is stated with resolving code references: the three adapter crates do not yet implement `consumer_route_projection_contribution` on current `main`; the intended established kind is `ConsumerRouteProjectionSourceKind::AdapterContribution`.
+- Active-observation facades are proven absent on current `main` with exact, resolving line references across all seven routes.
+- Explicit construction-time withholding rules are established for incompatible-operation, documentation-only, catalogue-only, unobserved, and negative-coverage rows.
 - **Verdict: PASS**.
 
-### Rubric Item 3: Public Baseline Stability
+### Rubric Item 3: Public Baseline Stability And View Occupancy
 
-- No new `swallowtail-runtime` or `swallowtail-core` public types are needed.
-- Standard controls (`control.model-selection`, `control.reasoning-selection`,
-  `control.maximum-output-tokens`) map directly to `ConsumerRouteControlId`
-  enum variants.
-- Route-specific controls (`control.structured-output`,
-  `control.resource-access`, `control.isolation`, `control.fast`,
-  `control.context-window`, `control.reasoning-effort`, `control.read-mode`) map
-  to `ConsumerRouteControlId::Namespaced(ConsumerRouteNamespacedExtension)`.
-- Fixed library maxima are respected:
-  - Selection-summary rows per route: maximum 13 (limit 32).
-  - Session-start controls per route: maximum 4 (limit 16).
-  - Active-session rows per route: 0 (limit 8).
-  - Namespaced extensions per route: maximum 4 (limit 16).
-- Pure fail-closed composer rules, registry absence, and Contract 061
-  boundaries remain intact. No contract amendment is needed.
+- No new runtime or core public types, composer failure codes, or contract amendments are needed.
+- All controls map cleanly to `ConsumerRouteControlId` standard variants or bounded `ConsumerRouteNamespacedExtension`s.
+- Fixed library maxima are strictly respected across all routes and views:
+  - `SelectionSummary`: maximum 8 emitted rows per contribution (limit 32).
+  - `SessionStart`: maximum 4 emitted controls per contribution (limit 16).
+  - `ActiveSession`: exactly 1 descriptor-only row (`feature.activity-observation`) for operations carrying an activity profile (`antigravity.headless` run & continuation, `bedrock.runtime`, `cursor-agent.acp`, `cursor-agent.headless`), and 0 rows for catalogue operations (`antigravity.catalogue`, `bedrock.catalogue`, `cursor-agent.catalogue`) where the activity profile is withheld. Both 0 and 1 are well within the limit of 8.
+  - `NamespacedExtensions`: maximum 4 on `cursor-agent.headless` (limit 16).
+  - `SourceIdentities`: 1 per contribution (limit 16).
+- Pure fail-closed composition and replacement semantics hold.
 - **Verdict: PASS**.
 
-### Rubric Item 4: Deterministic Adapter-Local Ledgers
+### Rubric Item 4: Deterministic 94-Row Emit/Withhold Ledgers
 
-- Deterministic ledgers for all seven routes prove exact emitted and withheld
-  sets without contacting a provider.
-- Negative coverage is explicitly asserted for the four no-control routes.
-- Lifecycle and authority distinctions are preserved: prepared success does
-  not create active observation.
+- The exact 94-row ledger below classifies all rows into 51 emitted and 43 withheld entries with complete Batch 9.4 disposition dimensions (value domain, omission semantics, applicability, lifecycle, state support, evidence source, and evidence strength).
+- Every withheld row has an explicit reason; negative coverage is preserved for the four no-control routes.
 - **Verdict: PASS**.
 
 ### Rubric Item 5: Package Boundary And Focused Validation
 
-- Candidate C encompasses exactly three adapter packages:
-  - `swallowtail-adapter-antigravity`
-  - `swallowtail-adapter-bedrock`
-  - `swallowtail-adapter-cursor`
-- Three packages is strictly within the four-package maximum for focused
-  validation (`effigy validate:focused ...`, `effigy package:verify-affected ...`).
+- Encompasses exactly three adapter packages: `swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-cursor`.
+- Three packages satisfies the four-package maximum for focused validation (`effigy validate:focused ...`, `effigy package:verify-affected ...`).
 - **Verdict: PASS**.
 
 ### Rubric Item 6: Reviewable Tranche Scope
 
-- Candidate C forms one cohesive, self-contained breadth tranche.
-- The audit claims nothing about remaining candidates (B, E, F, I, J, K, L)
-  or the 767-row Batch 9.5 audit.
-- Stops after this triage note and Card 064 Result update.
+- Forms one cohesive, self-contained breadth tranche.
+- Claims nothing about other candidates (B, E, F, I, J, K, L) or Batch 9.5.
+- Stops after this planning note and Card 064 Result update.
 - **Verdict: PASS**.
+
+## Complete 94-Row Deterministic Ledgers
+
+### Ledger Summary Tally
+
+| Route ID | Total Rows | Emitted | Withheld | Key Emitter / Withholding Summary |
+| --- | ---: | ---: | ---: | --- |
+| `antigravity.catalogue` | 14 | 2 | 12 | Emits model catalogue and prepared facade; withholds execution features, documentation-only matrix rows, activity observation, and no-control audit |
+| `antigravity.headless` | 18 | 16 | 2 | Headless run emits 15 (10 feat, 5 ctrl); continuation emits 9 (8 feat, 1 ctrl); union emits 16; withholds model catalogue and text write |
+| `bedrock.catalogue` | 9 | 2 | 7 | Emits model catalogue and prepared facade; withholds streaming, usage, token limit, interruption, activity, and no-control audit |
+| `bedrock.runtime` | 10 | 8 | 2 | Emits structured run, streaming, usage, token limit, prepared facade, activity, and 2 controls; withholds catalogue and interruption |
+| `cursor-agent.acp` | 13 | 7 | 6 | Emits interactive session, streaming, interruption, working resource, persistence, prepared facade, activity; withholds catalogue, run, usage, reasoning, text write, and no-control audit |
+| `cursor-agent.catalogue` | 13 | 2 | 11 | Emits model catalogue and prepared facade; withholds execution features, documentation-only matrix rows, activity, and no-control audit |
+| `cursor-agent.headless` | 17 | 14 | 3 | Emits structured run, streaming, usage, reasoning, interruption, working resource, persistence, prepared facade, activity, and 5 controls; withholds catalogue, session, and text write |
+| **Total** | **94** | **51** | **43** | **Exact census reconciliation with complete disposition dimensions** |
+
+### Route Ledger: `antigravity.catalogue` (14 rows: 2 emitted, 12 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Emitted** | AntigravityPreparedCatalogue (preflight plan carries Capability::ModelCatalog) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Withheld** | operation role is DriverRole::ModelCatalog, not consumer structured run execution | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| interactive-session | feature.interactive-session | feature | **Withheld** | operation shape is StructuredRun/ModelCatalog, not an interactive session | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.streaming-events capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.usage-evidence capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.reasoning-selection | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.reasoning-selection capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.structured-output | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.structured-output capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.cancellation-or-interruption capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.working-resource | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.working-resource capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.bounded-workspace-text-write | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.bounded-workspace-text-write capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| session-lifecycle | feature.persistent-session-posture | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.persistent-session-posture capability | matrix posture=Route-dependent; headless runs and exact-id continuation preserve provider state without public management; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | AntigravityPreparedCatalogue (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Withheld** | catalogue preflight plan carries no ObservableActivityProfile | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-antigravity/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| route-selection | audit.no-public-route-specific-selectable-control | route-audit | **Withheld** | negative coverage: audit records absence of route-specific selectable controls; withheld from public control descriptors | no enumerable route-specific operation option in current public prepared types | not applicable | exact route; catalogue/prepared evidence remains available | selection-summary | descriptor-only | crates/swallowtail-adapter-antigravity/src/lib.rs; docs/guides/provider-solution-feature-matrix.csv; docs/guides/provider-route-matrix.md | runtime-source-review+matrix-cross-check |
+
+### Route Ledger: `antigravity.headless` (18 rows: 16 emitted, 2 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Withheld** | neither headless run nor continuation carries Capability::ModelCatalog | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Emitted** | AntigravityPreparedHeadlessRun (preflight plan carries Capability::StructuredRun; withheld on Continuation) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| interactive-session | feature.interactive-session | feature | **Emitted** | AntigravityPreparedContinuation (preflight plan carries Capability::InteractiveSession; withheld on HeadlessRun) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry Capability::StreamingEvents) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry Capability::UsageReporting) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.reasoning-selection | feature | **Emitted** | AntigravityPreparedHeadlessRun (conditionally when effort is selected; withheld when omitted or on Continuation) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.structured-output | feature | **Emitted** | AntigravityPreparedHeadlessRun (conditionally when structured output schema is selected; withheld when omitted or on Continuation) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry Capability::Interruption) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.working-resource | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry Capability::WorkingResource) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.bounded-workspace-text-write | feature | **Withheld** | matrix posture is documentation only; preflight plan carries no Capability::WorkingResourceTextWrite | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| session-lifecycle | feature.persistent-session-posture | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry Capability::ProviderDurableRetention) | matrix posture=Route-dependent; headless runs and exact-id continuation preserve provider state without public management; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both carry PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-antigravity/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (both attach ObservableActivityProfile to preflight plan) | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-antigravity/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| structured-run | control.model-selection | control | **Emitted** | AntigravityPreparedHeadlessRun, AntigravityPreparedContinuation (required AntigravityHeadlessModelSelection in profile input) | ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default | required in the route selection constructor; no implicit model or fallback | exact route and configured instance; catalogue evidence and route validation remain separate | selection-summary | requested;prepared;provider-effective-unobserved | crates/swallowtail-adapter-antigravity/src/prepared/run.rs | runtime-public-type+route-validation |
+| structured-run | control.reasoning-selection | control | **Emitted** | AntigravityPreparedHeadlessRun (optional effort on run input; withheld on Continuation) | low\|medium\|high | optional unless the route constructor requires it; omission preserves route behavior; no Swallowtail default inferred | exact route, model qualification, operation shape, and preparation version | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-antigravity/src/prepared/run.rs | runtime-public-type+route-validation |
+| structured-run | control.structured-output | control | **Emitted** | AntigravityPreparedHeadlessRun (optional schema on run input; withheld on Continuation) | schema dialect and bounded schema document accepted by exact route | optional; omission leaves structured output unrequested | exact route, model, operation shape, schema dialect, and provider enforcement posture | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-antigravity/src/prepared/run.rs | runtime-public-type+route-validation |
+| structured-run | control.resource-access | control | **Emitted** | AntigravityPreparedHeadlessRun (ResourceAccess on run input; withheld on Continuation where access is fixed to Read) | read-only filesystem resource access; exact representation required | required by prepared run | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-antigravity/src/prepared/run.rs | runtime-public-type+route-validation |
+| structured-run | control.isolation | control | **Emitted** | AntigravityPreparedHeadlessRun (HarnessIsolation on run input; withheld on Continuation where isolation is fixed to AmbientHost) | qualified isolation posture; no dangerous-skip option | adapter selects qualified posture | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-antigravity/src/prepared/run.rs | runtime-public-type+route-validation |
+
+### Route Ledger: `bedrock.catalogue` (9 rows: 2 emitted, 7 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Emitted** | BedrockPreparedCatalogue (preflight plan carries Capability::ModelCatalog) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Withheld** | operation role is DriverRole::ModelCatalog, not consumer structured run execution | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.streaming-events capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.usage-evidence capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.output-token-limit | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.output-token-limit capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.cancellation-or-interruption capability | matrix posture=Partial; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | BedrockPreparedCatalogue (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Withheld** | catalogue preflight plan carries no ObservableActivityProfile | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-bedrock/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| route-selection | audit.no-public-route-specific-selectable-control | route-audit | **Withheld** | negative coverage: audit records absence of route-specific selectable controls; withheld from public control descriptors | no enumerable route-specific operation option in current public prepared types | not applicable | exact route; catalogue/prepared evidence remains available | selection-summary | descriptor-only | crates/swallowtail-adapter-bedrock/src/lib.rs; docs/guides/provider-solution-feature-matrix.csv; docs/guides/provider-route-matrix.md | runtime-source-review+matrix-cross-check |
+
+### Route Ledger: `bedrock.runtime` (10 rows: 8 emitted, 2 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Withheld** | runtime inference operation carries no Capability::ModelCatalog | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Emitted** | BedrockPreparedInferenceAttempt (preflight plan carries Capability::StructuredRun) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Emitted** | BedrockPreparedInferenceAttempt (preflight plan carries Capability::StreamingEvents) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Emitted** | BedrockPreparedInferenceAttempt (preflight plan carries Capability::UsageReporting) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.output-token-limit | feature | **Emitted** | BedrockPreparedInferenceAttempt (preflight plan carries Capability::OutputTokenLimit) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Withheld** | matrix posture is Partial (documentation only); preflight plan does not claim Capability::Interruption | matrix posture=Partial; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | BedrockPreparedInferenceAttempt (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-bedrock/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Emitted** | BedrockPreparedInferenceAttempt (attaches ObservableActivityProfile to prepared evidence) | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-bedrock/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| structured-run | control.model-selection | control | **Emitted** | BedrockPreparedInferenceAttempt (required BedrockModelSelection in BedrockRuntimeProfileInput) | ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default | required in the route selection constructor; no implicit model or fallback | exact route and configured instance; catalogue evidence and route validation remain separate | selection-summary | requested;prepared;provider-effective-unobserved | crates/swallowtail-adapter-bedrock/src/prepared/runtime/input.rs | runtime-public-type+route-validation |
+| structured-run | control.maximum-output-tokens | control | **Emitted** | BedrockPreparedInferenceAttempt (required maximum: NonZeroU64 in BedrockRuntimeProfileInput) | positive bounded integer | required by route preparation; no default inferred | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-bedrock/src/prepared/runtime/input.rs | runtime-public-type+route-validation |
+
+### Route Ledger: `cursor-agent.acp` (13 rows: 7 emitted, 6 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Withheld** | ACP interactive session carries no Capability::ModelCatalog | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Withheld** | operation shape is InteractiveSession, not a structured run | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| interactive-session | feature.interactive-session | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries Capability::InteractiveSession) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries Capability::StreamingEvents) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Withheld** | matrix posture is documentation only; ACP preflight plan carries no Capability::UsageReporting | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.reasoning-selection | feature | **Withheld** | matrix posture is documentation only; ACP preflight plan carries no Capability::ReasoningSelection | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries Capability::Interruption) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.working-resource | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries Capability::WorkingResource) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.bounded-workspace-text-write | feature | **Withheld** | matrix posture is documentation only; ACP preflight plan carries no Capability::WorkingResourceTextWrite | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| session-lifecycle | feature.persistent-session-posture | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries Capability::ProviderDurableRetention) | matrix posture=Route-dependent; ACP and headless provider state persist without management support; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | CursorPreparedAcpSession (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Emitted** | CursorPreparedAcpSession (attaches ObservableActivityProfile to preflight plan) | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-cursor/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| route-selection | audit.no-public-route-specific-selectable-control | route-audit | **Withheld** | negative coverage: audit records absence of route-specific selectable controls; withheld from public control descriptors | no enumerable route-specific operation option in current public prepared types | not applicable | exact route; catalogue/prepared evidence remains available | selection-summary | descriptor-only | crates/swallowtail-adapter-cursor/src/lib.rs; docs/guides/provider-solution-feature-matrix.csv; docs/guides/provider-route-matrix.md | runtime-source-review+matrix-cross-check |
+
+### Route Ledger: `cursor-agent.catalogue` (13 rows: 2 emitted, 11 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Emitted** | CursorPreparedCatalogue (preflight plan carries Capability::ModelCatalog) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Withheld** | operation role is DriverRole::ModelCatalog, not consumer structured run execution | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| interactive-session | feature.interactive-session | feature | **Withheld** | operation shape is StructuredRun/ModelCatalog, not an interactive session | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.streaming-events capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.usage-evidence capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.reasoning-selection | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.reasoning-selection capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.cancellation-or-interruption capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.working-resource | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.working-resource capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.bounded-workspace-text-write | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.bounded-workspace-text-write capability | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| session-lifecycle | feature.persistent-session-posture | feature | **Withheld** | matrix posture is documentation only; catalogue preflight plan carries no feature.persistent-session-posture capability | matrix posture=Route-dependent; ACP and headless provider state persist without management support; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | CursorPreparedCatalogue (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Withheld** | catalogue preflight plan carries no ObservableActivityProfile | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-cursor/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| route-selection | audit.no-public-route-specific-selectable-control | route-audit | **Withheld** | negative coverage: audit records absence of route-specific selectable controls; withheld from public control descriptors | no enumerable route-specific operation option in current public prepared types | not applicable | exact route; catalogue/prepared evidence remains available | selection-summary | descriptor-only | crates/swallowtail-adapter-cursor/src/lib.rs; docs/guides/provider-solution-feature-matrix.csv; docs/guides/provider-route-matrix.md | runtime-source-review+matrix-cross-check |
+
+### Route Ledger: `cursor-agent.headless` (17 rows: 14 emitted, 3 withheld)
+
+| Operation Shape | Semantic ID | Kind | Disposition | Emitted By / Withheld Reason | Value Domain | Omission Semantics | Applicability | Lifecycle | State Support | Evidence Source | Evidence Strength |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| model-catalogue | feature.model-catalogue | feature | **Withheld** | headless run carries no Capability::ModelCatalog | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| structured-run | feature.structured-run | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::StructuredRun) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| interactive-session | feature.interactive-session | feature | **Withheld** | operation shape is StructuredRun, not an interactive session | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.streaming-events | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::StreamingEvents) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.usage-evidence | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::UsageReporting) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.reasoning-selection | feature | **Emitted** | CursorPreparedHeadlessRun (conditionally when effort is set in parameters; withheld when omitted) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.cancellation-or-interruption | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::Interruption) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.working-resource | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::WorkingResource) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.bounded-workspace-text-write | feature | **Withheld** | matrix posture is documentation only; preflight plan carries no Capability::WorkingResourceTextWrite | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| session-lifecycle | feature.persistent-session-posture | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries Capability::ProviderDurableRetention) | matrix posture=Route-dependent; ACP and headless provider state persist without management support; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-capability | feature.prepared-facade | feature | **Emitted** | CursorPreparedHeadlessRun (preflight plan carries PreparedOperationEvidence) | matrix posture=Yes; route-specific qualification required | not a selectable value; descriptor only | exact route; configured instance and prepared operation; model/access/resource constraints remain separate | selection-summary | descriptor-only | docs/guides/provider-solution-feature-matrix.csv; crates/swallowtail-adapter-cursor/src/lib.rs | matrix-cross-check+runtime-type |
+| route-observation | feature.activity-observation | feature | **Emitted** | CursorPreparedHeadlessRun (attaches ObservableActivityProfile to preflight plan) | route-specific activity/event fidelity; no portable event payload | absent when route emits no event; no inference | exact route and operation; provider stream and adapter activity profile remain authoritative | post-open-observation-only | descriptor-only | crates/swallowtail-adapter-cursor/src/lib.rs; docs/guides/provider-route-matrix.md | runtime-export+route-matrix |
+| structured-run | control.model-selection | control | **Emitted** | CursorPreparedHeadlessRun (required CursorHeadlessModelSelection in profile input) | ModelRouteId + ModelRouteRevision + ModelId; provider id where carried; no alias/default | required in the route selection constructor; no implicit model or fallback | exact route and configured instance; catalogue evidence and route validation remain separate | selection-summary | requested;prepared;provider-effective-unobserved | crates/swallowtail-adapter-cursor/src/prepared/headless.rs | runtime-public-type+route-validation |
+| structured-run | control.fast | control | **Emitted** | CursorPreparedHeadlessRun (optional fast parameter on model selection) | Standard only; wire fast=false | optional; omission preserves standard dispatch | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-cursor/src/prepared/headless.rs | runtime-public-type+route-validation |
+| structured-run | control.context-window | control | **Emitted** | CursorPreparedHeadlessRun (optional context parameter on model selection) | ThreeHundredK\|OneMillion; exact model-qualified combinations | optional; omission preserves qualified default | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-cursor/src/prepared/headless.rs | runtime-public-type+route-validation |
+| structured-run | control.reasoning-effort | control | **Emitted** | CursorPreparedHeadlessRun (optional effort parameter on model selection) | high only for exact qualified model tuples | optional; omission preserves qualified behavior | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-cursor/src/prepared/headless.rs | runtime-public-type+route-validation |
+| structured-run | control.read-mode | control | **Emitted** | CursorPreparedHeadlessRun (optional read_mode on run input) | Plan\|Ask; read access only; read/write ignores mode | optional; omission leaves default read behavior | exact configured instance, route, model, operation shape, access, and resource | session-start-only | requested;prepared;effective-unobserved | crates/swallowtail-adapter-cursor/src/prepared/headless.rs | runtime-public-type+route-validation |
 
 ## Recommended Disposition
 
-**Promotable as one exact package tranche**.
+**Promotable as one exact package tranche** (`swallowtail-adapter-antigravity`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-cursor`).
 
-Candidate C passes all six promotion rubric criteria against current `main`
-at `bab21839321a1b29da0b14209db32c8323a9d1c2`:
-- 94 rows across 3 adapter packages and 7 route shapes.
-- 4 explicit no-control negative-coverage audits.
-- 0 active-observation dependencies; 0 public baseline gaps.
-- Does not trigger reopening the deferred Kimi decision.
+Candidate C passes all six promotion rubric criteria against current `main` at `bab21839321a1b29da0b14209db32c8323a9d1c2`:
+- 94 census rows across 3 adapter packages and 7 route shapes reconcile exactly.
+- 8 prepared facades identified on current `main` (including `AntigravityPreparedContinuation`).
+- Actual source-identity truth proved absent on current `main` and verified for future `AdapterContribution` implementation.
+- Active-observation absence proved with resolving code references across all 7 routes.
+- 4 explicit no-control route audits preserved as negative coverage.
+- Reopen trigger for the deferred Kimi decision evaluated and NOT triggered.
+- Deterministic 94-row ledger establishes 51 emitted and 43 withheld entries with full Batch 9.4 dimensions.
+- Zero Rust changes; docs and Northstar validation green.
 
-Chatterbox may promote Candidate C to an implementation card upon operator
-review.
+Chatterbox may promote Candidate C to an implementation card upon operator review.

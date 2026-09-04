@@ -77,6 +77,7 @@ fn candidate_e_gemini_routes_reconcile_executable_projection_truth() {
         ("gemini.live", "persistent-session-posture"),
     ];
     assert_eq!(withheld.len(), 14);
+    assert_eq!(emitted.len() + withheld.len(), 43);
     for (route, identity) in withheld {
         assert!(
             !emitted

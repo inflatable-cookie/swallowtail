@@ -47,11 +47,20 @@ fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
     let emitted = rows(&session).chain(rows(&run)).collect::<BTreeSet<_>>();
     assert_eq!(emitted.len(), 10);
     assert_eq!(emitted, expected_emitted());
-    for withheld in [
-        "ModelCatalogue",
-        "persistent-session-posture",
-        "negotiated-model-options-observation",
-    ] {
+    let withheld = expected_withheld();
+    assert_eq!(withheld.len(), 3);
+    assert_eq!(emitted.len() + withheld.len(), 13);
+    assert!(
+        emitted
+            .iter()
+            .any(|(_, identity)| identity == "Feature(UsageEvidence)")
+    );
+    assert!(
+        !emitted
+            .iter()
+            .any(|(_, identity)| identity == "Feature(CancellationOrInterruption)")
+    );
+    for (_, withheld) in &withheld {
         assert!(
             !emitted
                 .iter()
@@ -59,6 +68,16 @@ fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
             "Grok must withhold {withheld}"
         );
     }
+}
+fn expected_withheld() -> BTreeSet<(String, String)> {
+    [
+        ("", "Feature(ModelCatalogue)"),
+        ("", "feature.persistent-session-posture"),
+        ("", "feature.negotiated-model-options-observation"),
+    ]
+    .into_iter()
+    .map(|(shape, identity)| (shape.to_owned(), identity.to_owned()))
+    .collect()
 }
 
 fn rows(

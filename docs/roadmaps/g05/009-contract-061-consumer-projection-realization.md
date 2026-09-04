@@ -1,15 +1,15 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: planned; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged;
-strict-paused; no implementation card is ready
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; planning audits 064-067 for candidates C, E, I, and J are ready; no implementation card is ready
 Owner: Tom
 Created: 2026-08-31
-Updated: 2026-09-01
+Updated: 2026-09-04
 Depends on: completed g05.008; Contract 061; accepted realization-readiness decisions
 Vision tags: consumer integration, explicit selection, route truth
 Contract refs: 006, 008, 012, 020, 034, 037, 040, 041, 047, 057, 061
-Planning state: `strict-paused`; no implementation card is ready; the sole Next
-Task is the provider-operation observation public-baseline decision
+Planning state: `strict-ready` for planning-only audits; no implementation
+card is ready; the provider-operation observation decision is deferred behind
+the candidate C audit (card 064)
 
 ## Problem
 
@@ -174,6 +174,12 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       on three `kimi-code.acp` post-open rows, and the compiled Kimi gate
       stopped again on a missing shared provider-operation observation
       vocabulary
+- [ ] audit breadth candidates C, E, I, and J against current `main` under
+      the promotion rubric as four independent planning-only cards 064-067,
+      each returning one triage gate note and no Rust
+- [ ] report from the candidate C audit whether provider-operation
+      observation recurs on the three catalogue routes; that report is the
+      reopen trigger for the deferred Kimi decision
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -351,3 +357,33 @@ provider-operation observation public-baseline decision, and coverage stays
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)
 - [Contract 057 Route Readiness And Connection Admission](../../contracts/057-route-readiness-and-connection-admission.md)
+
+## Batch Cards In Flight
+
+- [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — ready; Antigravity, Bedrock, Cursor; 94 rows; carries the provider-operation observation reopen trigger
+- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
+- [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — ready; DeepSeek, DeepSeek Harness; 47 rows
+- [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — ready; llama.cpp, Ollama; 35 rows
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; decision deferred behind card 064
+
+## Dispatch Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Cards 064-067 are one approved concurrent group and are also approved
+concurrent with g05.026 card 062.
+
+| Field | Cards 064, 065, 066, 067 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | Contract 061 active; Batch 9.4 checkpoint note; cards 022-024 and 031-033 merged; current `main` |
+| Completion conditions | one new unique `docs/triage/` gate note per card with exact row reconciliation, facade and source-identity map, withholding rules, rubric verdict per item, and one recommended disposition; card `## Result` filled; docs QA and Northstar gates green; zero Rust |
+| Owned mutable paths | the card's own file under `docs/roadmaps/g05/batch-cards/`; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-candidate-<x>-audit.md`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | every `crates/**` path; `docs/contracts/**`; `docs/architecture/**`; the Batch 9.4 checkpoint note; the Kimi gate note; other candidates' notes; census CSV |
+| Approved concurrent siblings | 064, 065, 066, 067, and g05.026 card 062 |
+| Serial edges | Chatterbox reconciles the four notes and promotes at most one implementation card per passing candidate; card 034 and the Kimi decision reopen only from card 064's catalogue-route finding |
+| Worker capability class | planning-only census and code-reading auditor; Rust reading, no Rust writing; no provider credentials |
+| Acceptance evidence | rows reconcile to 94, 56, 47, or 35 without filters; every prepared or active facade and source-identity kind is named or its absence proved on current `main`; rubric items 1-6 each answered with evidence |
+| Review oracle | the note is evidence, not authority; the smallest counterexample is a row counted as proved, a facade asserted without a code reference, or a rubric item marked closed by omission |
+| Stop conditions | census total does not reconcile; a candidate needs a new shared public type or contract amendment (record it, do not design it); current `main` moves under the audit in the owned adapter packages |
+| Escalation owner | operator (Tom) via Chatterbox for any public-baseline or vocabulary question; coordinator for mechanical blockers |

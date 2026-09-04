@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-04 Contract 061 Observation Deferral And Breadth Audits](./2026-09-04-contract-061-observation-deferral-and-breadth-audits.md) — operator deferred the provider-operation observation decision behind the candidate C audit; planning-only cards 064-067 compiled for candidates C, E, I, and J as a concurrent frontier with card 062
 - [2026-09-04 v0.4.0 Annotated Tag And Post-Release Runway](./2026-09-04-v0-4-0-annotated-tag.md) — operator-authorized annotated `v0.4.0` created and pushed at exact `56f3913a`; tag-push CI run 33870017023 green; freeze lifted; g05.026 Kimi Code local server `0.40.1` compiled with card 062 ready
 - [2026-09-04 g05.021 Card 052 v0.4.0 Consumer Proof](./2026-09-04-g05-021-card-052-v0-4-0-consumer-proof.md) — exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against immutable candidate `56f3913a`; milestone complete; stopped before explicit tag authority
 - [2026-09-04 g05.021 Card 051 v0.4.0 Candidate Closeout](./2026-09-04-g05-021-card-051-v0-4-0-candidate-closeout.md) — PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch run 33853812785 passed all six jobs at that exact SHA; card 051 complete

@@ -22,8 +22,12 @@ v2 surfaces against the frozen `0.38.0` corpus through `0.39.0`, `0.39.1`,
 and `0.40.0`, and trace the `0.40.0` Bash tool `cwd` restriction removal as a
 Contract 017/023 authority question before naming a segment shape. Change no
 claim in that commit. Card 063 continues only for an admitted segment. The
-dispatch manifest lives in the g05.026 roadmap. `v0.4.0` is tagged; the
-feature/currentness freeze is lifted.
+dispatch manifest lives in the g05.026 roadmap. In parallel, the coordinator
+launches g05.009 planning-only audits 064-067 for Contract 061 breadth
+candidates C, E, I, and J from the manifest in that roadmap; card 064 also
+reports whether provider-operation observation recurs on the catalogue routes,
+which is the reopen trigger for the deferred Kimi decision. `v0.4.0` is
+tagged; the feature/currentness freeze is lifted.
 
 ## Standing Lanes
 

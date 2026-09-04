@@ -1,9 +1,9 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; blocked by provider-operation observation public-baseline decision
+Status: planned; not ready; provider-operation observation decision deferred 2026-09-04 behind the candidate C audit (card 064)
 Owner: Tom
 Created: 2026-09-01
-Updated: 2026-09-01
+Updated: 2026-09-04
 Milestone: `../009-contract-061-consumer-projection-realization.md`
 Depends on: completed card 033; provider-operation observation public-baseline
 decision; an accepted compound-acknowledgement representation if candidate F
@@ -21,7 +21,9 @@ three as post-open **session** semantics, while
 query therefore cannot be published honestly through those names. Do not
 broaden or reinterpret the shared vocabulary here.
 
-The sole open operator decision is whether to compile a shared
+On 2026-09-04 the operator deferred the decision: the row stays withheld until
+the candidate C audit (card 064) shows whether the vocabulary gap recurs on
+the catalogue routes. The open operator decision is whether to compile a shared
 provider-operation observation public-baseline gate with honest
 source/lifecycle/view vocabulary, or to leave
 `control.provider-session-catalogue` withheld and candidate F unpromoted. Both

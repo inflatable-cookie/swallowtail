@@ -36,11 +36,11 @@ Every prepared facade exists on current `main` and contributes under
 `ConsumerRouteProjectionSourceKind::AdapterContribution`:
 
 1. `gemini-cli.acp` (interactive-session):
-   `GeminiPreparedSession` in `crates/swallowtail-adapter-gemini/src/prepared_profile/session.rs:20`.
+   `GeminiPreparedSession` in `crates/swallowtail-adapter-gemini/src/prepared_profile/session.rs:19`.
    Preflight plan and capability profile derived via `session_capabilities()` in
    `crates/swallowtail-adapter-gemini/src/prepared/instance.rs:40`.
 2. `gemini-cli.headless` (structured-run):
-   `GeminiHeadlessPreparedRun` in `crates/swallowtail-adapter-gemini/src/prepared_headless/profile.rs:72`.
+   `GeminiHeadlessPreparedRun` in `crates/swallowtail-adapter-gemini/src/prepared_headless/profile.rs:192`.
    Preflight plan and capability profile derived via `run_capabilities()` in
    `crates/swallowtail-adapter-gemini/src/prepared_headless/instance.rs:40`.
 3. `gemini.live` (realtime-media-session):
@@ -48,11 +48,11 @@ Every prepared facade exists on current `main` and contributes under
    Preflight plan, media config, and rollover policy derived via `gemini_live_base_capabilities()`
    in `crates/swallowtail-adapter-gemini/src/live_selection.rs:222`.
 4. `grok-build.acp` (interactive-session):
-   `GrokPreparedSession` in `crates/swallowtail-adapter-grok/src/prepared_profile.rs:374`.
+   `GrokPreparedSession` in `crates/swallowtail-adapter-grok/src/prepared_profile.rs:132`.
    Preflight plan derived via `session_capabilities()` in
    `crates/swallowtail-adapter-grok/src/prepared/instance.rs:39`.
 5. `grok-build.acp` (structured-run):
-   `GrokPreparedRun` in `crates/swallowtail-adapter-grok/src/prepared_profile/run.rs:20`.
+   `GrokPreparedRun` in `crates/swallowtail-adapter-grok/src/prepared_profile/run.rs:33`.
    Preflight plan derived via `run_capabilities()` in
    `crates/swallowtail-adapter-grok/src/prepared/instance.rs:82`.
 
@@ -70,37 +70,49 @@ On current `main`, neither adapter exports an active-observation facade,
 - `GeminiPreparedLiveSession::open_session` in `crates/swallowtail-adapter-gemini/src/prepared_live_profile/session.rs:56`
   returns `BoxFuture<'static, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>>`.
   No projected-open seam exists.
-- `GrokPreparedSession::open_session` in `crates/swallowtail-adapter-grok/src/prepared_profile.rs:398`
+- `GrokPreparedSession::open_session` in `crates/swallowtail-adapter-grok/src/prepared_profile.rs:167`
   returns `GrokPreparedSessionFuture` yielding `Box<dyn InteractiveSessionHandle>`.
   `GrokInteractiveSession` in `crates/swallowtail-adapter-grok/src/driver/session.rs:14,42`
   holds `model_options: NegotiatedSessionModelOptions` and exposes it via
   `InteractiveSessionHandle::negotiated_model_options`, but no `open_session_with_projection`
   or projection outcome exists in the crate.
-- `GrokPreparedRun::execute_run` in `crates/swallowtail-adapter-grok/src/prepared_profile/run.rs:38`
-  executes the structured run and returns `Box<dyn RunHandle>`. No projection outcome exists.
+- `GrokPreparedRun::start_run` in `crates/swallowtail-adapter-grok/src/prepared_profile/run.rs:66`
+  starts the structured run and returns `GrokPreparedRunFuture` yielding `Result<Box<dyn RunHandle>, RuntimeFailure>`.
+  No projection outcome exists.
 
 ## Applicability Truth And Separation
 
 Batch 9.4 classed candidate E viable later because ACP, headless, and live
 applicability need a three-family proof that keeps each applicability distinct.
-The code inspection proves that all four route shapes maintain completely
-distinct, non-overlapping preflight dimensions:
+The code inspection shows that `gemini.live` and `gemini-cli.acp` actually **share**
+`OperationShape::InteractiveSession` (`crates/swallowtail-adapter-gemini/src/live_selection.rs:190`
+and `src/live.rs:209`), because `OperationShape` in `swallowtail-core` has no realtime-media
+variant.
+
+However, three-family separation remains absolute and fully proved on the specific
+dimensions that actually distinguish the routes:
 
 | Dimension | `gemini-cli.acp` | `gemini-cli.headless` | `gemini.live` | `grok-build.acp` |
 | --- | --- | --- | --- | --- |
 | Route ID | `gemini-cli.acp` | `gemini-cli.headless` | `gemini.live` | `grok-build.acp` |
 | Owning Adapter | `swallowtail-adapter-gemini` | `swallowtail-adapter-gemini` | `swallowtail-adapter-gemini` | `swallowtail-adapter-grok` |
-| Operation Shape | `InteractiveSession` | `StructuredRun` | Realtime media session (`StructuredRun` with media constraints) | `InteractiveSession` or `StructuredRun` |
-| Protocol Facade ID | `acp-v1` | `gemini-headless-stream-json-v1` | `google.ai.generativelanguage.v1alpha.generative-service.bidi-stream` | `acp-v1` |
+| Operation Shape | `InteractiveSession` | `StructuredRun` | `InteractiveSession` | `InteractiveSession` (session) / `StructuredRun` (run) |
+| Driver Role | `DriverRole::Session` | `DriverRole::StructuredRun` | `DriverRole::RealtimeMediaSession` | `DriverRole::Session` (session) / `DriverRole::StructuredRun` (run) |
+| Protocol Facade ID | `acp-v1` | `gemini-headless-stream-json-v1` | `google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent.thinking-output-max-context-compression-2026-08-23` | `acp-v1` |
 | Instance Ownership | `HostOwnedEphemeral` | `HostOwnedEphemeral` | `ExternalAttached` | `HostOwnedEphemeral` |
-| Access Profile ID | `gemini-cli.local-config` | `gemini-cli.local-config` | `gemini.api-key` | `grok-build.subscription` |
-| Endpoint / Audience | `gemini-developer-api` | `gemini-developer-api` | `generativelanguage.googleapis.com` | `api.x.ai` / local socket |
-| Resource Access | `ResourceAccess::Read` (filesystem) | `ResourceAccess::Read` (filesystem) | None (media stream) | `ResourceAccess::ReadWrite` (filesystem) |
+| Access Profile ID | `gemini-cli.local-config` | `gemini-cli.local-config` | `gemini.authorization-api-key.project` | `grok-build.subscription.delegated-oauth` |
+| Endpoint Audience | `gemini-developer-api` | `gemini-developer-api` | `generativelanguage.googleapis.com` | `grok-build.subscription` |
+| Resource Access | `ResourceAccess::Read` (filesystem) | `ResourceAccess::Read` (filesystem) | Resource-free (`SessionAccessPolicy::resource_free()`) | `ResourceAccess::ReadWrite` (filesystem) |
 | Mode / Harness Controls | Plan mode admitted | None | None | None |
 | Media / Rollover Policy | None | None | Asymmetric PCM audio; 1 planned rollover | None |
 | Model Selection | None (ambient/session) | `GeminiHeadlessModelSelection` | `GEMINI_LIVE_MODEL_ID` | `GrokModelSelection` |
 
-No route borrows another's preflight plan, driver role, facade ID, or operation shape.
+Separation holds firmly without overlap:
+- `gemini.live` separates from `gemini-cli.acp` on `DriverRole::RealtimeMediaSession` (vs `DriverRole::Session`), `InstanceOwnership::ExternalAttached` (vs `HostOwnedEphemeral`), distinct protocol facade revision, project API-key access profile (vs local config), endpoint audience, and realtime media requirements.
+- `gemini-cli.headless` separates on `OperationShape::StructuredRun` and `DriverRole::StructuredRun`.
+- `grok-build.acp` separates on distinct adapter crate (`swallowtail-adapter-grok`), separate provider family (`grok`), `ResourceAccess::ReadWrite`, and its own subscription access profile and audience.
+
+No route borrows another's preflight plan, driver role, facade ID, access profile, or instance ownership.
 Cross-route assembly between any of these fails closed under Contract 061.
 
 ## Construction-Time Withholding Rules
@@ -240,13 +252,13 @@ Census lines: 518-526, 554, 581, 582, 665.
 
 - Total census rows: 56.
 - Prepared facade emitted rows:
-  - `gemini-cli.acp`: 7
-  - `gemini-cli.headless`: 8
-  - `gemini.live`: 14
-  - `grok-build.acp`: 8 on session, 7 on run (9 unique rows emitted across both prepared facades)
-- Total unique rows emitted across candidate E at prepared construction: 38.
-- Total unique rows withheld at prepared construction: 18.
-- Sum: 38 + 18 = 56.
+  - `gemini-cli.acp`: 7 emitted, 7 withheld (total 14)
+  - `gemini-cli.headless`: 8 emitted, 5 withheld (total 13)
+  - `gemini.live`: 14 emitted, 2 withheld (total 16)
+  - `grok-build.acp`: session emitted = rows {3, 4, 5, 6, 8, 9, 12, 13} (8 emitted, 5 withheld); run emitted = rows {2, 4, 5, 6, 8, 9, 11} (7 emitted, 6 withheld); union across both prepared facades = {2, 3, 4, 5, 6, 8, 9, 11, 12, 13} = **10 unique emitted rows**. Rows withheld across both facades = {1, 7, 10} = 3. 10 + 3 = 13.
+- Total unique rows emitted across candidate E at prepared construction: 7 + 8 + 14 + 10 = **39**.
+- Total unique rows withheld across candidate E at prepared construction: 7 + 5 + 2 + 3 = **17**.
+- Sum: 39 + 17 = 56.
 
 ## Promotion Rubric Evaluation
 
@@ -277,9 +289,10 @@ zero explicit `audit.no-public-route-specific-selectable-control` rows.
 - No new runtime or core public type is required. All portable feature and control identities
   (`ConsumerRouteFeatureId`, `ConsumerRouteControlId`), value kinds, lifecycles, and source kinds
   already exist in `swallowtail-runtime`.
-- No new fixed maximum is required. The candidate's maximum route counts (16 on `gemini.live`,
-  14 on `gemini-cli.acp`, 13 on `gemini-cli.headless`, 13 on `grok-build.acp`) are well within
-  library limits (32 selection summary, 16 session start, 8 active session).
+- No new fixed maximum is required. Candidate E row counts fit comfortably within the fixed per-view limits (`consumer_route_projection.rs:51,53,55`):
+  - Selection-summary view: maximum 12 rows across routes (`gemini-cli.headless` 12, `gemini-cli.acp` 11, `gemini.live` 11, `grok-build.acp` 10) vs limit of 32 (`MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS`).
+  - Session-start view: maximum 5 controls on `gemini.live` (1 on `gemini-cli.acp`, 0 on `gemini-cli.headless`, 1 on `grok-build.acp`) vs limit of 16 (`MAX_CONSUMER_ROUTE_SESSION_START_ROWS`).
+  - Active-session view: maximum 2 rows (`feature.activity-observation` and `feature.negotiated-model-options-observation`) vs limit of 8 (`MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS`).
 - Existing composer failure rules (Contract 061) and replacement semantics apply cleanly.
 - No registry, runtime route enumeration, callback, or provider payload is introduced.
 - Contracts 037, 047, 057, and 061 remain unchanged.
@@ -304,7 +317,7 @@ coverage for candidates B, C, F, I, J, K, L, or the 767-row Batch 9.5 census aud
 
 ## Recommended Disposition
 
-**Promotable as one exact package tranche with adapter-owned projected-open seams.**
+**Promotable as one exact package tranche with adapter-owned projected-open seams (qualified on publication of active session observation).**
 
 ### Evidence Basis
 
@@ -312,9 +325,12 @@ coverage for candidates B, C, F, I, J, K, L, or the 767-row Batch 9.5 census aud
    The candidate requires zero new shared runtime/core public types, zero contract amendments,
    and zero new composer failure rules.
 2. **Three-family applicability separation is realized and proven.**
-   `gemini-cli.acp`, `gemini-cli.headless`, and `gemini.live` have mutually disjoint preflight
-   dimensions, protocol facades, ownership, and operation shapes. Grok ACP cleanly separates
-   interactive-session and structured-run requirements.
+   `gemini.live` and `gemini-cli.acp` share `OperationShape::InteractiveSession`, but separate
+   cleanly on `DriverRole::RealtimeMediaSession` vs `DriverRole::Session`, external attached ownership
+   vs host-owned ephemeral instance, protocol facade revision, project API-key access profile,
+   endpoint audience, and realtime media requirements. `gemini-cli.headless` separates on
+   `OperationShape::StructuredRun` and `DriverRole::StructuredRun`. Grok ACP separates across
+   interactive session and structured run under its own subscription access profile.
 3. **Model options retention is already implemented on current `main`.**
    Unlike Claude Agent and Cline before their respective gates (which discarded provider
    confirmations), both `GeminiInteractiveSession` and `GrokInteractiveSession` already parse,

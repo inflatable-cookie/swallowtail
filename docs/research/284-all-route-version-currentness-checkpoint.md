@@ -49,7 +49,7 @@ Observed host values were:
 - `agy` `1.1.19`;
 - `gemini` `0.53.0`;
 - `llama-server` `0.1.0-dev`, build `10450`, commit `ece963f41`;
-- `muse` `1.0.1 (1.0.1-R2006.1)`;
+- `muse` promptless replay returns `1.0.3 (1.0.3-R2198.1)`;
 - `kimi` `0.34.0`;
 - `omp` `18.1.6`;
 - `ollama` `0.33.2`;
@@ -101,7 +101,7 @@ candidate.
 | LangChain \| Deep Agents ACP (`deepagents.acp`) | `deepagents-acp` missing from `PATH` | npm [`deepagents-acp` `0.1.29`](https://registry.npmjs.org/deepagents-acp/latest), published 2026-09-03T16:05:59.467Z; ACP registry `DeepAgents` remains `0.1.7` discovery metadata | exact `0.1.25`; QualifiedOnly; do not bind the stale registry value | `record only; future range work deferred` |
 | llama.cpp \| llama.cpp attached server (`llama-cpp.attached`) | `llama-server`; `0.1.0-dev`, build `10450`, commit `ece963f41` | GitHub [`v0.3.0`](https://github.com/ggml-org/llama.cpp/releases/tag/v0.3.0), published 2026-08-25; release tag is not selected build identity | exact attached build `b9910/f5525f7e7`; QualifiedOnly | `record only; future range work deferred` |
 | llama.cpp \| llama.cpp owned server lifecycle (`llama-cpp.owned`) | same `llama-server` build `10450`, commit `ece963f41` | same GitHub latest `v0.3.0`; no build-to-claim inference | exact owned build `b10069/178a6c449`; QualifiedOnly | `record only; future range work deferred` |
-| Meta \| Muse Code headless (`muse-code.headless`) | `muse`; `--version` `Muse Code 1.0.1 (1.0.1-R2006.1)` | no public package or release channel for the signed payload located; local authority remains the exact payload record | exact opaque `0.2.1-R1215.1`; QualifiedOnly; mutable launcher is not the execution target | `record only; future range work deferred` |
+| Meta \| Muse Code headless (`muse-code.headless`) | `muse`; `--version` promptless replay returns `Muse Code 1.0.3 (1.0.3-R2198.1)` | no public package or release channel for the signed payload located; local authority remains the exact payload record | exact opaque `0.2.1-R1215.1`; QualifiedOnly; mutable launcher is not the execution target | `record only; future range work deferred` |
 | Mistral \| Mistral Vibe headless (`mistral-vibe.headless`) | `vibe` missing from `PATH` | GitHub [`v2.25.0`](https://github.com/mistralai/mistral-vibe/releases/tag/v2.25.0), published 2026-09-04T08:53:52Z; PyPI [`2.25.0`](https://pypi.org/project/mistral-vibe/) | exact `2.24.2`; QualifiedOnly | `record only; future range work deferred` |
 | Moonshot AI \| Kimi Code installed harness (`kimi-code.acp`; `kimi-code.headless`) | `kimi`; `--version` `0.34.0` | npm [`@moonshot-ai/kimi-code` `0.41.0`](https://registry.npmjs.org/@moonshot-ai%2Fkimi-code/latest), published 2026-09-04T11:01:04.740Z; GitHub [`@0.41.0`](https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai%2Fkimi-code%400.41.0) | ACP QualifiedOnly exact `0.28.1` plus `0.29.0..=0.38.0`, with `0.39.0` and `0.39.1` excluded; every ACP point above `0.38.0` fails closed; headless v1 `0.29.0..=0.32.0`, v2 `0.33.0..=0.39.1` | `record only; future range work deferred` |
 | Moonshot AI \| Kimi Code local server (`kimi-code.local-server`) | `kimi`; `--version` `0.34.0` | same npm package `0.41.0`, published 2026-09-04T11:01:04.740Z; GitHub tag `@0.41.0` | exact `0.28.1` plus `0.29.0..=0.38.0`; AllowUnverified; stopped at `0.41.0` ([Research 282](./282-kimi-code-local-server-0-41-0-identity.md)) on uncontained Bash `cwd` authority change at `0.40.0`, keeping ceiling at `0.38.0` | `record only; future range work deferred` |
@@ -119,7 +119,7 @@ candidate.
 
 Shared ACP checkpoint surfaces:
 
-- Stable ACP schema: GitHub schema [`v1.21.0`](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/v1.21.0)
+- Stable ACP schema: GitHub [schema `schema-v1.21.0`](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.21.0),
   published 2026-08-20. Frozen corpus records `v1.20.0`. Result: `record only; future range work deferred`.
 - ACP agent registry: `1.0.0`, 39 agents; selected entries include Cursor
   `2026.09.02` (binary identity `2026.09.02-c22c1a3`), Gemini `0.58.0`,
@@ -189,6 +189,7 @@ Shared ACP checkpoint surfaces:
    - Command Code moved to `1.47.1` (npm).
    - Deep Agents moved to `0.1.29` (npm).
    - DeepSeek Harness moved to `0.1.2-rc.1` (npm).
+   - Muse Code host observation moved: promptless replay returns `1.0.3 (1.0.3-R2198.1)` (previously `1.0.1`); signed payload remains exact opaque `0.2.1-R1215.1` (QualifiedOnly).
    - Oh My Pi moved npm to `18.1.10`; host is `18.1.6`.
    - Qoder moved to `1.1.43` (npm).
 

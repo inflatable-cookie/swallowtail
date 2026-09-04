@@ -16,6 +16,8 @@ here.
 - [Releases](releases/README.md) — candidate and published compatibility notes
 - [Guides](guides/README.md) — non-authoritative integration usage
 - [Policy](policy/internal-writing-style.md) — repository working style
+- [Triage](triage/README.md) — mutable unpromoted intake; never authority
+- [Handoffs](handoffs/README.md) — worker and coordinator dispatch artifacts
 
 ## Authority Rule
 

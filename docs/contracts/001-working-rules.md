@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-20
+Updated: 2026-09-04
 
 ## Scope
 
@@ -25,6 +25,26 @@ These rules apply to all Swallowtail work before v1.0.
 - Run all-route version currentness as a named Contract 029 checkpoint. It is
   a standing lane, not a generation runway goal. Do not extend a
   compatibility claim from registry `latest` or local `--version` alone.
+
+## Roles And Authority
+
+- The Chatterbox thread is the planning authority. It explores problems with
+  the operator, reconciles `docs/triage/`, and promotes canonical planning on
+  `main` only after explicit operator confirmation. It writes no runtime code.
+- The coordinator consumes the dispatch manifest published in ready planning,
+  launches the whole approved frontier, places independent review, owns the
+  merge gate, and performs closeout on the reserved shared surfaces. It does
+  not design lanes or invent concurrency.
+- A worker exists only through a coordinator-dispatched handoff under
+  `docs/handoffs/` whose frontmatter names worker mode and orchestrator
+  dispatch authority. Do not infer worker mode from a branch, path, or
+  harness. A worker edits only the paths its card and manifest own.
+- Triage notes are intake, never execution authority. Papercuts in
+  `PAPERCUTS.md` are observations for later triage, never an automatic
+  backlog.
+- Release mutations (tag, push, publication, GitHub Release, consumer or
+  provider changes) need explicit operator authority under Contract 036. A
+  green gate, changelog, or closeout commit grants none.
 
 ## Closeout
 

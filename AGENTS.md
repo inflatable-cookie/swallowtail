@@ -2,6 +2,14 @@
 
 This file applies to the whole repository.
 
+Swallowtail is a Rust workspace of provider-neutral agent-runtime crates: one
+core vocabulary, a runtime, host support, and opt-in adapters that expose each
+provider or harness through explicit capabilities and typed prepared paths.
+Consumers such as Nucleus select an exact route; Swallowtail never flattens
+providers into a generic router. Compatibility is claimed per exact
+interface version from frozen artifacts, never from `latest`. Releases are
+source-only annotated tags.
+
 ## Start Here
 
 ```sh
@@ -10,8 +18,33 @@ effigy doctor
 effigy test --plan
 ```
 
-Prefer `effigy <task>` for supported work before raw commands. Do not add
-package scripts that merely re-export Effigy tasks.
+Prefer `effigy <task>` for supported work before raw commands. `effigy doctor`
+is orientation, not validation; the validation board is `effigy qa` and the
+tiered selectors below. Do not add package scripts that merely re-export
+Effigy tasks.
+
+## How Work Moves Here
+
+Planning, dispatch, and implementation are separate threads:
+
+- **Chatterbox** owns planning with the operator. It reconciles
+  `docs/triage/` and promotes canonical docs on `main` after explicit
+  operator confirmation. It never edits runtime code.
+- **Coordinator** consumes the dispatch manifest published in the ready
+  roadmap, launches the whole approved frontier, places independent
+  cross-model review, owns the merge gate, and closes out the reserved shared
+  surfaces. It does not design lanes.
+- **Worker** mode is explicit: it exists only when a coordinator handoff under
+  `docs/handoffs/` declares worker mode and orchestrator dispatch authority.
+  Never infer worker mode from a branch, worktree path, or harness. A worker
+  edits only the paths its card and manifest own and stops at exact-head
+  review; it never merges.
+
+Normal-mode agents use the current checkout and follow the card named in
+`docs/roadmaps/README.md`. `docs/triage/` is a buffer of leads to promote or
+remove, never execution authority. Small solvable friction goes in
+`PAPERCUTS.md` without stopping the task. Full rules:
+`docs/contracts/001-working-rules.md`.
 
 ## Shell Snippet Rule
 
@@ -23,13 +56,17 @@ and `status` is read-only and rejects assignment. Use task-specific names
 
 ## Docs Authority
 
-- `docs/README.md`
+- `docs/README.md` — front door and the authority order when sources disagree
 - `docs/vision/README.md`
 - `docs/architecture/README.md`
 - `docs/contracts/README.md`
 - `docs/specs/README.md`
-- `docs/roadmaps/README.md`
+- `docs/roadmaps/README.md` — active generation and the sole Next Task pointer
 - `docs/logs/README.md`
+- `docs/research/README.md` — evidence awaiting promotion
+- `docs/releases/README.md` — tagged and candidate compatibility notes
+- `docs/triage/README.md` and `docs/handoffs/README.md` — intake and dispatch
+  artifacts, not authority
 
 Swallowtail is a standalone project. Nucleus, Soundcheck, Monkey, and future
 consumers may provide evidence, but they do not own Swallowtail decisions.
@@ -63,9 +100,13 @@ relevant contracts are clear enough to test.
 ## Continuation Rule
 
 In a strict Northstar lane, a bare `continue` resumes the ready card named by
-the previous closeout and `docs/roadmaps/README.md`.
+the previous closeout and `docs/roadmaps/README.md`. The coordinator does not
+wait for `continue`: it dispatches every ready lane in the manifest and moves
+through merge, closeout, and the next ready card on its own.
 
 Keep the active `## Next Task` pointer only in `docs/roadmaps/README.md`.
+When several lanes are ready, the pointer names the lead card and the
+roadmap holding the manifest for the rest.
 
 ## Batch Size Rule
 
@@ -115,9 +156,17 @@ than inventing product policy.
 
 ## Reporting Rule
 
-Use glue-light writing from `docs/policy/internal-writing-style.md`. For
-meaningful closeouts: what changed, current state, failed or material
-validation, next move.
+Use glue-light writing from `docs/policy/internal-writing-style.md` for
+artifacts and closeouts: what changed, current state, failed or material
+validation, next move. Operator-facing conversation stays natural and human;
+compress artifacts, not the chat.
+
+## Release Rule
+
+Releases are source-only annotated tags governed by Contract 036. No gate,
+changelog, or closeout commit authorizes tag creation, tag push, publication,
+a GitHub Release, or consumer/provider mutation; each needs explicit operator
+authority naming the exact SHA. Never move or recreate a tag.
 
 <!-- northstar:rust-quality:start -->
 ## Northstar Rust Quality

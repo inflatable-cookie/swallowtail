@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [069-contract-061-antigravity-bedrock-cursor-package-completion.md](./069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows across seven routes; 51 emitted, 43 withheld; three packages
 - [068-contract-061-llama-cpp-ollama-package-completion.md](./068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 10 `llama-cpp.attached`, 6 `llama-cpp.owned`, 19 `ollama.attached` rows; 32 emitted, 3 withheld
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — ready; planning-only; Gemini, Grok; 56 rows
 - [062-kimi-code-local-server-0-40-1-identity.md](./062-kimi-code-local-server-0-40-1-identity.md) — ready; freeze official `0.40.1` identity and trace the `0.40.0` Bash `cwd` authority change before any claim
@@ -9,7 +10,7 @@
 ## Planned
 
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; gated behind card 062 admitting a Contract 029 segment
-- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; observation decision deferred behind card 064
+- [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — planned; not ready; observation gap recurred on candidate I; decision with the operator
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 

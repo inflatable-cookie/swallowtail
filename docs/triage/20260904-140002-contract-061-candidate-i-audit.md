@@ -1,7 +1,10 @@
 # Contract 061 Candidate I Breadth Audit
 
-Status: stopped; the two local-server post-open control rows have no honest
-shared representation; candidate I is not promotable on current `main`
+Status: stopped; retained as open evidence; the two local-server post-open
+control rows have no honest shared representation; candidate I joins the
+provider-operation observation queue with Kimi candidate F; the 45
+representable rows wait on that operator decision; census-source corrections
+below are pending Chatterbox reconciliation into the census
 Owner: Tom
 Date: 2026-09-04
 Source: Card 066; handoff

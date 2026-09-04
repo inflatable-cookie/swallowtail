@@ -378,7 +378,12 @@ overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized. Card 067 closed candidate J as promotable on 2026-09-04
 (PR 206 merged as `8cbf6064`); card 068 is ready to complete its exact 35-row
-llama.cpp and Ollama tranche.
+llama.cpp and Ollama tranche. Card 064 closed candidate C as promotable (PR
+204 merged as `1903f715`) and found no catalogue route needs provider-operation
+observation; card 069 is ready to complete its exact 94-row Antigravity,
+Bedrock, and Cursor tranche. Card 066 stopped candidate I (PR 207 merged as
+`85221307`) on the same provider-operation observation gap as Kimi, so that
+decision has returned to the operator with three carrier routes.
 
 ## Rollover Rule
 

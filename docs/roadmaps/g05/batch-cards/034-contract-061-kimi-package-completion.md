@@ -1,6 +1,6 @@
 # 034 Contract 061 Kimi And Kimi Platform Package Completion
 
-Status: planned; not ready; provider-operation observation decision deferred 2026-09-04 behind the candidate C audit (card 064)
+Status: planned; not ready; the provider-operation observation gap recurred on candidate I (card 066) and the decision has returned to the operator
 Owner: Tom
 Created: 2026-09-01
 Updated: 2026-09-04

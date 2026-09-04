@@ -500,13 +500,15 @@ only from attachment-compatible profiles.
 ## Operator Decision Required
 
 Operator disposition on 2026-09-04: leave `control.provider-session-catalogue`
-withheld and candidate F unpromoted for now. Reopen trigger: the candidate C
-planning audit (g05.009 card 064) reports whether the `antigravity.catalogue`,
-`bedrock.catalogue`, or `cursor-agent.catalogue` routes carry rows that need
-the same provider-operation observation vocabulary. If they do, Chatterbox
-compiles one shared gate with at least two consuming routes; if they do not,
-the withheld answer stands and only this Kimi row is affected. Card 034 stays
-planned and not ready.
+withheld and candidate F unpromoted for now, with the candidate C audit as
+the reopen trigger. Card 064 later found no catalogue route needs the
+vocabulary, so that trigger did not fire. Card 066 then stopped candidate I
+on the identical gap: `deepseek-harness.local-server`
+`control.provider-session-catalogue` and `control.provider-session-history`
+are completed provider-operation queries with no session. The census places
+the same row on `opencode.http` (candidate L). The gap therefore recurs
+across three routes in three candidates, and the question returns to the
+operator. Card 034 stays planned and not ready.
 
 The two directions, retained for that reopen:
 

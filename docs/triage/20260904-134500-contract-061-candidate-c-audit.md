@@ -1,6 +1,6 @@
 # Contract 061 Candidate C Breadth Audit
 
-Status: active planning evidence; Candidate C audit complete; recommended disposition: promotable as one exact package tranche
+Status: promoted 2026-09-04 into ready card 069; retained as the ledger and anchor evidence that card owns
 Owner: Tom
 Date: 2026-09-04
 Source: Card 064, Contract 061, Batch 9.4 package expansion, and `main` at `bab21839321a1b29da0b14209db32c8323a9d1c2`

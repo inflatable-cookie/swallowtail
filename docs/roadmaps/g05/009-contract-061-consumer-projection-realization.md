@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidate J promoted as ready card 068; audits 064 and 066 closed; audit 065 remains active
+Status: ready; Batches 9.1-9.3 and Batch 9.4 candidates A, D, G, and H merged; candidates J and C promoted as ready cards 068 and 069; candidate I stopped on the shared observation gap; audit 065 remains active
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -180,6 +180,11 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
       candidate J as promotable
 - [ ] complete candidate J as the exact 10-row `llama-cpp.attached`, 6-row
       `llama-cpp.owned`, and 19-row `ollama.attached` tranche (card 068)
+- [ ] complete candidate C as the exact 94-row Antigravity, Bedrock, and
+      Cursor tranche across seven routes (card 069)
+- [ ] settle the provider-operation observation vocabulary once for the
+      recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
+      `opencode.http`, or record the withheld answer for all three
 - [ ] report from the candidate C audit whether provider-operation
       observation recurs on the three catalogue routes; that report is the
       reopen trigger for the deferred Kimi decision
@@ -363,9 +368,10 @@ provider-operation observation public-baseline decision, and coverage stays
 
 ## Batch Cards In Flight
 
+- [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — ready; candidate C; 94 rows, 51 emitted and 43 withheld; three packages
 - [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — ready; candidate J; 35 rows, 32 emitted and 3 withheld; two packages
 - [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — ready; Gemini, Grok; 56 rows
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; decision deferred behind card 064
+- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; the observation gap recurred on candidate I and the decision is with the operator
 
 ## Batch Cards Completed
 
@@ -413,5 +419,27 @@ Card 068 is approved concurrent with audits 064-066 and g05.026 card 062.
 | Worker capability class | Rust implementation worker with fixture authoring; no provider credentials |
 | Acceptance evidence | ledger fixtures per route and per Ollama shape; withheld-row assertions; focused and package-affected validation; semantic API unchanged |
 | Review oracle | the card's counterexample list; smallest counterexample is one row emitted from the wrong shape, from documentation, or from an unretained profile |
+| Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
+| Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |
+
+### Card 069 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 069 is approved concurrent with card 068, audit 065, and g05.026 card
+062.
+
+| Field | Card 069 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 064 merged at `1903f715`; the candidate C audit note; current `main` |
+| Completion conditions | seven per-route ledgers prove 51 emitted / 43 withheld across exactly 94 tuples; four no-control audits stay negative coverage; named validation green; god-file scan within the accepted baseline; one reviewable PR; no public baseline or contract change |
+| Owned mutable paths | `crates/swallowtail-adapter-antigravity/**`; `crates/swallowtail-adapter-bedrock/**`; `crates/swallowtail-adapter-cursor/**`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Forbidden paths | `crates/swallowtail-core/**`, `crates/swallowtail-runtime/**`, `crates/swallowtail-testkit/**`, every other adapter crate (card 068 owns llama.cpp and Ollama), `docs/contracts/**`, `docs/architecture/**`, the census CSV, the audit note, Antigravity version claims and corpora |
+| Approved concurrent siblings | 068, 065, and g05.026 card 062 |
+| Serial edges | none; the Antigravity `1.1.24` currentness family is a separate later lane and must not ride on this card |
+| Worker capability class | Rust implementation worker with fixture authoring; no provider credentials |
+| Acceptance evidence | ledger fixtures per route; withheld-row and no-control assertions; focused and package-affected validation; semantic API unchanged |
+| Review oracle | the card's counterexample list; smallest counterexample is one row emitted from a catalogue operation, from documentation, or from an unrequested profile |
 | Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
 | Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |

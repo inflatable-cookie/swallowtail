@@ -5,7 +5,6 @@
 - [074-contract-061-deepseek-package-completion.md](./074-contract-061-deepseek-package-completion.md) — ready; Candidate I; 41 emitted / 6 withheld / 47 reconciled across DeepSeek and DeepSeek Harness
 - [075-contract-061-gemini-grok-package-completion.md](./075-contract-061-gemini-grok-package-completion.md) — ready; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled across Gemini and Grok
 - [076-contract-061-kimi-compound-acknowledgement-gate.md](./076-contract-061-kimi-compound-acknowledgement-gate.md) — ready; planning-only gate for Kimi reasoning/Plan half-state representation
-- [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — ready; card 077 admitted compatible `surface-19`
 
 ## Planned
 
@@ -17,6 +16,7 @@
 
 ## Completed
 
+- [078-opencode-http-1-18-28-claim.md](./078-opencode-http-1-18-28-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.28`; PR 219 merged as `751ed27d`
 - [077-opencode-http-1-18-28-identity.md](./077-opencode-http-1-18-28-identity.md) — complete; compatible `surface-19` admitted through OpenCode HTTP `1.18.28`; PR 216 merged as `99e91aa8`
 - [065-contract-061-candidate-e-breadth-audit.md](./065-contract-061-candidate-e-breadth-audit.md) — complete; Candidate E audit accepted; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
 - [073-contract-061-provider-operation-observation-baseline.md](./073-contract-061-provider-operation-observation-baseline.md) — complete; provider-operation observation runtime/testkit baseline; PR 214 merged as `e39e0aa8`; cards 074 and 076 consume it

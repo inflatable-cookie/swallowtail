@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; 378 rows proved; cards 074 and 075 ready for Candidates I and E; card 076 owns the remaining Kimi acknowledgement gate | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-024, 030-034, and 064-076 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 077 admitted OpenCode HTTP `surface-19` through `1.18.28`; card 078 is ready for the claim | Contract 029 identity-before-claim; Research 282-285; current-main validation | `g05.028` cards 077-078 |
+| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 078 qualified OpenCode HTTP `surface-19` through `1.18.28`; `1.18.29` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285; current-main validation | `g05.028` cards 077-078 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
@@ -42,7 +42,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 077 admitted `surface-19`; card 078 ready
+- [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
 - [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
 - [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated
 - [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
@@ -407,7 +407,7 @@ identity.
 
 ## Milestones
 
-- [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 077 admitted `surface-19`; card 078 ready
+- [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
 - [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
 - [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; retargeted to `0.41.0`; card 063 claim gated behind an admitted segment
 - [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof

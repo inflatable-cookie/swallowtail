@@ -1,6 +1,6 @@
 # 078 OpenCode HTTP 1.18.28 Claim
 
-Status: implemented; awaiting exact-head review
+Status: complete; qualified through `1.18.28`; `1.18.29` remains `UnverifiedNewer`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04

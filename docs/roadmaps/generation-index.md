@@ -151,8 +151,8 @@ card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
 has 378 proved rows; cards 074 and 075 are ready for Candidates I and E, while
 card 076 owns Kimi's remaining compound-acknowledgement gate and card 034 stays
 planned behind it. Milestone 028 is complete: card 077 admitted compatible
-OpenCode HTTP `surface-19` through `1.18.28`; card 078 is ready for the serial
-claim. Milestones
+OpenCode HTTP `surface-19` and card 078 qualified that segment through
+`1.18.28`; `1.18.29` remains `UnverifiedNewer`. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on

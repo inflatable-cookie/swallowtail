@@ -1,6 +1,6 @@
 # g05.028 OpenCode HTTP 1.18.28 Useful Newer
 
-Status: complete; card 077 admitted compatible `surface-19`; card 078 is ready
+Status: complete; card 078 qualified compatible `surface-19` through `1.18.28`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -43,7 +43,7 @@ Candidate L projection, Gemini deferral lift, or release work.
 ## Batch Cards
 
 - [077 OpenCode HTTP 1.18.28 Identity](batch-cards/077-opencode-http-1-18-28-identity.md) — complete; compatible `surface-19` admitted
-- [078 OpenCode HTTP 1.18.28 Claim](batch-cards/078-opencode-http-1-18-28-claim.md) — ready; serially unblocked by card 077
+- [078 OpenCode HTTP 1.18.28 Claim](batch-cards/078-opencode-http-1-18-28-claim.md) — complete; qualified through `1.18.28`
 
 ## Dispatch Manifest
 

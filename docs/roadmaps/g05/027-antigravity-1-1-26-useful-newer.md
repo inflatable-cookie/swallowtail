@@ -1,6 +1,6 @@
 # g05.027 Antigravity 1.1.26 Useful Newer
 
-Status: ready; card 071 identity is ready; card 072 claim is gated behind an admitted segment
+Status: complete; evidence stop at card 071; card 072 claim remains gated behind an admitted segment
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -54,7 +54,7 @@ out of scope and must not be edited.
 
 ## Batch Cards
 
-- [071 Antigravity 1.1.26 Identity](batch-cards/071-antigravity-1-1-26-identity.md) — ready
+- [071 Antigravity 1.1.26 Identity](batch-cards/071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; ceiling remains `1.1.17`
 - [072 Antigravity 1.1.26 Claim](batch-cards/072-antigravity-1-1-26-claim.md) — planned; gated behind card 071
 
 ## Dispatch Manifest

@@ -38,11 +38,11 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
-| Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | ready; card 071 identity is ready; card 072 claim is gated behind an admitted segment | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
+| Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
 
 ## Planned Next Roadmaps
 
-- [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — ready; card 071 identity is ready; card 072 claim is gated behind an admitted segment
+- [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
 - [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated
 - [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
 - [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
@@ -80,8 +80,9 @@ evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
 qualifies official `0.152.1`. Milestone 026 is complete as an evidence stop:
 card 062 froze Kimi
 Code local server identity first, retargeted to official `0.41.0` after latest
-moved during its first run. Milestone 027 is ready: card 071 freezes
-Antigravity identity through official `1.1.26`. Milestone 009 is ready with four
+moved during its first run. Milestone 027 is complete as an evidence stop:
+card 071 froze Antigravity identity through official `1.1.26`, stopping at
+`1.1.22` with a `1.1.17` ceiling. Milestone 009 is ready with four
 planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
 C and J as promotable, while card 066 stopped on the shared observation decision;
 card 068 and card 069 are merged; card 070's gate is promoted into Contract
@@ -402,7 +403,7 @@ identity.
 
 ## Milestones
 
-- [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — ready; card 071 identity ready; card 072 claim gated behind an admitted segment
+- [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
 - [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; retargeted to `0.41.0`; card 063 claim gated behind an admitted segment
 - [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
 - [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping

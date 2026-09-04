@@ -14,6 +14,7 @@ mod contribution;
 mod failure;
 mod identity;
 mod model_binding;
+mod provider_operation_observation;
 mod row;
 mod semantics;
 mod text;
@@ -30,6 +31,9 @@ pub use identity::{
     ConsumerRouteProjectionSourceKind,
 };
 pub use model_binding::ConsumerRouteModelBinding;
+pub use provider_operation_observation::{
+    ConsumerRouteProviderOperationObservation, ConsumerRouteProviderOperationOutcome,
+};
 pub use row::ConsumerRouteProjectionRow;
 pub use semantics::{
     ConsumerRouteActorPosture, ConsumerRouteAvailability, ConsumerRouteAvailabilityDimension,
@@ -44,7 +48,8 @@ pub use value::{
 };
 pub use views::{
     ConsumerRouteActiveSessionState, ConsumerRouteProjection, ConsumerRouteProjectionIdentity,
-    ConsumerRouteSelectionSummary, ConsumerRouteSessionStartControls,
+    ConsumerRouteProviderOperationState, ConsumerRouteSelectionSummary,
+    ConsumerRouteSessionStartControls,
 };
 
 /// Maximum selection-summary rows in one exact route projection.
@@ -53,6 +58,8 @@ pub const MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS: usize = 32;
 pub const MAX_CONSUMER_ROUTE_SESSION_START_ROWS: usize = 16;
 /// Maximum active-session rows in one exact route projection.
 pub const MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS: usize = 8;
+/// Maximum provider-operation observation rows in one exact route projection.
+pub const MAX_CONSUMER_ROUTE_PROVIDER_OPERATION_ROWS: usize = 4;
 /// Maximum admitted values in one projected control domain.
 pub const MAX_CONSUMER_ROUTE_ENUMERABLE_VALUES: usize = 512;
 /// Maximum UTF-8 bytes in one projected control value.

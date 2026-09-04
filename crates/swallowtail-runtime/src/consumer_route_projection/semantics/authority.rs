@@ -17,6 +17,8 @@ pub enum ConsumerRouteSourceClass {
     AdapterPreparedInput,
     /// Route-driver or wire acknowledgement evidence.
     RouteAcknowledgementEvidence,
+    /// A validated successful provider-operation outcome.
+    ProviderOperationOutcome,
 }
 
 /// How strongly the named source proves the row.
@@ -33,6 +35,8 @@ pub enum ConsumerRouteEvidenceStrength {
     PreparedOperation,
     /// An exact provider wire acknowledgement proves it.
     WireAcknowledgement,
+    /// The completed provider operation returned validated outcome evidence.
+    CompletedProviderOperation,
 }
 
 /// Exact subset of request and provider state the source proves.

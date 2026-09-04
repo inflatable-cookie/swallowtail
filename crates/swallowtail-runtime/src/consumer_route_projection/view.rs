@@ -1,15 +1,16 @@
 use super::semantics::ConsumerRouteLifecycle;
 use super::{
-    MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS, MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS,
-    MAX_CONSUMER_ROUTE_SESSION_START_ROWS,
+    MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS, MAX_CONSUMER_ROUTE_PROVIDER_OPERATION_ROWS,
+    MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS, MAX_CONSUMER_ROUTE_SESSION_START_ROWS,
 };
 
-/// One of the three immutable projection views a row may be admitted to.
+/// One of the four immutable projection views a row may be admitted to.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) enum ConsumerRouteView {
     SelectionSummary,
     SessionStart,
     ActiveSession,
+    ProviderOperation,
 }
 
 impl ConsumerRouteView {
@@ -18,6 +19,7 @@ impl ConsumerRouteView {
             Self::SelectionSummary => MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS,
             Self::SessionStart => MAX_CONSUMER_ROUTE_SESSION_START_ROWS,
             Self::ActiveSession => MAX_CONSUMER_ROUTE_ACTIVE_SESSION_ROWS,
+            Self::ProviderOperation => MAX_CONSUMER_ROUTE_PROVIDER_OPERATION_ROWS,
         }
     }
 
@@ -33,6 +35,10 @@ impl ConsumerRouteView {
                 ConsumerRouteLifecycle::BetweenTurnNegotiable
                     | ConsumerRouteLifecycle::QualifiedMidTurnNegotiable
                     | ConsumerRouteLifecycle::PostOpenObservationOnly
+            ),
+            Self::ProviderOperation => matches!(
+                lifecycle,
+                ConsumerRouteLifecycle::PostOperationObservationOnly
             ),
         }
     }
@@ -50,6 +56,10 @@ impl ConsumerRouteView {
             Self::ActiveSession => (
                 "swallowtail.consumer_route_projection.active_session_limit_exceeded",
                 "Projected active-session state exceeds the fixed row maximum",
+            ),
+            Self::ProviderOperation => (
+                "swallowtail.consumer_route_projection.provider_operation_limit_exceeded",
+                "Projected provider-operation state exceeds the fixed row maximum",
             ),
         }
     }

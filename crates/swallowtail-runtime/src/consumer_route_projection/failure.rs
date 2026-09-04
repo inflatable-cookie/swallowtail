@@ -23,6 +23,8 @@ pub enum ConsumerRouteProjectionFailureKind {
     ValueDomainInvalid,
     /// A bounded safe reason exceeds its fixed byte maximum.
     SafeReasonLimitExceeded,
+    /// Provider-operation source, shape, outcome, or row semantics are invalid.
+    ProviderOperationObservationInvalid,
 }
 
 /// Safe failure returned while admitting or composing a route projection.

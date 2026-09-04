@@ -5,10 +5,12 @@ use super::{
     ProviderSessionHistoryTotal,
 };
 use crate::{CleanupOutcome, RuntimeFailure, SessionReplayItem};
+use std::fmt;
 
 /// Validated newest-first history page with metadata and joined cleanup truth.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone)]
 pub struct ProviderSessionHistoryPage {
+    source_plan: ProviderSessionHistoryPlan,
     items: Vec<SessionReplayItem>,
     has_older: bool,
     older_cursor: Option<ProviderSessionHistoryCursor>,
@@ -65,6 +67,7 @@ impl ProviderSessionHistoryPage {
             ));
         }
         Ok(Self {
+            source_plan: plan.clone(),
             items,
             has_older,
             older_cursor,
@@ -107,4 +110,33 @@ impl ProviderSessionHistoryPage {
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }
+
+    pub(crate) const fn source_plan(&self) -> &ProviderSessionHistoryPlan {
+        &self.source_plan
+    }
 }
+
+impl fmt::Debug for ProviderSessionHistoryPage {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("ProviderSessionHistoryPage")
+            .field("items", &self.items)
+            .field("has_older", &self.has_older)
+            .field("older_cursor", &self.older_cursor)
+            .field("total", &self.total)
+            .field("cleanup", &self.cleanup)
+            .finish()
+    }
+}
+
+impl PartialEq for ProviderSessionHistoryPage {
+    fn eq(&self, other: &Self) -> bool {
+        self.items == other.items
+            && self.has_older == other.has_older
+            && self.older_cursor == other.older_cursor
+            && self.total == other.total
+            && self.cleanup == other.cleanup
+    }
+}
+
+impl Eq for ProviderSessionHistoryPage {}

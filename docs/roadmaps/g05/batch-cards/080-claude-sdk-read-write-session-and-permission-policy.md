@@ -97,11 +97,11 @@ necessary; scope widens into a later card.
 
 ## Result
 
-Permission policy landed; read-write tool admission waits on card 089
-narrowing the shared preflight guard, and is refused with an exact code rather
-than forced.
+Delivered in two PRs: permission policy first, then read-write tool admission
+once card 089 narrowed the shared preflight guard to the bounded-profile
+boundary claim.
 
-Delivered:
+First PR (221):
 
 - `ClaudeAgentSdkSessionProfile`, `ClaudeAgentSdkTool`, and
   `ClaudeAgentSdkPermissionMode` as additive prepared inputs, bound through
@@ -127,24 +127,23 @@ Delivered:
 - The default profile is byte-identical in behaviour: the same read-only set,
   the same `default` mode, the same access policy, the same instance policy id.
 
-Blocked, as a named stop condition:
+Second PR, after card 089 merged:
 
-Admitting `Edit`, `Write`, or `MultiEdit` requires
-`ResourceAccess::ReadWrite` on the working-resource lease, and
-`swallowtail-core` preflight still refuses a writable interactive session that
-also declares `Capability::ToolCalls`
-(`crates/swallowtail-core/src/preflight/session_access.rs:101`). The operator
-ruling of 2026-09-04 keys that exclusion on a bounded profile's claimed
-filesystem boundary rather than on `ReadWrite`, so this route's ambient
-profile with consumer-mediated tool calls is admissible under Contract 013;
-the shared guard has not caught up. Narrowing it belongs to card 089 and to
-`swallowtail-core`, a path this card forbids.
-
-Preparation therefore refuses a write profile with
-`swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`, and
-the write path is proved at the sidecar layer so only the guard is missing.
-The refusal is correct until card 089 lands and is removed in card 080's
-second PR.
+- `prepare_claude_agent_sdk_session` no longer refuses a write profile.
+  `swallowtail.claude-agent.sdk.preparation.write_admission_unavailable` is
+  gone; admitting `Edit`, `Write`, or `MultiEdit` binds
+  `ResourceAccess::ReadWrite` into the plan, the session access policy, and
+  the `claude-agent-sdk-ambient-read-write` instance policy, and keeps
+  `Capability::ToolCalls`.
+- A host that resolves a read-only lease fails the agreement with
+  `swallowtail.session_access.resource_access_mismatch` before the sidecar
+  starts, so no write tool reaches a read-only working resource.
+- The read-only default is unchanged: same set, same `default` mode, same
+  `claude-agent-sdk-ambient-read` policy, same ambient read access policy.
+- The guide's write section, the route matrix and feature-matrix
+  `claude-agent.sdk` cells, and `CHANGELOG.md` `[Unreleased]` state the
+  admitted write path and the ambient posture. The bounded-workspace cell
+  stays `No`: this route claims no filesystem boundary.
 
 The `Status:` line and the batch-card index are reserved shared closeout
 surfaces, so this card still reads `ready`; the coordinator owns both.

@@ -307,22 +307,24 @@ narrowing of mediation, not a default: under `default` mode every admitted call
 is offered first. Choose `acceptEdits` only when the consumer accepts that it
 will not see each edit before it runs.
 
-### Write Tools Are Not Yet Bindable
+### Write Tools And The Read-Write Lease
 
-`Edit`, `Write`, and `MultiEdit` are expressible in the profile and are
-enforced end to end by the sidecar asset, but preparation refuses them today
-with
-`swallowtail.claude-agent.sdk.preparation.write_admission_unavailable`.
+`Edit`, `Write`, and `MultiEdit` are admitted end to end. Any of them binds
+`ResourceAccess::ReadWrite` on the working-resource lease into the plan, the
+session access policy, and the `claude-agent-sdk-ambient-read-write` instance
+policy. The host's own lease must grant exactly that access: a host that
+resolves a read-only lease fails the agreement with
+`swallowtail.session_access.resource_access_mismatch` before the sidecar
+starts, so no write tool ever reaches a read-only working resource. The
+read-only default profile is unchanged and keeps the `v0.4.0`
+`claude-agent-sdk-ambient-read` policy.
 
-The reason is a shared guard, not a missing implementation. Contract 013 keys
-the consumer-tool exclusion on a bounded profile's claimed filesystem
-boundary: an ambient profile claims no boundary, so it may combine `ReadWrite`
-with consumer-mediated tool calls, which is exactly what this route does.
-Shared preflight has not caught up — it still refuses any interactive session
-pairing `ResourceAccess::ReadWrite` with `Capability::ToolCalls`. Preparation
-says so exactly rather than dropping the capability the route requires.
-g05.029 card 089 narrows that guard; the write half then lands in card 080's
-second PR.
+The lease is a location scope under `AmbientHost`. This route makes no
+bounded-filesystem claim: Contract 013 keys the consumer-tool exclusion on a
+bounded profile's claimed filesystem boundary, and an ambient profile claims
+none, so `ReadWrite` may combine with consumer-mediated tool calls here.
+Nothing about that admission constrains the provider to the leased root; the
+mediation itself is what the consumer relies on.
 
 Each admitted request crosses the wire as a bounded correlated callback in the
 route-local `claude-agent-sdk/can-use-tool` namespace carrying the tool name

@@ -6,18 +6,16 @@
 
 use crate::host_id;
 use crate::sdk_support::{
-    SdkFixtureHost, SdkScenario, cleanup_request, preparation, prepared_session,
-    prepared_session_for,
+    SdkFixtureHost, SdkScenario, cleanup_request, prepared_session, prepared_session_for,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool,
-    prepare_claude_agent_sdk_session,
 };
 use swallowtail_core::{Capability, CapabilityConstraint, ResourceAccess};
 use swallowtail_runtime::{
     Deadline, InteractiveSessionDriver, InteractiveSessionHandle, MonotonicInstant,
-    PreparationStage, SessionAccessPolicy, SessionOptions,
+    SessionAccessPolicy,
 };
 
 /// Closes the route-local handle through the shared session surface.
@@ -73,45 +71,75 @@ fn the_default_profile_prepares_the_unchanged_read_only_plan() {
 }
 
 #[test]
-fn admitting_a_write_tool_is_refused_at_preparation_with_an_exact_code() {
+fn a_write_profile_prepares_a_read_write_plan_and_lease() {
     // Contract 013 keys the consumer-tool exclusion on a bounded profile's
     // claimed filesystem boundary, and this route claims none, so its ambient
-    // read-write profile is admissible. Shared preflight still refuses any
-    // interactive session pairing `ResourceAccess::ReadWrite` with
-    // `Capability::ToolCalls`. Preparation says so exactly rather than
-    // dropping the capability the route requires.
-    let Err(failure) = prepare_claude_agent_sdk_session(
-        preparation(host_id("claude-agent-sdk.fixture.rw-plan")).with_session_profile(read_write()),
-        SessionOptions::default(),
-    ) else {
-        panic!("a write profile must be refused at preparation");
-    };
+    // read-write profile with consumer-mediated tool calls is admissible.
+    let prepared = prepared_session_for(host_id("claude-agent-sdk.fixture.rw-plan"), read_write());
+    assert_eq!(prepared.session_profile(), read_write());
     assert_eq!(
-        failure.diagnostic().safe().code(),
-        "swallowtail.claude-agent.sdk.preparation.write_admission_unavailable"
+        prepared.request().access_policy(),
+        &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
     );
-    assert_eq!(failure.stage(), PreparationStage::Preflight);
-    // The refusal is preparation-wide: no plan, request, or lease exists that
-    // could carry a write tool.
     assert_eq!(
-        ClaudeAgentSdkSessionProfile::read_write(ClaudeAgentSdkPermissionMode::Default)
-            .resource_access(),
-        ResourceAccess::ReadWrite
+        plan_resource_access(prepared.plan()),
+        Some(ResourceAccess::ReadWrite)
+    );
+    assert_eq!(
+        prepared.plan().instance_policy_id().as_str(),
+        "claude-agent-sdk-ambient-read-write"
+    );
+    // The capability the route needs is still declared: the write lease did
+    // not cost it consumer tool exchange.
+    assert!(
+        prepared
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|required| required.capability() == Capability::ToolCalls)
     );
 }
 
 #[test]
-fn a_host_that_grants_only_read_access_still_opens_a_read_only_session() {
-    // The read-only lease is exactly what the default plan asks for, so a host
-    // that grants nothing more is sufficient for this route today.
-    let host = host_id("claude-agent-sdk.fixture.rw-lease");
-    let fixture = SdkFixtureHost::new(SdkScenario::Complete).granting_read_only_resource();
-    let prepared = prepared_session(host.clone());
+fn a_write_session_opens_with_its_write_set_on_a_read_write_lease() {
+    let host = host_id("claude-agent-sdk.fixture.rw-open");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepared_session_for(host.clone(), read_write());
     let services = fixture.services(host);
     let cleanup_services = services.clone();
-    let session = block_on(prepared.open_route_session(services)).expect("session opens");
-    assert!(!session.session_profile().admits(ClaudeAgentSdkTool::Write));
+    let session = block_on(prepared.open_route_session(services)).expect("a write session opens");
+    let open = fixture
+        .inputs()
+        .into_iter()
+        .find(|value| value["command"] == "open")
+        .expect("open command is sent");
+    assert_eq!(
+        open["params"]["tools"],
+        serde_json::json!(["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"])
+    );
+    // Availability is restricted, never auto-allowed.
+    assert!(open["params"].get("allowedTools").is_none());
+    assert_eq!(open["params"]["permissionMode"], "default");
+    assert!(session.session_profile().admits(ClaudeAgentSdkTool::Write));
     let _ = close_session(session, cleanup_request(), cleanup_services);
+}
+
+#[test]
+fn a_host_that_grants_only_read_access_cannot_open_a_write_session() {
+    // The plan asks for the lease the admitted set requires. A host granting
+    // less fails the lease agreement, so no write tool reaches a read-only
+    // working resource.
+    let host = host_id("claude-agent-sdk.fixture.rw-lease");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete).granting_read_only_resource();
+    let prepared = prepared_session_for(host.clone(), read_write());
+    let services = fixture.services(host);
+    let Err(error) = block_on(prepared.open_route_session(services)) else {
+        panic!("a read-only lease must refuse a write session");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.session_access.resource_access_mismatch"
+    );
 }
 
 #[test]

@@ -379,7 +379,7 @@ by this worker:
 | Candidate F: 4 routes | 89 tuples: 75 emitted, 14 withheld; Kimi observation/projected-open preserves exact reasoning/Plan and model evidence | Additive; current Unreleased coverage |
 | Candidate I: 3 routes | 47 tuples: 41 emitted, 6 withheld; completed catalogue/history observations only; execution/paging/cleanup unchanged | Additive; no separate Unreleased entry, so Card 091 must consolidate |
 | Candidate J: 3 routes | 35 tuples: 32 emitted, 3 withheld; contribution seams only | Additive; current Unreleased coverage |
-| provider-operation observation | Runtime/testkit view, max four rows, completed catalogue/history only; no active control/request authority | Additive observation-only; adapter methods are opt-in |
+| provider-operation observation (Card 073 / Contract 061 fourth view; 18 semantic public items: 17 runtime and 1 testkit) | Runtime/testkit view, max four rows, completed catalogue/history only; no active control/request authority | Additive observation-only; changelog-coverage disposition: current `[Unreleased]` has no dedicated Card 073/provider-operation observation entry, so Card 091 must promote this 18-item fourth-view surface during 0.4.1 candidate-note consolidation; this repair does not touch `CHANGELOG.md`; adapter methods remain opt-in |
 | compound acknowledgement | Independent Plan/reasoning states; exact provider values only effective/rejected; `RequestedNotDispatched` distinct from pending | Additive observation-only; no request/mutation/routing authority |
 | Card 089 preflight | Bounded writable rejection remains; ambient and ambient-mediated read-write tool calls now pass; no previously passing plan fails | Additive widening; current Unreleased Changed entry |
 | `claude-agent.sdk` default | `Read`/`Glob`/`Grep`, `default`, access policy, and instance policy id are behaviorally identical; explicit profiles are opt-in | Additive; current Unreleased records parity/write profile; no existing default break |
@@ -389,6 +389,14 @@ by this worker:
 Negative audit: no route was renamed/removed; no control authority, early
 provider work, cleanup guarantee, provider-token flattening, or consumer-facing
 permission was introduced.
+
+The 18-item Card 073 disposition counts the 17 runtime semantic items
+(the five vocabulary variants, the provider-operation outcome enum and its two
+variants, projection/input accessors, observation type and four accessors,
+state type, and fixed maximum) plus the one portable testkit assertion. The
+generated API snapshot also records additive `ProviderOperationState::rows` and
+derived `Eq`/`PartialEq`/`Debug` implementation lines; those do not change the
+18-item semantic count or its additive observation-only classification.
 
 ## Immutable-baseline proof
 

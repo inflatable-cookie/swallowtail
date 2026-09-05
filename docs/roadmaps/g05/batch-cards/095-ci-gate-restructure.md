@@ -1,6 +1,6 @@
 # 095 CI Gate Restructure
 
-Status: ready; `v0.4.1` is tagged; operator workflow authority granted 2026-09-05
+Status: complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

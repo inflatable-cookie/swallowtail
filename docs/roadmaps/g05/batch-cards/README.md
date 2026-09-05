@@ -3,8 +3,7 @@
 ## Ready
 
 - [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
-- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; set_model with confirmed values, supported_models at open, effort at open; no invented setter
-- [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — ready; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
+- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; paused behind card 100 (shared sidecar); resumes on its merge; set_model with confirmed values, supported_models and effort at open
 
 ## Planned
 
@@ -23,6 +22,7 @@
 
 ## Completed
 
+- [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — complete; Pi lifecycle race and workspace sweep merged through PR 227 as `3506d9a5`
 - [098-contract-061-alibaba-anthropic-xai-package-completion.md](./098-contract-061-alibaba-anthropic-xai-package-completion.md) — complete; candidate B; 76 rows; 74 emitted, 2 withheld; PR 236 merged as `921ee00c`
 - [097-contract-061-opencode-pi-package-completion.md](./097-contract-061-opencode-pi-package-completion.md) — complete; candidate L; 69 rows; 64 emitted, 5 withheld; PR 234 merged as `f4e707f0`

@@ -33,6 +33,7 @@ const observed = {
   admissions: {},
   permissionModes: [],
   closeCalls: 0,
+  promptStreamState: null,
   writes: [],
   bash: [],
 };
@@ -133,6 +134,49 @@ function initializeResponse(options) {
   };
 }
 
+function resultMessage({ subtype = "success", isError = false, error } = {}) {
+  const result = {
+    type: "result",
+    subtype,
+    is_error: isError,
+    num_turns: 1,
+    duration_ms: 7,
+  };
+  if (error !== undefined) {
+    result.error = error;
+  }
+  return result;
+}
+
+function earlyCompletingIterator(promptIterator) {
+  let first = true;
+  return {
+    async next() {
+      if (first) {
+        first = false;
+        return promptIterator.next();
+      }
+      return { value: undefined, done: true };
+    },
+    async return() {
+      return { value: undefined, done: true };
+    },
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+  };
+}
+
+async function recordPromptLifetime(promptIterator) {
+  const pending = promptIterator.next();
+  const outcome = await Promise.race([
+    pending.then((value) => ({ kind: value.done ? "early-eof" : "message" })),
+    new Promise((resolve) => setTimeout(() => resolve({ kind: "open" }), 10)),
+  ]);
+  observed.promptStreamState = outcome.kind;
+  record();
+}
+
 export function query({ prompt, options }) {
   state.permissionMode = options.permissionMode ?? "default";
   // Only serialisable option keys are recorded; callbacks are noted by name so
@@ -160,7 +204,11 @@ export function query({ prompt, options }) {
 
   let settled = false;
   let firstInputConsumed = false;
-  const promptIterator = prompt[Symbol.asyncIterator]();
+  const rawPromptIterator = prompt[Symbol.asyncIterator]();
+  const promptIterator =
+    SCENARIO === "early-input-eof"
+      ? earlyCompletingIterator(rawPromptIterator)
+      : rawPromptIterator;
 
   async function admit(name, input) {
     const decision = await options.canUseTool(name, input);
@@ -191,11 +239,34 @@ export function query({ prompt, options }) {
       }
       if (!settled) {
         settled = true;
+        if (SCENARIO === "early-input-eof") {
+          const nextInput = await promptIterator.next();
+          if (!nextInput.done) {
+            throw new Error("early-input-eof fixture did not complete its input");
+          }
+          observed.promptStreamState = "early-eof";
+          record();
+          return {
+            value: resultMessage({
+              subtype: "error_during_execution",
+              isError: true,
+              error: "fixture early input EOF",
+            }),
+            done: false,
+          };
+        }
+        if (SCENARIO === "input-stream-lifetime") {
+          await recordPromptLifetime(rawPromptIterator);
+          return {
+            value: resultMessage(),
+            done: false,
+          };
+        }
         // An allowed read-only tool, then a tool outside the read-only set.
         await admit("Read", { file_path: "/fixture/read-me.txt" });
         await admit("Bash", { command: "rm -rf /" });
         return {
-          value: { type: "result", subtype: "success", is_error: false },
+          value: resultMessage(),
           done: false,
         };
       }

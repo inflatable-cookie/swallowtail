@@ -3,6 +3,20 @@
  * @anthropic-ai/claude-agent-sdk 0.3.259 sdk.d.ts.
  */
 
+import type { MessageParam } from '@anthropic-ai/sdk/resources';
+
+export declare type SDKUserMessage = {
+    type: 'user';
+    message: MessageParam;
+    parent_tool_use_id: string | null;
+    session_id?: string;
+};
+
+export declare function query(_params: {
+    prompt: string | AsyncIterable<SDKUserMessage>;
+    options?: Options;
+}): Query;
+
 export declare type AccountInfo = {
     email?: string;
     organization?: string;

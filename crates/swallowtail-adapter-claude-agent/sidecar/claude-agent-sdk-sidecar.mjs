@@ -619,14 +619,42 @@ function projectMessage(message) {
       }
       return events;
     }
-    case "result":
+    case "result": {
+      const subtype = typeof message.subtype === "string" ? message.subtype : null;
+      const errorTextPresent = Object.prototype.hasOwnProperty.call(message, "error");
+      let errorTextType = "absent";
+      if (errorTextPresent) {
+        if (message.error === null) {
+          errorTextType = "null";
+        } else if (Array.isArray(message.error)) {
+          errorTextType = "array";
+        } else {
+          errorTextType = typeof message.error;
+        }
+      }
+      const numTurns =
+        Number.isSafeInteger(message.num_turns) && message.num_turns >= 0
+          ? message.num_turns
+          : null;
+      const durationMs =
+        Number.isSafeInteger(message.duration_ms) && message.duration_ms >= 0
+          ? message.duration_ms
+          : null;
       return [
         {
           event: "turn_ended",
-          stopReason: String(message.subtype ?? ""),
+          subtype,
           isError: message.is_error === true,
+          numTurns,
+          durationMs,
+          errorTextPresent,
+          errorTextType,
+          // Keep the existing route field while making the SDK result fields
+          // explicit and separately inspectable. Never forward error text.
+          stopReason: subtype ?? "",
         },
       ];
+    }
     case "stream_event":
     case "system":
       return [{ event: "progress" }];
@@ -763,29 +791,68 @@ async function handleOpen(params) {
   };
 }
 
-let inputResolve = null;
-const inputQueue = [];
-let inputClosed = false;
+// The SDK's streaming-input query stays alive for the session. A generator
+// that yields one queued message and then returns is a one-shot prompt, which
+// lets the SDK close stdin and report an abort/code-1 result after turn one.
+// Keep the source open across turns; only the sidecar close command ends it.
+class SessionInput {
+  constructor() {
+    this.queue = [];
+    this.waiters = [];
+    this.closed = false;
+  }
 
-async function* inputStream() {
-  while (!inputClosed) {
-    if (inputQueue.length === 0) {
-      await new Promise((resolve) => {
-        inputResolve = resolve;
-      });
-      continue;
+  next() {
+    if (this.queue.length > 0) {
+      return Promise.resolve({ value: this.queue.shift(), done: false });
     }
-    yield inputQueue.shift();
+    if (this.closed) {
+      return Promise.resolve({ value: undefined, done: true });
+    }
+    return new Promise((resolve) => this.waiters.push(resolve));
+  }
+
+  // Do not let an SDK consumer's per-turn iterator cleanup close the session.
+  // The sidecar owns session lifetime and calls close() only from handleClose.
+  return() {
+    return Promise.resolve({ value: undefined, done: true });
+  }
+
+  [Symbol.asyncIterator]() {
+    return this;
+  }
+
+  push(message) {
+    if (this.closed) {
+      return;
+    }
+    const resolve = this.waiters.shift();
+    if (resolve) {
+      resolve({ value: message, done: false });
+    } else {
+      this.queue.push(message);
+    }
+  }
+
+  close() {
+    if (this.closed) {
+      return;
+    }
+    this.closed = true;
+    while (this.waiters.length > 0) {
+      this.waiters.shift()({ value: undefined, done: true });
+    }
   }
 }
 
+const sessionInput = new SessionInput();
+
+function inputStream() {
+  return sessionInput;
+}
+
 function pushInput(message) {
-  inputQueue.push(message);
-  if (inputResolve) {
-    const resolve = inputResolve;
-    inputResolve = null;
-    resolve();
-  }
+  sessionInput.push(message);
 }
 
 function canonicalPath(value) {
@@ -803,12 +870,7 @@ function cwdMatches(expected, observed) {
 }
 
 function endInput() {
-  inputClosed = true;
-  if (inputResolve) {
-    const resolve = inputResolve;
-    inputResolve = null;
-    resolve();
-  }
+  sessionInput.close();
 }
 
 async function handleQuery(params) {

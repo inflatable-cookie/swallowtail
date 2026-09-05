@@ -182,6 +182,13 @@ Command-level sidecar rejections preserve their fixed failure code in the
 route diagnostic. Only that bounded code is exposed: sidecar message text,
 paths, and account values are discarded.
 
+The query prompt is a session-lifetime async input stream. Each `query`
+command queues one `SDKUserMessage` and resolves the next waiting consumer;
+the source remains open between turns and ends only during the explicit close
+sequence. A provider result projects only sanitized terminal evidence:
+subtype, error flag, turn count, duration, and the presence/type of error text;
+the error text itself never crosses the sidecar wire.
+
 Every public operation is bounded by a caller-supplied host deadline, and the
 bound covers the return, not merely the noticing.
 

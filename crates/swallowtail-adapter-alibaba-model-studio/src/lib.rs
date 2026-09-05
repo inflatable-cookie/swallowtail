@@ -5,6 +5,7 @@
 
 mod activity;
 mod catalogue;
+mod consumer_route_projection;
 mod driver;
 mod failure;
 mod prepared;

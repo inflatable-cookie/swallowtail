@@ -8,6 +8,7 @@
 
 mod activity;
 mod catalogue;
+mod consumer_route_projection;
 mod controls;
 mod driver;
 mod failure;

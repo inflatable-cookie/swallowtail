@@ -79,3 +79,17 @@ per-turn row carrying provider-effective state.
 ## Auto-Continuation
 
 No. Stop after one reviewable PR for exact-head review.
+
+## Result
+
+Candidate B Contract 061 projection completion delivered across
+`swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`,
+and `swallowtail-adapter-xai`. The adapter-local ledgers reconcile 76 exact
+rows: 74 emitted and the two named Alibaba matrix-descriptor-only rows
+withheld. Anthropic Managed Agents is the only B route with a per-turn row;
+its tool exchange carries `ConsumerMediatedPerTurn` from retained plan
+evidence, with no prepared, acknowledged, provider-effective, or rejected
+state claim. Mixed-assembly and negative provider-free coverage are included.
+
+The public API baselines for the three owned packages are additive-only.
+Validation and PR details are recorded at exact-head review after push.

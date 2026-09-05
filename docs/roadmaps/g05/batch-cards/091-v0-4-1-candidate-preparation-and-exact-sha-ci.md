@@ -47,3 +47,36 @@ Tag creation or push; publication; consumer edits; any feature change.
 ## Auto-Continuation
 
 No. Stop for exact-head review and exact-SHA CI.
+
+## Result
+
+Prepared the `0.4.1` source candidate on rebased base
+`201996d9a67926ae24de8b61dc4651aef3591118`. The worker head before Effigy
+preparation was `f9a7714095de477f2420fa9375b46939a23036d9`, preserving the
+release note and index. The required environment and toolchain evidence is in
+`.effigy/reports/release/environment-attempt-6.log`; it records pinned Cargo
+`1.95.0` and stable Cargo `1.97.1`. Read-only status was ready for patch
+`0.4.1`, the plan contained exactly three mutations, locked metadata reported
+40 workspace packages, and Cargo.lock was synchronized before preparation.
+
+Exactly one JSON-captured prepare transaction ran. Its report is
+`.effigy/reports/release/prepare-attempt-6.json` with SHA-256
+`1f8b93b3361a3e87431a3b6c698167a0ff4f62134b1d18bdb7d93f8077846092`; all 11
+prepare gates passed. The frozen-tree set also passed all 11 gates; its
+complete per-gate outputs and summary are under
+`.effigy/reports/release/frozen-gates-0.4.1-attempt-6-*.log`, with
+`frozen-gates-0.4.1-attempt-6-summary.log` recording the green result. The
+prepared floor was green, so no compression-rule floor rerun was needed.
+
+The promoted changelog was extracted to
+`.effigy/reports/release/changelog-0.4.1.txt` (SHA-256
+`fc4aa3a696386c69f50e508efc90a3e590033d557dd0abe3b99458cf22b838d0`). The
+distinct `0.4.1` evidence contains 40 public API package files plus its
+manifest, 49 production routes (SHA-256
+`ee184c09c57409ed8dcac7789d1c87cf9b97b8015f5892be81febafff99b82a2`), and 88
+internal dependency edges, all requiring `^0.4.1` (SHA-256
+`6d35bf0f02e13f572d36f4a3b63e992616a04e7e5c44552d164a26634fc860be`). The API
+manifest SHA-256 is
+`42b64192145c35aa1523167ec6c99d8b0d09cc66a05b7561aeb08fd04a5531eb`.
+No `0.4.0` baseline was modified. Candidate PR creation and exact-head review
+are next; merge, tag, publication, and consumer mutation remain out of scope.

@@ -1,0 +1,50 @@
+pub mod swallowtail_adapter_goose
+pub struct swallowtail_adapter_goose::GooseAcpDriver
+impl swallowtail_adapter_goose::GooseAcpDriver
+pub const fn swallowtail_adapter_goose::GooseAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_goose::GooseAcpDriver
+pub fn swallowtail_adapter_goose::GooseAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_goose::GooseAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_goose::GooseAcpDriver
+pub fn swallowtail_adapter_goose::GooseAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_goose::GooseAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_goose::GoosePreparationInput
+impl swallowtail_adapter_goose::GoosePreparationInput
+pub const fn swallowtail_adapter_goose::GoosePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_goose::GoosePreparationProbe
+impl swallowtail_adapter_goose::GoosePreparationProbe
+pub const fn swallowtail_adapter_goose::GoosePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_goose::GoosePreparedIntegration
+impl swallowtail_adapter_goose::GoosePreparedIntegration
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_goose::GoosePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_goose::GoosePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_goose::GooseAcpDriver
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_goose::GoosePreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_goose::GoosePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_goose::GoosePreparedIntegration
+pub fn swallowtail_adapter_goose::GoosePreparedIntegration::prepare_session(&self, swallowtail_adapter_goose::GooseSessionProfileInput) -> core::result::Result<swallowtail_adapter_goose::GoosePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_goose::GoosePreparedSession
+impl swallowtail_adapter_goose::GoosePreparedSession
+pub fn swallowtail_adapter_goose::GoosePreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_goose::GoosePreparedSession
+pub const fn swallowtail_adapter_goose::GoosePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_goose::GoosePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_goose::GoosePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_goose::GoosePreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_goose::GoosePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_goose::GooseSessionProfileInput
+impl swallowtail_adapter_goose::GooseSessionProfileInput
+pub const fn swallowtail_adapter_goose::GooseSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const swallowtail_adapter_goose::GOOSE_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_goose::GOOSE_LOCAL_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_goose::GOOSE_RELEASE_AXIS: &str
+pub const swallowtail_adapter_goose::GOOSE_RELEASE_VERSION: &str
+pub fn swallowtail_adapter_goose::goose_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_goose::goose_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_goose::goose_local_config_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_goose::goose_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_goose::prepare_goose_acp(swallowtail_adapter_goose::GoosePreparationInput, swallowtail_adapter_goose::GoosePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_goose::GoosePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

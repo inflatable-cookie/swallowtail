@@ -44,7 +44,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "0.4.0"
+version = "0.4.1"
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/inflatable-cookie/swallowtail"
@@ -53,14 +53,14 @@ publish = false
 rust-version = "1.95"
 
 [workspace.dependencies]
-swallowtail-core = { path = "crates/swallowtail-core", version = "0.4.0" }
-swallowtail-host-local = { path = "crates/swallowtail-host-local", version = "0.4.0" }
-swallowtail-idioms = { path = "crates/swallowtail-idioms", version = "0.4.0" }
-swallowtail-protocol-acp = { path = "crates/swallowtail-protocol-acp", version = "0.4.0" }
-swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-chat", version = "0.4.0" }
-swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.4.0" }
-swallowtail-testkit = { path = "crates/swallowtail-testkit", version = "0.4.0" }
-swallowtail-transport-acp-remote = { path = "crates/swallowtail-transport-acp-remote", version = "0.4.0" }
+swallowtail-core = { path = "crates/swallowtail-core", version = "0.4.1" }
+swallowtail-host-local = { path = "crates/swallowtail-host-local", version = "0.4.1" }
+swallowtail-idioms = { path = "crates/swallowtail-idioms", version = "0.4.1" }
+swallowtail-protocol-acp = { path = "crates/swallowtail-protocol-acp", version = "0.4.1" }
+swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-chat", version = "0.4.1" }
+swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.4.1" }
+swallowtail-testkit = { path = "crates/swallowtail-testkit", version = "0.4.1" }
+swallowtail-transport-acp-remote = { path = "crates/swallowtail-transport-acp-remote", version = "0.4.1" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

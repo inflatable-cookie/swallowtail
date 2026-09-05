@@ -2,10 +2,16 @@ use super::super::host::{CleanupEvent, SdkFixtureHost, Shared, fixture_failure};
 use super::script::respond;
 use serde_json::Value;
 use std::sync::Arc;
+use std::time::Duration;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest,
     ProcessService, RuntimeFailure, ScopeId,
 };
+
+/// Large named hang guard for fixture waits that must resolve through
+/// explicit test ordering. Expiry is a broken ordering contract, so it fails
+/// loudly instead of hanging the run; no passing test relies on this bound.
+const HANG_GUARD: Duration = Duration::from_secs(120);
 
 impl ProcessService for SdkFixtureHost {
     fn start(
@@ -86,27 +92,28 @@ impl ProcessHandle for SdkFixtureProcess {
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         let held = self.stall == Some(super::super::host::Stall::PumpRead);
         Box::pin(async move {
-            let mut state = self
+            let state = self
                 .shared
                 .process
                 .lock()
                 .expect("SDK fixture state lock poisoned");
-            loop {
-                // A held pump outlives process exit until the test releases it,
-                // which is what a real sidecar transport that has not yet
-                // drained looks like.
-                if held || state.holding_pump {
-                    if state.pump_released {
-                        return Ok(None);
+            let (mut state, wait) = self
+                .shared
+                .changed
+                .wait_timeout_while(state, HANG_GUARD, |state| {
+                    if held || state.holding_pump {
+                        !state.pump_released
+                    } else {
+                        state.output.is_empty() && !state.stopped
                     }
-                } else if !state.output.is_empty() || state.stopped {
-                    break;
-                }
-                state = self
-                    .shared
-                    .changed
-                    .wait(state)
-                    .expect("SDK fixture wait lock poisoned");
+                })
+                .expect("SDK fixture wait lock poisoned");
+            assert!(
+                !wait.timed_out(),
+                "fixture hang guard: SDK output was never released or produced within {HANG_GUARD:?}"
+            );
+            if (held || state.holding_pump) && state.pump_released {
+                return Ok(None);
             }
             Ok(state.output.pop_front())
         })
@@ -138,16 +145,18 @@ impl ProcessHandle for SdkFixtureProcess {
         let shared = Arc::clone(&self.shared);
         Box::pin(async move {
             if open_hold {
-                let mut state = shared
+                let state = shared
                     .process
                     .lock()
                     .expect("SDK fixture state lock poisoned");
-                while !state.process_hold_released {
-                    state = shared
-                        .changed
-                        .wait(state)
-                        .expect("SDK fixture wait lock poisoned");
-                }
+                let (_state, wait) = shared
+                    .changed
+                    .wait_timeout_while(state, HANG_GUARD, |state| !state.process_hold_released)
+                    .expect("SDK fixture wait lock poisoned");
+                assert!(
+                    !wait.timed_out(),
+                    "fixture hang guard: open-hold exit was never released within {HANG_GUARD:?}"
+                );
             }
             match (observable, attests) {
                 // Only a host with a concrete owned-tree observation may

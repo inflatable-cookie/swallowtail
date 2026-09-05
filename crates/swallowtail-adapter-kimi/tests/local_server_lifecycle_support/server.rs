@@ -7,6 +7,11 @@ use std::time::Duration;
 
 const TOKEN: &str = "fixture-kimi-local-bearer";
 
+/// Large named hang guard for fixture waits that must resolve through
+/// explicit test ordering. Expiry is a broken ordering contract, so it fails
+/// loudly instead of hanging the run; no passing test relies on this bound.
+const HANG_GUARD: Duration = Duration::from_secs(120);
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FixtureRequest {
     pub method: String,
@@ -100,14 +105,16 @@ impl FixtureServer {
 
     pub fn hold_lifecycle_responses(&self) {
         let (gate, changed) = &*self.lifecycle_response_gate;
-        let mut gate = gate
+        let gate = gate
             .lock()
             .expect("fixture lifecycle response lock is not poisoned");
-        while gate.active {
-            gate = changed
-                .wait(gate)
-                .expect("fixture lifecycle response lock is not poisoned");
-        }
+        let (mut gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: lifecycle response never settled before hold within {HANG_GUARD:?}"
+        );
         gate.held = true;
     }
 
@@ -118,11 +125,13 @@ impl FixtureServer {
             .expect("fixture lifecycle response lock is not poisoned");
         gate.held = false;
         changed.notify_all();
-        while gate.active {
-            gate = changed
-                .wait(gate)
-                .expect("fixture lifecycle response lock is not poisoned");
-        }
+        let (_gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: release never drained the lifecycle response within {HANG_GUARD:?}"
+        );
     }
 
     pub fn wait_until_seen(&self, path: &str) {
@@ -130,31 +139,36 @@ impl FixtureServer {
     }
 
     pub fn wait_until_seen_count(&self, path: &str, expected: usize) {
-        let mut requests = self
+        let requests = self
             .requests
             .lock()
             .expect("fixture request lock is not poisoned");
-        while requests
-            .iter()
-            .filter(|request| request.path == path)
-            .count()
-            < expected
-        {
-            requests = self
-                .request_changed
-                .wait(requests)
-                .expect("fixture request lock is not poisoned");
-        }
-        drop(requests);
+        let (_requests, wait) = self
+            .request_changed
+            .wait_timeout_while(requests, HANG_GUARD, |requests| {
+                requests
+                    .iter()
+                    .filter(|request| request.path == path)
+                    .count()
+                    < expected
+            })
+            .expect("fixture request lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: {path} never reached {expected} observations within {HANG_GUARD:?}"
+        );
+        drop(_requests);
         let (gate, changed) = &*self.lifecycle_response_gate;
-        let mut gate = gate
+        let gate = gate
             .lock()
             .expect("fixture lifecycle response lock is not poisoned");
-        while gate.held && !gate.active {
-            gate = changed
-                .wait(gate)
-                .expect("fixture lifecycle response lock is not poisoned");
-        }
+        let (_gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.held && !gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: gated lifecycle response never drained within {HANG_GUARD:?}"
+        );
     }
 }
 
@@ -219,11 +233,13 @@ fn serve(
             gate.active = true;
             changed.notify_all();
         }
-        while gate.held {
-            gate = changed
-                .wait(gate)
-                .expect("fixture lifecycle response lock is not poisoned");
-        }
+        let (mut gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.held)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: held lifecycle response was never released within {HANG_GUARD:?}"
+        );
         gate.active = false;
         changed.notify_all();
     }

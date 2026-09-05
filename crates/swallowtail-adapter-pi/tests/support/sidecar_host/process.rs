@@ -3,10 +3,16 @@ use super::script::respond;
 use super::{Shared, SidecarFixtureHost, SidecarScenario, fixture_failure};
 use serde_json::Value;
 use std::sync::Arc;
+use std::time::Duration;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest,
     ProcessService, RuntimeFailure, ScopeId,
 };
+
+/// Large named hang guard for fixture waits that must resolve through
+/// explicit test ordering. Expiry is a broken ordering contract, so it fails
+/// loudly instead of hanging the run; no passing test relies on this bound.
+const HANG_GUARD: Duration = Duration::from_secs(120);
 
 impl ProcessService for SidecarFixtureHost {
     fn start(
@@ -63,18 +69,22 @@ impl ProcessHandle for SidecarFixtureProcess {
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         Box::pin(async move {
-            let mut state = self
+            let state = self
                 .shared
                 .process
                 .lock()
                 .expect("sidecar fixture state lock poisoned");
-            while state.output.is_empty() && !state.stopped {
-                state = self
-                    .shared
-                    .changed
-                    .wait(state)
-                    .expect("sidecar fixture wait lock poisoned");
-            }
+            let (mut state, wait) = self
+                .shared
+                .changed
+                .wait_timeout_while(state, HANG_GUARD, |state| {
+                    state.output.is_empty() && !state.stopped
+                })
+                .expect("sidecar fixture wait lock poisoned");
+            assert!(
+                !wait.timed_out(),
+                "fixture hang guard: sidecar output was never observed within {HANG_GUARD:?}"
+            );
             Ok(state.output.pop_front())
         })
     }
@@ -99,16 +109,18 @@ impl ProcessHandle for SidecarFixtureProcess {
         let shared = Arc::clone(&self.shared);
         Box::pin(async move {
             if hold {
-                let mut state = shared
+                let state = shared
                     .process
                     .lock()
                     .expect("sidecar fixture state lock poisoned");
-                while !state.hold_released {
-                    state = shared
-                        .changed
-                        .wait(state)
-                        .expect("sidecar fixture wait lock poisoned");
-                }
+                let (_state, wait) = shared
+                    .changed
+                    .wait_timeout_while(state, HANG_GUARD, |state| !state.hold_released)
+                    .expect("sidecar fixture wait lock poisoned");
+                assert!(
+                    !wait.timed_out(),
+                    "fixture hang guard: held sidecar exit was never released within {HANG_GUARD:?}"
+                );
             }
             let result = if wait_failure {
                 Err(fixture_failure())

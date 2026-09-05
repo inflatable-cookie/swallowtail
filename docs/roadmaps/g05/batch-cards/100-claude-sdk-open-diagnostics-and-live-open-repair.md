@@ -318,6 +318,12 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   carry field-name presence only, and close responses carry the exact
   SessionInput/SDK-close/native-join timeline alongside native exit
   event/code/signal. No fourth live turn is authorized.
+- The fourth operator-authorized attempt stopped before any SDK or native
+  launch: the disposable live harness bound the delegated lease to the wrong
+  local audience, and the host rejected it with the safe code
+  `swallowtail.local_credential.audience_mismatch`. No prompt, provider call,
+  turn, write, child exit, or close sequence occurred; no live evidence was
+  captured and no retry is run under that relay.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.

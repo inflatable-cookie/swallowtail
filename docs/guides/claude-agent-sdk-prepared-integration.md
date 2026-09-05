@@ -58,9 +58,11 @@ Swallowtail never holds the subscription credential.
 3. Swallowtail leases a delegated credential reference that exposes no secret,
    and passes no credential over the sidecar wire.
 4. Open observes typed readiness only: `apiProvider` must be `firstParty` and
-   `apiKeySource` must be `oauth`. An API-key or delegated-cloud provenance
-   label fails closed rather than silently running on a different profile.
-   Account identity fields are refused, not redacted after the fact.
+   `subscriptionType` must be present. An API-key or delegated-cloud
+   provenance label fails closed under its own check rather than silently
+   running on a different profile. The sidecar projects only `apiProvider` and
+   a boolean `subscriptionPresent`; account identity fields are refused, not
+   redacted after the fact.
 
 Two mechanical rules make this checkable rather than reviewable. The sidecar
 imports the `.` SDK entry point only — the `/bridge` and `/browser` subpaths
@@ -121,8 +123,9 @@ not a sandbox.
 
 ## Version Posture
 
-Five separate axes carry qualified-only one-point claims; none admits an
-unverified-newer point:
+Five separate axes carry qualified-only one-point claims. The claims stay
+exact; the open path has one narrow observation-only exception for a newer Node
+runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.259`
 - `claude-agent.sdk.native`: exact native `2.1.259`, as the shipped
@@ -151,15 +154,23 @@ artifact identity, not as "current".
 
 ## What Open Verifies
 
-Open runs before any provider work and fails closed on any mismatch: wire,
-behavior revision, SDK package and version, native version, Node version, the
-host-leased working directory, the effective model, the exact admitted tool
-set, the selected permission mode, and first-party subscription readiness.
+Open runs before any provider work and fails closed on a mismatch in the wire,
+behavior revision, SDK package and version, native version, the host-leased
+working directory, the exact admitted tool set, the selected permission mode,
+or account readiness. It also fails when the SDK reports no effective model or
+reports one outside an available `supportedModels` list. The exact qualified
+Node point is recorded as `Qualified`; a newer runtime that passes the
+sidecar's floor is recorded as `UnverifiedNewer` with its observed version.
 
-The selected model is sent as `options.model` and then confirmed from the
-runtime's own `system/init` evidence. A session that silently ran Claude's
-ambient default instead of the plan's model is a substitution, not a
-convenience, and fails closed.
+The selected model is sent as `options.model`, while the runtime's own
+`system/init` evidence supplies the effective model. A canonical effective id
+may differ from the requested alias; the sidecar preserves both values and
+uses `supportedModels` only when the SDK reports that list. A missing or
+unsupported effective model fails closed.
+
+Command-level sidecar rejections preserve their fixed failure code in the
+route diagnostic. Only that bounded code is exposed: sidecar message text,
+paths, and account values are discarded.
 
 Every public operation is bounded by a caller-supplied host deadline, and the
 bound covers the return, not merely the noticing.

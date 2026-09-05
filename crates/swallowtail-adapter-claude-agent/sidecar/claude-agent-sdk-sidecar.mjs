@@ -102,6 +102,40 @@ const ENV_NATIVE_BINARY = "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY";
 const ENV_MANIFEST = "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST";
 
 const COMMANDS = new Set(["open", "query", "interrupt", "set_permission_mode", "close"]);
+const COMMAND_FAILURE_CODES = new Set([
+  "missing_environment",
+  "invalid_command",
+  "tools_invalid",
+  "permission_mode_invalid",
+  "permission_mode_rejected",
+  "sdk_unavailable",
+  "sdk_export_missing",
+  "native_manifest_unavailable",
+  "native_version_mismatch",
+  "capabilities_overflow",
+  "capabilities_invalid",
+  "account_not_first_party",
+  "account_not_subscription",
+  "already_open",
+  "node_runtime_unsupported",
+  "construction_failed",
+  "initialization_failed",
+  "cwd_mismatch",
+  "model_mismatch",
+  "model_missing",
+  "supported_model_rejected",
+  "account_unavailable",
+  "native_child_unavailable",
+  "not_open",
+  "turn_active",
+  "prompt_too_large",
+  "interrupt_failed",
+  "permission_mode_unsupported",
+  "permission_mode_failed",
+  "permission_mode_unconfirmed",
+  "unknown_command",
+  "command_failed",
+]);
 
 // Keep the stdout wire exclusive: SDK or dependency console output must never
 // corrupt framing. Diagnostics belong on stderr, which the host bounds.
@@ -158,7 +192,11 @@ async function respond(id, command, success, body) {
 }
 
 async function respondFailure(id, command, code) {
-  await respond(id, command, false, { code, message: `sidecar command failed: ${code}` });
+  const safeCode = COMMAND_FAILURE_CODES.has(code) ? code : "command_failed";
+  await respond(id, command, false, {
+    code: safeCode,
+    message: `sidecar command failed: ${safeCode}`,
+  });
 }
 
 async function emitDiagnostic(level, code) {
@@ -341,14 +379,16 @@ class NativeChild {
   }
 }
 
-function spawnNative(command, args, options) {
+function spawnNative({ command, args, cwd, env, signal }) {
   // The host launched this sidecar inside its own descendant-tree authority,
   // so the native child and everything it spawns stay enrolled in that tree.
   // No detachment, no new session, no new process group.
   const child = spawn(command, args, {
-    ...options,
+    cwd,
+    env,
+    signal,
     detached: false,
-    stdio: options?.stdio ?? ["pipe", "pipe", "pipe"],
+    stdio: ["pipe", "pipe", "pipe"],
   });
   state.native = new NativeChild(child);
   return child;
@@ -378,18 +418,17 @@ function boundedCapabilities(values) {
 
 /// Projects readiness provenance labels only. No email, organization, token,
 /// or raw account value ever crosses this wire.
-function accountProjection(account, apiKeySource) {
+function accountProjection(account) {
   const apiProvider = account?.apiProvider;
   if (apiProvider !== "firstParty") {
     throw new SidecarFailure("account_not_first_party");
   }
-  if (apiKeySource !== "oauth") {
+  if (typeof account?.subscriptionType !== "string" || account.subscriptionType.length === 0) {
     throw new SidecarFailure("account_not_subscription");
   }
   return {
     apiProvider,
-    apiKeySource,
-    subscriptionPresent: typeof account?.subscriptionType === "string",
+    subscriptionPresent: true,
   };
 }
 
@@ -593,7 +632,7 @@ async function handleOpen(params) {
         disallowedTools: disallowed,
         permissionMode,
         canUseTool: (toolName, input) => canUseTool(toolName, input),
-        spawnClaudeCodeProcess: (command, args, options) => spawnNative(command, args, options),
+        spawnClaudeCodeProcess: (options) => spawnNative(options),
       },
     });
   } catch (error) {
@@ -618,9 +657,16 @@ async function handleOpen(params) {
     throw new SidecarFailure("cwd_mismatch");
   }
   // The effective model is proved from the runtime's own init evidence, never
-  // assumed from the request.
-  if (typeof system.model !== "string" || system.model !== model) {
-    throw new SidecarFailure("model_mismatch");
+  // assumed from the request. A canonical id may differ from the requested
+  // alias; the SDK's supported-model evidence is the only optional boundary.
+  if (typeof system.model !== "string" || system.model.length === 0) {
+    throw new SidecarFailure("model_missing");
+  }
+  if (
+    Array.isArray(system.supportedModels) &&
+    !system.supportedModels.includes(system.model)
+  ) {
+    throw new SidecarFailure("supported_model_rejected");
   }
   const capabilities = boundedCapabilities(system.capabilities);
   let account;
@@ -629,7 +675,7 @@ async function handleOpen(params) {
   } catch {
     throw new SidecarFailure("account_unavailable");
   }
-  const readiness = accountProjection(account, system.apiKeySource);
+  const readiness = accountProjection(account);
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
@@ -644,7 +690,11 @@ async function handleOpen(params) {
     nativeVersion,
     nodeVersion: process.versions.node,
     cwd,
+    requestedModel: model,
     model: system.model,
+    ...(Array.isArray(system.supportedModels)
+      ? { supportedModels: system.supportedModels }
+      : {}),
     capabilities,
     account: readiness,
     tools,

@@ -134,3 +134,31 @@ request.
 ## Auto-Continuation
 
 No. Stop for exact-head review; the `v0.4.2` prepare follows.
+
+## Result
+
+- Provider-free repair complete: the frozen 0.3.259 object-form spawn hook and
+  `signal` forwarding are covered by the fake SDK regression fixture; the
+  real `AccountInfo` declaration was checked in the 0.3.259 `sdk.d.ts`, where
+  the subscription-evidence fields are `subscriptionType`, `tokenSource`,
+  and `apiKeySource`, with `apiProvider` kept as a separate first-party
+  check. Every command rejection preserves its fixed sidecar code without
+  forwarding message, path, or account data. Effective model evidence and
+  requested/effective model separation are covered, as is newer-Node
+  `UnverifiedNewer` readiness.
+- Provider-free validation passed: `cargo fmt -p
+  swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
+  swallowtail-adapter-claude-agent`; `effigy package:verify-affected
+  swallowtail-adapter-claude-agent`; `effigy package:api`; `effigy qa:routes`;
+  `effigy qa:guides`; `effigy qa:docs`; `effigy qa:northstar`; and `git diff
+  --check`.
+- Live item 4 used exactly two real 0.3.259 opens, with no prompt, tool call,
+  or write: Node 22.23.2 reached the real 2.1.259 native process but did not
+  produce an init response in the bounded observation window and was
+  terminated; Homebrew Node 26.7.0 produced no valid init message from the
+  real SDK query. No `system.model`, account field-presence, or rejection code
+  was exposed by either attempt, and no account values were recorded. The
+  second session had `query.close()` requested; no third live attempt was
+  made. Live acceptance remains unresolved and needs operator/design review
+  before another probe.
+- The additive API baseline and default read-only profile remain unchanged.

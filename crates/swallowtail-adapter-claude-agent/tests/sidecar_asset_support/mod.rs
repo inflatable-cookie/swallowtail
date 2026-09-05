@@ -46,6 +46,14 @@ impl SidecarProcess {
         Self::start_with(&Fixture::default())
     }
 
+    /// Starts the asset against a named provider-free fake-SDK scenario.
+    pub fn start_scenario(scenario: &'static str) -> Self {
+        Self::start_with(&Fixture {
+            scenario,
+            ..Fixture::default()
+        })
+    }
+
     /// Starts the asset with a fake native child that outlives any bound the
     /// test declares.
     pub fn start_with_surviving_native_child() -> Self {

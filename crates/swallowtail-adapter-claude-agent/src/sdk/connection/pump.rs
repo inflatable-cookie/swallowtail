@@ -108,6 +108,7 @@ impl SdkConnection {
                 pending.sender.complete(Ok(CommandResult {
                     success: response.success,
                     data: response.data,
+                    failure_code: response.failure_code,
                 }));
                 Ok(())
             }

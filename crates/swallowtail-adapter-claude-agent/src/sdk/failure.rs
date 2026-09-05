@@ -1,3 +1,4 @@
+use super::wire::ClaudeAgentSdkFailureCode;
 use swallowtail_runtime::RuntimeFailure;
 
 pub(crate) fn failure(code: &'static str, message: impl Into<String>) -> RuntimeFailure {
@@ -9,6 +10,14 @@ pub(crate) fn protocol_failure() -> RuntimeFailure {
         "swallowtail.claude-agent.sdk.protocol_failed",
         "Claude Agent SDK sidecar stream did not match the qualified protocol",
     )
+}
+
+pub(crate) fn command_rejected(
+    route_code: &'static str,
+    message: &'static str,
+    sidecar_code: ClaudeAgentSdkFailureCode,
+) -> RuntimeFailure {
+    failure(route_code, format!("{message}: {}", sidecar_code.as_str()))
 }
 
 pub(crate) fn unsupported(feature: &str) -> RuntimeFailure {

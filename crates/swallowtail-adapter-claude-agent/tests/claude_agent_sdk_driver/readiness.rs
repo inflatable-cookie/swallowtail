@@ -4,7 +4,7 @@ use crate::sdk_support::{
     prepared_session_with, turn_request,
 };
 use futures_executor::block_on;
-use swallowtail_runtime::SessionOptions;
+use swallowtail_runtime::{InteractiveSessionHandle, SessionOptions};
 
 fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
     let host = host_id("claude-agent-sdk.fixture.readiness");
@@ -21,9 +21,12 @@ fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
 }
 
 #[test]
-fn an_api_key_access_profile_never_becomes_a_subscription_session() {
-    let (code, cleanup) = open_failure(SdkScenario::AccountApiKeySource);
-    assert_eq!(code, "swallowtail.claude-agent.sdk.account_not_ready");
+fn missing_subscription_evidence_never_becomes_a_subscription_session() {
+    let (code, cleanup) = open_failure(SdkScenario::AccountNotSubscription);
+    assert_eq!(
+        code,
+        "swallowtail.claude-agent.sdk.account_not_subscription"
+    );
     // Failing open still terminates the tree and releases both leases.
     assert!(cleanup.contains(&CleanupEvent::ProcessForceStop));
     assert!(cleanup.contains(&CleanupEvent::ResourceRelease));
@@ -33,13 +36,68 @@ fn an_api_key_access_profile_never_becomes_a_subscription_session() {
 #[test]
 fn a_delegated_cloud_provider_is_not_first_party_readiness() {
     let (code, _) = open_failure(SdkScenario::AccountNotFirstParty);
-    assert_eq!(code, "swallowtail.claude-agent.sdk.account_not_ready");
+    assert_eq!(code, "swallowtail.claude-agent.sdk.account_not_first_party");
 }
 
 #[test]
 fn account_identity_fields_are_refused_rather_than_recorded() {
     let (code, _) = open_failure(SdkScenario::AccountIdentityLeak);
     assert_eq!(code, "swallowtail.claude-agent.sdk.account_not_ready");
+}
+
+#[test]
+fn command_rejections_keep_their_fixed_sidecar_code() {
+    let host = host_id("claude-agent-sdk.fixture.command-rejections");
+    let fixture = SdkFixtureHost::new(SdkScenario::QueryRejected);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("session opens before query rejection");
+    let Err(error) = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+    else {
+        panic!("query rejection must fail");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.query_rejected"
+    );
+    assert!(error.diagnostic().message().ends_with(": turn_active"));
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+
+    let host = host_id("claude-agent-sdk.fixture.interrupt-rejection");
+    let fixture = SdkFixtureHost::new(SdkScenario::InterruptRejected);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("session opens before interrupt rejection");
+    let turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("turn starts before interrupt rejection");
+    let error = block_on(turn.cancellation().request()).expect_err("interrupt must reject");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.interrupt_rejected"
+    );
+    assert!(error.diagnostic().message().ends_with(": interrupt_failed"));
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+
+    let host = host_id("claude-agent-sdk.fixture.close-rejection-code");
+    let fixture = SdkFixtureHost::new(SdkScenario::CloseRejected);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let session = block_on(prepared.open_route_session(services))
+        .expect("session opens before close rejection");
+    let outcome = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    let swallowtail_runtime::CleanupOutcome::Failed(diagnostic) = outcome else {
+        panic!("close rejection must fail cleanup");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_rejected"
+    );
+    assert!(diagnostic.message().ends_with(": invalid_command"));
 }
 
 #[test]
@@ -93,12 +151,67 @@ fn preparation_admits_no_session_options_in_this_layer() {
 }
 
 #[test]
-fn an_effective_model_other_than_the_selected_one_fails_closed() {
-    // The plan binds the model; running Claude's ambient default instead is a
-    // silent substitution, so open confirms the effective model from the
-    // runtime's own init evidence.
-    let (code, _) = open_failure(SdkScenario::ModelMismatch);
-    assert_eq!(code, "swallowtail.claude-agent.sdk.open_mismatch");
+fn a_canonical_effective_model_is_accepted_and_published() {
+    let host = host_id("claude-agent-sdk.fixture.canonical-model");
+    let fixture = SdkFixtureHost::new(SdkScenario::CanonicalModel);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let session = block_on(prepared.open_route_session(services)).expect("session opens");
+    assert_eq!(session.requested_model(), "claude-sonnet-5");
+    assert_eq!(session.effective_model(), "claude-sonnet-5-20250929");
+    assert_eq!(session.node_version(), "22.23.2");
+    assert_eq!(session.node_version_posture(), "Qualified");
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+}
+
+#[test]
+fn missing_and_unsupported_effective_models_fail_closed() {
+    assert_eq!(
+        open_failure(SdkScenario::MissingModel).0,
+        "swallowtail.claude-agent.sdk.model_missing"
+    );
+    assert_eq!(
+        open_failure(SdkScenario::UnsupportedModel).0,
+        "swallowtail.claude-agent.sdk.supported_model_rejected"
+    );
+}
+
+#[test]
+fn a_newer_node_that_passes_the_sidecar_floor_is_unverified_newer() {
+    let host = host_id("claude-agent-sdk.fixture.newer-node");
+    let fixture = SdkFixtureHost::new(SdkScenario::NewerNode);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let session = block_on(prepared.open_route_session(services)).expect("newer Node opens");
+    assert_eq!(session.node_version(), "26.7.0");
+    assert_eq!(session.node_version_posture(), "UnverifiedNewer");
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+}
+
+#[test]
+fn open_rejection_surfaces_the_fixed_sidecar_code_without_raw_details() {
+    let host = host_id("claude-agent-sdk.fixture.open-rejection");
+    let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("open must fail closed");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_rejected"
+    );
+    assert!(
+        error
+            .diagnostic()
+            .message()
+            .ends_with(": construction_failed")
+    );
+    for forbidden in ["/fixture/", "@example", "token", "organization"] {
+        assert!(!error.diagnostic().message().contains(forbidden));
+    }
 }
 
 #[test]

@@ -1,0 +1,119 @@
+# g05.030 v0.4.1 Release Readiness
+
+Status: ready; card 090 compatibility audit is ready; cards 091 and 092 are serial behind it
+Owner: Tom
+Created: 2026-09-05
+Updated: 2026-09-05
+Depends on: Contract 036; immutable `v0.4.0` at `56f3913a`; completed g05.021 as precedent; completed g05.029 card 080 and card 089
+Vision tags: source release, compatibility, consumer proof
+
+## Purpose
+
+Produce one reviewed, frozen `v0.4.1` source candidate and the evidence for
+a later operator tag decision. The carrier content is the Claude SDK
+read-write session and permission policy (g05.029 card 080), which Bovine
+Desktop switches to the moment it is tagged. The candidate also carries the
+OpenCode `1.18.28` qualification, the Contract 061 tranches for candidates
+C, E, F, I, and J with their two shared baselines, and the bounded-profile
+preflight scoping from card 089.
+
+Contract 036 says compatible public API and guaranteed-behaviour changes
+advance the patch. Every change since `v0.4.0` is believed additive or
+widening; card 090 proves that rather than assumes it, and read-only release
+status must infer `0.4.1`. If the audit finds a break, the lane stops and
+returns to Chatterbox for a minor decision instead of bending the
+classification.
+
+This milestone authorizes no tag, tag push, crates.io publication, GitHub
+Release object, binary, sidecar, installer, provider call, or consumer-repo
+mutation.
+
+## Runway
+
+1. Card 090 audits exact `v0.4.0` to reviewed-current-source package,
+   dependency, route, semantic API, and guaranteed-behaviour deltas; freezes
+   the release census; classifies every change; and confirms the patch class.
+2. Card 091, after separate operator authorization, runs one Effigy prepare
+   transaction for coordinated `0.4.1` Cargo versions, changelog promotion,
+   and workspace-only lock sync, reruns all local gates on the frozen tree,
+   lands the accepted candidate on canonical `main`, and requires CI at that
+   exact SHA.
+3. Card 092 reruns the external source consumer against the exact candidate,
+   performs one operator-authorized authenticated working-application smoke
+   (the operator names the application; Chatterbox recommends a Bovine
+   Desktop editing session on `claude-agent.sdk` because that is the
+   requirement's own acceptance), compiles final evidence, and stops for the
+   explicit operator tag decision.
+
+The cards are serial. Card 091 consumes card 090's frozen classifications;
+card 092 consumes card 091's immutable candidate SHA and the operator's
+smoke authority packet.
+
+## Release Boundary
+
+No card creates or pushes a tag. Card 092 stops with the exact candidate
+SHA and asks the operator to authorize source commit, canonical branch and
+remote, exact tag name, annotated message, local tag creation, and tag push,
+confirming that publication, a GitHub Release, binaries, sidecars, and
+installers are absent. Any candidate change after the local gates,
+exact-head review, canonical merge, or exact-SHA CI returns to card 091.
+
+## Known Limits Required In Release Notes
+
+- `claude-agent.sdk` write tools run under an explicit ambient-host posture
+  with consumer-mediated per-call admission; `acceptEdits` auto-approves
+  edits; no filesystem boundary is claimed
+- Bash, mid-session model change, resume, and MCP on the SDK route remain
+  later cards (081-084)
+- the SDK route keeps its five exact qualified-only version pins until card
+  087
+- Contract 061 coverage is 570 of 767 rows; candidates B, K, and L remain
+- Kimi local server and Antigravity ceilings stay at `0.38.0` and `1.1.17`
+  with named reopen conditions; Gemini remains deferred; the watcher stays
+  exact `2.1.251`
+
+## Batch Cards
+
+- [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — ready
+- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; needs separate prepare authorization
+- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; needs the operator's smoke authority packet
+
+## Dispatch Manifest
+
+Promoted planning commit: the `main` commit that introduces this file.
+
+| Field | Card 090 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | immutable `v0.4.0` at `56f3913a`; card 080's second PR merged at `23d3cd8d`; card 034 merged at `404fa068`; no open feature PR |
+| Completion conditions | Research 286 with the complete `v0.4.0..HEAD` package, dependency, route, semantic API, and guaranteed-behaviour ledgers; every change classified compatible or breaking with evidence; immutable `v0.4.0` baselines byte-identical; patch class confirmed or a stop recorded; card result filled; docs and Northstar gates green |
+| Owned mutable paths | `docs/research/286-*.md`; `docs/research/README.md` one index line; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every `crates/**` path; `Cargo.toml`, `Cargo.lock`; `CHANGELOG.md`; `release-baselines/**`; `docs/releases/**`; contracts; version claims |
+| Approved concurrent siblings | none; the currentness and Contract 061 lanes are quiet and the release lane freezes feature merges until card 092 stops |
+| Serial edges | card 091 follows an accepted card 090; card 092 follows card 091's candidate merge and exact-SHA CI |
+| Worker capability class | evidence-first audit worker with `cargo-public-api` and Contract 036 toolchain discipline; no provider credentials |
+| Acceptance evidence | ledgers keyed to the `v0.4.0` peel and the audited head; immutable-baseline diff; read-only release-status output inferring `0.4.1` |
+| Review oracle | one exact tree supports every statement; the smallest counterexample is a public item or guaranteed value changed since `v0.4.0` but absent from the ledger, or a break classified compatible |
+| Stop conditions | any breaking public API or guaranteed-behaviour change (return to Chatterbox for the minor decision); a modified immutable baseline; an open mergeable feature or currentness PR |
+| Escalation owner | operator via Chatterbox for release classification; coordinator for mechanical blockers |
+
+Card 091 enters the manifest after card 090 is accepted and the operator
+grants prepare authorization; card 092 after card 091's candidate merges with
+green exact-SHA CI and the operator supplies the smoke authority packet.
+
+## Feature Freeze
+
+From this promotion until card 092 stops, no feature or currentness PR
+merges to `main`. Cards 081-088 and the Contract 061 remainder stay queued.
+
+## Acceptance
+
+- [ ] every semantic API and guaranteed-behaviour delta from `v0.4.0` is
+      inventoried and classified, and the patch class holds
+- [ ] immutable `v0.4.0` baselines are unchanged; a distinct `0.4.1`
+      baseline and route inventory are created only during preparation
+- [ ] all local gates pass together on the frozen candidate, then exact-SHA CI
+- [ ] the external source consumer and one authenticated working-application
+      editing session pass against the exact candidate
+- [ ] final evidence names the exact SHA and stops before tag creation

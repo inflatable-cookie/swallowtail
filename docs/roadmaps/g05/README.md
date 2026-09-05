@@ -38,11 +38,13 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | ready; card 080 delivered as the `v0.4.1` carrier; cards 081-088 queued in consumer priority order | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
+| Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | ready; card 090 audit ready; cards 091-092 serial; feature freeze active | Contract 036; `v0.4.0` precedent; Research 286 | `g05.030`, cards 090-092 |
 | Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
 | Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
 
 ## Planned Next Roadmaps
 
+- [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — ready; card 090 compatibility audit is ready; cards 091-092 serial; feature freeze until card 092 stops
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered the `v0.4.1` carrier, card 089's bounded-profile preflight exclusion landed, and cards 081-088 are queued in consumer priority order
 - [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
 - [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
@@ -74,7 +76,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has twenty-nine numbered roadmaps: 22 completed milestones including
+g05 has thirty numbered roadmaps: 22 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -409,6 +411,7 @@ identity.
 
 ## Milestones
 
+- [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — ready; card 090 ready; cards 091-092 serial
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered; cards 081-088 queued
 - [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
 - [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated

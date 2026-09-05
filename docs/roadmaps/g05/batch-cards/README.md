@@ -2,9 +2,12 @@
 
 ## Ready
 
+- [090-v0-4-0-to-candidate-compatibility-audit.md](./090-v0-4-0-to-candidate-compatibility-audit.md) — ready; prove every change since `v0.4.0` is patch-compatible and freeze the `0.4.1` census; Research 286
 
 ## Planned
 
+- [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; separate prepare authorization
+- [092-v0-4-1-consumer-proof-and-operator-tag-gate.md](./092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; operator smoke authority packet
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — planned; g05.029 priority 2
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4

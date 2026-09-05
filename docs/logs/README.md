@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-05 g05.030 v0.4.1 Release Readiness Compiled](./2026-09-05-g05-030-v0-4-1-release-readiness-compiled.md) — card 080 delivered the Claude SDK editing session; cards 090-092 compiled on the v0.4.0 precedent with a feature freeze; card 090 ready; the operator's smoke packet is needed for card 092
 - [2026-09-05 g05.029 Card 080 Closeout](./2026-09-05-g05-029-card-080-closeout.md) — permission policy and ambient read-write editing merged through PRs 221 and 224; Chatterbox to compile `v0.4.1` readiness
 - [2026-09-04 g05.009 Card 034 Closeout](./2026-09-04-g05-009-card-034-closeout.md) — Candidate F merged through PR 222 as `404fa068`; Contract 061 coverage is now 570 proved rows
 - [2026-09-04 g05.029 Card 089 Closeout](./2026-09-04-g05-029-card-089-closeout.md) — bounded-profile preflight exclusion merged through PR 223 as `e4399790`; Card 080's second PR is unblocked

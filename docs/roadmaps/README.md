@@ -15,17 +15,15 @@ shape.
 
 ## Next Task
 
-Chatterbox should compile the g05.029 `v0.4.1` release-readiness roadmap now
-that Card 080's permission-policy and ambient read-write editing PRs are
-merged. Cards 081-088 remain queued without execution authority.
-[g05.029 card 080](g05/batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md)
-runs concurrently as the `v0.4.1` carrier; card 089's bounded-profile
-preflight guard is merged, so its second PR can follow. Cards 074, 075, 076,
-079, and 089 are merged. g05.028 is
-complete: OpenCode qualified through `1.18.28`.
-Current Contract 061 coverage is 481 proved / 286 remaining; card 034 can
-reconcile 89 rows without a new shared baseline. `v0.4.0` is tagged and
-the feature/currentness freeze is lifted.
+Implement [g05.030 card 090](g05/batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md):
+audit exact `v0.4.0` to the current head, prove every change is
+patch-compatible, and freeze the `0.4.1` census in Research 286, from the
+manifest in that roadmap. Cards 091 and 092 are serial behind it; card 091
+needs separate operator prepare authorization and card 092 needs the
+operator's smoke authority packet. A feature freeze holds until card 092
+stops: g05.029 cards 081-088 and the Contract 061 remainder (candidates B, K,
+L; 197 rows) stay queued. Contract 061 coverage is 570 proved / 197
+remaining. `v0.4.0` is tagged.
 
 ## Standing Lanes
 

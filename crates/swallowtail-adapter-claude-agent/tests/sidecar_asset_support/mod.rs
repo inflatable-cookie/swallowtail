@@ -8,11 +8,13 @@ use serde_json::{Value, json};
 use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 use std::process::{Child, ChildStdin, Command, Stdio};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::mpsc::{Receiver, RecvTimeoutError, channel};
 use std::time::Duration;
 use swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE;
 
 const SIDECAR_DEATH_GUARD: Duration = Duration::from_secs(5 * 60);
+static NEXT_TEMPORARY_DIRECTORY: AtomicUsize = AtomicUsize::new(0);
 
 /// How one sidecar-asset process is started.
 struct Fixture {
@@ -298,10 +300,11 @@ fn temporary_directory() -> PathBuf {
         .duration_since(std::time::UNIX_EPOCH)
         .expect("system time follows epoch")
         .as_nanos();
+    let sequence = NEXT_TEMPORARY_DIRECTORY.fetch_add(1, Ordering::Relaxed);
     let path = std::env::temp_dir().join(format!(
-        "swallowtail-claude-agent-sdk-{}-{nanos}",
+        "swallowtail-claude-agent-sdk-{}-{nanos}-{sequence}",
         std::process::id()
     ));
-    std::fs::create_dir_all(&path).expect("fixture directory is created");
+    std::fs::create_dir(&path).expect("fixture directory is created without collision");
     path
 }

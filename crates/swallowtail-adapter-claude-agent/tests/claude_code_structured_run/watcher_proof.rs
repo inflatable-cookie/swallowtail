@@ -8,6 +8,9 @@ use swallowtail_runtime::{
     RuntimeRunId, RuntimeTurnId, WATCHER_BRIDGE_TOOLS_LIST_METHOD,
 };
 
+static NEXT_TEMP_WORKSPACE: std::sync::atomic::AtomicUsize =
+    std::sync::atomic::AtomicUsize::new(0);
+
 fn hook_event(session: &str, phase: &str) -> RuntimeEvent {
     hook_event_for("turn-a", session, phase)
 }
@@ -132,11 +135,12 @@ struct TempWorkspace {
 
 impl TempWorkspace {
     fn create() -> Self {
+        let sequence = NEXT_TEMP_WORKSPACE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
-            "swallowtail-watcher-proof-{}",
-            std::process::id()
+            "swallowtail-watcher-proof-{}-{sequence}",
+            std::process::id(),
         ));
-        std::fs::create_dir_all(&path).expect("workspace");
+        std::fs::create_dir(&path).expect("workspace is created without collision");
         Self { path }
     }
 }
@@ -149,22 +153,14 @@ impl Drop for TempWorkspace {
 
 #[test]
 fn temporary_workspace_cleanup_is_established_before_assertions() {
-    let path = std::panic::catch_unwind(|| {
-        let workspace = TempWorkspace::create();
-        let path = workspace.path.clone();
-        assert!(path.is_dir());
+    let workspace = TempWorkspace::create();
+    let path = workspace.path.clone();
+    std::panic::catch_unwind(move || {
+        assert!(workspace.path.is_dir());
         panic!("assertion failure after workspace owner is live");
     })
     .expect_err("panic is required");
-    drop(path);
-    let leftover = std::env::temp_dir().join(format!(
-        "swallowtail-watcher-proof-{}",
-        std::process::id()
-    ));
-    assert!(
-        !leftover.exists(),
-        "workspace survived an assertion panic"
-    );
+    assert!(!path.exists(), "workspace survived an assertion panic");
 }
 
 #[test]

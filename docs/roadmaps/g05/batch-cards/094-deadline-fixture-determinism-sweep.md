@@ -87,3 +87,45 @@ reason.
 ## Auto-Continuation
 
 No. Stop for exact-head review; card 091 re-prepares on the merged base.
+
+## Result
+
+Fixture-uniqueness release gate prepared from current main `dc04df04`:
+
+- **Claude Agent SDK sidecar asset — fixed here.** Its temporary-directory
+  name now includes a process-wide `AtomicUsize` sequence after the process ID
+  and timestamp. `create_dir` rejects any collision instead of sharing an
+  existing root through `create_dir_all`.
+- **Anthropic prepared fixture — deterministic.** Its attachment path already
+  includes the process-wide `NEXT_ATTACHMENT: AtomicUsize` sequence.
+- **Claude Code support — deterministic.** Its watcher temporary root already
+  includes the process-wide `TEMPORARY_ROOT_SEQUENCE` counter.
+- **Claude structured-run watcher proof — fixed here.** Its workspace now has
+  an atomic sequence suffix, uses `create_dir`, and its unwind test checks the
+  exact allocated path after owner teardown.
+- **Claude live watcher probe — fixed here.** Its workspace now has an atomic
+  sequence suffix and uses `create_dir`.
+- **Oh My Pi fixture host — fixed here.** Attachment paths now have an atomic
+  sequence suffix and use `File::create_new`, the fail-loud file equivalent of
+  `create_dir`.
+- **OpenCode prepared fixture — fixed here.** Attachment paths now have an
+  atomic sequence suffix and use `File::create_new`.
+
+The exact pinned reproduction command completed 20 runs with 20 passes and
+zero failures:
+
+```text
+rustup run 1.95.0 cargo test -p swallowtail-adapter-claude-agent --all-features --locked --test claude_agent_sdk_sidecar_asset
+```
+
+Focused validation passed 492 tests across the three touched packages. Pinned
+Rust `1.95.0` package tests passed for Oh My Pi and OpenCode; pinned Claude
+structured-run and live-watcher tests passed. Formatting and the 40-package
+semantic API gate passed.
+
+This result covers only the fixture-uniqueness release gate recorded after the
+fifth prepare. The broader Card 094 deadline sweep remains incomplete and
+deferred post-tag under the operator compression decision; this result does not
+claim otherwise. All changes are test-only plus this Result. Production source,
+sidecars, Cargo files, changelog, release baselines, contracts, and Card 091 are
+unchanged.

@@ -26,6 +26,8 @@ use swallowtail_runtime::{
     WorkingResourceRef, WorkingResourceService,
 };
 
+static NEXT_ATTACHMENT: AtomicUsize = AtomicUsize::new(0);
+
 pub(super) struct PreparedFixture {
     pub(super) server: FixtureServer,
     pub(super) host_id: ExecutionHostId,
@@ -59,12 +61,16 @@ impl PreparedFixture {
         let credential = CredentialRef::new("opencode.prepared.delegated").unwrap();
         let resource = WorkingResourceRef::new("opencode.prepared.workspace").unwrap();
         let attachment_ref = AttachmentRef::new("opencode.prepared.image").unwrap();
+        let attachment_sequence = NEXT_ATTACHMENT.fetch_add(1, Ordering::Relaxed);
         let attachment_path = std::env::temp_dir().join(format!(
-            "swallowtail-opencode-{}-{}.png",
+            "swallowtail-opencode-{}-{attachment_sequence}-{}.png",
             std::process::id(),
             host_id.as_str().replace(['.', ':'], "-")
         ));
-        std::fs::write(&attachment_path, b"\x89PNG\r\n\x1a\n").expect("fixture image writes");
+        let mut attachment_file = std::fs::File::create_new(&attachment_path)
+            .expect("fixture image path is created without collision");
+        std::io::Write::write_all(&mut attachment_file, b"\x89PNG\r\n\x1a\n")
+            .expect("fixture image writes");
         let attachment =
             AttachmentDescriptor::new(attachment_ref.clone(), "image/png", AttachmentRole::Input)
                 .unwrap()

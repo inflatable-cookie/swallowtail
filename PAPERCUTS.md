@@ -45,6 +45,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `docs/triage/20260905-092527-release-gate-failure-diagnosability.md`
   (commit `47f66f93c`). Swallowtail release lanes should run prepare with
   `--json` until the text renderer is fixed.
+- Progress 2026-09-05 (later): fixed on Effigy main by PR 90 (card 1112,
+  merge `7cafd3b5`): per-gate logs under `.effigy/reports/release/gates/`,
+  a redacted `environment.json`, failing-gate tail in text output, and an
+  immediate `release gates` inventory. Adopt through the local-install route
+  after the `v0.4.1` lane closes; do not change the release tool mid-lane.
+  Keep-on-failure remains in Effigy triage.
 
 ### [ ] Docs link check skips roadmap batch cards — 2026-09-04
 - Friction: `scripts/check-docs-links.py` covers front doors plus research

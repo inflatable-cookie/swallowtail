@@ -237,6 +237,22 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `cwd_mismatch` rejection; the close evidence is recorded, but no Clean or
   Degraded success claim is made from this failed turn. This was the one
   authorized live turn; do not retry without a fresh authorization relay.
+- Under the second single-turn authorization, exactly one Node `22.23.2`
+  read-only live turn ran after the canonical-cwd repair. Sanitized evidence
+  was: open `success: true` with `requested-with-supported-list`, first-party
+  readiness, and an available supported-model list; first yielded message
+  `system/init` with canonical cwd match; query `success: true` with
+  `confirmed` readiness, cwd and requested-model confirmation, effective model
+  `claude-sonnet-5`, and capability labels
+  `interrupt_receipt_v1`, `interrupt_cancel_queued_v1`, and
+  `msg_lifecycle_v1`. No tool was requested. The terminal event was
+  `turn_ended` with stop reason `success` and `isError: true`. Close returned
+  native exit event `exit`, code `1`, signal absent, `sdkTransportCloseRan:
+  true`, `nativeJoin: exited`, and `nativeExitObserved: true`; the sidecar
+  root exited by `exit` code `0`, signal absent. The resulting posture is
+  `Failed` because the turn terminal carried `isError: true` and the native
+  child exited nonzero. Acceptance remains unticked; do not run another live
+  turn without a fresh authorization relay.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.

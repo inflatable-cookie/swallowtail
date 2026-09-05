@@ -97,3 +97,10 @@ Required-check names for the new layout:
 
 Branch protection was not changed; any required-check policy change remains a
 coordinator decision.
+
+Post-merge verification: main-push run [33971762581](https://github.com/inflatable-cookie/swallowtail/actions/runs/33971762581)
+on `ba8275ebf7623724ec61398acd1117d9c5c08c9a` was cancelled. Its `Pinned
+MSRV floor` job entered the `Test` step at 14:26:48Z and the step ended
+`cancelled` at 14:29:49Z, so the pinned MSRV `Test` step did execute but did
+not complete successfully. The follow-up keeps PR cancellation enabled and
+makes only a push to `main` non-canceling.

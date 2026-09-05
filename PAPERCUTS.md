@@ -39,6 +39,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Fix: tee each gate's stdout and stderr to `.effigy/reports/release/<gate>.log`
   and print the last lines of the failing gate in the rollback summary.
 - Surface: Effigy release prepare gate runner; Swallowtail `config/release.toml`.
+- Progress 2026-09-05: Effigy Chatterbox confirms the gate output is captured
+  in memory and rendered by `effigy --json release prepare ...`; only the text
+  renderer drops it. Intake filed in Effigy triage
+  `docs/triage/20260905-092527-release-gate-failure-diagnosability.md`
+  (commit `47f66f93c`). Swallowtail release lanes should run prepare with
+  `--json` until the text renderer is fixed.
 
 ### [ ] Docs link check skips roadmap batch cards — 2026-09-04
 - Friction: `scripts/check-docs-links.py` covers front doors plus research

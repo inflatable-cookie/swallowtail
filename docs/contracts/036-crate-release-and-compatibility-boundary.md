@@ -331,8 +331,9 @@ mutation.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.4.0` at
-`56f3913ac99af44b6ff45384cfc53a0adea587ba`, tagged 2026-09-04. Immutable
+Current tagged identity is `v0.4.1` at
+`c3cce7504ffd5eae138a0190f1cd81332db68c3c`, tagged 2026-09-05. Immutable
+`v0.4.0` remains at `56f3913ac99af44b6ff45384cfc53a0adea587ba`. Immutable
 `v0.3.3` remains at `51d186208e75dca4c04f077dd7179ec3c2fafae9`. Later candidates require a
 strictly greater version, an absent matching tag, and explicit operator
 authorization of:

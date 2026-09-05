@@ -15,14 +15,9 @@ shape.
 
 ## Next Task
 
-Implement [g05.030 card 094](g05/batch-cards/094-deadline-fixture-determinism-sweep.md):
-fix the Pi sidecar lifecycle deadline race and sweep the workspace for every
-test whose outcome depends on which of two scheduled events wins, from the
-manifest in that roadmap. Card 091's fourth prepare failed the floor on that
-race after card 093 repaired the Claude fixture; the operator ruled such
-tests are defects. Card 091 re-prepares on card 094's merged base under the
-standing grant; card 092 follows. The feature freeze holds. `v0.4.0` is
-tagged.
+The g05.030 `v0.4.1` release-readiness lane is complete. The tagged source
+release is `v0.4.1` at `c3cce750`; feature freeze is lifted. Ask the operator
+for the next runway decision.
 
 ## Standing Lanes
 

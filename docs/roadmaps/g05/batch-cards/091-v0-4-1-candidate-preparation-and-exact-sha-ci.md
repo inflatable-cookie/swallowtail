@@ -1,6 +1,6 @@
 # 091 v0.4.1 Candidate Preparation And Exact-SHA CI
 
-Status: ready; Card 093 merged as 4bb00dab; re-prepare on this repaired base under renewed authorization
+Status: complete; `v0.4.1` tagged at `c3cce750`
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -78,5 +78,9 @@ internal dependency edges, all requiring `^0.4.1` (SHA-256
 `6d35bf0f02e13f572d36f4a3b63e992616a04e7e5c44552d164a26634fc860be`). The API
 manifest SHA-256 is
 `42b64192145c35aa1523167ec6c99d8b0d09cc66a05b7561aeb08fd04a5531eb`.
-No `0.4.0` baseline was modified. Candidate PR creation and exact-head review
-are next; merge, tag, publication, and consumer mutation remain out of scope.
+No `0.4.0` baseline was modified. Candidate PR `#229` was accepted at exact
+head `cb732009` and merged at `c3cce750`. The merged-SHA workflow-dispatch run
+`33969131592` passed all six jobs. The source consumer passed from a clean
+detached checkout at the merged SHA. Operator authorization created and pushed
+annotated tag `v0.4.1`; no application had driven the candidate before the
+tag. No publication or consumer mutation occurred.

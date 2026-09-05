@@ -6,9 +6,8 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.4.1](0.4.1.md) — candidate; intended patch over the tagged
-  `v0.4.0`; tag creation, publication, provider work, consumer mutation, and
-  merge remain unauthorized
+- [Swallowtail 0.4.1](0.4.1.md) — released 2026-09-05 as annotated tag
+  `v0.4.1` at `c3cce750`; patch-compatible source release over `v0.4.0`
 
 Earlier immutable releases remain documented at [`v0.4.0`](0.4.0.md),
 [`v0.3.3`](0.3.3.md),

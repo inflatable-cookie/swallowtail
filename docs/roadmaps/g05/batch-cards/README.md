@@ -3,12 +3,10 @@
 ## Ready
 
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — ready; fix the Pi sidecar deadline race and sweep the workspace for scheduler-dependent deadline tests; release-lane repair under the freeze
-- [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted after Card 090 acceptance
 
 ## Planned
 
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — planned; after the `v0.4.1` tag; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
-- [092-v0-4-1-consumer-proof-and-operator-tag-gate.md](./092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; operator smoke authority packet
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — planned; g05.029 priority 2
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
@@ -24,6 +22,8 @@
 
 ## Completed
 
+- [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — complete; `v0.4.1` tagged at `c3cce750`
+- [092-v0-4-1-consumer-proof-and-operator-tag-gate.md](./092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — complete; source consumer passed at `c3cce750`; operator-authorized tag pushed
 - [093-claude-sdk-sidecar-fixture-determinism.md](./093-claude-sdk-sidecar-fixture-determinism.md) — complete; deterministic sidecar-asset fixture merged through PR 226 as `4bb00dab`; 20/20 full-binary and 200/200 targeted load runs passed
 
 - [090-v0-4-0-to-candidate-compatibility-audit.md](./090-v0-4-0-to-candidate-compatibility-audit.md) — complete; Research 286 froze the patch-compatible `0.4.1` census; PR 225 merged as `3dcf4f12`

@@ -1,6 +1,6 @@
 # 092 v0.4.1 Consumer Proof And Operator Tag Gate
 
-Status: planned; serial after card 091's candidate merges with green exact-SHA CI; reduced by the operator's 2026-09-05 compression decision to the external source consumer; the recorded v0.4.0 Nucleus smoke satisfies Contract 036; Bovine's editing session is post-tag adoption evidence
+Status: complete; source consumer passed at `c3cce750`; operator-authorized annotated tag `v0.4.1` pushed
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -34,6 +34,16 @@ complete.
    remote, exact tag `v0.4.1`, annotated message, and confirmation that no
    publication, GitHub Release, binary, sidecar, or installer is included.
 4. Stop. No card authorizes tag creation or push.
+
+## Result
+
+`effigy package:source-consumer` passed from a clean detached checkout at
+`c3cce7504ffd5eae138a0190f1cd81332db68c3c`. No application had driven the
+candidate before the tag. The operator authorized creation and push of the
+annotated `v0.4.1` tag; its object is
+`c888b2dc1a968d8dda66a99da1bb5fd51067df58`, and its local and remote peels
+resolve to the merged SHA. No provider call, consumer-repository mutation,
+publication, GitHub Release, binary, sidecar, or installer was performed.
 
 ## Auto-Continuation
 

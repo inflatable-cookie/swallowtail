@@ -1,6 +1,6 @@
 # g05.030 v0.4.1 Release Readiness
 
-Status: ready; card 090 accepted and merged; card 091 is ready under its one-shot prepare authorization; card 092 is serial behind it
+Status: complete; `v0.4.1` tagged at `c3cce750`; cards 090-092 complete; feature freeze lifted
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -77,8 +77,8 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 - [094 Deadline Fixture Determinism Sweep](batch-cards/094-deadline-fixture-determinism-sweep.md) — ready; Pi lifecycle race plus a workspace sweep; card 091 re-prepares on its merged base
 - [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — complete; PR 226 merged as `4bb00dab`; deterministic sidecar-asset fixture proven under load
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
-- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; re-prepare on Card 093 merge `4bb00dab` under renewed authorization
-- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; Bovine Desktop editing session accepted as the smoke; exact checkout, command, and retry budget still required
+- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — complete; merged candidate `c3cce750`; tagged `v0.4.1`
+- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — complete; source consumer passed; operator-authorized tag pushed
 
 ## Dispatch Manifest
 
@@ -259,6 +259,18 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Stop conditions | ordering cannot be guaranteed without a production change (return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
 
+
+## Result
+
+The `v0.4.1` candidate was prepared, reviewed, merged at exact SHA
+`c3cce7504ffd5eae138a0190f1cd81332db68c3c`, and tagged as annotated `v0.4.1`.
+The tag object is `c888b2dc1a968d8dda66a99da1bb5fd51067df58`; local and remote
+peels match the merged SHA. The merged-SHA workflow-dispatch run
+`33969131592` passed all six jobs. The clean detached source consumer passed
+at the merged SHA. No application had driven the candidate before the tag.
+No crates.io publication, GitHub Release, binary, sidecar, installer,
+provider mutation, or consumer-repository mutation occurred. The feature
+freeze is lifted.
 
 ## Acceptance
 

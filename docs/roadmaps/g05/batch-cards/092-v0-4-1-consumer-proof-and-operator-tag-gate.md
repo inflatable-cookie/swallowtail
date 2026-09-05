@@ -1,6 +1,6 @@
 # 092 v0.4.1 Consumer Proof And Operator Tag Gate
 
-Status: planned; serial after card 091's candidate merges with green exact-SHA CI; needs the operator's smoke authority packet
+Status: planned; serial after card 091's candidate merges with green exact-SHA CI; the operator accepted Bovine Desktop on `claude-agent.sdk` as the smoke application on 2026-09-05; exact checkout, command, and retry budget still required
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -15,11 +15,15 @@ evidence, and stop for the operator's exact tag decision.
 
 ## Operator Authority Packet (required before ready)
 
-The operator names: the working application and exact checkout; the
-authenticated route and the exact command or test; the retry budget; and
-consumer-repo mutation permission. Chatterbox recommends a Bovine Desktop
-multi-turn editing session on `claude-agent.sdk` with per-call admission
-visible, because that is the requirement's own acceptance.
+Accepted on 2026-09-05: the working application is Bovine Desktop and the
+smoke is a multi-turn editing session on `claude-agent.sdk` with per-call
+admission visible, the requirement's own acceptance. Still required before
+this card is ready, supplied by the operator or the Acowtancy Chatterbox
+thread: the exact Bovine checkout and dependency revision that consumes the
+candidate; the exact command or test; the retry budget (the `v0.4.0`
+precedent was one attempt plus one authorized retry); and consumer-repo
+mutation permission. No provider call happens until that packet is
+complete.
 
 ## Scope
 

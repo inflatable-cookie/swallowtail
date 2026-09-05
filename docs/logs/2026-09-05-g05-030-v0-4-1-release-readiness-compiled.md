@@ -21,6 +21,14 @@ after the operator's smoke packet. Chatterbox recommends a Bovine editing
 session on `claude-agent.sdk` as the smoke. A feature freeze holds from this
 promotion until card 092 stops.
 
+## Authorizations
+
+On 2026-09-05 the operator granted card 091's one-shot prepare authorization,
+contingent on card 090's acceptance, and accepted Bovine Desktop on
+`claude-agent.sdk` as the card 092 smoke application. The exact Bovine
+checkout, command, and retry budget are still to be supplied before card 092
+is ready.
+
 ## Next
 
-Coordinator dispatches card 090. Operator decides the smoke application.
+Coordinator dispatches card 090.

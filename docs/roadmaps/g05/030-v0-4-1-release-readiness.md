@@ -75,8 +75,8 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 ## Batch Cards
 
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — ready
-- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; needs separate prepare authorization
-- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; needs the operator's smoke authority packet
+- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; prepare authorization granted 2026-09-05
+- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; Bovine Desktop editing session accepted as the smoke; exact checkout, command, and retry budget still required
 
 ## Dispatch Manifest
 
@@ -98,9 +98,11 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Stop conditions | any breaking public API or guaranteed-behaviour change (return to Chatterbox for the minor decision); a modified immutable baseline; an open mergeable feature or currentness PR |
 | Escalation owner | operator via Chatterbox for release classification; coordinator for mechanical blockers |
 
-Card 091 enters the manifest after card 090 is accepted and the operator
-grants prepare authorization; card 092 after card 091's candidate merges with
-green exact-SHA CI and the operator supplies the smoke authority packet.
+Card 091 enters the manifest after card 090 is accepted; the operator granted
+its one-shot prepare authorization on 2026-09-05. Card 092 enters after card
+091's candidate merges with green exact-SHA CI and the smoke packet is
+complete: Bovine Desktop on `claude-agent.sdk` is accepted; the exact checkout,
+command, and retry budget are still to be supplied.
 
 ## Feature Freeze
 

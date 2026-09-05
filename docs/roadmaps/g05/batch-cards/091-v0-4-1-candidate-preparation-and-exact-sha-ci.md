@@ -1,6 +1,6 @@
 # 091 v0.4.1 Candidate Preparation And Exact-SHA CI
 
-Status: planned; serial after an accepted card 090; needs separate operator prepare authorization
+Status: planned; serial after an accepted card 090; operator prepare authorization granted 2026-09-05 for exactly one Effigy prepare transaction once card 090 is accepted
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -22,7 +22,9 @@ accepted candidate on canonical `main`, and require CI at that exact SHA.
 2. Run read-only release status; confirm it infers patch `0.4.1` and the
    three-mutation prepare plan (coordinated `Cargo.toml` versions, changelog
    promotion, workspace-only `Cargo.lock` sync).
-3. After separate operator authorization, run exactly one prepare
+3. The operator granted prepare authorization on 2026-09-05, contingent on
+   card 090's acceptance and a clean canonical base; a failed or rolled-back
+   prepare consumes it and needs a fresh grant. Run exactly one prepare
    transaction; rerun all local gates on the frozen tree; extract the exact
    promoted changelog; regenerate the `0.4.1` semantic baseline and route
    inventory without touching `0.4.0` files.

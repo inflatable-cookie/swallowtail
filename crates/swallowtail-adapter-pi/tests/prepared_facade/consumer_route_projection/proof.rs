@@ -124,6 +124,14 @@ fn pi_ledgers_reconcile_against_real_prepared_facade_contributions() {
     );
     assert_observed(&observed_rpc(), &PI_RPC_LEDGER, &RPC_PROFILES);
     assert_observed(&observed_sidecar(), &PI_SIDECAR_LEDGER, &SIDECAR_PROFILES);
+    assert_eq!(
+        PI_SIDECAR_LEDGER
+            .iter()
+            .find(|entry| entry.semantic_id == "feature.persistent-session-posture")
+            .expect("sidecar persistent posture is ledgered")
+            .operation_shape,
+        "session-lifecycle"
+    );
 }
 
 #[test]

@@ -66,8 +66,8 @@ fn operation_shape(
         | "feature.cancellation-or-interruption"
         | "feature.working-resource"
         | "feature.prepared-facade"
-        | "feature.reasoning-selection"
-        | "feature.persistent-session-posture" => "route-capability",
+        | "feature.reasoning-selection" => "route-capability",
+        "feature.persistent-session-posture" => "session-lifecycle",
         "control.load-session" | "control.resume-session" => "session-management",
         "control.model-selection" | "control.reasoning-selection" | "control.attachments" => {
             match contribution_shape {

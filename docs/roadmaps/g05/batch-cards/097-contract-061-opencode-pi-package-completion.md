@@ -92,6 +92,9 @@ No. Stop after one reviewable PR for exact-head review.
 
 Repaired candidate L at exact scope: `opencode.http` 33 emitted / 2 withheld,
 `pi.rpc` 15/0, and `pi.sdk-sidecar` 16/3; 64 emitted and 5 withheld across 69.
+The Pi sidecar `feature.persistent-session-posture` tuple uses the census
+`session-lifecycle` operation shape, with the adapter-pi proof asserting that
+identity against the real prepared contribution.
 The repair reverted the sidecar plan widening in
 `crates/swallowtail-adapter-pi/src/sidecar/prepared/build.rs`: its session
 facade has no catalogue role or route, no `Capability::UsageReporting`

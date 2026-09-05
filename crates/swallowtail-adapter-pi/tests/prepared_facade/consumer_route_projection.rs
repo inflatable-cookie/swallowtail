@@ -169,6 +169,65 @@ fn pi_rpc_attachments_are_conditional_and_per_turn_authority_is_exact() {
 }
 
 #[test]
+fn pi_mixed_structured_and_interactive_assembly_fails_at_applicability_admission() {
+    let prepared = pi_prepared();
+    let run = prepared
+        .prepare_run(PiRunProfileInput::new(
+            RequestId::new("pi-mixed-run").unwrap(),
+            super::model("pi.mixed.route"),
+            OperationContent::new("mixed run").unwrap(),
+            WorkingResourceRef::new("pi.mixed.workspace").unwrap(),
+            Deadline::at(MonotonicInstant::from_ticks(100_000)),
+        ))
+        .expect("Pi run prepares");
+    let session = prepared
+        .prepare_session(
+            PiSessionProfileInput::new(
+                RequestId::new("pi-mixed-session").unwrap(),
+                super::model("pi.mixed.route"),
+                WorkingResourceRef::new("pi.mixed.workspace").unwrap(),
+                SessionOptions::default(),
+            )
+            .with_image_attachments(),
+        )
+        .expect("Pi session prepares");
+    let run_contribution = run
+        .consumer_route_projection_contribution(
+            ConsumerRouteProjectionSourceId::new("pi-mixed-run-source").unwrap(),
+        )
+        .expect("run contribution admits");
+    let session_contribution = session
+        .consumer_route_projection_contribution(
+            ConsumerRouteProjectionSourceId::new("pi-mixed-session-source").unwrap(),
+        )
+        .expect("session contribution admits");
+    let row = rows(&session_contribution)
+        .into_iter()
+        .find(|row| semantic_id(row) == "feature.prepared-facade")
+        .expect("session prepared-facade row exists");
+    let rebound = ConsumerRouteProjectionRow::new(
+        row.identity().clone(),
+        session_contribution.applicability().clone(),
+        run_contribution.sources().next().unwrap().clone(),
+        row.source_class(),
+        row.evidence_strength(),
+        row.lifecycle(),
+    );
+    let failure = ConsumerRouteProjectionContribution::new(
+        run_contribution.applicability().clone(),
+        run_contribution.sources().cloned().collect::<Vec<_>>(),
+        [rebound],
+        [],
+        [],
+    )
+    .expect_err("cross-operation assembly is rejected");
+    assert_eq!(
+        failure.kind(),
+        swallowtail_runtime::ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement
+    );
+}
+
+#[test]
 fn pi_sdk_sidecar_projection_keeps_reasoning_and_attachment_evidence_route_local() {
     let sidecar = sidecar_prepared(true, reasoning_options("medium"));
     assert!(

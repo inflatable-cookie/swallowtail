@@ -248,7 +248,7 @@ pub(super) const PI_SIDECAR_LEDGER: [LedgerEntry; 19] = [
     },
     LedgerEntry {
         route_id: SIDECAR_ROUTE,
-        operation_shape: "route-capability",
+        operation_shape: "session-lifecycle",
         semantic_id: "feature.persistent-session-posture",
         emitted_by: SIDECAR_EVERY,
         withheld_because: "",

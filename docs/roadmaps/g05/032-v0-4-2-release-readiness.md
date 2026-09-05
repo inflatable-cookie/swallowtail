@@ -88,3 +88,27 @@ Chatterbox round trip. Operator prepare authorization was granted
 | Review oracle | one exact tree supports every candidate statement; release note status line reads `Status: candidate; not tagged` |
 | Stop conditions | a gate fails (Effigy rolls back; report with the captured gate log; a transient renewed by Chatterbox under the standing grant; a real defect stops); release status infers anything but `0.4.2`; an open feature PR |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 102 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 102 becomes ready when card 101's candidate merges with green exact-SHA
+CI; Chatterbox fills the candidate SHA into the Bovine packet and relays it
+to the Acowtancy coordinator; the Swallowtail coordinator runs the source
+consumer in parallel. No further Chatterbox promotion is needed to start.
+
+| Field | Card 102 |
+| --- | --- |
+| Readiness | planned until card 101's candidate merges with green exact-SHA CI; then ready |
+| Prerequisites | merged `0.4.2` candidate SHA; the Bovine Desktop smoke packet at `/Users/tom/Dev/projects/acowtancy/docs/handoffs/20260905-desktop-swallowtail-v042-smoke-packet.md` with the SHA filled in; the operator's host Node step (present `~/.local/bin/node` 22.23.2 first for the run) |
+| Completion conditions | `effigy package:source-consumer` passes from a clean detached checkout of the merged SHA; one Bovine Desktop editing turn on `claude-agent.sdk` with the `read_write(AcceptEdits)` profile on a smoke branch pinned to the SHA: session opens with init evidence and no `open_rejected`, the in-workspace file lands with no per-edit prompt, the outside-workspace write is refused in the transcript, and the close is clean under card 100's instrumentation; the tag decision request compiled with the exact SHA |
+| Owned mutable paths | this card's `## Result`; `PAPERCUTS.md` append only. The Desktop smoke branch and its one log are the Acowtancy lane's, never merged there |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the release note status line at tag time |
+| Forbidden paths | every crate; every baseline; the candidate itself after merge; any Swallowtail edit beyond the result |
+| Approved concurrent siblings | none; feature freeze holds until this card stops |
+| Serial edges | the operator's exact-SHA tag decision follows |
+| Worker capability class | Swallowtail side: release-evidence worker running the source consumer; Desktop side: the Acowtancy lane under its own coordinator |
+| Acceptance evidence | source-consumer output at the exact revision; the Desktop run log (sanitised) with the four acceptance points; retry budget one attempt plus one authorized retry for environment faults only |
+| Review oracle | both proofs use the exact merged SHA; no provider-free substitute counts as the editing turn |
+| Stop conditions | the Desktop turn fails on a route defect (report the typed code; the fix is a further patch, not a retag); a retry beyond the budget |
+| Escalation owner | operator via Chatterbox; Swallowtail coordinator for the source consumer; Acowtancy coordinator for the Desktop run |

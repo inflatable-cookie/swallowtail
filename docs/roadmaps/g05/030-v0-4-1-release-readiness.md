@@ -98,8 +98,29 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Stop conditions | any breaking public API or guaranteed-behaviour change (return to Chatterbox for the minor decision); a modified immutable baseline; an open mergeable feature or currentness PR |
 | Escalation owner | operator via Chatterbox for release classification; coordinator for mechanical blockers |
 
-Card 091 enters the manifest after card 090 is accepted; the operator granted
-its one-shot prepare authorization on 2026-09-05. Card 092 enters after card
+### Card 091 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 090 was accepted at exact head `90c9c65a` and merged as `3dcf4f12`;
+Research 286 confirms the patch class. The operator's one-shot prepare
+authorization of 2026-09-05 applies.
+
+| Field | Card 091 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 090 merged; Research 286 on `main`; clean canonical base with no open feature or currentness PR; `Cargo.lock` in sync before the first `--locked` gate (the `v0.4.0` lock-sync precedent) |
+| Completion conditions | `docs/releases/0.4.1.md` and index entry authored from Research 286 before any mutation; read-only release status infers `0.4.1` with the three-mutation plan; exactly one prepare transaction applies coordinated `0.4.1` versions, promotes the changelog, and syncs the workspace-only lock; all 11 local gates pass on the frozen tree; the exact promoted changelog is extracted; distinct `0.4.1` semantic baseline, route inventory, and dependency graph are generated without touching any `0.4.0` file; one candidate PR; exact-head review; canonical merge; workflow-dispatch CI green at the merged SHA |
+| Owned mutable paths | every workspace `Cargo.toml` version and internal requirement through the prepare transaction only; `Cargo.lock` workspace entries only; `CHANGELOG.md` promotion only; `docs/releases/0.4.1.md`; `docs/releases/README.md` current-release entry; `release-baselines/public-api-0.4.1/**`, `production-routes-0.4.1.txt`, `internal-dependencies-0.4.1.tsv`; `.release-prepared.json`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
+| Forbidden paths | every `crates/**/src` and test path; every `release-baselines/*0.4.0*` and earlier file; contracts; architecture; guides; matrices; version claims; any feature change |
+| Approved concurrent siblings | none; feature freeze |
+| Serial edges | card 092 follows the merged candidate with green exact-SHA CI and the completed smoke packet |
+| Worker capability class | release-preparation worker with Effigy release discipline; frontier-tier; no provider credentials; no tag authority |
+| Acceptance evidence | read-only status output; prepare transaction log with the three mutations; 11 gate results on the frozen tree; extracted changelog; new `0.4.1` baseline files; PR head and merged SHA; workflow-dispatch run id at that SHA |
+| Review oracle | one exact tree supports every candidate statement; the smallest counterexample is a post-gate commit presented as the candidate, a regenerated `0.4.0` baseline, or a changelog that disagrees with Research 286 |
+| Stop conditions | any gate fails (roll back the three mutations; the authorization is consumed; report to Chatterbox); release status infers anything but `0.4.1`; a feature or currentness PR is open; the lock is out of sync at the first `--locked` gate |
+| Escalation owner | operator via Chatterbox for any further authorization; coordinator for mechanical blockers |
+ Card 092 enters after card
 091's candidate merges with green exact-SHA CI and the smoke packet is
 complete: Bovine Desktop on `claude-agent.sdk` is accepted; the exact checkout,
 command, and retry budget are still to be supplied.

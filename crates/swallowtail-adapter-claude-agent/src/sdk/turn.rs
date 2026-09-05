@@ -8,7 +8,7 @@ use self::finished::FinishedState;
 use super::activity::SdkActivityProjection;
 use super::failure::failure;
 use super::permission::AdmissionHub;
-use super::wire::ClaudeAgentSdkEvent;
+use super::wire::{ClaudeAgentSdkBashCommandView, ClaudeAgentSdkEvent};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, Weak};
 use swallowtail_core::{
@@ -121,18 +121,36 @@ impl SdkActiveTurn {
         &self,
         sidecar_id: &str,
         tool_name: &str,
+        bash_command: Option<&ClaudeAgentSdkBashCommandView>,
     ) -> Result<AdmissionDisposition, RuntimeFailure> {
         // The session's admitted set is an allow-list on both sides of the
         // wire. A tool outside it never reaches the consumer, and its arrival
         // is itself a transport failure rather than a decision to delegate.
         // This is checked first, so an out-of-set request stays fatal even
         // when it races the turn's end.
-        if !crate::sdk::profile::ClaudeAgentSdkTool::parse(tool_name)
-            .is_some_and(|tool| self.profile.admits(tool))
-        {
+        let Some(tool) = crate::sdk::profile::ClaudeAgentSdkTool::parse(tool_name) else {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.admission_tool_unadmitted",
                 "Claude Agent SDK sidecar requested admission for a tool outside the admitted set",
+            ));
+        };
+        if !self.profile.admits(tool) {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.admission_tool_unadmitted",
+                "Claude Agent SDK sidecar requested admission for a tool outside the admitted set",
+            ));
+        }
+        if tool == crate::sdk::profile::ClaudeAgentSdkTool::Bash {
+            if bash_command.is_none() {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.admission_bash_view_missing",
+                    "Claude Agent SDK Bash admission omitted its command view",
+                ));
+            }
+        } else if bash_command.is_some() {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.admission_bash_view_unexpected",
+                "Claude Agent SDK non-Bash admission carried a Bash command view",
             ));
         }
         if self.is_finished() {
@@ -145,6 +163,7 @@ impl SdkActiveTurn {
             self.deadline,
             sidecar_id,
             tool_name,
+            bash_command,
         )?
         else {
             return Ok(AdmissionDisposition::RacedTurnEnd);

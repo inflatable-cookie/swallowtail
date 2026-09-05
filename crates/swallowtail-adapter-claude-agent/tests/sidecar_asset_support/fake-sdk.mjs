@@ -4,7 +4,7 @@
 // observations where the test can read them. No provider, credential, network,
 // or official package is involved.
 
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import {
   closeSync,
   fsyncSync,
@@ -24,7 +24,7 @@ const NATIVE_LIFETIME_MS = Number(process.env.FAKE_SDK_NATIVE_LIFETIME_MS ?? "50
 // against the filesystem itself.
 const SCENARIO = process.env.FAKE_SDK_SCENARIO ?? "read-only";
 
-const observed = { options: null, admissions: {}, permissionModes: [], writes: [] };
+const observed = { options: null, admissions: {}, permissionModes: [], writes: [], bash: [] };
 
 function record() {
   const descriptor = openSync(TEMP_OBSERVATIONS, "w");
@@ -56,6 +56,9 @@ export function query({ prompt, options }) {
 
   if (SCENARIO === "editing") {
     return editingSession(prompt, options, child);
+  }
+  if (SCENARIO === "bash") {
+    return bashSession(prompt, options, child);
   }
 
   let settled = false;
@@ -120,6 +123,72 @@ export function query({ prompt, options }) {
     },
   };
   void prompt;
+  return iterator;
+}
+
+/// A two-turn Bash session. The first command is denied; the second carries
+/// oversized command and description fields so the shipped sidecar must expose
+/// a bounded, truncation-flagged view while retaining the full input privately.
+function bashSession(prompt, options, child) {
+  async function attempt(input) {
+    const decision = await options.canUseTool("Bash", input);
+    const allowed = decision.behavior === "allow";
+    const unchanged =
+      allowed && JSON.stringify(decision.updatedInput) === JSON.stringify(input);
+    let exitStatus = null;
+    if (allowed) {
+      const result = spawnSync(decision.updatedInput.command, {
+        cwd: options.cwd,
+        shell: true,
+        stdio: "ignore",
+      });
+      exitStatus = result.status;
+    }
+    observed.bash.push({
+      command: input.command,
+      description: input.description,
+      allowed,
+      inputUnchanged: unchanged,
+      ran: allowed,
+      exitStatus,
+    });
+    record();
+  }
+
+  async function* messages() {
+    yield {
+      type: "system",
+      subtype: "init",
+      cwd: options.cwd,
+      model: options.model,
+      apiKeySource: "oauth",
+      capabilities: ["interrupt_receipt_v1"],
+    };
+    for await (const message of prompt) {
+      void message;
+      await attempt({
+        command: `node -e "require('fs').writeFileSync('denied.txt','denied')"`,
+        description: "write a denied marker",
+      });
+      await attempt({
+        command: `node -e "require('fs').writeFileSync('allowed.txt','allowed')" ${"x".repeat(180)}`,
+        description: "d".repeat(180),
+      });
+      yield { type: "result", subtype: "success", is_error: false };
+    }
+  }
+
+  const iterator = messages();
+  iterator.accountInfo = async () => ({ apiProvider: "firstParty", subscriptionType: "max" });
+  iterator.interrupt = async () => ({ received: true });
+  iterator.setPermissionMode = async (mode) => {
+    state.permissionMode = mode;
+    observed.permissionModes.push(mode);
+    record();
+  };
+  iterator.close = () => {
+    void child;
+  };
   return iterator;
 }
 

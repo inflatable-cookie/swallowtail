@@ -115,6 +115,85 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
 }
 
 const WRITE_TOOLS: [&str; 6] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"];
+const BASH_TOOLS: [&str; 7] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit", "Bash"];
+
+fn open_bash(sidecar: &mut SidecarProcess, permission_mode: &str) -> serde_json::Value {
+    let cwd = sidecar.cwd();
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": cwd, "model": "m-1", "tools": BASH_TOOLS,
+               "permissionMode": permission_mode}),
+    )
+}
+
+fn next_bash_request(sidecar: &mut SidecarProcess) -> serde_json::Value {
+    let request = sidecar.next_callback();
+    assert_eq!(request["toolName"], "Bash");
+    request
+}
+
+#[test]
+fn bash_is_host_mediated_in_every_permission_mode_with_bounded_views() {
+    for permission_mode in ["default", "plan", "acceptEdits"] {
+        let mut sidecar = SidecarProcess::start_bash();
+        let open = open_bash(&mut sidecar, permission_mode);
+        assert_eq!(open["success"], true, "open response: {open}");
+        assert_eq!(open["data"]["tools"], json!(BASH_TOOLS));
+        assert_eq!(open["data"]["permissionMode"], permission_mode);
+
+        sidecar.command("query-1", "query", json!({"text": "run it"}));
+        let denied = next_bash_request(&mut sidecar);
+        assert_eq!(
+            denied["command"],
+            "node -e \"require('fs').writeFileSync('denied.txt','denied')\""
+        );
+        assert_eq!(denied["description"], "write a denied marker");
+        assert_eq!(denied["commandByteLength"], 60);
+        assert_eq!(denied["truncated"], false);
+        sidecar.respond_callback(denied["id"].as_str().expect("callback id"), "deny");
+
+        let allowed = next_bash_request(&mut sidecar);
+        assert_eq!(allowed["command"].as_str().expect("command").len(), 128);
+        assert!(
+            allowed["commandByteLength"]
+                .as_u64()
+                .expect("command length")
+                > 128
+        );
+        assert_eq!(
+            allowed["description"].as_str().expect("description").len(),
+            128
+        );
+        assert_eq!(allowed["truncated"], true);
+        sidecar.respond_callback(allowed["id"].as_str().expect("callback id"), "allow");
+
+        let outcomes = sidecar.bash_outcomes(2);
+        assert_eq!(outcomes[0]["allowed"], false);
+        assert_eq!(outcomes[0]["ran"], false);
+        assert_eq!(outcomes[1]["allowed"], true);
+        assert_eq!(outcomes[1]["inputUnchanged"], true);
+        assert_eq!(outcomes[1]["ran"], true);
+        assert_eq!(outcomes[1]["exitStatus"], 0);
+        assert!(outcomes[1]["command"].as_str().expect("full command").len() > 128);
+        assert_eq!(
+            outcomes[1]["description"]
+                .as_str()
+                .expect("full description")
+                .len(),
+            180
+        );
+        assert_eq!(sidecar.file_under_cwd("denied.txt"), None);
+        assert_eq!(
+            sidecar.file_under_cwd("allowed.txt").as_deref(),
+            Some("allowed")
+        );
+        assert_eq!(
+            sidecar.callback_tool_names(),
+            vec!["Bash".to_owned(), "Bash".to_owned()]
+        );
+    }
+}
 
 fn open_editing(sidecar: &mut SidecarProcess, permission_mode: &str) -> serde_json::Value {
     let cwd = sidecar.cwd();
@@ -242,7 +321,7 @@ fn an_unadmitted_tool_name_is_refused_before_the_sdk_is_constructed() {
     let open = sidecar.command(
         "open-1",
         "open",
-        json!({"cwd": cwd, "model": "m-1", "tools": ["Read", "Bash"],
+        json!({"cwd": cwd, "model": "m-1", "tools": ["Read", "BashOutput"],
                "permissionMode": "default"}),
     );
     assert_eq!(open["success"], false, "open response: {open}");
@@ -264,7 +343,8 @@ fn a_write_profile_restricts_availability_without_auto_allowing_anything() {
         "allowedTools bypasses per-use admission: {options}"
     );
     assert_eq!(options["permissionMode"], "acceptEdits");
-    // Bash and terminal stay disallowed whatever the host admitted.
+    // Bash stays disallowed when this editing profile withholds it; terminal
+    // and other later-card tools remain outside the route entirely.
     for forbidden in ["Bash", "BashOutput", "KillShell", "NotebookEdit", "Task"] {
         assert!(
             options["disallowedTools"]

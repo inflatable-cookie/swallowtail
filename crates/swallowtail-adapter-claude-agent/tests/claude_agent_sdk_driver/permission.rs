@@ -143,6 +143,26 @@ fn a_host_that_grants_only_read_access_cannot_open_a_write_session() {
 }
 
 #[test]
+fn an_explicit_bash_profile_cannot_open_with_a_read_only_lease() {
+    let host = host_id("claude-agent-sdk.fixture.bash-lease");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete).granting_read_only_resource();
+    let profile = ClaudeAgentSdkSessionProfile::new(
+        [ClaudeAgentSdkTool::Bash],
+        ClaudeAgentSdkPermissionMode::Default,
+    )
+    .expect("explicit Bash profile is admissible");
+    let prepared = prepared_session_for(host.clone(), profile);
+    let services = fixture.services(host);
+    let Err(error) = block_on(prepared.open_route_session(services)) else {
+        panic!("a Bash profile must refuse a read-only lease");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.session_access.resource_access_mismatch"
+    );
+}
+
+#[test]
 fn a_session_sends_its_admitted_set_and_selected_mode_on_open() {
     let host = host_id("claude-agent-sdk.fixture.mode-open");
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);

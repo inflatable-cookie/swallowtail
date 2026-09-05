@@ -35,6 +35,7 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::parse(&str) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::skips_edit_admission(self) -> bool
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool::Bash
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool::Edit
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool::Glob
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool::Grep

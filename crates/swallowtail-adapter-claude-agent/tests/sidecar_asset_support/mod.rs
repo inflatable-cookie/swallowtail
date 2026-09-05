@@ -64,6 +64,14 @@ impl SidecarProcess {
         })
     }
 
+    /// Starts the asset against the fake SDK's two-turn Bash session.
+    pub fn start_bash() -> Self {
+        Self::start_with(&Fixture {
+            scenario: "bash",
+            ..Fixture::default()
+        })
+    }
+
     fn start_with(fixture: &Fixture) -> Self {
         let lifetime_ms = fixture.native_lifetime_ms;
         let scenario = fixture.scenario;
@@ -178,6 +186,19 @@ impl SidecarProcess {
             "fake SDK did not record the expected write outcomes"
         );
         writes
+    }
+
+    /// Per-turn Bash outcomes the fake SDK recorded before the turn-ended
+    /// wire event.
+    pub fn bash_outcomes(&mut self, turns: usize) -> Vec<Value> {
+        self.wait_for_turn_end();
+        let observations = self.read_observations();
+        let outcomes = observations["bash"].as_array().cloned().unwrap_or_default();
+        assert!(
+            outcomes.len() >= turns,
+            "fake SDK did not record the expected Bash outcomes"
+        );
+        outcomes
     }
 
     /// Sends one command and returns its correlated response, collecting any

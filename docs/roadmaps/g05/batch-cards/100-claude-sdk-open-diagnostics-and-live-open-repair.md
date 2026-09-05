@@ -69,7 +69,7 @@ assumptions about the hook signature and the account shape.
    `UnverifiedNewer` on that axis rather than an `open_mismatch`, recording
    the observed version in readiness. Card 087 owns the full qualified-range
    redesign; this is the minimal patch-compatible relief.
-4. **Live proof.** One operator-authorized live open against the real
+4. **Live proof** (operator authorized 2026-09-05, "Both"). One live open against the real
    `@anthropic-ai/claude-agent-sdk` with a first-party subscription login,
    on Node 22.23.2 and on the Homebrew Node the consumer uses, recording
    the real `system.model` for the requested alias and the account

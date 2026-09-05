@@ -1,6 +1,6 @@
 # 101 v0.4.2 Candidate Preparation
 
-Status: planned; serial in g05.032
+Status: planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the v0.4.1 standing-grant pattern (one transaction per attempt, renewable by Chatterbox on a captured transient failure; a real defect stops the lane)
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

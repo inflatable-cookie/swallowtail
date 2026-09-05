@@ -35,7 +35,7 @@ mutation.
 ## Batch Cards
 
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready
-- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; one-shot prepare under the operator's standing grant pattern, to be confirmed
+- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the standing-grant pattern
 - [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; serial after card 101; Bovine editing session as the smoke
 
 ## Dispatch Manifest
@@ -52,7 +52,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; the SDK wrapper and native pins (only the Node open check changes); card 082's model-change surfaces |
 | Approved concurrent siblings | g05.009 cards 097-099; card 094 remainder. Card 082 is paused, not concurrent, because it shares the sidecar |
 | Serial edges | card 082 rebases and resumes after card 100 merges; card 101 follows card 100 |
-| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; the live open needs the operator's first-party subscription login on this host and is authorized separately |
+| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; the live open uses the operator's first-party subscription login on this host, authorized 2026-09-05 |
 | Acceptance evidence | fixtures for the three changes; the live open log with `system.model`, `apiKeySource`, `apiProvider` labels only; additive API diff |
 | Review oracle | the card's invariant |
 | Stop conditions | the live open reveals a rejection that needs a design decision (report the code; return to Chatterbox) |

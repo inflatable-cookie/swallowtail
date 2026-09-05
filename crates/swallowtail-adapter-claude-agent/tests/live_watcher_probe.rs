@@ -5,6 +5,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::ffi::OsString;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 use swallowtail_adapter_claude_agent::{
     CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
@@ -32,6 +33,7 @@ const WATCHER_NATIVE_SHA256_DARWIN_ARM64: &str =
 const WATCHER_NATIVE_SHA256_LINUX_X64: &str =
     "fd5f10ff0eb58daec04900466b143ea98aab50abf208a422bc008eaec13f61f7";
 const WATCHER_MODEL: &str = "claude-haiku-4-5";
+static NEXT_TEMP_WORKSPACE: AtomicUsize = AtomicUsize::new(0);
 
 fn watcher_native_sha256(os: &str, arch: &str) -> Option<&'static str> {
     match (os, arch) {
@@ -47,11 +49,12 @@ struct TempWorkspace {
 
 impl TempWorkspace {
     fn create() -> Self {
+        let sequence = NEXT_TEMP_WORKSPACE.fetch_add(1, Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
-            "swallowtail-claude-watcher-live-{}",
-            std::process::id()
+            "swallowtail-claude-watcher-live-{}-{sequence}",
+            std::process::id(),
         ));
-        std::fs::create_dir_all(&path).expect("workspace");
+        std::fs::create_dir(&path).expect("workspace is created without collision");
         Self { path }
     }
 }

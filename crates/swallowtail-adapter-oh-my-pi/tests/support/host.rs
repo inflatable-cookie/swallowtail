@@ -1,5 +1,6 @@
 use serde_json::Value;
 use std::collections::VecDeque;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
 use swallowtail_core::ExecutionHostId;
@@ -17,6 +18,8 @@ mod authority;
 mod inspection;
 mod script;
 mod task_time;
+
+static NEXT_ATTACHMENT: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
@@ -137,12 +140,15 @@ impl AttachmentService for FixtureHost {
         scope: ScopeId,
         descriptor: AttachmentDescriptor,
     ) -> BoxFuture<'static, Result<AttachmentFileLease, RuntimeFailure>> {
+        let sequence = NEXT_ATTACHMENT.fetch_add(1, Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
-            "swallowtail-pi-{}-{}.png",
+            "swallowtail-pi-{}-{sequence}-{}.png",
             std::process::id(),
             descriptor.reference().as_host_value()
         ));
-        let result = std::fs::write(&path, b"\x89PNG\r\n\x1a\n").map_err(|_| fixture_failure());
+        let result = std::fs::File::create_new(&path)
+            .and_then(|mut file| std::io::Write::write_all(&mut file, b"\x89PNG\r\n\x1a\n"))
+            .map_err(|_| fixture_failure());
         Box::pin(async move {
             result?;
             Ok(AttachmentFileLease::operation_scoped(

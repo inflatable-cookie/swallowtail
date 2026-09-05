@@ -1,6 +1,6 @@
 # 092 v0.4.1 Consumer Proof And Operator Tag Gate
 
-Status: planned; serial after card 091's candidate merges with green exact-SHA CI; the operator accepted Bovine Desktop on `claude-agent.sdk` as the smoke application on 2026-09-05; exact checkout, command, and retry budget still required
+Status: planned; serial after card 091's candidate merges with green exact-SHA CI; reduced by the operator's 2026-09-05 compression decision to the external source consumer; the recorded v0.4.0 Nucleus smoke satisfies Contract 036; Bovine's editing session is post-tag adoption evidence
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

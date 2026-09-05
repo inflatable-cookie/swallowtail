@@ -154,6 +154,31 @@ tests are defects, card 094 fixes it and sweeps the workspace for the same
 shape so the fifth prepare is not stopped by the next one. Card 091's
 prepared state was rolled back by Effigy; its release note stays committed.
 
+## Operator Compression Decision (2026-09-05)
+
+The operator has a hard external deadline on this release and accepted
+three compressions of the lane, on the Chatterbox recommendation:
+
+1. **Card 094 is split.** The Pi lifecycle fix plus every fixture already
+   proved under load ships now as one PR under the narrow oracle (one
+   deterministic outcome, no production source, touched binaries proved
+   under load). The rest of the sweep continues after the tag under the same
+   card number and does not gate `v0.4.1`.
+2. **One floor rerun on a timing flake.** If the frozen-tree floor fails on
+   a timing-class test that the prepare's own floor just passed on the same
+   tree, the coordinator reruns only the floor gate once on the unchanged
+   frozen tree and continues if green. A real defect still stops the lane.
+   The target clean is not repeated; the attempt-4 environment was sound.
+3. **Card 092 reduces to the external source consumer.** Contract 036's
+   acceptance line "an accepted working-application smoke remains recorded"
+   is satisfied by the recorded `v0.4.0` Nucleus Agent Chat smoke. The Bovine
+   Desktop editing session becomes post-tag adoption evidence, not a tag
+   gate. The `0.4.1` release note and the tag request must state plainly
+   that no application had driven the candidate before the tag.
+
+Candidate review and workflow-dispatch CI run in parallel. The tag request
+goes to the operator as one message with the exact SHA.
+
 ### Card 094 Manifest
 
 Promoted planning commit: the `main` commit that introduces this section.

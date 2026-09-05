@@ -74,8 +74,15 @@ Implemented the bounded CI restructure in `.github/workflows/ci.yml` and
 
 Before timing evidence: representative green PR 226 run [33958420553](https://github.com/inflatable-cookie/swallowtail/actions/runs/33958420553)
 on `11be445f7ccb4bcaa1a358da1ff1522a3b9a3c7d` took 9m14s wall-clock;
-the stable job took 4m35s and the pinned floor took 9m06s. The after timing
-will be recorded from this card's green PR run before exact-head review.
+the stable job took 4m35s and the pinned floor took 9m06s.
+
+After timing evidence: representative green PR 230 run [33971014129](https://github.com/inflatable-cookie/swallowtail/actions/runs/33971014129)
+on `af86aa9ee576b555d8ef64a0183374f17c5d1fdd` took 4m48s wall-clock. The
+stable format/lint job took 1m57s, nextest shards took 3m28s, 3m23s, and
+2m23s, the process-spawning shard took 2m58s, and the pinned floor took 1m53s
+with its PR `Test` step skipped. The longest required job was Documentation
+and semantic API at 4m45s. The representative wall-clock round trip fell by
+4m26s (48%).
 
 Required-check names for the new layout:
 

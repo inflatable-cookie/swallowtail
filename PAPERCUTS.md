@@ -28,6 +28,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Independent reviewers cannot post formal GitHub reviews — 2026-09-05
+- Friction: every worker and reviewer pushes and comments as the same
+  GitHub identity, so `REQUEST_CHANGES` and approvals return 422 "Can not
+  request changes on your own pull request"; verdicts land as ordinary
+  comments and the merge gate is procedural.
+- Impact: no enforceable review requirement on `main`, and verdict comments
+  are indistinguishable from discussion to branch protection.
+- Fix: a second GitHub identity (bot or app token) for review children, or
+  a required status check that a reviewer publishes with the exact head.
+- Surface: coordinator review children; GitHub branch protection on `main`.
+
 ### [ ] Contract 061 ledger fixtures assert emitting facade declaratively — 2026-09-05
 - Friction: candidate K's ledgers (and likely earlier tranches) carry
   `emitted_by` as a declarative field and compare observed rows as a set of

@@ -69,7 +69,10 @@ assumptions about the hook signature and the account shape.
    `UnverifiedNewer` on that axis rather than an `open_mismatch`, recording
    the observed version in readiness. Card 087 owns the full qualified-range
    redesign; this is the minimal patch-compatible relief.
-4. **Live proof** (operator authorized 2026-09-05, "Both"). One live open against the real
+4. **Live proof** (operator authorized 2026-09-05, "Both"; Chatterbox extended the
+   grant the same day, with the operator informed, to further open-only probes under
+   the same constraints: open, observe the handshake, close; no prompt, tool call, or
+   write). One live open against the real
    `@anthropic-ai/claude-agent-sdk` with a first-party subscription login,
    on Node 22.23.2 and on the Homebrew Node the consumer uses, recording
    the real `system.model` for the requested alias and the account
@@ -77,6 +80,21 @@ assumptions about the hook signature and the account shape.
    run is the first-time evidence this route lacked.
 5. Guide, matrix cells, `CHANGELOG.md` `[Unreleased]`, additive API
    baseline. One PR.
+
+## Second Layer (2026-09-05, after the first live probes)
+
+With the spawn hook fixed, both authorized probes reached the native child
+(first native record `control_response`, empty stderr) and then timed out
+waiting for `system/init`. The frozen 0.3.259 declarations refute the spawn
+shape as a cause. Ruling: the sidecar's open protocol is wrong for a
+streaming-input query. The SDK serves readiness (`supportedModels`,
+`accountInfo`, `supportedCommands`) from the `initialize` control exchange,
+and `system/init` arrives only after the first user message. Open must
+take readiness from the initialize exchange and treat `system/init` as
+first-turn evidence (cwd and effective-model confirmation, capabilities),
+failing typed (`init_missing`) if it is not the first message of the first
+turn. The fake SDK must reproduce that ordering. The 094 follow-up note the
+worker added is ratified.
 
 ## Out Of Scope
 

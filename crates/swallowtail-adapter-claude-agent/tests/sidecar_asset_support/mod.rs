@@ -284,6 +284,24 @@ impl SidecarProcess {
         observations["options"].clone()
     }
 
+    pub fn observed_control_calls(&self) -> Vec<String> {
+        self.read_observations()["controlCalls"]
+            .as_array()
+            .expect("fake SDK control observations are an array")
+            .iter()
+            .map(|value| {
+                value
+                    .as_str()
+                    .expect("fake SDK control observation is a string")
+                    .to_owned()
+            })
+            .collect()
+    }
+
+    pub fn first_input_consumed(&self) -> bool {
+        self.read_observations()["firstInputConsumed"] == true
+    }
+
     pub fn observed_spawn_hook_argument(&self) -> Value {
         let observations = self.read_observations();
         assert!(

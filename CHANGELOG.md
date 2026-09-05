@@ -35,10 +35,13 @@ annotated Git tags from the canonical repository.
 - repair the `claude-agent.sdk` open path for SDK `0.3.259`: the spawn hook
   now accepts the frozen object-form `SpawnOptions`, subscription readiness
   uses `accountInfo().apiProvider` and `subscriptionType` as separate checks,
-  sidecar rejection codes reach safe route diagnostics, canonical effective
-  models are published separately from requested aliases, and floor-passing
-  newer Node runtimes are recorded as `UnverifiedNewer`. Provider-free fake-SDK
-  fixtures cover each path. g05.032 card 100.
+  sidecar rejection codes reach safe route diagnostics, bounded initialize and
+  control evidence reports requested-with-supported-list readiness, and the
+  first query requires `system/init` before publishing effective model and
+  capabilities. Canonical effective models remain distinct from requested
+  aliases, and floor-passing newer Node runtimes are recorded as
+  `UnverifiedNewer`. Provider-free fake-SDK fixtures cover each path. g05.032
+  card 100.
 
 ## [0.4.1] - 2026-09-05
 

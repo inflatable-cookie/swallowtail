@@ -69,6 +69,9 @@ const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
 const MAXIMUM_PROMPT_BYTES = 256 * 1024;
 const MINIMUM_JOIN_BOUND_MS = 100;
 const MAXIMUM_JOIN_BOUND_MS = 60_000;
+const SDK_CONTROL_BOUND_MS = 60_000;
+const READINESS_REQUESTED = "requested-with-supported-list";
+const READINESS_CONFIRMED = "confirmed";
 
 // Every tool this route can admit, in the exact order the host sends them.
 // Background shells, terminal, notebook, and network tools stay outside this
@@ -120,6 +123,7 @@ const COMMAND_FAILURE_CODES = new Set([
   "node_runtime_unsupported",
   "construction_failed",
   "initialization_failed",
+  "init_missing",
   "cwd_mismatch",
   "model_mismatch",
   "model_missing",
@@ -155,11 +159,16 @@ const state = {
   sdk: null,
   query: null,
   cwd: null,
+  requestedModel: null,
   tools: DEFAULT_TOOLS,
   permissionMode: "default",
   capabilities: [],
   native: null,
   reader: null,
+  initialized: false,
+  effectiveModel: null,
+  supportedModels: [],
+  supportedModelsAvailable: false,
   turnActive: false,
   pending: new Map(),
   usedIds: new Set(),
@@ -347,6 +356,25 @@ function boundedWait(boundMs) {
   return { expiry, cancel: () => clearTimeout(timer) };
 }
 
+/// Bounds one SDK control exchange. The SDK's control methods can wait on the
+/// native process, so open never inherits an unbounded await from the wrapper.
+async function boundedControl(operation, failureCode) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new SidecarFailure(failureCode)), SDK_CONTROL_BOUND_MS);
+  });
+  try {
+    return await Promise.race([Promise.resolve().then(operation), timeout]);
+  } catch (error) {
+    if (error instanceof SidecarFailure) {
+      throw error;
+    }
+    throw new SidecarFailure(failureCode);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /// Retains the native child independently of SDK cleanup. The SDK's own
 /// bounded wait discards its outcome, so only this handle may be joined.
 class NativeChild {
@@ -430,6 +458,35 @@ function accountProjection(account) {
     apiProvider,
     subscriptionPresent: true,
   };
+}
+
+function supportedModelValues(values) {
+  if (!Array.isArray(values)) {
+    throw new SidecarFailure("initialization_failed");
+  }
+  const models = [];
+  for (const entry of values) {
+    const candidates = [entry?.value, entry?.resolvedModel];
+    for (const candidate of candidates) {
+      if (typeof candidate !== "string" || candidate.length === 0) {
+        continue;
+      }
+      if (!models.includes(candidate)) {
+        models.push(candidate);
+      }
+    }
+  }
+  return models;
+}
+
+function supportedCommandNames(values) {
+  if (!Array.isArray(values)) {
+    throw new SidecarFailure("initialization_failed");
+  }
+  return values.flatMap((entry) => {
+    const name = entry?.name;
+    return typeof name === "string" && name.length > 0 ? [name] : [];
+  });
 }
 
 function boundedCallbackText(value) {
@@ -643,45 +700,53 @@ async function handleOpen(params) {
   }
   state.query = query;
 
-  let initialized;
-  try {
-    initialized = await query.next();
-  } catch {
+  // The SDK initialize exchange is the open-time handshake. It is deliberately
+  // separate from the async-generator's first system/init message, which is
+  // evidence for the first user turn rather than an open gate.
+  if (typeof query.initializationResult !== "function") {
     throw new SidecarFailure("initialization_failed");
   }
-  const system = initialized?.value;
-  if (initialized?.done === true || system?.type !== "system" || system.subtype !== "init") {
+  const initialization = await boundedControl(
+    () => query.initializationResult(),
+    "initialization_failed",
+  );
+  if (!initialization || typeof initialization !== "object") {
     throw new SidecarFailure("initialization_failed");
   }
-  if (typeof system.cwd !== "string" || system.cwd !== cwd) {
-    throw new SidecarFailure("cwd_mismatch");
-  }
-  // The effective model is proved from the runtime's own init evidence, never
-  // assumed from the request. A canonical id may differ from the requested
-  // alias; the SDK's supported-model evidence is the only optional boundary.
-  if (typeof system.model !== "string" || system.model.length === 0) {
-    throw new SidecarFailure("model_missing");
-  }
-  if (
-    Array.isArray(system.supportedModels) &&
-    !system.supportedModels.includes(system.model)
-  ) {
-    throw new SidecarFailure("supported_model_rejected");
-  }
-  const capabilities = boundedCapabilities(system.capabilities);
-  let account;
-  try {
-    account = await query.accountInfo();
-  } catch {
-    throw new SidecarFailure("account_unavailable");
-  }
+  const modelRows = await boundedControl(
+    () =>
+      typeof query.supportedModels === "function"
+        ? query.supportedModels()
+        : initialization.models,
+    "initialization_failed",
+  );
+  const supportedModels = supportedModelValues(modelRows);
+  const account = await boundedControl(
+    () =>
+      typeof query.accountInfo === "function"
+        ? query.accountInfo()
+        : initialization.account,
+    "account_unavailable",
+  );
   const readiness = accountProjection(account);
+  const commandRows = await boundedControl(
+    () =>
+      typeof query.supportedCommands === "function"
+        ? query.supportedCommands()
+        : initialization.commands,
+    "initialization_failed",
+  );
+  const supportedCommands = supportedCommandNames(commandRows);
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
   state.cwd = cwd;
-  state.capabilities = capabilities;
-  state.reader = drainQuery();
+  state.requestedModel = model;
+  state.capabilities = [];
+  state.initialized = false;
+  state.effectiveModel = null;
+  state.supportedModels = supportedModels;
+  state.supportedModelsAvailable = true;
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -691,11 +756,10 @@ async function handleOpen(params) {
     nodeVersion: process.versions.node,
     cwd,
     requestedModel: model,
-    model: system.model,
-    ...(Array.isArray(system.supportedModels)
-      ? { supportedModels: system.supportedModels }
-      : {}),
-    capabilities,
+    readiness: READINESS_REQUESTED,
+    supportedModels,
+    supportedCommands,
+    capabilities: [],
     account: readiness,
     tools,
     permissionMode,
@@ -755,8 +819,46 @@ async function handleQuery(params) {
     parent_tool_use_id: null,
     session_id: "",
   });
+  if (!state.initialized) {
+    let first;
+    try {
+      first = await state.query.next();
+    } catch {
+      state.turnActive = false;
+      throw new SidecarFailure("initialization_failed");
+    }
+    const system = first?.value;
+    if (first?.done === true || system?.type !== "system" || system.subtype !== "init") {
+      state.turnActive = false;
+      throw new SidecarFailure("init_missing");
+    }
+    if (typeof system.cwd !== "string" || system.cwd !== state.cwd) {
+      state.turnActive = false;
+      throw new SidecarFailure("cwd_mismatch");
+    }
+    if (typeof system.model !== "string" || system.model.length === 0) {
+      state.turnActive = false;
+      throw new SidecarFailure("model_missing");
+    }
+    if (state.supportedModelsAvailable && !state.supportedModels.includes(system.model)) {
+      state.turnActive = false;
+      throw new SidecarFailure("supported_model_rejected");
+    }
+    const capabilities = boundedCapabilities(system.capabilities);
+    state.initialized = true;
+    state.effectiveModel = system.model;
+    state.capabilities = capabilities;
+    state.reader = drainQuery();
+  }
   await emitEvent({ event: "turn_started" });
-  return { accepted: true };
+  return {
+    accepted: true,
+    readiness: READINESS_CONFIRMED,
+    cwd: state.cwd,
+    requestedModel: state.requestedModel,
+    model: state.effectiveModel,
+    capabilities: state.capabilities,
+  };
 }
 
 async function handleInterrupt(params) {

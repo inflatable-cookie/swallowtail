@@ -13,6 +13,8 @@ use swallowtail_runtime::RuntimeFailure;
 
 const MAXIMUM_CAPABILITIES: usize = 64;
 const MAXIMUM_CAPABILITY_BYTES: usize = 96;
+const READINESS_REQUESTED: &str = "requested-with-supported-list";
+const READINESS_CONFIRMED: &str = "confirmed";
 
 /// Runtime-advertised readiness observed at open. Capabilities are the only
 /// axis that is runtime behavior rather than declaration, so nothing here is
@@ -23,6 +25,8 @@ pub(crate) struct SessionReadiness {
     cwd: String,
     requested_model: String,
     effective_model: String,
+    supported_models: Vec<String>,
+    readiness: ReadinessState,
     node_version: String,
     node_version_posture: NodeVersionPosture,
     profile: ClaudeAgentSdkSessionProfile,
@@ -33,6 +37,21 @@ pub(crate) struct SessionReadiness {
 enum NodeVersionPosture {
     Qualified,
     UnverifiedNewer,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ReadinessState {
+    RequestedWithSupportedList,
+    Confirmed,
+}
+
+impl ReadinessState {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::RequestedWithSupportedList => READINESS_REQUESTED,
+            Self::Confirmed => READINESS_CONFIRMED,
+        }
+    }
 }
 
 impl NodeVersionPosture {
@@ -67,6 +86,58 @@ impl SessionReadiness {
         &self.effective_model
     }
 
+    pub(crate) fn readiness_state(&self) -> &'static str {
+        self.readiness.as_str()
+    }
+
+    /// Confirms the first-turn `system/init` evidence carried by the sidecar's
+    /// first query response. Open intentionally leaves the effective model and
+    /// runtime capabilities unconfirmed until this exchange completes.
+    pub(crate) fn confirm_first_turn(
+        &mut self,
+        data: Option<&Value>,
+    ) -> Result<(), RuntimeFailure> {
+        let data = data.ok_or_else(init_missing)?;
+        if text(data, "readiness") != Some(READINESS_CONFIRMED) {
+            return Err(init_missing());
+        }
+        if text(data, "cwd") != Some(self.cwd.as_str()) {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.cwd_mismatch",
+                "Claude Agent SDK sidecar first-turn init did not report the leased working directory",
+            ));
+        }
+        if text(data, "requestedModel") != Some(self.requested_model.as_str()) {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.open_mismatch",
+                "Claude Agent SDK sidecar first-turn init changed the requested model",
+            ));
+        }
+        let effective_model = text(data, "model")
+            .filter(|model| !model.is_empty())
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.claude-agent.sdk.model_missing",
+                    "Claude Agent SDK sidecar first-turn init did not report an effective model",
+                )
+            })?;
+        if !self.supported_models.is_empty()
+            && !self
+                .supported_models
+                .iter()
+                .any(|model| model == effective_model)
+        {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.supported_model_rejected",
+                "Claude Agent SDK sidecar first-turn init reported an effective model outside its supported model list",
+            ));
+        }
+        self.effective_model = effective_model.to_owned();
+        self.capabilities = capabilities(data)?;
+        self.readiness = ReadinessState::Confirmed;
+        Ok(())
+    }
+
     pub(crate) fn node_version(&self) -> &str {
         &self.node_version
     }
@@ -77,8 +148,10 @@ impl SessionReadiness {
 }
 
 /// Opens the session, verifying the bound runtime, wire, package, native
-/// binary, resource, admitted tool set, permission mode, and first-party
-/// subscription readiness before any provider work.
+/// binary, resource, admitted tool set, permission mode, and initialize-time
+/// first-party subscription readiness before any provider work. The effective
+/// model and runtime capabilities remain unconfirmed until the first query's
+/// `system/init` evidence.
 pub(crate) async fn open(
     connection: &SdkConnection,
     plan: &PreflightPlan,
@@ -170,20 +243,13 @@ fn readiness(
         ));
     }
     let data = data.expect("validated sidecar open identity carries data");
-    let effective_model = text(data, "model")
-        .filter(|model| !model.is_empty())
-        .ok_or_else(|| {
-            failure(
-                "swallowtail.claude-agent.sdk.model_missing",
-                "Claude Agent SDK sidecar did not report an effective model",
-            )
-        })?;
-    if !supported_model(data, effective_model) {
+    if text(data, "readiness") != Some(READINESS_REQUESTED) {
         return Err(failure(
-            "swallowtail.claude-agent.sdk.supported_model_rejected",
-            "Claude Agent SDK sidecar reported an effective model outside its supported model list",
+            "swallowtail.claude-agent.sdk.open_mismatch",
+            "Claude Agent SDK sidecar did not report requested-with-supported-list readiness",
         ));
     }
+    let supported_models = supported_models(data);
     let node_version = text(data, "nodeVersion")
         .filter(|version| !version.is_empty())
         .ok_or_else(|| {
@@ -201,10 +267,14 @@ fn readiness(
         })?;
     account_ready(data)?;
     Ok(SessionReadiness {
-        capabilities: capabilities(data)?,
+        // Capabilities are runtime evidence from first-turn system/init, not
+        // an initialize-response claim.
+        capabilities: Vec::new(),
         cwd: expected.cwd.to_owned(),
         requested_model: expected.requested_model.to_owned(),
-        effective_model: effective_model.to_owned(),
+        effective_model: String::new(),
+        supported_models,
+        readiness: ReadinessState::RequestedWithSupportedList,
         node_version: node_version.to_owned(),
         node_version_posture,
         profile: expected.profile,
@@ -237,14 +307,25 @@ fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
-fn supported_model(data: &Value, effective_model: &str) -> bool {
+fn supported_models(data: &Value) -> Vec<String> {
     data.get("supportedModels")
         .and_then(Value::as_array)
-        .is_none_or(|supported| {
+        .map(|supported| {
             supported
                 .iter()
-                .any(|model| model.as_str() == Some(effective_model))
+                .filter_map(Value::as_str)
+                .filter(|model| !model.is_empty())
+                .map(str::to_owned)
+                .collect()
         })
+        .unwrap_or_default()
+}
+
+fn init_missing() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.init_missing",
+        "Claude Agent SDK sidecar did not yield system/init as the first query message",
+    )
 }
 
 fn node_version_posture(observed: &str, qualified: &str) -> Option<NodeVersionPosture> {

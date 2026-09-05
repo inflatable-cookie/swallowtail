@@ -165,21 +165,26 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 }
             };
             match response {
-                Ok(response) if response.success => Ok(Box::new(ClaudeAgentSdkTurnHandle::new(
-                    request.turn_id().clone(),
-                    events,
-                    callbacks,
-                    Box::pin(terminal),
-                    TurnBinding {
-                        connection: Arc::clone(&self.connection),
-                        turn,
-                        active: Arc::clone(&self.active),
-                        receipts_advertised: self
-                            .readiness
-                            .advertises(INTERRUPT_RECEIPT_CAPABILITY),
-                        bounded,
-                    },
-                )) as Box<dyn TurnHandle>),
+                Ok(response) if response.success => {
+                    if let Err(error) = self.readiness.confirm_first_turn(response.data.as_ref()) {
+                        return Err(self.reject_turn(&turn, error));
+                    }
+                    Ok(Box::new(ClaudeAgentSdkTurnHandle::new(
+                        request.turn_id().clone(),
+                        events,
+                        callbacks,
+                        Box::pin(terminal),
+                        TurnBinding {
+                            connection: Arc::clone(&self.connection),
+                            turn,
+                            active: Arc::clone(&self.active),
+                            receipts_advertised: self
+                                .readiness
+                                .advertises(INTERRUPT_RECEIPT_CAPABILITY),
+                            bounded,
+                        },
+                    )) as Box<dyn TurnHandle>)
+                }
                 Ok(response) => Err(self.reject_turn(
                     &turn,
                     command_rejected(
@@ -266,6 +271,13 @@ impl ClaudeAgentSdkSessionHandle {
     #[must_use]
     pub fn effective_model(&self) -> &str {
         self.readiness.effective_model()
+    }
+
+    /// Returns the readiness evidence stage: initialize-served requested
+    /// model support at open, or confirmed after first-turn `system/init`.
+    #[must_use]
+    pub fn readiness_state(&self) -> &'static str {
+        self.readiness.readiness_state()
     }
 
     /// Returns the observed Node runtime version from the sidecar open.

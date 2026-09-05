@@ -36,6 +36,10 @@ pub enum SdkScenario {
     MissingModel,
     /// Open reports an effective model outside its supported-model list.
     UnsupportedModel,
+    /// The first query response reports that no system/init was yielded.
+    InitMissing,
+    /// The SDK failed while yielding the first-turn init message.
+    InitializationFailed,
     /// The sidecar rejects open and reports its fixed construction code.
     OpenRejected,
     /// The sidecar rejects query and reports its fixed turn-active code.

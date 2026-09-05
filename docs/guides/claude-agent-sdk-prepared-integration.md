@@ -58,11 +58,11 @@ Swallowtail never holds the subscription credential.
 3. Swallowtail leases a delegated credential reference that exposes no secret,
    and passes no credential over the sidecar wire.
 4. Open observes typed readiness only: `apiProvider` must be `firstParty` and
-   `subscriptionType` must be present. An API-key or delegated-cloud
-   provenance label fails closed under its own check rather than silently
-   running on a different profile. The sidecar projects only `apiProvider` and
-   a boolean `subscriptionPresent`; account identity fields are refused, not
-   redacted after the fact.
+   `subscriptionType` must be present in the SDK's `AccountInfo` projection.
+   An API-key or delegated-cloud provenance label fails closed under its own
+   check rather than silently running on a different profile. The sidecar
+   projects only `apiProvider` and a boolean `subscriptionPresent`; account
+   identity fields are refused, not redacted after the fact.
 
 Two mechanical rules make this checkable rather than reviewable. The sidecar
 imports the `.` SDK entry point only — the `/bridge` and `/browser` subpaths
@@ -144,8 +144,8 @@ repository holds no SDK source, so a future checkpoint cannot diff tags or
 read that repository's changelog as a shipped-behavior oracle. And shipped
 declarations are not runtime evidence — the shipped `manifest.json` declares
 tested wrapper versions topping out at `0.3.227` inside the wrapper published
-as `0.3.259`. Only the runtime `capabilities` observed at open may be treated
-as behavior.
+as `0.3.259`. Only the runtime `capabilities` observed from the first-turn
+`system/init` may be treated as behavior.
 
 The point moved once already: `0.3.258` was qualified first, and Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory. The
@@ -154,19 +154,25 @@ artifact identity, not as "current".
 
 ## What Open Verifies
 
-Open runs before any provider work and fails closed on a mismatch in the wire,
-behavior revision, SDK package and version, native version, the host-leased
-working directory, the exact admitted tool set, the selected permission mode,
-or account readiness. It also fails when the SDK reports no effective model or
-reports one outside an available `supportedModels` list. The exact qualified
-Node point is recorded as `Qualified`; a newer runtime that passes the
-sidecar's floor is recorded as `UnverifiedNewer` with its observed version.
+Open first constructs the SDK query, performs its bounded initialize exchange,
+and uses bounded `supportedModels()`, `accountInfo()`, and
+`supportedCommands()` controls when the SDK exposes them. It reports
+`requested-with-supported-list` readiness: the requested model and the
+initialize-served supported list are recorded, but open does not await the
+async generator or `system/init`. A mismatch in the wire, behavior revision,
+SDK package and version, native version, the host-leased working directory,
+the exact admitted tool set, the selected permission mode, or account
+readiness still fails closed.
 
-The selected model is sent as `options.model`, while the runtime's own
-`system/init` evidence supplies the effective model. A canonical effective id
-may differ from the requested alias; the sidecar preserves both values and
-uses `supportedModels` only when the SDK reports that list. A missing or
-unsupported effective model fails closed.
+The selected model is sent as `options.model`. On the first query command, the
+first yielded generator message must be `system/init`; otherwise the sidecar
+returns typed `init_missing` (or `initialization_failed` when yielding throws).
+That first-turn evidence verifies the leased cwd and effective model, publishes
+runtime capabilities, and changes readiness to `confirmed`. A canonical
+effective id may differ from the requested alias. A missing effective model or
+one outside the initialize-served supported list fails closed. The exact
+qualified Node point is recorded as `Qualified`; a newer runtime that passes
+the sidecar's floor is recorded as `UnverifiedNewer` with its observed version.
 
 Command-level sidecar rejections preserve their fixed failure code in the
 route diagnostic. Only that bounded code is exposed: sidecar message text,

@@ -119,6 +119,7 @@ fn sidecar_command_failure_codes_match_the_rust_enumeration() {
         ClaudeAgentSdkFailureCode::NodeRuntimeUnsupported,
         ClaudeAgentSdkFailureCode::ConstructionFailed,
         ClaudeAgentSdkFailureCode::InitializationFailed,
+        ClaudeAgentSdkFailureCode::InitMissing,
         ClaudeAgentSdkFailureCode::CwdMismatch,
         ClaudeAgentSdkFailureCode::ModelMismatch,
         ClaudeAgentSdkFailureCode::ModelMissing,

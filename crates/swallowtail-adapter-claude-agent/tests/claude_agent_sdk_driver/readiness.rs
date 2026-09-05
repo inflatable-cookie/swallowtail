@@ -20,6 +20,30 @@ fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
     )
 }
 
+fn first_turn_failure(scenario: SdkScenario) -> String {
+    let host = host_id("claude-agent-sdk.fixture.first-turn-readiness");
+    let fixture = SdkFixtureHost::new(scenario);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("initialize-served open must succeed before first-turn evidence");
+    let Err(error) = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+    else {
+        panic!("first-turn readiness must fail closed");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.query_rejected"
+    );
+    let code = error.diagnostic().message().rsplit_once(": ").map_or_else(
+        || error.diagnostic().message().to_owned(),
+        |(_, code)| code.to_owned(),
+    );
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    code
+}
+
 #[test]
 fn missing_subscription_evidence_never_becomes_a_subscription_session() {
     let (code, cleanup) = open_failure(SdkScenario::AccountNotSubscription);
@@ -157,9 +181,23 @@ fn a_canonical_effective_model_is_accepted_and_published() {
     let prepared = prepared_session(host.clone());
     let services = fixture.services(host);
     let cleanup_services = services.clone();
-    let session = block_on(prepared.open_route_session(services)).expect("session opens");
+    let mut session =
+        block_on(prepared.open_route_session(services.clone())).expect("session opens");
+    assert_eq!(session.readiness_state(), "requested-with-supported-list");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("first turn confirms init");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome exists"),
+    );
+    assert_eq!(
+        terminal.status(),
+        &swallowtail_runtime::TerminalStatus::Completed
+    );
+    let _ = block_on(turn.close());
     assert_eq!(session.requested_model(), "claude-sonnet-5");
     assert_eq!(session.effective_model(), "claude-sonnet-5-20250929");
+    assert_eq!(session.readiness_state(), "confirmed");
     assert_eq!(session.node_version(), "22.23.2");
     assert_eq!(session.node_version_posture(), "Qualified");
     let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
@@ -168,12 +206,21 @@ fn a_canonical_effective_model_is_accepted_and_published() {
 #[test]
 fn missing_and_unsupported_effective_models_fail_closed() {
     assert_eq!(
-        open_failure(SdkScenario::MissingModel).0,
-        "swallowtail.claude-agent.sdk.model_missing"
+        first_turn_failure(SdkScenario::MissingModel),
+        "model_missing"
     );
     assert_eq!(
-        open_failure(SdkScenario::UnsupportedModel).0,
-        "swallowtail.claude-agent.sdk.supported_model_rejected"
+        first_turn_failure(SdkScenario::UnsupportedModel),
+        "supported_model_rejected"
+    );
+}
+
+#[test]
+fn first_turn_init_missing_and_initialization_failure_stay_distinct() {
+    assert_eq!(first_turn_failure(SdkScenario::InitMissing), "init_missing");
+    assert_eq!(
+        first_turn_failure(SdkScenario::InitializationFailed),
+        "initialization_failed"
     );
 }
 

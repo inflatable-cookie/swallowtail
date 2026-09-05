@@ -58,12 +58,15 @@ assumptions about the hook signature and the account shape.
    diagnostic (code set is the fixed sidecar enumeration; no message text,
    path, or account value crosses). Consumers see, for example,
    `open_rejected: model_mismatch`.
-2. **Effective model as evidence, not equality.** The sidecar returns the
-   SDK-reported `system.model` in the open response; `readiness()` records
-   requested and effective model separately and publishes the effective
-   value. Fail open only when the SDK reports no model or a model outside
-   `supportedModels` when that list is available. Do not fail on a
-   canonical id differing from a requested alias.
+2. **Effective model as evidence, not equality.** The sidecar reports the
+   requested model and initialize-served supported list at open, then requires
+   the first query's first yielded message to be `system/init`. That evidence
+   supplies the effective model and capabilities; `readiness()` records
+   requested and effective model separately and confirms only after the first
+   turn. Fail with `init_missing` when init is absent or not first, keep
+   `initialization_failed` distinct for an SDK init throw, and reject an
+   effective model outside `supportedModels` when that list is available. Do
+   not fail on a canonical id differing from a requested alias.
 3. **Node newer-allowed at open.** Keep the pinned Node `22.23.2` as the
    qualified point but treat a newer Node that passes the sidecar floor as
    `UnverifiedNewer` on that axis rather than an `open_mismatch`, recording
@@ -149,6 +152,15 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `AccountInfo`, `SpawnedProcess`, and `SpawnOptions` are frozen under the
   owned 0.3.259 fixture corpus, and a unit drift test compares
   `COMMAND_FAILURE_CODES` with the Rust command-code enumeration.
+- The protocol-order repair is provider-free and complete: open now consumes
+  the SDK initialize exchange plus bounded `supportedModels()`, `accountInfo()`,
+  and `supportedCommands()` controls without awaiting `query.next()`. Open
+  reports `requested-with-supported-list`; the first query requires
+  `system/init` as its first yielded message and then returns `confirmed`
+  readiness with cwd, effective model, and capabilities. Missing or reordered
+  init is `init_missing`; an SDK throw remains `initialization_failed`.
+  Fixtures cover both paths and preserve the canonical/effective model and
+  account-check proofs.
 - Provider-free validation passed: `cargo fmt -p
   swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
   swallowtail-adapter-claude-agent`; `effigy package:verify-affected
@@ -171,6 +183,14 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   write was sent. No rejection requiring design judgment was exposed. Live
   acceptance remains unresolved and the card stays open pending a successful
   live init capture.
+- After the provider-free validation, the one further extended-authorization
+  live probe was run exactly once on Node `22.23.2` with the real SDK and native
+  binary. The open-only control exchange returned the sanitized sidecar result
+  `success: false`, `failure.code: account_not_subscription`; stderr was empty.
+  No prompt, tool call, write, turn, `system/init`, model value, or account
+  field presence was captured. This is the live design-review stop point: do
+  not infer subscription evidence or run another live probe until the code is
+  reviewed. The card remains open pending a successful live init capture.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 195 passed, 0 skipped, 0 failed.

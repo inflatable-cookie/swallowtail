@@ -4,8 +4,8 @@ use swallowtail_adapter_pi::{
     PiSessionProfileInput, prepare_pi_rpc, prepare_pi_sdk_sidecar_session,
 };
 use swallowtail_core::{
-    AccessProfileId, ConfiguredInstanceId, CredentialRef, InstanceRevision, InstanceTargetRef,
-    ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
+    AccessProfileId, Capability, ConfiguredInstanceId, CredentialRef, InstanceRevision,
+    InstanceTargetRef, ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
 };
 use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteProjectionContribution,
@@ -171,22 +171,45 @@ fn pi_rpc_attachments_are_conditional_and_per_turn_authority_is_exact() {
 #[test]
 fn pi_sdk_sidecar_projection_keeps_reasoning_and_attachment_evidence_route_local() {
     let sidecar = sidecar_prepared(true, reasoning_options("medium"));
+    assert!(
+        sidecar
+            .plan()
+            .requirements()
+            .capabilities()
+            .all(|required| {
+                !matches!(
+                    required.capability(),
+                    Capability::ModelCatalog
+                        | Capability::UsageReporting
+                        | Capability::ObservableActivity
+                )
+            })
+    );
     let contribution = sidecar
         .consumer_route_projection_contribution(
             ConsumerRouteProjectionSourceId::new("pi-sidecar-projection").unwrap(),
         )
         .expect("sidecar contribution admits");
     for semantic in [
-        "feature.model-catalogue",
-        "feature.activity-observation",
-        "feature.usage-evidence",
         "feature.attachments",
         "control.reasoning-selection",
         "control.session-options",
     ] {
         find(&contribution, semantic);
     }
-    assert_eq!(rows(&contribution).len(), 19);
+    assert_eq!(rows(&contribution).len(), 16);
+    for withheld in [
+        "feature.model-catalogue",
+        "feature.activity-observation",
+        "feature.usage-evidence",
+    ] {
+        assert!(
+            rows(&contribution)
+                .into_iter()
+                .all(|row| semantic_id(row) != withheld),
+            "{withheld} is withheld by the sidecar plan"
+        );
+    }
     let attachment = find(&contribution, "control.attachments");
     assert!(
         attachment
@@ -213,3 +236,12 @@ fn pi_sdk_sidecar_projection_keeps_reasoning_and_attachment_evidence_route_local
                 && semantic_id(row) != "control.attachments")
     );
 }
+
+#[path = "consumer_route_projection/fixtures.rs"]
+mod fixtures;
+#[path = "consumer_route_projection/ledger.rs"]
+mod ledger;
+#[path = "consumer_route_projection/naming.rs"]
+mod naming;
+#[path = "consumer_route_projection/proof.rs"]
+mod proof;

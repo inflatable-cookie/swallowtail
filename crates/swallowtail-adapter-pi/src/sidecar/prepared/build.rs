@@ -28,11 +28,8 @@ pub(super) fn prepare(
 ) -> Result<PiSdkSidecarPreparedSession, PreparationFailure> {
     super::super::reasoning::validate_options(&options)?;
     let mut capability_requirements = vec![
-        CapabilityRequirement::new(Capability::ModelCatalog, []),
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::ObservableActivity, []),
         CapabilityRequirement::new(
             Capability::LoadSession,
             [

@@ -239,3 +239,12 @@ fn opencode_mixed_applicability_is_rejected_before_composition() {
         swallowtail_runtime::ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement
     );
 }
+
+#[path = "consumer_route_projection/fixtures.rs"]
+mod fixtures;
+#[path = "consumer_route_projection/ledger.rs"]
+mod ledger;
+#[path = "consumer_route_projection/naming.rs"]
+mod naming;
+#[path = "consumer_route_projection/proof.rs"]
+mod proof;

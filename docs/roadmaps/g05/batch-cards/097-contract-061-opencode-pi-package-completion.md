@@ -90,9 +90,17 @@ No. Stop after one reviewable PR for exact-head review.
 
 ## Result
 
-Completed candidate L at exact scope: `opencode.http` 33 emitted / 2 withheld,
-`pi.rpc` 15/0, and `pi.sdk-sidecar` 19/0. Prepared OpenCode and Pi facades now
-publish adapter-local Contract 061 contributions. Per-turn rows require
+Repaired candidate L at exact scope: `opencode.http` 33 emitted / 2 withheld,
+`pi.rpc` 15/0, and `pi.sdk-sidecar` 16/3; 64 emitted and 5 withheld across 69.
+The repair reverted the sidecar plan widening in
+`crates/swallowtail-adapter-pi/src/sidecar/prepared/build.rs`: its session
+facade has no catalogue role or route, no `Capability::UsageReporting`
+requirement, and no `ObservableActivityProfile`-derived requirement, so
+`feature.model-catalogue`, `feature.usage-evidence`, and
+`feature.activity-observation` remain withheld at construction with anchored
+reasons. Prepared OpenCode and Pi facades publish adapter-local Contract 061
+contributions; provider-free fixtures bind every emitted ledger row to the
+named facade and assert every withheld row is absent. Per-turn rows require
 retained attachment or consumer-mediated callback evidence and carry only
 `ConsumerMediatedPerTurn`; OpenCode permission exchange is namespaced over
 `opencode/permission`, and the reasoning-selection and provider-turn-reference

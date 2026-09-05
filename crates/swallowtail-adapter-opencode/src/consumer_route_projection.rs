@@ -230,7 +230,3 @@ fn availability(status: &AccessStatus) -> ConsumerRouteAvailability {
         ConsumerRouteAvailability::Conditional
     }
 }
-
-#[cfg(test)]
-#[path = "consumer_route_projection/ledger.rs"]
-mod ledger;

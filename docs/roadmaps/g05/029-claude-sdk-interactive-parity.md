@@ -37,7 +37,7 @@ visibility holds only in `default` and `plan`; the guide states this.
 1. Card 080: read-write session (`Edit`, `Write`, `MultiEdit`) through
    per-call admission on a read-write lease, `permissionMode` at open, and
    `setPermissionMode` mid-session. Carrier for `v0.4.1`.
-2. Card 081: Bash under mediation with intact tool input.
+2. Card 081: Bash under mediation with intact tool input — delivered through PR 233 at `97f37e4d`.
 3. Card 082: mid-session model and effort change with confirmed values.
 4. Card 083: resume, `resumeSessionAt`, and session listing; fork optional.
 5. Card 084: client MCP servers on open.
@@ -68,7 +68,7 @@ forces a minor.
 
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
-- [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — ready; bounded command view on the callback; nothing auto-allowed
+- [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — complete; bounded command view on the callback; PR 233 merged at `97f37e4d`
 - [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — ready; confirmed values only; effort at open
 - [083 Claude SDK Resume And Session Listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — planned; after 080
 - [084 Claude SDK Client MCP Servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — planned; after 080

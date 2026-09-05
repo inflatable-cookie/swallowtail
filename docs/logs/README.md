@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-05 g05.029 Card 081 Closeout](./2026-09-05-g05-029-card-081-closeout.md) — Bash under mediation accepted at exact head and merged through PR 233 as `97f37e4d`; Card 082 is the next consumer-parity card
 - [2026-09-05 Contract 061 Final Tranches Compiled](./2026-09-05-contract-061-final-tranches-compiled.md) — card 096 ruled the existing per-turn vocabulary sufficient; cards 097-099 complete the last 197 rows (L, B, K) as one concurrent group
 - [2026-09-05 g05.030 Card 093 Closeout](./2026-09-05-g05-030-card-093-closeout.md) — deterministic Claude SDK sidecar fixture merged through PR 226 as `4bb00dab`; Card 091 re-prepares on the repaired base
 - [2026-09-05 g05.030 Card 090 Closeout](./2026-09-05-g05-030-card-090-closeout.md) — compatibility audit accepted and merged as `3dcf4f12`; Card 091 prepare authorization is now actionable

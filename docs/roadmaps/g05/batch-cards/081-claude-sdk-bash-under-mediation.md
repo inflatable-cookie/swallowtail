@@ -1,6 +1,6 @@
 # 081 Claude SDK Bash Under Mediation
 
-Status: ready
+Status: complete; PR 233 merged at `97f37e4d`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-05

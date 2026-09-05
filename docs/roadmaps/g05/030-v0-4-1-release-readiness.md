@@ -179,6 +179,23 @@ three compressions of the lane, on the Chatterbox recommendation:
 Candidate review and workflow-dispatch CI run in parallel. The tag request
 goes to the operator as one message with the exact SHA.
 
+## Fifth Prepare: Temp-Directory Collision
+
+Attempt five (on `c8ebfb6a`, after card 093) failed the prepare's own floor
+on two sidecar-asset tests: one found no `observations.json`, the other got
+no sidecar record before the 300-second death guard. Root cause: the fixture
+names its temporary directory by process id plus a nanosecond timestamp;
+under `cargo test` the twelve tests are threads of one process, macOS time
+resolves to microseconds, two tests share a name, `create_dir_all` accepts
+the existing directory, and the first test's cleanup deletes the other's
+workspace. Nextest isolates tests per process, so CI's stable job and local
+nextest never reproduce it. This is the v0.4.0 watcher path-reuse race in a
+new fixture. The fix is a process-wide counter in the directory name plus
+`create_dir` so a collision fails loudly, applied to every fixture that
+builds temporary roots the same way; it ships as a tiny test-only PR before
+the sixth prepare. PR 227's stable job, wedged for over ninety minutes with
+no test failing locally, is a runner problem and is re-run after the tag.
+
 ### Card 094 Manifest
 
 Promoted planning commit: the `main` commit that introduces this section.

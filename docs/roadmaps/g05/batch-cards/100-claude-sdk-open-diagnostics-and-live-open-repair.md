@@ -215,6 +215,20 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   with no model or account values. No live turn, prompt, tool call, write, or
   `system/init` was run or captured. The card remains open pending successful
   live init evidence.
+- Under the single newly relayed bounded-turn authorization, exactly one
+  Node `22.23.2` live turn was attempted in a throwaway working directory with
+  the read-only `Read`/`Glob`/`Grep` profile and default permission mode. The
+  sanitized sequence was: open succeeded with
+  `requested-with-supported-list`, first-party readiness, and an available
+  supported-model list; the first yielded SDK message was `system/init`; the
+  query then failed with `cwd_mismatch` before a turn terminal event, with no
+  tool requested. Close succeeded with native exit event `exit`, code `1`,
+  signal absent, `sdkTransportCloseRan: true`, `nativeJoin: exited`, and
+  `nativeExitObserved: true`; the sidecar root exited by `exit` code `0`,
+  signal absent. The live operation is therefore `Failed` on the typed
+  `cwd_mismatch` rejection; the close evidence is recorded, but no Clean or
+  Degraded success claim is made from this failed turn. This was the one
+  authorized live turn; do not retry without a fresh authorization relay.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.

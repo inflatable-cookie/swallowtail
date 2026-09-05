@@ -1,3 +1,14 @@
 [profile.default]
 final-status-level = "fail"
 status-level = "fail"
+
+# Keep process-spawning binaries out of the count-partitioned shards. They run
+# once in the dedicated CI process shard below, so every test remains covered
+# exactly once on pull requests.
+[profile.ci]
+inherits = "default"
+default-filter = "not (binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service))"
+
+[profile.ci-process]
+inherits = "default"
+default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service)"

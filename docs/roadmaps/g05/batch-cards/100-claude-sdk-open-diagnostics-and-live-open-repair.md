@@ -265,6 +265,24 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `Failed` because the turn terminal carried `isError: true` and the native
   child exited nonzero. Acceptance remains unticked; do not run another live
   turn without a fresh authorization relay.
+- Under the third single-turn authorization, exactly one Node `22.23.2`
+  read-only live turn ran with the default permission mode. The sanitized
+  sequence was: open succeeded with `requested-with-supported-list`,
+  first-party readiness, and an available supported-model list; the first
+  yielded message passed the sidecar gate as `system/init`; query reached
+  `confirmed` readiness with canonical cwd confirmation, effective model
+  `claude-sonnet-5`, and capability labels
+  `interrupt_receipt_v1`, `interrupt_cancel_queued_v1`, and
+  `msg_lifecycle_v1`. No tool was requested and no write occurred. Separately,
+  the SDK result fields were subtype `success`, `is_error: true`, `num_turns:
+  1`, `duration_ms: 28`, and error text absent with absent type. The sanitized
+  native stderr tail was empty. Turn `TerminalStatus` was `Failed`; close
+  observed native exit event `exit`, code `1`, signal absent,
+  `sdkTransportCloseRan: true`, and `nativeJoin: exited`. Route
+  `CleanupOutcome` was `Failed`, kept separate from the turn status. No typed
+  sidecar rejection code was emitted. Acceptance remains unticked; this was
+  the one authorized third live turn and no further live attempt is allowed
+  without a fresh authorization relay.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.

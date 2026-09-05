@@ -64,3 +64,27 @@ Promoted planning commit: the `main` commit that introduces this file.
       a multi-turn edit lands in the leased cwd
 - [ ] every open failure names its sidecar code
 - [ ] `v0.4.2` tagged on the operator's exact-SHA authorization
+
+### Card 101 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 101 becomes ready the moment card 100 merges with its live acceptance
+recorded; the coordinator dispatches it on that notice without a further
+Chatterbox round trip. Operator prepare authorization was granted
+2026-09-05 on the `v0.4.1` standing-grant pattern.
+
+| Field | Card 101 |
+| --- | --- |
+| Readiness | planned until card 100 merges; then ready without further promotion |
+| Prerequisites | card 100 merged with the live turn recorded (system/init first, truthful close); Effigy local install at or beyond the per-gate-log fix; clean canonical base; no open feature PR |
+| Completion conditions | `docs/releases/0.4.2.md` and index entry authored from card 100's result, the merged Contract 061 tranches (candidates B, K, L and the 767/767 completion), card 081's Bash mediation, and cards 093/094/095; patch class stated from the semantic API diff (all changes since `v0.4.1` are additive: card 100 adds 5 baseline lines, the tranches add contribution methods); read-only release status inferring `0.4.2` with the three-mutation plan; lock in sync before the first `--locked` gate; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.2` with the per-gate logs kept as evidence; NO separate frozen-tree rerun; distinct `0.4.2` semantic baseline, route inventory, and dependency graph without touching `0.4.1` files; the four gate scripts and the consumer front-door script repointed to `0.4.2` exactly as card 091 did; candidate PR; independent review and workflow-dispatch CI in parallel; merge on both green |
+| Owned mutable paths | as card 091's amended manifest, with `0.4.2` in place of `0.4.1`: workspace `Cargo.toml` versions through the prepare transaction; `Cargo.lock` workspace entries; `CHANGELOG.md` promotion; `docs/releases/0.4.2.md`; `docs/releases/README.md` current entry; `release-baselines/public-api-0.4.2/**`, `production-routes-0.4.2.txt`, `internal-dependencies-0.4.2.tsv`; `.release-prepared.json`; `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, `scripts/check-consumer-front-door.py`, `scripts/README.md`; root `README.md` release-posture lines; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
+| Forbidden paths | every `crates/**/src` and test path; every `0.4.1` and earlier baseline; contracts; architecture; guides; matrices; version claims; any feature change |
+| Approved concurrent siblings | none; feature freeze from card 100's merge until card 102 stops (card 082 stays paused) |
+| Serial edges | card 102 follows the merged candidate with green exact-SHA CI and the Bovine packet |
+| Worker capability class | release-preparation worker with Effigy release discipline; no credentials; no tag authority |
+| Acceptance evidence | read-only status output; prepare JSON report with all gates green and per-gate logs; the `0.4.2` baseline files; PR head and merged SHA; workflow-dispatch run id at that SHA |
+| Review oracle | one exact tree supports every candidate statement; release note status line reads `Status: candidate; not tagged` |
+| Stop conditions | a gate fails (Effigy rolls back; report with the captured gate log; a transient renewed by Chatterbox under the standing grant; a real defect stops); release status infers anything but `0.4.2`; an open feature PR |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

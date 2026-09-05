@@ -1,6 +1,6 @@
 # 097 Contract 061 OpenCode And Pi Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -109,3 +109,14 @@ retained attachment or consumer-mediated callback evidence and carry only
 `opencode/permission`, and the reasoning-selection and provider-turn-reference
 matrix rows remain withheld. Added deterministic ledgers, mixed-applicability
 rejection, and negative profile coverage.
+
+PR #234 was independently accepted at exact head
+`58f8495f44b917ac6d7ed0a5d58b68a5338705eb` and merged as
+`f4e707f08e7bb1dd064914766f7b17449e3d2c6c`. All 11 hosted checks were green
+and GitHub reported `MERGEABLE` / `CLEAN`. The final review reconfirmed the
+Pi RPC to SDK-sidecar cross-route `ApplicabilityDisagreement` proof in both
+directions, the corrected `session-lifecycle` tuple, and the 64/5 ledger.
+
+Contract 061 now has all 767 census rows proved. The per-turn audit note is
+retained for Chatterbox to prune as the reserved follow-up; this closeout does
+not delete it.

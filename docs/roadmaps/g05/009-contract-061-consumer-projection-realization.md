@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 698 rows proved; card 096 ruled the existing vocabulary sufficient; cards 098 and 099 are complete, and card 097 remains for the final 69 rows (candidate L)
+Status: complete; 767 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are complete; the per-turn audit note remains for Chatterbox's reserved prune
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -353,7 +353,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
-- [097 Contract 061 OpenCode And Pi Package Completion](batch-cards/097-contract-061-opencode-pi-package-completion.md) — ready; candidate L; 69 rows, 67 emitted and 2 withheld; two packages
+- [097 Contract 061 OpenCode And Pi Package Completion](batch-cards/097-contract-061-opencode-pi-package-completion.md) — complete; candidate L; 69 rows, 64 emitted and 5 withheld; PR 234 merged as `f4e707f0`
 - [098 Contract 061 Alibaba, Anthropic, And xAI Package Completion](batch-cards/098-contract-061-alibaba-anthropic-xai-package-completion.md) — complete; candidate B; 76 rows, 74 emitted and 2 withheld; PR 236 merged as `921ee00c`
 - [099 Contract 061 Mistral Vibe, Muse, Oh My Pi, And Qwen Package Completion](batch-cards/099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md) — complete; candidate K; 52 rows, all emitted; PR 235 merged as `c2f46b6e`
 - [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — complete; existing vocabulary suffices; B, K, L promotable; PR 232 merged as `b874df63`

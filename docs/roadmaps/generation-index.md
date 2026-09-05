@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 32 roadmaps: 24 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 009, 029, 031, 032. Milestone 030 completed the
+g05 has 32 roadmaps: 25 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 029, 031, 032. Milestone 030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
 are complete and `v0.4.1` is tagged at `c3cce750`. Milestone 029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;
@@ -153,7 +153,7 @@ cards 080 and 081 delivered the `v0.4.1` carrier and Bash mediation, card 082
 is ready, and cards 083-088 are planned. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
-has 698 proved rows; cards 034, 074, 075, 076, 079, 098, and 099 are complete, with card 097 remaining for 69 rows. Milestone 028 is complete: card 077 admitted compatible
+has all 767 proved rows; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete. Milestone 028 is complete: card 077 admitted compatible
 OpenCode HTTP `surface-19` and card 078 qualified that segment through
 `1.18.28`; `1.18.29` remains `UnverifiedNewer`. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing

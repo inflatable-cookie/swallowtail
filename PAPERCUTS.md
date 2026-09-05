@@ -826,3 +826,8 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `PAPERCUTS.md` before exact-SHA / clean-tree release prep (skill repo-contract,
   normalize-docs, bundle-docs/papercuts.md, template-bundle).
 - Surface: Northstar adoption and tagged-release preparation.
+### [ ] Retained worker workspace can disappear before deferred continuation — 2026-09-05
+- Friction: the retained Card 094 worker agent existed in prior coordination history, but its registered worktree had been removed before the post-tag continuation arrived.
+- Impact: the original agent could not be resumed; recreating the implementation lane required a replacement worker and fresh same-workspace reviewer placement.
+- Fix: preserve deferred worker workspaces until the lane is merged and closed out, or make continuation preflight surface the archival/removal event before dispatch.
+- Surface: Paseo workspace lifecycle and Northstar deferred-lane continuation.

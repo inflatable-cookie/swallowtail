@@ -83,10 +83,16 @@ function accountInfo() {
   if (SCENARIO === "account-not-subscription") {
     return { apiProvider: "firstParty" };
   }
+  if (SCENARIO === "account-api-key-source") {
+    return { apiProvider: "firstParty", subscriptionType: "max", apiKeySource: "oauth" };
+  }
   return { apiProvider: "firstParty", subscriptionType: "max" };
 }
 
 function modelRows(options) {
+  if (SCENARIO === "empty-supported-models") {
+    return [];
+  }
   if (SCENARIO === "unsupported-model") {
     return [{ value: "claude-opus-5", displayName: "Opus" }];
   }
@@ -199,10 +205,6 @@ export function query({ prompt, options }) {
       observeControl("supportedModels");
       return modelRows(options);
     },
-    async supportedCommands() {
-      observeControl("supportedCommands");
-      return [{ name: "help", description: "fixture command" }];
-    },
     async interrupt() {
       return { received: true };
     },
@@ -304,10 +306,6 @@ function bashSession(prompt, options, child) {
     observeControl("supportedModels");
     return modelRows(options);
   };
-  iterator.supportedCommands = async () => {
-    observeControl("supportedCommands");
-    return [{ name: "help", description: "fixture command" }];
-  };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;
@@ -387,10 +385,6 @@ function editingSession(prompt, options, child) {
   iterator.supportedModels = async () => {
     observeControl("supportedModels");
     return modelRows(options);
-  };
-  iterator.supportedCommands = async () => {
-    observeControl("supportedCommands");
-    return [{ name: "help", description: "fixture command" }];
   };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {

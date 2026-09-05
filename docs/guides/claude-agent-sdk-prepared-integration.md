@@ -54,15 +54,17 @@ Swallowtail never holds the subscription credential.
 1. The user runs the official Claude Code login out of band. Swallowtail does
    not perform, wrap, or drive it, and the SDK exposes no login function.
 2. Credentials stay in the official Claude credential store, reachable only by
-   the native binary, which authenticates itself.
+   the native binary, which authenticates itself. The sidecar passes `env: {}`
+   and no API key, so first-party OAuth belongs to that native binary rather
+   than to Swallowtail.
 3. Swallowtail leases a delegated credential reference that exposes no secret,
    and passes no credential over the sidecar wire.
-4. Open observes typed readiness only: `apiProvider` must be `firstParty` and
-   `subscriptionType` must be present in the SDK's `AccountInfo` projection.
-   An API-key or delegated-cloud provenance label fails closed under its own
-   check rather than silently running on a different profile. The sidecar
-   projects only `apiProvider` and a boolean `subscriptionPresent`; account
-   identity fields are refused, not redacted after the fact.
+4. Open observes typed readiness only: `apiProvider` must be `firstParty`.
+   Subscription fields are observations, not gates: the sidecar projects
+   labelled `subscriptionTypePresent` and `apiKeySourcePresent` booleans, with
+   no raw values. A delegated-cloud provider label fails closed under its own
+   check rather than silently running on a different profile; account identity
+   fields are refused, not redacted after the fact.
 
 Two mechanical rules make this checkable rather than reviewable. The sidecar
 imports the `.` SDK entry point only — the `/bridge` and `/browser` subpaths
@@ -155,8 +157,7 @@ artifact identity, not as "current".
 ## What Open Verifies
 
 Open first constructs the SDK query, performs its bounded initialize exchange,
-and uses bounded `supportedModels()`, `accountInfo()`, and
-`supportedCommands()` controls when the SDK exposes them. It reports
+and uses the bounded `supportedModels()` and `accountInfo()` controls. It reports
 `requested-with-supported-list` readiness: the requested model and the
 initialize-served supported list are recorded, but open does not await the
 async generator or `system/init`. A mismatch in the wire, behavior revision,
@@ -164,13 +165,15 @@ SDK package and version, native version, the host-leased working directory,
 the exact admitted tool set, the selected permission mode, or account
 readiness still fails closed.
 
-The selected model is sent as `options.model`. On the first query command, the
+The selected model is sent as `options.model`. A non-empty initialize-served
+supported-model list constrains the first-turn effective model; an empty list
+is treated as unavailable. On the first query command, the
 first yielded generator message must be `system/init`; otherwise the sidecar
 returns typed `init_missing` (or `initialization_failed` when yielding throws).
 That first-turn evidence verifies the leased cwd and effective model, publishes
 runtime capabilities, and changes readiness to `confirmed`. A canonical
 effective id may differ from the requested alias. A missing effective model or
-one outside the initialize-served supported list fails closed. The exact
+one outside a non-empty initialize-served supported list fails closed. The exact
 qualified Node point is recorded as `Qualified`; a newer runtime that passes
 the sidecar's floor is recorded as `UnverifiedNewer` with its observed version.
 

@@ -129,6 +129,8 @@ pub(crate) enum ClaudeAgentSdkFailureCode {
     CapabilitiesOverflow,
     CapabilitiesInvalid,
     AccountNotFirstParty,
+    /// Retired compatibility code: subscription evidence is observational,
+    /// so current open never emits this rejection.
     AccountNotSubscription,
     AlreadyOpen,
     NodeRuntimeUnsupported,

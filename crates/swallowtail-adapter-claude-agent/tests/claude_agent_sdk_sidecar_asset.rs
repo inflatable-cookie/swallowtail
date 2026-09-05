@@ -33,7 +33,6 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
             "initializationResult".to_owned(),
             "supportedModels".to_owned(),
             "accountInfo".to_owned(),
-            "supportedCommands".to_owned(),
         ]
     );
     assert!(!sidecar.first_input_consumed());
@@ -65,10 +64,7 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
 
 #[test]
 fn open_rejections_expose_only_the_fixed_sidecar_code() {
-    for (scenario, expected) in [
-        ("account-not-first-party", "account_not_first_party"),
-        ("account-not-subscription", "account_not_subscription"),
-    ] {
+    for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);
         let response = sidecar.command(
             "open-1",
@@ -88,6 +84,47 @@ fn open_rejections_expose_only_the_fixed_sidecar_code() {
             );
         }
     }
+}
+
+#[test]
+fn first_party_account_fields_are_labelled_observations_not_gates() {
+    for (scenario, subscription, api_key) in [
+        ("read-only", true, false),
+        ("account-not-subscription", false, false),
+        ("account-api-key-source", true, true),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true, "{scenario} must open: {open}");
+        assert_eq!(open["data"]["account"]["apiProvider"], "firstParty");
+        assert_eq!(
+            open["data"]["account"]["subscriptionTypePresent"],
+            subscription
+        );
+        assert_eq!(open["data"]["account"]["apiKeySourcePresent"], api_key);
+    }
+}
+
+#[test]
+fn an_empty_supported_model_list_is_unavailable() {
+    let mut sidecar = SidecarProcess::start_scenario("empty-supported-models");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "empty list is unavailable: {open}");
+    assert_eq!(open["data"]["supportedModels"], json!([]));
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], true,
+        "empty list must not reject the effective model: {first_turn}"
+    );
+    assert_eq!(first_turn["data"]["model"], "m-1");
 }
 
 #[test]

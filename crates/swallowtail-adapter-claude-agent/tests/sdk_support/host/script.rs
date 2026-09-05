@@ -69,7 +69,8 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "capabilities": [],
         "account": {
             "apiProvider": "firstParty",
-            "subscriptionPresent": true
+            "subscriptionTypePresent": true,
+            "apiKeySourcePresent": false
         },
         // The fixture sidecar echoes exactly what the driver admitted, so a
         // widened or reordered echo is a deliberate scenario rather than an
@@ -82,7 +83,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
             data["account"]
                 .as_object_mut()
                 .expect("account object")
-                .remove("subscriptionPresent");
+                .insert("subscriptionTypePresent".to_owned(), json!(false));
         }
         SdkScenario::AccountNotFirstParty => data["account"]["apiProvider"] = json!("bedrock"),
         SdkScenario::AccountIdentityLeak => {
@@ -94,6 +95,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
             data["supportedModels"] = json!([FIXTURE_MODEL, "claude-sonnet-5-20250929"]);
         }
         SdkScenario::MissingModel | SdkScenario::UnsupportedModel => {}
+        SdkScenario::EmptySupportedModels => data["supportedModels"] = json!([]),
         SdkScenario::NewerNode => data["nodeVersion"] = json!("26.7.0"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
         SdkScenario::PermissionModeDrift => data["permissionMode"] = json!("plan"),

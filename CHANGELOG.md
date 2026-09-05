@@ -33,9 +33,10 @@ annotated Git tags from the canonical repository.
 
 ### Fixed
 - repair the `claude-agent.sdk` open path for SDK `0.3.259`: the spawn hook
-  now accepts the frozen object-form `SpawnOptions`, subscription readiness
-  uses `accountInfo().apiProvider` and `subscriptionType` as separate checks,
-  sidecar rejection codes reach safe route diagnostics, bounded initialize and
+  now accepts the frozen object-form `SpawnOptions`, first-party readiness
+  gates on `accountInfo().apiProvider` while `subscriptionType` and
+  `apiKeySource` are labelled observations, sidecar rejection codes reach safe
+  route diagnostics, bounded initialize and
   control evidence reports requested-with-supported-list readiness, and the
   first query requires `system/init` before publishing effective model and
   capabilities. Canonical effective models remain distinct from requested

@@ -48,8 +48,9 @@ assumptions about the hook signature and the account shape.
    signal}` and forwards `signal` to `spawn`. Verify the subscription
    evidence field names against the frozen 0.3.259 `sdk.d.ts` (Research
    280 corpus) and project readiness from the fields the SDK actually
-   returns; keep first-party and subscription as separate labelled checks
-   with distinct codes. Update the fake SDK to call the hook with the real
+   returns. `apiProvider` is the only account gate; subscription fields are
+   labelled observations, and `account_not_subscription` is retained only as
+   a retired code. Update the fake SDK to call the hook with the real
    signature and to return `accountInfo()` in the real 0.3.259 shape, so the
    fixture can never again agree with a wrong assumption; add a test that
    fails if the hook is called positionally.
@@ -65,7 +66,8 @@ assumptions about the hook signature and the account shape.
    requested and effective model separately and confirms only after the first
    turn. Fail with `init_missing` when init is absent or not first, keep
    `initialization_failed` distinct for an SDK init throw, and reject an
-   effective model outside `supportedModels` when that list is available. Do
+   effective model outside a non-empty `supportedModels` list when it is
+   available. An empty list is unavailable and imposes no model constraint. Do
    not fail on a canonical id differing from a requested alias.
 3. **Node newer-allowed at open.** Keep the pinned Node `22.23.2` as the
    qualified point but treat a newer Node that passes the sidecar floor as
@@ -90,8 +92,9 @@ With the spawn hook fixed, both authorized probes reached the native child
 (first native record `control_response`, empty stderr) and then timed out
 waiting for `system/init`. The frozen 0.3.259 declarations refute the spawn
 shape as a cause. Ruling: the sidecar's open protocol is wrong for a
-streaming-input query. The SDK serves readiness (`supportedModels`,
-`accountInfo`, `supportedCommands`) from the `initialize` control exchange,
+streaming-input query. The SDK serves the needed readiness (`supportedModels`,
+`accountInfo`) from the `initialize` control exchange; `supportedCommands` is
+unevidenced and not needed by this route,
 and `system/init` arrives only after the first user message. Open must
 take readiness from the initialize exchange and treat `system/init` as
 first-turn evidence (cwd and effective-model confirmation, capabilities),
@@ -144,8 +147,9 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `signal` forwarding are covered by the fake SDK regression fixture; the
   real `AccountInfo` declaration was checked in the 0.3.259 `sdk.d.ts`, where
   the subscription-evidence fields are `subscriptionType`, `tokenSource`,
-  and `apiKeySource`, with `apiProvider` kept as a separate first-party
-  check. Every command rejection preserves its fixed sidecar code without
+  and `apiKeySource`, with `apiProvider` kept as the first-party gate and the
+  subscription fields projected as labelled presence observations. Every
+  command rejection preserves its fixed sidecar code without
   forwarding message, path, or account data. Effective model evidence and
   requested/effective model separation are covered, as is newer-Node
   `UnverifiedNewer` readiness. Reproducible `sdk.d.ts` excerpts for
@@ -153,9 +157,9 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   owned 0.3.259 fixture corpus, and a unit drift test compares
   `COMMAND_FAILURE_CODES` with the Rust command-code enumeration.
 - The protocol-order repair is provider-free and complete: open now consumes
-  the SDK initialize exchange plus bounded `supportedModels()`, `accountInfo()`,
-  and `supportedCommands()` controls without awaiting `query.next()`. Open
-  reports `requested-with-supported-list`; the first query requires
+  the SDK initialize exchange plus bounded `supportedModels()` and
+  `accountInfo()` controls without awaiting `query.next()`. Open reports
+  `requested-with-supported-list`; the first query requires
   `system/init` as its first yielded message and then returns `confirmed`
   readiness with cwd, effective model, and capabilities. Missing or reordered
   init is `init_missing`; an SDK throw remains `initialization_failed`.
@@ -191,6 +195,18 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   field presence was captured. This is the live design-review stop point: do
   not infer subscription evidence or run another live probe until the code is
   reviewed. The card remains open pending a successful live init capture.
+- After retiring `account_not_subscription`, the one authorized Node
+  `22.23.2` open-only probe ran exactly once with the real SDK and native
+  binary. Open reported `requested-with-supported-list`, advanced through the
+  first-party account gate and the initialize controls, then the sidecar
+  exited during close before the normal `opened_and_closed` marker. Sanitized
+  control evidence recorded
+  `apiProvider` present (first-party gate passed), `subscriptionType` absent,
+  `tokenSource` present, and `apiKeySource` absent. The initialize-served
+  supported-model list contained 5 rows; only row field labels were retained,
+  with no model or account values. No live turn, prompt, tool call, write, or
+  `system/init` was run or captured. The card remains open pending successful
+  live init evidence.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 195 passed, 0 skipped, 0 failed.

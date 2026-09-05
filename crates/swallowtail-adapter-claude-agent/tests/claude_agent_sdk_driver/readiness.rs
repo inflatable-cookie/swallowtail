@@ -45,16 +45,20 @@ fn first_turn_failure(scenario: SdkScenario) -> String {
 }
 
 #[test]
-fn missing_subscription_evidence_never_becomes_a_subscription_session() {
-    let (code, cleanup) = open_failure(SdkScenario::AccountNotSubscription);
-    assert_eq!(
-        code,
-        "swallowtail.claude-agent.sdk.account_not_subscription"
-    );
-    // Failing open still terminates the tree and releases both leases.
-    assert!(cleanup.contains(&CleanupEvent::ProcessForceStop));
-    assert!(cleanup.contains(&CleanupEvent::ResourceRelease));
-    assert!(cleanup.contains(&CleanupEvent::CredentialRelease));
+fn first_party_without_subscription_evidence_still_opens() {
+    let host = host_id("claude-agent-sdk.fixture.account-observations");
+    let fixture = SdkFixtureHost::new(SdkScenario::AccountNotSubscription);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let session = block_on(prepared.open_route_session(services))
+        .expect("first-party open must not gate on subscriptionType");
+    let outcome = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    assert!(matches!(
+        outcome,
+        swallowtail_runtime::CleanupOutcome::Clean
+            | swallowtail_runtime::CleanupOutcome::Degraded(_)
+    ));
 }
 
 #[test]
@@ -213,6 +217,30 @@ fn missing_and_unsupported_effective_models_fail_closed() {
         first_turn_failure(SdkScenario::UnsupportedModel),
         "supported_model_rejected"
     );
+}
+
+#[test]
+fn an_empty_supported_model_list_does_not_reject_first_turn_evidence() {
+    let host = host_id("claude-agent-sdk.fixture.empty-supported-models");
+    let fixture = SdkFixtureHost::new(SdkScenario::EmptySupportedModels);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("empty supported-model list is unavailable, not rejecting");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("first-turn model evidence is accepted without an available list");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome exists"),
+    );
+    assert_eq!(
+        terminal.status(),
+        &swallowtail_runtime::TerminalStatus::Completed
+    );
+    let _ = block_on(turn.close());
+    assert_eq!(session.effective_model(), "claude-sonnet-5");
+    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
 }
 
 #[test]

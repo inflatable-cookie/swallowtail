@@ -19,7 +19,6 @@ pub enum SdkScenario {
     ToolAdmissionOverflow,
     /// Interrupt reports a receipt the runtime never advertised.
     UnadvertisedInterruptReceipt,
-    /// Open reports a non-subscription access profile.
     /// Open reports first-party without the subscription evidence field.
     AccountNotSubscription,
     /// Open reports a delegated cloud provider rather than first party.
@@ -36,6 +35,8 @@ pub enum SdkScenario {
     MissingModel,
     /// Open reports an effective model outside its supported-model list.
     UnsupportedModel,
+    /// Open reports an empty supported-model list, which is unavailable.
+    EmptySupportedModels,
     /// The first query response reports that no system/init was yielded.
     InitMissing,
     /// The SDK failed while yielding the first-turn init message.

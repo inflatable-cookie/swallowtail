@@ -118,6 +118,8 @@ const COMMAND_FAILURE_CODES = new Set([
   "capabilities_overflow",
   "capabilities_invalid",
   "account_not_first_party",
+  // Retired compatibility label: subscription evidence is observation-only,
+  // so the sidecar no longer rejects when subscriptionType is absent.
   "account_not_subscription",
   "already_open",
   "node_runtime_unsupported",
@@ -445,18 +447,19 @@ function boundedCapabilities(values) {
 }
 
 /// Projects readiness provenance labels only. No email, organization, token,
-/// or raw account value ever crosses this wire.
+/// or raw account value ever crosses this wire. Subscription fields are
+/// observations, not gates.
 function accountProjection(account) {
   const apiProvider = account?.apiProvider;
   if (apiProvider !== "firstParty") {
     throw new SidecarFailure("account_not_first_party");
   }
-  if (typeof account?.subscriptionType !== "string" || account.subscriptionType.length === 0) {
-    throw new SidecarFailure("account_not_subscription");
-  }
   return {
     apiProvider,
-    subscriptionPresent: true,
+    subscriptionTypePresent:
+      typeof account?.subscriptionType === "string" && account.subscriptionType.length > 0,
+    apiKeySourcePresent:
+      typeof account?.apiKeySource === "string" && account.apiKeySource.length > 0,
   };
 }
 
@@ -477,16 +480,6 @@ function supportedModelValues(values) {
     }
   }
   return models;
-}
-
-function supportedCommandNames(values) {
-  if (!Array.isArray(values)) {
-    throw new SidecarFailure("initialization_failed");
-  }
-  return values.flatMap((entry) => {
-    const name = entry?.name;
-    return typeof name === "string" && name.length > 0 ? [name] : [];
-  });
 }
 
 function boundedCallbackText(value) {
@@ -703,9 +696,6 @@ async function handleOpen(params) {
   // The SDK initialize exchange is the open-time handshake. It is deliberately
   // separate from the async-generator's first system/init message, which is
   // evidence for the first user turn rather than an open gate.
-  if (typeof query.initializationResult !== "function") {
-    throw new SidecarFailure("initialization_failed");
-  }
   const initialization = await boundedControl(
     () => query.initializationResult(),
     "initialization_failed",
@@ -713,30 +703,13 @@ async function handleOpen(params) {
   if (!initialization || typeof initialization !== "object") {
     throw new SidecarFailure("initialization_failed");
   }
-  const modelRows = await boundedControl(
-    () =>
-      typeof query.supportedModels === "function"
-        ? query.supportedModels()
-        : initialization.models,
-    "initialization_failed",
-  );
+  const modelRows = await boundedControl(() => query.supportedModels(), "initialization_failed");
   const supportedModels = supportedModelValues(modelRows);
   const account = await boundedControl(
-    () =>
-      typeof query.accountInfo === "function"
-        ? query.accountInfo()
-        : initialization.account,
+    () => query.accountInfo(),
     "account_unavailable",
   );
   const readiness = accountProjection(account);
-  const commandRows = await boundedControl(
-    () =>
-      typeof query.supportedCommands === "function"
-        ? query.supportedCommands()
-        : initialization.commands,
-    "initialization_failed",
-  );
-  const supportedCommands = supportedCommandNames(commandRows);
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
@@ -746,7 +719,7 @@ async function handleOpen(params) {
   state.initialized = false;
   state.effectiveModel = null;
   state.supportedModels = supportedModels;
-  state.supportedModelsAvailable = true;
+  state.supportedModelsAvailable = supportedModels.length > 0;
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -758,7 +731,6 @@ async function handleOpen(params) {
     requestedModel: model,
     readiness: READINESS_REQUESTED,
     supportedModels,
-    supportedCommands,
     capabilities: [],
     account: readiness,
     tools,

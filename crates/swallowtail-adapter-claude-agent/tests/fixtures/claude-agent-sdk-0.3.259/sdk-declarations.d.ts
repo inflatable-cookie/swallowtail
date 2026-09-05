@@ -16,6 +16,15 @@ export declare type AccountInfo = {
 };
 
 /**
+ * Query control methods used by the sidecar during the initialize handshake.
+ */
+export declare interface Query extends AsyncGenerator<SDKMessage, void> {
+    initializationResult(): Promise<SDKControlInitializeResponse>;
+    supportedModels(): Promise<ModelInfo[]>;
+    accountInfo(): Promise<AccountInfo>;
+}
+
+/**
  * Represents a spawned process with stdin/stdout streams and lifecycle management.
  * Implementers provide this interface to abstract the process spawning mechanism.
  * ChildProcess already satisfies this interface.

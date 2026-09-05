@@ -149,9 +149,10 @@ impl SessionReadiness {
 
 /// Opens the session, verifying the bound runtime, wire, package, native
 /// binary, resource, admitted tool set, permission mode, and initialize-time
-/// first-party subscription readiness before any provider work. The effective
-/// model and runtime capabilities remain unconfirmed until the first query's
-/// `system/init` evidence.
+/// first-party provenance before any provider work. Subscription fields are
+/// labelled observations, not gates. The effective model and runtime
+/// capabilities remain unconfirmed until the first query's `system/init`
+/// evidence.
 pub(crate) async fn open(
     connection: &SdkConnection,
     plan: &PreflightPlan,
@@ -282,21 +283,15 @@ fn readiness(
     })
 }
 
-/// Accepts only a first-party subscription session. An API-key or delegated
-/// cloud provenance label fails closed rather than silently running the route
-/// on a different access profile.
+/// Accepts only a first-party session. An API-key or delegated cloud
+/// provenance label fails closed rather than silently running the route on a
+/// different access profile. Subscription evidence remains observational.
 fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
     let account = data.get("account").ok_or_else(account_mismatch)?;
     if text(account, "apiProvider") != Some("firstParty") {
         return Err(failure(
             "swallowtail.claude-agent.sdk.account_not_first_party",
             "Claude Agent SDK sidecar did not report a first-party account",
-        ));
-    }
-    if account.get("subscriptionPresent").and_then(Value::as_bool) != Some(true) {
-        return Err(failure(
-            "swallowtail.claude-agent.sdk.account_not_subscription",
-            "Claude Agent SDK sidecar did not report subscription evidence",
         ));
     }
     // Readiness is provenance labels only; no email, organization, or token

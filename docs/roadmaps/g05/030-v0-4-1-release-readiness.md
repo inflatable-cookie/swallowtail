@@ -74,7 +74,7 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 
 ## Batch Cards
 
-- [094 Deadline Fixture Determinism Sweep](batch-cards/094-deadline-fixture-determinism-sweep.md) — ready; Pi lifecycle race plus a workspace sweep; card 091 re-prepares on its merged base
+- [094 Deadline Fixture Determinism Sweep](batch-cards/094-deadline-fixture-determinism-sweep.md) — complete; Pi lifecycle race plus workspace sweep merged through PR 227 as `3506d9a5`
 - [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — complete; PR 226 merged as `4bb00dab`; deterministic sidecar-asset fixture proven under load
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
 - [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — complete; merged candidate `c3cce750`; tagged `v0.4.1`

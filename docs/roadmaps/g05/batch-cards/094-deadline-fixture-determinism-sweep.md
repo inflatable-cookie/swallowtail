@@ -1,6 +1,6 @@
 # 094 Deadline Fixture Determinism Sweep
 
-Status: ready
+Status: complete; PR 227 merged at `3506d9a5`
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

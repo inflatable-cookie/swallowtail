@@ -25,12 +25,30 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
         "object-form spawn hook must construct: {open}"
     );
     assert_eq!(open["data"]["model"], "m-1");
-    // The fake SDK invokes the exact 0.3.259 SpawnOptions shape. A positional
-    // sidecar callback receives this object as `command` and fails before this
-    // response can be produced.
-    let options = sidecar.observed_options();
-    assert_eq!(options["cwd"], sidecar.cwd());
-    assert_eq!(options["env"], json!({}));
+    // This is the argument the fake SDK actually received, not the query
+    // options passed into `query()`. A positional callback receives the
+    // object in the wrong slot and fails before this response is produced.
+    let spawn = sidecar.observed_spawn_hook_argument();
+    assert_eq!(
+        sidecar.observed_spawn_hook_argument_count(),
+        1_usize,
+        "the SDK invokes spawnClaudeCodeProcess with one object argument"
+    );
+    let mut keys = spawn
+        .as_object()
+        .expect("spawn hook shape is an object")
+        .keys()
+        .collect::<Vec<_>>();
+    keys.sort();
+    assert_eq!(keys, vec!["args", "command", "cwd", "env", "signal"]);
+    assert!(spawn["command"].is_string());
+    assert_eq!(spawn["args"][0], "-e");
+    assert_eq!(spawn["cwd"], sidecar.cwd());
+    assert_eq!(spawn["env"], json!({}));
+    assert_eq!(
+        spawn["signal"], true,
+        "SpawnOptions.signal must be preserved"
+    );
 }
 
 #[test]

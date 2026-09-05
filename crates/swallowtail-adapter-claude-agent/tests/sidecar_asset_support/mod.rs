@@ -284,6 +284,21 @@ impl SidecarProcess {
         observations["options"].clone()
     }
 
+    pub fn observed_spawn_hook_argument(&self) -> Value {
+        let observations = self.read_observations();
+        assert!(
+            observations["spawnHookArgument"].is_object(),
+            "fake SDK did not record the argument received by the spawn hook"
+        );
+        observations["spawnHookArgument"].clone()
+    }
+
+    pub fn observed_spawn_hook_argument_count(&self) -> usize {
+        self.read_observations()["spawnHookArgumentCount"]
+            .as_u64()
+            .expect("fake SDK recorded the spawn hook argument count") as usize
+    }
+
     fn read_observations(&self) -> Value {
         let path = self.directory.join("observations.json");
         let text = std::fs::read_to_string(path).expect("fake SDK observations are present");

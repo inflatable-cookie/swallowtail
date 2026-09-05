@@ -5,6 +5,7 @@ use super::{
 };
 use crate::sdk::protocol::ClaudeAgentSdkProtocolFailureKind;
 use serde_json::json;
+use std::collections::BTreeSet;
 
 #[test]
 fn commands_and_callback_responses_encode_as_lf_terminated_records() {
@@ -80,6 +81,64 @@ fn command_rejection_keeps_only_its_fixed_code() {
         decode_record(&unknown).err().map(|error| error.kind()),
         Some(ClaudeAgentSdkProtocolFailureKind::InvalidResponse)
     );
+}
+
+#[test]
+fn sidecar_command_failure_codes_match_the_rust_enumeration() {
+    let source = crate::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE;
+    let (_, body) = source
+        .split_once("const COMMAND_FAILURE_CODES = new Set([")
+        .expect("sidecar declares its command failure code set");
+    let (body, _) = body
+        .split_once("]);")
+        .expect("sidecar command failure code set is closed");
+    let sidecar_codes: BTreeSet<_> = body
+        .split('"')
+        .filter(|value| {
+            !value.is_empty()
+                && value
+                    .chars()
+                    .all(|character| character.is_ascii_lowercase() || character == '_')
+        })
+        .collect();
+    let rust_codes: BTreeSet<_> = [
+        ClaudeAgentSdkFailureCode::MissingEnvironment,
+        ClaudeAgentSdkFailureCode::InvalidCommand,
+        ClaudeAgentSdkFailureCode::ToolsInvalid,
+        ClaudeAgentSdkFailureCode::PermissionModeInvalid,
+        ClaudeAgentSdkFailureCode::PermissionModeRejected,
+        ClaudeAgentSdkFailureCode::SdkUnavailable,
+        ClaudeAgentSdkFailureCode::SdkExportMissing,
+        ClaudeAgentSdkFailureCode::NativeManifestUnavailable,
+        ClaudeAgentSdkFailureCode::NativeVersionMismatch,
+        ClaudeAgentSdkFailureCode::CapabilitiesOverflow,
+        ClaudeAgentSdkFailureCode::CapabilitiesInvalid,
+        ClaudeAgentSdkFailureCode::AccountNotFirstParty,
+        ClaudeAgentSdkFailureCode::AccountNotSubscription,
+        ClaudeAgentSdkFailureCode::AlreadyOpen,
+        ClaudeAgentSdkFailureCode::NodeRuntimeUnsupported,
+        ClaudeAgentSdkFailureCode::ConstructionFailed,
+        ClaudeAgentSdkFailureCode::InitializationFailed,
+        ClaudeAgentSdkFailureCode::CwdMismatch,
+        ClaudeAgentSdkFailureCode::ModelMismatch,
+        ClaudeAgentSdkFailureCode::ModelMissing,
+        ClaudeAgentSdkFailureCode::SupportedModelRejected,
+        ClaudeAgentSdkFailureCode::AccountUnavailable,
+        ClaudeAgentSdkFailureCode::NativeChildUnavailable,
+        ClaudeAgentSdkFailureCode::NotOpen,
+        ClaudeAgentSdkFailureCode::TurnActive,
+        ClaudeAgentSdkFailureCode::PromptTooLarge,
+        ClaudeAgentSdkFailureCode::InterruptFailed,
+        ClaudeAgentSdkFailureCode::PermissionModeUnsupported,
+        ClaudeAgentSdkFailureCode::PermissionModeFailed,
+        ClaudeAgentSdkFailureCode::PermissionModeUnconfirmed,
+        ClaudeAgentSdkFailureCode::UnknownCommand,
+        ClaudeAgentSdkFailureCode::CommandFailed,
+    ]
+    .into_iter()
+    .map(ClaudeAgentSdkFailureCode::as_str)
+    .collect();
+    assert_eq!(sidecar_codes, rust_codes);
 }
 
 #[test]

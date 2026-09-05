@@ -147,6 +147,11 @@ above; it does not claim the 102-candidate ledger or the full Card 094 sweep is
 complete, and that continuation does not gate `v0.4.1`. The post-tag
 continuation below records that ledger.
 
+- **Host-local process fixture follow-up — deferred.** Add the host-local
+  `tests/local_process/` fixture test to the post-tag determinism follow-up
+  list. Card 100 records this follow-up only; it does not modify the
+  host-local crate or broaden its validation scope.
+
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 
 - **Claude Agent SDK sidecar asset — fixed here.** Its temporary-directory

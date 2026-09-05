@@ -307,10 +307,13 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
 - Provider-free environment hardening now passes an explicit child allowlist:
   `HOME`, `PATH`, `TMPDIR`, `LANG`, `LC_*`, `USER`, `SHELL`, terminal labels,
   and the required macOS process essentials. It never forwards
-  `ANTHROPIC_API_KEY`, `CLAUDE_*`, or API-key-pattern names. This follows
-  Research 278's explicit `Options.env` replacement/non-inheritance rule and
-  its HOME-owned native credential-store boundary; fixtures assert exact key
-  presence and deny-list exclusion while recording no values.
+  `ANTHROPIC_API_KEY`, `CLAUDE_*`, or API-key-pattern names. Research 278
+  supports the explicit `Options.env` replacement/non-inheritance rule and
+  the delegated native-credential-store posture; HOME dependence is a
+  host-local observation, not a Research 278 claim. The current allowlist is
+  macOS-shaped and needs a Linux pass covering `LOGNAME`/`XDG_*` before any
+  Linux claim. Fixtures assert exact key presence and deny-list exclusion
+  while recording no values.
 - The next-turn provider-free recording shape is prepared: result events now
   carry field-name presence only, and close responses carry the exact
   SessionInput/SDK-close/native-join timeline alongside native exit

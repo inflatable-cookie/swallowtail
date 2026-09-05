@@ -24,8 +24,35 @@ facts from the `v0.4.1` source:
    real SDK init before Bovine's run; card 080's proofs use a fake SDK that
    echoes the request. A canonicalised model id or a newer Node fails open.
 
+## Root Cause (Bovine probe, 2026-09-05)
+
+The Acowtancy Chatterbox ran the `v0.4.1` sidecar directly on this host
+(Node 22.23.2, SDK 0.3.259, manifest 2.1.259). The open response was
+`failure.code = construction_failed`: `sdk.query()` throws inside the spawn
+hook. SDK 0.3.259 calls `spawnClaudeCodeProcess(options)` with ONE object
+`{command, args, cwd, env, signal}` (`sdk.d.ts` `SpawnOptions`), while the
+sidecar's `spawnNative(command, args, options)` is positional, so
+`spawn(<object>, undefined, ...)` throws a `TypeError`. Node floor,
+manifest, and module import had all passed. With the hook corrected the
+native process spawns. The probe also saw `query.accountInfo()` return
+`apiProvider: "firstParty"` with `apiKeySource: undefined`, so the
+`account_not_subscription` check would fail next on a real subscription
+login unless the evidence key is verified against 0.3.259. The fake-SDK
+fixture never caught either, because it mirrored the sidecar's own
+assumptions about the hook signature and the account shape.
+
 ## Scope
 
+0. **Fix the spawn hook and the account projection.** `spawnNative` takes
+   the SDK's single `SpawnOptions` object `{command, args, cwd, env,
+   signal}` and forwards `signal` to `spawn`. Verify the subscription
+   evidence field names against the frozen 0.3.259 `sdk.d.ts` (Research
+   280 corpus) and project readiness from the fields the SDK actually
+   returns; keep first-party and subscription as separate labelled checks
+   with distinct codes. Update the fake SDK to call the hook with the real
+   signature and to return `accountInfo()` in the real 0.3.259 shape, so the
+   fixture can never again agree with a wrong assumption; add a test that
+   fails if the hook is called positionally.
 1. **Surface the sidecar code.** `open_rejected` and every other
    command-level rejection carry the sidecar's failure code in the
    diagnostic (code set is the fixed sidecar enumeration; no message text,
@@ -58,6 +85,8 @@ rebased after it); card 087's ranges; Bash, resume, MCP.
 
 ## Acceptance Criteria
 
+- [ ] `sdk.query()` constructs against 0.3.259 with the object-form spawn hook, proved by a fixture that calls the hook the way the real SDK does
+- [ ] account readiness projects from the real 0.3.259 `accountInfo()` shape
 - [ ] every sidecar rejection reaches the consumer with its code
 - [ ] a canonical model id no longer fails open; effective model is published
 - [ ] Node newer than the pin passes open with an `UnverifiedNewer` record

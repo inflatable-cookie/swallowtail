@@ -145,16 +145,20 @@ impl SidecarProcess {
     }
 
     /// Every permission mode the fake SDK was asked to apply, in order.
-    pub fn observed_permission_modes(&self) -> Vec<String> {
-        let Ok(text) = std::fs::read_to_string(self.directory.join("observations.json")) else {
-            return Vec::new();
-        };
-        serde_json::from_str::<Value>(&text)
-            .ok()
-            .and_then(|value| value["permissionModes"].as_array().cloned())
-            .unwrap_or_default()
+    pub fn observed_permission_modes(&mut self) -> Vec<String> {
+        // The caller has consumed the command response for each mode change;
+        // the fake SDK publishes its observation before that response.
+        let observations = self.read_observations();
+        observations["permissionModes"]
+            .as_array()
+            .expect("fake SDK permission-mode observations are an array")
             .iter()
-            .filter_map(|value| value.as_str().map(str::to_owned))
+            .map(|value| {
+                value
+                    .as_str()
+                    .expect("fake SDK permission-mode observations are strings")
+                    .to_owned()
+            })
             .collect()
     }
 

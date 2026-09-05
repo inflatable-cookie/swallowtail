@@ -74,12 +74,14 @@ raising the bound as the fix.
 
 ## Result
 
-Implemented the smallest test-only ordering repair. The fake SDK now writes
-observations through a synchronous write plus fsyncSync before the initial
-init and each turn's following wire event. The Rust fixture consumes the
-turn_ended event before reading turn observations; the observation poll loop
-is gone. next_record retains one named five-minute SIDECAR_DEATH_GUARD for a
-genuinely dead or wedged sidecar.
+Implemented the bounded test-only ordering repair. The fake SDK now publishes
+each observation through a synchronous write, fsyncSync, and atomic
+temp-file-plus-renameSync before the initial init, each turn's following wire
+event, and each permission-mode command response. The Rust fixture consumes
+the correlated command response before reading permission-mode observations;
+that reader now fails explicitly on missing, invalid, or torn data. The turn
+observation poll loop is gone. next_record retains one named five-minute
+SIDECAR_DEATH_GUARD for a genuinely dead or wedged sidecar.
 
 Evidence:
 
@@ -87,9 +89,11 @@ Evidence:
   cargo test -p swallowtail-adapter-claude-agent --test
   claude_agent_sdk_sidecar_asset --all-features --locked — 12 passed, 0
   failed.
-- Under-load proof: the same binary ran 20 times with --test-threads=1 while
-  18 yes >/dev/null CPU burners ran, one per sysctl -n hw.ncpu reported core.
-  Result: 20 passed, 0 failed.
+- Under-load proof: the formerly failing permission-mode test ran 200 times
+  with --test-threads=1 while 36 yes >/dev/null CPU burners ran, two per
+  sysctl -n hw.ncpu reported core. Result: 200 passed, 0 failed.
+- Under-load proof: the complete sidecar-asset binary ran 20 times with
+  --test-threads=1 under the same 36 burners. Result: 20 passed, 0 failed.
 - effigy validate:focused swallowtail-adapter-claude-agent — 329 passed,
   0 skipped; focused package validation passed.
 - effigy package:verify-affected swallowtail-adapter-claude-agent — affected

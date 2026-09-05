@@ -78,3 +78,22 @@ authorization.
 
 Any breaking change; a modified immutable baseline; an open mergeable
 feature or currentness PR; release status inferring anything but `0.4.1`.
+
+## Result
+
+Complete at audited head `2187bbecb9e24425f574f4c6c434fd8f16fe0300`.
+The v0.4.0-to-head range is patch-compatible: 40 packages, 49 production
+routes, 120 commits, 361 changed paths, 88 unchanged internal dependency
+edges, and no route additions or removals. The semantic API audit found 244
+additive reference lines across 14 package files and 0 removals; the other 26
+packages are byte-identical to the v0.4.0 tag output. Contract 061 tranches
+are additive, Card 089 is a widening scoped to ambient profiles, the
+`claude-agent.sdk` default profile is behaviorally identical, and OpenCode
+`1.18.28` is a Contract 029 qualification only. Frozen tag baseline paths
+match byte-for-byte; current API references retain the tag bytes plus authorized
+additions. Read-only release status is ready for patch `0.4.1`; no stop
+condition was present. Research 286 and its index line contain the package,
+route, behavior, baseline, release, and full-range ledgers. Named validation
+passed: `effigy package:api`, `effigy qa:routes`, `effigy qa:docs`,
+`effigy qa:northstar`, and `git diff --check`. Exact-head PR handoff is
+next.

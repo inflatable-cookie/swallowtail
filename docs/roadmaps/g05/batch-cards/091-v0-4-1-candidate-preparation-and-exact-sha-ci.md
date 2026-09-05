@@ -1,6 +1,6 @@
 # 091 v0.4.1 Candidate Preparation And Exact-SHA CI
 
-Status: ready; Card 090 accepted and merged; operator prepare authorization granted 2026-09-05 for exactly one Effigy prepare transaction
+Status: ready; first prepare consumed on a transient floor failure (floor reproduced green on the same tree); operator renewed authorization 2026-09-05 with standing renewal for further transient failures until the candidate lands
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -22,10 +22,19 @@ accepted candidate on canonical `main`, and require CI at that exact SHA.
 2. Run read-only release status; confirm it infers patch `0.4.1` and the
    three-mutation prepare plan (coordinated `Cargo.toml` versions, changelog
    promotion, workspace-only `Cargo.lock` sync).
-3. The operator granted prepare authorization on 2026-09-05, contingent on
-   card 090's acceptance and a clean canonical base; a failed or rolled-back
-   prepare consumes it and needs a fresh grant. Run exactly one prepare
-   transaction; rerun all local gates on the frozen tree; extract the exact
+3. Authorization history: the first prepare on 2026-09-05 passed nine gates
+   and failed `floor`; Effigy rolled back cleanly and retained no gate
+   output. Chatterbox reproduced the floor gate on the identical tree and it
+   passed (pinned `1.95.0` clippy clean, 271 test binaries green), and CI's
+   pinned-MSRV job passed on card 090's head. The operator then said "do
+   whatever we need to do to get this done": authorization is renewed, and
+   Chatterbox may renew it again without a further operator round-trip
+   whenever a failure is captured and shown to be transient. Each attempt
+   still runs exactly one prepare transaction, and each attempt must tee
+   every gate's stdout and stderr to `.effigy/reports/release/<gate>.log` in
+   the workspace (or an equivalent captured log) so a failure names the test.
+   A failure that names a real defect, not a race, stops the lane and returns
+   to Chatterbox. Run one prepare transaction; rerun all local gates on the frozen tree; extract the exact
    promoted changelog; regenerate the `0.4.1` semantic baseline and route
    inventory without touching `0.4.0` files.
 4. Open the candidate PR; stop for exact-head review; on merge, require

@@ -118,7 +118,7 @@ authorization of 2026-09-05 applies.
 | Worker capability class | release-preparation worker with Effigy release discipline; frontier-tier; no provider credentials; no tag authority |
 | Acceptance evidence | read-only status output; prepare transaction log with the three mutations; 11 gate results on the frozen tree; extracted changelog; new `0.4.1` baseline files; PR head and merged SHA; workflow-dispatch run id at that SHA |
 | Review oracle | one exact tree supports every candidate statement; the smallest counterexample is a post-gate commit presented as the candidate, a regenerated `0.4.0` baseline, or a changelog that disagrees with Research 286 |
-| Stop conditions | any gate fails (roll back the three mutations; the authorization is consumed; report to Chatterbox); release status infers anything but `0.4.1`; a feature or currentness PR is open; the lock is out of sync at the first `--locked` gate |
+| Stop conditions | a gate fails (roll back the three mutations; report to Chatterbox with the captured gate log; a transient, reproduced-green failure is renewed by Chatterbox under the operator's 2026-09-05 standing grant; a real defect stops the lane); release status infers anything but `0.4.1`; a feature or currentness PR is open; the lock is out of sync at the first `--locked` gate |
 | Escalation owner | operator via Chatterbox for any further authorization; coordinator for mechanical blockers |
  Card 092 enters after card
 091's candidate merges with green exact-SHA CI and the smoke packet is

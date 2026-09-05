@@ -29,6 +29,15 @@ contingent on card 090's acceptance, and accepted Bovine Desktop on
 checkout, command, and retry budget are still to be supplied before card 092
 is ready.
 
+## First Prepare
+
+The first card 091 prepare passed nine gates and failed `floor` with no
+retained output; Effigy rolled back cleanly. Chatterbox reproduced the floor
+gate green on the same tree and CI's pinned-MSRV job was green on card
+090's head, so the failure was transient. The operator renewed the
+authorization with a standing grant for further transient failures; every
+attempt now captures each gate's output.
+
 ## Next
 
-Coordinator dispatches card 090.
+Coordinator resumes card 091 on the same worker.

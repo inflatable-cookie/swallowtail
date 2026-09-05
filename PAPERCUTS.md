@@ -28,6 +28,18 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] `effigy release prepare --check-gates` discards the failing gate's output — 2026-09-05
+- Friction: the one-shot v0.4.1 prepare reported only `floor` failed after
+  200409ms and rolled back; the Clippy or test output that named the failure
+  was not retained anywhere. Reproducing the floor gate in the same worktree
+  minutes later passed (clippy clean, 271 test binaries ok).
+- Impact: a consumed release authorization with no diagnosable cause; the
+  v0.4.0 lane lost two authorizations to races that were only named because
+  the worker happened to have the terminal open.
+- Fix: tee each gate's stdout and stderr to `.effigy/reports/release/<gate>.log`
+  and print the last lines of the failing gate in the rollback summary.
+- Surface: Effigy release prepare gate runner; Swallowtail `config/release.toml`.
+
 ### [ ] Docs link check skips roadmap batch cards — 2026-09-04
 - Friction: `scripts/check-docs-links.py` covers front doors plus research
   and log files, so cards under `docs/roadmaps/*/batch-cards/` can link to a

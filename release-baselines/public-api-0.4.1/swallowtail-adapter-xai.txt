@@ -46,11 +46,15 @@ impl swallowtail_adapter_xai::XaiPreparedIntegration
 pub fn swallowtail_adapter_xai::XaiPreparedIntegration::prepare_responses_session(&self, swallowtail_adapter_xai::XaiSessionProfileInput) -> core::result::Result<swallowtail_adapter_xai::XaiPreparedResponsesSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_xai::XaiPreparedModels
 impl swallowtail_adapter_xai::XaiPreparedModels
+pub fn swallowtail_adapter_xai::XaiPreparedModels::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_xai::XaiPreparedModels
 pub const fn swallowtail_adapter_xai::XaiPreparedModels::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_xai::XaiPreparedModels::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_xai::XaiPreparedModels::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_xai::XaiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_xai::XaiPreparedResponsesRun
+impl swallowtail_adapter_xai::XaiPreparedResponsesRun
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_xai::XaiPreparedResponsesRun
 pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::evidence(&self) -> &swallowtail_adapter_xai::XaiPreparedEvidence
 pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::into_parts(self) -> (swallowtail_adapter_xai::XaiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
@@ -59,6 +63,8 @@ pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::plan(&self) -> &s
 pub const fn swallowtail_adapter_xai::XaiPreparedResponsesRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_xai::XaiPreparedResponsesRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_xai::XaiPreparedResponsesSession
+impl swallowtail_adapter_xai::XaiPreparedResponsesSession
+pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_xai::XaiPreparedResponsesSession
 pub const fn swallowtail_adapter_xai::XaiPreparedResponsesSession::evidence(&self) -> &swallowtail_adapter_xai::XaiPreparedEvidence
 pub fn swallowtail_adapter_xai::XaiPreparedResponsesSession::into_parts(self) -> (swallowtail_adapter_xai::XaiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)

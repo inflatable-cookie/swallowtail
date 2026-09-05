@@ -11,6 +11,12 @@ annotated Git tags from the canonical repository.
   the single interactive Oh My Pi attachment row is consumer-mediated per
   turn from its bounded plan capability, with provider-free ledgers and
   negative assembly coverage. g05.009 card 099.
+- complete Contract 061 candidate B across Alibaba Conversations,
+  Anthropic Managed Agents and Messages, and xAI Responses WebSocket. The
+  prepared facades publish 74 exact rows and withhold only the two named
+  Alibaba matrix-descriptor-only rows; adapter-local ledgers cover all 76
+  rows, including the single consumer-mediated Managed Agents per-turn
+  exchange. g05.009 card 098.
 - admit explicit Claude Agent SDK `Bash` profiles under a read-write working
   resource lease. Every Bash call remains consumer-mediated in `default`,
   `plan`, and `acceptEdits`; the callback carries bounded command and

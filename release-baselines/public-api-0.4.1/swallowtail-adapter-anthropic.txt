@@ -77,6 +77,8 @@ pub fn swallowtail_adapter_anthropic::AnthropicPreparationInput::from_admitted(&
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_anthropic::AnthropicPreparedCatalogue
 impl swallowtail_adapter_anthropic::AnthropicPreparedCatalogue
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_anthropic::AnthropicPreparedCatalogue
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -92,6 +94,8 @@ pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::plan(&sel
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::reasoning_mode(&self) -> core::option::Option<&swallowtail_core::model::ReasoningMode>
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::thinking_mode(&self) -> core::option::Option<swallowtail_adapter_anthropic::AnthropicThinkingMode>
 pub struct swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
+impl swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
@@ -115,6 +119,8 @@ impl swallowtail_adapter_anthropic::AnthropicPreparedIntegration
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::prepare_session(&self, swallowtail_adapter_anthropic::AnthropicSessionProfileInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun
 impl swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
@@ -137,6 +143,8 @@ impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOper
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_anthropic::AnthropicPreparedSession
+impl swallowtail_adapter_anthropic::AnthropicPreparedSession
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_anthropic::AnthropicPreparedSession
 pub const fn swallowtail_adapter_anthropic::AnthropicPreparedSession::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
 pub fn swallowtail_adapter_anthropic::AnthropicPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>

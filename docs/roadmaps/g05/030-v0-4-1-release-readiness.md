@@ -74,6 +74,7 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 
 ## Batch Cards
 
+- [094 Deadline Fixture Determinism Sweep](batch-cards/094-deadline-fixture-determinism-sweep.md) — ready; Pi lifecycle race plus a workspace sweep; card 091 re-prepares on its merged base
 - [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — complete; PR 226 merged as `4bb00dab`; deterministic sidecar-asset fixture proven under load
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
 - [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; re-prepare on Card 093 merge `4bb00dab` under renewed authorization
@@ -141,6 +142,37 @@ under host load. The operator ruled on 2026-09-05 that the fixture is the
 defect and must be fixed, not timed around. Card 093 owns that repair. The
 prepared tree in the worker workspace is discarded; card 091 re-prepares on
 card 093's merged base under the standing grant, in `--json` mode.
+
+## Fourth Prepare And Deadline Sweep
+
+Card 091's fourth prepare, on card 093's base with a cleaned target and a
+recorded environment, failed the floor on a different timing race:
+`swallowtail-adapter-pi` `host_deadline_uses_native_abort_and_resolves_timed_out`
+asserts a cleanup outcome that depends on whether a held child process has
+exited when close polls it. Under the operator's ruling that load-dependent
+tests are defects, card 094 fixes it and sweeps the workspace for the same
+shape so the fifth prepare is not stopped by the next one. Card 091's
+prepared state was rolled back by Effigy; its release note stays committed.
+
+### Card 094 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 094 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 091's attempt-4 floor excerpt; card 093 merged at `4bb00dab`; current `main` |
+| Completion conditions | Pi lifecycle test deterministic via explicit process control; sweep ledger classifying every candidate test; each fixed binary proved 20+ runs under load with zero failures; full pinned-toolchain workspace test green; production source unchanged; one PR |
+| Owned mutable paths | `crates/*/tests/**` only; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every `crates/**/src` path; sidecar production scripts; Cargo files; `CHANGELOG.md`; `release-baselines/**`; contracts |
+| Approved concurrent siblings | none |
+| Serial edges | card 091's fifth prepare follows card 094's merge |
+| Worker capability class | Rust test-fixture worker with concurrency discipline; frontier-tier; no provider credentials |
+| Acceptance evidence | loop-under-load logs per binary; the sweep ledger; pinned workspace test run; diff confined to tests |
+| Review oracle | the card's invariant |
+| Stop conditions | a fixture needs a production change to be deterministic (record, return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
 
 ### Card 093 Manifest
 

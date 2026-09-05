@@ -15,11 +15,14 @@ shape.
 
 ## Next Task
 
-Implement [g05.030 card 091](g05/batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md):
-re-prepare the v0.4.1 candidate on Card 093's repaired base under the standing
-grant. Card 093 merged as `4bb00dab` after deterministic sidecar-asset proof;
-card 092 follows. The feature freeze holds. Contract 061 coverage is 570
-proved / 197 remaining. `v0.4.0` is tagged.
+Implement [g05.030 card 094](g05/batch-cards/094-deadline-fixture-determinism-sweep.md):
+fix the Pi sidecar lifecycle deadline race and sweep the workspace for every
+test whose outcome depends on which of two scheduled events wins, from the
+manifest in that roadmap. Card 091's fourth prepare failed the floor on that
+race after card 093 repaired the Claude fixture; the operator ruled such
+tests are defects. Card 091 re-prepares on card 094's merged base under the
+standing grant; card 092 follows. The feature freeze holds. `v0.4.0` is
+tagged.
 
 ## Standing Lanes
 

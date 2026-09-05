@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — ready; fix the Pi sidecar deadline race and sweep the workspace for scheduler-dependent deadline tests; release-lane repair under the freeze
 - [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted after Card 090 acceptance
 
 ## Planned

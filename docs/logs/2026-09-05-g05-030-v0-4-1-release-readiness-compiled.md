@@ -47,6 +47,12 @@ earlier on the same tree. The operator ruled that a load-dependent test is
 the defect. Card 093 repairs the fixture under the freeze; card 091
 re-prepares on that base.
 
+## Fourth Prepare
+
+On card 093's base the fourth prepare failed the floor on a Pi sidecar
+lifecycle test whose cleanup assertion depends on child-process exit
+timing. Card 094 fixes it and sweeps the workspace for the same shape.
+
 ## Next
 
-Coordinator dispatches card 093, then card 091's fourth prepare.
+Coordinator dispatches card 094, then card 091's fifth prepare.

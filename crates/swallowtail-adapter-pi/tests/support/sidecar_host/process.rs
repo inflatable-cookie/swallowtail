@@ -95,25 +95,49 @@ impl ProcessHandle for SidecarFixtureProcess {
             .push(CleanupEvent::ProcessWait);
         let wait_failure = self.wait_failure;
         let exit_failure = self.exit_failure;
+        let hold = matches!(self.scenario, SidecarScenario::Hold);
+        let shared = Arc::clone(&self.shared);
         Box::pin(async move {
-            if wait_failure {
+            if hold {
+                let mut state = shared
+                    .process
+                    .lock()
+                    .expect("sidecar fixture state lock poisoned");
+                while !state.hold_released {
+                    state = shared
+                        .changed
+                        .wait(state)
+                        .expect("sidecar fixture wait lock poisoned");
+                }
+            }
+            let result = if wait_failure {
                 Err(fixture_failure())
             } else if exit_failure {
                 Ok(ProcessExit::new(false, Some(1)))
             } else {
                 Ok(ProcessExit::new(true, Some(0)))
-            }
+            };
+            shared
+                .process
+                .lock()
+                .expect("sidecar fixture state lock poisoned")
+                .exited = true;
+            shared.changed.notify_all();
+            result
         })
     }
 }
 
 impl SidecarFixtureProcess {
     fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.shared
+        let mut state = self
+            .shared
             .process
             .lock()
-            .expect("sidecar fixture state lock poisoned")
-            .stopped = true;
+            .expect("sidecar fixture state lock poisoned");
+        if !matches!(self.scenario, SidecarScenario::Hold) || state.hold_released {
+            state.stopped = true;
+        }
         self.shared.changed.notify_all();
         Box::pin(async { Ok(()) })
     }

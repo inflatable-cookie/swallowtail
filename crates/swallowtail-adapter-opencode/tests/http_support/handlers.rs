@@ -50,8 +50,8 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             &fixture[1]["response"]["body"].to_string(),
         );
     } else if target.starts_with("GET ") && path.starts_with("/session/status?") {
-        if matches!(fixture, StreamFixture::ImportDelayed) {
-            thread::sleep(Duration::from_millis(100));
+        if matches!(fixture, StreamFixture::ImportGated) {
+            delete_gate.mark_dispatched_and_wait_for_release();
         }
         respond_json(
             &mut stream,
@@ -127,10 +127,6 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             }
             StreamFixture::DeleteMalformedSuccess => respond_json(&mut stream, 200, "false"),
             StreamFixture::DeleteDisconnect => {}
-            StreamFixture::DeleteDelayed => {
-                thread::sleep(Duration::from_millis(100));
-                respond_json(&mut stream, 200, "true");
-            }
             StreamFixture::DeleteGated => {
                 delete_gate.mark_dispatched_and_wait_for_release();
                 respond_json(&mut stream, 200, "true");

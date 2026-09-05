@@ -247,7 +247,7 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.import.lifecycle",
         "1.18.10",
-        StreamFixture::ImportDelayed,
+        StreamFixture::ImportGated,
     );
     let prepared = fixture.prepared();
     let catalogue = prepared
@@ -259,20 +259,16 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
         ))
         .unwrap();
     let cancellation = Arc::clone(catalogue.request().cancellation());
+    let response_gate = fixture.server.delete_response_gate();
     let execution = std::thread::spawn({
         let future = catalogue.list_sessions(fixture.services());
         move || block_on(future)
     });
-    while !fixture
-        .server
-        .requests()
-        .iter()
-        .any(|request| request.contains("GET /session/status?"))
-    {
-        std::thread::yield_now();
-    }
+    response_gate.wait_for_dispatch();
     block_on(cancellation.request()).unwrap();
-    let failure = execution.join().unwrap().expect_err("cancelled list fails");
+    let failure = execution.join();
+    response_gate.release();
+    let failure = failure.unwrap().expect_err("cancelled list fails");
     assert_eq!(
         failure.stage(),
         ProviderSessionOperationFailureStage::Cancelled
@@ -286,19 +282,34 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
         "attached server survives cancellation"
     );
 
-    let deadline = prepared
+    let deadline_fixture = PreparedFixture::new_with_fixture(
+        "opencode.import.deadline",
+        "1.18.10",
+        StreamFixture::ImportGated,
+    );
+    let deadline_prepared = deadline_fixture.prepared();
+    let deadline = deadline_prepared
         .prepare_session_catalogue(
             OpenCodeSessionCatalogueInput::new(
                 RequestId::new("opencode-lifecycle-deadline").unwrap(),
                 ProviderSessionCatalogueId::new("opencode-lifecycle-deadline").unwrap(),
-                fixture.resource.clone(),
+                deadline_fixture.resource.clone(),
                 bounds(),
             )
-            .with_deadline(fixture.deadline_after(Duration::from_millis(10))),
+            .with_deadline(deadline_fixture.deadline_after(Duration::from_millis(10))),
         )
         .unwrap();
-    let failure =
-        block_on(deadline.list_sessions(fixture.services())).expect_err("deadline list fails");
+    let deadline_trigger = deadline_fixture.arm_manual_deadline();
+    let response_gate = deadline_fixture.server.delete_response_gate();
+    let execution = std::thread::spawn({
+        let future = deadline.list_sessions(deadline_fixture.services());
+        move || block_on(future)
+    });
+    response_gate.wait_for_dispatch();
+    deadline_trigger.fire_and_wait_for_observation();
+    let failure = execution.join();
+    response_gate.release();
+    let failure = failure.unwrap().expect_err("deadline list fails");
     assert_eq!(
         failure.stage(),
         ProviderSessionOperationFailureStage::TimedOut

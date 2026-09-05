@@ -1,5 +1,4 @@
 use std::sync::{Arc, Condvar, Mutex};
-use std::time::Duration;
 
 #[derive(Clone, Default)]
 pub(crate) struct DeleteResponseGate {
@@ -27,12 +26,12 @@ impl DeleteResponseGate {
 
     pub(crate) fn wait_for_dispatch(&self) {
         let (state, changed) = &*self.state;
-        let state = state.lock().expect("delete response gate lock poisoned");
-        let (state, timeout) = changed
-            .wait_timeout_while(state, Duration::from_secs(2), |state| !state.dispatched)
-            .expect("delete response gate lock poisoned");
-        assert!(state.dispatched, "DELETE was not dispatched before timeout");
-        assert!(!timeout.timed_out(), "DELETE dispatch wait timed out");
+        let mut state = state.lock().expect("delete response gate lock poisoned");
+        while !state.dispatched {
+            state = changed
+                .wait(state)
+                .expect("delete response gate lock poisoned");
+        }
     }
 
     pub(crate) fn release(&self) {

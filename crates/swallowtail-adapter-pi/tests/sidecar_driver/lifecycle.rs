@@ -4,6 +4,7 @@ use crate::support::{
     sidecar_selection, sidecar_selection_with_attachments, turn_request,
 };
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use swallowtail_adapter_pi::PiSdkSidecarDriver;
 use swallowtail_core::CredentialRef;
 use swallowtail_runtime::{
@@ -43,6 +44,7 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
     );
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    fixture.release_hold();
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean
@@ -58,7 +60,7 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
 #[test]
 fn host_deadline_uses_native_abort_and_resolves_timed_out() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.deadline");
-    let fixture = SidecarFixtureHost::new(SidecarScenario::Hold).with_immediate_time();
+    let fixture = SidecarFixtureHost::new(SidecarScenario::Hold);
     let selected = sidecar_selection(host_id.clone());
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
@@ -72,24 +74,35 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
         services.clone(),
     ))
     .expect("sidecar turn starts");
+    let mut events = turn.take_events().expect("event stream exists");
+    block_on(events.next())
+        .expect("agent-start observation arrives")
+        .expect("agent-start observation is valid");
+    fixture.fire_all_deadlines();
 
     let terminal = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),
     );
-    assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
-    assert!(
-        fixture
-            .inputs()
-            .iter()
-            .any(|value| value["command"] == "abort")
-    );
-    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    let status = terminal.status().clone();
+    let abort_sent = fixture
+        .inputs()
+        .iter()
+        .any(|value| value["command"] == "abort");
+    let turn_cleanup = block_on(turn.close());
     let cleanup = block_on(close_session(session, services));
+    let cleanup_code = cleanup
+        .diagnostic()
+        .map(swallowtail_core::SafeDiagnostic::code)
+        .map(str::to_owned);
+    fixture.release_hold();
+    fixture.wait_for_process_exit();
+    drop(events);
+    assert_eq!(status, TerminalStatus::TimedOut);
+    assert!(abort_sent);
+    assert_eq!(turn_cleanup, CleanupOutcome::NotApplicable);
     assert_eq!(
-        cleanup
-            .diagnostic()
-            .map(swallowtail_core::SafeDiagnostic::code),
+        cleanup_code.as_deref(),
         Some("swallowtail.session_cleanup.deadline_expired")
     );
 }
@@ -122,6 +135,7 @@ fn prompt_bounds_hold_without_reclassification() {
         "swallowtail.pi.sdk-sidecar.turn_active"
     );
     assert!(block_on(turn.close()) == CleanupOutcome::NotApplicable);
+    fixture.release_hold();
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean

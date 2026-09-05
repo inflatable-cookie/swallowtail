@@ -80,6 +80,9 @@ struct ProcessState {
     input: Vec<Value>,
     output: VecDeque<ProcessOutputChunk>,
     stopped: bool,
+    hold_released: bool,
+    close_requested: bool,
+    exited: bool,
     bootstrap: Option<(String, String, String)>,
     session_ref: Option<String>,
     thinking_level: Option<String>,
@@ -105,6 +108,11 @@ impl SidecarFixtureHost {
     }
 
     pub fn with_immediate_time(self) -> Self {
+        self.fire_all_deadlines();
+        self
+    }
+
+    pub fn fire_all_deadlines(&self) {
         let mut time = self
             .shared
             .time
@@ -112,8 +120,9 @@ impl SidecarFixtureHost {
             .expect("sidecar fixture time lock poisoned");
         time.now = 1_000;
         time.fire_through = Some(u64::MAX);
-        drop(time);
-        self
+        for waiter in std::mem::take(&mut time.waiters) {
+            waiter.wake();
+        }
     }
 
     pub fn with_process_wait_failure(mut self) -> Self {
@@ -188,6 +197,34 @@ impl SidecarFixtureHost {
             .iter()
             .any(|value| value.get("command").and_then(Value::as_str) == Some(command))
         {
+            state = self
+                .shared
+                .changed
+                .wait(state)
+                .expect("sidecar fixture wait lock poisoned");
+        }
+    }
+
+    pub fn release_hold(&self) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        state.hold_released = true;
+        if state.close_requested {
+            state.stopped = true;
+        }
+        self.shared.changed.notify_all();
+    }
+
+    pub fn wait_for_process_exit(&self) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        while !state.exited {
             state = self
                 .shared
                 .changed

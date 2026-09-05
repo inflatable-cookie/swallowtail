@@ -90,6 +90,62 @@ No. Stop for exact-head review; card 091 re-prepares on the merged base.
 
 ## Result
 
+Release-blocking batch prepared on current main `2b919503`, which contains
+the operator compression decision at `820bc4d1`:
+
+- **Pi sidecar driver — fixed here.** `SidecarScenario::Hold` now keeps its
+  fake process alive and ignores close until the test explicitly releases it.
+  The deadline test observes turn startup, fires the fixture deadline, asserts
+  only `swallowtail.session_cleanup.deadline_expired`, then releases and joins
+  the fake process for teardown. Existing clean-path tests release before
+  session close.
+- **Claude Agent SDK driver — fixed here.** `OpenHold` process wait remains
+  blocked until explicit fixture release, so the open-deadline test asserts
+  only `swallowtail.claude-agent.sdk.open_cleanup_unconfirmed` before teardown.
+- **OpenCode prepared facade — fixed here.** Cancellation and deadline fixtures
+  use response gates and observed dispatch instead of finite sleeps for delete
+  and session-import operations.
+- **Kimi local-server lifecycle — fixed here.** Cancellation, deadline, and
+  binding-import fixtures use an observed two-way response gate instead of a
+  finite response delay.
+- **Local-host watcher — fixed here.** The deadline fixture uses an indefinite
+  child mode and explicit cleanup instead of relying on a 30-second child.
+
+All five changes are test-only. No `crates/**/src`, production sidecar, Cargo,
+changelog, release-baseline, contract, or Card 091 path changed.
+
+### Under-load proof
+
+Each row ran the complete touched test binary 24 times under Rust `1.95.0`
+while 18 CPU burners were active. Final result: zero failures.
+
+| Package | Test binary | Runs | Failures |
+| --- | --- | ---: | ---: |
+| `swallowtail-adapter-pi` | `sidecar_driver` | 24 | 0 |
+| `swallowtail-adapter-claude-agent` | `claude_agent_sdk_driver` | 24 | 0 |
+| `swallowtail-adapter-opencode` | `prepared_facade` | 24 | 0 |
+| `swallowtail-adapter-kimi` | `local_server_interactive` | 24 | 0 |
+| `swallowtail-host-local` | `watcher_service` | 24 | 0 |
+
+### Release-lane validation
+
+- `cargo fmt --all -- --check` — passed
+- `effigy validate:focused swallowtail-adapter-pi swallowtail-adapter-claude-agent swallowtail-adapter-opencode swallowtail-adapter-kimi` — passed, 767 tests
+- `effigy validate:focused swallowtail-host-local` — passed, 131 tests
+- `effigy qa:northstar` — passed
+- `git diff --check` — passed
+- local pinned full-workspace test — replaced by the CI pinned-MSRV job under
+  the operator's compression decision
+
+### Deferred post-tag continuation
+
+The remaining workspace-wide candidate classification is explicitly deferred
+until after the tag under Card 094. The initial grep produced 102 candidate
+test files, including the named Claude structured-run and SDK areas. This
+release-blocking result records only the five repaired and proved binaries
+above; it does not claim the 102-candidate ledger or the full Card 094 sweep is
+complete, and that continuation does not gate `v0.4.1`.
+
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 
 - **Claude Agent SDK sidecar asset — fixed here.** Its temporary-directory

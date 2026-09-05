@@ -134,7 +134,21 @@ impl ProcessHandle for SdkFixtureProcess {
         self.record(CleanupEvent::ProcessWait);
         let observable = self.exit_observable;
         let attests = self.attests_empty_owned_tree;
+        let open_hold = matches!(self.scenario, super::super::host::SdkScenario::OpenHold);
+        let shared = Arc::clone(&self.shared);
         Box::pin(async move {
+            if open_hold {
+                let mut state = shared
+                    .process
+                    .lock()
+                    .expect("SDK fixture state lock poisoned");
+                while !state.process_hold_released {
+                    state = shared
+                        .changed
+                        .wait(state)
+                        .expect("SDK fixture wait lock poisoned");
+                }
+            }
             match (observable, attests) {
                 // Only a host with a concrete owned-tree observation may
                 // construct the attesting exit.

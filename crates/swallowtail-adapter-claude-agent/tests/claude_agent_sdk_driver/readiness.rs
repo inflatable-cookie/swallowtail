@@ -136,20 +136,15 @@ fn an_open_that_never_reaches_readiness_expires_on_the_host_deadline() {
     let Err(error) = block_on(prepared.open_session(services)) else {
         panic!("an unbounded open must fail on the host deadline");
     };
-    // Expiry makes the descendant termination request, then races its own
-    // cleanup against the same caller bound and reports which happened.
-    assert!(
-        [
-            "swallowtail.claude-agent.sdk.open_deadline_elapsed",
-            "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
-        ]
-        .contains(&error.diagnostic().code()),
-        "unexpected open expiry diagnostic {}",
-        error.diagnostic().code()
+    let code = error.diagnostic().code().to_owned();
+    fixture.wait_for_cleanup(CleanupEvent::ProcessWait);
+    fixture.release_process_hold();
+    fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
+    fixture.reaper().shutdown();
+    assert_eq!(
+        code,
+        "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed"
     );
-    // The guard terminates on its own host task, so this waits for the request
-    // rather than racing it.
-    fixture.wait_for_cleanup(CleanupEvent::ProcessForceStop);
 }
 
 #[cfg(windows)]

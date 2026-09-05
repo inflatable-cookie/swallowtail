@@ -76,6 +76,7 @@ pub(super) struct ProcessState {
     pub(super) stalling_writes: bool,
     pub(super) pump_released: bool,
     pub(super) holding_pump: bool,
+    pub(super) process_hold_released: bool,
 }
 
 impl SdkFixtureHost {
@@ -210,6 +211,17 @@ impl SdkFixtureHost {
             .lock()
             .expect("SDK fixture state lock poisoned")
             .pump_released = true;
+        self.shared.changed.notify_all();
+    }
+
+    /// Lets an open-hold process report exit after the test has observed the
+    /// deadline-bound cleanup result.
+    pub fn release_process_hold(&self) {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .process_hold_released = true;
         self.shared.changed.notify_all();
     }
 

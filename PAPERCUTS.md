@@ -28,6 +28,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Live-probe harnesses ran without a self-proof — 2026-09-05
+- Friction: card 100's live harness consumed two operator authorizations
+  without producing provider evidence: once on a wrong endpoint audience,
+  once by capturing `diagnostic().code()` and dropping the message that
+  carried the sidecar subcode. The route was correct both times.
+- Impact: each lost authorization costs an operator round trip and a
+  subscription-backed attempt; the record gains nothing.
+- Fix: no live authorization is relayed until the harness has been driven
+  end to end against the fake SDK through the same path it uses live and
+  its record shape is asserted by a committed test.
+- Surface: Claude Agent SDK live-probe harness; Chatterbox live-authorization
+  practice.
+
 ### [ ] Independent reviewers cannot post formal GitHub reviews — 2026-09-05
 - Friction: every worker and reviewer pushes and comments as the same
   GitHub identity, so `REQUEST_CHANGES` and approvals return 422 "Can not

@@ -317,14 +317,21 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
 - The next-turn provider-free recording shape is prepared: result events now
   carry field-name presence only, and close responses carry the exact
   SessionInput/SDK-close/native-join timeline alongside native exit
-  event/code/signal. No fourth live turn is authorized.
-- The fourth operator-authorized attempt stopped before any SDK or native
-  launch: the disposable live harness bound the delegated lease to the wrong
-  local audience, and the host rejected it with the safe code
+  event/code/signal. Before the later fourth-turn relay, no fourth live turn
+  was authorized; that line was the pre-relay boundary, not a contradiction of
+  the later setup stop.
+- The first fourth-turn relay stopped before any SDK or native launch: the
+  disposable live harness bound the delegated lease to the wrong local
+  audience, and the host rejected it with the safe code
   `swallowtail.local_credential.audience_mismatch`. No prompt, provider call,
   turn, write, child exit, or close sequence occurred; no live evidence was
-  captured and no retry is run under that relay.
+  captured. The next step is to correct the disposable harness audience to
+  exactly `claude-agent-sdk` and use the renewed operator authorization.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.
+- The hosted Stable nextest shard 2/3 was rerun exactly once after the
+  `kimi-platform` `direct_driver` deadline-timing report:
+  `cargo nextest run --workspace --all-features --locked --profile ci
+  --partition count:2/3` — 967 passed, 1 leaky, 1,980 skipped, 0 failed.
 - The additive API baseline and default read-only profile remain unchanged.

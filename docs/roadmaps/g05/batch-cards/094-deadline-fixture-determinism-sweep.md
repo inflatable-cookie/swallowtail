@@ -160,6 +160,9 @@ continuation below records that ledger.
   - `swallowtail-host-local/tests/local_process/descendant_tree.rs` — the
     Card 094 host-local descendant-tree timing flake; keep both descendant
     tree cases in the follow-up set.
+  - `swallowtail-host-local::watcher_service::lifecycle::watcher_stop_and_join_retires_owned_identities`
+    — the single leaky test identified by the Stable shard 2/3
+    status-level leak run; retain it for the same post-tag determinism pass.
 
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 

@@ -17,6 +17,38 @@ fn push_raw(state: &mut ProcessState, bytes: &[u8]) {
     ));
 }
 
+fn push_stderr(state: &mut ProcessState, bytes: &[u8]) {
+    state.output.push_back(ProcessOutputChunk::new(
+        ProcessOutputStream::Stderr,
+        bytes.to_vec(),
+    ));
+}
+
+fn complete_turn_record() -> Value {
+    let mut result_field_presence = serde_json::Map::new();
+    for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
+        result_field_presence.insert(
+            (*field).to_owned(),
+            json!(matches!(
+                *field,
+                "type" | "subtype" | "duration_ms" | "is_error" | "num_turns"
+            )),
+        );
+    }
+    json!({
+        "type": "event",
+        "event": "turn_ended",
+        "subtype": "success",
+        "stopReason": "success",
+        "isError": false,
+        "numTurns": 1,
+        "durationMs": 7,
+        "errorTextPresent": false,
+        "errorTextType": "absent",
+        "resultFieldPresence": result_field_presence,
+    })
+}
+
 pub(super) fn respond(
     scenario: SdkScenario,
     command: &Value,
@@ -268,11 +300,8 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                 json!({"type": "event", "event": "tool_ended", "toolCallId": "t-1",
                        "isError": false}),
             );
-            push(
-                state,
-                json!({"type": "event", "event": "turn_ended", "stopReason": "success",
-                       "isError": false}),
-            );
+            push_stderr(state, b"fixture native stderr tail\n");
+            push(state, complete_turn_record());
         }
     }
 }
@@ -341,7 +370,12 @@ fn close(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         state,
         json!({"type": "response", "id": id, "command": "close", "success": true,
                "data": {"nativeJoin": native_join, "joinBoundMs": 2000,
-                        "nativeExitObserved": observed}}),
+                        "nativeExitObserved": observed,
+                        "nativeExitEvent": "exit", "nativeExitCode": 0,
+                        "nativeExitSignal": null,
+                        "sdkTransportCloseRan": true,
+                        "closeTimeline": ["close_requested", "session_input_closed",
+                                           "sdk_transport_close_ran", "native_join_exited"]}}),
     );
     state.stopped = true;
 }

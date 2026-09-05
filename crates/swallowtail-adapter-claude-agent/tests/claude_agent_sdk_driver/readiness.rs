@@ -1,10 +1,12 @@
 use crate::host_id;
 use crate::sdk_support::{
-    CleanupEvent, SdkFixtureHost, SdkScenario, cleanup_request, prepared_session,
-    prepared_session_with, turn_request,
+    CleanupEvent, SDK_RESULT_FIELD_NAMES, SdkFixtureHost, SdkScenario, captured_services,
+    cleanup_request, prepared_session, prepared_session_with, record_open_failure, record_success,
+    turn_request,
 };
 use futures_executor::block_on;
-use swallowtail_runtime::{InteractiveSessionHandle, SessionOptions};
+use futures_util::StreamExt;
+use swallowtail_runtime::{InteractiveSessionHandle, ProcessExit, SessionOptions};
 
 fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
     let host = host_id("claude-agent-sdk.fixture.readiness");
@@ -287,6 +289,126 @@ fn open_rejection_surfaces_the_fixed_sidecar_code_without_raw_details() {
     for forbidden in ["/fixture/", "@example", "token", "organization"] {
         assert!(!error.diagnostic().message().contains(forbidden));
     }
+}
+
+#[test]
+fn the_live_capture_path_retains_message_fields_and_close_evidence_provider_free() {
+    let host = host_id("claude-agent-sdk.fixture.capture-open-rejection");
+    let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected);
+    let (services, capture) = captured_services(&fixture, host.clone());
+    let prepared = prepared_session(host);
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("construction rejection must fail open");
+    };
+    let rejected = record_open_failure(&error, &capture);
+    assert_eq!(
+        rejected.route_code.as_deref(),
+        Some("swallowtail.claude-agent.sdk.open_rejected")
+    );
+    assert!(
+        rejected
+            .diagnostic_message
+            .as_deref()
+            .is_some_and(|message| message.ends_with(": construction_failed")),
+        "route diagnostic must retain the fixed sidecar subcode"
+    );
+    assert_eq!(
+        rejected.wire.open_sidecar_code.as_deref(),
+        Some("construction_failed")
+    );
+
+    let host = host_id("claude-agent-sdk.fixture.capture-complete");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let (services, capture) = captured_services(&fixture, host.clone());
+    let prepared = prepared_session(host);
+    let cleanup_services = services.clone();
+    let mut session =
+        block_on(prepared.open_route_session(services.clone())).expect("complete fixture opens");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("complete fixture starts one turn");
+    let mut events = turn.take_events().expect("turn event stream");
+    let terminal_future = turn.take_terminal_outcome().expect("terminal outcome");
+    block_on(async { while events.next().await.is_some() {} });
+    let terminal = block_on(terminal_future);
+    let _ = block_on(turn.close());
+    let cleanup = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    let complete = record_success(&terminal, &cleanup, &capture);
+
+    assert!(matches!(
+        complete.terminal_status,
+        Some(swallowtail_runtime::TerminalStatus::Completed)
+    ));
+    assert_eq!(complete.terminal_diagnostic_code, None);
+    assert!(
+        complete.cleanup_outcome.as_ref().is_some_and(|outcome| {
+            matches!(
+                outcome,
+                swallowtail_runtime::CleanupOutcome::Clean
+                    | swallowtail_runtime::CleanupOutcome::Degraded(_)
+            )
+        }),
+        "capture must retain a truthful cleanup posture"
+    );
+    assert_eq!(
+        complete.cleanup_diagnostic_code.as_deref(),
+        Some("swallowtail.claude-agent.sdk.close_root_only_degraded")
+    );
+    assert_eq!(
+        complete.wire.stderr_tail.as_deref(),
+        Some("<redacted>"),
+        "sanitized stderr tail must be retained without raw text"
+    );
+    assert_eq!(
+        complete.wire.result_fields.len(),
+        SDK_RESULT_FIELD_NAMES.len()
+    );
+    for field in SDK_RESULT_FIELD_NAMES {
+        assert!(
+            complete.wire.result_fields.contains_key(*field),
+            "result field presence map omitted {field}"
+        );
+    }
+    for field in ["type", "subtype", "duration_ms", "is_error", "num_turns"] {
+        assert_eq!(
+            complete.wire.result_fields.get(field),
+            Some(&true),
+            "{field}"
+        );
+    }
+    for field in ["duration_api_ms", "result", "errors", "uuid", "session_id"] {
+        assert_eq!(
+            complete.wire.result_fields.get(field),
+            Some(&false),
+            "{field}"
+        );
+    }
+    assert_eq!(complete.wire.result_subtype.as_deref(), Some("success"));
+    assert_eq!(complete.wire.result_is_error, Some(false));
+    assert_eq!(complete.wire.result_num_turns, Some(1));
+    assert_eq!(complete.wire.result_duration_ms, Some(7));
+    assert_eq!(complete.wire.result_error_text_present, Some(false));
+    assert_eq!(
+        complete.wire.result_error_text_type.as_deref(),
+        Some("absent")
+    );
+    assert_eq!(
+        complete.wire.close_timeline,
+        vec![
+            "close_requested",
+            "session_input_closed",
+            "sdk_transport_close_ran",
+            "native_join_exited"
+        ]
+    );
+    assert_eq!(complete.wire.native_exit_event.as_deref(), Some("exit"));
+    assert_eq!(complete.wire.native_exit_code, Some(0));
+    assert_eq!(complete.wire.native_exit_signal, None);
+    assert_eq!(complete.wire.native_join.as_deref(), Some("exited"));
+    assert_eq!(complete.wire.native_exit_observed, Some(true));
+    assert_eq!(
+        complete.wire.root_exit.map(ProcessExit::code),
+        Some(Some(0))
+    );
 }
 
 #[test]

@@ -177,7 +177,7 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   both sides of first-turn init. The fake SDK covers a macOS-style
   `/var`/`/private/var` alias (with a portable equivalent fallback), and the
   direct sidecar proof also keeps a genuinely different path typed as
-  `cwd_mismatch`. The new local proof is `21` sidecar-asset tests and `64`
+  `cwd_mismatch`. The new local proof is `21` sidecar-asset tests and `65`
   SDK-driver tests, all passing. The live Result at `c1ac17d5` remains
   unchanged: first `system/init`, then `cwd_mismatch`, native exit code `1`,
   SDK close ran, joined `exited`, and overall `Failed`.
@@ -333,15 +333,27 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
 - The hosted Stable nextest shard 2/3 was rerun exactly once after the
   `kimi-platform` `direct_driver` deadline-timing report:
   `cargo nextest run --workspace --all-features --locked --profile ci
-  --partition count:2/3` — 967 passed, 1 leaky, 1,980 skipped, 0 failed.
+  --partition count:2/3` — the captured prior result was 967 passed, 1 leaky,
+  1,980 skipped, 0 failed. A status-level leak run identified the leaky test
+  as `swallowtail-host-local::watcher_service::lifecycle::watcher_stop_and_join_retires_owned_identities`;
+  Card 094 now carries it as a third post-tag determinism surface. The later
+  hosted rerun of the same shard passed 967 tests with no leaky status.
 - Under the renewed single provider-turn authorization, exactly one Node
   `22.23.2` invocation used the corrected disposable harness audience
   `claude-agent-sdk` and stopped before readiness: the route reported
   `swallowtail.claude-agent.sdk.open_rejected`. No first-party readiness,
   first message, cwd/model/capability evidence, SDK result fields, stderr
   tail, SessionInput/close timeline, native exit evidence, prompt, tool
-  request, turn, or write was captured. The harness retained only the route
-  diagnostic and did not retain the sidecar rejection subcode on this
-  open-failure path; no subcode is inferred. The one authorization is
-  exhausted, acceptance remains unticked, and no retry is authorized.
+  request, turn, or write was captured. The route had retained the fixed
+  sidecar subcode in `diagnostic().message()` while the live harness copied
+  only `diagnostic().code()`, so the missing subcode was harness capture loss,
+  not a route limitation. The exact live subcode cannot be recovered from
+  that record. The provider-free harness proof now captures the message and
+  all required sanitized fields through the same process boundary.
+  From the corrected-audience host environment, the leading hypothesis is an
+  `account_not_first_party` rejection caused by the explicit child
+  environment/authentication context; this is only a hypothesis, not an
+  observed code. `construction_failed` remains an alternative unobserved
+  possibility. The one authorization is exhausted, acceptance remains
+  unticked, and no retry is authorized.
 - The additive API baseline and default read-only profile remain unchanged.

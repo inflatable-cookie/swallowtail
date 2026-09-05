@@ -3,12 +3,19 @@
 #[allow(dead_code)]
 mod cancel;
 #[allow(dead_code)]
+mod capture;
+#[allow(dead_code)]
 mod host;
 #[allow(dead_code)]
 mod selection;
 
 #[allow(unused_imports)]
 pub use cancel::{drop_within, poll_once};
+#[allow(unused_imports)]
+pub use capture::{
+    SDK_RESULT_FIELD_NAMES, SanitizedHarnessRecord, SanitizedWireCapture, captured_services,
+    record_open_failure, record_success,
+};
 #[allow(unused_imports)]
 pub use host::{CleanupEvent, SdkFixtureHost, SdkScenario, Stall};
 #[allow(unused_imports)]

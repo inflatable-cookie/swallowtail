@@ -228,6 +228,60 @@ fn pi_mixed_structured_and_interactive_assembly_fails_at_applicability_admission
 }
 
 #[test]
+fn pi_rpc_and_sdk_sidecar_cross_route_assembly_fails_at_applicability_admission() {
+    let source_id = "pi-cross-route-shared-source";
+    let rpc = pi_prepared()
+        .prepare_run(PiRunProfileInput::new(
+            RequestId::new("pi-cross-route-rpc").unwrap(),
+            super::model("pi.cross.route"),
+            OperationContent::new("cross-route run").unwrap(),
+            WorkingResourceRef::new("pi.cross.workspace").unwrap(),
+            Deadline::at(MonotonicInstant::from_ticks(100_000)),
+        ))
+        .expect("Pi RPC run prepares")
+        .consumer_route_projection_contribution(
+            ConsumerRouteProjectionSourceId::new(source_id).unwrap(),
+        )
+        .expect("Pi RPC contribution admits");
+    let sidecar = sidecar_prepared(true, reasoning_options("medium"))
+        .consumer_route_projection_contribution(
+            ConsumerRouteProjectionSourceId::new(source_id).unwrap(),
+        )
+        .expect("Pi SDK-sidecar contribution admits");
+    let rpc_row = rows(&rpc)
+        .into_iter()
+        .find(|row| semantic_id(row) == "feature.prepared-facade")
+        .expect("Pi RPC prepared-facade row exists")
+        .clone();
+    let sidecar_row = rows(&sidecar)
+        .into_iter()
+        .find(|row| semantic_id(row) == "feature.prepared-facade")
+        .expect("Pi SDK-sidecar prepared-facade row exists")
+        .clone();
+
+    for (applicability, sources, row) in [
+        (
+            rpc.applicability().clone(),
+            rpc.sources().cloned().collect::<Vec<_>>(),
+            sidecar_row,
+        ),
+        (
+            sidecar.applicability().clone(),
+            sidecar.sources().cloned().collect::<Vec<_>>(),
+            rpc_row,
+        ),
+    ] {
+        let failure =
+            ConsumerRouteProjectionContribution::new(applicability, sources, [row], [], [])
+                .expect_err("cross-route assembly is rejected");
+        assert_eq!(
+            failure.kind(),
+            swallowtail_runtime::ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement
+        );
+    }
+}
+
+#[test]
 fn pi_sdk_sidecar_projection_keeps_reasoning_and_attachment_evidence_route_local() {
     let sidecar = sidecar_prepared(true, reasoning_options("medium"));
     assert!(

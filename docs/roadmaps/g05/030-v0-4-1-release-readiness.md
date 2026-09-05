@@ -114,7 +114,7 @@ authorization of 2026-09-05 applies.
 | Completion conditions | `docs/releases/0.4.1.md` and index entry authored from Research 286 before any mutation; read-only release status infers `0.4.1` with the three-mutation plan; exactly one prepare transaction applies coordinated `0.4.1` versions, promotes the changelog, and syncs the workspace-only lock; all 11 local gates pass on the frozen tree; the exact promoted changelog is extracted; distinct `0.4.1` semantic baseline, route inventory, and dependency graph are generated without touching any `0.4.0` file; one candidate PR; exact-head review; canonical merge; workflow-dispatch CI green at the merged SHA |
 | Owned mutable paths | every workspace `Cargo.toml` version and internal requirement through the prepare transaction only; `Cargo.lock` workspace entries only; `CHANGELOG.md` promotion only; `docs/releases/0.4.1.md`; `docs/releases/README.md` current-release entry; `release-baselines/public-api-0.4.1/**`, `production-routes-0.4.1.txt`, `internal-dependencies-0.4.1.tsv`; `.release-prepared.json`; this card's `## Result`; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
-| Forbidden paths | every `crates/**/src` and test path; every `release-baselines/*0.4.0*` and earlier file; contracts; architecture; guides; matrices; version claims; any feature change |
+| Forbidden paths | every `crates/**/src` and test path; every `release-baselines/*0.4.0*` and earlier file; contracts; architecture; guides; matrices; version claims; any feature change. Amended 2026-09-05: the release gate scripts `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, and `scripts/README.md` are owned, exactly as the `v0.4.0` candidate commit `10d9b7a0` updated them, so the gates validate the `0.4.1` baselines (immutable baseline becomes `0.4.0`; no approved removals for a patch) |
 | Approved concurrent siblings | none; feature freeze |
 | Serial edges | card 092 follows the merged candidate with green exact-SHA CI and the completed smoke packet |
 | Worker capability class | release-preparation worker with Effigy release discipline; frontier-tier; no provider credentials; no tag authority |
@@ -178,6 +178,29 @@ three compressions of the lane, on the Chatterbox recommendation:
 
 Candidate review and workflow-dispatch CI run in parallel. The tag request
 goes to the operator as one message with the exact SHA.
+
+## Candidate PR 229 Review Findings (2026-09-05)
+
+The retained reviewer blocked PR 229 on two findings. Chatterbox ruling:
+
+1. **Pi `host_deadline_uses_native_abort_and_resolves_timed_out` in CI's
+   pinned-MSRV job.** Not a candidate defect. `swallowtail-runtime`
+   `session_cleanup.rs`, the Pi adapter source, and the test itself are
+   byte-identical to `v0.4.0`; the race pre-dates the candidate and cannot
+   be a `v0.4.1` regression. The runtime returns `Clean` when cleanup
+   genuinely completes before the deadline observation, which is honest
+   truth, not weakened truth; the test asserts a scheduler-dependent branch
+   (card 094 diagnosis). The block on this point is overruled under the
+   operator's compression rule 2; the job is re-run once.
+2. **Release gate scripts still pinned to `0.4.0` baselines.** Correct and
+   in scope. The `v0.4.0` candidate commit updated the same scripts to its
+   own baselines; card 091's manifest wrongly forbade `scripts/`. The manifest
+   is amended: the candidate gains one more commit updating the three gate
+   scripts and `scripts/README.md` to the `0.4.1` baselines with `0.4.0` as
+   the immutable baseline, then the `api`, `metadata`, and `routes` gates
+   rerun on that tree, the reviewer re-reviews the new exact head, and the
+   release note status line reads released-pending-tag rather than
+   "candidate; preparation pending".
 
 ## Fifth Prepare: Temp-Directory Collision
 

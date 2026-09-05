@@ -2,11 +2,11 @@
 
 ## Ready
 
+- [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — ready; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — ready; fix the Pi sidecar deadline race and sweep the workspace for scheduler-dependent deadline tests; release-lane repair under the freeze
 
 ## Planned
 
-- [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — planned; after the `v0.4.1` tag; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — planned; g05.029 priority 2
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4

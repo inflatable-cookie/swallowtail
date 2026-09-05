@@ -1,6 +1,6 @@
 # 095 CI Gate Restructure
 
-Status: planned; gated behind the `v0.4.1` tag; operator workflow authority granted 2026-09-05
+Status: ready; `v0.4.1` is tagged; operator workflow authority granted 2026-09-05
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

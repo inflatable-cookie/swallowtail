@@ -44,7 +44,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.031 CI Latency](./031-ci-latency.md) — planned; card 095 restructures the PR gate after the `v0.4.1` tag; operator workflow authority granted
+- [g05.031 CI Latency](./031-ci-latency.md) — ready; card 095 restructures the PR gate; operator workflow authority granted
 - [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered the `v0.4.1` carrier, card 089's bounded-profile preflight exclusion landed, and cards 081-088 are queued in consumer priority order
 - [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
@@ -412,7 +412,7 @@ identity.
 
 ## Milestones
 
-- [031 CI Latency](./031-ci-latency.md) — planned; card 095 after the `v0.4.1` tag
+- [031 CI Latency](./031-ci-latency.md) — ready; card 095
 - [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered; cards 081-088 queued
 - [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`

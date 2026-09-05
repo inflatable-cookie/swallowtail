@@ -1,6 +1,6 @@
 # 096 Contract 061 Per-Turn Authority Audit
 
-Status: ready; card 095 merged at `ba8275eb`; one planning-only audit across candidates B, K, and L
+Status: ready; audit executed and Result filled; existing vocabulary suffices; B, K, and L all pass the rubric; L recommended for first promotion; awaiting coordinator closeout
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -60,3 +60,44 @@ local call.
 ## Auto-Continuation
 
 No. Stop after the note for Chatterbox reconciliation.
+
+## Result
+
+Complete. Planning-only; zero Rust.
+
+All 197 rows across candidates B (76), K (52), and L (69) are classified with
+code anchors in
+[the per-turn authority audit](../../../triage/20260905-143430-contract-061-per-turn-authority-audit.md).
+Every per-turn and attachment row is itemised individually: 8 per-turn rows
+and 13 attachment rows, 4 of which overlap, for 17 distinct itemised rows; the
+other 180 are classified by band. Lifecycle split is 136 selection-summary, 41
+session-start-only, 12 post-open-observation-only, and 8 per-turn.
+
+Ruling: the existing `ConsumerMediatedPerTurn` posture and projection
+vocabulary suffice. No additive shared baseline is drafted, because none is
+needed. Seven of the eight per-turn rows carry retained plan-borne evidence —
+a bounded `Capability::Attachments` requirement, or
+`SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests` plus the
+exact `opencode/permission` and `opencode/question` extension namespaces — and
+`admit_lifecycle_authority`
+(`crates/swallowtail-runtime/src/consumer_route_projection/admission.rs:211`)
+already rejects the card's counterexample as a composer failure. The eighth,
+`opencode.http control.provider-turn-reference`, is matrix-descriptor-only and
+is withheld at construction as negative coverage.
+
+Rubric: B, K, and L all pass items 1-6. No evidence stop and no gate. Two
+conditions are recorded for the implementing cards, neither requiring a shared
+change: `feature.permission-exchange` must use a bounded `Namespaced`
+extension rather than `QuestionExchange`, and `feature.attachments` rows are
+conditional on the prepared capability profile because no route descriptor
+declares `Capability::Attachments`.
+
+Recommended first promotion: **L** (OpenCode, Pi), as Chatterbox expected. It
+holds six of the eight per-turn rows, has the widest per-turn spectrum, and is
+the smallest validation scope at two adapter packages. Suggested order after L
+is B, then K.
+
+Validation: `effigy qa:docs`, `effigy qa:northstar`, `git diff --check`.
+
+Stops for Chatterbox reconciliation. No candidate promoted; no shared
+vocabulary, contract, architecture, or census surface changed.

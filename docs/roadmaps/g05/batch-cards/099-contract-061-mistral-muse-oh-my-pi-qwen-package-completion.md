@@ -1,6 +1,6 @@
 # 099 Contract 061 Mistral Vibe, Muse, Oh My Pi, And Qwen Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -91,6 +91,17 @@ testkit, core, contract, census, audit, other-adapter, roadmap-closeout, or
 version-claim surface changed.
 
 PR: [#235](https://github.com/inflatable-cookie/swallowtail/pull/235)
+
+PR #235 was independently accepted at exact head
+`c6af566a52f4c570c4b3df991da4cac2c5da37ae` and merged as
+`c2f46b6e88b4db13bfb5c7021515813a60a0dcc2`. All 11 hosted checks were green
+and GitHub reported `MERGEABLE` / `CLEAN`.
+
+The reviewer recorded a non-blocking papercut: `LedgerEntry.emitted_by` is
+declarative and observed rows are compared as a semantic-id set, so
+`operation_shape` is asserted only for uniqueness within the const table.
+Per-facade counts and distinct-set equality still pin behaviour; a later
+ledger-attribution sweep can tighten the shape assertion.
 
 ## Review Oracle
 

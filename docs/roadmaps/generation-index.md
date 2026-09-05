@@ -153,7 +153,7 @@ cards 080 and 081 delivered the `v0.4.1` carrier and Bash mediation, card 082
 is ready, and cards 083-088 are planned. Milestone 027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
-has 570 proved rows; cards 034, 074, 075, 076, and 079 are complete. Milestone 028 is complete: card 077 admitted compatible
+has 698 proved rows; cards 034, 074, 075, 076, 079, 098, and 099 are complete, with card 097 remaining for 69 rows. Milestone 028 is complete: card 077 admitted compatible
 OpenCode HTTP `surface-19` and card 078 qualified that segment through
 `1.18.28`; `1.18.29` remains `UnverifiedNewer`. Milestones
 004, 005, 012, 013, 014, 015, 016, 018, 019, and 020 are completed standing

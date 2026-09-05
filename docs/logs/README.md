@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-05 g05.009 Cards 098-099 Closeout](./2026-09-05-g05-009-cards-098-099-closeout.md) — Candidates B and K accepted and merged through PRs 236 and 235; Contract 061 coverage is now 698 proved rows with candidate L's 69 rows remaining
 - [2026-09-05 g05.030 Card 094 Closeout](./2026-09-05-g05-030-card-094-closeout.md) — deferred fixture sweep accepted at live head and merged through PR 227 as `3506d9a5`; named hang guards and load proofs passed
 - [2026-09-05 v0.4.1 Live-Open Defect And v0.4.2 Lane](./2026-09-05-v0-4-1-live-open-defect-and-v0-4-2-lane.md) — Bovine Desktop's first live `claude-agent.sdk` open failed with an opaque `open_rejected`; the route drops the sidecar's failure code and had never met a real SDK init; card 100 repairs it and g05.032 ships `v0.4.2` compressed with a real consumer proof
 - [2026-09-05 g05.029 Card 081 Closeout](./2026-09-05-g05-029-card-081-closeout.md) — Bash under mediation accepted at exact head and merged through PR 233 as `97f37e4d`; Card 082 is the next consumer-parity card

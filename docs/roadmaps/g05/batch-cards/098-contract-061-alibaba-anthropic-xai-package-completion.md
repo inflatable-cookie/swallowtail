@@ -1,6 +1,6 @@
 # 098 Contract 061 Alibaba, Anthropic, And xAI Package Completion
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -93,3 +93,13 @@ state claim. Mixed-assembly and negative provider-free coverage are included.
 
 The public API baselines for the three owned packages are additive-only.
 Validation and PR details are recorded at exact-head review after push.
+
+PR #236 was independently accepted at rebased exact head
+`32378ef6b7da84ee6738f6339a985aa156007055` and merged as
+`921ee00ca29a6b4da7b2ccbe2835124fdeac4ff7`. All 11 hosted checks were green
+and GitHub reported `MERGEABLE` / `CLEAN`. The rebase changed only the shared
+`CHANGELOG.md` anchor; the non-CHANGELOG patch remained byte-identical.
+
+The god-files scan reported three new `high` findings. They are recorded for a
+later ledger-attribution structural-split sweep; no split commit is required
+for this card and the scan is not a CI gate.

@@ -1,6 +1,6 @@
 # 280 Claude Agent SDK 0.3.259 Identity
 
-Status: promoted
+Status: promoted; corrected 2026-09-05 (spawn hook call shape)
 Owner: Tom
 Date: 2026-09-03
 Card: g05 batch 055 (selected refresh exit)
@@ -97,6 +97,17 @@ Probed directly in the shipped `sdk.mjs` of both versions:
   structurally identical.
 - `spawnClaudeCodeProcess` is present with the same call sites, so the
   independently joinable native handle this route depends on still exists.
+  **Correction 2026-09-05 (card 100):** the hook is present, but its call
+  shape was not verified here and the fake-SDK fixture mirrored the sidecar's
+  own assumption. `0.3.259` calls `spawnClaudeCodeProcess(options)` with one
+  `SpawnOptions` object `{command, args, cwd?, env, signal}` and expects a
+  `SpawnedProcess` with piped stdin/stdout plus `kill`/`on`/`once`/`off`;
+  the `v0.4.1` sidecar took positional arguments and threw at construction
+  on the first live open (Bovine Desktop, 2026-09-05). The declarations are
+  now frozen in the adapter's `tests/fixtures/claude-agent-sdk-0.3.259/`
+  `sdk-declarations.d.ts`, together with `Query.initializationResult()`,
+  `supportedModels()`, and `accountInfo()`. "Same call sites" must not be
+  read as "same call shape".
 - The bounded `waitForExit()` race remains and the `SIGKILL` escalation is still
   `unref()`'d: the SDK still supplies no joined stop, which is the premise of
   the route's own close design.

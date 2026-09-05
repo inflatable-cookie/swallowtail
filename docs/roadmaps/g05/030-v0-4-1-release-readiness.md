@@ -74,6 +74,7 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 
 ## Batch Cards
 
+- [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — ready; release-lane repair under the freeze; card 091 re-prepares on its merged base
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
 - [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted 2026-09-05
 - [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; Bovine Desktop editing session accepted as the smoke; exact checkout, command, and retry budget still required
@@ -129,6 +130,38 @@ command, and retry budget are still to be supplied.
 
 From this promotion until card 092 stops, no feature or currentness PR
 merges to `main`. Cards 081-088 and the Contract 061 remainder stay queued.
+Release-lane repairs that fix a gate defect without changing production
+behaviour (card 093) are the one exception, on the `v0.4.0` precedent.
+
+## Third Prepare And Fixture Repair
+
+Card 091's third prepare succeeded on all 11 gates, but the required
+frozen-tree rerun failed the floor on two sidecar-asset tests that time out
+under host load. The operator ruled on 2026-09-05 that the fixture is the
+defect and must be fixed, not timed around. Card 093 owns that repair. The
+prepared tree in the worker workspace is discarded; card 091 re-prepares on
+card 093's merged base under the standing grant, in `--json` mode.
+
+### Card 093 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 093 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 091's frozen-gates log naming the two tests; current `main` |
+| Completion conditions | fixture reads observations after the wire record that guarantees them; no passing test depends on a bound; loop-under-load proof with zero failures recorded; production sidecar and adapter source unchanged; named validation green under stable and `1.95.0`; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/tests/**` (including `sidecar_asset_support/fake-sdk.mjs` and `mod.rs`); this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | `crates/swallowtail-adapter-claude-agent/src/**` and `sidecar/**`; every other crate; Cargo files; `CHANGELOG.md`; `release-baselines/**`; contracts |
+| Approved concurrent siblings | none |
+| Serial edges | card 091's fourth prepare follows card 093's merge |
+| Worker capability class | Rust and Node test-fixture worker with concurrency discipline; no provider credentials |
+| Acceptance evidence | the loop-under-load run log; diff confined to tests; pinned-toolchain focused test run |
+| Review oracle | the card's invariant |
+| Stop conditions | ordering cannot be guaranteed without a production change (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
 
 ## Acceptance
 

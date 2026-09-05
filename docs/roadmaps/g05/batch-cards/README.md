@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [093-claude-sdk-sidecar-fixture-determinism.md](./093-claude-sdk-sidecar-fixture-determinism.md) — ready; make the Claude SDK sidecar-asset fixture deterministic under load; release-lane repair under the freeze
 - [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted after Card 090 acceptance
 
 ## Planned

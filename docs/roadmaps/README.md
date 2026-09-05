@@ -15,13 +15,14 @@ shape.
 
 ## Next Task
 
-Implement [g05.030 card 091](g05/batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md):
-run the one-shot operator-authorized `0.4.1` prepare transaction from the
-accepted Research 286 census, then require exact-SHA CI. Card 092 follows
-serially and still needs its completed Bovine Desktop smoke packet. The
-feature freeze holds until card 092 stops: g05.029 cards 081-088 and the
-Contract 061 remainder (candidates B, K, L; 197 rows) stay queued. Contract
-061 coverage is 570 proved / 197 remaining. `v0.4.0` is tagged.
+Implement [g05.030 card 093](g05/batch-cards/093-claude-sdk-sidecar-fixture-determinism.md):
+make the `claude-agent.sdk` sidecar-asset test fixture deterministic under
+any host load, from the manifest in that roadmap. Card 091's third prepare
+passed all 11 gates but its frozen-tree rerun failed the floor on two
+timing-bound fixture tests; the operator ruled the fixture is the defect.
+Card 091 re-prepares on card 093's merged base under the standing grant; card
+092 follows. The feature freeze holds. Contract 061 coverage is 570 proved /
+197 remaining. `v0.4.0` is tagged.
 
 ## Standing Lanes
 

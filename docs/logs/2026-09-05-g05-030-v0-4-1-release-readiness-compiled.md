@@ -38,6 +38,15 @@ gate green on the same tree and CI's pinned-MSRV job was green on card
 authorization with a standing grant for further transient failures; every
 attempt now captures each gate's output.
 
+## Third Prepare
+
+Attempt three passed all 11 gates, then the required frozen-tree rerun
+failed the floor: two sidecar-asset tests timed out on the fixture's
+20-second bound with the host at load average 15, having passed minutes
+earlier on the same tree. The operator ruled that a load-dependent test is
+the defect. Card 093 repairs the fixture under the freeze; card 091
+re-prepares on that base.
+
 ## Next
 
-Coordinator resumes card 091 on the same worker.
+Coordinator dispatches card 093, then card 091's fourth prepare.

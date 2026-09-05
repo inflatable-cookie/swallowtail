@@ -24,7 +24,19 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
         open["success"], true,
         "object-form spawn hook must construct: {open}"
     );
-    assert_eq!(open["data"]["model"], "m-1");
+    assert_eq!(open["data"]["readiness"], "requested-with-supported-list");
+    assert_eq!(open["data"]["requestedModel"], "m-1");
+    assert!(open["data"].get("model").is_none());
+    assert_eq!(
+        sidecar.observed_control_calls(),
+        vec![
+            "initializationResult".to_owned(),
+            "supportedModels".to_owned(),
+            "accountInfo".to_owned(),
+            "supportedCommands".to_owned(),
+        ]
+    );
+    assert!(!sidecar.first_input_consumed());
     // This is the argument the fake SDK actually received, not the query
     // options passed into `query()`. A positional callback receives the
     // object in the wrong slot and fails before this response is produced.
@@ -56,8 +68,6 @@ fn open_rejections_expose_only_the_fixed_sidecar_code() {
     for (scenario, expected) in [
         ("account-not-first-party", "account_not_first_party"),
         ("account-not-subscription", "account_not_subscription"),
-        ("missing-model", "model_missing"),
-        ("unsupported-model", "supported_model_rejected"),
     ] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);
         let response = sidecar.command(
@@ -81,6 +91,34 @@ fn open_rejections_expose_only_the_fixed_sidecar_code() {
 }
 
 #[test]
+fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
+    for (scenario, expected) in [
+        ("init-missing", "init_missing"),
+        ("init-not-first", "init_missing"),
+        ("init-throws", "initialization_failed"),
+        ("missing-model", "model_missing"),
+        ("unsupported-model", "supported_model_rejected"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(
+            open["success"], true,
+            "{scenario} must pass initialize: {open}"
+        );
+        let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        assert_eq!(
+            response["success"], false,
+            "{scenario} must reject: {response}"
+        );
+        assert_eq!(response["failure"]["code"], expected);
+    }
+}
+
+#[test]
 fn canonical_effective_model_is_accepted_and_published() {
     let mut sidecar = SidecarProcess::start_scenario("canonical-model");
     let response = sidecar.command(
@@ -92,8 +130,16 @@ fn canonical_effective_model_is_accepted_and_published() {
         response["success"], true,
         "canonical model must open: {response}"
     );
+    assert_eq!(
+        response["data"]["readiness"],
+        "requested-with-supported-list"
+    );
     assert_eq!(response["data"]["requestedModel"], "claude-sonnet-5");
-    assert_eq!(response["data"]["model"], "claude-sonnet-5-20250929");
+    assert!(response["data"].get("model").is_none());
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(first_turn["success"], true, "first-turn init: {first_turn}");
+    assert_eq!(first_turn["data"]["readiness"], "confirmed");
+    assert_eq!(first_turn["data"]["model"], "claude-sonnet-5-20250929");
 }
 
 #[test]
@@ -105,9 +151,11 @@ fn every_allowed_invocation_crosses_the_callback_with_its_input_intact() {
         json!({"cwd": sidecar.cwd(), "model": "m-1"}),
     );
     assert_eq!(open["success"], true, "open response: {open}");
-    assert_eq!(open["data"]["model"], "m-1");
+    assert_eq!(open["data"]["readiness"], "requested-with-supported-list");
 
-    sidecar.command("query-1", "query", json!({"text": "read it"}));
+    let query = sidecar.command("query-1", "query", json!({"text": "read it"}));
+    assert_eq!(query["success"], true, "query response: {query}");
+    assert_eq!(query["data"]["readiness"], "confirmed");
 
     // The allowed tool reaches the host as a bounded callback carrying the
     // tool name and nothing else: no input, no path, no provider payload.

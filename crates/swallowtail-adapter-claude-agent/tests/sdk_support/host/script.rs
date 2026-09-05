@@ -64,9 +64,9 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "nodeVersion": "22.23.2",
         "cwd": FIXTURE_CWD,
         "requestedModel": FIXTURE_MODEL,
-        "model": FIXTURE_MODEL,
         "supportedModels": [FIXTURE_MODEL],
-        "capabilities": ["interrupt_receipt_v1"],
+        "readiness": "requested-with-supported-list",
+        "capabilities": [],
         "account": {
             "apiProvider": "firstParty",
             "subscriptionPresent": true
@@ -91,18 +91,9 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         SdkScenario::IdentityMismatch => data["sdkVersion"] = json!("0.3.258"),
         SdkScenario::CwdMismatch => data["cwd"] = json!("/fixture/elsewhere"),
         SdkScenario::CanonicalModel => {
-            data["model"] = json!("claude-sonnet-5-20250929");
-            data["supportedModels"] = json!(["claude-sonnet-5-20250929"]);
+            data["supportedModels"] = json!([FIXTURE_MODEL, "claude-sonnet-5-20250929"]);
         }
-        SdkScenario::MissingModel => {
-            data.as_object_mut()
-                .expect("open data object")
-                .remove("model");
-        }
-        SdkScenario::UnsupportedModel => {
-            data["model"] = json!("claude-sonnet-5-20250929");
-            data["supportedModels"] = json!(["claude-opus-5"]);
-        }
+        SdkScenario::MissingModel | SdkScenario::UnsupportedModel => {}
         SdkScenario::NewerNode => data["nodeVersion"] = json!("26.7.0"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
         SdkScenario::PermissionModeDrift => data["permissionMode"] = json!("plan"),
@@ -129,10 +120,61 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         );
         return;
     }
+    if matches!(scenario, SdkScenario::InitMissing) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "init_missing",
+                               "message": "sidecar command failed: init_missing"}}),
+        );
+        return;
+    }
+    if matches!(scenario, SdkScenario::InitializationFailed) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "initialization_failed",
+                               "message": "sidecar command failed: initialization_failed"}}),
+        );
+        return;
+    }
+    if matches!(scenario, SdkScenario::MissingModel) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "model_missing",
+                               "message": "sidecar command failed: model_missing"}}),
+        );
+        return;
+    }
+    if matches!(scenario, SdkScenario::UnsupportedModel) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "supported_model_rejected",
+                               "message": "sidecar command failed: supported_model_rejected"}}),
+        );
+        return;
+    }
+    let effective_model = if scenario == SdkScenario::CanonicalModel {
+        "claude-sonnet-5-20250929"
+    } else {
+        FIXTURE_MODEL
+    };
+    let capabilities = if scenario == SdkScenario::UnadvertisedInterruptReceipt {
+        json!([])
+    } else {
+        json!(["interrupt_receipt_v1"])
+    };
     push(
         state,
         json!({"type": "response", "id": id, "command": "query", "success": true,
-               "data": {"accepted": true}}),
+               "data": {"accepted": true,
+                        "readiness": "confirmed",
+                        "cwd": FIXTURE_CWD,
+                        "requestedModel": FIXTURE_MODEL,
+                        "model": effective_model,
+                        "capabilities": capabilities}}),
     );
     push(state, json!({"type": "event", "event": "turn_started"}));
     match scenario {

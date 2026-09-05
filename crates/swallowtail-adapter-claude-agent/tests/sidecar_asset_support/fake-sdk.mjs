@@ -26,6 +26,8 @@ const SCENARIO = process.env.FAKE_SDK_SCENARIO ?? "read-only";
 
 const observed = {
   options: null,
+  controlCalls: [],
+  firstInputConsumed: false,
   spawnHookArgument: null,
   spawnHookArgumentCount: null,
   admissions: {},
@@ -43,6 +45,11 @@ function record() {
     closeSync(descriptor);
   }
   renameSync(TEMP_OBSERVATIONS, OBSERVATIONS);
+}
+
+function observeControl(name) {
+  observed.controlCalls.push(name);
+  record();
 }
 
 // The live session mode, which the fixture's own admission modelling reads.
@@ -79,6 +86,33 @@ function accountInfo() {
   return { apiProvider: "firstParty", subscriptionType: "max" };
 }
 
+function modelRows(options) {
+  if (SCENARIO === "unsupported-model") {
+    return [{ value: "claude-opus-5", displayName: "Opus" }];
+  }
+  if (SCENARIO === "canonical-model") {
+    return [
+      {
+        value: options.model,
+        resolvedModel: "claude-sonnet-5-20250929",
+        displayName: "Sonnet",
+      },
+    ];
+  }
+  return [{ value: options.model, displayName: "Fixture model" }];
+}
+
+function initializeResponse(options) {
+  return {
+    commands: [{ name: "help", description: "fixture command" }],
+    agents: [],
+    output_style: "",
+    available_output_styles: [],
+    models: modelRows(options),
+    account: accountInfo(),
+  };
+}
+
 export function query({ prompt, options }) {
   state.permissionMode = options.permissionMode ?? "default";
   // Only serialisable option keys are recorded; callbacks are noted by name so
@@ -105,7 +139,8 @@ export function query({ prompt, options }) {
   }
 
   let settled = false;
-  const messages = [initMessage(options)];
+  let firstInputConsumed = false;
+  const promptIterator = prompt[Symbol.asyncIterator]();
 
   async function admit(name, input) {
     const decision = await options.canUseTool(name, input);
@@ -115,8 +150,24 @@ export function query({ prompt, options }) {
 
   const iterator = {
     async next() {
-      if (messages.length > 0) {
-        return { value: messages.shift(), done: false };
+      if (!firstInputConsumed) {
+        const firstInput = await promptIterator.next();
+        if (firstInput.done) {
+          return { value: undefined, done: true };
+        }
+        firstInputConsumed = true;
+        observed.firstInputConsumed = true;
+        record();
+        if (SCENARIO === "init-throws") {
+          throw new Error("fixture init failure");
+        }
+        if (SCENARIO === "init-missing") {
+          return { value: { type: "assistant", message: { content: [] } }, done: false };
+        }
+        if (SCENARIO === "init-not-first") {
+          return { value: { type: "result", subtype: "success", is_error: false }, done: false };
+        }
+        return { value: initMessage(options), done: false };
       }
       if (!settled) {
         settled = true;
@@ -137,7 +188,20 @@ export function query({ prompt, options }) {
       return iterator;
     },
     async accountInfo() {
+      observeControl("accountInfo");
       return accountInfo();
+    },
+    async initializationResult() {
+      observeControl("initializationResult");
+      return initializeResponse(options);
+    },
+    async supportedModels() {
+      observeControl("supportedModels");
+      return modelRows(options);
+    },
+    async supportedCommands() {
+      observeControl("supportedCommands");
+      return [{ name: "help", description: "fixture command" }];
     },
     async interrupt() {
       return { received: true };
@@ -208,8 +272,12 @@ function bashSession(prompt, options, child) {
   }
 
   async function* messages() {
-    yield initMessage(options);
+    let first = true;
     for await (const message of prompt) {
+      if (first) {
+        first = false;
+        yield initMessage(options);
+      }
       void message;
       await attempt({
         command: `node -e "require('fs').writeFileSync('denied.txt','denied')"`,
@@ -224,7 +292,22 @@ function bashSession(prompt, options, child) {
   }
 
   const iterator = messages();
-  iterator.accountInfo = async () => accountInfo();
+  iterator.accountInfo = async () => {
+    observeControl("accountInfo");
+    return accountInfo();
+  };
+  iterator.initializationResult = async () => {
+    observeControl("initializationResult");
+    return initializeResponse(options);
+  };
+  iterator.supportedModels = async () => {
+    observeControl("supportedModels");
+    return modelRows(options);
+  };
+  iterator.supportedCommands = async () => {
+    observeControl("supportedCommands");
+    return [{ name: "help", description: "fixture command" }];
+  };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;
@@ -275,9 +358,13 @@ function editingSession(prompt, options, child) {
   async function* messages() {
     // record flushes the SDK observations before the wire event that proves
     // the turn completed, so the Rust fixture can read them after turn_ended.
-    yield initMessage(options);
+    let first = true;
     let index = 0;
     for await (const message of prompt) {
+      if (first) {
+        first = false;
+        yield initMessage(options);
+      }
       index += 1;
       void message;
       // A read is always mediated, whatever the mode, so the acceptEdits
@@ -289,7 +376,22 @@ function editingSession(prompt, options, child) {
   }
 
   const iterator = messages();
-  iterator.accountInfo = async () => accountInfo();
+  iterator.accountInfo = async () => {
+    observeControl("accountInfo");
+    return accountInfo();
+  };
+  iterator.initializationResult = async () => {
+    observeControl("initializationResult");
+    return initializeResponse(options);
+  };
+  iterator.supportedModels = async () => {
+    observeControl("supportedModels");
+    return modelRows(options);
+  };
+  iterator.supportedCommands = async () => {
+    observeControl("supportedCommands");
+    return [{ name: "help", description: "fixture command" }];
+  };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;

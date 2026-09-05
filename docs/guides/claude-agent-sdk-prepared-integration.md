@@ -55,10 +55,12 @@ Swallowtail never holds the subscription credential.
    not perform, wrap, or drive it, and the SDK exposes no login function.
 2. Credentials stay in the official Claude credential store, reachable only by
    the native binary, which authenticates itself. The sidecar passes an
-   explicit non-secret platform allowlist (`HOME`, `PATH`, `TMPDIR`, `LANG`,
-   `LC_*`, `USER`, `SHELL`, terminal labels, and required macOS essentials)
-   and no API key, so first-party OAuth belongs to that native binary rather
-   than to Swallowtail.
+   explicit non-secret, currently macOS-shaped allowlist (`HOME`, `PATH`,
+   `TMPDIR`, `LANG`, `LC_*`, `USER`, `SHELL`, terminal labels, and required
+   macOS essentials) and no API key. HOME dependence is a local host
+   observation; a Linux pass covering `LOGNAME`/`XDG_*` is required before
+   making a Linux claim. First-party OAuth therefore belongs to that native
+   binary rather than to Swallowtail.
 3. Swallowtail leases a delegated credential reference that exposes no secret,
    and passes no credential over the sidecar wire.
 4. Open observes typed readiness only: `apiProvider` must be `firstParty`.

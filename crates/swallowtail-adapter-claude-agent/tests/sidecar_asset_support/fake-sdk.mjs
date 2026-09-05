@@ -68,6 +68,16 @@ function initMessage(options) {
   if (SCENARIO === "canonical-model") {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-sonnet-5-20250929"];
+  } else if (SCENARIO === "canonical-cwd") {
+    if (options.cwd.startsWith("/private/")) {
+      message.cwd = options.cwd.slice("/private".length);
+    } else if (options.cwd.startsWith("/var/")) {
+      message.cwd = `/private${options.cwd}`;
+    } else {
+      message.cwd = `${options.cwd}/../${path.basename(options.cwd)}`;
+    }
+  } else if (SCENARIO === "cwd-mismatch") {
+    message.cwd = "/fixture/elsewhere";
   } else if (SCENARIO === "missing-model") {
     delete message.model;
   } else if (SCENARIO === "unsupported-model") {

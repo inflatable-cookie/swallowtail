@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: ready; 570 rows proved; card 096 per-turn authority audit is ready for the last 197 rows (candidates B, K, L)
+Status: ready; 570 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are ready for the last 197 rows (candidates L, B, K)
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -353,7 +353,10 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
-- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — ready; one planning-only audit across candidates B, K, and L; the last 197 rows
+- [097 Contract 061 OpenCode And Pi Package Completion](batch-cards/097-contract-061-opencode-pi-package-completion.md) — ready; candidate L; 69 rows, 67 emitted and 2 withheld; two packages
+- [098 Contract 061 Alibaba, Anthropic, And xAI Package Completion](batch-cards/098-contract-061-alibaba-anthropic-xai-package-completion.md) — ready; candidate B; 76 rows, 74 emitted and 2 withheld; three packages
+- [099 Contract 061 Mistral Vibe, Muse, Oh My Pi, And Qwen Package Completion](batch-cards/099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md) — ready; candidate K; 52 rows, all emitted; four packages
+- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — complete; existing vocabulary suffices; B, K, L promotable; PR 232 merged as `b874df63`
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged
 - [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
@@ -574,3 +577,32 @@ remainder.
 | Review oracle | the card's invariant |
 | Stop conditions | a row needs a production change to be honest (record, do not design beyond the drafted baseline) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Cards 097-099 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 096 (PR 232, merged `b874df63`) ruled that no shared change is needed
+and all three candidates pass the rubric. The three cards own disjoint
+packages and are one approved concurrent group, also concurrent with
+g05.029 card 081 and the card 094 remainder. They complete the 767-row
+census.
+
+| Field | Card 097 (L) | Card 098 (B) | Card 099 (K) |
+| --- | --- | --- | --- |
+| Readiness | ready | ready | ready |
+| Prerequisites | card 096 merged; the audit note; current `main` | same | same |
+| Completion conditions | exact 35/15/19 ledgers, 67 emitted / 2 withheld; six per-turn rows on retained plan evidence; one PR | exact 19/17/23/17 ledgers, 74 emitted / 2 withheld; one per-turn row; one PR | exact 8/10/18/16 ledgers, 52 emitted; one per-turn attachment row; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-opencode/**`; `crates/swallowtail-adapter-pi/**`; their `release-baselines/public-api-0.4.1/*.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-alibaba-model-studio/**`; `crates/swallowtail-adapter-anthropic/**`; `crates/swallowtail-adapter-xai/**`; their API baseline files; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-mistral-vibe/**`; `crates/swallowtail-adapter-muse/**`; `crates/swallowtail-adapter-oh-my-pi/**`; `crates/swallowtail-adapter-qwen/**`; their API baseline files; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` | same | same |
+| Forbidden paths | shared runtime, testkit, core; every other adapter; contracts; architecture; the audit note; the census; version claims | same | same |
+| Approved concurrent siblings | 098, 099, g05.029 card 081, card 094 remainder | 097, 099, card 081, card 094 remainder | 097, 098, card 081, card 094 remainder |
+| Serial edges | none | none | none |
+| Worker capability class | Rust implementation worker with per-turn authority discipline; no credentials | same | same |
+| Acceptance evidence | per-route ledgers; per-turn authority proofs; mixed-assembly rejection; focused and package-affected validation; additive API diff | same | same |
+| Review oracle | the card's invariant | same | same |
+| Stop conditions | any need for a shared type or contract change returns to Chatterbox; a per-turn row without retained plan evidence | same | same |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers | same | same |
+
+The audit note stays as the ledger evidence these three cards own and is
+pruned when the last of them closes. `CHANGELOG.md` `[Unreleased]` is shared
+across the three; each card appends its own entry and rebases on conflict.

@@ -1,6 +1,6 @@
 # 096 Contract 061 Per-Turn Authority Audit
 
-Status: ready; audit executed and Result filled; existing vocabulary suffices; B, K, and L all pass the rubric; L recommended for first promotion; awaiting coordinator closeout
+Status: complete; existing vocabulary suffices; B, K, and L promotable; PR 232 exact head `497ed460` merged as `b874df63`
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

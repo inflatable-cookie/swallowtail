@@ -1,7 +1,7 @@
 # Contract 061 Per-Turn Authority Audit
 
-Status: complete planning evidence; candidates B, K, and L classified against
-`dda64268`; existing vocabulary suffices; L recommended for first promotion
+Status: promoted 2026-09-05 into ready cards 097 (L), 098 (B), and 099 (K);
+retained as the ledger evidence those cards own; pruned when the last closes
 Owner: Tom
 Date: 2026-09-05
 Card: `docs/roadmaps/g05/batch-cards/096-contract-061-per-turn-authority-audit.md`

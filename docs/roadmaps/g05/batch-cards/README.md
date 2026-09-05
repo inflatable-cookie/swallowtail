@@ -2,7 +2,9 @@
 
 ## Ready
 
-- [096-contract-061-per-turn-authority-audit.md](./096-contract-061-per-turn-authority-audit.md) — ready; planning-only; the per-turn authority proof across candidates B, K, L; last 197 Contract 061 rows
+- [097-contract-061-opencode-pi-package-completion.md](./097-contract-061-opencode-pi-package-completion.md) — ready; candidate L; 69 rows; 67 emitted, 2 withheld
+- [098-contract-061-alibaba-anthropic-xai-package-completion.md](./098-contract-061-alibaba-anthropic-xai-package-completion.md) — ready; candidate B; 76 rows; 74 emitted, 2 withheld
+- [099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md](./099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md) — ready; candidate K; 52 rows, all emitted; four packages
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — ready; Bash admitted only through per-call host allow with a bounded command view; read-write lease required
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — ready; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — ready; fix the Pi sidecar deadline race and sweep the workspace for scheduler-dependent deadline tests; release-lane repair under the freeze
@@ -23,6 +25,7 @@
 
 ## Completed
 
+- [096-contract-061-per-turn-authority-audit.md](./096-contract-061-per-turn-authority-audit.md) — complete; existing vocabulary suffices; B, K, L promotable; PR 232 merged as `b874df63`
 - [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — complete; `v0.4.1` tagged at `c3cce750`
 - [092-v0-4-1-consumer-proof-and-operator-tag-gate.md](./092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — complete; source consumer passed at `c3cce750`; operator-authorized tag pushed
 - [093-claude-sdk-sidecar-fixture-determinism.md](./093-claude-sdk-sidecar-fixture-determinism.md) — complete; deterministic sidecar-asset fixture merged through PR 226 as `4bb00dab`; 20/20 full-binary and 200/200 targeted load runs passed

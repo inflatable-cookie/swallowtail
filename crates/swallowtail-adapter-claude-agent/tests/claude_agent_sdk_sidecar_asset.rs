@@ -135,6 +135,7 @@ fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
         ("init-missing", "init_missing"),
         ("init-not-first", "init_missing"),
         ("init-throws", "initialization_failed"),
+        ("cwd-mismatch", "cwd_mismatch"),
         ("missing-model", "model_missing"),
         ("unsupported-model", "supported_model_rejected"),
     ] {
@@ -155,6 +156,37 @@ fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
         );
         assert_eq!(response["failure"]["code"], expected);
     }
+}
+
+#[test]
+fn canonicalized_first_turn_cwd_is_accepted_but_a_different_path_is_rejected() {
+    let mut sidecar = SidecarProcess::start_scenario("canonical-cwd");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "canonical cwd open: {open}");
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], true,
+        "canonical cwd init: {first_turn}"
+    );
+    assert_eq!(first_turn["data"]["cwd"], sidecar.cwd());
+
+    let mut different = SidecarProcess::start_scenario("cwd-mismatch");
+    let open = different.command(
+        "open-1",
+        "open",
+        json!({"cwd": different.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "different cwd open: {open}");
+    let first_turn = different.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], false,
+        "different cwd must reject: {first_turn}"
+    );
+    assert_eq!(first_turn["failure"]["code"], "cwd_mismatch");
 }
 
 #[test]

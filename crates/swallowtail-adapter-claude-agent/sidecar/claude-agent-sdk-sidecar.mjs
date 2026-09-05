@@ -46,7 +46,9 @@
 // termination authority; it is never a slow success.
 
 import { spawn } from "node:child_process";
+import { realpathSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { pathToFileURL } from "node:url";
 import process from "node:process";
 
@@ -786,6 +788,20 @@ function pushInput(message) {
   }
 }
 
+function canonicalPath(value) {
+  try {
+    return realpathSync.native(path.resolve(value));
+  } catch {
+    return null;
+  }
+}
+
+function cwdMatches(expected, observed) {
+  const expectedCanonical = canonicalPath(expected);
+  const observedCanonical = canonicalPath(observed);
+  return expectedCanonical !== null && expectedCanonical === observedCanonical;
+}
+
 function endInput() {
   inputClosed = true;
   if (inputResolve) {
@@ -827,7 +843,7 @@ async function handleQuery(params) {
       state.turnActive = false;
       throw new SidecarFailure("init_missing");
     }
-    if (typeof system.cwd !== "string" || system.cwd !== state.cwd) {
+    if (typeof system.cwd !== "string" || !cwdMatches(state.cwd, system.cwd)) {
       state.turnActive = false;
       throw new SidecarFailure("cwd_mismatch");
     }

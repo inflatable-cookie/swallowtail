@@ -173,6 +173,14 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   the joined `exited`/`survivor` outcome, with fake-SDK close-call proofs for
   both paths. Existing host evidence remains the authority for truthful
   `Clean`, `Degraded`, or `Failed` reporting; no live close claim is made.
+- The provider-free cwd repair now compares canonicalized existing paths on
+  both sides of first-turn init. The fake SDK covers a macOS-style
+  `/var`/`/private/var` alias (with a portable equivalent fallback), and the
+  direct sidecar proof also keeps a genuinely different path typed as
+  `cwd_mismatch`. The new local proof is `20` sidecar-asset tests and `64`
+  SDK-driver tests, all passing. The live Result at `c1ac17d5` remains
+  unchanged: first `system/init`, then `cwd_mismatch`, native exit code `1`,
+  SDK close ran, joined `exited`, and overall `Failed`.
 - Provider-free validation passed: `cargo fmt -p
   swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
   swallowtail-adapter-claude-agent`; `effigy package:verify-affected

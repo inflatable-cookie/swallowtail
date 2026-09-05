@@ -9,7 +9,7 @@
 
 mod sidecar_asset_support;
 
-use serde_json::json;
+use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 
 #[test]
@@ -88,10 +88,11 @@ fn open_rejections_expose_only_the_fixed_sidecar_code() {
 
 #[test]
 fn first_party_account_fields_are_labelled_observations_not_gates() {
-    for (scenario, subscription, api_key) in [
-        ("read-only", true, false),
-        ("account-not-subscription", false, false),
-        ("account-api-key-source", true, true),
+    for (scenario, subscription, token, api_key) in [
+        ("read-only", true, false, false),
+        ("account-not-subscription", false, false, false),
+        ("account-token-source", true, true, false),
+        ("account-api-key-source", true, false, true),
     ] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);
         let open = sidecar.command(
@@ -105,6 +106,7 @@ fn first_party_account_fields_are_labelled_observations_not_gates() {
             open["data"]["account"]["subscriptionTypePresent"],
             subscription
         );
+        assert_eq!(open["data"]["account"]["tokenSourcePresent"], token);
         assert_eq!(open["data"]["account"]["apiKeySourcePresent"], api_key);
     }
 }
@@ -563,7 +565,12 @@ fn close_reports_the_native_exit_it_actually_observed() {
     assert_eq!(close["success"], true, "close response: {close}");
     assert_eq!(close["data"]["nativeJoin"], "exited");
     assert_eq!(close["data"]["nativeExitObserved"], true);
+    assert_eq!(close["data"]["nativeExitEvent"], "exit");
+    assert_eq!(close["data"]["nativeExitCode"], 0);
+    assert_eq!(close["data"]["nativeExitSignal"], Value::Null);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
     assert_eq!(close["data"]["joinBoundMs"], 2000);
+    assert_eq!(sidecar.observed_close_calls(), 1);
 }
 
 #[test]
@@ -581,4 +588,9 @@ fn a_native_child_alive_at_the_bound_is_reported_as_a_survivor() {
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 300}));
     assert_eq!(close["data"]["nativeJoin"], "survivor");
     assert_eq!(close["data"]["nativeExitObserved"], false);
+    assert_eq!(close["data"]["nativeExitEvent"], Value::Null);
+    assert_eq!(close["data"]["nativeExitCode"], Value::Null);
+    assert_eq!(close["data"]["nativeExitSignal"], Value::Null);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(sidecar.observed_close_calls(), 1);
 }

@@ -32,6 +32,7 @@ const observed = {
   spawnHookArgumentCount: null,
   admissions: {},
   permissionModes: [],
+  closeCalls: 0,
   writes: [],
   bash: [],
 };
@@ -85,6 +86,9 @@ function accountInfo() {
   }
   if (SCENARIO === "account-api-key-source") {
     return { apiProvider: "firstParty", subscriptionType: "max", apiKeySource: "oauth" };
+  }
+  if (SCENARIO === "account-token-source") {
+    return { apiProvider: "firstParty", subscriptionType: "max", tokenSource: "oauth" };
   }
   return { apiProvider: "firstParty", subscriptionType: "max" };
 }
@@ -216,6 +220,8 @@ export function query({ prompt, options }) {
       record();
     },
     close() {
+      observed.closeCalls += 1;
+      record();
       // Deliberately inert. The real SDK's cleanup races a timer, swallows the
       // outcome, and its escalation is unreferenced, so a fixture that killed
       // the child here would prove a stop the SDK does not actually provide.
@@ -313,6 +319,8 @@ function bashSession(prompt, options, child) {
     record();
   };
   iterator.close = () => {
+    observed.closeCalls += 1;
+    record();
     void child;
   };
   return iterator;
@@ -393,6 +401,8 @@ function editingSession(prompt, options, child) {
     record();
   };
   iterator.close = () => {
+    observed.closeCalls += 1;
+    record();
     // Deliberately inert, exactly like the read-only path.
     void child;
   };

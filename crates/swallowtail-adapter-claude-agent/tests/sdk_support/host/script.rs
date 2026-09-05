@@ -70,6 +70,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "account": {
             "apiProvider": "firstParty",
             "subscriptionTypePresent": true,
+            "tokenSourcePresent": false,
             "apiKeySourcePresent": false
         },
         // The fixture sidecar echoes exactly what the driver admitted, so a

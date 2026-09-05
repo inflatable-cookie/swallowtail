@@ -177,6 +177,7 @@ const state = {
   callbacks: new Map(),
   nextCallbackId: 0,
   closed: false,
+  sdkTransportCloseRan: false,
 };
 
 let writes = Promise.resolve();
@@ -383,12 +384,31 @@ class NativeChild {
   constructor(child) {
     this.child = child;
     this.exited = false;
+    this.exitEvent = null;
+    this.exitCode = null;
+    this.exitSignal = null;
     this.exitObserved = new Promise((resolve) => {
-      child.once("exit", () => {
+      child.once("error", () => {
+        if (this.exitEvent === null) {
+          this.exitEvent = "error";
+        }
+      });
+      child.once("exit", (code, signal) => {
         this.exited = true;
+        this.exitEvent = "exit";
+        this.exitCode = code;
+        this.exitSignal = signal;
         resolve();
       });
     });
+  }
+
+  evidence() {
+    return {
+      event: this.exitEvent,
+      code: this.exitCode,
+      signal: this.exitSignal,
+    };
   }
 
   /// Joins the retained handle to `boundMs`. Returns true only on an
@@ -458,6 +478,8 @@ function accountProjection(account) {
     apiProvider,
     subscriptionTypePresent:
       typeof account?.subscriptionType === "string" && account.subscriptionType.length > 0,
+    tokenSourcePresent:
+      typeof account?.tokenSource === "string" && account.tokenSource.length > 0,
     apiKeySourcePresent:
       typeof account?.apiKeySource === "string" && account.apiKeySource.length > 0,
   };
@@ -720,6 +742,7 @@ async function handleOpen(params) {
   state.effectiveModel = null;
   state.supportedModels = supportedModels;
   state.supportedModelsAvailable = supportedModels.length > 0;
+  state.sdkTransportCloseRan = false;
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -922,6 +945,7 @@ async function handleClose(id, command, params) {
     endInput();
     try {
       state.query.close();
+      state.sdkTransportCloseRan = true;
     } catch {
       await emitDiagnostic("warning", "sdk_close_failed");
     }
@@ -939,6 +963,11 @@ async function handleClose(id, command, params) {
   state.callbacks.clear();
   const joined = await joinPromise;
   bound.cancel();
+  const nativeEvidence = state.native?.evidence() ?? {
+    event: null,
+    code: null,
+    signal: null,
+  };
   // Report what was observed, not what is hoped. The retained handle still
   // showing an unexited child is a positive survivor observation; the host
   // treats that as cleanup failure rather than an absence of news.
@@ -946,6 +975,10 @@ async function handleClose(id, command, params) {
     nativeJoin: joined ? "exited" : "survivor",
     joinBoundMs: boundMs,
     nativeExitObserved: joined,
+    nativeExitEvent: nativeEvidence.event,
+    nativeExitCode: nativeEvidence.code,
+    nativeExitSignal: nativeEvidence.signal,
+    sdkTransportCloseRan: state.sdkTransportCloseRan,
   });
   await writes;
   process.exit(joined ? 0 : 1);

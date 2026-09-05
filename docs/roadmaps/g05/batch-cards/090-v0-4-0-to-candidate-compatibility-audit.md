@@ -1,6 +1,6 @@
 # 090 v0.4.0 To Candidate Compatibility Audit
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -71,8 +71,8 @@ ledger, or a break classified compatible.
 
 ## Auto-Continuation
 
-No. Stop for exact-head review; card 091 needs separate operator prepare
-authorization.
+No. Stop for exact-head review; card 091 now has the separately granted
+one-shot prepare authorization.
 
 ## Stop Conditions
 
@@ -81,7 +81,9 @@ feature or currentness PR; release status inferring anything but `0.4.1`.
 
 ## Result
 
-Complete at audited head `2187bbecb9e24425f574f4c6c434fd8f16fe0300`.
+Complete at audited head `2187bbecb9e24425f574f4c6c434fd8f16fe0300`; PR 225
+was accepted at exact head `90c9c65a3c08bb36ae79762360fa83f43853b833` and
+merged as `3dcf4f12ad4dfe50e83b5dc9ff75ab0e771129b6`.
 The v0.4.0-to-head range is patch-compatible: 40 packages, 49 production
 routes, 120 commits, 361 changed paths, 88 unchanged internal dependency
 edges, and no route additions or removals. The semantic API audit found 244

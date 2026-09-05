@@ -2,11 +2,10 @@
 
 ## Ready
 
-- [090-v0-4-0-to-candidate-compatibility-audit.md](./090-v0-4-0-to-candidate-compatibility-audit.md) — ready; prove every change since `v0.4.0` is patch-compatible and freeze the `0.4.1` census; Research 286
+- [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted after Card 090 acceptance
 
 ## Planned
 
-- [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; separate prepare authorization
 - [092-v0-4-1-consumer-proof-and-operator-tag-gate.md](./092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; operator smoke authority packet
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — planned; g05.029 priority 2
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
@@ -22,6 +21,8 @@
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
+
+- [090-v0-4-0-to-candidate-compatibility-audit.md](./090-v0-4-0-to-candidate-compatibility-audit.md) — complete; Research 286 froze the patch-compatible `0.4.1` census; PR 225 merged as `3dcf4f12`
 
 - [080-claude-sdk-read-write-session-and-permission-policy.md](./080-claude-sdk-read-write-session-and-permission-policy.md) — complete; permission policy and ambient read-write editing merged through PRs 221 and 224
 - [034-contract-061-kimi-package-completion.md](./034-contract-061-kimi-package-completion.md) — complete; Candidate F; 75 emitted / 14 withheld across 89 Kimi rows; PR 222 merged as `404fa068`

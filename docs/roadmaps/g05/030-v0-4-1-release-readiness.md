@@ -1,6 +1,6 @@
 # g05.030 v0.4.1 Release Readiness
 
-Status: ready; card 090 compatibility audit is ready; cards 091 and 092 are serial behind it
+Status: ready; card 090 accepted and merged; card 091 is ready under its one-shot prepare authorization; card 092 is serial behind it
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -74,8 +74,8 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 
 ## Batch Cards
 
-- [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — ready
-- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — planned; serial after card 090; prepare authorization granted 2026-09-05
+- [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
+- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted 2026-09-05
 - [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; Bovine Desktop editing session accepted as the smoke; exact checkout, command, and retry budget still required
 
 ## Dispatch Manifest

@@ -15,15 +15,13 @@ shape.
 
 ## Next Task
 
-Implement [g05.030 card 090](g05/batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md):
-audit exact `v0.4.0` to the current head, prove every change is
-patch-compatible, and freeze the `0.4.1` census in Research 286, from the
-manifest in that roadmap. Cards 091 and 092 are serial behind it; card 091
-needs separate operator prepare authorization and card 092 needs the
-operator's smoke authority packet. A feature freeze holds until card 092
-stops: g05.029 cards 081-088 and the Contract 061 remainder (candidates B, K,
-L; 197 rows) stay queued. Contract 061 coverage is 570 proved / 197
-remaining. `v0.4.0` is tagged.
+Implement [g05.030 card 091](g05/batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md):
+run the one-shot operator-authorized `0.4.1` prepare transaction from the
+accepted Research 286 census, then require exact-SHA CI. Card 092 follows
+serially and still needs its completed Bovine Desktop smoke packet. The
+feature freeze holds until card 092 stops: g05.029 cards 081-088 and the
+Contract 061 remainder (candidates B, K, L; 197 rows) stay queued. Contract
+061 coverage is 570 proved / 197 remaining. `v0.4.0` is tagged.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # 091 v0.4.1 Candidate Preparation And Exact-SHA CI
 
-Status: planned; serial after an accepted card 090; operator prepare authorization granted 2026-09-05 for exactly one Effigy prepare transaction once card 090 is accepted
+Status: ready; Card 090 accepted and merged; operator prepare authorization granted 2026-09-05 for exactly one Effigy prepare transaction
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

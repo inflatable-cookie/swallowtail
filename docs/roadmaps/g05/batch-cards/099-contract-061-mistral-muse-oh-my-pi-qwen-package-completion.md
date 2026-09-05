@@ -72,6 +72,26 @@ composer rule, or contract amendment; provider contact.
 - `effigy --json scan god-files`
 - `git diff --check`
 
+## Result
+
+Implemented candidate K across the four owned adapters. The adapter-local
+ledgers reconcile exactly to 8/10/18/16 rows for Mistral Vibe, Muse Code, Oh My
+Pi, and Qwen: 52 emitted and 0 withheld. Added prepared-facade contributions,
+plan-backed controls, mixed-applicability rejection, and provider-free negative
+coverage. The only per-turn row is Oh My Pi interactive
+`control.attachments`, sourced from retained bounded `Capability::Attachments`
+evidence and carrying `ConsumerMediatedPerTurn`; it makes no
+provider-effective claim.
+
+Validation passed: the exact four-package fmt check; focused validation and
+affected-package verification for the exact four packages; package API;
+`qa:routes`; `qa:docs`; `qa:northstar`; the JSON god-file scan (`ok: true`);
+and `git diff --check`. The API baselines are additive only. No shared runtime,
+testkit, core, contract, census, audit, other-adapter, roadmap-closeout, or
+version-claim surface changed.
+
+PR: [#235](https://github.com/inflatable-cookie/swallowtail/pull/235)
+
 ## Review Oracle
 
 Invariant: a per-turn row is truth only because the consumer mediated it on

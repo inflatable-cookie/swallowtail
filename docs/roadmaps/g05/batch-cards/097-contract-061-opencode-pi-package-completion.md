@@ -11,7 +11,7 @@ Depends on: completed card 096 and its audit note; Contract 061; completed cards
 
 Complete candidate L's exact 69-row Contract 061 package remainder
 across `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, as the ledger fixed by the
-[per-turn authority audit](../../../triage/20260905-143430-contract-061-per-turn-authority-audit.md): `opencode.http` 33 emitted / 2 withheld, `pi.rpc` 15 / 0, `pi.sdk-sidecar` 19 / 0; 67 emitted and 2 withheld across 69 rows. The audit ruled that the
+[per-turn authority audit](../../../triage/20260905-143430-contract-061-per-turn-authority-audit.md): `opencode.http` 33 emitted / 2 withheld, `pi.rpc` 15 / 0, `pi.sdk-sidecar` 16 / 3; 64 emitted and 5 withheld across 69 rows (corrected 2026-09-05 after review: the audit's 19/0 for the sidecar was a stated target, and the exact session plan carries no catalogue role, no usage-reporting requirement, and no activity-profile requirement, so `feature.model-catalogue`, `feature.usage-evidence`, and `feature.activity-observation` are withheld at construction with anchored reasons; widening the production plan to reach the target is forbidden by this card's oracle). The audit ruled that the
 existing `ConsumerMediatedPerTurn` posture and projection vocabulary suffice;
 no shared type, bound, or contract change is in scope.
 
@@ -41,9 +41,11 @@ no shared type, bound, or contract change is in scope.
    (`operations/integration.rs`) must not publish a per-turn row.
 5. Add one deterministic adapter-local ledger per route asserting every
    exact `(route_id, operation_shape, semantic_id)` once with an emitted or
-   withheld reason and no exception list; prove source, applicability,
-   lifecycle, and authority distinctions, mixed-assembly rejection, and
-   negative coverage provider-free.
+   withheld reason and no exception list, and bind it to real
+   contributions in both directions on the codex and llama-cpp precedent:
+   drive each prepared fixture and assert that every ledger-claimed row is
+   published by the named facade and every withheld row is absent. A
+   ledger that only describes itself does not satisfy this item.
 6. Keep the runtime, testkit, and core public baseline and Contracts 037,
    047, 057, and 061 unchanged. Regenerate the owned adapter API baseline
    files under `release-baselines/public-api-0.4.1/` additively. Stop after

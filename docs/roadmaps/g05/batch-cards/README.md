@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; set_model with confirmed values, supported_models at open, effort at open; no invented setter
 - [097-contract-061-opencode-pi-package-completion.md](./097-contract-061-opencode-pi-package-completion.md) — ready; candidate L; 69 rows; 67 emitted, 2 withheld
 - [098-contract-061-alibaba-anthropic-xai-package-completion.md](./098-contract-061-alibaba-anthropic-xai-package-completion.md) — ready; candidate B; 76 rows; 74 emitted, 2 withheld
 - [099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md](./099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md) — ready; candidate K; 52 rows, all emitted; four packages
@@ -11,7 +12,6 @@
 
 ## Planned
 
-- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — planned; g05.029 priority 6

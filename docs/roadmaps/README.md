@@ -20,9 +20,10 @@ restructure the CI gate for a five-minute pull-request round trip without
 weakening the release floor, from the manifest in that roadmap. Concurrent:
 finish the g05.030 card 094 fixture sweep through PR 227 (re-run its wedged
 stable job; bound every untimed wait). `v0.4.1` is tagged at `c3cce750`; the
-feature freeze is lifted. Also concurrent:
-[g05.029 card 081](g05/batch-cards/081-claude-sdk-bash-under-mediation.md),
-Bash under mediation on `claude-agent.sdk`. Cards 095 and 096 are merged; card 096 ruled the existing vocabulary
+feature freeze is lifted. Card 081 (Bash under mediation) is merged at `97f37e4d`; next in the
+consumer's order is
+[g05.029 card 082](g05/batch-cards/082-claude-sdk-mid-session-model-and-effort.md),
+model change mid-session and effort at open with confirmed values. Cards 095 and 096 are merged; card 096 ruled the existing vocabulary
 sufficient, so [g05.009 cards 097, 098, and 099](g05/009-contract-061-consumer-projection-realization.md)
 complete the last 197 Contract 061 rows (candidates L, B, K) as one
 concurrent group.

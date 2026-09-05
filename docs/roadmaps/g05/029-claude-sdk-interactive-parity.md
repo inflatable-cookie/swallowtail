@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; card 080 delivered in `v0.4.1`; card 081 Bash under mediation is ready; cards 082-088 queued in priority order
+Status: ready; cards 080 and 081 delivered; card 082 model and effort is ready; cards 083-088 queued in priority order
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -69,7 +69,7 @@ forces a minor.
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
 - [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — ready; bounded command view on the callback; nothing auto-allowed
-- [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — planned; after 080
+- [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — ready; confirmed values only; effort at open
 - [083 Claude SDK Resume And Session Listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — planned; after 080
 - [084 Claude SDK Client MCP Servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — planned; after 080
 - [085 Grok ACP Answerable Permissions](batch-cards/085-grok-acp-answerable-permissions.md) — planned; independent crate
@@ -158,4 +158,26 @@ remainder.
 | Acceptance evidence | provider-free fake-SDK proofs; rejection proofs; truncation proof; focused and package-affected validation; additive API diff |
 | Review oracle | the card's invariant |
 | Stop conditions | the card's stop list |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 082 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 082 is approved concurrent with g05.009 cards 097-099 and the card 094
+remainder.
+
+| Field | Card 082 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 081 merged at `97f37e4d`; the fake-SDK fixture on `main` |
+| Completion conditions | `supported_models` in open evidence; `set_model` with confirmed-or-typed-unconfirmed outcome and pre-call rejection of unsupported models; `effort` at open with the five admitted levels; no invented effort setter; fixture proofs; guide, matrices, changelog, additive baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.1/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; SDK version pins; resume, listing, and MCP surfaces |
+| Approved concurrent siblings | g05.009 cards 097, 098, 099; card 094 remainder |
+| Serial edges | card 083 follows card 082 |
+| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
+| Acceptance evidence | provider-free fake-SDK proofs for confirmed, unconfirmed, and rejected paths; additive API diff |
+| Review oracle | the card's invariant |
+| Stop conditions | the SDK confirms nothing for `setModel` in any observable way (record; return to Chatterbox rather than assume) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

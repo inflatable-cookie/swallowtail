@@ -67,7 +67,7 @@ Complete. Planning-only; zero Rust.
 
 All 197 rows across candidates B (76), K (52), and L (69) are classified with
 code anchors in
-[the per-turn authority audit](../../../triage/20260905-143430-contract-061-per-turn-authority-audit.md).
+the per-turn authority audit (note `docs/triage/20260905-143430-contract-061-per-turn-authority-audit.md`, pruned after g05.009 closed; preserved in Git history).
 Every per-turn and attachment row is itemised individually: 8 per-turn rows
 and 13 attachment rows, 4 of which overlap, for 17 distinct itemised rows; the
 other 180 are classified by band. Lifecycle split is 136 selection-summary, 41

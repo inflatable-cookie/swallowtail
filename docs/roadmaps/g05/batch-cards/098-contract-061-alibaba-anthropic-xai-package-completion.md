@@ -11,7 +11,7 @@ Depends on: completed card 096 and its audit note; Contract 061; completed cards
 
 Complete candidate B's exact 76-row Contract 061 package remainder
 across `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-xai`, as the ledger fixed by the
-[per-turn authority audit](../../../triage/20260905-143430-contract-061-per-turn-authority-audit.md): 74 emitted and 2 withheld across 76 rows; the two withheld are `alibaba.conversations` `control.provider-state-policy` and `control.resume-session` (matrix-descriptor-only). The audit ruled that the
+per-turn authority audit (note `docs/triage/20260905-143430-contract-061-per-turn-authority-audit.md`, pruned after g05.009 closed; preserved in Git history): 74 emitted and 2 withheld across 76 rows; the two withheld are `alibaba.conversations` `control.provider-state-policy` and `control.resume-session` (matrix-descriptor-only). The audit ruled that the
 existing `ConsumerMediatedPerTurn` posture and projection vocabulary suffice;
 no shared type, bound, or contract change is in scope.
 

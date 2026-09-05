@@ -2,13 +2,13 @@
 
 ## Ready
 
+- [096-contract-061-per-turn-authority-audit.md](./096-contract-061-per-turn-authority-audit.md) — ready; planning-only; the per-turn authority proof across candidates B, K, L; last 197 Contract 061 rows
 - [081-claude-sdk-bash-under-mediation.md](./081-claude-sdk-bash-under-mediation.md) — ready; Bash admitted only through per-call host allow with a bounded command view; read-write lease required
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — ready; parallel jobs, nextest shards, clippy-only MSRV on PRs, Linux for non-target checks
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — ready; fix the Pi sidecar deadline race and sweep the workspace for scheduler-dependent deadline tests; release-lane repair under the freeze
 
 ## Planned
 
-- [096-contract-061-per-turn-authority-audit.md](./096-contract-061-per-turn-authority-audit.md) — planned; one audit across candidates B, K, L; ready after card 095
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — planned; g05.029 priority 3
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5

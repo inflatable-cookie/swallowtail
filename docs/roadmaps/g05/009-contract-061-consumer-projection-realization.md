@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: complete; 570 rows proved; cards 034, 074, 075, 076, and 079 are complete
+Status: ready; 570 rows proved; card 096 per-turn authority audit is ready for the last 197 rows (candidates B, K, L)
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -353,7 +353,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
-- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — planned; one planning-only audit across candidates B, K, and L; ready after card 095 merges
+- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — ready; one planning-only audit across candidates B, K, and L; the last 197 rows
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged
 - [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
@@ -552,3 +552,25 @@ already merged the provider-operation baseline.
 | Review oracle | no prepared evidence masquerades as completed operation, no pending half is invented, no adapter downcast is needed to read a half state, and `open_session` is byte-identical in behaviour |
 | Stop conditions | the card's Stop Conditions; any need for a shared type or contract change returns to Chatterbox |
 | Escalation owner | operator via Chatterbox for semantics; coordinator for mechanical blockers |
+
+### Card 096 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Card 096 is approved concurrent with g05.029 card 081 and the card 094
+remainder.
+
+| Field | Card 096 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 095 merged at `ba8275eb`; Batch 9.4 checkpoint note; Contracts 041 and 061; cards 022-034 and 068-079 on `main` |
+| Completion conditions | one new triage note classifying every B, K, and L per-turn and attachment row with code anchors; one ruling on vocabulary sufficiency or one drafted additive baseline; rubric verdict per candidate; recommended first promotion; card result filled; docs and Northstar gates green; zero Rust |
+| Owned mutable paths | this card's file; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-per-turn-authority-audit.md`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | every `crates/**` path; contracts; architecture; the Batch 9.4 note; the census; other triage notes |
+| Approved concurrent siblings | g05.029 card 081; card 094 remainder |
+| Serial edges | Chatterbox promotes the ruling and at most one implementation card per passing candidate |
+| Worker capability class | planning-only auditor with strong Rust reading and Contract 041 familiarity; frontier-tier; no credentials |
+| Acceptance evidence | code-anchored row ledger; explicit ruling; rubric verdicts |
+| Review oracle | the card's invariant |
+| Stop conditions | a row needs a production change to be honest (record, do not design beyond the drafted baseline) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

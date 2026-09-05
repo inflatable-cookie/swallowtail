@@ -22,9 +22,9 @@ finish the g05.030 card 094 fixture sweep through PR 227 (re-run its wedged
 stable job; bound every untimed wait). `v0.4.1` is tagged at `c3cce750`; the
 feature freeze is lifted. Also concurrent:
 [g05.029 card 081](g05/batch-cards/081-claude-sdk-bash-under-mediation.md),
-Bash under mediation on `claude-agent.sdk`. Card 096, one planning audit
-across the Contract 061 remainder (candidates B, K, L; 197 rows), becomes
-ready when card 095 merges.
+Bash under mediation on `claude-agent.sdk`. Card 095 is merged; [g05.009 card 096](g05/batch-cards/096-contract-061-per-turn-authority-audit.md),
+one planning audit across the Contract 061 remainder (candidates B, K, L;
+197 rows), is ready and concurrent.
 
 ## Standing Lanes
 

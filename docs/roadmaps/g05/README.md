@@ -67,7 +67,7 @@ enforcement.
 - [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
 - [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — complete; 570 rows proved; Candidate F and the shared Kimi baselines landed through PR 222
+- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — ready; 570 rows proved; card 096 per-turn authority audit covers the last 197 rows (candidates B, K, L)
 - [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
 - [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
@@ -435,7 +435,7 @@ identity.
 - [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
-- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — complete; cards 034, 074-076, and 079 form the realized projection frontier
+- [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — ready; card 096 audit for the last 197 rows
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished

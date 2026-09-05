@@ -1,6 +1,6 @@
 # 096 Contract 061 Per-Turn Authority Audit
 
-Status: planned; gated behind card 095's merge; then ready as one planning-only audit across candidates B, K, and L
+Status: ready; card 095 merged at `ba8275eb`; one planning-only audit across candidates B, K, and L
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -30,7 +30,33 @@ authority. These 197 rows are the last of the 767.
    promote first (Chatterbox expects L).
 4. One triage note; zero Rust; stop for Chatterbox promotion.
 
-## Readiness
+## Out Of Scope
 
-Becomes ready when card 095 merges, so faster CI precedes it. Chatterbox
-publishes its manifest then.
+Rust, contract, architecture, census, or Batch 9.4 note edits; implementing
+any candidate; provider contact.
+
+## Acceptance Criteria
+
+- every per-turn and attachment row across B, K, and L is classified with
+  a code-anchored reason
+- one ruling: existing vocabulary suffices, or one additive shared baseline
+  is drafted verbatim (names, admission, assertions) for Chatterbox promotion
+- rubric verdict per candidate and one recommended first promotion
+- one triage note; zero Rust
+
+## Validation
+
+- `effigy qa:docs`
+- `effigy qa:northstar`
+- `git diff --check`
+
+## Review Oracle
+
+Invariant: no row is marked publishable without naming the retained
+evidence that proves the consumer mediated it. Smallest counterexample: a
+per-turn row whose authority is inferred from a prepared plan or a successful
+local call.
+
+## Auto-Continuation
+
+No. Stop after the note for Chatterbox reconciliation.

@@ -177,10 +177,22 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   both sides of first-turn init. The fake SDK covers a macOS-style
   `/var`/`/private/var` alias (with a portable equivalent fallback), and the
   direct sidecar proof also keeps a genuinely different path typed as
-  `cwd_mismatch`. The new local proof is `20` sidecar-asset tests and `64`
+  `cwd_mismatch`. The new local proof is `21` sidecar-asset tests and `64`
   SDK-driver tests, all passing. The live Result at `c1ac17d5` remains
   unchanged: first `system/init`, then `cwd_mismatch`, native exit code `1`,
   SDK close ran, joined `exited`, and overall `Failed`.
+- The provider-free stream-lifetime repair is now explicit against the frozen
+  0.3.259 declaration: `query()` accepts an `AsyncIterable<SDKUserMessage>`,
+  and the sidecar owns one queued session input whose per-turn iterator return
+  cannot end the session; only the explicit close path ends the source. The
+  fake SDK proves the normal source remains open and that a deliberately
+  early-completing iterable produces an error result with `is_error: true`.
+  The sidecar projects only sanitized result fields (`subtype`, `isError`,
+  `numTurns`, `durationMs`, and error-text presence/type), never error text.
+  No live operation ran for this repair. The next fresh live relay must record
+  those result fields and the sanitized native-stderr tail separately from the
+  route `CleanupOutcome` (`Clean`/`Degraded`/`Failed`) and turn
+  `TerminalStatus`; no new close or turn claim is made here.
 - Provider-free validation passed: `cargo fmt -p
   swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
   swallowtail-adapter-claude-agent`; `effigy package:verify-affected

@@ -63,6 +63,58 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
 }
 
 #[test]
+fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
+    let mut open_input = SidecarProcess::start_scenario("input-stream-lifetime");
+    let open = open_input.command(
+        "open-1",
+        "open",
+        json!({"cwd": open_input.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "open response: {open}");
+    open_input.command("query-1", "query", json!({"text": "first turn"}));
+    let terminal = open_input.wait_for_turn_end_record();
+    assert_eq!(
+        open_input.observed_prompt_stream_state().as_deref(),
+        Some("open")
+    );
+    assert_eq!(terminal["subtype"], "success");
+    assert_eq!(terminal["isError"], false);
+    assert_eq!(terminal["numTurns"], 1);
+    assert_eq!(terminal["durationMs"], 7);
+    assert_eq!(terminal["errorTextPresent"], false);
+    assert_eq!(terminal["errorTextType"], "absent");
+
+    let close = open_input.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true, "close response: {close}");
+
+    let mut early_eof = SidecarProcess::start_scenario("early-input-eof");
+    let open = early_eof.command(
+        "open-1",
+        "open",
+        json!({"cwd": early_eof.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "open response: {open}");
+    early_eof.command("query-1", "query", json!({"text": "first turn"}));
+    let terminal = early_eof.wait_for_turn_end_record();
+    assert_eq!(
+        early_eof.observed_prompt_stream_state().as_deref(),
+        Some("early-eof")
+    );
+    assert_eq!(terminal["subtype"], "error_during_execution");
+    assert_eq!(terminal["isError"], true);
+    assert_eq!(terminal["numTurns"], 1);
+    assert_eq!(terminal["durationMs"], 7);
+    assert_eq!(terminal["errorTextPresent"], true);
+    assert_eq!(terminal["errorTextType"], "string");
+    assert!(
+        !terminal.to_string().contains("fixture early input EOF"),
+        "SDK error text must never cross the sidecar wire: {terminal}"
+    );
+    let close = early_eof.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true, "close response: {close}");
+}
+
+#[test]
 fn open_rejections_expose_only_the_fixed_sidecar_code() {
     for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);

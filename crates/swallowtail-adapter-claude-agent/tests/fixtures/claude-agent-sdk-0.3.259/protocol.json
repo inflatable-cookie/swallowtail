@@ -1,6 +1,7 @@
 {
   "selected_mapped_subset": [
     "query() through the '.' entry point only",
+    "query({prompt, options}) accepts string | AsyncIterable<SDKUserMessage>; the streaming input remains open across turns until Query.close()",
     "Options: cwd, model, executable, pathToClaudeCodeExecutable, env, settingSources, skills, plugins, agents, mcpServers, strictMcpConfig, hooks, persistSession, tools, disallowedTools, permissionMode, canUseTool, spawnClaudeCodeProcess",
     "system/init fields: cwd, model, apiKeySource, capabilities",
     "Query.initializationResult(): Promise<SDKControlInitializeResponse>",

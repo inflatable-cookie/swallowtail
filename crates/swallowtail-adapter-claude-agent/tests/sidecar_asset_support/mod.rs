@@ -317,6 +317,12 @@ impl SidecarProcess {
             .expect("fake SDK recorded the spawn hook argument count") as usize
     }
 
+    pub fn observed_close_calls(&self) -> usize {
+        self.read_observations()["closeCalls"]
+            .as_u64()
+            .expect("fake SDK recorded close calls") as usize
+    }
+
     fn read_observations(&self) -> Value {
         let path = self.directory.join("observations.json");
         let text = std::fs::read_to_string(path).expect("fake SDK observations are present");

@@ -61,8 +61,9 @@ Swallowtail never holds the subscription credential.
    and passes no credential over the sidecar wire.
 4. Open observes typed readiness only: `apiProvider` must be `firstParty`.
    Subscription fields are observations, not gates: the sidecar projects
-   labelled `subscriptionTypePresent` and `apiKeySourcePresent` booleans, with
-   no raw values. A delegated-cloud provider label fails closed under its own
+   labelled `subscriptionTypePresent`, `tokenSourcePresent`, and
+   `apiKeySourcePresent` booleans, with no raw values. These subscription
+   evidence fields are observations, not gates. A delegated-cloud provider label fails closed under its own
    check rather than silently running on a different profile; account identity
    fields are refused, not redacted after the fact.
 

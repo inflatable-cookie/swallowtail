@@ -165,6 +165,14 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   init is `init_missing`; an SDK throw remains `initialization_failed`.
   Fixtures cover both paths and preserve the canonical/effective model and
   account-check proofs.
+- The readiness account projection now includes labelled presence-only
+  `subscriptionTypePresent`, `tokenSourcePresent`, and `apiKeySourcePresent`
+  fields beside the gated `apiProvider`; provider-free fixtures cover both
+  token-source absence and presence. The sidecar close response now carries
+  bounded native exit event/code/signal evidence, `sdkTransportCloseRan`, and
+  the joined `exited`/`survivor` outcome, with fake-SDK close-call proofs for
+  both paths. Existing host evidence remains the authority for truthful
+  `Clean`, `Degraded`, or `Failed` reporting; no live close claim is made.
 - Provider-free validation passed: `cargo fmt -p
   swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
   swallowtail-adapter-claude-agent`; `effigy package:verify-affected
@@ -209,5 +217,5 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   live init evidence.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
-  ci-process` — 195 passed, 0 skipped, 0 failed.
+  ci-process` — 200 passed, 0 skipped, 0 failed.
 - The additive API baseline and default read-only profile remain unchanged.

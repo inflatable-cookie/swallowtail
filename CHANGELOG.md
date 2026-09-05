@@ -24,6 +24,12 @@ annotated Git tags from the canonical repository.
   full input unchanged on allow. Provider-free fake-SDK proofs cover denial,
   execution, truncation, and no live credentials or provider calls. g05.029
   card 081.
+- complete Contract 061 candidate L across OpenCode HTTP and Pi RPC/SDK-sidecar
+  prepared facades: 64 emitted rows and 5 construction-time withheld rows
+  across 69. The Pi sidecar keeps catalogue, usage, and activity rows withheld
+  because its exact session plan has no corresponding role or requirement;
+  adapter-local ledgers are bound bidirectionally to provider-free prepared
+  facade fixtures, with retained-plan per-turn authority. g05.009 card 097.
 
 ## [0.4.1] - 2026-09-05
 

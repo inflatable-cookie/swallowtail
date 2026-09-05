@@ -29,3 +29,6 @@ use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/operations.rs");
 include!("prepared_facade/support.rs");
+
+#[path = "prepared_facade/consumer_route_projection.rs"]
+mod consumer_route_projection;

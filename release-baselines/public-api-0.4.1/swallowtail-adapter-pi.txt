@@ -57,6 +57,8 @@ impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_pi::
 pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_pi::sidecar::PiSdkSidecarPreparedSession
 impl swallowtail_adapter_pi::PiSdkSidecarPreparedSession
+pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_pi::PiSdkSidecarPreparedSession
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::load_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::low_level_driver(&self) -> swallowtail_adapter_pi::PiSdkSidecarDriver
@@ -112,6 +114,8 @@ impl swallowtail_adapter_pi::PiPreparationProbe
 pub const fn swallowtail_adapter_pi::PiPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_pi::PiPreparedCatalogue
 impl swallowtail_adapter_pi::PiPreparedCatalogue
+pub fn swallowtail_adapter_pi::PiPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_pi::PiPreparedCatalogue
 pub const fn swallowtail_adapter_pi::PiPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_pi::PiPreparedEvidence
 pub fn swallowtail_adapter_pi::PiPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_pi::PiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_pi::PiPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -143,6 +147,8 @@ impl swallowtail_adapter_pi::PiPreparedIntegration
 pub fn swallowtail_adapter_pi::PiPreparedIntegration::prepare_session(&self, swallowtail_adapter_pi::PiSessionProfileInput) -> core::result::Result<swallowtail_adapter_pi::PiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_pi::PiPreparedRun
 impl swallowtail_adapter_pi::PiPreparedRun
+pub fn swallowtail_adapter_pi::PiPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_pi::PiPreparedRun
 pub const fn swallowtail_adapter_pi::PiPreparedRun::evidence(&self) -> &swallowtail_adapter_pi::PiPreparedEvidence
 pub fn swallowtail_adapter_pi::PiPreparedRun::into_parts(self) -> (swallowtail_adapter_pi::PiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_pi::PiPreparedRun::low_level_driver(&self) -> swallowtail_adapter_pi::PiRpcDriver
@@ -150,6 +156,8 @@ pub const fn swallowtail_adapter_pi::PiPreparedRun::plan(&self) -> &swallowtail_
 pub const fn swallowtail_adapter_pi::PiPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
 pub fn swallowtail_adapter_pi::PiPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_pi::PiPreparedSession
+impl swallowtail_adapter_pi::PiPreparedSession
+pub fn swallowtail_adapter_pi::PiPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_pi::PiPreparedSession
 pub const fn swallowtail_adapter_pi::PiPreparedSession::evidence(&self) -> &swallowtail_adapter_pi::PiPreparedEvidence
 pub fn swallowtail_adapter_pi::PiPreparedSession::into_parts(self) -> (swallowtail_adapter_pi::PiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
@@ -185,6 +193,8 @@ pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::resume_session(&self, swallow
 impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_pi::PiSdkSidecarDriver
 pub fn swallowtail_adapter_pi::PiSdkSidecarDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_pi::PiSdkSidecarPreparedSession
+impl swallowtail_adapter_pi::PiSdkSidecarPreparedSession
+pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 impl swallowtail_adapter_pi::PiSdkSidecarPreparedSession
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::load_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>

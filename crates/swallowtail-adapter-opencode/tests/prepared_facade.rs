@@ -1,5 +1,7 @@
 #[path = "prepared_facade/cases.rs"]
 mod cases;
+#[path = "prepared_facade/consumer_route_projection.rs"]
+mod consumer_route_projection;
 #[path = "prepared_facade/deletion_conformance.rs"]
 mod deletion_conformance;
 #[path = "prepared_facade/fixture.rs"]

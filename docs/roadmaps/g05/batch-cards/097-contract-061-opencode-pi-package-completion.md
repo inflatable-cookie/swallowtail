@@ -87,3 +87,25 @@ per-turn row carrying provider-effective state.
 ## Auto-Continuation
 
 No. Stop after one reviewable PR for exact-head review.
+
+## Result
+
+Repaired candidate L at exact scope: `opencode.http` 33 emitted / 2 withheld,
+`pi.rpc` 15/0, and `pi.sdk-sidecar` 16/3; 64 emitted and 5 withheld across 69.
+The Pi sidecar `feature.persistent-session-posture` tuple uses the census
+`session-lifecycle` operation shape, with the adapter-pi proof asserting that
+identity against the real prepared contribution.
+The repair reverted the sidecar plan widening in
+`crates/swallowtail-adapter-pi/src/sidecar/prepared/build.rs`: its session
+facade has no catalogue role or route, no `Capability::UsageReporting`
+requirement, and no `ObservableActivityProfile`-derived requirement, so
+`feature.model-catalogue`, `feature.usage-evidence`, and
+`feature.activity-observation` remain withheld at construction with anchored
+reasons. Prepared OpenCode and Pi facades publish adapter-local Contract 061
+contributions; provider-free fixtures bind every emitted ledger row to the
+named facade and assert every withheld row is absent. Per-turn rows require
+retained attachment or consumer-mediated callback evidence and carry only
+`ConsumerMediatedPerTurn`; OpenCode permission exchange is namespaced over
+`opencode/permission`, and the reasoning-selection and provider-turn-reference
+matrix rows remain withheld. Added deterministic ledgers, mixed-applicability
+rejection, and negative profile coverage.

@@ -32,6 +32,7 @@ impl swallowtail_adapter_muse::MusePreparedIntegration
 pub fn swallowtail_adapter_muse::MusePreparedIntegration::prepare_run(&self, swallowtail_adapter_muse::MuseRunProfileInput) -> core::result::Result<swallowtail_adapter_muse::MusePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_muse::MusePreparedRun
 impl swallowtail_adapter_muse::MusePreparedRun
+pub fn swallowtail_adapter_muse::MusePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_muse::MusePreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_muse::MusePreparedRun::low_level_driver(&self) -> swallowtail_adapter_muse::MuseHeadlessDriver
 pub const fn swallowtail_adapter_muse::MusePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan

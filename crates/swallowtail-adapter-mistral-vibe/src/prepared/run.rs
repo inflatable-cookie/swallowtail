@@ -155,6 +155,17 @@ impl MistralVibeHeadlessPreparedRun {
         self.max_turns
     }
 
+    /// Emits the exact Contract 061 contribution for this prepared run.
+    pub fn consumer_route_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+    ) -> Result<
+        swallowtail_runtime::ConsumerRouteProjectionContribution,
+        swallowtail_runtime::ConsumerRouteProjectionFailure,
+    > {
+        crate::consumer_route_projection::contribution(self, source_id)
+    }
+
     /// Creates the low-level headless driver as an explicit escape hatch.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::MistralVibeHeadlessDriver {

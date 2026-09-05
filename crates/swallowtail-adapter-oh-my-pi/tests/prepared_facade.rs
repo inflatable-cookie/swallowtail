@@ -29,3 +29,16 @@ use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 include!("prepared_facade/catalogue.rs");
 include!("prepared_facade/operations.rs");
 include!("prepared_facade/support.rs");
+
+include!("consumer_route_projection/mod.rs");
+
+fn prepared() -> swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration {
+    let host_id = ExecutionHostId::new("oh-my-pi.projection.host").expect("host");
+    let discovery = FixtureHost::version_probe("17.2.9");
+    block_on(prepare_oh_my_pi_rpc(
+        preparation_input(host_id.clone()),
+        probe(),
+        discovery.services(host_id),
+    ))
+    .expect("Oh My Pi prepares")
+}

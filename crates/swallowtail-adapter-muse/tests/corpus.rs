@@ -10,3 +10,5 @@ mod identity;
 mod prepared;
 #[path = "corpus/rejection.rs"]
 mod rejection;
+
+include!("consumer_route_projection/mod.rs");

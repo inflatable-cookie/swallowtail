@@ -38,6 +38,7 @@ impl swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe
 pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue
 impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -69,6 +70,7 @@ impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::prepare_session(&self, swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput) -> core::result::Result<swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun
 impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
@@ -77,6 +79,7 @@ pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::request(&self) -> 
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession
 impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
 pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver

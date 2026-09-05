@@ -12,6 +12,7 @@ mod activity;
 mod budgets;
 mod catalogue;
 mod command;
+mod consumer_route_projection;
 mod control;
 mod discovery;
 mod driver;

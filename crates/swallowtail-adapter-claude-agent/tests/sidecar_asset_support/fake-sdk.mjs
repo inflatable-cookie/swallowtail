@@ -5,7 +5,7 @@
 // or official package is involved.
 
 import { spawn } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { closeSync, fsyncSync, openSync, writeSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
@@ -19,7 +19,13 @@ const SCENARIO = process.env.FAKE_SDK_SCENARIO ?? "read-only";
 const observed = { options: null, admissions: {}, permissionModes: [], writes: [] };
 
 function record() {
-  writeFileSync(OBSERVATIONS, JSON.stringify(observed));
+  const descriptor = openSync(OBSERVATIONS, "w");
+  try {
+    writeSync(descriptor, JSON.stringify(observed));
+    fsyncSync(descriptor);
+  } finally {
+    closeSync(descriptor);
+  }
 }
 
 // The live session mode, which the fixture's own admission modelling reads.
@@ -144,6 +150,8 @@ function editingSession(prompt, options, child) {
   }
 
   async function* messages() {
+    // record flushes the SDK observations before the wire event that proves
+    // the turn completed, so the Rust fixture can read them after turn_ended.
     yield {
       type: "system",
       subtype: "init",

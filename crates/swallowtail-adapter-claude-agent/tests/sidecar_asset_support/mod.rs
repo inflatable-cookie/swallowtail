@@ -1,7 +1,8 @@
 //! Drives the shipped sidecar asset under Node over its real private wire.
 //!
-//! Every wait here is bounded, and the child is killed on drop, so a wedged
-//! sidecar fails the test instead of hanging the suite.
+//! Every wait here is bounded by the sidecar-death guard, and the child is
+//! killed on drop, so a wedged sidecar fails the test instead of hanging the
+//! suite.
 
 use serde_json::{Value, json};
 use std::io::{BufRead, BufReader, Write};
@@ -11,7 +12,7 @@ use std::sync::mpsc::{Receiver, RecvTimeoutError, channel};
 use std::time::Duration;
 use swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE;
 
-const WIRE_BOUND: Duration = Duration::from_secs(20);
+const SIDECAR_DEATH_GUARD: Duration = Duration::from_secs(5 * 60);
 
 /// How one sidecar-asset process is started.
 struct Fixture {
@@ -157,17 +158,20 @@ impl SidecarProcess {
             .collect()
     }
 
-    /// Per-turn write outcomes the fake SDK recorded, waited for until the
-    /// named number of turns has been decided.
-    pub fn writes(&self, turns: usize) -> Vec<Value> {
-        self.await_observations(|value| {
-            value["writes"]
-                .as_array()
-                .is_some_and(|writes| writes.len() >= turns)
-        })["writes"]
+    /// Per-turn write outcomes the fake SDK recorded before the turn-ended
+    /// wire event.
+    pub fn writes(&mut self, turns: usize) -> Vec<Value> {
+        self.wait_for_turn_end();
+        let observations = self.read_observations();
+        let writes = observations["writes"]
             .as_array()
             .cloned()
-            .unwrap_or_default()
+            .unwrap_or_default();
+        assert!(
+            writes.len() >= turns,
+            "fake SDK did not record the expected write outcomes"
+        );
+        writes
     }
 
     /// Sends one command and returns its correlated response, collecting any
@@ -222,37 +226,33 @@ impl SidecarProcess {
         self.offered.clone()
     }
 
-    /// The decisions the fake SDK observed for `tools`, waited for until every
-    /// named tool has been decided.
-    pub fn admissions(&self, tools: &[&str]) -> Value {
-        self.await_observations(|value| {
+    /// The decisions the fake SDK observed for the named tools, after the
+    /// turn-ended wire event that follows all of them.
+    pub fn admissions(&mut self, tools: &[&str]) -> Value {
+        self.wait_for_turn_end();
+        let observations = self.read_observations();
+        assert!(
             tools
                 .iter()
-                .all(|tool| value["admissions"].get(tool).is_some())
-        })["admissions"]
-            .clone()
+                .all(|tool| observations["admissions"].get(tool).is_some()),
+            "fake SDK did not record the expected tool admissions"
+        );
+        observations["admissions"].clone()
     }
 
     pub fn observed_options(&self) -> Value {
-        self.await_observations(|value| value["options"].is_object())["options"].clone()
+        let observations = self.read_observations();
+        assert!(
+            observations["options"].is_object(),
+            "fake SDK did not record its options before the open response"
+        );
+        observations["options"].clone()
     }
 
-    fn await_observations(&self, ready: impl Fn(&Value) -> bool) -> Value {
+    fn read_observations(&self) -> Value {
         let path = self.directory.join("observations.json");
-        let deadline = std::time::Instant::now() + WIRE_BOUND;
-        loop {
-            if let Ok(text) = std::fs::read_to_string(&path)
-                && let Ok(value) = serde_json::from_str::<Value>(&text)
-                && ready(&value)
-            {
-                return value;
-            }
-            assert!(
-                std::time::Instant::now() < deadline,
-                "fake SDK never recorded the expected observations"
-            );
-            std::thread::sleep(Duration::from_millis(20));
-        }
+        let text = std::fs::read_to_string(path).expect("fake SDK observations are present");
+        serde_json::from_str(&text).expect("fake SDK observations are valid JSON")
     }
 
     fn hold_callback(&mut self, record: Value) {
@@ -269,11 +269,13 @@ impl SidecarProcess {
     }
 
     fn next_record(&mut self) -> Value {
-        match self.lines.recv_timeout(WIRE_BOUND) {
+        match self.lines.recv_timeout(SIDECAR_DEATH_GUARD) {
             Ok(line) => serde_json::from_str(&line).unwrap_or_else(|error| {
                 panic!("sidecar wrote a non-record line {line:?}: {error}")
             }),
-            Err(RecvTimeoutError::Timeout) => panic!("sidecar produced no record inside its bound"),
+            Err(RecvTimeoutError::Timeout) => {
+                panic!("sidecar produced no record before the sidecar-death guard")
+            }
             Err(RecvTimeoutError::Disconnected) => panic!("sidecar closed its wire unexpectedly"),
         }
     }

@@ -72,6 +72,37 @@ raising the bound as the fix.
 - `effigy qa:northstar`
 - `git diff --check`
 
+## Result
+
+Implemented the smallest test-only ordering repair. The fake SDK now writes
+observations through a synchronous write plus fsyncSync before the initial
+init and each turn's following wire event. The Rust fixture consumes the
+turn_ended event before reading turn observations; the observation poll loop
+is gone. next_record retains one named five-minute SIDECAR_DEATH_GUARD for a
+genuinely dead or wedged sidecar.
+
+Evidence:
+
+- Stable focused sidecar-asset binary:
+  cargo test -p swallowtail-adapter-claude-agent --test
+  claude_agent_sdk_sidecar_asset --all-features --locked — 12 passed, 0
+  failed.
+- Under-load proof: the same binary ran 20 times with --test-threads=1 while
+  18 yes >/dev/null CPU burners ran, one per sysctl -n hw.ncpu reported core.
+  Result: 20 passed, 0 failed.
+- effigy validate:focused swallowtail-adapter-claude-agent — 329 passed,
+  0 skipped; focused package validation passed.
+- effigy package:verify-affected swallowtail-adapter-claude-agent — affected
+  package proof passed.
+- rustup run 1.95.0 cargo test -p swallowtail-adapter-claude-agent
+  --all-features --locked — passed; the sidecar-asset binary reported 12
+  passed, 0 failed.
+- cargo fmt -p swallowtail-adapter-claude-agent -- --check — passed.
+
+The diff is confined to tests/sidecar_asset_support/fake-sdk.mjs,
+tests/sidecar_asset_support/mod.rs, and this card result. Production sidecar
+and adapter source remain unchanged.
+
 ## Review Oracle
 
 Invariant: a passing sidecar-asset test never waits on the clock. Smallest

@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 31 roadmaps: 24 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 009, 029, 031. Milestone 030 completed the
+g05 has 32 roadmaps: 24 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 009, 029, 031, 032. Milestone 030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
 are complete and `v0.4.1` is tagged at `c3cce750`. Milestone 029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;

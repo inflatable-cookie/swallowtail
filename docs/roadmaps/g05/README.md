@@ -38,12 +38,14 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | ready; cards 080 and 081 delivered; card 082 is ready; cards 083-088 queued in consumer priority order | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
+| Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with a real consumer proof. | ready; card 100 ready; cards 101-102 serial; card 082 paused behind 100 | Contract 036; the 2026-09-05 Bovine report | `g05.032`, cards 100-102 |
 | Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | `g05.030`, cards 090-092 |
 | Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
 | Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
 
 ## Planned Next Roadmaps
 
+- [g05.032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — ready; card 100 repairs the Claude SDK live-open failure Bovine hit on `v0.4.1`; cards 101-102 serial; compressed lane
 - [g05.031 CI Latency](./031-ci-latency.md) — ready; card 095 restructures the PR gate; operator workflow authority granted
 - [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080 and 081 delivered, card 082 ready, and cards 083-088 queued in consumer priority order
@@ -77,7 +79,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has thirty-one numbered roadmaps: 22 completed milestones including
+g05 has thirty-two numbered roadmaps: 22 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -412,6 +414,7 @@ identity.
 
 ## Milestones
 
+- [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — ready; card 100 ready; 101-102 serial
 - [031 CI Latency](./031-ci-latency.md) — ready; card 095
 - [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered; cards 081-088 queued

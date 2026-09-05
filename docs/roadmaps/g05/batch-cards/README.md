@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; set_model with confirmed values, supported_models at open, effort at open; no invented setter
 - [097-contract-061-opencode-pi-package-completion.md](./097-contract-061-opencode-pi-package-completion.md) — ready; candidate L; 69 rows; 67 emitted, 2 withheld
 - [098-contract-061-alibaba-anthropic-xai-package-completion.md](./098-contract-061-alibaba-anthropic-xai-package-completion.md) — ready; candidate B; 76 rows; 74 emitted, 2 withheld
@@ -11,6 +12,8 @@
 
 ## Planned
 
+- [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — planned; after card 100
+- [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; after card 101; Bovine editing session as the smoke
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — planned; g05.029 priority 6

@@ -15,13 +15,14 @@ shape.
 
 ## Next Task
 
-Implement [g05.029 card 082](g05/batch-cards/082-claude-sdk-mid-session-model-and-effort.md):
-model change mid-session and effort at open with confirmed values. Concurrent:
-complete [g05.009 cards 097, 098, and 099](g05/009-contract-061-consumer-projection-realization.md)
-for the last 197 Contract 061 rows (candidates L, B, K), and finish the
-g05.030 card 094 fixture sweep through PR 227. `v0.4.1` is tagged at
-`c3cce750`; the feature freeze is lifted. Card 081 (Bash under mediation) is
-merged at `97f37e4d`; cards 095 and 096 are merged.
+Implement [g05.032 card 100](g05/batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md):
+repair the `claude-agent.sdk` live-open failure Bovine Desktop hit on
+`v0.4.1` (sidecar codes surfaced, effective model from init evidence, Node
+newer-allowed at open, one live open), from the manifest in that roadmap.
+Card 082 is paused behind it because they share the sidecar. Concurrent:
+g05.009 cards 097-099 (the last Contract 061 rows) and the card 094
+remainder. Cards 101-102 then ship `v0.4.2` on a compressed lane with a
+Bovine editing session as the smoke. `v0.4.1` is tagged at `c3cce750`.
 
 ## Standing Lanes
 

@@ -334,4 +334,14 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `kimi-platform` `direct_driver` deadline-timing report:
   `cargo nextest run --workspace --all-features --locked --profile ci
   --partition count:2/3` — 967 passed, 1 leaky, 1,980 skipped, 0 failed.
+- Under the renewed single provider-turn authorization, exactly one Node
+  `22.23.2` invocation used the corrected disposable harness audience
+  `claude-agent-sdk` and stopped before readiness: the route reported
+  `swallowtail.claude-agent.sdk.open_rejected`. No first-party readiness,
+  first message, cwd/model/capability evidence, SDK result fields, stderr
+  tail, SessionInput/close timeline, native exit evidence, prompt, tool
+  request, turn, or write was captured. The harness retained only the route
+  diagnostic and did not retain the sidecar rejection subcode on this
+  open-failure path; no subcode is inferred. The one authorization is
+  exhausted, acceptance remains unticked, and no retry is authorized.
 - The additive API baseline and default read-only profile remain unchanged.

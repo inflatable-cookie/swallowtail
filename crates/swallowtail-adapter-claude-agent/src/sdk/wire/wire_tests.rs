@@ -1,7 +1,7 @@
 use super::{
     ClaudeAgentSdkCommand, ClaudeAgentSdkDiagnosticLevel, ClaudeAgentSdkEvent,
-    ClaudeAgentSdkRecord, ClaudeAgentSdkToolDecision, decode_record, encode_callback_response,
-    encode_command,
+    ClaudeAgentSdkFailureCode, ClaudeAgentSdkRecord, ClaudeAgentSdkToolDecision, decode_record,
+    encode_callback_response, encode_command,
 };
 use crate::sdk::protocol::ClaudeAgentSdkProtocolFailureKind;
 use serde_json::json;
@@ -42,6 +42,44 @@ fn responses_must_correlate_a_qualified_command_and_one_outcome() {
             "record {invalid} must fail closed"
         );
     }
+}
+
+#[test]
+fn command_rejection_keeps_only_its_fixed_code() {
+    let bytes = serde_json::to_vec(&json!({
+        "type": "response",
+        "id": "open-1",
+        "command": "open",
+        "success": false,
+        "failure": {
+            "code": "construction_failed",
+            "message": "provider path and account details stay discarded"
+        }
+    }))
+    .expect("fixture serializes");
+    let ClaudeAgentSdkRecord::Response(response) =
+        decode_record(&bytes).expect("rejection decodes")
+    else {
+        panic!("response expected");
+    };
+    assert_eq!(
+        response.failure_code,
+        Some(ClaudeAgentSdkFailureCode::ConstructionFailed)
+    );
+    assert!(response.data.is_none());
+
+    let unknown = serde_json::to_vec(&json!({
+        "type": "response",
+        "id": "open-1",
+        "command": "open",
+        "success": false,
+        "failure": {"code": "provider_secret", "message": "discard me"}
+    }))
+    .expect("fixture serializes");
+    assert_eq!(
+        decode_record(&unknown).err().map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::InvalidResponse)
+    );
 }
 
 #[test]

@@ -13,6 +13,72 @@ use serde_json::json;
 use sidecar_asset_support::SidecarProcess;
 
 #[test]
+fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], true,
+        "object-form spawn hook must construct: {open}"
+    );
+    assert_eq!(open["data"]["model"], "m-1");
+    // The fake SDK invokes the exact 0.3.259 SpawnOptions shape. A positional
+    // sidecar callback receives this object as `command` and fails before this
+    // response can be produced.
+    let options = sidecar.observed_options();
+    assert_eq!(options["cwd"], sidecar.cwd());
+    assert_eq!(options["env"], json!({}));
+}
+
+#[test]
+fn open_rejections_expose_only_the_fixed_sidecar_code() {
+    for (scenario, expected) in [
+        ("account-not-first-party", "account_not_first_party"),
+        ("account-not-subscription", "account_not_subscription"),
+        ("missing-model", "model_missing"),
+        ("unsupported-model", "supported_model_rejected"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let response = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(
+            response["success"], false,
+            "{scenario} must reject: {response}"
+        );
+        assert_eq!(response["failure"]["code"], expected);
+        let failure = response["failure"].to_string();
+        for forbidden in ["/fixture/", "@example", "token", "organization"] {
+            assert!(
+                !failure.contains(forbidden),
+                "{scenario} leaked {forbidden}: {failure}"
+            );
+        }
+    }
+}
+
+#[test]
+fn canonical_effective_model_is_accepted_and_published() {
+    let mut sidecar = SidecarProcess::start_scenario("canonical-model");
+    let response = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "claude-sonnet-5"}),
+    );
+    assert_eq!(
+        response["success"], true,
+        "canonical model must open: {response}"
+    );
+    assert_eq!(response["data"]["requestedModel"], "claude-sonnet-5");
+    assert_eq!(response["data"]["model"], "claude-sonnet-5-20250929");
+}
+
+#[test]
 fn every_allowed_invocation_crosses_the_callback_with_its_input_intact() {
     let mut sidecar = SidecarProcess::start();
     let open = sidecar.command(

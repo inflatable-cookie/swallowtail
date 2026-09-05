@@ -1,5 +1,5 @@
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::failure;
+use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
@@ -21,8 +21,27 @@ const MAXIMUM_CAPABILITY_BYTES: usize = 96;
 pub(crate) struct SessionReadiness {
     capabilities: Vec<String>,
     cwd: String,
+    requested_model: String,
+    effective_model: String,
+    node_version: String,
+    node_version_posture: NodeVersionPosture,
     profile: ClaudeAgentSdkSessionProfile,
     permission_mode: ClaudeAgentSdkPermissionMode,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum NodeVersionPosture {
+    Qualified,
+    UnverifiedNewer,
+}
+
+impl NodeVersionPosture {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Qualified => "Qualified",
+            Self::UnverifiedNewer => "UnverifiedNewer",
+        }
+    }
 }
 
 impl SessionReadiness {
@@ -38,6 +57,22 @@ impl SessionReadiness {
     /// The effective permission mode the sidecar confirmed at open.
     pub(crate) const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
         self.permission_mode
+    }
+
+    pub(crate) fn requested_model(&self) -> &str {
+        &self.requested_model
+    }
+
+    pub(crate) fn effective_model(&self) -> &str {
+        &self.effective_model
+    }
+
+    pub(crate) fn node_version(&self) -> &str {
+        &self.node_version
+    }
+
+    pub(crate) const fn node_version_posture(&self) -> &'static str {
+        self.node_version_posture.as_str()
     }
 }
 
@@ -72,14 +107,17 @@ pub(crate) async fn open(
         )
         .await?;
     if !response.success {
-        return Err(failure(
+        return Err(command_rejected(
             "swallowtail.claude-agent.sdk.open_rejected",
             "Claude Agent SDK sidecar rejected its restrictive open",
+            response
+                .failure_code
+                .expect("a rejected response carries its fixed sidecar code"),
         ));
     }
     let expected = Expectation {
         cwd: leased_cwd,
-        model: &model,
+        requested_model: &model,
         profile,
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
@@ -100,7 +138,7 @@ fn bound_version(plan: &PreflightPlan, axis: &str) -> String {
 
 struct Expectation<'a> {
     cwd: &'a str,
-    model: &'a str,
+    requested_model: &'a str,
     profile: ClaudeAgentSdkSessionProfile,
     sdk_version: &'a str,
     native_version: &'a str,
@@ -119,11 +157,9 @@ fn readiness(
             && text(data, "sdkPackage") == Some(CLAUDE_AGENT_SDK_PACKAGE)
             && text(data, "sdkVersion") == Some(expected.sdk_version)
             && text(data, "nativeVersion") == Some(expected.native_version)
-            && text(data, "nodeVersion") == Some(expected.node_version)
+            && text(data, "nodeVersion").is_some()
             && text(data, "cwd") == Some(expected.cwd)
-            // The effective model is confirmed from the runtime's own init
-            // evidence; a session that silently ran an ambient default fails.
-            && text(data, "model") == Some(expected.model)
+            && text(data, "requestedModel") == Some(expected.requested_model)
             && tools_match(data, expected.profile)
             && text(data, "permissionMode") == Some(expected.profile.permission_mode().as_str())
     });
@@ -134,10 +170,43 @@ fn readiness(
         ));
     }
     let data = data.expect("validated sidecar open identity carries data");
+    let effective_model = text(data, "model")
+        .filter(|model| !model.is_empty())
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.claude-agent.sdk.model_missing",
+                "Claude Agent SDK sidecar did not report an effective model",
+            )
+        })?;
+    if !supported_model(data, effective_model) {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.supported_model_rejected",
+            "Claude Agent SDK sidecar reported an effective model outside its supported model list",
+        ));
+    }
+    let node_version = text(data, "nodeVersion")
+        .filter(|version| !version.is_empty())
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.claude-agent.sdk.open_mismatch",
+                "Claude Agent SDK sidecar did not report its Node runtime version",
+            )
+        })?;
+    let node_version_posture = node_version_posture(node_version, expected.node_version)
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.claude-agent.sdk.open_mismatch",
+                "Claude Agent SDK sidecar Node runtime was older than the qualified point",
+            )
+        })?;
     account_ready(data)?;
     Ok(SessionReadiness {
         capabilities: capabilities(data)?,
         cwd: expected.cwd.to_owned(),
+        requested_model: expected.requested_model.to_owned(),
+        effective_model: effective_model.to_owned(),
+        node_version: node_version.to_owned(),
+        node_version_posture,
         profile: expected.profile,
         permission_mode: expected.profile.permission_mode(),
     })
@@ -148,11 +217,17 @@ fn readiness(
 /// on a different access profile.
 fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
     let account = data.get("account").ok_or_else(account_mismatch)?;
-    if text(account, "apiProvider") != Some("firstParty")
-        || text(account, "apiKeySource") != Some("oauth")
-        || account.get("subscriptionPresent").and_then(Value::as_bool) != Some(true)
-    {
-        return Err(account_mismatch());
+    if text(account, "apiProvider") != Some("firstParty") {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.account_not_first_party",
+            "Claude Agent SDK sidecar did not report a first-party account",
+        ));
+    }
+    if account.get("subscriptionPresent").and_then(Value::as_bool) != Some(true) {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.account_not_subscription",
+            "Claude Agent SDK sidecar did not report subscription evidence",
+        ));
     }
     // Readiness is provenance labels only; no email, organization, or token
     // material is admitted even if a future sidecar offered it.
@@ -160,6 +235,39 @@ fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
         return Err(account_mismatch());
     }
     Ok(())
+}
+
+fn supported_model(data: &Value, effective_model: &str) -> bool {
+    data.get("supportedModels")
+        .and_then(Value::as_array)
+        .is_none_or(|supported| {
+            supported
+                .iter()
+                .any(|model| model.as_str() == Some(effective_model))
+        })
+}
+
+fn node_version_posture(observed: &str, qualified: &str) -> Option<NodeVersionPosture> {
+    let observed = version_parts(observed)?;
+    let qualified = version_parts(qualified)?;
+    match observed.cmp(&qualified) {
+        std::cmp::Ordering::Less => None,
+        std::cmp::Ordering::Equal => Some(NodeVersionPosture::Qualified),
+        std::cmp::Ordering::Greater => Some(NodeVersionPosture::UnverifiedNewer),
+    }
+}
+
+fn version_parts(value: &str) -> Option<[u32; 3]> {
+    let mut parts = value.split('.');
+    let result = [
+        parts.next()?.parse().ok()?,
+        parts.next()?.parse().ok()?,
+        parts.next()?.parse().ok()?,
+    ];
+    if parts.next().is_some() {
+        return None;
+    }
+    Some(result)
 }
 
 fn capabilities(data: &Value) -> Result<Vec<String>, RuntimeFailure> {

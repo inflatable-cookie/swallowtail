@@ -40,6 +40,37 @@ function record() {
 // The live session mode, which the fixture's own admission modelling reads.
 const state = { permissionMode: "default" };
 
+function initMessage(options) {
+  const message = {
+    type: "system",
+    subtype: "init",
+    cwd: options.cwd,
+    model: options.model,
+    apiKeySource: "oauth",
+    capabilities: ["interrupt_receipt_v1"],
+  };
+  if (SCENARIO === "canonical-model") {
+    message.model = "claude-sonnet-5-20250929";
+    message.supportedModels = ["claude-sonnet-5-20250929"];
+  } else if (SCENARIO === "missing-model") {
+    delete message.model;
+  } else if (SCENARIO === "unsupported-model") {
+    message.model = "claude-sonnet-5-20250929";
+    message.supportedModels = ["claude-opus-5"];
+  }
+  return message;
+}
+
+function accountInfo() {
+  if (SCENARIO === "account-not-first-party") {
+    return { apiProvider: "bedrock", subscriptionType: "max" };
+  }
+  if (SCENARIO === "account-not-subscription") {
+    return { apiProvider: "firstParty" };
+  }
+  return { apiProvider: "firstParty", subscriptionType: "max" };
+}
+
 export function query({ prompt, options }) {
   state.permissionMode = options.permissionMode ?? "default";
   // Only serialisable option keys are recorded; callbacks are noted by name so
@@ -49,10 +80,14 @@ export function query({ prompt, options }) {
   );
   record();
 
-  const child = options.spawnClaudeCodeProcess("node", [
-    "-e",
-    `setTimeout(() => {}, ${NATIVE_LIFETIME_MS})`,
-  ]);
+  const spawnOptions = {
+    command: process.execPath,
+    args: ["-e", `setTimeout(() => {}, ${NATIVE_LIFETIME_MS})`],
+    cwd: options.cwd,
+    env: options.env,
+    signal: new AbortController().signal,
+  };
+  const child = options.spawnClaudeCodeProcess(spawnOptions);
 
   if (SCENARIO === "editing") {
     return editingSession(prompt, options, child);
@@ -62,16 +97,7 @@ export function query({ prompt, options }) {
   }
 
   let settled = false;
-  const messages = [
-    {
-      type: "system",
-      subtype: "init",
-      cwd: options.cwd,
-      model: options.model,
-      apiKeySource: "oauth",
-      capabilities: ["interrupt_receipt_v1"],
-    },
-  ];
+  const messages = [initMessage(options)];
 
   async function admit(name, input) {
     const decision = await options.canUseTool(name, input);
@@ -103,7 +129,7 @@ export function query({ prompt, options }) {
       return iterator;
     },
     async accountInfo() {
-      return { apiProvider: "firstParty", subscriptionType: "max" };
+      return accountInfo();
     },
     async interrupt() {
       return { received: true };
@@ -156,14 +182,7 @@ function bashSession(prompt, options, child) {
   }
 
   async function* messages() {
-    yield {
-      type: "system",
-      subtype: "init",
-      cwd: options.cwd,
-      model: options.model,
-      apiKeySource: "oauth",
-      capabilities: ["interrupt_receipt_v1"],
-    };
+    yield initMessage(options);
     for await (const message of prompt) {
       void message;
       await attempt({
@@ -179,7 +198,7 @@ function bashSession(prompt, options, child) {
   }
 
   const iterator = messages();
-  iterator.accountInfo = async () => ({ apiProvider: "firstParty", subscriptionType: "max" });
+  iterator.accountInfo = async () => accountInfo();
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;
@@ -230,14 +249,7 @@ function editingSession(prompt, options, child) {
   async function* messages() {
     // record flushes the SDK observations before the wire event that proves
     // the turn completed, so the Rust fixture can read them after turn_ended.
-    yield {
-      type: "system",
-      subtype: "init",
-      cwd: options.cwd,
-      model: options.model,
-      apiKeySource: "oauth",
-      capabilities: ["interrupt_receipt_v1"],
-    };
+    yield initMessage(options);
     let index = 0;
     for await (const message of prompt) {
       index += 1;
@@ -251,7 +263,7 @@ function editingSession(prompt, options, child) {
   }
 
   const iterator = messages();
-  iterator.accountInfo = async () => ({ apiProvider: "firstParty", subscriptionType: "max" });
+  iterator.accountInfo = async () => accountInfo();
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;

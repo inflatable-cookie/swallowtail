@@ -67,7 +67,11 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSessio
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::effective_model(&self) -> &str
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::node_version(&self) -> &str
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::node_version_posture(&self) -> &'static str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::permission_mode(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::requested_model(&self) -> &str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::set_permission_mode<'a>(&'a mut self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode, swallowtail_runtime::host_registry::HostServices, swallowtail_runtime::time::Deadline) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode, swallowtail_runtime::failure::RuntimeFailure>>
 impl core::ops::drop::Drop for swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle

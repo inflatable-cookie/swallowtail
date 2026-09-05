@@ -8,7 +8,8 @@
 use super::failure::{failure, protocol_failure};
 use super::turn::SdkActiveTurn;
 use super::wire::{
-    ClaudeAgentSdkCommand, ClaudeAgentSdkToolDecision, encode_callback_response, encode_command,
+    ClaudeAgentSdkCommand, ClaudeAgentSdkFailureCode, ClaudeAgentSdkToolDecision,
+    encode_callback_response, encode_command,
 };
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
@@ -30,6 +31,7 @@ const MAXIMUM_PENDING_COMMANDS: usize = 16;
 pub(crate) struct CommandResult {
     pub(crate) success: bool,
     pub(crate) data: Option<Value>,
+    pub(crate) failure_code: Option<ClaudeAgentSdkFailureCode>,
 }
 
 pub(crate) struct SdkConnection {

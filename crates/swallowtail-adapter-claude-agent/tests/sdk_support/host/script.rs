@@ -46,6 +46,15 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         // No response and no exit: only the host deadline can end this.
         return;
     }
+    if matches!(scenario, SdkScenario::OpenRejected) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "open", "success": false,
+                   "failure": {"code": "construction_failed",
+                               "message": "sidecar command failed: construction_failed"}}),
+        );
+        return;
+    }
     let mut data = json!({
         "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
         "behavior": "claude-agent.sdk-v1",
@@ -54,11 +63,12 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "nativeVersion": "2.1.259",
         "nodeVersion": "22.23.2",
         "cwd": FIXTURE_CWD,
+        "requestedModel": FIXTURE_MODEL,
         "model": FIXTURE_MODEL,
+        "supportedModels": [FIXTURE_MODEL],
         "capabilities": ["interrupt_receipt_v1"],
         "account": {
             "apiProvider": "firstParty",
-            "apiKeySource": "oauth",
             "subscriptionPresent": true
         },
         // The fixture sidecar echoes exactly what the driver admitted, so a
@@ -68,14 +78,32 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "permissionMode": params["permissionMode"].clone()
     });
     match scenario {
-        SdkScenario::AccountApiKeySource => data["account"]["apiKeySource"] = json!("apiKeyHelper"),
+        SdkScenario::AccountNotSubscription => {
+            data["account"]
+                .as_object_mut()
+                .expect("account object")
+                .remove("subscriptionPresent");
+        }
         SdkScenario::AccountNotFirstParty => data["account"]["apiProvider"] = json!("bedrock"),
         SdkScenario::AccountIdentityLeak => {
             data["account"]["email"] = json!("person@example.test");
         }
         SdkScenario::IdentityMismatch => data["sdkVersion"] = json!("0.3.258"),
         SdkScenario::CwdMismatch => data["cwd"] = json!("/fixture/elsewhere"),
-        SdkScenario::ModelMismatch => data["model"] = json!("claude-opus-5"),
+        SdkScenario::CanonicalModel => {
+            data["model"] = json!("claude-sonnet-5-20250929");
+            data["supportedModels"] = json!(["claude-sonnet-5-20250929"]);
+        }
+        SdkScenario::MissingModel => {
+            data.as_object_mut()
+                .expect("open data object")
+                .remove("model");
+        }
+        SdkScenario::UnsupportedModel => {
+            data["model"] = json!("claude-sonnet-5-20250929");
+            data["supportedModels"] = json!(["claude-opus-5"]);
+        }
+        SdkScenario::NewerNode => data["nodeVersion"] = json!("26.7.0"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
         SdkScenario::PermissionModeDrift => data["permissionMode"] = json!("plan"),
         SdkScenario::UnadvertisedInterruptReceipt => data["capabilities"] = json!([]),
@@ -90,6 +118,15 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
 fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
     if matches!(scenario, SdkScenario::QueryHold) {
         // No response and no exit: only the caller's turn deadline ends this.
+        return;
+    }
+    if matches!(scenario, SdkScenario::QueryRejected) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "turn_active",
+                               "message": "sidecar command failed: turn_active"}}),
+        );
         return;
     }
     push(
@@ -219,6 +256,15 @@ fn set_permission_mode(scenario: SdkScenario, state: &mut ProcessState, id: &str
 }
 
 fn interrupt(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+    if matches!(scenario, SdkScenario::InterruptRejected) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "interrupt", "success": false,
+                   "failure": {"code": "interrupt_failed",
+                               "message": "sidecar command failed: interrupt_failed"}}),
+        );
+        return;
+    }
     let receipt = !matches!(scenario, SdkScenario::NativeChildSurvives);
     push(
         state,
@@ -228,6 +274,16 @@ fn interrupt(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
 }
 
 fn close(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+    if matches!(scenario, SdkScenario::CloseRejected) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "close", "success": false,
+                   "failure": {"code": "invalid_command",
+                               "message": "sidecar command failed: invalid_command"}}),
+        );
+        state.stopped = true;
+        return;
+    }
     let (native_join, observed) = match scenario {
         // The retained handle still shows a live child: a positive survivor
         // observation, not an absence of news.

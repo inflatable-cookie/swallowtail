@@ -31,6 +31,15 @@ annotated Git tags from the canonical repository.
   adapter-local ledgers are bound bidirectionally to provider-free prepared
   facade fixtures, with retained-plan per-turn authority. g05.009 card 097.
 
+### Fixed
+- repair the `claude-agent.sdk` open path for SDK `0.3.259`: the spawn hook
+  now accepts the frozen object-form `SpawnOptions`, subscription readiness
+  uses `accountInfo().apiProvider` and `subscriptionType` as separate checks,
+  sidecar rejection codes reach safe route diagnostics, canonical effective
+  models are published separately from requested aliases, and floor-passing
+  newer Node runtimes are recorded as `UnverifiedNewer`. Provider-free fake-SDK
+  fixtures cover each path. g05.032 card 100.
+
 ## [0.4.1] - 2026-09-05
 
 ### Added

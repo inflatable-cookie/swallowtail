@@ -21,6 +21,7 @@
 use crate::sdk::bounded::HostBound;
 use crate::sdk::close::SidecarNativeJoin;
 use crate::sdk::connection::SdkConnection;
+use crate::sdk::failure::command_rejected;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::{Value, json};
 use std::sync::Arc;
@@ -68,6 +69,7 @@ impl Owned {
 /// guardian having merely finished.
 pub(crate) struct CleanupReport {
     pub(crate) native_join: Option<SidecarNativeJoin>,
+    pub(crate) cooperative_failure: Option<SafeDiagnostic>,
     pub(crate) pump_joined: bool,
     pub(crate) root_exit: Option<ProcessTreeCompletion>,
     pub(crate) resource: CleanupOutcome,
@@ -93,11 +95,11 @@ pub(crate) async fn run(
     cooperative: Cooperative,
 ) -> CleanupReport {
     let connection = owned.connection.take();
-    let native_join = match (&connection, cooperative) {
+    let (native_join, cooperative_failure) = match (&connection, cooperative) {
         (Some(connection), Cooperative::Session { turn_active }) => {
             cooperative_close(connection, bounded, request_id, turn_active).await
         }
-        _ => None,
+        _ => (None, None),
     };
     // The declared descendant termination attempt. It is a request through host
     // authority, made whether or not any cooperative stage answered.
@@ -128,6 +130,7 @@ pub(crate) async fn run(
     let credential = release_credential(owned.credential.take(), services).await;
     CleanupReport {
         native_join,
+        cooperative_failure,
         pump_joined,
         root_exit,
         resource,
@@ -140,28 +143,60 @@ async fn cooperative_close(
     bounded: &HostBound,
     request_id: &str,
     turn_active: bool,
-) -> Option<SidecarNativeJoin> {
+) -> (Option<SidecarNativeJoin>, Option<SafeDiagnostic>) {
+    let mut cooperative_failure = None;
     if turn_active {
         let id = format!("close-interrupt:{request_id}");
-        let _ = bounded
+        if let Some(Ok(response)) = bounded
             .run(connection.command(id, ClaudeAgentSdkCommand::Interrupt, json!({})))
-            .await;
+            .await
+            && !response.success
+        {
+            cooperative_failure = Some(
+                command_rejected(
+                    "swallowtail.claude-agent.sdk.interrupt_rejected",
+                    "Claude Agent SDK sidecar rejected the close interrupt",
+                    response
+                        .failure_code
+                        .expect("a rejected response carries its fixed sidecar code"),
+                )
+                .diagnostic()
+                .clone(),
+            );
+        }
     }
     // The sidecar's own bounded native join. Bounded here as well, so a silent
     // sidecar cannot consume the whole cleanup budget inside this stage.
     let id = format!("close:{request_id}");
-    let reported = bounded
+    let close_result = bounded
         .run(connection.command(
             id,
             ClaudeAgentSdkCommand::Close,
             json!({"joinBoundMs": CLOSE_JOIN_BOUND_MS}),
         ))
-        .await
-        .and_then(Result::ok)
-        .filter(|response| response.success)
-        .and_then(|response| native_join(response.data.as_ref()));
+        .await;
+    let reported = match close_result {
+        Some(Ok(response)) if response.success => native_join(response.data.as_ref()),
+        Some(Ok(response)) => {
+            if cooperative_failure.is_none() {
+                cooperative_failure = Some(
+                    command_rejected(
+                        "swallowtail.claude-agent.sdk.close_rejected",
+                        "Claude Agent SDK sidecar rejected close",
+                        response
+                            .failure_code
+                            .expect("a rejected response carries its fixed sidecar code"),
+                    )
+                    .diagnostic()
+                    .clone(),
+                );
+            }
+            None
+        }
+        Some(Err(_)) | None => None,
+    };
     let _ = bounded.run(connection.begin_close()).await;
-    reported
+    (reported, cooperative_failure)
 }
 
 /// Reads the sidecar's report of its own direct native child.

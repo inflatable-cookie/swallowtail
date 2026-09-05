@@ -1,6 +1,6 @@
 # 091 v0.4.1 Candidate Preparation And Exact-SHA CI
 
-Status: ready; first prepare consumed on a transient floor failure (floor reproduced green on the same tree); operator renewed authorization 2026-09-05 with standing renewal for further transient failures until the candidate lands
+Status: ready; Card 093 merged as 4bb00dab; re-prepare on this repaired base under renewed authorization
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

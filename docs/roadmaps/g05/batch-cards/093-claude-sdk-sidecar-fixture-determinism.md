@@ -1,6 +1,6 @@
 # 093 Claude SDK Sidecar Fixture Determinism
 
-Status: ready
+Status: complete; PR 226 merged as 4bb00dab
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -58,10 +58,10 @@ raising the bound as the fix.
 
 ## Acceptance Criteria
 
-- [ ] no test in the sidecar-asset binary depends on a timing bound to pass
-- [ ] the loop-under-load proof recorded zero failures
-- [ ] production sidecar and adapter source are byte-identical
-- [ ] focused validation green under both stable and pinned `1.95.0`
+- [x] no test in the sidecar-asset binary depends on a timing bound to pass
+- [x] the loop-under-load proof recorded zero failures
+- [x] production sidecar and adapter source are byte-identical
+- [x] focused validation green under both stable and pinned `1.95.0`
 
 ## Validation
 
@@ -115,4 +115,4 @@ still depends on.
 
 ## Auto-Continuation
 
-No. Stop for exact-head review; card 091 re-prepares on the merged base.
+No. Card 091 re-prepares on this merged base.

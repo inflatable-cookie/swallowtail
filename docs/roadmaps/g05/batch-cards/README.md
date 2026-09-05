@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [093-claude-sdk-sidecar-fixture-determinism.md](./093-claude-sdk-sidecar-fixture-determinism.md) — ready; make the Claude SDK sidecar-asset fixture deterministic under load; release-lane repair under the freeze
 - [091-v0-4-1-candidate-preparation-and-exact-sha-ci.md](./091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted after Card 090 acceptance
 
 ## Planned
@@ -22,6 +21,8 @@
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
 
 ## Completed
+
+- [093-claude-sdk-sidecar-fixture-determinism.md](./093-claude-sdk-sidecar-fixture-determinism.md) — complete; deterministic sidecar-asset fixture merged through PR 226 as `4bb00dab`; 20/20 full-binary and 200/200 targeted load runs passed
 
 - [090-v0-4-0-to-candidate-compatibility-audit.md](./090-v0-4-0-to-candidate-compatibility-audit.md) — complete; Research 286 froze the patch-compatible `0.4.1` census; PR 225 merged as `3dcf4f12`
 

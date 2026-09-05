@@ -15,14 +15,11 @@ shape.
 
 ## Next Task
 
-Implement [g05.030 card 093](g05/batch-cards/093-claude-sdk-sidecar-fixture-determinism.md):
-make the `claude-agent.sdk` sidecar-asset test fixture deterministic under
-any host load, from the manifest in that roadmap. Card 091's third prepare
-passed all 11 gates but its frozen-tree rerun failed the floor on two
-timing-bound fixture tests; the operator ruled the fixture is the defect.
-Card 091 re-prepares on card 093's merged base under the standing grant; card
-092 follows. The feature freeze holds. Contract 061 coverage is 570 proved /
-197 remaining. `v0.4.0` is tagged.
+Implement [g05.030 card 091](g05/batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md):
+re-prepare the v0.4.1 candidate on Card 093's repaired base under the standing
+grant. Card 093 merged as `4bb00dab` after deterministic sidecar-asset proof;
+card 092 follows. The feature freeze holds. Contract 061 coverage is 570
+proved / 197 remaining. `v0.4.0` is tagged.
 
 ## Standing Lanes
 

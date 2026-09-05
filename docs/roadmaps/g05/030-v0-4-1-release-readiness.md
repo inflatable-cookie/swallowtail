@@ -74,9 +74,9 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
 
 ## Batch Cards
 
-- [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — ready; release-lane repair under the freeze; card 091 re-prepares on its merged base
+- [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — complete; PR 226 merged as `4bb00dab`; deterministic sidecar-asset fixture proven under load
 - [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
-- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; one-shot prepare authorization granted 2026-09-05
+- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — ready; re-prepare on Card 093 merge `4bb00dab` under renewed authorization
 - [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — planned; serial after card 091; Bovine Desktop editing session accepted as the smoke; exact checkout, command, and retry budget still required
 
 ## Dispatch Manifest

@@ -55,7 +55,26 @@ fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
     assert!(spawn["command"].is_string());
     assert_eq!(spawn["args"][0], "-e");
     assert_eq!(spawn["cwd"], sidecar.cwd());
-    assert_eq!(spawn["env"], json!({}));
+    assert_eq!(
+        spawn["env"]["keys"],
+        json!([
+            "COLORTERM",
+            "COMMAND_MODE",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LC_CTYPE",
+            "MallocNanoZone",
+            "PATH",
+            "SHELL",
+            "TERM",
+            "TMPDIR",
+            "USER",
+            "XPC_FLAGS",
+            "XPC_SERVICE_NAME",
+            "__CF_USER_TEXT_ENCODING"
+        ])
+    );
     assert_eq!(
         spawn["signal"], true,
         "SpawnOptions.signal must be preserved"
@@ -83,9 +102,30 @@ fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
     assert_eq!(terminal["durationMs"], 7);
     assert_eq!(terminal["errorTextPresent"], false);
     assert_eq!(terminal["errorTextType"], "absent");
+    for field in ["duration_ms", "is_error", "num_turns", "subtype", "type"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], true,
+            "{field} present"
+        );
+    }
+    for field in ["duration_api_ms", "result", "errors", "uuid", "session_id"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], false,
+            "{field} absent"
+        );
+    }
 
     let close = open_input.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true, "close response: {close}");
+    assert_eq!(
+        close["data"]["closeTimeline"],
+        json!([
+            "close_requested",
+            "session_input_closed",
+            "sdk_transport_close_ran",
+            "native_join_exited"
+        ])
+    );
 
     let mut early_eof = SidecarProcess::start_scenario("early-input-eof");
     let open = early_eof.command(
@@ -106,6 +146,25 @@ fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
     assert_eq!(terminal["durationMs"], 7);
     assert_eq!(terminal["errorTextPresent"], true);
     assert_eq!(terminal["errorTextType"], "string");
+    for field in [
+        "duration_ms",
+        "error",
+        "is_error",
+        "num_turns",
+        "subtype",
+        "type",
+    ] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], true,
+            "{field} present"
+        );
+    }
+    for field in ["duration_api_ms", "result", "errors", "uuid", "session_id"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], false,
+            "{field} absent"
+        );
+    }
     assert!(
         !terminal.to_string().contains("fixture early input EOF"),
         "SDK error text must never cross the sidecar wire: {terminal}"
@@ -359,7 +418,45 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
     assert_eq!(options["persistSession"], json!(false));
-    assert_eq!(options["env"], json!({}));
+    assert_eq!(
+        options["env"]["keys"],
+        json!([
+            "COLORTERM",
+            "COMMAND_MODE",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LC_CTYPE",
+            "MallocNanoZone",
+            "PATH",
+            "SHELL",
+            "TERM",
+            "TMPDIR",
+            "USER",
+            "XPC_FLAGS",
+            "XPC_SERVICE_NAME",
+            "__CF_USER_TEXT_ENCODING"
+        ])
+    );
+    for forbidden in [
+        "ANTHROPIC_API_KEY",
+        "CLAUDE_CONFIG_DIR",
+        "CLAUDE_CODE_USE_BEDROCK",
+        "OPENAI_API_KEY",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "GOOGLE_API_KEY",
+        "RANDOM_UNRELATED",
+    ] {
+        assert!(
+            !options["env"]["keys"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|key| key == forbidden),
+            "forbidden environment key was forwarded: {forbidden}"
+        );
+    }
     for forbidden in ["apiKeyHelper", "awsAuthRefresh", "gcpAuthRefresh"] {
         assert!(
             options.get(forbidden).is_none(),

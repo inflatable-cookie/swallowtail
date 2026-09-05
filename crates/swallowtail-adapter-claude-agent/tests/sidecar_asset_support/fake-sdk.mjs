@@ -38,6 +38,10 @@ const observed = {
   bash: [],
 };
 
+function sanitizedEnvironment(environment) {
+  return { keys: Object.keys(environment ?? {}).sort() };
+}
+
 function record() {
   const descriptor = openSync(TEMP_OBSERVATIONS, "w");
   try {
@@ -182,7 +186,10 @@ export function query({ prompt, options }) {
   // Only serialisable option keys are recorded; callbacks are noted by name so
   // the test can assert what was and was not passed.
   observed.options = JSON.parse(
-    JSON.stringify(options, (key, value) => (typeof value === "function" ? `[fn ${key}]` : value)),
+    JSON.stringify(
+      { ...options, env: sanitizedEnvironment(options.env) },
+      (key, value) => (typeof value === "function" ? `[fn ${key}]` : value),
+    ),
   );
   record();
 
@@ -324,7 +331,7 @@ function invokeSpawnHook(hook, ...hookArguments) {
     command: spawnOptions?.command ?? null,
     args: spawnOptions?.args ?? null,
     cwd: spawnOptions?.cwd ?? null,
-    env: spawnOptions?.env ?? null,
+    env: sanitizedEnvironment(spawnOptions?.env),
     signal: spawnOptions?.signal instanceof AbortSignal,
   };
   record();

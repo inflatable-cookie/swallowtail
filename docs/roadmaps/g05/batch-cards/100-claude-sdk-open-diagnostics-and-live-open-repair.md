@@ -188,7 +188,10 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   fake SDK proves the normal source remains open and that a deliberately
   early-completing iterable produces an error result with `is_error: true`.
   The sidecar projects only sanitized result fields (`subtype`, `isError`,
-  `numTurns`, `durationMs`, and error-text presence/type), never error text.
+  `numTurns`, `durationMs`, error-text presence/type, and result-field-name
+  presence), never error text. Its close response also carries the bounded
+  `closeTimeline` labels for SessionInput closure, SDK transport close, and
+  native join.
   No live operation ran for this repair. The next fresh live relay must record
   those result fields and the sanitized native-stderr tail separately from the
   route `CleanupOutcome` (`Clean`/`Degraded`/`Failed`) and turn
@@ -258,13 +261,15 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `claude-sonnet-5`, and capability labels
   `interrupt_receipt_v1`, `interrupt_cancel_queued_v1`, and
   `msg_lifecycle_v1`. No tool was requested. The terminal event was
-  `turn_ended` with stop reason `success` and `isError: true`. Close returned
+  `turn_ended` with stop reason `success` and `isError: true`. Its
+  `TerminalStatus` was `ProviderFailed(SafeDiagnostic)` with code
+  `swallowtail.claude-agent.sdk.provider_failed`. Close returned
   native exit event `exit`, code `1`, signal absent, `sdkTransportCloseRan:
   true`, `nativeJoin: exited`, and `nativeExitObserved: true`; the sidecar
   root exited by `exit` code `0`, signal absent. The resulting posture is
-  `Failed` because the turn terminal carried `isError: true` and the native
-  child exited nonzero. Acceptance remains unticked; do not run another live
-  turn without a fresh authorization relay.
+  provider-failed turn plus a failed cleanup record; the cleanup diagnostic
+  code was not captured separately in this earlier record. Acceptance remains
+  unticked; do not run another live turn without a fresh authorization relay.
 - Under the third single-turn authorization, exactly one Node `22.23.2`
   read-only live turn ran with the default permission mode. The sanitized
   sequence was: open succeeded with `requested-with-supported-list`,
@@ -276,13 +281,40 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `msg_lifecycle_v1`. No tool was requested and no write occurred. Separately,
   the SDK result fields were subtype `success`, `is_error: true`, `num_turns:
   1`, `duration_ms: 28`, and error text absent with absent type. The sanitized
-  native stderr tail was empty. Turn `TerminalStatus` was `Failed`; close
-  observed native exit event `exit`, code `1`, signal absent,
-  `sdkTransportCloseRan: true`, and `nativeJoin: exited`. Route
-  `CleanupOutcome` was `Failed`, kept separate from the turn status. No typed
-  sidecar rejection code was emitted. Acceptance remains unticked; this was
-  the one authorized third live turn and no further live attempt is allowed
-  without a fresh authorization relay.
+  native stderr tail was empty. Turn `TerminalStatus` was
+  `ProviderFailed(SafeDiagnostic)` with code
+  `swallowtail.claude-agent.sdk.provider_failed`. Close observed native exit
+  event `exit`, code `1`, signal absent, `sdkTransportCloseRan: true`, and
+  `nativeJoin: exited`; the captured root exit was `exit` code `0`, signal
+  absent. Route `CleanupOutcome` was
+  `Failed(SafeDiagnostic)` with code
+  `swallowtail.claude-agent.sdk.close_root_unconfirmed`, kept separate from
+  the turn status. That code exposed a cleanup evidence defect: the host lost
+  its observed root wait while the pump joined, even though the sidecar
+  reported an exited native child and root exit 0. The provider-free fix now
+  retains the host `ProcessHandle::wait()` observation so `RootCompleted`
+  projects truthfully to `Degraded` with code
+  `swallowtail.claude-agent.sdk.close_root_only_degraded`. No typed sidecar
+  rejection code was emitted.
+- The SessionInput/early-EOF repair remains a correct provider-free hardening
+  change: the session source stays open until explicit close, and the fixture
+  rejects early iterable completion. Turns two and three instead share the
+  sanitized signature subtype `success`, `is_error: true`, no error text,
+  empty native stderr, native exit code `1`, and no tool request. The fixture
+  reports `error_during_execution` with error text, so early EOF is not
+  confirmed as the live cause; the actual live termination cause remains
+  unidentified.
+- Provider-free environment hardening now passes an explicit child allowlist:
+  `HOME`, `PATH`, `TMPDIR`, `LANG`, `LC_*`, `USER`, `SHELL`, terminal labels,
+  and the required macOS process essentials. It never forwards
+  `ANTHROPIC_API_KEY`, `CLAUDE_*`, or API-key-pattern names. This follows
+  Research 278's explicit `Options.env` replacement/non-inheritance rule and
+  its HOME-owned native credential-store boundary; fixtures assert exact key
+  presence and deny-list exclusion while recording no values.
+- The next-turn provider-free recording shape is prepared: result events now
+  carry field-name presence only, and close responses carry the exact
+  SessionInput/SDK-close/native-join timeline alongside native exit
+  event/code/signal. No fourth live turn is authorized.
 - The unrelated Stable process-spawning nextest job was rerun exactly once:
   `cargo nextest run --workspace --all-features --locked --profile
   ci-process` — 200 passed, 0 skipped, 0 failed.

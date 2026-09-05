@@ -54,7 +54,9 @@ Swallowtail never holds the subscription credential.
 1. The user runs the official Claude Code login out of band. Swallowtail does
    not perform, wrap, or drive it, and the SDK exposes no login function.
 2. Credentials stay in the official Claude credential store, reachable only by
-   the native binary, which authenticates itself. The sidecar passes `env: {}`
+   the native binary, which authenticates itself. The sidecar passes an
+   explicit non-secret platform allowlist (`HOME`, `PATH`, `TMPDIR`, `LANG`,
+   `LC_*`, `USER`, `SHELL`, terminal labels, and required macOS essentials)
    and no API key, so first-party OAuth belongs to that native binary rather
    than to Swallowtail.
 3. Swallowtail leases a delegated credential reference that exposes no secret,

@@ -106,6 +106,73 @@ const ENV_SDK_MODULE = "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE";
 const ENV_NATIVE_BINARY = "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY";
 const ENV_MANIFEST = "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST";
 
+// Keep the native child useful for its local runtime and locale without
+// inheriting credentials, provider switches, Claude configuration, or other
+// ambient application state. LC_* is the only prefix allowlist; every other
+// accepted name is explicit, including the macOS process essentials.
+const CHILD_ENV_EXACT_KEYS = new Set([
+  "HOME",
+  "PATH",
+  "TMPDIR",
+  "LANG",
+  "USER",
+  "SHELL",
+  "TERM",
+  "COLORTERM",
+  "__CF_USER_TEXT_ENCODING",
+  "XPC_FLAGS",
+  "XPC_SERVICE_NAME",
+  "MallocNanoZone",
+  "COMMAND_MODE",
+]);
+
+// Names from the frozen 0.3.259 SDKResultSuccess/SDKResultError union. The
+// sidecar records only presence booleans; values such as result text, usage,
+// UUIDs, paths, and provider errors never cross the wire.
+const SDK_RESULT_FIELD_NAMES = [
+  "type",
+  "subtype",
+  "duration_ms",
+  "duration_api_ms",
+  "ttft_ms",
+  "ttft_stream_ms",
+  "time_to_request_ms",
+  "user_message_uuid",
+  "user_message_uuids",
+  "request_sent_wall_ms",
+  "time_to_request_from_spawn_ms",
+  "warm_spare_claimed",
+  "time_origin_ms",
+  "is_error",
+  "api_error_status",
+  "num_turns",
+  "result",
+  "stop_reason",
+  "total_cost_usd",
+  "usage",
+  "modelUsage",
+  "permission_denials",
+  "queued_turn_count",
+  "structured_output",
+  "deferred_tool_use",
+  "terminal_reason",
+  "fast_mode_state",
+  "fast_mode_disabled_reason",
+  "origin",
+  "uuid",
+  "session_id",
+  "errors",
+];
+
+function childEnvironment() {
+  return Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([key, value]) =>
+        typeof value === "string" && (CHILD_ENV_EXACT_KEYS.has(key) || key.startsWith("LC_")),
+    ),
+  );
+}
+
 const COMMANDS = new Set(["open", "query", "interrupt", "set_permission_mode", "close"]);
 const COMMAND_FAILURE_CODES = new Set([
   "missing_environment",
@@ -169,6 +236,7 @@ const state = {
   capabilities: [],
   native: null,
   reader: null,
+  closeTimeline: [],
   initialized: false,
   effectiveModel: null,
   supportedModels: [],
@@ -620,6 +688,11 @@ function projectMessage(message) {
       return events;
     }
     case "result": {
+      const resultFieldPresence = Object.fromEntries(
+        [...new Set([...SDK_RESULT_FIELD_NAMES, ...Object.keys(message)])]
+          .sort()
+          .map((key) => [key, Object.prototype.hasOwnProperty.call(message, key)]),
+      );
       const subtype = typeof message.subtype === "string" ? message.subtype : null;
       const errorTextPresent = Object.prototype.hasOwnProperty.call(message, "error");
       let errorTextType = "absent";
@@ -649,6 +722,7 @@ function projectMessage(message) {
           durationMs,
           errorTextPresent,
           errorTextType,
+          resultFieldPresence,
           // Keep the existing route field while making the SDK result fields
           // explicit and separately inspectable. Never forward error text.
           stopReason: subtype ?? "",
@@ -718,7 +792,7 @@ async function handleOpen(params) {
         pathToClaudeCodeExecutable: nativeBinary,
         // Always explicit: omission would inherit `process.env` and could
         // silently select API-key authentication over the subscription.
-        env: {},
+        env: childEnvironment(),
         settingSources: [],
         skills: [],
         plugins: [],
@@ -773,6 +847,7 @@ async function handleOpen(params) {
   state.supportedModels = supportedModels;
   state.supportedModelsAvailable = supportedModels.length > 0;
   state.sdkTransportCloseRan = false;
+  state.closeTimeline = [];
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -987,6 +1062,7 @@ async function handleSetPermissionMode(params) {
 /// bound. The SDK's own cleanup outcome is never treated as evidence.
 async function handleClose(id, command, params) {
   state.closed = true;
+  state.closeTimeline = ["close_requested"];
   let boundMs;
   try {
     requireExactParams(params, ["joinBoundMs"]);
@@ -1013,18 +1089,24 @@ async function handleClose(id, command, params) {
   const bound = boundedWait(boundMs);
   if (state.query) {
     if (state.turnActive) {
+      state.closeTimeline.push("interrupt_requested");
       try {
         await Promise.race([state.query.interrupt(), bound.expiry]);
+        state.closeTimeline.push("interrupt_completed");
       } catch {
+        state.closeTimeline.push("interrupt_failed");
         await emitDiagnostic("warning", "interrupt_before_close_failed");
       }
       state.turnActive = false;
     }
     endInput();
+    state.closeTimeline.push("session_input_closed");
     try {
       state.query.close();
       state.sdkTransportCloseRan = true;
+      state.closeTimeline.push("sdk_transport_close_ran");
     } catch {
+      state.closeTimeline.push("sdk_transport_close_failed");
       await emitDiagnostic("warning", "sdk_close_failed");
     }
     if (state.reader) {
@@ -1040,6 +1122,7 @@ async function handleClose(id, command, params) {
   }
   state.callbacks.clear();
   const joined = await joinPromise;
+  state.closeTimeline.push(joined ? "native_join_exited" : "native_join_survivor");
   bound.cancel();
   const nativeEvidence = state.native?.evidence() ?? {
     event: null,
@@ -1057,6 +1140,7 @@ async function handleClose(id, command, params) {
     nativeExitCode: nativeEvidence.code,
     nativeExitSignal: nativeEvidence.signal,
     sdkTransportCloseRan: state.sdkTransportCloseRan,
+    closeTimeline: state.closeTimeline,
   });
   await writes;
   process.exit(joined ? 0 : 1);

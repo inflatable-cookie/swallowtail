@@ -108,10 +108,15 @@ pub(crate) async fn run(
     } else if let Some(process) = &owned.process {
         let _ = process.force_stop().await;
     }
-    // Root/process observation, before any join is claimed.
-    if let Some(process) = owned.process.take() {
-        let _ = process.wait().await;
-    }
+    // Root/process observation, before any join is claimed. Keep this result:
+    // the pump also waits on the same host handle, and a host is allowed to
+    // make that wait consumptive. Dropping this result would turn an observed
+    // root exit into `close_root_unconfirmed` after the pump joined.
+    let process_root_exit = if let Some(process) = owned.process.take() {
+        process.wait().await.ok().map(ProcessExit::tree_completion)
+    } else {
+        None
+    };
     // Scoped work joined before either lease is released, so a release is
     // evidence that the work using it had already stopped.
     for task in std::mem::take(&mut owned.scoped) {
@@ -122,10 +127,11 @@ pub(crate) async fn run(
         None => false,
     };
     // Root exit is only readable once the pump that recorded it was joined.
-    let root_exit = match (pump_joined, &connection) {
+    let pump_root_exit = match (pump_joined, &connection) {
         (true, Some(connection)) => connection.observed_exit().map(ProcessExit::tree_completion),
         _ => None,
     };
+    let root_exit = observed_root_exit(pump_joined, pump_root_exit, process_root_exit);
     let resource = release_resource(owned.resource.take(), services).await;
     let credential = release_credential(owned.credential.take(), services).await;
     CleanupReport {
@@ -136,6 +142,16 @@ pub(crate) async fn run(
         resource,
         credential,
     }
+}
+
+fn observed_root_exit(
+    pump_joined: bool,
+    pump_root_exit: Option<ProcessTreeCompletion>,
+    process_root_exit: Option<ProcessTreeCompletion>,
+) -> Option<ProcessTreeCompletion> {
+    pump_joined
+        .then(|| pump_root_exit.or(process_root_exit))
+        .flatten()
 }
 
 async fn cooperative_close(
@@ -243,4 +259,30 @@ async fn release_credential(
 
 fn cleanup_failure(code: &'static str, message: &'static str) -> CleanupOutcome {
     CleanupOutcome::Failed(SafeDiagnostic::new(code, message))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::observed_root_exit;
+    use swallowtail_runtime::ProcessTreeCompletion;
+
+    #[test]
+    fn retained_process_wait_evidence_prevents_false_root_unconfirmed() {
+        assert_eq!(
+            observed_root_exit(true, None, Some(ProcessTreeCompletion::RootOnly)),
+            Some(ProcessTreeCompletion::RootOnly)
+        );
+        assert_eq!(
+            observed_root_exit(
+                true,
+                Some(ProcessTreeCompletion::OwnedTreeEmpty),
+                Some(ProcessTreeCompletion::RootOnly),
+            ),
+            Some(ProcessTreeCompletion::OwnedTreeEmpty)
+        );
+        assert_eq!(
+            observed_root_exit(false, None, Some(ProcessTreeCompletion::RootOnly)),
+            None
+        );
+    }
 }

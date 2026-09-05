@@ -11,6 +11,7 @@ mod activity;
 mod callback;
 mod catalogue;
 mod connection;
+mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;

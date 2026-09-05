@@ -6,6 +6,11 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- publish Contract 061 candidate K across the Mistral Vibe, Muse Code, Oh
+  My Pi, and Qwen adapters. Prepared facades emit the exact 52-row tranche;
+  the single interactive Oh My Pi attachment row is consumer-mediated per
+  turn from its bounded plan capability, with provider-free ledgers and
+  negative assembly coverage. g05.009 card 099.
 - admit explicit Claude Agent SDK `Bash` profiles under a read-write working
   resource lease. Every Bash call remains consumer-mediated in `default`,
   `plan`, and `acceptEdits`; the callback carries bounded command and

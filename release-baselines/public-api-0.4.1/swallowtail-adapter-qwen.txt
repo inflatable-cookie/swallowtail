@@ -34,6 +34,7 @@ impl swallowtail_adapter_qwen::QwenPreparationProbe
 pub const fn swallowtail_adapter_qwen::QwenPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
 pub struct swallowtail_adapter_qwen::QwenPreparedCatalogue
 impl swallowtail_adapter_qwen::QwenPreparedCatalogue
+pub fn swallowtail_adapter_qwen::QwenPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_qwen::QwenPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
 pub fn swallowtail_adapter_qwen::QwenPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_qwen::QwenPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -65,6 +66,7 @@ impl swallowtail_adapter_qwen::QwenPreparedIntegration
 pub fn swallowtail_adapter_qwen::QwenPreparedIntegration::prepare_session(&self, swallowtail_adapter_qwen::QwenSessionProfileInput) -> core::result::Result<swallowtail_adapter_qwen::QwenPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_qwen::QwenPreparedRun
 impl swallowtail_adapter_qwen::QwenPreparedRun
+pub fn swallowtail_adapter_qwen::QwenPreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_qwen::QwenPreparedRun::evidence(&self) -> &swallowtail_adapter_qwen::QwenPreparedEvidence
 pub fn swallowtail_adapter_qwen::QwenPreparedRun::into_parts(self) -> (swallowtail_adapter_qwen::QwenPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
 pub fn swallowtail_adapter_qwen::QwenPreparedRun::low_level_driver(&self) -> swallowtail_adapter_qwen::QwenHeadlessDriver
@@ -73,6 +75,7 @@ pub const fn swallowtail_adapter_qwen::QwenPreparedRun::request(&self) -> &swall
 pub fn swallowtail_adapter_qwen::QwenPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_qwen::QwenPreparedSession
 impl swallowtail_adapter_qwen::QwenPreparedSession
+pub fn swallowtail_adapter_qwen::QwenPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub const fn swallowtail_adapter_qwen::QwenPreparedSession::evidence(&self) -> &swallowtail_adapter_qwen::QwenPreparedEvidence
 pub fn swallowtail_adapter_qwen::QwenPreparedSession::into_parts(self) -> (swallowtail_adapter_qwen::QwenPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
 pub fn swallowtail_adapter_qwen::QwenPreparedSession::low_level_driver(&self) -> swallowtail_adapter_qwen::QwenHeadlessDriver

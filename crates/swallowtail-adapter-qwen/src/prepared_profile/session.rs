@@ -39,6 +39,17 @@ impl QwenPreparedSession {
         &self.request
     }
 
+    /// Emits the exact Contract 061 contribution for this prepared session.
+    pub fn consumer_route_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+    ) -> Result<
+        swallowtail_runtime::ConsumerRouteProjectionContribution,
+        swallowtail_runtime::ConsumerRouteProjectionFailure,
+    > {
+        crate::consumer_route_projection::session(self, source_id)
+    }
+
     /// Creates the low-level driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> QwenHeadlessDriver {

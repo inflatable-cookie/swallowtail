@@ -344,3 +344,5 @@ fn evidence() -> PreparedAccessEvidence {
         SupportAuthority::ProviderSupported,
     ))
 }
+
+include!("consumer_route_projection/mod.rs");

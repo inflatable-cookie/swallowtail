@@ -177,6 +177,17 @@ impl MusePreparedRun {
         &self.request
     }
 
+    /// Emits the exact Contract 061 contribution for this prepared run.
+    pub fn consumer_route_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+    ) -> Result<
+        swallowtail_runtime::ConsumerRouteProjectionContribution,
+        swallowtail_runtime::ConsumerRouteProjectionFailure,
+    > {
+        crate::consumer_route_projection::contribution(self, source_id)
+    }
+
     #[must_use]
     /// Creates the low-level exact driver as an explicit escape hatch.
     pub fn low_level_driver(&self) -> crate::MuseHeadlessDriver {

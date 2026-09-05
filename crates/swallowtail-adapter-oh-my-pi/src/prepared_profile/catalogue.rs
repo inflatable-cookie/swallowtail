@@ -38,6 +38,17 @@ impl OhMyPiPreparedCatalogue {
         &self.request
     }
 
+    /// Emits the exact Contract 061 contribution for this prepared catalogue.
+    pub fn consumer_route_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+    ) -> Result<
+        swallowtail_runtime::ConsumerRouteProjectionContribution,
+        swallowtail_runtime::ConsumerRouteProjectionFailure,
+    > {
+        crate::consumer_route_projection::catalogue(self, source_id)
+    }
+
     /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> OhMyPiRpcDriver {

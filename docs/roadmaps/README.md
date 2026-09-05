@@ -20,9 +20,11 @@ restructure the CI gate for a five-minute pull-request round trip without
 weakening the release floor, from the manifest in that roadmap. Concurrent:
 finish the g05.030 card 094 fixture sweep through PR 227 (re-run its wedged
 stable job; bound every untimed wait). `v0.4.1` is tagged at `c3cce750`; the
-feature freeze is lifted. Next planning decisions with the operator: g05.029
-card 081 (Bash under mediation) readiness and the Contract 061 remainder
-(candidates B, K, L; 197 rows).
+feature freeze is lifted. Also concurrent:
+[g05.029 card 081](g05/batch-cards/081-claude-sdk-bash-under-mediation.md),
+Bash under mediation on `claude-agent.sdk`. Card 096, one planning audit
+across the Contract 061 remainder (candidates B, K, L; 197 rows), becomes
+ready when card 095 merges.
 
 ## Standing Lanes
 

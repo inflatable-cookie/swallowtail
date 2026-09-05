@@ -353,6 +353,7 @@ card 079 is the shared runtime/testkit baseline before card 034.
 
 ## Batch Cards In Flight
 
+- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — planned; one planning-only audit across candidates B, K, and L; ready after card 095 merges
 - [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged
 - [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
 - [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`

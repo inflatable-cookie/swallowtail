@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
   push:
+    branches: [main]
     tags: ["v*"]
 
 permissions:
@@ -17,28 +18,73 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  stable:
-    name: Stable format, lint, test, and guides
-    runs-on: macos-latest
+  stable-format-and-lint:
+    name: Stable format and lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@cargo-nextest
-      - name: Node runtime for the Claude Agent SDK sidecar asset proof
-        uses: actions/setup-node@v6
         with:
-          node-version: 22.23.2
+          shared-key: stable
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy (all features)
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Clippy (no default features)
         run: cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings
+
+  stable-nextest:
+    name: Stable nextest (shard ${{ matrix.shard }}/3)
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: stable
+      - uses: taiki-e/install-action@cargo-nextest
+      - name: Node runtime for the Claude Agent SDK sidecar asset proof
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.23.2
       - name: Test
-        run: cargo nextest run --workspace --all-features --locked
+        run: cargo nextest run --workspace --all-features --locked --profile ci --partition count:${{ matrix.shard }}/3
+
+  stable-process-nextest:
+    name: Stable process-spawning nextest
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: stable
+      - uses: taiki-e/install-action@cargo-nextest
+      - name: Node runtime for the Claude Agent SDK sidecar asset proof
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.23.2
+      - name: Process-spawning tests
+        run: cargo nextest run --workspace --all-features --locked --profile ci-process
+
+  stable-contracts:
+    name: Stable examples, metadata, and route contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: stable
       - name: Examples
         run: cargo check --workspace --examples --locked
       - name: Package metadata and topology
@@ -60,6 +106,8 @@ jobs:
         with:
           toolchain: nightly-2026-08-05
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: stable
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-public-api@0.52.0
@@ -98,6 +146,7 @@ jobs:
       - name: Clippy
         run: cargo +${{ env.RUST_MSRV }} clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Test
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: cargo +${{ env.RUST_MSRV }} test --workspace --all-features --locked
 
   supply-chain:

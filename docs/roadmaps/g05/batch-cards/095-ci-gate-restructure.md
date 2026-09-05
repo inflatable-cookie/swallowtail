@@ -55,3 +55,38 @@ without coordinator agreement; any production source.
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Implemented the bounded CI restructure in `.github/workflows/ci.yml` and
+`.config/nextest.toml`:
+
+- split stable format/lint, nextest, process-spawning nextest, and contracts
+  into parallel jobs;
+- put non-target checks on `ubuntu-latest`, retaining nextest and the pinned
+  floor on `macos-latest`;
+- count-partitioned ordinary nextest across three macOS runners and isolated
+  the six process-spawning binaries in a dedicated profile/job;
+- kept the pinned MSRV clippy check on pull requests and its full test on
+  `main` pushes, tag pushes, and workflow dispatch;
+- added `main` pushes to the existing CI triggers without changing branch
+  protection.
+
+Before timing evidence: representative green PR 226 run [33958420553](https://github.com/inflatable-cookie/swallowtail/actions/runs/33958420553)
+on `11be445f7ccb4bcaa1a358da1ff1522a3b9a3c7d` took 9m14s wall-clock;
+the stable job took 4m35s and the pinned floor took 9m06s. The after timing
+will be recorded from this card's green PR run before exact-head review.
+
+Required-check names for the new layout:
+
+- Stable format and lint
+- Stable nextest (shard 1/3), Stable nextest (shard 2/3), Stable nextest (shard 3/3)
+- Stable process-spawning nextest
+- Documentation and semantic API
+- Roadmap number uniqueness
+- Pinned MSRV floor
+- Dependency security, licenses, and sources
+- External Git-source consumer
+
+Branch protection was not changed; any required-check policy change remains a
+coordinator decision.

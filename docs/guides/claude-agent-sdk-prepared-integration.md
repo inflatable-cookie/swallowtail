@@ -17,12 +17,14 @@ driver ID `swallowtail.claude-agent.sdk`. It is Unix-only: see
 interactive session on the user's own Claude subscription, with streamed
 output, identity-and-lifecycle activity, consumer-mediated tool admission, a
 permission mode selected at open and changeable mid-session, interrupt, and a
-host-owned descendant-tree close. Reject it when the
+host-owned descendant-tree close. The default profile is read-only; an
+explicit profile may admit writes or Bash only with a read-write working
+resource lease. Reject it when the
 application cannot provision the Node runtime, sidecar asset, SDK package, and
 platform binary, or needs a model catalogue, structured runs, resume, fork,
 session management, usage detail, model/effort/thinking control, MCP, hooks,
-plugins, skills, subagents, checkpoints, writes, or Bash and terminal
-execution. Those are later layers or separate routes, not withheld defaults.
+plugins, skills, subagents, checkpoints, or terminal execution. Those are
+later layers or separate routes, not withheld defaults.
 
 All four Claude routes remain distinct. `claude-agent.acp` speaks ACP v1 over
 stdio through a third-party bridge and is versioned on its own adapter axis.
@@ -270,8 +272,9 @@ Availability is restricted with `Options.tools`, which carries exactly the
 admitted set. `Options.allowedTools` is never set: it auto-allows without
 prompting, which would bypass per-use admission entirely. Every admissible tool
 the consumer did not admit is added to `Options.disallowedTools` alongside
-Bash, terminal, notebook, and network tools, which are never available on this
-route at all. The admitted set is enforced inside the sidecar before any
+terminal, notebook, and network tools, which are never available on this route
+at all. Bash is available only when explicitly admitted in the mediated
+read-write profile. The admitted set is enforced inside the sidecar before any
 consumer round trip, so an unadmitted tool is denied without ever being
 offered, and the Rust side rejects an out-of-set request as a transport failure
 rather than delegating it.
@@ -302,14 +305,15 @@ and this route does not claim one.
 
 **The `acceptEdits` caveat.** `acceptEdits` auto-approves edits to the working
 directory, so edits run without a per-call consumer decision while every other
-admitted tool still goes through `canUseTool`. That is a consumer-chosen
+admitted tool, including Bash, still goes through `canUseTool`. That is a consumer-chosen
 narrowing of mediation, not a default: under `default` mode every admitted call
 is offered first. Choose `acceptEdits` only when the consumer accepts that it
 will not see each edit before it runs.
 
 ### Write Tools And The Read-Write Lease
 
-`Edit`, `Write`, and `MultiEdit` are admitted end to end. Any of them binds
+`Edit`, `Write`, `MultiEdit`, and explicit Bash admission are admitted end to
+end. Any of them binds
 `ResourceAccess::ReadWrite` on the working-resource lease into the plan, the
 session access policy, and the `claude-agent-sdk-ambient-read-write` instance
 policy. The host's own lease must grant exactly that access: a host that
@@ -327,11 +331,12 @@ Nothing about that admission constrains the provider to the leased root; the
 mediation itself is what the consumer relies on.
 
 Each admitted request crosses the wire as a bounded correlated callback in the
-route-local `claude-agent-sdk/can-use-tool` namespace carrying the tool name
-and nothing else. The tool's own input never crosses the wire: the sidecar
-retains it privately and returns it unchanged as `updatedInput` on allow,
-because `updatedInput` replaces what the provider would otherwise use — an
-empty object would silently destroy the path or pattern the tool needs. A
+route-local `claude-agent-sdk/can-use-tool` namespace. Ordinary callbacks carry
+only the tool name. Bash callbacks also carry bounded command and description
+views plus a truncation flag; the full input never crosses the wire, the
+sidecar retains it privately, and an allow returns that input byte-identically
+as `updatedInput`, because `updatedInput` replaces what the provider would
+otherwise use — an empty object would silently destroy the command. A
 consumer failure, an abandoned turn, or a closed exchange all deny. A request
 the sidecar had already written when the turn ended is denied on the wire
 rather than treated as a protocol violation: the answer is the same fail-closed
@@ -340,9 +345,10 @@ one, and the transport stays usable for the interrupt and close that follow.
 The namespace is deliberately route-local: shared permission vocabulary is
 orchestrator work once a second provider proves the same semantics.
 
-Bash, terminal, and every remaining tool are outside this route. A capability
-advertisement is not admission; those need their own Contract 023 process
-authority and Contract 041 mediation evidence.
+Terminal, notebook, network, and every remaining later-card tool are outside
+this route. Bash is the exception: it needs the explicit read-write profile and
+the Contract 023/041 mediated command path above. A capability advertisement is
+not admission.
 
 ## Close And The Descendant Tree
 

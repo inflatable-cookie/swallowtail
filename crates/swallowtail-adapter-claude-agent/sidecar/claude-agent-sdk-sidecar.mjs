@@ -63,24 +63,26 @@ const MAXIMUM_PENDING_COMMANDS = 16;
 const MAXIMUM_PENDING_CALLBACKS = 8;
 const MAXIMUM_CAPABILITIES = 64;
 const MAXIMUM_CAPABILITY_BYTES = 96;
+// Keep callback text aligned with the runtime's existing
+// MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES bound.
+const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
 const MAXIMUM_PROMPT_BYTES = 256 * 1024;
 const MINIMUM_JOIN_BOUND_MS = 100;
 const MAXIMUM_JOIN_BOUND_MS = 60_000;
 
 // Every tool this route can admit, in the exact order the host sends them.
-// Bash, terminal, notebook, and network tools stay outside this route until
-// Contract 023 process authority and Contract 041 mediation evidence admit
-// them.
+// Background shells, terminal, notebook, and network tools stay outside this
+// route. Bash is admitted only through the explicit Contract 023/041-mediated
+// path below.
 //
 // The admitted subset is passed as `tools`, which restricts availability. It
 // is never passed as `allowedTools`, which auto-allows a tool without
 // prompting and would bypass the host's per-use admission decision.
-const ADMISSIBLE_TOOLS = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"];
+const ADMISSIBLE_TOOLS = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit", "Bash"];
 const DEFAULT_TOOLS = ["Read", "Glob", "Grep"];
 // Never available on this route, whatever the host admits. Anything
 // admissible but not admitted is added to this list at open.
 const NEVER_AVAILABLE_TOOLS = [
-  "Bash",
   "BashOutput",
   "KillShell",
   "NotebookEdit",
@@ -391,13 +393,39 @@ function accountProjection(account, apiKeySource) {
   };
 }
 
-function callbackRecord(toolName, callbackId) {
+function boundedCallbackText(value) {
+  const text = typeof value === "string" ? value : "";
+  const bytes = Buffer.from(text, "utf8");
+  if (bytes.length <= MAXIMUM_CALLBACK_TEXT_BYTES) {
+    return { text, byteLength: bytes.length, truncated: false };
+  }
+  let safeLength = MAXIMUM_CALLBACK_TEXT_BYTES;
+  while (safeLength > 0 && (bytes[safeLength] & 0xc0) === 0x80) {
+    safeLength -= 1;
+  }
   return {
+    text: bytes.subarray(0, safeLength).toString("utf8"),
+    byteLength: bytes.length,
+    truncated: true,
+  };
+}
+
+function callbackRecord(toolName, callbackId, input) {
+  const record = {
     type: "callback",
     id: callbackId,
     callback: "can_use_tool",
     toolName: String(toolName ?? ""),
   };
+  if (record.toolName === "Bash") {
+    const command = boundedCallbackText(input?.command);
+    const description = boundedCallbackText(input?.description);
+    record.command = command.text;
+    record.commandByteLength = command.byteLength;
+    record.description = description.text;
+    record.truncated = command.truncated || description.truncated;
+  }
+  return record;
 }
 
 /// Bridges one SDK `canUseTool` request onto the private wire and blocks on
@@ -405,10 +433,10 @@ function callbackRecord(toolName, callbackId) {
 ///
 /// Three rules hold together. The host's admitted set is enforced here
 /// first, so an unadmitted tool is denied without ever reaching the consumer.
-/// The tool's input never crosses the wire: it is retained privately and
-/// returned unchanged on allow, because `updatedInput` replaces the input the
-/// provider would otherwise use. And admission is never inferred locally: an
-/// allowed tool always waits for the host's decision.
+/// Bash exposes only a bounded command view; every tool's full input remains
+/// private and is returned unchanged on allow, because `updatedInput` replaces
+/// the input the provider would otherwise use. Admission is never inferred
+/// locally: an allowed tool always waits for the host's decision.
 function canUseTool(toolName, input) {
   const name = String(toolName ?? "");
   if (!state.tools.includes(name)) {
@@ -421,7 +449,7 @@ function canUseTool(toolName, input) {
   const callbackId = `cb-${state.nextCallbackId}`;
   return new Promise((resolve) => {
     state.callbacks.set(callbackId, { resolve, input });
-    void writeRecord(callbackRecord(name, callbackId));
+    void writeRecord(callbackRecord(name, callbackId, input));
   });
 }
 

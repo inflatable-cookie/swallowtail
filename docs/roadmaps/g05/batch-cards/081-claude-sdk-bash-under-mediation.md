@@ -94,3 +94,19 @@ No. Stop after one reviewable PR for exact-head review.
 The SDK auto-approves `Bash` in a mode this card admits (record and return
 to Chatterbox); the command view cannot be bounded without lossy
 transformation of what the SDK executes.
+
+## Result
+
+- Added explicit `ClaudeAgentSdkTool::Bash` admission under a read-write lease;
+  the default read-only and existing editing profiles remain unchanged.
+- Bash callbacks carry bounded command and description views with a
+  truncation flag. The sidecar retains full input and returns it unchanged on
+  allow; `default`, `plan`, and `acceptEdits` all remain host-mediated.
+- Provider-free proofs cover Rust framing, denial, truncation, unchanged input,
+  fake command execution, no denied filesystem effect, and unadmitted Bash
+  denial without a host round trip. No credentials or live provider calls were
+  used.
+- Validation passed: 71 library tests, 58 SDK-driver tests, 13 sidecar-asset
+  tests; `effigy validate:focused` ran 334 package tests; affected-package,
+  API, route, guide, docs, Northstar, format, and diff gates passed.
+- Public API baseline is additive-only: `ClaudeAgentSdkTool::Bash`.

@@ -83,7 +83,8 @@
     "Grep",
     "Edit",
     "Write",
-    "MultiEdit"
+    "MultiEdit",
+    "Bash"
   ],
   "default_tools": [
     "Read",

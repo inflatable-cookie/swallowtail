@@ -96,6 +96,15 @@ pub(crate) struct ClaudeAgentSdkResponse {
 pub(crate) struct ClaudeAgentSdkCallback {
     pub(crate) id: String,
     pub(crate) tool_name: String,
+    pub(crate) bash_command: Option<ClaudeAgentSdkBashCommandView>,
+}
+
+/// Bounded consumer-visible fields for one admitted Bash call.
+pub(crate) struct ClaudeAgentSdkBashCommandView {
+    pub(crate) command: String,
+    pub(crate) command_byte_length: usize,
+    pub(crate) description: String,
+    pub(crate) truncated: bool,
 }
 
 #[allow(dead_code)]

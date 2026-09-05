@@ -1,9 +1,13 @@
 use crate::host_id;
 use crate::sdk_support::{
-    SdkFixtureHost, SdkScenario, cleanup_request, prepared_session, turn_request,
+    SdkFixtureHost, SdkScenario, cleanup_request, prepared_session, prepared_session_for,
+    turn_request,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use swallowtail_adapter_claude_agent::sdk::{
+    ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool,
+};
 use swallowtail_runtime::{CallbackPayload, CallbackResponse, CallbackResult, TerminalStatus};
 
 fn terminal_status(scenario: SdkScenario) -> TerminalStatus {
@@ -96,6 +100,64 @@ fn tool_admission_crosses_the_wire_as_a_correlated_consumer_decision() {
     assert_eq!(decision["id"], "cb-1");
     assert_eq!(decision["decision"], "allow");
     let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
+}
+
+#[test]
+fn bash_admission_crosses_the_wire_with_its_bounded_command_view() {
+    let host = host_id("claude-agent-sdk.fixture.bash-admission");
+    let fixture = SdkFixtureHost::new(SdkScenario::BashAdmission);
+    let profile = ClaudeAgentSdkSessionProfile::new(
+        [ClaudeAgentSdkTool::Bash],
+        ClaudeAgentSdkPermissionMode::Default,
+    )
+    .expect("explicit Bash profile is admissible");
+    let prepared = prepared_session_for(host.clone(), profile);
+    let services = fixture.services(host);
+    let services_for_cleanup = services.clone();
+    let mut session =
+        block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "inspect it"), services))
+        .expect("SDK sidecar turn starts");
+
+    let mut callbacks = turn.take_callbacks().expect("turn exposes tool admission");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("admission requests are available once");
+    let request = block_on(requests.next())
+        .expect("one admission request arrives")
+        .expect("admission request is healthy");
+    let swallowtail_runtime::CallbackRequestKind::Extension(extension) = request.kind() else {
+        panic!("tool admission is a route-local extension callback");
+    };
+    let payload: serde_json::Value =
+        serde_json::from_slice(extension.payload()).expect("payload is JSON");
+    assert_eq!(payload["toolName"], "Bash");
+    assert_eq!(payload["command"], "git status --porcelain");
+    assert_eq!(payload["commandByteLength"], 22);
+    assert_eq!(payload["description"], "inspect the working tree");
+    assert_eq!(payload["truncated"], false);
+    assert_eq!(payload.as_object().expect("object").len(), 5);
+
+    block_on(
+        callbacks.responder().respond(CallbackResponse::new(
+            request.callback_id().clone(),
+            swallowtail_runtime::RuntimeTurnId::new("turn-1").expect("valid turn"),
+            CallbackResult::Success(
+                CallbackPayload::new(br#"{"decision":"allow"}"#.to_vec(), 4096)
+                    .expect("payload fits the bound"),
+            ),
+        )),
+    )
+    .expect("admission response reaches the sidecar");
+
+    let decision = fixture
+        .inputs()
+        .into_iter()
+        .find(|value| value["type"] == "callback_response")
+        .expect("a callback response crosses the wire");
+    assert_eq!(decision["id"], "cb-1");
+    assert_eq!(decision["decision"], "allow");
+    let _ = block_on(session.close(cleanup_request(), services_for_cleanup));
 }
 
 #[test]

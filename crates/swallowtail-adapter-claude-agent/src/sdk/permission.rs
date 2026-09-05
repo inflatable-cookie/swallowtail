@@ -3,12 +3,13 @@
 //! Admission is the consumer's decision, never the sidecar's. Every request
 //! is bounded, correlated to one turn, answered at most once, and fails
 //! closed: a consumer failure, an abandoned turn, or a closed exchange all
-//! deny. Only the tool name crosses the boundary; no tool input, provider
-//! payload, or path is exposed.
+//! deny. Only the tool name crosses the boundary for ordinary tools. Bash
+//! additionally exposes a bounded command view; its full input remains in the
+//! sidecar and is returned unchanged on allow.
 
 use super::connection::SdkConnection;
 use super::failure::failure;
-use super::wire::ClaudeAgentSdkToolDecision;
+use super::wire::{ClaudeAgentSdkBashCommandView, ClaudeAgentSdkToolDecision};
 use futures_core::Stream;
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, VecDeque};
@@ -87,9 +88,17 @@ impl AdmissionHub {
         deadline: Option<Deadline>,
         sidecar_id: &str,
         tool_name: &str,
+        bash_command: Option<&ClaudeAgentSdkBashCommandView>,
     ) -> Result<Option<CallbackId>, RuntimeFailure> {
-        let payload = serde_json::to_vec(&json!({"toolName": tool_name}))
-            .map_err(|_| admission_failure("payload was invalid"))?;
+        let mut payload = json!({"toolName": tool_name});
+        if let Some(view) = bash_command {
+            payload["command"] = json!(view.command.as_str());
+            payload["commandByteLength"] = json!(view.command_byte_length);
+            payload["description"] = json!(view.description.as_str());
+            payload["truncated"] = json!(view.truncated);
+        }
+        let payload =
+            serde_json::to_vec(&payload).map_err(|_| admission_failure("payload was invalid"))?;
         let callback_id = CallbackId::new(format!(
             "{}:can-use-tool:{event_sequence}",
             turn_id.as_str()

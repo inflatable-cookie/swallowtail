@@ -11,6 +11,8 @@ pub enum SdkScenario {
     NativeJoinWithoutObservation,
     /// One `canUseTool` admission request during the turn.
     ToolAdmission,
+    /// One mediated Bash admission request carrying a bounded command view.
+    BashAdmission,
     /// An admission request for a tool outside the read-only set.
     UnadmittedToolAdmission,
     /// More admission requests than the bounded exchange accepts.

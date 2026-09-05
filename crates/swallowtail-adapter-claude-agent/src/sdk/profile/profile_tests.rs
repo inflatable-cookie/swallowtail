@@ -55,8 +55,8 @@ fn an_auto_approving_permission_mode_cannot_be_constructed() {
 
 #[test]
 fn an_unknown_or_repeated_tool_name_is_rejected_while_parsing() {
-    let unknown = ClaudeAgentSdkSessionProfile::from_names(["Read", "Bash"], "default")
-        .expect_err("Bash is outside the admitted set");
+    let unknown = ClaudeAgentSdkSessionProfile::from_names(["Read", "BashOutput"], "default")
+        .expect_err("BashOutput is outside the admitted set");
     assert_eq!(
         unknown.diagnostic().safe().code(),
         "swallowtail.claude-agent.sdk.profile.tool_unknown"
@@ -73,6 +73,20 @@ fn an_unknown_or_repeated_tool_name_is_rejected_while_parsing() {
         empty.diagnostic().safe().code(),
         "swallowtail.claude-agent.sdk.profile.tool_set_empty"
     );
+}
+
+#[test]
+fn explicit_bash_requires_a_read_write_lease() {
+    let profile = ClaudeAgentSdkSessionProfile::new(
+        [ClaudeAgentSdkTool::Bash],
+        ClaudeAgentSdkPermissionMode::Default,
+    )
+    .expect("Bash is an admitted explicit tool");
+
+    assert_eq!(names(&profile), ["Bash"]);
+    assert!(profile.admits_writes());
+    assert_eq!(profile.resource_access(), ResourceAccess::ReadWrite);
+    assert!(ClaudeAgentSdkTool::Bash.mutates_working_resource());
 }
 
 #[test]

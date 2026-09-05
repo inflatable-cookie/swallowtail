@@ -132,7 +132,11 @@ impl SdkConnection {
                     .expect("SDK sidecar active lock poisoned")
                     .clone();
                 match active {
-                    Some(turn) => match turn.handle_admission(&callback.id, &callback.tool_name)? {
+                    Some(turn) => match turn.handle_admission(
+                        &callback.id,
+                        &callback.tool_name,
+                        callback.bash_command.as_ref(),
+                    )? {
                         AdmissionDisposition::Delegated => Ok(()),
                         // The turn ended before this request was read. The
                         // sidecar had already written it, so it is denied on

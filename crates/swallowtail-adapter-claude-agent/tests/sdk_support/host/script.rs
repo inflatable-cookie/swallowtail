@@ -106,11 +106,22 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                        "toolName": "Read"}),
             );
         }
+        SdkScenario::BashAdmission => {
+            push(
+                state,
+                json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
+                       "toolName": "Bash", "command": "git status --porcelain",
+                       "commandByteLength": 22,
+                       "description": "inspect the working tree", "truncated": false}),
+            );
+        }
         SdkScenario::UnadmittedToolAdmission => {
             push(
                 state,
                 json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
-                       "toolName": "Bash"}),
+                       "toolName": "Bash", "command": "git status --porcelain",
+                       "commandByteLength": 22,
+                       "description": "inspect the working tree", "truncated": false}),
             );
         }
         SdkScenario::ToolAdmissionOverflow => {

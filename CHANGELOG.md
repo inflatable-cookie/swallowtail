@@ -5,6 +5,15 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- admit explicit Claude Agent SDK `Bash` profiles under a read-write working
+  resource lease. Every Bash call remains consumer-mediated in `default`,
+  `plan`, and `acceptEdits`; the callback carries bounded command and
+  description views with truncation, while the sidecar retains and returns the
+  full input unchanged on allow. Provider-free fake-SDK proofs cover denial,
+  execution, truncation, and no live credentials or provider calls. g05.029
+  card 081.
+
 ## [0.4.1] - 2026-09-05
 
 ### Added

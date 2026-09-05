@@ -61,6 +61,7 @@ fn callbacks_admit_only_the_qualified_tool_admission_shape() {
         json!({"type": "callback", "id": "cb-1", "callback": "request_user_dialog", "toolName": "Read"}),
         json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool"}),
         json!({"type": "callback", "callback": "can_use_tool", "toolName": "Read"}),
+        json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool", "toolName": "Read", "command": "pwd"}),
     ] {
         let bytes = serde_json::to_vec(&invalid).expect("fixture serializes");
         assert_eq!(
@@ -68,6 +69,51 @@ fn callbacks_admit_only_the_qualified_tool_admission_shape() {
             Some(ClaudeAgentSdkProtocolFailureKind::InvalidCallback)
         );
     }
+}
+
+#[test]
+fn bash_callbacks_carry_a_bounded_truncation_flagged_command_view() {
+    let command = "x".repeat(128);
+    let description = "d".repeat(128);
+    let bytes = serde_json::to_vec(&json!({
+        "type": "callback",
+        "id": "cb-1",
+        "callback": "can_use_tool",
+        "toolName": "Bash",
+        "command": command,
+        "commandByteLength": 256,
+        "description": description,
+        "truncated": true
+    }))
+    .expect("fixture serializes");
+    let ClaudeAgentSdkRecord::Callback(callback) =
+        decode_record(&bytes).expect("Bash callback decodes")
+    else {
+        panic!("callback expected");
+    };
+    let view = callback
+        .bash_command
+        .expect("Bash carries its command view");
+    assert_eq!(view.command.len(), 128);
+    assert_eq!(view.command_byte_length, 256);
+    assert_eq!(view.description.len(), 128);
+    assert!(view.truncated);
+
+    let invalid = serde_json::to_vec(&json!({
+        "type": "callback",
+        "id": "cb-1",
+        "callback": "can_use_tool",
+        "toolName": "Bash",
+        "command": "pwd",
+        "commandByteLength": 256,
+        "description": "run it",
+        "truncated": false
+    }))
+    .expect("fixture serializes");
+    assert_eq!(
+        decode_record(&invalid).err().map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::InvalidCallback)
+    );
 }
 
 #[test]

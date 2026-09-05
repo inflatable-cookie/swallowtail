@@ -40,16 +40,19 @@ pub enum ClaudeAgentSdkTool {
     Write,
     /// Replace several spans in one file.
     MultiEdit,
+    /// Execute one consumer-admitted shell command.
+    Bash,
 }
 
 /// Every tool this route admits, in the exact wire order it sends them.
-const ADMISSIBLE_TOOLS: [ClaudeAgentSdkTool; 6] = [
+const ADMISSIBLE_TOOLS: [ClaudeAgentSdkTool; 7] = [
     ClaudeAgentSdkTool::Read,
     ClaudeAgentSdkTool::Glob,
     ClaudeAgentSdkTool::Grep,
     ClaudeAgentSdkTool::Edit,
     ClaudeAgentSdkTool::Write,
     ClaudeAgentSdkTool::MultiEdit,
+    ClaudeAgentSdkTool::Bash,
 ];
 
 impl ClaudeAgentSdkTool {
@@ -63,6 +66,7 @@ impl ClaudeAgentSdkTool {
             Self::Edit => "Edit",
             Self::Write => "Write",
             Self::MultiEdit => "MultiEdit",
+            Self::Bash => "Bash",
         }
     }
 
@@ -78,7 +82,10 @@ impl ClaudeAgentSdkTool {
     /// Reports whether this tool can mutate the leased working resource.
     #[must_use]
     pub const fn mutates_working_resource(self) -> bool {
-        matches!(self, Self::Edit | Self::Write | Self::MultiEdit)
+        matches!(
+            self,
+            Self::Edit | Self::Write | Self::MultiEdit | Self::Bash
+        )
     }
 
     const fn bit(self) -> u8 {
@@ -158,7 +165,8 @@ const READ_ONLY_ADMITTED: u8 = ClaudeAgentSdkTool::Read.bit()
 
 const WRITE_ADMITTED: u8 = ClaudeAgentSdkTool::Edit.bit()
     | ClaudeAgentSdkTool::Write.bit()
-    | ClaudeAgentSdkTool::MultiEdit.bit();
+    | ClaudeAgentSdkTool::MultiEdit.bit()
+    | ClaudeAgentSdkTool::Bash.bit();
 
 impl ClaudeAgentSdkSessionProfile {
     /// The unchanged `v0.4.0` profile: the read set under `default` mode.
@@ -171,11 +179,15 @@ impl ClaudeAgentSdkSessionProfile {
     }
 
     /// The read set plus `Edit`, `Write`, and `MultiEdit`, which requires a
-    /// read-write working-resource lease.
+    /// read-write working-resource lease. Bash is opt-in through [`Self::new`]
+    /// so adding shell mediation never widens an existing editing profile.
     #[must_use]
     pub const fn read_write(permission_mode: ClaudeAgentSdkPermissionMode) -> Self {
         Self {
-            admitted: READ_ONLY_ADMITTED | WRITE_ADMITTED,
+            admitted: READ_ONLY_ADMITTED
+                | ClaudeAgentSdkTool::Edit.bit()
+                | ClaudeAgentSdkTool::Write.bit()
+                | ClaudeAgentSdkTool::MultiEdit.bit(),
             permission_mode,
         }
     }

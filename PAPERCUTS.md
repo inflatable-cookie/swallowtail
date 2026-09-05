@@ -28,6 +28,20 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Contract 061 ledger fixtures assert emitting facade declaratively — 2026-09-05
+- Friction: candidate K's ledgers (and likely earlier tranches) carry
+  `emitted_by` as a declarative field and compare observed rows as a set of
+  semantic ids, so the `operation_shape` half of the
+  `(route_id, operation_shape, semantic_id)` tuple is asserted only for
+  uniqueness inside the const table, not against which facade emitted it.
+- Impact: a row misattributed to the wrong facade or shape would only be
+  caught if it moved a per-facade count; exact-tuple attribution is not
+  proved.
+- Fix: one sweep card that makes every ledger assert `(shape, semantic_id)`
+  per emitting facade against the actual contribution, across all merged
+  tranches.
+- Surface: `crates/swallowtail-adapter-*/tests/**` ledger fixtures; g05.009.
+
 ### [ ] `effigy release prepare --check-gates` discards the failing gate's output — 2026-09-05
 - Friction: the one-shot v0.4.1 prepare reported only `floor` failed after
   200409ms and rolled back; the Clippy or test output that named the failure

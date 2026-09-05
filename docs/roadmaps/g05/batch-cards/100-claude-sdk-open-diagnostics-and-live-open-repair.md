@@ -145,20 +145,33 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   check. Every command rejection preserves its fixed sidecar code without
   forwarding message, path, or account data. Effective model evidence and
   requested/effective model separation are covered, as is newer-Node
-  `UnverifiedNewer` readiness.
+  `UnverifiedNewer` readiness. Reproducible `sdk.d.ts` excerpts for
+  `AccountInfo`, `SpawnedProcess`, and `SpawnOptions` are frozen under the
+  owned 0.3.259 fixture corpus, and a unit drift test compares
+  `COMMAND_FAILURE_CODES` with the Rust command-code enumeration.
 - Provider-free validation passed: `cargo fmt -p
   swallowtail-adapter-claude-agent -- --check`; `effigy validate:focused
   swallowtail-adapter-claude-agent`; `effigy package:verify-affected
   swallowtail-adapter-claude-agent`; `effigy package:api`; `effigy qa:routes`;
   `effigy qa:guides`; `effigy qa:docs`; `effigy qa:northstar`; and `git diff
   --check`.
-- Live item 4 used exactly two real 0.3.259 opens, with no prompt, tool call,
-  or write: Node 22.23.2 reached the real 2.1.259 native process but did not
-  produce an init response in the bounded observation window and was
-  terminated; Homebrew Node 26.7.0 produced no valid init message from the
-  real SDK query. No `system.model`, account field-presence, or rejection code
-  was exposed by either attempt, and no account values were recorded. The
-  second session had `query.close()` requested; no third live attempt was
-  made. Live acceptance remains unresolved and needs operator/design review
-  before another probe.
+- The prior operator-authorized live item-4 pair used exactly two real 0.3.259
+  opens, with no prompt, tool call, or write. Node 22.23.2 reached the real
+  2.1.259 native process but produced no init response in the bounded window;
+  the Homebrew Node 26.7.0 outcome was explicitly
+  `initialization_failed`. No `system.model`, account field-presence, or
+  rejection code was exposed by that pair, and no account values were
+  recorded.
+- Under the resumed extended authorization, one bounded open-only diagnostic
+  was run on each runtime in order: Node 22.23.2, then Node 26.7.0. Both
+  reached the real native child and timed out without an SDK `system/init`.
+  Sanitized native-child evidence for each was empty stderr and one first
+  native protocol record of type `control_response`; the SDK first-message
+  list and account projection were empty/not reached. No prompt, tool call, or
+  write was sent. No rejection requiring design judgment was exposed. Live
+  acceptance remains unresolved and the card stays open pending a successful
+  live init capture.
+- The unrelated Stable process-spawning nextest job was rerun exactly once:
+  `cargo nextest run --workspace --all-features --locked --profile
+  ci-process` — 195 passed, 0 skipped, 0 failed.
 - The additive API baseline and default read-only profile remain unchanged.

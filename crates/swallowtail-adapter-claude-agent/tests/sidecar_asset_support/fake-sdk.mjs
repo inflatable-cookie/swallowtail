@@ -24,7 +24,15 @@ const NATIVE_LIFETIME_MS = Number(process.env.FAKE_SDK_NATIVE_LIFETIME_MS ?? "50
 // against the filesystem itself.
 const SCENARIO = process.env.FAKE_SDK_SCENARIO ?? "read-only";
 
-const observed = { options: null, admissions: {}, permissionModes: [], writes: [], bash: [] };
+const observed = {
+  options: null,
+  spawnHookArgument: null,
+  spawnHookArgumentCount: null,
+  admissions: {},
+  permissionModes: [],
+  writes: [],
+  bash: [],
+};
 
 function record() {
   const descriptor = openSync(TEMP_OBSERVATIONS, "w");
@@ -87,7 +95,7 @@ export function query({ prompt, options }) {
     env: options.env,
     signal: new AbortController().signal,
   };
-  const child = options.spawnClaudeCodeProcess(spawnOptions);
+  const child = invokeSpawnHook(options.spawnClaudeCodeProcess, spawnOptions);
 
   if (SCENARIO === "editing") {
     return editingSession(prompt, options, child);
@@ -150,6 +158,24 @@ export function query({ prompt, options }) {
   };
   void prompt;
   return iterator;
+}
+
+function invokeSpawnHook(hook, ...hookArguments) {
+  const [spawnOptions] = hookArguments;
+  // Record the arguments actually received by this SDK-side invocation before
+  // forwarding them. This is a sanitized shape projection, not the query
+  // options object: all five 0.3.259 SpawnOptions keys remain visible,
+  // including the forwarded signal, and the count catches positional calls.
+  observed.spawnHookArgumentCount = hookArguments.length;
+  observed.spawnHookArgument = {
+    command: spawnOptions?.command ?? null,
+    args: spawnOptions?.args ?? null,
+    cwd: spawnOptions?.cwd ?? null,
+    env: spawnOptions?.env ?? null,
+    signal: spawnOptions?.signal instanceof AbortSignal,
+  };
+  record();
+  return hook(...hookArguments);
 }
 
 /// A two-turn Bash session. The first command is denied; the second carries

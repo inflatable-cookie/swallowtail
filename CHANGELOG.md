@@ -5,10 +5,7 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Changed
-- scope shared preflight consumer-tool exclusion to bounded writable session
-  profiles, admitting tool calls for ambient read-write harnesses while
-  preserving the existing bounded rejection. g05.029 card 089.
+## [0.4.1] - 2026-09-05
 
 ### Added
 - complete Contract 061 candidate F across Kimi ACP, headless, local-server,
@@ -54,6 +51,11 @@ annotated Git tags from the canonical repository.
 - publish Contract 061 consumer-route projection for candidate J: exact 10
   `llama-cpp.attached`, 6 `llama-cpp.owned`, and 19 `ollama.attached` rows
   with 32 emitted and 3 construction-time withheld. g05.009 card 068.
+
+### Changed
+- scope shared preflight consumer-tool exclusion to bounded writable session
+  profiles, admitting tool calls for ambient read-write harnesses while
+  preserving the existing bounded rejection. g05.029 card 089.
 
 ## [0.4.0] - 2026-09-04
 

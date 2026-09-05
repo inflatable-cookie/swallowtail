@@ -57,7 +57,7 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-LC_ALL=C sort release-baselines/public-api-0.4.0/packages.txt > "$release_expected_names"
+LC_ALL=C sort release-baselines/public-api-0.4.1/packages.txt > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 source scripts/release-package-set.sh
@@ -77,9 +77,9 @@ jq -r '
 
 awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
   '{$3 = requirement; print}' \
-  release-baselines/internal-dependencies-0.4.0.tsv \
+  release-baselines/internal-dependencies-0.4.1.tsv \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'current-source metadata passed for 40 crates at %s and Rust %s; immutable v0.3.3 baseline remains 40 packages / 47 routes\n' \
+printf 'current-source metadata passed for 40 crates at %s and Rust %s; immutable v0.4.0 baseline remains 40 packages / 49 routes\n' \
   "$release_version" "$release_msrv_cargo"

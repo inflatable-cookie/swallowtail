@@ -378,7 +378,7 @@ the coordinator.
 
 #### Deterministic candidates (60)
 
-- 
+-
   `swallowtail-adapter-alibaba-model-studio/tests/direct_driver/failure_cases.rs`
   — 1ms bounded poll only awaits the server counter for the turn's
   already-dispatched request (hang guard).
@@ -412,7 +412,7 @@ the coordinator.
 - `swallowtail-adapter-claude-agent/tests/acp_driver/deadline.rs` —
   FixtureHost::with_immediate_deadline makes wait_until return Ready at once.
 
-- 
+-
   `swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/cancellation.rs`
   — hold_pump/release_pump gates, fire_deadlines fixture clock, drop_within
   hang-guarded drop.
@@ -434,22 +434,22 @@ the coordinator.
   FakeProcessService plus Pending/ImmediateTimeService fixture clocks decide
   every deadline and cancellation.
 
-- 
+-
   `swallowtail-adapter-claude-agent/tests/claude_code_structured_run/control_cases.rs`
   — FakeProcessService held_open/completed with Pending/ImmediateTimeService
   clocks.
 
-- 
+-
   `swallowtail-adapter-claude-agent/tests/claude_code_structured_run/watcher_cases.rs`
   — 2s yield-spin waits only for the run's own guaranteed process start (hang
   guard).
 
-- 
+-
   `swallowtail-adapter-claude-agent/tests/claude_code_structured_run/watcher_deadline.rs`
   — ControllableTimeService armed manually (time.fire) after a synchronous
   watcher start over loopback.
 
-- 
+-
   `swallowtail-adapter-claude-agent/tests/claude_code_structured_run/watcher_stop_reentry.rs`
   — wait_for_fact's 10ms/2s poll is a hang guard for proof facts each caused
   by an action just taken (completer.pu.
@@ -473,7 +473,7 @@ the coordinator.
   probes (no real child process) with PendingTime or the immediately-firing
   RecordingService .
 
-- 
+-
   `swallowtail-adapter-codex/tests/prepared_profile_cases/provider_session_import/acceptance.rs`
   — yield-spin gate waits for the scripted thread/list dispatch (guaranteed
   event) before requesting cancellation .
@@ -641,7 +641,7 @@ the coordinator.
   1ms accept poll and bounded request peek only serve requests the driver
   itself initiates, and each request is .
 
-- 
+-
   `swallowtail-adapter-kimi/tests/local_server_interactive_support/server/websocket.rs`
   — Scenario flows are scripted with protocol-ordered blocking reads.
 

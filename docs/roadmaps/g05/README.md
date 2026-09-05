@@ -44,6 +44,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.031 CI Latency](./031-ci-latency.md) — planned; card 095 restructures the PR gate after the `v0.4.1` tag; operator workflow authority granted
 - [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — ready; card 090 compatibility audit is ready; cards 091-092 serial; feature freeze until card 092 stops
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered the `v0.4.1` carrier, card 089's bounded-profile preflight exclusion landed, and cards 081-088 are queued in consumer priority order
 - [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
@@ -76,7 +77,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has thirty numbered roadmaps: 22 completed milestones including
+g05 has thirty-one numbered roadmaps: 22 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -411,6 +412,7 @@ identity.
 
 ## Milestones
 
+- [031 CI Latency](./031-ci-latency.md) — planned; card 095 after the `v0.4.1` tag
 - [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — ready; card 090 ready; cards 091-092 serial
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered; cards 081-088 queued
 - [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`

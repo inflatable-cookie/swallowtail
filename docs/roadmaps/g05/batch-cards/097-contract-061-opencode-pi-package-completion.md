@@ -87,3 +87,14 @@ per-turn row carrying provider-effective state.
 ## Auto-Continuation
 
 No. Stop after one reviewable PR for exact-head review.
+
+## Result
+
+Completed candidate L at exact scope: `opencode.http` 33 emitted / 2 withheld,
+`pi.rpc` 15/0, and `pi.sdk-sidecar` 19/0. Prepared OpenCode and Pi facades now
+publish adapter-local Contract 061 contributions. Per-turn rows require
+retained attachment or consumer-mediated callback evidence and carry only
+`ConsumerMediatedPerTurn`; OpenCode permission exchange is namespaced over
+`opencode/permission`, and the reasoning-selection and provider-turn-reference
+matrix rows remain withheld. Added deterministic ledgers, mixed-applicability
+rejection, and negative profile coverage.

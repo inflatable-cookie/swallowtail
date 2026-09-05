@@ -24,6 +24,10 @@ annotated Git tags from the canonical repository.
   full input unchanged on allow. Provider-free fake-SDK proofs cover denial,
   execution, truncation, and no live credentials or provider calls. g05.029
   card 081.
+- complete Contract 061 candidate L across OpenCode HTTP and Pi RPC/SDK-sidecar
+  prepared facades: 67 emitted rows and 2 construction-time withheld matrix
+  descriptors, with adapter-local ledgers and retained-plan per-turn authority.
+  g05.009 card 097.
 
 ## [0.4.1] - 2026-09-05
 

@@ -8,6 +8,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod consumer_route_projection;
 mod driver;
 mod failure;
 mod prepared;

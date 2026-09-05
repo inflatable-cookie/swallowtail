@@ -4,6 +4,7 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
+use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService,
@@ -11,6 +12,11 @@ use swallowtail_runtime::{
     ProcessRequest, RuntimeFailure, ScopeId,
 };
 use task_time::ThreadTaskService;
+
+/// Large named hang guard for fixture waits that must resolve through
+/// explicit test ordering. Expiry is a broken ordering contract, so it fails
+/// loudly instead of hanging the run; no passing test relies on this bound.
+const HANG_GUARD: Duration = Duration::from_secs(120);
 
 mod authority;
 mod process;
@@ -80,6 +86,9 @@ struct ProcessState {
     input: Vec<Value>,
     output: VecDeque<ProcessOutputChunk>,
     stopped: bool,
+    hold_released: bool,
+    close_requested: bool,
+    exited: bool,
     bootstrap: Option<(String, String, String)>,
     session_ref: Option<String>,
     thinking_level: Option<String>,
@@ -105,6 +114,11 @@ impl SidecarFixtureHost {
     }
 
     pub fn with_immediate_time(self) -> Self {
+        self.fire_all_deadlines();
+        self
+    }
+
+    pub fn fire_all_deadlines(&self) {
         let mut time = self
             .shared
             .time
@@ -112,8 +126,9 @@ impl SidecarFixtureHost {
             .expect("sidecar fixture time lock poisoned");
         time.now = 1_000;
         time.fire_through = Some(u64::MAX);
-        drop(time);
-        self
+        for waiter in std::mem::take(&mut time.waiters) {
+            waiter.wake();
+        }
     }
 
     pub fn with_process_wait_failure(mut self) -> Self {
@@ -178,22 +193,55 @@ impl SidecarFixtureHost {
     }
 
     pub fn wait_for_command(&self, command: &str) {
+        let state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        let (_state, wait) = self
+            .shared
+            .changed
+            .wait_timeout_while(state, HANG_GUARD, |state| {
+                !state
+                    .input
+                    .iter()
+                    .any(|value| value.get("command").and_then(Value::as_str) == Some(command))
+            })
+            .expect("sidecar fixture wait lock poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: command {command:?} was never observed within {HANG_GUARD:?}"
+        );
+    }
+
+    pub fn release_hold(&self) {
         let mut state = self
             .shared
             .process
             .lock()
             .expect("sidecar fixture state lock poisoned");
-        while !state
-            .input
-            .iter()
-            .any(|value| value.get("command").and_then(Value::as_str) == Some(command))
-        {
-            state = self
-                .shared
-                .changed
-                .wait(state)
-                .expect("sidecar fixture wait lock poisoned");
+        state.hold_released = true;
+        if state.close_requested {
+            state.stopped = true;
         }
+        self.shared.changed.notify_all();
+    }
+
+    pub fn wait_for_process_exit(&self) {
+        let state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        let (_state, wait) = self
+            .shared
+            .changed
+            .wait_timeout_while(state, HANG_GUARD, |state| !state.exited)
+            .expect("sidecar fixture wait lock poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: held sidecar process never observed exit within {HANG_GUARD:?}"
+        );
     }
 
     pub fn inputs(&self) -> Vec<Value> {

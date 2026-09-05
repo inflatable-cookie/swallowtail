@@ -41,11 +41,10 @@ pub enum StreamFixture {
     DeleteServerError,
     DeleteMalformedSuccess,
     DeleteDisconnect,
-    DeleteDelayed,
     DeleteGated,
     DeleteHealthDrift,
     ImportTitleDrift,
-    ImportDelayed,
+    ImportGated,
     ReconciliationActive,
     PanicOnEvent,
 }

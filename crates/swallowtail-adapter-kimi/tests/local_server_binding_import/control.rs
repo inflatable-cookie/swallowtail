@@ -78,7 +78,7 @@ fn cancellation_and_deadline_join_read_only_lookup_without_effects() {
         "swallowtail.kimi.local_server.preparation.cancelled"
     );
 
-    server.delay_lifecycle_response(250);
+    server.hold_lifecycle_responses();
     let source = source_authority(
         host_id.clone(),
         "0.29.0",
@@ -101,8 +101,9 @@ fn cancellation_and_deadline_join_read_only_lookup_without_effects() {
         server.wait_until_seen("/api/v1/sessions/session-1");
         block_on(cancellation.request()).expect("lookup cancellation requests");
         running.join().expect("lookup thread joins")
-    })
-    .expect_err("cancelled lookup does not import");
+    });
+    server.release_lifecycle_responses();
+    let error = error.expect_err("cancelled lookup does not import");
     assert_eq!(
         error.diagnostic().safe().code(),
         "swallowtail.kimi.local_server.preparation.cancelled"
@@ -117,13 +118,15 @@ fn cancellation_and_deadline_join_read_only_lookup_without_effects() {
     .unwrap();
     let input = import_input(&prepared, source, "fixture-deadline-after");
     let operation = prepared.prepare_binding_import(input).unwrap();
+    server.hold_lifecycle_responses();
     let error = std::thread::scope(|scope| {
         let running = scope.spawn(|| block_on(operation.execute(services)));
         server.wait_until_seen_count("/api/v1/sessions/session-1", 2);
         host.set_now(100);
         running.join().expect("deadline lookup thread joins")
-    })
-    .expect_err("deadline lookup does not import");
+    });
+    server.release_lifecycle_responses();
+    let error = error.expect_err("deadline lookup does not import");
     assert_eq!(
         error.diagnostic().safe().code(),
         "swallowtail.kimi.local_server.preparation.timed_out"

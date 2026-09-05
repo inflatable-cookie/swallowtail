@@ -1,11 +1,16 @@
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
 use std::time::Duration;
 
 const TOKEN: &str = "fixture-kimi-local-bearer";
+
+/// Large named hang guard for fixture waits that must resolve through
+/// explicit test ordering. Expiry is a broken ordering contract, so it fails
+/// loudly instead of hanging the run; no passing test relies on this bound.
+const HANG_GUARD: Duration = Duration::from_secs(120);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FixtureRequest {
@@ -17,9 +22,16 @@ pub struct FixtureRequest {
 pub struct FixtureServer {
     endpoint: String,
     requests: Arc<Mutex<Vec<FixtureRequest>>>,
-    lifecycle_delay_ms: Arc<AtomicU64>,
+    request_changed: Arc<Condvar>,
+    lifecycle_response_gate: Arc<(Mutex<LifecycleResponseGate>, Condvar)>,
     stopped: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
+}
+
+#[derive(Default)]
+struct LifecycleResponseGate {
+    held: bool,
+    active: bool,
 }
 
 impl FixtureServer {
@@ -37,18 +49,27 @@ impl FixtureServer {
             listener.local_addr().expect("fixture address is visible")
         );
         let requests = Arc::new(Mutex::new(Vec::new()));
+        let request_changed = Arc::new(Condvar::new());
         let stopped = Arc::new(AtomicBool::new(false));
-        let lifecycle_delay_ms = Arc::new(AtomicU64::new(0));
+        let lifecycle_response_gate =
+            Arc::new((Mutex::new(LifecycleResponseGate::default()), Condvar::new()));
         let version = Arc::new(version.to_owned());
         let worker_requests = Arc::clone(&requests);
+        let worker_request_changed = Arc::clone(&request_changed);
         let worker_stopped = Arc::clone(&stopped);
-        let worker_delay = Arc::clone(&lifecycle_delay_ms);
+        let worker_lifecycle_response_gate = Arc::clone(&lifecycle_response_gate);
         let worker_version = Arc::clone(&version);
         let thread = std::thread::spawn(move || {
             while !worker_stopped.load(Ordering::SeqCst) {
                 match listener.accept() {
                     Ok((stream, _)) => {
-                        serve(stream, &worker_requests, &worker_delay, &worker_version);
+                        serve(
+                            stream,
+                            &worker_requests,
+                            &worker_request_changed,
+                            &worker_lifecycle_response_gate,
+                            &worker_version,
+                        );
                     }
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                         std::thread::sleep(Duration::from_millis(1));
@@ -60,7 +81,8 @@ impl FixtureServer {
         Self {
             endpoint,
             requests,
-            lifecycle_delay_ms,
+            request_changed,
+            lifecycle_response_gate,
             stopped,
             thread: Some(thread),
         }
@@ -81,9 +103,35 @@ impl FixtureServer {
             .clone()
     }
 
-    pub fn delay_lifecycle_response(&self, milliseconds: u64) {
-        self.lifecycle_delay_ms
-            .store(milliseconds, Ordering::SeqCst);
+    pub fn hold_lifecycle_responses(&self) {
+        let (gate, changed) = &*self.lifecycle_response_gate;
+        let gate = gate
+            .lock()
+            .expect("fixture lifecycle response lock is not poisoned");
+        let (mut gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: lifecycle response never settled before hold within {HANG_GUARD:?}"
+        );
+        gate.held = true;
+    }
+
+    pub fn release_lifecycle_responses(&self) {
+        let (gate, changed) = &*self.lifecycle_response_gate;
+        let mut gate = gate
+            .lock()
+            .expect("fixture lifecycle response lock is not poisoned");
+        gate.held = false;
+        changed.notify_all();
+        let (_gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: release never drained the lifecycle response within {HANG_GUARD:?}"
+        );
     }
 
     pub fn wait_until_seen(&self, path: &str) {
@@ -91,25 +139,43 @@ impl FixtureServer {
     }
 
     pub fn wait_until_seen_count(&self, path: &str, expected: usize) {
-        for _ in 0..1_000 {
-            if self
-                .requests()
-                .iter()
-                .filter(|request| request.path == path)
-                .count()
-                >= expected
-            {
-                return;
-            }
-            std::thread::sleep(Duration::from_millis(1));
-        }
-        panic!("fixture server did not observe expected route");
+        let requests = self
+            .requests
+            .lock()
+            .expect("fixture request lock is not poisoned");
+        let (_requests, wait) = self
+            .request_changed
+            .wait_timeout_while(requests, HANG_GUARD, |requests| {
+                requests
+                    .iter()
+                    .filter(|request| request.path == path)
+                    .count()
+                    < expected
+            })
+            .expect("fixture request lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: {path} never reached {expected} observations within {HANG_GUARD:?}"
+        );
+        drop(_requests);
+        let (gate, changed) = &*self.lifecycle_response_gate;
+        let gate = gate
+            .lock()
+            .expect("fixture lifecycle response lock is not poisoned");
+        let (_gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.held && !gate.active)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: gated lifecycle response never drained within {HANG_GUARD:?}"
+        );
     }
 }
 
 impl Drop for FixtureServer {
     fn drop(&mut self) {
         self.stopped.store(true, Ordering::SeqCst);
+        self.release_lifecycle_responses();
         if let Some(thread) = self.thread.take() {
             let _ = thread.join();
         }
@@ -119,7 +185,8 @@ impl Drop for FixtureServer {
 fn serve(
     mut stream: TcpStream,
     requests: &Arc<Mutex<Vec<FixtureRequest>>>,
-    lifecycle_delay_ms: &AtomicU64,
+    request_changed: &Condvar,
+    lifecycle_response_gate: &(Mutex<LifecycleResponseGate>, Condvar),
     version: &str,
 ) {
     stream
@@ -156,10 +223,25 @@ fn serve(
             path: path.clone(),
             authenticated,
         });
+    request_changed.notify_all();
     if path.starts_with("/api/v1/sessions/") {
-        std::thread::sleep(Duration::from_millis(
-            lifecycle_delay_ms.load(Ordering::SeqCst),
-        ));
+        let (gate, changed) = lifecycle_response_gate;
+        let mut gate = gate
+            .lock()
+            .expect("fixture lifecycle response lock is not poisoned");
+        if gate.held {
+            gate.active = true;
+            changed.notify_all();
+        }
+        let (mut gate, wait) = changed
+            .wait_timeout_while(gate, HANG_GUARD, |gate| gate.held)
+            .expect("fixture lifecycle response lock is not poisoned");
+        assert!(
+            !wait.timed_out(),
+            "fixture hang guard: held lifecycle response was never released within {HANG_GUARD:?}"
+        );
+        gate.active = false;
+        changed.notify_all();
     }
     if path == "/api/v1/sessions/disconnect-session" {
         return;

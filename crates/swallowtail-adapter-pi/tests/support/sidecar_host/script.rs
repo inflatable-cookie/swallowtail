@@ -259,11 +259,14 @@ pub(super) fn respond(
             settled(state, "aborted");
         }
         "close" => {
-            output(
-                state,
-                json!({"type": "response", "id": id, "command": "close", "success": true, "data": {}}),
-            );
-            state.stopped = true;
+            state.close_requested = true;
+            if !matches!(scenario, SidecarScenario::Hold) || state.hold_released {
+                output(
+                    state,
+                    json!({"type": "response", "id": id, "command": "close", "success": true, "data": {}}),
+                );
+                state.stopped = true;
+            }
         }
         _ => return Err(fixture_failure()),
     }

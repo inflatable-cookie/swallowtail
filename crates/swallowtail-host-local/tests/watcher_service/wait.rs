@@ -57,7 +57,7 @@ fn watcher_wait_returns_live_cancellation_before_join_and_cleanup_preserves_trut
 
 #[test]
 fn watcher_wait_returns_live_deadline_before_join_and_cleanup_preserves_truth() {
-    let local = watcher_host("sleep", 2);
+    let local = watcher_host("hold", 2);
     let watcher = local
         .services()
         .watcher()
@@ -67,7 +67,7 @@ fn watcher_wait_returns_live_deadline_before_join_and_cleanup_preserves_truth() 
     let watcher_id = block_on(watcher.accept_start(
         turn.clone(),
         WatcherRequester::Model,
-        operation_data("sleep-operation"),
+        operation_data("hold-operation"),
     ))
     .expect("watcher starts")
     .watcher_id()

@@ -58,6 +58,9 @@ fn process_fixture() {
             std::fs::write("host-owned-marker", b"created")
                 .expect("fixture writes inside the host-owned resource");
         }
+        "hold" => loop {
+            thread::park();
+        },
         "sleep" => thread::sleep(Duration::from_secs(30)),
         // A foreign-language sidecar whose SDK launches a further
         // provider-owned process: the parent stays alive while the native

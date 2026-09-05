@@ -3,7 +3,7 @@ fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.prepared.delete.cancel",
         "1.18.4",
-        crate::http_support::StreamFixture::DeleteDelayed,
+        crate::http_support::StreamFixture::DeleteGated,
     );
     let prepared = fixture.prepared();
     let session = prepared
@@ -23,20 +23,18 @@ fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
         ))
         .expect("delete prepares");
     let cancellation = std::sync::Arc::clone(delete.request().cancellation());
-    let requests = fixture.server.request_log();
-    let canceller = std::thread::spawn(move || {
-        while !requests
-            .lock()
-            .expect("request lock")
-            .iter()
-            .any(|request| request.starts_with("DELETE "))
-        {
-            std::thread::sleep(std::time::Duration::from_millis(1));
-        }
-        block_on(cancellation.request()).expect("cancellation requests");
+    let response_gate = fixture.server.delete_response_gate();
+    let execution = std::thread::spawn({
+        let future = delete.execute(fixture.services());
+        move || block_on(future)
     });
-    let outcome = block_on(delete.execute(fixture.services())).expect("delete resolves");
-    canceller.join().expect("canceller joins");
+    response_gate.wait_for_dispatch();
+    block_on(cancellation.request()).expect("cancellation requests");
+    let outcome = execution.join();
+    response_gate.release();
+    let outcome = outcome
+        .expect("delete execution joins")
+        .expect("delete resolves");
     assert_eq!(
         outcome.effect().truth(),
         ProviderSessionEffectTruth::UnconfirmedAfterEffect

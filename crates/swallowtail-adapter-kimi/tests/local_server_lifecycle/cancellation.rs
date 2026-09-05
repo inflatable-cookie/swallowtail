@@ -47,7 +47,7 @@ fn cancellation_and_deadline_keep_before_and_after_dispatch_truth_distinct() {
     );
 
     host.set_now(0);
-    server.delay_lifecycle_response(250);
+    server.hold_lifecycle_responses();
     let cancelled_after = prepared
         .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
             value(RequestId::new, "cancel-after"),
@@ -60,8 +60,9 @@ fn cancellation_and_deadline_keep_before_and_after_dispatch_truth_distinct() {
         server.wait_until_seen("/api/v1/sessions/session-1:archive");
         block_on(cancellation.request()).expect("post-dispatch cancellation is requested");
         operation.join().expect("operation thread joins")
-    })
-    .expect("cancel-after returns truth");
+    });
+    server.release_lifecycle_responses();
+    let outcome = outcome.expect("cancel-after returns truth");
     assert_eq!(
         outcome.effect().truth(),
         ProviderSessionEffectTruth::UnconfirmedAfterEffect
@@ -76,13 +77,15 @@ fn cancellation_and_deadline_keep_before_and_after_dispatch_truth_distinct() {
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(20))),
         )
         .expect("deadline-after restore prepares");
+    server.hold_lifecycle_responses();
     let outcome = std::thread::scope(|scope| {
         let operation = scope.spawn(|| block_on(deadline_after.execute(services)));
         server.wait_until_seen("/api/v1/sessions/session-1:restore");
         host.set_now(20);
         operation.join().expect("operation thread joins")
-    })
-    .expect("deadline-after returns truth");
+    });
+    server.release_lifecycle_responses();
+    let outcome = outcome.expect("deadline-after returns truth");
     assert_eq!(
         outcome.effect().truth(),
         ProviderSessionEffectTruth::UnconfirmedAfterEffect

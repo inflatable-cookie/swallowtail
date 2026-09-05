@@ -161,6 +161,7 @@ fn fresh_session_relays_scheduling_and_joined_cleanup() {
     );
     assert!(!format!("{terminal:?}").contains("fixture answer"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    fixture.release_hold();
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean

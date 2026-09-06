@@ -24,7 +24,7 @@ fn push_stderr(state: &mut ProcessState, bytes: &[u8]) {
     ));
 }
 
-fn complete_turn_record() -> Value {
+fn turn_ended_record(failed: bool) -> Value {
     let mut result_field_presence = serde_json::Map::new();
     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
         result_field_presence.insert(
@@ -35,17 +35,38 @@ fn complete_turn_record() -> Value {
             )),
         );
     }
+    if failed {
+        result_field_presence.insert("error".to_owned(), json!(true));
+    }
     json!({
         "type": "event",
         "event": "turn_ended",
-        "subtype": "success",
-        "stopReason": "success",
-        "isError": false,
+        "subtype": if failed { "error_during_execution" } else { "success" },
+        "stopReason": if failed { "error_during_execution" } else { "success" },
+        "isError": failed,
         "numTurns": 1,
         "durationMs": 7,
-        "errorTextPresent": false,
-        "errorTextType": "absent",
+        "errorTextPresent": failed,
+        "errorTextType": if failed { "string" } else { "absent" },
         "resultFieldPresence": result_field_presence,
+    })
+}
+
+fn terminal_code(scenario: SdkScenario) -> Option<&'static str> {
+    Some(match scenario {
+        SdkScenario::TerminalRecord | SdkScenario::TerminalUnknownMessage => "unknown_message",
+        SdkScenario::TerminalInvalidCommand => "invalid_command",
+        SdkScenario::TerminalCommandIdReused => "command_id_reused",
+        SdkScenario::TerminalTooManyPending => "too_many_pending",
+        SdkScenario::TerminalCallbackUnknown => "callback_unknown",
+        SdkScenario::TerminalCallbackInvalid => "callback_invalid",
+        SdkScenario::TerminalRecordTooLarge => "record_too_large",
+        SdkScenario::TerminalEmptyRecord => "empty_record",
+        SdkScenario::TerminalMalformedJson => "malformed_json",
+        SdkScenario::TerminalMissingType => "missing_type",
+        SdkScenario::TerminalUnknownRecord => "unknown_record",
+        SdkScenario::TerminalInternalError => "internal_error",
+        _ => return None,
     })
 }
 
@@ -230,6 +251,20 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                "data": init}),
     );
     push(state, json!({"type": "event", "event": "turn_started"}));
+    if let Some(code) = terminal_code(scenario) {
+        let stderr = format!(
+            "\u{1b}[31mnative /private/fixture token=fixture-secret user@example.test {}",
+            "detail ".repeat(80)
+        );
+        push_stderr(state, stderr.as_bytes());
+        push(
+            state,
+            json!({"type": "terminal",
+                   "failure": {"code": code,
+                               "message": format!("sidecar terminated: {code}")}}),
+        );
+        return;
+    }
     match scenario {
         SdkScenario::ToolAdmission => {
             push(
@@ -273,23 +308,15 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
             push_raw(state, b"{\"type\":\"event\",\"event\":\"output_");
             state.stopped = true;
         }
-        SdkScenario::TerminalRecord => {
-            push(
-                state,
-                json!({"type": "terminal",
-                       "failure": {"code": "unknown_message",
-                                   "message": "sidecar terminated: unknown_message"}}),
-            );
+        SdkScenario::TurnEndedError => {
+            push_stderr(state, b"fixture failed result stderr");
+            push(state, turn_ended_record(true));
         }
         // The turn ends first, then an admission request the sidecar had
         // already written arrives. The wire order is what a real interrupt or
         // deadline race produces.
         SdkScenario::AdmissionAfterResult => {
-            push(
-                state,
-                json!({"type": "event", "event": "turn_ended", "stopReason": "success",
-                       "isError": false}),
-            );
+            push(state, turn_ended_record(false));
             push(
                 state,
                 json!({"type": "callback", "id": "cb-late", "callback": "can_use_tool",
@@ -319,7 +346,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                        "isError": false}),
             );
             push_stderr(state, b"fixture native stderr tail\n");
-            push(state, complete_turn_record());
+            push(state, turn_ended_record(false));
         }
     }
 }

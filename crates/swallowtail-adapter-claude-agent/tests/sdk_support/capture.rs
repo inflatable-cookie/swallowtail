@@ -31,6 +31,7 @@ pub const SDK_RESULT_FIELD_NAMES: &[&str] = &[
     "time_origin_ms",
     "is_error",
     "api_error_status",
+    "error",
     "num_turns",
     "result",
     "stop_reason",

@@ -9,6 +9,7 @@ use super::activity::SdkActivityProjection;
 use super::failure::failure;
 use super::permission::AdmissionHub;
 use super::wire::{ClaudeAgentSdkBashCommandView, ClaudeAgentSdkEvent};
+use std::collections::BTreeMap;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, Weak};
 use swallowtail_core::{
@@ -35,6 +36,7 @@ pub(crate) enum AdmissionDisposition {
 }
 
 pub(crate) struct SdkActiveTurn {
+    connection: Weak<super::connection::SdkConnection>,
     runtime_id: RuntimeTurnId,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: TerminalOutcomeSender,
@@ -49,6 +51,17 @@ pub(crate) struct SdkActiveTurn {
     finish_signal: Arc<Mutex<FinishedState>>,
     /// The session's admitted tool set. Admission never widens per turn.
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
+}
+
+pub(super) struct TurnEndedDiagnostic {
+    pub(super) stop_reason: String,
+    pub(super) failed: bool,
+    pub(super) subtype: Option<String>,
+    pub(super) num_turns: Option<u64>,
+    pub(super) duration_ms: Option<u64>,
+    pub(super) error_text_present: bool,
+    pub(super) error_text_type: String,
+    pub(super) result_field_presence: BTreeMap<String, bool>,
 }
 
 impl SdkActiveTurn {
@@ -69,9 +82,10 @@ impl SdkActiveTurn {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
         let (terminal, future) = terminal_outcome_channel();
-        let (admission, exchange) = AdmissionHub::new(connection);
+        let (admission, exchange) = AdmissionHub::new(connection.clone());
         Ok((
             Arc::new(Self {
+                connection,
                 activity: Mutex::new(SdkActivityProjection::new(runtime_id.clone())),
                 runtime_id,
                 events,
@@ -184,6 +198,14 @@ impl SdkActiveTurn {
             TerminalStatus::RuntimeFailed(diagnostic)
         };
         self.finish(status);
+    }
+
+    pub(super) fn add_stderr_to_diagnostic(&self, diagnostic: SafeDiagnostic) -> SafeDiagnostic {
+        self.connection
+            .upgrade()
+            .map_or(diagnostic.clone(), |connection| {
+                connection.diagnostic_with_stderr(diagnostic)
+            })
     }
 
     fn output_delta(&self, delta: String) -> Result<(), RuntimeFailure> {
@@ -301,4 +323,41 @@ pub(super) fn provider_diagnostic() -> SafeDiagnostic {
         FailureKind::Unknown,
         FailureRecovery::Unknown,
     ))
+}
+
+pub(super) fn provider_turn_ended_diagnostic(fields: TurnEndedDiagnostic) -> SafeDiagnostic {
+    let TurnEndedDiagnostic {
+        stop_reason,
+        failed,
+        subtype,
+        num_turns,
+        duration_ms,
+        error_text_present,
+        error_text_type,
+        result_field_presence,
+    } = fields;
+    let fields = result_field_presence
+        .into_iter()
+        .map(|(field, present)| format!("{field}={present}"))
+        .collect::<Vec<_>>()
+        .join(",");
+    let subtype = subtype.as_deref().unwrap_or("<null>");
+    provider_diagnostic_with_message(format!(
+        "Claude Agent SDK sidecar reported a downstream provider failure; turn_ended: subtype={subtype}; stopReason={stop_reason}; isError={failed}; numTurns={}; durationMs={}; errorTextPresent={error_text_present}; errorTextType={error_text_type}; resultFieldPresence=[{fields}]",
+        optional_number(num_turns),
+        optional_number(duration_ms),
+    ))
+}
+
+fn optional_number(value: Option<u64>) -> String {
+    value.map_or_else(|| "<null>".to_owned(), |value| value.to_string())
+}
+
+fn provider_diagnostic_with_message(message: String) -> SafeDiagnostic {
+    SafeDiagnostic::new("swallowtail.claude-agent.sdk.provider_failed", message)
+        .with_failure_classification(FailureClassification::new(
+            FailureOrigin::Provider,
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ))
 }

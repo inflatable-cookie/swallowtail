@@ -140,13 +140,47 @@ fn decide(report: &CleanupReport) -> CleanupOutcome {
         .cooperative_failure
         .clone()
         .map_or(CleanupOutcome::NotApplicable, CleanupOutcome::Failed);
-    merge_cleanup(
+    let outcome = merge_cleanup(
         merge_cleanup(
             merge_cleanup(state.cleanup_outcome(), cooperative),
             report.resource.clone(),
         ),
         report.credential.clone(),
+    );
+    append_close_evidence(outcome, report.close_evidence.as_ref())
+}
+
+fn append_close_evidence(
+    outcome: CleanupOutcome,
+    evidence: Option<&crate::sdk::close::SidecarCloseEvidence>,
+) -> CleanupOutcome {
+    let Some(evidence) = evidence else {
+        return outcome;
+    };
+    match outcome {
+        CleanupOutcome::Degraded(diagnostic) => {
+            CleanupOutcome::Degraded(with_close_evidence(diagnostic, evidence))
+        }
+        CleanupOutcome::Failed(diagnostic) => {
+            CleanupOutcome::Failed(with_close_evidence(diagnostic, evidence))
+        }
+        other => other,
+    }
+}
+
+fn with_close_evidence(
+    diagnostic: SafeDiagnostic,
+    evidence: &crate::sdk::close::SidecarCloseEvidence,
+) -> SafeDiagnostic {
+    SafeDiagnostic::new(
+        diagnostic.code(),
+        format!(
+            "{}; {}",
+            diagnostic.message(),
+            evidence.diagnostic_fragment()
+        ),
     )
+    .with_failure_classification(diagnostic.failure_classification())
 }
 
 fn guardian_unavailable() -> CleanupOutcome {

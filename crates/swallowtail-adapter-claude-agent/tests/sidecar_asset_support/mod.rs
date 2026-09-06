@@ -263,6 +263,32 @@ impl SidecarProcess {
         }
     }
 
+    /// Reads the next wire event, retaining the same held-record ordering as commands.
+    pub fn next_event(&mut self) -> Value {
+        let record = self.next_record();
+        assert_eq!(record["type"], "event", "expected event: {record}");
+        record
+    }
+
+    /// Sends a query and returns the terminal record emitted for an unmapped
+    /// fake-SDK message. The raw message type is never part of that record.
+    pub fn terminal_after_query(&mut self, id: &str, params: Value) -> Value {
+        self.write(json!({
+            "type": "command",
+            "id": id,
+            "command": "query",
+            "params": params
+        }));
+        loop {
+            let record = self.next_record();
+            match record["type"].as_str() {
+                Some("callback") => self.hold_callback(record),
+                Some("terminal") => return record,
+                _ => {}
+            }
+        }
+    }
+
     /// Returns the next `canUseTool` request, waiting for it if needed.
     pub fn next_callback(&mut self) -> Value {
         if !self.pending.is_empty() {

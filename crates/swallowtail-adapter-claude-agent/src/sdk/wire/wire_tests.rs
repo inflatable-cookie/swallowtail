@@ -264,6 +264,82 @@ fn events_decode_their_qualified_payloads_and_reject_the_rest() {
 }
 
 #[test]
+fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+    let bytes = serde_json::to_vec(&json!({
+        "type": "event",
+        "event": "turn_ended",
+        "subtype": "error_during_execution",
+        "stopReason": "error_during_execution",
+        "isError": true,
+        "numTurns": 2,
+        "durationMs": 41,
+        "errorTextPresent": true,
+        "errorTextType": "string",
+        "resultFieldPresence": {
+            "error": true,
+            "is_error": true,
+            "num_turns": true,
+            "subtype": true
+        }
+    }))
+    .expect("fixture serializes");
+    let ClaudeAgentSdkRecord::Event(ClaudeAgentSdkEvent::TurnEnded {
+        stop_reason,
+        failed,
+        subtype,
+        num_turns,
+        duration_ms,
+        error_text_present,
+        error_text_type,
+        result_field_presence,
+    }) = decode_record(&bytes).expect("turn end decodes")
+    else {
+        panic!("turn_ended expected");
+    };
+    assert_eq!(stop_reason, "error_during_execution");
+    assert!(failed);
+    assert_eq!(subtype.as_deref(), Some("error_during_execution"));
+    assert_eq!(num_turns, Some(2));
+    assert_eq!(duration_ms, Some(41));
+    assert!(error_text_present);
+    assert_eq!(error_text_type, "string");
+    assert!(result_field_presence["error"]);
+    assert!(result_field_presence["num_turns"]);
+
+    let null_metadata = serde_json::to_vec(&json!({
+        "type": "event", "event": "turn_ended", "subtype": null,
+        "stopReason": "", "isError": false, "numTurns": null,
+        "durationMs": null, "errorTextPresent": false,
+        "errorTextType": "absent", "resultFieldPresence": {}
+    }))
+    .expect("fixture serializes");
+    assert!(matches!(
+        decode_record(&null_metadata),
+        Ok(ClaudeAgentSdkRecord::Event(
+            ClaudeAgentSdkEvent::TurnEnded {
+                subtype: None,
+                num_turns: None,
+                duration_ms: None,
+                ..
+            }
+        ))
+    ));
+
+    let invalid = json!({
+        "type": "event", "event": "turn_ended", "subtype": "provider error",
+        "stopReason": "provider error", "isError": true, "numTurns": null,
+        "durationMs": null, "errorTextPresent": true,
+        "errorTextType": "string", "resultFieldPresence": {}
+    });
+    let bytes = serde_json::to_vec(&invalid).expect("fixture serializes");
+    assert_eq!(
+        decode_record(&bytes).err().map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
+        "record {invalid} must fail closed"
+    );
+}
+
+#[test]
 fn terminal_and_diagnostic_payloads_stay_bounded() {
     let bytes = serde_json::to_vec(&json!({
         "type": "diagnostic",

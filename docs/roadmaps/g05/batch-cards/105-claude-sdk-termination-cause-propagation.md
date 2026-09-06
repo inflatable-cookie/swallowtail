@@ -45,10 +45,10 @@ Card 100's own live record hit the same wall: `subtype success`,
 4. Sidecar stderr: the host already bounds it (`pump.rs:38`); retain the
    sanitized tail (bounded bytes, redacted by the existing allowlist) on the
    terminal failure diagnostic so the native's last words survive.
-5. Decide, with evidence, whether `unknown_message` should stay terminal:
-   if the SDK emits a message type the sidecar does not map, killing the
-   session is a policy choice; record the observed type presence and rule in
-   the card Result (Chatterbox confirms).
+5. Qualify the pinned `rate_limit_event` under the direct operator scope
+   extension: known advisory events project progress; result/error remains
+   authoritative for turn failure. Malformed and genuinely unknown messages
+   stay terminal. Record exact evidence and boundary proofs in Result.
 6. Fixture proofs on the fake SDK: each terminal code surfaces verbatim; a
    `turn_ended` with `isError` carries all fields; close evidence appears in
    the cleanup diagnostic; stderr tail is bounded and redacted.
@@ -92,3 +92,90 @@ Chatterbox for a redaction ruling).
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Implementation ready for independent review. The stable runtime diagnostic code
+remains `swallowtail.claude-agent.sdk.sidecar_terminated`; its message now carries
+`sidecar_terminated: <code>`, matching `open_rejected`'s existing shape. The wire
+`TurnEnded` variant retains every sanitized result field; failed runtime turns
+include those fields in their terminal diagnostic. These types are crate-private,
+so no exported Rust API baseline addition is needed.
+
+Degraded/failed cleanup diagnostics include bounded native-close evidence.
+Stderr retains at most 2 KiB and projects at most 240 characters plus a truncation
+marker through fixed diagnostic vocabulary; arbitrary words and paths are
+redacted. Only stderr consumed before the terminal record is available: this
+change does not claim a complete native stderr drain after termination.
+
+### Pinned SDK evidence and remaining cause
+
+Inspected the official `@anthropic-ai/claude-agent-sdk` 0.3.259 tarball whose
+SHA-256 matches the frozen identity:
+`0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e`.
+Its `sdk.d.ts` declares `SDKRateLimitEvent` as a rate-limit information update
+and includes it in `SDKMessage`. `SDKRateLimitInfo.status` is exactly `allowed`,
+`allowed_warning`, or `rejected`; quota and overage observations are optional.
+`SDKResultMessage` documents exactly one result per turn as the turn-complete
+signal. This settles the projection without inventing a provider-failure policy.
+
+The direct root/operator continuation authorizes qualification on this card and
+PR245, superseding the diagnostic-only limitation at `fd00ae03`. A well-formed
+`rate_limit_event` now projects only `{event: progress}` for all three declared
+statuses during an active turn. Between turns the session-long iterator still
+validates the notification but emits no turn-scoped progress. Required
+`rate_limit_info` object, status enum, and nonempty string
+`uuid`/`session_id` are validated; optional quota/account/timing payload is never
+forwarded. Malformed envelopes and unknown statuses keep `unknown_message`.
+Genuinely unknown message types retain the same terminal behavior.
+
+A `rejected` notification is not itself a result and does not manufacture a
+terminal outcome. The following provider error result or thrown query failure
+still fails the turn through the existing path. This preserves real rejection
+without treating changing quota/overage information as a session-kill command.
+Fake-SDK sequences prove allowed/allowed_warning -> assistant text -> successful
+result, rejected -> error result without error text, malformed notifications,
+and interrupt/close after advisory progress. Existing runtime failure,
+cancellation, permission and cleanup proofs remain green.
+
+The pinned `SDKResultError` carries `errors: string[]`; the `SDKResultMessage`
+documentation also specifies error text in `result` for subtype success with
+`is_error: true`. Presence/type projection now covers both and retains singular
+`error` observation. Fake-SDK proofs assert that neither text crosses the wire.
+The SDK input stream, tool permissions, and query options are unchanged.
+
+The old fixture demonstrated the repaired projection gap; it did not prove that
+Desktop emitted that record. There is still no captured live JSONL or provider
+reproduction in this lane. Actual Desktop root cause remains unproved until a
+later tagged real Send.
+
+Release input: v0.4.3 diagnostic and rate-limit projection repair, same qualified package/native axes and
+behavior revision. Root owns independent exact-head review, merge, candidate
+preparation and any separately authorized release. The decisive consumer follow-up
+is one bounded Send on the reviewed build, recording only terminal code/message
+and cleanup evidence. No native UI, global tools, auth or consumer files changed.
+
+### Validation receipts
+
+- Extended focused adapter gate: 377/377 tests; warnings-denied all-target
+  Clippy passed. Nextest `3413ca87-ce26-4fbc-b586-4998470e021d`.
+- Affected-package proof passed for `swallowtail-adapter-claude-agent`.
+- Public API gate passed; no exported API delta.
+- Northstar docs and final formatting/whitespace checks passed.
+- No live provider test or real Send success is claimed.
+
+### Pre-tag persistence delta
+
+Review of `b5934ce2` found that idle rate-limit progress reached Rust's
+`event_without_turn` guard. The repair checks `state.turnActive` only after
+validating the known notification. `handleQuery` sets that state before input;
+`drainQuery` clears it after projecting the result. Generic `event_without_turn`,
+system/stream projection, and malformed/unknown failure policy are unchanged.
+
+A deterministic two-turn fixture drains allowed/allowed_warning/rejected between
+results and the next input, proves no idle wire event, then proves the next reply
+and successful result. Idle malformed and genuinely unknown records remain
+terminal. Focused asset batch: 33/33 passed; the first run reported one leaky
+process marker, and an unchanged-tree detailed rerun passed without that marker.
+No broader test run is claimed for this delta. Prior full focused evidence stands
+for unchanged paths. Root owns the same-reviewer delta check before release.

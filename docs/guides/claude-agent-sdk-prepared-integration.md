@@ -472,9 +472,45 @@ noise.
 ## Failure Diagnostics
 
 Every driver failure is a safe `swallowtail.claude-agent.sdk.*` diagnostic.
-Sidecar records are bounded and redacted, stderr is dropped without
-inspection, and no provider payload, credential, path, or raw SDK value
-reaches a public record. Do not parse diagnostic text; classify on the code.
+Sidecar records are bounded and redacted, and no provider payload, credential,
+path, or raw SDK value reaches a public record. Do not parse diagnostic text;
+classify on the code.
+
+## Reading a Terminated Session
+
+When a sidecar terminates, the turn carries the stable code
+`swallowtail.claude-agent.sdk.sidecar_terminated`. Its safe diagnostic message
+also carries the bounded sidecar cause as `sidecar_terminated: <code>`, for
+example `unknown_message`, `callback_invalid`, or `internal_error`. The sidecar
+message field is validated but never surfaced.
+
+A failed `turn_ended` carries the sanitized fields `subtype`, `stopReason`,
+`isError`, `numTurns`, `durationMs`, `errorTextPresent`, `errorTextType`, and
+the fixed result-field presence map. `errorTextPresent` and `errorTextType`
+describe `errors`, legacy `error`, or `result` when `is_error` is true, in
+that precedence order; the text itself never crosses the sidecar wire. A bounded stderr tail may follow the same diagnostic. It uses the route's
+fixed diagnostic-word allowlist; all other words and paths are redacted. It
+contains only stderr consumed before the terminal record, not a guaranteed
+complete native stderr drain or a retry instruction.
+
+Cleanup is independent from the turn. On a degraded or failed
+`CleanupOutcome`, its diagnostic includes the sidecar's bounded
+`nativeExitObserved`, `nativeExitEvent`, `nativeExitCode`, `nativeExitSignal`,
+`sdkTransportCloseRan`, and `closeTimeline` evidence. `Clean` has no diagnostic;
+the absence of one is not permission to infer missing evidence.
+
+The pinned SDK's `rate_limit_event` is an information update. A valid required
+envelope with status `allowed`, `allowed_warning`, or `rejected` projects only
+progress only while a turn is active; between turns it is validated without
+emitting a turn event. Quota, account, timing and session fields are not forwarded. The
+SDK's result or query error remains authoritative for turn completion/failure,
+so a following provider rejection still fails the turn. The notification itself
+does not kill a valid turn or manufacture a retry instruction.
+
+Malformed rate-limit envelopes and statuses, and genuinely unmapped message
+types, still terminate as `unknown_message`. The raw type and provider payload
+are not included in that safe diagnostic. Provider-free sequence tests qualify
+this behavior; they do not establish the cause of a particular live failure.
 
 ## Normal Path
 

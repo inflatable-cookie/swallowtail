@@ -35,9 +35,10 @@ impl SdkConnection {
                         break;
                     }
                 }
-                // Sidecar stderr carries only bounded host-owned diagnostics;
-                // chunks are dropped without inspection.
-                Ok(Some(_)) => {}
+                // Sidecar stderr is retained only in a bounded host-owned
+                // tail. It is sanitized when attached to the terminal
+                // diagnostic and never enters the wire or debug payload.
+                Ok(Some(chunk)) => self.record_stderr(chunk.bytes()),
                 Ok(None) => break,
                 Err(error) => {
                     self.emit_protocol_debug(&error, "sdk.pump.read");
@@ -65,6 +66,7 @@ impl SdkConnection {
                 "Claude Agent SDK sidecar connection ended",
             )
         });
+        let error = self.terminal_error_with_stderr(error);
         self.record_terminal_error(&error);
         self.closed.store(true, Ordering::SeqCst);
         if let Some(turn) = self
@@ -162,10 +164,9 @@ impl SdkConnection {
                     }
                 }
             }
-            ClaudeAgentSdkRecord::Terminal(_) => Err(failure(
-                "swallowtail.claude-agent.sdk.sidecar_terminated",
-                "Claude Agent SDK sidecar reported a terminal failure",
-            )),
+            ClaudeAgentSdkRecord::Terminal(terminal) => {
+                Err(crate::sdk::failure::terminal_failure(terminal.code))
+            }
             // Diagnostics are bounded, redacted, and observation-only.
             ClaudeAgentSdkRecord::Diagnostic(_) => Ok(()),
         }

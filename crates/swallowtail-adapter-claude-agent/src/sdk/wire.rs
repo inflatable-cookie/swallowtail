@@ -9,6 +9,7 @@ use super::protocol::{
     ClaudeAgentSdkProtocolFailure, ClaudeAgentSdkProtocolFailureKind, ClaudeAgentSdkRecordKind,
 };
 use serde_json::Value;
+use std::collections::BTreeMap;
 
 mod decode;
 
@@ -68,7 +69,6 @@ pub(crate) enum ClaudeAgentSdkRecord {
     // Terminal and diagnostic payloads stay redacted: the driver maps them to
     // one distinct safe failure or drops them without surfacing content. The
     // frozen corpus proves the decoded shape.
-    #[allow(dead_code)]
     Terminal(ClaudeAgentSdkFailure),
     #[allow(dead_code)]
     Diagnostic(ClaudeAgentSdkDiagnostic),
@@ -108,7 +108,6 @@ pub(crate) struct ClaudeAgentSdkBashCommandView {
     pub(crate) truncated: bool,
 }
 
-#[allow(dead_code)]
 pub(crate) struct ClaudeAgentSdkFailure {
     pub(crate) code: ClaudeAgentSdkFailureCode,
 }
@@ -298,9 +297,24 @@ pub(crate) enum ClaudeAgentSdkEvent {
     TurnStarted,
     Progress,
     OutputDelta(String),
-    ToolStarted { call_id: String, name: String },
-    ToolEnded { call_id: String, failed: bool },
-    TurnEnded { stop_reason: String, failed: bool },
+    ToolStarted {
+        call_id: String,
+        name: String,
+    },
+    ToolEnded {
+        call_id: String,
+        failed: bool,
+    },
+    TurnEnded {
+        stop_reason: String,
+        failed: bool,
+        subtype: Option<String>,
+        num_turns: Option<u64>,
+        duration_ms: Option<u64>,
+        error_text_present: bool,
+        error_text_type: String,
+        result_field_presence: BTreeMap<String, bool>,
+    },
     TurnFailed,
 }
 

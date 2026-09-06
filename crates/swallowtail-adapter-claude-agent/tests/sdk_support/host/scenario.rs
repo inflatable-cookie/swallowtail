@@ -79,6 +79,32 @@ pub enum SdkScenario {
     Disconnect,
     /// The sidecar reports a terminal failure.
     TerminalRecord,
+    /// The sidecar reports an invalid command terminal failure.
+    TerminalInvalidCommand,
+    /// The sidecar reports a reused command id terminal failure.
+    TerminalCommandIdReused,
+    /// The sidecar reports too many pending commands terminal failure.
+    TerminalTooManyPending,
+    /// The sidecar reports an unknown callback terminal failure.
+    TerminalCallbackUnknown,
+    /// The sidecar reports an invalid callback terminal failure.
+    TerminalCallbackInvalid,
+    /// The sidecar reports an oversized record terminal failure.
+    TerminalRecordTooLarge,
+    /// The sidecar reports an empty record terminal failure.
+    TerminalEmptyRecord,
+    /// The sidecar reports malformed JSON terminal failure.
+    TerminalMalformedJson,
+    /// The sidecar reports a missing type terminal failure.
+    TerminalMissingType,
+    /// The sidecar reports an unknown record terminal failure.
+    TerminalUnknownRecord,
+    /// The sidecar reports an internal terminal failure.
+    TerminalInternalError,
+    /// The sidecar reports that it could not map an SDK message.
+    TerminalUnknownMessage,
+    /// The sidecar reports a failed SDK result with all sanitized fields.
+    TurnEndedError,
     /// A tool ends without ever starting.
     ToolOrderingDrift,
     /// The sidecar writes an admission request that the turn's own end raced.

@@ -147,6 +147,7 @@ const SDK_RESULT_FIELD_NAMES = [
   "time_origin_ms",
   "is_error",
   "api_error_status",
+  "error",
   "num_turns",
   "result",
   "stop_reason",
@@ -723,20 +724,34 @@ function projectMessage(message) {
     }
     case "result": {
       const resultFieldPresence = Object.fromEntries(
-        [...new Set([...SDK_RESULT_FIELD_NAMES, ...Object.keys(message)])]
-          .sort()
-          .map((key) => [key, Object.prototype.hasOwnProperty.call(message, key)]),
+        SDK_RESULT_FIELD_NAMES.map((key) => [
+          key,
+          Object.prototype.hasOwnProperty.call(message, key),
+        ]),
       );
-      const subtype = typeof message.subtype === "string" ? message.subtype : null;
-      const errorTextPresent = Object.prototype.hasOwnProperty.call(message, "error");
+      const subtype =
+        typeof message.subtype === "string" && /^[A-Za-z0-9_.-]{1,96}$/.test(message.subtype)
+          ? message.subtype
+          : null;
+      // SDKResultError uses errors[]; SDKResultSuccess with is_error carries
+      // error text in result. Retain the singular observation for older records.
+      const errorField = Object.prototype.hasOwnProperty.call(message, "errors")
+        ? "errors"
+        : Object.prototype.hasOwnProperty.call(message, "error")
+          ? "error"
+          : message.is_error === true && Object.prototype.hasOwnProperty.call(message, "result")
+            ? "result"
+            : null;
+      const errorTextPresent = errorField !== null;
+      const errorText = errorTextPresent ? message[errorField] : undefined;
       let errorTextType = "absent";
       if (errorTextPresent) {
-        if (message.error === null) {
+        if (errorText === null) {
           errorTextType = "null";
-        } else if (Array.isArray(message.error)) {
+        } else if (Array.isArray(errorText)) {
           errorTextType = "array";
         } else {
-          errorTextType = typeof message.error;
+          errorTextType = typeof errorText;
         }
       }
       const numTurns =
@@ -762,6 +777,24 @@ function projectMessage(message) {
           stopReason: subtype ?? "",
         },
       ];
+    }
+    case "rate_limit_event": {
+      // SDK 0.3.259: a rate-limit information update, not a turn result.
+      // Even rejected may describe changing quota/overage state; the SDK's
+      // result (or thrown query error) still owns success/failure. Forward no
+      // quota, account, timing, or session payload.
+      const info = message.rate_limit_info;
+      if (
+        !info || typeof info !== "object" || Array.isArray(info) ||
+        !["allowed", "allowed_warning", "rejected"].includes(info.status) ||
+        typeof message.uuid !== "string" || message.uuid.length === 0 ||
+        typeof message.session_id !== "string" || message.session_id.length === 0
+      ) {
+        return "unknown";
+      }
+      // The iterator is session-long. Validate idle notifications too, but
+      // never send a turn-scoped event when no turn owns it.
+      return state.turnActive ? [{ event: "progress" }] : [];
     }
     case "stream_event":
     case "system":

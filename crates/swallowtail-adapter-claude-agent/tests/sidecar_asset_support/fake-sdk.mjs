@@ -226,6 +226,11 @@ export function query({ prompt, options }) {
   }
 
   let settled = false;
+  let rateStep = 0;
+  let releaseRateInterrupt;
+  const rateInterrupt = new Promise((resolve) => { releaseRateInterrupt = resolve; });
+  let releaseIdleRateLimits;
+  const idleRateLimits = new Promise((resolve) => { releaseIdleRateLimits = resolve; });
   let firstInputConsumed = false;
   const rawPromptIterator = prompt[Symbol.asyncIterator]();
   const promptIterator =
@@ -260,8 +265,74 @@ export function query({ prompt, options }) {
         }
         return { value: initMessage(options), done: false };
       }
+      if (SCENARIO.startsWith("between-")) {
+        rateStep += 1;
+        if (rateStep === 1 || rateStep === 6) {
+          if (rateStep === 6) {
+            // Reaching next() proves all three idle notices were projected.
+            // The no-op permission control below supplies a deterministic
+            // barrier before the test sends its second input.
+            releaseIdleRateLimits();
+            if ((await promptIterator.next()).done) return { value: undefined, done: true };
+          }
+          return { value: { type: "assistant", message: { content: [{ type: "text", text: "fixture reply" }] } }, done: false };
+        }
+        if (rateStep === 2 || rateStep === 7) return { value: resultMessage(), done: false };
+        if (rateStep >= 3 && rateStep <= 5) {
+          return { value: {
+            type: SCENARIO === "between-unknown" ? "fixture_unknown_message" : "rate_limit_event",
+            rate_limit_info: { status: SCENARIO === "between-malformed" ? "future-status" : ["allowed", "allowed_warning", "rejected"][rateStep - 3] },
+            uuid: "fixture-uuid", session_id: "private-session",
+          }, done: false };
+        }
+        return { value: undefined, done: true };
+      }
+      if (SCENARIO.startsWith("rate-")) {
+        const variant = SCENARIO.slice(5);
+        rateStep += 1;
+        if (rateStep === 1) {
+          const message = {
+            type: "rate_limit_event",
+            rate_limit_info: { status: variant === "cancel" ? "allowed_warning" : variant },
+            uuid: "fixture-uuid", session_id: "private-session",
+          };
+          if (variant === "missing-info") delete message.rate_limit_info;
+          if (variant === "null-info") message.rate_limit_info = null;
+          if (variant === "array-info") message.rate_limit_info = [];
+          if (variant === "missing-status") message.rate_limit_info = {};
+          if (variant === "numeric-status") message.rate_limit_info.status = 7;
+          if (variant === "missing-session") {
+            message.rate_limit_info.status = "allowed";
+            delete message.session_id;
+          }
+          return { value: message, done: false };
+        }
+        if (rateStep === 2) {
+          if (variant === "cancel") {
+            await rateInterrupt;
+            return { value: resultMessage(), done: false };
+          }
+          if (variant === "rejected") {
+            return { value: { ...resultMessage({ isError: true }), result: "private rejection detail" }, done: false };
+          }
+          return { value: { type: "assistant", message: { content: [{ type: "text", text: "fixture reply" }] } }, done: false };
+        }
+        if (rateStep === 3 && variant !== "cancel" && variant !== "rejected") {
+          return { value: resultMessage(), done: false };
+        }
+        return { value: undefined, done: true };
+      }
       if (!settled) {
         settled = true;
+        if (SCENARIO === "pinned-error-result") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "pinned-success-error") {
+          return { value: { ...resultMessage({ isError: true }), result: "private provider detail" }, done: false };
+        }
+        if (SCENARIO === "unknown-message") {
+          return { value: { type: "fixture_unknown_message" }, done: false };
+        }
         if (SCENARIO === "early-input-eof") {
           const nextInput = await promptIterator.next();
           if (!nextInput.done) {
@@ -314,9 +385,11 @@ export function query({ prompt, options }) {
       return modelRows(options);
     },
     async interrupt() {
+      releaseRateInterrupt();
       return { received: true };
     },
     async setPermissionMode(mode) {
+      if (SCENARIO === "between-turns") await idleRateLimits;
       // Upstream `Query.setPermissionMode` resolves without a value, so the
       // sidecar's confirmation is that the change was accepted.
       state.permissionMode = mode;

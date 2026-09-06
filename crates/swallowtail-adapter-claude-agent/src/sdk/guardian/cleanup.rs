@@ -19,21 +19,17 @@
 //! caller's future.
 
 use crate::sdk::bounded::HostBound;
-use crate::sdk::close::SidecarNativeJoin;
+use crate::sdk::close::{CLOSE_JOIN_BOUND_MS, SidecarCloseEvidence, SidecarNativeJoin};
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::command_rejected;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
-use serde_json::{Value, json};
+use serde_json::json;
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     CleanupOutcome, CredentialLease, HostServices, JoinedTask, ProcessExit, ProcessHandle,
     ProcessTreeCompletion, ResourceLease,
 };
-
-/// Bound the sidecar states, and honours, when joining its own retained
-/// native child handle before the host escalates.
-pub(crate) const CLOSE_JOIN_BOUND_MS: u64 = 2_000;
 
 /// Everything one guardian owns for the whole ordered continuation.
 #[derive(Default)]
@@ -68,6 +64,7 @@ impl Owned {
 /// Absent fields are absent observations. Nothing here is upgraded by the
 /// guardian having merely finished.
 pub(crate) struct CleanupReport {
+    pub(crate) close_evidence: Option<SidecarCloseEvidence>,
     pub(crate) native_join: Option<SidecarNativeJoin>,
     pub(crate) cooperative_failure: Option<SafeDiagnostic>,
     pub(crate) pump_joined: bool,
@@ -95,12 +92,13 @@ pub(crate) async fn run(
     cooperative: Cooperative,
 ) -> CleanupReport {
     let connection = owned.connection.take();
-    let (native_join, cooperative_failure) = match (&connection, cooperative) {
+    let (close_evidence, cooperative_failure) = match (&connection, cooperative) {
         (Some(connection), Cooperative::Session { turn_active }) => {
             cooperative_close(connection, bounded, request_id, turn_active).await
         }
         _ => (None, None),
     };
+    let native_join = close_evidence.as_ref().map(|evidence| evidence.native_join);
     // The declared descendant termination attempt. It is a request through host
     // authority, made whether or not any cooperative stage answered.
     if let Some(connection) = &connection {
@@ -135,6 +133,7 @@ pub(crate) async fn run(
     let resource = release_resource(owned.resource.take(), services).await;
     let credential = release_credential(owned.credential.take(), services).await;
     CleanupReport {
+        close_evidence,
         native_join,
         cooperative_failure,
         pump_joined,
@@ -159,7 +158,7 @@ async fn cooperative_close(
     bounded: &HostBound,
     request_id: &str,
     turn_active: bool,
-) -> (Option<SidecarNativeJoin>, Option<SafeDiagnostic>) {
+) -> (Option<SidecarCloseEvidence>, Option<SafeDiagnostic>) {
     let mut cooperative_failure = None;
     if turn_active {
         let id = format!("close-interrupt:{request_id}");
@@ -192,7 +191,9 @@ async fn cooperative_close(
         ))
         .await;
     let reported = match close_result {
-        Some(Ok(response)) if response.success => native_join(response.data.as_ref()),
+        Some(Ok(response)) if response.success => {
+            SidecarCloseEvidence::from_sidecar(response.data.as_ref())
+        }
         Some(Ok(response)) => {
             if cooperative_failure.is_none() {
                 cooperative_failure = Some(
@@ -213,23 +214,6 @@ async fn cooperative_close(
     };
     let _ = bounded.run(connection.begin_close()).await;
     (reported, cooperative_failure)
-}
-
-/// Reads the sidecar's report of its own direct native child.
-///
-/// A reported join must carry the observation that produced it, and must state
-/// the exact bound this route declared.
-pub(crate) fn native_join(data: Option<&Value>) -> Option<SidecarNativeJoin> {
-    let data = data?;
-    if data.get("joinBoundMs").and_then(Value::as_u64) != Some(CLOSE_JOIN_BOUND_MS) {
-        return None;
-    }
-    let observed = data.get("nativeExitObserved").and_then(Value::as_bool)?;
-    let join = SidecarNativeJoin::from_sidecar(data.get("nativeJoin")?.as_str()?)?;
-    match (join, observed) {
-        (SidecarNativeJoin::Exited, true) | (SidecarNativeJoin::Survivor, false) => Some(join),
-        _ => None,
-    }
 }
 
 async fn release_resource(lease: Option<ResourceLease>, services: &HostServices) -> CleanupOutcome {

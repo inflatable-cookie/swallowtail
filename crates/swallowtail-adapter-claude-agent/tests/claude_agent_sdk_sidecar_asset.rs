@@ -174,6 +174,199 @@ fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
 }
 
 #[test]
+fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() {
+    let mut sidecar = SidecarProcess::start_scenario("unknown-message");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], true,
+        "unknown-message fixture opens: {open}"
+    );
+    let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+    assert_eq!(terminal["failure"]["code"], "unknown_message");
+    assert_eq!(
+        terminal["failure"]["message"],
+        "sidecar terminated: unknown_message"
+    );
+    assert!(!terminal.to_string().contains("fixture_unknown_message"));
+}
+
+#[test]
+fn pinned_advisory_rate_limits_allow_reply_and_successful_result() {
+    for scenario in ["rate-allowed", "rate-allowed_warning"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        assert_eq!(sidecar.next_event()["event"], "turn_started");
+        assert_eq!(
+            sidecar.next_event(),
+            json!({"type": "event", "event": "progress"})
+        );
+        let reply = sidecar.next_event();
+        assert_eq!(reply["event"], "output_delta");
+        assert_eq!(reply["delta"], "fixture reply");
+        let ended = sidecar.next_event();
+        assert_eq!(ended["event"], "turn_ended");
+        assert_eq!(ended["isError"], false);
+        assert_eq!(ended["stopReason"], "success");
+        let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+        assert_eq!(close["success"], true);
+        assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+        assert_eq!(close["data"]["nativeExitObserved"], true);
+    }
+}
+
+#[test]
+fn idle_rate_limit_notifications_do_not_emit_turn_events_and_next_turn_succeeds() {
+    let mut sidecar = SidecarProcess::start_scenario("between-turns");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "output_delta");
+    assert_eq!(sidecar.next_event()["event"], "turn_ended");
+
+    // Same-mode control is a fixture barrier: its SDK method waits until the
+    // session iterator has projected all three notices while no turn is active.
+    let barrier = sidecar.command(
+        "idle-barrier",
+        "set_permission_mode",
+        json!({"mode": "default"}),
+    );
+    assert_eq!(barrier["success"], true);
+    sidecar.command("query-2", "query", json!({"text": "second turn"}));
+    // Any idle progress record would be held ahead of this turn_started.
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    let reply = sidecar.next_event();
+    assert_eq!(reply["event"], "output_delta");
+    assert_eq!(reply["delta"], "fixture reply");
+    let ended = sidecar.next_event();
+    assert_eq!(ended["event"], "turn_ended");
+    assert_eq!(ended["isError"], false);
+    assert_eq!(ended["stopReason"], "success");
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+    assert_eq!(close["data"]["nativeExitObserved"], true);
+}
+
+#[test]
+fn idle_malformed_and_unknown_notifications_still_terminate() {
+    for scenario in ["between-malformed", "between-unknown"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+        assert_eq!(terminal["failure"]["code"], "unknown_message");
+    }
+}
+
+#[test]
+fn rejected_rate_limit_preserves_the_provider_error_result() {
+    let mut sidecar = SidecarProcess::start_scenario("rate-rejected");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(
+        sidecar.next_event(),
+        json!({"type": "event", "event": "progress"})
+    );
+    let ended = sidecar.next_event();
+    assert_eq!(ended["event"], "turn_ended");
+    assert_eq!(ended["isError"], true);
+    assert_eq!(ended["errorTextPresent"], true);
+    assert!(!ended.to_string().contains("private rejection detail"));
+    assert_eq!(
+        sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}))["success"],
+        true
+    );
+}
+
+#[test]
+fn malformed_rate_limits_remain_terminal() {
+    for scenario in [
+        "rate-missing-info",
+        "rate-null-info",
+        "rate-array-info",
+        "rate-missing-status",
+        "rate-numeric-status",
+        "rate-future-status",
+        "rate-missing-session",
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+        assert_eq!(terminal["failure"]["code"], "unknown_message");
+        assert!(!terminal.to_string().contains("private-session"));
+    }
+}
+
+#[test]
+fn rate_limit_progress_preserves_interrupt_and_close() {
+    let mut sidecar = SidecarProcess::start_scenario("rate-cancel");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "progress");
+    let interrupt = sidecar.command("interrupt-1", "interrupt", json!({}));
+    assert_eq!(interrupt["success"], true);
+    assert_eq!(sidecar.wait_for_turn_end_record()["event"], "turn_ended");
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(close["data"]["nativeExitObserved"], true);
+}
+
+#[test]
+fn pinned_result_error_fields_report_presence_without_provider_text() {
+    for (scenario, field, kind) in [
+        ("pinned-error-result", "errors", "array"),
+        ("pinned-success-error", "result", "string"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        let ended = sidecar.wait_for_turn_end_record();
+        assert_eq!(ended["isError"], true);
+        assert_eq!(ended["errorTextPresent"], true);
+        assert_eq!(ended["errorTextType"], kind);
+        assert_eq!(ended["resultFieldPresence"][field], true);
+        assert!(!ended.to_string().contains("private provider detail"));
+        sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    }
+}
+
+#[test]
 fn open_rejections_expose_only_the_fixed_sidecar_code() {
     for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);

@@ -3,5 +3,5 @@
 {"type":"event","event":"output_delta","delta":"partial answer"}
 {"type":"event","event":"tool_started","toolCallId":"tool-1","toolName":"Read"}
 {"type":"event","event":"tool_ended","toolCallId":"tool-1","isError":false}
-{"type":"event","event":"turn_ended","stopReason":"success","isError":false}
+{"type":"event","event":"turn_ended","subtype":"success","stopReason":"success","isError":false,"numTurns":1,"durationMs":7,"errorTextPresent":false,"errorTextType":"absent","resultFieldPresence":{"api_error_status":false,"deferred_tool_use":false,"duration_api_ms":false,"duration_ms":true,"errors":false,"fast_mode_disabled_reason":false,"fast_mode_state":false,"is_error":true,"modelUsage":false,"num_turns":true,"origin":false,"permission_denials":false,"queued_turn_count":false,"request_sent_wall_ms":false,"result":false,"session_id":false,"stop_reason":false,"structured_output":false,"subtype":true,"terminal_reason":false,"time_origin_ms":false,"time_to_request_from_spawn_ms":false,"total_cost_usd":false,"ttft_ms":false,"ttft_stream_ms":false,"type":true,"usage":false,"user_message_uuid":false,"user_message_uuids":false,"warm_spare_claimed":false}}
 {"type":"event","event":"turn_failed"}

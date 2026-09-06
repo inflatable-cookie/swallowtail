@@ -44,7 +44,7 @@ root = Path(sys.argv[1])
 current_route_file = Path(sys.argv[2])
 historical_route_file = root / "release-baselines/production-routes-0.3.3.txt"
 immutable_route_file = root / "release-baselines/production-routes-0.4.1.txt"
-candidate_route_file = root / "release-baselines/production-routes-0.4.2.txt"
+candidate_route_file = root / "release-baselines/production-routes-0.4.3.txt"
 ledger_file = root / (
     "docs/research/281-v0-4-0-compatibility-and-freeze-audit/"
     "route-behavior-ledger.tsv"
@@ -91,7 +91,7 @@ candidate_routes = {
 }
 if candidate_routes != current_routes:
     fail(
-        "v0.4.2 candidate route baseline must equal the current 49-route set: "
+        "v0.4.3 candidate route baseline must equal the current 49-route set: "
         f"added={sorted(candidate_routes - current_routes)}, "
         f"missing={sorted(current_routes - candidate_routes)}"
     )

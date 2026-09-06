@@ -5,7 +5,7 @@ release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
 release_immutable_baseline_dir=release-baselines/public-api-0.4.1
-release_baseline_dir=release-baselines/public-api-0.4.2
+release_baseline_dir=release-baselines/public-api-0.4.3
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
 
@@ -39,7 +39,7 @@ while IFS= read -r release_package; do
       "$release_immutable_baseline_dir/$release_package.txt" \
       > "$release_removed_api" || true
     if [[ -s "$release_removed_api" ]]; then
-      printf 'v0.4.2 release API removes an immutable v0.4.1 item: %s\n' \
+      printf 'v0.4.3 release API removes an immutable v0.4.1 item: %s\n' \
         "$release_package" >&2
       cat "$release_removed_api" >&2
       exit 1
@@ -49,4 +49,4 @@ while IFS= read -r release_package; do
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: 40 packages at v0.4.2; immutable v0.4.1 remains 40; no API removals are permitted in this patch\n'
+printf 'semantic API passed: 40 packages at v0.4.3; immutable v0.4.1 remains 40; no API removals are permitted in this patch\n'

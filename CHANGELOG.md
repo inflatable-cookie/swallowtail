@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-09-06
+
 ### Added
 - propagate bounded Claude Agent SDK termination causes, sanitized `turn_ended`
   result fields, close evidence, and redacted stderr tails into safe consumer

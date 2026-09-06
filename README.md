@@ -19,14 +19,14 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.4.2` is the current source-candidate identity. Releases are distributed as
+`v0.4.3` is the current source-candidate identity. Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
-installer in this release line. The last tagged release remains `v0.4.1` until
-the operator authorizes the annotated `v0.4.2` tag.
+installer in this release line. The last tagged release remains `v0.4.2` until
+the operator authorizes the annotated `v0.4.3` tag.
 
-The 40 packages share coordinated version `0.4.2` and provide 49 production
+The 40 packages share coordinated version `0.4.3` and provide 49 production
 routes, including `pi.sdk-sidecar` and `claude-agent.sdk` after immutable
 `v0.4.1`. OpenHands remains a package without a production route. The candidate
 preserves the Rust `1.95.0` floor and is not an API 1.0 promise.
@@ -56,10 +56,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.2" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.2" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.2" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.2" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.3" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.3" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.3" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.3" }
 ```
 <!-- source-install:end -->
 
@@ -115,7 +115,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.4.2` package
+- Rust `1.95.0` or newer for every `v0.4.3` package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -147,7 +147,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.4.2 candidate release notes](docs/releases/0.4.2.md).
+and the [v0.4.3 candidate release notes](docs/releases/0.4.3.md).
 
 ## Development
 

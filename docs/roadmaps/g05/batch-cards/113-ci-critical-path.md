@@ -111,10 +111,27 @@ and a green workflow-dispatch run at 4m25s. The macOS runner queue that
 cost the baseline dispatch about 3 minutes largely went away with the
 macOS job count down from four to one.
 
-The commit that records these numbers gets a run of its own; it is the
-exact-head run for review and is expected to sit in the same band. Every
-timing above is the run's own `createdAt` to `updatedAt`, so queue time is
-counted.
+Every timing above is the run's own `createdAt` to `updatedAt`, so queue
+time is counted.
+
+Run 34058895115, a docs-only commit, was green at 4m08s: the pinned MSRV
+floor took 4m05s on an evicted cache instead of the 1m04s it takes on a
+hit. That is the finding below, not a regression in the shape.
+
+### Cache pressure is the remaining variance
+
+`actions/cache` usage for this repository is 11.1 GB against a 10 GB
+limit, 38 entries, including entries for long-merged pull requests. GitHub
+evicts least-recently-used entries, so any job can go cold on any run;
+that is what made the head run 4m08s.
+
+The fix is outside this card's owned paths and needs evidence this branch
+cannot produce. `save-if: ${{ github.ref == 'refs/heads/main' }}` on the
+two nextest jobs and the doc job would stop every pull request writing its
+own multi-gigabyte copy and let branches read `main`'s. It can only be
+measured once `main` holds those keys, which happens on the first push
+after this merges. Recommended as a follow-up for the coordinator, along
+with deleting the cache entries still held for merged pull requests.
 
 ### Flake surfaced, not owned here
 

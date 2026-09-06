@@ -869,3 +869,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Impact: the original agent could not be resumed; recreating the implementation lane required a replacement worker and fresh same-workspace reviewer placement.
 - Fix: preserve deferred worker workspaces until the lane is merged and closed out, or make continuation preflight surface the archival/removal event before dispatch.
 - Surface: Paseo workspace lifecycle and Northstar deferred-lane continuation.
+
+### [ ] Public API baseline directory naming invites post-tag edits to look like tag mutation — 2026-09-06
+
+- Friction: `release-baselines/public-api-<current>` is the working baseline
+  that absorbs additive API between tags; `public-api-<previous>` is the
+  immutable one. Nothing says so, and `public-api-unreleased` exists but is
+  stale and unread by `scripts/check-public-api.sh`. Card 082 was steered
+  into the unreleased directory and lost a review round.
+- Fix shape: either delete `public-api-unreleased` and document the
+  working/immutable roles in `scripts/README.md` and Contract 036, or make
+  the gate overlay an `unreleased` directory and have prepare fold it in.
+  Decide once; the release lane should not re-derive this.
+- Surface: `scripts/check-public-api.sh`, `release-baselines/`, Contract 036.

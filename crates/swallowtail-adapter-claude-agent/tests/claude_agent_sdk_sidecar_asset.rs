@@ -785,6 +785,37 @@ fn resume_options_are_forwarded_without_replaying_a_transcript() {
 }
 
 #[test]
+fn fake_sdk_resume_mismatch_scenarios_fail_on_the_first_turn() {
+    for (scenario, expected) in [
+        ("resume-session-unknown", "resume_session_unknown"),
+        ("resume-cwd-mismatch", "resume_cwd_mismatch"),
+        ("resume-account-mismatch", "resume_account_mismatch"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let cwd = sidecar.cwd();
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({
+                "cwd": cwd,
+                "model": "m-1",
+                "persistSession": true,
+                "resume": "session-1"
+            }),
+        );
+        assert_eq!(open["success"], true, "resume open response: {open}");
+
+        let query = sidecar.command("query-1", "query", json!({"text": "continue"}));
+        assert_eq!(query["success"], false, "resume mismatch response: {query}");
+        assert_eq!(query["failure"]["code"], expected);
+        assert!(
+            query.get("data").is_none(),
+            "a failed resume must not accept a turn: {query}"
+        );
+    }
+}
+
+#[test]
 fn listing_forwards_only_the_bounded_provider_metadata_request() {
     let mut sidecar = SidecarProcess::start();
     let response = sidecar.command(

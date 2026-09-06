@@ -40,6 +40,7 @@ Load with replay (Contract 017 load); recovery attachment; consumer transcript r
 - `effigy validate:focused swallowtail-adapter-claude-agent`
 - `effigy package:verify-affected swallowtail-adapter-claude-agent`
 - `effigy package:api`
+- `effigy qa:routes`
 - `effigy qa:northstar`
 - `git diff --check`
 
@@ -65,5 +66,6 @@ Frozen anchors in `sdk.d.ts`:
 - `forkSession` at lines 724-738, returning a new resumable session id through `query({ options: { resume: sessionId } })`.
 - `getSessionInfo` at lines 759-767 and `getSessionMessages` at lines 787-797; message retrieval is outside this card.
 - `listSessions` at lines 973-992, with `dir`, `limit`, `offset`, `includeWorktrees`, `includeProgrammatic`, and `sessionStore` options at lines 997-1034.
+- `SDKSessionInfo` at lines 4987-5031: required `sessionId`, `summary`, and `lastModified` at lines 4990-5002; optional `fileSize`, `customTitle`, `firstPrompt`, `gitBranch`, `cwd`, `tag`, and `createdAt` at lines 5004-5030. The route projects only the bounded `sessionId`, leased `cwd`, `createdAt`, `lastModified`, and title fields.
 
-Decision: resume, `resumeSessionAt`, and `listSessions` are present in the pinned artifact. This card implements resume and the bounded listing surface using the leased cwd; listing returns provider session id, cwd, timestamps, and title only. `getSessionMessages` and `forkSession` remain out of scope. `sessionStore` is not used. No provider calls or credentials were used for this freeze.
+Decision: resume, `resumeSessionAt`, and `listSessions` are present in the pinned artifact, and the `SDKSessionInfo` record shape is frozen above. This card implements resume and the bounded listing surface using the leased cwd; listing returns provider session id, cwd, timestamps, and title only. `getSessionMessages` and `forkSession` remain out of scope. `sessionStore` is not used. The solution feature matrix retains `resume_session=No` and `provider_session_catalogue=No`: this route's exact-binding resume is adapter-local rather than shared load/catalogue authority, and listing is display-only. The lifecycle matrix keeps the persistent-session posture `unsupported` because the route has no management binding, archive, restore, or delete surface. The shared provider-route inventory scripts are outside this card's owned paths and remain unchanged; the owned matrix cells are aligned to their current audited expectations. No provider calls or credentials were used for this freeze.

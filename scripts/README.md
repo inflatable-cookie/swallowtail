@@ -53,6 +53,10 @@ Normal validation scripts:
 - `security:dependencies` — RustSec advisory, allowed-license, and allowed-
   source policy through the repository `deny.toml`
 
+The source-tag lane, cheap-then-hosted gate order, and tag-request template:
+[docs/guides/release-playbook.md](../docs/guides/release-playbook.md).
+Contract 036 hosted-gate delegation is the authority.
+
 Release-preparation scripts:
 
 - `release-version-identity.sh` — current version from

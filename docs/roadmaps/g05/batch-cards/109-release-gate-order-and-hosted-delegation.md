@@ -34,6 +34,15 @@ Make one prepare attempt cheap: run the deterministic fast gates first, and let 
 
 See the g05.034 manifest row.
 
+## Result
+
+PR 253. Chatterbox co-signed the Contract 036 clause on two bounded
+conditions, then required this event qualifier: `floor` joins the
+hosted-delegated set; evidence is a green hosted `CI` run triggered by
+`workflow_dispatch` (or a push to `main`) at the SHA to tag or at a commit
+with an identical tree; pull-request runs do not qualify because the MSRV
+floor skips its tests there. Stopped for final delta review. No merge.
+
 ## Auto-Continuation
 
 No. Stop for exact-head review.

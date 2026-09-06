@@ -326,6 +326,38 @@ gates.
 The gate performs no authenticated provider work and no external release
 mutation.
 
+## Hosted Gate Delegation
+
+`lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate by
+a green hosted `CI` run triggered by `workflow_dispatch` (or a push to `main`)
+at the SHA to tag or at a commit with an identical tree; pull-request runs do
+not qualify because the MSRV floor skips its tests there. `floor` is the
+pinned-MSRV clippy and test pass already represented by that board; repeating
+it locally re-runs a heavy gate the hosted run already proved.
+
+A hosted run at another SHA does not count unless that commit's tree is
+identical. If merge produces a new SHA whose tree is not identical to a
+green qualifying run, dispatch `CI` with `workflow_dispatch` at the merge
+SHA and wait for green before the tag request.
+
+Local prepare either runs those four gates or records the qualifying run
+id. The release note names the run.
+
+Cheap gates still run locally, in this order: `fmt`, `qa`, `docs`,
+`metadata`, `api`, `security`, `source`. A docs-index failure must fail
+before clippy and the workspace tests.
+
+Effigy v0.12.1 preserves `[release.gates]` declaration order and cannot skip
+a configured gate from hosted evidence. Until Effigy grows that skip, the
+default table omits the four delegated gates. Operators invoke the
+local-heavy profile in `config/release.toml` only when no qualifying hosted
+run exists. Native skip remains an Effigy Chatterbox request.
+
+The lane, expected clocks, actors, and tag-request template live in
+[the release playbook](../guides/release-playbook.md). The tag request goes
+to the operator the moment those gates are green. Consumer smoke runs on the
+tag afterwards and does not hold the tag.
+
 ## Release Authority
 
 No manifest version, passing gate, changelog, clean commit, or generated

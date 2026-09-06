@@ -10,17 +10,34 @@ sync-files = ["Cargo.lock"]
 tag-format = "v{version}"
 initial-tag-current-version = true
 
-# Local release gates are credential-free. Heavy Rust lanes run at reduced
-# scheduling priority so the developer machine remains usable.
+# Local release gates are credential-free. Cheap gates run first in
+# declaration order so a docs or metadata failure costs seconds, not a
+# clippy-and-test cycle. `lint`, `lint:no-features`, `test`, and `floor` are
+# omitted from this table: Contract 036 treats a green hosted `CI` run
+# triggered by `workflow_dispatch` (or a push to `main`) at the SHA to tag
+# or at a commit with an identical tree as their evidence; pull-request
+# runs do not qualify because the MSRV floor skips its tests there.
+# `floor` is the pinned-MSRV clippy and test pass already on that board.
+# Effigy v0.12.1 preserves order but cannot skip a configured gate and has
+# no `--hosted` flag; native skip is an Effigy Chatterbox request. Until
+# then, invoke the local-heavy profile below only when no qualifying hosted
+# run exists.
 [release.gates]
 fmt = "cargo fmt --all -- --check"
-lint = "nice -n 5 cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
-"lint:no-features" = "nice -n 5 cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
-test = "nice -n 5 cargo nextest run --workspace --all-features --locked"
 qa = "effigy qa:docs && effigy qa:routes"
 docs = "effigy package:docs"
 metadata = "effigy package:metadata"
 api = "effigy package:api"
 security = "effigy security:dependencies"
-floor = "effigy package:release-floor"
 source = "effigy package:source-consumer"
+
+# Local-heavy profile. Not loaded: Effigy has one `[release.gates]` table.
+# Paste these four keys into `[release.gates]` and rerun
+# `effigy --json release gates`, or run the commands in this order, only
+# when no qualifying hosted run exists. Heavy Rust lanes stay at reduced
+# scheduling priority so the developer machine remains usable.
+#
+# lint = "nice -n 5 cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
+# "lint:no-features" = "nice -n 5 cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
+# test = "nice -n 5 cargo nextest run --workspace --all-features --locked"
+# floor = "effigy package:release-floor"

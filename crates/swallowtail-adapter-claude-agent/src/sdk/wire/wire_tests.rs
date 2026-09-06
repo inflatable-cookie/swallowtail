@@ -133,6 +133,10 @@ fn sidecar_command_failure_codes_match_the_rust_enumeration() {
         ClaudeAgentSdkFailureCode::PermissionModeUnsupported,
         ClaudeAgentSdkFailureCode::PermissionModeFailed,
         ClaudeAgentSdkFailureCode::PermissionModeUnconfirmed,
+        ClaudeAgentSdkFailureCode::ModelChangeUnsupported,
+        ClaudeAgentSdkFailureCode::ModelChangeFailed,
+        ClaudeAgentSdkFailureCode::ModelChangeUnconfirmed,
+        ClaudeAgentSdkFailureCode::EffortUnconfirmed,
         ClaudeAgentSdkFailureCode::UnknownCommand,
         ClaudeAgentSdkFailureCode::CommandFailed,
     ]

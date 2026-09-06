@@ -65,6 +65,8 @@ const MAXIMUM_PENDING_COMMANDS = 16;
 const MAXIMUM_PENDING_CALLBACKS = 8;
 const MAXIMUM_CAPABILITIES = 64;
 const MAXIMUM_CAPABILITY_BYTES = 96;
+const MAXIMUM_SUPPORTED_MODELS = 64;
+const MAXIMUM_MODEL_BYTES = 128;
 // Keep callback text aligned with the runtime's existing
 // MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES bound.
 const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
@@ -173,7 +175,14 @@ function childEnvironment() {
   );
 }
 
-const COMMANDS = new Set(["open", "query", "interrupt", "set_permission_mode", "close"]);
+const COMMANDS = new Set([
+  "open",
+  "query",
+  "interrupt",
+  "set_permission_mode",
+  "set_model",
+  "close",
+]);
 const COMMAND_FAILURE_CODES = new Set([
   "missing_environment",
   "invalid_command",
@@ -208,6 +217,10 @@ const COMMAND_FAILURE_CODES = new Set([
   "permission_mode_unsupported",
   "permission_mode_failed",
   "permission_mode_unconfirmed",
+  "model_change_unsupported",
+  "model_change_failed",
+  "model_change_unconfirmed",
+  "effort_unconfirmed",
   "unknown_command",
   "command_failed",
 ]);
@@ -241,6 +254,8 @@ const state = {
   effectiveModel: null,
   supportedModels: [],
   supportedModelsAvailable: false,
+  requestedEffort: null,
+  effectiveEffort: null,
   turnActive: false,
   pending: new Map(),
   usedIds: new Set(),
@@ -377,6 +392,16 @@ function admittedPermissionMode(value) {
   }
   if (!PERMISSION_MODES.includes(value)) {
     throw new SidecarFailure("permission_mode_invalid");
+  }
+  return value;
+}
+
+function admittedEffort(value) {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (!["low", "medium", "high", "xhigh", "max"].includes(value)) {
+    throw new SidecarFailure("invalid_command");
   }
   return value;
 }
@@ -556,15 +581,24 @@ function accountProjection(account) {
 }
 
 function supportedModelValues(values) {
-  if (!Array.isArray(values)) {
+  if (!Array.isArray(values) || values.length > MAXIMUM_SUPPORTED_MODELS) {
     throw new SidecarFailure("initialization_failed");
   }
   const models = [];
   for (const entry of values) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new SidecarFailure("initialization_failed");
+    }
     const candidates = [entry?.value, entry?.resolvedModel];
     for (const candidate of candidates) {
       if (typeof candidate !== "string" || candidate.length === 0) {
         continue;
+      }
+      if (
+        Buffer.byteLength(candidate, "utf8") > MAXIMUM_MODEL_BYTES ||
+        [...candidate].some((character) => character.charCodeAt(0) < 0x20)
+      ) {
+        throw new SidecarFailure("initialization_failed");
       }
       if (!models.includes(candidate)) {
         models.push(candidate);
@@ -762,11 +796,12 @@ async function handleOpen(params) {
   if (state.query) {
     throw new SidecarFailure("already_open");
   }
-  requireExactParams(params, ["cwd", "model", "tools", "permissionMode"]);
+  requireExactParams(params, ["cwd", "model", "tools", "permissionMode", "effort"]);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
   const tools = admittedTools(params.tools);
   const permissionMode = admittedPermissionMode(params.permissionMode);
+  const effort = admittedEffort(params.effort);
   const disallowed = [
     ...NEVER_AVAILABLE_TOOLS,
     ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),
@@ -783,7 +818,7 @@ async function handleOpen(params) {
 
   let query;
   try {
-    query = sdk.query({
+    const options = {
       prompt: inputStream(),
       options: {
         cwd,
@@ -810,7 +845,11 @@ async function handleOpen(params) {
         canUseTool: (toolName, input) => canUseTool(toolName, input),
         spawnClaudeCodeProcess: (options) => spawnNative(options),
       },
-    });
+    };
+    if (effort !== undefined) {
+      options.options.effort = effort;
+    }
+    query = sdk.query(options);
   } catch (error) {
     if (error instanceof SidecarFailure) {
       throw error;
@@ -846,6 +885,8 @@ async function handleOpen(params) {
   state.effectiveModel = null;
   state.supportedModels = supportedModels;
   state.supportedModelsAvailable = supportedModels.length > 0;
+  state.requestedEffort = effort ?? null;
+  state.effectiveEffort = null;
   state.sdkTransportCloseRan = false;
   state.closeTimeline = [];
   return {
@@ -863,6 +904,7 @@ async function handleOpen(params) {
     account: readiness,
     tools,
     permissionMode,
+    ...(effort === undefined ? {} : { requestedEffort: effort }),
   };
 }
 
@@ -993,6 +1035,15 @@ async function handleQuery(params) {
       throw new SidecarFailure("supported_model_rejected");
     }
     const capabilities = boundedCapabilities(system.capabilities);
+    const reportedEffort = system.effort;
+    if (reportedEffort !== undefined) {
+      admittedEffort(reportedEffort);
+      if (state.requestedEffort === null || reportedEffort !== state.requestedEffort) {
+        state.turnActive = false;
+        throw new SidecarFailure("effort_unconfirmed");
+      }
+      state.effectiveEffort = reportedEffort;
+    }
     state.initialized = true;
     state.effectiveModel = system.model;
     state.capabilities = capabilities;
@@ -1006,6 +1057,7 @@ async function handleQuery(params) {
     requestedModel: state.requestedModel,
     model: state.effectiveModel,
     capabilities: state.capabilities,
+    ...(state.effectiveEffort === null ? {} : { effort: state.effectiveEffort }),
   };
 }
 
@@ -1055,6 +1107,36 @@ async function handleSetPermissionMode(params) {
   }
   state.permissionMode = mode;
   return { permissionMode: mode };
+}
+
+/// Changes the live model only when the SDK reports the resulting model.
+/// `Query.setModel` is `Promise<void>` in the pinned SDK, so that version has
+/// no confirmation signal and returns the typed unconfirmed outcome. A future
+/// SDK that explicitly returns the effective model is accepted only when its
+/// value exactly matches the requested supported model.
+async function handleSetModel(params) {
+  if (!state.query) {
+    throw new SidecarFailure("not_open");
+  }
+  requireExactParams(params, ["model"]);
+  const model = requireString(params, "model");
+  if (!state.supportedModels.includes(model)) {
+    throw new SidecarFailure("supported_model_rejected");
+  }
+  if (typeof state.query.setModel !== "function") {
+    throw new SidecarFailure("model_change_unsupported");
+  }
+  let confirmed;
+  try {
+    confirmed = await state.query.setModel(model);
+  } catch {
+    throw new SidecarFailure("model_change_failed");
+  }
+  if (typeof confirmed !== "string" || confirmed !== model) {
+    throw new SidecarFailure("model_change_unconfirmed");
+  }
+  state.effectiveModel = confirmed;
+  return { model: confirmed };
 }
 
 /// Closes in contract order: interrupt a live turn, end input, dispose SDK
@@ -1167,6 +1249,9 @@ async function dispatch(record) {
         break;
       case "set_permission_mode":
         data = await handleSetPermissionMode(params);
+        break;
+      case "set_model":
+        data = await handleSetModel(params);
         break;
       default:
         throw new SidecarFailure("unknown_command");

@@ -90,3 +90,21 @@ SDK evidence.
 ## Auto-Continuation
 
 No. Stop after one reviewable PR for exact-head review.
+
+## Result
+
+Implemented on the Card082 branch after rebasing onto `origin/main` at
+`97728c9e607fc9a09ed41292106ecab597df46ca`, with Card100 merge
+`ffc263107343b30cda7a0efde840f84f47a361ec` in history. Open evidence now
+exposes bounded `Query.supportedModels` values; `set_model` calls
+`Query.setModel`, rejects unsupported values before the SDK call, and keeps
+the prior model effective on typed unconfirmed failure. Open effort admits
+only low, medium, high, xhigh, and max, confirms from init evidence when
+reported, and has no mid-session setter without pinned SDK evidence.
+
+Provider-free fake-SDK proofs cover confirmed, unconfirmed, rejected,
+supported-models, and effort paths. The focused tier, affected-package
+verification, package API, route, guide, docs, Northstar, god-files JSON, and
+diff checks pass. Matrix aggregate dispositions remain frozen; the owned
+Claude SDK notes carry the new evidence. Branch-only review remains pending;
+the v0.4.2 merge gate stays closed.

@@ -66,6 +66,7 @@ pub(super) fn respond(
         "query" => query(scenario, state, &id),
         "interrupt" => interrupt(scenario, state, &id),
         "set_permission_mode" => set_permission_mode(scenario, state, &id, &command["params"]),
+        "set_model" => set_model(scenario, state, &id, &command["params"]),
         "close" => close(scenario, state, &id),
         _ => return Err(super::super::host::fixture_failure()),
     }
@@ -132,8 +133,20 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         SdkScenario::NewerNode => data["nodeVersion"] = json!("26.7.0"),
         SdkScenario::ToolsWidened => data["tools"] = json!(["Read", "Glob", "Grep", "Bash"]),
         SdkScenario::PermissionModeDrift => data["permissionMode"] = json!("plan"),
+        SdkScenario::ModelChangeConfirmed
+        | SdkScenario::ModelChangeUnconfirmed
+        | SdkScenario::ModelChangeRejected => {
+            data["supportedModels"] = json!([FIXTURE_MODEL, "claude-opus-5"]);
+        }
         SdkScenario::UnadvertisedInterruptReceipt => data["capabilities"] = json!([]),
         _ => {}
+    }
+    state.open_effort = params
+        .get("effort")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
+    if let Some(effort) = state.open_effort.as_deref() {
+        data["requestedEffort"] = json!(effort);
     }
     push(
         state,
@@ -201,15 +214,20 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
     } else {
         json!(["interrupt_receipt_v1"])
     };
+    let effort = state.open_effort.as_deref().map(|effort| json!(effort));
+    let mut init = json!({"accepted": true,
+        "readiness": "confirmed",
+        "cwd": FIXTURE_CWD,
+        "requestedModel": FIXTURE_MODEL,
+        "model": effective_model,
+        "capabilities": capabilities});
+    if scenario == SdkScenario::EffortConfirmed {
+        init["effort"] = effort.unwrap_or(Value::Null);
+    }
     push(
         state,
         json!({"type": "response", "id": id, "command": "query", "success": true,
-               "data": {"accepted": true,
-                        "readiness": "confirmed",
-                        "cwd": FIXTURE_CWD,
-                        "requestedModel": FIXTURE_MODEL,
-                        "model": effective_model,
-                        "capabilities": capabilities}}),
+               "data": init}),
     );
     push(state, json!({"type": "event", "event": "turn_started"}));
     match scenario {
@@ -325,6 +343,37 @@ fn set_permission_mode(scenario: SdkScenario, state: &mut ProcessState, id: &str
             state,
             json!({"type": "response", "id": id, "command": "set_permission_mode",
                    "success": true, "data": {"permissionMode": params["mode"].clone()}}),
+        ),
+    }
+}
+
+fn set_model(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {
+    match scenario {
+        SdkScenario::ModelChangeRejected => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_model",
+                   "success": false,
+                   "failure": {"code": "model_change_failed",
+                               "message": "sidecar command failed: model_change_failed"}}),
+        ),
+        SdkScenario::ModelChangeUnconfirmed => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_model",
+                   "success": false,
+                   "failure": {"code": "model_change_unconfirmed",
+                               "message": "sidecar command failed: model_change_unconfirmed"}}),
+        ),
+        SdkScenario::ModelChangeConfirmed => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_model",
+                   "success": true, "data": {"model": params["model"].clone()}}),
+        ),
+        _ => push(
+            state,
+            json!({"type": "response", "id": id, "command": "set_model",
+                   "success": false,
+                   "failure": {"code": "model_change_unsupported",
+                               "message": "sidecar command failed: model_change_unsupported"}}),
         ),
     }
 }

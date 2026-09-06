@@ -8,7 +8,7 @@ use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::turn::SdkActiveTurn;
-use crate::sdk::wire::ClaudeAgentSdkCommand;
+use crate::sdk::wire::{ClaudeAgentSdkCommand, ClaudeAgentSdkFailureCode};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
@@ -64,6 +64,8 @@ pub struct ClaudeAgentSdkSessionHandle {
     pub(super) permission_mode: ClaudeAgentSdkPermissionMode,
     /// Correlation counter, so each change carries its own single-use id.
     pub(super) permission_mode_changes: u32,
+    /// Correlation counter for model changes.
+    pub(super) model_changes: u32,
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
@@ -280,6 +282,89 @@ impl ClaudeAgentSdkSessionHandle {
         self.readiness.readiness_state()
     }
 
+    /// Returns the bounded model list reported by `Query.supportedModels` at
+    /// open. An empty list means the SDK supplied no usable catalogue.
+    #[must_use]
+    pub fn supported_models(&self) -> &[String] {
+        self.readiness.supported_models()
+    }
+
+    /// Returns the effort evidence currently available for this session.
+    #[must_use]
+    pub const fn effort(&self) -> crate::sdk::profile::ClaudeAgentSdkEffortOutcome {
+        self.readiness.effort()
+    }
+
+    /// Calls `Query.setModel` only for a model in the open-time supported
+    /// list. Success requires the sidecar to return that exact model; an
+    /// unconfirmed change leaves the previously confirmed model effective.
+    pub fn set_model<'a>(
+        &'a mut self,
+        model: &'a str,
+        services: HostServices,
+        deadline: swallowtail_runtime::Deadline,
+    ) -> BoxFuture<'a, Result<String, RuntimeFailure>> {
+        Box::pin(async move {
+            services.require_execution_host(&self.execution_host_id)?;
+            if self.readiness.effective_model().is_empty()
+                || !self
+                    .readiness
+                    .supported_models()
+                    .iter()
+                    .any(|supported| supported == model)
+            {
+                return Err(model_unsupported());
+            }
+            let bounded = HostBound::new(
+                services
+                    .time()
+                    .cloned()
+                    .expect("validated sidecar time service"),
+                deadline,
+            );
+            self.model_changes += 1;
+            let id = format!(
+                "set-model:{}:{}",
+                self.request_id.as_str(),
+                self.model_changes
+            );
+            let Some(response) = bounded
+                .run(self.connection.command(
+                    id,
+                    ClaudeAgentSdkCommand::SetModel,
+                    json!({"model": model}),
+                ))
+                .await
+            else {
+                return Err(model_change_unconfirmed());
+            };
+            let response = response?;
+            if !response.success {
+                let code = response
+                    .failure_code
+                    .expect("a rejected response carries its fixed sidecar code");
+                if code == ClaudeAgentSdkFailureCode::ModelChangeUnconfirmed {
+                    return Err(model_change_unconfirmed());
+                }
+                return Err(command_rejected(
+                    "swallowtail.claude-agent.sdk.model_change_rejected",
+                    "Claude Agent SDK sidecar rejected the model change",
+                    code,
+                ));
+            }
+            let confirmed = response
+                .data
+                .as_ref()
+                .and_then(|data| data.get("model"))
+                .and_then(serde_json::Value::as_str);
+            if confirmed != Some(model) {
+                return Err(model_change_unconfirmed());
+            }
+            self.readiness.confirm_model_change(model);
+            Ok(model.to_owned())
+        })
+    }
+
     /// Returns the observed Node runtime version from the sidecar open.
     #[must_use]
     pub fn node_version(&self) -> &str {
@@ -398,5 +483,19 @@ fn permission_mode_unconfirmed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.permission_mode_unconfirmed",
         "Claude Agent SDK sidecar did not confirm the requested permission mode",
+    )
+}
+
+fn model_unsupported() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.model_unsupported",
+        "Claude Agent SDK model was not present in the open-time supported model list",
+    )
+}
+
+fn model_change_unconfirmed() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.model_change_unconfirmed",
+        "Claude Agent SDK sidecar did not confirm the requested model change",
     )
 }

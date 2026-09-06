@@ -44,7 +44,10 @@ pub use prepared::{
     ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation,
     prepare_claude_agent_sdk_session,
 };
-pub use profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool};
+pub use profile::{
+    ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
+    ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool,
+};
 pub use selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_SIDECAR_AXIS, CLAUDE_AGENT_SDK_WIRE_AXIS, claude_agent_sdk_native_binding,

@@ -1,6 +1,9 @@
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{command_rejected, failure};
-use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
+use crate::sdk::profile::{
+    ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
+    ClaudeAgentSdkSessionProfile,
+};
 use crate::sdk::selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_WIRE_AXIS,
@@ -26,6 +29,7 @@ pub(crate) struct SessionReadiness {
     requested_model: String,
     effective_model: String,
     supported_models: Vec<String>,
+    effort: ClaudeAgentSdkEffortOutcome,
     readiness: ReadinessState,
     node_version: String,
     node_version_posture: NodeVersionPosture,
@@ -86,6 +90,18 @@ impl SessionReadiness {
         &self.effective_model
     }
 
+    pub(crate) fn confirm_model_change(&mut self, model: &str) {
+        self.effective_model = model.to_owned();
+    }
+
+    pub(crate) fn supported_models(&self) -> &[String] {
+        &self.supported_models
+    }
+
+    pub(crate) const fn effort(&self) -> ClaudeAgentSdkEffortOutcome {
+        self.effort
+    }
+
     pub(crate) fn readiness_state(&self) -> &'static str {
         self.readiness.as_str()
     }
@@ -132,8 +148,21 @@ impl SessionReadiness {
                 "Claude Agent SDK sidecar first-turn init reported an effective model outside its supported model list",
             ));
         }
+        let effort = match (self.profile.effort(), text(data, "effort")) {
+            (Some(requested), Some(reported)) => {
+                let reported = parse_effort(reported).ok_or_else(effort_unconfirmed)?;
+                if reported != requested {
+                    return Err(effort_unconfirmed());
+                }
+                ClaudeAgentSdkEffortOutcome::Confirmed(reported)
+            }
+            (Some(requested), None) => ClaudeAgentSdkEffortOutcome::RequestedOnly(requested),
+            (None, Some(_)) => return Err(effort_unconfirmed()),
+            (None, None) => ClaudeAgentSdkEffortOutcome::NotRequested,
+        };
         self.effective_model = effective_model.to_owned();
         self.capabilities = capabilities(data)?;
+        self.effort = effort;
         self.readiness = ReadinessState::Confirmed;
         Ok(())
     }
@@ -168,17 +197,17 @@ pub(crate) async fn open(
         .tools()
         .map(crate::sdk::profile::ClaudeAgentSdkTool::as_str)
         .collect();
+    let mut params = json!({
+        "cwd": leased_cwd,
+        "model": model,
+        "tools": tools,
+        "permissionMode": profile.permission_mode().as_str(),
+    });
+    if let Some(effort) = profile.effort() {
+        params["effort"] = json!(effort.as_str());
+    }
     let response = connection
-        .command(
-            "open-1".to_owned(),
-            ClaudeAgentSdkCommand::Open,
-            json!({
-                "cwd": leased_cwd,
-                "model": model,
-                "tools": tools,
-                "permissionMode": profile.permission_mode().as_str(),
-            }),
-        )
+        .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
         .await?;
     if !response.success {
         return Err(command_rejected(
@@ -236,6 +265,7 @@ fn readiness(
             && text(data, "requestedModel") == Some(expected.requested_model)
             && tools_match(data, expected.profile)
             && text(data, "permissionMode") == Some(expected.profile.permission_mode().as_str())
+            && effort_matches(data, expected.profile)
     });
     if !identity_matches {
         return Err(failure(
@@ -250,7 +280,7 @@ fn readiness(
             "Claude Agent SDK sidecar did not report requested-with-supported-list readiness",
         ));
     }
-    let supported_models = supported_models(data);
+    let supported_models = supported_models(data)?;
     let node_version = text(data, "nodeVersion")
         .filter(|version| !version.is_empty())
         .ok_or_else(|| {
@@ -275,6 +305,10 @@ fn readiness(
         requested_model: expected.requested_model.to_owned(),
         effective_model: String::new(),
         supported_models,
+        effort: expected.profile.effort().map_or(
+            ClaudeAgentSdkEffortOutcome::NotRequested,
+            ClaudeAgentSdkEffortOutcome::RequestedOnly,
+        ),
         readiness: ReadinessState::RequestedWithSupportedList,
         node_version: node_version.to_owned(),
         node_version_posture,
@@ -302,18 +336,42 @@ fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
-fn supported_models(data: &Value) -> Vec<String> {
-    data.get("supportedModels")
-        .and_then(Value::as_array)
-        .map(|supported| {
-            supported
-                .iter()
-                .filter_map(Value::as_str)
-                .filter(|model| !model.is_empty())
-                .map(str::to_owned)
-                .collect()
-        })
-        .unwrap_or_default()
+fn supported_models(data: &Value) -> Result<Vec<String>, RuntimeFailure> {
+    let Some(supported) = data.get("supportedModels").and_then(Value::as_array) else {
+        return Ok(Vec::new());
+    };
+    if supported.len() > 64 {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.supported_models_invalid",
+            "Claude Agent SDK sidecar advertised too many supported models",
+        ));
+    }
+    let mut models = Vec::with_capacity(supported.len());
+    for model in supported {
+        let Some(model) = model.as_str().filter(|model| {
+            !model.is_empty() && model.len() <= 128 && !model.chars().any(char::is_control)
+        }) else {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.supported_models_invalid",
+                "Claude Agent SDK sidecar advertised an invalid supported model",
+            ));
+        };
+        if !models.iter().any(|existing| existing == model) {
+            models.push(model.to_owned());
+        }
+    }
+    Ok(models)
+}
+
+fn parse_effort(value: &str) -> Option<ClaudeAgentSdkEffort> {
+    Some(match value {
+        "low" => ClaudeAgentSdkEffort::Low,
+        "medium" => ClaudeAgentSdkEffort::Medium,
+        "high" => ClaudeAgentSdkEffort::High,
+        "xhigh" => ClaudeAgentSdkEffort::XHigh,
+        "max" => ClaudeAgentSdkEffort::Max,
+        _ => return None,
+    })
 }
 
 fn init_missing() -> RuntimeFailure {
@@ -402,6 +460,13 @@ fn tools_match(data: &Value, profile: ClaudeAgentSdkSessionProfile) -> bool {
         })
 }
 
+fn effort_matches(data: &Value, profile: ClaudeAgentSdkSessionProfile) -> bool {
+    match profile.effort() {
+        Some(effort) => text(data, "requestedEffort") == Some(effort.as_str()),
+        None => data.get("requestedEffort").is_none(),
+    }
+}
+
 fn text<'a>(value: &'a Value, field: &str) -> Option<&'a str> {
     value.get(field).and_then(Value::as_str)
 }
@@ -410,5 +475,12 @@ fn account_mismatch() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.account_not_ready",
         "Claude Agent SDK sidecar did not report a first-party subscription session",
+    )
+}
+
+fn effort_unconfirmed() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.effort_unconfirmed",
+        "Claude Agent SDK sidecar did not confirm the requested opening effort",
     )
 }

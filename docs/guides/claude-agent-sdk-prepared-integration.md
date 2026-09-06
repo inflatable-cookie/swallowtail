@@ -16,14 +16,15 @@ driver ID `swallowtail.claude-agent.sdk`. It is Unix-only: see
 [Supported Platforms](#supported-platforms). Choose it for one fresh read-only
 interactive session on the user's own Claude subscription, with streamed
 output, identity-and-lifecycle activity, consumer-mediated tool admission, a
-permission mode selected at open and changeable mid-session, interrupt, and a
-host-owned descendant-tree close. The default profile is read-only; an
-explicit profile may admit writes or Bash only with a read-write working
-resource lease. Reject it when the
-application cannot provision the Node runtime, sidecar asset, SDK package, and
-platform binary, or needs a model catalogue, structured runs, resume, fork,
-session management, usage detail, model/effort/thinking control, MCP, hooks,
-plugins, skills, subagents, checkpoints, or terminal execution. Those are
+permission mode selected at open and changeable mid-session, a supported-model
+catalogue, confirmed-or-typed-fail model changes, optional open-time effort,
+interrupt, and a host-owned descendant-tree close. The default profile is
+read-only; an explicit profile may admit writes or Bash only with a read-write
+working resource lease. Reject it when the application cannot provision the
+Node runtime, sidecar asset, SDK package, and platform binary, or needs
+structured runs, resume, fork, session management, usage detail, thinking
+control, MCP, hooks, plugins, skills, subagents, checkpoints, or terminal
+execution. Those are
 later layers or separate routes, not withheld defaults.
 
 All four Claude routes remain distinct. `claude-agent.acp` speaks ACP v1 over
@@ -329,6 +330,31 @@ session surface. The change is raced against a caller-supplied deadline, and a
 refused, unanswered, or differently-answered change is a typed failure —
 `permission_mode_rejected` or `permission_mode_unconfirmed` — never a silent
 success. `permission_mode()` reports the last mode that was actually confirmed.
+
+## Model And Effort
+
+Open calls the SDK's `Query.supportedModels()` and exposes its bounded values as
+`ClaudeAgentSdkSessionHandle::supported_models()`. The list is runtime evidence;
+the route does not maintain a copied model catalogue. A model change is
+available through the route-local `set_model` method only when the requested
+value is in that open-time list, so an unsupported model is rejected before
+`Query.setModel` is called.
+
+`set_model` reports the exact model returned by the sidecar only when the SDK
+supplies that value. The pinned `0.3.259` declaration records
+`Query.setModel` as resolving without a model value, so its normal outcome is
+the typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In
+that outcome the previously confirmed model remains effective. No requested
+value is treated as confirmation.
+
+The profile's optional `effort` selects exactly `low`, `medium`, `high`,
+`xhigh`, or `max` in `Options.effort`. `max` is session-scoped and is never
+persisted. The handle reports `RequestedOnly` until the first-turn init message
+reports the same value, then reports `Confirmed`; missing init evidence is not
+upgraded by assumption. The default profile omits the field, preserving the
+prior open options byte-for-byte. The pinned SDK has no evidenced mid-session
+effort setter, so this route exposes none. `Options.thinking` remains out of
+scope.
 
 Read the confirmation for exactly what it is. Upstream `Query.setPermissionMode`
 resolves without a value, so the sidecar's confirmation means the SDK accepted

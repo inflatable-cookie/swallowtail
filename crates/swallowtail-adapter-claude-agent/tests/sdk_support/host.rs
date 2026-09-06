@@ -77,6 +77,7 @@ pub(super) struct ProcessState {
     pub(super) pump_released: bool,
     pub(super) holding_pump: bool,
     pub(super) process_hold_released: bool,
+    pub(super) open_effort: Option<String>,
 }
 
 impl SdkFixtureHost {

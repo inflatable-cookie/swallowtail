@@ -174,6 +174,65 @@ fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
 }
 
 #[test]
+fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() {
+    let mut sidecar = SidecarProcess::start_scenario("unknown-message");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], true,
+        "unknown-message fixture opens: {open}"
+    );
+    let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+    assert_eq!(terminal["failure"]["code"], "unknown_message");
+    assert_eq!(
+        terminal["failure"]["message"],
+        "sidecar terminated: unknown_message"
+    );
+    assert!(!terminal.to_string().contains("fixture_unknown_message"));
+}
+
+#[test]
+fn pinned_rate_limit_message_exposes_the_unqualified_projection_gap() {
+    let mut sidecar = SidecarProcess::start_scenario("pinned-rate-limit");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true);
+    let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+    assert_eq!(terminal["failure"]["code"], "unknown_message");
+    assert!(!terminal.to_string().contains("fixture-session"));
+}
+
+#[test]
+fn pinned_result_error_fields_report_presence_without_provider_text() {
+    for (scenario, field, kind) in [
+        ("pinned-error-result", "errors", "array"),
+        ("pinned-success-error", "result", "string"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        let ended = sidecar.wait_for_turn_end_record();
+        assert_eq!(ended["isError"], true);
+        assert_eq!(ended["errorTextPresent"], true);
+        assert_eq!(ended["errorTextType"], kind);
+        assert_eq!(ended["resultFieldPresence"][field], true);
+        assert!(!ended.to_string().contains("private provider detail"));
+        sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    }
+}
+
+#[test]
 fn open_rejections_expose_only_the_fixed_sidecar_code() {
     for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);

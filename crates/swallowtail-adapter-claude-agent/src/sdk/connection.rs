@@ -5,6 +5,7 @@
 //! bounded exchange. Pending work is capped, so a stalled consumer cannot
 //! make the sidecar an unbounded buffer.
 
+use self::stderr::StderrTail;
 use super::failure::{failure, protocol_failure};
 use super::turn::SdkActiveTurn;
 use super::wire::{
@@ -25,6 +26,7 @@ use swallowtail_runtime::{
 };
 
 mod pump;
+mod stderr;
 
 const MAXIMUM_PENDING_COMMANDS: usize = 16;
 
@@ -42,6 +44,7 @@ pub(crate) struct SdkConnection {
     active_turn: Mutex<Option<Arc<SdkActiveTurn>>>,
     closed: AtomicBool,
     terminal_error: Mutex<Option<SafeDiagnostic>>,
+    stderr_tail: Mutex<StderrTail>,
     exit: Mutex<Option<ProcessExit>>,
 }
 
@@ -55,6 +58,7 @@ impl SdkConnection {
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
             terminal_error: Mutex::new(None),
+            stderr_tail: Mutex::new(StderrTail::default()),
             exit: Mutex::new(None),
         })
     }
@@ -212,6 +216,33 @@ impl SdkConnection {
             .terminal_error
             .lock()
             .expect("SDK sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
+    }
+
+    pub(crate) fn record_stderr(&self, bytes: &[u8]) {
+        self.stderr_tail
+            .lock()
+            .expect("SDK sidecar stderr-tail lock poisoned")
+            .append(bytes);
+    }
+
+    pub(crate) fn diagnostic_with_stderr(&self, diagnostic: SafeDiagnostic) -> SafeDiagnostic {
+        let Some(excerpt) = self
+            .stderr_tail
+            .lock()
+            .expect("SDK sidecar stderr-tail lock poisoned")
+            .excerpt()
+        else {
+            return diagnostic;
+        };
+        SafeDiagnostic::new(
+            diagnostic.code(),
+            format!("{}; stderr: {excerpt}", diagnostic.message()),
+        )
+        .with_failure_classification(diagnostic.failure_classification())
+    }
+
+    pub(crate) fn terminal_error_with_stderr(&self, error: RuntimeFailure) -> RuntimeFailure {
+        RuntimeFailure::new(self.diagnostic_with_stderr(error.diagnostic().clone()))
     }
 
     fn closed_failure(&self) -> RuntimeFailure {

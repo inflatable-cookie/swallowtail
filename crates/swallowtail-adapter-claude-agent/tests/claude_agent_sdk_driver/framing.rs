@@ -50,6 +50,82 @@ fn unqualified_malformed_truncated_and_terminal_records_all_fail_closed() {
 }
 
 #[test]
+fn every_sidecar_terminal_code_reaches_the_bounded_runtime_diagnostic() {
+    for (scenario, code) in [
+        (SdkScenario::TerminalRecordTooLarge, "record_too_large"),
+        (SdkScenario::TerminalEmptyRecord, "empty_record"),
+        (SdkScenario::TerminalMalformedJson, "malformed_json"),
+        (SdkScenario::TerminalMissingType, "missing_type"),
+        (SdkScenario::TerminalUnknownRecord, "unknown_record"),
+        (SdkScenario::TerminalInvalidCommand, "invalid_command"),
+        (SdkScenario::TerminalCommandIdReused, "command_id_reused"),
+        (SdkScenario::TerminalTooManyPending, "too_many_pending"),
+        (SdkScenario::TerminalCallbackUnknown, "callback_unknown"),
+        (SdkScenario::TerminalCallbackInvalid, "callback_invalid"),
+        (SdkScenario::TerminalInternalError, "internal_error"),
+        (SdkScenario::TerminalUnknownMessage, "unknown_message"),
+    ] {
+        let status = terminal_status(scenario);
+        let TerminalStatus::RuntimeFailed(diagnostic) = &status else {
+            panic!("{scenario:?} must fail the turn, got {status:?}");
+        };
+        assert_eq!(
+            diagnostic.code(),
+            "swallowtail.claude-agent.sdk.sidecar_terminated"
+        );
+        assert!(
+            diagnostic
+                .message()
+                .contains(&format!("sidecar_terminated: {code}")),
+            "{scenario:?} must preserve its sidecar code: {}",
+            diagnostic.message()
+        );
+        assert!(diagnostic.message().contains("stderr: native <path>"));
+        assert!(diagnostic.message().contains("<redacted>"));
+        assert!(diagnostic.message().ends_with("[stderr truncated]"));
+        for forbidden in ["/private/fixture", "fixture-secret", "user@example.test"] {
+            assert!(
+                !diagnostic.message().contains(forbidden),
+                "{scenario:?} diagnostic leaked {forbidden}: {}",
+                diagnostic.message()
+            );
+        }
+    }
+}
+
+#[test]
+fn failed_turn_end_carries_all_sanitized_fields_without_error_text() {
+    let status = terminal_status(SdkScenario::TurnEndedError);
+    let TerminalStatus::ProviderFailed(diagnostic) = status else {
+        panic!("failed turn end must be provider failure");
+    };
+    for field in [
+        "subtype=error_during_execution",
+        "stopReason=error_during_execution",
+        "isError=true",
+        "numTurns=1",
+        "durationMs=7",
+        "errorTextPresent=true",
+        "errorTextType=string",
+        "error=true",
+        "is_error=true",
+        "num_turns=true",
+    ] {
+        assert!(
+            diagnostic.message().contains(field),
+            "turn-ended diagnostic omitted {field}: {}",
+            diagnostic.message()
+        );
+    }
+    assert!(
+        diagnostic
+            .message()
+            .contains("stderr: <redacted> failed result stderr")
+    );
+    assert!(!diagnostic.message().contains("provider error text"));
+}
+
+#[test]
 fn tool_admission_crosses_the_wire_as_a_correlated_consumer_decision() {
     let host = host_id("claude-agent-sdk.fixture.admission");
     let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);

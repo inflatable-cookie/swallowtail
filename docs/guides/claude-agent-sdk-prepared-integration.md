@@ -472,9 +472,41 @@ noise.
 ## Failure Diagnostics
 
 Every driver failure is a safe `swallowtail.claude-agent.sdk.*` diagnostic.
-Sidecar records are bounded and redacted, stderr is dropped without
-inspection, and no provider payload, credential, path, or raw SDK value
-reaches a public record. Do not parse diagnostic text; classify on the code.
+Sidecar records are bounded and redacted, and no provider payload, credential,
+path, or raw SDK value reaches a public record. Do not parse diagnostic text;
+classify on the code.
+
+## Reading a Terminated Session
+
+When a sidecar terminates, the turn carries the stable code
+`swallowtail.claude-agent.sdk.sidecar_terminated`. Its safe diagnostic message
+also carries the bounded sidecar cause as `sidecar_terminated: <code>`, for
+example `unknown_message`, `callback_invalid`, or `internal_error`. The sidecar
+message field is validated but never surfaced.
+
+A failed `turn_ended` carries the sanitized fields `subtype`, `stopReason`,
+`isError`, `numTurns`, `durationMs`, `errorTextPresent`, `errorTextType`, and
+the fixed result-field presence map. `errorTextPresent` and `errorTextType`
+describe `errors`, legacy `error`, or `result` when `is_error` is true, in
+that precedence order; the text itself never crosses the sidecar wire. A bounded stderr tail may follow the same diagnostic. It uses the route's
+fixed diagnostic-word allowlist; all other words and paths are redacted. It
+contains only stderr consumed before the terminal record, not a guaranteed
+complete native stderr drain or a retry instruction.
+
+Cleanup is independent from the turn. On a degraded or failed
+`CleanupOutcome`, its diagnostic includes the sidecar's bounded
+`nativeExitObserved`, `nativeExitEvent`, `nativeExitCode`, `nativeExitSignal`,
+`sdkTransportCloseRan`, and `closeTimeline` evidence. `Clean` has no diagnostic;
+the absence of one is not permission to infer missing evidence.
+
+An SDK message the sidecar does not map remains `unknown_message` and terminates
+the session. Without a qualified projection,
+continuing could misclassify provider or tool semantics. The observed message
+type is not included in the safe diagnostic, and the provider-free fixture
+proves both the terminal code and the absence of the unmapped type. The pinned
+SDK also declares `rate_limit_event`; a fixture demonstrates that it reaches
+this path even with status `allowed`. That projection gap does not establish
+the cause of a particular live failure without captured evidence.
 
 ## Normal Path
 

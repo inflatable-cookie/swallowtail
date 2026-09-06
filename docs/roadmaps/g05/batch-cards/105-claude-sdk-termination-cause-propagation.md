@@ -92,3 +92,59 @@ Chatterbox for a redaction ruling).
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Implementation ready for independent review. The stable runtime diagnostic code
+remains `swallowtail.claude-agent.sdk.sidecar_terminated`; its message now carries
+`sidecar_terminated: <code>`, matching `open_rejected`'s existing shape. The wire
+`TurnEnded` variant retains every sanitized result field; failed runtime turns
+include those fields in their terminal diagnostic. These types are crate-private,
+so no exported Rust API baseline addition is needed.
+
+Degraded/failed cleanup diagnostics include bounded native-close evidence.
+Stderr retains at most 2 KiB and projects at most 240 characters plus a truncation
+marker through fixed diagnostic vocabulary; arbitrary words and paths are
+redacted. Only stderr consumed before the terminal record is available: this
+change does not claim a complete native stderr drain after termination.
+
+### Pinned SDK evidence and remaining cause
+
+Inspected the official `@anthropic-ai/claude-agent-sdk` 0.3.259 tarball whose
+SHA-256 matches the frozen identity:
+`0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e`.
+Its `sdk.d.ts` declares `SDKRateLimitEvent` (`rate_limit_event`, including
+`status: allowed`) and includes it in `SDKMessage`. The actual sidecar maps only
+assistant, user, result, stream_event, and system at the top level. A fake-SDK
+record built from that pinned declaration reproduces `unknown_message` even
+when rate-limit status is allowed. This is a concrete projection gap, not proof
+that the real Desktop Send emitted that record. The generic unknown-type fixture
+alone was insufficient evidence.
+
+The pinned `SDKResultError` carries `errors: string[]`; the `SDKResultMessage`
+documentation also specifies error text in `result` for subtype success with
+`is_error: true`. Presence/type projection now covers both and retains singular
+`error` observation. Fake-SDK proofs assert that neither text crosses the wire.
+The SDK input stream, tool permissions, and query options are unchanged.
+
+Recommendation for root review: qualify the exact rate-limit notification as
+observation-only progress, with fixtures for allowed/warning/rejected and no
+payload forwarding, before changing its current fail-closed behavior. Arbitrary
+unknown records remain terminal. This PR preserves that behavior; it does not
+claim a new Chatterbox policy ruling or that real Send is fixed. There is no
+captured live JSONL and no live provider reproduction in this lane.
+
+Release input: v0.4.3 diagnostic repair, same qualified package/native axes and
+behavior revision. Root owns independent exact-head review, merge, candidate
+preparation and any separately authorized release. The decisive consumer follow-up
+is one bounded Send on the reviewed build, recording only terminal code/message
+and cleanup evidence. No native UI, global tools, auth or consumer files changed.
+
+### Validation receipts
+
+- Focused adapter gate: 374/374 tests; warnings-denied all-target Clippy passed.
+  Restored-tree run: nextest `44e967c0-f8f7-49d8-ab58-fb1029c21b9f`.
+- Affected-package proof passed for `swallowtail-adapter-claude-agent`.
+- Public API gate passed; no exported API delta.
+- Northstar docs and final formatting/whitespace checks passed.
+- No live provider test or real Send success is claimed.

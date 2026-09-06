@@ -12,8 +12,24 @@
 //! `Clean`. Collapsing the two would let one observed child stand in for a
 //! tree, which is exactly the Review Oracle counterexample.
 
+use serde_json::Value;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{CleanupOutcome, ProcessTreeCompletion};
+
+const MAXIMUM_CLOSE_TIMELINE_LABELS: usize = 16;
+const MAXIMUM_CLOSE_LABEL_BYTES: usize = 64;
+pub(crate) const CLOSE_JOIN_BOUND_MS: u64 = 2_000;
+const CLOSE_TIMELINE_LABELS: &[&str] = &[
+    "close_requested",
+    "interrupt_requested",
+    "interrupt_completed",
+    "interrupt_failed",
+    "session_input_closed",
+    "sdk_transport_close_ran",
+    "sdk_transport_close_failed",
+    "native_join_exited",
+    "native_join_survivor",
+];
 
 /// What the sidecar itself observed about its retained native child handle.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -36,6 +52,110 @@ impl SidecarNativeJoin {
             _ => None,
         }
     }
+}
+
+/// Sanitized evidence from the sidecar's bounded close response.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct SidecarCloseEvidence {
+    pub(crate) native_join: SidecarNativeJoin,
+    pub(crate) native_exit_observed: bool,
+    pub(crate) native_exit_event: Option<String>,
+    pub(crate) native_exit_code: Option<i64>,
+    pub(crate) native_exit_signal: Option<String>,
+    pub(crate) sdk_transport_close_ran: bool,
+    pub(crate) close_timeline: Vec<String>,
+}
+
+impl SidecarCloseEvidence {
+    pub(crate) fn from_sidecar(data: Option<&Value>) -> Option<Self> {
+        let data = data?;
+        if data.get("joinBoundMs").and_then(Value::as_u64) != Some(CLOSE_JOIN_BOUND_MS) {
+            return None;
+        }
+        let native_exit_observed = data.get("nativeExitObserved").and_then(Value::as_bool)?;
+        let native_join = SidecarNativeJoin::from_sidecar(data.get("nativeJoin")?.as_str()?)?;
+        let native_exit_event = optional_label(data, "nativeExitEvent")?;
+        if native_exit_event
+            .as_deref()
+            .is_some_and(|event| !matches!(event, "exit" | "error"))
+        {
+            return None;
+        }
+        let native_exit_code = optional_integer(data, "nativeExitCode")?;
+        let native_exit_signal = optional_label(data, "nativeExitSignal")?;
+        let sdk_transport_close_ran = data.get("sdkTransportCloseRan").and_then(Value::as_bool)?;
+        let close_timeline = data
+            .get("closeTimeline")
+            .and_then(Value::as_array)
+            .filter(|labels| labels.len() <= MAXIMUM_CLOSE_TIMELINE_LABELS)?
+            .iter()
+            .map(|label| {
+                let label = label.as_str()?;
+                CLOSE_TIMELINE_LABELS
+                    .contains(&label)
+                    .then(|| label.to_owned())
+            })
+            .collect::<Option<Vec<_>>>()?;
+        match (native_join, native_exit_observed) {
+            (SidecarNativeJoin::Exited, true) | (SidecarNativeJoin::Survivor, false) => {}
+            _ => return None,
+        }
+        Some(Self {
+            native_join,
+            native_exit_observed,
+            native_exit_event,
+            native_exit_code,
+            native_exit_signal,
+            sdk_transport_close_ran,
+            close_timeline,
+        })
+    }
+
+    pub(crate) fn diagnostic_fragment(&self) -> String {
+        let timeline = self.close_timeline.join(",");
+        format!(
+            "close_evidence: nativeExitObserved={}; nativeExitEvent={}; nativeExitCode={}; nativeExitSignal={}; sdkTransportCloseRan={}; closeTimeline=[{timeline}]",
+            self.native_exit_observed,
+            optional_text(self.native_exit_event.as_deref()),
+            optional_integer_text(self.native_exit_code),
+            optional_text(self.native_exit_signal.as_deref()),
+            self.sdk_transport_close_ran,
+        )
+    }
+}
+
+fn optional_label(data: &Value, field: &str) -> Option<Option<String>> {
+    let value = data.get(field)?;
+    if value.is_null() {
+        return Some(None);
+    }
+    let text = value.as_str()?;
+    if text.is_empty()
+        || text.len() > MAXIMUM_CLOSE_LABEL_BYTES
+        || !text.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.')
+        })
+    {
+        return None;
+    }
+    Some(Some(text.to_owned()))
+}
+
+fn optional_integer(data: &Value, field: &str) -> Option<Option<i64>> {
+    let value = data.get(field)?;
+    if value.is_null() {
+        Some(None)
+    } else {
+        value.as_i64().map(Some)
+    }
+}
+
+fn optional_text(value: Option<&str>) -> &str {
+    value.unwrap_or("<null>")
+}
+
+fn optional_integer_text(value: Option<i64>) -> String {
+    value.map_or_else(|| "<null>".to_owned(), |value| value.to_string())
 }
 
 /// Exact close outcome for one session, decided from host evidence.
@@ -100,7 +220,10 @@ impl ClaudeAgentSdkCloseState {
 
 #[cfg(test)]
 mod tests {
-    use super::{ClaudeAgentSdkCloseState, SidecarNativeJoin};
+    use super::{
+        CLOSE_JOIN_BOUND_MS, ClaudeAgentSdkCloseState, SidecarCloseEvidence, SidecarNativeJoin,
+    };
+    use serde_json::json;
     use swallowtail_runtime::{CleanupOutcome, ProcessTreeCompletion};
 
     #[test]
@@ -175,6 +298,52 @@ mod tests {
         // No sidecar vocabulary for escalation, tree emptiness, or cleanliness.
         for rejected in ["graceful", "escalated", "clean", "unconfirmed", ""] {
             assert!(SidecarNativeJoin::from_sidecar(rejected).is_none());
+        }
+    }
+
+    #[test]
+    fn close_evidence_is_bounded_and_projects_into_a_safe_fragment() {
+        let evidence = SidecarCloseEvidence::from_sidecar(Some(&json!({
+            "nativeJoin": "exited",
+            "joinBoundMs": CLOSE_JOIN_BOUND_MS,
+            "nativeExitObserved": true,
+            "nativeExitEvent": "exit",
+            "nativeExitCode": 1,
+            "nativeExitSignal": null,
+            "sdkTransportCloseRan": true,
+            "closeTimeline": [
+                "close_requested",
+                "session_input_closed",
+                "sdk_transport_close_ran",
+                "native_join_exited"
+            ]
+        })))
+        .expect("valid close evidence decodes");
+        assert!(
+            evidence
+                .diagnostic_fragment()
+                .contains("nativeExitObserved=true")
+        );
+        assert!(evidence.diagnostic_fragment().contains("nativeExitCode=1"));
+        assert!(evidence
+            .diagnostic_fragment()
+            .contains("closeTimeline=[close_requested,session_input_closed,sdk_transport_close_ran,native_join_exited]"));
+
+        for invalid in [
+            json!({
+                "nativeJoin": "exited", "joinBoundMs": CLOSE_JOIN_BOUND_MS,
+                "nativeExitObserved": true, "nativeExitEvent": "provider error",
+                "nativeExitCode": 1, "nativeExitSignal": null,
+                "sdkTransportCloseRan": true, "closeTimeline": []
+            }),
+            json!({
+                "nativeJoin": "exited", "joinBoundMs": CLOSE_JOIN_BOUND_MS,
+                "nativeExitObserved": true, "nativeExitEvent": "exit",
+                "nativeExitCode": 1, "nativeExitSignal": null,
+                "sdkTransportCloseRan": true, "closeTimeline": ["provider_error"]
+            }),
+        ] {
+            assert!(SidecarCloseEvidence::from_sidecar(Some(&invalid)).is_none());
         }
     }
 }

@@ -6,6 +6,10 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- propagate bounded Claude Agent SDK termination causes, sanitized `turn_ended`
+  result fields, close evidence, and redacted stderr tails into safe consumer
+  diagnostics. Unmapped SDK messages remain terminal as `unknown_message`, with
+  provider-free fake-SDK proofs and no provider error text. g05.029 card 105.
 - add an explicit Grok Build ACP interactive-session permission exchange. The
   default reject-and-cancel path remains unchanged; the opt-in prepared session
   exposes bounded one-shot `allow_once` and `reject_once` choices through the

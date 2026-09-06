@@ -63,6 +63,14 @@ fn open_streams_one_turn_and_closes_without_claiming_tree_completion() {
         diagnostic.code(),
         "swallowtail.claude-agent.sdk.close_root_only_degraded"
     );
+    assert!(diagnostic.message().contains("nativeExitObserved=true"));
+    assert!(diagnostic.message().contains("nativeExitEvent=exit"));
+    assert!(diagnostic.message().contains("nativeExitCode=0"));
+    assert!(diagnostic.message().contains("nativeExitSignal=<null>"));
+    assert!(diagnostic.message().contains("sdkTransportCloseRan=true"));
+    assert!(diagnostic
+        .message()
+        .contains("closeTimeline=[close_requested,session_input_closed,sdk_transport_close_ran,native_join_exited]"));
     let cleanup = fixture.cleanup_events();
     assert_ordered(
         &cleanup,

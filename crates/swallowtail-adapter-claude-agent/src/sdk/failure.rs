@@ -20,6 +20,16 @@ pub(crate) fn command_rejected(
     failure(route_code, format!("{message}: {}", sidecar_code.as_str()))
 }
 
+pub(crate) fn terminal_failure(code: ClaudeAgentSdkFailureCode) -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.sidecar_terminated",
+        format!(
+            "Claude Agent SDK sidecar reported terminal failure: sidecar_terminated: {}",
+            code.as_str()
+        ),
+    )
+}
+
 pub(crate) fn unsupported(feature: &str) -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.unsupported_input",

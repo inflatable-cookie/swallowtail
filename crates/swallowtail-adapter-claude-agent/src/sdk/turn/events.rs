@@ -1,7 +1,9 @@
 //! Projection of qualified sidecar events onto runtime events, activity, and
 //! exactly one terminal outcome.
 
-use super::{SdkActiveTurn, provider_diagnostic};
+use super::{
+    SdkActiveTurn, TurnEndedDiagnostic, provider_diagnostic, provider_turn_ended_diagnostic,
+};
 use crate::sdk::failure::failure;
 use crate::sdk::wire::ClaudeAgentSdkEvent;
 use std::sync::atomic::Ordering;
@@ -24,18 +26,37 @@ impl SdkActiveTurn {
             }
             ClaudeAgentSdkEvent::TurnFailed => {
                 self.complete_activity(ActivityStatus::Failed)?;
-                self.finish(TerminalStatus::ProviderFailed(provider_diagnostic()));
+                self.finish(TerminalStatus::ProviderFailed(
+                    self.add_stderr_to_diagnostic(provider_diagnostic()),
+                ));
                 Ok(())
             }
             ClaudeAgentSdkEvent::TurnEnded {
                 stop_reason,
                 failed,
+                subtype,
+                num_turns,
+                duration_ms,
+                error_text_present,
+                error_text_type,
+                result_field_presence,
             } => {
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
                 } else if failed || stop_reason != "success" {
                     (
-                        TerminalStatus::ProviderFailed(provider_diagnostic()),
+                        TerminalStatus::ProviderFailed(self.add_stderr_to_diagnostic(
+                            provider_turn_ended_diagnostic(TurnEndedDiagnostic {
+                                stop_reason,
+                                failed,
+                                subtype,
+                                num_turns,
+                                duration_ms,
+                                error_text_present,
+                                error_text_type,
+                                result_field_presence,
+                            }),
+                        )),
                         ActivityStatus::Failed,
                     )
                 } else if self.cancelled.load(Ordering::SeqCst) {

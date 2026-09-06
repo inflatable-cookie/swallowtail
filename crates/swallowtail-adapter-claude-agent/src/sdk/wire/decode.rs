@@ -7,6 +7,9 @@ use super::{
 };
 use crate::sdk::protocol::{ClaudeAgentSdkProtocolFailure, ClaudeAgentSdkProtocolFailureKind};
 use serde_json::Value;
+use std::collections::BTreeMap;
+
+const MAXIMUM_RESULT_FIELDS: usize = 64;
 
 pub(super) fn decode_response(
     value: &Value,
@@ -72,10 +75,27 @@ pub(super) fn decode_event(
             call_id: bounded_text(value, "toolCallId", MAXIMUM_TEXT_BYTES, invalid)?.to_owned(),
             failed: required_bool(value, "isError", invalid)?,
         }),
-        Some("turn_ended") => Ok(ClaudeAgentSdkEvent::TurnEnded {
-            stop_reason: bounded_text(value, "stopReason", MAXIMUM_TEXT_BYTES, invalid)?.to_owned(),
-            failed: required_bool(value, "isError", invalid)?,
-        }),
+        Some("turn_ended") => {
+            let subtype = nullable_label(value, "subtype", invalid)?;
+            let stop_reason = bounded_label_allow_empty(value, "stopReason", invalid)?.to_owned();
+            let failed = required_bool(value, "isError", invalid)?;
+            let num_turns = nullable_nonnegative_integer(value, "numTurns", invalid)?;
+            let duration_ms = nullable_nonnegative_integer(value, "durationMs", invalid)?;
+            let error_text_present = required_bool(value, "errorTextPresent", invalid)?;
+            let error_text_type =
+                bounded_label(value, "errorTextType", MAXIMUM_TEXT_BYTES, invalid)?.to_owned();
+            let result_field_presence = result_field_presence(value, invalid)?;
+            Ok(ClaudeAgentSdkEvent::TurnEnded {
+                stop_reason,
+                failed,
+                subtype,
+                num_turns,
+                duration_ms,
+                error_text_present,
+                error_text_type,
+                result_field_presence,
+            })
+        }
         Some(_) => Err(failure(ClaudeAgentSdkProtocolFailureKind::UnknownRecord)),
         None => Err(failure(ClaudeAgentSdkProtocolFailureKind::MissingType)),
     }
@@ -172,4 +192,99 @@ fn decode_failure(
     let code = bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, kind)?;
     let code = ClaudeAgentSdkFailureCode::parse(code).ok_or_else(|| failure(kind))?;
     Ok(ClaudeAgentSdkFailure { code })
+}
+
+fn nullable_label(
+    value: &Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<String>, ClaudeAgentSdkProtocolFailure> {
+    let value = value.get(field).ok_or_else(|| failure(kind))?;
+    if value.is_null() {
+        return Ok(None);
+    }
+    Ok(Some(
+        bounded_label_value(value, MAXIMUM_TEXT_BYTES, kind)?.to_owned(),
+    ))
+}
+
+fn nullable_nonnegative_integer(
+    value: &Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<u64>, ClaudeAgentSdkProtocolFailure> {
+    let value = value.get(field).ok_or_else(|| failure(kind))?;
+    if value.is_null() {
+        return Ok(None);
+    }
+    value.as_u64().ok_or_else(|| failure(kind)).map(Some)
+}
+
+fn result_field_presence(
+    value: &Value,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<BTreeMap<String, bool>, ClaudeAgentSdkProtocolFailure> {
+    let fields = value
+        .get("resultFieldPresence")
+        .and_then(Value::as_object)
+        .filter(|fields| fields.len() <= MAXIMUM_RESULT_FIELDS)
+        .ok_or_else(|| failure(kind))?;
+    fields
+        .iter()
+        .map(|(field, value)| {
+            if !is_safe_label(field, MAXIMUM_TEXT_BYTES) {
+                return Err(failure(kind));
+            }
+            value
+                .as_bool()
+                .map(|present| (field.clone(), present))
+                .ok_or_else(|| failure(kind))
+        })
+        .collect()
+}
+
+fn bounded_label<'a>(
+    value: &'a Value,
+    field: &str,
+    maximum: usize,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<&'a str, ClaudeAgentSdkProtocolFailure> {
+    let value = value.get(field).ok_or_else(|| failure(kind))?;
+    bounded_label_value(value, maximum, kind)
+}
+
+fn bounded_label_allow_empty<'a>(
+    value: &'a Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<&'a str, ClaudeAgentSdkProtocolFailure> {
+    let text = value
+        .get(field)
+        .and_then(Value::as_str)
+        .ok_or_else(|| failure(kind))?;
+    if is_safe_label(text, MAXIMUM_TEXT_BYTES) {
+        Ok(text)
+    } else {
+        Err(failure(kind))
+    }
+}
+
+fn bounded_label_value(
+    value: &Value,
+    maximum: usize,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<&str, ClaudeAgentSdkProtocolFailure> {
+    let text = value.as_str().ok_or_else(|| failure(kind))?;
+    if is_safe_label(text, maximum) && !text.is_empty() {
+        Ok(text)
+    } else {
+        Err(failure(kind))
+    }
+}
+
+fn is_safe_label(value: &str, maximum: usize) -> bool {
+    value.len() <= maximum
+        && value.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.')
+        })
 }

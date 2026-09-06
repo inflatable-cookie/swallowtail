@@ -147,6 +147,7 @@ const SDK_RESULT_FIELD_NAMES = [
   "time_origin_ms",
   "is_error",
   "api_error_status",
+  "error",
   "num_turns",
   "result",
   "stop_reason",
@@ -723,20 +724,34 @@ function projectMessage(message) {
     }
     case "result": {
       const resultFieldPresence = Object.fromEntries(
-        [...new Set([...SDK_RESULT_FIELD_NAMES, ...Object.keys(message)])]
-          .sort()
-          .map((key) => [key, Object.prototype.hasOwnProperty.call(message, key)]),
+        SDK_RESULT_FIELD_NAMES.map((key) => [
+          key,
+          Object.prototype.hasOwnProperty.call(message, key),
+        ]),
       );
-      const subtype = typeof message.subtype === "string" ? message.subtype : null;
-      const errorTextPresent = Object.prototype.hasOwnProperty.call(message, "error");
+      const subtype =
+        typeof message.subtype === "string" && /^[A-Za-z0-9_.-]{1,96}$/.test(message.subtype)
+          ? message.subtype
+          : null;
+      // SDKResultError uses errors[]; SDKResultSuccess with is_error carries
+      // error text in result. Retain the singular observation for older records.
+      const errorField = Object.prototype.hasOwnProperty.call(message, "errors")
+        ? "errors"
+        : Object.prototype.hasOwnProperty.call(message, "error")
+          ? "error"
+          : message.is_error === true && Object.prototype.hasOwnProperty.call(message, "result")
+            ? "result"
+            : null;
+      const errorTextPresent = errorField !== null;
+      const errorText = errorTextPresent ? message[errorField] : undefined;
       let errorTextType = "absent";
       if (errorTextPresent) {
-        if (message.error === null) {
+        if (errorText === null) {
           errorTextType = "null";
-        } else if (Array.isArray(message.error)) {
+        } else if (Array.isArray(errorText)) {
           errorTextType = "array";
         } else {
-          errorTextType = typeof message.error;
+          errorTextType = typeof errorText;
         }
       }
       const numTurns =

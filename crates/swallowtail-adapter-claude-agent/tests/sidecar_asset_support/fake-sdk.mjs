@@ -262,6 +262,21 @@ export function query({ prompt, options }) {
       }
       if (!settled) {
         settled = true;
+        if (SCENARIO === "pinned-rate-limit") {
+          return { value: {
+            type: "rate_limit_event", rate_limit_info: { status: "allowed" },
+            uuid: "fixture-uuid", session_id: "fixture-session",
+          }, done: false };
+        }
+        if (SCENARIO === "pinned-error-result") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "pinned-success-error") {
+          return { value: { ...resultMessage({ isError: true }), result: "private provider detail" }, done: false };
+        }
+        if (SCENARIO === "unknown-message") {
+          return { value: { type: "fixture_unknown_message" }, done: false };
+        }
         if (SCENARIO === "early-input-eof") {
           const nextInput = await promptIterator.next();
           if (!nextInput.done) {

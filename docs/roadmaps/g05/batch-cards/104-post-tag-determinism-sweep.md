@@ -89,6 +89,12 @@ family were untouched.
   runs. All 72 invocations passed with zero aborts, failures, or `leaky`
   results. A post-run process-table check found no fixture, sidecar, native
   descendant, or `/bin/sleep` hold process.
+- The reviewed branch rebased cleanly onto `origin/main` at Card 113 merge
+  `d7ed04ff`; the diff remains limited to the nine Card 104-owned test/docs
+  paths. The bounded post-rebase loaded sanity set used eight CPU burners, four
+  concurrent lanes, and two rounds: eight runs per affected binary, all clean
+  with zero aborts, failures, or `leaky` results. The existing 120-second
+  fixture hang guard and unrelated 30-second witness were not changed.
 
 The focused tests, nextest leak-level check, loaded proof, formatting,
 focused validation, affected-package verification, Northstar QA, and diff

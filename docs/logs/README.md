@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-06 g05.032 Card 103 Closeout](./2026-09-06-g05-032-card-103-closeout.md) — Card 103 found the OpenCode cancellation-cleanup issue fixture-only; no production change was required and the card merged at `d7b483dd`
 - [2026-09-05 g05.009 Card 097 Closeout](./2026-09-05-g05-009-card-097-closeout.md) — Candidate L accepted and merged through PR 234; Contract 061 now proves all 767 rows, with the per-turn audit note retained for reserved prune
 - [2026-09-06 g05.032 Card 100 Closeout](./2026-09-06-g05-032-card-100-closeout.md) — Card 100 accepted at exact head `df5f199b`, merged as `ffc26310`; proven open/readiness and diagnostics scope shipped, with the live editing termination retained as typed unresolved evidence for Card 102
 - [2026-09-05 g05.009 Cards 098-099 Closeout](./2026-09-05-g05-009-cards-098-099-closeout.md) — Candidates B and K accepted and merged through PRs 236 and 235; Contract 061 coverage is now 698 proved rows with candidate L's 69 rows remaining

@@ -321,7 +321,7 @@ runtime card becomes ready:
 
 ## Readiness Gates
 
-No implementation batch is ready until gates 1-5 pass. Route batches also
+No implementation batch is ready until gates 1-6 pass. Route batches also
 require their route gate.
 
 1. **Authority:** architecture and repository authority map name Swallowtail,
@@ -354,7 +354,7 @@ require their route gate.
    support waits for a frozen provider surface and cannot be inferred from
    provider-owned tools.
 10. **Consumer:** Desktop and Longhorn compile against one reviewed candidate;
-   product context and tool semantics stay outside Swallowtail.
+    product context and tool semantics stay outside Swallowtail.
 11. **Release:** public API baseline, route matrices, guide, source consumer,
     exact-SHA CI, and a separately authorized tag follow Contract 036.
 

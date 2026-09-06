@@ -94,7 +94,7 @@ No. Stop after one reviewable PR for exact-head review.
 ## Result
 
 Implemented on the Card082 branch after rebasing onto `origin/main` at
-`99825ba32ea6e87ca107c4d4c1b964b5b87598c8`, with Card100 merge
+`7d92591ac9da9c11eaad6b921e7ebc9e1a539e7a`, with Card100 merge
 `ffc263107343b30cda7a0efde840f84f47a361ec` in history. Open evidence now
 exposes bounded `Query.supportedModels` values; `set_model` calls
 `Query.setModel`, rejects unsupported values before the SDK call, and keeps
@@ -104,9 +104,11 @@ reported, and has no mid-session setter without pinned SDK evidence.
 
 Provider-free fake-SDK proofs cover confirmed, unconfirmed, rejected,
 supported-models, and effort paths. The focused tier, affected-package
-verification, package API, route, guide, Northstar, god-files JSON, and diff
-checks pass. `qa:docs` is blocked only by current-main Card103 status drift,
-outside Card082 ownership; Card082 leaves that shared surface unchanged.
-Matrix aggregate dispositions remain frozen; the owned Claude SDK notes carry
-the new evidence. Exact-head review is ready; the v0.4.2 merge gate stays
-closed.
+verification, route, guide, docs, Northstar, god-files JSON, and diff checks
+pass. The package API gate reaches the current candidate 0.4.2 baseline and
+reports the 18 Card082 additions; that frozen baseline remains byte-identical
+and untouched by ruling. The 0.4.1 Claude baseline is byte-identical to its
+frozen main version; the additions are recorded only in
+`public-api-unreleased`. Matrix aggregate dispositions remain frozen; the
+owned Claude SDK notes carry the new evidence. Exact-head review is ready; the
+v0.4.2 merge gate stays closed.

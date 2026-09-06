@@ -15,10 +15,10 @@ shape.
 
 ## Next Task
 
-Implement [g05.029 card 082](g05/batch-cards/082-claude-sdk-mid-session-model-and-effort.md):
-merge PR 239 on its accepted exact-head review now that `v0.4.2` is tagged at
-`f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`, then run the g05.029 runway
-(cards 083 to 088) from its manifest. Card 102 stays open only for the
+Implement [g05.029 card 105](g05/batch-cards/105-claude-sdk-termination-cause-propagation.md):
+surface the Claude SDK sidecar's termination cause to the consumer
+(consumer-critical, `v0.4.3` content), ahead of card 083 in the shared crate.
+Cards 085, 086, 088, and 104 run alongside from their manifests. Card 102 stays open only for the
 tag-pinned Bovine smoke result as consumer evidence; it holds nothing.
 
 ## Standing Lanes

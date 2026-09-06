@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [105-claude-sdk-termination-cause-propagation.md](./105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; surface the sidecar terminal code, result fields, close evidence, and stderr tail; precedes card 083
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9

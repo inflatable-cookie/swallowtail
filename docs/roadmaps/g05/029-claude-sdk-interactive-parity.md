@@ -66,6 +66,7 @@ forces a minor.
 
 ## Batch Cards
 
+- [105 Claude SDK Termination Cause Propagation](batch-cards/105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; the tagged driver discards the sidecar's terminal code and result fields; `v0.4.3` content; precedes card 083 in the shared crate
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
 - [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — complete; bounded command view on the callback; PR 233 merged at `97f37e4d`
@@ -300,4 +301,25 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Acceptance evidence | tests per adapter; vendor URL and date in source |
 | Review oracle | the card's invariant |
 | Stop conditions | a vendor publishes no stable command (record; ship the rest) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 105 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Consumer-critical: it takes the SDK crate ahead of card 083.
+
+| Field | Card 105 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | `v0.4.2` tagged; current `main` |
+| Completion conditions | terminal code, `turn_ended` fields, close evidence, and stderr tail reach the consumer bounded; `unknown_message` policy ruled; fixture proofs; guide; changelog; additive baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `src/sdk/connection/**`; `src/sdk/turn/**` and `turn.rs`; `src/sdk/close.rs`; `src/sdk/failure.rs`; `sidecar/**` only for the stderr tail and close evidence; `tests/**`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/prepared*`; `sdk/profile*`; `claude_code_*` and ACP modules; contracts; every other crate |
+| Approved concurrent siblings | cards 085, 086, 088, 104 |
+| Serial edges | card 083 follows card 105's merge (shared sidecar and connection); if card 083 already started, it rebases onto card 105 |
+| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
+| Acceptance evidence | fake-SDK proofs per terminal code and per `turn_ended` field; additive API diff |
+| Review oracle | the card's invariant |
+| Stop conditions | actionability needs provider error text (return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

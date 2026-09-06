@@ -27,7 +27,8 @@
 //
 // Ambient behavior is suppressed by construction: empty setting sources, an
 // explicit empty skill list, no MCP servers, no plugins, no hooks, no
-// subagents, no system prompt, no session persistence, and an explicitly
+// subagents, no system prompt, provider-owned session persistence is opt-in,
+// and an explicitly
 // admitted tool set. Unknown semantics fail closed.
 //
 // The admitted tool set and the permission mode are decided by the host and
@@ -182,6 +183,7 @@ const COMMANDS = new Set([
   "interrupt",
   "set_permission_mode",
   "set_model",
+  "list_sessions",
   "close",
 ]);
 const COMMAND_FAILURE_CODES = new Set([
@@ -210,6 +212,13 @@ const COMMAND_FAILURE_CODES = new Set([
   "model_missing",
   "supported_model_rejected",
   "account_unavailable",
+  "resume_cwd_mismatch",
+  "resume_account_mismatch",
+  "resume_session_unknown",
+  "resume_boundary_invalid",
+  "resume_persistence_disabled",
+  "listing_failed",
+  "listing_invalid",
   "native_child_unavailable",
   "not_open",
   "turn_active",
@@ -264,6 +273,12 @@ const state = {
   nextCallbackId: 0,
   closed: false,
   sdkTransportCloseRan: false,
+  persistSession: false,
+  resuming: false,
+  resumeSessionId: null,
+  resumeSessionAt: null,
+  providerSessionId: null,
+  account: null,
 };
 
 let writes = Promise.resolve();
@@ -565,10 +580,10 @@ function boundedCapabilities(values) {
 /// Projects readiness provenance labels only. No email, organization, token,
 /// or raw account value ever crosses this wire. Subscription fields are
 /// observations, not gates.
-function accountProjection(account) {
+function accountProjection(account, resuming = false) {
   const apiProvider = account?.apiProvider;
   if (apiProvider !== "firstParty") {
-    throw new SidecarFailure("account_not_first_party");
+    throw new SidecarFailure(resuming ? "resume_account_mismatch" : "account_not_first_party");
   }
   return {
     apiProvider,
@@ -829,12 +844,34 @@ async function handleOpen(params) {
   if (state.query) {
     throw new SidecarFailure("already_open");
   }
-  requireExactParams(params, ["cwd", "model", "tools", "permissionMode", "effort"]);
+  requireExactParams(params, [
+    "cwd",
+    "model",
+    "tools",
+    "permissionMode",
+    "effort",
+    "persistSession",
+    "resume",
+    "resumeSessionAt",
+  ]);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
   const tools = admittedTools(params.tools);
   const permissionMode = admittedPermissionMode(params.permissionMode);
   const effort = admittedEffort(params.effort);
+  const persistSession = params.persistSession === undefined ? false : params.persistSession;
+  if (typeof persistSession !== "boolean") {
+    throw new SidecarFailure("invalid_command");
+  }
+  const resume = params.resume === undefined ? undefined : requireString(params, "resume");
+  const resumeSessionAt =
+    params.resumeSessionAt === undefined ? undefined : requireString(params, "resumeSessionAt");
+  if (resumeSessionAt !== undefined && resume === undefined) {
+    throw new SidecarFailure("resume_boundary_invalid");
+  }
+  if (resume !== undefined && !persistSession) {
+    throw new SidecarFailure("resume_persistence_disabled");
+  }
   const disallowed = [
     ...NEVER_AVAILABLE_TOOLS,
     ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),
@@ -868,7 +905,7 @@ async function handleOpen(params) {
         mcpServers: {},
         strictMcpConfig: true,
         hooks: {},
-        persistSession: false,
+        persistSession,
         includePartialMessages: false,
         // `tools` restricts availability; `allowedTools` is deliberately
         // never set, because it auto-allows without prompting.
@@ -882,12 +919,18 @@ async function handleOpen(params) {
     if (effort !== undefined) {
       options.options.effort = effort;
     }
+    if (resume !== undefined) {
+      options.options.resume = resume;
+    }
+    if (resumeSessionAt !== undefined) {
+      options.options.resumeSessionAt = resumeSessionAt;
+    }
     query = sdk.query(options);
   } catch (error) {
     if (error instanceof SidecarFailure) {
       throw error;
     }
-    throw new SidecarFailure("construction_failed");
+    throw new SidecarFailure(resume !== undefined ? "resume_session_unknown" : "construction_failed");
   }
   state.query = query;
 
@@ -896,7 +939,7 @@ async function handleOpen(params) {
   // evidence for the first user turn rather than an open gate.
   const initialization = await boundedControl(
     () => query.initializationResult(),
-    "initialization_failed",
+    resume !== undefined ? "resume_session_unknown" : "initialization_failed",
   );
   if (!initialization || typeof initialization !== "object") {
     throw new SidecarFailure("initialization_failed");
@@ -905,9 +948,9 @@ async function handleOpen(params) {
   const supportedModels = supportedModelValues(modelRows);
   const account = await boundedControl(
     () => query.accountInfo(),
-    "account_unavailable",
+    resume !== undefined ? "resume_account_mismatch" : "account_unavailable",
   );
-  const readiness = accountProjection(account);
+  const readiness = accountProjection(account, resume !== undefined);
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
@@ -922,6 +965,12 @@ async function handleOpen(params) {
   state.effectiveEffort = null;
   state.sdkTransportCloseRan = false;
   state.closeTimeline = [];
+  state.persistSession = persistSession;
+  state.resuming = resume !== undefined;
+  state.resumeSessionId = resume ?? null;
+  state.resumeSessionAt = resumeSessionAt ?? null;
+  state.providerSessionId = null;
+  state.account = readiness;
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -932,6 +981,8 @@ async function handleOpen(params) {
     cwd,
     requestedModel: model,
     readiness: READINESS_REQUESTED,
+    persistSession,
+    resuming: resume !== undefined,
     supportedModels,
     capabilities: [],
     account: readiness,
@@ -1048,16 +1099,35 @@ async function handleQuery(params) {
       first = await state.query.next();
     } catch {
       state.turnActive = false;
-      throw new SidecarFailure("initialization_failed");
+      throw new SidecarFailure(state.resuming ? "resume_session_unknown" : "initialization_failed");
     }
     const system = first?.value;
     if (first?.done === true || system?.type !== "system" || system.subtype !== "init") {
       state.turnActive = false;
-      throw new SidecarFailure("init_missing");
+      throw new SidecarFailure(state.resuming ? "resume_session_unknown" : "init_missing");
     }
     if (typeof system.cwd !== "string" || !cwdMatches(state.cwd, system.cwd)) {
       state.turnActive = false;
-      throw new SidecarFailure("cwd_mismatch");
+      throw new SidecarFailure(state.resuming ? "resume_cwd_mismatch" : "cwd_mismatch");
+    }
+    if (
+      state.resuming &&
+      system.apiKeySource !== "oauth" &&
+      system.apiKeySource !== "none"
+    ) {
+      state.turnActive = false;
+      throw new SidecarFailure("resume_account_mismatch");
+    }
+    if (
+      state.resuming &&
+      (typeof system.session_id !== "string" || system.session_id.length === 0)
+    ) {
+      state.turnActive = false;
+      throw new SidecarFailure("resume_session_unknown");
+    }
+    if (state.resuming && system.session_id !== state.resumeSessionId) {
+      state.turnActive = false;
+      throw new SidecarFailure("resume_session_unknown");
     }
     if (typeof system.model !== "string" || system.model.length === 0) {
       state.turnActive = false;
@@ -1079,6 +1149,12 @@ async function handleQuery(params) {
     }
     state.initialized = true;
     state.effectiveModel = system.model;
+    state.providerSessionId =
+      (state.persistSession || state.resuming) &&
+      typeof system.session_id === "string" &&
+      system.session_id.length > 0
+        ? system.session_id
+        : null;
     state.capabilities = capabilities;
     state.reader = drainQuery();
   }
@@ -1089,9 +1165,91 @@ async function handleQuery(params) {
     cwd: state.cwd,
     requestedModel: state.requestedModel,
     model: state.effectiveModel,
+    ...(state.providerSessionId === null ? {} : { sessionId: state.providerSessionId }),
+    account: state.account,
+    ...(state.resuming ? { accountVerified: true } : {}),
     capabilities: state.capabilities,
     ...(state.effectiveEffort === null ? {} : { effort: state.effectiveEffort }),
   };
+}
+
+/// Lists only the SDK's bounded session metadata for the leased project. The
+/// provider store remains provider-owned: its paths and message bodies never
+/// cross this wire, and the returned cwd is the current host lease rather than
+/// metadata that could later be used as resume authority.
+async function handleListSessions(params) {
+  requireExactParams(params, ["cwd", "limit", "offset"]);
+  const cwd = requireString(params, "cwd");
+  const limit = params.limit;
+  const offset = params.offset;
+  if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) {
+    throw new SidecarFailure("listing_invalid");
+  }
+  if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10_000) {
+    throw new SidecarFailure("listing_invalid");
+  }
+  const sdk = state.sdk ?? (await importSdk());
+  if (typeof sdk.listSessions !== "function") {
+    throw new SidecarFailure("sdk_export_missing");
+  }
+  let sessions;
+  try {
+    sessions = await boundedControl(
+      () =>
+        sdk.listSessions({
+          dir: cwd,
+          limit,
+          offset,
+          includeWorktrees: false,
+          includeProgrammatic: true,
+        }),
+      "listing_failed",
+    );
+  } catch (error) {
+    if (error instanceof SidecarFailure) {
+      throw error;
+    }
+    throw new SidecarFailure("listing_failed");
+  }
+  if (!Array.isArray(sessions) || sessions.length > limit) {
+    throw new SidecarFailure("listing_invalid");
+  }
+  const projected = sessions.map((session) => {
+    if (!session || typeof session !== "object") {
+      throw new SidecarFailure("listing_invalid");
+    }
+    const sessionId = session.sessionId;
+    const title = session.customTitle ?? session.summary;
+    if (
+      typeof sessionId !== "string" ||
+      sessionId.length === 0 ||
+      sessionId.length > 4096 ||
+      [...sessionId].some((character) => character.charCodeAt(0) < 0x20) ||
+      (title !== undefined &&
+        (typeof title !== "string" ||
+          title.length > 16_384 ||
+          [...title].some((character) => character.charCodeAt(0) < 0x20)))
+    ) {
+      throw new SidecarFailure("listing_invalid");
+    }
+    const lastModified = session.lastModified;
+    const createdAt = session.createdAt;
+    if (
+      !Number.isSafeInteger(lastModified) ||
+      lastModified < 0 ||
+      (createdAt !== undefined && (!Number.isSafeInteger(createdAt) || createdAt < 0))
+    ) {
+      throw new SidecarFailure("listing_invalid");
+    }
+    return {
+      sessionId,
+      cwd,
+      createdAt: createdAt ?? null,
+      lastModified,
+      title: title ?? null,
+    };
+  });
+  return { cwd, sessions: projected };
 }
 
 async function handleInterrupt(params) {
@@ -1288,6 +1446,9 @@ async function dispatch(record) {
         break;
       case "set_model":
         data = await handleSetModel(params);
+        break;
+      case "list_sessions":
+        data = await handleListSessions(params);
         break;
       default:
         throw new SidecarFailure("unknown_command");

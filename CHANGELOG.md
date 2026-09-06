@@ -21,6 +21,13 @@ annotated Git tags from the canonical repository.
   Provider-free ACP fixtures cover both choices, timeout, cancellation
   abandonment, malformed requests, bounds, and no active turn. g05.029 card
   085.
+ - add opt-in provider-owned Claude Agent SDK session persistence with
+   replay-free `resume` and `resumeSessionAt` attachment. Resume rebinds the
+   host-leased cwd, first-party account, and exact `SessionResumeBinding`, while
+   a separate bounded `listSessions` projection returns only provider session
+   ids, leased cwd, timestamps, and titles; persistence remains disabled by
+   default and provider-free proofs cover attach, mismatch, unknown-session,
+   boundary, listing, and persistence-off paths. g05.029 card 083.
 - add bounded `Query.supportedModels` evidence and route-local `set_model` to
   the Claude Agent SDK sidecar. Unsupported models fail before `Query.setModel`;
   confirmed values update the effective model, while the pinned SDK's

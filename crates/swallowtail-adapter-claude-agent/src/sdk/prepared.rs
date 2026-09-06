@@ -3,8 +3,9 @@
 //! The prepared session binds the five exact interface-version points, the
 //! host-approved launch recipe target, the delegated subscription credential
 //! reference, the exact model route, and the read-only ambient resource
-//! posture. Only fresh sessions are prepared here: resume, fork, and session
-//! management are later layers and are not smuggled in through preparation.
+//! posture. Preparation always creates a fresh route binding; the resulting
+//! prepared session can separately attach an explicitly supplied resume
+//! binding, but never turns listing metadata into authority.
 
 mod build;
 
@@ -17,8 +18,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparationStage, RequestId, RuntimeFailure,
-    SessionOptions, WorkingResourceRef,
+    OpenSessionRequest, PreparationFailure, PreparationStage, RequestId, ResumeSessionRequest,
+    RuntimeFailure, SessionOptions, SessionResumeBinding, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one fresh Claude Agent SDK sidecar session.
@@ -169,6 +170,59 @@ type OpenSessionFuture =
 
 type RouteSessionFuture = BoxFuture<'static, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>>;
 
+/// One bounded provider-owned session record returned by the route-local
+/// listing query. It is metadata only and is never resume authority.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClaudeAgentSdkSessionListing {
+    provider_session_ref: swallowtail_core::SessionRef,
+    cwd: String,
+    created_at_unix_milliseconds: Option<u64>,
+    last_modified_unix_milliseconds: u64,
+    title: Option<String>,
+}
+
+impl ClaudeAgentSdkSessionListing {
+    pub(crate) fn from_parts(entry: super::driver::SessionListing) -> Self {
+        Self {
+            provider_session_ref: entry.provider_session_ref,
+            cwd: entry.cwd,
+            created_at_unix_milliseconds: entry.created_at_unix_milliseconds,
+            last_modified_unix_milliseconds: entry.last_modified_unix_milliseconds,
+            title: entry.title,
+        }
+    }
+
+    /// Returns the opaque provider session identity.
+    #[must_use]
+    pub const fn provider_session_ref(&self) -> &swallowtail_core::SessionRef {
+        &self.provider_session_ref
+    }
+
+    /// Returns the leased cwd used for this listing.
+    #[must_use]
+    pub fn cwd(&self) -> &str {
+        &self.cwd
+    }
+
+    /// Returns the provider-reported creation time when available.
+    #[must_use]
+    pub const fn created_at_unix_milliseconds(&self) -> Option<u64> {
+        self.created_at_unix_milliseconds
+    }
+
+    /// Returns the provider-reported last-modified time.
+    #[must_use]
+    pub const fn last_modified_unix_milliseconds(&self) -> u64 {
+        self.last_modified_unix_milliseconds
+    }
+
+    /// Returns the bounded display title when available.
+    #[must_use]
+    pub fn title(&self) -> Option<&str> {
+        self.title.as_deref()
+    }
+}
+
 /// A prepared fresh sidecar session: validated plan plus bound request.
 pub struct ClaudeAgentSdkPreparedSession {
     plan: PreflightPlan,
@@ -229,6 +283,90 @@ impl ClaudeAgentSdkPreparedSession {
         let plan = self.plan.clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_route_session(plan, request, services).await })
+    }
+
+    /// Builds an exact Contract 017 resume request without replay.
+    pub fn resume_request(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        ResumeSessionRequest::from_plan(
+            &self.plan,
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared Claude Agent SDK session binds a working resource")
+                .clone(),
+            self.request.deadline(),
+        )
+        .map_err(|_| {
+            preparation_failure(
+                PreparationStage::Preflight,
+                "swallowtail.claude-agent.sdk.preparation.resume_request_invalid",
+                "Claude Agent SDK resume request did not match the prepared session",
+            )
+        })
+    }
+
+    /// Resumes a retained provider session without replaying its transcript.
+    pub fn resume_session(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<RouteSessionFuture, PreparationFailure> {
+        let request = self.resume_request(request_id, binding)?;
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        Ok(Box::pin(async move {
+            driver
+                .resume_route_session(plan, request, services, None)
+                .await
+        }))
+    }
+
+    /// Resumes at one additive message boundary without replaying prior
+    /// transcript content.
+    pub fn resume_session_at(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        message_boundary: impl Into<String>,
+        services: HostServices,
+    ) -> Result<RouteSessionFuture, PreparationFailure> {
+        let request = self.resume_request(request_id, binding)?;
+        let message_boundary = message_boundary.into();
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        Ok(Box::pin(async move {
+            driver
+                .resume_route_session(plan, request, services, Some(message_boundary))
+                .await
+        }))
+    }
+
+    /// Lists bounded provider-owned session metadata for the leased cwd.
+    /// Listing is not a resume or attachment authority.
+    pub fn list_sessions(
+        &self,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<Vec<ClaudeAgentSdkSessionListing>, RuntimeFailure>> {
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        let request_id = self.request.request_id().clone();
+        let working_resource = self
+            .request
+            .working_resource()
+            .expect("prepared Claude Agent SDK session binds a working resource")
+            .clone();
+        let deadline = self.request.deadline().expect("prepared session deadline");
+        Box::pin(async move {
+            driver
+                .list_sessions(plan, request_id, working_resource, deadline, services)
+                .await
+        })
     }
 }
 

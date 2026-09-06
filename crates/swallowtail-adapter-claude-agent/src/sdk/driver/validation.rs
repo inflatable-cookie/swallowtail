@@ -7,7 +7,8 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_plan_agreement,
+    HostServices, OpenSessionRequest, ResumeSessionRequest, RuntimeFailure, TurnRequest,
+    validate_session_plan_agreement,
 };
 
 pub(crate) const ACCESS_NAMESPACE: &str = "claude/delegated-subscription-auth";
@@ -79,7 +80,12 @@ pub(super) fn validate_open(
     {
         return Err(plan_mismatch("ambient resource access"));
     }
-    if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
+    let expected_provider_state_policy = if profile.persist_session() {
+        SessionProviderStatePolicy::DurableProviderSessionPreserved
+    } else {
+        SessionProviderStatePolicy::Prohibited
+    };
+    if request.provider_state_policy() != Some(expected_provider_state_policy) {
         return Err(plan_mismatch("provider-state policy"));
     }
     if request.working_resource().is_none() {
@@ -109,7 +115,56 @@ pub(super) fn validate_open(
         plan,
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+    )?;
+    if profile.persist_session() {
+        require_capability(plan, Capability::Resume)?;
+        require_capability(plan, Capability::ProviderDurableRetention)?;
+    }
+    Ok(())
+}
+
+pub(super) fn validate_resume(
+    plan: &PreflightPlan,
+    request: &ResumeSessionRequest,
+    services: &HostServices,
+    credential: &swallowtail_core::CredentialRef,
+    profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
+    resume_session_at: Option<&str>,
+) -> Result<(), RuntimeFailure> {
+    if !profile.persist_session() {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.resume_persistence_disabled",
+            "Claude Agent SDK session persistence is disabled for this profile",
+        ));
+    }
+    let open = OpenSessionRequest::from_plan(
+        plan,
+        request.request_id().clone(),
+        request.working_resource().clone(),
+        request.deadline(),
     )
+    .map(|open| open.with_options(request.options().clone()))
+    .map_err(|_| plan_mismatch("resume request"))?;
+    validate_open(plan, &open, services, credential, profile)?;
+    if !request.resume_binding().matches_attachment(
+        plan,
+        request.working_resource(),
+        request.access_policy(),
+    ) {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.resume_binding_mismatch",
+            "Claude Agent SDK resume binding does not match the prepared route, host, resource, or access policy",
+        ));
+    }
+    if let Some(boundary) = resume_session_at
+        && (boundary.is_empty() || boundary.len() > 256 || boundary.chars().any(char::is_control))
+    {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.resume_boundary_invalid",
+            "Claude Agent SDK resume message boundary is empty or outside its bound",
+        ));
+    }
+    Ok(())
 }
 
 pub(super) fn validate_turn(request: &TurnRequest) -> Result<(), RuntimeFailure> {

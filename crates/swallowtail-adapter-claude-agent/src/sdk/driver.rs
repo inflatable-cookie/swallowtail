@@ -8,17 +8,18 @@
 //! binary and everything it spawns stay enrolled in one host-owned tree.
 
 pub use self::session::ClaudeAgentSdkSessionHandle;
-use self::validation::validate_open;
+use self::validation::{validate_open, validate_resume};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::failure;
 use crate::sdk::guardian::OpenGuard;
+use crate::sdk::prepared::ClaudeAgentSdkSessionListing;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
     BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     LoadSessionRequest, LoadedSession, OpenSessionRequest, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId,
+    RuntimeSessionId, SessionResumeBinding,
 };
 
 mod descriptor;
@@ -27,6 +28,8 @@ mod launch;
 mod session;
 mod startup;
 mod validation;
+
+pub(crate) use startup::SessionListing;
 
 pub(super) const SDK_DRIVER_ID: &str = "swallowtail.claude-agent.sdk";
 
@@ -105,6 +108,8 @@ pub(super) struct PendingSession {
     pub(super) connection: Arc<SdkConnection>,
     pub(super) services: HostServices,
     pub(super) leased_cwd: String,
+    pub(super) working_resource: swallowtail_runtime::WorkingResourceRef,
+    pub(super) access_policy: swallowtail_core::SessionAccessPolicy,
     /// The enclosing cleanup guardian, started before the first acquisition so
     /// activating it at close cannot fail while the session holds live state.
     pub(super) close_guardian: Option<crate::sdk::guardian::SessionGuardian>,
@@ -116,6 +121,7 @@ impl PendingSession {
         plan: &PreflightPlan,
         readiness: startup::SessionReadiness,
         acquired: crate::sdk::guardian::Acquisitions,
+        resume_binding: Option<SessionResumeBinding>,
     ) -> ClaudeAgentSdkSessionHandle {
         let runtime_id =
             RuntimeSessionId::new(format!("claude-agent-sdk:{}", self.request_id.as_str()))
@@ -133,6 +139,13 @@ impl PendingSession {
             services: self.services,
             resource: acquired.resource,
             credential: acquired.credential,
+            plan: plan.clone(),
+            working_resource: self.working_resource,
+            access_policy: self.access_policy,
+            provider_session_ref: resume_binding
+                .as_ref()
+                .map(|binding| binding.provider_session_ref().clone()),
+            resume_binding,
             readiness,
             active,
             permission_mode,
@@ -167,11 +180,15 @@ impl InteractiveSessionDriver for ClaudeAgentSdkDriver {
 
     fn resume_session(
         &self,
-        _plan: PreflightPlan,
-        _request: ResumeSessionRequest,
-        _services: HostServices,
+        plan: PreflightPlan,
+        request: ResumeSessionRequest,
+        services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async { Err(crate::sdk::failure::unsupported("session resume")) })
+        Box::pin(async move {
+            self.resume_route_session(plan, request, services, None)
+                .await
+                .map(|handle| Box::new(handle) as Box<dyn InteractiveSessionHandle>)
+        })
     }
 }
 
@@ -184,8 +201,203 @@ impl ClaudeAgentSdkDriver {
         request: OpenSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
+        self.open_with_start(plan, request, services, SessionStart::Fresh)
+    }
+
+    /// Resumes the exact provider session in a Contract 017 binding without
+    /// replaying its transcript.
+    pub fn resume_route_session(
+        &self,
+        plan: PreflightPlan,
+        request: ResumeSessionRequest,
+        services: HostServices,
+        resume_session_at: Option<String>,
+    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
         Box::pin(async move {
+            let working_resource = request.working_resource().clone();
+            let open = OpenSessionRequest::from_plan(
+                &plan,
+                request.request_id().clone(),
+                working_resource,
+                request.deadline(),
+            )
+            .map_err(|_| {
+                failure(
+                    "swallowtail.claude-agent.sdk.resume_binding_mismatch",
+                    "Claude Agent SDK resume request could not be reconstructed from its bound plan",
+                )
+            })?
+            .with_options(request.options().clone());
+            self.open_with_start(
+                plan,
+                open,
+                services,
+                SessionStart::Resume {
+                    binding: Box::new(request.resume_binding().clone()),
+                    resume_session_at,
+                },
+            )
+            .await
+        })
+    }
+
+    /// Lists provider-owned session metadata for the exact leased working
+    /// resource. This operation never opens a provider session and never
+    /// treats a listing record as resume authority.
+    pub fn list_sessions(
+        &self,
+        plan: PreflightPlan,
+        request_id: swallowtail_runtime::RequestId,
+        working_resource: swallowtail_runtime::WorkingResourceRef,
+        deadline: swallowtail_runtime::Deadline,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<Vec<ClaudeAgentSdkSessionListing>, RuntimeFailure>> {
+        Box::pin(async move {
+            let request = OpenSessionRequest::from_plan(
+                &plan,
+                request_id.clone(),
+                working_resource.clone(),
+                Some(deadline),
+            )
+            .map_err(|_| {
+                failure(
+                    "swallowtail.claude-agent.sdk.listing_request_invalid",
+                    "Claude Agent SDK session listing request did not match its prepared route",
+                )
+            })?;
             validate_open(&plan, &request, &services, &self.credential, self.profile)?;
+            let bounded = HostBound::new(
+                services
+                    .time()
+                    .cloned()
+                    .expect("validated sidecar time service"),
+                deadline,
+            );
+            if bounded.expired() {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.listing_timed_out",
+                    "Claude Agent SDK session listing reached its host deadline before dispatch",
+                ));
+            }
+            let open_scope = guard_scope("listing-open-guard", request_id.as_str())?;
+            let close_scope = guard_scope("listing-close-guard", request_id.as_str())?;
+            let session_scope = guard_scope("listing-session", request_id.as_str())?;
+            let open_reservation = crate::sdk::guardian::reserve_reap(&services, &open_scope)?;
+            let close_reservation = crate::sdk::guardian::reserve_reap(&services, &close_scope)?;
+            let pump_reservation = crate::sdk::guardian::reserve_reap(&services, &session_scope)?;
+            let close_guardian = crate::sdk::guardian::SessionGuardian::arm(
+                &services,
+                close_reservation,
+                close_scope,
+                request_id.as_str(),
+            )?;
+            let (guard, lease) = OpenGuard::arm(
+                &services,
+                open_reservation,
+                open_scope,
+                request_id.as_str(),
+                deadline,
+            )?;
+            let started = bounded
+                .run(self.acquire_and_list(
+                    &plan,
+                    &request,
+                    services.clone(),
+                    &guard,
+                    lease,
+                    Reservations {
+                        pump: pump_reservation,
+                        pump_scope: session_scope,
+                        close_guardian,
+                    },
+                ))
+                .await;
+            let (pending, listing) = match started {
+                Some(Ok(value)) => value,
+                Some(Err(error)) => {
+                    let cleaned = guard.fire(&bounded, &services).await;
+                    return Err(if cleaned {
+                        error
+                    } else {
+                        failure(
+                            "swallowtail.claude-agent.sdk.listing_cleanup_unconfirmed",
+                            "Claude Agent SDK session listing cleanup was not confirmed",
+                        )
+                    });
+                }
+                None => {
+                    let cleaned = guard.fire(&bounded, &services).await;
+                    return Err(if cleaned {
+                        failure(
+                            "swallowtail.claude-agent.sdk.listing_timed_out",
+                            "Claude Agent SDK session listing reached its host deadline",
+                        )
+                    } else {
+                        failure(
+                            "swallowtail.claude-agent.sdk.listing_cleanup_unconfirmed",
+                            "Claude Agent SDK session listing cleanup was not confirmed",
+                        )
+                    });
+                }
+            };
+            pending.connection.begin_close().await;
+            let cleaned = guard.fire(&bounded, &services).await;
+            if !cleaned {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.listing_cleanup_unconfirmed",
+                    "Claude Agent SDK session listing cleanup was not confirmed",
+                ));
+            }
+            Ok(listing
+                .into_iter()
+                .map(ClaudeAgentSdkSessionListing::from_parts)
+                .collect())
+        })
+    }
+
+    fn open_with_start(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+        start: SessionStart,
+    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
+        Box::pin(async move {
+            match &start {
+                SessionStart::Fresh => {
+                    validate_open(&plan, &request, &services, &self.credential, self.profile)?;
+                }
+                SessionStart::Resume {
+                    binding,
+                    resume_session_at,
+                } => {
+                    let resume = ResumeSessionRequest::from_plan(
+                        &plan,
+                        request.request_id().clone(),
+                        *binding.clone(),
+                        request
+                            .working_resource()
+                            .expect("validated resume working resource")
+                            .clone(),
+                        request.deadline(),
+                    )
+                    .map(|resume| resume.with_options(request.options().clone()))
+                    .map_err(|_| {
+                        failure(
+                            "swallowtail.claude-agent.sdk.resume_binding_mismatch",
+                            "Claude Agent SDK resume request could not be reconstructed from its bound plan",
+                        )
+                    })?;
+                    validate_resume(
+                        &plan,
+                        &resume,
+                        &services,
+                        &self.credential,
+                        self.profile,
+                        resume_session_at.as_deref(),
+                    )?;
+                }
+            }
             let deadline = request.deadline().expect("validated open deadline");
             let bounded = HostBound::new(
                 services
@@ -237,6 +449,7 @@ impl ClaudeAgentSdkDriver {
                 .run(self.acquire_and_start(
                     &plan,
                     &request,
+                    &start,
                     services.clone(),
                     &guard,
                     lease,
@@ -249,7 +462,12 @@ impl ClaudeAgentSdkDriver {
                 .await;
             match opened {
                 Some(Ok((pending, readiness))) => match guard.claim() {
-                    Some(acquired) => Ok(pending.into_handle(&plan, readiness, acquired)),
+                    Some(acquired) => Ok(pending.into_handle(
+                        &plan,
+                        readiness,
+                        acquired,
+                        start.resume_binding().cloned(),
+                    )),
                     // Readiness landed on the boundary and cleanup won the one
                     // atomic transition. What this open acquired is already
                     // being terminated, so reporting success would be a lie.
@@ -293,10 +511,12 @@ impl ClaudeAgentSdkDriver {
     ///
     /// It is one future so the caller's deadline covers all of it, and every
     /// acquisition inside is recorded in the guard before the next await.
+    #[allow(clippy::too_many_arguments)]
     async fn acquire_and_start(
         &self,
         plan: &PreflightPlan,
         request: &OpenSessionRequest,
+        start: &SessionStart,
         services: HostServices,
         guard: &OpenGuard,
         lease: crate::sdk::guardian::RecordingLease,
@@ -321,9 +541,80 @@ impl ClaudeAgentSdkDriver {
                 guard,
             )
             .await?;
-        let readiness =
-            startup::open(&pending.connection, plan, &pending.leased_cwd, self.profile).await?;
+        let readiness = match start {
+            SessionStart::Fresh => {
+                startup::open(&pending.connection, plan, &pending.leased_cwd, self.profile).await?
+            }
+            SessionStart::Resume {
+                binding,
+                resume_session_at,
+            } => {
+                startup::resume(
+                    &pending.connection,
+                    plan,
+                    &pending.leased_cwd,
+                    self.profile,
+                    binding.provider_session_ref(),
+                    resume_session_at.as_deref(),
+                )
+                .await?
+            }
+        };
         Ok((pending, readiness))
+    }
+
+    async fn acquire_and_list(
+        &self,
+        plan: &PreflightPlan,
+        request: &OpenSessionRequest,
+        services: HostServices,
+        guard: &OpenGuard,
+        lease: crate::sdk::guardian::RecordingLease,
+        reservations: Reservations,
+    ) -> Result<(PendingSession, Vec<startup::SessionListing>), RuntimeFailure> {
+        let _recording = lease;
+        let pending = self
+            .spawn_session(
+                plan,
+                SessionLaunch {
+                    request_id: request.request_id().clone(),
+                    working_resource: request
+                        .working_resource()
+                        .expect("validated listing working resource")
+                        .clone(),
+                    access_policy: request.access_policy(),
+                    reservations,
+                },
+                services,
+                guard,
+            )
+            .await?;
+        let listing = startup::list(
+            &pending.connection,
+            request.request_id().as_str(),
+            &pending.leased_cwd,
+            1_000,
+            0,
+        )
+        .await?;
+        Ok((pending, listing))
+    }
+}
+
+enum SessionStart {
+    Fresh,
+    Resume {
+        binding: Box<SessionResumeBinding>,
+        resume_session_at: Option<String>,
+    },
+}
+
+impl SessionStart {
+    fn resume_binding(&self) -> Option<&SessionResumeBinding> {
+        match self {
+            Self::Fresh => None,
+            Self::Resume { binding, .. } => Some(binding),
+        }
     }
 }
 

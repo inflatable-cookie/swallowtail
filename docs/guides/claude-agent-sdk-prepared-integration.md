@@ -18,13 +18,14 @@ interactive session on the user's own Claude subscription, with streamed
 output, identity-and-lifecycle activity, consumer-mediated tool admission, a
 permission mode selected at open and changeable mid-session, a supported-model
 catalogue, confirmed-or-typed-fail model changes, optional open-time effort,
-interrupt, and a host-owned descendant-tree close. The default profile is
-read-only; an explicit profile may admit writes or Bash only with a read-write
-working resource lease. Reject it when the application cannot provision the
-Node runtime, sidecar asset, SDK package, and platform binary, or needs
-structured runs, resume, fork, session management, usage detail, thinking
-control, MCP, hooks, plugins, skills, subagents, checkpoints, or terminal
-execution. Those are
+optional provider-owned persistence with replay-free resume, bounded session
+listing, interrupt, and a host-owned descendant-tree close. The default profile
+is read-only and non-persistent; an explicit profile may admit writes or Bash
+only with a read-write working resource lease. Reject it when the application
+cannot provision the Node runtime, sidecar asset, SDK package, and platform
+binary, or needs load with replay, fork, provider-session management, usage
+detail, thinking control, MCP, hooks, plugins, skills, subagents, checkpoints,
+or terminal execution. Those are
 later layers or separate routes, not withheld defaults.
 
 All four Claude routes remain distinct. `claude-agent.acp` speaks ACP v1 over
@@ -126,8 +127,9 @@ runtime, SDK package, native binary, or fallback route, and never installs,
 vendors, updates, repairs, or redistributes any of them.
 
 The host binds task, process, time, credential, and working-resource services.
-The working resource is read-only, and `ProviderSuppressed` configuration is
-not a sandbox.
+The default working resource is read-only. An explicit write or Bash profile
+asks for a read-write lease; `ProviderSuppressed` configuration is not a
+sandbox.
 
 ## Version Posture
 
@@ -275,9 +277,9 @@ stages because no caller deadline exists there.
 
 Ambient behavior is suppressed by construction rather than by omission:
 setting sources are empty, skills are an explicit empty list (omission is
-documented *not* to mean "skills off"), session persistence is disabled, and
-MCP servers, plugins, hooks, subagents, and system prompts are all set
-explicitly.
+documented *not* to mean "skills off"), session persistence is disabled unless
+the prepared profile opts in, and MCP servers, plugins, hooks, subagents, and
+system prompts are all set explicitly.
 
 Runtime-advertised capabilities are recorded and then enforced. An interrupt
 receipt is admissible only where the runtime advertised
@@ -407,6 +409,42 @@ upgraded by assumption. The default profile omits the field, preserving the
 prior open options byte-for-byte. The pinned SDK has no evidenced mid-session
 effort setter, so this route exposes none. `Options.thinking` remains out of
 scope.
+
+## Resume And Session Listing
+
+The pinned `0.3.259` SDK exposes `persistSession`, `resume`, and
+`resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
+prepared profile keeps persistence disabled by default. Calling
+`with_persist_session(true)` opts into provider-owned retention, adds the
+route's `Resume` and `ProviderDurableRetention` requirements, and sends
+`persistSession: true`; the default open omits that field. Swallowtail never
+reads, rewrites, or reconstructs the provider's session store.
+
+After a persisted session has reported its first-turn `sessionId`, the route
+handle exposes that opaque provider reference and an exact
+`SessionResumeBinding`. The binding fixes the configured instance, execution
+host, model route, model, working resource, and access policy. A matching
+prepared session can call `resume_session` to attach without replaying prior
+messages, or `resume_session_at` to add one bounded provider message boundary.
+Neither operation falls back to opening a fresh session. A boundary is an
+additive input, not a request to load or replay history.
+
+Resume derives `cwd` only from the current host-resolved working-resource lease.
+The sidecar verifies the provider account through `accountInfo()` at open and
+the first-turn `system/init` evidence before it accepts a turn; the Rust route
+also requires the bound session id, leased cwd, and first-party account proof
+to match. Cwd, account, boundary, and unknown-session failures are typed
+`resume_*` diagnostics. A mismatch means no turn runs.
+
+`ClaudeAgentSdkPreparedSession::list_sessions` performs a separate bounded
+route-local query. It calls the pinned SDK's `listSessions` with the leased cwd,
+a maximum page of 1,000, offset zero, `includeWorktrees: false`, and
+`includeProgrammatic: true`. Each returned record is projected to only its
+opaque provider session id, the leased cwd, bounded timestamps, and an optional
+title. Provider paths, message bodies, and raw store records never cross the
+sidecar. A listing is display evidence only: it is not a resume binding or
+attachment authority, and it never opens a live provider session or replays
+transcript content.
 
 ## Close And The Descendant Tree
 

@@ -41,7 +41,7 @@ pub use asset::{
 pub use driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle, claude_agent_sdk_descriptor};
 pub use permission::claude_agent_sdk_tool_admission_namespace;
 pub use prepared::{
-    ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation,
+    ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionListing, ClaudeAgentSdkSessionPreparation,
     prepare_claude_agent_sdk_session,
 };
 pub use profile::{

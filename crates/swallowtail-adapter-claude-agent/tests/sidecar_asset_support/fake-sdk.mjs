@@ -35,6 +35,7 @@ const observed = {
   modelSetCalls: [],
   closeCalls: 0,
   promptStreamState: null,
+  listSessions: null,
   writes: [],
   bash: [],
 };
@@ -69,6 +70,7 @@ function initMessage(options) {
     cwd: options.cwd,
     model: options.model,
     apiKeySource: "oauth",
+    session_id: options.resume ?? "session-1",
     capabilities: ["interrupt_receipt_v1"],
   };
   if (SCENARIO === "canonical-model") {
@@ -89,6 +91,12 @@ function initMessage(options) {
   } else if (SCENARIO === "unsupported-model") {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-opus-5"];
+  } else if (SCENARIO === "resume-session-unknown") {
+    message.session_id = "other-session";
+  } else if (SCENARIO === "resume-cwd-mismatch") {
+    message.cwd = "/fixture/elsewhere";
+  } else if (SCENARIO === "resume-account-mismatch") {
+    message.apiKeySource = "ANTHROPIC_API_KEY";
   }
   if (SCENARIO === "effort-confirmed") {
     message.effort = options.effort;
@@ -421,6 +429,27 @@ export function query({ prompt, options }) {
   };
   void prompt;
   return iterator;
+}
+
+export async function listSessions(options = {}) {
+  observed.listSessions = {
+    dir: options.dir ?? null,
+    limit: options.limit ?? null,
+    offset: options.offset ?? null,
+    includeWorktrees: options.includeWorktrees ?? null,
+    includeProgrammatic: options.includeProgrammatic ?? null,
+  };
+  record();
+  return [
+    {
+      sessionId: "session-1",
+      summary: "Fixture session",
+      customTitle: "Fixture title",
+      lastModified: 200,
+      createdAt: 100,
+      cwd: options.dir,
+    },
+  ];
 }
 
 function invokeSpawnHook(hook, ...hookArguments) {

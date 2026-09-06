@@ -362,6 +362,15 @@ impl SidecarProcess {
         observations["options"].clone()
     }
 
+    pub fn observed_list_sessions(&self) -> Value {
+        let observations = self.read_observations();
+        assert!(
+            observations["listSessions"].is_object(),
+            "fake SDK did not record listSessions options"
+        );
+        observations["listSessions"].clone()
+    }
+
     pub fn observed_control_calls(&self) -> Vec<String> {
         self.read_observations()["controlCalls"]
             .as_array()

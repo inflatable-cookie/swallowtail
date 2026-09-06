@@ -756,6 +756,66 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     assert_eq!(options["executable"], "node");
 }
 
+#[test]
+fn resume_options_are_forwarded_without_replaying_a_transcript() {
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({
+            "cwd": sidecar.cwd(),
+            "model": "m-1",
+            "persistSession": true,
+            "resume": "session-1",
+            "resumeSessionAt": "message-boundary-1"
+        }),
+    );
+    assert_eq!(open["success"], true, "resume open response: {open}");
+    let options = sidecar.observed_options();
+    assert_eq!(options["persistSession"], true);
+    assert_eq!(options["resume"], "session-1");
+    assert_eq!(options["resumeSessionAt"], "message-boundary-1");
+
+    let query = sidecar.command("query-1", "query", json!({"text": "continue"}));
+    assert_eq!(query["success"], true, "resumed query response: {query}");
+    assert_eq!(query["data"]["sessionId"], "session-1");
+    assert_eq!(query["data"]["accountVerified"], true);
+    assert_eq!(query["data"]["account"]["apiProvider"], "firstParty");
+    assert!(sidecar.first_input_consumed());
+}
+
+#[test]
+fn listing_forwards_only_the_bounded_provider_metadata_request() {
+    let mut sidecar = SidecarProcess::start();
+    let response = sidecar.command(
+        "list-1",
+        "list_sessions",
+        json!({"cwd": sidecar.cwd(), "limit": 1000, "offset": 0}),
+    );
+    assert_eq!(response["success"], true, "listing response: {response}");
+    assert_eq!(response["data"]["cwd"], sidecar.cwd());
+    assert_eq!(
+        response["data"]["sessions"],
+        json!([{
+            "sessionId": "session-1",
+            "cwd": sidecar.cwd(),
+            "createdAt": 100,
+            "lastModified": 200,
+            "title": "Fixture title"
+        }])
+    );
+    assert_eq!(
+        sidecar.observed_list_sessions(),
+        json!({
+            "dir": sidecar.cwd(),
+            "limit": 1000,
+            "offset": 0,
+            "includeWorktrees": false,
+            "includeProgrammatic": true
+        })
+    );
+}
+
 const WRITE_TOOLS: [&str; 6] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"];
 const BASH_TOOLS: [&str; 7] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit", "Bash"];
 

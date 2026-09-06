@@ -54,3 +54,16 @@ The SDK cannot report the session's account or cwd on resume in any observable w
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Static freeze completed before implementation from `@anthropic-ai/claude-agent-sdk@0.3.259`, npm package shasum `daf465f8231392ab99e1c7fc7f1e14c3d25ea012`.
+
+Frozen anchors in `sdk.d.ts`:
+
+- `persistSession?: boolean` at lines 1674-1680; `resume?: string` at 1907-1910; `sessionId?: string` at 1911-1916; `resumeSessionAt?: string` at 1917-1924.
+- `forkSession` at lines 724-738, returning a new resumable session id through `query({ options: { resume: sessionId } })`.
+- `getSessionInfo` at lines 759-767 and `getSessionMessages` at lines 787-797; message retrieval is outside this card.
+- `listSessions` at lines 973-992, with `dir`, `limit`, `offset`, `includeWorktrees`, `includeProgrammatic`, and `sessionStore` options at lines 997-1034.
+
+Decision: resume, `resumeSessionAt`, and `listSessions` are present in the pinned artifact. This card implements resume and the bounded listing surface using the leased cwd; listing returns provider session id, cwd, timestamps, and title only. `getSessionMessages` and `forkSession` remain out of scope. `sessionStore` is not used. No provider calls or credentials were used for this freeze.

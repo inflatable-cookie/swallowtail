@@ -109,6 +109,18 @@ pub enum SdkScenario {
     ToolOrderingDrift,
     /// The sidecar writes an admission request that the turn's own end raced.
     AdmissionAfterResult,
+    /// A persisted session resumes and reports the bound session id.
+    ResumeComplete,
+    /// Resume init reports a different working directory.
+    ResumeCwdMismatch,
+    /// Resume init reports non-first-party account provenance.
+    ResumeAccountMismatch,
+    /// Resume init reports a different provider session id.
+    ResumeSessionUnknown,
+    /// Resume rejects the supplied message boundary.
+    ResumeBoundaryRejected,
+    /// The fake SDK returns bounded provider session metadata.
+    SessionListing,
 }
 
 /// One host service that never answers, so a caller bound is the only thing

@@ -15,13 +15,11 @@ shape.
 
 ## Next Task
 
-Implement [g05.032 card 102](g05/batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md):
-the `v0.4.2` consumer proof and tag gate. The candidate is merged at
-`f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8` (prepare commit
-`d5887929c4baaf84f0fd8c16c74375370945bd43`); Bovine Desktop runs the smoke
-from the Acowtancy packet, then the operator authorizes the tag by exact SHA.
-Card 082 stays branch-only until the tag; its baseline edits move to
-`public-api-unreleased`.
+Implement [g05.029 card 082](g05/batch-cards/082-claude-sdk-mid-session-model-and-effort.md):
+merge PR 239 on its accepted exact-head review now that `v0.4.2` is tagged at
+`f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`, then run the g05.029 runway
+(cards 083 to 088) from its manifest. Card 102 stays open only for the
+tag-pinned Bovine smoke result as consumer evidence; it holds nothing.
 
 ## Standing Lanes
 

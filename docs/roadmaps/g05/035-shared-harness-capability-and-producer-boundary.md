@@ -3,7 +3,7 @@
 Status: planned; architecture and contract promotion required before implementation
 Owner: Tom
 Created: 2026-09-06
-Updated: 2026-09-06
+Updated: 2026-09-07
 Depends on: Research 288; Spec 014; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; g05.029 card 084 evidence
 Vision tags: consumer integration, tools, MCP, skills, context, permissions, sessions
 
@@ -26,19 +26,25 @@ head `80e004b4` is the sole active Claude SDK client-MCP implementation-evidence
 owner; its uncommitted WIP is not released evidence. The preserved old branch
 `g05-card084-claude-client-mcp` at `7cb08b1f` is archival history, not a second
 lane. Batch C waits for the replacement owner to publish reviewed evidence and
-must not duplicate or disturb that work.
+must not duplicate or disturb that work. Since `80e004b4` is current
+`origin/main`, no committed Card 084 evidence exists yet.
 
 ## Execution Plan
 
 - [ ] **Batch A — architecture and contract promotion.** Independently review
       Spec 014; answer the three cross-repo questions; promote repository
-      ownership, registered capability, server lease/transport, tool kind and
-      Allow/Deny, skill/reference, and projection rules. Recompile this roadmap.
+      ownership, registered capability, the Contract 060 common-kernel and
+      compatibility amendment, server profile/transport, unique tool kind,
+      progress, Allow/Deny, skill/reference, and projection rules. Recompile
+      this roadmap.
 - [ ] **Batch B — shared kernel and host conformance.** Add the provider-neutral
-      registration snapshot, schema namespace/digest, host service, server
-      lease, stdio and private HTTP/SSE transport, lifecycle state machine,
-      safe diagnostics, projection rows, and exhaustive provider-free race and
-      teardown fixtures. No adapter change.
+      registration snapshot, schema namespace/digest, and registered-server
+      profile by extending Contract 060's existing operation lease and private
+      loopback lifecycle; retain the compatible closed `WatcherBridge` profile;
+      add stdio and any qualified bounded SSE carrier, ordered progress, safe
+      diagnostics, projection rows, and exhaustive provider-free race,
+      migration, compatibility, and teardown fixtures. No adapter change and
+      no second lease/listener implementation.
 - [ ] **Batch C — Claude routes.** Finish exact Claude SDK client-MCP evidence
       and integrate it behind the common lease; retain ACP empty-MCP truth
       unless its separate gate passes; prove options, fresh-session limits,
@@ -76,6 +82,9 @@ not delay Claude/Codex/Grok.
 - [ ] one central registered capability and server lease replaces no existing
       registry and introduces no generic executor
 - [ ] native client, MCP, app, and provider-owned tools retain exact identity
+- [ ] one namespaced tool identity binds exactly one tool kind per snapshot
+- [ ] Contract 060's released watcher profile and Claude Code attachment retain
+      behavior while both profiles share one operation-bridge kernel
 - [ ] every call and result remains bound to task, session, turn, attempt,
       registration, transport generation, deadline, and cancellation
 - [ ] reconnect never replays mutating work and stale callbacks fail closed
@@ -91,6 +100,11 @@ not delay Claude/Codex/Grok.
       marked ready
 - [ ] shared provider-free conformance proves every lifecycle and security
       counterexample in Spec 014
+- [ ] Contract 060 compatibility fixtures prove unchanged watcher admission,
+      ready-before-provider order, omission, private material, terminal barrier,
+      and joined teardown; no duplicate listener or lease manager exists
+- [ ] ordered progress fixtures reject duplicate, regressive, foreign,
+      stale-generation, post-cancel, post-terminal, and post-close notifications
 - [ ] each route completes disposable workspace edit/reconcile, supported
       Allow/Deny, cancellation, skill with required references, disposable MCP
       server and real result or honest unsupported disposition, app-context
@@ -105,7 +119,8 @@ not delay Claude/Codex/Grok.
 
 ## Validation Shape
 
-Batch A uses `effigy qa:docs` and `git diff --check`. Later cards name exact
+Batch A uses `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check`.
+Its review must cover the Contract 060 amendment and compatibility plan. Later cards name exact
 package scopes for `effigy validate:focused` and
 `effigy package:verify-affected`; shared Batch B includes core, runtime,
 testkit, and host-local. Real provider acceptance is opt-in, separately
@@ -119,6 +134,8 @@ authorized, one route at a time, after deterministic conformance passes.
   configuration mutation, or unrelated client content;
 - provider-direct MCP cannot preserve the common lease and exact per-call
   admission boundary;
+- Contract 060 would be copied, bypassed, or incompatibly changed without an
+  explicit migration and operator decision;
 - a Deny cannot be represented without simulated provider acknowledgement;
 - reconnect requires mutating replay; or
 - a batch would alter release, provider, global configuration, or consumer

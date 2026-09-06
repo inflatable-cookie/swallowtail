@@ -2,8 +2,8 @@
 
 Status: complete evidence; no production claim
 Owner: Tom
-Date: 2026-09-06
-Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `169cc1993e8e80d0512661c307b2aba60afdf80a`
+Date: 2026-09-07
+Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `80e004b4aa1f43da9dd9d39bed5274e9e773c216`
 Consumer intake: Desktop `docs/roadmaps/dispatch-manifest.md` at `d4e56c5acb86bb084f5377cfaa516a03cfda76c3`, section `Swallowtail shared harness capability lane` (operator-confirmed; object is not present in this repository)
 
 ## Question
@@ -35,6 +35,7 @@ policy into Swallowtail?
 
 | Route | Text and instructions | Session and continuation | Tools and permissions | MCP | Queue or steering |
 | --- | --- | --- | --- | --- | --- |
+| `claude-code` | bounded structured-run input plus qualified watcher instructions when opted in | one operation-scoped run; no reusable SDK/ACP session facade | built-in Claude Code tools plus the closed Contract 059 watcher family when opted in; no generic consumer-tool registration | released `--mcp-config` + `--strict-mcp-config` attachment of the private `swallowtail-watchers` Contract 060 bridge; omission sends an empty server object | no portable queue or mid-turn steering; watcher completion re-entry is the closed Contract 060 route seam |
 | `claude-agent.sdk` | one bounded text turn; current SDK profile rejects portable developer instructions | reusable session; exact SDK resume work is separate and version-qualified | admitted built-in read/write/Bash set; route-local tool admission; permission mode has exact supported values | current released profile sends no client MCP servers | one active turn; scheduling policy bounds exist, but `schedule_harness_message` returns `Rejected` |
 | `claude-agent.acp` | bounded text turns; setup-time reasoning and Plan; no embedded context or references | new, load with replay, resume without replay; exact binding | read callbacks, typed questions, provider-owned tool activity, optional one-shot permission exchange | `mcpServers: []` on new/load/resume | one active turn; upstream steering metadata and queue ownership are deliberately unmapped |
 | `codex.app-server` | bounded text turns; setup-time developer instructions, reasoning, Plan | new, load, resume, catalogue, import, history, reconciliation, archive, restore, delete | dynamic native client tools and typed question exchange; no approval grant | MCP activity is observable, but no public server-registration or MCP-result dispatch API exists | serialized turns; no scheduling implementation or capability row |
@@ -50,6 +51,8 @@ owner for Claude SDK client MCP. It uses branch
 `g05-card084-claude-client-mcp-1` at committed head `80e004b4` and carries
 uncommitted `sdk/mcp.rs` and `sdk/mcp/` work. Those uncommitted files are WIP,
 not released behavior, canonical planning, or evidence this audit may claim.
+`80e004b4` is the current `origin/main`, so the replacement lane has no
+committed Card 084 evidence yet.
 
 The archived workspace row for branch `g05-card084-claude-client-mcp` at
 `7cb08b1f` is preservation history only. Its branch remains intact, but it is
@@ -62,14 +65,16 @@ review; do not inspect, stage, move, overwrite, or duplicate its WIP.
 1. No central, typed registration snapshot for consumer tools and MCP servers
    names exact schemas, versions, transport, lifecycle, execution host, or
    authority source.
-2. No common host service opens a registered server, dispatches its tool call,
+2. Contract 060 opens and joins the released watcher-only bridge, but no common
+   host service opens an arbitrary registered server, dispatches its tool call,
    or returns an exact result while preserving native-client, MCP, app-tool,
    and provider-owned-tool identity.
 3. No portable schema-discovery namespace prevents collisions or binds a
    schema revision and digest to the admitted operation.
-4. No common server lease owns ready, reconnect, version negotiation, stale
-   request rejection, and joined teardown. Contract 060 supplies the lifecycle
-   precedent but only for watchers.
+4. Contract 060 already owns operation lease, private loopback, bearer,
+   ready-before-provider, correlation, and joined teardown for watchers. No
+   generalized registered-server profile adds negotiation and reconnect. A
+   second lease or loopback lifecycle would conflict with live prior art.
 5. No task/session/attempt binding spans server registration, provider call,
    consumer execution, result submission, cancellation, and terminal cleanup.
 6. No common Allow/Deny result distinguishes consumer policy, stale authority,
@@ -89,10 +94,13 @@ adapter. Keep server implementation and business semantics in Longhorn. Keep
 skill discovery selection, context assembly, task policy, queue UX, and
 product persistence in Desktop.
 
-Do not build a second provider registry. A new service composes through
-`HostServices`, immutable prepared plans, `CallbackExchange`, and Contract 061
-projection. It may reuse Contract 060's private transport patterns but cannot
-reuse its watcher authority or closed protocol namespace.
+Do not build a second provider registry, operation lease, or private loopback
+lifecycle. Amend Contract 060 to factor its existing operation-scoped bridge
+lease and transport lifecycle into the reusable kernel. Keep `WatcherBridge`
+as the compatible closed watcher profile over that kernel; registered tool
+servers use a distinct profile and protocol namespace and never inherit
+watcher authority. A new service composes through `HostServices`, immutable
+prepared plans, `CallbackExchange`, and Contract 061 projection.
 
 ## Evidence
 
@@ -101,13 +109,18 @@ reuse its watcher authority or closed protocol namespace.
   `crates/swallowtail-runtime/src/roles/api/turn_and_serving.rs`
 - callback and admission: `crates/swallowtail-runtime/src/callback/`, Contract
   012, Contract 041
+- released Claude Code watcher MCP attachment and omission:
+  `crates/swallowtail-adapter-claude-agent/tests/claude_code_structured_run/watcher_cases.rs`,
+  `crates/swallowtail-adapter-claude-agent/src/claude_code_watcher/material.rs`,
+  Contract 060
 - scheduling shape and current default rejection:
   `crates/swallowtail-runtime/src/harness_rpc.rs`,
   `crates/swallowtail-adapter-claude-agent/src/sdk/driver/handle.rs`
 - Claude ACP withheld capability census: Research 279
 - Claude SDK route evidence and upstream gaps: Research 278 and 280
 - Codex dynamic-tool and continuity fixtures:
-  `crates/swallowtail-adapter-codex/tests/app_server/`
+  `crates/swallowtail-adapter-codex/tests/app_server/`; Codex MCP progress
+  projection: `crates/swallowtail-adapter-codex/src/app_server_activity/projection.rs`
 - Grok permission and session fixtures:
   `crates/swallowtail-adapter-grok/tests/acp/`
 - route projection census:

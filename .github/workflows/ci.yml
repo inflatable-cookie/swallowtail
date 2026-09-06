@@ -75,7 +75,12 @@ jobs:
         with:
           node-version: 22.23.2
       - name: Process-spawning tests
-        run: cargo nextest run --workspace --all-features --locked --profile ci-process
+        run: |
+          cargo nextest run \
+            -p swallowtail-adapter-claude-agent \
+            -p swallowtail-adapter-pi \
+            -p swallowtail-host-local \
+            --all-features --locked --profile ci-process
 
   stable-contracts:
     name: Stable examples, metadata, and route contracts

@@ -235,7 +235,7 @@ did not receive.
 | Route | First placement | Reason and gate |
 | --- | --- | --- |
 | `claude-code` | existing provider-direct private watcher MCP through Contract 060 | released `--mcp-config`/`--strict-mcp-config` carries only `swallowtail-watchers`; reuse proves the common bridge kernel while its closed protocol, operation scope, and omission behavior remain unchanged; it is not generic tool registration |
-| `claude-agent.sdk` | provider-direct private MCP attachment behind the common server lease | upstream client MCP is the selected native seam; registration, process/env, credential references, per-call admission, status, and teardown remain host-owned; no support claim until a real disposable server returns a real result |
+| `claude-agent.sdk` | merged consumer-declared stdio MCP attachment, then common-bridge integration | PR 255 proves strict declared stdio configuration, explicit child env, per-call mediation, bounded status, typed required-connect failure, and unchanged omission; it does not prove SSE/HTTP/in-process/managed MCP, a real provider turn, the centralized snapshot, or Contract 060 integration |
 | `claude-agent.acp` | host-mediated native callbacks only; MCP withheld | current ACP sends an empty server list and has no MCP input facade; add direct MCP only after exact bridge schema, version, permission, and lifecycle evidence |
 | `codex.app-server` | host-mediated dynamic native tools | this is already the qualified execution seam; observed MCP activity is not registration or result authority; provider-direct MCP needs a separate app-server surface and corpus |
 | `grok-build.acp` | host-mediated permission and provider-tool observation; MCP withheld | current route sends an empty server list and exposes no consumer tools; direct MCP waits for exact ACP and Grok version evidence |
@@ -243,17 +243,11 @@ did not receive.
 The common API must not promise that every route accepts MCP. A route publishes
 the exact attachment or mediation kind through Contract 061.
 
-Card 084's replacement lane is the active implementation-evidence owner for
-the Claude SDK row. Its branch `g05-card084-claude-client-mcp-1` is at committed
-head `80e004b4` with uncommitted MCP WIP. This proposal treats that state as
-neither released capability nor a reviewed contract. The preserved
-`g05-card084-claude-client-mcp` branch at `7cb08b1f` is archival history, not a
-second lane. Once the replacement owner publishes an exact head, this proposal
-must reconcile the row against its reviewed evidence before promotion; it must
-not copy or independently implement that work.
-
-`80e004b4` is also the current `origin/main`; there is no committed Card 084
-implementation evidence at that head.
+Card 084 merged through PR 255 at `8a377c1b` after independent exact-head
+review at `f52c48c6`. It is merged but untagged evidence, not released `R`
+behavior and not a reviewed centralized producer contract. The preserved
+`g05-card084-claude-client-mcp` branch at `7cb08b1f` remains archival history,
+not a second lane. Batch C consumes PR 255 rather than recreating it.
 
 ### Context, Instructions, Skills, And References
 
@@ -311,8 +305,9 @@ replays a mutating tool call or message.
 
 Legend: `R` means the exact cell behavior is released at audited tag `v0.4.3`,
 including any stated route-local restriction; it never means generic parity.
-`P` is proposed but unimplemented; `W` is withheld pending route evidence; `—`
-means the capability does not apply to that route shape. An upstream feature
+`M` is merged after that tag but untagged and unreleased; `P` is proposed but
+unimplemented; `W` is withheld pending route evidence; `—` means the
+capability does not apply to that route shape. An upstream feature
 without an adapter plan, facade, acknowledgement, and proof is `W`.
 
 | Capability | Claude Code | Claude SDK | Claude ACP | Codex app-server | Grok ACP | Common producer gate |
@@ -324,7 +319,7 @@ without an adapter plan, facade, acknowledgement, and proof is `W`.
 | native consumer tools | W | route-local R | W | R | W | registration, schema, exact result |
 | one-shot Allow/Deny | W generic; closed watcher host admission R | route-local R | R subset | tool result/question; approval W | R subset | exact provider response or typed cancel/fail |
 | persistent permission | W | W | W | W | W | separate explicit contract |
-| provider-direct MCP | R watcher-only | P | W | W | W | Contract 060 kernel plus real server/result |
+| provider-direct MCP | R watcher-only | M declared stdio only; common bridge P | W | W | W | Contract 060 kernel plus real server/result |
 | host-mediated tool server | W | P | P | P | P after consumer-tool evidence | common host service and callback binding |
 | tool progress/partial | W notifications; R queried watcher state | W | W | R provider-owned MCP display progress | W | bounded correlation, order, cancellation, stale generation |
 | skill/reference bundle | R watcher skill only | P | P | P | P | Contract 062 selection plus opaque refs |

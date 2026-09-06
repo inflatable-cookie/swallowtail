@@ -24,20 +24,17 @@ blocked. Existing Desktop baseline and rehearsal lanes continue independently.
 Desktop Spec 010 at `30a338f2` now settles the bilateral ownership split;
 Longhorn PR 22 is aligned and independently passed at head `6ce4aa1b`.
 Bilateral ownership alignment is complete; Swallowtail promotion gates remain.
-The replacement Card 084 branch `g05-card084-claude-client-mcp-1` at committed
-head `80e004b4` is the sole active Claude SDK client-MCP implementation-evidence
-owner; its uncommitted WIP is not released evidence. The preserved old branch
-`g05-card084-claude-client-mcp` at `7cb08b1f` is archival history, not a second
-lane. Batch C waits for the replacement owner to publish reviewed evidence and
-must not duplicate or disturb that work. Since `80e004b4` is current
-`origin/main`, no committed Card 084 evidence exists yet.
+Card 084 merged through PR 255 at `8a377c1b` after independent review of
+`f52c48c6`. It is merged, untagged stdio-only Claude SDK evidence, not released
+`v0.4.3` behavior or centralized bridge delivery. The old branch at `7cb08b1f`
+remains archival history. No duplicate Card 084 or producer lane is allowed.
 
 ## Execution Plan
 
 - [ ] **Batch A — architecture and contract promotion.** Independently review
-      Spec 014; retain Longhorn PR 22 alignment at PASS head `6ce4aa1b`; promote repository
-      ownership, registered capability, the Contract 060 common-kernel and
-      compatibility amendment, server profile/transport, unique tool kind,
+      Spec 014; retain Longhorn PR 22 alignment at PASS head `6ce4aa1b`;
+      promote repository ownership, registered capability, the Contract 060
+      common-kernel and compatibility amendment, server profile/transport, unique tool kind,
       progress, Allow/Deny, skill/reference, and projection rules. Recompile
       this roadmap.
 - [ ] **Batch B — shared kernel and host conformance.** Add the provider-neutral
@@ -49,11 +46,13 @@ must not duplicate or disturb that work. Since `80e004b4` is current
       diagnostics, projection rows, and exhaustive provider-free race,
       migration, compatibility, and teardown fixtures. No adapter change,
       stdio/daemon startup, or second registry/lease/listener implementation.
-- [ ] **Batch C — Claude routes.** Finish exact Claude SDK client-MCP evidence
-      and integrate it behind the common lease; retain ACP empty-MCP truth
-      unless its separate gate passes; prove options, fresh-session limits,
-      Allow/Deny, continuation, skill/reference transport, and no unsupported
-      steering claim.
+- [ ] **Batch C — Claude routes.** Consume PR 255's merged stdio-only Claude SDK
+      attachment after Batch B, then integrate the centralized snapshot and
+      Contract 060-derived common lease without duplicating its process,
+      admission, or lifecycle work. Retain ACP empty-MCP truth unless its
+      separate gate passes; prove a real disposable server/result, options,
+      fresh-session limits, Allow/Deny, continuation, skill/reference transport,
+      and no unsupported steering or release claim.
 - [ ] **Batch D — Codex and Grok routes, parallel where paths do not overlap.**
       Codex maps the common registry to dynamic native tools and keeps direct
       MCP withheld without evidence. Grok maps exact one-shot permission and

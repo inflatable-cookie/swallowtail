@@ -3,7 +3,7 @@
 Status: complete evidence; no production claim
 Owner: Tom
 Date: 2026-09-07
-Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `80e004b4aa1f43da9dd9d39bed5274e9e773c216`
+Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `8a377c1bf732372bec3cfa9db2a6a60308580b3d`
 Consumer intake: Desktop `docs/roadmaps/dispatch-manifest.md` at `d4e56c5acb86bb084f5377cfaa516a03cfda76c3`, section `Swallowtail shared harness capability lane` (operator-confirmed; object is not present in this repository)
 Ownership decision: Desktop `docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2` ([exact source](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md)); counterpart planning: [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22) independently passed at aligned head `6ce4aa1beafad6748af238d19fb47ffaa1ad342f` ([review](https://github.com/inflatable-cookie/longhorn/pull/22#issuecomment-5563025824))
 
@@ -42,24 +42,24 @@ policy into Swallowtail?
 | `codex.app-server` | bounded text turns; setup-time developer instructions, reasoning, Plan | new, load, resume, catalogue, import, history, reconciliation, archive, restore, delete | dynamic native client tools and typed question exchange; no approval grant | MCP activity is observable, but no public server-registration or MCP-result dispatch API exists | serialized turns; no scheduling implementation or capability row |
 | `grok-build.acp` | bounded text turns; portable instructions, reasoning, tools, and Plan are not mapped | durable provider-owned local state; exact attachment recovery only; no public load/resume/management | provider-owned tool activity; optional one-shot `allow_once` or `reject_once` permission response | `mcpServers: []` | one active turn; no queue, steering, or acknowledgement surface |
 
-The source tree after `v0.4.3` changes planning only for this scope. No current
-code extends these claims.
+The table above remains frozen to released `v0.4.3`. Post-tag PR 255 adds the
+merged, untagged evidence below; it does not change released claims.
 
-## Adjacent Card 084 Evidence Ownership
+## Card 084 Merged Evidence
 
-The replacement Card 084 workspace is the sole active implementation-evidence
-owner for Claude SDK client MCP. It uses branch
-`g05-card084-claude-client-mcp-1` at committed head `80e004b4` and carries
-uncommitted `sdk/mcp.rs` and `sdk/mcp/` work. Those uncommitted files are WIP,
-not released behavior, canonical planning, or evidence this audit may claim.
-`80e004b4` is the current `origin/main`, so the replacement lane has no
-committed Card 084 evidence yet.
+Card 084 merged through PR 255 at `8a377c1b` after independent review of exact
+head `f52c48c6`. It adds consumer-declared stdio MCP servers to
+`claude-agent.sdk`: strict config, explicit child environment, per-call
+`canUseTool` mediation, bounded status, typed required-connect failure, and an
+unchanged default open. It does not admit SSE/HTTP/in-process or managed MCP,
+prove a live provider turn, integrate the centralized registration/Contract
+060 bridge, or create released `v0.4.3` behavior. The source is merged and
+untagged evidence only.
 
 The archived workspace row for branch `g05-card084-claude-client-mcp` at
 `7cb08b1f` is preservation history only. Its branch remains intact, but it is
-not a second owner or parallel lane. Reconcile Research 288 and Spec 014 with
-the replacement owner's published exact-head evidence after publication and
-review; do not inspect, stage, move, overwrite, or duplicate its WIP.
+not a second owner or parallel lane. PR 255 is the sole Card 084 evidence line;
+do not recreate it as another producer lane.
 
 ## Exact Gaps
 

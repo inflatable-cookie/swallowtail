@@ -37,7 +37,7 @@ pub(super) fn missing_executable() -> DiscoveryOutcome {
 }
 
 pub(super) fn process_start_failed(error: &RuntimeFailure) -> DiscoveryOutcome {
-    if error.diagnostic().code() == "swallowtail.local_process.spawn_failed" {
+    if error.diagnostic().code() == "swallowtail.local_process.executable_not_found" {
         missing_executable()
     } else {
         spawn_failed()

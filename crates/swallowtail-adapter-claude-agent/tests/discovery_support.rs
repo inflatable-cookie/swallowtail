@@ -84,8 +84,8 @@ impl ProcessService for FixtureHost {
         if self.missing_executable {
             return Box::pin(async {
                 Err(RuntimeFailure::new(SafeDiagnostic::new(
-                    "swallowtail.local_process.spawn_failed",
-                    "Local process could not be started",
+                    "swallowtail.local_process.executable_not_found",
+                    "Local executable was not found",
                 )))
             });
         }

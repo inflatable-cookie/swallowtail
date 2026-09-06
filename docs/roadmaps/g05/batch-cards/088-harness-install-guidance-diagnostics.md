@@ -61,6 +61,9 @@ No. Stop for exact-head review.
 - widened the production start-failure paths so missing-executable probes
   classify `Absent` in the shared runtime, Codex, and Grok drivers; added
   driver-through-missing-path proofs for Claude Code, Codex, and Grok
+- bounded the host emitter's missing-executable diagnostic to
+  `io::ErrorKind::NotFound`; host-level tests pin the NotFound and a
+  non-NotFound spawn failure while the three driver proofs remain
 - escaped the three install-command pipes in the route matrix so its table
   remains two columns
 - added the route-matrix note, changelog entry, and four additive v0.4.2 API

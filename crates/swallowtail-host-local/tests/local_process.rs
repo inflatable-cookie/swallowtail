@@ -77,6 +77,55 @@ fn only_host_approved_references_and_arguments_spawn() {
 }
 
 #[test]
+fn missing_executable_emits_bounded_not_found_diagnostic() {
+    let directory = temporary_resource();
+    let missing_path = directory.join("missing-executable");
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), missing_path.clone())
+        .build();
+
+    let failure = start(&host, ProcessRequest::new(executable))
+        .err()
+        .expect("missing executable must fail at the host boundary");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_process.executable_not_found"
+    );
+    assert_eq!(
+        failure.diagnostic().message(),
+        "Local executable was not found"
+    );
+    assert!(!format!("{failure:?}").contains(missing_path.to_string_lossy().as_ref()));
+
+    std::fs::remove_dir_all(directory).expect("fixture directory is removed");
+}
+
+#[test]
+fn non_not_found_spawn_error_remains_safe_failed_diagnostic() {
+    let directory = temporary_resource();
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), directory.clone())
+        .build();
+
+    let failure = start(&host, ProcessRequest::new(executable))
+        .err()
+        .expect("a directory is not a spawnable executable");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.local_process.spawn_failed"
+    );
+    assert_eq!(
+        failure.diagnostic().message(),
+        "Local process could not be started"
+    );
+    assert!(!format!("{failure:?}").contains(directory.to_string_lossy().as_ref()));
+
+    std::fs::remove_dir_all(directory).expect("fixture directory is removed");
+}
+
+#[test]
 fn installed_version_probe_uses_only_the_explicit_approved_target_and_joins() {
     let resource_directory = temporary_resource();
     let limits = LocalProcessLimits::new(8, 1024, 64, 1024, 1024);

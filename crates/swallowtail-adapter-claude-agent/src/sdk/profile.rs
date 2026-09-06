@@ -110,6 +110,61 @@ pub enum ClaudeAgentSdkPermissionMode {
     AcceptEdits,
 }
 
+/// Effort levels admitted by the pinned Claude Agent SDK options surface.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ClaudeAgentSdkEffort {
+    /// Minimal reasoning effort.
+    Low,
+    /// Medium reasoning effort.
+    Medium,
+    /// High reasoning effort.
+    High,
+    /// Extended-high reasoning effort.
+    XHigh,
+    /// Maximum session-scoped reasoning effort.
+    Max,
+}
+
+impl ClaudeAgentSdkEffort {
+    /// Returns the exact SDK option value.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Low => "low",
+            Self::Medium => "medium",
+            Self::High => "high",
+            Self::XHigh => "xhigh",
+            Self::Max => "max",
+        }
+    }
+
+    /// Parses one admitted SDK effort value.
+    pub fn parse(value: &str) -> Result<Self, PreparationFailure> {
+        match value {
+            "low" => Ok(Self::Low),
+            "medium" => Ok(Self::Medium),
+            "high" => Ok(Self::High),
+            "xhigh" => Ok(Self::XHigh),
+            "max" => Ok(Self::Max),
+            _ => Err(profile_failure(
+                "swallowtail.claude-agent.sdk.profile.effort_unknown",
+                "Claude Agent SDK preparation admits only low, medium, high, xhigh, and max effort",
+            )),
+        }
+    }
+}
+
+/// Runtime evidence for the optional effort selected at open.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ClaudeAgentSdkEffortOutcome {
+    /// No effort was requested by the profile.
+    NotRequested,
+    /// The profile requested effort, but the SDK did not report it at init.
+    RequestedOnly(ClaudeAgentSdkEffort),
+    /// The SDK reported the requested effort at init.
+    Confirmed(ClaudeAgentSdkEffort),
+}
+
 impl ClaudeAgentSdkPermissionMode {
     /// Returns the exact upstream permission-mode name.
     #[must_use]
@@ -157,6 +212,7 @@ impl ClaudeAgentSdkPermissionMode {
 pub struct ClaudeAgentSdkSessionProfile {
     admitted: u8,
     permission_mode: ClaudeAgentSdkPermissionMode,
+    effort: Option<ClaudeAgentSdkEffort>,
 }
 
 const READ_ONLY_ADMITTED: u8 = ClaudeAgentSdkTool::Read.bit()
@@ -175,6 +231,7 @@ impl ClaudeAgentSdkSessionProfile {
         Self {
             admitted: READ_ONLY_ADMITTED,
             permission_mode: ClaudeAgentSdkPermissionMode::Default,
+            effort: None,
         }
     }
 
@@ -189,6 +246,7 @@ impl ClaudeAgentSdkSessionProfile {
                 | ClaudeAgentSdkTool::Write.bit()
                 | ClaudeAgentSdkTool::MultiEdit.bit(),
             permission_mode,
+            effort: None,
         }
     }
 
@@ -219,6 +277,7 @@ impl ClaudeAgentSdkSessionProfile {
         Ok(Self {
             admitted,
             permission_mode,
+            effort: None,
         })
     }
 
@@ -269,6 +328,19 @@ impl ClaudeAgentSdkSessionProfile {
     #[must_use]
     pub const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
         self.permission_mode
+    }
+
+    /// Returns the optional opening effort selection.
+    #[must_use]
+    pub const fn effort(&self) -> Option<ClaudeAgentSdkEffort> {
+        self.effort
+    }
+
+    /// Selects one admitted effort level for the opening SDK options.
+    #[must_use]
+    pub const fn with_effort(mut self, effort: ClaudeAgentSdkEffort) -> Self {
+        self.effort = Some(effort);
+        self
     }
 
     /// Returns the exact working-resource lease access this profile requires.

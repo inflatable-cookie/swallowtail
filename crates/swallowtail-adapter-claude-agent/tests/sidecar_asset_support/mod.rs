@@ -204,6 +204,21 @@ impl SidecarProcess {
             .collect()
     }
 
+    /// Models the calls that reached the fake SDK's `setModel` method.
+    pub fn observed_model_set_calls(&self) -> Vec<String> {
+        self.read_observations()["modelSetCalls"]
+            .as_array()
+            .expect("fake SDK model-change observations are an array")
+            .iter()
+            .map(|value| {
+                value
+                    .as_str()
+                    .expect("fake SDK model-change observation is a string")
+                    .to_owned()
+            })
+            .collect()
+    }
+
     /// Per-turn write outcomes the fake SDK recorded before the turn-ended
     /// wire event.
     pub fn writes(&mut self, turns: usize) -> Vec<Value> {

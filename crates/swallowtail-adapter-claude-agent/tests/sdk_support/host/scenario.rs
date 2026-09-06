@@ -37,6 +37,14 @@ pub enum SdkScenario {
     UnsupportedModel,
     /// Open reports an empty supported-model list, which is unavailable.
     EmptySupportedModels,
+    /// `set_model` returns the requested model as explicit confirmation.
+    ModelChangeConfirmed,
+    /// `set_model` resolves without a model confirmation.
+    ModelChangeUnconfirmed,
+    /// `set_model` is rejected by the fake SDK.
+    ModelChangeRejected,
+    /// The first-turn init reports the requested effort.
+    EffortConfirmed,
     /// The first query response reports that no system/init was yielded.
     InitMissing,
     /// The SDK failed while yielding the first-turn init message.

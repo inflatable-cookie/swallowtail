@@ -325,6 +325,99 @@ fn canonical_effective_model_is_accepted_and_published() {
 }
 
 #[test]
+fn supported_models_drive_confirmed_and_unconfirmed_model_changes() {
+    let mut confirmed = SidecarProcess::start_scenario("model-change-confirmed");
+    confirmed.command(
+        "open-1",
+        "open",
+        json!({"cwd": confirmed.cwd(), "model": "m-1"}),
+    );
+    confirmed.command("query-1", "query", json!({"text": "first turn"}));
+    let changed = confirmed.command("model-1", "set_model", json!({"model": "claude-opus-5"}));
+    assert_eq!(
+        changed["success"], true,
+        "confirmed model response: {changed}"
+    );
+    assert_eq!(changed["data"]["model"], "claude-opus-5");
+    assert_eq!(confirmed.observed_model_set_calls(), vec!["claude-opus-5"]);
+
+    let mut unconfirmed = SidecarProcess::start_scenario("model-change-unconfirmed");
+    unconfirmed.command(
+        "open-1",
+        "open",
+        json!({"cwd": unconfirmed.cwd(), "model": "m-1"}),
+    );
+    unconfirmed.command("query-1", "query", json!({"text": "first turn"}));
+    let response = unconfirmed.command("model-1", "set_model", json!({"model": "claude-opus-5"}));
+    assert_eq!(
+        response["success"], false,
+        "unconfirmed model response: {response}"
+    );
+    assert_eq!(response["failure"]["code"], "model_change_unconfirmed");
+    assert_eq!(
+        unconfirmed.observed_model_set_calls(),
+        vec!["claude-opus-5"]
+    );
+}
+
+#[test]
+fn a_fake_sdk_rejection_is_typed_unconfirmed_after_query_set_model() {
+    let mut rejected = SidecarProcess::start_scenario("model-change-rejected");
+    rejected.command(
+        "open-1",
+        "open",
+        json!({"cwd": rejected.cwd(), "model": "m-1"}),
+    );
+    rejected.command("query-1", "query", json!({"text": "first turn"}));
+    let response = rejected.command("model-1", "set_model", json!({"model": "claude-opus-5"}));
+    assert_eq!(
+        response["success"], false,
+        "provider rejection is not confirmation: {response}"
+    );
+    assert_eq!(response["failure"]["code"], "model_change_unconfirmed");
+    assert_eq!(rejected.observed_model_set_calls(), vec!["claude-opus-5"]);
+}
+
+#[test]
+fn the_sidecar_rejects_a_model_before_query_set_model() {
+    let mut sidecar = SidecarProcess::start();
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    let response = sidecar.command("model-1", "set_model", json!({"model": "claude-opus-5"}));
+    assert_eq!(response["success"], false);
+    assert_eq!(response["failure"]["code"], "supported_model_rejected");
+    assert!(sidecar.observed_model_set_calls().is_empty());
+}
+
+#[test]
+fn effort_is_optional_at_open_and_init_confirmation_is_preserved() {
+    let mut confirmed = SidecarProcess::start_scenario("effort-confirmed");
+    let open = confirmed.command(
+        "open-1",
+        "open",
+        json!({"cwd": confirmed.cwd(), "model": "m-1", "effort": "xhigh"}),
+    );
+    assert_eq!(open["data"]["requestedEffort"], "xhigh");
+    assert_eq!(confirmed.observed_options()["effort"], "xhigh");
+    let query = confirmed.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(query["data"]["effort"], "xhigh");
+
+    let mut requested_only = SidecarProcess::start();
+    let open = requested_only.command(
+        "open-1",
+        "open",
+        json!({"cwd": requested_only.cwd(), "model": "m-1", "effort": "max"}),
+    );
+    assert_eq!(open["data"]["requestedEffort"], "max");
+    let query = requested_only.command("query-1", "query", json!({"text": "first turn"}));
+    assert!(query["data"].get("effort").is_none());
+}
+
+#[test]
 fn every_allowed_invocation_crosses_the_callback_with_its_input_intact() {
     let mut sidecar = SidecarProcess::start();
     let open = sidecar.command(
@@ -415,6 +508,10 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
         "allowedTools bypasses per-use admission: {options}"
     );
     assert_eq!(options["model"], "m-1");
+    assert!(
+        options.get("effort").is_none(),
+        "the default profile must omit Options.effort: {options}"
+    );
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
     assert_eq!(options["persistSession"], json!(false));

@@ -32,6 +32,7 @@ const observed = {
   spawnHookArgumentCount: null,
   admissions: {},
   permissionModes: [],
+  modelSetCalls: [],
   closeCalls: 0,
   promptStreamState: null,
   writes: [],
@@ -89,6 +90,9 @@ function initMessage(options) {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-opus-5"];
   }
+  if (SCENARIO === "effort-confirmed") {
+    message.effort = options.effort;
+  }
   return message;
 }
 
@@ -122,6 +126,18 @@ function modelRows(options) {
         resolvedModel: "claude-sonnet-5-20250929",
         displayName: "Sonnet",
       },
+    ];
+  }
+  if (SCENARIO === "model-change-confirmed" || SCENARIO === "model-change-unconfirmed") {
+    return [
+      { value: options.model, displayName: "Fixture model" },
+      { value: "claude-opus-5", displayName: "Fixture alternate" },
+    ];
+  }
+  if (SCENARIO === "model-change-rejected") {
+    return [
+      { value: options.model, displayName: "Fixture model" },
+      { value: "claude-opus-5", displayName: "Fixture alternate" },
     ];
   }
   return [{ value: options.model, displayName: "Fixture model" }];
@@ -306,6 +322,20 @@ export function query({ prompt, options }) {
       state.permissionMode = mode;
       observed.permissionModes.push(mode);
       record();
+    },
+    async setModel(model) {
+      observed.modelSetCalls.push(model);
+      record();
+      if (SCENARIO === "model-change-confirmed") {
+        return model;
+      }
+      if (SCENARIO === "model-change-rejected") {
+        throw new Error("fixture model change failure");
+      }
+      // The pinned SDK resolves without a model value. The fake retains the
+      // requested value to prove the sidecar does not mistake acceptance for
+      // confirmation.
+      return undefined;
     },
     close() {
       observed.closeCalls += 1;

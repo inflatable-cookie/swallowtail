@@ -5,6 +5,16 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- add bounded `Query.supportedModels` evidence and route-local `set_model` to
+  the Claude Agent SDK sidecar. Unsupported models fail before `Query.setModel`;
+  confirmed values update the effective model, while the pinned SDK's
+  confirmation-free result returns typed `model_change_unconfirmed` and keeps
+  the prior model. Add optional open-time `low`, `medium`, `high`, `xhigh`, and
+  `max` effort with init-confirmed or requested-only evidence; no mid-session
+  effort setter is invented. Provider-free fake-SDK proofs cover all paths.
+  g05.029 card 082.
+
 ## [0.4.2] - 2026-09-06
 
 ### Added

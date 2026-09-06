@@ -1,9 +1,9 @@
 # 087 Claude SDK Qualified Ranges
 
-Status: planned; ready on card 086's admitted ranges
+Status: stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-06
+Updated: 2026-09-07
 Milestone: `../029-claude-sdk-interactive-parity.md`
 Depends on: card 086 research promoted; Contract 029 segment and unverified-newer rules; the Codex range precedent in `crates/swallowtail-adapter-codex/src/selection.rs`
 
@@ -24,10 +24,10 @@ Widening beyond what card 086 proved; the wire and sidecar axes unless card 086 
 
 ## Acceptance Criteria
 
-- [ ] every range endpoint cites card 086 evidence
-- [ ] gaps listed explicitly; nothing bulk-bumped from `latest`
-- [ ] identity tests at each boundary
-- [ ] guide, matrix, changelog, baseline; one PR
+- [ ] every range endpoint cites card 086 evidence — **stopped**: Research 287 Decision table is empty; no endpoint is admitted
+- [ ] gaps listed explicitly; nothing bulk-bumped from `latest` — **stopped**: no range to gap; pins unchanged; `latest` unused
+- [x] identity tests lock the current exact-pin boundaries and Research 287 withheld points as unqualified
+- [x] guide, matrix, changelog, and baseline unchanged; one PR for the stop
 
 ## Validation
 
@@ -49,3 +49,29 @@ Card 086 found a surface change inside the intended range (return to Chatterbox 
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Stop. Research 287 admits no candidate range, so Card 087 does not invent
+Codex-style windows, gaps, or `AllowUnverified` stable-newer. The five
+`claude-agent.sdk` axes stay qualified-only exact pins:
+
+| Axis | Withheld claim | Evidence |
+| --- | --- | --- |
+| SDK wrapper range | no `0.3.259` window and no `UnverifiedNewer` for `0.3.260` | Research 287, line 131 |
+| Bundled native range | no `2.1.259` window | Research 287, line 132 |
+| Host native `2.1.258` | not interchangeable with bundled `2.1.259` | Research 287, lines 97-98, 133, 147 |
+| Node `22.23.2` as a range | open-only initialize controls exist; `system/init` does not | Research 287, lines 134, 79-81 |
+| Node `26.7.0` | refused-with-code/unresolved; not compatible | Research 287, lines 70, 82-84, 135 |
+| Native `2.1.227..=2.1.258` | not installed; not probed | Research 287, lines 99-100 |
+| Harness schema as a range axis | artifact metadata only | Research 287, lines 136, 87-88 |
+| Wire and sidecar | unchanged; Card 086 shows no movement | Research 287; card Out Of Scope |
+
+The precise blocker is evidence, not planning: Card 086 required
+`system/init`, `supportedModels`, and runtime `harnessSchema` per triple,
+and `system/init` is the first query message (Card 100, lines 191-197). No
+new live turn was run. Production claims, pins, guide, matrix, changelog,
+and API baseline are unchanged. Claim ids stay `*-window-1` / `wire-v1` /
+`sidecar-v1`. Reopen when Chatterbox authorizes a live first-query capture
+that fills Research 287's Decision table, or when an initialize-only
+surface can supply those fields without a turn.

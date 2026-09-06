@@ -4,6 +4,8 @@
 //! exact digests, never counts alone. If the frozen inventory or the classified
 //! deltas are edited without re-deriving the evidence, this fails. Nothing here
 //! executes a downloaded artifact, contacts a provider, or reads a credential.
+//! Card 087 does not retarget this hop to a Codex-style range: Research 287
+//! admits no candidate range.
 
 use serde_json::Value;
 use std::collections::BTreeSet;

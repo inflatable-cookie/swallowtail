@@ -3,7 +3,6 @@
 ## Ready
 
 - [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; is the missing lease-release DELETE under cancellation a production race or a fixture ordering; Drop must never abort
-- [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; paused behind card 100 (shared sidecar); resumes on its merge; set_model with confirmed values, supported_models and effort at open
 
 ## Planned
@@ -23,6 +22,7 @@
 
 ## Completed
 
+- [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — complete; Pi lifecycle race and workspace sweep merged through PR 227 as `3506d9a5`
 - [098-contract-061-alibaba-anthropic-xai-package-completion.md](./098-contract-061-alibaba-anthropic-xai-package-completion.md) — complete; candidate B; 76 rows; 74 emitted, 2 withheld; PR 236 merged as `921ee00c`

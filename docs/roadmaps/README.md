@@ -19,7 +19,7 @@ Implement [g05.032 card 103](g05/batch-cards/103-opencode-cancellation-cleanup-d
 settle the OpenCode cancellation cleanup DELETE dispatch and fixture teardown
 race before the `v0.4.2` candidate. Card 100 is merged at
 `ffc263107343b30cda7a0efde840f84f47a361ec`; Card 101 waits for Card 103's
-verdict. Card 082 remains paused because it shares the sidecar.
+verdict. Card 082 resumes as branch work (rebase onto Card 100's merge); its merge gate holds until the `v0.4.2` tag.
 
 ## Standing Lanes
 

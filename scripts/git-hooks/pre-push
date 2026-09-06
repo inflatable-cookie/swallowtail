@@ -2,6 +2,10 @@
 # Refuse a push that changes docs, PAPERCUTS.md, or CHANGELOG.md when
 # `effigy qa:docs` fails. Contract 001 is the authority; this hook is the
 # enforcement. Install once with `effigy hooks:install`.
+#
+# Fail closed: a git error while listing the pushed paths refuses the push.
+# qa:docs runs against the worktree, so the pushed commit must be HEAD and
+# the worktree must match it.
 set -euo pipefail
 
 repo_root=$(git rev-parse --show-toplevel)
@@ -10,6 +14,7 @@ cd "$repo_root"
 remote_name=${1:-}
 zero_oid=0000000000000000000000000000000000000000
 docs_touched=0
+docs_oid=
 
 path_is_checked() {
   local changed_path=$1
@@ -22,18 +27,21 @@ path_is_checked() {
 collect_changed_paths() {
   local local_oid=$1
   local remote_oid=$2
-  local merge_base
+  local merge_base listing
+  git cat-file -e "${local_oid}^{commit}" || return 1
   if [[ "$remote_oid" == "$zero_oid" ]]; then
     if merge_base=$(git merge-base "$local_oid" "${remote_name}/HEAD" 2>/dev/null); then
-      git diff --name-only "$merge_base" "$local_oid"
+      listing=$(git diff --name-only "$merge_base" "$local_oid") || return 1
     elif merge_base=$(git merge-base "$local_oid" origin/main 2>/dev/null); then
-      git diff --name-only "$merge_base" "$local_oid"
+      listing=$(git diff --name-only "$merge_base" "$local_oid") || return 1
     else
-      git diff-tree --no-commit-id --name-only -r "$local_oid"
+      listing=$(git diff-tree --no-commit-id --name-only -r "$local_oid") || return 1
     fi
   else
-    git diff --name-only "$remote_oid" "$local_oid"
+    git cat-file -e "${remote_oid}^{commit}" || return 1
+    listing=$(git diff --name-only "$remote_oid" "$local_oid") || return 1
   fi
+  printf '%s\n' "$listing"
 }
 
 while read -r _local_ref local_oid _remote_ref remote_oid; do
@@ -43,22 +51,40 @@ while read -r _local_ref local_oid _remote_ref remote_oid; do
   if [[ "$local_oid" == "$zero_oid" ]]; then
     continue
   fi
+  if ! listing=$(collect_changed_paths "$local_oid" "$remote_oid"); then
+    printf 'pre-push: cannot list changed paths for %s; refusing push\n' \
+      "$local_oid" >&2
+    exit 1
+  fi
   while IFS= read -r changed_path; do
     if [[ -z "$changed_path" ]]; then
       continue
     fi
     if path_is_checked "$changed_path"; then
       docs_touched=1
+      if [[ -n "$docs_oid" && "$docs_oid" != "$local_oid" ]]; then
+        printf 'pre-push: multiple docs-touching commits in one push; refusing\n' >&2
+        exit 1
+      fi
+      docs_oid=$local_oid
       break
     fi
-  done < <(collect_changed_paths "$local_oid" "$remote_oid")
-  if [[ "$docs_touched" -eq 1 ]]; then
-    break
-  fi
+  done <<< "$listing"
 done
 
 if [[ "$docs_touched" -ne 1 ]]; then
   exit 0
+fi
+
+head_oid=$(git rev-parse HEAD)
+if [[ "$docs_oid" != "$head_oid" ]]; then
+  printf 'pre-push: pushed commit %s is not HEAD (%s); refusing so qa:docs checks the pushed tree\n' \
+    "$docs_oid" "$head_oid" >&2
+  exit 1
+fi
+if ! git diff --quiet HEAD; then
+  printf 'pre-push: worktree does not match HEAD; refusing so qa:docs checks the pushed commit\n' >&2
+  exit 1
 fi
 
 if ! command -v effigy >/dev/null 2>&1; then

@@ -54,4 +54,6 @@ push of card 111 listed under `## Ready` was refused:
 `docs/roadmaps/g05/batch-cards/README.md:5`. A planned annotation containing
 later `stopped` now passes. The hook unsets `GIT_DIR` and related vars before
 `qa:docs` so nested git in the number-collision tests is not the pushed repo.
-`scripts/README.md` is owned by card 110; the new scripts are not listed there.
+Path collection failures refuse the push. `qa:docs` runs only when the pushed
+commit is a clean HEAD. `scripts/README.md` is owned by card 110; the new
+scripts are not listed there.

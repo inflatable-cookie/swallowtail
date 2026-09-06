@@ -357,3 +357,14 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   possibility. The one authorization is exhausted, acceptance remains
   unticked, and no retry is authorized.
 - The additive API baseline and default read-only profile remain unchanged.
+- Under the fresh operator authorization on 2026-09-06, exactly one Node
+  `22.23.2` invocation used the corrected disposable harness audience
+  `claude-agent-sdk`, the pinned SDK/native artifacts, the existing empty
+  throwaway cwd, the read-only `Read`/`Glob`/`Grep` default profile, and one
+  fixed one-word no-tool prompt. The capture wrapper terminated before it
+  emitted its sanitized record. No recoverable open readiness or rejection
+  subcode, first SDK message, cwd/model/capability evidence, result-field
+  projection, stderr tail, SessionInput/close timeline, native exit evidence,
+  `TerminalStatus`, or `CleanupOutcome` remains. This is a harness-capture
+  failure, not evidence of a route or provider outcome; no acceptance box is
+  ticked and no retry was run. The disposable cwd remained empty afterward.

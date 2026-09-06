@@ -1,6 +1,8 @@
 #[path = "../claude_code_support/mod.rs"]
 #[allow(dead_code, unused_imports)]
 mod claude_code_support;
+#[path = "../discovery_support.rs"]
+mod discovery_support;
 #[path = "../support/mod.rs"]
 mod support;
 

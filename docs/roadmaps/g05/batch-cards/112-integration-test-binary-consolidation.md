@@ -76,6 +76,37 @@ Validation:
   four-package groups.
 - `cargo fmt --all -- --check` and `git diff --check` passed.
 
+Post-Card 113 review reconciliation:
+
+- Rebasing onto current `origin/main` (`944a4285`, which contains Card 113 at
+  `d7ed04ffc30154c51af509eef00e730d384ec335`) required no change to the
+  Card 113 `.config/nextest.toml` filters or its three-package macOS
+  selection. The six retained process binaries still belong exactly to
+  `swallowtail-adapter-claude-agent`, `swallowtail-adapter-pi`, and
+  `swallowtail-host-local`; no workflow or config file is changed here.
+- Removed the three dead auto-discovery roots
+  `anthropic/tests/prepared_facade.rs`,
+  `claude-agent/tests/consumer_route_projection.rs`, and
+  `claude-agent/tests/support/discovery.rs`.
+- The pre-consolidation `connection_lifecycle.rs` and `installed_probe.rs`
+  explicitly used the small process-only `support/discovery.rs` fixture,
+  not the broader `SharedAgent` fixture. That switch was accidental during
+  grouping. Its implementation is preserved verbatim at
+  `claude-agent/tests/discovery_support.rs`, included once by the compiled
+  integration target, and both tests use it again. No discovery credential,
+  resource, or timing semantics changed.
+- A machine-readable nextest inventory counted the full `(package, test
+  leaf)` multiset at 3,155 entries. The logical package/test-leaf multiset
+  is unchanged from current `origin/main`; the grouped binary namespaces do
+  not add or remove a test. The current profiles are `ci=2,929` and
+  `ci-process=226`, with zero leaf overlap and a 3,155-entry union.
+- The non-empty `ci-process` binary set is exactly six entries, each selected
+  once: `claude_agent_sdk_driver`, `claude_agent_sdk_sidecar_asset`,
+  `claude_code_structured_run`, `sidecar_driver`, `local_process`, and
+  `watcher_service`. None is selected by `ci`.
+- No autotests reachability guard was added; that belongs to Card 113/release
+  mechanics.
+
 The diff is limited to test-target manifests, test modules, and this result;
 no production source, workflow, baseline, release, or script surface changed.
 

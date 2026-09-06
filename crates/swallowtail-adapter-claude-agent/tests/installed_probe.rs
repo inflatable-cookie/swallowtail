@@ -1,7 +1,7 @@
-use crate::support;
+use crate::discovery_support;
 
+use discovery_support::{FixtureHost, Scenario};
 use futures_executor::block_on;
-use support::{FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_AXIS, ClaudeAgentAcpDriver, claude_agent_acp_claim,
 };

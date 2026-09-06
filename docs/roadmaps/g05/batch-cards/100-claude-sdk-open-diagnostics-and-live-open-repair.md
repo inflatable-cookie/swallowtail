@@ -130,22 +130,22 @@ Re-cut by the operator's 2026-09-06 ship decision. The card closes on what
 is proven live and provider-free; the end-to-end editing turn moves to card
 102's acceptance through the real consumer.
 
-- [ ] `sdk.query()` constructs against 0.3.259 with the object-form spawn
+- [x] `sdk.query()` constructs against 0.3.259 with the object-form spawn
       hook (fixture and live)
-- [ ] open takes readiness from the initialize exchange; `system/init` is
+- [x] open takes readiness from the initialize exchange; `system/init` is
       first-turn evidence (fixture and live)
-- [ ] readiness requires `apiProvider === "firstParty"` and publishes
+- [x] readiness requires `apiProvider === "firstParty"` and publishes
       subscription, token-source, and api-key-source presence as labels
       (fixture and live)
-- [ ] canonical cwd comparison and effective model from init evidence
+- [x] canonical cwd comparison and effective model from init evidence
       (fixture and live)
-- [ ] every sidecar rejection reaches the consumer with its code (fixture
-      proven; live: `open_rejected` observed, its subcode emitted by
-      construction but lost to the harness capture on that attempt)
-- [ ] Node newer than the pin passes open as `UnverifiedNewer` (fixture)
-- [ ] cleanup reports `Degraded` with `close_root_only_degraded` on a joined
+- [x] every sidecar rejection reaches the consumer with its code (fixture
+      proven; live: `open_rejected` observed; exact sidecar subcode unavailable
+      because the harness dropped `diagnostic().message()`)
+- [x] Node newer than the pin passes open as `UnverifiedNewer` (fixture)
+- [x] cleanup reports `Degraded` with `close_root_only_degraded` on a joined
       root exit (route-level proof)
-- [ ] the live turn termination (`subtype success`, `is_error true`, no error
+- [x] the live turn termination (`subtype success`, `is_error true`, no error
       text, native exit 1) is recorded as unresolved with its typed
       `ProviderFailed` code; not a claim of success
 
@@ -419,3 +419,8 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   mid-run, and verifies that the partial JSONL record survives. This covers
   the third harness failure class and leaves a reusable persistence seam for
   future live lanes; no live probe was run for this repair.
+- The operator ship decision recorded on main `2dcf6d82` re-cuts Card 100 to
+  the proven scope above. The acceptance boxes are now ticked from the
+  recorded evidence; this does not claim live editing success. The live turn
+  remains the unresolved typed `ProviderFailed` outcome, while Card 102 owns
+  the later consumer editing proof.

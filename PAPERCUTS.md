@@ -899,11 +899,11 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
 
 ### [ ] Effigy cannot skip release gates from hosted exact-SHA evidence — 2026-09-06
-- Friction: Card 109 needs `lint`, `lint:no-features`, and `test` satisfied by
-  the candidate PR's green hosted run at the exact SHA. Effigy v0.12.1
-  (`4a17a76`) preserves `[release.gates]` order, has one table, and has no
-  skip or `--hosted` flag.
-- Impact: Swallowtail omits those three gates from the default table and
+- Friction: Card 109 needs `lint`, `lint:no-features`, `test`, and `floor`
+  satisfied by a green hosted run at the SHA to tag, or at a commit with an
+  identical tree. Effigy v0.12.1 (`4a17a76`) preserves `[release.gates]`
+  order, has one table, and has no skip or `--hosted` flag.
+- Impact: Swallowtail omits those four gates from the default table and
   keeps them as a comment-only local-heavy profile. A later native skip would
   let one complete table stay loaded.
 - Fix: Effigy Chatterbox — skip named gates when a green hosted run at HEAD

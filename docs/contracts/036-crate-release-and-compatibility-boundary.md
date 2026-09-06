@@ -328,19 +328,28 @@ mutation.
 
 ## Hosted Gate Delegation
 
-`lint`, `lint:no-features`, and `test` are satisfied for a candidate by a
-green hosted `CI` run at the exact candidate SHA: the same run the candidate
-PR already requires. Local prepare either runs those three gates or records
-that run id. The release note names the run.
+`lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate
+by a green hosted `CI` run at the SHA to tag, or at a commit with an
+identical tree. `floor` is the pinned-MSRV clippy and test pass already
+represented by that board; repeating it locally re-runs a heavy gate the
+hosted run already proved.
+
+A hosted run at another SHA does not count unless that commit's tree is
+identical. If merge produces a new SHA whose tree is not identical to a
+green run, dispatch `CI` at the merge SHA and wait for green before the tag
+request.
+
+Local prepare either runs those four gates or records the qualifying run
+id. The release note names the run.
 
 Cheap gates still run locally, in this order: `fmt`, `qa`, `docs`,
-`metadata`, `api`, `security`, `floor`, `source`. A docs-index failure must
-fail before clippy and the workspace tests.
+`metadata`, `api`, `security`, `source`. A docs-index failure must fail
+before clippy and the workspace tests.
 
 Effigy v0.12.1 preserves `[release.gates]` declaration order and cannot skip
 a configured gate from hosted evidence. Until Effigy grows that skip, the
-default table omits the three delegated gates. Operators invoke the
-local-heavy profile in `config/release.toml` only when no exact-SHA hosted
+default table omits the four delegated gates. Operators invoke the
+local-heavy profile in `config/release.toml` only when no qualifying hosted
 run exists. Native skip remains an Effigy Chatterbox request.
 
 The lane, expected clocks, actors, and tag-request template live in

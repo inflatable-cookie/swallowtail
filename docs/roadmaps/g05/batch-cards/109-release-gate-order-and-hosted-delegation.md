@@ -34,6 +34,14 @@ Make one prepare attempt cheap: run the deterministic fast gates first, and let 
 
 See the g05.034 manifest row.
 
+## Result
+
+PR 253. Chatterbox co-signed the Contract 036 clause on two bounded
+conditions, applied on this delta: `floor` joins the hosted-delegated
+set; a hosted run counts only at the SHA to tag or a commit with an identical
+tree, otherwise `CI` dispatches at the merge SHA before the tag request.
+Stopped for delta re-review. No merge.
+
 ## Auto-Continuation
 
 No. Stop for exact-head review.

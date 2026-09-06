@@ -1,6 +1,6 @@
 # 100 Claude SDK Open Diagnostics And Live-Open Repair
 
-Status: ready
+Status: ready; operator ship decision 2026-09-06: close on the proven scope; the end-to-end editing turn is card 102's acceptance
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -96,6 +96,23 @@ failing typed (`init_missing`) if it is not the first message of the first
 turn. The fake SDK must reproduce that ordering. The 094 follow-up note the
 worker added is ratified.
 
+## Third Layer (2026-09-05, after the initialize-first probe)
+
+The initialize-first open reached the real SDK: `initializationResult()`,
+`supportedModels()`, and `accountInfo()` all answered. The probe then
+stopped at our own `account_not_subscription` because the real
+`accountInfo()` reports `apiProvider: "firstParty"` with no
+`subscriptionType`; the frozen declaration makes every field optional.
+Ruling: readiness requires `apiProvider === "firstParty"` and publishes
+subscription evidence as a labelled observation without gating on it. The
+route proves non-custody by construction (the native binary launches with
+`env: {}` and no API key), so a first-party account in that process is the
+binary's own OAuth login. The empty `supportedModels` list is unavailable,
+not a rejection. `supportedCommands()` leaves open until evidenced. The
+worker's rewrite of Scope item 2 to the initialize-first design is ratified
+as Chatterbox text. A first live turn to observe `system/init` end to end
+requires separate operator authorization.
+
 ## Out Of Scope
 
 Card 082's model change and effort surfaces (paused behind this card and
@@ -103,13 +120,27 @@ rebased after it); card 087's ranges; Bash, resume, MCP.
 
 ## Acceptance Criteria
 
-- [ ] `sdk.query()` constructs against 0.3.259 with the object-form spawn hook, proved by a fixture that calls the hook the way the real SDK does
-- [ ] account readiness projects from the real 0.3.259 `accountInfo()` shape
-- [ ] every sidecar rejection reaches the consumer with its code
-- [ ] a canonical model id no longer fails open; effective model is published
-- [ ] Node newer than the pin passes open with an `UnverifiedNewer` record
-- [ ] the live open succeeded once with the recorded evidence
-- [ ] API diff additive; default profile unchanged
+Re-cut by the operator's 2026-09-06 ship decision. The card closes on what
+is proven live and provider-free; the end-to-end editing turn moves to card
+102's acceptance through the real consumer.
+
+- [ ] `sdk.query()` constructs against 0.3.259 with the object-form spawn
+      hook (fixture and live)
+- [ ] open takes readiness from the initialize exchange; `system/init` is
+      first-turn evidence (fixture and live)
+- [ ] readiness requires `apiProvider === "firstParty"` and publishes
+      subscription, token-source, and api-key-source presence as labels
+      (fixture and live)
+- [ ] canonical cwd comparison and effective model from init evidence
+      (fixture and live)
+- [ ] every sidecar rejection reaches the consumer with its code (fixture;
+      live: `open_rejected: <code>` observed)
+- [ ] Node newer than the pin passes open as `UnverifiedNewer` (fixture)
+- [ ] cleanup reports `Degraded` with `close_root_only_degraded` on a joined
+      root exit (route-level proof)
+- [ ] the live turn termination (`subtype success`, `is_error true`, no error
+      text, native exit 1) is recorded as unresolved with its typed
+      `ProviderFailed` code; not a claim of success
 
 ## Validation
 

@@ -15,6 +15,17 @@ release lane runs compressed from the outset: no duplicate gate reruns,
 review and CI in parallel, source consumer as the mechanical proof, and one
 live consumer open as the acceptance this defect class needs.
 
+## Ship Decision (2026-09-06)
+
+Six live authorizations were spent on card 100: two open-only probes, two
+turns that reached a real `system/init`, and two lost to the worker's
+harness. Every stage a consumer hits before the turn is proven against the
+real SDK, and the one remaining failure is typed and visible. The operator
+ruled to ship: card 100 closes on the proven scope, `v0.4.2` is prepared
+now, and card 102's Bovine Desktop editing session is the end-to-end proof
+through the real consumer. If that run fails on the termination defect, the
+fix ships as `v0.4.3` under the same patch rules, with the code named.
+
 ## Runway
 
 1. Card 100 repairs open diagnostics, effective-model evidence, and Node
@@ -46,7 +57,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | --- | --- |
 | Readiness | ready |
 | Prerequisites | `v0.4.1` on `main`; the Bovine report; card 082 paused in its workspace |
-| Completion conditions | spawn hook takes the SDK's single `SpawnOptions` object with `signal` forwarded; account projection verified against the frozen 0.3.259 `sdk.d.ts`; fake SDK calls the hook and returns `accountInfo()` in the real shape; sidecar codes surfaced on every rejection; effective model published from init evidence; Node newer-allowed at open with an `UnverifiedNewer` record; provider-free fixtures for all three; one live open recorded with the real `system.model` and account projection; guide, matrices, changelog, additive baseline; one PR |
+| Completion conditions | (re-cut 2026-09-06 by the operator's ship decision: close on the proven scope; the live editing turn is card 102's acceptance) spawn hook takes the SDK's single `SpawnOptions` object with `signal` forwarded; account projection verified against the frozen 0.3.259 `sdk.d.ts`; fake SDK calls the hook and returns `accountInfo()` in the real shape; sidecar codes surfaced on every rejection; effective model published from init evidence; Node newer-allowed at open with an `UnverifiedNewer` record; provider-free fixtures for all three; one live open recorded with the real `system.model` and account projection; guide, matrices, changelog, additive baseline; one PR |
 | Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.1/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
 | Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; the SDK wrapper and native pins (only the Node open check changes); card 082's model-change surfaces |
@@ -75,7 +86,7 @@ Chatterbox round trip. Operator prepare authorization was granted
 
 | Field | Card 101 |
 | --- | --- |
-| Readiness | planned until card 100 merges; then ready without further promotion |
+| Readiness | ready on card 100's merge (operator ship decision 2026-09-06) |
 | Prerequisites | card 100 merged with the live turn recorded (system/init first, truthful close); Effigy local install at or beyond the per-gate-log fix; clean canonical base; no open feature PR |
 | Completion conditions | `docs/releases/0.4.2.md` and index entry authored from card 100's result, the merged Contract 061 tranches (candidates B, K, L and the 767/767 completion), card 081's Bash mediation, and cards 093/094/095; patch class stated from the semantic API diff (all changes since `v0.4.1` are additive: card 100 adds 5 baseline lines, the tranches add contribution methods); read-only release status inferring `0.4.2` with the three-mutation plan; lock in sync before the first `--locked` gate; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.2` with the per-gate logs kept as evidence; NO separate frozen-tree rerun; distinct `0.4.2` semantic baseline, route inventory, and dependency graph without touching `0.4.1` files; the four gate scripts and the consumer front-door script repointed to `0.4.2` exactly as card 091 did; candidate PR; independent review and workflow-dispatch CI in parallel; merge on both green |
 | Owned mutable paths | as card 091's amended manifest, with `0.4.2` in place of `0.4.1`: workspace `Cargo.toml` versions through the prepare transaction; `Cargo.lock` workspace entries; `CHANGELOG.md` promotion; `docs/releases/0.4.2.md`; `docs/releases/README.md` current entry; `release-baselines/public-api-0.4.2/**`, `production-routes-0.4.2.txt`, `internal-dependencies-0.4.2.tsv`; `.release-prepared.json`; `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, `scripts/check-consumer-front-door.py`, `scripts/README.md`; root `README.md` release-posture lines; this card's `## Result`; `PAPERCUTS.md` append only |

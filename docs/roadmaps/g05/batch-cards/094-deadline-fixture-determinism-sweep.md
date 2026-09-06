@@ -147,6 +147,37 @@ above; it does not claim the 102-candidate ledger or the full Card 094 sweep is
 complete, and that continuation does not gate `v0.4.1`. The post-tag
 continuation below records that ledger.
 
+- **Host-local process fixture follow-up — deferred.** Add the host-local
+  `tests/local_process/` fixture test to the post-tag determinism follow-up
+  list. Card 100 records this follow-up only; it does not modify the
+  host-local crate or broaden its validation scope.
+- **Observed post-tag timing flakes — deferred.** Retain these exact surfaces
+  for the post-tag determinism pass:
+  - `swallowtail-adapter-kimi-platform/tests/direct_driver.rs` —
+    `in_flight_deadline_times_out_and_releases_after_connection_join`; the
+    hosted Stable shard 2/3 direct-driver deadline timing flake passed in six
+    local runs.
+  - `swallowtail-host-local/tests/local_process/descendant_tree.rs` — the
+    Card 094 host-local descendant-tree timing flake; keep both descendant
+    tree cases in the follow-up set.
+  - `swallowtail-host-local::watcher_service::lifecycle::watcher_stop_and_join_retires_owned_identities`
+    — the single leaky test identified by the Stable shard 2/3
+    status-level leak run; retain it for the same post-tag determinism pass.
+  - `swallowtail-adapter-claude-agent` fake-sidecar test processes surviving
+    overnight — retain this process-leak family for the same post-tag
+    determinism pass.
+  - `swallowtail-adapter-opencode::prepared_facade`
+    `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`
+    — fifth distinct Stable shard 2/3 macOS cleanup surface: the fixture-only
+    test hit SIGABRT after 121s because `FixtureServer::drop` called
+    `join_fixture_thread`, which resumed the fixture-thread panic while the
+    test thread was not already panicking. The cancellation test gates the
+    delete response and releases it in `Drop`; this is not production behavior
+    and is not a v0.4.2 blocker. Fix shape: `Drop` must never
+    `resume_unwind`; store the fixture-thread panic in an
+    `Arc<Mutex<Option<payload>>>` and assert it before `Drop`, or use
+    non-`Drop` teardown.
+
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 
 - **Claude Agent SDK sidecar asset — fixed here.** Its temporary-directory

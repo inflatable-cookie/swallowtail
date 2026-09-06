@@ -19,8 +19,8 @@ pub enum SdkScenario {
     ToolAdmissionOverflow,
     /// Interrupt reports a receipt the runtime never advertised.
     UnadvertisedInterruptReceipt,
-    /// Open reports a non-subscription access profile.
-    AccountApiKeySource,
+    /// Open reports first-party without the subscription evidence field.
+    AccountNotSubscription,
     /// Open reports a delegated cloud provider rather than first party.
     AccountNotFirstParty,
     /// Open leaks an account identity field.
@@ -29,8 +29,28 @@ pub enum SdkScenario {
     IdentityMismatch,
     /// Open reports a cwd other than the leased resource root.
     CwdMismatch,
-    /// Open reports an effective model other than the selected one.
-    ModelMismatch,
+    /// Open reports a canonical effective model for the selected alias.
+    CanonicalModel,
+    /// Open reports no effective model.
+    MissingModel,
+    /// Open reports an effective model outside its supported-model list.
+    UnsupportedModel,
+    /// Open reports an empty supported-model list, which is unavailable.
+    EmptySupportedModels,
+    /// The first query response reports that no system/init was yielded.
+    InitMissing,
+    /// The SDK failed while yielding the first-turn init message.
+    InitializationFailed,
+    /// The sidecar rejects open and reports its fixed construction code.
+    OpenRejected,
+    /// The sidecar rejects query and reports its fixed turn-active code.
+    QueryRejected,
+    /// The sidecar rejects interrupt and reports its fixed interrupt code.
+    InterruptRejected,
+    /// The sidecar rejects close and reports its fixed invalid-command code.
+    CloseRejected,
+    /// Open reports a Node runtime newer than the qualified point.
+    NewerNode,
     /// The sidecar accepts open and never answers it.
     OpenHold,
     /// The sidecar accepts the query and never answers it.

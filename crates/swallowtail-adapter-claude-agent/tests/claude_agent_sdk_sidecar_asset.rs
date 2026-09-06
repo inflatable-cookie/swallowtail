@@ -9,8 +9,320 @@
 
 mod sidecar_asset_support;
 
-use serde_json::json;
+use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
+
+#[test]
+fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], true,
+        "object-form spawn hook must construct: {open}"
+    );
+    assert_eq!(open["data"]["readiness"], "requested-with-supported-list");
+    assert_eq!(open["data"]["requestedModel"], "m-1");
+    assert!(open["data"].get("model").is_none());
+    assert_eq!(
+        sidecar.observed_control_calls(),
+        vec![
+            "initializationResult".to_owned(),
+            "supportedModels".to_owned(),
+            "accountInfo".to_owned(),
+        ]
+    );
+    assert!(!sidecar.first_input_consumed());
+    // This is the argument the fake SDK actually received, not the query
+    // options passed into `query()`. A positional callback receives the
+    // object in the wrong slot and fails before this response is produced.
+    let spawn = sidecar.observed_spawn_hook_argument();
+    assert_eq!(
+        sidecar.observed_spawn_hook_argument_count(),
+        1_usize,
+        "the SDK invokes spawnClaudeCodeProcess with one object argument"
+    );
+    let mut keys = spawn
+        .as_object()
+        .expect("spawn hook shape is an object")
+        .keys()
+        .collect::<Vec<_>>();
+    keys.sort();
+    assert_eq!(keys, vec!["args", "command", "cwd", "env", "signal"]);
+    assert!(spawn["command"].is_string());
+    assert_eq!(spawn["args"][0], "-e");
+    assert_eq!(spawn["cwd"], sidecar.cwd());
+    assert_eq!(
+        spawn["env"]["keys"],
+        json!([
+            "COLORTERM",
+            "COMMAND_MODE",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LC_CTYPE",
+            "MallocNanoZone",
+            "PATH",
+            "SHELL",
+            "TERM",
+            "TMPDIR",
+            "USER",
+            "XPC_FLAGS",
+            "XPC_SERVICE_NAME",
+            "__CF_USER_TEXT_ENCODING"
+        ])
+    );
+    assert_eq!(
+        spawn["signal"], true,
+        "SpawnOptions.signal must be preserved"
+    );
+}
+
+#[test]
+fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
+    let mut open_input = SidecarProcess::start_scenario("input-stream-lifetime");
+    let open = open_input.command(
+        "open-1",
+        "open",
+        json!({"cwd": open_input.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "open response: {open}");
+    open_input.command("query-1", "query", json!({"text": "first turn"}));
+    let terminal = open_input.wait_for_turn_end_record();
+    assert_eq!(
+        open_input.observed_prompt_stream_state().as_deref(),
+        Some("open")
+    );
+    assert_eq!(terminal["subtype"], "success");
+    assert_eq!(terminal["isError"], false);
+    assert_eq!(terminal["numTurns"], 1);
+    assert_eq!(terminal["durationMs"], 7);
+    assert_eq!(terminal["errorTextPresent"], false);
+    assert_eq!(terminal["errorTextType"], "absent");
+    for field in ["duration_ms", "is_error", "num_turns", "subtype", "type"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], true,
+            "{field} present"
+        );
+    }
+    for field in ["duration_api_ms", "result", "errors", "uuid", "session_id"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], false,
+            "{field} absent"
+        );
+    }
+
+    let close = open_input.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true, "close response: {close}");
+    assert_eq!(
+        close["data"]["closeTimeline"],
+        json!([
+            "close_requested",
+            "session_input_closed",
+            "sdk_transport_close_ran",
+            "native_join_exited"
+        ])
+    );
+
+    let mut early_eof = SidecarProcess::start_scenario("early-input-eof");
+    let open = early_eof.command(
+        "open-1",
+        "open",
+        json!({"cwd": early_eof.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "open response: {open}");
+    early_eof.command("query-1", "query", json!({"text": "first turn"}));
+    let terminal = early_eof.wait_for_turn_end_record();
+    assert_eq!(
+        early_eof.observed_prompt_stream_state().as_deref(),
+        Some("early-eof")
+    );
+    assert_eq!(terminal["subtype"], "error_during_execution");
+    assert_eq!(terminal["isError"], true);
+    assert_eq!(terminal["numTurns"], 1);
+    assert_eq!(terminal["durationMs"], 7);
+    assert_eq!(terminal["errorTextPresent"], true);
+    assert_eq!(terminal["errorTextType"], "string");
+    for field in [
+        "duration_ms",
+        "error",
+        "is_error",
+        "num_turns",
+        "subtype",
+        "type",
+    ] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], true,
+            "{field} present"
+        );
+    }
+    for field in ["duration_api_ms", "result", "errors", "uuid", "session_id"] {
+        assert_eq!(
+            terminal["resultFieldPresence"][field], false,
+            "{field} absent"
+        );
+    }
+    assert!(
+        !terminal.to_string().contains("fixture early input EOF"),
+        "SDK error text must never cross the sidecar wire: {terminal}"
+    );
+    let close = early_eof.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true, "close response: {close}");
+}
+
+#[test]
+fn open_rejections_expose_only_the_fixed_sidecar_code() {
+    for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let response = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(
+            response["success"], false,
+            "{scenario} must reject: {response}"
+        );
+        assert_eq!(response["failure"]["code"], expected);
+        let failure = response["failure"].to_string();
+        for forbidden in ["/fixture/", "@example", "token", "organization"] {
+            assert!(
+                !failure.contains(forbidden),
+                "{scenario} leaked {forbidden}: {failure}"
+            );
+        }
+    }
+}
+
+#[test]
+fn first_party_account_fields_are_labelled_observations_not_gates() {
+    for (scenario, subscription, token, api_key) in [
+        ("read-only", true, false, false),
+        ("account-not-subscription", false, false, false),
+        ("account-token-source", true, true, false),
+        ("account-api-key-source", true, false, true),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true, "{scenario} must open: {open}");
+        assert_eq!(open["data"]["account"]["apiProvider"], "firstParty");
+        assert_eq!(
+            open["data"]["account"]["subscriptionTypePresent"],
+            subscription
+        );
+        assert_eq!(open["data"]["account"]["tokenSourcePresent"], token);
+        assert_eq!(open["data"]["account"]["apiKeySourcePresent"], api_key);
+    }
+}
+
+#[test]
+fn an_empty_supported_model_list_is_unavailable() {
+    let mut sidecar = SidecarProcess::start_scenario("empty-supported-models");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "empty list is unavailable: {open}");
+    assert_eq!(open["data"]["supportedModels"], json!([]));
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], true,
+        "empty list must not reject the effective model: {first_turn}"
+    );
+    assert_eq!(first_turn["data"]["model"], "m-1");
+}
+
+#[test]
+fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
+    for (scenario, expected) in [
+        ("init-missing", "init_missing"),
+        ("init-not-first", "init_missing"),
+        ("init-throws", "initialization_failed"),
+        ("cwd-mismatch", "cwd_mismatch"),
+        ("missing-model", "model_missing"),
+        ("unsupported-model", "supported_model_rejected"),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(
+            open["success"], true,
+            "{scenario} must pass initialize: {open}"
+        );
+        let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        assert_eq!(
+            response["success"], false,
+            "{scenario} must reject: {response}"
+        );
+        assert_eq!(response["failure"]["code"], expected);
+    }
+}
+
+#[test]
+fn canonicalized_first_turn_cwd_is_accepted_but_a_different_path_is_rejected() {
+    let mut sidecar = SidecarProcess::start_scenario("canonical-cwd");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "canonical cwd open: {open}");
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], true,
+        "canonical cwd init: {first_turn}"
+    );
+    assert_eq!(first_turn["data"]["cwd"], sidecar.cwd());
+
+    let mut different = SidecarProcess::start_scenario("cwd-mismatch");
+    let open = different.command(
+        "open-1",
+        "open",
+        json!({"cwd": different.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "different cwd open: {open}");
+    let first_turn = different.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        first_turn["success"], false,
+        "different cwd must reject: {first_turn}"
+    );
+    assert_eq!(first_turn["failure"]["code"], "cwd_mismatch");
+}
+
+#[test]
+fn canonical_effective_model_is_accepted_and_published() {
+    let mut sidecar = SidecarProcess::start_scenario("canonical-model");
+    let response = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "claude-sonnet-5"}),
+    );
+    assert_eq!(
+        response["success"], true,
+        "canonical model must open: {response}"
+    );
+    assert_eq!(
+        response["data"]["readiness"],
+        "requested-with-supported-list"
+    );
+    assert_eq!(response["data"]["requestedModel"], "claude-sonnet-5");
+    assert!(response["data"].get("model").is_none());
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(first_turn["success"], true, "first-turn init: {first_turn}");
+    assert_eq!(first_turn["data"]["readiness"], "confirmed");
+    assert_eq!(first_turn["data"]["model"], "claude-sonnet-5-20250929");
+}
 
 #[test]
 fn every_allowed_invocation_crosses_the_callback_with_its_input_intact() {
@@ -21,9 +333,11 @@ fn every_allowed_invocation_crosses_the_callback_with_its_input_intact() {
         json!({"cwd": sidecar.cwd(), "model": "m-1"}),
     );
     assert_eq!(open["success"], true, "open response: {open}");
-    assert_eq!(open["data"]["model"], "m-1");
+    assert_eq!(open["data"]["readiness"], "requested-with-supported-list");
 
-    sidecar.command("query-1", "query", json!({"text": "read it"}));
+    let query = sidecar.command("query-1", "query", json!({"text": "read it"}));
+    assert_eq!(query["success"], true, "query response: {query}");
+    assert_eq!(query["data"]["readiness"], "confirmed");
 
     // The allowed tool reaches the host as a bounded callback carrying the
     // tool name and nothing else: no input, no path, no provider payload.
@@ -104,7 +418,45 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
     assert_eq!(options["persistSession"], json!(false));
-    assert_eq!(options["env"], json!({}));
+    assert_eq!(
+        options["env"]["keys"],
+        json!([
+            "COLORTERM",
+            "COMMAND_MODE",
+            "HOME",
+            "LANG",
+            "LC_ALL",
+            "LC_CTYPE",
+            "MallocNanoZone",
+            "PATH",
+            "SHELL",
+            "TERM",
+            "TMPDIR",
+            "USER",
+            "XPC_FLAGS",
+            "XPC_SERVICE_NAME",
+            "__CF_USER_TEXT_ENCODING"
+        ])
+    );
+    for forbidden in [
+        "ANTHROPIC_API_KEY",
+        "CLAUDE_CONFIG_DIR",
+        "CLAUDE_CODE_USE_BEDROCK",
+        "OPENAI_API_KEY",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "GOOGLE_API_KEY",
+        "RANDOM_UNRELATED",
+    ] {
+        assert!(
+            !options["env"]["keys"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|key| key == forbidden),
+            "forbidden environment key was forwarded: {forbidden}"
+        );
+    }
     for forbidden in ["apiKeyHelper", "awsAuthRefresh", "gcpAuthRefresh"] {
         assert!(
             options.get(forbidden).is_none(),
@@ -394,7 +746,12 @@ fn close_reports_the_native_exit_it_actually_observed() {
     assert_eq!(close["success"], true, "close response: {close}");
     assert_eq!(close["data"]["nativeJoin"], "exited");
     assert_eq!(close["data"]["nativeExitObserved"], true);
+    assert_eq!(close["data"]["nativeExitEvent"], "exit");
+    assert_eq!(close["data"]["nativeExitCode"], 0);
+    assert_eq!(close["data"]["nativeExitSignal"], Value::Null);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
     assert_eq!(close["data"]["joinBoundMs"], 2000);
+    assert_eq!(sidecar.observed_close_calls(), 1);
 }
 
 #[test]
@@ -412,4 +769,9 @@ fn a_native_child_alive_at_the_bound_is_reported_as_a_survivor() {
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 300}));
     assert_eq!(close["data"]["nativeJoin"], "survivor");
     assert_eq!(close["data"]["nativeExitObserved"], false);
+    assert_eq!(close["data"]["nativeExitEvent"], Value::Null);
+    assert_eq!(close["data"]["nativeExitCode"], Value::Null);
+    assert_eq!(close["data"]["nativeExitSignal"], Value::Null);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(sidecar.observed_close_calls(), 1);
 }

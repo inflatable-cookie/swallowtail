@@ -1,7 +1,7 @@
 use super::session::ActiveSlot;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::failure;
+use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::turn::SdkActiveTurn;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::{Value, json};
@@ -75,9 +75,12 @@ impl CancellationControl for TurnCancellation {
             };
             let response = response?;
             if !response.success {
-                return Err(failure(
+                return Err(command_rejected(
                     "swallowtail.claude-agent.sdk.interrupt_rejected",
                     "Claude Agent SDK sidecar rejected the interrupt",
+                    response
+                        .failure_code
+                        .expect("a rejected response carries its fixed sidecar code"),
                 ));
             }
             let receipt = response

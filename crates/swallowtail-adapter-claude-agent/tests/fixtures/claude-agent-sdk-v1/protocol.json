@@ -33,11 +33,18 @@
   ],
   "account_fields": [
     "apiProvider",
-    "apiKeySource",
-    "subscriptionPresent"
+    "subscriptionType",
+    "tokenSource",
+    "apiKeySource"
+  ],
+  "account_projection_fields": [
+    "apiProvider",
+    "subscriptionTypePresent",
+    "tokenSourcePresent",
+    "apiKeySourcePresent"
   ],
   "required_api_provider": "firstParty",
-  "required_api_key_source": "oauth",
+  "subscription_evidence": "subscriptionType, tokenSource, and apiKeySource presence are observations, not gates",
   "environment": {
     "sdk_module": "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE",
     "native_binary": "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY",

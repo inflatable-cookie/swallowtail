@@ -21,6 +21,7 @@
 use crate::sdk::bounded::HostBound;
 use crate::sdk::close::SidecarNativeJoin;
 use crate::sdk::connection::SdkConnection;
+use crate::sdk::failure::command_rejected;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::{Value, json};
 use std::sync::Arc;
@@ -68,6 +69,7 @@ impl Owned {
 /// guardian having merely finished.
 pub(crate) struct CleanupReport {
     pub(crate) native_join: Option<SidecarNativeJoin>,
+    pub(crate) cooperative_failure: Option<SafeDiagnostic>,
     pub(crate) pump_joined: bool,
     pub(crate) root_exit: Option<ProcessTreeCompletion>,
     pub(crate) resource: CleanupOutcome,
@@ -93,11 +95,11 @@ pub(crate) async fn run(
     cooperative: Cooperative,
 ) -> CleanupReport {
     let connection = owned.connection.take();
-    let native_join = match (&connection, cooperative) {
+    let (native_join, cooperative_failure) = match (&connection, cooperative) {
         (Some(connection), Cooperative::Session { turn_active }) => {
             cooperative_close(connection, bounded, request_id, turn_active).await
         }
-        _ => None,
+        _ => (None, None),
     };
     // The declared descendant termination attempt. It is a request through host
     // authority, made whether or not any cooperative stage answered.
@@ -106,10 +108,15 @@ pub(crate) async fn run(
     } else if let Some(process) = &owned.process {
         let _ = process.force_stop().await;
     }
-    // Root/process observation, before any join is claimed.
-    if let Some(process) = owned.process.take() {
-        let _ = process.wait().await;
-    }
+    // Root/process observation, before any join is claimed. Keep this result:
+    // the pump also waits on the same host handle, and a host is allowed to
+    // make that wait consumptive. Dropping this result would turn an observed
+    // root exit into `close_root_unconfirmed` after the pump joined.
+    let process_root_exit = if let Some(process) = owned.process.take() {
+        process.wait().await.ok().map(ProcessExit::tree_completion)
+    } else {
+        None
+    };
     // Scoped work joined before either lease is released, so a release is
     // evidence that the work using it had already stopped.
     for task in std::mem::take(&mut owned.scoped) {
@@ -120,14 +127,16 @@ pub(crate) async fn run(
         None => false,
     };
     // Root exit is only readable once the pump that recorded it was joined.
-    let root_exit = match (pump_joined, &connection) {
+    let pump_root_exit = match (pump_joined, &connection) {
         (true, Some(connection)) => connection.observed_exit().map(ProcessExit::tree_completion),
         _ => None,
     };
+    let root_exit = observed_root_exit(pump_joined, pump_root_exit, process_root_exit);
     let resource = release_resource(owned.resource.take(), services).await;
     let credential = release_credential(owned.credential.take(), services).await;
     CleanupReport {
         native_join,
+        cooperative_failure,
         pump_joined,
         root_exit,
         resource,
@@ -135,33 +144,75 @@ pub(crate) async fn run(
     }
 }
 
+fn observed_root_exit(
+    pump_joined: bool,
+    pump_root_exit: Option<ProcessTreeCompletion>,
+    process_root_exit: Option<ProcessTreeCompletion>,
+) -> Option<ProcessTreeCompletion> {
+    pump_joined
+        .then(|| pump_root_exit.or(process_root_exit))
+        .flatten()
+}
+
 async fn cooperative_close(
     connection: &Arc<SdkConnection>,
     bounded: &HostBound,
     request_id: &str,
     turn_active: bool,
-) -> Option<SidecarNativeJoin> {
+) -> (Option<SidecarNativeJoin>, Option<SafeDiagnostic>) {
+    let mut cooperative_failure = None;
     if turn_active {
         let id = format!("close-interrupt:{request_id}");
-        let _ = bounded
+        if let Some(Ok(response)) = bounded
             .run(connection.command(id, ClaudeAgentSdkCommand::Interrupt, json!({})))
-            .await;
+            .await
+            && !response.success
+        {
+            cooperative_failure = Some(
+                command_rejected(
+                    "swallowtail.claude-agent.sdk.interrupt_rejected",
+                    "Claude Agent SDK sidecar rejected the close interrupt",
+                    response
+                        .failure_code
+                        .expect("a rejected response carries its fixed sidecar code"),
+                )
+                .diagnostic()
+                .clone(),
+            );
+        }
     }
     // The sidecar's own bounded native join. Bounded here as well, so a silent
     // sidecar cannot consume the whole cleanup budget inside this stage.
     let id = format!("close:{request_id}");
-    let reported = bounded
+    let close_result = bounded
         .run(connection.command(
             id,
             ClaudeAgentSdkCommand::Close,
             json!({"joinBoundMs": CLOSE_JOIN_BOUND_MS}),
         ))
-        .await
-        .and_then(Result::ok)
-        .filter(|response| response.success)
-        .and_then(|response| native_join(response.data.as_ref()));
+        .await;
+    let reported = match close_result {
+        Some(Ok(response)) if response.success => native_join(response.data.as_ref()),
+        Some(Ok(response)) => {
+            if cooperative_failure.is_none() {
+                cooperative_failure = Some(
+                    command_rejected(
+                        "swallowtail.claude-agent.sdk.close_rejected",
+                        "Claude Agent SDK sidecar rejected close",
+                        response
+                            .failure_code
+                            .expect("a rejected response carries its fixed sidecar code"),
+                    )
+                    .diagnostic()
+                    .clone(),
+                );
+            }
+            None
+        }
+        Some(Err(_)) | None => None,
+    };
     let _ = bounded.run(connection.begin_close()).await;
-    reported
+    (reported, cooperative_failure)
 }
 
 /// Reads the sidecar's report of its own direct native child.
@@ -208,4 +259,30 @@ async fn release_credential(
 
 fn cleanup_failure(code: &'static str, message: &'static str) -> CleanupOutcome {
     CleanupOutcome::Failed(SafeDiagnostic::new(code, message))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::observed_root_exit;
+    use swallowtail_runtime::ProcessTreeCompletion;
+
+    #[test]
+    fn retained_process_wait_evidence_prevents_false_root_unconfirmed() {
+        assert_eq!(
+            observed_root_exit(true, None, Some(ProcessTreeCompletion::RootOnly)),
+            Some(ProcessTreeCompletion::RootOnly)
+        );
+        assert_eq!(
+            observed_root_exit(
+                true,
+                Some(ProcessTreeCompletion::OwnedTreeEmpty),
+                Some(ProcessTreeCompletion::RootOnly),
+            ),
+            Some(ProcessTreeCompletion::OwnedTreeEmpty)
+        );
+        assert_eq!(
+            observed_root_exit(false, None, Some(ProcessTreeCompletion::RootOnly)),
+            None
+        );
+    }
 }

@@ -317,6 +317,14 @@ fn a_rejected_or_unconfirmed_mode_change_is_never_a_silent_success() {
             panic!("{scenario:?} must fail rather than report success");
         };
         assert_eq!(error.diagnostic().code(), code);
+        if scenario == SdkScenario::PermissionModeRejected {
+            assert!(
+                error
+                    .diagnostic()
+                    .message()
+                    .ends_with(": permission_mode_failed")
+            );
+        }
         // The session keeps the last mode it actually had.
         assert_eq!(
             session.permission_mode(),

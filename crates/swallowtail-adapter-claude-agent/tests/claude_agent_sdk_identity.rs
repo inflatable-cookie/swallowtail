@@ -123,7 +123,7 @@ fn the_sidecar_asset_can_never_reach_a_credential_bearing_surface() {
     }
     // Explicit environment on every launch: omission would inherit the parent
     // environment and could silently select API-key authentication.
-    assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("env: {}"));
+    assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("env: childEnvironment()"));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("settingSources: []"));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("skills: []"));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains("persistSession: false"));

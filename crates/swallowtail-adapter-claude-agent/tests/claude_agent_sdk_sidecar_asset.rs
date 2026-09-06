@@ -195,17 +195,101 @@ fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() 
 }
 
 #[test]
-fn pinned_rate_limit_message_exposes_the_unqualified_projection_gap() {
-    let mut sidecar = SidecarProcess::start_scenario("pinned-rate-limit");
-    let open = sidecar.command(
+fn pinned_advisory_rate_limits_allow_reply_and_successful_result() {
+    for scenario in ["rate-allowed", "rate-allowed_warning"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        assert_eq!(sidecar.next_event()["event"], "turn_started");
+        assert_eq!(
+            sidecar.next_event(),
+            json!({"type": "event", "event": "progress"})
+        );
+        let reply = sidecar.next_event();
+        assert_eq!(reply["event"], "output_delta");
+        assert_eq!(reply["delta"], "fixture reply");
+        let ended = sidecar.next_event();
+        assert_eq!(ended["event"], "turn_ended");
+        assert_eq!(ended["isError"], false);
+        assert_eq!(ended["stopReason"], "success");
+        let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+        assert_eq!(close["success"], true);
+        assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+        assert_eq!(close["data"]["nativeExitObserved"], true);
+    }
+}
+
+#[test]
+fn rejected_rate_limit_preserves_the_provider_error_result() {
+    let mut sidecar = SidecarProcess::start_scenario("rate-rejected");
+    sidecar.command(
         "open-1",
         "open",
         json!({"cwd": sidecar.cwd(), "model": "m-1"}),
     );
-    assert_eq!(open["success"], true);
-    let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
-    assert_eq!(terminal["failure"]["code"], "unknown_message");
-    assert!(!terminal.to_string().contains("fixture-session"));
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(
+        sidecar.next_event(),
+        json!({"type": "event", "event": "progress"})
+    );
+    let ended = sidecar.next_event();
+    assert_eq!(ended["event"], "turn_ended");
+    assert_eq!(ended["isError"], true);
+    assert_eq!(ended["errorTextPresent"], true);
+    assert!(!ended.to_string().contains("private rejection detail"));
+    assert_eq!(
+        sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}))["success"],
+        true
+    );
+}
+
+#[test]
+fn malformed_rate_limits_remain_terminal() {
+    for scenario in [
+        "rate-missing-info",
+        "rate-null-info",
+        "rate-array-info",
+        "rate-missing-status",
+        "rate-numeric-status",
+        "rate-future-status",
+        "rate-missing-session",
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+        assert_eq!(terminal["failure"]["code"], "unknown_message");
+        assert!(!terminal.to_string().contains("private-session"));
+    }
+}
+
+#[test]
+fn rate_limit_progress_preserves_interrupt_and_close() {
+    let mut sidecar = SidecarProcess::start_scenario("rate-cancel");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "progress");
+    let interrupt = sidecar.command("interrupt-1", "interrupt", json!({}));
+    assert_eq!(interrupt["success"], true);
+    assert_eq!(sidecar.wait_for_turn_end_record()["event"], "turn_ended");
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(close["data"]["nativeExitObserved"], true);
 }
 
 #[test]

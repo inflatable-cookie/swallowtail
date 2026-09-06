@@ -778,6 +778,22 @@ function projectMessage(message) {
         },
       ];
     }
+    case "rate_limit_event": {
+      // SDK 0.3.259: a rate-limit information update, not a turn result.
+      // Even rejected may describe changing quota/overage state; the SDK's
+      // result (or thrown query error) still owns success/failure. Forward no
+      // quota, account, timing, or session payload.
+      const info = message.rate_limit_info;
+      if (
+        !info || typeof info !== "object" || Array.isArray(info) ||
+        !["allowed", "allowed_warning", "rejected"].includes(info.status) ||
+        typeof message.uuid !== "string" || message.uuid.length === 0 ||
+        typeof message.session_id !== "string" || message.session_id.length === 0
+      ) {
+        return "unknown";
+      }
+      return [{ event: "progress" }];
+    }
     case "stream_event":
     case "system":
       return [{ event: "progress" }];

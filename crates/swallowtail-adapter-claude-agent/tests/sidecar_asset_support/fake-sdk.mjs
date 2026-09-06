@@ -226,6 +226,9 @@ export function query({ prompt, options }) {
   }
 
   let settled = false;
+  let rateStep = 0;
+  let releaseRateInterrupt;
+  const rateInterrupt = new Promise((resolve) => { releaseRateInterrupt = resolve; });
   let firstInputConsumed = false;
   const rawPromptIterator = prompt[Symbol.asyncIterator]();
   const promptIterator =
@@ -260,14 +263,43 @@ export function query({ prompt, options }) {
         }
         return { value: initMessage(options), done: false };
       }
+      if (SCENARIO.startsWith("rate-")) {
+        const variant = SCENARIO.slice(5);
+        rateStep += 1;
+        if (rateStep === 1) {
+          const message = {
+            type: "rate_limit_event",
+            rate_limit_info: { status: variant === "cancel" ? "allowed_warning" : variant },
+            uuid: "fixture-uuid", session_id: "private-session",
+          };
+          if (variant === "missing-info") delete message.rate_limit_info;
+          if (variant === "null-info") message.rate_limit_info = null;
+          if (variant === "array-info") message.rate_limit_info = [];
+          if (variant === "missing-status") message.rate_limit_info = {};
+          if (variant === "numeric-status") message.rate_limit_info.status = 7;
+          if (variant === "missing-session") {
+            message.rate_limit_info.status = "allowed";
+            delete message.session_id;
+          }
+          return { value: message, done: false };
+        }
+        if (rateStep === 2) {
+          if (variant === "cancel") {
+            await rateInterrupt;
+            return { value: resultMessage(), done: false };
+          }
+          if (variant === "rejected") {
+            return { value: { ...resultMessage({ isError: true }), result: "private rejection detail" }, done: false };
+          }
+          return { value: { type: "assistant", message: { content: [{ type: "text", text: "fixture reply" }] } }, done: false };
+        }
+        if (rateStep === 3 && variant !== "cancel" && variant !== "rejected") {
+          return { value: resultMessage(), done: false };
+        }
+        return { value: undefined, done: true };
+      }
       if (!settled) {
         settled = true;
-        if (SCENARIO === "pinned-rate-limit") {
-          return { value: {
-            type: "rate_limit_event", rate_limit_info: { status: "allowed" },
-            uuid: "fixture-uuid", session_id: "fixture-session",
-          }, done: false };
-        }
         if (SCENARIO === "pinned-error-result") {
           return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
         }
@@ -329,6 +361,7 @@ export function query({ prompt, options }) {
       return modelRows(options);
     },
     async interrupt() {
+      releaseRateInterrupt();
       return { received: true };
     },
     async setPermissionMode(mode) {

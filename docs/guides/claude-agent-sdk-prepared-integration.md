@@ -499,14 +499,17 @@ Cleanup is independent from the turn. On a degraded or failed
 `sdkTransportCloseRan`, and `closeTimeline` evidence. `Clean` has no diagnostic;
 the absence of one is not permission to infer missing evidence.
 
-An SDK message the sidecar does not map remains `unknown_message` and terminates
-the session. Without a qualified projection,
-continuing could misclassify provider or tool semantics. The observed message
-type is not included in the safe diagnostic, and the provider-free fixture
-proves both the terminal code and the absence of the unmapped type. The pinned
-SDK also declares `rate_limit_event`; a fixture demonstrates that it reaches
-this path even with status `allowed`. That projection gap does not establish
-the cause of a particular live failure without captured evidence.
+The pinned SDK's `rate_limit_event` is an information update. A valid required
+envelope with status `allowed`, `allowed_warning`, or `rejected` projects only
+progress; quota, account, timing and session fields are not forwarded. The
+SDK's result or query error remains authoritative for turn completion/failure,
+so a following provider rejection still fails the turn. The notification itself
+does not kill a valid turn or manufacture a retry instruction.
+
+Malformed rate-limit envelopes and statuses, and genuinely unmapped message
+types, still terminate as `unknown_message`. The raw type and provider payload
+are not included in that safe diagnostic. Provider-free sequence tests qualify
+this behavior; they do not establish the cause of a particular live failure.
 
 ## Normal Path
 

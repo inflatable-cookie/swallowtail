@@ -45,10 +45,10 @@ Card 100's own live record hit the same wall: `subtype success`,
 4. Sidecar stderr: the host already bounds it (`pump.rs:38`); retain the
    sanitized tail (bounded bytes, redacted by the existing allowlist) on the
    terminal failure diagnostic so the native's last words survive.
-5. Decide, with evidence, whether `unknown_message` should stay terminal:
-   if the SDK emits a message type the sidecar does not map, killing the
-   session is a policy choice; record the observed type presence and rule in
-   the card Result (Chatterbox confirms).
+5. Qualify the pinned `rate_limit_event` under the direct operator scope
+   extension: known advisory events project progress; result/error remains
+   authoritative for turn failure. Malformed and genuinely unknown messages
+   stay terminal. Record exact evidence and boundary proofs in Result.
 6. Fixture proofs on the fake SDK: each terminal code surfaces verbatim; a
    `turn_ended` with `isError` carries all fields; close evidence appears in
    the cleanup diagnostic; stderr tail is bounded and redacted.
@@ -113,13 +113,28 @@ change does not claim a complete native stderr drain after termination.
 Inspected the official `@anthropic-ai/claude-agent-sdk` 0.3.259 tarball whose
 SHA-256 matches the frozen identity:
 `0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e`.
-Its `sdk.d.ts` declares `SDKRateLimitEvent` (`rate_limit_event`, including
-`status: allowed`) and includes it in `SDKMessage`. The actual sidecar maps only
-assistant, user, result, stream_event, and system at the top level. A fake-SDK
-record built from that pinned declaration reproduces `unknown_message` even
-when rate-limit status is allowed. This is a concrete projection gap, not proof
-that the real Desktop Send emitted that record. The generic unknown-type fixture
-alone was insufficient evidence.
+Its `sdk.d.ts` declares `SDKRateLimitEvent` as a rate-limit information update
+and includes it in `SDKMessage`. `SDKRateLimitInfo.status` is exactly `allowed`,
+`allowed_warning`, or `rejected`; quota and overage observations are optional.
+`SDKResultMessage` documents exactly one result per turn as the turn-complete
+signal. This settles the projection without inventing a provider-failure policy.
+
+The direct root/operator continuation authorizes qualification on this card and
+PR245, superseding the diagnostic-only limitation at `fd00ae03`. A well-formed
+`rate_limit_event` now projects only `{event: progress}` for all three declared
+statuses. Required `rate_limit_info` object, status enum, and nonempty string
+`uuid`/`session_id` are validated; optional quota/account/timing payload is never
+forwarded. Malformed envelopes and unknown statuses keep `unknown_message`.
+Genuinely unknown message types retain the same terminal behavior.
+
+A `rejected` notification is not itself a result and does not manufacture a
+terminal outcome. The following provider error result or thrown query failure
+still fails the turn through the existing path. This preserves real rejection
+without treating changing quota/overage information as a session-kill command.
+Fake-SDK sequences prove allowed/allowed_warning -> assistant text -> successful
+result, rejected -> error result without error text, malformed notifications,
+and interrupt/close after advisory progress. Existing runtime failure,
+cancellation, permission and cleanup proofs remain green.
 
 The pinned `SDKResultError` carries `errors: string[]`; the `SDKResultMessage`
 documentation also specifies error text in `result` for subtype success with
@@ -127,14 +142,12 @@ documentation also specifies error text in `result` for subtype success with
 `error` observation. Fake-SDK proofs assert that neither text crosses the wire.
 The SDK input stream, tool permissions, and query options are unchanged.
 
-Recommendation for root review: qualify the exact rate-limit notification as
-observation-only progress, with fixtures for allowed/warning/rejected and no
-payload forwarding, before changing its current fail-closed behavior. Arbitrary
-unknown records remain terminal. This PR preserves that behavior; it does not
-claim a new Chatterbox policy ruling or that real Send is fixed. There is no
-captured live JSONL and no live provider reproduction in this lane.
+The old fixture demonstrated the repaired projection gap; it did not prove that
+Desktop emitted that record. There is still no captured live JSONL or provider
+reproduction in this lane. Actual Desktop root cause remains unproved until a
+later tagged real Send.
 
-Release input: v0.4.3 diagnostic repair, same qualified package/native axes and
+Release input: v0.4.3 diagnostic and rate-limit projection repair, same qualified package/native axes and
 behavior revision. Root owns independent exact-head review, merge, candidate
 preparation and any separately authorized release. The decisive consumer follow-up
 is one bounded Send on the reviewed build, recording only terminal code/message
@@ -142,8 +155,8 @@ and cleanup evidence. No native UI, global tools, auth or consumer files changed
 
 ### Validation receipts
 
-- Focused adapter gate: 374/374 tests; warnings-denied all-target Clippy passed.
-  Restored-tree run: nextest `44e967c0-f8f7-49d8-ab58-fb1029c21b9f`.
+- Extended focused adapter gate: 377/377 tests; warnings-denied all-target
+  Clippy passed. Nextest `3413ca87-ce26-4fbc-b586-4998470e021d`.
 - Affected-package proof passed for `swallowtail-adapter-claude-agent`.
 - Public API gate passed; no exported API delta.
 - Northstar docs and final formatting/whitespace checks passed.

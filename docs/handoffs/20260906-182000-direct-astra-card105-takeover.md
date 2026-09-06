@@ -29,3 +29,15 @@ under Tom's instruction. Worker stops at a clean PR and returns exact head,
 validation, real-cause evidence versus uncertainty, and release inputs. No
 self-review, tag, publication or unrelated feature changes. No coordinator
 messages. Retain this workspace for repairs and release preparation.
+
+## Direct scope extension — pinned rate-limit projection
+
+After Opus PASS and green CI on `fd00ae03`, root/operator explicitly authorized
+repair of the known pinned `rate_limit_event` gap in the same workspace/card/PR245.
+No separate card or coordinator dispatch is required. Well-formed `allowed`,
+`allowed_warning`, and `rejected` updates now project payload-free progress;
+SDK result/error still owns turn failure. Malformed/unknown messages remain
+terminal. Fake-SDK sequence, rejection, interrupt and close proofs qualify this
+bounded repair. This supersedes the prior diagnostic-only release limitation.
+Real Desktop cause remains unproved until tagged consumer Send evidence. Root
+reuses the independent reviewer and owns merge/release; worker stops at updated PR.

@@ -1,9 +1,9 @@
 # 100 Claude SDK Open Diagnostics And Live-Open Repair
 
-Status: ready; operator ship decision 2026-09-06: close on the proven scope; the end-to-end editing turn is card 102's acceptance
+Status: complete; merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; feature freeze active; end-to-end editing turn remains card 102's acceptance
 Owner: Tom
 Created: 2026-09-05
-Updated: 2026-09-05
+Updated: 2026-09-06
 Milestone: `../032-v0-4-2-release-readiness.md`
 Depends on: `v0.4.1`; the 2026-09-05 Bovine Desktop failure report (PR 97 head `17321cc9`); Contract 036 patch rules
 

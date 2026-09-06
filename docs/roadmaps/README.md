@@ -15,14 +15,11 @@ shape.
 
 ## Next Task
 
-Implement [g05.032 card 100](g05/batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md):
-repair the `claude-agent.sdk` live-open failure Bovine Desktop hit on
-`v0.4.1` (sidecar codes surfaced, effective model from init evidence, Node
-newer-allowed at open, one live open), from the manifest in that roadmap.
-Card 082 is paused behind it because they share the sidecar. Concurrent:
-g05.009 cards 097-099 (the last Contract 061 rows). Cards 101-102 then ship
-`v0.4.2` on a compressed lane with a
-Bovine editing session as the smoke. `v0.4.1` is tagged at `c3cce750`.
+Implement [g05.032 card 103](g05/batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md):
+settle the OpenCode cancellation cleanup DELETE dispatch and fixture teardown
+race before the `v0.4.2` candidate. Card 100 is merged at
+`ffc263107343b30cda7a0efde840f84f47a361ec`; Card 101 waits for Card 103's
+verdict. Card 082 remains paused because it shares the sidecar.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # g05.032 v0.4.2 Release Readiness
 
-Status: ready; card 100 repair is ready; cards 101 and 102 serial behind it; compressed lane from the start
+Status: ready; card 100 merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; card 103 gates card 101; feature freeze active
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -29,8 +29,10 @@ fix ships as `v0.4.3` under the same patch rules, with the code named.
 ## Runway
 
 1. Card 100 repairs open diagnostics, effective-model evidence, and Node
-   newer-allowed at open, with one operator-authorized live open.
-2. Card 101 prepares the candidate: patch audit folded in (the delta since
+   newer-allowed at open; its unresolved typed live termination is recorded
+   and the end-to-end editing proof moves to card 102.
+2. Card 103 settles the OpenCode cancellation cleanup DELETE dispatch before
+   Card 101 prepares the candidate: patch audit folded in (the delta since
    `v0.4.1` is card 100 plus whatever merged tranches are green), one
    Effigy prepare transaction with per-gate logs under the updated Effigy,
    candidate PR with review and exact-SHA CI in parallel, merge.
@@ -46,7 +48,7 @@ mutation.
 ## Batch Cards
 
 - [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; release-lane investigation; card 101 waits for its verdict
-- [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready
+- [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
 - [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the standing-grant pattern
 - [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; serial after card 101; Bovine editing session as the smoke
 

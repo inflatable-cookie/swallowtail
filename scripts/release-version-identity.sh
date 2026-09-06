@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 # Current and previous release identity for the five gate scripts.
 # Current: Cargo.toml workspace.package.version.
-# Previous: newest tagged public-api-* directory older than current.
+# Previous: greatest tagged public-api-* directory strictly older than current.
 set -euo pipefail
+
+release_version_is_strictly_older() {
+  local candidate=$1
+  local current=$2
+  local first
+  [[ $candidate =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || return 1
+  [[ $current =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || return 1
+  [[ $candidate != "$current" ]] || return 1
+  first=$(printf '%s\n%s\n' "$candidate" "$current" | sort -t. -k1,1n -k2,2n -k3,3n | head -n 1)
+  [[ $first == "$candidate" ]]
+}
 
 release_load_version_identity() {
   local cargo_toml=${1:-Cargo.toml}
@@ -28,7 +39,7 @@ release_load_version_identity() {
     for baseline_dir in release-baselines/public-api-[0-9]*; do
       [[ -d $baseline_dir ]] || continue
       name=${baseline_dir##*/public-api-}
-      [[ $name != "$release_current_version" ]] || continue
+      release_version_is_strictly_older "$name" "$release_current_version" || continue
       printf '%s\n' "$name"
     done | sort -t. -k1,1n -k2,2n -k3,3n | tail -n 1
   )

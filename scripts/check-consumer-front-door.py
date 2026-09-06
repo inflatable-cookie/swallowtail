@@ -114,9 +114,8 @@ release_package_section = section(release, "## Package Set", "## Production Rout
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
 if not documented_packages:
     if (
-        f"unchanged from `{previous_tag}`" not in release_package_section
-        and f"packages listed in the `{previous_tag}` release note."
-        not in release_package_section
+        f"The 40-package set is unchanged from `{previous_tag}`." not in release_package_section
+        or f"packages listed in the `{previous_tag}` release note." not in release_package_section
     ):
         fail("release package section has no package inventory or unchanged-set evidence")
     prior_release = read(f"docs/releases/{previous_version}.md")
@@ -141,9 +140,10 @@ release_route_section = section(release, "## Production Routes", "## Highlights"
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if not documented_routes:
     if (
-        f"unchanged from `{previous_tag}`" not in release_route_section
-        and "Research 286 confirms that no route" not in release_route_section
-        and "was renamed or removed." not in release_route_section
+        f"The 49-route candidate inventory is unchanged from `{previous_tag}`, including"
+        not in release_route_section
+        or "Research 286 confirms that no route" not in release_route_section
+        or "was renamed or removed." not in release_route_section
     ):
         fail("release route section has no route inventory or unchanged-set evidence")
     prior_release = read(f"docs/releases/{previous_version}.md")

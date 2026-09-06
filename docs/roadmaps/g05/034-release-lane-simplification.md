@@ -47,7 +47,7 @@ parallel with the `v0.4.3` candidate. Cards 109-111 run after the tag.
 ## Batch Cards
 
 - [109 Release Gate Order And Hosted Delegation](batch-cards/109-release-gate-order-and-hosted-delegation.md) — planned; after the `v0.4.3` tag
-- [110 Version-Derived Release Scripts And Baseline Roles](batch-cards/110-version-derived-release-scripts-and-baseline-roles.md) — planned; after the `v0.4.3` tag
+- [110 Version-Derived Release Scripts And Baseline Roles](batch-cards/110-version-derived-release-scripts-and-baseline-roles.md) — ready; PR 252; exact-head re-review
 - [111 Docs Check On Push And Closeout Grammar](batch-cards/111-docs-check-on-push-and-closeout-grammar.md) — planned; after the `v0.4.3` tag
 - [112 Integration Test Binary Consolidation](batch-cards/112-integration-test-binary-consolidation.md) — planned; may start under the freeze
 - [113 CI Critical Path](batch-cards/113-ci-critical-path.md) — planned; may start under the freeze; operator workflow authority from card 095 carries

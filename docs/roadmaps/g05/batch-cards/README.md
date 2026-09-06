@@ -7,11 +7,11 @@
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9
 - [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
+- [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — ready; PR 252; exact-head re-review
 
 ## Planned
 
 - [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — planned; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
-- [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — planned; no version literals in gate scripts; baseline roles documented; after the tag
 - [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — planned; pre-push docs check; drift checker grammar documented; after the tag
 - [112-integration-test-binary-consolidation.md](./112-integration-test-binary-consolidation.md) — planned; 370 test binaries to a handful per crate; may start now
 - [113-ci-critical-path.md](./113-ci-critical-path.md) — planned; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now

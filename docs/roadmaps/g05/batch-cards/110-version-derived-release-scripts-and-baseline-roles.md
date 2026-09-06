@@ -1,6 +1,6 @@
 # 110 Version-Derived Release Scripts And Baseline Roles
 
-Status: planned; after the `v0.4.3` tag
+Status: ready; PR 252; exact-head re-review
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06
@@ -20,9 +20,9 @@ Remove the manual version repointing and the baseline-directory confusion that c
 
 ## Acceptance Criteria
 
-- [ ] no version literal in the five scripts; they pass on `main` unchanged
-- [ ] baseline roles documented; stale directory removed
-- [ ] `effigy package:api` and the other gates green
+- [x] no version literal in the five scripts; they pass on `main` unchanged
+- [x] baseline roles documented; stale directory removed
+- [x] `effigy package:api` and the other gates green
 
 ## Validation
 
@@ -36,3 +36,15 @@ See the g05.034 manifest row.
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+PR 252. First head `10e5859c` accepted direction with two merge blockers, now
+fixed: previous is the greatest tagged `public-api-*` directory strictly older
+than current (fixture: `public-api-0.5.0` cannot become previous when current
+is `0.4.3`); front-door unchanged-set fallbacks again require both package
+phrases and all three route phrases, substituting only `previous_tag`.
+
+Named gates and the identity fixture are green. `PAPERCUTS.md` left open:
+manifest is append-only, and Contract 036 remains Card 109. The scripts-repointed
+playbook line is Card 109. No merge, tag, or live action.

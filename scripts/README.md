@@ -56,9 +56,10 @@ Normal validation scripts:
 Release-preparation scripts:
 
 - `release-version-identity.sh` — current version from
-  `workspace.package.version`; previous from the newest tagged `public-api-*`
-  directory older than current. Sourced or executed by the four gate scripts
-  and the consumer front door. Prepare does not repoint those scripts.
+  `workspace.package.version`; previous is the greatest tagged `public-api-*`
+  directory strictly older than current. Sourced or executed by the four gate
+  scripts and the consumer front door. Prepare does not repoint those scripts.
+  Hermetic fixtures: `bash scripts/tests/release-version-identity.sh`
 - `check-package-metadata.sh` — Contract 036 metadata, package set, MSRV, and
   dependency topology against `public-api-<current>` and
   `internal-dependencies-<current>.tsv`

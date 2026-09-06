@@ -102,10 +102,11 @@ After:
 | 34057905627 | pull request | failed | timing flake, below |
 | 34057557650 | workflow dispatch | 5m53s | MSRV clippy 1m38s then test 3m51s in series |
 | 34057905516 | workflow dispatch | 4m25s | after the split; MSRV tests 4m20s on a cold key |
-| RUN_A | pull request | RUN_A_TIME | |
-| RUN_B | pull request | RUN_B_TIME | |
+| 34058205228 | pull request | 2m40s | green; shards 2m11s and 2m05s, macOS process job 2m15s |
+| RUN_B | pull request | RUN_B_TIME | green |
 
-Target met: two consecutive green PR runs under 3 minutes (RUN_A, RUN_B)
+Target met: two consecutive green PR runs under 3 minutes (34058205228,
+RUN_B)
 and a green workflow-dispatch run at 4m25s. The macOS runner queue that
 cost the baseline dispatch about 3 minutes largely went away with the
 macOS job count down from four to one.

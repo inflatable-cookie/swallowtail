@@ -26,10 +26,10 @@
 // subscription.
 //
 // Ambient behavior is suppressed by construction: empty setting sources, an
-// explicit empty skill list, no MCP servers, no plugins, no hooks, no
-// subagents, no system prompt, provider-owned session persistence is opt-in,
-// and an explicitly
-// admitted tool set. Unknown semantics fail closed.
+// explicit empty skill list, MCP servers only from the host's declared stdio
+// set, no plugins, no hooks, no subagents, no system prompt, provider-owned
+// session persistence is opt-in, and an explicitly admitted tool set. Unknown
+// semantics fail closed.
 //
 // The admitted tool set and the permission mode are decided by the host and
 // arrive on `open`. This process never widens either: an unadmitted tool is
@@ -72,6 +72,14 @@ const MAXIMUM_MODEL_BYTES = 128;
 // MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES bound.
 const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
 const MAXIMUM_PROMPT_BYTES = 256 * 1024;
+const MAXIMUM_MCP_SERVERS = 16;
+const MAXIMUM_MCP_ARGS = 32;
+const MAXIMUM_MCP_ENV_KEYS = 32;
+const MAXIMUM_MCP_TOOLS = 32;
+const MAXIMUM_MCP_NAME_BYTES = 64;
+const MAXIMUM_MCP_COMMAND_BYTES = 512;
+const MAXIMUM_MCP_ARG_BYTES = 256;
+const WATCHER_SERVER_NAME = "swallowtail-watchers";
 const MINIMUM_JOIN_BOUND_MS = 100;
 const MAXIMUM_JOIN_BOUND_MS = 60_000;
 const SDK_CONTROL_BOUND_MS = 60_000;
@@ -231,6 +239,11 @@ const COMMAND_FAILURE_CODES = new Set([
   "model_change_failed",
   "model_change_unconfirmed",
   "effort_unconfirmed",
+  "mcp_servers_invalid",
+  "mcp_server_undeclared",
+  "mcp_server_failed",
+  "mcp_server_needs_auth",
+  "mcp_status_invalid",
   "unknown_command",
   "command_failed",
 ]);
@@ -420,6 +433,175 @@ function admittedEffort(value) {
     throw new SidecarFailure("invalid_command");
   }
   return value;
+}
+
+function isMcpIdentifier(value) {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= MAXIMUM_MCP_NAME_BYTES &&
+    /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(value)
+  );
+}
+
+function mcpToolName(server, tool) {
+  return `mcp__${server}__${tool}`;
+}
+
+function mcpServerEnvironment(allowlistKeys) {
+  const child = childEnvironment();
+  const env = {};
+  for (const key of allowlistKeys) {
+    if (!(CHILD_ENV_EXACT_KEYS.has(key) || key.startsWith("LC_"))) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    if (typeof child[key] === "string") {
+      env[key] = child[key];
+    }
+  }
+  return env;
+}
+
+function admittedMcpServers(value) {
+  if (value === undefined) {
+    return [];
+  }
+  if (!Array.isArray(value) || value.length > MAXIMUM_MCP_SERVERS) {
+    throw new SidecarFailure("mcp_servers_invalid");
+  }
+  const servers = [];
+  const names = [];
+  for (const entry of value) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    for (const key of Object.keys(entry)) {
+      if (!["name", "command", "args", "envAllowlistKeys", "tools", "optional"].includes(key)) {
+        throw new SidecarFailure("mcp_servers_invalid");
+      }
+    }
+    const name = entry.name;
+    if (!isMcpIdentifier(name) || name === WATCHER_SERVER_NAME || names.includes(name)) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    if (typeof entry.command !== "string" || entry.command.length === 0 || entry.command.length > MAXIMUM_MCP_COMMAND_BYTES) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    const args = entry.args === undefined ? [] : entry.args;
+    if (!Array.isArray(args) || args.length > MAXIMUM_MCP_ARGS || args.some((argument) => typeof argument !== "string" || argument.length === 0 || argument.length > MAXIMUM_MCP_ARG_BYTES)) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    const envAllowlistKeys = entry.envAllowlistKeys === undefined ? [] : entry.envAllowlistKeys;
+    if (!Array.isArray(envAllowlistKeys) || envAllowlistKeys.length > MAXIMUM_MCP_ENV_KEYS || envAllowlistKeys.some((key) => typeof key !== "string" || envAllowlistKeys.indexOf(key) !== envAllowlistKeys.lastIndexOf(key))) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    const tools = entry.tools;
+    if (!Array.isArray(tools) || tools.length === 0 || tools.length > MAXIMUM_MCP_TOOLS || tools.some((tool) => !isMcpIdentifier(tool) || tools.indexOf(tool) !== tools.lastIndexOf(tool))) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    const optional = entry.optional === undefined ? false : entry.optional;
+    if (typeof optional !== "boolean") {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    names.push(name);
+    servers.push({
+      name,
+      command: entry.command,
+      args,
+      envAllowlistKeys,
+      tools,
+      optional,
+      admitted: tools.map((tool) => mcpToolName(name, tool)),
+    });
+  }
+  return servers;
+}
+
+function admittedToolsWithMcp(values, servers) {
+  const mcpTools = new Set(servers.flatMap((server) => server.admitted));
+  if (values === undefined) {
+    if (mcpTools.size > 0) {
+      throw new SidecarFailure("mcp_server_undeclared");
+    }
+    return DEFAULT_TOOLS;
+  }
+  if (!Array.isArray(values) || values.length === 0) {
+    throw new SidecarFailure("tools_invalid");
+  }
+  const admitted = [];
+  for (const value of values) {
+    if (typeof value !== "string" || admitted.includes(value)) {
+      throw new SidecarFailure("tools_invalid");
+    }
+    if (ADMISSIBLE_TOOLS.includes(value) || mcpTools.has(value)) {
+      admitted.push(value);
+      continue;
+    }
+    if (value.startsWith("mcp__")) {
+      throw new SidecarFailure("mcp_server_undeclared");
+    }
+    throw new SidecarFailure("tools_invalid");
+  }
+  return admitted;
+}
+
+function sdkMcpServers(servers) {
+  const config = {};
+  for (const server of servers) {
+    config[server.name] = {
+      type: "stdio",
+      command: server.command,
+      args: server.args,
+      env: mcpServerEnvironment(server.envAllowlistKeys),
+      alwaysLoad: !server.optional,
+    };
+  }
+  return config;
+}
+
+function projectMcpStatuses(reported, servers) {
+  if (!Array.isArray(reported) || reported.length !== servers.length) {
+    throw new SidecarFailure("mcp_status_invalid");
+  }
+  const projected = [];
+  for (const server of servers) {
+    const row = reported.find((entry) => entry && entry.name === server.name);
+    if (!row || typeof row !== "object") {
+      throw new SidecarFailure("mcp_status_invalid");
+    }
+    if (row.error !== undefined || row.url !== undefined || row.config !== undefined || row.headers !== undefined) {
+      throw new SidecarFailure("mcp_status_invalid");
+    }
+    const status = row.status;
+    let kind;
+    let failureCode;
+    if (status === "connected") {
+      kind = "connected";
+    } else if (status === "pending") {
+      kind = "pending";
+    } else if (status === "failed" || status === "disabled") {
+      kind = "failed";
+      failureCode = "mcp_server_failed";
+    } else if (status === "needs-auth") {
+      kind = "failed";
+      failureCode = "mcp_server_needs_auth";
+    } else {
+      throw new SidecarFailure("mcp_status_invalid");
+    }
+    if (!server.optional && kind !== "connected") {
+      throw new SidecarFailure(failureCode ?? "mcp_server_failed");
+    }
+    const evidence = { name: server.name, status: kind };
+    if (failureCode) {
+      evidence.failureCode = failureCode;
+    }
+    projected.push(evidence);
+  }
+  const reportedNames = reported.map((entry) => entry && entry.name);
+  if (reportedNames.some((name) => !servers.some((server) => server.name === name))) {
+    throw new SidecarFailure("mcp_server_undeclared");
+  }
+  return projected;
 }
 
 async function importSdk() {
@@ -853,10 +1035,12 @@ async function handleOpen(params) {
     "persistSession",
     "resume",
     "resumeSessionAt",
+    "mcpServers",
   ]);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
-  const tools = admittedTools(params.tools);
+  const mcpServers = admittedMcpServers(params.mcpServers);
+  const tools = admittedToolsWithMcp(params.tools, mcpServers);
   const permissionMode = admittedPermissionMode(params.permissionMode);
   const effort = admittedEffort(params.effort);
   const persistSession = params.persistSession === undefined ? false : params.persistSession;
@@ -875,6 +1059,7 @@ async function handleOpen(params) {
   const disallowed = [
     ...NEVER_AVAILABLE_TOOLS,
     ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),
+    ...mcpServers.flatMap((server) => server.admitted).filter((tool) => !tools.includes(tool)),
   ];
   state.tools = tools;
   state.permissionMode = permissionMode;
@@ -902,7 +1087,7 @@ async function handleOpen(params) {
         skills: [],
         plugins: [],
         agents: {},
-        mcpServers: {},
+        mcpServers: sdkMcpServers(mcpServers),
         strictMcpConfig: true,
         hooks: {},
         persistSession,
@@ -951,6 +1136,11 @@ async function handleOpen(params) {
     resume !== undefined ? "resume_account_mismatch" : "account_unavailable",
   );
   const readiness = accountProjection(account, resume !== undefined);
+  let mcpServerStatus;
+  if (mcpServers.length > 0) {
+    const reported = await boundedControl(() => query.mcpServerStatus(), "mcp_status_invalid");
+    mcpServerStatus = projectMcpStatuses(reported, mcpServers);
+  }
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
@@ -989,6 +1179,7 @@ async function handleOpen(params) {
     tools,
     permissionMode,
     ...(effort === undefined ? {} : { requestedEffort: effort }),
+    ...(mcpServerStatus === undefined ? {} : { mcpServerStatus }),
   };
 }
 

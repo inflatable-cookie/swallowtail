@@ -144,6 +144,11 @@ fn sidecar_command_failure_codes_match_the_rust_enumeration() {
         ClaudeAgentSdkFailureCode::ModelChangeFailed,
         ClaudeAgentSdkFailureCode::ModelChangeUnconfirmed,
         ClaudeAgentSdkFailureCode::EffortUnconfirmed,
+        ClaudeAgentSdkFailureCode::McpServersInvalid,
+        ClaudeAgentSdkFailureCode::McpServerUndeclared,
+        ClaudeAgentSdkFailureCode::McpServerFailed,
+        ClaudeAgentSdkFailureCode::McpServerNeedsAuth,
+        ClaudeAgentSdkFailureCode::McpStatusInvalid,
         ClaudeAgentSdkFailureCode::UnknownCommand,
         ClaudeAgentSdkFailureCode::CommandFailed,
     ]

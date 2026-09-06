@@ -7,6 +7,17 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add consumer-declared stdio MCP servers on `claude-agent.sdk` open as
+  additive prepared input beside the Copy session profile. `strictMcpConfig`
+  stays true, server env is an explicit child-allowlist object, every
+  `mcp__` tool call goes through `canUseTool`, and required connect failure
+  fails open typed. SSE/HTTP, in-process SDK servers, and managed MCP stay
+  out. Provider-free fake-SDK proofs cover connect, mediation, deny-never-
+  reaches-server, undeclared-before-construct, and required-server failure.
+  g05.029 card 084.
+
+### Added
+
 - add opt-in provider-owned Claude Agent SDK session persistence with
   replay-free `resume` and `resumeSessionAt` attachment. Resume rebinds the
   host-leased cwd, first-party account, and exact `SessionResumeBinding`, while

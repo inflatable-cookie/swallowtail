@@ -38,6 +38,18 @@ pub fn prepared_session_with(
     prepare_claude_agent_sdk_session(preparation(host), options)
 }
 
+/// A prepared session with declared stdio MCP servers beside the Copy profile.
+pub fn prepared_session_with_mcp(
+    host: ExecutionHostId,
+    binding: swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding,
+) -> ClaudeAgentSdkPreparedSession {
+    prepare_claude_agent_sdk_session(
+        preparation(host).with_mcp_binding(binding),
+        SessionOptions::default(),
+    )
+    .expect("fixture preparation succeeds for an MCP binding")
+}
+
 pub fn preparation(host: ExecutionHostId) -> ClaudeAgentSdkSessionPreparation {
     ClaudeAgentSdkSessionPreparation::new(
         ConfiguredInstanceId::new("claude-agent-sdk.fixture").expect("valid instance"),

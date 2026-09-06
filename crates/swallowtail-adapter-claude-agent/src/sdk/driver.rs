@@ -38,6 +38,7 @@ pub struct ClaudeAgentSdkDriver {
     environment: EnvironmentRef,
     credential: swallowtail_core::CredentialRef,
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
+    mcp_servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
 }
 
 impl ClaudeAgentSdkDriver {
@@ -52,6 +53,7 @@ impl ClaudeAgentSdkDriver {
             environment,
             credential,
             profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile::read_only(),
+            mcp_servers: Vec::new(),
         }
     }
 
@@ -67,6 +69,19 @@ impl ClaudeAgentSdkDriver {
         profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
     ) -> Self {
         self.profile = profile;
+        self
+    }
+
+    /// Binds declared stdio MCP servers for this driver.
+    ///
+    /// Omitting this keeps the empty set, so the default open never sends
+    /// `mcpServers` and never queries `mcpServerStatus`.
+    #[must_use]
+    pub fn with_mcp_servers(
+        mut self,
+        servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
+    ) -> Self {
+        self.mcp_servers = servers;
         self
     }
 
@@ -543,7 +558,14 @@ impl ClaudeAgentSdkDriver {
             .await?;
         let readiness = match start {
             SessionStart::Fresh => {
-                startup::open(&pending.connection, plan, &pending.leased_cwd, self.profile).await?
+                startup::open(
+                    &pending.connection,
+                    plan,
+                    &pending.leased_cwd,
+                    self.profile,
+                    &self.mcp_servers,
+                )
+                .await?
             }
             SessionStart::Resume {
                 binding,
@@ -554,6 +576,7 @@ impl ClaudeAgentSdkDriver {
                     plan,
                     &pending.leased_cwd,
                     self.profile,
+                    &self.mcp_servers,
                     binding.provider_session_ref(),
                     resume_session_at.as_deref(),
                 )

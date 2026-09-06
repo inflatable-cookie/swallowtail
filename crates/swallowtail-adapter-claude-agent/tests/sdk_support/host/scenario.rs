@@ -121,6 +121,14 @@ pub enum SdkScenario {
     ResumeBoundaryRejected,
     /// The fake SDK returns bounded provider session metadata.
     SessionListing,
+    /// Open reports connected status for declared MCP servers.
+    McpConnected,
+    /// Open rejects because a required MCP server failed to connect.
+    McpRequiredFail,
+    /// Open records a failed optional MCP server and still succeeds.
+    McpOptionalFail,
+    /// One mediated MCP tool admission request during the turn.
+    McpAdmission,
 }
 
 /// One host service that never answers, so a caller bound is the only thing

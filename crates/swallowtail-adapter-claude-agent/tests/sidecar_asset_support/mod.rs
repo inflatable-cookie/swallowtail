@@ -410,6 +410,20 @@ impl SidecarProcess {
             .expect("fake SDK recorded close calls") as usize
     }
 
+    pub fn observed_mcp_hits(&self) -> Vec<String> {
+        self.read_observations()["mcpHits"]
+            .as_array()
+            .expect("fake SDK MCP hits are an array")
+            .iter()
+            .map(|value| {
+                value
+                    .as_str()
+                    .expect("fake SDK MCP hit is a string")
+                    .to_owned()
+            })
+            .collect()
+    }
+
     fn read_observations(&self) -> Value {
         let path = self.directory.join("observations.json");
         let text = std::fs::read_to_string(path).expect("fake SDK observations are present");

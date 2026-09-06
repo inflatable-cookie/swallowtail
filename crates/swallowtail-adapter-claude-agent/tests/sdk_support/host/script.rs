@@ -24,6 +24,26 @@ fn push_stderr(state: &mut ProcessState, bytes: &[u8]) {
     ));
 }
 
+fn mcp_status_echo(params: &Value, status: &str, failure_code: Option<&str>) -> Value {
+    let Some(servers) = params.get("mcpServers").and_then(Value::as_array) else {
+        return json!([]);
+    };
+    Value::Array(
+        servers
+            .iter()
+            .map(|server| {
+                let mut row = serde_json::Map::new();
+                row.insert("name".to_owned(), server["name"].clone());
+                row.insert("status".to_owned(), json!(status));
+                if let Some(code) = failure_code {
+                    row.insert("failureCode".to_owned(), json!(code));
+                }
+                Value::Object(row)
+            })
+            .collect(),
+    )
+}
+
 fn turn_ended_record(failed: bool) -> Value {
     let mut result_field_presence = serde_json::Map::new();
     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
@@ -187,6 +207,21 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
             data["supportedModels"] = json!([FIXTURE_MODEL, "claude-opus-5"]);
         }
         SdkScenario::UnadvertisedInterruptReceipt => data["capabilities"] = json!([]),
+        SdkScenario::McpRequiredFail => {
+            push(
+                state,
+                json!({"type": "response", "id": id, "command": "open", "success": false,
+                       "failure": {"code": "mcp_server_failed",
+                                   "message": "sidecar command failed: mcp_server_failed"}}),
+            );
+            return;
+        }
+        SdkScenario::McpConnected | SdkScenario::McpAdmission => {
+            data["mcpServerStatus"] = mcp_status_echo(params, "connected", None);
+        }
+        SdkScenario::McpOptionalFail => {
+            data["mcpServerStatus"] = mcp_status_echo(params, "failed", Some("mcp_server_failed"));
+        }
         _ => {}
     }
     state.open_effort = params
@@ -354,6 +389,13 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                        "toolName": "Bash", "command": "git status --porcelain",
                        "commandByteLength": 22,
                        "description": "inspect the working tree", "truncated": false}),
+            );
+        }
+        SdkScenario::McpAdmission => {
+            push(
+                state,
+                json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
+                       "toolName": "mcp__fixture__search"}),
             );
         }
         SdkScenario::ToolAdmissionOverflow => {

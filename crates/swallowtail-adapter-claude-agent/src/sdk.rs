@@ -20,6 +20,7 @@ mod connection;
 mod driver;
 mod failure;
 mod guardian;
+mod mcp;
 mod permission;
 mod prepared;
 mod profile;
@@ -39,6 +40,10 @@ pub use asset::{
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG,
 };
 pub use driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle, claude_agent_sdk_descriptor};
+pub use mcp::{
+    ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer, ClaudeAgentSdkMcpServerStatus,
+    ClaudeAgentSdkMcpServerStatusKind,
+};
 pub use permission::claude_agent_sdk_tool_admission_namespace;
 pub use prepared::{
     ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionListing, ClaudeAgentSdkSessionPreparation,

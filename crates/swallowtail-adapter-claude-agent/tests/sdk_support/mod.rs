@@ -13,8 +13,8 @@ mod selection;
 pub use cancel::{drop_within, poll_once};
 #[allow(unused_imports)]
 pub use capture::{
-    SDK_RESULT_FIELD_NAMES, SanitizedHarnessRecord, SanitizedWireCapture, captured_services,
-    record_open_failure, record_success,
+    SDK_RESULT_FIELD_NAMES, SanitizedCaptureJournal, SanitizedHarnessRecord, SanitizedWireCapture,
+    captured_services, captured_services_with_journal, record_open_failure, record_success,
 };
 #[allow(unused_imports)]
 pub use host::{CleanupEvent, SdkFixtureHost, SdkScenario, Stall};

@@ -2,8 +2,11 @@
 //! harness. It retains labels, fixed codes, and typed lifecycle evidence only.
 
 use super::host::SdkFixtureHost;
-use serde_json::Value;
+use serde_json::{Value, json};
 use std::collections::BTreeMap;
+use std::fs::{File, OpenOptions};
+use std::io::{self, Write};
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, HostServices, ProcessExit, ProcessHandle, ProcessInputChunk,
@@ -103,11 +106,71 @@ pub struct SanitizedHarnessRecord {
     pub wire: SanitizedWireCapture,
 }
 
+/// Append-only, flush-and-sync journal for sanitized capture snapshots.
+///
+/// A live wrapper can disappear before its final record is assembled. Future
+/// harnesses may pass this journal to [`captured_services_with_journal`] so
+/// every observed wire update is durable before the next await. The journal
+/// contains only fixed codes, labels, bounded numbers, and field presence;
+/// it never writes paths, account values, provider payloads, or raw errors.
+pub struct SanitizedCaptureJournal {
+    file: File,
+}
+
+impl SanitizedCaptureJournal {
+    /// Creates a fresh journal at the caller-owned path.
+    pub fn create(path: impl AsRef<Path>) -> io::Result<Self> {
+        let file = OpenOptions::new()
+            .create(true)
+            .truncate(true)
+            .write(true)
+            .open(path)?;
+        Ok(Self { file })
+    }
+
+    /// Persists one complete sanitized wire snapshot as one JSONL record.
+    pub fn append_snapshot(&mut self, capture: &SanitizedWireCapture) -> io::Result<()> {
+        let record = json!({
+            "openSidecarCode": capture.open_sidecar_code,
+            "resultFieldPresence": capture.result_fields,
+            "resultSubtype": capture.result_subtype,
+            "resultIsError": capture.result_is_error,
+            "resultNumTurns": capture.result_num_turns,
+            "resultDurationMs": capture.result_duration_ms,
+            "resultErrorTextPresent": capture.result_error_text_present,
+            "resultErrorTextType": capture.result_error_text_type,
+            "stderrTailPresent": capture.stderr_tail.is_some(),
+            "closeTimeline": capture.close_timeline,
+            "nativeExitEvent": capture.native_exit_event,
+            "nativeExitCode": capture.native_exit_code,
+            "nativeExitSignal": capture.native_exit_signal,
+            "nativeJoin": capture.native_join,
+            "nativeExitObserved": capture.native_exit_observed,
+            "rootExitObserved": capture.root_exit.is_some(),
+        });
+        serde_json::to_writer(&mut self.file, &record)?;
+        self.file.write_all(b"\n")?;
+        self.file.flush()?;
+        self.file.sync_data()
+    }
+}
+
 /// Builds services that capture the same stdout/stderr process boundary used
 /// by the disposable live harness, while retaining only sanitized evidence.
 pub fn captured_services(
     fixture: &SdkFixtureHost,
     host: swallowtail_core::ExecutionHostId,
+) -> (HostServices, Arc<Mutex<SanitizedWireCapture>>) {
+    captured_services_with_journal(fixture, host, None)
+}
+
+/// Builds capture services with an optional durable journal for future live
+/// lanes. Existing callers keep the in-memory-only behavior by using
+/// [`captured_services`].
+pub fn captured_services_with_journal(
+    fixture: &SdkFixtureHost,
+    host: swallowtail_core::ExecutionHostId,
+    journal: Option<Arc<Mutex<SanitizedCaptureJournal>>>,
 ) -> (HostServices, Arc<Mutex<SanitizedWireCapture>>) {
     let capture = Arc::new(Mutex::new(SanitizedWireCapture::default()));
     let services = fixture
@@ -115,6 +178,7 @@ pub fn captured_services(
         .with_process(Arc::new(CapturingProcessService {
             inner: Arc::new(fixture.clone()),
             capture: Arc::clone(&capture),
+            journal,
         }) as Arc<dyn ProcessService>);
     (services, capture)
 }
@@ -161,11 +225,13 @@ pub fn record_success(
 struct CapturingProcessService {
     inner: Arc<dyn ProcessService>,
     capture: Arc<Mutex<SanitizedWireCapture>>,
+    journal: Option<Arc<Mutex<SanitizedCaptureJournal>>>,
 }
 
 struct CapturingProcessHandle {
     inner: Box<dyn ProcessHandle>,
     capture: Arc<Mutex<SanitizedWireCapture>>,
+    journal: Option<Arc<Mutex<SanitizedCaptureJournal>>>,
     stdout_buffer: Mutex<Vec<u8>>,
 }
 
@@ -177,11 +243,13 @@ impl ProcessService for CapturingProcessService {
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
         let inner = Arc::clone(&self.inner);
         let capture = Arc::clone(&self.capture);
+        let journal = self.journal.as_ref().map(Arc::clone);
         Box::pin(async move {
             let handle = inner.start(scope, request).await?;
             Ok(Box::new(CapturingProcessHandle {
                 inner: handle,
                 capture,
+                journal,
                 stdout_buffer: Mutex::new(Vec::new()),
             }) as Box<dyn ProcessHandle>)
         })
@@ -200,6 +268,7 @@ impl ProcessHandle for CapturingProcessHandle {
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         let pending = self.inner.read_output();
         let capture = Arc::clone(&self.capture);
+        let journal = self.journal.as_ref().map(Arc::clone);
         Box::pin(async move {
             let chunk = pending.await?;
             if let Some(chunk_ref) = chunk.as_ref() {
@@ -208,6 +277,7 @@ impl ProcessHandle for CapturingProcessHandle {
                         if !chunk_ref.bytes().is_empty() {
                             capture.lock().expect("capture lock").stderr_tail =
                                 Some("<redacted>".to_owned());
+                            persist_snapshot(&capture, journal.as_ref());
                         }
                     }
                     ProcessOutputStream::Stdout => {
@@ -217,6 +287,7 @@ impl ProcessHandle for CapturingProcessHandle {
                             let line: Vec<u8> = buffer.drain(..=index).collect();
                             if let Ok(record) = serde_json::from_slice::<Value>(&line) {
                                 project_record(&record, &capture);
+                                persist_snapshot(&capture, journal.as_ref());
                             }
                         }
                     }
@@ -237,12 +308,28 @@ impl ProcessHandle for CapturingProcessHandle {
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         let pending = self.inner.wait();
         let capture = Arc::clone(&self.capture);
+        let journal = self.journal.as_ref().map(Arc::clone);
         Box::pin(async move {
             let exit = pending.await?;
             capture.lock().expect("capture lock").root_exit = Some(exit);
+            persist_snapshot(&capture, journal.as_ref());
             Ok(exit)
         })
     }
+}
+
+fn persist_snapshot(
+    capture: &Arc<Mutex<SanitizedWireCapture>>,
+    journal: Option<&Arc<Mutex<SanitizedCaptureJournal>>>,
+) {
+    let Some(journal) = journal else {
+        return;
+    };
+    let snapshot = capture.lock().expect("capture lock").clone();
+    let _ = journal
+        .lock()
+        .expect("capture journal lock poisoned")
+        .append_snapshot(&snapshot);
 }
 
 fn project_record(record: &Value, capture: &Arc<Mutex<SanitizedWireCapture>>) {

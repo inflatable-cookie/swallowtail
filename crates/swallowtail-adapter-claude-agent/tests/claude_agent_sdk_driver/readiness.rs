@@ -8,13 +8,45 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use serde_json::Value;
 use std::fs;
-use std::process::{Command, Stdio};
+use std::io;
+use std::process::{Child, Command, ExitStatus, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::thread;
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{InteractiveSessionHandle, ProcessExit, SessionOptions};
 
 const CAPTURE_CHILD_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_CHILD";
 const CAPTURE_JOURNAL_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_JOURNAL";
+static NEXT_CAPTURE_JOURNAL: AtomicU64 = AtomicU64::new(0);
+
+struct ReapOnDrop {
+    child: Option<Child>,
+}
+
+impl ReapOnDrop {
+    fn new(child: Child) -> Self {
+        Self { child: Some(child) }
+    }
+
+    fn kill_and_wait(&mut self) -> io::Result<ExitStatus> {
+        let child = self.child.as_mut().ok_or_else(|| {
+            io::Error::new(io::ErrorKind::NotFound, "capture wrapper already reaped")
+        })?;
+        let _ = child.kill();
+        let status = child.wait()?;
+        self.child = None;
+        Ok(status)
+    }
+}
+
+impl Drop for ReapOnDrop {
+    fn drop(&mut self) {
+        if let Some(child) = self.child.as_mut() {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    }
+}
 
 fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
     let host = host_id("claude-agent-sdk.fixture.readiness");
@@ -47,19 +79,22 @@ fn wrapper_death_preserves_partial_capture_journal() {
         }
     }
 
+    let sequence = NEXT_CAPTURE_JOURNAL.fetch_add(1, Ordering::Relaxed);
     let path = std::env::temp_dir().join(format!(
         "swallowtail-card100-capture-{}-{}.jsonl",
         std::process::id(),
-        Instant::now().elapsed().as_nanos()
+        sequence
     ));
-    let mut child = Command::new(std::env::current_exe().expect("test binary path"))
-        .arg("wrapper_death_preserves_partial_capture_journal")
-        .env(CAPTURE_CHILD_ENV, "1")
-        .env(CAPTURE_JOURNAL_ENV, &path)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()
-        .expect("capture wrapper child starts");
+    let mut child = ReapOnDrop::new(
+        Command::new(std::env::current_exe().expect("test binary path"))
+            .arg("wrapper_death_preserves_partial_capture_journal")
+            .env(CAPTURE_CHILD_ENV, "1")
+            .env(CAPTURE_JOURNAL_ENV, &path)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .expect("capture wrapper child starts"),
+    );
 
     let deadline = Instant::now() + Duration::from_secs(5);
     while !path.exists() {
@@ -69,8 +104,9 @@ fn wrapper_death_preserves_partial_capture_journal() {
         );
         thread::sleep(Duration::from_millis(10));
     }
-    child.kill().expect("capture wrapper is killed mid-run");
-    let status = child.wait().expect("capture wrapper status is observed");
+    let status = child
+        .kill_and_wait()
+        .expect("capture wrapper status is observed");
     assert!(!status.success(), "killed wrapper must not report success");
 
     let line = fs::read_to_string(&path)

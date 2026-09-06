@@ -163,6 +163,9 @@ continuation below records that ledger.
   - `swallowtail-host-local::watcher_service::lifecycle::watcher_stop_and_join_retires_owned_identities`
     — the single leaky test identified by the Stable shard 2/3
     status-level leak run; retain it for the same post-tag determinism pass.
+  - `swallowtail-adapter-claude-agent` fake-sidecar test processes surviving
+    overnight — retain this process-leak family for the same post-tag
+    determinism pass.
 
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 

@@ -277,7 +277,7 @@ impl ProcessHandle for CapturingProcessHandle {
                         if !chunk_ref.bytes().is_empty() {
                             capture.lock().expect("capture lock").stderr_tail =
                                 Some("<redacted>".to_owned());
-                            persist_snapshot(&capture, journal.as_ref());
+                            persist_snapshot(&capture, journal.as_ref())?;
                         }
                     }
                     ProcessOutputStream::Stdout => {
@@ -287,7 +287,7 @@ impl ProcessHandle for CapturingProcessHandle {
                             let line: Vec<u8> = buffer.drain(..=index).collect();
                             if let Ok(record) = serde_json::from_slice::<Value>(&line) {
                                 project_record(&record, &capture);
-                                persist_snapshot(&capture, journal.as_ref());
+                                persist_snapshot(&capture, journal.as_ref())?;
                             }
                         }
                     }
@@ -312,7 +312,7 @@ impl ProcessHandle for CapturingProcessHandle {
         Box::pin(async move {
             let exit = pending.await?;
             capture.lock().expect("capture lock").root_exit = Some(exit);
-            persist_snapshot(&capture, journal.as_ref());
+            persist_snapshot(&capture, journal.as_ref())?;
             Ok(exit)
         })
     }
@@ -321,15 +321,21 @@ impl ProcessHandle for CapturingProcessHandle {
 fn persist_snapshot(
     capture: &Arc<Mutex<SanitizedWireCapture>>,
     journal: Option<&Arc<Mutex<SanitizedCaptureJournal>>>,
-) {
+) -> Result<(), RuntimeFailure> {
     let Some(journal) = journal else {
-        return;
+        return Ok(());
     };
     let snapshot = capture.lock().expect("capture lock").clone();
-    let _ = journal
+    journal
         .lock()
         .expect("capture journal lock poisoned")
-        .append_snapshot(&snapshot);
+        .append_snapshot(&snapshot)
+        .map_err(|_| {
+            RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.claude_agent.sdk.capture_journal_failed",
+                "Claude Agent SDK sanitized capture journal failed",
+            ))
+        })
 }
 
 fn project_record(record: &Value, capture: &Arc<Mutex<SanitizedWireCapture>>) {

@@ -122,7 +122,9 @@ signal. This settles the projection without inventing a provider-failure policy.
 The direct root/operator continuation authorizes qualification on this card and
 PR245, superseding the diagnostic-only limitation at `fd00ae03`. A well-formed
 `rate_limit_event` now projects only `{event: progress}` for all three declared
-statuses. Required `rate_limit_info` object, status enum, and nonempty string
+statuses during an active turn. Between turns the session-long iterator still
+validates the notification but emits no turn-scoped progress. Required
+`rate_limit_info` object, status enum, and nonempty string
 `uuid`/`session_id` are validated; optional quota/account/timing payload is never
 forwarded. Malformed envelopes and unknown statuses keep `unknown_message`.
 Genuinely unknown message types retain the same terminal behavior.
@@ -161,3 +163,19 @@ and cleanup evidence. No native UI, global tools, auth or consumer files changed
 - Public API gate passed; no exported API delta.
 - Northstar docs and final formatting/whitespace checks passed.
 - No live provider test or real Send success is claimed.
+
+### Pre-tag persistence delta
+
+Review of `b5934ce2` found that idle rate-limit progress reached Rust's
+`event_without_turn` guard. The repair checks `state.turnActive` only after
+validating the known notification. `handleQuery` sets that state before input;
+`drainQuery` clears it after projecting the result. Generic `event_without_turn`,
+system/stream projection, and malformed/unknown failure policy are unchanged.
+
+A deterministic two-turn fixture drains allowed/allowed_warning/rejected between
+results and the next input, proves no idle wire event, then proves the next reply
+and successful result. Idle malformed and genuinely unknown records remain
+terminal. Focused asset batch: 33/33 passed; the first run reported one leaky
+process marker, and an unchanged-tree detailed rerun passed without that marker.
+No broader test run is claimed for this delta. Prior full focused evidence stands
+for unchanged paths. Root owns the same-reviewer delta check before release.

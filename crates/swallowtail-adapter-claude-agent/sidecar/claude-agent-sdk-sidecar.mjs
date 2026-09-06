@@ -792,7 +792,9 @@ function projectMessage(message) {
       ) {
         return "unknown";
       }
-      return [{ event: "progress" }];
+      // The iterator is session-long. Validate idle notifications too, but
+      // never send a turn-scoped event when no turn owns it.
+      return state.turnActive ? [{ event: "progress" }] : [];
     }
     case "stream_event":
     case "system":

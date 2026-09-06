@@ -229,6 +229,8 @@ export function query({ prompt, options }) {
   let rateStep = 0;
   let releaseRateInterrupt;
   const rateInterrupt = new Promise((resolve) => { releaseRateInterrupt = resolve; });
+  let releaseIdleRateLimits;
+  const idleRateLimits = new Promise((resolve) => { releaseIdleRateLimits = resolve; });
   let firstInputConsumed = false;
   const rawPromptIterator = prompt[Symbol.asyncIterator]();
   const promptIterator =
@@ -262,6 +264,28 @@ export function query({ prompt, options }) {
           return { value: { type: "result", subtype: "success", is_error: false }, done: false };
         }
         return { value: initMessage(options), done: false };
+      }
+      if (SCENARIO.startsWith("between-")) {
+        rateStep += 1;
+        if (rateStep === 1 || rateStep === 6) {
+          if (rateStep === 6) {
+            // Reaching next() proves all three idle notices were projected.
+            // The no-op permission control below supplies a deterministic
+            // barrier before the test sends its second input.
+            releaseIdleRateLimits();
+            if ((await promptIterator.next()).done) return { value: undefined, done: true };
+          }
+          return { value: { type: "assistant", message: { content: [{ type: "text", text: "fixture reply" }] } }, done: false };
+        }
+        if (rateStep === 2 || rateStep === 7) return { value: resultMessage(), done: false };
+        if (rateStep >= 3 && rateStep <= 5) {
+          return { value: {
+            type: SCENARIO === "between-unknown" ? "fixture_unknown_message" : "rate_limit_event",
+            rate_limit_info: { status: SCENARIO === "between-malformed" ? "future-status" : ["allowed", "allowed_warning", "rejected"][rateStep - 3] },
+            uuid: "fixture-uuid", session_id: "private-session",
+          }, done: false };
+        }
+        return { value: undefined, done: true };
       }
       if (SCENARIO.startsWith("rate-")) {
         const variant = SCENARIO.slice(5);
@@ -365,6 +389,7 @@ export function query({ prompt, options }) {
       return { received: true };
     },
     async setPermissionMode(mode) {
+      if (SCENARIO === "between-turns") await idleRateLimits;
       // Upstream `Query.setPermissionMode` resolves without a value, so the
       // sidecar's confirmation is that the change was accepted.
       state.permissionMode = mode;

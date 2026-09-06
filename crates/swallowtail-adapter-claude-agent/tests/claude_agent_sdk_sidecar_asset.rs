@@ -225,6 +225,56 @@ fn pinned_advisory_rate_limits_allow_reply_and_successful_result() {
 }
 
 #[test]
+fn idle_rate_limit_notifications_do_not_emit_turn_events_and_next_turn_succeeds() {
+    let mut sidecar = SidecarProcess::start_scenario("between-turns");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "output_delta");
+    assert_eq!(sidecar.next_event()["event"], "turn_ended");
+
+    // Same-mode control is a fixture barrier: its SDK method waits until the
+    // session iterator has projected all three notices while no turn is active.
+    let barrier = sidecar.command(
+        "idle-barrier",
+        "set_permission_mode",
+        json!({"mode": "default"}),
+    );
+    assert_eq!(barrier["success"], true);
+    sidecar.command("query-2", "query", json!({"text": "second turn"}));
+    // Any idle progress record would be held ahead of this turn_started.
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    let reply = sidecar.next_event();
+    assert_eq!(reply["event"], "output_delta");
+    assert_eq!(reply["delta"], "fixture reply");
+    let ended = sidecar.next_event();
+    assert_eq!(ended["event"], "turn_ended");
+    assert_eq!(ended["isError"], false);
+    assert_eq!(ended["stopReason"], "success");
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+    assert_eq!(close["data"]["nativeExitObserved"], true);
+}
+
+#[test]
+fn idle_malformed_and_unknown_notifications_still_terminate() {
+    for scenario in ["between-malformed", "between-unknown"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+        assert_eq!(terminal["failure"]["code"], "unknown_message");
+    }
+}
+
+#[test]
 fn rejected_rate_limit_preserves_the_provider_error_result() {
     let mut sidecar = SidecarProcess::start_scenario("rate-rejected");
     sidecar.command(

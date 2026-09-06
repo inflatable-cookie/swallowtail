@@ -501,7 +501,8 @@ the absence of one is not permission to infer missing evidence.
 
 The pinned SDK's `rate_limit_event` is an information update. A valid required
 envelope with status `allowed`, `allowed_warning`, or `rejected` projects only
-progress; quota, account, timing and session fields are not forwarded. The
+progress only while a turn is active; between turns it is validated without
+emitting a turn event. Quota, account, timing and session fields are not forwarded. The
 SDK's result or query error remains authoritative for turn completion/failure,
 so a following provider rejection still fails the turn. The notification itself
 does not kill a valid turn or manufacture a retry instruction.

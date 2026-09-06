@@ -41,3 +41,12 @@ terminal. Fake-SDK sequence, rejection, interrupt and close proofs qualify this
 bounded repair. This supersedes the prior diagnostic-only release limitation.
 Real Desktop cause remains unproved until tagged consumer Send evidence. Root
 reuses the independent reviewer and owns merge/release; worker stops at updated PR.
+
+## Pre-tag persistence repair
+
+Root authorized the demonstrated idle-notification edge after `b5934ce2` PASS.
+Known rate-limit messages are validated regardless of turn state, but emit
+progress only during an active turn. The generic Rust `event_without_turn`
+guard and unrelated message projections stay unchanged. Two-turn and idle
+malformed/unknown fixtures cover this delta; the focused asset batch passes.
+Root requests the same reviewer delta check on the new PR245 head.

@@ -21,6 +21,12 @@ Research 288 preserves the released capability audit. Spec 014 records the
 operator-confirmed ownership split and first concrete architecture. No durable
 architecture or contract has been promoted from the spec. Implementation is
 blocked. Existing Desktop baseline and rehearsal lanes continue independently.
+The replacement Card 084 branch `g05-card084-claude-client-mcp-1` at committed
+head `80e004b4` is the sole active Claude SDK client-MCP implementation-evidence
+owner; its uncommitted WIP is not released evidence. The preserved old branch
+`g05-card084-claude-client-mcp` at `7cb08b1f` is archival history, not a second
+lane. Batch C waits for the replacement owner to publish reviewed evidence and
+must not duplicate or disturb that work.
 
 ## Execution Plan
 

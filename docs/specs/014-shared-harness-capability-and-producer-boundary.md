@@ -154,6 +154,15 @@ did not receive.
 The common API must not promise that every route accepts MCP. A route publishes
 the exact attachment or mediation kind through Contract 061.
 
+Card 084's replacement lane is the active implementation-evidence owner for
+the Claude SDK row. Its branch `g05-card084-claude-client-mcp-1` is at committed
+head `80e004b4` with uncommitted MCP WIP. This proposal treats that state as
+neither released capability nor a reviewed contract. The preserved
+`g05-card084-claude-client-mcp` branch at `7cb08b1f` is archival history, not a
+second lane. Once the replacement owner publishes an exact head, this proposal
+must reconcile the row against its reviewed evidence before promotion; it must
+not copy or independently implement that work.
+
 ### Context, Instructions, Skills, And References
 
 Keep four inputs distinct:

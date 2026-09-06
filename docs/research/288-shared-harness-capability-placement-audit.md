@@ -3,7 +3,7 @@
 Status: complete evidence; no production claim
 Owner: Tom
 Date: 2026-09-06
-Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `f2d93fa237373640170a3872e9c08dda23f73e7f`
+Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `169cc1993e8e80d0512661c307b2aba60afdf80a`
 Consumer intake: Desktop `docs/roadmaps/dispatch-manifest.md` at `d4e56c5acb86bb084f5377cfaa516a03cfda76c3`, section `Swallowtail shared harness capability lane` (operator-confirmed; object is not present in this repository)
 
 ## Question
@@ -42,6 +42,20 @@ policy into Swallowtail?
 
 The source tree after `v0.4.3` changes planning only for this scope. No current
 code extends these claims.
+
+## Adjacent Card 084 Evidence Ownership
+
+The replacement Card 084 workspace is the sole active implementation-evidence
+owner for Claude SDK client MCP. It uses branch
+`g05-card084-claude-client-mcp-1` at committed head `80e004b4` and carries
+uncommitted `sdk/mcp.rs` and `sdk/mcp/` work. Those uncommitted files are WIP,
+not released behavior, canonical planning, or evidence this audit may claim.
+
+The archived workspace row for branch `g05-card084-claude-client-mcp` at
+`7cb08b1f` is preservation history only. Its branch remains intact, but it is
+not a second owner or parallel lane. Reconcile Research 288 and Spec 014 with
+the replacement owner's published exact-head evidence after publication and
+review; do not inspect, stage, move, overwrite, or duplicate its WIP.
 
 ## Exact Gaps
 

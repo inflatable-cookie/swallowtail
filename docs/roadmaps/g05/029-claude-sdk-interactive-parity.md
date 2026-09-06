@@ -73,7 +73,7 @@ forces a minor.
 - [083 claude sdk resume and session listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — resume as Contract 017 resume with lease cwd and account checks; listing if frozen
 - [084 claude sdk client mcp servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — declared MCP servers, mediated MCP tools, per-server status
 - [085 grok acp answerable permissions](batch-cards/085-grok-acp-answerable-permissions.md) — answerable Grok permissions on the ACP callback precedent, or labelled activity-only
-- [086 claude sdk discovery identity](batch-cards/086-claude-sdk-discovery-identity.md) — discovery identity research across native and Node points; no claim change
+- [086 claude sdk discovery identity](batch-cards/086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; no claim change
 - [087 claude sdk qualified ranges](batch-cards/087-claude-sdk-qualified-ranges.md) — Codex-style qualified ranges from card 086 evidence
 - [088 harness install guidance diagnostics](batch-cards/088-harness-install-guidance-diagnostics.md) — vendor install guidance on absent discovery, three harnesses
 
@@ -268,7 +268,7 @@ Promoted planning commit: the `main` commit that introduces this section.
 
 | Field | Card 087 |
 | --- | --- |
-| Readiness | planned; ready on card 086's promoted research |
+| Readiness | planned; ready after cards 084 and 086 |
 | Prerequisites | card 086 research promoted; card 084 merged (shared crate) |
 | Completion conditions | five axes on the Codex range shape with cited endpoints and explicit gaps; boundary identity tests; guide, matrix, changelog, additive baseline; one PR |
 | Owned mutable paths | `crates/swallowtail-adapter-claude-agent`/src/sdk/selection.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/asset.rs`; `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_*identity*.rs`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; guide and matrix version cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |

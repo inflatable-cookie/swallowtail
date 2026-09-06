@@ -1,6 +1,6 @@
 # 086 Claude SDK Discovery Identity
 
-Status: ready
+Status: complete; merged through PR 241 as `d127837f8c3c39b377b5eae35aa4d9aebedcae09`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06
@@ -24,10 +24,10 @@ Any code change; any claim change; any live turn. Initialize-only probes are not
 
 ## Acceptance Criteria
 
-- [ ] every probed triple recorded with evidence lines; none inferred
-- [ ] the decision section names the candidate admitted ranges per axis and the incompatible reasons
-- [ ] no source, claim, or pin changed
-- [ ] research doc indexed in `docs/research/README.md`
+- [x] every probed triple recorded with evidence lines; none inferred
+- [x] the decision section names the candidate admitted ranges per axis and the incompatible reasons
+- [x] no source, claim, or pin changed
+- [x] research doc indexed in `docs/research/README.md`
 
 ## Validation
 
@@ -59,6 +59,8 @@ Node 22.23.2 with the real SDK/native path, not a host-native crossing. No new
 credential-dependent probe, prompt, or live turn was run.
 
 No candidate admitted range was produced. Production claims, pins, source,
-guides, matrices, and baselines are unchanged. Card 087 remains gated because
+guides, matrices, and baselines are unchanged. Independent exact-head review
+approved the final research record at `34841818`, and hosted/docs validation
+passed. Card 087 remains gated because
 the required system/init evidence needs the first query message, which is a
 live turn under this sidecar and this card's stop conditions.

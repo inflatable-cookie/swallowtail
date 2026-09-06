@@ -5,13 +5,12 @@
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — ready; g05.029 priority 6
-- [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — ready; g05.029 priority 7
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9
 - [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 
 ## Planned
 
-- [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; g05.029 priority 8
+- [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; waits for cards 084 and 086
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
@@ -20,6 +19,7 @@
 
 ## Completed
 
+- [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; Research 287 indexed, no production claims changed
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`; 18 additive API lines absorbed by the 0.4.2 working baseline
 - [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate `f94dd16f`; exact-SHA workflow run `34019752262` green; no tag
 - [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — complete; tagged smoke inconclusive pre-window; Desktop owns visibility follow-up

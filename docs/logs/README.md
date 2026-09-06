@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-06 g05.029 Card 086 Closeout](./2026-09-06-g05-029-card-086-closeout.md) — Research 287 accepted through PR 241 as `d127837f`; no production claims changed
 - [2026-09-06 g05.029 Card 082 Closeout](./2026-09-06-g05-029-card-082-closeout.md) — Claude SDK model and effort card accepted and merged through PR 239 as `c8512290`; g05.029 runway is active
 
 - [2026-09-06 g05.032 Card 102 Closeout](./2026-09-06-g05-032-card-102-closeout.md) — tagged `v0.4.2` Bovine smoke was inconclusive before the Desktop window appeared; no Swallowtail defect or v0.4.3 lane was indicated

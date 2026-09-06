@@ -882,3 +882,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   the gate overlay an `unreleased` directory and have prepare fold it in.
   Decide once; the release lane should not re-derive this.
 - Surface: `scripts/check-public-api.sh`, `release-baselines/`, Contract 036.
+
+### [ ] Bounded-recovery timing flake follows the tests onto Linux runners — 2026-09-06
+
+- Friction: `swallowtail-adapter-anthropic::managed_prepared_facade
+  prepared_interrupt_deletes_owned_resources_before_credential_release`
+  returned `remote_state_unconfirmed` instead of `Cancelled` after 4.73s
+  on `ubuntu-latest` (run 34057905627), and passed on the same SHA in run
+  34057905516. The macOS shard flakes recorded in card 094 were read as
+  macOS scheduling; the bound is simply wall clock under load.
+- Impact: a red PR gate that a rerun would clear, which the g05.034 target
+  explicitly rules out.
+- Fix shape: replace the wall-clock recovery bound with a deterministic
+  fixture signal, as cards 093 and 094 did elsewhere. Card 104 owns the
+  sweep.
+- Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
+

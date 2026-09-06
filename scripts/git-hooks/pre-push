@@ -5,7 +5,8 @@
 #
 # Fail closed: a git error while listing the pushed paths refuses the push.
 # qa:docs runs against the worktree, so the pushed commit must be HEAD and
-# the worktree must match it.
+# the worktree must be empty of tracked and untracked changes. Tag refs are
+# skipped so Contract 036 annotated tags can push at a non-HEAD SHA.
 set -euo pipefail
 
 repo_root=$(git rev-parse --show-toplevel)
@@ -44,8 +45,11 @@ collect_changed_paths() {
   printf '%s\n' "$listing"
 }
 
-while read -r _local_ref local_oid _remote_ref remote_oid; do
+while read -r local_ref local_oid _remote_ref remote_oid; do
   if [[ -z "${local_oid:-}" ]]; then
+    continue
+  fi
+  if [[ "$local_ref" == refs/tags/* ]]; then
     continue
   fi
   if [[ "$local_oid" == "$zero_oid" ]]; then
@@ -82,8 +86,12 @@ if [[ "$docs_oid" != "$head_oid" ]]; then
     "$docs_oid" "$head_oid" >&2
   exit 1
 fi
-if ! git diff --quiet HEAD; then
-  printf 'pre-push: worktree does not match HEAD; refusing so qa:docs checks the pushed commit\n' >&2
+if ! porcelain=$(git status --porcelain); then
+  printf 'pre-push: cannot read worktree status; refusing push\n' >&2
+  exit 1
+fi
+if [[ -n "$porcelain" ]]; then
+  printf 'pre-push: worktree is not clean; refusing so qa:docs checks the pushed commit\n' >&2
   exit 1
 fi
 

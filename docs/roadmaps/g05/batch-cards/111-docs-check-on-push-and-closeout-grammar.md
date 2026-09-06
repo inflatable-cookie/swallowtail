@@ -55,5 +55,7 @@ push of card 111 listed under `## Ready` was refused:
 later `stopped` now passes. The hook unsets `GIT_DIR` and related vars before
 `qa:docs` so nested git in the number-collision tests is not the pushed repo.
 Path collection failures refuse the push. `qa:docs` runs only when the pushed
-commit is a clean HEAD. `scripts/README.md` is owned by card 110; the new
-scripts are not listed there.
+commit is HEAD and `git status --porcelain` is empty, so an untracked card
+cannot hide missing-file drift. Tag refs are skipped so a Contract 036
+annotated tag at a non-HEAD SHA can push. `scripts/README.md` is owned by
+card 110; the new scripts are not listed there.

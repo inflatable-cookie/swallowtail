@@ -13,6 +13,7 @@ struct GrokSessionInput {
     provider_id: String,
     binding: SessionResumeBinding,
     model_options: NegotiatedSessionModelOptions,
+    permission_handling: crate::GrokPermissionHandling,
 }
 
 impl GrokAcpDriver {
@@ -157,6 +158,7 @@ impl PendingAttachment {
             provider_id: input.provider_id,
             binding: input.binding,
             model_options: input.model_options,
+            permission_handling: input.permission_handling,
             execution_host_id: services.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),

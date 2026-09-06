@@ -125,6 +125,7 @@ impl InteractiveSessionDriver for GrokAcpDriver {
         Box::pin(async move {
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let selected = self.validate_plan(&plan)?;
+            let permission_handling = permission_handling(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             validate_recovery(&plan, &request, &services)?;
             let mut attachment = self
@@ -174,6 +175,7 @@ impl InteractiveSessionDriver for GrokAcpDriver {
                             provider_id,
                             binding: request.resume_binding().clone(),
                             model_options,
+                            permission_handling,
                         },
                         &services,
                     )) as Box<dyn InteractiveSessionHandle>)
@@ -197,6 +199,7 @@ impl GrokAcpDriver {
         let selected = self.validate_plan(plan)?;
         services.require_execution_host(plan.execution_host_id())?;
         validate_open(plan, request, services)?;
+        let permission_handling = permission_handling(plan)?;
         let working_resource = request
             .working_resource()
             .expect("validated working resource")
@@ -270,6 +273,7 @@ impl GrokAcpDriver {
                 provider_id,
                 binding,
                 model_options,
+                permission_handling,
             },
             services,
         ))

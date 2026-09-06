@@ -50,3 +50,13 @@ Grok Build's ACP requires a method or field outside Contract 015 (record; return
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Implemented the opt-in Grok Build ACP permission exchange on the Claude ACP
+callback precedent. The default reject-and-cancel path is unchanged; the
+consumer path exposes only bounded one-shot choices, carries turn deadlines,
+and abandons pending requests on cancellation, timeout, failure, or close.
+Provider-free ACP fixtures cover both one-shot options, persistent-option
+withholding, malformed input, bounds, abandonment, timeout, and no active turn.
+Ready for exact-head independent review after push.

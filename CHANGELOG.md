@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- add an explicit Grok Build ACP interactive-session permission exchange. The
+  default reject-and-cancel path remains unchanged; the opt-in prepared session
+  exposes bounded one-shot `allow_once` and `reject_once` choices through the
+  exact runtime callback exchange, with turn-deadline and abandonment handling.
+  Provider-free ACP fixtures cover both choices, timeout, cancellation
+  abandonment, malformed requests, bounds, and no active turn. g05.029 card
+  085.
 - add bounded `Query.supportedModels` evidence and route-local `set_model` to
   the Claude Agent SDK sidecar. Unsupported models fail before `Query.setModel`;
   confirmed values update the effective model, while the pinned SDK's

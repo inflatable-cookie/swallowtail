@@ -10,6 +10,7 @@ mod descriptor;
 mod discovery;
 mod driver;
 mod failure;
+mod permission;
 mod prepared;
 mod prepared_profile;
 mod selection;
@@ -20,12 +21,14 @@ pub use consumer_route_projection::{
 };
 pub use descriptor::grok_build_acp_descriptor;
 pub use discovery::GrokAcpDriver;
+pub use permission::grok_build_permission_namespace;
 pub use prepared::{
     GrokPreparationInput, GrokPreparationProbe, GrokPreparedIntegration, prepare_grok_build,
 };
 pub use prepared_profile::{
-    GrokModelSelection, GrokPreparedEvidence, GrokPreparedRun, GrokPreparedRunFuture,
-    GrokPreparedSession, GrokPreparedSessionFuture, GrokRunProfileInput, GrokSessionProfileInput,
+    GrokModelSelection, GrokPermissionHandling, GrokPreparedEvidence, GrokPreparedRun,
+    GrokPreparedRunFuture, GrokPreparedSession, GrokPreparedSessionFuture, GrokRunProfileInput,
+    GrokSessionProfileInput,
 };
 pub use selection::{
     GROK_BUILD_ACP_AXIS, GROK_BUILD_ACP_BASELINE_VERSION, GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION,

@@ -57,5 +57,6 @@ pub fn grok_build_acp_descriptor() -> DriverDescriptor {
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_extension_namespaces([crate::grok_build_permission_namespace()])
     .with_interface_compatibility(crate::grok_build_acp_claim())
 }

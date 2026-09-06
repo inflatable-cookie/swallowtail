@@ -46,7 +46,7 @@ fn validate_open(
             "Grok private session projection requires a structured-run plan",
         ));
     }
-    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite) {
+    if request.access_policy() != &session_access_policy(plan)? {
         return Err(failure(
             "swallowtail.grok.acp.access_policy_rejected",
             "Grok Build requires exact ambient read-write workspace access",
@@ -140,8 +140,7 @@ fn validate_recovery(
         plan,
         request.working_resource(),
         request.access_policy(),
-    ) || request.access_policy()
-        != &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+    ) || request.access_policy() != &session_access_policy(plan)?
         || request.provider_state_policy()
             != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
         || request.deadline().is_some()
@@ -153,6 +152,41 @@ fn validate_recovery(
         ));
     }
     Ok(())
+}
+
+fn permission_handling(
+    plan: &PreflightPlan,
+) -> Result<crate::GrokPermissionHandling, RuntimeFailure> {
+    let namespaces = plan
+        .requirements()
+        .extension_namespaces()
+        .collect::<Vec<_>>();
+    match namespaces.as_slice() {
+        [] => Ok(crate::GrokPermissionHandling::RejectAndCancel),
+        [namespace] if *namespace == &crate::grok_build_permission_namespace() => {
+            Ok(crate::GrokPermissionHandling::ConsumerMediated)
+        }
+        _ => Err(failure(
+            "swallowtail.grok.acp.permission_profile_mismatch",
+            "Grok Build permission handling does not match its immutable preflight plan",
+        )),
+    }
+}
+
+fn session_access_policy(
+    plan: &PreflightPlan,
+) -> Result<SessionAccessPolicy, RuntimeFailure> {
+    Ok(match permission_handling(plan)? {
+        crate::GrokPermissionHandling::RejectAndCancel => {
+            SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+        }
+        crate::GrokPermissionHandling::ConsumerMediated => {
+            SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::ReadWrite,
+                [crate::grok_build_permission_namespace()],
+            )
+        }
+    })
 }
 
 fn validate_turn(request: &TurnRequest, services: &HostServices) -> Result<(), RuntimeFailure> {

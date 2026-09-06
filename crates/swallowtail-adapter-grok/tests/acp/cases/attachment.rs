@@ -232,6 +232,180 @@ fn permission_is_observed_and_cancelled_without_ambient_approval() {
 }
 
 #[test]
+fn consumer_permission_exchange_answers_each_one_shot_option_and_hides_persistent_choices() {
+    for option_id in ["allow-once", "reject-once"] {
+        let (host, services, mut session) = open_consumer(Scenario::Permission);
+        let mut turn = start(&mut *session, services.clone(), "grok-permission-exchange-turn");
+        let mut callbacks = turn.take_callbacks().expect("consumer exchange exists");
+        let mut requests = callbacks
+            .take_requests()
+            .expect("permission request stream exists");
+        let request = block_on(requests.next())
+            .expect("permission callback arrives")
+            .expect("permission callback is valid");
+        let swallowtail_runtime::CallbackRequestKind::Extension(extension) = request.kind() else {
+            panic!("permission is a provider extension");
+        };
+        assert_eq!(extension.namespace().as_str(), "acp/session/request-permission");
+        let payload: Value = serde_json::from_slice(extension.payload()).expect("JSON payload");
+        let options = payload["options"].as_array().expect("options");
+        assert_eq!(
+            options
+                .iter()
+                .map(|option| option["kind"].as_str().expect("option kind"))
+                .collect::<Vec<_>>(),
+            ["allow_once", "reject_once"]
+        );
+        assert_eq!(
+            request
+                .provider_request_ref()
+                .expect("provider request correlation")
+                .as_provider_value(),
+            "acp:number:900"
+        );
+        block_on(callbacks.responder().respond(CallbackResponse::for_request(
+            &request,
+            CallbackResult::Success(
+                CallbackPayload::new(
+                    format!(r#"{{"optionId":"{option_id}"}}"#).into_bytes(),
+                    256,
+                )
+                .expect("selection is bounded"),
+            ),
+        )))
+        .expect("permission answer reaches the fixture");
+        let outcome = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome available"),
+        );
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert!(host.writes().iter().any(|message| {
+            message.get("id").and_then(Value::as_u64) == Some(900)
+                && message["result"]["outcome"]["optionId"] == option_id
+        }));
+        assert!(!host.writes().iter().any(|message| {
+            message.get("method").and_then(Value::as_str) == Some("session/cancel")
+        }));
+        assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+        assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
+    }
+}
+
+#[test]
+fn consumer_permission_abandonment_closes_the_exchange_without_granting_access() {
+    let (host, services, mut session) = open_consumer(Scenario::Permission);
+    let mut turn = start(&mut *session, services.clone(), "grok-permission-abandon-turn");
+    let mut callbacks = turn.take_callbacks().expect("consumer exchange exists");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("permission request stream exists");
+    let request = block_on(requests.next())
+        .expect("permission callback arrives")
+        .expect("permission callback is valid");
+    let responder = callbacks.responder();
+    block_on(turn.cancellation().request()).expect("turn cancellation requested");
+    assert!(block_on(requests.next()).is_none());
+    assert!(block_on(responder.respond(CallbackResponse::for_request(
+        &request,
+        CallbackResult::Success(
+            CallbackPayload::new(br#"{"optionId":"allow-once"}"#.to_vec(), 256)
+                .expect("selection is bounded"),
+        ),
+    ))).is_err());
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+    assert!(host.writes().iter().any(|message| {
+        message.get("method").and_then(Value::as_str) == Some("session/cancel")
+    }));
+    assert!(!host.writes().iter().any(|message| {
+        message.get("id").and_then(Value::as_u64) == Some(900)
+            && message["result"]["outcome"]["outcome"] == "selected"
+    }));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
+}
+
+#[test]
+fn consumer_permission_timeout_abandons_the_bounded_exchange() {
+    let (host, services, mut session) = open_consumer(Scenario::PermissionTimeout);
+    let mut turn = start_with_deadline(
+        &mut *session,
+        services.clone(),
+        "grok-permission-timeout-turn",
+        Some(Deadline::at(MonotonicInstant::from_ticks(10))),
+    );
+    let mut callbacks = turn.take_callbacks().expect("consumer exchange exists");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("permission request stream exists");
+    let request = block_on(requests.next())
+        .expect("permission callback arrives before timeout")
+        .expect("permission callback is valid");
+    assert_eq!(
+        request.deadline(),
+        Some(Deadline::at(MonotonicInstant::from_ticks(10)))
+    );
+    let responder = callbacks.responder();
+    host.release_deadline();
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    assert!(block_on(requests.next()).is_none());
+    assert!(block_on(responder.respond(CallbackResponse::for_request(
+        &request,
+        CallbackResult::Failure {
+            kind: swallowtail_runtime::CallbackFailureKind::TimedOut,
+            detail: None,
+        },
+    ))).is_err());
+    assert!(host.wait_for_write(|writes| writes.iter().any(|message| {
+        message.get("method").and_then(Value::as_str) == Some("session/cancel")
+    })));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
+}
+
+#[test]
+fn consumer_permission_malformed_request_fails_closed() {
+    let (_host, services, mut session) = open_consumer(Scenario::PermissionMalformed);
+    let mut turn = start(&mut *session, services.clone(), "grok-permission-malformed-turn");
+    let mut callbacks = turn.take_callbacks().expect("consumer exchange exists");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("permission request stream exists");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome available"),
+    );
+    assert!(matches!(
+        outcome.status(),
+        TerminalStatus::RuntimeFailed(diagnostic)
+            if diagnostic.code() == "swallowtail.grok.acp.response_malformed"
+    ));
+    assert!(block_on(requests.next()).is_none());
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
+}
+
+#[test]
+fn permission_without_active_turn_is_rejected_by_the_fixture_exchange() {
+    let (host, services, session) = open(Scenario::PermissionWithoutTurn);
+    host.emit_permission_without_turn();
+    assert!(host.wait_for_write(|writes| {
+        writes.iter().any(|message| {
+            message.get("id").and_then(Value::as_u64) == Some(902)
+                && message["error"]["code"].as_i64() == Some(-32600)
+        })
+    }));
+    let _ = block_on(close_session(session, services));
+}
+
+#[test]
 fn active_turn_cancellation_waits_for_native_cancelled_result() {
     let (_host, services, mut session) = open(Scenario::Cancellation);
     let mut turn = start(&mut *session, services.clone(), "grok-cancel-turn");

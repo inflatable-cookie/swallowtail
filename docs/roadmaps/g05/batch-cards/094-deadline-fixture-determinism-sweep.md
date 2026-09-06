@@ -166,6 +166,17 @@ continuation below records that ledger.
   - `swallowtail-adapter-claude-agent` fake-sidecar test processes surviving
     overnight — retain this process-leak family for the same post-tag
     determinism pass.
+  - `swallowtail-adapter-opencode::prepared_facade`
+    `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`
+    — fifth distinct Stable shard 2/3 macOS cleanup surface: the fixture-only
+    test hit SIGABRT after 121s because `FixtureServer::drop` called
+    `join_fixture_thread`, which resumed the fixture-thread panic while the
+    test thread was not already panicking. The cancellation test gates the
+    delete response and releases it in `Drop`; this is not production behavior
+    and is not a v0.4.2 blocker. Fix shape: `Drop` must never
+    `resume_unwind`; store the fixture-thread panic in an
+    `Arc<Mutex<Option<payload>>>` and assert it before `Drop`, or use
+    non-`Drop` teardown.
 
 Fixture-uniqueness release gate prepared from current main `dc04df04`:
 

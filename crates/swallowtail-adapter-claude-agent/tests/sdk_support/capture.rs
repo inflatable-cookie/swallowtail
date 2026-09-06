@@ -332,7 +332,7 @@ fn persist_snapshot(
         .append_snapshot(&snapshot)
         .map_err(|_| {
             RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.claude_agent.sdk.capture_journal_failed",
+                "swallowtail.claude-agent.sdk.capture_journal_failed",
                 "Claude Agent SDK sanitized capture journal failed",
             ))
         })

@@ -33,8 +33,4 @@ printf '%s\n' '[workspace.package]' 'version = "0.4.3"' \
   identity_expect_previous 'newer 0.5.0 directory present' 0.4.2
 )
 
-cd "$identity_repo_root"
-release_load_version_identity
-identity_expect_previous 'real tree' 0.4.2
-
 printf 'release-version-identity fixtures passed\n'

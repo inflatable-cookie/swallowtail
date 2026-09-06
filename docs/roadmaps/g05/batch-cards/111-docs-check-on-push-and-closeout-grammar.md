@@ -59,7 +59,9 @@ commit is HEAD and `git status --porcelain` is empty, so an untracked card
 cannot hide missing-file drift. Tag refs are skipped so a Contract 036
 annotated tag at a non-HEAD SHA can push. `qa:docs` now runs
 `scripts/tests/release-version-identity.sh` so the Card 110 strict-older
-previous-version fixture runs on every docs push. Rebase onto Card 110
-`258574a6` inherited Card 104's unrecognized Status token `review`; the
-first token is `ready` so it matches the Ready index. `scripts/README.md`
-is owned by card 110; the new scripts are not listed there.
+fixture runs on every docs push; the live-tree `0.4.2` assertion is gone so
+the next release lane does not fail the docs hook. Rebase onto Card 110
+`258574a6` inherited Card 104's unrecognized Status token `review`; Status
+is `complete` and the index line moved with PR 251 at `944a4285`.
+`scripts/README.md` is owned by card 110; the new scripts are not listed
+there.

@@ -54,7 +54,8 @@ including the retired repo-side account_not_subscription diagnostic,
 initialize controls, supported-model row count, and the absence of system/init;
 the stronger prior Node 22.23.2 live evidence is cited but remains outside this
 card's initialize-only acceptance. Host claude 2.1.258 and older native points
-remain withheld at Card 100's credential-dependent design-review stop. No new
+remain withheld because Card 100's resumed evidence at lines 261-272 covers
+Node 22.23.2 with the real SDK/native path, not a host-native crossing. No new
 credential-dependent probe, prompt, or live turn was run.
 
 No candidate admitted range was produced. Production claims, pins, source,

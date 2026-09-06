@@ -19,13 +19,15 @@ No new SDK/native compatibility probe or provider session was run for Card 086.
 The provider-free inventory did run the installed CLI's version command, but
 that command only reports the executable version; it is not a provider session
 or an SDK/native sidecar compatibility probe. The repository already records
-the permitted open-only probes and their stop point. Card 100 records that the
-initialize exchange and bounded supportedModels() and accountInfo()
+the permitted open-only probes and their stop point. Card 100 records a
+historical design-review stop after the open-only diagnostic
+account_not_subscription (lines 253-260), then records a resumed authorized
+Node 22.23.2 open-only probe after that repo-side diagnostic was retired
+(lines 261-272). That later evidence is included below. Card 100 records that
+the initialize exchange and bounded supportedModels() and accountInfo()
 controls can complete without awaiting query.next(), while system/init is the
 first message of the first query and a missing message is init_missing (Card
-100, lines 191-197). The same record says not to run another live probe before
-code review after the open-only diagnostic account_not_subscription (Card 100,
-lines 253-260). That is the evidence boundary used here.
+100, lines 191-197). No new probe is authorized for this revision.
 
 The provider-free host inventory was captured without ambient provider
 variables or a provider session:
@@ -64,7 +66,7 @@ inferred from a changelog or from the artifact version alone.
 
 | Wrapper | Native | Node | Classification at this boundary | Exact evidence |
 | --- | --- | --- | --- | --- |
-| 0.3.259 | bundled 2.1.259 | 22.23.2 (~/.local/bin/node, also the pinned point) | surface-changed: the retired repo-side account_not_subscription diagnostic was followed by successful open/initialize controls; Card 086 still admits no range because its permitted transcript lacks system/init | Card 100, lines 253-272 and 287-300 |
+| 0.3.259 | bundled 2.1.259 | 22.23.2 (~/.local/bin/node, also the pinned point) | unresolved/not-compatible: the retired repo-side account_not_subscription diagnostic was followed by successful open/initialize controls; Card 086 still admits no range because its permitted transcript lacks system/init | Card 100, lines 253-272 and 287-300 |
 | 0.3.259 | bundled 2.1.259 | 26.7.0 (/opt/homebrew/bin/node) | refused-with-code was observed as initialization_failed; a later bounded open-only run timed out without system/init, so not compatible | Card 100, lines 237-250 |
 
 For the 22.23.2 triple, account_not_subscription is a retired repo-side
@@ -92,8 +94,8 @@ classification:
 
 | Triple set | Why withheld |
 | --- | --- |
-| 0.3.259 + host claude 2.1.258 + 22.23.2 | A host-native crossing would require a real credential-dependent SDK/native probe. Card 100's account_not_subscription design-review stop forbids another live probe before code review (lines 253-260); no new credential or probe is authorized |
-| 0.3.259 + host claude 2.1.258 + 26.7.0 | Same credential-dependent Card 100 design-review stop (lines 253-260); no new credential or probe is authorized |
+| 0.3.259 + host claude 2.1.258 + 22.23.2 | A host-native crossing would require a real credential-dependent SDK/native probe. Card 100's resumed open-only evidence at lines 261-272 covers Node 22.23.2 with the real SDK/native path, not host claude 2.1.258; no new credential or probe is authorized |
+| 0.3.259 + host claude 2.1.258 + 26.7.0 | Same boundary: Card 100's resumed lines 261-272 cover Node 22.23.2 with the real SDK/native path, not host claude 2.1.258; no new credential or probe is authorized |
 | 0.3.259 + each native point 2.1.227..=2.1.258 + 22.23.2 | No such native artifact was installed or made available for a permitted probe |
 | 0.3.259 + each native point 2.1.227..=2.1.258 + 26.7.0 | No such native artifact was installed or made available for a permitted probe |
 | 0.3.259 + native 2.1.259 + any other Node point | Only the two observed Node installations were in scope; no install is permitted |
@@ -128,7 +130,7 @@ empty at this evidence boundary:
 | --- | --- | --- |
 | SDK wrapper | none | No initialize-only triple has the required system/init evidence |
 | Bundled native | none | No initialize-only triple has the required system/init evidence |
-| Host native discovery | none | The installed 2.1.258 executable is inventory-only; its credential-dependent crossing is stopped by Card 100's design-review boundary |
+| Host native discovery | none | The installed 2.1.258 executable is inventory-only; Card 100's resumed evidence covers Node 22.23.2 with the real SDK/native path, not this host-native crossing |
 | Node 22.23.2 | none | Open-only initialize controls were observed, but system/init was not |
 | Node 26.7.0 | none | Refusal/timeout evidence exists, but no successful system/init |
 | Harness schema | none as a range axis | 1 is unchanged artifact metadata, not a runtime range result |
@@ -148,7 +150,7 @@ consume this document as admitted ranges.
 
 - No new system/init capture under the initialize-only rule.
 - No live prompt, live turn, or credential-dependent probe.
-- No host-native sidecar crossing for claude 2.1.258; Card 100's credential-dependent design-review stop remains in force.
+- No host-native sidecar crossing for claude 2.1.258; Card 100's resumed evidence at lines 261-272 covers Node 22.23.2 with the real SDK/native path, not this host-native crossing.
 - No probes for native points 2.1.227..=2.1.258.
 - No claim, pin, source, guide, matrix, or baseline changes.
 

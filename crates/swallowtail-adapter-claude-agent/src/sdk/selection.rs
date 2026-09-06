@@ -3,7 +3,9 @@
 //! Five axes bind the exact SDK wrapper package, the exact native binary
 //! version the shipped manifest declares, the exact approved Node runtime,
 //! the private sidecar wire, and the source-tagged sidecar revision. Every
-//! claim is a qualified-only one-point segment. None inherits the
+//! claim is a qualified-only one-point segment. Research 287 admits no
+//! Codex-style range on any axis, so Card 087 does not widen these pins,
+//! mint `-window-2` ids, or enable `AllowUnverified`. None inherits the
 //! `claude-agent.acp` window or either Claude Code window: the wrapper and
 //! native axes are coupled but not equal, so a Claude Code qualification
 //! never transfers here and this route's qualification never transfers back.

@@ -10,7 +10,9 @@ use swallowtail_adapter_claude_agent::sdk::{
     CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE,
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
     CLAUDE_AGENT_SDK_WIRE, claude_agent_sdk_addable_route_descriptor, claude_agent_sdk_descriptor,
-    claude_agent_sdk_tool_admission_namespace,
+    claude_agent_sdk_native_claim, claude_agent_sdk_node_claim, claude_agent_sdk_package_claim,
+    claude_agent_sdk_sidecar_claim, claude_agent_sdk_tool_admission_namespace,
+    claude_agent_sdk_wire_claim,
 };
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::HostServices;
@@ -76,6 +78,64 @@ fn the_route_binds_five_independent_exact_identities() {
         "2.1.257",
         "the Claude Code window is observed separately and does not transfer"
     );
+}
+
+#[test]
+fn research_287_admits_no_range_so_exact_pins_and_claim_ids_stay() {
+    // Research 287 Decision table (lines 124-139) admits no candidate range.
+    // Card 087 therefore keeps the five QualifiedOnly one-point claims and
+    // does not mint `-window-2` ids or enable AllowUnverified.
+    let claims = [
+        (
+            claude_agent_sdk_package_claim(),
+            "claude-agent.sdk.package-window-1",
+            CLAUDE_AGENT_SDK_VERSION,
+        ),
+        (
+            claude_agent_sdk_native_claim(),
+            "claude-agent.sdk.native-window-1",
+            CLAUDE_AGENT_SDK_NATIVE_VERSION,
+        ),
+        (
+            claude_agent_sdk_node_claim(),
+            "claude-agent.sdk.node-window-1",
+            CLAUDE_AGENT_SDK_NODE_RUNTIME,
+        ),
+        (
+            claude_agent_sdk_wire_claim(),
+            "claude-agent.sdk.wire-v1",
+            CLAUDE_AGENT_SDK_WIRE,
+        ),
+        (
+            claude_agent_sdk_sidecar_claim(),
+            "claude-agent.sdk.sidecar-v1",
+            CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG,
+        ),
+    ];
+    for (claim, id, point) in claims {
+        assert_eq!(claim.id().as_str(), id);
+        assert_eq!(
+            claim.newer_version_posture(),
+            swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
+        );
+        assert_eq!(claim.milestones().len(), 1);
+        let point = swallowtail_core::InterfaceVersion::new(point).expect("valid version");
+        assert_eq!(claim.baseline(), &point);
+        assert_eq!(claim.latest_qualified(), &point);
+        assert_eq!(claim.exclusions().len(), 0);
+        assert!(claim.permits(&point));
+    }
+
+    let version =
+        |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
+    // Wrapper stable-newer is not UnverifiedNewer: Research 287, line 131.
+    assert!(!claude_agent_sdk_package_claim().permits(&version("0.3.260")));
+    // Host native 2.1.258 is inventory-only, not a crossing: Research 287, lines 97-98, 133.
+    assert!(!claude_agent_sdk_native_claim().permits(&version("2.1.258")));
+    // Node 26.7.0 is refused-with-code/unresolved: Research 287, lines 70, 82-84, 135.
+    assert!(!claude_agent_sdk_node_claim().permits(&version("26.7.0")));
+    // Older native points in 2.1.227..=2.1.258 were not probed: Research 287, lines 99-100.
+    assert!(!claude_agent_sdk_native_claim().permits(&version("2.1.227")));
 }
 
 #[test]

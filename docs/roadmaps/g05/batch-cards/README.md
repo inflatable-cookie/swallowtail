@@ -10,6 +10,8 @@
 
 ## Planned
 
+- [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
+- [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.3` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; waits for cards 084 and 086
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment

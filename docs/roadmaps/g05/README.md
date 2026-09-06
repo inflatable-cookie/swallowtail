@@ -38,6 +38,7 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
+| Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | ready; card 105 in flight; cards 106 and 107 ready on its merge and the tag | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
 | Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with cards 100 and 103 closed, card 101 candidate preparation complete, and card 102 ready. | complete; `v0.4.2` at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up | Contract 036; the 2026-09-05 Bovine report | `g05.032`, cards 100-103 |
 | Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | `g05.030`, cards 090-092 |
 | Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
@@ -45,6 +46,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — ready; card 105 in flight; cards 106 and 107 ready on its merge and the tag
 - [g05.032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up
 - [g05.031 CI Latency](./031-ci-latency.md) — ready; card 095 restructures the PR gate; operator workflow authority granted
 - [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
@@ -414,6 +416,7 @@ identity.
 
 ## Milestones
 
+- [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — ready; card 105 in flight; cards 106 and 107 ready on its merge and the tag
 - [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window
 - [031 CI Latency](./031-ci-latency.md) — ready; card 095
 - [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted

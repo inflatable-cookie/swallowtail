@@ -60,7 +60,7 @@ pub struct FixtureServer {
     endpoint: String,
     requests: Arc<Mutex<Vec<FixtureRequest>>>,
     attempts: Arc<AtomicUsize>,
-    attempt_signal: Arc<(Mutex<()>, Condvar)>,
+    attempt_signal: Arc<(Mutex<bool>, Condvar)>,
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
 }
@@ -71,7 +71,7 @@ impl FixtureServer {
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let requests = Arc::new(Mutex::new(Vec::new()));
         let attempts = Arc::new(AtomicUsize::new(0));
-        let attempt_signal = Arc::new((Mutex::new(()), Condvar::new()));
+        let attempt_signal = Arc::new((Mutex::new(false), Condvar::new()));
         let stop = Arc::new(AtomicBool::new(false));
         let state = (
             Arc::clone(&requests),
@@ -114,10 +114,10 @@ impl FixtureServer {
     }
 
     pub fn wait_for_attempt(&self) {
-        let (lock, signal) = &*self.attempt_signal;
-        let guard = lock.lock().expect("attempt readiness lock");
+        let (ready, signal) = &*self.attempt_signal;
+        let guard = ready.lock().expect("attempt readiness lock");
         let (_guard, wait) = signal
-            .wait_timeout_while(guard, ATTEMPT_HANG_GUARD, |_| self.attempts() == 0)
+            .wait_timeout_while(guard, ATTEMPT_HANG_GUARD, |ready| !*ready)
             .expect("attempt readiness lock");
         assert!(
             !wait.timed_out(),
@@ -178,7 +178,7 @@ fn respond(
     stream: &mut TcpStream,
     request: &FixtureRequest,
     attempts: &AtomicUsize,
-    attempt_signal: &(Mutex<()>, Condvar),
+    attempt_signal: &(Mutex<bool>, Condvar),
     fixture: StreamFixture,
 ) {
     if request.headers.get("authorization").map(String::as_str) != Some("Bearer fixture-secret") {
@@ -192,7 +192,9 @@ fn respond(
     match (request.method.as_str(), request.target.as_str()) {
         ("GET", "/v1/models") => write_response(stream, 200, "application/json", MODELS),
         ("POST", "/v1/chat/completions") if attempts.fetch_add(1, Ordering::SeqCst) == 0 => {
-            attempt_signal.1.notify_all();
+            let (ready, signal) = attempt_signal;
+            *ready.lock().expect("attempt readiness lock") = true;
+            signal.notify_all();
             match fixture {
                 StreamFixture::Success => write_response(stream, 200, "text/event-stream", SUCCESS),
                 StreamFixture::Unknown => write_response(stream, 200, "text/event-stream", UNKNOWN),

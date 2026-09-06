@@ -58,16 +58,14 @@ fn process_fixture() {
             std::fs::write("host-owned-marker", b"created")
                 .expect("fixture writes inside the host-owned resource");
         }
-        "hold" => loop {
-            thread::park();
-        },
-        "sleep" => thread::park(),
+        "hold" => hold_forever(),
+        "sleep" => hold_forever(),
         // A foreign-language sidecar whose SDK launches a further
         // provider-owned process: the parent stays alive while the native
         // grandchild runs.
         "sidecar-with-native-descendant" => {
             spawn_native_descendant();
-            thread::park();
+            hold_forever();
         }
         // The same topology, except the nearest child exits immediately. A
         // join of that child alone reports success while the descendant lives.
@@ -153,6 +151,12 @@ fn await_fixture_file(file_name: &str) {
     }
 }
 
+fn hold_forever() -> ! {
+    loop {
+        thread::park();
+    }
+}
+
 /// Spawns a same-group child, records its pid, then keeps the parent alive so
 /// watcher cleanup can prove cooperative process-group stop.
 #[allow(clippy::zombie_processes)]
@@ -163,7 +167,7 @@ fn spawn_cooperative_child_and_hold() {
         .expect("fixture spawns a cooperative child");
     std::fs::write("cooperative-child.pid", child.id().to_string())
         .expect("fixture records cooperative child pid");
-    thread::park();
+    hold_forever();
 }
 
 /// Spawns a grandchild that inherits this process's stdout and stderr pipes.

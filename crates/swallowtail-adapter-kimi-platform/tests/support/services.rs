@@ -76,11 +76,11 @@ impl Future for ManualDeadlineWait {
         }
         let mut wakers = self.state.wakers.lock().expect("manual deadline waker lock");
         if self.state.fired.load(Ordering::Acquire) {
-            let pending = wakers.drain(..).collect::<Vec<_>>();
             drop(wakers);
-            for waker in pending {
-                waker.wake();
-            }
+            return Poll::Ready(DeadlineObservation::new(
+                self.deadline,
+                self.deadline.instant(),
+            ));
         } else if !wakers
             .iter()
             .any(|waker| waker.will_wake(context.waker()))

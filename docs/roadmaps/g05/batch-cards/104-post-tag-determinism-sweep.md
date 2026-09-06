@@ -63,10 +63,20 @@ family were untouched.
   dispatch under load. `ThreadServices` now offers a manual deadline trigger;
   `FixtureServer::wait_for_attempt` proves the POST dispatch before the test
   fires it. The driver test no longer relies on the wall-clock deadline.
+- The reviewed-head synchronization fixes close both readiness races:
+  `ManualDeadlineWait::poll` returns `Ready` when the fire is observed after
+  waiter registration, and the fixture POST predicate is a boolean protected
+  by the same mutex paired with its condition variable before notification.
 - Both local descendant cases now gate on fixture markers and recorded PIDs,
   then poll process state to observe exit. The control case explicitly releases
   its parked descendant. The fixture parent and native descendant no longer
   use outcome-deciding lifetime sleeps.
+- The local-process `hold`, `sleep`, sidecar-parent, and cooperative-child
+  fixture arms now use `hold_forever`, a loop around `thread::park`, so a
+  spurious park return cannot make a fixture exit early. Their lifetime is now
+  governed by the host stop/join or process-group reaping path; the affected
+  tests cover that cleanup explicitly. Replacing the old bounded sleeps removes
+  the accidental early-exit window without making cleanup depend on a timeout.
 - The watcher identity case's loaded leak report did not reproduce as a
   production retention defect. The existing host path only retires a turn
   after every watcher task and process is joined and removes its active

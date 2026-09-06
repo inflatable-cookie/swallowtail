@@ -373,14 +373,15 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
 - Under the renewed single provider-turn authorization, exactly one Node
   `22.23.2` invocation used the corrected disposable harness audience
   `claude-agent-sdk` and stopped before readiness: the route reported
-  `swallowtail.claude-agent.sdk.open_rejected`. No first-party readiness,
+  `swallowtail.claude-agent.sdk.open_rejected`, with no recorded sidecar
+  subcode. No first-party readiness,
   first message, cwd/model/capability evidence, SDK result fields, stderr
   tail, SessionInput/close timeline, native exit evidence, prompt, tool
   request, turn, or write was captured. The route had retained the fixed
-  sidecar subcode in `diagnostic().message()` while the live harness copied
-  only `diagnostic().code()`, so the missing subcode was harness capture loss,
-  not a route limitation. The exact live subcode cannot be recovered from
-  that record. The provider-free harness proof now captures the message and
+  sidecar subcode in `diagnostic().message()` while the live harness dropped
+  that diagnostic message and copied only `diagnostic().code()`, so the exact
+  sidecar subcode is unavailable from the record. This is harness capture
+  loss, not a route limitation. The provider-free harness proof now captures the message and
   all required sanitized fields through the same process boundary.
   From the corrected-audience host environment, the leading hypothesis is an
   `account_not_first_party` rejection caused by the explicit child

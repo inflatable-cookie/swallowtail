@@ -94,7 +94,7 @@ No. Stop after one reviewable PR for exact-head review.
 ## Result
 
 Implemented on the Card082 branch after rebasing onto `origin/main` at
-`7d92591ac9da9c11eaad6b921e7ebc9e1a539e7a`, with Card100 merge
+`ba78e5279307425696ff0565a54fd9274f28f0d8`, with Card100 merge
 `ffc263107343b30cda7a0efde840f84f47a361ec` in history. Open evidence now
 exposes bounded `Query.supportedModels` values; `set_model` calls
 `Query.setModel`, rejects unsupported values before the SDK call, and keeps
@@ -104,11 +104,10 @@ reported, and has no mid-session setter without pinned SDK evidence.
 
 Provider-free fake-SDK proofs cover confirmed, unconfirmed, rejected,
 supported-models, and effort paths. The focused tier, affected-package
-verification, route, guide, docs, Northstar, god-files JSON, and diff checks
-pass. The package API gate reaches the current candidate 0.4.2 baseline and
-reports the 18 Card082 additions; that frozen baseline remains byte-identical
-and untouched by ruling. The 0.4.1 Claude baseline is byte-identical to its
-frozen main version; the additions are recorded only in
-`public-api-unreleased`. Matrix aggregate dispositions remain frozen; the
-owned Claude SDK notes carry the new evidence. Exact-head review is ready; the
-v0.4.2 merge gate stays closed.
+verification, package API, route, guide, docs, Northstar, god-files JSON, and
+diff checks pass. The 0.4.2 Claude baseline absorbs exactly the 18 Card082 API
+additions; the 0.4.1 Claude baseline remains immutable, and the stale
+`public-api-unreleased` file is restored byte-for-byte to main. The Card082
+changelog entry is under `[Unreleased]`. Matrix aggregate dispositions remain
+frozen; the owned Claude SDK notes carry the new evidence. Exact-head review is
+ready; the v0.4.2 merge gate stays closed.

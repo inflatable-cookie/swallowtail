@@ -5,8 +5,6 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-## [0.4.2] - 2026-09-06
-
 ### Added
 - add bounded `Query.supportedModels` evidence and route-local `set_model` to
   the Claude Agent SDK sidecar. Unsupported models fail before `Query.setModel`;
@@ -16,6 +14,10 @@ annotated Git tags from the canonical repository.
   `max` effort with init-confirmed or requested-only evidence; no mid-session
   effort setter is invented. Provider-free fake-SDK proofs cover all paths.
   g05.029 card 082.
+
+## [0.4.2] - 2026-09-06
+
+### Added
 - publish Contract 061 candidate K across the Mistral Vibe, Muse Code, Oh
   My Pi, and Qwen adapters. Prepared facades emit the exact 52-row tranche;
   the single interactive Oh My Pi attachment row is consumer-mediated per

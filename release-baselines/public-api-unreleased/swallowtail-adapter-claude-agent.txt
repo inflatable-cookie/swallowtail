@@ -26,19 +26,6 @@ impl core::error::Error for swallowtail_adapter_claude_agent::sdk::protocol::Cla
 impl core::fmt::Display for swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
 pub fn swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub fn swallowtail_adapter_claude_agent::sdk::protocol::decode_records(&[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind>, swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure>
-pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::High
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::Low
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::Max
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::Medium
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::XHigh
-impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::as_str(self) -> &'static str
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::parse(&str) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
-pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::Confirmed(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort)
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::NotRequested
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::RequestedOnly(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort)
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
@@ -52,15 +39,10 @@ pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::low
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::effort(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::set_model<'a>(&'a mut self, &'a str, swallowtail_runtime::host_registry::HostServices, swallowtail_runtime::time::Deadline) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<alloc::string::String, swallowtail_runtime::failure::RuntimeFailure>>
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::supported_models(&self) -> &[alloc::string::String]
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> Self
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::effort(&self) -> core::option::Option<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort>
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
 pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_BEHAVIOR: &str
 pub const swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_CREDENTIAL_FIELD_ID: &str

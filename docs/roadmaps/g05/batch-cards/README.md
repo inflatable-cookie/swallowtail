@@ -17,7 +17,6 @@
 - [113-ci-critical-path.md](./113-ci-critical-path.md) — planned; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
-- [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.3` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; waits for cards 084 and 086
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
@@ -27,6 +26,7 @@
 
 ## Completed
 
+- [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — complete; source consumer passed at `cbd4ddc8`; tag capsule relayed to Acowtancy
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — complete; PR 243 merged at `8bbeceb4`; opt-in exchange with default reject/cancel and stable `No` disposition
 - [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; Research 287 indexed, no production claims changed
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`; 18 additive API lines absorbed by the 0.4.2 working baseline

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-06 g05.033 Card 107 Closeout](./2026-09-06-g05-033-card-107-closeout.md) — `v0.4.3` source consumer passed at peeled `cbd4ddc8`; tag capsule relayed to Acowtancy; no Desktop/provider action performed
 - [2026-09-06 g05.029 Card 085 Closeout](./2026-09-06-g05-029-card-085-closeout.md) — Grok ACP permission exchange accepted and merged through PR 243 as `8bbeceb4`; stable matrix disposition remains `No`
 - [2026-09-06 g05.029 Card 086 Closeout](./2026-09-06-g05-029-card-086-closeout.md) — Research 287 accepted through PR 241 as `d127837f`; no production claims changed
 - [2026-09-06 g05.029 Card 082 Closeout](./2026-09-06-g05-029-card-082-closeout.md) — Claude SDK model and effort card accepted and merged through PR 239 as `c8512290`; g05.029 runway is active

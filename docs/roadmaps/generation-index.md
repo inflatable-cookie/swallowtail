@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-04
+Updated: 2026-09-06
 
 ## Generations
 
@@ -144,10 +144,11 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 34 roadmaps: 26 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 029, 031, 033, 034. Milestone 034
-makes the release lane short and dependable and CI fast (cards 109-113). Milestone 033 ships
-card 105 as patch `v0.4.3`. Milestone 030 completed the
+g05 has 34 roadmaps: 27 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 029, 031, 034. Milestone 034
+makes the release lane short and dependable and CI fast (cards 109-113). Milestone 033
+completed the `v0.4.3` patch release; Card107's source consumer passed at
+`cbd4ddc8` and its tag capsule was relayed to Acowtancy. Milestone 030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
 are complete and `v0.4.1` is tagged at `c3cce750`. Milestone 029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;
@@ -411,7 +412,7 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). Card 074 is the lead of the approved
-concurrent frontier with cards 075, 076, and g05.028 card 077. Card 034 and
-card 078 remain serially gated. This index records generation status; the
-canonical actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). g05.034 card 109 is the lead of
+the approved release-lane simplification manifest; cards 110-113 remain in
+that manifest. This index records generation status; the canonical actionable
+pointer stays in the front door.

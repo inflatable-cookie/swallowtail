@@ -1,6 +1,6 @@
 # 103 OpenCode Cancellation Cleanup DELETE Dispatch
 
-Status: review; fixture-only verdict, no `v0.4.2` content
+Status: complete; fixture-only verdict, no `v0.4.2` content
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

@@ -144,11 +144,14 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 34 roadmaps: 27 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 029, 031, 034. Milestone 034
-makes the release lane short and dependable and CI fast (cards 109-113). Milestone 033
-completed the `v0.4.3` patch release; Card107's source consumer passed at
-`cbd4ddc8` and its tag capsule was relayed to Acowtancy. Milestone 030 completed the
+g05 has 35 roadmaps: 27 completed milestones, honest evidence stops at 002,
+003, 007, and 011, ready milestones at 029, 031, and 034, and planned
+milestone 035. Milestone 035 holds the shared harness capability architecture
+and contract-promotion batches; it grants no runtime implementation authority.
+Milestone 034 makes the release lane short and dependable and CI fast (cards
+109-113). Milestone 033 completed the `v0.4.3` patch release; Card107's source
+consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
+Milestone 030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
 are complete and `v0.4.1` is tagged at `c3cce750`. Milestone 029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;

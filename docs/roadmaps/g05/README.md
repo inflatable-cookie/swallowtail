@@ -39,6 +39,7 @@ enforcement.
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 compiled; 112 and 113 may start under the freeze | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | `g05.034`, cards 109-113 |
+| Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; Research 288 and Spec 014 drafted; architecture and contracts unpromoted | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop operator direction 2026-09-06 | `g05.035`, promotion before implementation |
 | Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
 | Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with cards 100 and 103 closed, card 101 candidate preparation complete, and card 102 ready. | complete; `v0.4.2` at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up | Contract 036; the 2026-09-05 Bovine report | `g05.032`, cards 100-103 |
 | Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | `g05.030`, cards 090-092 |
@@ -47,6 +48,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [g05.033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
 - [g05.032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up
@@ -83,7 +85,7 @@ enforcement.
 - [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
 - [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
 
-g05 has thirty-two numbered roadmaps: 22 completed milestones including
+g05 has thirty-five numbered roadmaps: 27 completed milestones including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, and
 020, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
 at 022, and shared
@@ -102,6 +104,9 @@ card 068 and card 069 are merged; card 070's gate is promoted into Contract
 Candidates I and E. Card 076's compound-acknowledgement design is complete;
 card 079 realizes it before card 034. g05.028 card 077 is the concurrent
 OpenCode HTTP identity lane ranked by Research 284.
+Milestone 035 is planned and blocked on independent review plus operator
+promotion of the shared harness capability contracts; it grants no runtime
+implementation authority.
 Milestone 021 is complete; the exact-head review accepted Research 281 through
 PR 198 head `2f4923b8`, merged as `835fe9ff`; card 051 is complete after PR
 201 exact head `10d9b7a0` merged as candidate `56f3913a` and canonical
@@ -418,6 +423,7 @@ identity.
 
 ## Milestones
 
+- [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; independent review and contract promotion required before implementation
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
 - [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window

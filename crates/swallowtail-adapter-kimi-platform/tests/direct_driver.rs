@@ -205,7 +205,7 @@ fn cancellation_stops_the_local_connection_and_joins_before_release() {
 #[test]
 fn in_flight_deadline_times_out_and_releases_after_connection_join() {
     let fixture = Fixture::with_stream(StreamFixture::WaitForCancel);
-    let deadline = Deadline::at(MonotonicInstant::from_ticks(20));
+    let (deadline, trigger) = fixture.manual_deadline();
     let timed = request(OperationPolicy::offline().with_reasoning_mode(mode("high")))
         .with_deadline(deadline);
     let mut run = block_on(KimiPlatformDirectDriver::new().start_run(
@@ -215,6 +215,8 @@ fn in_flight_deadline_times_out_and_releases_after_connection_join() {
     ))
     .expect("run starts");
     let _events = run.take_events().expect("events");
+    fixture.server.wait_for_attempt();
+    trigger.fire();
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
     assert_eq!(fixture.server.attempts(), 1);

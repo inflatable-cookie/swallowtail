@@ -2,17 +2,92 @@
 pub struct ThreadServices {
     origin: Instant,
     completed: Arc<AtomicUsize>,
+    manual_deadline: Arc<Mutex<Option<Arc<ManualDeadlineState>>>>,
 }
 impl ThreadServices {
     pub fn new() -> Self {
         Self {
             origin: Instant::now(),
             completed: Arc::new(AtomicUsize::new(0)),
+            manual_deadline: Arc::new(Mutex::new(None)),
         }
     }
 
     pub fn completed(&self) -> usize {
         self.completed.load(Ordering::SeqCst)
+    }
+
+    pub fn manual_deadline(&self) -> (Deadline, ManualDeadlineTrigger) {
+        let state = Arc::new(ManualDeadlineState::default());
+        *self
+            .manual_deadline
+            .lock()
+            .expect("manual deadline lock") = Some(Arc::clone(&state));
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(
+            self.now().ticks().saturating_add(3_600_000),
+        ));
+        (deadline, ManualDeadlineTrigger { state })
+    }
+}
+
+#[derive(Clone)]
+pub struct ManualDeadlineTrigger {
+    state: Arc<ManualDeadlineState>,
+}
+
+impl ManualDeadlineTrigger {
+    pub fn fire(&self) {
+        if self.state.fired.swap(true, Ordering::Release) {
+            return;
+        }
+        let wakers = self
+            .state
+            .wakers
+            .lock()
+            .expect("manual deadline waker lock")
+            .drain(..)
+            .collect::<Vec<_>>();
+        for waker in wakers {
+            waker.wake();
+        }
+    }
+}
+
+#[derive(Default)]
+struct ManualDeadlineState {
+    fired: std::sync::atomic::AtomicBool,
+    wakers: Mutex<Vec<Waker>>,
+}
+
+struct ManualDeadlineWait {
+    deadline: Deadline,
+    state: Arc<ManualDeadlineState>,
+}
+
+impl Future for ManualDeadlineWait {
+    type Output = DeadlineObservation;
+
+    fn poll(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+        if self.state.fired.load(Ordering::Acquire) {
+            return Poll::Ready(DeadlineObservation::new(
+                self.deadline,
+                self.deadline.instant(),
+            ));
+        }
+        let mut wakers = self.state.wakers.lock().expect("manual deadline waker lock");
+        if self.state.fired.load(Ordering::Acquire) {
+            let pending = wakers.drain(..).collect::<Vec<_>>();
+            drop(wakers);
+            for waker in pending {
+                waker.wake();
+            }
+        } else if !wakers
+            .iter()
+            .any(|waker| waker.will_wake(context.waker()))
+        {
+            wakers.push(context.waker().clone());
+        }
+        Poll::Pending
     }
 }
 struct ThreadTask(JoinHandle<()>);
@@ -65,6 +140,14 @@ impl TimeService for ThreadServices {
         MonotonicInstant::from_ticks(self.origin.elapsed().as_millis() as u64)
     }
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        if let Some(state) = self
+            .manual_deadline
+            .lock()
+            .expect("manual deadline lock")
+            .clone()
+        {
+            return Box::pin(ManualDeadlineWait { deadline, state });
+        }
         let remaining = deadline
             .instant()
             .ticks()

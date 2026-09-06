@@ -8,6 +8,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
+- [287 Claude Agent SDK Discovery Identity](./287-claude-agent-sdk-discovery-identity.md) — Card 086 evidence stop; initialize-only open evidence records refusals and bounded initialize controls, but no permitted triple has system/init; no candidate range admitted and production claims unchanged
+
 ### Harness Skills And Watchers
 
 - [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite

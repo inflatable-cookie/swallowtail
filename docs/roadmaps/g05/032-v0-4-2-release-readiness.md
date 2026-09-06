@@ -49,8 +49,8 @@ mutation.
 
 - [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only, merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
-- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the standing-grant pattern
-- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; serial after card 101; Bovine editing session as the smoke
+- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate SHA `f94dd16f`
+- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; exact candidate SHA `f94dd16f` and Bovine editing session as the smoke
 
 ## Dispatch Manifest
 
@@ -127,14 +127,15 @@ Chatterbox round trip. Operator prepare authorization was granted
 ### Card 102 Manifest
 
 Promoted planning commit: the `main` commit that introduces this section.
-Card 102 becomes ready when card 101's candidate merges with green exact-SHA
-CI; Chatterbox fills the candidate SHA into the Bovine packet and relays it
+Card 102 is ready now that card 101's candidate merged with green exact-SHA
+CI; Chatterbox fills candidate SHA `f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`
+into the Bovine packet and relays it
 to the Acowtancy coordinator; the Swallowtail coordinator runs the source
 consumer in parallel. No further Chatterbox promotion is needed to start.
 
 | Field | Card 102 |
 | --- | --- |
-| Readiness | planned until card 101's candidate merges with green exact-SHA CI; then ready |
+| Readiness | ready; card 101 candidate merged with green exact-SHA CI |
 | Prerequisites | merged `0.4.2` candidate SHA; the Bovine Desktop smoke packet at `/Users/tom/Dev/projects/acowtancy/docs/handoffs/20260905-desktop-swallowtail-v042-smoke-packet.md` with the SHA filled in; the operator's host Node step (present `~/.local/bin/node` 22.23.2 first for the run) |
 | Completion conditions | `effigy package:source-consumer` passes from a clean detached checkout of the merged SHA; one Bovine Desktop editing turn on `claude-agent.sdk` with the `read_write(AcceptEdits)` profile on a smoke branch pinned to the SHA: session opens with init evidence and no `open_rejected`, the in-workspace file lands with no per-edit prompt, the outside-workspace write is refused in the transcript, and the close is clean under card 100's instrumentation; the tag decision request compiled with the exact SHA |
 | Owned mutable paths | this card's `## Result`; `PAPERCUTS.md` append only. The Desktop smoke branch and its one log are the Acowtancy lane's, never merged there |

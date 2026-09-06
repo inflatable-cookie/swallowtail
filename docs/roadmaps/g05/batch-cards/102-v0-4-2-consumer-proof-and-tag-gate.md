@@ -1,6 +1,6 @@
 # 102 v0.4.2 Consumer Proof And Tag Gate
 
-Status: planned; serial in g05.032
+Status: ready; candidate `f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8` merged; serial in g05.032
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05

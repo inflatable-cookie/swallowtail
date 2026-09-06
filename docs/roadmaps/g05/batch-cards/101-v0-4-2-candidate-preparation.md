@@ -1,6 +1,6 @@
 # 101 v0.4.2 Candidate Preparation
 
-Status: planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the v0.4.1 standing-grant pattern (one transaction per attempt, renewable by Chatterbox on a captured transient failure; a real defect stops the lane)
+Status: complete; candidate merged through PR 240 at `f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`; tag not authorized
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-06
@@ -126,8 +126,10 @@ Desktop request or untagged-main/`ffc26310` pin, and PR102 remains NO MERGE at
 Desktop-owned and is not Card 101/102 content; remaining `0.153.3` is
 `UnverifiedNewer` against the `0.152.1` ceiling.
 
-No 0.4.2 candidate PR/head SHA, workflow-dispatch run ID, merge SHA, or tag
-SHA exists yet. Candidate PR creation, independent review, and exact-SHA CI
-dispatch are the remaining worker-loop steps. No tag, push-to-tag action,
+Candidate PR #240 was opened at head
+`ab3787717b7dd4d7c23bd08da92dae55d8ae3673`, independently re-reviewed and
+approved, and merged at candidate SHA
+`f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`. Exact-SHA workflow-dispatch run
+`34019752262` passed all checks at that head. No tag, push-to-tag action,
 Desktop request, Card 082 merge, credential/auth/permission change, consumer
 pin, feature-code change, or workflow edit was performed.

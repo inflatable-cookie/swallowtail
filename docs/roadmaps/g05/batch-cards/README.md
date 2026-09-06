@@ -3,11 +3,10 @@
 ## Ready
 
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; branch-only until the `v0.4.2` tag; set_model with confirmed values, supported_models and effort at open
+- [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; candidate `f94dd16f` merged; Bovine editing session as the smoke
 
 ## Planned
 
-- [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — active; dispatched after cards 100 and 103
-- [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; after card 101; Bovine editing session as the smoke
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — planned; g05.029 priority 6
@@ -21,6 +20,7 @@
 
 ## Completed
 
+- [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate `f94dd16f`; exact-SHA workflow run `34019752262` green; no tag
 - [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only; merged at `d7b483dd`
 - [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s

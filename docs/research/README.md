@@ -28,6 +28,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Installed Harness Routes
 
+- [287 Claude Agent SDK Discovery Identity](./287-claude-agent-sdk-discovery-identity.md) — Card 086 evidence stop; initialize-only open evidence records refusals and bounded initialize controls, but no permitted triple has system/init; no candidate range admitted and production claims unchanged
 - [006 Kimi Code ACP Currentness And Persistent Session Evidence](./006-kimi-code-acp-currentness-and-persistent-session-evidence.md)
 - [009 Native macOS Kimi Containment And Successor Delta](./009-native-macos-kimi-containment-and-successor-delta.md)
 - [010 Kimi Code Successor And Artifact Currentness Repair](./010-kimi-code-successor-and-artifact-currentness-repair.md)

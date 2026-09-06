@@ -45,3 +45,20 @@ A probe requires a live turn or credentials beyond the operator's existing subsc
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Research 287 records the Card 086 evidence boundary. The existing open-only
+evidence covers bundled native 2.1.259 with Node 22.23.2 and 26.7.0,
+including the retired repo-side account_not_subscription diagnostic,
+initialize controls, supported-model row count, and the absence of system/init;
+the stronger prior Node 22.23.2 live evidence is cited but remains outside this
+card's initialize-only acceptance. Host claude 2.1.258 and older native points
+remain withheld because Card 100's resumed evidence at lines 261-272 covers
+Node 22.23.2 with the real SDK/native path, not a host-native crossing. No new
+credential-dependent probe, prompt, or live turn was run.
+
+No candidate admitted range was produced. Production claims, pins, source,
+guides, matrices, and baselines are unchanged. Card 087 remains gated because
+the required system/init evidence needs the first query message, which is a
+live turn under this sidecar and this card's stop conditions.

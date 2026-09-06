@@ -10,6 +10,7 @@ pub struct swallowtail_adapter_grok::GrokAcpDriver
 impl swallowtail_adapter_grok::GrokAcpDriver
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::ambient_environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::credential(&self) -> &swallowtail_core::runtime_identity::CredentialRef
+pub const fn swallowtail_adapter_grok::GrokAcpDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_grok::GrokAcpDriver
 pub fn swallowtail_adapter_grok::GrokAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>

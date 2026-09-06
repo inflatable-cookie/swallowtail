@@ -50,3 +50,13 @@ A vendor publishes no stable install command (record the absence; ship the other
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+- implemented additive core `InstallGuidance` on absent discovery outcomes
+- attached vendor-frozen guidance to Claude Code, Codex CLI, and Grok Build
+  discovery; source comments and matrix entries record URL and 2026-09-06
+- added absent/present coverage and present-probe assertions proving install
+  text is not executed or passed to the process service
+- added the route-matrix note, changelog entry, and four additive v0.4.2 API
+  baselines

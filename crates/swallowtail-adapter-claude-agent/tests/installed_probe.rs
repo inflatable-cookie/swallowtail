@@ -3,7 +3,9 @@ use crate::discovery_support;
 use discovery_support::{FixtureHost, Scenario};
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_AGENT_ACP_AXIS, ClaudeAgentAcpDriver, claude_agent_acp_claim,
+    CLAUDE_AGENT_ACP_AXIS, CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_RESPONSE_ONLY_AXIS,
+    ClaudeAgentAcpDriver, ClaudeCodeHeadlessDriver, ClaudeCodeResponseOnlyDriver,
+    claude_agent_acp_claim,
 };
 use swallowtail_core::{
     DiscoveryStatus, ExecutionHostId, InstalledExecutableCompatibility, InterfaceVersionAxis,
@@ -58,7 +60,48 @@ fn exact_wrapper_versions_probe_only_the_host_approved_target() {
         assert_eq!(process.environment_count, 0);
         assert!(process.working_resource.is_none());
         assert_eq!(host.credential_acquires(), 0);
+        assert!(outcome.install_guidance().is_none());
     }
+}
+
+#[test]
+fn claude_code_routes_probe_without_executing_install_guidance() {
+    let host_id = ExecutionHostId::new("fixture.host.claude-code.discovery").expect("valid host");
+    let headless_host = FixtureHost::new(Scenario::Version, "2.1.257 (Claude Code)");
+    let headless = block_on(
+        ClaudeCodeHeadlessDriver::new(
+            EnvironmentRef::new("claude-code.fixture.environment").expect("environment"),
+        )
+        .discover_installed_executable(
+            request_for_axis(host_id.clone(), CLAUDE_CODE_HEADLESS_AXIS),
+            headless_host.services(host_id.clone()),
+        ),
+    )
+    .expect("headless discovery completes");
+    assert_eq!(headless.status(), DiscoveryStatus::Discovered);
+    assert!(headless.install_guidance().is_none());
+    let headless_process = headless_host.observed_process();
+    assert_eq!(headless_process.arguments, ["--version"]);
+    assert_eq!(headless_process.environment_count, 0);
+    assert!(headless_process.working_resource.is_none());
+
+    let response_host = FixtureHost::new(Scenario::Version, "2.1.257 (Claude Code)");
+    let response = block_on(
+        ClaudeCodeResponseOnlyDriver::new(
+            EnvironmentRef::new("claude-code.fixture.environment").expect("environment"),
+        )
+        .discover_installed_executable(
+            request_for_axis(host_id.clone(), CLAUDE_CODE_RESPONSE_ONLY_AXIS),
+            response_host.services(host_id),
+        ),
+    )
+    .expect("response-only discovery completes");
+    assert_eq!(response.status(), DiscoveryStatus::Discovered);
+    assert!(response.install_guidance().is_none());
+    let response_process = response_host.observed_process();
+    assert_eq!(response_process.arguments, ["--version"]);
+    assert_eq!(response_process.environment_count, 0);
+    assert!(response_process.working_resource.is_none());
 }
 
 #[test]
@@ -81,13 +124,17 @@ fn excluded_and_incompatible_versions_remain_distinct() {
 }
 
 fn request(host: ExecutionHostId) -> InstalledExecutableDiscoveryRequest {
+    request_for_axis(host, CLAUDE_AGENT_ACP_AXIS)
+}
+
+fn request_for_axis(host: ExecutionHostId, axis: &str) -> InstalledExecutableDiscoveryRequest {
     InstalledExecutableDiscoveryRequest::new(
         RequestId::new("claude-agent-version-probe").expect("valid request"),
         ScopeId::new("claude-agent-version-probe").expect("valid scope"),
         host,
         InstalledExecutableTarget::new(
             ExecutableRef::new("claude-agent.fixture.executable").expect("valid executable"),
-            InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("valid axis"),
+            InterfaceVersionAxis::new(axis).expect("valid axis"),
         ),
         Deadline::at(MonotonicInstant::from_ticks(100)),
         DiscoveryCancellation::new(),

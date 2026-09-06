@@ -74,6 +74,7 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
             assert!(captured.working_resource.is_none());
             assert!(state.stdin_closed());
             assert!(state.waited());
+            assert!(outcome.install_guidance().is_none());
         }
     }
 }

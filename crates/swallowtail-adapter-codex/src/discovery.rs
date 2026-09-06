@@ -7,8 +7,8 @@ use outcome_result::{exit_failed, outcome, output_failed, output_limit, spawn_fa
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{
-    DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation, InterfaceCompatibilityClaim,
-    InterfaceVersion, InterfaceVersionBinding, SafeDiagnostic,
+    DiscoveryOutcome, DiscoveryStatus, InstallGuidance, InstalledExecutableObservation,
+    InterfaceCompatibilityClaim, InterfaceVersion, InterfaceVersionBinding, SafeDiagnostic,
 };
 use swallowtail_runtime::{
     BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
@@ -18,6 +18,35 @@ use swallowtail_runtime::{
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 128;
 const MAX_VERSION_STDERR_BYTES: usize = 1024;
+
+// Vendor source: https://github.com/openai/codex/blob/main/README.md#installing-and-running-codex-cli
+// (frozen 2026-09-06). This text is descriptive only; discovery never executes it.
+const CODEX_INSTALL_GUIDANCE: InstallGuidance = InstallGuidance::new(
+    "Codex CLI",
+    "curl -fsSL https://chatgpt.com/codex/install.sh | sh",
+    "https://github.com/openai/codex/blob/main/README.md#installing-and-running-codex-cli",
+    "2026-09-06",
+);
+
+fn attach_install_guidance(outcome: DiscoveryOutcome) -> DiscoveryOutcome {
+    outcome.with_install_guidance(CODEX_INSTALL_GUIDANCE)
+}
+
+impl CodexExecDriver {
+    #[must_use]
+    /// Returns the descriptive vendor guidance used for an absent executable.
+    pub const fn install_guidance() -> InstallGuidance {
+        CODEX_INSTALL_GUIDANCE
+    }
+}
+
+impl CodexAppServerDriver {
+    #[must_use]
+    /// Returns the descriptive vendor guidance used for an absent executable.
+    pub const fn install_guidance() -> InstallGuidance {
+        CODEX_INSTALL_GUIDANCE
+    }
+}
 
 impl DiscoveryDriver for CodexExecDriver {
     fn discover(
@@ -33,7 +62,11 @@ impl DiscoveryDriver for CodexExecDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, codex_exec_claim()))
+        Box::pin(async move {
+            probe_joined(request, services, codex_exec_claim())
+                .await
+                .map(attach_install_guidance)
+        })
     }
 }
 
@@ -51,7 +84,11 @@ impl DiscoveryDriver for CodexAppServerDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, codex_app_server_claim()))
+        Box::pin(async move {
+            probe_joined(request, services, codex_app_server_claim())
+                .await
+                .map(attach_install_guidance)
+        })
     }
 }
 

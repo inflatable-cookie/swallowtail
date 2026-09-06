@@ -137,7 +137,8 @@ pub use realtime_media::{
     RealtimeMediaRequirements,
 };
 pub use registration::{
-    DiscoveryAction, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, SignInAction,
+    DiscoveryAction, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, InstallGuidance,
+    SignInAction,
 };
 pub use remote_acp::{
     InvalidRemoteAcpRequirements, REMOTE_ACP_WIRE_VERSION, RemoteAcpAffinityPolicy,

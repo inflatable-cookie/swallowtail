@@ -54,6 +54,7 @@ fn both_drivers_probe_only_the_explicit_target_and_classify_independently() {
         assert!(state.request().working_resource.is_none());
         assert!(state.stdin_closed());
         assert!(state.waited());
+        assert!(outcome.install_guidance().is_none());
     }
 }
 

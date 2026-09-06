@@ -29,6 +29,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: stable
+          cache-on-failure: true
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy (all features)
@@ -37,27 +38,26 @@ jobs:
         run: cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings
 
   stable-nextest:
-    name: Stable nextest (shard ${{ matrix.shard }}/3)
-    runs-on: macos-latest
+    name: Stable nextest (shard ${{ matrix.shard }}/2)
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: stable
+          shared-key: nextest
+          cache-on-failure: true
       - uses: taiki-e/install-action@cargo-nextest
       - name: Node runtime for the Claude Agent SDK sidecar asset proof
         uses: actions/setup-node@v6
         with:
           node-version: 22.23.2
       - name: Test
-        run: cargo nextest run --workspace --all-features --locked --profile ci --partition count:${{ matrix.shard }}/3
+        run: cargo nextest run --workspace --all-features --locked --profile ci --partition count:${{ matrix.shard }}/2
 
   stable-process-nextest:
     name: Stable process-spawning nextest
@@ -67,14 +67,20 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: stable
+          shared-key: nextest
+          cache-on-failure: true
       - uses: taiki-e/install-action@cargo-nextest
       - name: Node runtime for the Claude Agent SDK sidecar asset proof
         uses: actions/setup-node@v6
         with:
           node-version: 22.23.2
       - name: Process-spawning tests
-        run: cargo nextest run --workspace --all-features --locked --profile ci-process
+        run: |
+          cargo nextest run \
+            -p swallowtail-adapter-claude-agent \
+            -p swallowtail-adapter-pi \
+            -p swallowtail-host-local \
+            --all-features --locked --profile ci-process
 
   stable-contracts:
     name: Stable examples, metadata, and route contracts
@@ -85,6 +91,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: stable
+          cache-on-failure: true
       - name: Examples
         run: cargo check --workspace --examples --locked
       - name: Package metadata and topology
@@ -107,7 +114,8 @@ jobs:
           toolchain: nightly-2026-08-05
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: stable
+          shared-key: docs-api
+          cache-on-failure: true
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-public-api@0.52.0
@@ -128,7 +136,7 @@ jobs:
 
   rust-floor:
     name: Pinned MSRV floor
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Install pinned MSRV from baseline
@@ -139,14 +147,30 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: rust-${{ env.RUST_MSRV }}
+          cache-on-failure: true
+      - name: Clippy
+        run: cargo +${{ env.RUST_MSRV }} clippy --workspace --all-targets --all-features --locked -- -D warnings
+
+  rust-floor-test:
+    name: Pinned MSRV floor tests
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned MSRV from baseline
+        run: |
+          source release-baselines/rust-toolchains-0.2.0.env
+          echo "RUST_MSRV=$SWALLOWTAIL_MSRV" >> "$GITHUB_ENV"
+          rustup toolchain install "$SWALLOWTAIL_MSRV" --profile minimal
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: rust-${{ env.RUST_MSRV }}
+          cache-on-failure: true
       - name: Node runtime for the Claude Agent SDK sidecar asset proof
         uses: actions/setup-node@v6
         with:
           node-version: 22.23.2
-      - name: Clippy
-        run: cargo +${{ env.RUST_MSRV }} clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Test
-        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: cargo +${{ env.RUST_MSRV }} test --workspace --all-features --locked
 
   supply-chain:
@@ -158,6 +182,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-targets: false
+          cache-on-failure: true
       - uses: taiki-e/install-action@cargo-deny
       - run: cargo deny check advisories licenses sources
 
@@ -168,4 +193,6 @@ jobs:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
       - run: bash scripts/verify-source-consumer.sh

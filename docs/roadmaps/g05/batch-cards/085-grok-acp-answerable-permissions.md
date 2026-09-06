@@ -1,6 +1,6 @@
 # 085 Grok ACP Answerable Permissions
 
-Status: ready
+Status: complete; merged through PR 243 as `8bbeceb44ba6ed3df03397573e2b7c5fd49d5c85`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06
@@ -25,10 +25,10 @@ Grok discovery or install guidance (card 088); any Claude route; new ACP methods
 
 ## Acceptance Criteria
 
-- [ ] exchange path implemented on the precedent, default unchanged
-- [ ] bounds and abandonment recorded typed
-- [ ] fixture proofs as listed, or the labelled activity-only posture with evidence
-- [ ] guide, matrix, changelog `[Unreleased]`, additive baseline; one PR
+- [x] exchange path implemented on the precedent, default unchanged
+- [x] bounds and abandonment recorded typed
+- [x] fixture proofs as listed, or the labelled activity-only posture with evidence
+- [x] guide, matrix, changelog `[Unreleased]`, additive baseline; one PR
 
 ## Validation
 
@@ -59,7 +59,9 @@ consumer path exposes only bounded one-shot choices, carries turn deadlines,
 and abandons pending requests on cancellation, timeout, failure, or close.
 Provider-free ACP fixtures cover both one-shot options, persistent-option
 withholding, malformed input, bounds, abandonment, timeout, and no active turn.
-Ready for exact-head independent review after push.
+Accepted at exact head `3efbdcdf1a0ab2d4ed48fceb7a0a5737d90b2abf` and merged
+through PR 243 as `8bbeceb44ba6ed3df03397573e2b7c5fd49d5c85`. All hosted
+checks and named package validation passed.
 
 The stable solution feature matrix intentionally retains `permission_exchange`
 as `No`: the shared route-contract inventory still classifies the Grok cell as

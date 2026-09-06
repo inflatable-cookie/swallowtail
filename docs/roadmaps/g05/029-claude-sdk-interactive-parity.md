@@ -72,7 +72,7 @@ forces a minor.
 - [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`
 - [083 claude sdk resume and session listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — resume as Contract 017 resume with lease cwd and account checks; listing if frozen
 - [084 claude sdk client mcp servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — declared MCP servers, mediated MCP tools, per-server status
-- [085 grok acp answerable permissions](batch-cards/085-grok-acp-answerable-permissions.md) — answerable Grok permissions on the ACP callback precedent, or labelled activity-only
+- [085 grok acp answerable permissions](batch-cards/085-grok-acp-answerable-permissions.md) — complete; PR 243 merged at `8bbeceb4`; stable matrix disposition remains `No`
 - [086 claude sdk discovery identity](batch-cards/086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; no claim change
 - [087 claude sdk qualified ranges](batch-cards/087-claude-sdk-qualified-ranges.md) — Codex-style qualified ranges from card 086 evidence
 - [088 harness install guidance diagnostics](batch-cards/088-harness-install-guidance-diagnostics.md) — vendor install guidance on absent discovery, three harnesses

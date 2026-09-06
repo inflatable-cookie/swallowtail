@@ -6,7 +6,6 @@
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9
-- [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 - [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — ready; PR 252; exact-head re-review
 
 ## Planned
@@ -26,6 +25,7 @@
 
 ## Completed
 
+- [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — complete; PR 251 merged; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 - [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — complete; source consumer passed at `cbd4ddc8`; tag capsule relayed to Acowtancy
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — complete; PR 243 merged at `8bbeceb4`; opt-in exchange with default reject/cancel and stable `No` disposition
 - [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; Research 287 indexed, no production claims changed

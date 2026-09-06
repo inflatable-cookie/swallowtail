@@ -1,6 +1,6 @@
 # 104 Post-Tag Determinism Sweep
 
-Status: review; fixture-only verdict, no production source changes
+Status: complete; PR 251 merged; fixture-only verdict, no production source changes
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

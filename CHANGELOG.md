@@ -4,6 +4,9 @@ All notable Swallowtail changes are recorded here. Releases are source-only
 annotated Git tags from the canonical repository.
 
 ## [Unreleased]
+
+### Added
+
 - add opt-in provider-owned Claude Agent SDK session persistence with
   replay-free `resume` and `resumeSessionAt` attachment. Resume rebinds the
   host-leased cwd, first-party account, and exact `SessionResumeBinding`, while

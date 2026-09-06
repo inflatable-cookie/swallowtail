@@ -5,7 +5,7 @@ use super::startup::SessionReadiness;
 use super::validation::validate_turn;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::failure;
+use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::turn::SdkActiveTurn;
 use crate::sdk::wire::ClaudeAgentSdkCommand;
@@ -165,22 +165,36 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 }
             };
             match response {
-                Ok(response) if response.success => Ok(Box::new(ClaudeAgentSdkTurnHandle::new(
-                    request.turn_id().clone(),
-                    events,
-                    callbacks,
-                    Box::pin(terminal),
-                    TurnBinding {
-                        connection: Arc::clone(&self.connection),
-                        turn,
-                        active: Arc::clone(&self.active),
-                        receipts_advertised: self
-                            .readiness
-                            .advertises(INTERRUPT_RECEIPT_CAPABILITY),
-                        bounded,
-                    },
-                )) as Box<dyn TurnHandle>),
-                Ok(_) => Err(self.reject_turn(&turn, query_rejected())),
+                Ok(response) if response.success => {
+                    if let Err(error) = self.readiness.confirm_first_turn(response.data.as_ref()) {
+                        return Err(self.reject_turn(&turn, error));
+                    }
+                    Ok(Box::new(ClaudeAgentSdkTurnHandle::new(
+                        request.turn_id().clone(),
+                        events,
+                        callbacks,
+                        Box::pin(terminal),
+                        TurnBinding {
+                            connection: Arc::clone(&self.connection),
+                            turn,
+                            active: Arc::clone(&self.active),
+                            receipts_advertised: self
+                                .readiness
+                                .advertises(INTERRUPT_RECEIPT_CAPABILITY),
+                            bounded,
+                        },
+                    )) as Box<dyn TurnHandle>)
+                }
+                Ok(response) => Err(self.reject_turn(
+                    &turn,
+                    command_rejected(
+                        "swallowtail.claude-agent.sdk.query_rejected",
+                        "Claude Agent SDK sidecar rejected the query before acceptance",
+                        response
+                            .failure_code
+                            .expect("a rejected response carries its fixed sidecar code"),
+                    ),
+                )),
                 Err(error) => Err(self.reject_turn(&turn, error)),
             }
         })
@@ -247,6 +261,38 @@ impl Drop for ClaudeAgentSdkSessionHandle {
 }
 
 impl ClaudeAgentSdkSessionHandle {
+    /// Returns the model requested by the plan at open.
+    #[must_use]
+    pub fn requested_model(&self) -> &str {
+        self.readiness.requested_model()
+    }
+
+    /// Returns the effective model reported by the SDK `system/init` evidence.
+    #[must_use]
+    pub fn effective_model(&self) -> &str {
+        self.readiness.effective_model()
+    }
+
+    /// Returns the readiness evidence stage: initialize-served requested
+    /// model support at open, or confirmed after first-turn `system/init`.
+    #[must_use]
+    pub fn readiness_state(&self) -> &'static str {
+        self.readiness.readiness_state()
+    }
+
+    /// Returns the observed Node runtime version from the sidecar open.
+    #[must_use]
+    pub fn node_version(&self) -> &str {
+        self.readiness.node_version()
+    }
+
+    /// Returns `Qualified` for the exact point or `UnverifiedNewer` for a
+    /// newer runtime that passed the sidecar floor.
+    #[must_use]
+    pub const fn node_version_posture(&self) -> &'static str {
+        self.readiness.node_version_posture()
+    }
+
     /// Returns the admitted tool set and current effective permission mode.
     #[must_use]
     pub const fn session_profile(&self) -> ClaudeAgentSdkSessionProfile {
@@ -306,9 +352,12 @@ impl ClaudeAgentSdkSessionHandle {
             };
             let response = response?;
             if !response.success {
-                return Err(failure(
+                return Err(command_rejected(
                     "swallowtail.claude-agent.sdk.permission_mode_rejected",
                     "Claude Agent SDK sidecar rejected the permission-mode change",
+                    response
+                        .failure_code
+                        .expect("a rejected response carries its fixed sidecar code"),
                 ));
             }
             // The confirmation is the sidecar's own echo of the mode it
@@ -349,12 +398,5 @@ fn permission_mode_unconfirmed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.permission_mode_unconfirmed",
         "Claude Agent SDK sidecar did not confirm the requested permission mode",
-    )
-}
-
-fn query_rejected() -> RuntimeFailure {
-    failure(
-        "swallowtail.claude-agent.sdk.query_rejected",
-        "Claude Agent SDK sidecar rejected the query before acceptance",
     )
 }

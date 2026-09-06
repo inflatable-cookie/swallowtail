@@ -37,6 +37,7 @@ pub struct SidecarProcess {
     lines: Receiver<String>,
     directory: PathBuf,
     pending: Vec<Value>,
+    held: Vec<Value>,
     offered: Vec<String>,
 }
 
@@ -44,6 +45,14 @@ impl SidecarProcess {
     /// Starts the asset with a fake native child that exits promptly.
     pub fn start() -> Self {
         Self::start_with(&Fixture::default())
+    }
+
+    /// Starts the asset against a named provider-free fake-SDK scenario.
+    pub fn start_scenario(scenario: &'static str) -> Self {
+        Self::start_with(&Fixture {
+            scenario,
+            ..Fixture::default()
+        })
     }
 
     /// Starts the asset with a fake native child that outlives any bound the
@@ -92,6 +101,28 @@ impl SidecarProcess {
             .arg(&entry)
             .env_clear()
             .env("PATH", std::env::var("PATH").unwrap_or_default())
+            .env("HOME", "/fixture/home")
+            .env("TMPDIR", "/fixture/tmp")
+            .env("LANG", "en_US.UTF-8")
+            .env("LC_ALL", "en_US.UTF-8")
+            .env("LC_CTYPE", "en_US.UTF-8")
+            .env("USER", "fixture-user")
+            .env("SHELL", "/bin/sh")
+            .env("TERM", "xterm-256color")
+            .env("COLORTERM", "truecolor")
+            .env("__CF_USER_TEXT_ENCODING", "0x0:0:0")
+            .env("XPC_FLAGS", "0x0")
+            .env("XPC_SERVICE_NAME", "fixture.service")
+            .env("MallocNanoZone", "0")
+            .env("COMMAND_MODE", "unix2003")
+            .env("ANTHROPIC_API_KEY", "fixture-secret")
+            .env("CLAUDE_CONFIG_DIR", "/fixture/claude")
+            .env("CLAUDE_CODE_USE_BEDROCK", "1")
+            .env("OPENAI_API_KEY", "fixture-secret")
+            .env("AWS_ACCESS_KEY_ID", "fixture-secret")
+            .env("AWS_SECRET_ACCESS_KEY", "fixture-secret")
+            .env("GOOGLE_API_KEY", "fixture-secret")
+            .env("RANDOM_UNRELATED", "fixture-value")
             .env(
                 "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE",
                 directory.join("fake-sdk.mjs"),
@@ -134,6 +165,7 @@ impl SidecarProcess {
             lines,
             directory,
             pending: Vec::new(),
+            held: Vec::new(),
             offered: Vec::new(),
         }
     }
@@ -206,12 +238,12 @@ impl SidecarProcess {
     pub fn command(&mut self, id: &str, command: &str, params: Value) -> Value {
         self.write(json!({"type": "command", "id": id, "command": command, "params": params}));
         loop {
-            let record = self.next_record();
+            let record = self.next_received_record();
             match record["type"].as_str() {
                 Some("response") if record["id"] == id => return record,
                 Some("callback") => self.hold_callback(record),
                 Some("terminal") => panic!("sidecar terminated: {record}"),
-                _ => {}
+                _ => self.held.push(record),
             }
         }
     }
@@ -233,15 +265,28 @@ impl SidecarProcess {
     /// Waits for the live turn to end, holding any callback that arrives
     /// first. A new query before the turn ends is refused by the sidecar.
     pub fn wait_for_turn_end(&mut self) {
+        let _ = self.wait_for_turn_end_record();
+    }
+
+    /// Returns the sanitized terminal event, holding any callback that arrives
+    /// before it. The sidecar's projection intentionally excludes SDK error
+    /// text while retaining the typed result evidence needed by the live log.
+    pub fn wait_for_turn_end_record(&mut self) -> Value {
         loop {
             let record = self.next_record();
             match record["type"].as_str() {
                 Some("callback") => self.hold_callback(record),
                 Some("terminal") => panic!("sidecar terminated: {record}"),
-                Some("event") if record["event"] == "turn_ended" => return,
+                Some("event") if record["event"] == "turn_ended" => return record,
                 _ => {}
             }
         }
+    }
+
+    pub fn observed_prompt_stream_state(&self) -> Option<String> {
+        self.read_observations()["promptStreamState"]
+            .as_str()
+            .map(ToOwned::to_owned)
     }
 
     pub fn respond_callback(&mut self, id: &str, decision: &str) {
@@ -276,6 +321,45 @@ impl SidecarProcess {
         observations["options"].clone()
     }
 
+    pub fn observed_control_calls(&self) -> Vec<String> {
+        self.read_observations()["controlCalls"]
+            .as_array()
+            .expect("fake SDK control observations are an array")
+            .iter()
+            .map(|value| {
+                value
+                    .as_str()
+                    .expect("fake SDK control observation is a string")
+                    .to_owned()
+            })
+            .collect()
+    }
+
+    pub fn first_input_consumed(&self) -> bool {
+        self.read_observations()["firstInputConsumed"] == true
+    }
+
+    pub fn observed_spawn_hook_argument(&self) -> Value {
+        let observations = self.read_observations();
+        assert!(
+            observations["spawnHookArgument"].is_object(),
+            "fake SDK did not record the argument received by the spawn hook"
+        );
+        observations["spawnHookArgument"].clone()
+    }
+
+    pub fn observed_spawn_hook_argument_count(&self) -> usize {
+        self.read_observations()["spawnHookArgumentCount"]
+            .as_u64()
+            .expect("fake SDK recorded the spawn hook argument count") as usize
+    }
+
+    pub fn observed_close_calls(&self) -> usize {
+        self.read_observations()["closeCalls"]
+            .as_u64()
+            .expect("fake SDK recorded close calls") as usize
+    }
+
     fn read_observations(&self) -> Value {
         let path = self.directory.join("observations.json");
         let text = std::fs::read_to_string(path).expect("fake SDK observations are present");
@@ -296,6 +380,13 @@ impl SidecarProcess {
     }
 
     fn next_record(&mut self) -> Value {
+        if !self.held.is_empty() {
+            return self.held.remove(0);
+        }
+        self.next_received_record()
+    }
+
+    fn next_received_record(&self) -> Value {
         match self.lines.recv_timeout(SIDECAR_DEATH_GUARD) {
             Ok(line) => serde_json::from_str(&line).unwrap_or_else(|error| {
                 panic!("sidecar wrote a non-record line {line:?}: {error}")

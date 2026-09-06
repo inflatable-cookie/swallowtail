@@ -1,9 +1,9 @@
 use super::{
     ClaudeAgentSdkBashCommandView, ClaudeAgentSdkCallback, ClaudeAgentSdkCommand,
     ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticLevel, ClaudeAgentSdkEvent,
-    ClaudeAgentSdkFailure, ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES,
-    MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES, MAXIMUM_TEXT_BYTES, bounded_text,
-    failure, required_bool,
+    ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode, ClaudeAgentSdkResponse,
+    MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
+    MAXIMUM_TEXT_BYTES, bounded_text, failure, required_bool,
 };
 use crate::sdk::protocol::{ClaudeAgentSdkProtocolFailure, ClaudeAgentSdkProtocolFailureKind};
 use serde_json::Value;
@@ -29,15 +29,17 @@ pub(super) fn decode_response(
                 command: command.to_owned(),
                 success,
                 data,
+                failure_code: None,
             })
         }
         (false, None, Some(record)) => {
-            decode_failure(record, invalid)?;
+            let failure = decode_failure(record, invalid)?;
             Ok(ClaudeAgentSdkResponse {
                 id,
                 command: command.to_owned(),
                 success,
                 data: None,
+                failure_code: Some(failure.code),
             })
         }
         _ => Err(failure(invalid)),
@@ -167,7 +169,7 @@ fn decode_failure(
     kind: ClaudeAgentSdkProtocolFailureKind,
 ) -> Result<ClaudeAgentSdkFailure, ClaudeAgentSdkProtocolFailure> {
     bounded_text(value, "message", MAXIMUM_FAILURE_MESSAGE_BYTES, kind)?;
-    Ok(ClaudeAgentSdkFailure {
-        code: bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, kind)?.to_owned(),
-    })
+    let code = bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, kind)?;
+    let code = ClaudeAgentSdkFailureCode::parse(code).ok_or_else(|| failure(kind))?;
+    Ok(ClaudeAgentSdkFailure { code })
 }

@@ -136,8 +136,15 @@ fn decide(report: &CleanupReport) -> CleanupOutcome {
         None
     };
     let state = ClaudeAgentSdkCloseState::decide(report.native_join, root_exit);
+    let cooperative = report
+        .cooperative_failure
+        .clone()
+        .map_or(CleanupOutcome::NotApplicable, CleanupOutcome::Failed);
     merge_cleanup(
-        merge_cleanup(state.cleanup_outcome(), report.resource.clone()),
+        merge_cleanup(
+            merge_cleanup(state.cleanup_outcome(), cooperative),
+            report.resource.clone(),
+        ),
         report.credential.clone(),
     )
 }

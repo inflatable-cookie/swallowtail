@@ -46,7 +46,9 @@
 // termination authority; it is never a slow success.
 
 import { spawn } from "node:child_process";
+import { realpathSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { pathToFileURL } from "node:url";
 import process from "node:process";
 
@@ -69,6 +71,9 @@ const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
 const MAXIMUM_PROMPT_BYTES = 256 * 1024;
 const MINIMUM_JOIN_BOUND_MS = 100;
 const MAXIMUM_JOIN_BOUND_MS = 60_000;
+const SDK_CONTROL_BOUND_MS = 60_000;
+const READINESS_REQUESTED = "requested-with-supported-list";
+const READINESS_CONFIRMED = "confirmed";
 
 // Every tool this route can admit, in the exact order the host sends them.
 // Background shells, terminal, notebook, and network tools stay outside this
@@ -101,7 +106,111 @@ const ENV_SDK_MODULE = "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE";
 const ENV_NATIVE_BINARY = "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY";
 const ENV_MANIFEST = "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST";
 
+// Keep the native child useful for its local runtime and locale without
+// inheriting credentials, provider switches, Claude configuration, or other
+// ambient application state. LC_* is the only prefix allowlist; every other
+// accepted name is explicit, including the macOS process essentials.
+const CHILD_ENV_EXACT_KEYS = new Set([
+  "HOME",
+  "PATH",
+  "TMPDIR",
+  "LANG",
+  "USER",
+  "SHELL",
+  "TERM",
+  "COLORTERM",
+  "__CF_USER_TEXT_ENCODING",
+  "XPC_FLAGS",
+  "XPC_SERVICE_NAME",
+  "MallocNanoZone",
+  "COMMAND_MODE",
+]);
+
+// Names from the frozen 0.3.259 SDKResultSuccess/SDKResultError union. The
+// sidecar records only presence booleans; values such as result text, usage,
+// UUIDs, paths, and provider errors never cross the wire.
+const SDK_RESULT_FIELD_NAMES = [
+  "type",
+  "subtype",
+  "duration_ms",
+  "duration_api_ms",
+  "ttft_ms",
+  "ttft_stream_ms",
+  "time_to_request_ms",
+  "user_message_uuid",
+  "user_message_uuids",
+  "request_sent_wall_ms",
+  "time_to_request_from_spawn_ms",
+  "warm_spare_claimed",
+  "time_origin_ms",
+  "is_error",
+  "api_error_status",
+  "num_turns",
+  "result",
+  "stop_reason",
+  "total_cost_usd",
+  "usage",
+  "modelUsage",
+  "permission_denials",
+  "queued_turn_count",
+  "structured_output",
+  "deferred_tool_use",
+  "terminal_reason",
+  "fast_mode_state",
+  "fast_mode_disabled_reason",
+  "origin",
+  "uuid",
+  "session_id",
+  "errors",
+];
+
+function childEnvironment() {
+  return Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([key, value]) =>
+        typeof value === "string" && (CHILD_ENV_EXACT_KEYS.has(key) || key.startsWith("LC_")),
+    ),
+  );
+}
+
 const COMMANDS = new Set(["open", "query", "interrupt", "set_permission_mode", "close"]);
+const COMMAND_FAILURE_CODES = new Set([
+  "missing_environment",
+  "invalid_command",
+  "tools_invalid",
+  "permission_mode_invalid",
+  "permission_mode_rejected",
+  "sdk_unavailable",
+  "sdk_export_missing",
+  "native_manifest_unavailable",
+  "native_version_mismatch",
+  "capabilities_overflow",
+  "capabilities_invalid",
+  "account_not_first_party",
+  // Retired compatibility label: subscription evidence is observation-only,
+  // so the sidecar no longer rejects when subscriptionType is absent.
+  "account_not_subscription",
+  "already_open",
+  "node_runtime_unsupported",
+  "construction_failed",
+  "initialization_failed",
+  "init_missing",
+  "cwd_mismatch",
+  "model_mismatch",
+  "model_missing",
+  "supported_model_rejected",
+  "account_unavailable",
+  "native_child_unavailable",
+  "not_open",
+  "turn_active",
+  "prompt_too_large",
+  "interrupt_failed",
+  "permission_mode_unsupported",
+  "permission_mode_failed",
+  "permission_mode_unconfirmed",
+  "unknown_command",
+  "command_failed",
+]);
 
 // Keep the stdout wire exclusive: SDK or dependency console output must never
 // corrupt framing. Diagnostics belong on stderr, which the host bounds.
@@ -121,17 +230,24 @@ const state = {
   sdk: null,
   query: null,
   cwd: null,
+  requestedModel: null,
   tools: DEFAULT_TOOLS,
   permissionMode: "default",
   capabilities: [],
   native: null,
   reader: null,
+  closeTimeline: [],
+  initialized: false,
+  effectiveModel: null,
+  supportedModels: [],
+  supportedModelsAvailable: false,
   turnActive: false,
   pending: new Map(),
   usedIds: new Set(),
   callbacks: new Map(),
   nextCallbackId: 0,
   closed: false,
+  sdkTransportCloseRan: false,
 };
 
 let writes = Promise.resolve();
@@ -158,7 +274,11 @@ async function respond(id, command, success, body) {
 }
 
 async function respondFailure(id, command, code) {
-  await respond(id, command, false, { code, message: `sidecar command failed: ${code}` });
+  const safeCode = COMMAND_FAILURE_CODES.has(code) ? code : "command_failed";
+  await respond(id, command, false, {
+    code: safeCode,
+    message: `sidecar command failed: ${safeCode}`,
+  });
 }
 
 async function emitDiagnostic(level, code) {
@@ -309,18 +429,56 @@ function boundedWait(boundMs) {
   return { expiry, cancel: () => clearTimeout(timer) };
 }
 
+/// Bounds one SDK control exchange. The SDK's control methods can wait on the
+/// native process, so open never inherits an unbounded await from the wrapper.
+async function boundedControl(operation, failureCode) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new SidecarFailure(failureCode)), SDK_CONTROL_BOUND_MS);
+  });
+  try {
+    return await Promise.race([Promise.resolve().then(operation), timeout]);
+  } catch (error) {
+    if (error instanceof SidecarFailure) {
+      throw error;
+    }
+    throw new SidecarFailure(failureCode);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /// Retains the native child independently of SDK cleanup. The SDK's own
 /// bounded wait discards its outcome, so only this handle may be joined.
 class NativeChild {
   constructor(child) {
     this.child = child;
     this.exited = false;
+    this.exitEvent = null;
+    this.exitCode = null;
+    this.exitSignal = null;
     this.exitObserved = new Promise((resolve) => {
-      child.once("exit", () => {
+      child.once("error", () => {
+        if (this.exitEvent === null) {
+          this.exitEvent = "error";
+        }
+      });
+      child.once("exit", (code, signal) => {
         this.exited = true;
+        this.exitEvent = "exit";
+        this.exitCode = code;
+        this.exitSignal = signal;
         resolve();
       });
     });
+  }
+
+  evidence() {
+    return {
+      event: this.exitEvent,
+      code: this.exitCode,
+      signal: this.exitSignal,
+    };
   }
 
   /// Joins the retained handle to `boundMs`. Returns true only on an
@@ -341,14 +499,16 @@ class NativeChild {
   }
 }
 
-function spawnNative(command, args, options) {
+function spawnNative({ command, args, cwd, env, signal }) {
   // The host launched this sidecar inside its own descendant-tree authority,
   // so the native child and everything it spawns stay enrolled in that tree.
   // No detachment, no new session, no new process group.
   const child = spawn(command, args, {
-    ...options,
+    cwd,
+    env,
+    signal,
     detached: false,
-    stdio: options?.stdio ?? ["pipe", "pipe", "pipe"],
+    stdio: ["pipe", "pipe", "pipe"],
   });
   state.native = new NativeChild(child);
   return child;
@@ -377,20 +537,41 @@ function boundedCapabilities(values) {
 }
 
 /// Projects readiness provenance labels only. No email, organization, token,
-/// or raw account value ever crosses this wire.
-function accountProjection(account, apiKeySource) {
+/// or raw account value ever crosses this wire. Subscription fields are
+/// observations, not gates.
+function accountProjection(account) {
   const apiProvider = account?.apiProvider;
   if (apiProvider !== "firstParty") {
     throw new SidecarFailure("account_not_first_party");
   }
-  if (apiKeySource !== "oauth") {
-    throw new SidecarFailure("account_not_subscription");
-  }
   return {
     apiProvider,
-    apiKeySource,
-    subscriptionPresent: typeof account?.subscriptionType === "string",
+    subscriptionTypePresent:
+      typeof account?.subscriptionType === "string" && account.subscriptionType.length > 0,
+    tokenSourcePresent:
+      typeof account?.tokenSource === "string" && account.tokenSource.length > 0,
+    apiKeySourcePresent:
+      typeof account?.apiKeySource === "string" && account.apiKeySource.length > 0,
   };
+}
+
+function supportedModelValues(values) {
+  if (!Array.isArray(values)) {
+    throw new SidecarFailure("initialization_failed");
+  }
+  const models = [];
+  for (const entry of values) {
+    const candidates = [entry?.value, entry?.resolvedModel];
+    for (const candidate of candidates) {
+      if (typeof candidate !== "string" || candidate.length === 0) {
+        continue;
+      }
+      if (!models.includes(candidate)) {
+        models.push(candidate);
+      }
+    }
+  }
+  return models;
 }
 
 function boundedCallbackText(value) {
@@ -506,14 +687,48 @@ function projectMessage(message) {
       }
       return events;
     }
-    case "result":
+    case "result": {
+      const resultFieldPresence = Object.fromEntries(
+        [...new Set([...SDK_RESULT_FIELD_NAMES, ...Object.keys(message)])]
+          .sort()
+          .map((key) => [key, Object.prototype.hasOwnProperty.call(message, key)]),
+      );
+      const subtype = typeof message.subtype === "string" ? message.subtype : null;
+      const errorTextPresent = Object.prototype.hasOwnProperty.call(message, "error");
+      let errorTextType = "absent";
+      if (errorTextPresent) {
+        if (message.error === null) {
+          errorTextType = "null";
+        } else if (Array.isArray(message.error)) {
+          errorTextType = "array";
+        } else {
+          errorTextType = typeof message.error;
+        }
+      }
+      const numTurns =
+        Number.isSafeInteger(message.num_turns) && message.num_turns >= 0
+          ? message.num_turns
+          : null;
+      const durationMs =
+        Number.isSafeInteger(message.duration_ms) && message.duration_ms >= 0
+          ? message.duration_ms
+          : null;
       return [
         {
           event: "turn_ended",
-          stopReason: String(message.subtype ?? ""),
+          subtype,
           isError: message.is_error === true,
+          numTurns,
+          durationMs,
+          errorTextPresent,
+          errorTextType,
+          resultFieldPresence,
+          // Keep the existing route field while making the SDK result fields
+          // explicit and separately inspectable. Never forward error text.
+          stopReason: subtype ?? "",
         },
       ];
+    }
     case "stream_event":
     case "system":
       return [{ event: "progress" }];
@@ -577,7 +792,7 @@ async function handleOpen(params) {
         pathToClaudeCodeExecutable: nativeBinary,
         // Always explicit: omission would inherit `process.env` and could
         // silently select API-key authentication over the subscription.
-        env: {},
+        env: childEnvironment(),
         settingSources: [],
         skills: [],
         plugins: [],
@@ -593,7 +808,7 @@ async function handleOpen(params) {
         disallowedTools: disallowed,
         permissionMode,
         canUseTool: (toolName, input) => canUseTool(toolName, input),
-        spawnClaudeCodeProcess: (command, args, options) => spawnNative(command, args, options),
+        spawnClaudeCodeProcess: (options) => spawnNative(options),
       },
     });
   } catch (error) {
@@ -604,38 +819,35 @@ async function handleOpen(params) {
   }
   state.query = query;
 
-  let initialized;
-  try {
-    initialized = await query.next();
-  } catch {
+  // The SDK initialize exchange is the open-time handshake. It is deliberately
+  // separate from the async-generator's first system/init message, which is
+  // evidence for the first user turn rather than an open gate.
+  const initialization = await boundedControl(
+    () => query.initializationResult(),
+    "initialization_failed",
+  );
+  if (!initialization || typeof initialization !== "object") {
     throw new SidecarFailure("initialization_failed");
   }
-  const system = initialized?.value;
-  if (initialized?.done === true || system?.type !== "system" || system.subtype !== "init") {
-    throw new SidecarFailure("initialization_failed");
-  }
-  if (typeof system.cwd !== "string" || system.cwd !== cwd) {
-    throw new SidecarFailure("cwd_mismatch");
-  }
-  // The effective model is proved from the runtime's own init evidence, never
-  // assumed from the request.
-  if (typeof system.model !== "string" || system.model !== model) {
-    throw new SidecarFailure("model_mismatch");
-  }
-  const capabilities = boundedCapabilities(system.capabilities);
-  let account;
-  try {
-    account = await query.accountInfo();
-  } catch {
-    throw new SidecarFailure("account_unavailable");
-  }
-  const readiness = accountProjection(account, system.apiKeySource);
+  const modelRows = await boundedControl(() => query.supportedModels(), "initialization_failed");
+  const supportedModels = supportedModelValues(modelRows);
+  const account = await boundedControl(
+    () => query.accountInfo(),
+    "account_unavailable",
+  );
+  const readiness = accountProjection(account);
   if (!state.native) {
     throw new SidecarFailure("native_child_unavailable");
   }
   state.cwd = cwd;
-  state.capabilities = capabilities;
-  state.reader = drainQuery();
+  state.requestedModel = model;
+  state.capabilities = [];
+  state.initialized = false;
+  state.effectiveModel = null;
+  state.supportedModels = supportedModels;
+  state.supportedModelsAvailable = supportedModels.length > 0;
+  state.sdkTransportCloseRan = false;
+  state.closeTimeline = [];
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
@@ -644,46 +856,96 @@ async function handleOpen(params) {
     nativeVersion,
     nodeVersion: process.versions.node,
     cwd,
-    model: system.model,
-    capabilities,
+    requestedModel: model,
+    readiness: READINESS_REQUESTED,
+    supportedModels,
+    capabilities: [],
     account: readiness,
     tools,
     permissionMode,
   };
 }
 
-let inputResolve = null;
-const inputQueue = [];
-let inputClosed = false;
-
-async function* inputStream() {
-  while (!inputClosed) {
-    if (inputQueue.length === 0) {
-      await new Promise((resolve) => {
-        inputResolve = resolve;
-      });
-      continue;
-    }
-    yield inputQueue.shift();
+// The SDK's streaming-input query stays alive for the session. A generator
+// that yields one queued message and then returns is a one-shot prompt, which
+// lets the SDK close stdin and report an abort/code-1 result after turn one.
+// Keep the source open across turns; only the sidecar close command ends it.
+class SessionInput {
+  constructor() {
+    this.queue = [];
+    this.waiters = [];
+    this.closed = false;
   }
+
+  next() {
+    if (this.queue.length > 0) {
+      return Promise.resolve({ value: this.queue.shift(), done: false });
+    }
+    if (this.closed) {
+      return Promise.resolve({ value: undefined, done: true });
+    }
+    return new Promise((resolve) => this.waiters.push(resolve));
+  }
+
+  // Do not let an SDK consumer's per-turn iterator cleanup close the session.
+  // The sidecar owns session lifetime and calls close() only from handleClose.
+  return() {
+    return Promise.resolve({ value: undefined, done: true });
+  }
+
+  [Symbol.asyncIterator]() {
+    return this;
+  }
+
+  push(message) {
+    if (this.closed) {
+      return;
+    }
+    const resolve = this.waiters.shift();
+    if (resolve) {
+      resolve({ value: message, done: false });
+    } else {
+      this.queue.push(message);
+    }
+  }
+
+  close() {
+    if (this.closed) {
+      return;
+    }
+    this.closed = true;
+    while (this.waiters.length > 0) {
+      this.waiters.shift()({ value: undefined, done: true });
+    }
+  }
+}
+
+const sessionInput = new SessionInput();
+
+function inputStream() {
+  return sessionInput;
 }
 
 function pushInput(message) {
-  inputQueue.push(message);
-  if (inputResolve) {
-    const resolve = inputResolve;
-    inputResolve = null;
-    resolve();
+  sessionInput.push(message);
+}
+
+function canonicalPath(value) {
+  try {
+    return realpathSync.native(path.resolve(value));
+  } catch {
+    return null;
   }
 }
 
+function cwdMatches(expected, observed) {
+  const expectedCanonical = canonicalPath(expected);
+  const observedCanonical = canonicalPath(observed);
+  return expectedCanonical !== null && expectedCanonical === observedCanonical;
+}
+
 function endInput() {
-  inputClosed = true;
-  if (inputResolve) {
-    const resolve = inputResolve;
-    inputResolve = null;
-    resolve();
-  }
+  sessionInput.close();
 }
 
 async function handleQuery(params) {
@@ -705,8 +967,46 @@ async function handleQuery(params) {
     parent_tool_use_id: null,
     session_id: "",
   });
+  if (!state.initialized) {
+    let first;
+    try {
+      first = await state.query.next();
+    } catch {
+      state.turnActive = false;
+      throw new SidecarFailure("initialization_failed");
+    }
+    const system = first?.value;
+    if (first?.done === true || system?.type !== "system" || system.subtype !== "init") {
+      state.turnActive = false;
+      throw new SidecarFailure("init_missing");
+    }
+    if (typeof system.cwd !== "string" || !cwdMatches(state.cwd, system.cwd)) {
+      state.turnActive = false;
+      throw new SidecarFailure("cwd_mismatch");
+    }
+    if (typeof system.model !== "string" || system.model.length === 0) {
+      state.turnActive = false;
+      throw new SidecarFailure("model_missing");
+    }
+    if (state.supportedModelsAvailable && !state.supportedModels.includes(system.model)) {
+      state.turnActive = false;
+      throw new SidecarFailure("supported_model_rejected");
+    }
+    const capabilities = boundedCapabilities(system.capabilities);
+    state.initialized = true;
+    state.effectiveModel = system.model;
+    state.capabilities = capabilities;
+    state.reader = drainQuery();
+  }
   await emitEvent({ event: "turn_started" });
-  return { accepted: true };
+  return {
+    accepted: true,
+    readiness: READINESS_CONFIRMED,
+    cwd: state.cwd,
+    requestedModel: state.requestedModel,
+    model: state.effectiveModel,
+    capabilities: state.capabilities,
+  };
 }
 
 async function handleInterrupt(params) {
@@ -762,6 +1062,7 @@ async function handleSetPermissionMode(params) {
 /// bound. The SDK's own cleanup outcome is never treated as evidence.
 async function handleClose(id, command, params) {
   state.closed = true;
+  state.closeTimeline = ["close_requested"];
   let boundMs;
   try {
     requireExactParams(params, ["joinBoundMs"]);
@@ -788,17 +1089,24 @@ async function handleClose(id, command, params) {
   const bound = boundedWait(boundMs);
   if (state.query) {
     if (state.turnActive) {
+      state.closeTimeline.push("interrupt_requested");
       try {
         await Promise.race([state.query.interrupt(), bound.expiry]);
+        state.closeTimeline.push("interrupt_completed");
       } catch {
+        state.closeTimeline.push("interrupt_failed");
         await emitDiagnostic("warning", "interrupt_before_close_failed");
       }
       state.turnActive = false;
     }
     endInput();
+    state.closeTimeline.push("session_input_closed");
     try {
       state.query.close();
+      state.sdkTransportCloseRan = true;
+      state.closeTimeline.push("sdk_transport_close_ran");
     } catch {
+      state.closeTimeline.push("sdk_transport_close_failed");
       await emitDiagnostic("warning", "sdk_close_failed");
     }
     if (state.reader) {
@@ -814,7 +1122,13 @@ async function handleClose(id, command, params) {
   }
   state.callbacks.clear();
   const joined = await joinPromise;
+  state.closeTimeline.push(joined ? "native_join_exited" : "native_join_survivor");
   bound.cancel();
+  const nativeEvidence = state.native?.evidence() ?? {
+    event: null,
+    code: null,
+    signal: null,
+  };
   // Report what was observed, not what is hoped. The retained handle still
   // showing an unexited child is a positive survivor observation; the host
   // treats that as cleanup failure rather than an absence of news.
@@ -822,6 +1136,11 @@ async function handleClose(id, command, params) {
     nativeJoin: joined ? "exited" : "survivor",
     joinBoundMs: boundMs,
     nativeExitObserved: joined,
+    nativeExitEvent: nativeEvidence.event,
+    nativeExitCode: nativeEvidence.code,
+    nativeExitSignal: nativeEvidence.signal,
+    sdkTransportCloseRan: state.sdkTransportCloseRan,
+    closeTimeline: state.closeTimeline,
   });
   await writes;
   process.exit(joined ? 0 : 1);

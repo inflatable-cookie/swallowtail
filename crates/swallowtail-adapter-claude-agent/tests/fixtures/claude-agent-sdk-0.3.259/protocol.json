@@ -1,9 +1,13 @@
 {
   "selected_mapped_subset": [
     "query() through the '.' entry point only",
+    "query({prompt, options}) accepts string | AsyncIterable<SDKUserMessage>; the streaming input remains open across turns until Query.close()",
     "Options: cwd, model, executable, pathToClaudeCodeExecutable, env, settingSources, skills, plugins, agents, mcpServers, strictMcpConfig, hooks, persistSession, tools, disallowedTools, permissionMode, canUseTool, spawnClaudeCodeProcess",
     "system/init fields: cwd, model, apiKeySource, capabilities",
-    "accountInfo(): apiProvider, subscriptionType",
+    "Query.initializationResult(): Promise<SDKControlInitializeResponse>",
+    "Query.supportedModels(): Promise<ModelInfo[]>",
+    "Query.accountInfo(): Promise<AccountInfo>",
+    "accountInfo(): apiProvider, subscriptionType, tokenSource, apiKeySource",
     "canUseTool(toolName, input) -> allow with unchanged updatedInput, or deny",
     "interrupt() and its capability-gated receipt",
     "SDKMessage projection: assistant text and tool_use, user tool_result, result subtype"
@@ -51,7 +55,8 @@
   ],
   "implementation_invariants_unchanged": {
     "can_use_tool_gating": "canUseTool still pushes --permission-prompt-tool stdio and still conflicts with permissionPromptToolName",
-    "spawn_callback": "spawnClaudeCodeProcess still present with the same call sites",
+    "spawn_callback": "spawnClaudeCodeProcess receives one SpawnOptions object with command, args, cwd, env, and signal",
+    "account_projection": "apiProvider is a first-party gate; subscriptionTypePresent, tokenSourcePresent, and apiKeySourcePresent are labelled observations",
     "no_joined_stop": "the bounded waitForExit race remains, and SIGKILL escalation is still unref'd",
     "stderr_drain": "sdk-exit-after-stderr-drained remains a single internal remap"
   },

@@ -14,6 +14,10 @@ the shipped `manifest.json` digests rather than by downloading 200 MB artifacts.
   Research 278 exactly.
 - `dist-inventory.json` — deterministic 15-file package-tree inventory across
   the hop: 7 identical, 8 changed, 0 added, 0 removed, with per-file digests.
+- `sdk-declarations.d.ts` — reproducible excerpts of the pinned `sdk.d.ts`
+  declarations for the streaming `query()` input, `SDKUserMessage`,
+  `AccountInfo`, the initialize-control methods on `Query`, `SpawnedProcess`,
+  and `SpawnOptions`.
 - `protocol.json` — the selected mapped subset, every classified declaration
   delta with why it stays unmapped, the unchanged implementation invariants,
   and the credential non-custody re-verification.

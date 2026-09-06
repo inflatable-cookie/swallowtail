@@ -12,9 +12,6 @@ use super::*;
 use std::path::Path;
 use std::time::{Duration, Instant};
 
-/// The fixture descendant lives for three seconds; every wait here is longer
-/// so an absent marker means termination, not impatience.
-const DESCENDANT_LIFETIME: Duration = Duration::from_secs(3);
 const MARKER_TIMEOUT: Duration = Duration::from_secs(8);
 
 #[test]
@@ -33,7 +30,8 @@ fn host_tree_termination_reaches_the_native_grandchild() {
     // the descendant the SDK launched.
     block_on(process.force_stop()).expect("host terminates the descendant tree");
     let _ = block_on(process.wait());
-    std::thread::sleep(DESCENDANT_LIFETIME + Duration::from_secs(1));
+    let descendant_pid = await_pid(&resource_directory);
+    await_process_exit(descendant_pid);
     assert!(
         !resource_directory.join("descendant-survived").exists(),
         "the native descendant must not survive host tree termination"
@@ -60,6 +58,9 @@ fn a_nearest_child_join_without_host_tree_ownership_leaves_the_descendant_runnin
         .expect("control sidecar starts");
     let control_exit = control.wait().expect("the nearest child joins");
     assert!(control_exit.success(), "the nearest child exited cleanly");
+    await_marker(&control_directory, "descendant-started");
+    std::fs::write(control_directory.join("descendant-release"), b"release")
+        .expect("control releases the descendant");
     await_marker(&control_directory, "descendant-survived");
     std::fs::remove_dir_all(control_directory).expect("control resource is removed");
 
@@ -75,12 +76,71 @@ fn a_nearest_child_join_without_host_tree_ownership_leaves_the_descendant_runnin
         .expect("sidecar fixture starts");
     await_marker(&resource_directory, "descendant-started");
     let _ = block_on(process.wait());
-    std::thread::sleep(DESCENDANT_LIFETIME + Duration::from_secs(1));
+    let descendant_pid = await_pid(&resource_directory);
+    await_process_exit(descendant_pid);
     assert!(
         !resource_directory.join("descendant-survived").exists(),
         "host tree ownership, not the nearest-child join, is what stopped the descendant"
     );
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+fn await_pid(directory: &Path) -> u32 {
+    let path = directory.join("descendant.pid");
+    let deadline = Instant::now() + MARKER_TIMEOUT;
+    loop {
+        if let Ok(contents) = std::fs::read_to_string(&path)
+            && let Ok(pid) = contents.trim().parse()
+        {
+            return pid;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "fixture descendant pid never appeared"
+        );
+        std::thread::sleep(Duration::from_millis(20));
+    }
+}
+
+fn await_process_exit(pid: u32) {
+    let deadline = Instant::now() + MARKER_TIMEOUT;
+    while process_is_alive(pid) {
+        assert!(
+            Instant::now() < deadline,
+            "fixture descendant {pid} remained alive"
+        );
+        std::thread::sleep(Duration::from_millis(20));
+    }
+}
+
+fn process_is_alive(pid: u32) -> bool {
+    #[cfg(unix)]
+    {
+        std::process::Command::new("/bin/ps")
+            .args(["-p", &pid.to_string(), "-o", "stat="])
+            .output()
+            .map(|output| {
+                output.status.success()
+                    && String::from_utf8_lossy(&output.stdout)
+                        .split_whitespace()
+                        .next()
+                        .is_some_and(|state| !state.starts_with('Z'))
+            })
+            .unwrap_or(false)
+    }
+    #[cfg(windows)]
+    {
+        std::process::Command::new("tasklist")
+            .args(["/FI", &format!("PID eq {pid}"), "/NH"])
+            .output()
+            .map(|output| output.status.success() && !output.stdout.starts_with(b"INFO:"))
+            .unwrap_or(false)
+    }
+    #[cfg(not(any(unix, windows)))]
+    {
+        let _ = pid;
+        false
+    }
 }
 
 fn await_marker(directory: &Path, marker: &str) {

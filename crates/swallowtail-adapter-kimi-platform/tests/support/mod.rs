@@ -1,10 +1,13 @@
 use futures_channel::oneshot;
 use futures_executor::block_on;
 use std::collections::BTreeMap;
+use std::future::Future;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
+use std::task::{Context, Poll, Waker};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{
@@ -33,6 +36,8 @@ const DISCONNECT: &str = include_str!(concat!(
     "/tests/fixtures/kimi-platform-k3-2026-07-21/disconnect.sse"
 ));
 
+const ATTEMPT_HANG_GUARD: Duration = Duration::from_secs(120);
+
 #[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
@@ -55,6 +60,7 @@ pub struct FixtureServer {
     endpoint: String,
     requests: Arc<Mutex<Vec<FixtureRequest>>>,
     attempts: Arc<AtomicUsize>,
+    attempt_signal: Arc<(Mutex<bool>, Condvar)>,
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
 }
@@ -65,10 +71,12 @@ impl FixtureServer {
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let requests = Arc::new(Mutex::new(Vec::new()));
         let attempts = Arc::new(AtomicUsize::new(0));
+        let attempt_signal = Arc::new((Mutex::new(false), Condvar::new()));
         let stop = Arc::new(AtomicBool::new(false));
         let state = (
             Arc::clone(&requests),
             Arc::clone(&attempts),
+            Arc::clone(&attempt_signal),
             Arc::clone(&stop),
         );
         let thread = thread::spawn(move || {
@@ -76,12 +84,12 @@ impl FixtureServer {
                 let Ok((mut stream, _)) = listener.accept() else {
                     break;
                 };
-                if state.2.load(Ordering::SeqCst) {
+                if state.3.load(Ordering::SeqCst) {
                     break;
                 }
                 if let Some(request) = read_request(&mut stream) {
                     state.0.lock().expect("request lock").push(request.clone());
-                    respond(&mut stream, &request, &state.1, fixture);
+                    respond(&mut stream, &request, &state.1, &state.2, fixture);
                 }
             }
         });
@@ -89,6 +97,7 @@ impl FixtureServer {
             endpoint,
             requests,
             attempts,
+            attempt_signal,
             stop,
             thread: Some(thread),
         }
@@ -102,6 +111,18 @@ impl FixtureServer {
     }
     pub fn attempts(&self) -> usize {
         self.attempts.load(Ordering::SeqCst)
+    }
+
+    pub fn wait_for_attempt(&self) {
+        let (ready, signal) = &*self.attempt_signal;
+        let guard = ready.lock().expect("attempt readiness lock");
+        let (_guard, wait) = signal
+            .wait_timeout_while(guard, ATTEMPT_HANG_GUARD, |ready| !*ready)
+            .expect("attempt readiness lock");
+        assert!(
+            !wait.timed_out(),
+            "fixture POST was never dispatched within {ATTEMPT_HANG_GUARD:?}"
+        );
     }
 }
 
@@ -157,6 +178,7 @@ fn respond(
     stream: &mut TcpStream,
     request: &FixtureRequest,
     attempts: &AtomicUsize,
+    attempt_signal: &(Mutex<bool>, Condvar),
     fixture: StreamFixture,
 ) {
     if request.headers.get("authorization").map(String::as_str) != Some("Bearer fixture-secret") {
@@ -170,6 +192,9 @@ fn respond(
     match (request.method.as_str(), request.target.as_str()) {
         ("GET", "/v1/models") => write_response(stream, 200, "application/json", MODELS),
         ("POST", "/v1/chat/completions") if attempts.fetch_add(1, Ordering::SeqCst) == 0 => {
+            let (ready, signal) = attempt_signal;
+            *ready.lock().expect("attempt readiness lock") = true;
+            signal.notify_all();
             match fixture {
                 StreamFixture::Success => write_response(stream, 200, "text/event-stream", SUCCESS),
                 StreamFixture::Unknown => write_response(stream, 200, "text/event-stream", UNKNOWN),

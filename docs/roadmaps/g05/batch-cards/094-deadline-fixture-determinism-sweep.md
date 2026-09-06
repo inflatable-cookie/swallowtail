@@ -147,28 +147,30 @@ above; it does not claim the 102-candidate ledger or the full Card 094 sweep is
 complete, and that continuation does not gate `v0.4.1`. The post-tag
 continuation below records that ledger.
 
-- **Host-local process fixture follow-up — deferred.** Add the host-local
-  `tests/local_process/` fixture test to the post-tag determinism follow-up
-  list. Card 100 records this follow-up only; it does not modify the
-  host-local crate or broaden its validation scope.
-- **Observed post-tag timing flakes — deferred.** Retain these exact surfaces
-  for the post-tag determinism pass:
+- **Host-local process fixture follow-up — retired by Card 104.** The
+  `tests/local_process/` fixture now uses explicit readiness and release
+  signals for its descendant cases and parked holds instead of outcome-deciding
+  sleep durations.
+- **Observed post-tag timing flakes — retired by Cards 103 and 104, except the
+  Claude sidecar family.** The exact surfaces below were reclassified and
+  closed by the named cards:
   - `swallowtail-adapter-kimi-platform/tests/direct_driver.rs` —
     `in_flight_deadline_times_out_and_releases_after_connection_join`; the
-    hosted Stable shard 2/3 direct-driver deadline timing flake passed in six
-    local runs.
+    hosted Stable shard 2/3 direct-driver deadline timing flake; retired by
+    Card 104 with a manual deadline trigger and dispatch-readiness gate.
   - `swallowtail-host-local/tests/local_process/descendant_tree.rs` — the
-    Card 094 host-local descendant-tree timing flake; keep both descendant
-    tree cases in the follow-up set.
+    Card 094 host-local descendant-tree timing flake; both cases were retired
+    by Card 104 with marker, PID, and process-state gates.
   - `swallowtail-host-local::watcher_service::lifecycle::watcher_stop_and_join_retires_owned_identities`
     — the single leaky test identified by the Stable shard 2/3
-    status-level leak run; retain it for the same post-tag determinism pass.
+    status-level leak run; retired by Card 104 with parked fixture lifetime,
+    explicit host reaper shutdown, and stale-identity assertions retained.
   - `swallowtail-adapter-claude-agent` fake-sidecar test processes surviving
-    overnight — retain this process-leak family for the same post-tag
-    determinism pass.
+    overnight — remains deferred and reserved for Card 088 closeout.
   - `swallowtail-adapter-opencode::prepared_facade`
     `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`
-    — fifth distinct Stable shard 2/3 macOS cleanup surface: the fixture-only
+    — retired by Card 103. This fifth distinct Stable shard 2/3 macOS cleanup
+    surface was fixture-only:
     test hit SIGABRT after 121s because `FixtureServer::drop` called
     `join_fixture_thread`, which resumed the fixture-thread panic while the
     test thread was not already panicking. The cancellation test gates the

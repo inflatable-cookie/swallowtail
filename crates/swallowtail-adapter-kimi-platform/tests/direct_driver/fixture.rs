@@ -13,8 +13,8 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    CredentialService, EndpointRef, HostServices, NetworkPolicyService, RuntimeFailure, ScopeId,
-    ScopedTaskService, TimeService,
+    CredentialService, Deadline, EndpointRef, HostServices, NetworkPolicyService, RuntimeFailure,
+    ScopeId, ScopedTaskService, TimeService,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -101,6 +101,10 @@ impl Fixture {
             .lock()
             .expect("release-order lock")
             .clone()
+    }
+
+    pub fn manual_deadline(&self) -> (Deadline, crate::support::ManualDeadlineTrigger) {
+        self.thread.manual_deadline()
     }
 
     pub fn plan(&self, role: DriverRole) -> swallowtail_core::PreflightPlan {

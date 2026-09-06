@@ -213,6 +213,9 @@ fn watcher_stop_and_join_retires_owned_identities() {
         failure.diagnostic().code(),
         "swallowtail.local_watcher.turn_retired"
     );
+    local
+        .shutdown_task_reapers()
+        .expect("watcher host task reapers shut down");
 }
 
 #[test]

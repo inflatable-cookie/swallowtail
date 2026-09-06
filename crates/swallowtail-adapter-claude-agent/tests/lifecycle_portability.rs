@@ -1,7 +1,7 @@
 #[path = "lifecycle_portability_support/mod.rs"]
-mod lifecycle_portability;
+mod portability_support;
 
-use lifecycle_portability::{host, server};
+use portability_support::{host, server};
 use serde_json::json;
 use swallowtail_core::{ExecutionHostId, RemoteAcpTransport};
 use swallowtail_protocol_acp::Message;

@@ -1,8 +1,4 @@
-mod support;
-
-#[allow(dead_code)]
-#[path = "prepared_facade/fixtures.rs"]
-mod fixtures;
+use crate::fixtures;
 
 use fixtures::PreparedFixture;
 use futures_executor::block_on;

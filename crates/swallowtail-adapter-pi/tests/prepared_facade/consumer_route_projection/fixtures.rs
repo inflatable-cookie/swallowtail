@@ -45,13 +45,13 @@ fn rpc_run(with_attachments: bool) -> ConsumerRouteProjectionContribution {
             "pi-ledger-run-minimal"
         })
         .expect("request id"),
-        crate::model("pi.ledger.run"),
+        super::super::model("pi.ledger.run"),
         OperationContent::new("private Pi ledger prompt").expect("content"),
         WorkingResourceRef::new("pi.ledger.workspace").expect("resource"),
         Deadline::at(MonotonicInstant::from_ticks(100_000)),
     );
     let input = if with_attachments {
-        input.with_attachments([crate::image("pi.ledger.image")])
+        input.with_attachments([super::super::image("pi.ledger.image")])
     } else {
         input
     };
@@ -77,7 +77,7 @@ fn rpc_session(with_attachments: bool) -> ConsumerRouteProjectionContribution {
             "pi-ledger-session-minimal"
         })
         .expect("request id"),
-        crate::model("pi.ledger.session"),
+        super::super::model("pi.ledger.session"),
         WorkingResourceRef::new("pi.ledger.workspace").expect("resource"),
         SessionOptions::default(),
     );

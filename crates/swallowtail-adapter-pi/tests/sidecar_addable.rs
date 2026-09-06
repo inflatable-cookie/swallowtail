@@ -2,7 +2,7 @@
 //! Pi SDK sidecar route. Deterministic fixtures only: no Node runtime, no
 //! SDK package, and no provider access.
 
-mod support;
+use crate::support;
 
 use std::sync::Arc;
 use support::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario, close_session};

@@ -1,4 +1,4 @@
-mod support;
+use crate::support;
 
 #[path = "direct_driver/failure_cases.rs"]
 mod failure_cases;

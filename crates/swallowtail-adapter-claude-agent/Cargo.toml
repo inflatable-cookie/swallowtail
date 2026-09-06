@@ -8,6 +8,7 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Claude Agent ACP and Claude Code headless harness drivers for Swallowtail"
+autotests = false
 
 [features]
 live-probes = []
@@ -45,3 +46,19 @@ required-features = ["live-probes"]
 name = "live_watcher_probe"
 path = "tests/live_watcher_probe.rs"
 required-features = ["live-probes"]
+
+[[test]]
+name = "integration"
+path = "tests/integration/main.rs"
+
+[[test]]
+name = "claude_agent_sdk_driver"
+path = "tests/claude_agent_sdk_driver.rs"
+
+[[test]]
+name = "claude_agent_sdk_sidecar_asset"
+path = "tests/claude_agent_sdk_sidecar_asset.rs"
+
+[[test]]
+name = "claude_code_structured_run"
+path = "tests/claude_code_structured_run.rs"

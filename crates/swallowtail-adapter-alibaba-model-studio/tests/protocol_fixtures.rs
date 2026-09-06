@@ -9,7 +9,7 @@ use swallowtail_runtime::{
     TerminalOutcome, TerminalStatus,
 };
 
-mod support;
+use crate::support;
 
 use support::{bytes, conversation, frames_from_chunks, json_fixture};
 

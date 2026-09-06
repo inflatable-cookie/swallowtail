@@ -2,7 +2,7 @@
 
 #[path = "prepared_facade/session_management.rs"]
 mod session_management;
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

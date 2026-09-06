@@ -5,10 +5,7 @@
 //! Deterministic harness only: no live login or install probes, no browser
 //! ports, no keychain extraction, no secret bytes in portable records.
 
-#[path = "support/discovery.rs"]
-mod support;
-
-use crate::support::{FixtureHost, Scenario};
+use crate::discovery_support::{FixtureHost, Scenario};
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID, CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID,

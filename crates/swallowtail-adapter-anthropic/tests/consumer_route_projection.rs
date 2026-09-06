@@ -2,10 +2,9 @@
 
 #![allow(dead_code, unused_imports)]
 
-mod support;
+use crate::support;
 
-#[path = "prepared_facade/fixtures.rs"]
-mod direct_fixtures;
+use crate::fixtures as direct_fixtures;
 
 use direct_fixtures::PreparedFixture;
 use std::collections::BTreeSet;

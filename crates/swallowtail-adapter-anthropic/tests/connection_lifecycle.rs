@@ -5,7 +5,7 @@
 //! Deterministic harness only: no live provider calls, no browser ports, no
 //! secret bytes in portable records.
 
-mod support;
+use crate::support;
 
 use std::sync::Arc;
 use support::ThreadServices;

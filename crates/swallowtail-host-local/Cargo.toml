@@ -8,6 +8,7 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Host-approved local execution services for Swallowtail"
+autotests = false
 
 [lib]
 doctest = false
@@ -27,3 +28,15 @@ nix = { version = "0.31.3", default-features = false, features = ["fs", "signal"
 
 [lints]
 workspace = true
+
+[[test]]
+name = "integration"
+path = "tests/integration/main.rs"
+
+[[test]]
+name = "local_process"
+path = "tests/local_process.rs"
+
+[[test]]
+name = "watcher_service"
+path = "tests/watcher_service.rs"

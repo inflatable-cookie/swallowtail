@@ -1,8 +1,6 @@
 #![allow(dead_code, unused_imports)]
 
-mod claude_code_support;
-
-use claude_code_support::{
+use crate::claude_code_support::{
     FakeProcessService, ImmediateTimeService, PendingTimeService, host_services, response_fixture,
     response_fixture_at, response_preparation_input, response_preparation_probe,
 };

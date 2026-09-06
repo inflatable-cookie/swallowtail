@@ -6,7 +6,7 @@ mod failures;
 mod lifecycle;
 #[path = "driver/profile.rs"]
 mod profile;
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

@@ -1,5 +1,4 @@
-#[path = "support/discovery.rs"]
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use support::{FixtureHost, Scenario};

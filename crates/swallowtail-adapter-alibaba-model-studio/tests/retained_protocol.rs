@@ -6,7 +6,7 @@ use swallowtail_adapter_alibaba_model_studio::{
 };
 use swallowtail_runtime::SessionReplayKind;
 
-mod support;
+use crate::support;
 
 use support::{bytes, conversation, json_fixture};
 

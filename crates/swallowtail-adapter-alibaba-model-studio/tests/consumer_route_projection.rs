@@ -2,7 +2,7 @@
 
 #![allow(dead_code)]
 
-mod support;
+use crate::support;
 
 use std::collections::BTreeSet;
 use std::num::{NonZeroU32, NonZeroU64};

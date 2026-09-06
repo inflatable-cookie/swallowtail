@@ -1,4 +1,4 @@
-use super::support::{FixtureHost, reasoning_options};
+use crate::support::{FixtureHost, reasoning_options};
 use swallowtail_adapter_pi::{
     PiRunProfileInput, PiSdkSidecarPreparedSession, PiSdkSidecarSessionPreparation,
     PiSessionProfileInput, prepare_pi_rpc, prepare_pi_sdk_sidecar_session,

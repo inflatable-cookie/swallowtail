@@ -1,9 +1,5 @@
 #![allow(dead_code)]
 
-#[allow(unused_imports)]
-mod claude_code_support;
-mod support;
-
 #[path = "consumer_route_projection/acknowledgement.rs"]
 mod acknowledgement;
 #[path = "consumer_route_projection/assembly.rs"]

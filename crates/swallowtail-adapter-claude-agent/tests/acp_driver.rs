@@ -2,7 +2,7 @@
 mod conformance;
 #[path = "acp_driver/deadline.rs"]
 mod deadline;
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

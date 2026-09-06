@@ -8,6 +8,7 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Alibaba Model Studio direct-inference drivers for Swallowtail"
+autotests = false
 
 [lib]
 doctest = false
@@ -29,3 +30,7 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "integration"
+path = "tests/integration/main.rs"

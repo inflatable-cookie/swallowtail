@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

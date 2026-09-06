@@ -1,6 +1,6 @@
 # g05.033 v0.4.3 Release Readiness
 
-Status: ready; card 105 in flight; cards 106 and 107 ready on its merge
+Status: complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed and tag capsule relayed to Acowtancy
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06
@@ -47,7 +47,7 @@ and rebase after the candidate; if one is accepted and green before card
 ## Batch Cards
 
 - [106 v0.4.3 Candidate Preparation](batch-cards/106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
-- [107 v0.4.3 Consumer Proof And Tag Capsule](batch-cards/107-v0-4-3-consumer-proof-and-tag-capsule.md) — planned; ready on the tag
+- [107 v0.4.3 Consumer Proof And Tag Capsule](batch-cards/107-v0-4-3-consumer-proof-and-tag-capsule.md) — complete; source consumer passed at `cbd4ddc8`; tag capsule relayed to Acowtancy
 
 ## Dispatch Manifest
 

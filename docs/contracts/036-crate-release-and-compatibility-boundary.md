@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-04
+Updated: 2026-09-06
 
 ## Purpose
 
@@ -331,7 +331,10 @@ mutation.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.4.2` at
+Current tagged identity is `v0.4.3` at
+`cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`, tag object
+`d83004302801222258c3496791de1e3305571860`, tagged 2026-09-06. Immutable
+`v0.4.2` remains at
 `f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`, tag object
 `927d14eccc16b5f24fc427913e087cd47fcfa499`, tagged 2026-09-06. Immutable
 `v0.4.1` remains at `c3cce7504ffd5eae138a0190f1cd81332db68c3c`, tagged

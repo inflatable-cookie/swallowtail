@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-None.
+- [014 Shared Harness Capability And Producer Boundary](014-shared-harness-capability-and-producer-boundary.md) — draft; operator-confirmed direction awaiting independent review and contract promotion
 
 ## Promoted Specs
 

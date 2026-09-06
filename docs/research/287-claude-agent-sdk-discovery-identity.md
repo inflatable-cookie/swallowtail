@@ -15,9 +15,12 @@ pin, source file, guide, matrix, or baseline.
 
 ## Method
 
-No new SDK/native process was started for Card 086. The repository already
-records the permitted open-only probes and their stop point. Card 100 records
-that the initialize exchange and bounded supportedModels() and accountInfo()
+No new SDK/native compatibility probe or provider session was run for Card 086.
+The provider-free inventory did run the installed CLI's version command, but
+that command only reports the executable version; it is not a provider session
+or an SDK/native sidecar compatibility probe. The repository already records
+the permitted open-only probes and their stop point. Card 100 records that the
+initialize exchange and bounded supportedModels() and accountInfo()
 controls can complete without awaiting query.next(), while system/init is the
 first message of the first query and a missing message is init_missing (Card
 100, lines 191-197). The same record says not to run another live probe before
@@ -61,16 +64,22 @@ inferred from a changelog or from the artifact version alone.
 
 | Wrapper | Native | Node | Classification at this boundary | Exact evidence |
 | --- | --- | --- | --- | --- |
-| 0.3.259 | bundled 2.1.259 | 22.23.2 (~/.local/bin/node, also the pinned point) | refused-with-code was observed once as account_not_subscription; a later open-only run passed the account gate and initialize controls but remained unresolved, so not compatible | Card 100, lines 253-272 |
+| 0.3.259 | bundled 2.1.259 | 22.23.2 (~/.local/bin/node, also the pinned point) | surface-changed: the retired repo-side account_not_subscription diagnostic was followed by successful open/initialize controls; Card 086 still admits no range because its permitted transcript lacks system/init | Card 100, lines 253-272 and 287-300 |
 | 0.3.259 | bundled 2.1.259 | 26.7.0 (/opt/homebrew/bin/node) | refused-with-code was observed as initialization_failed; a later bounded open-only run timed out without system/init, so not compatible | Card 100, lines 237-250 |
 
-For the 22.23.2 triple, the later open-only evidence recorded
-requested-with-supported-list, first-party gate passage, five supported-model
-rows, and presence-only account-source labels, but no system/init and no model
-or account values (Card 100, lines 261-272). For the 26.7.0 triple, the
-bounded run reached the native child but recorded no SDK first message,
-system/init, model, account projection, or rejection code (Card 100, lines
-244-252). Neither is a compatible classification.
+For the 22.23.2 triple, account_not_subscription is a retired repo-side
+diagnostic defect, not a current provider or native-identity refusal. The
+stronger prior live evidence records open success, system/init, canonical cwd
+match, requested-model confirmation, effective model, capability labels, and
+the later provider-failed terminal/cleanup posture (Card 100, lines 287-300).
+That live turn is outside Card 086's initialize-only acceptance boundary, so it
+does not admit the triple here. The later open-only evidence independently
+recorded requested-with-supported-list, first-party gate passage, five
+supported-model rows, and presence-only account-source labels, but no
+system/init and no model or account values (Card 100, lines 261-272). For the
+26.7.0 triple, the bounded run reached the native child but recorded no SDK
+first message, system/init, model, account projection, or rejection code (Card
+100, lines 244-252). It remains refused-with-code/unresolved, not compatible.
 
 The artifact-level harnessSchema: 1 is recorded for both rows by Research 280,
 lines 133-134. It is not a runtime field observed in either open-only
@@ -83,8 +92,8 @@ classification:
 
 | Triple set | Why withheld |
 | --- | --- |
-| 0.3.259 + host claude 2.1.258 + 22.23.2 | E1 inventories the host executable, but no sidecar transcript crosses the host executable into the SDK route |
-| 0.3.259 + host claude 2.1.258 + 26.7.0 | Same missing host-native sidecar transcript; no source change or install is permitted |
+| 0.3.259 + host claude 2.1.258 + 22.23.2 | A host-native crossing would require a real credential-dependent SDK/native probe. Card 100's account_not_subscription design-review stop forbids another live probe before code review (lines 253-260); no new credential or probe is authorized |
+| 0.3.259 + host claude 2.1.258 + 26.7.0 | Same credential-dependent Card 100 design-review stop (lines 253-260); no new credential or probe is authorized |
 | 0.3.259 + each native point 2.1.227..=2.1.258 + 22.23.2 | No such native artifact was installed or made available for a permitted probe |
 | 0.3.259 + each native point 2.1.227..=2.1.258 + 26.7.0 | No such native artifact was installed or made available for a permitted probe |
 | 0.3.259 + native 2.1.259 + any other Node point | Only the two observed Node installations were in scope; no install is permitted |
@@ -100,11 +109,14 @@ boundary.
 1. A successful initialize-control response is not system/init; the latter
    belongs to the first query message (Card 100, lines 191-197).
 2. An artifact harnessSchema value is not a per-triple runtime observation.
-3. A refusal followed by a later open-only surface that still lacks system/init
+3. account_not_subscription in Card 100, lines 253-260, is a retired repo-side
+   diagnostic defect; the stronger Node 22.23.2 evidence is recorded at lines
+   287-300.
+4. A refusal followed by a later open-only surface that still lacks system/init
    does not prove compatibility.
-4. Node engines.node >=18.0.0 is package admission metadata, not evidence that
+5. Node engines.node >=18.0.0 is package admission metadata, not evidence that
    this sidecar/native triple is compatible.
-5. No claim, pin, source, guide, matrix, or baseline may move from these
+6. No claim, pin, source, guide, matrix, or baseline may move from these
    observations.
 
 ## Decision
@@ -116,7 +128,7 @@ empty at this evidence boundary:
 | --- | --- | --- |
 | SDK wrapper | none | No initialize-only triple has the required system/init evidence |
 | Bundled native | none | No initialize-only triple has the required system/init evidence |
-| Host native discovery | none | The installed 2.1.258 executable has inventory evidence only |
+| Host native discovery | none | The installed 2.1.258 executable is inventory-only; its credential-dependent crossing is stopped by Card 100's design-review boundary |
 | Node 22.23.2 | none | Open-only initialize controls were observed, but system/init was not |
 | Node 26.7.0 | none | Refusal/timeout evidence exists, but no successful system/init |
 | Harness schema | none as a range axis | 1 is unchanged artifact metadata, not a runtime range result |
@@ -136,7 +148,7 @@ consume this document as admitted ranges.
 
 - No new system/init capture under the initialize-only rule.
 - No live prompt, live turn, or credential-dependent probe.
-- No host-native sidecar crossing for claude 2.1.258.
+- No host-native sidecar crossing for claude 2.1.258; Card 100's credential-dependent design-review stop remains in force.
 - No probes for native points 2.1.227..=2.1.258.
 - No claim, pin, source, guide, matrix, or baseline changes.
 

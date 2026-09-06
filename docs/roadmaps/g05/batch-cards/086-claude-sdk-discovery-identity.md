@@ -50,10 +50,12 @@ No. Stop for exact-head review.
 
 Research 287 records the Card 086 evidence boundary. The existing open-only
 evidence covers bundled native 2.1.259 with Node 22.23.2 and 26.7.0,
-including the observed refusal codes, initialize controls, supported-model row
-count, and the absence of system/init; host claude 2.1.258 and older native
-points remain inventory-only or unprobed. No new credential-dependent probe,
-prompt, or live turn was run.
+including the retired repo-side account_not_subscription diagnostic,
+initialize controls, supported-model row count, and the absence of system/init;
+the stronger prior Node 22.23.2 live evidence is cited but remains outside this
+card's initialize-only acceptance. Host claude 2.1.258 and older native points
+remain withheld at Card 100's credential-dependent design-review stop. No new
+credential-dependent probe, prompt, or live turn was run.
 
 No candidate admitted range was produced. Production claims, pins, source,
 guides, matrices, and baselines are unchanged. Card 087 remains gated because

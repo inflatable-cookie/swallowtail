@@ -371,3 +371,19 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `CleanupOutcome`: unavailable. This is a harness-capture failure, not
   evidence of a route or provider outcome; no acceptance box is ticked and no
   retry was run. The disposable cwd remained empty afterward.
+- The same 2026-09-06 attempt did send its one fixed prompt through the
+  subscription-backed CLI after the sidecar opened. Provider work and token
+  use therefore cannot be excluded from this attempt, unlike the earlier
+  audience-stopped attempt. The post-attempt process table had no process
+  matching the live native-binary path or live sidecar launch, confirming the
+  live child was terminated. It did expose two unrelated stale provider-free
+  fake-sidecar cargo tests from 2026-09-05; both were terminated with `SIGTERM`,
+  and a follow-up process-table check found no matching sidecar, native child,
+  or fixture test process. No live evidence was inferred from that cleanup.
+- Provider-free capture persistence is now incremental: the reusable
+  `SanitizedCaptureJournal` appends sanitized snapshots with flush-and-sync
+  after each observed wire update, and capture services can opt into it. A
+  provider-free child-wrapper proof writes its first snapshot, is killed
+  mid-run, and verifies that the partial JSONL record survives. This covers
+  the third harness failure class and leaves a reusable persistence seam for
+  future live lanes; no live probe was run for this repair.

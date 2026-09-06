@@ -1,12 +1,20 @@
 use crate::host_id;
 use crate::sdk_support::{
-    CleanupEvent, SDK_RESULT_FIELD_NAMES, SdkFixtureHost, SdkScenario, captured_services,
-    cleanup_request, prepared_session, prepared_session_with, record_open_failure, record_success,
-    turn_request,
+    CleanupEvent, SDK_RESULT_FIELD_NAMES, SanitizedCaptureJournal, SanitizedWireCapture,
+    SdkFixtureHost, SdkScenario, captured_services, cleanup_request, prepared_session,
+    prepared_session_with, record_open_failure, record_success, turn_request,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use serde_json::Value;
+use std::fs;
+use std::process::{Command, Stdio};
+use std::thread;
+use std::time::{Duration, Instant};
 use swallowtail_runtime::{InteractiveSessionHandle, ProcessExit, SessionOptions};
+
+const CAPTURE_CHILD_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_CHILD";
+const CAPTURE_JOURNAL_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_JOURNAL";
 
 fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
     let host = host_id("claude-agent-sdk.fixture.readiness");
@@ -20,6 +28,64 @@ fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
         error.diagnostic().code().to_owned(),
         fixture.cleanup_events(),
     )
+}
+
+#[test]
+fn wrapper_death_preserves_partial_capture_journal() {
+    if std::env::var_os(CAPTURE_CHILD_ENV).is_some() {
+        let path = std::env::var_os(CAPTURE_JOURNAL_ENV).expect("journal path is passed");
+        let mut journal = SanitizedCaptureJournal::create(path).expect("journal is created");
+        let capture = SanitizedWireCapture {
+            open_sidecar_code: Some("construction_failed".to_owned()),
+            ..SanitizedWireCapture::default()
+        };
+        journal
+            .append_snapshot(&capture)
+            .expect("partial capture is persisted");
+        loop {
+            thread::sleep(Duration::from_millis(25));
+        }
+    }
+
+    let path = std::env::temp_dir().join(format!(
+        "swallowtail-card100-capture-{}-{}.jsonl",
+        std::process::id(),
+        Instant::now().elapsed().as_nanos()
+    ));
+    let mut child = Command::new(std::env::current_exe().expect("test binary path"))
+        .arg("wrapper_death_preserves_partial_capture_journal")
+        .env(CAPTURE_CHILD_ENV, "1")
+        .env(CAPTURE_JOURNAL_ENV, &path)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+        .expect("capture wrapper child starts");
+
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !path.exists() {
+        assert!(
+            Instant::now() < deadline,
+            "capture wrapper did not persist before the kill"
+        );
+        thread::sleep(Duration::from_millis(10));
+    }
+    child.kill().expect("capture wrapper is killed mid-run");
+    let status = child.wait().expect("capture wrapper status is observed");
+    assert!(!status.success(), "killed wrapper must not report success");
+
+    let line = fs::read_to_string(&path)
+        .expect("partial capture remains readable after wrapper death")
+        .lines()
+        .next()
+        .expect("partial capture has one durable record")
+        .to_owned();
+    let record: Value = serde_json::from_str(&line).expect("durable record is JSON");
+    assert_eq!(
+        record["openSidecarCode"],
+        Value::String("construction_failed".to_owned())
+    );
+    assert_eq!(record["stderrTailPresent"], Value::Bool(false));
+    fs::remove_file(path).expect("capture journal is removed");
 }
 
 fn first_turn_failure(scenario: SdkScenario) -> String {

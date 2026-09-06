@@ -66,6 +66,11 @@ if ! command -v effigy >/dev/null 2>&1; then
   exit 1
 fi
 
+# Hook GIT_* vars pin nested git to this repo. qa:docs runs throwaway
+# git (roadmap number collision tests) and must see a clean environment.
+unset -v GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY \
+  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX
+
 printf 'pre-push: docs, PAPERCUTS.md, or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
 if ! effigy qa:docs; then
   printf 'pre-push: effigy qa:docs failed; refusing push (Contract 001 closeout rule)\n' >&2

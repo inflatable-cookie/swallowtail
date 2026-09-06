@@ -2,12 +2,11 @@
 
 ## Ready
 
-- [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; is the missing lease-release DELETE under cancellation a production race or a fixture ordering; Drop must never abort
-- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; paused behind card 100 (shared sidecar); resumes on its merge; set_model with confirmed values, supported_models and effort at open
+- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; branch-only until the `v0.4.2` tag; set_model with confirmed values, supported_models and effort at open
 
 ## Planned
 
-- [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — planned; after card 100
+- [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — active; dispatched after cards 100 and 103
 - [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; after card 101; Bovine editing session as the smoke
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — planned; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — planned; g05.029 priority 5
@@ -22,6 +21,7 @@
 
 ## Completed
 
+- [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only; merged at `d7b483dd`
 - [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s
 - [094-deadline-fixture-determinism-sweep.md](./094-deadline-fixture-determinism-sweep.md) — complete; Pi lifecycle race and workspace sweep merged through PR 227 as `3506d9a5`

@@ -47,7 +47,7 @@ mutation.
 
 ## Batch Cards
 
-- [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; release-lane investigation; card 101 waits for its verdict
+- [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only, merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
 - [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the standing-grant pattern
 - [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; serial after card 101; Bovine editing session as the smoke

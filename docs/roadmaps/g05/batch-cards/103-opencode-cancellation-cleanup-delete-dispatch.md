@@ -1,6 +1,6 @@
 # 103 OpenCode Cancellation Cleanup DELETE Dispatch
 
-Status: complete; fixture-only verdict, no `v0.4.2` content
+Status: complete; fixture-only verdict, no `v0.4.2` content; merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06
@@ -58,6 +58,28 @@ Other crates; the release candidate; card 094's other surfaces.
 - `effigy package:verify-affected swallowtail-adapter-opencode`
 - `effigy qa:northstar`
 - `git diff --check`
+
+## Result
+
+Card 103 is complete and fixture-only. The gate was `GET /session/status?`,
+not a missing DELETE. The fixture's 10 ms wall-clock budget raced thread
+spawn, lease acquisition, and loopback health work under loaded macOS CI;
+the driver correctly refused an already-expired deadline and released leases
+on every path. The abort was a poisoned-mutex double panic: the hang guard
+panicked while holding the gate, then `FixtureServer::drop` touched the
+poisoned lock while unwinding. It was not a production cleanup failure and
+adds no `v0.4.2` content.
+
+The fixture now tolerates poison, `Drop` does not raise the fixture panic,
+explicit shutdown performs the assertion, and manual deadline triggering
+prevents the gate from being missed. The retained `JoinOnDrop` test keeps the
+guarded `resume_unwind` behavior at the non-Drop suppression seam. Twenty-four
+loaded runs completed with zero aborts and zero failures; focused validation,
+package verification, formatting, Northstar QA, and diff checks passed.
+
+Merged through PR 238 at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b` after all
+11 hosted checks passed. Card 101 may prepare the candidate; Card 082 remains
+branch-only until the `v0.4.2` tag.
 
 ## Review Oracle
 
